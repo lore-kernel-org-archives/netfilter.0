@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Resend: MASQUERADE: Route sent us somewhere else.
-Date: Tue, 5 Apr 2005 10:50:28 -0400
-Message-ID: <20050405145028.GA2620@bender.817west.com>
-References: <200504051035.j35AZn2H025714@osprey.tkevans.com>
+Subject: Re: Problem in setting NAT using IP tables for kernel 2.4.x
+Date: Tue, 5 Apr 2005 11:43:47 -0400
+Message-ID: <20050405154347.GA2805@bender.817west.com>
+References: <54d79d81050402214135b12fa5@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200504051035.j35AZn2H025714@osprey.tkevans.com>
+In-Reply-To: <54d79d81050402214135b12fa5@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,47 +21,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Apr 05, 2005 at 06:35:49AM -0400, Tim Evans wrote:
-> Thanks for your reply.
+On Sun, Apr 03, 2005 at 11:11:47AM +0530, Rahul Hirve wrote:
+> hi all 
+> 	I am using uClinux to test nat on IXDP425 the setup is use is as shown below
 > 
-> >the error message you refer to in your subject is normally encountered
-> >when using MASQUERADE in conjunction with policy routing, which normally
-> >implies multiple ISP connections.
+> LAN
+> with subnet <-------------[ixp0:10.0.10.11/23 (IXDP425) ixp1:
+> 192.168.0.1/24]----------->PC with 10.0.10.0/23					 				             
+>             IP 192.168.0.4/24
+>                                                                       
+>                           Default Gateway 192.168.0.1
 > 
-> Just one connection.
+>                                                         
+> now here th IXDP425 acting as router with ip_forward = 1
+> ixp0(eth1) with IP 10.0.10.11 is acting as WAN port connecting to LAN
+> of subnet 10.0.10.0/23 and
 > 
-> >i cannot find information referencing any of the above in the details of
-> >your post; which could be a possible explanation for the silence.
-> 
-> Might it be some sort of conflict between my immediate ISP (Comcast) assigning a 
-> my firewall a domain name via DHCP and my using my "real" domain name on the 
-> inside?  Again, however, this problem didn't happen with RHEL 3.
+> ixp1(eth0) is acting as LAN port connecting to PC of IP 192.168.0.4
+> with default gateway as 192.168.0.1
 
-the error message implies a routing problem--the domain name of the
-router is not a factor in the routing decision normally.
+<--snip-->
 
-the gist of that error message is this:  the output interface for this
-packet according to the routing table is different from the interface we
-are doing a lookup on for the MASQ IP.  i cannot fathom how you could
-get this message with a standard inside/outside interfaces, single
-default gateway, firewall machine.
+> LOOPBACK=lo
+> LAN=ixp1
+> WAN=ixp0
 
-without seeing some rules[1], some routing tables[2], and some addressing
-info[3], i'm pretty sure no one is going to be able to divine what the
-problem is.
+<--snip-->
 
-the reason you're seeing this after an upgrade is because this bug reared
-it's head somewhere around 2.4.23 and later kernels (someone else probably
-has a better memory than me).
+> iptables -t nat -A POSTROUTING -s 192.168.0.4 -o ${LAN} -j SNAT --to 10.0.10.11
+
+shouldn't that be "-o $WAN"
 
 -j
 
-[1] iptables -t mangle -vnxL; iptables -t nat -vnxL; iptables -vnxL
-[2] ip ro sh
-[3] ip -4 -o addr sh
-
 --
-"Peter, you're bribing your daughter with a car? 
- Ah, c'mon, Lois, isn't 'bribe' just another word for 'love?'"
-	--Family Guy
+"Stewie: Well, I'd love to stay and chat, but you're a bitch."
+        --Family Guy
 
