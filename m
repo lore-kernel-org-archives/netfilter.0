@@ -1,13 +1,12 @@
-From: "Regalado, Ron" <Ron.Regalado@mci.com>
-Subject: TARPIT Redhat 9 error
-Date: Wed, 22 Oct 2003 17:53:52 +0000
+From: Brent Gregersen <gregerse@chemsun.chem.umn.edu>
+Subject: RE: work ip address at home
+Date: Wed, 22 Oct 2003 13:15:31 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E26ABBCB14D369428125D23DF8BE94E52CD0BB@DGEXCH06.mcilink.com>
+Message-ID: <20031022125857.K34090@chemsun.chem.umn.edu>
+References: <7C9884991ADAE0479C14F10C858BCDF5122E78@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="Boundary_(ID_gW6S+ASVSd4Teq/vQix/NA)"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-return: allowed
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122E78@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +16,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Daniel Chemko <dchemko@smgtec.com>
+Cc: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Wed, 22 Oct 2003, Daniel Chemko wrote:
 
---Boundary_(ID_gW6S+ASVSd4Teq/vQix/NA)
-Content-type: text/plain; CHARSET=us-ascii
+> Well, I'd say that VPN is the most obvious solution for this problem,
+> but since you haven't done that already, I assume you aren't doing this
+> above the radar, or without network competent administrators.
+>
+> An SSH tunnel is feasible as long as the client side doesn't need to use
+> the work IP for the protocol to function. Maybe if you gave some details
+> on this 'license server' we could get a better idea on what we're
+> working on. Is this plugging into something like LM Server?
 
-I have upgraded to iptables 1.2.8, installed the patch-o-matic extra for
-tarpit, recompiled the kernel.  I am getting the error 
- 
-iptables -A INPUT -p tcp -m tcp --dport 135 -j TARPIT
-iptables: No chain/target/match by that name
- 
-Will tarpit work with redhat's rpm package?
-Or do I need to download and install the package from the netfilter site?
- 
-Thanks,
- 
-Ron
-
---Boundary_(ID_gW6S+ASVSd4Teq/vQix/NA)
-Content-type: text/html; CHARSET=us-ascii
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+The license server is a machine I do not have access to. It is running
+Elan License Manager software for Tecplot (application I want to use at
+home to prepare graphs/plots for journal articles). I believe tecplot
+compares the ip address of application machine to a 'valid' ip domain
+contained in license obtained from the license server.  This was the reasoning
+behind the 'trick application into thinking I am at work' approch. I
+could be wrong on this however. If thats the case, I'll look into
+implementing a VPN solution between my home machine and work machine.
+(wrong forum, but any pointers/urls on useful VPN software?)
 
 
-<META content="MSHTML 6.00.2800.1264" name=GENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=Arial size=2><SPAN class=438185017-22102003>I have upgraded to 
-iptables 1.2.8, installed the patch-o-matic extra for tarpit, recompiled the 
-kernel.&nbsp; I am getting the error </SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2>iptables -A INPUT -p tcp -m tcp --dport 135 -j 
-TARPIT</FONT></DIV>
-<DIV><FONT face=Arial size=2>iptables: No chain/target/match by that 
-name</FONT></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN class=438185017-22102003>Will tarpit work 
-with redhat's rpm package?</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=438185017-22102003>Or do I need to 
-download and install the package from the netfilter site?</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN 
-class=438185017-22102003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN 
-class=438185017-22102003>Thanks,</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN 
-class=438185017-22102003></SPAN></FONT>&nbsp;</DIV>
-<DIV><SPAN class=438185017-22102003><FONT face=Arial 
-size=2>Ron</FONT></SPAN></DIV></BODY></HTML>
 
---Boundary_(ID_gW6S+ASVSd4Teq/vQix/NA)--
+>
+>
+> -----Original Message-----
+> From: Brent Gregersen [mailto:gregerse@chemsun.chem.umn.edu]
+> Sent: Wednesday, October 22, 2003 10:08 AM
+> To: netfilter@lists.netfilter.org
+> Subject: work ip address at home
+>
+> I need help with the following setup.
+>
+> I have one machine at home that gets an IP address (say 1.2.3.4) by DHCP
+> from an ISP. However, I would like applications on my home machine to
+> think it has the ip address of my machine at work (say 4.3.2.1).
+> I would then like to forward a specific port of my home machine to my
+> work
+> machine, and then forward that to a license server at work. Thus,
+> application thinks I'm at work, license server thinks Im at work, but Im
+> really sitting comfortably in my own home.
+>
+> Is this possible? Should this be done with netfilter/iptables or should
+> I
+> be looking at another option?
+>
+> If it is possible, I could get some extra work done at home, without
+> having to use certain graphics intensive programs over a tunneled X
+> connection to my work machine(which is extreamly slow).
+>
+> A diagram:
+>
+>         LinuxA                 LinuxB            LinuxC
+> |---------HOME---------|     |---Work--|     |-Work Server-|
+> |'4.3.2.1' <--> 1.2.3.4|<--->| 4.3.2.1 |<--->|   4.3.2.2   |
+> |----------------------|     |---------|     |-------------|
+>
+>
+> Thanks for any help/suggestions
+>
+>
 
