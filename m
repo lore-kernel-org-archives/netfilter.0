@@ -1,12 +1,11 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: more than 1 ISP
-Date: 17 Nov 2004 20:14:34 +0100
-Message-ID: <1100714893.27541.20.camel@nostromo.bgsecm.com>
-References: <20041117115158.GA30794@tranquility.scriptkitchen.com>
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Simple Blackberry Enterprise configuration
+Date: Wed, 17 Nov 2004 11:44:27 -0800
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF56795B4@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041117115158.GA30794@tranquility.scriptkitchen.com>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <opie@817west.com>, mclinden@informed.net, netfilter@lists.netfilter.org
 
-El mi=C3=A9, 17 de 11 de 2004 a las 12:51, Payal Rathod escribi=C3=B3:
-> Hi,
-> My ISP gives me a speed of 48kbps maximum (actually 64kbps is promised
-> but it never goes about 48). For a month or 2 we are taking one more co=
-nnection
-> of 48kbps from another ISP (actually a nearby company) for uploading da=
-ta to
-> our client's computer.
-> Can I terminate it in my Linux box (which is the gateway) and for few o=
-f my windows
-> clients make that IP my default gateway or is lartc needed here?
-> I don't mind if even FTP protocol passes through the other link and the=
- first
-> one is used for browsing and mails.
-> I need a simple solution to this and lartc was becoming too complex.
->=20
-> Any ideas anyone?
-> With warm regards,
-> -Payal
+> as your "open, testing" policy.  source/destination IP restrictions
+> can be added later as you get more comfortable with the configuration.
 
-You can use the iproute2 command "ip" with the parameter
-nexthop to use the 2 ISPs.
+Just to throw in my two cents, there are two things key in dioagnosing
+firewall ruleset failures.
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+1. tcpdump on both the inbound and outbound interfaces You will see
+exactly what the result of the firewall configuration has on the network
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+2. Add 'logdrop' support. It goes like this: You specify DROP by default
+in INPUT/FORWARD, but the very last rule in the INPUT/FORWARD chains is
+to log the failure.=20
 
+By running tcpdump and reading the logs, you can get a good
+understanding of how a protocol works. It doesn't take too much linux
+experience to get the gist of what's happening as long as you have some
+networking background.
 
