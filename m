@@ -1,13 +1,13 @@
 From: "Andrew E. Mileski" <andrewm@isoar.ca>
-Subject: Re: pptp-conntrack-nat.
-Date: Wed, 05 May 2004 01:10:05 -0400
+Subject: Re: CISCO VPN clients behind firewall
+Date: Wed, 05 May 2004 01:10:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4098772D.3030003@isoar.ca>
-References: <2BE915A69EF4D2119A0800805FF5E0501F14EA44@brspm201.exbr01.exch.eds.com>
+Message-ID: <4098774D.6070604@isoar.ca>
+References: <00f101c43236$e54f0380$0300a8c0@indoakses2>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2BE915A69EF4D2119A0800805FF5E0501F14EA44@brspm201.exbr01.exch.eds.com>
+In-Reply-To: <00f101c43236$e54f0380$0300a8c0@indoakses2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,23 +20,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Ampugnani, Fernando wrote:
-> Hi all,
-> 	I tried apply the patch pptp conntrack on 3 different kernel
-> versions. None of them worked for me. I tried on 2.4.14, 2.4.21 and 2.4.26.
-> The patch is not getting applied cleanly on any of these.Could anyone please
-> tell me with which kernel version this patch works?
+bino_oetomo wrote:
+> Hi All
+> 
+> Is there any clue/docs on hoe to let multiple clients behind firewall =
+> connecting to CISCO vpn concentrator ?
+> 
+> Sincerely
+> -bino-
 
 [This might be a dupe, as my addressbook had the wrong address]
 
-I'm using 2.4.22-1.nptl from Fedora.  I'd use newer, but this
-is what my company's products are currently using.
+I just finished Intel Centrino Certification testing on the
+PPTP patch (2004-04-16 cvs snapshot) and Fedora's 2.4.22-1.nptl
+last week.  Passed with XP/2000 using Intel, Microsoft, Cisco,
+and Checkpoint VPN clients.
 
-If it will help, I can make the kernels available.  I've compiled
-for all x86 arch's, and have a modified iptables (required) as
-well.  Or you can use my SRPM and compile your own.
+You can browse the PPTP patch in CVS:
+http://cvs.netfilter.org/cgi-bin/viewcvs.cgi/netfilter/patch-o-matic/extra/
+and check it out from a similar path.
 
 -- 
 Andrew E. Mileski
+
 
 
