@@ -1,8 +1,8 @@
-From: "Benjamin Case" <benjamin_case@yahoo.com>
-Subject: problem with documentation
-Date: Fri, 14 May 2004 09:34:50 -0500
+From: "Manikandan" <manikandan_m@java-green.com>
+Subject: Unable to apply pptp conntrack patch
+Date: Fri, 14 May 2004 16:04:09 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c439c0$a5ee79f0$28c8a8c0@polm.dyndns.org>
+Message-ID: <GHEILNONPACCGBGKBEKKMEMOCFAA.manikandan_m@java-green.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,32 +16,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-I have just completed the the installation of IPTABLES in Debian based on
-Russel's "Packet Filter" documentation.
+Hi all,
 
-I am now attempting to create the rules that Russel has provided in the
-"Rusty's Really Quick Guide To Filtering".
+	I am trying to patch my RedHat kernel kernel-2.4.20-31.9 with pptp
+conntrack patch as my NAT clients requires access to one of my Windows 2000
+VPN server. I am getting the following error when I patch my kernel.
 
-Unfortunately I am receiving an errror.
+[root@manikandan patch-o-matic-ng-20040302]# ./runme pptp-conntrack-nat/
+Hey! KERNEL_DIR is not set.
+Where is your kernel? [/usr/src/linux] /usr/src/linux-2.4.20-31.9
+Where is your iptables source code? [/usr/src/iptables]
+/usr/src/iptables-1.2.9
+Loading patchlet definitions... done
+Welcome to Patch-o-matic (1.14)!
 
-polm:/etc# iptables -N block
-polm:/etc# iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables: No chain/target/match by that name
+Kernel:         /usr/src/linux-2.4.20-31.9
+Iptables:       /usr/src/iptables-1.2.9
 
-When I do an iptables -L , I can see the "block" chain.
+Each patch is a new feature: many have minimal impact, some do not.
+Almost every one has bugs, so don't apply what you don't need!
+-------------------------------------------------------
+Already applied:
 
-Why does the second command return an error ?
+Not all requirements fulfilled for pptp-conntrack-nat/, skipping:
+ Can't find a patch version of  matching your  version
 
-Thanks,
+Excellent! Source trees are ready for compilation.
 
-Ben
+Any help!
 
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.681 / Virus Database: 443 - Release Date: 5/10/2004
+-- Manikandan.
+
 
 
 
