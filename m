@@ -1,16 +1,14 @@
-From: Mike <1100100@gmail.com>
-Subject: Re: Port 21, 23, and 80 are open according to Shields Up at grc.com
-Date: Mon, 13 Sep 2004 11:18:12 -0400
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: MAC addresses
+Date: 13 Sep 2004 17:57:52 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <8ca4228204091308186fc50d59@mail.gmail.com>
+Message-ID: <1095079543.6971.1.camel@nostromo.bgsecm.com>
 References: <200409111150.50506.bulliver@badcomputer.no-ip.com>
-	<8ca42282040911160952abec3b@mail.gmail.com>
-	<1095079786.1899.8.camel@wolfpack.ljm.dom>
-Reply-To: Mike <1100100@gmail.com>
+	<20040911220159.4cee40bb@oldskool.actisystem.nix>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1095079786.1899.8.camel@wolfpack.ljm.dom>
+In-Reply-To: <20040911220159.4cee40bb@oldskool.actisystem.nix>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,49 +18,40 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi J,
+El s=C3=A1b, 11 de 09 de 2004 a las 22:01, active escribi=C3=B3:
+> On "Sat 11 of September 2004" Darren Kirby wrote:
+>=20
+> > Are MAC addresses unique for all ethernet cards? What I would like to
+> > know is could I use this rule to allow ssh connections ONLY from my
+> > notebook no matter what its current IP address happens to be, and dro=
+p
+> > all other connection requests?
+>=20
+> Yes. MAC addresses are set in the card by the manufacturer. This is a
+> good method to control input traffic.
+>=20
+> For more info: http://www.webopedia.com/TERM/M/MAC_address.html
 
-Thanks for the guidance.
-There's definitely no DNATing/PREROUTING currently set up in the
-iptables firewall.  So, I guess the only thing that could explain port
-21 and/or 23 is there must be an ftp daemon using those ports.
-
-As for port 80, I wonder if it's got anything to do with Apache
-running the intranet webserver inside the LAN.  I don't believe I've
-got apache even installed on the routerbox.
-
-Well, enough guessing.  I'll try some netstat research and see what
-percolates to the surface.
-
-Best regards.
-
-Mike
+But have in mind that some operating systems let you change the
+MAC address of the card. By example, Linux let you do that, and
+that can fool some kinds of traffic control.
 
 
-On Mon, 13 Sep 2004 08:53:07 -0400, Jason Opperisano <opie@817west.com> wrote:
-> 
-> you need to keep in mind that if your netfilter box is performing
-> MASQ/SNAT for your LAN machines--the IP being scanned by grc.com is the
-> public IP of the netfilter box.
-> 
-> unless your doing some DNATs to machines on your LAN--you should focus
-> your efforts on the netfilter machine itself.
-> 
-> "netstat -lntu" would be a good place to start.
-> 
-> i've always questioned the output of web-based scanners like grc.com;
-> however, i just went to grc.com and tried it out, and achieved a
-> *perfect* "TruStealth" rating...which must mean i'm super l33t like
-> stevie...  :-P
-> 
-> -j
-> 
-> --
-> Jason Opperisano <opie@817west.com>
-> 
->
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
 
