@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FORWARD question
-Date: Thu, 20 Nov 2003 23:12:06 +0000
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: H323 NAT
+Date: Fri, 21 Nov 2003 09:16:50 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311202312.hAKNC8723820@onyx.rockstone.co.uk>
-References: <20031120215156.99184.qmail@web40809.mail.yahoo.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A28AD49@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3AFB3.FEDA9310"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031120215156.99184.qmail@web40809.mail.yahoo.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,125 +17,121 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+To: German Viera <gviera@directo.com.uy>, netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C3AFB3.FEDA9310
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Wow.. our names are close in some way (gvieira)...
+=20
+You need patch-o-matic H323 patch and use the 2 modules that it creates =
+after recompiling the kernel.
+There is alot on this in the archives.
+
+Thanks,
+
+=20
+=20
+=20
+
+-----Original Message-----
+From: German Viera [mailto:gviera@directo.com.uy]
+Sent: Thursday, 20 November 2003 11:49 PM
 To: netfilter@lists.netfilter.org
+Subject: H323 NAT
 
-On Thursday 20 November 2003 9:51 pm, Nick wrote:
 
-> Antony, first of all thanks for your answer :-) If
-> you don't mind I would like to clarify a few things.
->
-> I know the router 'remembers' things about packets, I
-> just don't know how much he remembers.That's where I
-> am right now.
+Hi everybody......
+=20
+    I had been using iptables for almost a year ...I am administering a =
+linux box that works as a router....I am maquins source routing and NAT =
+..but I am having problem with some H323 equipement to make nat with =
+them.....
+=20
+some one has any idea ???
+=20
+=20
+PS: Please reply to this mail becuase I am not yet subscriber to the =
+list.
+=20
+Regards ,
+=20
+Geman Viera
 
-The connection tracking system remembers: source IP & port, destination IP & 
-port (4 values), and the ESTABLISHED state then matches reply packets with 
-source & destination reversed.   The RELATED state will also match packets 
-with completely different port numbers, depending on the protocol involved 
-(this is where the FTP conntrack helper comes in).
 
-> I do use connection traccking, and I guess I use it
-> correctly.(Earlier I had posted only a part of my
-> script) I also have only one public IP, the FW machine
-> sends FTP requests to the FTP server on 192.168.0.12.
->
-> The only open port on the external NIC of the FW
-> machine is 21.
+------_=_NextPart_001_01C3AFB3.FEDA9310
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-If that really is true (I wonder how you think you have closed all the other 
-ports?), then even FTP won't work, because it needs TCP port 20 as well (in 
-active mode).
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
 
-> My complete forward rules are those:
->
-> $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
-> $IPTABLES -A FORWARD -m state --state
-> ESTABLISHED,RELATED -j ACCEPT
->
-> $IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
-> $FTPSRV --dport 21 -m state --state NEW -j ACCEPT
->
-> $IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
-> $FTPSRV --dport 20 -j ACCEPT
 
-The above rule is redundant (see whether "iptables -L -n -v -x" shows any 
-packets having matched it) because of the "-m state" rule earlier.
+<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><SPAN class=3D427301522-20112003><FONT face=3DArial color=3D#0000ff =
+size=3D2>Wow..=20
+our names are close in some way (gvieira)...</FONT></SPAN></DIV>
+<DIV><SPAN class=3D427301522-20112003><FONT face=3DArial color=3D#0000ff =
 
-> $IPTABLES -A FORWARD -i ppp0 -o $LAN_IFACE -p tcp -d
-> $FTPSRV --dport 1024:65535 --sport 1024:65535 -j
-> ACCEPT
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D427301522-20112003><FONT face=3DArial color=3D#0000ff =
+size=3D2>You=20
+need patch-o-matic H323 patch and use the 2 modules that it creates =
+after=20
+recompiling the kernel.</FONT></SPAN></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
+class=3D427301522-20112003>There=20
+is alot on this in the archives.</SPAN></FONT></DIV>
+<DIV>
+<P><FONT face=3DArial size=3D2><SPAN=20
+class=3D674251008-03092002>Thanks,</SPAN></FONT></P></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D674251008-03092002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2></FONT>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<BLOCKQUOTE dir=3Dltr=20
+style=3D"PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #0000ff 2px =
+solid; MARGIN-RIGHT: 0px">
+  <DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
+face=3DTahoma=20
+  size=3D2>-----Original Message-----<BR><B>From:</B> German Viera=20
+  [mailto:gviera@directo.com.uy]<BR><B>Sent:</B> Thursday, 20 November =
+2003=20
+  11:49 PM<BR><B>To:</B> =
+netfilter@lists.netfilter.org<BR><B>Subject:</B> H323=20
+  NAT<BR><BR></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>Hi everybody......</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I had been using =
+iptables for=20
+  almost a year ...I am administering a linux box that works as a =
+router....I am=20
+  maquins source routing and NAT ..but I am having problem with some =
+H323=20
+  equipement to make nat with them.....</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>some one has any idea =
+???</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>PS: Please reply to this mail becuase =
+I am not=20
+  yet subscriber to the list.</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Regards ,</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Geman =
+Viera</FONT></DIV></BLOCKQUOTE></BODY></HTML>
 
-Ditto.
-
-> $IPTABLES -t nat -A PREROUTING -p tcp -d $INET_IP -i
-> ppp0 --dport 21 -j DNAT --to $FTPSRV
-
-This forwards FTP requests to your FTP server.
-
-> $IPTABLES -t nat -A POSTROUTING -o ppp0 -s
-> $LAN_IP_RANGE -j MASQUERADE
-
-This makes sure all outgoing packets have a public source address, so the 
-replies can get back to you.
-
-> $INET_IP= public IP
-> $LAN_IFACE=internal NIC of the FW server
->
-> I use NEW when I forward to port 21 because I figured
-> the first FTP request will be new. Am I right ?
-
-Yes.
-
-> If I understand correctly, the router will pick up FTP
-> related traffic coming from the internet through ports
-> 1024:65535 and forward it only to the FTP server
-> because I do PREROUTING to my FTP server ?
-
-The original packet coming in to your public IP address will be to port 21, 
-and will therefore be NATted to your internal FTP server.
-
-All future packets will match ESTABLISHED or RELATED, and will therefore 
-match the first rule in your FORWARD chain.   You do not need to worry about 
-packets other than the first one in your nat tables, because all future 
-packets are automagically NATted (in both directions) by the protocol nat 
-helper (this is why in my previous answer I said you should compile into your 
-kernel, or load as modules, the connection tracking and nat helpers for FTP).
-
-> Does the router say: 'this packet that came through
-> port 1025 ist FTP related and I will FORWARD it only
-> to the FTP server(because that's what PREROUTING tells
-> me) and this packet coming through port 1026 is for
-> client x.x.x.x (for which there is no PREROUTING) and
-> I will send it to only him' ?
-
-That depends on whether it is RELATED to an already ESTABLISHED ftp 
-connection.
-
-Provided there was a PORT command sent over the FTP control channel to 
-specify data on port 1025, then yes.   If there was no PORT command telling 
-the nat & conntrack helpers to expect a data connection on port 1025, then 
-that packet will not be allowed through, and your network remains secure.
-
-Basically what I'm saying is that if you use the nat and conntrack ftp 
-helpers, your rules can be very simple and your network can be very secure, 
-both at the same time.
-
-If you do not use the nat and conntrack helpers, it is very difficult to make 
-the ftp protocol both secure and functional at the same time.
-
-> If that's so, great :-) Thanks again for your help
-
-Try it and see :)
-
-Antony.
-
--- 
-
-What is this talk of software 'release' ?
-Our software evolves and matures until it becomes capable of escape, leaving 
-a bloody trail of designers and quality assurance people in its wake.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+------_=_NextPart_001_01C3AFB3.FEDA9310--
 
