@@ -1,11 +1,13 @@
-From: "Alex Nee" <hard__ware@dynamicaccess.biz>
+From: "Patrick Kwan" <pat@pat.dyndns.info>
 Subject: Re: netmeeting (incoming and outgoing connection)
-Date: Mon, 28 Apr 2003 17:42:15 +1000
+Date: Mon, 28 Apr 2003 16:17:27 +0800 (HKT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001b01c30d59$b059c730$7b7b10ac@hardware>
-References: <33659.172.16.28.1.1051508134.squirrel@pat.dyndns.info>
-Reply-To: "Alex Nee" <hard__ware@dynamicaccess.biz>
+Message-ID: <1483.172.16.28.100.1051517847.squirrel@pat.dyndns.info>
+References: <33659.172.16.28.1.1051508134.squirrel@pat.dyndns.info> 
+     <1051513684.2388.138.camel@alpha.newkirk.us>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1051513684.2388.138.camel@alpha.newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,43 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "lists.netfilter" <netfilter@lists.netfilter.org>
+To: Joel Newkirk <netfilter@newkirk.us>
+Cc: netfilter@lists.netfilter.org
 
-Yes but i believe it must be forwarded to an internal IP
+Hello,
 
-thus meaning you would need to have Multiple external IP's ...
+Thanks your help first!
 
------ Original Message -----
-From: "Patrick Kwan" <pat@pat.dyndns.info>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, April 28, 2003 3:35 PM
-Subject: netmeeting (incoming and outgoing connection)
+I found there is a OpenGatekeeper H323 proxy, it seem to solve that
+limitation. Am I right?
+
+Or any other suggestions?
+
+Thanks!
+
+Patrick
 
 
-> Hello,
+> On Mon, 2003-04-28 at 01:35, Patrick Kwan wrote:
+>> Hello,
+>>
+>> I'm using iptables NAT to allow lan client to access internet.
+>> if i patch my kernel with netfilter's POM and load the required
+>> H323 modules.
+>>
+>> I want to confirm if h323 modules also allow "Incoming connection"
+>> to Netmeeting in internal lan client?
 >
-> I'm using iptables NAT to allow lan client to access internet.
-> if i patch my kernel with netfilter's POM and load the required
-> H323 modules.
+> If you're talking about a new connection being initiated, then it's the
+> same as with any other NAT situation - you have to explicitly DNAT new
+> incoming connections to a local IP if you want them to reach a
+> particular target.  Otherwise they will end up in the INPUT chain,
+> destined for the firewall/nat box itself.  As long as you only need
+> incoming NEW state connections to reach a single client, just add a DNAT
+> rule to nat PREROUTING to handle them. If you need multiple internal
+> clients to be able to receive NEW connections from outside the network,
+> you have a problem.  (however, you would anyway, regardless of
+> firewall/NAT solution - this is a limit imposed by the nature of NAT
+> itself, not netfilter)
 >
-> I want to confirm if h323 modules also allow "Incoming connection"
-> to Netmeeting in internal lan client?
+>> Please clarify me. (already search the past thread)
+>> Many thanks your advices.
+>>
+>> Patrick
 >
-> Please clarify me. (already search the past thread)
-> Many thanks your advices.
->
->
-> Patrick
+> j
 >
 >
 >
->
->
->
->
-
 
 
