@@ -1,11 +1,9 @@
-From: "Remus" <rmocius@auste.elnet.lt>
-Subject: router protection with iptables
-Date: Mon, 25 Nov 2002 10:45:28 -0000
+From: COUSIN Marc <mcousin@sigma.fr>
+Subject: Marking and Mangling for QoS
+Date: Mon, 25 Nov 2002 11:24:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01bd01c2946f$c8498fa0$6e69690a@rimas>
-References: <B5D7C6B6D020D511838A0060082D4CC90299BBF7@kheops.sigma.fr>
+Message-ID: <B5D7C6B6D020D511838A0060082D4CC90299BBF7@kheops.sigma.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,28 +15,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi folks,
+Hi,
+I'm having trouve using mangling on NATed packets:
 
-I have small router on Linux box.
-It has two NICs and I use it to route real IP addresses (basicly I use it to
-replace CISCO router, it is cheaper :-) )
-I have a command echo 1 > /proc/sys/net/ipv4/ip_forward and everything works
-just fine.
+Here's what we're trying to do:
+We're trying to build a system to test the behaviour of our web applications
+with slow links. For that, we decided to use the Linux QoS, and SNAT+DNAT to
+redirect the packets from the linux system to the webserver. The idea behind
+this is that someone contacting the linux on the 8081 port will be
+transparently redirected to the 8080 of the real web server, simulating a
+56k modem. on the 8082 port, it could be a 128 link, etc ...
 
-I'm wondering about iptables rules which I can use to protect my router from
-hackers.
-I want all IP/UDP/ICMP packets to go trought my router in both ways, just to
-protect my router.
-Behind the router I have Firewalls and they do a protection job for my www,
-mail and local network.
+The system is a Redhat 7.3
 
-What you can recomend for me?
+To create this, I used:
+- DNAT and SNAT rules to redirect the packets from my port to the web
+server, and SNAT the packet (so that it is returned to me and i can shape it
+too) [these are OK]
+- a QoS script (simple, using fwmarks) [ok too]
+- And I wanted to mangle the packets to put the marks on the NATed pakets
+[here comes the trouble]
+I'll continue on the above example :
 
-Thank you
+# For the NAT
+iptables -t nat -A PREROUTING -p tcp --destination-port 8081:8090 -j DNAT
+--to-destination 89.131.0.7:8080
+iptables -t nat -A POSTROUTING -p tcp --destination 89.131.0.7 -j SNAT
+--to-source 89.131.0.58
+# For the marks
+iptables -A PREROUTING -t mangle -p tcp --destination-port 8081 -j MARK
+--set-mark 10 
+iptables -A POSTROUTING -t mangle -p tcp --source-port 8081 -j MARK
+--set-mark 11 # Trying to match the return NATed packet
 
-Remus
 
+The --set-mark 10 works (no surprise, very simple rule in fact)
+the --set-mark 11 doesn't match. It may be normal, as I'm trying to match a
+return packet on a NAT connexion. How am I supposed to match the return
+packet in such a situation ?
+
+Thanks fof helping
 
 
