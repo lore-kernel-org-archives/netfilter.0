@@ -1,11 +1,10 @@
-From: Jonathan Humphrey <jhumphrey@codemasters.com>
-Subject: RE: Today's Brain Teaser.
-Date: Wed, 12 Mar 2003 18:21:23 -0000
+From: "Joaquin Henriquez Alzola (REE)"
+	 <Joaquin.Henriquez-Alzola@ree.ericsson.se>
+Subject: netfilter/iptables problems on solaris
+Date: Wed, 12 Mar 2003 20:06:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4D613EBFB75BD6118A5B00508BEEC62C0111CBE5@JESS>
+Message-ID: <8C1856C372A7574291A56C3B7000A7AEF58254@eestqnt104>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2E8C4.0A504724"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,199 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Hi, 
 
-------_=_NextPart_001_01C2E8C4.0A504724
-Content-Type: text/plain
+I have problems on the compilation of netfilter/iptables on Solaris 8.
+When I do a make it appears me the error in line 12 that is
+KERNEL_DIR=/usr/src/linux
 
-just to let you all know (in case anyone was trying to find out why...)
- 
-the ftp daemon that was running was listening on all interfaces.  once i
-limited it to 1 its all working now....
+I just wanted to compile it for Solaris but I am not able to fiond the
+kernel source in the Solaris. Can you tell me wher eis it.
 
------Original Message-----
-From: Jonathan Humphrey [mailto:jhumphrey@codemasters.com]
-Sent: 12 March 2003 12:29
-To: 'raymondl@knowledgefactory.co.za'; Netfilter Mailing List
-Subject: RE: Today's Brain Teaser.
+I have search in google but I can't find it.
 
+BR,
 
-
-xxx.xxx.xxx.xxx is a tottaly seprate T1, with a completly different ISP. 
-
------Original Message----- 
-From: Raymond Leach [ mailto:raymondl@knowledgefactory.co.za
-<mailto:raymondl@knowledgefactory.co.za> ] 
-Sent: 12 March 2003 10:32 
-To: Netfilter Mailing List 
-Subject: RE: Today's Brain Teaser. 
-
-
-On Wed, 2003-03-12 at 11:20, Jonathan Humphrey wrote: 
-> As a company we have two t1's (greedy i know!) 
-> 
-> the aaa.aaa.aaa.aaa address range is the external address's for one T1 
-> xxx.xxx.xxx.xxx is the address range for the other T1 
-> 
-How does the xxx.xxx.xxx.xxx connect to the linux router? eth1:1? Or are 
-the two t1's connected to the router (something like a Cisco 2501)? If 
-that's the case, then I would check the routing tables (and interfaces) 
-on the router first ... 
-
-> Does that make sense! 
-> 
-> -----Original Message----- 
-> From: Raymond Leach [ mailto:raymondl@knowledgefactory.co.za
-<mailto:raymondl@knowledgefactory.co.za> ] 
-> Sent: 12 March 2003 09:09 
-> To: Netfilter Mailing List 
-> Subject: Re: Today's Brain Teaser. 
-> 
-> 
-> On Wed, 2003-03-12 at 10:35, Jonathan Humphrey wrote: 
-> > I've been struggling with this one for some time, i am currently at 
-> > the end of my teather so if anyone has any great ideas about why 
-> this 
-> > happens let me know. 
-> >  
-> > Basically, i have a linux server that has three interfaces; 
-> >  
-> >     eth1          aaa.aaa.aaa.202        External Facing network 
-> >     eth0          bbb.bbb.bbb.254        Internal protected network 
-> >     eth1:0       aaa.aaa.aaa.197        External IP Address for 
-> > FTPServer 
-> >  
-> > I have a device that sits on xxx.xxx.xxx.5 that cannot get to any 
-> > service on aaa.aaa.aaa.197, however every other ip address i have 
-> > tried can.  I suspect that if i release the real ip address of 
-> > aaa.aaa.aaa.197 then everyone reading this list could too. 
-> >  
-> > And it's on the .5 address, if i try from xxx.xxx.xxx.15 i can 
-> > connect. 
-> Where is xxx.xxx.xxx.5? Is it on the internal or external network? 
-> 
-> >  
-> > Nothing is being show as dropped in the logs either.    
-> >  
-> > Thanks, 
-> >  
-> > Jonathan Humphrey 
-> >  
-> > 
-> > 
-> ********************************************************************** 
-> > This email and any files transmitted with it are confidential and 
-> > intended solely for the use of the individual or entity to whom they 
-> > are addressed. If you have received this email in error please 
-> notify 
-> > the system manager. 
-> > 
-> > This footnote also confirms that this email message has been swept 
-> by 
-> > MIMEsweeper for the presence of computer viruses. 
-> > 
-> > 
-> ********************************************************************** 
-
-
-------_=_NextPart_001_01C2E8C4.0A504724
-Content-Type: text/html
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<TITLE>RE: Today's Brain Teaser.</TITLE>
-
-<META content="MSHTML 6.00.2800.1041" name=GENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=359571918-12032003><FONT face=Arial color=#0000ff size=2>just 
-to let you all know (in case anyone was trying to find out 
-why...)</FONT></SPAN></DIV>
-<DIV><SPAN class=359571918-12032003><FONT face=Arial color=#0000ff 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=359571918-12032003><FONT face=Arial color=#0000ff size=2>the 
-ftp daemon that was running was listening on all interfaces.&nbsp; once i 
-limited it to 1 its all working now....</FONT></SPAN></DIV>
-<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
-  <DIV class=OutlookMessageHeader dir=ltr align=left><FONT face=Tahoma 
-  size=2>-----Original Message-----<BR><B>From:</B> Jonathan Humphrey 
-  [mailto:jhumphrey@codemasters.com]<BR><B>Sent:</B> 12 March 2003 
-  12:29<BR><B>To:</B> 'raymondl@knowledgefactory.co.za'; Netfilter Mailing 
-  List<BR><B>Subject:</B> RE: Today's Brain Teaser.<BR><BR></FONT></DIV>
-  <P><FONT size=2>xxx.xxx.xxx.xxx is a tottaly seprate T1, with a completly 
-  different ISP.</FONT> </P>
-  <P><FONT size=2>-----Original Message-----</FONT> <BR><FONT size=2>From: 
-  Raymond Leach [<A 
-  href="mailto:raymondl@knowledgefactory.co.za">mailto:raymondl@knowledgefactory.co.za</A>]</FONT> 
-  <BR><FONT size=2>Sent: 12 March 2003 10:32</FONT> <BR><FONT size=2>To: 
-  Netfilter Mailing List</FONT> <BR><FONT size=2>Subject: RE: Today's Brain 
-  Teaser.</FONT> </P><BR>
-  <P><FONT size=2>On Wed, 2003-03-12 at 11:20, Jonathan Humphrey wrote:</FONT> 
-  <BR><FONT size=2>&gt; As a company we have two t1's (greedy i know!)</FONT> 
-  <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; the aaa.aaa.aaa.aaa address 
-  range is the external address's for one T1</FONT> <BR><FONT size=2>&gt; 
-  xxx.xxx.xxx.xxx is the address range for the other T1</FONT> <BR><FONT 
-  size=2>&gt; </FONT><BR><FONT size=2>How does the xxx.xxx.xxx.xxx connect to 
-  the linux router? eth1:1? Or are</FONT> <BR><FONT size=2>the two t1's 
-  connected to the router (something like a Cisco 2501)? If</FONT> <BR><FONT 
-  size=2>that's the case, then I would check the routing tables (and 
-  interfaces)</FONT> <BR><FONT size=2>on the router first ...</FONT> </P>
-  <P><FONT size=2>&gt; Does that make sense!</FONT> <BR><FONT size=2>&gt; 
-  </FONT><BR><FONT size=2>&gt; -----Original Message-----</FONT> <BR><FONT 
-  size=2>&gt; From: Raymond Leach [<A 
-  href="mailto:raymondl@knowledgefactory.co.za">mailto:raymondl@knowledgefactory.co.za</A>]</FONT> 
-  <BR><FONT size=2>&gt; Sent: 12 March 2003 09:09</FONT> <BR><FONT size=2>&gt; 
-  To: Netfilter Mailing List</FONT> <BR><FONT size=2>&gt; Subject: Re: Today's 
-  Brain Teaser.</FONT> <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; 
-  </FONT><BR><FONT size=2>&gt; On Wed, 2003-03-12 at 10:35, Jonathan Humphrey 
-  wrote:</FONT> <BR><FONT size=2>&gt; &gt; I've been struggling with this one 
-  for some time, i am currently at</FONT> <BR><FONT size=2>&gt; &gt; the end of 
-  my teather so if anyone has any great ideas about why</FONT> <BR><FONT 
-  size=2>&gt; this</FONT> <BR><FONT size=2>&gt; &gt; happens let me know.</FONT> 
-  <BR><FONT size=2>&gt; &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; Basically, 
-  i have a linux server that has three interfaces;</FONT> <BR><FONT size=2>&gt; 
-  &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp; 
-  eth1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-  aaa.aaa.aaa.202&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; External Facing 
-  network</FONT> <BR><FONT size=2>&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp; 
-  eth0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-  bbb.bbb.bbb.254&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Internal protected 
-  network</FONT> <BR><FONT size=2>&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp; 
-  eth1:0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-  aaa.aaa.aaa.197&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; External IP Address 
-  for</FONT> <BR><FONT size=2>&gt; &gt; FTPServer</FONT> <BR><FONT size=2>&gt; 
-  &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; I have a device that sits on 
-  xxx.xxx.xxx.5 that cannot get to any</FONT> <BR><FONT size=2>&gt; &gt; service 
-  on aaa.aaa.aaa.197, however every other ip address i have</FONT> <BR><FONT 
-  size=2>&gt; &gt; tried can.&nbsp; I suspect that if i release the real ip 
-  address of</FONT> <BR><FONT size=2>&gt; &gt; aaa.aaa.aaa.197 then everyone 
-  reading this list could too.</FONT> <BR><FONT size=2>&gt; &gt;&nbsp; 
-  </FONT><BR><FONT size=2>&gt; &gt; And it's on the .5 address, if i try from 
-  xxx.xxx.xxx.15 i can</FONT> <BR><FONT size=2>&gt; &gt; connect.</FONT> 
-  <BR><FONT size=2>&gt; Where is xxx.xxx.xxx.5? Is it on the internal or 
-  external network?</FONT> <BR><FONT size=2>&gt; </FONT><BR><FONT size=2>&gt; 
-  &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; Nothing is being show as dropped 
-  in the logs either.&nbsp;&nbsp;&nbsp; </FONT><BR><FONT size=2>&gt; &gt;&nbsp; 
-  </FONT><BR><FONT size=2>&gt; &gt; Thanks,</FONT> <BR><FONT size=2>&gt; 
-  &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; Jonathan Humphrey</FONT> 
-  <BR><FONT size=2>&gt; &gt;&nbsp; </FONT><BR><FONT size=2>&gt; &gt; 
-  </FONT><BR><FONT size=2>&gt; &gt;</FONT> <BR><FONT size=2>&gt; 
-  **********************************************************************</FONT> 
-  <BR><FONT size=2>&gt; &gt; This email and any files transmitted with it are 
-  confidential and</FONT> <BR><FONT size=2>&gt; &gt; intended solely for the use 
-  of the individual or entity to whom they</FONT> <BR><FONT size=2>&gt; &gt; are 
-  addressed. If you have received this email in error please</FONT> <BR><FONT 
-  size=2>&gt; notify</FONT> <BR><FONT size=2>&gt; &gt; the system 
-  manager.</FONT> <BR><FONT size=2>&gt; &gt; </FONT><BR><FONT size=2>&gt; &gt; 
-  This footnote also confirms that this email message has been swept</FONT> 
-  <BR><FONT size=2>&gt; by</FONT> <BR><FONT size=2>&gt; &gt; MIMEsweeper for the 
-  presence of computer viruses.</FONT> <BR><FONT size=2>&gt; &gt; 
-  </FONT><BR><FONT size=2>&gt; &gt;</FONT> <BR><FONT size=2>&gt; 
-  **********************************************************************</FONT> 
-  </P></BLOCKQUOTE></BODY></HTML>
-
-------_=_NextPart_001_01C2E8C4.0A504724--
+Joaquin
 
