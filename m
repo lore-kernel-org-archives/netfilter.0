@@ -1,14 +1,14 @@
-From: Mikhail Zotov <e-boogie@yandex.ru>
-Subject: Re: [OBORONA-SPAM]  Re: RELATED ICMP packets of type 3
-Date: Fri, 11 Feb 2005 18:34:28 +0300
-Message-ID: <200502111834.28809.e-boogie@yandex.ru>
-References: <200502111757.16352.e-boogie@yandex.ru>
-	<20050211150635.GA2371@bender.817west.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: conntrack error
+Date: Fri, 11 Feb 2005 10:33:22 -0500
+Message-ID: <20050211153322.GA2516@bender.817west.com>
+References: <20050211105519.GA14110@daleka.net>
+	<1108127256.4489.27.camel@hubcap.ljm.dom>
+	<20050211152217.GA17270@daleka.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050211150635.GA2371@bender.817west.com>
 Content-Disposition: inline
+In-Reply-To: <20050211152217.GA17270@daleka.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,34 +20,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Friday 11 February 2005 18:06, Jason Opperisano wrote:
-> On Fri, Feb 11, 2005 at 05:57:16PM +0300, Mikhail Zotov wrote:
-> > Hello everybody,
-> > 
-> > I have written an iptables script to protect a machine/LAN
-> > and I'd like to clarify an issue about RELATED ICMP packets
-> > of type 3 (actually, mostly 3/1).
-> > 
-> > As far as I understand, it is safe to ACCEPT incoming
-> > packets of this sort.
-> 
-> yes.  personally (for whatever that is worth), i allow ICMP Types 3, 11,
-> and 12 [*].
+On Fri, Feb 11, 2005 at 04:22:17PM +0100, Piotrek Kaczmarek wrote:
+> # sysctl net.ipv4.netfilter.ip_conntrack_max
+> net.ipv4.netfilter.ip_conntrack_max = 30000
 
-Thank you for the reply!
-I do ACCEPT ICMP packets of types 11 and 12, too.
+i assume you set that manually, as i don't think there's an amount
+of physical RAM that would result in 30000 on the dot...  speaking of
+which--how much physical RAM does this machine have?  you would need 512
+MB RAM for ip_conntrack_max to be automatically calculated to 32768,
+even though the conntrack table would only really use around 12 MB of
+kernel memory.  also--is this machine dedicated solely to firewalling,
+or is there something else chewing up your RAM?
 
-> > Is it safe to allow _outgoing_ packets of this kind?
-> > Can an attacker make my machine generate such packets
-> > in order to obtain information about it?  (All new
-> > incoming packets are just DROPped.)
-> 
-> yes.
+-j
 
-Does "yes" correspond to "Is it safe...?" or to "Can an attacker..."?
-
-Regards,
-Mikhail
+--
+"I have thought this through. First, I will send Bart the money to
+ fly home. Then I will murder him."
+        --The Simpsons
 
