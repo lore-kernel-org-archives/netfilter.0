@@ -1,16 +1,16 @@
-From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: Re: ip_conntrack_max vs ip_conntrack
-Date: Tue, 28 Sep 2004 08:53:38 -0400
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Transparent Remote Proxy Server
+Date: Tue, 28 Sep 2004 09:44:41 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096376018.16424.95.camel@inyoureyes.linsolutions.com>
-References: <4154A112.20308@suse.cz>
-	<1403218a0409280059123fa77f@mail.gmail.com>
-	<200409280831.31267.Alistair@nerdnet.ca>
-Reply-To: tedkaz@optonline.net
+Message-ID: <1096379081.2330.17.camel@wolfpack.ljm.dom>
+References: <666183F7-0DA7-11D9-99BA-000A95C71776@freezone.co.uk>
+	<41546F23.2010601@pbl.ca>
+	<9B51275E-10B2-11D9-9099-0003931DA24A@freezone.co.uk>
+	<41586A3A.5060901@pbl.ca> <1096313839.16814.63.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <200409280831.31267.Alistair@nerdnet.ca>
+In-Reply-To: <1096313839.16814.63.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,31 +21,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair Tonner <Alistair@nerdnet.ca>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-      * 
-On Tue, 2004-09-28 at 08:31, Alistair Tonner wrote:
-> On September 28, 2004 03:59 am, Mohamed Eldesoky wrote:
-> > But still,
-> > The /proc/net/ip_conntrack should contain all connections tracked by
-> > that firewall (ie, passing through the firewall), am I right ??
-> >
+On Mon, 2004-09-27 at 15:37, Jason Opperisano wrote:
+> keep in mind that a side-effect of the REDIRECT "magic" is that the SYN
+> does not go to; nor does the SYN-ACK come from, wum's IP address (as was
+> evident from the tcpdump snippet provided).
 > 
-> 	This list is all actively tracked connections, all not yet completed,  but 
-> possibly tracked connections (called expectations) that the netfilter code is 
-> watching for.  You need to pay attention to the state of the connection, but 
-> you've got  the right idea.
+> with the REDIRECT target, wum will pretend to be the destination web
+> server from the perspective of the client and tor.
 > 
-> 	I can't recall all the states off the top of my head, but they are fairly 
-> clearly labelled.
+> all this being said--i couldn't tell from the OP why things weren't
+> working.
 > 
-> 	Alistair Tonner.
+> tcpdump anywhere and everywhere and you'll find the culprit.
 > 
-> 	<< SNIPPAGE>>
-> 
-Iptstate is nice for this.
+> -j
 
-Ted
+hmmm...along those same lines--i just had a thought.  is it possible
+that "rp_filter" on tor is blocking the packets from wum because "-j
+REDIRECT" is making wum spoof the address of the destination web server?
+
+on tor, check:
+
+        sysctl -a | grep '\.rp_filter'
+        sysctl -a | grep log_martians
+        
+try either (a) setting rp_filter=0 on the interface on tor that is
+connected to wum, or (b) leave rp_filter=1 and set "log_martians=1" on
+that interface on tor to see if rp_filter is; in fact, the culprit.
+
+just a thought.
+
+-j 
+
+=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
+I'd horsewhip you if I had a horse. -- Groucho Marx
+=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
 
 
