@@ -1,16 +1,15 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: David Cannings <lists@edeca.net>
 Subject: Re: INCOMPLETE [ 8bytes] with two src addresses!
-Date: Fri, 27 Feb 2004 20:17:52 +0100
+Date: Fri, 27 Feb 2004 19:33:01 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1077909472.2526.54.camel@anduril.intranet.cartel-securite.net>
-References: <20040227175608.666a0e38.Information-Cascade@ntlworld.com>
-	 <1077905409.1644.5.camel@pepelui.baicom>
-	 <1077906138.2526.48.camel@anduril.intranet.cartel-securite.net>
-	 <1077907260.1647.18.camel@pepelui.baicom>
+Message-ID: <200402271933.01977.lists@edeca.net>
+References: <20040227175608.666a0e38.Information-Cascade@ntlworld.com> <1077907260.1647.18.camel@pepelui.baicom> <1077909472.2526.54.camel@anduril.intranet.cartel-securite.net>
+Reply-To: david@edeca.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077907260.1647.18.camel@pepelui.baicom>
+In-Reply-To: <1077909472.2526.54.camel@anduril.intranet.cartel-securite.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,22 +20,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Alexis <alexis@attla.net.ar>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Le ven 27/02/2004 =E0 19:41, Alexis a =E9crit :
-> in traceroute ttl=3D1 is only for the first packet (thats what i said
-> about the first step)
+On Friday 27 February 2004 19:17, Cedric Blancher wrote:
+> Le ven 27/02/2004 =E0 19:41, Alexis a =E9crit :
+> > in traceroute ttl=3D1 is only for the first packet (thats what i said
+> > about the first step)
+>
+> Yep, but...
+> The router which has raised the TTL exceeded error always receive the
+> packet with TTL=3D1. So, when you get an ICMP TTL exceeded, the TTL in
+> the citation is always 1 (well, should be).
 
-Yep, but...
-The router which has raised the TTL exceeded error always receive the
-packet with TTL=3D1. So, when you get an ICMP TTL exceeded, the TTL in th=
-e
-citation is always 1 (well, should be).
+Unless the router is decrementing the TTL field by more than 1 for each=20
+packet.  For example, if it decrements by 5 and it receives any packet=20
+with a TTL <=3D 4, it will raise TTL exceeded.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+I believe this is possible, but most likely not common.
+
+David
 
