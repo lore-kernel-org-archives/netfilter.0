@@ -1,14 +1,13 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: compiling iptables support for other machine
-Date: Sun, 4 May 2003 12:39:02 +0800
+From: "Andrius Cibulskis" <can@centras.lt>
+Subject: RE: netfilter digest, Vol 1 #811 - 7 msgs
+Date: Sun, 4 May 2003 11:26:44 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030504043901.GA1439@floyd>
-References: <3EB3A7FD.22A17A1@abc.at>
-Reply-To: kluivert@tm.net.my
+Message-ID: <000101c31216$e8e9e910$0201040a@can>
+References: <20030502222622.31281.6575.Mailman@kashyyyk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3EB3A7FD.22A17A1@abc.at>
+In-Reply-To: <20030502222622.31281.6575.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,31 +18,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sat, May 03, 2003 at 01:29:01PM +0200, Emanoil Kotsev spoke thusly:
->Unfortunately on MA everything is compiling fine - where is the problem
->what do I need for the asm/param.h
->
->Is it enough to compile on MA and to copy the relevant stuff eg. vmlinuz
->+ modules to MB
+Hello,
 
-After you compile the kernel, merely copy over the following files :
+I apply route patch and after that I cannot compile iptables. Could
+anybody tell me what is wrong?
 
-- /usr/src/linux-2.4.20/arch/i386/boot/bzImage
-- /usr/src/linux-2.4.20/System.map
-- /lib/modules/2.4.20/*
+Thank you.
 
-to the relevant paths at MB. Most probably /boot/ and /lib/. If you've made
-changes to the iptables stuff, copy over the binary + relevant shared
-libraries (.so files); those might be in different places. Try the
-following paths for starters :
 
-/lib/iptables/
-/usr/local/lib/iptables/
 
-If you still can't find it, try doing 'strace /path/to/new/iptables/binary
--L -n', and look for the open() calls to see which library path its looking
-at. Reboot && voila :)
+cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/
+-DIPTABLES_VERSION=\"1.2.8\"  -fPIC -o extensions/libipt_ROUTE_sh.o -c
+extensions/libipt_ROUTE.c
+extensions/libipt_ROUTE.c: In function `init':
+extensions/libipt_ROUTE.c:44: structure has no member named `oif'
+extensions/libipt_ROUTE.c:45: structure has no member named `iif'
+extensions/libipt_ROUTE.c:46: structure has no member named `gw'
+extensions/libipt_ROUTE.c: In function `parse':
+extensions/libipt_ROUTE.c:73: structure has no member named `oif'
+extensions/libipt_ROUTE.c:76: structure has no member named `oif'
+extensions/libipt_ROUTE.c:78: structure has no member named `oif'
+extensions/libipt_ROUTE.c:78: structure has no member named `oif'
+extensions/libipt_ROUTE.c:78: structure has no member named `oif'
+extensions/libipt_ROUTE.c:91: structure has no member named `iif'
+extensions/libipt_ROUTE.c:94: structure has no member named `iif'
+extensions/libipt_ROUTE.c:96: structure has no member named `iif'
+extensions/libipt_ROUTE.c:96: structure has no member named `iif'
+extensions/libipt_ROUTE.c:96: structure has no member named `iif'
+extensions/libipt_ROUTE.c:105: structure has no member named `gw'
+extensions/libipt_ROUTE.c: In function `print':
+extensions/libipt_ROUTE.c:142: structure has no member named `oif'
+extensions/libipt_ROUTE.c:143: structure has no member named `oif'
+extensions/libipt_ROUTE.c:145: structure has no member named `iif'
+extensions/libipt_ROUTE.c:146: structure has no member named `iif'
+extensions/libipt_ROUTE.c:148: structure has no member named `gw'
+extensions/libipt_ROUTE.c:149: structure has no member named `gw'
+extensions/libipt_ROUTE.c: In function `save':
+extensions/libipt_ROUTE.c:161: structure has no member named `oif'
+extensions/libipt_ROUTE.c:162: structure has no member named `oif'
+extensions/libipt_ROUTE.c:164: structure has no member named `iif'
+extensions/libipt_ROUTE.c:165: structure has no member named `iif'
+extensions/libipt_ROUTE.c:167: structure has no member named `gw'
+extensions/libipt_ROUTE.c:168: structure has no member named `gw'
+make: *** [extensions/libipt_ROUTE_sh.o] Error 1
+
+
+
 
