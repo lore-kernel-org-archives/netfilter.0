@@ -1,54 +1,58 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables questions
-Date: Mon, 17 Nov 2003 14:18:05 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311171418.hAHEIAj22127@agate.rockstone.co.uk>
-References: <003601c3ab66$7396c360$2178df50@lanzor2k.com> <3FB8D61F.7050005@Loudoun-Fairfax.com>
+From: xavier <list.netfilter-W+vduneg5OqcvWdFBKKxig@public.gmane.org>
+Subject: tcp & udp timeout hardcoding
+Date: Mon, 17 Nov 2003 09:42:08 -0500
+Sender: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Message-ID: <20031117144208.GA22431@nest.8d.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FB8D61F.7050005@Loudoun-Fairfax.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
+Return-path: <netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Content-Disposition: inline
+Errors-To: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmI2yCS0tKOigE@public.gmane.org>
+List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIRj+87qQpzpCql8G6E966Ow@public.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIFcjs2lY4wUfKtGCp0j7rLg@public.gmane.org>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
 
-On Monday 17 November 2003 2:07 pm, Jeffrey Laramie wrote:
 
-> Antti Korpela wrote:
-> >
-> > 1. What difference and which is better between: iptables -t nat -j
-> > MASQUERADE or SNAT --to IP if im using it for internet gateway
-> > NAT-machine in big LAN-parties, over 300 IP:s.
->
-> According to Oskar's tutorial SNAT is preferable for static IPs:
 
-My understanding is that SNAT is marginally more efficient than MASQUERADE 
-because the address to be susbstituted is fixed in the SNAT rule, whereas 
-with MASQUERADE the rule needs to look up the address of the interface before 
-it knows what to replace into the packet.
+Hello,
 
-Whether you could measure the difference in efficiency between the two rules 
-is another matter entirely, however.   My recommendation would be to go for 
-maximum readability of your rules.
+I saw in the 2.4.22 kernel source : 
 
-Regards,
+/usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+static unsigned long tcp_timeouts[]
+= { 30 MINS,    /*      TCP_CONNTRACK_NONE,     */
+    5 DAYS,     /*      TCP_CONNTRACK_ESTABLISHED,      */
+    2 MINS,     /*      TCP_CONNTRACK_SYN_SENT, */
+    60 SECS,    /*      TCP_CONNTRACK_SYN_RECV, */
+    2 MINS,     /*      TCP_CONNTRACK_FIN_WAIT, */
+    2 MINS,     /*      TCP_CONNTRACK_TIME_WAIT,        */
+    10 SECS,    /*      TCP_CONNTRACK_CLOSE,    */
+    60 SECS,    /*      TCP_CONNTRACK_CLOSE_WAIT,       */
+    30 SECS,    /*      TCP_CONNTRACK_LAST_ACK, */
+    2 MINS,     /*      TCP_CONNTRACK_LISTEN,   */
+};
 
-Antony.
+
+ip_conntrack_proto_udp.c
+#define UDP_TIMEOUT (30*HZ)
+#define UDP_STREAM_TIMEOUT (180*HZ)
+
+
+Is there any plan to be able to set thoses values throught /proc ?
+
+in some cases a 5 days timeout on tcp connexions may be too long...
+
+thanks
+
+
 
 -- 
-
-90% of network problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+xavier
 
