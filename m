@@ -1,14 +1,12 @@
-From: Sheldon Hearn <sheldonh@clue.bz>
-Subject: Re: skip other iptables marking if packet is already marked
-Date: Mon, 31 May 2004 11:36:36 +0200
+From: "Vinay Poojary" <vinay@technoinfotech.com>
+Subject: iptables Help
+Date: Mon, 31 May 2004 16:06:31 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1085996196.9107.5.camel@axl.seasidesoftware.co.za>
-References: <020701c446e0$44e95ee0$0100a8c0@newlife>
-	 <1085991395.26732.12.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <33638.10.0.0.199.1085999791.squirrel@10.0.0.254>
+Reply-To: vinay@technoinfotech.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1085991395.26732.12.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +17,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Ming-Ching Tiew <mingching.tiew@redtone.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mon, 2004-05-31 at 10:16, Cedric Blancher wrote:
+Dear Sir,
 
-> I think your ruleset does not work because a packet without a mark will
-> match your non-zero mark rule. I mean that no mark is different than 0,
-> so all packets will match the first "-m mark ! --mark 0" rule.
+  I have installed redhat 9.0 for my server, i have two Internet links. I
+have 3 Interface cards attached to my server where the two Internet
+links terminate and One Internet card for my local network.
 
-Really?  No mark and mark 0 are different?
+suppose
 
-How do you distinguish an unmarked packet in a ruleset?
+eth0 - 10.0.0.200 (Local Lan IP address)
+eth1 - 11.0.0.254  (The first Isp Link terminate let it be of tata )
+eth2 - 12.0.0.254  (The second isp Link terminate Let it be of sify)
 
-I ask because this relates to an as yet unanswered question of mine,
-with Subject "CONNMARK restore-mark creates conntrack entry?"
+ My default gateway is Isp 1 (eth1) But the problem with these is that
+they charge a lot .
 
-Ciao,
-Sheldon.
+ So what i want is to upload from eth1 (first Internet Link) and download
+from eth2 (second Internet link).
 
+ Please send me any iptable rule which could do this.
 
+Thanks In advance,
+
+Waiting for your reply,
+
+Regards,
+vinay
 
