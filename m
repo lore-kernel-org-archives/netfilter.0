@@ -1,13 +1,13 @@
 From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Where libipt_MASQ.so (???)
-Date: 04 Aug 2003 20:05:45 +0200
+Subject: Re: Re[2]: Where libipt_MASQ.so (???)
+Date: 04 Aug 2003 20:08:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060020345.26856.44.camel@kermit>
-References: <1211419607.20030804184812@sevein.com>
+Message-ID: <1060020485.26856.47.camel@kermit>
+References: <1214220394.20030804195749@sevein.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1211419607.20030804184812@sevein.com>
+In-Reply-To: <1214220394.20030804195749@sevein.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,9 +21,19 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: "=?ISO-8859-1?Q?Jes=FAs_Garc=EDa?= Crespo (aka Sevein)" <correo@sevein.com>
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
->  iptables -A FORWARD --match mac --mac-source 00:c0:49:c9:d3:f1 -j MASQ
-You need:iptables -A FORWARD --match mac --mac-source 00:c0:49:c9:d3:f1
--j MASQUERADE
+Am Mon, 2003-08-04 um 19.57 schrieb Jes=FAs Garc=EDa Crespo (aka Sevein):
+> Hola flaq,
+>=20
+> Monday, August 4, 2003 7:38:47 PM, you wrote:
+>=20
+> f> Try -j MASQUERADE
+
+>=20
+> iptables: Invalid argument
+>=20
+Could you post the whole line you used or try:
+iptables -t nat -A POSTROUTING -j MASQUERADE
+Masquerading is done in the POSTROUTING chain of the nat table!
 
 Cheers,
 
