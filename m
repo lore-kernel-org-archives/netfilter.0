@@ -1,13 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Hostname Routing
-Date: 08 Sep 2003 13:14:50 +0200
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: Dropping RST of SYN
+Date: Mon, 08 Sep 2003 07:29:22 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063019689.1615.34.camel@kermit>
-References: <200309071541.02247.hchs@ns.sympatico.ca>
+Message-ID: <3F5C6812.2040407@chrisbrenton.org>
+References: <1063000297.827.26.camel@india.nsecure.net> <3F5C539E.8030704@chrisbrenton.org> <20030908204206.C148.ATNAK@chejz.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200309071541.02247.hchs@ns.sympatico.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cody Harris <hchs@ns.sympatico.ca>
-Cc: Netfilter <netfilter@lists.netfilter.org>, netfilter-request@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Atsushi Nakagawa <atnak@chejz.com>
+Cc: "Dharmendra.T" <dharmu@nsecure.net>, Ralf Spenneberg <lists@spenneberg.org>, Netfilter <netfilter@lists.netfilter.org>
 
-Am Son, 2003-09-07 um 20.41 schrieb Cody Harris:
-> Oops, forgot to add my message.
->=20
-> This DOES not work (adding the line to /etc/hosts)
-Ok.=20
-Where do your requests come from? From the outside?
-Then you need to update your DNS, so everybody else uses the correct IP
-addresses. If you can't do that, you need a name-aware proxy for every
-service you want.
+Atsushi Nakagawa wrote:
+> 
+> Ralf's response was to a question regarding the removal of outgoing RST
+> packets that are generated in reply to incoming SYN packets.  (These
+> RSTs being the kind that causes the "Connection Refused" TCP message)
 
-Cheers,
+DOOOOH!
 
-Ralf
->=20
-> ----------  Forwarded Message  ----------
->=20
-> Subject: Re: Hostname Routing
-> Date: Sunday 07 September 2003 3:39 pm
-> From: Cody Harris <hchs@ns.sympatico.ca>
-> To: netfilter@lists.netfilter.org
->=20
-> On Sunday 07 September 2003 6:11 am, Ralf Spenneberg wrote:
-> > Am Son, 2003-09-07 um 01.53 schrieb Cody Harris:
-> > > Hello. I have researched your database on this subject (hostname
-> > > routing), but found nothing much. What i want is to take domain.com:*=
- and
-> > > deliver that to the local machine (127.0.0.1), but i want
-> > > alt.domain.com:* to go to 192.0.0.2. How is this done?
-> >
-> > Am I missing something?
-> > What about the following in /etc/hosts:
-> > 127.0.0.1 localhost localhost.localdomain domain.com
-> > 192.0.0.2 alt.domain.com
-> >
-> > Or do it on you DNS server.
-> >
-> > Cheers,
-> >
-> > Ralf
->=20
-> -------------------------------------------------------
---=20
-Ralf Spenneberg
-RHCE, RHCX
+> In this case, there should be no consequences with SYN flood-type
+> attacks.  The only ill-effect, AFAIK, is with abortive disconnects not
+> reaching remote host (and remote host will resend obselete packets
+> little more times).  --A problem enough to deter me from implmementing
+> this.
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+Guess that's what I get for jumping in mid thread. :(
+
+I think I'm at a loss as to why we are trying to do it this way. In 
+other words, if you want to stop a scanner from getting a reply from all 
+of your closed ports, would it not be easier to only let SYN packets in 
+to legitimate services?
+
+Or is this another "we're a .edu stuck in Dante's fourth circle of hell 
+and are not permitted to filter out services". ;-)
+
+C
+
 
