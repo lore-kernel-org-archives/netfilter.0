@@ -1,12 +1,13 @@
-From: "Louie Miranda" <louie@axishift.ath.cx>
+From: "Szabo Nandor" <medve@wenetto.hu>
 Subject: Re: Are IP ALIASES supported by iptables?
-Date: Tue, 29 Jul 2003 14:03:01 +0800
+Date: Tue, 29 Jul 2003 08:54:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <017101c35597$13603280$020119ac@ADMWEBDEVWS>
-References: <008301c3558f$22b075e0$080a0a0a@medannic> <00c401c35590$cd0c8ff0$020119ac@ADMWEBDEVWS>
+Message-ID: <20030729065429.3133.qmail@mail.panaphone.hu>
+References: <008301c3558f$22b075e0$080a0a0a@medannic>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <008301c3558f$22b075e0$080a0a0a@medannic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: HTB <kerasakti@nusa.net.id>, netfilter@lists.netfilter.org
-
-Oh, wait i've read it wrong.. sorry..
-
---
-Thank you,
-Louie Miranda (louie@axishift.ath.cx)
-
-
-
------ Original Message -----
-From: Louie Miranda
-To: HTB ; netfilter@lists.netfilter.org
-Sent: Tuesday, July 29, 2003 1:18 PM
-Subject: Re: Are IP ALIASES supported by iptables?
-
-
-Hi, it must be Is your Kernel compiled with IP Aliasing?
-Yes, Iptables support ip aliasing.
-
---
-Thank you,
-Louie Miranda (louie@axishift.ath.cx)
-
-
-
------ Original Message -----
-From: HTB
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Sent: Tuesday, July 29, 2003 1:06 PM
-Subject: Are IP ALIASES supported by iptables?
 
+HTB writes: 
 
-When i want to active nat using iptable on eth0:0 (aliasing) "error appear"
-# /sbin/iptables -A POSTROUTING -j MASQUERADE -t nat -s 192.168.0.0/24 -o
-eth0:0
-Warning: wierd character in interface `eth0:0' (No aliases, :, ! or *).
+> When i want to active nat using iptable on eth0:0 (aliasing) "error 
+> appear"
+> # /sbin/iptables -A POSTROUTING -j MASQUERADE -t nat -s 192.168.0.0/24 -o 
+> eth0:0
+> Warning: wierd character in interface `eth0:0' (No aliases, :, ! or *).
 
-Are IP ALIASES supported by iptables?
+If eth0:0 has FIX IP address, you should try SNAT: 
 
-regards
-HTB
+# iptables -A POSTROUTING -t nat -s 192.168.0.0/24 -j SNAT --to IP_of_eth0:0 
+
+Nandor Szabo 
 
 
