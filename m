@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Windows Update through Mandrake firewall
-Date: Wed, 11 Feb 2004 19:37:17 +0000
+From: Ray Anderson <rsa@prideindustries.com>
+Subject: RE: Windows Update through Mandrake firewall
+Date: Wed, 11 Feb 2004 11:56:13 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402111937.17191.Antony@Soft-Solutions.co.uk>
-References: <1076479135.2747.44.camel@raylinux.internal> <402A35FA.11068.EBAD7F@localhost>
+Message-ID: <000601c3f0d9$1a7c7780$2405010a@rsa>
+References: <402A35FA.11068.EBAD7F@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <402A35FA.11068.EBAD7F@localhost>
+In-reply-to: <402A35FA.11068.EBAD7F@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,57 +18,70 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: cbaker@bbbscentralohio.org, netfilter@lists.netfilter.org
 
-On Wednesday 11 February 2004 7:02 pm, cbaker@bbbscentralohio.org wrote:
+I have no problems updating several Windows machines behind a Mandrake
+machine with iptables.  I do NOT have squid running, and only run the
+standard iptables suite vs. the canned Mandrake firewall.
 
-> I am having trouble running Windows Update through a Mandrake
-> Multi Network Firewall. I have already asked for help in several other
+I do not believe this is an iptables issue, but perhaps something else
+Mandrake has done with their firewall setup.  My rules are very simple, =
+and
+were obtained by following the tutorial from Oskar
+(http://iptables-tutorial.frozentux.net/iptables-tutorial.html)  I go =
+back
+to this document often, and seem to glean something new from it each =
+time.
+(Thanks Oskar!)
+
+You shouldn't have to have any ports open, but should use snat from the
+internal machines to your external ip address, and dnat from the =
+external ip
+address to the related,established ports.  That should be it.
+
+-=3DRay
+---------------------------------------
+He who gets excited in fighting is sure to make mistakes.
+Baron Manfred von Richthofen
+
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org=20
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of=20
+> cbaker@bbbscentralohio.org
+> Sent: Wednesday, February 11, 2004 11:03 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Windows Update through Mandrake firewall
+>=20
+>=20
+> I am having trouble running Windows Update through a Mandrake=20
+> Multi Network Firewall. I have already asked for help in=20
+> several other=20
 > forums.
->
-> I am able to browse other web sites just fine. The Windows Update site
-> appears to fail up when I checks my PC for updates. Microsoft's site
+>=20
+> I am able to browse other web sites just fine. The Windows=20
+> Update site=20
+> appears to fail up when I checks my PC for updates. Microsoft's site=20
 > support site said that I should "disable the firewall."
-
-Hahahaha :)   Wonderful recommendations from Microsoft once again!!
-
-> What ports do I need to open? What rules do I need to have? Could
+>=20
+> What ports do I need to open? What rules do I need to have? Could=20
 > this be a Squid issue (our web proxy server)?
-
-Possibly it's a Squid issue, however you should be able to tell that easily 
-enough from your Squid logs - see what request comes in from the client, 
-whether a response is obtained from the server, and what the status code is.
-
-If in fact it's a netfilter problem, you can find out what ports are being 
-blocked (and need to be opened for WinUpdate to work) by adding a LOG rule at 
-the end of your FORWARD chain (just before the default DROP policy), and 
-seeing what packets get caught (just before being discarded).   If you see 
-too much to make sense of it, narrow down the logging rule by specifying the 
-source address of the client making the request (this will need to bypass the 
-Squid proxy, obviously, otherwise you'll just see the proxy's address, 
-however I don't know whether your Squid is on the internal LAN or on a DMZ 
-port of your Firewall).
-
-Hope this helps to point you in the right direction,
-
-Regards,
-
-Antony.
-
--- 
-This email is intended for the use of the individual addressee(s) named above 
-and may contain information that is confidential, privileged or unsuitable 
-for overly sensitive persons with low self-esteem, no sense of humour, or 
-irrational religious beliefs.
-
-If you have received this email in error, you are required to shred it 
-immediately, add some nutmeg, three egg whites and a dessertspoonful of 
-caster sugar.   Whisk until soft peaks form, then place in a warm oven for 40 
-minutes.   Remove promptly and let stand for 2 hours before adding some 
-decorative kiwi fruit and cream.   Then notify me immediately by return email 
-and eat the original message.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+>=20
+> Thanks,
+>=20
+> Chris
+>=20
+>=20
+> =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Chris Baker -- technical specialist
+> 614-839-2447x108
+> cbaker@bbbscentralohio.org
+> Big Brothers Big Sisters of Central Ohio
+> www.bbbscentralohio.org
+> Opinions expressed in this e-mail are solely my own.
+>=20
+>=20
 
 
