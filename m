@@ -1,13 +1,11 @@
-From: saint <nagajuna@optushome.com.au>
-Subject: RE: iptables grep problems
-Date: 04 Feb 2003 00:42:27 +1100
+From: Sander Sneekes <sander@dmdsecure.com>
+Subject: load balancing
+Date: 03 Feb 2003 14:49:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044279746.9027.55.camel@juna.cypherworld.org>
-References: <01CEA3A5B8B2D511890F0002A5870AEC64EB7B@EXCHANGE>
+Message-ID: <1044280193.16953.15.camel@sander>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=-2e6+zpWr2fUM/mtyhMSJ"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC64EB7B@EXCHANGE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,64 +15,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hi Khanh,
 
-I already have #!/bin/bash.  My firewall script works. When
-I first learnt how to build one everyone was saying use eth0.
-But I have now learnt to dynamically configure eth0.
-I know how to print out the info from the command line but
-when I include the same command in my script all hell breaks lose.
-And the { print $2 } bit -> you should see what it does.
+--=-2e6+zpWr2fUM/mtyhMSJ
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Santos
+Hi all,
 
-On Tue, 2003-02-04 at 00:34, Khanh Tran wrote:
-> Are you trying to assign your external interface's IP to a variable for
-> something?  What does $2 look like?  Chances are you are trying to do
-> something with $2 as an IP, but really the value is probably set for
-> "addr:1.2.3.4".  You may also want to add a #!/bin/bash, or whatever your
-> shell is to the top of the script if you are getting the right variable
-> assignment.
-> 
-> Khanh Tran
-> Network Operations
-> Sarah Lawrence College
-> 
-> -----Original Message-----
-> From: saint [mailto:nagajuna@optushome.com.au]
-> Sent: Monday, February 03, 2003 8:14 AM
-> To: Netfilter Mailing List
-> Subject: iptables grep problems
-> 
-> 
-> Hi all,
-> 
-> It seems I'm in a bit of a bother.  Here's my problem:
-> I have a semi-permanent IP address provided by my ISP
-> and I can't do one of two things:
-> 1. use eth0, and
-> 2. use a combination of grep, awk, & ifconfig.
-> 
-> Normally, if I issue this from the bash shell:
-> 
-> $ifconfig eth0 | grep 'inet addr' | awk '{print $2}'
-> 
-> I get the intended result i.e the external interface's IP address.
-> So why can't I get anything when I put this in the firewall script?
-> Actually, I do get something: ERRORS!
-> 
-> If someone would kindly help me with this problem
-> and relieve my suffering it'll be very much appreciated.
-> 
-> Thanks.
-> 
-> Santos.
-> Still learning.
-> 
-> 
-> 
+I need to load balance between 2 webserver 
+what is the most fastest way of doing this?
+With iptables? if yes wich line's do i need to use
+i have a RH 7.2 with iptables running already doing
+al network traffic
+
+cheers
+Sander
+
+--=-2e6+zpWr2fUM/mtyhMSJ
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/1.1.5">
+</HEAD>
+<BODY>
+Hi all,<BR>
+<BR>
+I need to load balance between 2 webserver <BR>
+what is the most fastest way of doing this?<BR>
+With iptables? if yes wich line's do i need to use<BR>
+i have a RH 7.2 with iptables running already doing<BR>
+al network traffic<BR>
+<BR>
+cheers<BR>
+Sander
+</BODY>
+</HTML>
+
+--=-2e6+zpWr2fUM/mtyhMSJ--
 
 
