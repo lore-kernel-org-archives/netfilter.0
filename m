@@ -1,13 +1,12 @@
-From: "Vladimir Potapov" <mailarchives@mail.ru>
+From: "Hildebrand, Brian" <BrianHildebrand@universalcomputersys.com>
 Subject: RE: Gigabit
-Date: Wed, 10 Mar 2004 00:44:48 +0300
+Date: Tue, 9 Mar 2004 15:45:25 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FOELKOFDAANJCBHBJNEBMEOGCCAA.mailarchives@mail.ru>
-References: <7A3B4AA360FDEF448F3390421FC8D7311B9D61@coxhpexg.coxhp.com>
+Message-ID: <D8FBABA1EF6F2E4DBCC88903F60691F3024CCBF5@houxchsvr.ucscorp.ucs.pvt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <7A3B4AA360FDEF448F3390421FC8D7311B9D61@coxhpexg.coxhp.com>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: bmcdowell@coxhealthplans.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+I believe it was an 800MHz or 1200MHz Duron (not sure which I pulled out =
+of the stash when I did the testing) with 256MB DDR, and a very minimal =
+Debian load. The CPU utilization was all system, load averages were =
+beyond 1 but I do not have the figures for this. Other things I do not =
+know, I was just testing to see if it securely dropped packets rather =
+than passing them if the utilization went too high. I do not remember =
+seeing anything odd in the memory section or otherwise at lower =
+utilizations. The key to making it drop packets was to get the syn =
+traffic going across it, otherwise stateful inspection only has to look =
+at the initial packet and then start passing traffic as established. I =
+am running an FTP transfer at 80% utilization right now and it is only =
+running at 34% CPU.=20
+
+Brian
+
+-----Original Message-----
+
+Thank's.It's interesting.Can I give more exactly infomation about =
+harware,
+kernel options, more thorough statictics of using by linux CPU, memory , =
+I/O
+, irq and other ?
 
 
-Anthony makes a good point.  'Need' is probably going to be the biggest
-factor here.  For example, what exactly does gigabit to the VPN net you?  If
-it's intended that internet users be the ones who use the VPN to access the
-subnets, how many concurrent users would saturate your internet pipe?  My
-guess is that this would happen far sooner than would your over running the
-bandwidth that 100mbps can get you.  It does depend on the size of your
-internet pipe, but it would have to be pretty broad.
-
-Now, one could make a case for gigabit from subnet1 to subnet2.  In this
-situation, however, maybe a nice managed Cisco switch would suit your needs
-a little better than a netfilter firewall?  No offense to anyone is
-intended, and it may not even be applicable, but it's my two-cents anyway.
-
-
-Gigabit need only for access to the intranet web-server with board, chat,
-VPN-statictics and other.We haven't enough money to the cisco or AT.
-
+----------------------------------------
+The information transmitted in this message is intended only for the =
+person or entity to whom it is addressed and may contain confidential =
+and/or privileged material.  Any review, retransmission, dissemination =
+or other use of, or taking of any action in reliance upon this =
+information by persons or entities other than the intended recipient is =
+prohibited.  If you received this in error, please contact the sender =
+and destroy any copies of this document.
 
