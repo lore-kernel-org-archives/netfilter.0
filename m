@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Measuring traffic
-Date: Thu, 12 Sep 2002 19:53:32 +0100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: Single IP firewall help...
+Date: Thu, 12 Sep 2002 21:06:35 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020912185335.OMKI11421.mta03-svc.ntlworld.com@there>
-References: <001401c25a7b$d81e5920$6b01a8c0@s3ac>
+Message-ID: <Pine.LNX.4.44.0209122101100.8897-100000@dns.toxicfilms.tv>
+References: <3D80D033.1020703@canada.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001401c25a7b$d81e5920$6b01a8c0@s3ac>
+In-Reply-To: <3D80D033.1020703@canada.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Chris Poupart <cpoupart@canada.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 12 September 2002 5:45 pm, Rowan Reid wrote:
+> use.  In this case, IPTables is running on the web server.  Because I
+Aaah, sorry.
 
-> Is there a way using IPTables to measure network traffic across the
-> firewall ? Perhaps even begin categorizing it by client.
+Well What he proposed seemed fine.
+Personally i would anyway use the state module. (that is what stateful
+firewalls are for)
 
-iptables -A FORWARD -s a.b.c.d
-or
-iptables -A FORWARD -p tcp --dport 80
-or both:
-iptables -A FORWARD -s a.b.c.d -p tcp --dport 80
+iptables -F
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p tcp -d <ip> --dport 80 --syn -j ACCEPT
+iptables -A INPUT -p tcp -d <ip> --dport 443 --syn -j ACCEPT
+iptables -A INPUT -p tcp -d <ip> --dport 22 --syn -j ACCEPT
 
-(Yes, there is no -j TARGET at the end of those commands).
+The UDP rule is not that important, it will only tell port scanners that
+the ports are open/filtered (which is not true,anyway,but it will seem
+as it is).
 
-Then
-iptables -L FORWARD -n -v -x
-will show you the packet & byte counts for each rule which matched packets - 
-in this case, all packets from a specific source address, all packets 
-containing http requests, or all http request packets from a specific source 
-address.....
+As you said, nothing fancy :)
 
-Antony.
+Regards,
+Maciej Soltysiak
 
--- 
-
-It is also possible that putting the birds in a laboratory setting
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennett
 
