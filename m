@@ -1,12 +1,10 @@
-From: Helge Weissig <helgew@grajagan.org>
-Subject: Re: protocol 50 unreachable
-Date: Sat, 4 Dec 2004 09:07:22 -0800
-Message-ID: <F6A65EF7-4616-11D9-98BD-0003939B51C0@grajagan.org>
-References: <Pine.LNX.4.44.0412011448020.18751-100000@gollum.grajagan.net>
-Mime-Version: 1.0 (Apple Message framework v619)
-Content-Transfer-Encoding: 7bit
+From: "A. Sayler" <asayler@qorvus.net>
+Subject: PPTP Server and PPTP clients on a firewalled gateway
+Date: Sat, 4 Dec 2004 16:30:25 -0800
+Message-ID: <001b01c4da61$9df07180$0401a8c0@dell>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0412011448020.18751-100000@gollum.grajagan.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,100 +15,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-what do you know?? As mysteriously as the problem appeared, it seems to 
-have resolved itself. I am stumped!
+Hi,
 
-Thanks to all of you for your input and patience.
+If anybody might some insight into this problem I would certainly =
+appreciate it.
 
-h.
+I have multiple wireless clients that need access to outside corporate =
+VPN servers through my system.  I also have a PPTP server listening on =
+the local gateway host for other users to connect to our internal =
+network from outside.
 
-On Dec 1, 2004, at 2:51 PM, Helge Weissig wrote:
+I have a 2 NIC system.=20
 
-> Sorry for the cross-post, but this problem is really nagging me. What I
-> did not put into the post below is the fact that it only occurred 
-> after a
-> reboot of my linux system due to a short power outage. Here is the 
-> routing
-> table, if that makes any difference:
->
-> Kernel IP routing table
-> Destination  Gateway     Genmask         Flags Metric Ref    Use Iface
-> 10.0.0.0     0.0.0.0     255.255.255.0   U     0      0        0 eth1
-> xx.xx.xx.0   0.0.0.0     255.255.255.0   U     0      0        0 eth0
-> 127.0.0.0    0.0.0.0     255.0.0.0       U     0      0        0 lo
-> 0.0.0.0      xx.xx.xx.1  0.0.0.0         UG    0      0        0 eth0
->
-> the xx.xx.xx is the first part of my external ip address.
->
-> thanks for any advice or insight!
-> h.
->
->
->
-> From: helgew@grajagan.org (Helge Weissig)
-> Newsgroups: comp.security.firewalls
-> Subject: protocol 50 unreachable
-> NNTP-Posting-Host: 63.196.131.66
-> Message-ID: <a1a4b233.0411301146.3c342dce@posting.google.com>
->
-> Hi,
->
-> I have been searching for information about this problem high and low
-> but came up dry. Basically, I am trying to connect to a VPN server via
-> ipsec from behind a NAT firewall set up on a Linux (kernel 2.4.x) box
-> with iptables. I have no problem establishing the connection via port
-> 500 as this is initiated by the client. However, I cannot seem to get
-> protocol 50 (ESP) to work, independent of whether the ipsec tunnel is
-> established or not. I have tried every incantation of iptables rules I
-> could find, to no avail. When I set up tcdump on both interfaces on my
-> server as well as on the client behind it, a port I have opened for
-> forwarding responds as expected. If I run 'nmap -sO' from somewhere
-> outside however, it will report protocol 50 as open although the
-> external interface reports a 'icmp: xx.xx.xx.xx protocol 50
-> unreachable' response and the two other interfaces never see the
-> traffic.
->
-> Here is my current iptables configuration
->
-> $IPTABLES -P INPUT ACCEPT
-> $IPTABLES -F INPUT
-> $IPTABLES -P OUTPUT ACCEPT
-> $IPTABLES -F OUTPUT
-> $IPTABLES -P FORWARD DROP
-> $IPTABLES -F FORWARD
-> $IPTABLES -t nat -F
->
-> echo "Enabling PORTFW Redirection on the external LAN.."
-> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p esp -j ACCEPT
-> $IPTABLES -A PREROUTING -t nat -d $VPN_SERVER -p esp -j DNAT \
->  --to-destination $VPN_CLIENT
->
-> echo "   FWD: Allow all connections OUT and only existing and related
-> ones IN"
-> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state \
->  --state ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-> $IPTABLES -A FORWARD -j LOG
->
-> echo "   Enabling SNAT (MASQUERADE) functionality on $EXTIF"
-> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
->
-> here is the tcpdump info I see on $EXTIF:
->
-> 10:23:09.234937 (vpn server ip) > (my ip): ESP(spi=0x00000000,seq=0x0)
-> 10:23:09.235055 (my ip) > (vpn server ip): icmp: (my ip) protocol 50
-> unreachable [tos 0xc0]
->
-> (these are empty packets sent by nmap but it looks the same for legit
-> ones coming from the vpn server ip). FWIW, when the ipsec tunnel is
-> established and I try to ping the a host behind the vpn server, I see
-> the outgoing packets on all three interfaces, but not response.
->
-> thanks for any information or pointers in advance!
-> h.
->
+I have an internal interface of WLAN0 and the external interface of =
+ETH0.
 
+I have made sure to load the following modules...
+ip_conntrack_proto_gre
+ip_conntrack_pptp
+ip_nat_pptp
+ip_nat_proto_gre
 
+I have added the following commands to the rest of my firewall rules
+
+iptables -I INPUT -p 47 -j ACCEPT
+iptables -I INPUT -p tcp --dport 1723 -j ACCEPT
+
+iptables -I OUTPUT -p 47 -j ACCEPT
+iptables -I OUTPUT -p tcp --dport 1723 -j ACCEPT
+
+iptables -I FORWARD -p 47 -j ACCEPT
+iptables -I FORWARD -p tcp --dport 1723 -j ACCEPT
+
+iptables -I FILTER -p 47 -j ACCEPT
+iptables -I FILTER -p tcp --dport 1723 -j ACCEPT
+
+I'm masquerading all connections out.
+
+currently the clients can get out and connect properly but the outside =
+clients trying to connect to our local system via the PPTP server on the =
+gateway box can not get a connection.
+
+I think it has something to do with how I'm routing the connection to =
+the local host but I'm not sure what I need to change. Or is this even =
+possible?
+
+Any thoughts?
+
+Thanks,
+Adam
