@@ -1,12 +1,15 @@
-From: Nick Taylor <nickt@lightlink.com>
-Subject: Re: Different routes for different src addresses
-Date: Wed, 7 Jul 2004 17:02:27 -0400 (EDT)
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Re: IPSec Transport Mode
+Date: Wed, 7 Jul 2004 23:11:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSU.4.58.0407071653430.21043@adore.lightlink.com>
-References: <20040707120502.GA23120@nihil> <200407071410.02752.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040707211122.GA15747@zion.homelinux.com>
+References: <1089207305.788.14.camel@PCA-ARNSTR.ee-consultants.de> <200407071453.49223.Antony@Soft-Solutions.co.uk> <1089210110.788.27.camel@PCA-ARNSTR.ee-consultants.de> <200407072154.52923.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407071410.02752.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
+In-Reply-To: <200407072154.52923.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +19,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: NetFilter Mailling List <netfilter@lists.netfilter.org>
 
-> > is it possible to create a route for a single src address?
-> > I mean _routing_, not natting. If I nat the pkts their destination will
-> > change and I need to keep it intact.
->
-> As you say, you mean _routing_, therefore this a routing question, not a
-> netfilter question.
->
-> You need iproute2 (see http://lartc.org)
->
-This is true, but misleading.  Netfilter does provide a nice interface to
-iproute2 with the fwmark feature.  You can use a:
 
-iptables -A FORWARD -s 192.168.1.7 -d 192.168.2.0/24 -j MARK --set-mark X
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-to put a particular firewall mark on a particular packet, then you can use
 
-ip rule add fwmark X lookup Y
+Hi Antony,
 
-which tells the kernel to use routing table Y to lookup the route, and
-then you must maintain a seperate routing table for each firewall mark,
-like:
+On Wed, Jul 07, 2004 at 09:54:52PM +0100, Antony Stone told us:
+>=20
+> ESP is for tunnel mode, and works fine through NAT.
+>=20
+> Transport mode uses AH (protocol 51), and that's the one which breaks thr=
+ough=20
+> NAT.
 
-ip route add 192.168.1.0/24 via 10.0.0.3 table Y
-ip route add 192.168.1.0/24 via 10.0.0.4 table Z
+Isn't using AH or ESP independent from tunnel/transport mode?? AH
+mode is just authentication, ESP is authentication + encryption. You
+can use AH with tunnel mode and ESP with transport mode like you
+wish I think.
 
-Of course, X Y and Z represent integers.
+
+Sven
+
+--=20
+Linux zion 2.6.7 #1 Thu Jun 17 10:44:26 CEST 2004 i686 athlon i386 GNU/Linux
+ 23:08:58  up 7 days,  6:52,  3 users,  load average: 0.06, 0.05, 0.00
+
+--G4iJoqBmSsgzjUCe
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQFA7Gb6o4FAdB2PneQRAqqXAJ9Z43IaZU+Fh90R8gmiYs9AvAXD6wCdEXHt
+wCFt4RUDY13ALfFtCvFEmgg=
+=DZ7T
+-----END PGP SIGNATURE-----
+
+--G4iJoqBmSsgzjUCe--
 
