@@ -1,11 +1,14 @@
-From: guillaume <guillaume.riviere@hcm.vsl-vn.com>
-Subject: Routing, SNAT and two ISPs
-Date: Tue, 10 Aug 2004 16:18:10 +0700
+From: raido <raido@elin.ttu.ee>
+Subject: Re: ebtables question
+Date: Tue, 10 Aug 2004 12:12:05 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <411892D2.6010904@hcm.vsl-vn.com>
+Message-ID: <200408101212.05530.raido@elin.ttu.ee>
+References: <HAEOIFPIBBBLGLHOMLLIOEAHCHAA.bclark@eccotours.biz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <HAEOIFPIBBBLGLHOMLLIOEAHCHAA.bclark@eccotours.biz>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,48 +18,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi!
 
-Well, it's seams to be a little bit more complicated than
-I thought to loadbalance Internat connection between 2 (different) ISP
-lines ...
+Have you read ebtables.sourceforge.net page? I read it, and I think there is a 
+quite decent explanation.
 
-Here is my problem:
+Copy-paste from http://ebtables.sourceforge.net/documentation.html#what:
+ebtables tries to provide the bridge firewalling that iptables cannot provide, 
+namely the filtering of non-IP traffic.
 
-Basically, I need to connect my office to 2 differents ISP (different 
-gateways and different DNS ). My linux box is a 3 NICs Box. The problem 
-is that, for the first ISP, I don't have static Addresses.
-
-So, I would like to loadbalance, "route" and NAT all my internals Addresses
-through thoses 2 ISP except for some addresses and some port numbers 
-which will use
-only the ISP2.
-
-I would like also to detect dead gateway (maybe I ask for to much ...).
-
-My problem is that SNAT is POSTROUTING. I am lose ...
-I don't know if I have to deal with iptable2 loadbalancing or if I can do
-this only with netfilter.
-
-Maybe in a first part, I just would like to "statically loadbalance" my 
-connections.
-I mean, just put rules to (for example)
-
-- route http packets to my first ISP and ssh packets to my second ISP,
-- route packets from my internals IP 10.0.0.2-100 to ISP 1
-- route packets from my internals IP 10.0.0.101 to ISP2
-        (all with NAT, of course)
-
-After, I will deal with a real loadbalancing for a part of my internal 
-IP and
-for some protocols.
-
-Any Help will be very appreciated,
-Thank you in advance,
-Guillaume
-
-
+Raido
+> Hi all
+>
+> Im sorry for ask a real dumb to question (tou you guys it may be).
+> Whats the difference between iptables and ebtables?
+> Wheres it used?
+> Why is it used?
+> When must it be used?
+>
+> Once again, my apologies for asking this here, but I know if I had to ask
+> this on another mailing list, I would not get a
+> decent answer.
+>
+> Kind Regards
+> Brent Clark
 
