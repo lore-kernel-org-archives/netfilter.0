@@ -1,13 +1,14 @@
-From: "Rodrigo Haces" <rhaces_chistes@yahoo.com.mx>
-Subject: RE: IP Alias with iptables
-Date: Mon, 19 Apr 2004 21:08:16 -0600
+From: test@seaconindia.com
+Subject: Re: DNAT Problem
+Date: Tue, 20 Apr 2004 10:01:31 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <EMEKLOMJOPNJPAFKHEDJKECNCDAA.rhaces_chistes@yahoo.com.mx>
-References: <200404192231.42723.Antony@Soft-Solutions.co.uk>
+Message-ID: <1061.80.0.0.23.1082435491.squirrel@80.0.0.175>
+References: <1611.80.0.0.23.1082351242.squirrel@80.0.0.175>
+    <4083D765.7000000@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404192231.42723.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <4083D765.7000000@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,91 +19,82 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Joel Newkirk <firewalldude@newkirk.us>
+Cc: netfilter@lists.netfilter.org
 
-New Situation:
+Hi Joel
 
-I have managed to have another interface so this is my situation:
-
-My Server:
-
-eth0: 192.168.1.1 Connected to hub 1
-eth1: 192.168.0.1 Connected to hub 2
-
-hub 1 is for guests
-hub 2 is for administrative porposes, and MUST be able to use network
-192.168.0.x and 192.168.1.x
-
-so this is something i thought.
-
-eth0... 192.168.1.1 netmask 255.255.255.0
-eth1... 192.168.0.1 netmask 255.255.0.0
-eth1:1. 192.168.1.101 netmask 255.255.0.0
-
-my laptop is part of the administrative sector, i have 192.168.0.10 ip, but
-i need to be able to use also 192.168.1.10 so i can monitor guests, if i
-switch to 192.168.1.10 i just simply cant see anything (nither the server at
-192.168.1.101 nor 192.168.0.1 and 192.168.1.1).
-
-Any ideas
-Thanks
-
-Rodrigo
-
-> -----Mensaje original-----
-> De: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]En nombre de Antony Stone
-> Enviado el: Lunes, 19 de Abril de 2004 03:32 p.m.
-> Para: netfilter@lists.netfilter.org
-> Asunto: Re: IP Alias with iptables
+> test@seaconindia.com wrote:
 >
+>>Hi All
+>>
+>>I am new to Iptables & Firewall. I have 2 servers (web & email) running
+>>behind firewall. I have DNAT rule on my firewall, so any request hitting
+>>on port 25, 80, 110 are DNAT to internal servers. Inturn my internal
+>>servers (web & email) feel these requests were received from firewall ie
+>>internal ip and can be trusted.
+>>
+>>I want these DNAT request to be forward with their original ip address
+>> and
+>>not as coming from firewall ip.
+>>
+>>Please advice my firewall rule is as follows :
+>>
+>>iptables -t nat -A PREROUTING -p tcp -i eth1 --dport 25 -j DNAT --to
+>>192.168.0.175:25
+>>
+>>Regards
+>>
+>>Joel
+>>
+> The way DNAT works it changes ONLY the Destination IP, not the Source
+> IP, so the packets WILL still appear to be from the original source.  If
+> you are NOT seeing them as such, then you have a SNAT rule affecting
+> them, perhaps something like:
 >
-> On Monday 19 April 2004 5:12 pm, Alistair Tonner wrote:
->
-> > On April 19, 2004 03:25 pm, Antony Stone wrote:
-> > >
-> > > I suggest another firewall then - trying to set up a firewall
-> with only
-> > > one ethernet interface is a poor enough solution (from a
-> security point
-> > > of view) in the first place, but if there is wireless access
-> involved as
-> > > well then I would not even consider it.
-> >
-> > 	Thanks Antony  -- again you have expressed precisely what I
-> would have
-> > said -- succinctly and clearly.
-> >
-> > 	Aliased (stacked) interfaces ARE NOT SECURE.  Period.
->
-> Indeed.   I would like to see this emphasised more in the
-> netfilter howtos &
-> tutorials.   Multiple addresses on one interface are all very
-> well, so long
-> as they exist within the same subnet; however anyone trying to
-> use multiple
-> *network* addresses on one physical interface is defeating their
-> security by
-> ignoring what the different OSI network layers mean.
->
-> Even someone who thinks "I have a switch; my packets cannot be
-> sniffed" simply
-> hasn't investigated Dug Song's (and similar) network tools sufficiently.
->
-> Regards,
->
-> Antony.
->
-> --
-> Having been asked for a reference for this man,
-> I can confirm that you will be very lucky indeed if you can get
-> him to work
-> for you.
->
->                                                      Please reply
-> to the list;
->                                                            please
-> don't CC me.
+> iptables -t nat -A POSTROUTING -j MASQUERADE
+> or
+> iptables -t nat -A POSTROUTING -j SNAT --to 192.168.0.254
 >
 
+Yes I do have "iptables -t nat -A POSTROUTING -j MASQUERADE"
+
+> The solution, if this is the case, is to tie the MASQUERADE or SNAT rule
+> to a particular interface:
+>
+> iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+>
+> And make sure that if for some reason you DO need to SNAT traffic from
+> the firewall inward (out the 'private' nic), you can restrict that
+> action to particular source IPs or networks (-s a.b.c.d) etc to ensure
+> that /only/ the traffic you need to have a different source IP will in
+> fact get one.
+>
+> Note that this will prevent computers on the LAN from reaching these
+> servers at their public IPs. (client connects to public IP, which is
+> firewall, which DNATs traffic back to LAN IP of server, which tries to
+> reply directly to client awaiting reply from public IP) If you need to
+> connect to the local servers, you either need to use the local IPs, or
+> use a SNAT like:
+>
+> iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -j SNAT --to
+> 192.168.0.254
+>
+> This way, the ONLY traffic from the firewall to the LAN that is SNATted
+> is traffic that came from the LAN originally - in most cases, this is
+> the only SNAT that should be performed on the 'local' interface of the
+> firewall.
+>
+> j
+>
+
+But Joel can you please advice me what rule set should I use on my
+firewall. I want users from outside to come in for POP & SMTP. But I want
+their request to be forwarded with their real ips and not firewall ip.
+
+Thanks for your help
+
+Regards
+
+Joel
 
