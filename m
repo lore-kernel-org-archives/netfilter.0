@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I need help , please
-Date: Thu, 4 Jul 2002 15:53:08 +0100
+From: "Ed Street" <blacknet@simplyaquatics.com>
+Subject: RE: How to ACCEPT or DENY or DROP and also LOG in the same rule ?
+Date: Thu, 4 Jul 2002 10:54:35 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207041453.g64ErIU32086@vulcan.rissington.net>
-References: <001e01c22321$e86018a0$2400a8c0@inq7.net> <002801c22336$32460150$8703000a@aid.inf.cu>
+Message-ID: <005701c2236a$b69ddde0$0a01a8c0@ed>
+References: <20020704075047.EBOJ16050.mta01-svc.ntlworld.com@there>
+Reply-To: <blacknet@simplyaquatics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <002801c22336$32460150$8703000a@aid.inf.cu>
+In-Reply-To: <20020704075047.EBOJ16050.mta01-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,24 +19,47 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+
+Hello,
+
+Actually you can:
+Rule #1 is to log 
+Rule #2 is to deny
+
+Works In any chain.
+
+Ed
+
+-----Original Message-----
+From: netfilter-admin@lists.samba.org
+[mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
+Sent: Thursday, July 04, 2002 3:51 AM
 To: netfilter@lists.samba.org
+Subject: Re: How to ACCEPT or DENY or DROP and also LOG in the same rule
+?
 
-On Thursday 04 July 2002 9:38 am, david wrote:
+On Thursday 04 July 2002 5:31 am, Orca J. wrote:
 
-> It was a mistake.What I do is
->
-> # service iptables save
-> after that  I got a new file in /etc/sysconfig/iptables .
-> and then :
-> #/etc/rc.d/init.d/iptables restart 2>salida8
-> .And here you see all the errors.
+> Hi
+>   I want to both DENY and LOG in the same rule ? or ACCEPT and LOG ,
+or
+> DENY and LOG
 
-What rules are you trying to set ?
+You can't put them both in the same rule, butyou can create a
+user-defined 
+chain and jump to that:
 
-Have you compiled all the required bits of iptables into the kernel or are 
-you loading modules ?
+iptables -N LOGDROP
+iptables -A LOGDROP -j LOG --log-options........
+iptables -A LOGDROP -j DROP
+
+Then use that single target in your rules:
+
+iptables -A INPUT -i eth0 -j LOGDROP
 
  
 
-Antony.
+Antony/.
+
 
