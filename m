@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Not quite understanding DNAT
-Date: 25 Jul 2003 12:10:52 +0200
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: VLANs and DNAT
+Date: Fri, 25 Jul 2003 11:17:57 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059127851.1020.45.camel@elendil.intranet.cartel-securite.net>
-References: <Pine.LNX.4.44.0307251045220.1760-100000@localhost>
+Message-ID: <Pine.LNX.4.44.0307251115230.1760-100000@localhost>
+References: <3F206E52.2090307@suse.net.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0307251045220.1760-100000@localhost>
+In-Reply-To: <3F206E52.2090307@suse.net.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Chris Wilson <chris@netservers.co.uk>
-Cc: Coutts@elendil.intranet.cartel-securite.net, "Ashe (Testing Account)" <ATest@sbsdk12.org>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Damien Mason <kinetic@suse.net.au>
+Cc: netfilter@lists.netfilter.org
 
-Le ven 25/07/2003 =E0 11:47, Chris Wilson a =E9crit :
-> You could try:
-> 	route add <internal-server-10.0.0.x> dev eth0 \
-> 		gw <address-of-eth0:x>
-> Using an address of your own box as the gateway of a route will cause
-> locally-generated traffic going down that route to come from that addre=
-ss,
-> instead of the default address on the device. This should mean that the
-> masquerading uses that address too, but I haven't tested it.
+Hi Damien,
 
-I've just tested this, it does not work as I was expecting.
+>     I have two interfaces, eth1 and eth2
+> 
+>     I have multiple vlans on a eth1, that is, eth1.1 and eth1.2, eth1.3
+[...]
+>     However, there are servers on Vlan2 which I would like to forward 
+> traffic to from the external interface, I would imagine that I could do 
+> something like:
+> 
+> iptables -A PREROUTING -t nat -p tcp -d 203.221.181.27 --dport 80 -j 
+> DNAT --to 192.168.50.10:80
+> 
+> But I cannot specify an interface -i eth1.2 in the prerouting, because 
+> it occurs pre-routing?
 
-Therefore, you can use iproute2 to achieve this kind of behaviour. You
-can specify to use an arbitrary local IP as source for a given route.
-Ashe, you should try this :
+I don't see why you can't do this. We do it and it works. You might get a
+warning about "strange characters in interface name" if you have an old
+iptables version, but it should still work.
 
-	ip route add $INSERV dev eth0 src $SRCIP
+>     How can I forward traffic to a host on a vlan when the vlans don't 
+> use unique addressing schemes?.. I was thinking I may have to -j 
+> REDIRECT the traffic to another chain, and forward it from there?
 
-I use this quite often on net2net VPN using FreeS/WAN to force gateways
-to use their private IP when communicating through the tunnel.
+I don't think the REDIRECT target would help you here.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+
 
