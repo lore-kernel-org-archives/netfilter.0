@@ -1,13 +1,22 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+From: alucard@kanux.com
 Subject: Re: forwarding on the same NIC
-Date: Tue, 11 May 2004 15:37:18 -0500
+Date: Tue, 11 May 2004 17:02:13 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40A1397E.4020508@pbl.ca>
-References: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105>        <200405102115.14089.Antony@Soft-Solutions.co.uk>        <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>        <1084227992.14224.5.camel@localhost>        <1166.200.44.170.105.1084283379.squirrel@200.44.170.105>       <1084288178.15768.10.camel@localhost>    <2022.200.44.170.105.1084289894.squirrel@200.44.170.105>    <40A0FEC7.7020201@pbl.ca> <3440.200.44.170.105.1084303244.squirrel@200.44.170.105>
+Message-ID: <4106.200.44.170.105.1084309333.squirrel@200.44.170.105>
+References: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105> 
+    <200405102115.14089.Antony@Soft-Solutions.co.uk> 
+    <1292.192.168.74.154.1084226963.squirrel@192.168.74.154> 
+    <1084227992.14224.5.camel@localhost> 
+    <1166.200.44.170.105.1084283379.squirrel@200.44.170.105> 
+    <1084288178.15768.10.camel@localhost> 
+    <2022.200.44.170.105.1084289894.squirrel@200.44.170.105> 
+    <1084295076.15641.54.camel@localhost> 
+    <3506.200.44.170.105.1084304149.squirrel@200.44.170.105>
+    <1084306180.15631.68.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3440.200.44.170.105.1084303244.squirrel@200.44.170.105>
+In-Reply-To: <1084306180.15631.68.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +26,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: alucard@kanux.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-alucard@kanux.com wrote:
-> mmm not at all, it's a cisco router for one of the t1's for the company I
-> work for.
 
-Hm, doesn't change much in the hole picture.  What you'll need to do 
-depends much on how much you are allowed to change (and you'll have to 
-change something, there's no way around it).  If you are allowed to 
-change internal IP address on Cisco, than you can use your Linux box as 
-router/firewall for internal network (as per diagram I sent earlier). 
-That would move Cisco out of your internal network (good thing (tm) 
-since you don't control it, and obviously you are not very keen of 
-person who does have control over it), and than you can do close to 
-about anything you desire.
+John A. Sullivan III wrote:
+> Ah, OK - between this reply and your replay to Aleksander, it's starting
+> to become a bit more clear.  The router is a corporate router to the
+> outside world over which you have no control.  This internal 10 network
+> where the Linux box and 2nd Webserver sit IS the entire internal network
+> with a 22 bit mask and housing all users who directly access the 2nd
+> WebServer on the LAN.  You want the WebServer accessible to the world
+> but, because of politics, bureaucracy, etc., you only have control over
+> the Linux box.  Do I understand it thus far?
 
-BTW, one stupid question, you did set ip_forwarding to 1 on Linux box, 
-right?  As I recall, it defaults to 0 (either in kernel, or startup 
-scripts in various distributions set it to 0, not sure).
+Exactly :)
 
-What John just suggested with virutal interfaces will also work.  But 
-with only one physical interface you must be carefull about ICMP 
-redirects.  Your Linux box is going to start spitting them out as soon 
-as it detects two networks on same wire, unless you specifically tell it 
-not to do that.  If Cisco and Web2 boxes are set to obey them (bad thing 
-(tm)), they'll just start talking directly to each other.  Been there, 
-done that.
+>
+> Do you have the freedom to insert a second NIC into the 2nd WebServer?
+> If so, you can insert a second NIC into both devices, set the default
+> gateway for the 2nd WebServer to the Linux Box and allow world access
+> through this second network.
 
-Anyhow, whatever you choose to do, I would stronly recommend having two 
-seperate wires.  One for your internal network, and another for outside 
-world.  And since you don't have control over Cisco, it boils down to 
-two NICs in your Linux box or two NICs in your Web box.
+No, I don't but, I'm just going to have to go through all the steps in
+this company to get it in order to do what they require.
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+> One way or another, you are going to have to touch the 2nd WebServer
+> even if just to change its default gateway to the LinuxBox so that its
+> reply packets to the world pass through the Linux Box.  If you cannot
+> get it on a separate network by hook or by crook, you'll have to
+> investigate bridging.  I think there is something at
+> http://ebtables.sourceforge.net/ but I have never played with it.  Good
+> luck - John
+
+To make matters worse, the second webserver is IIS and I have no idea how
+to use IP Multiplexing on Win2k, I could do it in linux but Windows
+systems are not my expertise. What I'm going to do -if I get the
+permission- is this: Install a 2nd nic on the 2nd webserver so the IP
+address that is being used doesn't get affected and I will configure it's
+router to the linux box so it can redirect packets where they should go...
+
+Thanx a lot for this great help, I really mean it... this mailing list is
+simply great
+
+Juan
 
