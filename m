@@ -1,14 +1,12 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: H/A
-Date: Tue, 27 May 2003 18:09:05 +0800
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Multi PPTP clients behind iptables firewall
+Date: Tue, 27 May 2003 21:02:00 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030527100905.GA1395@floyd>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CE7@wardrive.citadelcomputer.com.au>
-Reply-To: kluivert@tm.net.my
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D07@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CE7@wardrive.citadelcomputer.com.au>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Urban Spielmann <spielmann@it-insourcing.ch>, Ralf Spenneberg <lists@spenneberg.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Tue, May 27, 2003 at 07:47:31AM +1000, George Vieira spoke thusly:
->LIVE IP=203.x.x.x
->FW1=10.1.1.1    FW2=10.1.1.1
->
->using iproute2 I add the live IP to FW1 which is the Master FW.
->
->ip add addr 203.x.x.x/28 dev eth0
->
->Then my firewall scripts find the dev IP using "ip addr show $EXTDEV" add
->then "tail -1" for so it grabs the last line of the list otherwise it
->finds 2 IP bounded to the 1 network card and the scripts go nuts.. See
->snippet of my iptables script below.
+FYI, the reason why you needed GRE is because GRE is PORTless =
+connections and iptables without the GRE module cannot determine which =
+client inside it's for because connection tracking uses ports to =
+track.... but GRE has none...
 
-George,
+so the module find what's what and does it's little magic.. ;)
 
-You have not stated, exactly what failover scenarios does your setup work
-for ? Ie,
+-----Original Message-----
+From: Urban Spielmann [mailto:spielmann@it-insourcing.ch]
+Sent: Tuesday, May 27, 2003 6:10 PM
+To: Ralf Spenneberg
+Cc: Netfilter
+Subject: AW: Multi PPTP clients behind iptables firewall
 
-[ internet link #1 ] +- [ firewall #1 ] -- +-------+
-                     |                     | LAN1  |
-	             |                     | LAN2  | 
-[ internet link #2 ] +- [ firewall #2 ] -- +-------+
 
-I was addressing something like the above. If firewall #1 goes down,
-firewall #2 can take over, but it still requires that all state information
-from firewall #1; be propogated to firewall #2. I am not taking into
-account any load balancing requirements, pure failover. State info for both
-iptables + their VPN setup. [*]
+Now it works, but I had to do not only
+modprobe ip_nat_pptp
+also
+modprobe ip_nat_proto_gre
 
-I don't understand how your unique IP addressing method will solve the
-above, though your setup itself isn't very clear to me.
+I do not know why. But im lucky it works.
 
-That said, the original poster didn't exactly state (IIRC) what sort of VPN
-setup he is using (office <-> office), what exactly does he want
-fail-over'ed, does he have dual Internet links and many many other bits of
-information.
+Regards,
+Urban
 
-Take note, that even my ascii diagran above only caters for certain
-failover scenarios.
+-----Urspr=FCngliche Nachricht-----
+Von: Ralf Spenneberg [mailto:lists@spenneberg.org]=20
+Gesendet: Dienstag, 20. Mai 2003 08:16
+An: Urban Spielmann
+Cc: Netfilter
+Betreff: Re: Multi PPTP clients behind iptables firewall
+
+
+Am Sam, 2003-05-17 um 05.41 schrieb Urban Spielmann:
+> Hi
+> =20
+> I have Windows-XP-Clients behind a linux firewall ( kernal 2.4.20). I=20
+> do VPN over PPTP to a VPN-Server on the internet.
+> =20
+> I configured the iptables and it works fine for ONE client.
+> =20
+> But a second client at the same time does not :-(
+> =20
+> Do I have to use any patches for kernal 2.4.20?
+Yes.
+You have to use the nat_pptp module. Depending on your kernel you have =
+to patch and recompile your kernel. You will find the patch on=20
+http://www.netfilter.org.
+Then do a=20
+modprobe ip_nat_pptp
+And it should work.
+
+Cheers,
+
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
+
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                   =20
+http://honeynet.spenneberg.org
+
+
 
