@@ -1,7 +1,7 @@
-From: =?ISO-8859-15?Q?Bj=F6rn_Schmidt?= <bj-schmidt@uni-paderborn.de>
-Subject: state: INVALID
-Date: Fri, 19 Nov 2004 23:37:37 +0100
-Message-ID: <419E75B1.3030406@uni-paderborn.de>
+From: Daniel Dorau <daniel.dorau@alumni.tu-berlin.de>
+Subject: decrypted ipsec packets lost, last seen in INPUT chain
+Date: Sat, 20 Nov 2004 14:52:21 +0100
+Message-ID: <1100958740.3687.11.camel@haktar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,34 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello list,
+I have a problem with decrypted ipsec packets lost. I'm not sure if this
+is netfilter related, maybe someone has any idea.
 
-the ulogd logfile of my server shows many "INVALID state" packets. What could
-be the reason for that?
+I have a local interface with both 192.168.178.2 (unencrypted) and
+192.168.202.5 assigned to it. Packets directed to the private network
+are routed to local address 192.168.202.5 which is the local ipsec
+tunnel endpoint.
+Now if I ping a machine within the VPN, a ICMP echo request is sent
+encrypted via 192.168.202.5 into the tunnel. An encrypted ICMP echo
+reply is sent back, can be seen with ethereal and in netfilter's INPUT
+chain. That echo reply is decrypted and can be seen again in ethereal
+(now decrypted) as well as in the INPUT chain.
 
-The server has one cardbus nic (eth0), one dsl-interface (ppp0) and, of course
-lo. The client has only eth0 and lo. The kernel version of both computers is
-2.6.10-rc2
+INPUT chain has policy ACCEPT and doesn't contain any rule except
+logging every packet for debugging.
 
-syslogemu.log:Nov 19 20:31:52 kilobyte INPUT_INVALID IN=eth0 OUT= 
-MAC=00:d0:b7:01:ce:2a:00:04:e2:7f:90:41:08:00  SRC=192.168.0.2 DST=192.168.0.1 
-LEN=52 TOS=00 PREC=0x00 TTL=64 ID=1680 DF PROTO=TCP SPT=32899 DPT=3130 
-SEQ=4260699581 ACK=510793293 WINDOW=5080 ACK FIN URGP=0
-syslogemu.log:Nov 19 20:31:52 kilobyte OUTPUT_INVALID IN= OUT=eth0 MAC= 
-SRC=192.168.0.1 DST=192.168.0.2 LEN=80 TOS=00 PREC=0x00 TTL=255 ID=29481 
-PROTO=ICMP TYPE=3 CODE=3
-syslogemu.log:Nov 19 20:31:52 kilobyte INPUT_INVALID IN=eth0 OUT= 
-MAC=00:d0:b7:01:ce:2a:00:04:e2:7f:90:41:08:00  SRC=192.168.0.2 DST=192.168.0.1 
-LEN=52 TOS=00 PREC=0x00 TTL=64 ID=13326 DF PROTO=TCP SPT=32845 DPT=993 
-SEQ=3094163529 ACK=3641510831 WINDOW=2908 ACK FIN URGP=0
+So, basically ipsec works as I get the echo reply decrypted to my INPUT
+chain.
+But then the packet is lost, ping itself never receives it (strace shows
+-EAGAIN as result of recvmsg).
+Same for TCP connections. I can see the SYN,ACK in the INPUT chain but
+the application never gets it.
 
-Please CC... ;)
+Does anybody has an idea where and/or why packets can get lost after
+travelling through INPUT chain? (POLICY ACCEPT s.above)
+IP adresses and packets itself as inspected within ethereal look
+perfectly ok.
+
+Any ideas? I'm completely lost. :-/
+
+Thank you,
+Daniel
 
 -- 
-Greetings
-Bjoern Schmidt
+Daniel Dorau
+
 
 
