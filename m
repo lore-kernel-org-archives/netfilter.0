@@ -1,10 +1,11 @@
-From: Emilio Casbas <ecasbas@unav.es>
-Subject: strange log
-Date: Thu, 22 Apr 2004 08:50:12 +0200
+From: "George Hong" <george@chinanetcenter.com>
+Subject: ip_conntrack entry: possible potential virus cost connection full
+Date: Thu, 22 Apr 2004 15:30:31 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40876B24.6030209@unav.es>
+Message-ID: <005501c4283b$b245b1f0$bc14a8c0@IBMGeorge>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms070703070301030603070906"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0056_01C4287E.C068F1F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,107 +18,282 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This is a cryptographically signed message in MIME format.
+This is a multi-part message in MIME format.
 
---------------ms070703070301030603070906
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+------=_NextPart_000_0056_01C4287E.C068F1F0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-Hi,
+Hi there,
+  I have a firewall capable of handling more than 30,000 connections.
+Normally the connection number is around 3,000. But sometimes it got
+maxed out. And I can't tell what cost it. So I put in the Linux with
+iptables to debug it. The Linux box is doing NAT. 
+  Let's assume that a lan PC source address and port is 1.1.1.1:1000 and
+the destination address and port is 100.100.100.100:80. And the lan
+address for the Linux box is 2.2.2.2 and WAN address is 90.90.90.90. 
+  I noticed that about 40% of the entries in my ip_conntrack table look
+like this:
+Tcp SYN src=1.1.1.1 dst=100.100.100.100 sport=1000 dport=80 [UNREPLIED] 
+Src=100.100.100.100 dst=90.90.90.90 sport=80 dport=1000
+ 
+  What concerned me is the portion "dst=90.90.90.90". Isn't it supposed
+to be "1.1.1.1"? O.W., how could the connection be completed? 
+  If this is an attack or virus, what kind of attack is it? Any
+suggestion to stop it? 
+Thanks.
+George Hong 
 
-We've seen  in the firewall's log of transparent proxy this messege from 
-different ips repeteadly :
+------=_NextPart_000_0056_01C4287E.C068F1F0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Apr 21 21:28:55 moria kernel: TCP: Treason uncloaked! Peer 
-external_ip/80 shrinks window 1466359669:1466360884. Repaired.
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-We've googling, but we dont know if is an attack or a bad negotiation.
-Any suggestion?
-
-Thanks
-Emilio C.
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
 
---------------ms070703070301030603070906
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C4287E.BF01C0D0">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:EnvelopeVis/>
+  <w:PunctuationKerning/>
+  <w:DrawingGridVerticalSpacing>7.8 pt</w:DrawingGridVerticalSpacing>
+  =
+<w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEve=
+ry>
+  =
+<w:DisplayVerticalDrawingGridEvery>2</w:DisplayVerticalDrawingGridEvery>
+  <w:Compatibility>
+   <w:SpaceForUL/>
+   <w:BalanceSingleByteDoubleByteWidth/>
+   <w:DoNotLeaveBackslashAlone/>
+   <w:ULTrailSpace/>
+   <w:DoNotExpandShiftReturn/>
+   <w:AdjustLineHeightInTable/>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+   <w:UseFELayout/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-alt:SimSun;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 135135232 16 0 262145 0;}
+@font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 135135232 16 0 262145 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	mso-pagination:none;
+	font-size:10.5pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:SimSun;
+	mso-font-kerning:1.0pt;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:9.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-fareast-font-family:SimSun;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+ /* Page Definitions */
+ @page
+	{mso-page-border-surround-header:no;
+	mso-page-border-surround-footer:no;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	mso-header-margin:36.0pt;
+	mso-footer-margin:36.0pt;
+	mso-paper-source:0;
+	layout-grid:15.6pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIL5zCC
-A6swggMUoAMCAQICAQIwDQYJKoZIhvcNAQEEBQAwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQI
-EwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUg
-TmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAwDgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkB
-FgtjdGlAdW5hdi5lczAeFw0wMDEyMDcxODM0NTlaFw0xMDEyMDUxODM0NTlaMIGSMQswCQYD
-VQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoT
-FlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1D
-QS0xMTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXMwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
-MIGJAoGBAMnPtNu0DY74Cy8ADkGWQ+P+o0tADrVZ4Lcp7XrTO/DBsviqY2K90SPnjTq4iaHq
-nPR3NtP5NITlgeOriB6Qz0rP2cIyPbvj+omMNcjLNMKwjzN/Xlz/PQHtc7uB475qcRI2Upf0
-efcCuZ+2c9Bh8whAR6yBPMZYBOf/CnTOGhiXAgMBAAGjggEQMIIBDDAdBgNVHQ4EFgQU5IiI
-QsdSywUHw6MhYN5TwgPUKoIwgbwGA1UdIwSBtDCBsYAULcM6eDF7f4FPgfZNagFP7vaHJMqh
-gZWkgZIwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1w
-bG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAw
-DgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkBFgtjdGlAdW5hdi5lc4IBADAMBgNVHRME
-BTADAQH/MAsGA1UdDwQEAwIBBjARBglghkgBhvhCAQEEBAMCAQYwDQYJKoZIhvcNAQEEBQAD
-gYEAX1CIwLZPpFS3JvoHEHZ5Ot5NnfQfQP7P8c0obKsenSVSD5ikiif1FTpZV71IhMBA+CIp
-I5yGHD2lJhRmU8mxydPc4Duc8Vq5yw5TEtbgFamszQDaloFLKVqgsizZ6ljB0X2N/oGKOr70
-BNaayTRZuGaqBRwL9rOtQAPuUVWvvOAwggQYMIIDgaADAgECAgIDSTANBgkqhkiG9w0BAQQF
-ADCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25h
-MR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxEzARBgNV
-BAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0aUB1bmF2LmVzMB4XDTAyMTEwNDEy
-MDc1MVoXDTA0MTEwMzEyMDc1MVowgaYxCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJh
-MREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEM
-MAoGA1UECxMDQ1RJMSMwIQYDVQQDExplbWlsaW8gam9zZSBjYXNiYXMgamltZW5lejEeMBwG
-CSqGSIb3DQEJARYPZWNhc2Jhc0B1bmF2LmVzMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
-gQCjUTWXn5KebVC7S9O1gDRZP3Rk7RhmhfDAwwiGdl762ICY8DhMAkQ8bmhCy/Xka1sNiFQA
-Mgoj0UfVZTX221BWOzHZdaPimyxBTO42jsnvU9D+Q9BAIzRwI/FrBLw4LGngPgGaifQtAdet
-hRiHHCQGj63Ra53JNc1IOFqJo0qdxwIDAQABo4IBZTCCAWEwCQYDVR0TBAIwADARBglghkgB
-hvhCAQEEBAMCBaAwLAYJYIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmlj
-YXRlMB0GA1UdDgQWBBQ1ww0xtTIZCwn1KzaqzfR0rRxjpTCBvAYDVR0jBIG0MIGxgBTkiIhC
-x1LLBQfDoyFg3lPCA9QqgqGBlaSBkjCBjzELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
-cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
-MQwwCgYDVQQLEwNDVEkxEDAOBgNVBAMTB1VOQVYtQ0ExGjAYBgkqhkiG9w0BCQEWC2N0aUB1
-bmF2LmVzggECMDUGA1UdHwQuMCwwKqAooCaGJGh0dHBzOi8vZ2FuZGFsZi5jdGkudW5hdi5l
-cy91bmF2LmNybDANBgkqhkiG9w0BAQQFAAOBgQC8A7UirMJ77vP8eGoeFXCNMV20V+0uWzqs
-Kuu8UqsAbYF3t32SLFO4eQdJILSHIafDqj+L5Qy53UzXgBY0Hu3MheLf6V5U4nwd03ukBGXg
-1Zs9vBqMzGria1D0YjBTYqip7TQTT6mPFMb/Loek0/pmn/q/r45z0w8Cs6ljMKM51zCCBBgw
-ggOBoAMCAQICAgNJMA0GCSqGSIb3DQEBBAUAMIGSMQswCQYDVQQGEwJFUzEQMA4GA1UECBMH
-TmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoTFlVuaXZlcnNpZGFkIGRlIE5h
-dmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1DQS0xMTEaMBgGCSqGSIb3DQEJ
-ARYLY3RpQHVuYXYuZXMwHhcNMDIxMTA0MTIwNzUxWhcNMDQxMTAzMTIwNzUxWjCBpjELMAkG
-A1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQK
-ExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxIzAhBgNVBAMTGmVtaWxp
-byBqb3NlIGNhc2JhcyBqaW1lbmV6MR4wHAYJKoZIhvcNAQkBFg9lY2FzYmFzQHVuYXYuZXMw
-gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKNRNZefkp5tULtL07WANFk/dGTtGGaF8MDD
-CIZ2XvrYgJjwOEwCRDxuaELL9eRrWw2IVAAyCiPRR9VlNfbbUFY7Mdl1o+KbLEFM7jaOye9T
-0P5D0EAjNHAj8WsEvDgsaeA+AZqJ9C0B162FGIccJAaPrdFrnck1zUg4WomjSp3HAgMBAAGj
-ggFlMIIBYTAJBgNVHRMEAjAAMBEGCWCGSAGG+EIBAQQEAwIFoDAsBglghkgBhvhCAQ0EHxYd
-T3BlblNTTCBHZW5lcmF0ZWQgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFDXDDTG1MhkLCfUrNqrN
-9HStHGOlMIG8BgNVHSMEgbQwgbGAFOSIiELHUssFB8OjIWDeU8ID1CqCoYGVpIGSMIGPMQsw
-CQYDVQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNV
-BAoTFlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTEQMA4GA1UEAxMHVU5B
-Vi1DQTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXOCAQIwNQYDVR0fBC4wLDAqoCigJoYk
-aHR0cHM6Ly9nYW5kYWxmLmN0aS51bmF2LmVzL3VuYXYuY3JsMA0GCSqGSIb3DQEBBAUAA4GB
-ALwDtSKswnvu8/x4ah4VcI0xXbRX7S5bOqwq67xSqwBtgXe3fZIsU7h5B0kgtIchp8OqP4vl
-DLndTNeAFjQe7cyF4t/pXlTifB3Te6QEZeDVmz28GozMauJrUPRiMFNiqKntNBNPqY8Uxv8u
-h6TT+maf+r+vjnPTDwKzqWMwoznXMYIDUTCCA00CAQEwgZkwgZIxCzAJBgNVBAYTAkVTMRAw
-DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
-YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
-KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwCQYFKw4DAhoFAKCCAg0wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDQwNDIyMDY1MDEyWjAjBgkqhkiG9w0B
-CQQxFgQU4D2kYip1XyK3VSPKbDkkXCXxucwwUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0D
-BzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwIC
-ASgwgaoGCSsGAQQBgjcQBDGBnDCBmTCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
-cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
-MQwwCgYDVQQLEwNDVEkxEzARBgNVBAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0
-aUB1bmF2LmVzAgIDSTCBrAYLKoZIhvcNAQkQAgsxgZyggZkwgZIxCzAJBgNVBAYTAkVTMRAw
-DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
-YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
-KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwDQYJKoZIhvcNAQEBBQAEgYBfS3NcgQQv/La9
-Kh+xd77h8m4C0Ohc0JunEbG1KayjUza1yMd6y1AGoG0aljPwqpqdtD7N5aURKsPFi8hy3UY0
-lFZzN7CigJgUYdju8E53t4lPBR2L2YBtMBp+SURUCo8uDt+zL19A4zJTJTZwZ3Z/A/eLxE8V
-6S2V0sxh+oKQxAAAAAAAAA==
---------------ms070703070301030603070906--
+<body lang=3DZH-CN link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:21.0pt;text-justify-trim:
+punctuation'>
+
+<div class=3DSection1 style=3D'layout-grid:15.6pt'>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'>Hi =
+there,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'><span
+style=3D'mso-spacerun:yes'>&nbsp; </span>I have a firewall capable of =
+handling
+more than 30,000 connections. Normally the connection number is around =
+3,000.
+But sometimes it got maxed out. And I can&#8217;t tell what cost it. So =
+I put
+in the Linux with <span class=3DSpellE>iptables</span> to debug it. The =
+Linux box
+is doing NAT. <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'><span
+style=3D'mso-spacerun:yes'>&nbsp; </span>Let&#8217;s assume that a <span
+class=3DSpellE><span class=3DGramE>lan</span></span> PC source address =
+and port is
+1.1.1.1:1000 and the destination address and port is 100.100.100.100:80. =
+And
+the <span class=3DSpellE><span class=3DGramE>lan</span></span> address =
+for the
+Linux box is 2.2.2.2 and WAN address is 90.90.90.90. =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'><span
+style=3D'mso-spacerun:yes'>&nbsp; </span>I noticed that about 40% of the =
+entries in
+my <span class=3DSpellE>ip_conntrack</span> table look like =
+this:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><span class=3DSpellE><font size=3D1 =
+face=3DArial><span lang=3DEN-US
+style=3D'font-size:9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'>Tcp=
+</span></font></span><font
+size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:9.0pt;mso-bidi-font-size:
+10.0pt;font-family:Arial'> SYN <span class=3DSpellE>src</span>=3D1.1.1.1 =
+<span
+class=3DSpellE><span class=3DGramE>dst</span></span><span =
+class=3DGramE>=3D</span>100.100.100.100
+sport=3D1000 <span class=3DSpellE>dport</span>=3D80 [UNREPLIED] =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><span class=3DSpellE><font size=3D1 =
+face=3DArial><span lang=3DEN-US
+style=3D'font-size:9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'>Src=
+</span></font></span><font
+size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:9.0pt;mso-bidi-font-size:
+10.0pt;font-family:Arial'>=3D100.100.100.100 <span class=3DSpellE><span
+class=3DGramE>dst</span></span><span class=3DGramE>=3D</span>90.90.90.90 =
+sport=3D80 <span
+class=3DSpellE>dport</span>=3D1000<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></spa=
+n></font></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'><span
+style=3D'mso-spacerun:yes'>&nbsp; </span>What concerned me is the =
+portion &#8220;<span
+class=3DSpellE><span class=3DGramE>dst</span></span><span =
+class=3DGramE>=3D</span>90.90.90.90&#8221;.
+Isn&#8217;t it supposed to be &#8220;1.1.1.1&#8221;? O.W., how could the
+connection be completed? <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'><span
+style=3D'mso-spacerun:yes'>&nbsp; </span>If this is an attack or virus, =
+what kind
+of attack is it? Any suggestion to stop it? =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'>Thanks.<o:p></o:p></sp=
+an></font></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;mso-bidi-font-size:10.0pt;font-family:Arial'>George Hong =
+<o:p></o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0056_01C4287E.C068F1F0--
 
 
