@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
+From: Dominic Iadicicco <sctylib2004@yahoo.com>
 Subject: Re: Can anyone tell me how to do this?
-Date: Wed, 22 Sep 2004 10:29:43 -0400
+Date: Wed, 22 Sep 2004 07:45:18 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095863383.1891.18.camel@wolfpack.ljm.dom>
-References: <20040922140922.36826.qmail@web51301.mail.yahoo.com>
+Message-ID: <20040922144518.81033.qmail@web51309.mail.yahoo.com>
+References: <1095863109.4393.9.camel@coati>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040922140922.36826.qmail@web51301.mail.yahoo.com>
+In-Reply-To: <1095863109.4393.9.camel@coati>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +17,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2004-09-22 at 10:09, Dominic Iadicicco wrote:
-> Hello all,
+Eric:
+
+Where should I put?
+
+  "iptables -A POSTROUTING -t nat -d 172.16.12.212 -p
+> tcp --dport 22 \\ 
+> -j SNAT --to 172.16.12.130"
+
+
+Should that command also be executed on the same
+machine as the previous?
+
+
+Thanks
+
+Dom
+ 
+--- Eric Leblond <eric@inl.fr> wrote:
+
+> On Wed, 2004-09-22 at 16:09, Dominic Iadicicco
+> wrote:
+> > Hello all,
+> > My devil-Box is at 172.16.12.130 and I want all
+> ssh
+> > request to this .130 address, to go to address
+> > 172.16.12.212.   
 > 
-> Can anyone tell me how to do this so that I may ask
-> some questions afterword's in hopes to learn a little
-> more about iptables.
-
-learning more about iptables is a nice goal to have.  sometimes i wish
-it was just as glamorous for people to want to learn more about routing
-and the OSI model, before becoming super l33t firewall gurus...but i
-digress...
-
-> This is what I would like to try. I think this would
-> get me to the next level.
+> go to : it's the easy part : 
+> iptables -A PREROUTING -t nat -d 172.16.12.130 -p
+> tcp -dport 22 \\
+> -j DNAT --to 172.16.12.212
 > 
-> My devil-Box is at 172.16.12.130 and I want all ssh
-> request to this .130 address, to go to address
-> 172.16.12.212.   How do I do this?  All machines are
-> on the 172.16.12.x subnet for right now.
+> well that's for go to. But let say A try to connect
+> to 172.16.12.130 then
+> 172.16.12.212 receive a connection from 1 and answer
+> to A which wait
+> answer from 172.16.12.130. bad day for him.
+> The solution is to change source address of packets
+> going to
+> 172.16.12.212 :
+> iptables -A POSTROUTING -t nat -d 172.16.12.212 -p
+> tcp --dport 22 \\ 
+> -j SNAT --to 172.16.12.130
+> 
+> thus we have the following :
+>  A talks to 172.16.12.130
+>  packet arrive to 172.16.12.212 with source
+> 172.16.12.130
+> packet return to 172.16.12.130
+> which reemit to A.
+> 
+> BR,
+> -- 
+> Eric Leblond <eric@inl.fr>
+> INL
+> 
+> 
 
-  iptables -t nat -A PREROUTING -p tcp --dport 22 \
-    -d 172.16.12.130 -j DNAT --to-destination 172.16.12.212
 
-  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-  iptables -A FORWARD -p tcp -d 172.16.12.212 -j ACCEPT
-
-  iptables -t nat -A POSTROUTING -p tcp --dport 22 \
-    -d 172.16.12.212 -j SNAT --to-source 172.16.12.130
-
-  sysctl -w net.ipv4.ip_forward=1
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+		
+_______________________________
+Do you Yahoo!?
+Declare Yourself - Register online to vote today!
+http://vote.yahoo.com
 
