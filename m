@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: iptables + ipsec can't  open an application
-Date: Fri, 28 Jan 2005 15:33:14 -0500
-Message-ID: <20050128203314.GA15550@bender.817west.com>
-References: <1106943964.28230.18.camel@pauloric.intranet>
+From: Mohammad Khan <mkhan@lextranet.com>
+Subject: What about these packets?
+Date: Fri, 28 Jan 2005 21:29:45 -0500
+Message-ID: <1106965785.21043.4.camel@croaker>
+Reply-To: mkhan@lextranet.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1106943964.28230.18.camel@pauloric.intranet>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,78 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Jan 28, 2005 at 06:26:04PM -0200, Paulo Ricardo Bruck wrote:
-> Hi guys
-> 
-> I've been testing debian sarge kernel 2.6.8-1 + iptables 1.2.11-8 +
-> openswan 2.2.0-4 
-> 
-> I can ping from desktop1 to desktop2 , but if I try to see a http page
-> at desktop1 from desktop 2 I see a connection time out.
-> 
-> desktop1-- iptables/openswan1--internet--iptables/openswan2--desktop2
-> 
-> ping 192.168.1.7 ( desktop 2)
-> tcpdump from iptables2 wan
-> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x22)
-> IP 192.168.0.11 > 192.168.1.7: icmp 64: echo request seq 1
-> IP 200.168.52.239 > 200.207.125.76: ESP(spi=0x1e76f500,seq=0x29)
-> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x23)
-> ok works
-> 
-> 
-> lynx 192.168.1.7 (desktop2)
-> tcpdump from iptables2 wan
-> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x2c)
-> IP 192.168.0.11.33654 > 192.168.1.7.80: S 3132491911:3132491911(0) win
-> 5840 <mss 1460,sackOK,timestamp 33947617 0,nop,wscale 0>
-> IP 200.168.52.239 > 200.207.125.76: ESP(spi=0x1e76f500,seq=0x39)
-> IP 200.168.52.239 > 200.207.125.76: ESP(spi=0x1e76f500,seq=0x3a)
-> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x2d)
-> IP 192.168.0.11.33655 > 192.168.1.7.80: S 3148629414:3148629414(0) win
-> 5840 <mss 1460,sackOK,timestamp 33950275 0,nop,wscale 0>
-> IP 200.168.52.239 > 200.207.125.76: ESP(spi=0x1e76f500,seq=0x3b)
-> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x2e)
-> IP 192.168.0.11.33655 > 192.168.1.7.80: S 3148629414:3148629414(0) win
-> 5840 <mss 1460,sackOK,timestamp 33953275 0,nop,wscale 0>
-> 
-> important rules iptables/ipsec1
-> iptables -A INPUT   -p 50 -j ACCEPT
-> iptables -A FORWARD -p 50 -j ACCEPT
-> iptables -A INPUT   -p 51 -j ACCEPT
-> iptables -A FORWARD -p 51 -j ACCEPT
-> iptables -A INPUT   -p udp --sport 500 --dport 500 -j ACCEPT
-> iptables -A INPUT   -p udp --sport 4500 --dport 4500 -j ACCEPT
-> #iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss
-> 1440
-> iptables -A FORWARD -s 192.168.0.0/24 -d 192.168.1.0/24 -j ACCEPT
-> iptables -A FORWARD -s 192.168.1.0/24 -d 192.168.0.0/24 -j ACCEPT
-> iptables -t nat -A POSTROUTING  -o $WAN1 -d ! 192.168.1.0/24 -j SNAT
-> --to-source $IPWAN1
-> 
-> I ve already tried using TCPMSS, but not solved.
+two rules in my INPUT chains are:
+-A INPUT -s 63.110.21.51 -m state --state NEW -j LOG --log-prefix
+"PLAYNC_NEW " --log-level debug
+-A INPUT -s 63.110.21.51 -m state --state NEW -j DROP
 
-try it again, and use a lower value than 1440--i'd recommend starting
-at 1400, actually--and work you're way down until it works.  i *would*
-say tcpdump your external interface and filter for ICMP Type 3 Code 4
-packets to verify that it's an MTU/MSS problem, but to quote a statement
-some wizard just made in #iptables:
+My router is keeping the following logs
 
-  "perhaps there is icmp filtering at the border router for anything not
-   an echo reply.  which makes sense cause you normally dont need icmp
-   messages across the internet"
+Jan 28 18:32:46 stingray kernel: PLAYNC_NEW IN=eth0 OUT=
+MAC=00:c0:26:63:47:f5:00:90:1a:40:a2:9f:08:00 SRC=63.110.21.51
+DST=x.x.x.x LEN=32 TOS=0x00 PREC=0x20 TTL=1 ID=775 PROTO=UDP SPT=14339
+DPT=33438 LEN=12
+Jan 28 18:32:46 stingray kernel: PLAYNC_NEW IN=eth0 OUT=
+MAC=00:c0:26:63:47:f5:00:90:1a:40:a2:9f:08:00 SRC=63.110.21.51
+DST=x.x.x.x LEN=32 TOS=0x00 PREC=0x20 TTL=1 ID=1031 PROTO=UDP SPT=14339
+DPT=33440 LEN=12
+Jan 28 18:32:51 stingray kernel: PLAYNC_NEW IN=eth0 OUT=
+MAC=00:c0:26:63:47:f5:00:90:1a:40:a2:9f:08:00 SRC=63.110.21.51
+DST=x.x.x.x LEN=32 TOS=0x00 PREC=0x20 TTL=2 ID=776 PROTO=UDP SPT=14339
+DPT=33438 LEN=12
+Jan 28 18:32:51 stingray kernel: PLAYNC_NEW IN=eth0 OUT=
+MAC=00:c0:26:63:47:f5:00:90:1a:40:a2:9f:08:00 SRC=63.110.21.51
+DST=x.x.x.x LEN=32 TOS=0x00 PREC=0x20 TTL=2 ID=1032 PROTO=UDP SPT=14339
+DPT=33440 LEN=12
+Jan 28 18:32:56 stingray kernel: PLAYNC_NEW IN=eth0 OUT=
+MAC=00:c0:26:63:47:f5:00:90:1a:40:a2:9f:08:00 SRC=63.110.21.51
+DST=x.x.x.x LEN=32 TOS=0x00 PREC=0x20 TTL=2 ID=776 PROTO=UDP SPT=14339
+DPT=33438 LEN=12
+Jan 28 18:32:56 stingray kernel: PLAYNC_NEW IN=eth0 OUT=
+MAC=00:c0:26:63:47:f5:00:90:1a:40:a2:9f:08:00 SRC=63.110.21.51
+DST=x.x.x.x LEN=32 TOS=0x00 PREC=0x20 TTL=2 ID=1032 PROTO=UDP SPT=14339
+DPT=33440 LEN=12
+Jan 28 18:33:01 stingray kernel: PLAYNC_NEW IN=eth0 OUT=
+MAC=00:c0:26:63:47:f5:00:90:1a:40:a2:9f:08:00 SRC=63.110.21.51
+DST=x.x.x.x LEN=32 TOS=0x00 PREC=0x20 TTL=3 ID=777 PROTO=UDP SPT=14339
+DPT=33438 LEN=12
 
-depending on the combination of encapsulations in your specific scenario
-(WiFi, PPP, etc), i've had to ratchet it down as low as 1330 to get a
-functional tunnel.
 
--j
+I have replace my original ip with x.x.x.x
+What can I say about these packets?
+Please let me learn more details about this packet.
 
---
-"The only reason I lied was because it was the easiest way to get
- what I wanted."
-        --The Simpsons
+MOhammad
+
+
+
 
