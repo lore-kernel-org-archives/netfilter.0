@@ -1,12 +1,14 @@
-From: Frans Luteijn <f.a.g.luteijn@knoware.nl>
-Subject: Re: bidirectional forwarding
-Date: Thu, 29 Jul 2004 07:04:27 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables help
+Date: Thu, 29 Jul 2004 07:32:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4108855B.D7624DB2@knoware.nl>
-References: <D5C9032B2B09C64EA2409D6214E91AC90511FF@asimail2.alphanumeric.com>
+Message-ID: <200407290732.13336.Antony@Soft-Solutions.co.uk>
+References: <410834D9.10404@pcraft.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <410834D9.10404@pcraft.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,61 +21,55 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Jason Opperisano schreef:
+On Thursday 29 July 2004 12:20 am, Ashley M. Kirchner wrote:
 
-> > PC1               R1           R2           R3           R4            PC2
-> > |---------------|   |-------|    |--------|   |--------|   |-----------|
-> > 192.168.10.2   .1  12.1    12.2 13.1     13.2 16.1    16.2 11.1       11.2
-> > e0             e0   e1     e0   e1        e0  e1       e0  e1          e0
+>     I need some help adding a few blocking rules (*) to an iptables
+> script that I once inherited, and grown over time.  I don't want to post
+> the whole thing here because I don't need to be spamming everyone with
+> it, but if there's a kind soul willing to help, I'll gladly send it
+> (unless no one objects to getting the whole file.)
 >
-> assuming:
->
->   default gw of pc1 is 10.1
->   default gw of r1 is 12.2
->
->   default gw of pc2 is 11.1
->   default gw of r4 is 16.1
->
-> both r2 & r3 will need static routes telling them how to get to networks 10 and 11:
->
-> on r2:
->
->   192.168.10.0/24 via 192.168.12.1
->   192.168.11.0/24 via 192.168.13.2
+>     (*) the basic gist is that I need to block places like hotmail.com,
+> yahoo.com, and other sites from getting accessed from only two machines
+> on our private network, during a specific period of time.  If we like
+> the way it works, we'll add more machines/IPs to it later.
 
-How cat r2 reach your 16-network? you will need to add a routing for
-that network to.
+1. What help do you need?   Adding rules to block specific traffic is quite 
+simple:
 
->
->
-> on r3:
->
->   192.168.10.0/24 via 192.168.13.1
->   192.168.11.0/24 via 192.168.16.2
+iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p tcp --dport 80 -j REJECT
 
-Same for r3, but now for your 12-network.
+(this is assuming that you meant you want to block web access - I've assumed 
+this because the domains you mentioned are best known as large websites)
 
->
->
-> the output of:
->
->   ip route get 192.168.10.2
->   ip route get 192.168.11.2
->
-> on r2 and r3 should clue you in to where the packets are going.
->
-> HTH...
->
-> -j
+a.b.c.d is the machine in your network you want the block to apply to
+w.x.y.z is a machine on the Internet you don't want them to access
 
-Routingprotocols are designed for this kind of problem, to get this
-resolved
-automaticly. In this case you might look at zebra.
+2. Applying a time window to rules is also fairly simple once you've applied 
+the 'time' match from patch-o-matic:
+
+iptables -I FORWARD -s a.b.c.d -d w.x.y.z -p txp --dport 80 -m time 
+--timestart 09:00 --timestop 17:00 -j REJECT
+
+Do block the same packets as for the previous rule, but only between 09:00 and 
+17:00 each day.
+
+3. If it is primarily web access you want to restrict, you may well find that 
+Squid http://www.squid-cache.org is a better way of doing it; that can 
+control access to domains by domain name rather than requiring a rule for 
+each web server IP address (as netfilter does), and can also do time-based 
+matching as a standard facility.
+
+Hope this helps,
 
 Regards,
---
-Frans Luteijn
-PGP PblKey fprnt=C4 87 CE AF BC B6 98 C1  EF 42 A1 9A E2 C0 42 5B
-GPG PblKey fprnt=ED20 0F25 C233 DC59 3FFA  170E D0BF 15F5 0BA6 1355
+
+Antony.
+
+-- 
+Wanted: telepath.   You know where to apply.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
