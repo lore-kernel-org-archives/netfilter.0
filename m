@@ -1,11 +1,11 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: limit speed of file transfer
-Date: Sun, 23 Jan 2005 19:05:47 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10501231904190.6831-100000@darkstar.sysinfo.com>
-References: <41F5327F.3070803@wildcash.com>
+From: Atilla <theatilla@gmail.com>
+Subject: Weird behaviour when compiling iptables
+Date: Mon, 24 Jan 2005 15:07:31 +0200
+Message-ID: <b53c932d0501240507143cd370@mail.gmail.com>
+Reply-To: Atilla <theatilla@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41F5327F.3070803@wildcash.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,43 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rudi Starcevic <tech@wildcash.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Mon, 24 Jan 2005, Rudi Starcevic wrote:
+Hi, I hope I'm posting my question in the correct place. 
 
-> Hi,
-> 
-> An option may be to use SSH with RSYNC instead of SCP.
-> The Rsync command has a bandwidth limit option.
-> 
-> I use it like this:
-> 
-> rsync -avz --bwlimit 10 -e ssh remoteuser@remotehost:/remote/dir /this/dir/
-> 
-> Check the 'man' pages for more info on the 'bwlimit' option.
+Here is the issue - I'm using  the "Core Linux" distribution on an old
+PC to aplly some traffic shaping on my ADSL connection. I had no
+problems compiling Iptables in the begining and all works for now.
+
+Now - where the problems start. I wanted to try to see how the Layer-7
+classifier performs (http://l7-filter.sourceforge.net), so i got the
+patches, applied them and tried if it compiles. The kernel worked with
+no problem, i compiled it and replaced the old one. However iptables
+did not - i type "make KERNEL_DIR=/correct/path/to/patched kernel" and
+it just stays there. Nothing happens - no messages no nothing.
+
+So i mailed the guyz, asking for advice and it turned out i can't
+compile iptables again whatsoever. I deleted the source file, unpacked
+again and tried just "make" - with the default kernel path -  wich is
+to unpatched 2.4 files. Same effect - nothing happens , no mesages no
+nothing. Compiling it, still without the Layer 7 patch, but with the
+2.6.9 kernel dir - same effect.
 
 
-The main caveat here is that it requires that rsync be installed on both
-ends.  Rsync is a great tool under ssh, but, still is not all that common.
-Especially with main vendor *nix's
+So I wonder what I did mess up.. I honestly don't remember with wich
+kernel I compiled iptables in the first place, but it should have been
+with 2.6.9, because it all works without any problems. (Core comes
+with 2.4.something by default, but i replaced it almost immediately so
+i don't think i compiled anything before switching to 2.6.9).
 
-Thanks,
+If you have any ideas how to fix this, please let me know. Thanks. 
 
-Ron DuFresne
 -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
-
+Atilla
 
