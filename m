@@ -1,9 +1,10 @@
-From: James Stickland <jimmy@sympatico.ca>
-Subject: cannot open shared object file: no such file or directory
-Date: Tue, 12 Nov 2002 21:27:38 -0500 (EST)
+From: =?unknown-8bit?q?Fran=E7ois?= Boisson <user@maison.homelinux.net>
+Subject: Iptables and broadcast
+Date: Fri, 22 Nov 2002 16:50:11 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0211122116250.189-100000@laptop.sympatico.ca>
+Message-ID: <20021122165011.7cd24ffb.user@maison.homelinux.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,43 +15,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, i recently ran patch-o-matic to patch my kernel for the string match
-from the extra patches.
+Hey, (excuse my english)
 
-I ran patch-o-matic, and it copied the string files to
-/usr/src/linux/net/ipv4/netfilter.  Ok, so far so good.
+I'm trying to understand something on iptables:
+If I put the iptables rules
+iptables -t nat -A PREROUTING -p icmp -d 255.255.255.255 -j DNAT --to
+80.11.65.250
 
-I went to compile my kernel, and have ipt_string as a module.  I did so by
-adding the line CONFIG_IP_NF_MATCH_STRING=m in my /usr/src/linux/.config.
+I got
+iptables:
+DNAT       icmp --  anywhere             255.255.255.255   
+to:80.11.65.250
+DNAT       tcp  --  anywhere             anywhere           tcp dpt:6000
+to:192.168.1.253:6000
+DNAT       udp  --  anywhere             anywhere           udp dpt:6000
+to:192.168.1.253:6000
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+MASQUERADE  all  --  anywhere             anywhere
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
-I proceeded to do the standard make dep ; make modules ; make
-modules_install ; make bzImage.  THe kernel compiled, i rebooted, and was
-successfully able to modprobe ipt_string.
-(/lib/modules/2.4.19/kernel/net/ipv4/netfilter/ipt_string.o)
+but a ping to 255.255.255.255 (broadcast) isn't relayed to 80.11.65.250.
+The counters show that the rules is applied but the packet disappear.
 
-However, when i went to make use of the ipt_string match in an iptables
-rule, i was given the following error:
+If I put 
 
-iptables v1.2.7a: Couldn't load match
-`string':/usr/local/lib/iptables/libipt_st
-ring.so: cannot open shared object file: No such file or directory
+iptables -t nat -A PREROUTING -p icmp -d 192.168.1.255 -j DNAT --to
+80.11.65.250IP
+de la machine>
 
-Upon inspection, the libipt_string.so did not exist in
-/usr/local/lib/iptables.  How do i get this netfilter library to exist?
+The same thing happens: no relai of a ping to 192.168.1.255.
 
-I had this problem the last time i patched my kernel to support ipt_psd,
-but i cannot recall how i was able to get the psd library to exist.
+With no rule, I have a answer of ping 255.255.255.255 by the firewall
+itself. With the following rule:
 
-Did i miss a step while patching this time?  Anyone with help please
-respond to the list and my email directly - jamesstickland@sympatico.ca
+iptables -t nat -A PREROUTING -p icmp -d 192.168.1.251 -j DNAT --to
+80.11.65.250
 
-Thank you.
+(192.168.1.251 is the IP of the firewall), I have an echo of the firewall
+if I do "ping 255.255.255.255" and an echo of 80.11.65.250 if i do "ping
+192.168.1.251".
 
+After the rule is applied, the packet is not a broadcast packet so why it
+disappears. How can I forward a broadcast packet to a specific computer?
 
+Thanks for read me,
+regards
 
+F.Boisson
 
+PS: Cc answer to me, I'm not on the list
 
