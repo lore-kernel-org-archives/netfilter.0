@@ -1,12 +1,13 @@
-From: "Daniel Khan" <dk@webcluster.at>
-Subject: DNAT in OUTPUT chain
-Date: Thu, 27 Jun 2002 22:28:49 +0200
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: detection of the third tcp packet in a tcp connection setup
+Date: Thu, 27 Jun 2002 16:31:30 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <FIEPIOLBGHKEOJANBEKMKELHCCAA.dk@webcluster.at>
-Reply-To: <dk@webcluster.at>
+Message-ID: <20020627203130.GC31466@cannon.eng.us.uu.net>
+References: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com> <20020627194405.GLHF295.mta03-svc.ntlworld.com@there> <20020627195742.GA31466@cannon.eng.us.uu.net> <20020627200655.VZLE19225.mta07-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <20020627200655.VZLE19225.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,36 +18,37 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-Hello List,
+On Thu, Jun 27, 2002 at 09:06:54PM +0100, Antony Stone wrote:
 
-I have a Problem with NAT on RedHat 7.3/iptables v1.2.5.
+> On Thursday 27 June 2002 8:57 pm, Ramin Alidousti wrote:
+> 
+> > If I'm not wrong you can always send data even in SYN and SYN/ACK.
+> > Like Patrick said the default options in the socket interface might
+> > not do it but I thought I saw some tweaking in one of Richard Steven's
+> > (god bless his soul) books to push traffic in SYN packets.
+> 
+> Is that an interesting way to get round packet filtering firewalls ?
 
-I have 2 Hosts. I want to redirect every connection to Port 3306 on Host1 to
-Port 3306 on Host2.
-That is no problem as long I make an external connection (Prerouting).
+Why? The fw would either block the SYN (in case of DENY) or let the
+SYN and any subsequent packet through...
 
-I also need to redirect connections to localhost:3306.
-According to the Howto's I need to set this in the OUTPUT chain.
-So I use exactly the syntax from the HOWTO's:
+> Send enough data (eg an http request) in a SYN packet so that the application 
+> does the dirty work for you, even if the packet filter isn't going to allow 
+> the connection to get ESTABLISHED ?
 
-iptables -A OUTPUT -t nat -p tcp --dport 3306 -j DNAT --to 10.1.0.212:3306
+Again, if the SYN gets through, it's very likely that the connection
+will get ESTABLISHED.
 
-iptables reports:
-"Invalid Argument"
+> Or do you have to fiddle with the receiving socket too in order for it to 
+> cope with this ?
 
-I've allready played arround using -i lo, etc. The same errors.
-It simply seems as if DNAT on OUTPUT isn't possible, but the HOWTO's say it
-is.
+Good question. dunno.
 
-I also read, that OUTPUT DNAT was a Problem in 2001, but that's long ago I
-think.
+Ramin
 
-Please help!
-
-Thanks in advance
-
-Daniel Khan
-
+> Antony.
 
