@@ -1,13 +1,13 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: External IP addresses on internal network
-Date: Wed, 27 Aug 2003 09:54:58 -0700 (PDT)
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: [LARTC] Performanace fo the Iptables Server
+Date: Wed, 27 Aug 2003 22:33:10 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0308270944480.7868@simba.math.ucla.edu>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15C1B5@wardrive.citadelcomputer.com.au>
- <3F4C0519.8000109@Loudoun-Fairfax.com>
+Message-ID: <011601c36cbd$185a5da0$c2bf09ca__8931.60624332285$1062044216@Housecall>
+References: <019f01c36c5e$9f7868e0$c2bf09ca@Housecall> <200308271730.07228.stef.coene@docum.org>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F4C0519.8000109@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +17,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jeffrey Laramie <jalaramie@Loudoun-Fairfax.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Stef Coene <stef.coene@docum.org>, netfilter@lists.samba.org
+Cc: lartc@mailman.ds9a.nl
 
-On Tue, 26 Aug 2003, Jeffrey Laramie wrote:
-> George, here is the log entry I got:
+Hi Stef
+
+thanks for the reply
+
+yes i would like to do accounting the source IP
+so i need to log them all the traffic,
+so i will know each IP how much transfering DATA
+
+with my configuration, is there any performance issue
+i may have more than thousands of passing through this firewall or qos
+server
+
+so my PC will have any performance issue or,
+this configuration need any modification
+
+thanks
+hare
+----- Original Message -----
+From: "Stef Coene" <stef.coene@docum.org>
+To: "hare ram" <hareram@sol.net.in>; <netfilter@lists.samba.org>
+Cc: <lartc@mailman.ds9a.nl>
+Sent: Wednesday, August 27, 2003 9:00 PM
+Subject: Re: [LARTC] Performanace fo the Iptables Server
+
+
+> On Wednesday 27 August 2003 07:46, hare ram wrote:
+> > Hi all
+> >
+> > I have RH 9.0
+> > PIII with 550Mhz
+> > 512MB RAM
+> >
+> > working fine with Iptables+TC+HTB
+> >
+> > Now i want o make accounting system using ULOG
+> >
+> > so i introduced  to send all logs to Mysql
+> > So i can make my own Graphs
+> >
+> > iptables -A INPUT -j ULOG
+> > iptables -A FORWARD -j ULOG
+> > iptables -A OUTPUT -j ULOG
+> >
+> >
+> > the Server is connected to Several Clients
+> >
+> > does this server will have any Impact of performance
+> > or this PC can handle Easily
+> >
+> > how can caluculate the PC configuration,
+> The needed configutation also depends on how many logs you will have and
+how
+> you are going to proces them.
+> And do you really want to log everything?  If you are interested in what's
+> going thru your firewall, you can also log the connections.  Or you can
+> install ntop on the firewall.
 >
-> Aug 26 15:39:46 NS2 kernel: Filter_INPUT: IN=eth1 OUT=
-> MAC=00:c0:f0:69:26:49:52:54:00:de:46:c7:08:00 SRC=172.144.233.136
-> DST=192.168.0.24 LEN=73 TOS=0x10 PREC=0x00 TTL=128 ID=1755 PROTO=UDP
-> SPT=137 DPT=53 LEN=53
+> Stef
+>
+> --
+>
+> stef.coene@docum.org
+>  "Using Linux as bandwidth manager"
+>      http://www.docum.org/
+>      #lartc @ irc.oftc.net
+>
+>
 
-It looks to me that 172.144.233.136 is a nameserver, and 192.168.0.24 asked
-it for name resolution, and we're looking at its answer.  However, at
-present, this machine is refusing connections to port 53, so it's possible
-that there used to be a virus on it that tried to use port 53 for some evil
-purpose.  Suggestion: do a virus scan on 192.168.0.24.
-
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  90095-1555
-Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
