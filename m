@@ -1,14 +1,13 @@
-From: Kai Weber <kai.weber@glorybox.de>
-Subject: Re: What is missed for port forwarding
-Date: Sun, 7 Mar 2004 16:49:07 +0100
+From: "Brad Morgan" <B-Morgan@concentric.net>
+Subject: RE: problem with forward/nat
+Date: Sun, 7 Mar 2004 08:57:04 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040307154907.GA1978@glorybox.de>
-References: <20040306183657.GB836@glorybox.de> <200403061847.28569.Antony@Soft-Solutions.co.uk> <20040307094013.GA3156@glorybox.de> <200403070953.52863.Antony@Soft-Solutions.co.uk>
+Message-ID: <007d01c4045c$d9130060$0400a8c0@bradmorgan>
+References: <200403071503.56728.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200403070953.52863.Antony@Soft-Solutions.co.uk>
+In-reply-to: <200403071503.56728.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-* Antony Stone <Antony@Soft-Solutions.co.uk>:
+> >  Once you hit that rule, the only thing going past
+> > are INVALID packets so the rest of the INPUT and OUTPUT chains aren't
+> doing
+> > anything useful.
+> 
+> No, the other rules are dealing with packets to interfaces other than lo.
 
-> Are you testing both SSH/10143 and HTTP/8888 from the same client machine=
- out=20
-> on the Internet?
+Opps, I missed the lo!  That means there is no ESTABLISHED,RELATED rule for
+the Ethernet traffic.  My suggestions remove the lo interface which fixes
+that.
 
-Thanks for the tip. It works from outside. I tested only from "inside".
+So for local traffic add the rule:
 
-Why does DNAT not work when trying from inside?  The webserver is on
-192.168.1.2. The DNAT and MASQUERADE rules have no specific source and
-destination interfaces defined. When I try from outside the port
-forwarding does work. Connecting from a PC inside trying with the
-outside address does not. I do not unterstand this behaviour. What
-document should I read?
+iptables -A INPUT -i lo -j ACCEPT
 
--- =20
-  Kai Weber
-=BB kai.weber@glorybox.de   http://www.glorybox.de   gpg-key: 0x594D4132
+just after the drop of INVALID state packets.  Since I leave the OUTPUT
+default policy as ACCEPT, I don't have an OUTPUT rule for lo but it would
+probably be:
+
+iptables -A OUTOUT -o lo -j ACCEPT
+
+again placed just after the drop of INVALID state packets.
+
+
 
