@@ -1,46 +1,62 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: RE: new iptables user - default options
-Date: Tue, 28 Oct 2003 08:13:39 -0500 (EST)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310280811380.22631-100000@localhost.localdomain>
-References: <FDB52A0429DFD31196FB0008C7D972D50EA578CB@OST_EXCH_USR5>
+From: Evan Harris <eharris@puremagic.com>
+Subject: Re: Bug/Problem with DNAT on OUTPUT chain (-t nat -A OUTPUT) that
+ breaks routing? (fwd)
+Date: Tue, 28 Oct 2003 07:44:19 -0600 (CST)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0310280743051.1312-100000@kinison.puremagic.com>
+References: <3F980FE5.1000108@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FDB52A0429DFD31196FB0008C7D972D50EA578CB@OST_EXCH_USR5>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <3F980FE5.1000108@Loudoun-Fairfax.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Knight, Steve" <Steve.Knight@bskyb.com>
-Cc: netfilter@lists.netfilter.org
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-On Tue, 28 Oct 2003, Knight, Steve wrote:
 
-> Thanks Robert - I appreciate your response.
-> 
-> I have to say I'd agree - it seems to be more of a belt and braces approach
-> to use your suggestion, and more in the spirit of what we were told in
-> checkpoint kindergarten ["deny everything unless explicitly asked" - also
-> sounds a bit like being married].
-> 
-> Are the rules in each chain processed top down?
+The PREROUTING chain is only traversed for packets being forwarded through a
+host, not locally generated connections.  According to the docs, in order to
+DNAT local conns, it must be done in the OUTPUT chain.
 
-yup, which is why many folks recommend setting up some user-defined
-chains to break the processing down into more efficient and bite-sized
-pieces (unless you have a very small set of rules, then it's not
-really worth it).
+Evan
 
-so far, the more comprehensive treatment of iptables i've seen is
-ziegler's new riders book, particularly the lengthy examples of 
-rulesets he supplies.
 
-rday
+On Thu, 23 Oct 2003, Jeffrey Laramie wrote:
+
+> Evan Harris wrote:
+>
+> >Ok, I've upgraded to kernel 2.4.22, and the same behaviour is being
+> >exhibited.
+> >
+> >To recap the problem:
+> >
+> >Packets being nat'd on the OUTPUT chain of a machine are still being sent on
+> >the same interface they would have without the nat, and ignoring the route
+> >that aims them to the right iface for that dest addr.
+> >
+> >Evan
+> >
+> >
+> >
+>
+> I haven't seen the rest of this thread, so I may have missed something,
+> but why are you doing DNAT on the nat OUTPUT chain? DNAT is usually done
+> on the nat PREROUTING chain and SNAT on the POSTROUTING chain. Anything
+> done in filter OUTPUT, mangle POSTROUTING, or nat POSTROUTING could
+> change the direction of your packets before they leave your host.
+>
+> Jeff
+>
+>
+>
 
 
