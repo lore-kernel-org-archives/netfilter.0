@@ -1,11 +1,10 @@
 From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: IDS better than hardcore iptables rules?
-Date: Sun, 6 Feb 2005 15:34:12 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10502061533170.352-100000@darkstar.sysinfo.com>
-References: <1107695009.20774.1.camel@nostromo.bgsecm.com>
+Subject: Re: Port 25
+Date: Sun, 6 Feb 2005 15:44:56 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10502061541590.352-100000@darkstar.sysinfo.com>
+References: <Pine.LNX.4.58.0502061446150.1174@linux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1107695009.20774.1.camel@nostromo.bgsecm.com>
+In-Reply-To: <Pine.LNX.4.58.0502061446150.1174@linux>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,43 +15,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Jose Maria Lopez <jkerouac@bgsec.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ted Gervais <ve1drg@av.eastlink.ca>
+Cc: netfilter@lists.netfilter.org
 
-On 6 Feb 2005, Jose Maria Lopez wrote:
+On Sun, 6 Feb 2005, Ted Gervais wrote:
 
-> El dom, 06 de 02 de 2005 a las 07:29, seberino@spawar.navy.mil escribi=C3=
-=B3:
-> > Hudson & Ron
-> >=20
-> > I'm not sure there even exists documentation to explain
-> > some of the DROP rules I see in firewall scripts.
-> >=20
-> > Have you seen guys like these?...
-> >=20
-> >  -p tcp --tcp-flags ACK,FIN FIN -j DROP
-> >  -p tcp --tcp-flags ACK,PSH PSH -j DROP
-> >  -p tcp --tcp-flags ACK,URG URG -j DROP
-> >=20
-> > What TCP/IP book tells you that FIN, PSH and URG packets
-> > usually have ACK set?  **These** are the rules I don't
-> > know how to understand.
-> >=20
-> > Chris
->=20
-> They *don't* have the ACK set, that's because they are
-> dropped, because it's anormal traffic, probably portscans.
->=20
+> 
+> I have a problem getting mail packets to go out with my present firewall
+> setup.
+> 
+> What I have is a firewall that blocks/drops everything at the start and
+> then it goes on to allow access through specific ports. For Port 25 or
+> smtp to work, I have the following line which I was hoping to have mail
+> coming and going with this statement. However, outgoing mail can go, but
+> incoming has a problem:
+> 
+> /usr/sbin/iptables -A INPUT -p tcp --destination-port 25 -j ACCEPT
+> 
+> I also tried the following two lines to see if things would work but to no
+> avail..:
+> 
+> iptables -A OUTPUT -o $INTERNET -p tcp -s $IPADDR --sport $UNPRIVPORTS \
+> --dport 25 -j ACCEPT
+> iptables -A INPUT -i $INTERNET -p tcp ! --syn --sport 25 -d $IPADDR \
+> --dport $UNPRIVPORTS -j ACCEPT
+> 
+> So, if I take the firewall down, mail comes and goes just great..
+> What am I not seeing here??
+> 
 
-Can't these kind of packets get handled by an INVALID match, with one
-rule per appropriate chain?
-
+It's very likely the other systems sending in e-mail are hanging waiting
+on ident, port 113, try either allowing ident to pass or setting a REJECT
+on attempts to that port and see if that helps, and you might well get
+hung with DNS lookups with newer sendmails. Make sure the sendmail server
+can reach out and touch the DNS tree.
 
 Thanks,
 
 Ron DuFresne
---=20
+-- 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         admin & senior security consultant:  sysinfo.com
                         http://sysinfo.com
