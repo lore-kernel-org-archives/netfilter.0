@@ -1,11 +1,16 @@
-From: Mark Ord <lists@losthorizons.mailshell.com>
-Subject: Forwarding non local packets to loopback with iptables?
-Date: Tue, 7 Sep 2004 21:49:00 +1000
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: queue buffer size increasing howto? - solved
+Date: Tue, 7 Sep 2004 19:39:13 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040907114859.GA13315@scholars.home>
+Message-ID: <876ef97a040907163945871569@mail.gmail.com>
+References: <1093182015.17276.24.camel@debian>
+	<876ef97a0408220750591cc852@mail.gmail.com>
+	<1094285774.6293.44.camel@debian> <1094574626.15915.4.camel@debian>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1094574626.15915.4.camel@debian>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,78 +21,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Banszki Gabor <banszki.gabor@chello.hu>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Setup:
-   NAT + Firewall - Debian, 2.4.18 kernel, iptables v1.2.6a
-   eth0 - 10.0.x.x        - wireless broadband VPN connection
-   eth1 - 192.168.0.1     - Local network
-   ppp0 - server assigned - Internet connection via VPN established via
-                            eth0 - though, fairly irrelivent.
-   eth1:1 - 192.168.0.128 - Local network alias
-   eth1:2 - 192.168.0.129 - Local network alias
-      .. etc ..
+On Tue, 07 Sep 2004 18:30:26 +0200, Banszki Gabor
+<banszki.gabor@chello.hu> wrote:
+> Hi everybody!
+> 
+> I solved the problem by using pthread.h
+> 
+> The main thread in my process is reading from the queue buffer and open
+> new threads for the long time tasks.
+> 
+> In this case I don't need to increase the buffer size of the netlink
+> socket.
 
-What I want to do is set up a SSH tunnel to another machine, behind
-another firewall, and use the eth1 aliases to access the remote machines from my
-local network (eth1) and the iptables machine. I tried to set this up
-before with iptables, failed, found discovered rinetd, and have been using
-that since successfully. However, I'd like to use an iptables solution,
-because I think it'll be cleaner (can't easily ifup/ifdown the eth1 aliases
-when using rinetd), plus I'm plain interested in if/how to do an iptables
-solution.
+You will still lose some data under high enough load. This is exactly
+what I did, as well, and I still needed to pump up the size of the
+socket recv buffer.
 
-The main catch here is that I'm not using GatewayPorts for the ssh port
-forwarding. Firstly because binding the forwards to the loopback seems
-slightly more secure, and secondly because the ports I forward to on the
-remote machines are the same - using GatewayPorts binds to all available
-interfaces. Hence I do the ssh port forwards, binding to different
-ports on the loopback on the local end of the ssh tunnel, and then map
-the default service ports on the eth1 aliases to the appropriate port on
-the loopback ie:
-
-rinetd.conf:
-
-   192.168.0.128   3389      127.0.0.1       13389 # rdc
-   192.168.0.129   3389      127.0.0.1       23389 # rdc
-   192.168.0.130   3389      127.0.0.1       33389 # rdc
-
-Connections to 192.168.0.128:3389 redirect to localhost:13389, which connects
-via the ssh tunnel to port 3389 on the remote host.
-
-Last time I tried to establish this with iptables, I got nowhere. This time
-around I got it working on the iptables machine with:
-
-$IPTABLES -t nat -I OUTPUT -p tcp -s 192.168.0.128 --dport 3389 \
-        -j DNAT --to 127.0.0.1:13389
-   .. etc .. for each address and port required.
-
-Connecting to 129.168.0.128 port 3389 takes me where I want - down the
-ssh tunnel, to machine on the remote network.
-
-However, no matter what I try, I can't get connections from other machines
-on the 192.168.0.0/24 network to work. I've tried to several combinations
-of using PREROUTING, POSTROUTING and OUTPUT chains, with no luck.
-In particular, I've tried to model it on a rule that works:
-
-    iptables -t nat -I PREROUTING -p tcp -d 192.168.0.128 --dport 3389 \
-         -j DNAT --to x.x.x.x:3389
-    (where x.x.x.x is a host on the internet.)
-
-with:
-
-    iptables -t nat -I PREROUTING -p tcp -d 192.168.0.128 --dport 3389 \
-         -j DNAT --to 127.0.0.1:3389
-
-which doesn't work, to which I can only conclude that you can't dnat to
-127.0.0.1.
-
-Is it possible to achieve this with iptables (redirecting traffic coming in
-on eth1 (for eth1:?) to a port on 127.0.0.1), and if so, what rules are
-required?
-
-Thanks in advance,
-Mark.
-
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
