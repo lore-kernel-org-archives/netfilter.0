@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: http acces
-Date: Thu, 20 Nov 2003 22:54:50 +0000
+Subject: Re: How to redirect requests
+Date: Thu, 20 Nov 2003 21:56:59 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311202254.hAKMss723777@onyx.rockstone.co.uk>
-References: <1069364822.3fbd3656723b4@roma-hme1>
+Message-ID: <200311202157.hAKLv4723665@onyx.rockstone.co.uk>
+References: <1025.200.206.190.27.1069189922.squirrel@webmail.knal.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1069364822.3fbd3656723b4@roma-hme1>
+In-Reply-To: <1025.200.206.190.27.1069189922.squirrel@webmail.knal.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Thursday 20 November 2003 9:47 pm, skydive wrote:
+On Tuesday 18 November 2003 9:12 pm, magu@afesta.net wrote:
 
-> hi all
+> Hello all.
 >
-> i have been experienced a problem since i'm trying to
-> access my web server from my lan through my internet ip.
->
-> i have no problems doing DNAT, from those who access my
-> web page form the outside:
->
-> iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80
-> -j DNAT --to 192.168.0.1:80
->
-> this is solving the problem
->
-> let's say my web page has the following address
-> www.example.org, and that it is host  [like it is ;)) ]
-> in one machine on my lan with the following IP:
->
-> 192.168.0.1
->
-> when i write www.example.org on my web browser, it just
->  hits eth1 on my gateway/firewall and stucks there.
-> maybe i'm missing something on my prerouting rules, or
-> maybe my small brain just can't reach it :)
+> I'm trying to redirect all requests coming from my internal machines, that
+> contain www.smartlaunch.net to an internal machine. I've already
+> succesfully redirected all requests of the IP address, but haven't managed
+> to redirect the domain requests. Maybe it's not at all a job for iptables,
+> but I wanted some light on this, since I don't know where to start.
 
-See if http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html 
-answers your question.
+I'd suggest Squid or Apache n proxy mode.
+
+Netfilter works at OSI layers 3 & 4, not 7.
 
 Antony.
 
 -- 
 
-Having been asked to provide a reference for this man,
-I can confidently state that you will be very lucky indeed
-if you can get him to work for you.
+Ramdisk is not an installation procedure.
+
                                                      Please reply to the list;
                                                            please don't CC me.
 
