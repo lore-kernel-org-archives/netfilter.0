@@ -1,10 +1,10 @@
-From: Gerald Galster <Gerry@gerry.de>
-Subject: IP Accounting and performance
-Date: Sun, 8 Dec 2002 22:18:59 +0100
+From: Saulius Menkevicius <razzmatazz@mail.lt>
+Subject: a way to forward packets to another gateway?
+Date: Mon, 9 Dec 2002 00:33:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <AB18D92A-0AF2-11D7-96A2-00039376F59E@gerry.de>
-Mime-Version: 1.0 (Apple Message framework v548)
-Content-Transfer-Encoding: 7bit
+Message-ID: <ISPFE815jM1wrv0BFF500082938@mail.takas.lt>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,43 +15,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: Gerald Galster <Gerry@gerry.de>
 
-Hi all,
+=09Is there a way of forwarding certain types of packets to another=
+ 
+gateway on the same LAN?
+=09For example I have 2 gateways on the same network (10.0.0.1 & 
+10.0.0.2), both are ADSLs and have a bunch of clients which are 
+evenly masqueraded on them. There is Squid running on 10.0.0.1=
+ and 
+I'd like for the www connections comming from clients sitting on=
+ 
+10.0.0.2 gateway to be redirected to squid on 10.0.0.1. 10.0.0.1=
+ runs 
+transparent proxy. It should be as simple as transmitting=
+ unchanged 
+packets to another gateway on the receiving (internal to LAN) 
+interface. Still I could not find a way to do such thing on 
+linux/iptables.
 
-Perhaps you can give me some hints on a performance problem that I'm
-currently experiencing with iptables.
+=09In FreeBSD there is ipfw rule which does the thing:
+=09=09ipfw fwd 10.0.0.1 tcp from some_client to any 80
 
-The situation is as follows:
+=09I'm open to any other remedies I don't know of (such as some=
+ kind of 
+DNAT/SNAT). I.e. this is just my guess on how to make it work.
 
-I have a firewall currently running kernel 2.4.20, Celeron 1 GHz and 
-512 MB of RAM
-that should do traffic accounting based on single IP addresses. I 
-thought it would be more
-efficient to use iptables than writing a standalone application using 
-pcap or the like.
-
-I need to add filtering rules like
-
-/sbin/iptables -A FORWARD -o eth0 -s ip_address/32
-/sbin/iptables -A FORWARD -i eth0 -d ip_address/32
-
-for about six class-C networks (this means about 3000 iptables rules).
-
-The average throughput is around 3 Mbits / second.
-
-After I've added those rules, the latency in ping times to a machine 
-behind
-the firewall increases from 30 ms to over 200 ms ...
-
-Now my question is if I can speed those things up ... do you have any 
-ideas?
-
-Thanks in advance.
-
-Regards,
-Gerald
+=09Thanks
+-- 
+Saulius Menkevicius, razzmatazz@mail.lt on 2002.12.09
 
 
