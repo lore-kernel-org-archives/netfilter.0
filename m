@@ -1,13 +1,11 @@
 From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: problems using FTOS extension
-Date: Thu, 05 Feb 2004 09:30:21 +0200
+Subject: Strange traffic from a user ...
+Date: Thu, 05 Feb 2004 10:44:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075966221.5360.2.camel@raylinux.internal>
-References: <598558C21D078804AB348529E476E840@markcs.wildmail.com>
+Message-ID: <1075970665.5355.5.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-3ELK/+UyMWmVRsxyT+mr"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-sMcsVdkiO1YkEVpezULw"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <598558C21D078804AB348529E476E840@markcs.wildmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,62 +18,51 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-3ELK/+UyMWmVRsxyT+mr
+--=-sMcsVdkiO1YkEVpezULw
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2004-02-05 at 03:42, mark smith wrote:
-> Hi all,
->=20
-> I need to use the FTOS target. Took me quite a
-> while to figure out how to get it 'available' for
-> use. (I added 'FTOS' to the PF_EXT_SLI field of
-> the Makefile in the extensions directory of the
-> 1.2.9 distro and that seems to have done the
-> trick. After running make and make install the
-> libipt_FTOS.so file gets copied into
-> /usr/local/lib/iptables).
->=20
-> I'm having trouble using the correct syntax for a
-> rule though. This rule,using TOS, works fine:
-> iptables -I OUTPUT -t mangle -j TOS --set-tos 0x02
->=20
-> Trying the same thing with FTOS:
-> iptables -I OUTPUT -t mangle -j FTOS --set-ftos 0x02
-> Produces the error message:
-> iptables: No chain/target/match by that name
->=20
-> Looks weird. Interestingly, if I don't provide
-> the --set-ftos argument I get a logical error
-> message:
-> iptables v1.2.9: FTOS target: Parameter
-> --set-ftos is required
-> So it looks like FTOS can be used but I'm doing
-> something wrong with the --set-ftos argument.
->=20
-> I'm running a 2.4.20-8 kernel on RH9.
->=20
-Don't you need to recompile your kernel, selecting the FTOS stuff?
+Hi all
 
-> Thanks,
->=20
-> Mark.
->=20
->=20
-> &#8216;The ideals which have lighted my way,=20
-> and time after time given me new=20
-> courage=20
-> to face life cheerfully, have=20
-> been kindness, beauty, and truth. The=20
-> trite subjects of life &#8211; possessions,=20
-> outward success, luxury &#8211; have always=20
-> seemed contemptible.&#8217;=20
->=20
-> Albert Einstein
-> ------------------
->=20
-> Protect your right to breathe clean, smoke-free air:
-> http://www.care2.com/go/z/11238/1043
+Can someone tell me what this is?
+
+Feb  5 10:26:10 firefly kernel: DROP FORWARD INTERNAL: IN=3Deth2 OUT=3Deth0
+SRC=3D10.0.0.122 DST=3D24.26.4.32 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D127=
+ ID=3D32898
+DF PROTO=3DTCP SPT=3D1745 DPT=3D3022 WINDOW=3D64240 RES=3D0x00 SYN URGP=3D0
+Feb  5 10:26:11 firefly kernel: DROP FORWARD INTERNAL: IN=3Deth2 OUT=3Deth0
+SRC=3D10.0.0.122 DST=3D24.170.20.10 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D1=
+27
+ID=3D33629 DF PROTO=3DTCP SPT=3D1788 DPT=3D1915 WINDOW=3D64240 RES=3D0x00 S=
+YN URGP=3D0
+Feb  5 10:26:12 firefly kernel: DROP FORWARD INTERNAL: IN=3Deth2 OUT=3Deth0
+SRC=3D10.0.0.122 DST=3D24.92.38.155 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D1=
+27
+ID=3D34070 DF PROTO=3DTCP SPT=3D1780 DPT=3D2034 WINDOW=3D64240 RES=3D0x00 S=
+YN URGP=3D0
+Feb  5 10:26:12 firefly kernel: DROP FORWARD INTERNAL: IN=3Deth2 OUT=3Deth0
+SRC=3D10.0.0.122 DST=3D24.168.165.204 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=
+=3D127
+ID=3D34071 DF PROTO=3DTCP SPT=3D1781 DPT=3D3169 WINDOW=3D64240 RES=3D0x00 S=
+YN URGP=3D0
+Feb  5 10:26:12 firefly kernel: DROP FORWARD INTERNAL: IN=3Deth2 OUT=3Deth0
+SRC=3D10.0.0.122 DST=3D24.47.6.119 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D12=
+7
+ID=3D34072 DF PROTO=3DTCP SPT=3D1783 DPT=3D3595 WINDOW=3D64240 RES=3D0x00 S=
+YN URGP=3D0
+Feb  5 10:26:12 firefly kernel: DROP FORWARD INTERNAL: IN=3Deth2 OUT=3Deth0
+SRC=3D10.0.0.122 DST=3D24.128.32.100 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D=
+127
+ID=3D34412 DF PROTO=3DTCP SPT=3D1764 DPT=3D2962 WINDOW=3D64240 RES=3D0x00 S=
+YN URGP=3D0
+
+The destinations appear to be dialup ip addresses. Maybe a worm or
+spyware?
+
+Regards
+
+Ray
+
 --=20
 --
 Raymond Leach <raymondl@knowledgefactory.co.za>
@@ -85,18 +72,18 @@ http://www.knowledgefactory.co.za
 Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
 --
 
---=-3ELK/+UyMWmVRsxyT+mr
+--=-sMcsVdkiO1YkEVpezULw
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQBAIfENh1fuR/Bv+ygRAvHoAJ9adVGgzYsuyCrRqrUtOaTA7bL2vACglTXR
-HDhuxHuMEFL6uTulR5QjXoc=
-=dUqb
+iD8DBQBAIgJph1fuR/Bv+ygRAomZAKCyWMlnUs5Mnfv5MumeSrliNl6CJQCfbSLQ
+Vn5QWnD3Ygc1BA3pVqa2pqU=
+=k5xo
 -----END PGP SIGNATURE-----
 
---=-3ELK/+UyMWmVRsxyT+mr--
+--=-sMcsVdkiO1YkEVpezULw--
 
 
