@@ -1,13 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Blocking Windows
-Date: Thu, 29 May 2003 20:18:46 +0200
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: RE: Static compile issues
+Date: 29 May 2003 21:01:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030529201846.223e6c4c.arnt@c2i.net>
-References: <C037E4BA8D79D71196AF00805F777E98028A0C@colosrva.colosseum.com>
+Message-ID: <1054234869.749.42.camel@tux.rsn.bth.se>
+References: <Pine.LNX.4.30.0305291140260.18659-100000@phear.lwz.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <C037E4BA8D79D71196AF00805F777E98028A0C@colosrva.colosseum.com>
+In-Reply-To: <Pine.LNX.4.30.0305291140260.18659-100000@phear.lwz.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Cory Visi <merlin@phear.lwz.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 29 May 2003 11:27:11 -0400, 
-Dominic Irrcher <dirrcher@colosseum.com> wrote in message 
-<C037E4BA8D79D71196AF00805F777E98028A0C@colosrva.colosseum.com>:
+On Thu, 2003-05-29 at 17:45, Cory Visi wrote:
 
-> what about giving each os a different ip ?
+> > Recompile iptables against your new kernel and it _will_ work again.
 > 
-> then when users boot up into windows, block those ips you gave the
-> windows hosts.
+> Ahh, but that's the best part:
+> (This is iptables-1.2.7a)
 > 
-> ie. 192.168 on linux, and 10.10 on windows, block all 10.10 on the 
-> LAN!
-> 
-> something along those lines
+> # make
+> Extensions found: IPv4:ipv4options IPv4:IPV4OPTSSTRIP IPv4:mport IPv4:NETMAP IPv4:nth IPv4:pool IPv4:POOL IPv4:psd IPv4:quota IPv4:random IPv4:realm IPv4:time IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:REJECT IPv6:rt
+> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_conntrack_sh.o -c extensions/libipt_conntrack.c
+> In file included from /usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_talk.h:9,
+>                  from /usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack.h:69,
+>                  from extensions/libipt_conntrack.c:12:
+> /usr/src/linux/include/linux/in.h:25: conflicting types for `IPPROTO_IP'
+> /usr/include/netinet/in.h:32: previous declaration of `IPPROTO_IP'
 
-..can also be automated to first block _everything_, then hear dhcp ip
-request broadcasts from clients, then first check os with nmap or
-nessus before award an ip from dhcp.  Static ip tricksters can be
-blocked too.
+[snip lots of warnings and errors]
 
-..yet another option is run a ipv6 gateway, I don't believe 
-wintendo can do ipv6, concequently they will be kept nicely 
-off Internet, can some wintendoite confirm or refute me here?
+> make: *** [extensions/libipt_conntrack_sh.o] Error 1
+
+I just tested to compile iptables from cvs and it compiled just fine,
+I've never seen the errors you got before, you appear to have seriously
+screwed up includes.
 
 -- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
-
+/Martin
 
