@@ -1,12 +1,14 @@
-From: "Mark C. Casey" <markcc@jadepress.co.uk>
-Subject: RE: Redirecting from one ip to another problem
-Date: Fri, 25 Jun 2004 11:16:09 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Cross compiling, etc
+Date: Fri, 25 Jun 2004 11:28:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <627ED3D5182532448B61510FFAB3D37F1D328C@srvdc01.jade.local>
+Message-ID: <200406251128.40113.Antony@Soft-Solutions.co.uk>
+References: <40DBF710.1020200@4Dllc.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <40DBF710.1020200@4Dllc.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +19,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Oh, another question.
+On Friday 25 June 2004 10:57 am, Steve Comfort wrote:
 
-Is it possible to point an external ip address that we have to an =
-internal machine so when said machine tries accessing the external ip =
-address it simply accesses itself?
+> Hi gents,
+>
+> I've sorted out the problems with my cross compilation. I hadn't noticed
+> that the linker was using ar instead of arm-linux-ar. So, no more
+> truncations and iptables with my semi-trivial little script appears
+> hunky-dory. (Just tested on ping limits so far).
+>
+> Next question is whether you gurus can recommend any good test app that
+> I can use for checking my rules and seeing whether there any holes?
 
-For example, say externally (on the internet) I have an ip address of =
-62.39.23.52.
-If 172.16.0.1 tries accessing 62.39.23.52 it simply points to 172.16.0.1 =
-instead? (so, say I tried pinging or ftp'ing to 62.39.23.52 it would be =
-accessing 172.16.0.1 from 172.16.0.1)
+nmap?
 
-Thanks
+http://www.insecure.org
 
-Mark
+Antony.
 
-<snip>
+-- 
+There are two possible outcomes:
+
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
