@@ -1,12 +1,12 @@
-From: "M. Ahmad Ijaz" <ahmad@netlogicbroadband.com>
-Subject: newbie question
-Date: Thu, 8 Apr 2004 16:57:03 +0500
+From: manisha s <cdac_manisha@yahoo.com>
+Subject: Re: Iptables command failed
+Date: Thu, 8 Apr 2004 04:58:19 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004601c41d60$9bf1af70$aa47aacb@hacker>
+Message-ID: <20040408115819.8901.qmail@web61004.mail.yahoo.com>
+References: <001801c41d43$99a8b000$1202a8c0@admin>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0043_01C41D8A.8487A130"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001801c41d43$99a8b000$1202a8c0@admin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,108 +16,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------=_NextPart_000_0043_01C41D8A.8487A130
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Thanks for ur help....
+i again recompiled the kernel with netfilter support
+and the iptables is now working fine....
+i think i did not copied the newly kernel image to the
+boot dir  so that the problem remained....
 
-hi,
-
-I just wanna know few things , i have installed red hat 9, iptable is =
-installed.
-
-Now the thing is, i didnt know at first that i have to load the modules, =
-i was getting the message
-
-iptables: No chain/target/match by that name
-
-so after couple of searches i did find some help and i manage to apply =
-few commands i.e.
-
-modprobe ip_tables
-modprobe ip_conntrack
-modprobe iptable_nat
-modprobe ip_conntrack_ftp
-modprobe ip_nat_ftp
-
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD DROP
-iptables -A INPUT -p icmp --icmp-type 8 -j DROP=20
+anyway
+thanks once again for ur time
 
 
-all the above commands are accepted at command prompt, but when i try to =
-use this command
+--- Rob Sterenborg <rob@sterenborg.info> wrote:
+> > I have downloaded iptables-1.2.9 from
+> netfilter.org and
+> > installed using  make and make install commands
+> after
+> > compiling the kernel with network packet filtering
+> > (replaces ipchains) option having value yes
+> 
+> Did you patch the kernel with a new Patch-O-Matic
+> (also from the Netfilter
+> website) before you configured/compiled it ?
+> I suppose iptables-1.2.9 requires symbols not yet in
+> an unpatched kernel.
+> 
+> > > iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP
+> > >
+> > > i got the following error
+> > >
+> > >
+>
+/lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_tables.o:
+> > > unresolved symbol
+> nf_register_sockopt_Rsmp_f5985dce
+> 
+> 
+> Gr,
+> Rob
+> 
+> 
 
-iptables -A PREROUTING -s xxx.xxx.xxx.xxx/yyy.yyy.yyy.yyy -p tcp -m tcp =
---dport 80 -j REDIRECT --to-ports 8080 where xxx is any IP and yyy is =
-the subnet mask, it returns me the same message i.e.=20
-iptables: No chain/target/match by that name
 
-So it also give the same message with POSTROUTING.
-
-
-also i dont wana load the modules and the commands each time the system =
-starts, so when i type the commands i used iptables-save command to save =
-tat, also is there ne possibility where i can store the command and =
-execute when system startsup
-------=_NextPart_000_0043_01C41D8A.8487A130
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>I just wanna know few things , i have installed red hat 9, iptable =
-is=20
-installed.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Now the thing is, i didnt know at first =
-that i have=20
-to load the modules, i was getting the message</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT>iptables: No chain/target/match by that name</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>so after couple of searches i did find =
-some help=20
-and i manage to apply few commands i.e.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>modprobe ip_tables<BR>modprobe ip_conntrack<BR>modprobe=20
-iptable_nat<BR>modprobe ip_conntrack_ftp<BR>modprobe =
-ip_nat_ftp<BR><BR>iptables=20
--P INPUT ACCEPT<BR>iptables -P OUTPUT ACCEPT<BR>iptables -P FORWARD=20
-DROP<BR>iptables -A INPUT -p icmp --icmp-type 8 -j DROP <BR></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>all the above commands are accepted at command prompt, but when i =
-try to=20
-use this command<BR><BR>iptables -A PREROUTING -s=20
-xxx.xxx.xxx.xxx/yyy.yyy.yyy.yyy -p tcp -m tcp --dport 80 -j REDIRECT =
---to-ports=20
-8080 where xxx is any IP and yyy is the subnet mask, it returns me the =
-same=20
-message i.e. <BR>iptables: No chain/target/match by that name<BR><BR>So =
-it also=20
-give the same message with POSTROUTING.<BR><BR><BR>also i dont wana load =
-the=20
-modules and the commands each time the system starts, so when i type the =
-
-commands i used iptables-save command to save tat, also is there ne =
-possibility=20
-where i can store the command and execute when system=20
-startsup</DIV></BODY></HTML>
-
-------=_NextPart_000_0043_01C41D8A.8487A130--
-
+__________________________________
+Do you Yahoo!?
+Yahoo! Small Business $15K Web Design Giveaway 
+http://promotions.yahoo.com/design_giveaway/
 
