@@ -1,12 +1,12 @@
-From: "david" <david@aid.inf.cu>
-Subject: Re: I need help , please
-Date: Fri, 5 Jul 2002 12:18:47 +0200
+From: Cygnus - Flirttown Coder <cygnus@talker.com>
+Subject: Re: moving old ips to new ips..forwarding
+Date: Fri, 5 Jul 2002 16:28:03 +0000 (UTC)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <017d01c2240d$599336b0$8703000a@aid.inf.cu>
-References: <002701c2242f$9498cd20$0a01a8c0@ed> <015601c22405$f21c42d0$8703000a@aid.inf.cu> <200207051600.g65G0V802444@vulcan.rissington.net>
+Message-ID: <Pine.LNX.4.21.0207051614570.12797-100000@grabak.talker.com>
+References: <200207051440.g65Eex802164@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <200207051440.g65Eex802164@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,51 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
+On Fri, 5 Jul 2002, Antony Stone wrote:
 
-
-iptables:Bad built-in change name
-
-david
-
-
-
-
- ----- Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.samba.org>
-Sent: Friday, July 05, 2002 6:00 PM
-Subject: Re: I need help , please
-
-
-> On Friday 05 July 2002 10:25 am, david wrote:
+> Don't worry about this.   Netfilter will sort it all out for you.
 > 
-> > OK , I agree.In fact I  am just trying.
-> > I heve tested a simpler script :
-> >
-> > # Standard default policies
-> > iptables -P INPUT DROP
-> > iptables -P FORWARD DROP
-> > iptables -P OUTPUT DROP
-> >
-> > am here you have the output.
-> > /etc/rc.d/init.d/iptables : command not found
-> > iptables: bad police name
-> > iptables: bad police name
-> > iptables: bad police name
-> > /etc/rc.d/init.d/iptables : command not found
+
+good good
+
+> The address translation works like this:
 > 
-> Do you have . in your path ???   It looks to me as though you're in 
-> /etc/rc.d/init.d when you type this, and it's trying to run the iptables 
-> script in the local directory instead of the iptables binary in /sbin
+> iptables -A PREROUTING -d a.b.c.d -j DNAT --to w.x.y.z
 > 
-> What happens if you cd to /root and type
-> iptables -P INPUT DROP
+> ie any packets addressed to a.b.c.d are changed so that they go to w.x.y.z 
+> instead.
 > 
->  
+
+so this is the only rule I need to insert to do said in/out NATing?
+no POSTROUTING rules or anything like that.
+
 > 
-> Antony.
+> By the way, what bandwidth is your Internet link ?   Don't you think it would 
+> be a good idea to put an actual firewall in the link so that you can at least 
+> provide some filtering on the system ?
+> 
+
+we're using about 11MB/s avg.
+an actual firewall is planned, yes. i've been here about a month and a 1/2
+and the company was basically in disarray. ALL the admins were gone. it
+wasn't pretty.
+
+lastly..do you think it would be better if i just put this in between the
+Cisco router and the 1st switch.
+Put 2 eth. cards in it, eth0 coming in from the router, eth1 from the 
+1st switch. Then bind all the gateway ips (there are a bunch) for
+the customers as aliases to the eth1 interface; then I wont have to change
+the client gateways, because all traffic will be going through the
+forwarder no matter what, in pass-through.
+If you think this will work better, any good documents to show me the
+iptables rules to make this setup work..besides the ones you gave for the
+specific NATing, of course.
+(and/or nice test/gui interfaces to streamline management of these rules)
+I really appreciate this.
+
+Thanx,
+
+-Tony
 
 
