@@ -1,14 +1,10 @@
-From: Willi Dyck <wdyck@gmx.net>
-Subject: Re: iptables matches
-Date: Sat, 22 Mar 2003 22:12:48 +0100
+From: paulc@ibiblio.org
+Subject: filter parsing
+Date: Sun, 23 Mar 2003 00:05:28 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030322211248.GD412@tekilla.homeip.net>
-References: <580E532D9F7A9B4BAE8A130848E0DDA70283A21E@franklin.narus.com>
-Reply-To: netfilter user <netfilter@lists.netfilter.org>
+Message-ID: <5.2.0.9.0.20030322235642.00b8e418@mail.clara.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <580E532D9F7A9B4BAE8A130848E0DDA70283A21E@franklin.narus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,15 +14,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: netfilter user <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thu, Mar 06, 2003 at 09:09:12PM -0800, Scott Huang wrote:
-> Hi ,
-> 
-> Is it poosible to specify all elements in the 5-tuple, srcIP, srcPort,
-> protocol, dstIP, dstPort ,to iptables for filtering?
+Can anyone tell me if I got this right. I've read through the docs and 
+think it works like this, but it's still a bit cloudy so I'd like 
+confirmation before I try it and find out I've just blocked myself from the 
+box until I can get physical access to it again.
 
-Yes.
+Will iptables always check the rules in the order they are entered ? Eg. if 
+I setup the following in the exact sequence as below...
+
+[default policy: accept]
+-A input -p tcp --syn -dport 22 -j ACCEPT
+-A input -p tcp --syn -dport 8880 -j ACCEPT
+-A input -p tcp --syn -dport 0:60000 -j DROP
+
+Will this ignore all connection requests apart from port 22 and 8880 ?
+
+Is there any other way of doing this ? (perhaps more efficient for 
+example). I'd like all other types of packets to go through normally, and 
+just kill of the connection attempts. 
+
 
