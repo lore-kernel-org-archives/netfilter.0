@@ -1,10 +1,13 @@
-From: "Minh Cao" <caom@statsus.com>
-Subject: Re: Help: Iptables rules
-Date: Thu, 15 Jan 2004 11:57:26 -0800
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: Help: Iptables rules
+Date: Thu, 15 Jan 2004 15:11:40 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF487854B5.F9A9C49A-ON88256E1C.006A8AE9-88256E1C.006DA0EC@statsus.com>
+Message-ID: <200401152016.i0FKGQYg004568@discmail.com>
+References: <OF487854B5.F9A9C49A-ON88256E1C.006A8AE9-88256E1C.006DA0EC@statsus.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <OF487854B5.F9A9C49A-ON88256E1C.006A8AE9-88256E1C.006DA0EC@statsus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,8 +18,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: 'Minh Cao' <caom@statsus.com>, netfilter@lists.netfilter.org
+
+Ip_forward allows packets to go from one interface to another - without
+netfilter.  So your setup should allow all packets - it should be acting
+just like a router
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Minh Cao
+Sent: Thursday, January 15, 2004 2:57 PM
 To: netfilter@lists.netfilter.org
+Subject: Re: Help: Iptables rules
 
 
 
@@ -103,6 +116,7 @@ difference, whereas in practice there is.
 list;
                                                            please don't CC
 me.
+
 
 
 
