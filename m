@@ -1,13 +1,11 @@
-From: srgqwerty <srgqwerty@telefonica.net>
-Subject: Re: SNMP and IPTABLES
-Date: Sat, 02 Aug 2003 21:36:57 -0100
+From: Ulises Hernandez Pino <ulises@unicauca.edu.co>
+Subject: SNAT for a firewall machine
+Date: 02 Aug 2003 18:53:07 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F2C3D09.10708@telefonica.net>
-References: <1934869742.20030802113613@o2.pl>
+Message-ID: <1059868386.29439.7.camel@nerv.unicauca.edu.co>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1934869742.20030802113613@o2.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,73 +15,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter_user <netfilter_user@o2.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-netfilter_user wrote:
 
->hello everyone,
->
->This is my problem:
->
->As a gateway in my network is a PC with Linux ( Slackware 8.1 ), and
->also on this machine is installed MRTG that listen for SNMP. I want to use SNMP
->only in local ( internal ) network. I know that SNMP
->use 161 and 162 port. There are no problems with comunication between
->Linux machine and local hosts via SNMP.
->
->BUT: the problem is when MRTG try to receive SNMP information from this
->same machine that is installed ( MRTG is installed on Linux machine -
->gateway). I dont know why because i set: iptables -A INPUT -i eth1 -p tcp -m multiport --dport 21,80,161,3128 -j ACCEPT
->                                         iptables -A INPUT -i eth1 -p udp -m multiport --dport 80,67,161 -j ACCEPT
->                              ...and it should resolve problem...but
->                              it wont
->
->!!!!!THIS IS IMPORTANT!!!!
->when I set all INPUT ACCETP then it works. So there is no problem with
->snmp and MRTG but with my iptables config :/
->
->                                         
->I use:
->NET-SNMP version:  5.0.7
->iptables v1.2.6a
->
->This is my iptables config:
->
->
->insmod ip_conntrack
->insmod ip_conntrack_ftp
->
->iptables -P FORWARD DROP
->iptables -P INPUT DROP
->iptables -P OUTPUT ACCEPT
->
->iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->iptables -A INPUT -p tcp -m multiport --dport 22 -j ACCEPT
->iptables -A INPUT -i eth1 -p tcp -m multiport --dport 21,80,161,3128 -j ACCEPT
->iptables -A INPUT -i eth1 -p udp -m multiport --dport 80,67,161 -j ACCEPT
->
->iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 21,22,25,110,1111,6112 -j ACCEPT
->iptables -A FORWARD -i eth1 -p udp -m multiport --dport 53,6112,13073,23083,23073 -j ACCEPT
->
->iptables -I INPUT -p icmp --icmp-type echo-request -s 0.0.0.0/0 -m limit --limit 1/s -j ACCEPT
->iptables -I INPUT -p icmp --icmp-type echo-request -s 0.0.0.0/0 -j DROP
->
->
->#===NAT=================================================================================
->modprobe iptable_nat
->iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
->echo 1 > /proc/sys/net/ipv4/ip_forward
->
->
->Will be thankful for any good advice
->
-I think that you must accept incoming and outgoing traffic in the lo 
-(127.0.0.1) device:
+Hi... I have a problem with the implementation of a firewall. The
+firewall machine isconnected to router by an interface and a LAN
+(computer with real IP) by anotherinterface. 
 
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
+The router had IP 192.168.150.1 and the firewall machine had IP
+192.168.150.2 with mask 255.255.255.252. The other interface of firewall
+(side of my LAN) had a real IP (200.13.51.71), this IP is the gateway
+for the machines with real IP in my LAN. I made this to make aprivate
+bridge (router + firewall machine) between Internet and my LAN, and not
+to use more real IP.
+
+I don't have problem with the forward connection in the machine
+firewall. My problem this when I'm wanted toconnect to Internet from the
+firewall machine, because theconnections are make with IP 192.168.150.2
+(interface withconnection to router) an not with the real IP. 
+
+I had tried use SNAT (with the next script) but I follow without being
+able to me to connect.
+
+
+#!/bin/bash
+
+# Variables de la Interfaz de Red Externa
+EXT_IP="192.168.150.2"
+EXT_IFACE="eth1"
+
+# Variables de la Interfaz de Red Interna con Direccion Real
+INT_IP=" 200.13.51.71"
+INT_IFACE="eth0"
+
+# Variables de Iptables
+IPTABLES="/sbin/iptables"
+
+# Carga de Modulos requeridos por Iptables
+/sbin/depmod -a
+/sbin/modprobe ip_tables
+/sbin/modprobe ip_conntrack
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_nat_ftp
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_limit
+/sbin/modprobe ipt_state
+/sbin/modprobe iptable_filter
+/sbin/modprobe iptable_nat
+
+# Elimina todas las reglas, acdemas y contadores en cero
+$IPTABLES -F
+$IPTABLES -t nat -F
+$IPTABLES -X
+$IPTABLES -t nat -X
+$IPTABLES -Z
+$IPTABLES -t nat -Z
+
+# Establece las directivas por defecto para la tabla filter
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -P FORWARD ACCEPT
+$IPTABLES -t nat -A POSTROUTING -o $EXT_IFACE -s $EXT_IP -j SNAT
+--to-source $INT_IP
+
+
+Please, what I must make to connect me to Internet from firewall
+machine?
+
+
+
+Ulises Hernandez
+Red de Datos - Universidad del Cauca
+
+
 
 
