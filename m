@@ -1,14 +1,12 @@
-From: John Spencer Blue's Explosion - DaNg! <user0@smtp.netcabo.pt>
-Subject: Re: How to load modules needed by iptables?
-Date: Mon, 17 Mar 2003 18:13:43 +0000
+From: "Kyle Centers" <kcent@programmer.net>
+Subject: MAC addresses and broadcast pings
+Date: Mon, 24 Mar 2003 01:31:34 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030317181343.GA12081@neostage.ath.cx>
-References: <20030317120947.67E3F1CBAA261@sm204.163.com>
+Message-ID: <20030323173134.59731.qmail@mail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="y0ulUmNC+osPPQO6"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20030317120947.67E3F1CBAA261@sm204.163.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,99 +16,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Bobo <boboaq@163.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi All,
 
---y0ulUmNC+osPPQO6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I've been working for this for a while now, and don't realy know what to make of it:
+The relevant parts of my firewall are as follows, from iptables-save, only edited for clarity:
 
-Check 2 thing's: if you have modules autoload [x] in the kernel, and / or if the modules are built in - if so they
-aren't able to be calling neither with modprobe or insmod ...
+:INPUT DROP
+:FORWARD DROP
+:OUTPUT ACCEPT
+-A INPUT -m state --state ESTABLISHED -j ACCEPT
+-A INPUT -i eth0 -m mac --mac 00:05:5D:FA:3B:50 -j ACCEPT
+-A INPUT -i eth0 -m mac --mac 00:05:5D:4E:3C:C6 -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -i eth0 -m mac --mac 00:40:05:C7:04:DE -j ACCEPT
+-A INPUT -j LOG --log-prefix "!!DROPPED PACKET!!"
 
-hope it helps
+So basic description here is, nothing is allowed, except established connections, and NIC's matching the listed MAC's. Oh and log every thing that isn't allowed. Finally, note that 00:40:05:C7:04:DE (ie the last matched MAC) is the MAC address of eth0, in the firewall itself.
 
-On Mon, Mar 17, 2003 at 08:09:42PM +0800, Bobo wrote:
-> 
->         
->  How to load modules needed by iptables?
->    
->     While setup iptables firewall,I met a strange question.
->     I learned the following scripts frome the famous Iptables tutorail
->     wirtten by Oscar Andreasson.
->     If I input the following scripts ,and run it in a bash file.
->   ****************************
->      
->  /sbin/modprobe ip_tables
-> /sbin/modprobe ip_conntrack
-> /sbin/modprobe iptable_filter
-> /sbin/modprobe iptable_mangle
-> /sbin/modprobe iptable_nat
-> /sbin/modprobe ipt_LOG
-> /sbin/modprobe ipt_limit
-> /sbin/modprobe ipt_state
-> ***************************
-> and the message on the screen is :
-> 
-> 
->   modprobe: Can't locate module ip_tables
-> modprobe: Can't locate module ip_conntrack
-> modprobe: Can't locate module iptable_filter
-> modprobe: Can't locate module iptable_mangle
-> modprobe: Can't locate module iptable_nat
-> modprobe: Can't locate module ipt_LOG
-> modprobe: Can't locate module ipt_limit
-> 
-> If I input it by hand under command line mode each time a line,I
-> would not get the error message.
->  Why?
->  What is  the difference between modprobe and insmod?
->  
->  If I run lsmod ,I could get the following messages:    
->       
->         Module                  Size  Used by
-> ip_nat_irc              4416   0  (unused)
-> ip_nat_ftp              3488   0  (unused)
-> ip_conntrack_irc        2928   0  (unused)
-> ip_conntrack_ftp        3824   0  (unused)
-> ipt_MASQUERADE          1664   0  (unused)
-> ipt_REJECT              3392   0  (unused)
-> ipt_owner               1552   0  (unused)
-> ipt_state               1024   0 
-> ipt_limit               1360   0  (unused)
-> iptable_nat            16528   2  [ip_nat_irc ip_nat_ftp ipt_MASQUERADE]
-> iptable_mangle          2160   0  (unused)
-> ip_conntrack           15824   4  [ip_nat_irc ip_nat_ftp ip_conntrack_irc ip_conntrack_ftp ipt_MASQUERADE ipt_state iptable_nat]
-> ipt_LOG                 3856   0  (autoclean)
-> iptable_filter          2128   0  (autoclean) (unused)
-> ip_tables              10944  11  [ipt_MASQUERADE ipt_REJECT ipt_owner ipt_state ipt_limit iptable_nat iptable
-> 
-> It means there are already these modules needed by Iptables.
-> Why the operation system displays "modprobe: Can't locate module ip_conntrack"?
-> My operation system is REDHAT 7.2 and it was installed by default configuration.
-> 
-> Thanks
-> 
->     
-> 
-> 
+So far so good. Problem is, that when I ping the broadcast address for my subnet (192.168.0.255), from the firewall machine, the firewall does not respond. If I ping the broadcast from any other machine who's MAC is matched in the firewall, the firewall machine responds, but if I ping the broadcast from the firewall itself, it doesn't respond.
+
+When I check my /var/log/kern.log, I can see this (192.168.0.2 is the IP of the firewall):
+
+Mar 23 12:02:24 ifrit kernel: !!DROPPED PACKET!!IN=eth0 OUT= MAC= SRC=192.168.0.2 DST=192.168.0.255 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=37639 SEQ=256
+
+which tells me that my log rule works, and that the packet is at least traversing the INPUT chain. Furthermore, running 'tcpdump -ei eth0' while pinging the broadcast address from the firewall machine shows this:
+
+12:13:00.134364 0:40:05:c7:4:de Broadcast ip 98: ifrit.wvnet.edu > 192.168.0.255: icmp: echo request (DF)
+12:13:01.145071 0:40:05:c7:4:de Broadcast ip 98: ifrit.wvnet.edu > 192.168.0.255: icmp: echo request (DF)
+12:13:02.146555 0:40:05:c7:4:de Broadcast ip 98: ifrit.wvnet.edu > 192.168.0.255: icmp: echo request (DF)
+
+Which confirms that the ping packets at least have the correct MAC address. Yet, inexplicably, the packets are not being allowed through.
+
+Am I missing something here? Is there something I'm overlooking that would explain why my firewall isn't matching broadcast pings that originate from itself?  Any assistance here would be greatly appreciated.
+
+Thank you
+
+Kyle Centers
+
 
 -- 
-Best Regards, (com os mais sinceros cumprimentos);
-Joao F. Serejo , Lisbon - PT : jfserejo@netcabo.pt
+__________________________________________________________
+Sign-up for your own FREE Personalized E-mail at Mail.com
+http://www.mail.com/?sr=signup
 
---y0ulUmNC+osPPQO6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=".gnupg.sig"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+USgnbs/4LNABBrURAlesAJwNZeZ2PTaNoCqBa1zeSZmq+xCAvACfVvFU
-bEeqbhbpFi42/umDCUUafbg=
-=pMRV
------END PGP SIGNATURE-----
-
---y0ulUmNC+osPPQO6--
 
