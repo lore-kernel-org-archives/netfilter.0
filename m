@@ -1,13 +1,12 @@
-From: Ben Russo <ben@umialumni.com>
-Subject: Re: concurrent connections
-Date: 06 Nov 2002 09:59:55 -0500
+From: "Jon Anderson" <jon-anderson@rogers.com>
+Subject: Re: iptables can protect syn-flooding?
+Date: Wed, 6 Nov 2002 10:06:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1036594806.1847.24.camel@ben.mis.tnsi.com>
-References: <A590F7F751E6D6118C0800104B0DF37304CDAF@MAILGATE>
+Message-ID: <001f01c285a6$1246f260$0300000a@hypnos>
+References: <F124l1k7ZDGRLvoD6ax0001857d@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <A590F7F751E6D6118C0800104B0DF37304CDAF@MAILGATE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,65 +17,79 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Naleendra@dms.lanka.net
-Cc: netfilter@lists.netfilter.org
+To: SB CH <chulmin2@hotmail.com>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Wed, 2002-11-06 at 04:03, Naleendra@dms.lanka.net wrote:
-> 
-> 
-> 	Hi List,
-> 
-> 	I have a customer of mine who needs a firewalling solution. However
-> they have given specification guidelines such as,
-> 
-> 	170 Mbps throughput 
-> 	125,000 simultaneos connections
-> 
-> 	I looked up the Cisco site & they have products to support this.
-> Only thing to note  was the micro-processor & Memory which varied from AMD
-> 133 to Intel 1Ghz for their range of models. In order to match this what is
-> the spec that I could go for in the Linux Server. Is their any sort of
-> yard-stick or rule of thumb for this purpose ?
-> 
->  Thanks in advance
-> 
->  naleendra
+Can't guarantee that I'm right about the following, or that it's even
+relevant, but based on my experience, the following might help...
 
-In a former professional position I deployed many Linux based firewalls
-for 24x7 commercial production networks.  After deploying about 3 or 4
-such production networks I realized that the management of the firewalls
-in a dynamic network environment is very expensive in terms of man
-hours.
+SB CH (chulmin2@hotmail.com) wrote:
+> I saw that we can protect syn-flooding using iptables like this.
+>
+> $IPTABLES -N syn-flood
+> $IPTABLES -A INPUT -p tcp --syn -j syn-flood
+> $IPTABLES -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
+> $IPTABLES -A syn-flood -j DROP
 
-On IBM Netfinity Servers (I think they were 7500's? 4U boxes?) Running
-stock RedHat 7.2 kernels with some expensive Quad Fast Ethernet NIC's
-with custom drivers from the manufacturers and a huge but simple
-firewall ruleset, we never managed to push more than about 30Mbps
-through the firewall.  Granted for what we were using them for that was
-sufficient at the time, so we didn't worry about it.  I'm sure that
-if we had taken the time to carefully configure the kernel and the
-drivers and all the little tweaks and settings we could have increased
-that number dramatically.
+Of course one could achieve the same thing by using only two rules:
 
-However I think that with Standard PC hardware and a Linux OS you may be
-hard pushed to get a sustained 170Mbps on a stateful firewall with
-125,000 connections.
+iptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 4 -j
+ACCEPT
+iptables -A INPUT -p tcp --syn -j DROP
 
-(just an offhand thought...) You might consider breaking up the traffic
-through different firewalls by seperating your network nodes onto
-different subnets. and putting a router in front of your firewalls to
-spread the load. But when you do this you enter into the firewall
-management issue of having many different firewalls to be managed with
-so-so management tools.
+But that's just so I can simplify things below...
 
-I may get flamed for saying this on this list, but for that big of a
-firewall, and *expecially* if you are going to have more than 3 of them,
-I would recommend that you look into a dedicated firewall appliance with
-a firewall management GUI.  Something like a NOKIA box or CISCO PIX or
-whatever.  I don't have much experience with them, but I really like the
-CheckPoint management interface.
+> But I think that anyone can't protect syn-flooding attack completely using
+> this rule, just some legal client can't connect the server because the
+rate
+> limit rule in busy system.
 
+Ran into the same thing trying to intercept (syn) port scans - makes it real
+easy to DoS a machine when the above "flood protection" rules are in effect,
+thus making it useless (and even worse than nothing), especially when you
+have an HTTP server that will get a few concurrent connections from the same
+host (each sending a SYN packet) requesting images, or html pages in an html
+frameset. That said, I found a few solutions, none are really perfect, but
+are better than the above:
 
--Ben.
+1) Accept served ports, then apply the syn flood protection.
+
+iptables -A INPUT -p tcp --syn --dport 25 -j ACCEPT        <-- A Mail server
+iptables -A INPUT -p tcp --syn --dport 80 -j ACCEPT        <-- Or a web
+server, for example.
+iptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 4 -j
+ACCEPT
+iptables -A INPUT -p tcp --syn -j DROP
+
+Add ports as necessary. This of course doesn't work if an attacker is SYN
+flooding a particular port you're serving.
+
+2) IPLimit extension (May not be available if you're using an old
+distro...?)
+
+iptables -A INPUT -p tcp --syn -m iplimit --iplimit-above 5 -j REJECT
+
+That would allow 5 SYN packets from any given host, then reject any others.
+This doesn't work if you're getting flooded by many fake hosts. This is
+where your ISP could enable TCP Intercept on their router for you.
+
+3) If by SYN flood, you're trying to block a SYN scan, you could use the PSD
+extension, but that's not in the latest stable kernel - only in
+patch-o-matic. Works really well though (cheers to the guy who wrote it!).
+
+> I guess that any firewall can't protect syn-flooding except tcp intercept
+> method.right?
+> (but tcp intercept requires so much memory)
+
+Maybe I'm not clear on what tcp intercept is, but I don't think it's
+relevant in your case. Seems you're trying to prevent SYN flooding on the
+INPUT chain...It would be relevant if it were a router, and were using the
+FORWARD chain. I don't even know of a TCP Intercept implementation for
+linux - only for routers (e.g. cisco).
+
+Hope that helps,
+
+jon anderson
+
 
 
