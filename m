@@ -1,12 +1,11 @@
-From: Bernardo Vieira <bernardo.vieira@terra.com.br>
-Subject: Re: Newbie iptables question
-Date: Thu, 09 Dec 2004 15:29:41 -0200
-Message-ID: <41B88B85.5050602@terra.com.br>
-References: <27594E8BA9D5CA458F5EF87D88B6B48F019829@pxtvjoexd01.pxt.primeexalia.com>
+From: "Hudson Delbert J Contr 61 CS/SCBN" <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: Newbie iptables question
+Date: Thu, 9 Dec 2004 09:34:45 -0800
+Message-ID: <186AC876521E0F46BDE77079A6567FD04DBDBB@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F019829@pxtvjoexd01.pxt.primeexalia.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,14 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Bernardo Vieira <bernardo.vieira@terra.com.br>, Netfilter <netfilter@lists.netfilter.org>
+
+no ftp access on port 20 ?
+make sure you arent allowing port fwding via ssh.
+its not a best practice to do so unless you like your life complicated.
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Bernardo
+Vieira
+Sent: Thursday, December 09, 2004 9:30 AM
+To: Netfilter
+Subject: Re: Newbie iptables question
+
 
 Gary,
 Thank you for your reply, turns out the problem I was having was with=20
 the virtual interface, that out of the way I realised I
 forgot a couple of things (FTP for everyone  and LDAP for local folks),=20
-anyway I followed your advice and changed FORWARD policy to drop as well=20
+anyway I followed your advice and changed FORWARD policy to drop as well =
+
 as allowing related traffic. Now a port scan from the outside world=20
 looks a lot nicer:
 
@@ -78,15 +91,19 @@ Bernardo
 -A INPUT -p tcp -m tcp --dport 10000 -j ACCEPT
 
 # Samba on local network only
--A INPUT -s 192.168.1.0/255.255.255.0 -d 192.168.1.0/255.255.255.0 -j SMB
--A OUTPUT -s 192.168.1.0/255.255.255.0 -d 192.168.1.0/255.255.255.0 -j SMB
+-A INPUT -s 192.168.1.0/255.255.255.0 -d 192.168.1.0/255.255.255.0 -j =
+SMB
+-A OUTPUT -s 192.168.1.0/255.255.255.0 -d 192.168.1.0/255.255.255.0 -j =
+SMB
 
 # SMB Chain
 -A SMB -s ! 192.168.1.3 -d ! 192.168.1.3 -p tcp -m tcp -m multiport=20
---dports loc-srv,profile,netbios-ns,netbios-dgm,netbios-ssn,microsoft-ds=20
+--dports loc-srv,profile,netbios-ns,netbios-dgm,netbios-ssn,microsoft-ds =
+
 -j ACCEPT
 -A SMB -s ! 192.168.1.3 -d ! 192.168.1.3 -p udp -m udp -m multiport=20
---sports loc-srv,profile,netbios-ns,netbios-dgm,netbios-ssn,microsoft-ds=20
+--sports loc-srv,profile,netbios-ns,netbios-dgm,netbios-ssn,microsoft-ds =
+
 -j ACCEPT
 -A SMB -s ! 192.168.1.3 -d ! 192.168.1.3 -p tcp -m tcp --dport 489 -j=20
 ACCEPT
@@ -113,8 +130,10 @@ Gary W. Smith wrote:
 
 >Bernardo,=20
 >
->Where are you performing the scan from?  You need to do it externally if
->you want to see how it's operating.  Also, if you're not port forwarding
+>Where are you performing the scan from?  You need to do it externally =
+if
+>you want to see how it's operating.  Also, if you're not port =
+forwarding
 >the you can just do default DROP but allow related back in, which would
 >drop you down to about 6 rules on this list.
 >
@@ -147,15 +166,15 @@ Gary W. Smith wrote:
 >
 >
 >Esta mensagem foi verificada pelo E-mail Protegido Terra.
->Scan engine: McAfee VirusScan / Atualizado em 09/12/2004 / Vers=E3o: 4.4.0=
-0 - Dat 4413
+>Scan engine: McAfee VirusScan / Atualizado em 09/12/2004 / Vers=E3o: =
+4.4.00 - Dat 4413
 >Proteja o seu e-mail Terra: http://www.emailprotegido.terra.com.br/
 >
 >E-mail classificado pelo Identificador de Spam Inteligente Terra.
 >Para alterar a categoria classificada, visite
->http://www.terra.com.br/centralunificada/emailprotegido/imail/imail.cgi?+_=
-u=3Dbernardo.vieira&_l=3D1,1102609970.605061.3486.mongu.terra.com.br,1958,D=
-es15,Des15
+>http://www.terra.com.br/centralunificada/emailprotegido/imail/imail.cgi?=
++_u=3Dbernardo.vieira&_l=3D1,1102609970.605061.3486.mongu.terra.com.br,19=
+58,Des15,Des15
 >
 >
 >
