@@ -1,11 +1,13 @@
-From: Rohit Kumar Mehta <rohitm@engr.uconn.edu>
-Subject: simple port forwarding question
-Date: Mon, 03 Nov 2003 08:58:53 -0500
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Redirect and change the source IP
+Date: Mon, 03 Nov 2003 16:00:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FA65F1D.20205@engr.uconn.edu>
+Message-ID: <1067868026.26086.66.camel@raylinux.internal>
+References: <oprx2cuychpvmot6@192.168.2.1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-bcoG5kbKF1rps3+5UNv/"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <oprx2cuychpvmot6@192.168.2.1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,48 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Hi guys, I was wondering if someone could help me out here.  I am fairly 
-well confused after trying to muddle through
-this tutorial:
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+--=-bcoG5kbKF1rps3+5UNv/
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I think what I want to do should be easy.  Perhaps someone could help.
+On Mon, 2003-11-03 at 15:24, Mart=EDn wrote:
+> How can I redirect inbound traffic and also change the source IP of this=20
+> traffic?
+iptables -t nat -A POSTROUTING -i eth0 -s 123.321.123.321 -p tcp --dport
+80 -j SNAT --to 1.2.3.4
 
-We are trying to trick the systems into believing that the Kerberos 5 
-server is on IP#2 (let's call it 192.168.28.3)
-but it is in fact on IP#1 (192.168.28.2).
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
-Maybe my attempted iptables commands will make it blatantly obvious what 
-I am trying to do:
+--=-bcoG5kbKF1rps3+5UNv/
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-iptables -t nat -A PREROUTING --dst 192.168.28.3 -p tcp --dport 88 -j 
-DNAT --to 192.168.28.2
-iptables -t nat -A PREROUTING --dst 192.168.28.3 -p udp --dport 88 -j 
-DNAT --to 192.168.28.2
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
 
-iptables -t nat -A POSTROUTING -p udp --dst 192.168.28.2 --dport 88 -j 
-SNAT --to-source 192.168.28.3
-iptables -t nat -A POSTROUTING -p tcp --dst 192.168.28.2 --dport 88 -j 
-SNAT --to-source 192.168.28.3
+iD8DBQA/pl96h1fuR/Bv+ygRAk1MAJ9rsKyWRZ0L/oJ9rlnPfxRqosBsdACgpmxm
+BN3K9nAQYRpqV8FU0NxU6CI=
+=7FeK
+-----END PGP SIGNATURE-----
 
-iptables -t nat -A OUTPUT --dst 192.168.28.3 -p tcp --dport 88 -j DNAT 
---to-destination 192.168.28.2
-iptables -t nat -A OUTPUT --dst 192.168.28.3 -p udp --dport 88 -j DNAT 
---to-destination 192.168.28.2
-
-
-Basically we want it so that if I do a "telnet 192.168.28.3 88", I get a 
-connection to "192.168.28.2:88"
-This works - when I initiate the connection from 192.168.28.3, but from 
-any other machine on the network
-it does not work.
-
-Am I doing something wrong or forgetting a key step?  Thanks!
-
-Rohit
+--=-bcoG5kbKF1rps3+5UNv/--
 
 
