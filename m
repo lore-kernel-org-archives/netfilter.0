@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Yet another FTP connection problem
-Date: Thu, 6 Jun 2002 19:51:54 +0100
+From: "AB" <sinaasappelsap@planet.nl>
+Subject: HELP SSL-problem
+Date: Thu, 6 Jun 2002 21:05:25 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206061852.g56Iq2A30805@Networker.rockstone.co.uk>
-References: <200206061650.g56GoQA32044@vulcan.rissington.net> <381103237.1023392855@[192.168.13.4]>
+Message-ID: <GGECKAHHDGDOOLALHDJFCEIKCAAA.sinaasappelsap@planet.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <381103237.1023392855@[192.168.13.4]>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,75 +18,34 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 06 June 2002 6:47 pm, Erik Pagel wrote:
+Hello everybody, I hope someone out there can help me with a problem I have
+:-)
 
-> Hi Antony,
->
-> sorry I must apologise again, but I didn't send all my rules, just the ftp
-> part.
+Recently I compiled the 2.4.18 version of the Linux kernel. I am using
+IPtables with one rule in it:
 
-It's always good to post your complete ruleset, just in case you've got 
-something in a rule you don't think is important, which is causing all the 
-troubles...
+	iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
 
-> Of course my standard policy is deny,
+Internet works fine but I bump into trouble trying to reach an internet
+banking site.
+It uses https. The first few pages work well but when I have authenticated
+and
+want to see my account it seems to timeout.
+The same problem occurred when I tried to subscribe to a hotmail account.
 
-Good :-)
+I've tried other https pages and they work just fine.
+I've tried to pinpoint the problem with tcpdump and with ethereal but I
+can't find it.
+I know now that ssl3 is used and that it DOES work when I establish a direct
+connection
+(not through the Linux router)....
 
-> also I manage my own DNS Server.
+PLEASE anyone HELP ME... Tell my I'm stupid and please tell me what I'm
+doing wrong.
 
-Okay - you still need to makesure your firewall can talk to it, and I guess 
-you already have the rules to allow port 53 through the firewall for external 
-lookups.
+If there's any config or log or whatever file you want to see, let me know
+:-)
 
-> NAT is also installed and working.
+Thank you, for reading this. Arjan.
 
-Okay.   I saw you didn't have it and wasn't sure if that was because you 
-didn't need it (internal clients on routable addresses) or because you 
-already had it working, or because you'd forgotten it (we get all sorts of 
-questions on this mailing list).
-
-> The only part not working are the ftp
-> ruleset.
->
-> ># allow ftp control connections outbound
-> > iptables -A OUTPUT -p tcp --dport 21 -j ACCEPT
->
-> Why only port 21 and not also port 20 (DATA Channel).
-
-Because the first outbound connection from the client to the server will 
-always be a control connection, and then replies for both control and data 
-will be handled as in the ESTABLISHED,RELATED state match.
-
-> ># allow replies back from ftp servers
-> > iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> Ok, but I want to restrict the portrange to source port 20 and 21.
-
-Why ?   Where else are you going to get ESTABLISHED or RELATED packets from 
-except in reply to something you've decided to allow out in the first place ?
-
-> Anyway my last ruleset has a line like this but I want to get ride of it.
-
-Maybe you should post the complete ruleset and see if someone can see why ftp 
-wouldn't work if everything else does.
-
-> > iptables -A POSTROUTING -t nat -o $EXT_IF -j SNAT --to $EXT_IP
->
-> I use this rule
-> iptables -t nat -A POSTROUTING -o $I_EXTERN -j MASQUERADE
-
-If you have a dynamic address on your external interface, your rule is 
-correct.   It will still work even if you have a static address, but is 
-considered slightly less efficient for netfilter than specifiying SNAT and 
-the address.   Either way, I don't think you'll notice a difference.
-
-> > Let us know how you get on with those.
->
-> sorry, not until now.
-
-So did you try them ?   Do they work ?
-
-
-Antony.
 
