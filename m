@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: port redirection *without* nat
-Date: Mon, 6 Jan 2003 19:35:13 -0500
+From: Dan Egli <dan@shortcircuit.dyndns.org>
+Subject: Odd problem with MIP
+Date: Mon, 06 Jan 2003 23:42:58 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301061935.13614.netfilter@newkirk.us>
-References: <20030106141753.A12922@infinity.rhythm.cx>
-Reply-To: netfilter@newkirk.us
+Message-ID: <3E1A76F2.6060604@shortcircuit.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030106141753.A12922@infinity.rhythm.cx>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +15,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: sm@rhythm.cx, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Monday 06 January 2003 02:17 pm, sm@rhythm.cx wrote:
-> I'm trying to figure out how (if possible) to do port redirection with
-> iptables on my linux router. This router is is not doing NAT, all
-> connected networks have real, public IP addresses. There is tons of
-> information out there about doing port redirection with NAT, but I
-> can't find anything for without NAT. I just want to make the router
-> take traffic destined for address A port x and change the destination
-> address to send it off to address B port x instead. A and B are on the
-> same (directly attached ethernet) network. I looked into the DNAT and
-> REDIRECT targets, but those only seem to work in the nat table.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-What you say you are trying to do IS DNAT.  A packet reaches the machine=20
-addressed to one destination, but you want to send it to another address=20
-instead, changing the Destination IP.  Destination NAT.  And yes, such=20
-targets only work in the nat table's chains, and for DNAT you want to=20
-use the PREROUTING chain.  The REDIRECT target is for picking traffic=20
-out of the stream that would normally be forwarded and DNATting it to=20
-readdress it to the local box as INPUT instead. =20
+I have the following script to generate a firewall. For some reason,
+when I have the rules ON, I can not send mail through the mail proxy
+running on port 8027 (anti-spam measure).  With the rules disabled
+(service iptables stop on RH 7.3 box) I can send mail fine.
 
-The most frequently mentioned use of DNAT is for packets addressed to an=20
-IP of the box itself, but this isn't necessary.  DNAT is simply changing=20
-the destination IP, regardless of what it originally was.=20
+Any help is appreciated!
 
-j
+Thanks
+
+- --- Dan Egli
+
+!/bin/bash
+IPT=/sbin/iptables
+# step 1 - ensure iptables are loaded
+modprobe ip_conntrack_ftp
+# that should pull in all dependant modules
+#step 2  SET DEFAULT POLICY
+
+$IPT -P INPUT DROP
+$IPT -P OUTPUT ACCEPT
+$IPT -P FORWARD DROP
+
+# step 3 FLUSH THE TABLES
+$IPT -F INPUT
+$IPT -F OUTPUT
+$IPT -F FORWARD
+$IPT -t nat -F PREROUTING
+$IPT -t nat -F POSTROUTING
+$IPT -t nat -F OUTPUT
+
+# setp 4 - setup rules
+# $IPT -A INPUT -p tcp -m multiport --dports
+smtp,ftp,telnet,ssh,137,138,139,111 -j ACCEPT
+$IPT -A INPUT -p tcp -i eth0 -m multiport --dports
+telnet,ssh,domain,nntp,ntp,printer,pop3,imap,http,https,netbios-ssn,netbios-dgm
+- -
+j ACCEPT
+$IPT -A INPUT -p tcp -m multiport --dports
+netbios-ssn,netbios-dgm,netbios-ns,4000,pgpkeyserver,mysql,sunrpc,rndc,8027
+- -j ACCEPT
+$IPT -A INPUT -p udp -i eth0 -m multiport --dports
+domain,ntp,route,137,138,139 -j ACCEPT
+# $IPT -A INPUT -p udp -i eth1 -m multiport --dports 137,138,139,111
+- -j ACCEPT
+$IPT -A INPUT -i lo -j ACCEPT
+# $IPT -A INPUT -p tcp -i eth1 -m multiport --dports 137,138,139,111
+- -j ACCEPT
+# $IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+# $IPT -A INPUT -j LOG --log-prefix "Blocked Packet!: "
+
+$IPT -A FORWARD -i eth0 -j ACCEPT
+$IPT -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+# $IPT -A FORWARD -j LOG
+# step 5 - enable NAT
+# $IPT -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+
+(note some lines are commented out either because they were
+experiments, or because they  are for configuration not present  on
+the machine YET).
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (MingW32) - WinPT 0.7.93
+
+iD8DBQE+GnbsxQEzeXtVwzoRAk51AJ9o95E3XN3md2DvkOommZTDZfLkPACdE7PY
+ZTyP8HuDLcbzVfwKUK7lOyo=
+=dhIj
+-----END PGP SIGNATURE-----
 
 
