@@ -1,10 +1,14 @@
-From: John Duke <johnyduke@yahoo.com>
-Subject: Transparent broadband network connectivity (Internet PnP)
-Date: Thu, 13 Mar 2003 11:04:42 +0700
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: RE: RE : netfilter/iptables problems on solaris
+Date: 13 Mar 2003 07:22:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.2.20030313105124.022b25a8@216.136.173.10>
+Message-ID: <1047532936.11443.61.camel@raylinux.internal>
+References: <8C1856C372A7574291A56C3B7000A7AEF58255@eestqnt104>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-U4f5JoHbJiu9kt6/EAGA"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <8C1856C372A7574291A56C3B7000A7AEF58255@eestqnt104>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,59 +18,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org   '" <netfilter@lists.netfilter.org>
 
-Hi all,
 
-Can someone let me know if current netfilter can allow clients inside
-Internal network (can be any different ip) access Internet? There are some
-commercial products such as Reliaware
-(http://www.demarctech.com/products/reliawave-rwh/reliawave-ipnpsg.html)
-(see Address Translate Function section), WayPort (http://www.wayport.net),
-IP PnP (http://www.infino.co.kr/infino/eng/softpackage_e.php) provide that
-feature but I'm looking for an opensource solution.
+--=-U4f5JoHbJiu9kt6/EAGA
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-The main point of this system is that the client just only need to plug
-into the net then he can surf internet without changing his ip
-configuration. So clients inside internal network can have any IP address
-(different subnet, netmask, gateway, dns ... and even thought clients have
-the same IP)
+On Wed, 2003-03-12 at 21:43, Joaquin Henriquez Alzola (REE) wrote:
+>  Then I am not going to be able to use the turtle firewall. Any other fir=
+ewalls for Solaris that you would recommend. This is a sit back.
+>=20
+No, but you could install Linux on the Sun machine ...
 
-For example
+> Joaquin
+>=20
+>=20
+> -----Original Message-----
+> From: Franck ZOCCOLO
+> To: Joaquin Henriquez Alzola (REE); netfilter@lists.netfilter.org
+> Sent: 3/12/03 8:33 PM
+> Subject: RE : netfilter/iptables problems on solaris
+>=20
+> > I have problems on the compilation of netfilter/iptables on Solaris 8.
+>=20
+> Don't waste time trying to use netfilter on Solaris... Netfilter ONLY
+> works on Linux.
 
-Client 1 -----------|
-192.168.10.5        |
-		     |	172.16.1.1  PublicIP
-Client 2 -----------|	     eth0    eth1
-DHCP(172.16.1.90)   |-------- [ GW ] ----- [ router ] --- Internet
-		     |  DefaultGW=RouterIP
-Client 3 -----------|
-200.192.16.10       |
-		     |
-Client 4 -----------|
-64.12.5.12
+--=-U4f5JoHbJiu9kt6/EAGA
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-I can set the eth0 into proxy arp mode (net.ipv4.conf.eth0.proxy_arp = 1)
-to set it as the gateway for all clients, and use iptables SNAT target
-inside nat POSTROUTING chain of eth1.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source <eth1 ip>
+iD8DBQA+cBWIh1fuR/Bv+ygRAqeGAJwKhv9K9l1lTFbNI77/G4XAk+s8FwCbBil4
+R8WVN8rSpIGIZlpAOgAOxwA=
+=vtj8
+-----END PGP SIGNATURE-----
 
-When client send a packet out, the packet goes into eth0, goes through
-forward chain after routing decision routine, get nat'd on eth1 then send
-to the router. The problem is that when the reply packet from router goes
-back eth1, after de-nat'd, the packet will be sent to the eth1 following
-the default route on gateway box instead of eth0 (since client can have any
-ip, so we can't set the routing table; default gateway is router's ip via
-eth1).
-
-Do anyone have idea to solve this? Do current netfilter can do it or I need
-to hack some netfilter code?
-
-Best Regards,
-
-JD
+--=-U4f5JoHbJiu9kt6/EAGA--
 
 
