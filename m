@@ -1,12 +1,14 @@
-From: "Voltaire Pascual" <voltaire@voltaire.servebeer.com>
-Subject: Re: help: ip_nat_pptp/ip_nat_conntrack
-Date: Mon, 26 May 2003 15:26:22 +0800
+From: Michael Stilmant <ml-netfilter@adtech.be>
+Subject: RE: transparent tcp proxy
+Date: 26 May 2003 10:45:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <025801c32358$1bcb2c20$6400a8c0@homes>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CDF@wardrive.citadelcomputer.com.au>
+Message-ID: <1053938722.17259.6.camel@stilmant>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A019241@wardrive.citadelcomputer.com.au>
+Reply-To: ml-netfilter@adtech.be
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A019241@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +19,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org
-
-thanks... it helps.
-
------ Original Message -----
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-To: "Voltaire Pascual" <voltaire@voltaire.servebeer.com>;
-<netfilter@lists.netfilter.org>
-Sent: Monday, May 26, 2003 1:08 PM
-Subject: RE: help: ip_nat_pptp/ip_nat_conntrack
-
-
-patch-o-Matic. downloaded seperately to netfilter and you must get the same
-one as the source of iptables downloaded..
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-
-
------Original Message-----
-From: Voltaire Pascual [mailto:voltaire@voltaire.servebeer.com]
-Sent: Monday, May 26, 2003 2:56 PM
 To: netfilter@lists.netfilter.org
-Subject: help: ip_nat_pptp/ip_nat_conntrack
+
+On Sat, 2003-05-24 at 04:05, George Vieira wrote:
+> Hmm. I don't think bridging copies the packets MAC address over. it just copies the packet data with it's source and destination IPs.
+> 
+> Can I ask what the mac address is used for, or needed for? Is it for some authenticity reasons?
+
+No, I don't need ti used the MAC Address. And actually my 
+iptables filter work pretty well. But, with this, 
+the MAC address of the source host change for each connection
 
 
-Hi there,
+                     10.0.0.225
+                     +--------+
+                     |   B    |
+   +-----+           |        |          +-----+
+   |  A  +-----------[ebtables]----------|  C  |
+   +-----+           +--------+          +-----+
+   10.0.0.3                             10.0.0.32     
 
-do you know where to find ip_nat_pptp/ip_conntrack_pptp  patches for kernel
-2.4.20? I tried searching in google but didn't find any good guide for
-newbie. The reason why im doing this is to allow my private network to
-connect to the VPN simultaneously.
 
-I have these files installed but can I ask your help how to install these as
-modules?
+Rappel:
+when C send not filtered packet to A, A see the C MAC address with IP
+10.0.0.32. when B send filtered TCP/IP packet to A with IP address 
+10.0.0.32 A see the B MAC address. This work but it's not acceptable.
+the A MAC-IP association table will change setup all the time. 
 
-"/usr/src/linux-2.4.20/net/ipv4/netfilter"
-ip_nat_pptp.c
-ip_conntrack_pptp.c
 
-I cant find "pptp connection tracking" support in "make
-menuconfig/Networking Options/Netfilter Configuration"
-
-Appreciate your help.
-
-/TIA.
-VP.
-
+Michael
 
 
 
