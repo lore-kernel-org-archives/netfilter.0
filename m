@@ -1,8 +1,8 @@
 From: "sp3 sp3" <sp3@hotmail.com>
-Subject: RE: NetBios iptables trouble with small TCP packets
-Date: Sat, 03 Jan 2004 22:44:14 +0000
+Subject: Re: NetBios iptables trouble with small TCP packets
+Date: Sat, 03 Jan 2004 23:04:42 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY1-F494QzPW8AAkjt0000729e@hotmail.com>
+Message-ID: <BAY1-F159rnu2CCbJz900028fad@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,90 +16,87 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: markee@bandwidthco.com
+To: john.sullivan@nexusmgmt.com
 Cc: netfilter@lists.netfilter.org
 
 
 
 
->From: "Mark E. Donaldson" <markee@bandwidthco.com>
->Reply-To: <markee@bandwidthco.com>
->To: "'sp3 sp3'" <sp3@hotmail.com>, <netfilter@lists.netfilter.org>
->Subject: RE: NetBios iptables trouble with small TCP packets
->Date: Fri, 2 Jan 2004 19:41:02 -0800
+>From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+>To: sp3 sp3 <sp3@hotmail.com>
+>CC: netfilter@lists.netfilter.org
+>Subject: Re: NetBios iptables trouble with small TCP packets
+>Date: Fri, 02 Jan 2004 23:02:42 -0500
 >
->Questions:
+>On Fri, 2004-01-02 at 21:53, sp3 sp3 wrote:
+> > I,
+> >
+> > I have two networks connected with a linux firewall/router that is 
+>running
+> > RH8 and a firewall script.
+> > I'm having a problem with the transfer of small files (<256kb) using 
+>NetBios
+> > over TCP/IP between a NT4 machine and a win2k machine.
+> > The fw is doing source nat.
+> > The problem is that when i transfer a small file, the win2k machine 
+>seams to
+> > hang for a moment ( 10 seconds ) and displays an error.
+> > I have searched the MS site for the error and i have found that it's 
+>related
+> > to a time out.
+> >
+> > I have searched the logs, and nothing unusual is reported.
+> > I have checked the firewall logs also, and no drop packet is found ( i 
+>log
+> > all "can't happened" rules ).
+> >
+> > I have tried many things, like:
+> > - checking the MTU of the interfaces
+> > - cheching the mss value using ifconfig
+> > - each NIC uses a separate IRQ
+> >
+> > The problem is on the fw/router machine 'im shure. I know it, because a 
+>have
+> > tried to put the same machines on the same LAN and there is no problem.
+> >
+> > Does any one have any sugestion for this stange problem?
+> >
+> > Best regards,
+> > Sp3
+> >
+> > _________________________________________________________________
+> > The new MSN 8: advanced junk mail protection and 2 months FREE*
+> > http://join.msn.com/?page=features/junkmail
 >
->1. Are we to assume that large files (>256kb) transfer just fine? Or, is
->there a problem with them too?
+>Are you sure the packets are making it to the firewall?
 
-No, there is no problem with big files.
+Yes, i'm shure, i saw the packets getting out with tcdump.
 
->
->2. Which direction is the transfer?  NT -> W2K or W2K -> NT?
+>A product like
+>Ethereal (www.ethereal.com) can be of great help.  If you turn off the
+>firewall and just route, do you still have the same problem?
 
-W2K -> NT.
+I cant just route them for now....but i can create less restrictive rules.
+I will try it.
 
->
->3. By transfer, do you really mean "copy" using File & Print sharing?  I'm
->assuming this to be the case you say you are using NBT.
+>It is
+>possible that the two Windows stations can't find each other if they are
+>not on the same network.
 
-I map a network drive, autehntication is requested, and the network drive is 
-mapped with success.
-Yes, copy and paste.
->
->4.  Are these machines (both NT & W2K) members of a domain, and if so is it
->the same domain?
+As i'm ding source nat on the fw, the request is seen by the nt server as 
+comming from the firewall and not from the w2k machine.
 
-NT is member of a domain. W2K is not member of any domain.
+>For example, if there is no service location
+>running such as WINS or DNS, they may try to find each other via
+>broadcast which will then be blocked by the router (not the firewall).
 
->What is the setup here.
+Yes, it true, but i'm using for now plain ip address to establish the 
+connection to the nt server (i.e
+\\IP\sharename ).
 
-On the NT server we have some files that must be accessed by the w2k 
-machines (on the other network). Each w2k machine have as the default 
-gateway the firewall that does the source nat.
-To reach the nt server, i'm not using NetBios names nor lmhosts, just plain 
-ip address.
+Thank's to the help.
 
->This is necessary to know because
->SMB must negotiate the means of authentication and then authenticate before
->any transfer can take place.
->
-
->5.  What rules do you have in place that you feel should permit the SMB
->packets to pass through the firewall?
-
-I dont filter any traffic that exits the firewall via output nor via 
-forward.
-The default policy for forward is accept, for output is accept and for input 
-is drop.
-At the input chain i permit all the established and related traffic.
-I permit just ssh on the input chain. All the rest is logged.
-Any suspicios packet (invalid IP and or netmask is logged and dropped).
-
-I have tested the same rules with another firewall runnig the same linux 
-version, and all is ok.
-
->
->6.  What does the "Windump" output on the sending machine show for the
->packets generated during the "hang period" when run as "windump -n -vv -xX
->-i2"?
-
-I dont know what windump is, but it seams looking at the parametrs that it 
-is something like tcpdump.
-
-I have runned a tcpdump on the exterior interface of the fw, and saw nothing 
-suspecios. The source IP was the firewall (source nat ok) and the 
-destination was ok too.
-The last packet that is sent has the direction of fw->NT and i dont seen any 
-repply (ack) to it.
-After some time the nag error message just displays it self on the W2K 
-machine.
-
-I will post the windump/tcpdump result on my next message to the list.
-
-
-Thanks for the repply.
+Regards Sp3
 
 _________________________________________________________________
 The new MSN 8: smart spam protection and 2 months FREE*  
