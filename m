@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: [OT] Hello?
-Date: Fri, 28 May 2004 09:15:59 +0100
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: ftp
+Date: Fri, 28 May 2004 08:50:49 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405280915.59287.Antony@Soft-Solutions.co.uk>
-References: <Pine.LNX.4.33.0405280958160.26358-100000@blackhole.kfki.hu>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <11f101c444aa$05bb5a30$49caa8c0@caris.priv>
+References: <20040527193451.05B99DBD@sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0405280958160.26358-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,33 +17,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
 
-On Friday 28 May 2004 9:00 am, Jozsef Kadlecsik wrote:
+I guess my question was is it advisable to only allow active ftp .... ?  Or
+is that just not a reasonable idea ?  Or does the Related option make
+passive "safe" (ie, don't have to open a load of ports).
 
-> On Thu, 27 May 2004, Antony Stone wrote:
-> > That doesn't explain why my posting on Monday evening didn't appear on
-> > the list until Wednesday lunchtime.....
->
-> Mailing list services were disrupted by mistake when fighting against that
-> looping mail, sorry.
+I already had to open just about everything outgoing from my proxy server
+anyway, so I guess it is not a big deal ... *unless you have a better
+suggestion for that as well.
 
-No need to apologise (at least, not to me, anyway).   Thanks for the info.   
-(I don't think I saw any looping mail in the first place - maybe I was just 
-lucky...)
+Thank you for all of your help.
 
-Regards,
+Peter
 
-Antony.
 
--- 
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
+----- Original Message ----- 
+From: "Rob Sterenborg" <rob@sterenborg.info>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, May 27, 2004 4:34 PM
+Subject: RE: ftp
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+> > > .... Thank you for the info.  My question now is, will your rule
+> > > take care of both passive and active ftp ?  I would prefer to just
+> > > use active .. But
+
+> > ip_conntrack_ftp does handle both passive and active ftp.
+
+> Any thoughts on my last question ?
+
+As far as I see, Antony answered your last question : both passive and
+active ftp are handled.
+Or am I missing something ?
+
+
+Gr,
+Rob
+
 
 
