@@ -1,13 +1,12 @@
-From: dan radom <netfilter@radom.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: irc
-Date: Mon, 17 Nov 2003 08:41:24 -0700
+Date: Mon, 17 Nov 2003 15:39:07 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031117154124.GD10857@hamachi.radom.org>
+Message-ID: <200311171539.hAHFdBj22214@agate.rockstone.co.uk>
 References: <OF9DF42386.B8AE0536-ON85256DE1.00551398-85256DE1.00552F5A@kal.kalsec.com>
-Reply-To: netfilter@radom.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <OF9DF42386.B8AE0536-ON85256DE1.00551398-85256DE1.00552F5A@kal.kalsec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,25 +18,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-* trainier@kalsec.com (trainier@kalsec.com) wrote:
+On Monday 17 November 2003 3:30 pm, trainier@kalsec.com wrote:
+
 > Aye, a familiar face. ;-)
-> 
-> The 'firewall' in this case, is a transparent proxy server.  The proxy 
+
+Good afternoon :)
+
+> The 'firewall' in this case, is a transparent proxy server.  The proxy
 > server will be the gateway to the internet.
-> I need to allow irc connections through this machine, somehow.  I don't 
+
+Hm, well there's a problem there, because netfilter is not a proxy firewall - 
+it's a stateful packet filter.
+
+> I need to allow irc connections through this machine, somehow.  I don't
 > know how to do that.
-> 
-> Regards,
-> 
-> Tim Rainier
-> 
 
-You can always just allow established and related packets back in.  This
-should make almost any connection initiated from the LAN or iptables
-machine work.
+All I can suggest is that you look around for an IRC proxy server, however I 
+have no knowledge of such things myself.
 
-iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+Regards,
+
+Antony.
+
+-- 
+
+The only problem with the Universe as a platform, though, is that it is 
+currently running someone else's program.
+
+ - Ken Karakotsios, author of SimLife
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
