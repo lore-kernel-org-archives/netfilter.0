@@ -1,12 +1,12 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Patch-o-matic and Time Based Rules
-Date: 15 Jan 2005 23:19:56 +0100
-Message-ID: <1105802280.26750.4.camel@nostromo.bgsecm.com>
-References: <75b657f40501142358308ebc64@mail.gmail.com>
+Subject: Re: will port forwarding work here?
+Date: 15 Jan 2005 23:20:01 +0100
+Message-ID: <1105802749.19421.9.camel@nostromo.bgsecm.com>
+References: <20050114153508.GA1189@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <75b657f40501142358308ebc64@mail.gmail.com>
+In-Reply-To: <20050114153508.GA1189@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-El s=C3=A1b, 15 de 01 de 2005 a las 08:58, DurgaPrasad Adusumalli escribi=
-=C3=B3:
-> I am running FC3 and iptables 1.2.11. I like to add Time Based rules
-> module support to my existing system. Is there any possibility of
-> adding just the patch I like to without using patch-o-matic ng.
+El vie, 14 de 01 de 2005 a las 16:35, Payal Rathod escribi=C3=B3:
+> Hi,
+> I have 2 squid proxy on two different machines 192.168.0.10 and=20
+> 192.168.0.11 All my clients are configured to use 192.168.0.10:3128
+> Now I want a few specific clients to use 192.168.0.11:3128
+> Is it possible to write some kind of rule on 192.168.0.10 which will=20
+> *properly* redirect traffic from 192.168.0.10:3128 to=20
+> 192.168.0.11:3128 for those clients.  A friend on chat suggested (he=20
+> was not sure),
 >=20
-> Thanks in advance.
-> Durga Prasad.
+> iptables -A PREROUTING -t nat -s 192.168.0.10 --dport 3128 \
+>  -j DNAT --to-destination 192.168.0.11
+>=20
+> Is there anything else missing?
+>=20
+> With warm regards,
+> -Payal
 
-You have to patch the iptables 1.2.11 source code and the kernel
-source code with patch-o-matic-ng. Or you can get a kernel, and
-an iptables rpm package with the features you want. But both
-the kernel and iptables must be synced or it won't work.
+The easiest way to do this without problems it's just using source
+routing, with the iproute2 feature of the kernel. Just use some
+"ip" commands to route the traffic to one or the other machine.
 
 --=20
 Jose Maria Lopez Hernandez
