@@ -1,8 +1,8 @@
 From: saint <nagajuna@optushome.com.au>
-Subject: problem solved!
-Date: 04 Feb 2003 15:46:28 +1100
+Subject: Rulesets fro Internal & External Interface.
+Date: 04 Feb 2003 17:21:08 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044333988.4803.6.camel@juna.cypherworld.org>
+Message-ID: <1044339668.4803.14.camel@juna.cypherworld.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,18 +18,19 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-I would like to thank Ken Kilgore for the shell command.
-I never did it that way (even haven't seen it before) but
-it is (for me) a terrific fix.
+Hi everybody,
 
-I'm in the process of incorporating Andre's advice and I think
-I will now be ready to upgrade my firewall script version to 
-a big 0.20-stable.
+I have some questions:
 
-Thanks everyone.
+1. If a computer has two NICS, one connected to the Internet and the
+other towards the private LAN, is it necessary & possible to write
+different INPUT/OUTPUT rules concerning the individual
+interfaces?
 
-Santo.
+To note: I am thinking of assymetric rulesets.
 
-Friendly co-operation is pure magic.
+Santos.
+What is the nature of symmetry & assymetry?
+What is the matrix?
 
 
