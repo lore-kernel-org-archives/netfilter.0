@@ -1,11 +1,16 @@
-From: Alexey Talikov <alexey_talikov@texlab.com.uz>
-Subject: Re: H323..... and getting close! anyone tell me whats going wrong!
-Date: Wed, 05 Jun 2002 11:00:38 +0500
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: Error when using iptables 1.2.6a (or another version)
+Date: 05 Jun 2002 08:25:50 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3XPN94VRGB634ZA0KICUP42G1T0872.3cfda906@ALEXEY>
-Reply-To: alexey_talikov@texlab.com.uz
+Message-ID: <1023258350.2834.8.camel@billy.demon.nl>
+References: <B5747F3DB39FD411884B00B0D07808CCB6C1FC@server10>
+	<1023223261.8261.2.camel@billy.demon.nl> 
+	<20020604212807.GA30300@valjean.si.ocslink.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-aqvnJ2uUWuofzLLn0mDy"
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020604212807.GA30300@valjean.si.ocslink.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,130 +20,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org, smalik@vistawiz.com
-
-for 0-newnat13 you should apply this patch necessarily:
-arptables
-config-cleanup
-conntrack+nat-helper-unregister (not needed kernel>=2.4.18) even if your kernel 2.4.18
-ip_conntrack_protocol_destroy
-ip_conntrack_protocol_unregister
-macro-trailing-semicolon-fix
-nat-export_symbols
-netfilter-arp
-REJECT-dont_fragment
-
-for iptables-1.2.7-20020527
-if you use pptp-conntrack-nat and h323-conntrack-nat
-apply pptp-conntrack-nat before h323-conntrack-nat i.e. omit 
-h323-conntrack-nat apply pptp-conntrack-nat then use b key go back 
-and apply h323-conntrack-nat otherwise you can't apply 
-patch pptp-conntrack-nat 
+To: netfilter@lists.samba.org
+Cc: James Sneeringer <james+netfilter@vincentsystems.com>, "Philippe Dhont  (Sea-ro)" <Philippe.Dhont@searo.be>
 
 
-05.06.2002 4:55:53, "Shazad Malik" <smalik@vistawiz.com> wrote:
+--=-aqvnJ2uUWuofzLLn0mDy
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
->Hello -
->
->I have the following settings:
->iptables 1.2.6a
->linux kerbel 2.4.18
->pwlib (latest)
->and openh323 (latest)
->
->This is the error messages I'm getting, which I have seen from other sites
->but not sure how to tackle the problem:
->
->=======================================================================
->Testing... 0-newnat13.patch NOT APPLIED (98 rejects out of 100 hunks)
->The newnat/0-newnat13 patch:
->   Author: Harald Welte <laforge@gnumonks.org>,
->   Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
->   Status: Pending for kernel inclusion
->
->   Implementation of the new nat API for kernel 2.4.18 and above.
->
->   - enables us to have multiple related expectations
->   (necessarry for H.323, real IRC and PPTP tracking, ...)
->   - allows expectations to have timeouts
->   - adds full SACK support to the NAT code (we no longer strip
->   SACKPERM option out of all SYN patckes for ftp/irc connections)
->
->-----------------------------------------------------------------
->Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
->Testing patch newnat/0-newnat13.patch...
->Failed to patch copy of /usr/src/linux
->TEST FAILED: patch NOT applied.
->
->Aonther ERRROR:
->
-> 1731         Audio call control (TCP)
->   Dynamic              H.245 call control (TCP)
->   Dynamic              RTCP/RTP streaming (UDP)
->
->   The H.323 conntrack/NAT modules support the connection tracking/NATing of
->   the data streams requested on the dynamic ports. The helpers use the
->   search/replace hack from the ip_masq_h323.c module for the 2.2 kernel
->   series.
->
->   At the very minimum, H.323/netmeeting (video/audio) is functional by
->letting
->   trough the 1720 port and loading these H.323 module(s).
->
->   The H.323 conntrack/NAT modules do not support
->
->   - H.245 tunnelling
->   - H.225 RAS (gatekeepers)
->-----------------------------------------------------------------
->Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
->Testing patch newnat/h323-conntrack-nat.patch...
->   Placed new Config.in line
->   Placed new Config.in line
->   Placed new Configure.help entry
->   Placed new Makefile line
->Could not find place to slot in ip_conntrack.h entry
->Could not find place to slot in ip_conntrack.h entry
->Could not find place to slot in ip_conntrack.h entry
->
->===================================================================
->
->This is what I have done:
->1) I have grabbed the latest newnat from the CVS directory which is
->newnat13 from the samba.netfiler web site.
->
->2) With iptables under patch-o-matic/newnat, there is newnat8, h323, and
->talk files residing.  I bundled the h323, talk, and the latest newnat13 as
->tgz files in the patch-o-matric box.
->
->3) I grabbed the convert and convert-patch-o-matic
->http://www.kfki.hu/~kadlec/sw/netfilter/newnat-suite webs site.  I modified
->the convert script to see all the new tgz file thats I created which  are:
->h323.tgz talk.tgz and newnat13.tgz
->
->4) Then I run ./runme; ./runme suite and then I jump onto ./runme newnat
->and thats when I get the error.
->
->Is this the right? or something major missing......?? Help would be
->appreciated!
->
->-- 
->Shazad Malik
->work: (845)623-2161
->fax: (845) 623-1154
->
->
->
+tir, 2002-06-04 kl. 23:28 skrev James Sneeringer:
 
------------------------------------
-mailto:alexey_talikov@texlab.com.uz
-BR
-Alexey Talikov
-FORTEK
------------------------------------
+> There is a compile-time option to modutils (modprobe, insmod, et al) that
+> permits gzipped kernel modules.
+
+> I know Slackware 7.1 and 8.0 enable this feature.
+
+Ah. Well then, Philippe's possibly suffering from the well-known
+ipchains syndrome. lsmod would show this.
+
+The solution is remove the ipchains modules (if they're not compiled
+into a monolithic kernel) and substitute iptables.
+
+Under Red Hat, up to v7.2, anyway, it was standard to start up ipchains
+instead of iptables after a fresh install. All the iptables stuff had to
+be done by hand, i.e. stopping automatic loading and enabling automatic
+loading of iptables.
+
+Tony
+
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
 
 
 
+--=-aqvnJ2uUWuofzLLn0mDy
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA8/a7u99dgUTvnuYERAvhpAJ0dgXqPDxckaidjbfgN3gQlwr0nVgCfdc44
+u0hesKgzv+DRzCzIiee9gJM=
+=4FY6
+-----END PGP SIGNATURE-----
+
+--=-aqvnJ2uUWuofzLLn0mDy--
 
 
