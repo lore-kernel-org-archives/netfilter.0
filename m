@@ -1,13 +1,12 @@
-From: Patrick Schaaf <bof@bof.de>
-Subject: Re: Rule question
-Date: Sat, 22 Jun 2002 10:17:41 +0200
+From: "Joe de Vera Jr." <jhoedv@we-amuse.com>
+Subject: Re: Iptables Problem on DNS Server
+Date: Sat, 22 Jun 2002 21:01:26 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020622101741.K5183@oknodo.bof.de>
-References: <200206220935.12908.captain.nuke@gmx.at> <20020622094607.H5183@oknodo.bof.de> <20020622075338.KGUZ19225.mta07-svc.ntlworld.com@there> <20020622100824.J5183@oknodo.bof.de>
+Message-ID: <001201c21a6a$a6f45080$6500a8c0@systemsadmin>
+References: <20020622003205.C81D44808@lists.samba.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020622100824.J5183@oknodo.bof.de>; from bof@bof.de on Sat, Jun 22, 2002 at 10:08:24AM +0200
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,17 +17,87 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick Schaaf <bof@bof.de>
-Cc: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-(again replying to myself. early morning makes thought so slow...)
-> I like the incoming TCP connections through my application level
-> proxy to use the firewall's external IP address as the source, for the
-> sake of packet filters on my internal nodes.
+here's my ruleset in my machine... seen anything wrong or lacking here?
 
-Make that "for the sake of packet filters AND LOGFILES".
+just to remind you guys my problem is that.. when my firewall is running my
+DNS don't work... thanks!
 
-have a nice weekend
-  Patrick
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          state
+RELATED,ESTABLISHED
+ACCEPT     tcp  --  216.138.0.0/16       0.0.0.0/0          tcp dpt:21
+ACCEPT     tcp  --  216.138.0.0/16       0.0.0.0/0          tcp dpt:22
+ACCEPT     tcp  --  216.138.0.0/16       0.0.0.0/0          tcp dpt:110
+ACCEPT     tcp  --  216.208.0.0/16       0.0.0.0/0          tcp dpt:21
+ACCEPT     tcp  --  216.208.0.0/16       0.0.0.0/0          tcp dpt:22
+ACCEPT     tcp  --  216.208.0.0/16       0.0.0.0/0          tcp dpt:110
+ACCEPT     tcp  --  196.40.0.0/16        0.0.0.0/0          tcp dpt:21
+ACCEPT     tcp  --  196.40.0.0/16        0.0.0.0/0          tcp dpt:22
+ACCEPT     tcp  --  196.40.0.0/16        0.0.0.0/0          tcp dpt:110
+ACCEPT     tcp  --  203.87.0.0/16        0.0.0.0/0          tcp dpt:21
+ACCEPT     tcp  --  203.87.0.0/16        0.0.0.0/0          tcp dpt:22
+ACCEPT     tcp  --  203.87.0.0/16        0.0.0.0/0          tcp dpt:110
+ACCEPT     tcp  --  24.100.0.0/16        0.0.0.0/0          tcp dpt:21
+ACCEPT     tcp  --  24.100.0.0/16        0.0.0.0/0          tcp dpt:22
+ACCEPT     tcp  --  24.100.0.0/16        0.0.0.0/0          tcp dpt:110
+DROP       tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:21
+DROP       tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:22
+DROP       tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:110
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:80 state
+NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:21 state
+NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:25 state
+NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:22 state
+NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:53 state
+NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:3306
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:110
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:1127
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:2047
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:5012
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:6563
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:6564
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:7012
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:7017
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:7019
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:7021
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:8000
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:8007
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:8010
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:8080
+state NEW
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:10000
+state NEW
+REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0          reject-with
+tcp-reset
+REJECT     udp  --  0.0.0.0/0            0.0.0.0/0          reject-with
+icmp-port-unreachable
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
 
