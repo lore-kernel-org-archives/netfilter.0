@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: "iptables: Invalid argument" with kernel 2.4.20
-Date: Mon, 16 Dec 2002 14:35:06 -0500
+From: "Ranjeet Shetye" <ranjeet.shetye@zultys.com>
+Subject: RE: problem with UN-DNAT, source is same machine
+Date: Mon, 16 Dec 2002 12:04:35 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212161435.06101.netfilter@newkirk.us>
-References: <Pine.LNX.4.44.0212161717490.11632-100000@flex.cs.kun.nl>
-Reply-To: netfilter@newkirk.us
+Message-ID: <002a01c2a53e$5b26cca0$0100a8c0@zultys.com>
+References: <3DF2E9D3.6010006@technologist.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0212161717490.11632-100000@flex.cs.kun.nl>
+In-Reply-To: <3DF2E9D3.6010006@technologist.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +18,118 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: cees-bart <ceesb@cs.kun.nl>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Monday 16 December 2002 11:25 am, cees-bart wrote:
-> hi all,
 
-> -A OUTPUT -d MYMACHINE -p udp -m udp --dport 27960 -j DNAT \
->                            --to-destination OTHERMACHINE:30000
+Is your Kernel enabled with the LOCAL_NAT option ?
 
-> this setup works fine on kernel 2.4.19 with iptables 1.2.6a.
->
-> BUT, the last rule (OUTPUT) fails with message "iptables: Invalid
-> argument" when running under 2.4.20.
->
-> i tried iptables 1.2.7a as well, but the result is the same.
->
-> am i doing something wrong?
+"make xconfig" or "make menuconfig"
 
-Have you tried manually creating the rule, or are you restoring from a=20
-save made with the earlier version?  Since you list it in a save format,=20
-(dated November 12) and said it won't load, this strikes me as likely. =20
-I don't know, but it's possible this won't work.  Just try a:
+Click on "Networking options", click on "IP:NetFilter Configuration",
+click on "NAT of local connections". 
 
-/sbin/iptables -t nat -A OUTPUT -d MYMACHING -p udp --dport 27960 \
-=09-j DNAT --to OTHERMACHINE:30000
+This is the option "CONFIG_IP_NF_NAT_LOCAL" in your .config file.
 
-and see if it accepts it.  If so, then there must have been some change=20
-in the save file structure or handling (possibly fixing a flaw) that=20
-prevents newer netfilter form restoring from the older save.
+Ranjeet Shetye
+Senior Software Engineer
+Zultys Technologies
+771 Vaqueros Avenue
+Sunnyvale  CA  94085
+USA
+Ranjeet.Shetye@Zultys.com
+http://www.zultys.com/
 
-If you require the ability to use the same save under both versions, it's=
-=20
-possible that saving from the new will be restorable in the old, even if=20
-the reverse turns out to be broken.
+ 
 
-j
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org 
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
+> Frank Wallingford
+> Sent: Saturday, December 07, 2002 10:42 PM
+> To: netfilter@lists.netfilter.org
+> Subject: problem with UN-DNAT, source is same machine
+> 
+> 
+> Here's one I can't quite wrap my head around.
+> 
+> I got tcp port forwarding working from machine 192.168.0.100 
+> to machine 
+> 192.168.0.200 with two rules:
+> 
+> iptables -t nat -A PREROUTING -d 192.168.0.100 -p tcp --dport 22 \
+>    -j DNAT --to 192.168.0.200
+> iptables -t nat -A POSTROUTING -d 192.168.0.200 -p tcp --dport 22 \
+>    -j SNAT --to 192.168.0.100
+> 
+> I realized that I needed the second rule because the hosts 
+> were on the 
+> same network, and without it, replies from .200 would go 
+> straight to the 
+> source.
+> 
+> This works for all machines *except* 192.168.0.100. I wanted 
+> to connect 
+> from .100 to .100 on the port, and have it forwarded to .200. 
+> First, I 
+> realized that I needed a rule on OUTPUT, because locally generated 
+> packets don't traverse PREROUTE. So for testing, I flushed all the 
+> rules, and started over with:
+> 
+> iptables -t nat -A OUTPUT -d 192.168.0.100 --dport 22 \
+>    -j DNAT --to 192.168.0.200
+> 
+> Now, I'm only trying to get this one case working:
+> 
+> (from machine 192.168.0.100:) ssh 192.168.0.100
+> 
+> and I'd like it to connect to 192.168.0.200. I'm not sure why 
+> it isn't.
+> 
+> I've also tried the above rule with a second SNAT rule, which 
+> doesn't help.
+> 
+>  From what I understand, this should be the case:
+> (1) The packet starts as
+> 	SOURCE: 192.168.0.100:port_a (some random port)
+> 	DEST:   192.168.0.100:22
+> (2) While traversing the OUTPUT chain in the NAT table, it's changed:
+> 	SOURCE: 192.168.0.100:port_a
+> 	DEST:   192.168.0.200:22
+> (3) The packet is sent out
+> (4) Host 192.168.0.200 sees it and sends the reply
+> 	SOURCE: 192.168.0.200:22
+> 	DEST:   192.168.0.100:port_a
+> (5) The packet arrives, and is un-snat'd:
+> 	SOURCE: 192.168.0.100:22
+> 	DEST:   192.168.0.100:port_a
+> (6) The local process sees a reply from the local machine, 
+> and accepts it.
+> 
+> What's actually happening is that it's getting as far as (4), and the 
+> reply comes in, but the local process doesn't accept it. I'm guessing 
+> this is because it wasn't un-snat'd correctly, or I'm doing 
+> something wrong.
+> 
+> I've also tried a few permutations of putting 0 in 
+> /proc/sys/net/ipv4/conf/eth0/rp_filter, in case something weird was 
+> happening there.
+> 
+> 
+> I would be grateful if anyone had any insight into why this doesn't 
+> work, what I'm doing wrong, or how to forward a tcp port from 
+> machine A 
+> to machine B and have it work when the packets originate from 
+> machine A 
+> itself.
+> 
+> Thanks,
+> 
+> -- 
+> ----------------------------------
+> Frank Wallingford
+> frank.wallingford@technologist.com
+> 
+> 
+
 
