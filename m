@@ -1,11 +1,11 @@
-From: "Kyoungyong Lee" <leeky@icu.ac.kr>
-Subject: Writing a netfilter module..
-Date: Sun, 17 Aug 2003 15:46:28 +0900
+From: "Kent Wang" <kwang@kwang.org>
+Subject: Prioritizing Quake packets
+Date: Sun, 17 Aug 2003 04:38:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <02be01c3648b$49a1d440$da836bd2@kylee>
+Message-ID: <004101c364a3$5081b330$c800a8c0@eclipse>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_02BB_01C364D6.B8DE6F30"
+	boundary="----=_NextPart_000_0042_01C36479.67ABAB30"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,53 +20,111 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_02BB_01C364D6.B8DE6F30
+------=_NextPart_000_0042_01C36479.67ABAB30
 Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: base64
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-aGVsbG8sIGZvbGtzLg0KDQpJJ20gd3JpdGluZyBhIG5ldGZpbHRlciBtb2R1bGUgcHJvZ3JhbS4N
-Cg0KdGhlIHB1cnBvc2Ugb2YgdGhpcyBwcm9ncmFtIGlzIGZvcndhcmRpbmcgYSBwYWNrZXQgYWNj
-b3JkaW5nIHRvIHRoZSBpcCBhZGRyZXNzIG9yIHBvcnQgIyBvZiBpbmNvbWluZyBwYWNrZXQuDQoN
-CmZvciBleGFtcGxlLCBpZiB0aGUgcG9ydCAjIG9mIGluY29taW5nIHBhY2tldCBpcyA5OTk5LCBp
-IHdhbnQgdG8gZm9yd2FyZCB0aGlzIHBhY2tldCB0byAyMTAuMTA3Lnh4eC55eXkuDQoNCkFueXdh
-eSwgSSBob29rZWQgaW5jb21pbmcgcGFja2V0IA0KDQpidXQgYWZ0ZXIgY2hlY2tpbmcgdGhlIHBv
-cnQvaXAgYWRkciBJIGNhbm5vdCBmb3J3YXJkaW5nIGl0IGRpcmVjdGx5IHRvIHNwZWNpZmllZGwg
-aXAgYWRkcmVzcy4NCg0KaXMgdGhlcmUgYW55b25lIHdobyBrbm93IHRoZSB3YXkgaG93IHRvIGZv
-cndhcmQgcGFja2V0IGRpcmVjdGx5Pz8NCg0KVGhhbmtzIHZlcnkgbXVjaCBpbiBhZHZhbmNlLi4N
-Cg0KLWxlZWt5LQ==
+I'm running a firewall that's connected to a cable modem. The users
+behind this are running some filesharing programs and sometimes Quake. I
+want to prioritize all the Quake packets so that my ping doesn't
+skyrocket when someone is downloading from me in Kazaa.
 
-------=_NextPart_000_02BB_01C364D6.B8DE6F30
+ 
+
+I was able to figure out how to run NAT and packet filtering, so I just
+need to know 1) if this is possible at all and 2) which general area of
+the docs should I look at.
+
+ 
+
+Kent Wang
+
+
+------=_NextPart_000_0042_01C36479.67ABAB30
 Content-Type: text/html;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: base64
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWtzX2NfNTYwMS0xOTg3Ij4NCjxNRVRBIGNvbnRlbnQ9Ik1T
-SFRNTCA2LjAwLjI4MDAuMTE3MCIgbmFtZT1HRU5FUkFUT1I+DQo8U1RZTEU+PC9TVFlMRT4NCjwv
-SEVBRD4NCjxCT0RZIGJnQ29sb3I9I2ZmZmZmZj4NCjxESVY+PEZPTlQgc2l6ZT0yPmhlbGxvLCBm
-b2xrcy48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+
-DQo8RElWPjxGT05UIHNpemU9Mj5JJ20gd3JpdGluZyBhIG5ldGZpbHRlciBtb2R1bGUgcHJvZ3Jh
-bS48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8
-RElWPjxGT05UIHNpemU9Mj50aGUgcHVycG9zZSBvZiZuYnNwO3RoaXMgcHJvZ3JhbSBpcyBmb3J3
-YXJkaW5nIGEgDQpwYWNrZXQmbmJzcDthY2NvcmRpbmcgdG8mbmJzcDt0aGUgaXAgYWRkcmVzcyBv
-ciBwb3J0ICMmbmJzcDtvZiBpbmNvbWluZyANCnBhY2tldC48L0ZPTlQ+PC9ESVY+DQo8RElWPjxG
-T05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5mb3IgZXhh
-bXBsZSwgaWYgdGhlIHBvcnQgIyBvZiBpbmNvbWluZyBwYWNrZXQgaXMgOTk5OSwgaSB3YW50IA0K
-dG8gZm9yd2FyZCB0aGlzIHBhY2tldCB0byAyMTAuMTA3Lnh4eC55eXkuPC9GT05UPjwvRElWPg0K
-PERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+
-QW55d2F5LCBJJm5ic3A7aG9va2VkIGluY29taW5nIHBhY2tldCA8L0ZPTlQ+PC9ESVY+DQo8RElW
-PjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5idXQg
-YWZ0ZXIgY2hlY2tpbmcgdGhlIHBvcnQvaXAgYWRkciBJIGNhbm5vdCBmb3J3YXJkaW5nIGl0IA0K
-ZGlyZWN0bHkgdG8gc3BlY2lmaWVkbCBpcCBhZGRyZXNzLjwvRk9OVD48L0RJVj4NCjxESVY+PEZP
-TlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPmlzIHRoZXJl
-IGFueW9uZSB3aG8ga25vdyB0aGUgd2F5IGhvdyB0byBmb3J3YXJkIHBhY2tldCANCmRpcmVjdGx5
-Pz88L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8
-RElWPjxGT05UIHNpemU9Mj5UaGFua3MgdmVyeSBtdWNoIGluIGFkdmFuY2UuLjwvRk9OVD48L0RJ
-Vj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6
-ZT0yPi1sZWVreS08L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
+<html>
 
-------=_NextPart_000_02BB_01C364D6.B8DE6F30--
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.emailstyle17
+	{font-family:Arial;
+	color:windowtext;}
+span.EmailStyle18
+	{font-family:Arial;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I&#8217;m running a firewall that&#8217;s connected =
+to a
+cable modem. The users behind this are running some filesharing programs =
+and
+sometimes Quake. I want to prioritize all the Quake packets so that my =
+ping
+doesn&#8217;t skyrocket when someone is downloading from me in =
+Kazaa.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I was able to figure out how to run NAT and packet
+filtering, so I just need to know 1) if this is possible at all and 2) =
+which
+general area of the docs should I look at.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Kent Wang</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0042_01C36479.67ABAB30--
+
 
 
