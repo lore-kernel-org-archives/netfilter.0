@@ -1,13 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Server can't send :-/
-Date: Thu, 04 Sep 2003 13:52:39 +0200
+From: "jimbo jones" <jdvuyk_crap@hotmail.com>
+Subject: Re: GRE/PPTP Pass-through problems
+Date: Thu, 04 Sep 2003 13:57:19 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062676358.7531.21.camel@elendil.intranet.cartel-securite.net>
-References: <001801c371ee$abce1230$0000fea9@kessler.local>
+Message-ID: <Sea1-F69QuN6tdqVvPd000053cc@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001801c371ee$abce1230$0000fea9@kessler.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +14,131 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "yomega.info - Stephan Kessler" <sk@yomega.info>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: wim.ceulemans@able.be
 Cc: netfilter@lists.netfilter.org
 
-Le mer 03/09/2003 =E0 09:40, yomega.info - Stephan Kessler a =E9crit :
-> I got that Configuration of my Firewall:
-> http://warpy.yomeganet.biz/fw.txt
-> It seemed to be nice, everything worked but then i tried to initiate
-> outbound Traffic from my Server via SSH. The result: I can't establish
-> any connection from my to an another, except DNS (via UDP?). What did i
-> wrong?
+Hi,
+Thanks for your reply re: my problem.
 
-Returning packets will get dropped by last rule, for they are not
-destined to any of accepted ports. You have to add a rule to accept them
-explicitly, such as one using ESTABLISHED and RELATED states.
+probably the most important thing you can tell me is if I have to appy any 
+patches or modules in order to make this work.  There is a heck of alot of 
+differing opinions on the various forums and im not sure which way to turn.  
+I just want to rule this out knowing that it is essentially native in a 
+standard kernel and it should be just a configuration issue.
 
-By the way, I don't understand why your chains policy are all set to
-ACCEPT... In particular, OUTPUT rules are useless for they only ACCEPT
-in an ACCEPT policy chain ! Moreover, in INPUT chain, you implicitly
-allow any layer 4 protocol that is not TCP or ICMP (remember that trojan
-catched by Honeynet project that used IP protocol 11 for
-communications...).
+Cheers
+Jamie
 
-What I would do is :
 
-	1. set all chains policy to DROP :
-		iptables -P INPUT DROP
-		iptables -P OUTPUT DROP
-		iptables -P FORWARD DROP
+>From: Wim Ceulemans <wim.ceulemans@able.be>
+>To: Jamie Vuyk <jvuyk@jacobson.co.uk>
+>CC: netfilter@lists.netfilter.org
+>Subject: Re: GRE/PPTP Pass-through problems
+>Date: Thu, 04 Sep 2003 14:14:57 +0200
+>
+>Hi
+>
+>I had the same problems with GRE not passing through to a server behind the 
+>firewall.
+>I then used kernel 2.4.22 and the latest pom snapshot 
+>(patch-o-matic-20030831) with iptables 1.2.8
+>and gre passed through.
+>
+>However, after testing I notice now that although PPTP connections to a 
+>win2000 server behind the
+>firewall work, that the connection is not reliable. After 3 to 4 minutes 
+>the connection is closed for
+>some unknown reason and people have to re-establish the connection.
+>
+>Anyone experiencing this problem also?
+>
+>Regards
+>Wim
+>
+>Jamie Vuyk wrote:
+>
+>>Hello,
+>>
+>>I hope this will be a simple post that can lay to rest what a lot of
+>>people appear to be having trouble with.  I have read a massive amount
+>>of posts all over the web and there seems to be much confusion in this
+>>simple matter.
+>>
+>>
+>>
+>>Basically there are two aspects to my problems:
+>>
+>>1)       Does the standard kernel (RH 2.4.18) need to be patched in any
+>>way in order to PASS THROUGH proto 47 (GRE) to an internal server?  Im
+>>running a simply iptables firewall which I want to pass an external PPTP
+>>VPN connection through to an internal server.  It is most important to
+>>note that the firewall is masquerading all connections which I think is
+>>where the confusion lies.  As I understand if I want Linux to terminate
+>>the PPTP VPN I need a patch, if I want it to pass through I don't.
+>>However I am having a lot of trouble getting this to work and I would
+>>like to know if Im on the right track.
+>>
+>>
+>>
+>>2)     Given that I don't have to patch anything and it all should "just
+>>work"... I have setup my firewall to allow and forward the 1723 to my
+>>internal server.  This appears to work but the external Win2k box gets
+>>stuck on "verifying username and password".  This eventually times out
+>>with "disconnected".  A simple test was to Telnet to port 1723.
+>>Although there is no response as such from the server (expected) it does
+>>connect with a blank screen both internally and externally suggesting
+>>the forwarding is working ok.  At what point does the 1723 data exchange
+>>end and the "payload" as such start on the GRE protocol?  Is GRE
+>>involved in the 'verifying username and password' stage or is that still
+>>TCP on 1723?  Just so you are aware I have the rest of the firewall
+>>fully operational with various port forwards etc that work fine.  It is
+>>essentially only the VPN's that are giving me grief.
+>>
+>>
+>>
+>>If you could get some basic info I maybe able to troubleshoot this and
+>>get it operational.
+>>
+>>Cheers in advance for you help.
+>>
+>>J
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>
+>
+>--
+>Wim Ceulemans
+>R&D Engineer
+>
+>Secure Internet Communication with aXs Guard
+>
+>Able NV
+>Leuvensesteenweg 282 - B-3190 Boortmeerbeek - Belgium
+>Phone: + 32 15 50.44.00 - Fax: + 32 15 50.44.09
+>E-mail: wim.ceulemans@able.be
+>
+>
+>
+>--
+>Security check on this e-mail has been done by aXs GUARD
+>(http://www.axsguard.com)
+>
 
-	2. get rid of 2 last DROP rules (DROP handled by policy) and
-	   optionnaly add a specific rule for each protocol you really
-	   need to allow (UDP, GRE, ESP, etc.).
+_________________________________________________________________
+Use MSN Messenger to send music and pics to your friends 
+http://www.msn.co.uk/messenger
 
-	3. insert an ESTABLISHED, RELATED state ACCEPT at the top of
-	   INPUT rule :
-		iptables -I INPUT -m state --state ESTABLISHED,RELATED \
-			-j ACCEPT
-
-	4. invert OUTPUT rules order for optimization (far more valid
-	   packets are likely to match second rule than first one) :
-		iptables -D OUTPUT 2
-		iptables -I OUTPUT -m state --state \
-			ESTABLISHED,RELATED -j ACCEPT
-
-	5. add a NEW state match to all ACCEPT rules for services
-
-My 0.02=A4
-
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
