@@ -1,11 +1,10 @@
-From: Jens =?ISO-8859-1?Q?K=FChlberg?= <jn_k@gmx.de>
-Subject: Iptables Log - session Log
-Date: Thu, 12 Dec 2002 09:49:16 +0100 (MET)
+From: "eugenio" <eugenius@freemail.hu>
+Subject: pls help a beginner linux admin - problem with packetfilter setup
+Date: Sat, 7 Dec 2002 15:38:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <10887.1039682956@www54.gmx.net>
+Message-ID: <NHEFIMOGNFCHOOHNLFFEMEHOCFAA.eugenius@freemail.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,19 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+I need to set packetfiltering on a debian linux firewall to enable a network
+game.
+Necessary firewall settings are descibed here:
+http://support.microsoft.com/default.aspx?scid=KB;en-us;q240429
 
-I looking for a tool, witch can analyse iptales logs and show me only
-connections-session in realtime and not the complete IP-traffic.
+The system has client computers with 192.168.1.1x fix local IP addresses (no
+DHCP), and a gateway with both internal (192.168.1.1) and external (both
+fixed) IP adresses, w/ two network card of course (eth0 - external, eth1 -
+internal).
+
+Can anyone give me a hint what settings are necessary?
+
+Thanks in advance,
 
 
-Bye
-Jens
+Eugenio
 
---=20
-+++ GMX - Mail, Messaging & more  http://www.gmx.net +++
-NEU: Mit GMX ins Internet. Rund um die Uhr f=FCr 1 ct/ Min. surfen!
 
 
