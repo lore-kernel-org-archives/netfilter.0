@@ -1,11 +1,9 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Port 25
-Date: 08 Feb 2005 10:32:07 +0100
-Message-ID: <1107854056.17398.1.camel@nostromo.bgsecm.com>
-References: <Pine.LNX.4.05.10502071325260.15692-100000@darkstar.sysinfo.com>
+From: Paulo Ricardo Bruck <pauloric@contato.com.br>
+Subject: Re: iptables + ipsec can't  open an application - SOLVED
+Date: Tue, 08 Feb 2005 09:17:34 -0200
+Message-ID: <1107861454.4475.17.camel@pauloric.intranet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <Pine.LNX.4.05.10502071325260.15692-100000@darkstar.sysinfo.com>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,50 +14,104 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "R. DuFresne" <dufresne@sysinfo.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El lun, 07 de 02 de 2005 a las 19:30, R. DuFresne escribi=C3=B3:
-> I've never heard it is bad, but, te question is how nice one wishes to =
-be
-> to those trying to transgess your security profile.  I tend to use alot=
- of
-> drops, especially for ports like ftp, telnet, some of the printer and
-> shell exec ports, any ports trojans are fond of.  The drop make the oth=
-er
-> end continue trying till the command/connect attepmt is either aborted =
-or
-> timesout, and with autoomated attacks, that can slow down the how littl=
-e
-> nasty prog.  Kinder to me and my other servers, as well as others on th=
-e
-> net when I can slow these things down some.  Reject with rst, those are
-> for the ports that you wish to treat the otherend nicely from.
+>On Fri, Jan 28, 2005 at 06:26:04PM -0200, Paulo Ricardo Bruck wrote:
+>> Hi guys
+> >
+>>I've been testing debian sarge kernel 2.6.8-1 + iptables 1.2.11-8 +
+>>openswan 2.2.0-4 
+>> 
+>> I can ping from desktop1 to desktop2 , but if I try to see a http
+page
+>> at desktop1 from desktop 2 I see a connection time out.
+>>
+>> desktop1-- iptables/openswan1--internet--iptables/openswan2--desktop2
+>> 
+>> ping 192.168.1.7 ( desktop 2)
+>> tcpdump from iptables2 wan
+>> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x22)
+>> IP 192.168.0.11 > 192.168.1.7: icmp 64: echo request seq 1
+>> IP 200.168.52.239 > 200.207.125.76: ESP(spi=0x1e76f500,seq=0x29)
+>> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x23)
+>> ok works
+>> 
+>> 
+>> lynx 192.168.1.7 (desktop2)
+>> tcpdump from iptables2 wan
+>> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x2c)
+>> IP 192.168.0.11.33654 > 192.168.1.7.80: S 3132491911:3132491911(0)
+w>in
+>> 5840 <mss 1460,sackOK,timestamp 33947617 0,nop,wscale 0>
+>> IP 200.168.52.239 > 200.207.125.76: ESP(spi=0x1e76f500,seq=0x39)
+>> IP 200.168.52.239 > 200.207.125.76: ESP(spi=0x1e76f500,seq=0x3a)
+>> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x2d)
+>> IP 192.168.0.11.33655 > 192.168.1.7.80: S 3148629414:3148629414(0)
+>win
+>> 5840 <mss 1460,sackOK,timestamp 33950275 0,nop,wscale 0>
+>> IP 200.168.52.239 > 200.207.125.76: ESP(spi=0x1e76f500,seq=0x3b)
+>> IP 200.207.125.76 > 200.168.52.239: ESP(spi=0x78987d47,seq=0x2e)
+>> IP 192.168.0.11.33655 > 192.168.1.7.80: S 3148629414:3148629414(0)
+win
+>> 5840 <mss 1460,sackOK,timestamp 33953275 0,nop,wscale 0>
+>> 
+>> important rules iptables/ipsec1
+>> iptables -A INPUT   -p 50 -j ACCEPT
+>> iptables -A FORWARD -p 50 -j ACCEPT
+>> iptables -A INPUT   -p 51 -j ACCEPT
+>> iptables -A FORWARD -p 51 -j ACCEPT
+>> iptables -A INPUT   -p udp --sport 500 --dport 500 -j ACCEPT
+>< iptables -A INPUT   -p udp --sport 4500 --dport 4500 -j ACCEPT
+>> #iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS
+->-set-mss
+>> 1440
+>> iptables -A FORWARD -s 192.168.0.0/24 -d 192.168.1.0/24 -j ACCEPT
+>> iptables -A FORWARD -s 192.168.1.0/24 -d 192.168.0.0/24 -j ACCEPT
+>> iptables -t nat -A POSTROUTING  -o $WAN1 -d ! 192.168.1.0/24 -j SNAT
+>>--to-source $IPWAN1
+>> 
+>> I ve already tried using TCPMSS, but not solved.
+>
+>try it again, and use a lower value than 1440--i'd recommend starting
+>at 1400, actually--and work you're way down until it works.  i *would*
+>say tcpdump your external interface and filter for ICMP Type 3 Code 4
+>packets to verify that it's an MTU/MSS problem, but to quote a
+>statement
+>some wizard just made in #iptables:
+>
+>  "perhaps there is icmp filtering at the border router for anything
+>not
+>   an echo reply.  which makes sense cause you normally dont need icmp
+>   messages across the internet"
+>
+>depending on the combination of encapsulations in your specific
+>scenario
+>(WiFi, PPP, etc), i've had to ratchet it down as low as 1330 to get a
+>functional tunnel.
+>
+>-j
+>
 
-I don't have the documentation handy, but it said making just a
-DROP could lead you to being DOS attacked. Have anybody heard
-something about this?
+Hi guys finally I discover the "error" at my nat rule..
+
+Instead of :
+iptables -t nat -A POSTROUTING  -o $WAN1 -j SNAT --to-source $IPWAN1
+
+I insert my local net at the above rule
+iptables -t nat -A POSTROUTING  -s $LOCALNET -o $WAN1 -j SNAT
+--to-source $IPWAN1
+
+But thereis something that still bothering me.
+Why was everything working fine without this last rule and when I
+Install openswan I had to insert $LOCALNET?
+
+Thanks very much for your help Jason and list.
 
 
-> Thanks,
->=20
-> Ron DuFresne
-
-Regards.
-
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+-- 
+Paulo Ricardo Bruck - consultor
+Contato Global Solutions
+tel 011 5031-4932  fone/fax 011 5034-1732  cel 011 9235-4327
 
 
