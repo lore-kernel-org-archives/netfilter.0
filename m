@@ -1,11 +1,12 @@
-From: "Anuradha Kalyan" <anuradk@erivasystems.com>
-Subject: Oulook express not working on client machine
-Date: Thu, 29 Jul 2004 00:36:48 -0700
+From: Victor Julien <victor@nk.nl>
+Subject: best way of knowning what matches and targets are available
+Date: Thu, 29 Jul 2004 12:06:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407290036.AA99483926@erivasystems.com>
-Reply-To: <anuradk@erivasystems.com>
+Message-ID: <200407291206.59046.victor@nk.nl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +17,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi, 
+Hi list,
 
-Sorry for asking a well known question. My squid configuration seems to be fine too. but the outlook express at client machine is not working. 
+I'm developing a netfilter front-end (http://vuurmuur.sourceforge.net) and i 
+was wondering what the best way is to determine which targets and matches are 
+loaded. Just looking at the output of 'lsmod' won't cut it, since not 
+everyone uses modules.
 
-My configuration: 
+I have found /proc/net/ip_tables_matches and /proc/net/targets. Is reading 
+those 'files' the way to go? Can i be sure that if a match is listed 
+in /proc/net/ip_tables_matches i can really use it?
 
-eth0: 192.168.1.97 (My Public IP) 
-eth1: 192.168.5.1 (My Lan IP) 
-
-I have declared 25 and 110 as the safe ports also but still :(( 
-
-Based on therad i saw at linux solve, I tried to do 
-
-/sbin/iptables -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/24 -j MASQUERADE 
-
-But this also having no effect. 
-
-After lot of trials i even tried to disable iptables(https://phone.cs.columbia.edu/cinema/help/Online_documentation/Install/Troubleshoot4.html) and checked for the outlook but still it is not working.
-
-plz guide me to make my pop3 and smtp connections as transparent. 
-
-regards, 
-Anuradha 
- 
-             
+Regards,
+Victor
 
