@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: [Fwd: SNAT to allocat IP from an IP Pool]
-Date: Mon, 30 Sep 2002 22:29:52 +0100
+Subject: Re: ip_nat_pptp & ip_conntrack_pptp help appreciated.
+Date: Mon, 30 Sep 2002 22:22:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020930212955.BQLE28874.mta06-svc.ntlworld.com@there>
-References: <20020930191759.YMUT13996.mta05-svc.ntlworld.com@there> <43876.64.86.49.17.1033420646.squirrel@www.icafe.co.tz>
+Message-ID: <20020930212206.BGUF28874.mta06-svc.ntlworld.com@there>
+References: <0EB90DD25728C04CBD401CDCD72D2A655A8A@homer.no.laasby.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <43876.64.86.49.17.1033420646.squirrel@www.icafe.co.tz>
+In-Reply-To: <0EB90DD25728C04CBD401CDCD72D2A655A8A@homer.no.laasby.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,34 +20,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 30 September 2002 10:17 pm, Mitesh P Choksi wrote:
+On Monday 30 September 2002 10:10 pm, Kjetil Laasby wrote:
 
-> I keep changing my question based on what I learn from this list and from
-> the other articles on the net regarding netfilter.
+> Hello !
 >
-> As I mentioned in my first email, I had dial-up users, then I mentioned
-> that I had LAN users, actually I have dial-up users on the RAS being
-> allocated private ip along with other LAN users who have private IP as
-> well. All in all I have /24 for all the users.
-> But, I have only 16 public IP address to spare and share among the /24
-> private IP addresses.
+> I've got a little problem thats disrupting my nightsleep - and I
+>  hope someone could point me into where I'm doing wrong.
+>
+> My configuration is like this :
+> ---------------------------------------------
+> 80.x.x.x  (Valid IP)
+> Cisco DSL router
+> (one rule - NAT all to 10.0.2.1)
+>
+> 10.0.2.1 - RedHat 7.3 - kernel-2.4.20-pre8   (this Iface will receive
+> 							     all data
+> from valid-IP)
+> 	(Routing enabled, Netfilter 1.2.7a)
+> 10.0.0.1 - RedHat 7.3 - kernel-2.4.20-pre8
+>
+> 10.0.0.2 - Windows box (Client)
+>
+> My goal is to have a PPTP server (with PoPToP).
 
-This is still not an answer to my question (and that fact that you are 
-changing your question as the emails proceed is probably contributing to my 
-confusion).
+If you need to build NAT support for PPTP into the Linux box, then you would 
+need to do the same thing on the Cisco box if you're going to do NAT there as 
+well.
 
-Please answer this question:
+The whole point of netfilter support for PPTP through NAT is that PPTP 
+doesn't work through NAT without it - therefore it won't work through NAT on 
+the Cisco box either.
 
-Do you *only* need SNAT so that your internal clients (I don't care whether 
-they're LAN users or dial-up users) can access things out on the Internet, or 
-do you *also* need DNAT to allow connections in to those users, initiated 
-from the Internet end of the link ?
+Your best bet might actually be to perform the opposite NAT on the Linux box 
+that you're doing on the Cisco, put the same 80.x.x.x valid IP on the Windows 
+client as you have on the outside of the Cisco router, and see whether PPTP 
+will work, thinking there's no NAT going on at all (because the two cancel 
+each other out).
 
 Antony.
 
 -- 
 
-Most people are aware that the Universe is big.
-
- - Paul Davies, Professor of Theoretical Physics
+The difference between theory and practice is that
+in theory there is no difference, whereas in practice there is.
 
