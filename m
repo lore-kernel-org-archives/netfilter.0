@@ -1,12 +1,12 @@
-From: Ilguiz Latypov <ilguiz@nit.ca>
-Subject: Re: HELP PPTP CONNTRACK MULTIPLE CLIENTS
-Date: Thu, 5 Dec 2002 14:58:25 -0500 (EST)
+From: Maxim Berlin <mak@rtsnet.ru>
+Subject: port forwarding
+Date: Thu, 5 Dec 2002 23:56:27 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0212051454220.11714-100000@localhost.localdomain>
-References: <3DEF504A.F4099ACE@multitech.co.in>
+Message-ID: <285598680.20021205235627@rtsnet.ru>
+Reply-To: Maxim Berlin <mak@rtsnet.ru>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DEF504A.F4099ACE@multitech.co.in>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Adharsh Praveen R <adarsh@multitech.co.in>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hello all,
 
-Adharsh,
+Players at my office asks me to give them access to outside counterstrike
+server, UDP 21705. unfortunatelly, i am brand new in iptables, so i've
+read the docs and started make rules, but they does not work.
+Then i've tried simple
+root@woody~/iptables>cat 1.sh
+#!/bin/sh
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -v -F -t nat
+iptables -v -F
+iptables -v -A FORWARD -p tcp --dport 205 -j ACCEPT
+iptables -v -t nat -A PREROUTING -p tcp --dport 205 -j DNAT --to-destination 172.17.32.12:25
 
-Philip has posted a patch to the netfilter patch-o-matic PPTP patch.  The
-latter seems to apply well against the stock Linux kernel 2.4.20 from
-kernel.org.  All it takes is patching the netfilter patch first, then
-running the POM runme script with the extra parameter.
+, then telnet to woody:205 and there is no refusal and no answer.
 
-The PoPToP server itself may need a modification with regard to call ID
-allocation, see
+root@woody~/iptables>cat /proc/net/ip_conntrack
+[...]
+tcp      6 118 SYN_SENT src=172.17.32.5 dst=172.17.144.110 sport=2020 dport=205 [UNREPLIED] src=172.17.32.12 dst=172.17.32.5 sport=25 dport=2020 use=1
 
-http://sourceforge.net/tracker/index.php?func=detail&aid=648880&group_id=44827&atid=441003
+Can someone please tell me, what i am doing wrong? why [UNREPLIED]?
+should i create rule to pass packets back from 172.17.32.5 to client?
 
---
-Ilguiz Latypov
-Net Integration Technologies, Inc
+p.s. iptables v1.2.6a, kernel 2.4.18
 
-tel. +1 (514) 281 9191 x 117
-
-On Thu, 5 Dec 2002, Adharsh Praveen R wrote:
-
-
-> I saw a patch in December's list from Philip.
->
-> I would like to know the steps involved in getting PPTP conntrack work.
->
-> Which patch I should apply first, is it the one from netfilter.org
-> pptp-conntrack-nat.patch?
+Best wishes,
+ Maxim                          mailto:mak@rtsnet.ru
 
 
