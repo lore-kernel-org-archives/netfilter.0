@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Using mangle table to change source address, how?
-Date: Mon, 4 Nov 2002 20:45:29 +0000
+From: =?utf-8?q?Andr=C3=A9s=20Su=C3=A1rez?= <webmaster@colservers.com>
+Subject: nat problems
+Date: Tue, 5 Nov 2002 01:03:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021104204536.GNJJ27595.mta05-svc.ntlworld.com@there>
-References: <m3vg3d84fo.fsf@khem.blackfedora.com>
+Message-ID: <200211050103.26775.webmaster@colservers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <m3vg3d84fo.fsf@khem.blackfedora.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +16,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 04 November 2002 8:28 pm, Mark Atwood wrote:
+Hi:
 
-> I have an interface eth1, with an IP address 192.168.23.100
->
-> I've configured eth1 to have a subinterface eth1:0, and
-> have given that subinterface an IP address 172.23.1.3.
->
-> There is a host on the segment that this interface is connected to
-> with an IP address of 172.23.1.2.
->
-> If I send packets to that host 172.23.1.2, the packets from me have a
-> source address of 192.168.23.100, not 172.23.1.3!
->
-> Can I use the mangle table to rewrite the source address?  If so,
-> what is the iptable command line?
->
-> Or is there an easier way?
+I'm new to this list, and I have a problem that I don't know if is solved=
+ yet,=20
+but I really need help.
 
-Use the nat table - that's what it's for.
+I have a linux machine, with one public IP address, running dns, www, smt=
+p,=20
+and other services. I have some domains hosted on this machine. Those dom=
+ains=20
+have the same IP, because I have only one. That is working fine, I can se=
+e=20
+all of my domains, send mails from and to my machine. Thouse domains are=20
+visible to and from the internet.
 
-eg
+My problem begins here. I want to host one of this domains on other compu=
+ter,=20
+inside my local network. This computer have a private IP.=20
+I create a rule on my iptable, that change the destination address for th=
+at=20
+domain:
+iptables -t nat -A PREROUTING -s 0/0 -d mydomain.com -i eth0 -p tcp --dpo=
+rt 80=20
+-j DNAT --to 10.0.0.2
 
-iptables -A POSTROUTING -t nat -d 172.23.1.2 -j SNAT --to 172.23.1.3
+eth0 is the ethernet card that is connected to the internet. mydomain.com=
+ is=20
+the domain that I want to host on the local machine wich have the local i=
+p=20
+10.0.0.2
 
-Antony.
+That make that all the traffic on the port 80, goes to the 10.0.0.2 ip, a=
+nd=20
+the other domains, on the machine connected to the internet, goes to that=
+ ip=20
+too, and I want ONLY that domain redirect to the private network, to make=
+ a=20
+some kind of dedicated server, using one public ip, and some virtual serv=
+ers=20
+on the main maiche (wich is connected to the internet and have the public=
+=20
+ip).
 
--- 
+Thanks,
 
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
+Andres Suarez
+Webmaster
+http://www.colservers.com
 
