@@ -1,13 +1,12 @@
-From: David T-G <davidtg-netfilter@justpickone.org>
-Subject: where is libipt_match.so?
-Date: Wed, 28 May 2003 23:43:44 -0400
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: where is libipt_match.so?
+Date: Thu, 29 May 2003 13:54:45 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030529034344.GF33081@justpickone.org>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D40@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="O8XZ+2Hy8Kj8wLPZ"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,13 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: NetFilter Users' List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: David T-G <davidtg-netfilter@justpickone.org>, NetFilter Users' List <netfilter@lists.netfilter.org>
 
+Have you searched for the file?
 
---O8XZ+2Hy8Kj8wLPZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+# Unix compatible search. ;)
+find / -name libipt_match.so -exec ls -l {} \;
+
+if it's in a different location just symbolic link it to where ever it's
+looking for it.. ;) cheap way out..
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+=20
+
+-----Original Message-----
+From: David T-G [mailto:davidtg-netfilter@justpickone.org]
+Sent: Thursday, May 29, 2003 1:44 PM
+To: NetFilter Users' List
+Subject: where is libipt_match.so?
+
 
 Hi again, all --
 
@@ -33,10 +52,11 @@ iptables setup script.  Everything (NIC discovery, init script creation,
 etcetc) appears to have gone well but iptables has a problem:
 
   ...
-  iptables -t filter -A INPUT -i eth0 -m match NEW,RELATED,ESTABLISHED -j A=
-CCEPT
-  iptables v1.2.7a: Couldn't load match `match':/usr/lib/iptables/libipt_ma=
-tch.so: cannot open shared object file: No such file or directory
+  iptables -t filter -A INPUT -i eth0 -m match NEW,RELATED,ESTABLISHED
+-j ACCEPT
+  iptables v1.2.7a: Couldn't load match
+`match':/usr/lib/iptables/libipt_match.so: cannot open shared object
+file: No such file or directory
 
 This worked before, but I had also mucked around with the SuSEfirewall2
 scripts before; sure enough, it isn't there now.  Where does that file
@@ -48,22 +68,11 @@ TIA & HAND
 :-D
 --=20
 David T-G                      * There is too much animal courage in=20
-(play) davidtg@justpickone.org * society and not sufficient moral courage.
-(work) davidtgwork@justpickone.org  -- Mary Baker Eddy, "Science and Health"
-http://justpickone.org/davidtg/      Shpx gur Pbzzhavpngvbaf Qrprapl Npg!
+(play) davidtg@justpickone.org * society and not sufficient moral
+courage.
+(work) davidtgwork@justpickone.org  -- Mary Baker Eddy, "Science and
+Health"
+http://justpickone.org/davidtg/      Shpx gur Pbzzhavpngvbaf Qrprapl
+Npg!
 
-
---O8XZ+2Hy8Kj8wLPZ
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (FreeBSD)
-
-iD8DBQE+1YHwGb7uCXufRwARAmwBAJ9ee2dt8CMGwDLjb+L1kUsRdktTmACeLZaz
-uNY0c84bJwPoNy4wv1NrBKw=
-=G33C
------END PGP SIGNATURE-----
-
---O8XZ+2Hy8Kj8wLPZ--
 
