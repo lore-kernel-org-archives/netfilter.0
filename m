@@ -1,13 +1,14 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: DNAT on POSTROUTING or someother way?
-Date: 03 Apr 2003 17:29:49 +0200
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Bridge with iptables
+Date: Thu, 3 Apr 2003 10:24:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049383790.1937.3.camel@kermit.spenneberg.de>
-References: <200304030034.17067.dag@gruneau.com>
+Message-ID: <200304031024.03315.netfilter@newkirk.us>
+References: <071f01c2f9ef$86489980$13fcc5cb@Housecall>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304030034.17067.dag@gruneau.com>
+In-Reply-To: <071f01c2f9ef$86489980$13fcc5cb@Housecall>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +19,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Dag Gruneau <dag@gruneau.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: hare ram <hareram@sol.net.in>, netfilter@lists.samba.org
 
-Am Don, 2003-04-03 um 00.34 schrieb Dag Gruneau:
-> Hello,
-> I need to hide several identical targets behind a host but have failed
-> to accomplish this. Hope someone on the list can help me.
-> 
-> The set-up is shown below (good old ASCII drawings). My objectiv
-> is to set up a testsite where several (more than the shown three)
-> etherbased targets are to be tested. Each target has a FIXED ip. One target
-> is attached to one ethernet port on the server. Every target has the same
-> ip address.
-> 
-> My question: is it possible to access the differnt targets from the
-> LAN side via ip 10.1.1.11-13. A DNAT in a nat POSTROUTING rule would do
-> it, but that's not allowed.
-> 
-> Is there any other way to accomplish this?
-Well, that depends. By default I do not know of any additional way. If
-you enable sourcerouting, it should be possible, though.
+On Thursday 03 April 2003 09:44 am, hare ram wrote:
+> Hi
+>
+> iam trying to setup a bridge with iptable
+> i have setup the transparent bridge,
+>
+> and iam try to mark the http packets for QOS
+> iam not able to see the packets
+>
+> i was going through the Lartc.org
+> some where i read at this stage ( kernel 2.4.18-27 Redhat iam using)
+> bridge will not support iptables.
+> it will support only on kernel 2.5, is this true
+>
+> if false, where can i get the right documentation which help me to
+> setup bridge with packet filtering
 
-Ralf
-> 
-> 
->                  LAN side           Test side  
-> -----------              Server    
-> ! Client1 !-----!       ----------        -----------
-> -----------     !       !10.1.1.11/24-----! Target1 !
-> 10.0.0.1/24     !       !        !        -----------
->                 !       !        !        10.1.1.1/24
->                 !       !        !
-> -----------     !       !        !        -----------
-> ! Client2 !-----!-------!10.1.1.12/24-----! Target2 !
-> -----------     !       !        !        -----------
-> 10.0.0.2/24     !       !        !        10.1.1.1/24
->                 !       !        !        
->                 !       !        !        -----------
-> -----------     !       !10.1.1.13/24-----! Target3 !
-> ! Client3 !-----!       ----------        -----------
-> -----------       10.0.0.10/24            10.1.1.1/24
-> 10.0.0.3/24
-> 
-> I am running kernel 2.4.19, soon 2.4.20 with iptables 1.2.7a
-> 
-> Thanks in advance
-> /Dag
-> 
-> 
--- 
-Ralf Spenneberg
-RHCE, RHCX
+It is possible to patch the 2.4.x kernel.  Then you select "802.1d=20
+Ethernet Bridging" and "netfilter (firewalling) support" when=20
+configuring the kernel.
 
-IPsec/PPTP Kernels for Red Hat Linux:  
-http://www.spenneberg.com/.net/.org/.de
-Honeynet Project Mirror:                http://honeynet.spenneberg.org
-Snort Mirror:                           http://snort.spenneberg.org
+You need to download the br-nf patch and patch the kernel source with it.=
+ =20
+It is available at:
+http://bridge.sourceforge.net/
+
+The file you are looking for is:
+http://bridge.sourceforge.net/devel/bridge-nf/bridge-nf-0.0.7-against-2.4=
+=2E19.diff
+
+The documentation I successfully followed to build a transparent=20
+filtering bridge with a 2.4.x kernel is:
+http://www.think-future.de/DOCUMENTATION/Ethernet-Bridge-netfilter-HOWTO/
+
+I browsed other documents, and found another well-written one that=20
+covered the initial steps well, but when I tried to bring the bridge=20
+interface up using those instructions it failed.  The above link's=20
+approach worked painlessly, and it took about 25 minutes from download=20
+to a working filtering bridge, which now sits between an ISP and the=20
+internet.
+
+j
+
 
