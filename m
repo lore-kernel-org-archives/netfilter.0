@@ -1,13 +1,15 @@
-From: =?koi8-r?B?6czY0SD7ydDJw8nO?= <ilia@chel.skbkontur.ru>
-Subject: Re: [squid-users] How to allow traffic other than http
-Date: Thu, 14 Nov 2002 14:07:22 +0500 (YEKT)
+From: "Michael H. Warfield" <mhw@wittsend.com>
+Subject: Re: Trojaned tcpdump and libpcap
+Date: Wed, 13 Nov 2002 12:10:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021114140147.I57053-100000@sol.chel.skbkontur.ru>
-References: <AAEOLIGMOIBLFHGNBBEMCEHMCBAA.glens@cybercorpinc.com>
+Message-ID: <20021113171026.GI7463@alcove.wittsend.com>
+References: <91F7518FF779D41181A700010266356D015555E1@mail.springbound.com> <000201c28b31$490a37e0$52cc53c6@simutronics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-md5;
+	protocol="application/pgp-signature"; boundary="TA4f0niHM6tHt3xR"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <AAEOLIGMOIBLFHGNBBEMCEHMCBAA.glens@cybercorpinc.com>
+Content-Disposition: inline
+In-Reply-To: <000201c28b31$490a37e0$52cc53c6@simutronics.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,105 +19,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="koi8-r"
-To: Glen Spidal <glens@cybercorpinc.com>
-Cc: Net Filter <netfilter@lists.netfilter.org>, Squid Users <squid-users@squid-cache.org>
-
-Salut, Glen Spidal !
-
-you may want to use https proxy.
-
-It worked for me in the following way:
-
-1) CONNECT_ports (or somewhat like that), you have to allow "connect"
-   to all ports.
-
-2) desproxy. http://www.freshmeat.net -> search there for desproxy.
-   desproxy is tool to encapsulate SOCKS protocol into CONNECT requests.
-   even Basic authorization is supported.
-
-3) www.socks.nec.com -> download sockscap library (exists for Windows,
-   and major Unices). that library will wrap TCP requests into SOCKS.
-   (it'l wrap actually everything, ICMP, UDP ... but CONNECT is only for
-   TCP, what actually serves SMTP, IMAP, POP3, IRC and many more)
-
-that's it. run desproxy, run sockscap, then run "socksified" app from
-sockscap.
-
-let me know whether it works for you.
-(and maybe ?? you wanted to implement something completely different,
-sorry for misunderstanding :-)
-
-On Tue, 12 Nov 2002, Glen Spidal wrote:
-
-> I have servers set up as diagramed below.  Proxied web traffic work fine.
-> Email fails.
-> I can send mail from the Linux box via Pine.  Email server is at external
-> ISP.
->
-> +------------------------+
-> |                        |
-> |  DirectWay Satellite   |
-> |                        |
-> +------------------------+
->             |
->             |        +------------------------+
->             |        | Windows 2000 Pro       |
->             |        |                        |
->             |        | 10.111.45.249          |
->             +--------------------------       |
->                      | 255.255.255.0  |       |
->                      |                |       |
->                      |            NAT/DHCP    |  Connection Shared using =
-W2K
-> wizard
->                      | 192.168.0.1    |       |
->             +--------------------------       |
->             |        | 255.255.255.0          |
->             |        +------------------------+
->      Cross-Over Cable
->             |        +------------------------+
->             |        |     Redhat 7.3         |
->             |        |  DHCP (192.168.0.x)    |
->             +--------------------------       |  Squid Proxy
->                      |  255.255.255.0         |  Dan's Guardian web filte=
-r
->                      |                        |
->                      |  192.168.254.250       |
->             +--------------------------       |
->             |        |  255.255.0.0           |
->             |        |                        |
->             |        +------------------------+
->             |
->             |
-> +-----------+-------------+
-> |          Hub            |
-> |                         |
-> +--+---------+------------+
->    |         |
->    |    +----+------------+
->    |    | Wintel Clients  | Default Gateway =3D 192.168.254.250
->    |    +-----------------+
->    |
->    |    +-----------------+
->    |    | Win2K Server    |
->    |    | 192.168.254.254 |
->    +----+---------------  |  DHCP Server
->         | 255.255.0.0     |
->         |                 |
->         +-----------------+
->
->
->
-> Glen Spidal
-> Cybercorp Computers, Hillsboro Oregon
-> PH: 503-681-9786  FX: 503-615-2936
-> www.cybercorpinc.com
->
-
-Regards, (=EE=C1=C9=CC=D5=DE=DB=C9=C5 =D0=CF=D6=C5=CC=C1=CE=C9=D1)
-Ilia Chipitsine (=E9=CC=D8=D1 =FB=C9=D0=C9=C3=C9=CE)
+To: James Miller <jimm@simutronics.com>
+Cc: netfilter@lists.netfilter.org
 
 
+--TA4f0niHM6tHt3xR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Nov 13, 2002 at 10:25:30AM -0600, James Miller wrote:
+> Hello all
+
+> I have been a long time reader of this list.  An associate passed this al=
+ong
+> to me this morning and I wanted to share it with everyone.
+
+> http://hlug.fscker.com/
+> Latest libpcap & tcpdump sources from tcpdump.org contain a trojan.
+
+> Affected version are:
+> libpcap-0.7.1.tar.gz
+> tcpdump-3.6.2.tar.gz
+> tcpdump-3.7.1.tar.gz
+
+	Downloads from October 30 have been confirmed good.  Downloads
+after November 12 confirmed bad.  Anything in-between is anyone's guess.
+If anyone downloaded those sources between those two dates, please contact
+me with the package md5sums.  I want to narrow down the time frame.
+CVS repository does NOT appear to have been compromised.
+
+	Good:
+
+03e5eac68c65b7e6ce8da03b0b0b225e  tcpdump-3.7.1.tar.gz
+0597c23e3496a5c108097b2a0f1bd0c7  libpcap-0.7.1.tar.gz
+
+	Bad:
+
+3c410d8434e63fb3931fe77328e4dd88  tcpdump-3.7.1.bad.tar.gz
+73ba7af963aff7c9e23fa1308a793dca  libpcap-0.7.1.bad.tar.gz
+
+> Regards,
+> Jim
+
+	Mike
+--=20
+ Michael H. Warfield    |  (770) 985-6132   |  mhw@WittsEnd.com
+  /\/\|=3Dmhw=3D|\/\/       |  (678) 463-0932   |  http://www.wittsend.com/=
+mhw/
+  NIC whois:  MHW9      |  An optimist believes we live in the best of all
+ PGP Key: 0xDF1DD471    |  possible worlds.  A pessimist is sure of it!
+
+--TA4f0niHM6tHt3xR
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iQCVAwUBPdKHguHJS0bfHdRxAQGAnAQAwNm/9IzDza90dxhposTZoeVtgzjjeipY
+BJlgyhbeyLKvC5DoBMxn7eW29tl7+4e4FFQOsMKkaCyw+sCbc12hb3hWlNLzQeGO
+DrVpeLCaZsFuEZndl9Y7c7dLQvl4jUZVoLgIR8TDUXv9oz0TvjTA+1MUWZ/bEDPP
+xpkiaOEc1yg=
+=gt4S
+-----END PGP SIGNATURE-----
+
+--TA4f0niHM6tHt3xR--
 
