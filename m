@@ -1,13 +1,13 @@
-From: Nick Drage <nickd@metastasis.demon.co.uk>
-Subject: Re: Port Forwarding with iptables
-Date: Thu, 19 Aug 2004 12:22:17 +0100
+From: "Erick Sanz" <esanz@remotedynamics.com>
+Subject: RE: A simple question
+Date: Thu, 19 Aug 2004 10:46:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040819112216.GN29471@metastasis.org.uk>
-References: <412487B7.9090505@digitalview.com>
+Message-ID: <FLECICIIDHIEIENHHOOLEEPBCEAA.esanz@remotedynamics.com>
+References: <41241244.40804@svw.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <412487B7.9090505@digitalview.com>
+In-Reply-To: <41241244.40804@svw.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +18,59 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-
-On Thu, Aug 19, 2004 at 06:57:59PM +0800, Wilson Mak wrote:
-> Hi all,
-> 
-> I like to do the portforwarding with iptables(forward web traffic of an 
-> alias IP - <ext ip> to internal web server).  Here is what I have:
-> 
-> iptables -t nat -A PREROUTING -i eth0 -d <ext ip> -p tcp --dport 80 -j
-> DNAT --to 10.1.0.12:80
-> iptables -A INPUT -p tcp -i eth0 -d <ext ip> --dport 80 -m state
-> --state NEW -j ACCEPT
-> iptables -A FORWARD -p tcp -i eth0 -o eth1 -d <ext ip> --dport 80 -m
-> state --state NEW -j ACCEPT
-> 
-> However, it keep droping the packets when getting to the NAT box.
-> 
-> Logs
-> ====
-> (With iptables -A FORWARD -d 10.1.0.12 -j LOG; iptable -A FORWARD -j DROP)
-> 
-> kernel: IN=eth0 OUT=eth1 SRC=202.xxx.122.xxx DST=10.1.0.12 LEN=48
-> TOS=0x00 PREC=0x00 TTL=120 ID=6491 DF PROTO=TCP SPT=4023 DPT=80
-> WINDOW=64240 RES=0x00 SYN URGP=0
-> 
-> Any clues?  Did I miss something here?
-
-( caveat, this is a quick email during a lunch break at work, so it's
-all "best guess" )
-
-The rules in the PREROUTING table are executed before those in the
-FORWARD table, so the packet has a destination of 10.1.0.12 when it hits
-the FORWARD table.  So your third line should be
-
-iptables -A FORWARD -p tcp -i eth0 -o eth1 -d 10.1.0.12 --dport 80 -m
-state --state NEW -j ACCEPT
-
-Let me know how you get on :)
+To: Netfilter mailing list <netfilter@lists.netfilter.org>
 
 
--- 
-"I think a church with a lightning rod shows a decided lack of confidence"
+Sudheer,
+
+I like to block all outgoing traffic in case that someone can take control
+either from my firewall system or any other system in my network.
+
+The firewall should be the most secure system in your network; however, like
+any other system, it is still vulnerable to bugs and exploits.
+
+If the firewall allows everything out, your system can turn out to be the
+one used to attack other systems. It might bee too paranoid, but I like to
+protect other people from having my systems attacking theirs.
+
+Also, if you don't have a good system security policy, you might not realize
+that your system was taken over until the gentleman with the nice black
+suits
+knock at your door  ....    =)
+
+-- Just my two cents! maybe even less!
+
+
+
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Sudheer
+> Divakaran
+> Sent: Wednesday, August 18, 2004 9:37 PM
+> To: Netfilter mailing list
+> Subject: A simple question
+>
+>
+> Hi,
+>
+> In almost all IP Tables articles I've found that the default policy of
+> all tables (INPUT,OUTPUT,FORWARD) set to DROP.  I can understand it as
+> far as INPUT and FORWARD tables are concerned, but I do not understand
+> why should we set the default policy of OUTPUT chain to DROP.  OUTPUT
+> chain is responsible for packets originating from the firewall itself.
+> Whay should we DROP it?
+>
+> Thanks,
+> Sudheer
+>
+>
+>
+> This email message has been scanned for viruses.
+>
+
+
+
+This email message has been scanned for viruses.
+
 
