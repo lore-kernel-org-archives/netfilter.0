@@ -1,13 +1,12 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: DMZ Question
-Date: Mon, 04 Oct 2004 14:06:26 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: DMZ Question
+Date: Mon, 4 Oct 2004 11:09:31 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096913181.2069.92.camel@localhost>
-References: <200410041736.i94Haduj073687@jkcpub.iserver.net>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E381@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200410041736.i94Haduj073687@jkcpub.iserver.net>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,89 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Deepak Seshadri <dseshadri@broadbandmaritime.com>
-Cc: 'Veena Rao' <vrao@broadbandmaritime.com>, 'Imran Bashir' <ibashir@broadbandmaritime.com>, netfilter@lists.netfilter.org, 'Syed Amjad Ali' <sali@broadbandmaritime.com>, 'Zia Ullah' <szia@broadbandmaritime.com>
+To: Deepak Seshadri <dseshadri@broadbandmaritime.com>, netfilter@lists.netfilter.org
+Cc: Imran Bashir <ibashir@broadbandmaritime.com>, Veena Rao <vrao@broadbandmaritime.com>, Syed Amjad Ali <sali@broadbandmaritime.com>, Zia Ullah <szia@broadbandmaritime.com>
 
-On Mon, 2004-10-04 at 13:41, Deepak Seshadri wrote:
-> Hello everybody,
-> 
->  
-> 
-> 
-> 
->                              --------------------------
-> 
->                              |                               |     WAN
-> (x.x.x.58/28, default gateway - x.x.x.49)
-> 
->                              |       FC2           e0
-> |-------------------------- ISP
-> 
->              LAN         |                               |
-> 
-> -----------------------|  e1                         |     DMZ
-> 
->     10.0.1.x            |                        e2
-> |--------------------------
-> 
->                              |                               |
-> 
->                              |-------------------------|
-> 
-> I have 3 computers that need to have public addresses and their IP addresses
-> are:
-> 
-> A - x.x.x.50/28, DG - x.x.x.49
-> 
-> B - x.x.x.51/28, DG - x.x.x.49
-> 
-> C - x.x.x.55/28, DG - x.x.x.49
-> 
-> Now the problem is I do not understand how I will give access to these PCs
-> from public without putting these PCs on a different subnet. Some firewalls
-> such as sonicwall do not require an IP for the DMZ port. You can add any
-> number of IPs behind the DMZ and it works. How is that done? Is it possible
-> with Linux?
-> 
-> If I connect them on the DMZ interface, should they all be put in a
-> different subnet, probably with /29 bit mask? If I do it this way, should I
-> use iptables & DNAT or should/can I use just the "routing" in linux?
-> 
-> If you have a better way to do it, please let me know. Any help will be
-> greatly appreciated.
-> 
-> Thank you,
-> 
-> Deepak Seshadri
-> 
->  
-You have several different options.  You do not have to put the public
-devices on a separate subnet but I would strongly recommend doing so. 
-If the public has access, there is the chance that a public user can
-crack into your publicly exposed device.  If the device sits on your
-internal network, there is nothing between the intruder and the rest of
-your private systems.
+You ASCII arts looks like death!
 
-I would also recommend using DNAT and iptables access control.  This
-way, you can restrict what services are exposed to the public and hide
-the true addressing scheme.  If you really wanted to get tricky, you
-could even alter the TTL so that only your publicly exposed services can
-go any further than your ISP's router.
+In order to 'bind' any number of DNAT addresses to the firewall, you
+have two choices.
 
-You will need to ensure that the public interface of the firewall
-responds to ARP requests for the other addresses.  You do this by
-binding those addresses to the physical interface, e.g., 
+1. Actually bind the IP address to the physical interface, such as:
+	ip addr add w.x.y.z/24 dev eth1
+This will then get the DNAT from iptables.
+	iptables -t nat -A PREROUTING --destination w.x.y.z -j DNAT --to
+${My_NEW_ADDR}
 
-ip address add x.x.x.58/28 dev eth0 brd +
+2. ProxyARP the IP address (http://www.sjdjweis.com/linux/proxyarp/):
+	echo 1 > /proc/sys/net/ipv4/conf/eth1/proxy_arp
+	echo 1 > /proc/sys/net/ipv4/conf/eth0/proxy_arp
+This will then get the DNAT from iptables.
+	iptables -t nat -A PREROUTING --destination w.x.y.z -j DNAT --to
+${My_NEW_ADDR}
 
-When it is released, ISCS (http://iscs.sourceforge.net) will do all of
-this from NAT to access control to ARP to even TTL automatically.  Until
-then, you'll need to set it up manually or use a rule configurator like
-fwbuilder (http://www.fwbuilder.org).  Good luck - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-Financially sustainable open source development
-http://www.opensourcedevel.com
 
+There is one to catch when doing this. If you have a single DNS source
+for external and internal machines, you'll have to resolve the machine's
+ip's the external IP. Netfilter will not work performing what I call
+reflective nat out of the box.
+
+I consider reflective nat to be when you want to connect to a machine on
+your subnet but under a different IP address.
+
+# You should have something like this line already
+iptables -t nat -A PREROUTING --destination w.x.y.z -j DNAT --to
+${My_NEW_ADDR}
+
+# Allow traffic to bounce off the interface
+iptables -A FORWARD -o ${IF_DMZ} -o ${IF_DMZ} -j ACCEPT
+# Force the firewall to rewrite the source IP of the packet since
+conntrack refuses to allow SRC->FW->DST->SRC flows
+iptables -t nat -A POSTROUTING --destination ${My_NEW_ADDR} --source
+${DMZ_NET}/${DMZ_MSK} -j SNAT --to ${FW_DMZ_IP}
 
