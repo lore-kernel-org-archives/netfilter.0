@@ -1,12 +1,16 @@
-From: "Adam Pyne" <adam@dialnetwork.com>
-Subject: Trouble NAT'ing with a pool of public addresses
-Date: Wed, 17 Dec 2003 01:07:25 -0600 (CST)
+From: George Ross <gdmr@inf.ed.ac.uk>
+Subject: Re: Port Redirection with iptables (Log information)
+Date: Wed, 17 Dec 2003 16:09:49 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1122.63.164.0.198.1071644845.squirrel@squirrel.dialnetwork.com>
-Reply-To: adam@dialnetwork.com
+Message-ID: <200312171609.hBHG9nC06511@eden.inf.ed.ac.uk>
+References: <20031217154514.19655.qmail@web41105.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="==_Exmh_668181693P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: Your message of "Wed, 17 Dec 2003 07:45:14 PST."
+             <20031217154514.19655.qmail@web41105.mail.yahoo.com> 
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,49 +20,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear list members,
+--==_Exmh_668181693P
+Content-Type: text/plain; charset=us-ascii
 
-First let me apologize for my ignorance, I've searched as much I could for
-an answer on this and bugging you is a last resort.
+> I'm getting a lot of lines that look like:
+> Dec 17 09:37:27 redpen kernel: NET: 61 messages
+> suppressed.
+> Dec 17 09:37:27 redpen kernel: Neighbour table
+> overflow.
 
-Recently we moved our NAT service from a Cisco 3640 to a Debian box
-running iptables v1.2.6a and kernel version 2.4.18. Our network has 150+
-users. Since transitioning, there have been a number of unforseen
-obstacles in getting some of our user's applications to work, i.e. AIM and
-MSN messenger. I've been able to resolve most of these with the exception
-of one last issue.
+You may want to review the values of 
+/proc/sys/net/ipv4/neigh/default/gc_thresh2 and .../gc_thresh3.
+-- 
+Dr George D M Ross, School of Informatics, University of Edinburgh
+    Kings Buildings, Mayfield Road, Edinburgh, Scotland, EH9 3JZ
+Mail: gdmr@dcs.ed.ac.uk   Voice: +44 131 650 5147   Fax: +44 131 667 7209
+ PGP: 1024/B74A4F7D  14 E8 B3 00 20 04 68 F8  95 40 CB 36 A4 D4 FA 90
 
-On our Cisco we used a pool of public IP's for our users to NAT through.
-I've found a comparable configuration to do the same with iptables:
 
-iptables -t nat -p all -A POSTROUTING -s 10.0.0.0/8 -o eth0 -j SNAT --to
-x.x.x.x - y.y.y.y
 
-With this in place, outbound connections have a source address picked in a
-round-robin fashion from the pool which is basically what we want in order
-to not overload a single public IP. However, we now have an issue with
-some websites that have security measures in place to reject users
-connecting via a different IP for each transaction subsequent to logging
-in.
+--==_Exmh_668181693P
+Content-Type: application/pgp-signature
 
-For example, if my initial connection to http://secure.foo.com comes from
-xxx.xxx.xxx.4, the server will reject my next transaction if it comes from
-xxx.xxx.xxx.5.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+Comment: Exmh version 2.6.3 2003/04/04
 
-Somehow the Cisco NAT was able to address this with what I'm guessing was
-some kind of translation tracking procedure (either that or perhaps magic
-fairy dust) making subsequent connections to a site from a particular user
-come from the same IP.
+iD8DBQE/4H/NtnZcK611jMURAtnHAJ9ySt03TzNP9lQN7BaLazWUX9JaNgCgs35U
+I2ucObEGE3E3ZxdZ9qoK+Rs=
+=/beV
+-----END PGP SIGNATURE-----
 
-My question is, is there a way to configure iptables to do the same? If
-not, in your opinion how many users can we expect to successfully NAT to
-one public IP?
-
-Any feedback would be most appreciated. Sorry for my long winded post.
-
-Thanks and Happy Holidays,
-Adam Pyne
+--==_Exmh_668181693P--
 
