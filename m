@@ -1,12 +1,12 @@
-From: "Remus" <rmocius@auste.elnet.lt>
-Subject: DROP command
-Date: Thu, 3 Jul 2003 21:43:53 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: DROP command
+Date: Thu, 3 Jul 2003 13:55:48 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005d01c341a3$d335f7f0$6e69690a@rimas>
-References: <200307031501.00905.sysadmin_lists@iwa-solutions.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E355A@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,12 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Remus <rmocius@auste.elnet.lt>, netfilter@lists.netfilter.org
+
+Reverse the order
+
+-----Original Message-----
+From: Remus [mailto:rmocius@auste.elnet.lt]=20
+Sent: Thursday, July 03, 2003 1:44 PM
 To: netfilter@lists.netfilter.org
+Subject: DROP command
 
 Hi folks,
 
 I have a Linux box firewall (iptables 1.2.7a) with NAT/MASQUERADING.
-How I can block all local network access to my firewall excluding some local
+How I can block all local network access to my firewall excluding some
+local
 IP addresses?
 I tried these command but it doesn't work:
 
@@ -32,6 +41,7 @@ I tried these command but it doesn't work:
 Thank you in advance
 
 Remus
+
 
 
 
