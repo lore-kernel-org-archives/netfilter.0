@@ -1,61 +1,56 @@
-From: Leonid Veytser <veytser@cs.bu.edu>
-Subject: Re: Problem with FORWARD hook
-Date: Tue, 11 Nov 2003 19:40:54 -0500 (EST)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.SOL.4.20.0311111940090.29271-100000@csa.bu.edu>
-References: <200311112212.hABMCmj17939@agate.rockstone.co.uk>
+From: Kishore Dharmavaram <kishored@servgate.com>
+Subject: RE: Memory leaks in ip_conntrack?
+Date: Tue, 11 Nov 2003 16:49:12 -0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B2061@skat.sky.com>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311112212.hABMCmj17939@agate.rockstone.co.uk>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@soft-solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: 'Jozsef Kadlecsik' <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-I have figured out what my problem was. My machine had ip forwarding
-disabled.
+Jozsef & All,
+It seems some patches were already applied on base 2.4.20 kernel netfilter
+sources that iam working with, is there a way to findout what patches were
+applied on netfilter code? and are some must-apply patches for 2.4.20?, if
+so can you please give me a list or pointout few?
+Thanks,
+Kishore
 
-Thanks for you help.
+-----Original Message-----
+From: Jozsef Kadlecsik [mailto:kadlec@blackhole.kfki.hu]
+Sent: Tuesday, November 11, 2003 3:35 PM
+To: Kishore Dharmavaram
+Cc: netfilter@lists.netfilter.org; 'netfilter-devel@lists.netfilter.org'
+Subject: RE: Memory leaks in ip_conntrack?
 
-On Tue, 11 Nov 2003, Antony Stone wrote:
 
-> On Tuesday 11 November 2003 9:59 pm, Leonid Veytser wrote:
-> 
-> > When I dump the output of all the packets traveling thru my machine, I
-> > notice that none go thru FORWARD hook.
-> 
-> There's no other way packets are going to get routed through your machine 
-> except by passing through the FORWARD chain.
-> 
-> > So, I tried to make a packet have
-> > to go thru the FORWARD hook (ie by changing the packet dest at PREROUTING
-> > hook), but the packet never goes to the FORWARD hook, but disappears.
-> 
-> Show us an example of your rules so we can see what you are trying to do.
-> 
-> > Can there be some incorrect configuration on my machine that would cause
-> > it not to be able to forward packets?
-> 
-> There are many ways of (mis)configuring a machine so that it doesn't forward 
-> packets.   Some people might say this is a highly secure router :)
-> 
-> Antony.
-> 
-> -- 
-> 
-> Your email has been returned due to insufficient voltage.
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
+On Tue, 11 Nov 2003, Kishore Dharmavaram wrote:
 
+> I verified & I find my 2.4.20 is already patched with UNCONFIRMED
+> connections fix: http://www.netfilter.org/security/2003-08-01-listadd.html
+>
+> > Did you apply any patches from patch-o-matic? If yes, which one?
+
+There are other patches in p-o-m. Didn't you apply anything else?
+Say the nfnetlink/ctnetlink patch? It is known that there was a buggy
+version of that which screwed up the internal conntrack counter.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
