@@ -1,11 +1,13 @@
-From: Chetan Nagaraja <chetanmn_in@yahoo.com>
-Subject: ICMP Connections ...
-Date: Tue, 24 Aug 2004 06:36:10 -0700 (PDT)
+From: Jose Maria Lopez <jkerouac@eresmas.com>
+Subject: Re: Problem with 2 NAT and 2 ROUTE
+Date: 24 Aug 2004 07:17:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040824133610.80037.qmail@web14926.mail.yahoo.com>
+Message-ID: <1093324620.22468.10.camel@nostromo.bgsecm.com>
+References: <008801c4891f$70be07b0$0800000a@pc08infierno>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-864952120-1093354570=:79151"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <008801c4891f$70be07b0$0800000a@pc08infierno>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,50 +17,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
---0-864952120-1093354570=:79151
-Content-Type: text/plain; charset=us-ascii
+El lun, 23 de 08 de 2004 a las 16:42, Cristian Seva (VOIPLAB) escribió:
+> have a problem with mi linux BOX
+> 
+> Eth0 =  192.168.0.254  (RED A)
+> Eth1 =  200.69.123.177/130  (LINK A)
+> Eth2 =  192.168.0.100  (RED B)
+> Eth3 =  192.168.1.1 para el PPPOE
+> ppp0=  DynamicIP (LINK B)
+> -------------------------------------------------------------------
+> -DEFAULT ROUTE
+> 200.69.123.178 (LINKA)
+> ppp0 (cdo establece el PPPOE)
+> -------------------------------------------------------------------
+> -IPTABLES  NAT RULES
+> iptables -t nat -A POSTROUTING -s 192.168.0.0/255.255.255.128 -o ppp0 -j
+> MASQUERADE
+> iptables -t nat -A POSTROUTING -s 192.168.0.128/255.255.255.128 -o eth1 -j
+> MASQUERADE
+> -------------------------------------------------------------------
+> 
+> My problem is the only NAT works is the NAT with march with de default
+> route..
+> 
+> Can any one helme?
+> 
 
-Dear All,
-First of all, let me introduce as a total newbie in filtering and iptables.
- 
-To ping a host in a different network, I have configured a dual homed[ two network interfaces] linux system to act as NAT router.
-I have add a rule in the NAT table of iptables, to achieve the following.
-If the Linux system recieves a icmp packet from a particular host in NETWORK A addressed to a particular HOST in NETWORK B , perform SNAT of the ICMP packet to that of the Linux System, so that the icmp replies reaches the Linux system.
- 
-The above is working very fine. The ICMP requests are reaching the expected destination. 
-But I'am unable to understand the fact that the ICMP replies are reaching the host in NETWORK A which had generated the requests, without adding a DNAT rule for the same.
-How is this possible, does iptables automatically redirect ICMP replies ?
-And How to avoid the same.
- 
-Thanking you,
-Chetan M N
+I think you need Advanced Routing using iproute2 nexthop facility
+to send the traffic to both routers, and then masquerade the
+connections, masquerading does know who to send the traffic but
+it doesn't know how to do it.
 
 
-		
----------------------------------
-Do you Yahoo!?
-Yahoo! Mail is new and improved - Check it out!
---0-864952120-1093354570=:79151
-Content-Type: text/html; charset=us-ascii
 
-<DIV>Dear All,</DIV>
-<DIV>First of all, let me introduce as a total newbie in filtering and iptables.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>To ping a host in a different network, I have configured a dual homed[ two network interfaces]&nbsp;linux system to act as NAT router.</DIV>
-<DIV>
-<DIV>I have add a rule in the NAT table of iptables, to achieve the following.</DIV>
-<DIV>If the Linux system recieves a icmp packet from a particular host in NETWORK A addressed to a particular HOST in&nbsp;NETWORK B , perform SNAT of the ICMP packet to that of the Linux System, so that the icmp replies reaches the Linux system.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>The above is working very fine. The ICMP requests are reaching the expected destination. </DIV>
-<DIV>But I'am unable to understand the fact that the ICMP replies are reaching the host in NETWORK A which had generated the requests, without adding a DNAT rule for the same.</DIV>
-<DIV>How is this possible, does iptables automatically redirect ICMP replies ?</DIV>
-<DIV>And How to avoid the same.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thanking you,</DIV>
-<DIV>Chetan M N</DIV></DIV><p>
-		<hr size=1>Do you Yahoo!?<br>
-Yahoo! Mail is new and improved - <a href="http://us.rd.yahoo.com/mail_us/taglines/new/*http://promotions.yahoo.com/new_mail">Check it out!</a>
---0-864952120-1093354570=:79151--
+-- 
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPAÑA
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
 
