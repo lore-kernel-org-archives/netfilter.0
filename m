@@ -1,9 +1,10 @@
-From: Tim Burress <hokousha2001@yahoo.com>
-Subject: Conntrack Response to Port Unreachable for UDP
-Date: Tue, 22 Jul 2003 19:54:55 -0700 (PDT)
+From: "Sathi" <sathiyan@gmx.net>
+Subject: port forwarding
+Date: Wed, 23 Jul 2003 11:36:00 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030723025455.36204.qmail@web21102.mail.yahoo.com>
+Message-ID: <015701c350e0$7fdcf7b0$2a0110ac@SAMHP>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,54 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hello!
+Hello All,
 
-We kind of an interesting problem and I was wondering
-if people have any suggestions. Imagine a network like
-this:
+I am running squid reverse proxy for 5 different web servers.
 
-    X----------F---------Z
+I want to provide ftp access to clients so that they can update the web page
+content.
 
-where F is a Linux box acting as a firewall to protect
-the Z network. F runs
+As all the host name resolve to the single address i find problem in port
+forward the ftp request to the correct backend web server.
 
-    kernel 2.4.21-pre5 
-    iptables 1.2.7a
-    patch-o-matic 20030112
+How to make port forward the ftp request to the correct web server using
+iptables.
 
-The problem arises like this:
+Regards
+Sathi
 
-X attempts to initiate a UDP exchange with Z, but Z
-responds to the initial packet with an ICMP port
-unreachable. That's fine, but once this happens, it
-seems that Z (or some other node on Z's network) is
-then able to repeatedly replay this same ICMP port
-unreachable back to X.
 
-So the question is, what's the best way to prevent
-that at F?
-
-One idea was that conntrack could destroy the
-conntrack record for the UDP "connection" upon receipt
-of the port unreachable. Another, much larger scope
-solution would be to implement some sort of
-generalized replay protection that would attempt to
-identify and DROP replayed packets. The first seems
-nice and simple, but we're worried about unintended
-consequences. The second seems interesting, but could
-get a little involved. I wondered if people had any
-thoughts or suggestions for other ways to deal with
-this.
-
-Thanks!
-
-Tim
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
