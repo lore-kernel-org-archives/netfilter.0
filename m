@@ -1,10 +1,13 @@
-From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: Unable to apply pptp patch
-Date: Wed, 3 Jul 2002 19:29:32 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Masquerading problems
+Date: Wed, 3 Jul 2002 10:33:15 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA1F9@JUPITER>
+Message-ID: <200207030933.g639XMU28761@vulcan.rissington.net>
+References: <200FAA488DE0D41194F10010B597610D2BA1F8@JUPITER>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA1F8@JUPITER>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,42 +18,52 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
-
-Yeah I've compiled kernels over and over again.. just this time it's a sh$@
-and I get CRC on reboots..
-
-and this is a big network so I can't reboot it too often...
-
------Original Message-----
-From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-Sent: Wednesday, 03 July 2002 7:26 PM
 To: netfilter@lists.samba.org
-Subject: Re: Unable to apply pptp patch
 
+On Wednesday 03 July 2002 10:28 am, George Vieira wrote:
 
-On Wednesday 03 July 2002 10:18 am, George Vieira wrote:
-
-> Yes limitation is to all versions and it's not a netfilter problem.. it's
-> the design of PPTP which was microsoft big stuff up from memory. The
-design
-> didn't allow multiple connections from the same source..
-> Use a Linux to Linux VPN and you can route the whole network back and
-> forth....
+> All you really need is to POSTROUTE the workstations..
 >
-> Also PPTP isn't the best VPN but is widely used due to the Micro$oft
-> support for it..
+> With PPPoE do this..
 >
-> I'd rather use IPSEC if I can only just compile my damn kernel right for
-> once.. (it's been a while)..
+> INTSN="192.168.1.0/24"
+> IPTABLES=/sbin/iptables
+> EXTDEV="`adsl-status | grep "Link encap"  | awk {'print $1'}"
+> $IPTABLES -A POSTROUTING -o $EXTDEV -t nat -s $INTSN -d $ANYWHERE -j
+> MASQUERADE
 
-FreeS/WAN isn't difficult - it just takes a while, and you have to follow
-the 
-instructions carefully.   I think the guides and documentation on 
-http://www.freeswan.org are very good, though.
+Surely if this were David's problem, his workstations wouldn't be able to 
+access any external servers, whereas his problem report seems to suggest that 
+it is only certain websites which he cannot contact (and therefore others 
+which he can ?)
+
+Maybe this is my error in interpretation, and the solution is as simple as 
+you suggest...
 
  
 
 Antony.
+
+> -----Original Message-----
+> From: David Gaston Rodriguez [mailto:davidgr@interlap.com.ar]
+> Sent: Wednesday, 03 July 2002 3:08 PM
+> To: netfilter@lists.samba.org
+> Subject: Masquerading problems
+>
+>
+> Hi!, i am new in the list, i am from argentina, this is mi problem:
+> I have a small LAN with a server doing masquerading, I used the kernel
+> 2.2.20 and
+> did not have any problem, now i decided to use the kernel 2.4.18, i set
+> iptables
+> to make the masquerading, but now there are web pages which i can enter
+> from
+>
+> workstations, like for example www.mixmail.com or www.yahoo.com, and from
+> the server
+> i can enter to this pages. I using 2 interfaces, eth0: external, eth1:
+> internal, the
+> external interface is connect to ADSL Modem (PPPoE).
+> Some idea on as could be mi problem?
+> Thanks!!
 
