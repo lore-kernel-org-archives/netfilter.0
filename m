@@ -1,10 +1,11 @@
-From: "Michael Varga" <mike.varga@cavium.com>
-Subject: crash using netfilter for ipsec when processing icmp packets
-Date: Mon, 24 Jan 2005 20:10:15 -0800
-Message-ID: <09a101c50293$ca7ced00$a610a8c0@niche>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: ip_nat_pptp / proto_gre
+Date: Mon, 24 Jan 2005 22:24:00 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019917@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +19,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello:
+Hello,=20
 
-I have written an LKM module that uses netfilter to capture packets. =
-These packets
-are then sent to a hardware crypto device which after finishing, it's =
-driver calls a callback, which
-then calls either an ip_rcv (inbound/decrypt) or an ip_send =
-(outbound/encrypt) to deliver the
-packet.
+As with other emails that I have sent I have been having problems with
+the nat'ing for PPTP through a firewall that itself establishes the
+connection.  I have worked with one of the maintainers but they said
+they can't do much because of the age of the kernel (understood).
+Anyways, I was just wondering if someone has had success with RHEL 3
+update 3 with ip_nat_pptp / proto_gre while maintaining a connection
+originating from the server as well as behind them?
 
-When netfilter captures icmp packets which are destined to the machine =
-for=20
-which the Ipsec module is running on, I get kernel crashes.=20
+If you happen to have had any success and are willing to share it I
+would like to here from you.
 
-It only crashes when the icmp traffic is >=3D 10Mbits/sec.
+Thanks,=20
 
-Are there some unpublished rules when processing icmp with Netfilter?
-Does anyone have some suggestions/recommendations?
-
-thanks
-Mike
+Gary Smith
