@@ -1,12 +1,13 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `': Table does not exist (do you need to insmod?) <<Help>>
-Date: Tue, 24 Sep 2002 17:27:08 +0530
+From: david@dark.x.dtu.dk
+Subject: Re: Stopping greedy http clients!
+Date: Tue, 24 Sep 2002 13:58:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001701c263c1$887ebb40$2b00a8c0@dharmu>
-References: <00fb01c263b7$a8fe5380$2900a8c0@spectranet.com> <002b01c263be$95b3f490$2b00a8c0@dharmu> <000901c263bd$da3d1480$2900a8c0@spectranet.com>
+Message-ID: <20020924115818.GA23587@dark.x.dtu.dk>
+References: <F76qUlyunxtkVO4alvo00004b24@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <F76qUlyunxtkVO4alvo00004b24@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,97 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Krishna <Krishna_shekhar@gmx.net>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: J and T <j_and_t@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-You should send us the complete error message, which table the iptables
-could not recognize
-DHarmu
------ Original Message -----
-From: "Krishna" <Krishna_shekhar@gmx.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, September 24, 2002 5:00 PM
-Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
-Table does not exist (do you need to insmod?) <<Help>>
+On Mon, Sep 23, 2002 at 05:52:50PM -0700, J and T wrote:
+> Is there a way to set a "speed limit" on tcp port 80 requests? Here's my 
+> problem:
+> 
+> I have a very popular site with hundreds of pages updated dynamically every 
+> 4 hours. Since high-speed internet access has become more popular, I have 
+> found more and more visitors using robots to download all pages in one 
+> quick multi-threaded connection. When you have a 1,000 people downloading 
+> 100 pages all at once you end up with a problem. I can't just block them by 
+> their IP because their IPs are dynamic.
 
+I would take a look at iplimit from patch-o-matic, which "allows you to
+restrict the number of parallel TCP connections to a server per client IP
+address (or address block)". It will not block the access to your site, but
+you can use it to limit the number of parallel downloads the clients can
+use.
 
-> Hi,
->     It gives the same error
->
->  iptables-restore v1.2.5: can't initialize iptables table `': Table does
-not
-> exist (do you need to insmod?)
-> Perhaps iptables or your kernel needs to be upgraded
->
-> regards
-> Krishna
->
-> Krishna Shekhar
-> Network Administrator
-> Wiplash Wireless
-> ----- Original Message -----
-> From: Dharmendra.T <dharmu@nsecure.net>
-> To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
-> Sent: Tuesday, September 24, 2002 5:05 PM
-> Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
-> Table does not exist (do you need to insmod?) <<Help>>
->
->
-> > Hi Krishna,
-> >  Have you tried it manually?
-> > #iptables-restore < /etc/sysconfig/iptables
-> >
-> >  I think the iptables could not reach to the file
-/etc/sysconfig/iptables
-> > Regards
-> > Dharmu
-> > ----- Original Message -----
-> > From: "Krishna" <Krishna_shekhar@gmx.net>
-> > To: <netfilter@lists.netfilter.org>
-> > Sent: Tuesday, September 24, 2002 4:16 PM
-> > Subject: iptables-restore v1.2.5: can't initialize iptables table `':
-> Table
-> > does not exist (do you need to insmod?) <<Help>>
-> >
-> >
-> > > Hi,
-> > >
-> > > I switched from ipchains to iptables. But whenever I start iptables it
-> > gives
-> > > me this error.
-> > >
-> > > iptables-restore v1.2.5: can't initialize iptables table `': Table
-does
-> > not
-> > > exist (do you need to insmod?)
-> > > Perhaps iptables or your kernel needs to be upgraded.
-> > >
-> > > lsmod shows that
-> > > iptable_mangle,iptable_nat,ip_conntrack,iptable_filter and iptables
-are
-> > > loaded.
-> > > That means the modules for iptables has loaded also I can see that
-> modules
-> > > for ipchains are not loaded and that is right.
-> > >
-> > > The iptables file is in /etc/sysconfig/iptables
-> > > The table goes like this
-> > > -P INPUT DROP
-> > > -A FORWARD -s 192.168.0.0/24 -j MASQUERADE
-> > > .......
-> > > ...........
-> > > ........................
-> > > I am using RedHAt 7.1 and kernel 2.4.2-2
-> > > What could be the problem?
-> > >
-> > > regards
-> > > Krishna
-> > >
-> > > Krishna Shekhar
-> > > Network Administrator
-> > > Wiplash Wireless
-> > >
-> > >
->
->
-
+- David
 
