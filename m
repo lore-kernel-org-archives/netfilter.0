@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables, portforward, DNAT, SNAT
-Date: Thu, 31 Oct 2002 16:39:38 +0000
+From: "Matthew G. Marsh" <mgm@paktronix.com>
+Subject: Re: Packet chain traversals
+Date: Thu, 31 Oct 2002 10:55:06 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210311639.g9VGdje13442@vulcan.rissington.net>
-References: <3EC01717.7583E8B5.03240133@netscape.net>
+Message-ID: <Pine.LNX.4.43.0210311044410.18355-100000@netmonster.pakint.net>
+References: <200210301722.g9UHMEe12082@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EC01717.7583E8B5.03240133@netscape.net>
+In-Reply-To: <200210301722.g9UHMEe12082@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,152 +16,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 31 October 2002 3:33 pm, Thomas Meindl wrote:
+On Wed, 30 Oct 2002, Antony Stone wrote:
 
-> #!/bin/bash
+> On Wednesday 30 October 2002 4:11 pm, Matthew G. Marsh wrote:
 >
-> EXTIF=eth0
-> INTIF=eth1
-> EXTIP=www.xxx.yyy.zzz
-> INTIP=192.168.0.1
-> WWWSRV=192.168.0.2
+> > > The only thing I can think of is "which interface should this packet go
+> > > out of", however that's certainly not the same sort of "decision" as
+> > > there is between PREROUTING and INPUT or FORWARD, and I'm not even sure
+> > > it belongs quite where it is shown...
+> >
+> > It does exist between OUTPUT and NAT. But the decision structure is more
+> > along the lines of rule application. Thus you can issue rules such as:
+> >
+> > ip rule add from 10.1.1.1 dev lo table mytable prio 13000
+> >
+> > and any packet coming from the local machine (ie exiting OUTPUT) would
+> > then be acted upon by this rule. see?
 >
-> #here I'll make some
-> echo 1 > /proc/sys/net/ipv4/*
-
-Does that line really say "echo 1 to every file in the /proc/sys/net/ipv4 
-directory" !?
-
-Why ???
-
-> #to some features like ip_dynaddr, ip_forward, tcp_syncookie
+> Fair enough, but I still don't think this is any sort of decision which
+> affects netfilter (which would be the only point of putting it into the
+> diagram, I think).
 >
-> #then I set the default policies
-> #accept everything except the FORWARD chain
-> #and flush them
-> iptables -P INPUT -j ACCEPT
+> The only decisions of interest to netfilter are "is the packet local ?" and
+> if not "which interface is it going out of ?".   Both of those have already
+> been decided in the first routing decision, between prerouting and input /
+> forward.
 
-I don't like that - you should have a default DROP on INPUT and then create 
-rules to ACCEPT what you know you want.   Otherwise you're accepting anything 
-anyone cares to send you....
+Not completely true. fe: if the rule above takes affect then a packet may
+have its outbound interface, source address, and next hop all changed by
+the contents of table mytable. Illustrate by issuing the following:
 
-> iptables -F INPUT
-> iptables -P OUTPUT -j ACCEPT
-> iptables -F OUTPUT
-> iptables -P FORWARD -j DROP
-> iptables -F FORWARD
-> iptables -t nat -f        #flush the nat table
+ip rule add from 10.1.1.1 dev lo prohibit
+
+This will prohibit all packets source addressed with 10.1.1.1 from leaving
+the box. They are basically dropped no matter what your iptables settings
+are. So if your eth0 internal network interface is addressed as
+10.1.1.1 and you try to issue any ipv4 command from your firewall box it
+will simply never leave. You could also try the following rule route
+combo:
+
+ip rule add from 10.1.1.1 dev lo table 1 prio 2
+
+ip route add blackhole 11.1.1.0/24 table 1
+
+This combo will simply drop any packet with internal source address
+10.1.1.1 destined to 11.1.1.0/24 network. And iptables will never know.
+
+You do need to see that the RPDB for IPv4 under Linux has several effects
+upon the iptables structure. fe you can use FastNAT to change both source
+and destination addresses of a packet from your box without the iptables
+framework ever knowing. Such a change can really screw up your rules
+unless you understand what happened.
+
+ok?
+
+> I'm not convinced there's any purpose in having another routing decision
+> shown between output and postrouting, especially in a document which is aimed
+> at beginners.
 >
-> # and here's my little disaster
-> # i try to forward port 1234 to my internal www-server
-> iptables -t nat -A PREROUTING -p tcp -i $EXTIF -d $EXTIP --dport 1234 -j
-> DNAT --to-destination $WWWSRV:80
-
-Okay - that will redirect the incoming packets on TCP port 1234 to your 
-internal web server, port 80
-
-> iptables -A FORWARD -p tcp -i $EXTIF -o $INTIF -d $WWWSRV --dport 80 -j 
-ACCEPT
-
-That rule will forward the packets through your firewall to the web server 
-(do you have a rule somewhere to allow the replies back again ?)
-
-> iptables -t nat -A POSTROUTING -p tcp -o $EXTIF -s $WWWSRV --sport 80 -j 
-SNAT --to-source $EXTIP:1234
-
-I don't understand this rule - replies from the webserver are going to get 
-automagically reverse NATted anyway, so this rule is redundant...
-
-> # for what i understand from iptables till now is
-> # packet comes in thru ethernet, arrives in kernel
-> # so packet looks like this
-> # ip-layer: source-ip: WWWREQUEST  destination-ip: $EXTIP
-> # tcp-layer: source-port: a port higher than 1024   destination-port: 1234
-> # and hits the PREROUTING chain
-
-Looks good so far.
-
-> # with the DNAT rule above it changes following
-> # ip-layer: source-ip: WWWREQUEST   destination-ip: $WWSRV
-> # tcp-layer: source-port: a port higher than 1024   destination-port: 80
-
-Yup.
-
-> # then hits FORWARD chain (usually it would hit the INPUT chain,
-> # but we changed that with DNAT; it has to go out on $INTIF to reach
-> # its destination..)
-
-Correct.
-
-> # with the FORWARD rule it can bypass..
-
-Sorry - what do you mean ?
-
-> # when applying DNAT all other packets in that stream are bypassed as well
-
-All other packets in that stream are translated (both ways), yes.
-
-> # with this two rules it is sure that a request from a www-client from
-> # the inet is reaching the inner $WWWSRV, and the $WWWSRV can respond but
-> # there is still something wrong with the reply packet:
-> # ip-layer: source-ip: $WWWSRV destination-ip: WWWREQUEST
-> # tcp-layer: source-port: 80   destination-port: 1024:
-
-That's how it goes out from the web server, yes, but that doesn't show the 
-reverse NAT which will have been applied by netfilter by the time it gets 
-back to the client.   Borrowing your terminology, that would look like:
-
-> # ip-layer: source-ip: $EXTIP destination-ip: WWWREQUEST
-> # tcp-layer: source-port: 1234   destination-port: 1024:
-
-> # when the packet arrives at the WWWREQUEST-host-browser it doesn't know
-> # what to do with the packet (there was no request to this host $WWWSRV)
-> # so here comes rule 3; it changes the source ip and port to this
-> # ip-layer: source-ip: $EXTIP destination-ip: WWWREQUEST
-> # tcp-layer: source-port: 1234   destination-port: 1024:
-> # now the packet seems like the awaited reply from the request
-> # he has given to $EXTIP:1234
-
-I think you do not realise that netfilter automagically applies the reverse 
-NAT rules to reply packets, so you do not have to create your own rules to do 
-this.
-
-> # and another few rules to complete the firewall script
+> Regards,
 >
-> # allow all connections from inside out and only related
-> # and established ones in
-> iptables -A FORWARD -p tcp -i $EXTIF -o $INTIF -m state --state
-> ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -p tcp -o $EXTIF -i $INTIF -j ACCEPT
+> Anton.
+>
+> --
+>
+> Success is a lousy teacher.   It seduces smart people into thinking they
+> can't lose.
+>
+>  - William H Gates III
+>
 
-Okay, these two rules (specifically the last one) will allow your replies 
-back out from the web server to the client.
+--------------------------------------------------
+Matthew G. Marsh,  President
+Paktronix Systems LLC
+1506 North 59th Street
+Omaha  NE  68104
+Phone: (402) 932-7250 x101
+Email: mgm@paktronix.com
+WWW:  http://www.paktronix.com
+--------------------------------------------------
 
-> # enable masquerading
-> iptables -t NAT -A POSTROUTING -o $EXTIF -j MASQUERADE
-
-"NAT" in this rule should read "nat" - it matters !
-
-> I hope anyone out there can help me..
-> I tried serveral permutations with the three portforwarding rules:
-
-I think if you remove the third one it will work.
-
-> I changed some params or even let them away
-> One Variation was to ACCEPT the full FORWARD chain
-
-Ugh !!!
- 
-
-Antony.
-
--- 
-
-It is also possible that putting the birds in a laboratory setting
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennett
 
