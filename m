@@ -1,9 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: MAC addresses
-Date: Sat, 11 Sep 2004 18:23:30 -0400
+From: Mike <1100100@gmail.com>
+Subject: Port 21, 23, and 80 are open according to Shields Up at grc.com
+Date: Sat, 11 Sep 2004 19:09:11 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094941410.3925.20.camel@wolfpack.ljm.dom>
+Message-ID: <8ca42282040911160952abec3b@mail.gmail.com>
 References: <200409111150.50506.bulliver@badcomputer.no-ip.com>
+Reply-To: Mike <1100100@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -20,34 +21,167 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sat, 2004-09-11 at 14:50, Darren Kirby wrote:
-> Are MAC addresses unique for all ethernet cards? 
+Hi Group:
 
-theoretically, yes.
+I've tested for open ports from all the LAN clients behind my linux
+box router/gateway/firewall and all of them come up with the same
+results: port 21, 23, and 80 are open according to the results of the
+Steve Gibson Shields Up test.
 
-> What I would like to know is 
-> could I use this rule to allow ssh connections ONLY from my notebook no 
-> matter what its current IP address happens to be, and drop all other 
-> connection requests?
+I can't figure out how this can be happening.
+I've run a full nmap -P0 (that's a zero) on all my local ip addresses
+- 192.168.169.*
 
-yes--as long as "notebook" and "ssh server" are on the same network.
+You'll see below that the only ports open according to nmap on all the
+clients is Port 139.  This is appropriate as the box on 192.168.169.2
+is running a Samba server that all the clients connect to.
 
-keep in mind--nothing prevents "badguy" from configuring his NIC to have
-the same MAC as your "notebook"
+The box on 192.168.169.2 has Port 80 open because I run Apache as an
+intranet webserver.  It cannot be accessed from outside the firewall. 
+Port 631 is open because that's the port that receives print jobs via
+the CUPS printserver.  The LAN clients send print jobs to the
+printserver via port 631.  Lastly, I had the X window system up and
+running when I ran nmap so you can see a port open for that.
 
-if you're worried about security of "ssh server"--disable
-PasswordAuthentication and only allow RSAAuthentication and/or
-PubkeyAuthentication.
+But none of the clients, nor the gateway address on the routerbox
+(192.168.169.1) show port 21, 23, and 80 as open.
 
-stealing your IP and MAC is much more likely than someone stealing your
-private key (hopefully).
+So, I'm left with some questions:
 
-you could also create a reservation for your MAC in the DHCP server, and
-filter based upon your (now) fixed IP.
+A) Is the Gibson test accurate or am I misunderstanding the results?
+B) Do I need to do another kind of diagnostic test using nmap?
 
--j
+Thank you for reading the long post.
+I appreciate the time and help.
 
--- 
-Jason Opperisano <opie@817west.com>
+Mike
 
+                                                                      
+                                                                      
+                                                                      
+                                          Starting nmap 3.55 (
+http://www.insecure.org/nmap/ ) at 2004-09-09 10:21 EDT
+All 1660 scanned ports on 192.168.169.0 are: filtered
+
+All 1660 scanned ports on 192.168.169.1 are: filtered
+
+Interesting ports on primary.us (192.168.169.2):
+(The 1655 ports scanned but not shown below are in state: closed)
+PORT     STATE SERVICE
+80/tcp   open  http
+139/tcp  open  netbios-ssn
+631/tcp  open  ipp
+6000/tcp open  X11
+
+Interesting ports on 192.168.169.3:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXX (Intel)
+
+Interesting ports on 192.168.169.4:
+(The 1658 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+135/tcp open  msrpc
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXX (3com)
+
+Interesting ports on 192.168.169.5:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXXXX (Netgear)
+
+Interesting ports on 192.168.169.6:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXX (The Linksys Group)
+
+Interesting ports on 192.168.169.7:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXX (3com)
+
+All 1660 scanned ports on 192.168.169.8 are: filtered
+
+Interesting ports on 192.168.169.9:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXX (Hsing TECH. Enterprise CO.)
+
+Interesting ports on 192.168.169.10:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXXXX (Hsing TECH. Enterprise CO.)
+
+All 1660 scanned ports on 192.168.169.11 are: filtered
+
+All 1660 scanned ports on 192.168.169.12 are: filtered
+
+Interesting ports on 192.168.169.13:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXX (Micro-star International CO.)
+
+Interesting ports on 192.168.169.14:
+(The 1658 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+135/tcp open  msrpc
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXXXXX (The Linksys Group)
+
+Interesting ports on 192.168.169.15:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXX (Intel - Hf1-06)
+
+Interesting ports on 192.168.169.16:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXXX (Micro-star International CO.)
+
+Interesting ports on 192.168.169.17:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXXX (Micro-star International CO.)
+
+Interesting ports on 192.168.169.18:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXXXXXXX (Micro-star International CO.)
+
+Interesting ports on 192.168.169.19:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXX (Micro-star International CO.)
+
+Interesting ports on 192.168.169.20:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXXXXX (Micro-star International CO.)
+
+All 1660 scanned ports on 192.168.169.21 are: filtered
+
+Interesting ports on 192.168.169.22:
+(The 1659 ports scanned but not shown below are in state: closed)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: XXXXXXXXXXXX (Micro-star International CO.)
+
+All 1660 scanned ports on 192.168.169.23 are: filtered
+
+All 1660 scanned ports on 192.168.169.24 are: filtered
+
+-----------<<<snip>>>-------------------------
 
