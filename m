@@ -1,14 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: DNATing packets sent to the NATing box
-Date: Sun, 14 Dec 2003 11:55:19 -0500
+From: William Stearns <wstearns@pobox.com>
+Subject: RE: logging with iptables
+Date: Sun, 14 Dec 2003 11:57:35 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312141155.19270.JALaramie@Loudoun-Fairfax.com>
-References: <20031214135211.GA11695@tinuviel.compendium.com.ar> <200312141051.55776.JALaramie@Loudoun-Fairfax.com> <20031214160416.GA17220@tinuviel.compendium.com.ar>
+Message-ID: <Pine.LNX.4.44.0312141156080.2784-100000@sparrow>
+References: <37701240971DD31193970000F6CCB9F704CB7EFF@duke.datcon.co.uk>
+Reply-To: William Stearns <wstearns@pobox.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031214160416.GA17220@tinuviel.compendium.com.ar>
-Content-Disposition: inline
+In-Reply-To: <37701240971DD31193970000F6CCB9F704CB7EFF@duke.datcon.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Piers Finlayson <pdf@dataconnection.com>
+Cc: Antony Stone <Antony@Soft-Solutions.co.uk>, ML-netfilter <netfilter@lists.netfilter.org>
 
-On Sunday 14 December 2003 11:04, horape@tinuviel.compendium.com.ar wrote:
-> > > I do:
-> > >
-> > > iptables -t nat -A PREROUTING -p udp -j LOG --log-prefix "PREROUTING: "
-> > > iptables -t filter -A INPUT -p udp -j LOG --log-prefix "INPUT: "
-> > >
-> > > (I'm logged in that box via ssh, so I prefer not to do -p all)
-> > >
-> > > There are no more rules than these ones.
-> > >
-> > > In the log I see the INPUT ones but not the PREROUTING (only see on
-> > > PREROUTING packets to port 137, maybe some worm...)
-> >
-> > That's very strange. You said in your first post that you had a udp proxy
-> > running. Is it on this box? I'm not sure at what level a proxy hooks into
-> > the box, but I know that some programs read the data stream before
-> > netfilter sees it. If the proxy is in front of netfilter then netfilter
-> > would never see those packets. The port 137 packets are prolly just
-> > internet garbage.
->
-> The proxy has a udp socket bound to port 5000, and another udp socket bound
-> to some other port, it reads from the first socket and does a sendto using
-> the other socket (poll + read + write, no more)
->
+Good day, Piers,
 
-It looks like the proxy is grabbing the packets first and then dropping them 
-directly onto the INPUT chain. Try disabling the proxy and release the bound 
-ports then try it again. Once the packets reach PREROUTING you can DNAT them 
-to another port.
+On Sun, 14 Dec 2003, Piers Finlayson wrote:
 
-Jeff
+> Bill - thanks a lot.  That's exactly what I was after.
+
+	All the credit goes to Harald - I'm just the messenger.  :-)
+	Cheers,
+	- Bill
+
+> On Sat, 13 Dec 2003, Antony Stone wrote:
+> 
+> > On Saturday 13 December 2003 9:45 am, Piers Finlayson wrote:
+> > 
+> > > Is it possible to log a packet's entire contents with iptables,
+> > > rather than just useful stuff from the packet header?
+> > 
+> > No.  Netfilter has a single fixed logging format which shows onlt the
+> > packet header information, nothing from the body itself.
+> > 
+> > > I can run tcpdump/tethereal etc to log the packets I'm interested
+> > > in, but figure it would be much neater if I can just use iptables to
+> > > do it.
+> > 
+> > You might want to have a look at http://gnumonks.org/projects/ulogd to
+> > see if it will help with what you want, but I suspect tcpdump etc will
+> > remain your best bet.
+> 
+> 	It will help. http://www.stearns.org/doc/iptables-ulog.current.html
+
+
+---------------------------------------------------------------------------
+        "I plan to live forever.  So far, so good."
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+Linux articles at:                         http://www.opensourcedigest.com
+--------------------------------------------------------------------------
+
 
