@@ -1,11 +1,13 @@
-From: Richard Bellamy <richard.bellamy@virgin.net>
-Subject: Being selective about traffic and interfaces
-Date: Mon, 8 Mar 2004 15:07:59 +0000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Testing iptables setup
+Date: Mon, 8 Mar 2004 15:18:17 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040308150758.GB16848@virgin.net>
+Message-ID: <200403081518.17402.Antony@Soft-Solutions.co.uk>
+References: <404C8AA2.6060208@teleport.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <404C8AA2.6060208@teleport.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +18,59 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi
+On Monday 08 March 2004 3:00 pm, Richard L. Dery wrote:
 
-I have just set up an ecrypted connection (with OpenVPN) between my laptop and router currently all traffic goes down the vpn. I would like to allow ssh traffic to bypass the vpn.
+> I have the following setup in my /etc/ppp/ip-up.d directory:
+>
+> ## Create chain which blocks new connections, except if coming from inside.
+> # iptables -N block
+> # iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
+> # iptables -A block -m state --state NEW -i ! ppp0 -j ACCEPT
+> # iptables -A block -j DROP
+>
+> ## Jump to that chain from INPUT and FORWARD chains.
+> # iptables -A INPUT -j block
+> # iptables -A FORWARD -j block
+>
+> When I run iptables -L after connecting these rules are displayed.
+>
+> Is there a way to test to show that these rules work?
 
-The situation is this:
+I can think of two meanings of the word "work" here:
 
-Router:							Laptop:
-192.168.0.1 - tun0					192.168.0.2 - tun0
-	|							|
-10.44.10.1 - eth0					10.44.10.2 - eth0
-	|							|
-	---------------------------------------------------------
+1. Do they allow the traffic you want?
+2. Do they block the traffic you don't want?
 
-The default route on the laptop is set to 192.168.0.1 so all traffic is automatically sent encrypted. I need to be able to send everything but ssh down the vpn(with the possibility for https later on). I beleive that this would have to happen before routing took place. OpenVPN is on udp/5000.
+I suggest you test them by setting the packet counters to zero ("iptables 
+-Z"), then sending some traffic through your firewall which is expected to 
+work (eg: browse an Internet website from a LAN client), and make sure you 
+see a small increase in the packet counters for the NEW rule in the 
+user-defined chain (using "iptables -L -nvx"), and a larger increase in the 
+counters for the ESTABLISHED rule (since this is where the reply packets, and 
+further request packets, will go after the initial connection is made).
 
-I would be very grateful for any assistance.
+Then try something which should be blocked by the above rules (eg: try to 
+connect to your public IP address from somewhere else on the Internet - it 
+doesn't matter what protocol you try to use - HTTP, telnet, SSH, POP3 etc 
+should all be blocked), and make sure (a) you can't connect, and (b) you see 
+some packets build up in the counters for the DROP rule.
 
-Richard 
+If in doubt, put a LOG rule just before the DROP rule, and you'll sson see 
+packets from all over the Internet trying to connect to your address, and 
+failing :)
+
+Regards,
+
+Antony.
+
+-- 
+The words "e pluribus unum" on the Great Seal of the United States are from a 
+poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
+dressing.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
