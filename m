@@ -1,12 +1,14 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: ESP does not hit the nat table
-Date: Sun, 1 Aug 2004 15:03:48 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: [OT] Was: ESP does not hit the nat table
+Date: Sun, 1 Aug 2004 23:28:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051218@asimail2.alphanumeric.com>
+Message-ID: <200408012328.16124.Antony@Soft-Solutions.co.uk>
+References: <D5C9032B2B09C64EA2409D6214E91AC9051218@asimail2.alphanumeric.com>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC9051218@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +21,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> iptables -t nat -j DROP
->
-> Will not block ESP traffic.
+On Sunday 01 August 2004 8:03 pm, Jason Opperisano wrote:
 
-It's not a valid command, either.  In addition to specifying the table =
-(-t nat) to act upon, you also need to specify a command and a chain to =
-operate on; i.e.,
+> <OT>
+>  Where is the new-found obsession with dropping packets in the NAT table
+> coming from? </OT>
 
-	iptables -t nat -A PREROUTING -j DROP
+Indeed.   A few people here have commented recently that they prefer dropping 
+stuff in the PREROUTING nat table instead of waiting until it hits INPUT or 
+FORWARD, for things like spoofed packets or invalid TCP flag combinations.
 
-Not that I'm recommending the above rule, but it'll sure drop some =
-traffic...
+I guess dropping things in nat is okay in exceptional circumstances, but I 
+hardly think the efficiency boost of dropping in nat instead of waiting until 
+the first filter table is reached makes any noticeable difference, and I 
+still advocate doing address translation in the nat tables, filtering 
+operations in the filter tables, and anything else in the mangle tables.
 
-> On the other hand
->
-> iptables -t filter -p 50 -j DROP
->
-> will block ESP traffic.
+Just so long as you remember never to set a default policy other than ACCEPT 
+on any nat or mangle tables.....
 
-Nope...
+Regards,
 
-	iptables -A FORWARD -p 50 -j DROP
-Or
-	iptables -A INPUT -p 50 -j DROP
-Or
-	iptables -A OUTPUT -p 50 -j DROP
+Antony.
 
-("-t filter" is assumed if no "-t" is specified)
+-- 
+I own three Windows books, published by O'Reilly.   They are "Windows 
+Annoyances", "Office 97 Annoyances" and "Windows 98 Annoyances".   That 
+pretty much sums it up for me.
 
-<OT>
- Where is the new-found obsession with dropping packets in the NAT table =
-coming from?
-</OT>
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
--j
 
