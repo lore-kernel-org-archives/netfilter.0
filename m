@@ -1,11 +1,13 @@
-From: JHoskins98@aol.com
-Subject: Re: what traffic is this?
-Date: Wed, 26 Jun 2002 09:25:34 EDT
+From: "Benny Butler" <benny.butler@nexusitg.com>
+Subject: RE: IPTables not available
+Date: Wed, 26 Jun 2002 08:37:29 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <fd.19d60313.2a4b1ace@aol.com>
+Message-ID: <002301c21d16$9e229df0$0205a8c0@maxima>
+References: <004601c21cb9$a9482400$2400a8c0@inq7.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="part1_fd.19d60313.2a4b1ace_boundary"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <004601c21cb9$a9482400$2400a8c0@inq7.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,67 +17,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
+I have a RH 7.2 box that's running iptables and has never had the kernel
+recompiled.  Check 'lsmod' and make sure that ipchains is not listed.
+If it is then 'rmmod ipchains' then 'insmod ip_tables'  Actually you can
+skip that last command and it will load the module for you.
 
---part1_fd.19d60313.2a4b1ace_boundary
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-
-The traffic is CDP - Cisco Discovery Protocol.  It is a heartbeat to detect 
-changes i.e. newly attached or detacted cisco equipment.  
-
-You can turn it off with "no cdp run" command at the enable prompt or "no cdp 
-enable" at the interface.  
-jhh
-
-In a message dated 6/26/2002 7:37:06 AM Eastern Standard Time, 
-netfilter-request@lists.samba.org writes:
+Hope this helps.
 
 
-> This traffic comes from a cisco router.
-> what type of traffic is ?
-> 
-> [root@cuelebre root]# tcpdump -i eth2
-> tcpdump: listening on eth2
-> 
-> 13:19:12.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
->                          0000 0100 0000 0000 0000 0000 0000 0000
->                          0000 0000 0000 0000 0000 0000 0000 0000
->                          0000 0000 0000 0000 0000 0000 0000
-> 13:19:22.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
->                          0000 0100 0000 0000 0000 0000 0000 0000
->                          0000 0000 0000 0000 0000 0000 0000 0000
->                          0000 0000 0000 0000 0000 0000 0000
 
 
---part1_fd.19d60313.2a4b1ace_boundary
-Content-Type: text/html; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+-----Original Message-----
+From: netfilter-admin@lists.samba.org
+[mailto:netfilter-admin@lists.samba.org] On Behalf Of jesse.linux
+Sent: Tuesday, June 25, 2002 9:32 PM
+To: netfilter@lists.samba.org
+Cc: dcurry@cariocas.com
+Subject: Re: IPTables not available
 
-<HTML><FONT FACE=arial,helvetica><BODY BGCOLOR="#3dffff"><FONT  SIZE=2 FAMILY="SANSSERIF" FACE="Arial" LANG="0">The traffic is CDP - Cisco Discovery Protocol.&nbsp; It is a heartbeat to detect changes i.e. newly attached or detacted cisco equipment.&nbsp; <BR>
-<BR>
-You can turn it off with "no cdp run" command at the enable prompt or "no cdp enable" at the interface.&nbsp; <BR>
-jhh<BR>
-<BR>
-In a message dated 6/26/2002 7:37:06 AM Eastern Standard Time, netfilter-request@lists.samba.org writes:<BR>
-<BR>
-<BR>
-<BLOCKQUOTE TYPE=CITE style="BORDER-LEFT: #0000ff 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: 0px; PADDING-LEFT: 5px">This traffic comes from a cisco router.<BR>
-what type of traffic is ?<BR>
-<BR>
-[root@cuelebre root]# tcpdump -i eth2<BR>
-tcpdump: listening on eth2<BR>
-<BR>
-13:19:12.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0100 0000 0000 0000 0000 0000 0000<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0000 0000 0000 0000 0000 0000 0000<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0000 0000 0000 0000 0000 0000<BR>
-13:19:22.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0100 0000 0000 0000 0000 0000 0000<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0000 0000 0000 0000 0000 0000 0000<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0000 0000 0000 0000 0000 0000</BLOCKQUOTE><BR>
-<BR>
-</FONT></HTML>
---part1_fd.19d60313.2a4b1ace_boundary--
+
+
+Date: Tue, 25 Jun 2002 08:20:43 -0700
+From: "Daniel Curry" <dcurry@cariocas.com>
+To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
+
+On fresh RH7.2 and RH7.3 installs  IPTables executables are installed,
+but will not execute.  I get Kernel errors.  Can someone please direct
+me to a listing of what steps and option I need to enable this?  I wish
+to put firewalling with NAT services on a machine running an Apache web
+server, with PHP and Perl scripts connecting to a localhosted MySQL DB,
+as well as offering sendmail, POP(S)/IMAP(S), ftp, and PPTP VPN
+services.  Or a compatible ipchains script for this would also be
+appreciated.
+
+Thanks
+
+Daniel Curry
+IT Manager
+Cariocas
+625 Second Street=20
+Suite 201
+San Francisco, CA 94107=20
+ph: 415-348-6516
+fx: 415-348-6505=20
+cell: 510-579-6680
+
+"If A equals success, then the formula is: A =3D X + Y + Z,=20
+X is work. Y is play. Z is keep your mouth shut."=20
+  - Albert Einstein
+
+maybe ipchains is your problem.....
+try to unload ipchains then execute your iptables rules......
+
+ 
+
 
