@@ -1,8 +1,9 @@
 From: "Knight, Steve" <Steve.Knight@bskyb.com>
-Subject: RE: first time set up
-Date: Thu, 30 Oct 2003 12:32:04 -0000
+Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
+Date: Thu, 30 Oct 2003 12:45:49 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA57904@OST_EXCH_USR5>
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA57905@OST_EXCH_USR5>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -13,92 +14,104 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: iptables mailing list <netfilter@lists.netfilter.org>
 
-Thanks Ted for the pointers, I'll give it a shot.
+Hi rob
 
-Only really because ziegler recommends it.  It's early days though and at
-the moment I'm almost bordering on setting default policies to ACCEPT just
-to get the stupid DNS resolution working.
+As a total newbie :) at least to iptables, I think what you have there is
+great.
 
-Just to clarify the status it's the other way round --- I just want the box
-to be able to look up DNS, it's not running DNS itself.  So by inference all
-I should do is change INPUT to OUTPUT on your example?
-
-Thanks to george in edinburgh also for the advice re: resolving dns via tcp,
-I will allow that too.
-
-Fingers crossed ...
+Just my 0.02, if it's worth that much considering I cant even get DNS
+lookups from my fw working.....
 
 steve
 
 
+
 -----Original Message-----
-From: Ted Kaczmarek [mailto:tedkaz@optonline.net] 
-Sent: 30 October 2003 12.04
-To: Knight, Steve
-Cc: netfilter@lists.netfilter.org
-Subject: Re: first time set up
-
-
-Any particular reason you want default output drop?
-That is a lot of overhead unless the box is only a dns server
-than your train of thought is ok.
-
-Also you need 
-
-iptables -A INPUT -p udp -m udp --dport 53 -j ACCEPT
-
-you could specify as well the interface like so
--A INPUT -i eth0 -p udp -m udp --dport 53 -j ACCEPT
-
-Ted
+From: Robert P. J. Day [mailto:rpjday@mindspring.com] 
+Sent: 30 October 2003 12.31
+To: iptables mailing list
+Subject: thoughts on a newbie tutorial i'll be giving shortly
 
 
 
-On Thu, 2003-10-30 at 06:50, Knight, Steve wrote:
-> Hi there ---
-> 
-> Once I've got the normal stuff in place on a test standalone box [default
-> drop, accept related + established on tcp, loopback enabled]
-> 
-> iptables -A OUTPUT -p udp -s $LOCALIP -d $DNS1 --dport 53 -j ACCEPT
-> 
-> Shouldn't this be enough to allow standard dns resolution to take place?
-> According to Ziegler, it should?
-> 
-> Or am I a complete plum.
-> 
-> Any pointers as to my plumness gratefully received.  Thanks :)
-> 
-> steve
-> 
-> 
-> 
-> -----------------------------------------------------------------------
-> Information in this email may be privileged, confidential and is 
-> intended exclusively for the addressee.  The views expressed may
-> not be official policy, but the personal views of the originator.
-> If you have received it in error, please notify the sender by return
-> e-mail and delete it from your system.  You should not reproduce, 
-> distribute, store, retransmit, use or disclose its contents to anyone.
->  
-> Please note we reserve the right to monitor all e-mail
-> communication through our internal and external networks.
-> -----------------------------------------------------------------------
--- 
-Ted Kaczmarek<tedkaz@optonline.net>
-18 Packanack Lake Road
-Wayne, NJ, 07470
-973-633-6892
+  as a really low-level iptables intro i'm giving this monday,
+i'm going to show and explain something like the following.
+it's deliberately simplified as i have only about a half hour,
+but i'm interested in whether anyone here has any kind of 
+visceral reaction to this configuration -- whether i'm suggesting
+anything violently insecure or anything like that.  (i've removed
+a lot of preliminary variable setting, just wanting to show the
+salient stuff.)
 
-AIM-tedhurrah
-Yahoo-oasysted
+------------------------
+
+ALLOWED_INCOMING_SERVICES="ssh http"
+DISALLOWED_OUTGOING_SERVICES="telnet"
+
+#######################################################
+# Set the chain policies.
+#######################################################
+
+$IPT -P INPUT DROP
+$IPT -P FORWARD DROP
+$IPT -P OUTPUT ACCEPT	# Purists probably hate this.
+
+
+#######################################################
+# Start with some REALLY basic rules.
+#######################################################
+
+$IPT -A INPUT -i lo -j ACCEPT
+$IPT -A OUTPUT -o lo -j ACCEPT
+
+$IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+#######################################################
+# Kill really bad outgoing services.
+#######################################################
+
+for s in $DISALLOWED_OUTGOING_SERVICES ; do
+	$IPT -A OUTPUT -p tcp --dport $s -j DROP
+done
+
+#######################################################
+# Allow a very small set of incoming services.
+#######################################################
+
+for s in $ALLOWED_INCOMING_SERVICES ; do
+	$IPT -A INPUT -p tcp -s 192.168.1.0/24 --dport $s -j ACCEPT
+done
+
+------------------------------
+
+  yes, it could be fancier, but it's meant to be a starting
+point for total newbies.  
+
+  thoughts?
+
+rday
+
 
 
 
 .
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
+
 
