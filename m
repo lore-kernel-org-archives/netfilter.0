@@ -1,11 +1,12 @@
-From: Santi <nagajuna@optushome.com.au>
-Subject: RE: problems converting iptables script from eth2 ....
-Date: Wed, 29 Jan 2003 23:33:53 +1100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: Broken MS tcp new not syn: better to REJECT or DROP?
+Date: Wed, 29 Jan 2003 13:41:53 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E37CA31.3010907@optushome.com.au>
+Message-ID: <Pine.LNX.4.51.0301291326290.29265@dns.toxicfilms.tv>
+References: <3E307456.70104@orix.com.au.>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E307456.70104@orix.com.au.>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,61 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Phil Crooker <pcrooker@orix.com.au>
+Cc: netfilter@lists.netfilter.org
 
+> Hi,
+>
+> We've a recent install of iptables and came across the broken ms tcp
+> problem.
+Um, i though new, not syn is a result of a conntrack entry expiry.
+Ofcourse besides 'on purpose' packet crafting or scanning, etc.
 
-You mean you don't get any access to the Internet from any
-machines on your private network and / or from the firwall machine
-itself?
-I have the same mysterious problems until I tweaked these:
+> I was wondering, would rejecting the packet be faster than
+> dropping it for the client?
+Well, yes. The client's tcp stack on receiving either the tcp rst or icmp
+unreach will inform the applicaton about it. Now it's up to the client's
+application (eg. IE) to handle to network error properly.
 
-# Flushing pre-existing rules:
-iptables --flush INPUT
-iptables --flush OUTPUT
-iptables --flush FORWARD
-iptables -t nat --flush
-iptables -t mangle --flush
+Anyway dropping the packet will get you nowhere, you'll be waiting as much
+as the clients application (or the tcp stack) timeout is. Or the user's
+patience is :)
 
-# Policies
-# Set the default policy:
-iptables --policy INPUT ACCEPT
-iptables --policy OUTPUT ACCEPT
-iptables --policy FORWARD DROP
+> client will wait for a timeout before sending a proper syn packet.
+Really? ms ie sending unproper syn packets? What is so unproper about it?
+It must be something else.
 
-# This rule affects LAN access to the Internet.
-# If DROPped access is denied.
-iptables -t nat --policy PREROUTING ACCEPT
+> IE too dumb to recognise the reject?
+Well, try -j REJECT --reject-with tcp-reset, it will result as IE finding
+that the port is closed.
 
-# This rule affects the localhost:
-iptables -t nat --policy OUTPUT ACCEPT
+Also this works great for blocking ads in messenger software, just have to
+know the ip/port of the ads.
 
-# Specifies source changes to outgoing packets routed
-# through the box (SourceNAT, MASQUERADE). Somehow,
-# setting this to DROP denies access to X-server.
-iptables -t nat --policy POSTROUTING ACCEPT
-
-# This rule affects packets originating from the LAN
-# and is destined for the Internet:
-iptables -t mangle --policy PREROUTING ACCEPT
-
-# This rule affects Internet access for the host machine
-# and pings originating from the LAN: if set to drop then access is		# 
-denied!
-# A drop policy does not affect LAN access to the Internet.
-iptables -t mangle --policy OUTPUT ACCEPT
-
-I don't know what the problem is the above settings restored my services 
-again when I had a similar settup to yours.  Right now I'm rewritting 
-FORWARD rules for eth0/eth1 pairing, INPUT/OUTPUT rules for 
-eth0(Internet connected) as well as INPUT/OUTPUT rules for eth1 (private 
-LAN connected).  My new rules may mean that I will be able to set the 
-aforementioned rules to DROP.
-
-
-Maybe this helps you a bit in some way.
-
-
-
+Regards,
+Maciej
 
 
