@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Leandro Takashi Hirano" <takashi@alcidesmaya.com.br>
 Subject: Re: Port Scanner
-Date: Wed, 5 Nov 2003 14:19:47 +0000
+Date: Wed, 5 Nov 2003 12:44:06 -0200 (BRST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311051419.hA5EJtr13138@agate.rockstone.co.uk>
+Message-ID: <60242.200.180.170.253.1068043446.squirrel@www.alcidesmaya.com.br>
 References: <60101.200.180.170.253.1068041679.squirrel@www.alcidesmaya.com.br>
+        <200311051419.hA5EJtr13138@agate.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <60101.200.180.170.253.1068041679.squirrel@www.alcidesmaya.com.br>
+In-Reply-To: <200311051419.hA5EJtr13138@agate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,54 +18,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Lista de Mail netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 05 November 2003 2:14 pm, Leandro Takashi Hirano wrote:
-
-> How does this rule work?
+> On Wednesday 05 November 2003 2:14 pm, Leandro Takashi Hirano wrote:
 >
-> iptables -A FORWARD -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit ?limit
-> 1/s -j ACCEPT
-
-It means that any packets which have the RST flag set, and the SYN, ACK, FIN 
-flags cleared, will only be allowed *through* the firewall at a maximum rate 
-of one packet per second.
-
-> Is it safe to use only this rule to avoid port scanners?
-
-Depends what you mean by "safe" and "avoid" :)
-
-Here are some observations on the above rule:
-
-1. It is in the FORWARD chain, therefore it has no effect on people port 
-scanning the firewall itself (it would need to be in the INPUT chain to 
-affect that).
-
-2. One packet per second will be ACCEPTed.   What happens to the other 
-packets (and whether anything gets returned to the scanner) depends on the 
-other rules following this one in the chain.
-
-3. The rule only applies to packets with RST set, and SYN, ACK, FIN clear.   
-Therefore it will incfluence the outcome of a RST port scan, but have no 
-effect on a FIN scan, or a SYN scan.
-
-I think in order to answer your question we first need to know:
-
- - what response do you want someone to get when they attempt to port scan 
-your system?
-
-Regards,
-
-Antony.
+>> How does this rule work?
+>>
+>> iptables -A FORWARD -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit
+>> ?limit 1/s -j ACCEPT
+>
+> It means that any packets which have the RST flag set, and the SYN, ACK,
+> FIN  flags cleared, will only be allowed *through* the firewall at a
+> maximum rate  of one packet per second.
+>
+>> Is it safe to use only this rule to avoid port scanners?
+>
+> Depends what you mean by "safe" and "avoid" :)
+>
+> Here are some observations on the above rule:
+>
+> 1. It is in the FORWARD chain, therefore it has no effect on people port
+>  scanning the firewall itself (it would need to be in the INPUT chain to
+>  affect that).
+>
+> 2. One packet per second will be ACCEPTed.   What happens to the other
+> packets (and whether anything gets returned to the scanner) depends on
+> the  other rules following this one in the chain.
 
 
--- 
+OK, one packet per second will be ACCEPTed, but aren=B4t the other packets
+going to be DROPed?
 
-"It is not the strongest of the species that survive, nor the most 
-intelligent, but the ones most responsive to change."
 
- - Charles Darwin
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+>
+> 3. The rule only applies to packets with RST set, and SYN, ACK, FIN
+> clear.    Therefore it will incfluence the outcome of a RST port scan,
+> but have no  effect on a FIN scan, or a SYN scan.
+>
+
+Do I have also to create a rule for FIN scan and SYN scan?
+Do you have some port scanners rules to show me? (and other protection
+rules too)
+
+And thanks very much for the help!!!
+
+> I think in order to answer your question we first need to know:
+>
+>  - what response do you want someone to get when they attempt to port
+> scan
+> your system?
+>
+
+no answer....
+
+> Regards,
+>
+> Antony.
+>
+>
+> --
+>
+> "It is not the strongest of the species that survive, nor the most
+> intelligent, but the ones most responsive to change."
+>
+>  - Charles Darwin
+>                                                      Please reply to the
+> list;
+>                                                            please don't
+> CC me.
+
+
+
 
