@@ -1,11 +1,11 @@
 From: "Hlynur Thor Olason" <thorolason@web.de>
-Subject: forwarding local traffic
-Date: Thu, 11 Dec 2003 11:52:16 +0100
+Subject: iptables -- routing
+Date: Thu, 11 Dec 2003 10:04:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003101c3bfd4$d80cdf00$b84526c0@thor>
+Message-ID: <000e01c3bfc5$c0f8cfe0$b84526c0@thor>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002E_01C3BFDD.39728530"
+	boundary="----=_NextPart_000_000B_01C3BFCE.22585B90"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,7 +20,7 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_002E_01C3BFDD.39728530
+------=_NextPart_000_000B_01C3BFCE.22585B90
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -54,7 +54,7 @@ I have been trying to use iptables but not found a solution.=20
 
 Any suggestion would be welcome?  / Thor=20
 
-------=_NextPart_000_002E_01C3BFDD.39728530
+------=_NextPart_000_000B_01C3BFCE.22585B90
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -67,7 +67,6 @@ charset=3Diso-8859-1">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
 <DIV><FONT face=3DArial size=3D2>
 <P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
 style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
@@ -127,9 +126,8 @@ style=3D"mso-ansi-language: EN-US"><FONT size=3D3><FONT face=3D"Times =
 New Roman">Any=20
 suggestion would be welcome?<SPAN style=3D"mso-spacerun: yes">&nbsp; =
 </SPAN>/ Thor=20
-<o:p></o:p></FONT></FONT></SPAN></P></FONT></DIV></FONT></DIV></BODY></HT=
-ML>
+<o:p></o:p></FONT></FONT></SPAN></P></FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_002E_01C3BFDD.39728530--
+------=_NextPart_000_000B_01C3BFCE.22585B90--
 
 
