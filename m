@@ -1,12 +1,14 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: networking newbie needs help
-Date: Sun, 23 Jan 2005 07:10:05 -0500
-Message-ID: <1106482205.5171.15.camel@jasiiitosh.nexusmgmt.com>
-References: <20050123060556.35467.qmail@web90102.mail.scd.yahoo.com>
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: TTL mangling problems...
+Date: Fri, 21 Jan 2005 19:47:32 +0100
+Message-ID: <20050121184732.GR14460@sunbeam.de.gnumonks.org>
+References: <4147.192.168.3.47.1106333417.squirrel@192.168.3.47>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CMx2Qe8y1jN1ar4Y"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050123060556.35467.qmail@web90102.mail.scd.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <4147.192.168.3.47.1106333417.squirrel@192.168.3.47>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +19,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Kev askme <linuxtoybox@yahoo.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: wency@comelsoft.com
+Cc: netfilter@lists.netfilter.org
 
-On Sat, 2005-01-22 at 22:05 -0800, Kev askme wrote:
-> --- "John A. Sullivan III"
-> <jsullivan@opensourcedevelopmentcorp.com> wrote:
-> 
-> > <snip>
-> Thanks for the "dummified" explanation. That is very
-> clear and concise. :) So I just need my ISP to
-> statically assign the public IP addresses to me and
-> then add the addresses to my external interface using
-> the ip command and then the external interface will
-> answer for all ip addresses on the external interface?
-> Or do I need to add aliases for each address, or is
-> that essentially what the ip command is actually
-> doing?
-You've got it! Yes, adding addresses to the interface with ip is the
-successor to aliasing - John
-<snip>
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+--CMx2Qe8y1jN1ar4Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Jan 21, 2005 at 08:50:17PM +0200, Ventsyslav Vassilev wrote:
+> Helo, Mr. Welte,
+> may be this is not the place where i must ask the question below, but i'm
+> unable to find the right place on the Net.
+
+netfilter@lists.netfilter.org or netfilter-devel@lists.netfilter.org
+
+> iptables v1.2.7a: Unknown arg `--ttl-set'
+>=20
+> Can you tell me where is my error, please?
+
+your iptables userspace program seems to lack the libipt_TTL.so plugin.
+
+What does 'iptables -j TTL -h' tell you? (last 6 lines)=20
+
+--=20
+- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
+
+--CMx2Qe8y1jN1ar4Y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFB8U5EXaXGVTD0i/8RAvpDAKChX49233Gjn+lDTUEBwRh9/CVaiACdGldS
+3ImxKkpzXz3i49oYAi2W3tI=
+=seGy
+-----END PGP SIGNATURE-----
+
+--CMx2Qe8y1jN1ar4Y--
 
