@@ -1,9 +1,9 @@
-From: "Alyn Ashworth" <alyn@emph.com>
-Subject: Adding Telnet to a Working Setup
-Date: Wed, 27 Aug 2003 14:44:24 +0100
+From: "Guilherme Cox" <cox@sinistro.net>
+Subject: Multicast routing question...
+Date: Thu, 28 Aug 2003 22:36:19 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <023a01c36ca1$54a1f320$0500a8c0@emph05>
-Reply-To: <alyn@emph.com>
+Message-ID: <MCEJJKCAIMHFOKODABEIGEDCHNAA.cox@sinistro.net>
+Reply-To: <cox@ieee.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,76 +19,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a working iptables setup that uses the following script, and that I
-would like to change to allow telnet connexions from the local network
-(eth0) but nor from ppp0. Can anyone suggest the best way to do this
-(politely and in words of one sylable, please!), and I would also welcome
-any other comments on my script....
+I'd like to know if I can use iptables to solve one problem.
 
-#============================SCRIPT STARTS==================================
-# Load modules
-modprobe ip_tables
-modprobe ip_conntrack
-modprobe ip_conntrack_ftp
+My network is:
+<----Local Network/NAT (192.168.7.x)              -- eth0
+<----Internet link/Cisco router                   -- eth1
+<----ViaSat router/A Satelite link(10.254.103.x)  -- eth2
 
-# (1) Policies (default)
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+My default gateway is the Cisco router IP.
+I have static routes to networks connected using eth2.
 
-# (2) User-defined chain for ACCEPTed TCP packets - called okay
-iptables -N okay
-#next line would allow new connections
-#iptables -A okay -p TCP --syn -j ACCEPT
-iptables -A okay -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A okay -p TCP -j DROP
+My /sbin/route  is:
+cox@earth:~$ /sbin/route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use
+Iface
+xxx.xxx.xxx.128  0.0.0.0         255.255.255.192 U     0      0        0
+eth1
+192.168.7.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
+192.168.149.0   10.254.103.1    255.255.255.0   UG    0      0        0 eth2
+yyy.yyy.yyy.0   10.254.103.1    255.255.255.0   UG    0      0        0 eth2
+10.254.103.0    0.0.0.0         255.255.255.0   U     0      0        0 eth2
+127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
+224.0.0.0       0.0.0.0         240.0.0.0       U     0      0        0 eth0
+0.0.0.0         xxx.xxx.xx.129  0.0.0.0         UG    1      0        0 eth1
 
-# (3) INPUT chain rules
+--x--
+Using this model the Multicast packets came from eth2 aren't routed to my
+Local Network (eth0).
+If I connect the VaiSat router on my switch and use ip-aliases, I can
+receive the IGMP. However, it is unsafe. I need to mantain my network but
+the multicast packets must be routed to eth0.
 
-# Rules for incoming pakets from LAN
-iptables -A INPUT -p ALL -i eth0 -s 192.168.0.0/16 -j ACCEPT
-iptables -A INPUT -p ALL -i lo -s 127.0.0.1 -j ACCEPT
-iptables -A INPUT -p ALL -i lo -s 192.168.0.0/16 -j ACCEPT
+Do you know how can I do? Any ideias? Did anybody have the same problem?
 
-#Rules for incoming packets from the Internet
+If you want more information about my network, please contact me.
 
-#Packets for established connexions
-iptables -A INPUT -p ALL -i ppp0 -m state --state ESTABLISHED,RELATED -j
-ACCEPT
+Thanks and sorry my english mistakes.
 
-#TCP rules (not used as pres as no services running over net)
-
-#UDP rules
-iptables -A INPUT -p UDP -i ppp0 -s 0/0 --destination-port 53 -j ACCEPT
-iptables -A INPUT -p UDP -i ppp0 -s 0/0 --destination-port 2074 -j ACCEPT
-iptables -A INPUT -p UDP -i ppp0 -s 0/0 --destination-port 4000 -j ACCEPT
-
-#ICMP rules
-iptables -A INPUT -p ICMP -i ppp0 -s 0/0 --icmp-type 8 -j ACCEPT
-iptables -A INPUT -p ICMP -i ppp0 -s 0/0 --icmp-type 11 -j ACCEPT
-
-# (4) FORWARD chain rules
-# Accept packets we want to forward
-iptables -A FORWARD -i eth0 -s 192.168.0.0/16 -j ACCEPT
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# (5) OUTPUT chain rules
-# only output packets with local addreses (no spoofing)
-iptables -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
-iptables -A OUTPUT -p ALL -s 192.168.0.88 -j ACCEPT
-iptables -A OUTPUT -p ALL -s 192.168.0.0/24 -j ACCEPT
-
-# (6) POSTROUTING chain rules
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-#==========================================================SCRIPT ENDS
-==================
-
-Many thanks
-
-Alyn.
-
-
-Alyn W. Ashworth
-
+cox
 
 
