@@ -1,10 +1,13 @@
-From: Michael Anderson <mathtoot@yahoo.com>
-Subject: Iptables Tutorial 1.1.19 by Oskar Andreasson
-Date: Fri, 12 Sep 2003 09:50:30 -0700 (PDT)
+From: "Enrico Demarin" <enricod@videotron.ca>
+Subject: RE: Conntrack PPTP broken in 2.4.22 ?
+Date: Fri, 12 Sep 2003 13:01:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030912165030.86144.qmail@web40705.mail.yahoo.com>
+Message-ID: <000301c3791d$401bc4c0$f901010a@SC2003002>
+References: <3F611548.4020102@snapgear.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <3F611548.4020102@snapgear.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,124 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: 'Philip Craig' <philipc@snapgear.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi, 
+The problem goes away with the patches you mentioned. I also tried to
+establish a connection from a NATed box behind
 
-I have recieved an error called: "Unknown arg
-`--state'" from linux (I am running RH Linux 9.2
-(shrike) -- but have not run "Updater" i.e. have not
-run any patches or the like since the install) 
+The linux firewall to an external PPTP server ( win2k and linux poptop)
+: it works , even without the module loaded .
 
-I am using the Oskar Andreasson's "DHCP" firewall
-script from his excellent "Tutorial 1.1.19 "
+I think at this point I miss the functionality of the pptp_conntrack
+module ? When is it necessary to load it ?
 
-Here are some of the things I have changed in the DHCP
-script: 
+- Enrico
 
-from:  INET_IFACE="eth0"
-to:    INET_IFACE="ppp0"
+> -----Original Message-----
+> From: Philip Craig [mailto:philipc@snapgear.com]=20
+> Sent: venerd=EC 12 settembre 2003 2.37
+> To: Enrico Demarin
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: Conntrack PPTP broken in 2.4.22 ?
+>=20
+>=20
+> Enrico Demarin wrote:
+> > I have tried to use the pptp_conntrack patch from the last=20
+> > patch-o-matic on Linux kernel 2.4.22 , but with that patch applied,=20
+> > apps using
+> > =20
+> > getsockopt SO_ORIGINAL_DST stop working  :
+> > =20
+> > the perror i get is :
+> > =20
+> > getsockopt(SO_ORIGINAL_DST): No such file or directory
+>=20
+> The following patch in the netfilter patch-o-matic CVS is=20
+> meant to fix this:
+>=20
+http://cvs.netfilter.org/~checkout~/netfilter/patch-o-matic/pending/63_g
+etorigdst-tuple-zero.patch?sortby=3Drev
 
-form:  IPTABLES="/usr/sbin/iptables"
-to:    IPTABLES="/sbin/iptables"
+But unfortunately that patch is broken too, and you'll need to apply the
+patch from this message to fix the patch:
 
-from:   #echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-to:      echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+http://lists.netfilter.org/pipermail/netfilter-devel/2003-September/0123
+82.html
 
-It has been suggested that perhaps my modules were not
-loaded properly esp. the "ipt_STATE" module
+(Btw, check the netfilter-devel archives for this month for some
+discussion about what patches you need for pptp conntrack.)
 
-Perhaps this is the problem... Below are the
-/sbin/modprobe commands with "arg" from the DHCP
-script: 
+--=20
+Philip Craig - philipc@snapgear.com - http://www.SnapGear.com SnapGear -
+Custom Embedded Solutions and Security Appliances
 
-#
-# 2.1 Required modules
-#
-                                                      
-                         
-/sbin/modprobe ip_conntrack
-/sbin/modprobe ip_tables
-/sbin/modprobe iptable_filter
-/sbin/modprobe iptable_mangle
-/sbin/modprobe iptable_nat
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ipt_limit
-/sbin/modprobe ipt_MASQUERADE
-
-I do not see where ipt_STATE is loaded...
-Is this supposed to be loaded prior to running the
-DHCP script? 
-
-If there are additional modprobe commands that have to
-be loaded prior to running this script -- I wonder
-which ones they are?
-
-I did use Lokkit* to make a secure server whilst I ran
-this script ... Lokkit may have unloaded the mod that
-"ipt_STATE" ... and done this behind the scenes...
-
-Very roughly these are the line numbers 225-228 and
-314 and 367 where the error occured:
-
-$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state
---state NEW -j LOG \
---log-prefix "New not syn:"
-
-$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state
---state NEW -j DROP
-
-$IPTABLES -A allowed -p TCP -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-
-$IPTABLES -A FORWARD -m state --state 
-ESTABLISHED,RELATED -j ACCEPT
-
-
-*Lokkit iptables output after cat
-/etc/sysconfig/iptables: 
-
-# Firewall configuration written by lokkit
-# Manual customization of this file is not
-recommended.
-# Note: ifup-post will punch the current nameservers
-through the
-#       firewall; such entries will *not* be listed
-here.
-*filter
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:RH-Lokkit-0-50-INPUT - [0:0]
--A INPUT -j RH-Lokkit-0-50-INPUT
--A FORWARD -j RH-Lokkit-0-50-INPUT
--A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 80 --syn
--j ACCEPT
--A RH-Lokkit-0-50-INPUT -i lo -j ACCEPT
--A RH-Lokkit-0-50-INPUT -i eth1 -j ACCEPT
--A RH-Lokkit-0-50-INPUT -p tcp -m tcp --syn -j REJECT
--A RH-Lokkit-0-50-INPUT -p udp -m udp -j REJECT
-COMMIT
-
-Well as you can prolly tell I am a total "newbie" at
-all this stuff... 
-
-I have done google seaches but only one bug was
-remotely related to the --state error...  If someone
-could direct me in a "positive" direction -- I would
-be grateful... One last thing... My son is going to
-kill me If I dont get his win2k workstation (on my
-lan) back on the "net"!!!
-
-Kindest Regards, 
-
-Michael Anderson
-
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
