@@ -1,15 +1,11 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: HELP: Conntrack table filling up !!!
-Date: Tue, 31 Dec 2002 23:50:05 +0000
+From: "Kevin L. Collins" <kcollins@qx.net>
+Subject: Question about fiewall script....
+Date: Tue, 31 Dec 2002 21:19:42 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021231235005.GD1985@miggy.org>
-References: <3E075D48.70801@interplus.ro> <000001c2b10e$e13376a0$0100a8c0@zultys.com>
+Message-ID: <001601c2b13c$41954190$6501a8c0@athlon>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="llIrKcgUOe3dCx0c"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000001c2b10e$e13376a0$0100a8c0@zultys.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,52 +15,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I'm in the midst of building VICTORY, my Linux Router/Firewall.
 
---llIrKcgUOe3dCx0c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm reading the book "Linux Firewalls, Second Edition" by Robert L.
+Ziegler, and using a great deal of the 4th chapter to help me protect my
+LAN from the 'baddies'.
 
-On Tue, Dec 31, 2002 at 12:54:57PM -0800, Ranjeet Shetye wrote:
->=20
-> There are ways in which pings (ICMP packets) can fill up conntrack
-> tables quickly. Are you running into problems with ICMP traffic only or
-> with any traffic ? e.g. look at /proc/net/ip_conntrack . Is it filled up
-> with ICMP traffic connections only ? If so, you might want to protect
-> your linux box from malformed ICMP packets, by DROPping all such packets
-> in the "filter" table.
+But I have a question that I can't seem to find an answer for...(beware
+this may show extreme newbie stupidity, you've been warned.)
 
-  Don't arbitrarily drop all ICMP, bad idea, breaks a few things.
+On several occasions, Mr. Ziegler invokes lines simaliar to the
+following for IPTABLES rules and I'm not so sure I can follow them.
 
-  Couldn't the 'full ip conntrack table' problem be solved by echo'ing a
-bigger number into /proc/sys/net/ipv4/ip_conntrack_max ?
+------------------------------------------------------------------------
+if [ "$CONNECTION_TRACKING" = "1" ]; then
+	$IPTABLES -A INPUT -i $EXTIF -p tcp --sport 20 \
+	-d <Internet Address> --dport $UNPRIVPORTS -m state \
+	--state NEW -j ACCEPT
+fi
+$IPTABLES -A INPUT -i $EXTIF -p tcp --sport 20 -d <Internet Address> \
+--dport $UNPRIVPORTS -j ACCEPT
+$IPTABLES -A OUTPUT -o $EXTIF -p tcp ! --syn -s <Internet Address> \ 
+--sport $UNPRIVPORTS --dport 20 -j ACCEPT
+------------------------------------------------------------------------
 
-	root@jimblewix:/proc/sys/net/ipv4;
-	23:48:19 0$ echo 32768 > ip_conntrack_max=20
+If I understand his thinking properly, this statement is supposed to
+check
+to see if the "Connection Tracking" module of IPTABLES/NetFilter is
+loaded and if so, use the rule defined inside of the if/fi section.  But
+if the "Connection Tracking" module isn't loaded, the firewall will
+fallback to the rules that follow, allowing the proper traffic to flow
+anyway.  This is supposedly because the "Connection Tracking" module
+uses RAM to keep track of it's connections.  And if RAM isn't available,
+connections tracking would fail.
 
-certainly changes it here.
+So far this makes perfect sense, but I'm not sure that above code does
+what he's describing.
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+My big concern is: No where in the book (that I have yet found) does he
+mention that you should or need to set the constant
+"CONNECTION_TRACKING"
+in the script you're creating.  So, this leads me to believe that the
+Connection Tracking module does it as it loads.  It also leads me to
+think
+that the module controls the state of the constant as it works.
 
---llIrKcgUOe3dCx0c
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Does someone know if this is the case?  Or maybe be able to point me to
+somewhere that I can find out.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+Since I'm a newbie, I want to make things as simple as I can - just in
+case I screww something up, it'll be easier to find.  But I'm _much_
+more concerned With the firewall working and being complete than I am
+about syntax.  If my concern isn't valid, someone let me know, and I'll
+quit worring about it.  If it _is_ valid, then please diresct me to the
+_best_ solution.
 
-iEYEARECAAYFAj4SLS0ACgkQzbc+I5XfxKe1igCfX7whr9akXYXncNrJIcBidGzX
-av4AniJvf9qEFjfTFhKznmXViTk1ToKK
-=cAaK
------END PGP SIGNATURE-----
+Thanks in advance,
 
---llIrKcgUOe3dCx0c--
+Kevin L. Collins, MCSE
+Systems Manager
+Nesbitt Engineering, Inc.
+
+
 
