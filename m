@@ -1,12 +1,13 @@
-From: =?ISO-8859-1?Q?Ren=E9_Gallati?= <draxinusom@gmail.com>
-Subject: Security vulnerability in netfilter?
-Date: Fri, 22 Oct 2004 09:52:36 +0200
+From: Harald Welte <laforge@netfilter.org>
+Subject: Any known issues with iptables-1.3.0 from cvs/svn ?
+Date: Fri, 22 Oct 2004 10:09:13 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <50f03b970410220052683669a7@mail.gmail.com>
-Reply-To: =?ISO-8859-1?Q?Ren=E9_Gallati?= <draxinusom@gmail.com>
+Message-ID: <20041022080913.GV3551@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Tln/wzp9jsNjmSUr"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +17,47 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-Hello list,
 
-is there any official information about this
-http://www.securityfocus.com/archive/1/379010/2004-10-19/2004-10-25/0
+--Tln/wzp9jsNjmSUr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-?
+Hi!
 
-Couldn't find anything on netfilter.org
+I want to release iptables-1.3.0 (including the libiptc speedup rewrite)
+soon.
 
-quoting from the article:
-"
-   An integer underflow problem in the iptables firewall logging rules
-   can allow a remote attacker to crash the machine by using a handcrafted
-   IP packet. This attack is only possible with firewalling enabled.
+If anyone has any issues (bugs, changed functionality from 1.2.11, ...)
+with the current svn code or a recent snapshot, this is the time to step
+up :)
 
-   We would like to thank Richard Hart for reporting the problem.
+Please send mail to netfilter-devel and Cc me personally.
 
-   This problem has already been fixed in the 2.6.8 upstream Linux kernel,
-   this update contains a backport of the fix.
-
-   Products running a 2.4 kernel are not affected.
-
-   Mitre has assigned the CVE ID CAN-2004-0816 for this problem.
-"
 --=20
-C U
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-     - -- ---- ----- -----/\/  Ren=E9 Gallati  \/\---- ----- --- -- -
+--Tln/wzp9jsNjmSUr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFBeMApXaXGVTD0i/8RAoQBAJ9d1ZbJPAzAT+663+zDSXz6+t4rQwCfSFVE
+ZQeCAzPzEkgcefHnRI0DiH8=
+=4ClE
+-----END PGP SIGNATURE-----
+
+--Tln/wzp9jsNjmSUr--
 
