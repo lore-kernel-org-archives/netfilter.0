@@ -1,13 +1,13 @@
 From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: tcp-window-tracking.patch fails to apply
-Date: 26 Apr 2003 12:54:28 +0200
+Subject: Re: Kernel panic with RPC patch
+Date: 26 Apr 2003 12:55:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051354468.5942.72.camel@tux.rsn.bth.se>
-References: <1051339036.4860.26.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <1051354548.5942.74.camel@tux.rsn.bth.se>
+References: <1051338674.4852.20.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1051339036.4860.26.camel@jasiiitosh.nexusmgmt.com>
+In-Reply-To: <1051338674.4852.20.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,36 +22,23 @@ To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
 On Sat, 2003-04-26 at 11:19, John A. Sullivan III wrote:
-> I very much wanted to use the window tracking patch but an unable to get
-> it to apply.  I am running RedHat 7.3 with kernel 2.4.20.  The
-> patch-o-matic test replies:
+> I was thrilled to see the RPC patch but find that I cannot use it.  My
+> RedHat 7.3 system running kernel 2.4.20 hangs on boot with:
 > 
-> Testing... tcp-window-tracking.patch NOT APPLIED (29 rejects out of 32
-> hunks)
+> Unable to handle kernel NULL pointer dereference at virtual address
+> 00000010
 > 
-> When I try to apply the patch I get:
+> I thought it might be the use of cryptoapi so I removed it.  That made
+> no difference.  I overwrote the kernel source with a fresh copy and
+> recompiled without cryptoapi.  That didn't make a difference either.
 > 
-> Patch extra/tcp-window-tracking.patch conflicts with
-> extra/ip_conntrack-timeouts.patch...
-> ip_conntrack-timeouts.patch NOT APPLIED (1 missing files)
-> Testing patch extra/tcp-window-tracking.patch...
->    Placed new Makefile line
-> Failed to patch copy of /usr/src/linux
-> TEST FAILED: patch NOT applied.
+> I suspected some of the other patches but the one that made the error go
+> away when removed and return when applied was RPC.
 > 
-> I do not have ip_conntrack-timeouts.patch installed.  I even tried
-> reversing that patch in case it was installed without my knowing it but
-> it is not there.
-> 
-> I rebuilt the kernel and tried the tcp-window-tracking patch as the only
-> patch but that didn't work either.  I tried applying it separately after
-> applying all other patches.  That didn't work.  What am I doing wrong?
+> Has anyone else had this problem?
 
-Did you apply all pending and submitted patches?
-
-./runme --batch pending
-
-will do that and it is required for some patches to apply.
+Can you please run the entire stackdump through ksymoops so you get a
+redable backtrace? Otherwise noone can help you.
 
 -- 
 /Martin
