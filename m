@@ -1,14 +1,13 @@
-From: "James B. Hiller" <jhiller@visi.net>
-Subject: Re: Port 21, 23, and 80 are open according to Shields Up at grc.com
-Date: Mon, 13 Sep 2004 17:22:01 -0400 (EDT)
+From: =?iso-8859-1?q?JC?= <solemnphoenix@yahoo.co.uk>
+Subject: Re: Problems Compiling userspace NF_QUEUE handler
+Date: Mon, 13 Sep 2004 04:26:59 +0100 (BST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409132122.i8DLM1i6001590@bassett.home.org>
-References: <1095079786.1899.8.camel@wolfpack.ljm.dom>
+Message-ID: <20040913032659.39302.qmail@web86903.mail.ukl.yahoo.com>
+References: <1412212810402551@webmail.iastate.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1095079786.1899.8.camel@wolfpack.ljm.dom> from "Jason
-	Opperisano" at Sep 13, 2004 08:53:07 AM
+In-Reply-To: <1412212810402551@webmail.iastate.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,40 +18,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Joe Clark <joeclark@iastate.edu>, netfilter@lists.netfilter.org
 
-Hi.
+Hi,
+ 
+I couldnt help replying to this message, although it is not really to offer any help but to ask for help myself...
+ 
+I am currently trying to implement a kernel module that does some packet mangling and all I can say is that I'm really lost in some issues.
+ 
+Could you please point out some references? 
+Maybe there are some code snippets/examples of how to read things off the packet header (like source/destination port)?
+ 
+thanx for any help in advance
+ 
+regards,
+JC
+ 
 
-> On Sat, 2004-09-11 at 19:09, Mike wrote:
-> > Hi Group:
-> > 
-> > I've tested for open ports from all the LAN clients behind my linux
-> > box router/gateway/firewall and all of them come up with the same
-> > results: port 21, 23, and 80 are open according to the results of the
-> > Steve Gibson Shields Up test.
-> > 
-> > I can't figure out how this can be happening.
-> > I've run a full nmap -P0 (that's a zero) on all my local ip addresses
-> > - 192.168.169.*
-> 
-> you need to keep in mind that if your netfilter box is performing
-> MASQ/SNAT for your LAN machines--the IP being scanned by grc.com is the
-> public IP of the netfilter box.
-> 
-> unless your doing some DNATs to machines on your LAN--you should focus
-> your efforts on the netfilter machine itself.
-> 
-> "netstat -lntu" would be a good place to start.
-> 
-> i've always questioned the output of web-based scanners like grc.com;
-> however, i just went to grc.com and tried it out, and achieved a
-> *perfect* "TruStealth" rating...which must mean i'm super l33t like
-> stevie...  :-P
 
-For whatever it may be worth:  I have linux 2.6.0 running on my firewall
-machine, and 2.6.9-rc1 running on a machine behind it, and I get (and
-have always gotten) a *perfect* TruStealth result relative to both
-machines.
-
-jbh
-
+Destroying all hope... one line of code at a time.
+		
+---------------------------------
+ ALL-NEW Yahoo! Messenger - all new features - even more fun!  
