@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Simple Packet Forwarding
-Date: Tue, 25 Jun 2002 16:26:45 +0100
+From: Tom Eastep <teastep@shorewall.net>
+Subject: Re: IPTables not available
+Date: Tue, 25 Jun 2002 08:28:41 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206251526.QAA20725@slate.rockstone.co.uk>
-References: <20020625110630.G2549@www2.mrbrklyn.com> <200206251514.QAA20663@slate.rockstone.co.uk> <20020625111902.A3037@www2.mrbrklyn.com>
+Message-ID: <Pine.LNX.4.44.0206250827430.26055-100000@wookie.shorewall.net>
+References: <731E36372B5FD248AF790189519A32C19E4F88@mailhub.cgtime.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020625111902.A3037@www2.mrbrklyn.com>
+In-Reply-To: <731E36372B5FD248AF790189519A32C19E4F88@mailhub.cgtime.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,24 +16,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Daniel Curry <dcurry@cariocas.com>
+Cc: "Netfilter (E-mail)" <netfilter@lists.samba.org>
 
-On Tuesday 25 June 2002 4:19 pm, Ruben I Safir wrote:
+On Tue, 25 Jun 2002, Daniel Curry wrote:
 
-> Yes - well
->
-> Those are the ip addesses I've been assigned
+> On fresh RH7.2 and RH7.3 installs  IPTables executables are installed,
+> but will not execute.  I get Kernel errors.  Can someone please direct
+> me to a listing of what steps and option I need to enable this?  I wish
+> to put firewalling with NAT services on a machine running an Apache web
+> server, with PHP and Perl scripts connecting to a localhosted MySQL DB,
+> as well as offering sendmail, POP(S)/IMAP(S), ftp, and PPTP VPN
+> services.  Or a compatible ipchains script for this would also be
+> appreciated.
+> 
 
-Why can't you put the 216.254.... addresses on the outside of your firewall, 
-use some private addresses (10..... 172..... 192.168.....) on the inside, and 
-use NAT if you want to have some internal machines publicly visible ?
+See if http://www.shorewall.net/FAQ.htm#faq8 doesn't address your problem.
 
-> So my routing is a lot ip addresses host assignemnt
+-Tom
+-- 
+Tom Eastep    \ Shorewall - iptables made easy
+AIM: tmeastep  \ http://www.shorewall.net
+ICQ: #60745924  \ teastep@shorewall.net
 
-I don't understand that...
-
- 
-
-Antony.
 
