@@ -1,13 +1,13 @@
 From: Payal Rathod <payal-iptables@staticky.com>
-Subject: Re: AW: natting help needed urgently.
-Date: Tue, 9 Sep 2003 08:47:25 +0530
+Subject: Re: natting help needed urgently.
+Date: Tue, 9 Sep 2003 08:49:22 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030909031725.GA2818@linux.local>
-References: <65F646CE24EBF24AA3714070D537988E06FA62@gargoyle.seaan.net> <1062999111.960.11.camel@india.nsecure.net>
+Message-ID: <20030909031922.GB2818@linux.local>
+References: <20030907110417.GA1463@linux.local> <1062996575.831.4.camel@india.nsecure.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1062999111.960.11.camel@india.nsecure.net>
+In-Reply-To: <1062996575.831.4.camel@india.nsecure.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,14 +22,14 @@ Content-Transfer-Encoding: 7bit
 To: "Dharmendra.T" <dharmu@nsecure.net>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, Sep 08, 2003 at 11:01:44AM +0530, Dharmendra.T wrote:
-> Hi,
+On Mon, Sep 08, 2003 at 10:19:30AM +0530, Dharmendra.T wrote:
+> Hi Payal,
 > 
-> But it is not recommended to route the packets from external to internal
-> servers. There are chances that the attacker gets the details on the
-> internal network which most admins don't want to do. 
+> What error you get while connecting from outside? This info will help us
+> in solving your problem.
 
-Oh! Then how does one expose internal machines to outside world?
+Thanks but I solved it myself. I will get back on this in case of more
+difficulties.
 
 With warm regards,
 -Payal
