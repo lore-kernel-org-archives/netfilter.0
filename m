@@ -1,57 +1,47 @@
-From: Marian Stagarescu <marian@ti.com>
-Subject: Re: PPTP conntrack w/out DEBUG is broken ???
-Date: Wed, 2 Oct 2002 10:02:01 -0400
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <200210021002.01553.marian@ti.com>
-References: <20021002153013.A13233@sunbeam.de.gnumonks.org>
+From: "Andreas Wolff" <aw@mw-itcon.de>
+Subject: Re: assymetrical routing, iptables problem.
+Date: Fri, 4 Oct 2002 08:49:07 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <002b01c26b72$22e964c0$03c0a8c0@aw01>
+References: <20021003042738.24234.8348.Mailman@kashyyyk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20021002153013.A13233@sunbeam.de.gnumonks.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Harald Welte <laforge@gnumonks.org>
-Cc: Martin Josefsson <gandalf@wlug.westbo.se>, =?iso-8859-1?q?C=E9dric=20Rivard?= <cedric@yemanja.net>, @sunbeam.gnumonks.org, Netfilter-devel <netfilter-devel@lists.netfilter.org>, Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 02 October 2002 09:30 am, Harald Welte wrote:
-> On Wed, Sep 25, 2002 at 04:48:42PM -0400, Marian Stagarescu wrote:
-> > i run into one problem with PPTP conntrack:
-> >
-> > run it with debug on: works
-> > run it w/out debug on: does not.
+
+> on A:
 >
-> what do you call 'debug' ?  Does this mean the DEBUG #defines in the
-> respective sourcecode .c files
-
-yes. ip_conntrack_pptp.c, ip_nat_pptp.c, ip_conntrack_proto_gre.c,=20
-ip_nat_proto_gre.c are compiled with DEBUGP defined.
-
-> or are you talking about
-> CONFIG_NETFILTER_DEBUG?
-
-i have this turned on as well
-
-> > this debug issue was tracked down to a single printk statement in
-> > ip_conntrack_pptp.c: line 244,245:
-> >
-> > DEBUGP("%s, CID=3D%X, PCID=3D%X\n", strMName[msg]
-> >                      ntohs(*cid), ntohs(*pcid));
+> # iptables -t nat -A PREROUTING -d 1.1.1.1 -p tcp --destination-port 80 \
+>   -j DNAT --to-destination 2.2.2.2:8000
 >
-> What happens?  Does the kernel oops at this statement?
+> Redirects packets destined for 1.1.1.1 port 80 to 2.2.2.2 port 8000. This
+> is a way to 'tag' the packets (I opted against using any TCP options, as
+> routers/firewalls along the way may play with said options).
+>
 
-no opps but the PPTP session is not established.
+> on B:
+>
+> # iptables -t nat -A POSTROUTING -s 2.2.2.2 -p tcp --source-port 8000 -j \
+>   SNAT --to-source 1.1.1.1:80
+>
+I don't understand this rule. Do you really need this? The the nating of the
+the packets going back is done on A. Doesn't this rule break the nating of
+packets going back to A as they do not have the source address and port
+expected by a (the 2.2.2.2 and the port 8000)?
 
-I'll come back with a detailed debug log.
+Regards,
 
+Andreas
 
-> > thanks for any input,
-> > marian
 
