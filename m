@@ -1,42 +1,41 @@
-From: ip tables <iptables_help@yahoo.com>
-Subject: postrouting and dmz
-Date: Tue, 24 Feb 2004 22:58:03 -0800 (PST)
-Sender: redhat-list-admin@redhat.com
-Message-ID: <20040225065803.40555.qmail@web20730.mail.yahoo.com>
-Reply-To: redhat-list@redhat.com
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Subject: Re: dnat question
+Date: Mon, 23 Feb 2004 23:18:22 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1077596302.394.3.camel@localhost>
+References: <403a6f6e.ec2.0@arbbs.net>
 Mime-Version: 1.0
-Return-path: <redhat-list-admin@redhat.com>
-Errors-To: redhat-list-admin@redhat.com
-List-Help: <mailto:redhat-list-request@redhat.com?subject=help>
-List-Post: <mailto:redhat-list@redhat.com>
-List-Subscribe: <https://www.redhat.com/mailman/listinfo/redhat-list>,
-	<mailto:redhat-list-request@redhat.com?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/redhat-list>,
-	<mailto:redhat-list-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://www.redhat.com/archives/redhat-list/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: red hat <redhat-list@redhat.com>, ip tables <netfilter@lists.netfilter.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <403a6f6e.ec2.0@arbbs.net>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: black@arbbs.net
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+On Mon, 2004-02-23 at 16:23, John Black wrote:
+> Since i'm  running separate servers for FTP, Mail, and Web, and using dnat to
+> port forward to these machines. Do i need these ports open on the firewall?
+<snip>
+I am not an expert on the inward workings of iptables but I would assume
+that you do.  The NAT targets will change the source and destination
+addresses but the packets (at least the first packet in the case of
+connection tracking) must traverse the FORWARD chain of the filter
+table.  It will pass through that table with the real address so there
+must be a rule to allow access to the real address.
 
-I use iptables 1.2.7a on RH 9.0 when i enable 
-iptables -t nat --policy PREROUTING DROP
-it stops my connecting to the services offerd @ the
-natted dmz. Also nmap shows the ports opened when i do
-a "connect" scan. I have no user defined chanins. Any
-idea?
-
-Thanks and regards
-
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail SpamGuard - Read only the mail you want.
-http://antispam.yahoo.com/tools
-
-
+If someone tells you otherwise, listen to them :-)
 -- 
-redhat-list mailing list
-unsubscribe mailto:redhat-list-request@redhat.com?subject=unsubscribe
-https://www.redhat.com/mailman/listinfo/redhat-list
+Open Source Development Corporation
+Financially Sustainable open source development
+http://www.opensourcedevelopmentcorp.com
+
+
