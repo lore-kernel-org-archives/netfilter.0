@@ -1,8 +1,10 @@
-From: Pmishra@in.safenet-inc.com
+From: Michael Tautschnig <michael.tautschnig@zt-consulting.com>
 Subject: RE: Single IP
-Date: Fri, 4 Mar 2005 16:30:37 +0530
-Message-ID: <20686C579479DC438276A726FE80CDAA0294CBD3@INEXCH1>
+Date: Fri, 4 Mar 2005 12:17:09 +0100 (CET)
+Message-ID: <Pine.LNX.4.62.0503041209000.7410@L01.THNET>
+References: <20686C579479DC438276A726FE80CDAA0294CBD3@INEXCH1>
 Mime-Version: 1.0
+In-Reply-To: <20686C579479DC438276A726FE80CDAA0294CBD3@INEXCH1>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,67 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: michael.tautschnig@zt-consulting.com, Pmishra@in.safenet-inc.com
-Cc: netfilter@lists.netfilter.org
-
-Please see my answer below.
-
-- What is the client using to access your services? A web-browser?
-I Open the the portal page and click on the some link then my own service
-start and listen the server.
-- What "services" are you providing? Websites?
-I have two application name is VPX and FNC.
-- You can't have more than one application listening on port 80, so how are
-you dealing with that issue?
-My requirement is OPEN ONE tunnel( between server and client) and all the
-data will send via this tunnel. and In server side I check the packet and
-forward To appropriate server as per FLAG. 
-- why do you stick to 1 IP and 1 port?
-Because If client use some firewall the may be he open only single port for
-communicate with server.
-
-Thanks
-Pradeep
-
-
------Original Message-----
-From: Michael Tautschnig [mailto:michael.tautschnig@zt-consulting.com]
-Sent: Friday, March 04, 2005 3:10 PM
 To: Pmishra@in.safenet-inc.com
 Cc: netfilter@lists.netfilter.org
-Subject: RE: Single IP
 
-
-
-> That's My question,
-> I want to use some Option or flag  in socket label so that we can identify
-> the socket in server site and forward as per this option.
 >
->
-> I saw some link
-> <http://www.gsp.com/cgi-bin/man.cgi?section=2&topic=getsockopt> (see
-> SO_ACCEPTFILTER ) , but I don't identity exactly about setsocketopt and
-> getsocketopt.
->
-IMHO this is just for local operation on a socket, this has nothing what 
-so ever to do with the packets!
+> - What is the client using to access your services? A web-browser?
+> I Open the the portal page and click on the some link then my own service
+> start and listen the server.
+> - What "services" are you providing? Websites?
+> I have two application name is VPX and FNC.
+> - You can't have more than one application listening on port 80, so how are
+> you dealing with that issue?
+> My requirement is OPEN ONE tunnel( between server and client) and all the
+> data will send via this tunnel. and In server side I check the packet and
+> forward To appropriate server as per FLAG.
 
-Could you please tell as a bit more, what kind of "services" you are 
-trying to establish. If it were http-based services, you could always use 
-the host-field of the packet - but this has to be done at application 
-level, it's not (really) a job of iptables. Actually, there is a 
-layer7-filter-project for iptables, but - we just don't know what you are 
-trying to do ...
+So I assume, these packets are not http-requests anymore. If you're able 
+to control the packets sent by the client, you could, e.g., abuse the 
+DSCP-field of the IP header. By setting it to some specific value, you 
+might be able to match it at your site and then, using the 
+REDIRECT-target, you could send the packets where you want.
 
-Could you please answer the following questions?
+If you are unable to control the packets sent by the client, you should 
+finally tell us what this is all about, i.e., you need to explain the 
+whole handshake.
 
-- What is the client using to access your services? A web-browser?
-- What "services" are you providing? Websites?
-- You can't have more than one application listening on port 80, so how 
-are you dealing with that issue?
-- why do you stick to 1 IP and 1 port?
-
-Thanks,
+Regards,
 Michael
+
