@@ -1,8 +1,8 @@
-From: "Alfred E. Heggestad" <alfredh@sxdesign.com>
-Subject: netfilter: port restricted NAT
-Date: Thu, 23 Oct 2003 15:15:58 +0200
+From: Earl A.Killian <netfilter@lists.killian.com>
+Subject: anti-spoofing rule placement question
+Date: Thu, 23 Oct 2003 07:19:08 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066914957.10239.128.camel@tellus>
+Message-ID: <16279.58204.161920.989846@teak.killian.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,105 +18,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
+The iptables firewalls I've seen put anti-spoofing rules in the
+filter/INPUT and filter/FORWARD chains.  The documentation that this
+is where filtering is best done.
 
-I have a question about restricted NAT vs. port restricted NAT
-in the implentation of netfilter in 2.4.18 kernel. We are
-developing Voice-over-IP products using SIP for signalling,
-where the packets normally go over UDP port 5060.
-
-For VoIP devices located behind NATs we use a protocol called
-"STUN - Simple Traversal of UDP Through NATs" (RFC3489) to probe
-for public interface ip/ports, and refresh connection tracking
-in netfilter for outgoing/incoming RTP streams. The SIP proxies
-and/or devices are located on the public network.
-
-This works quite well with most SIP proxies but we have seen some
-cases where the response is "lost" in the gateway (linux 2.4.18)
-This is the case where the source port of the response is not the
-same as destination port of the request. I have looked around in
-these files:
-
-  net/ipv4/netfilter/ip_conntrack_proto_udp.c
-  net/ipv4/netfilter/ip_nat_proto_udp.c
-
-and it looks like the connection tracker requires the response to
-come from the same port as the ougoing request was sent to.
-
-Typical scenario:
-
-
--------------------------------------------
-[           DEVICE 10.47.11.109           ]
--------------------------------------------
-    |
-    |
-   \/
-src: 10.47.11.109:5060
-dst: 80.80.80.80.5060
-    |
-    |
--------------------------------------------
-[       GATEWAY 213.187.186.10            ]
--------------------------------------------
-    |                                 /\
-    |                                  |
-   \/                                  |
-src: 213.187.186.100:5060     src:80.80.80.80.12345
-dst: 80.80.80.80:5060         dst:213.187.186.100:5060
-    |                                 /\
-    |                                  |
-   \/                                  |
--------------------------------------------
-[        SIP PROXY 80.80.80.80            ]
--------------------------------------------
-
-
-The packet is lost in the gateway.
-
-From RFC3489:
-
-   Restricted Cone: A restricted cone NAT is one where all requests
-      from the same internal IP address and port are mapped to the same
-      external IP address and port.  Unlike a full cone NAT, an external
-      host (with IP address X) can send a packet to the internal host
-      only if the internal host had previously sent a packet to IP
-      address X.
-
-   Port Restricted Cone: A port restricted cone NAT is like a
-      restricted cone NAT, but the restriction includes port numbers.  
-      Specifically, an external host can send a packet, with source IP 
-      address X and source port P, to the internal host only if the    
-      internal host had previously sent a packet to IP address X and   
-      port P.
-
-
-This behaviour I suspect would be close to the "Port Restricted Cone"
-definition. My main question is: With netfilter, is it possible at all
-to have only "Restricted Cone" with no source port checking and if yes
-how is this possible to configure?
-
-I have read through iptables man page and searched www but could not
-find any reference to my problem.
-
-
-For reference, here is the iptables NAT table on my gateway:
-
-root@uranus:~# iptables -t nat -vL
-Chain PREROUTING (policy ACCEPT 1762K packets, 285M bytes)
- pkts bytes target     prot opt in     out     source               destination         
-
-Chain POSTROUTING (policy ACCEPT 833K packets, 209M bytes)
- pkts bytes target     prot opt in     out     source               destination         
- 177K   11M MASQUERADE  all  --  any    eth0    10.47.10.0/24        anywhere           
- 107K   13M SNAT       all  --  any    eth0    anywhere             anywhere           to:213.187.186.100 
-
-Chain OUTPUT (policy ACCEPT 227K packets, 26M bytes)
- pkts bytes target     prot opt in     out     source               destination  
-
-
-
-Hopefully you are able to understand my question, thanks for any help.
-
-/alfred
+However, if you put them in one of the PREROUTING chains, you would
+not have to duplicate the N calls to them (one call per interface
+usually), since that is common to the path to INPUT and FORWARD.  Is
+there a problem in doing that (e.g. put them in the nat/PREROUTING
+chain)?
 
