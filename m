@@ -1,13 +1,11 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: what filtering to do on the OUTPUT chain?
-Date: Tue, 22 Oct 2002 16:10:46 -0400 (EDT)
+From: Alfredo Muchut <amuchut@sanluis.gov.ar>
+Subject: Are ok those rules to not filter smtp?
+Date: Thu, 17 Oct 2002 20:54:42 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain>
-References: <1035317344.8858.14.camel@elendil>
+Message-ID: <02101721054005.10974@linux1.egovernment>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1035317344.8858.14.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +15,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 22 Oct 2002, Cedric Blancher wrote:
+When I send a mail, there is a delay of  15 second. Why is this problem?
 
-> Le mar 22/10/2002 =E0 20:57, Robert P. J. Day a =E9crit :
-> >   i've had a number of people tell me that, while they put a
-> > good deal of thought into their INPUT filtering, they simply
-> > ACCEPT all outgoing traffic since, if their input filtering
-> > is working properly, there's no reason to stop outgoing
-> > packets.
-> >   comments?
-> =
+Thank you, for your help. 
 
-> Once you have accepted the fact that your box can get compromised, you
-> easily understand why you should filter outgoing traffic. Moreover,
-> maximum security relies on the "lesser privilege rule" which specifies
-> that an object must not be allowed to do more than he has to. According=
 
-> to this, you have to filter network output.
-
-i understand that, for extra security, you should also filter on =
-
-the OUTPUT chain.  but someone suggested to me that, if i get hacked
-because someone gets through my INPUT filter rules, they have a good
-chance of being able to change my ruleset anyway and remove the
-filtering.  this is why this person suggested that i should concentrate
-my efforts on hardening my INPUT filter, and not worry a whole lot
-about the OUTPUT ruleset.  in other words, if i get hacked, i'm =
-
-pretty much toast anyway, and can't trust *anything* about my
-system anymore.
-
-i realize it sounds like having sloppier security not worrying
-about the OUTPUT ruleset.  i guess it would help me if someone
-could provide *specific* examples of how OUTPUT filtering adds to
-security beyond what would be provided by a well-designed INPUT
-ruleset.  a pointer to an FAQ or some other link would be fine.
-
-rday
-
+ITF_EXT=eth1
+ITF_INT=eth0
+MAIL_SERVER="200.26.91.2"
+WEB_SERVER="200.26.91.10"
+ 
+echo 1 > /proc/sys/net/ipv4/ip_forward
+ 
+# Nuevas chains
+iptables -N externa-interna
+iptables -N interna-externa
+iptables -N interna-if
+ 
+ 
+# Politicas paras INPUT OUTPUT (el INPUT no tiene DROP, pues esta en cada cadena que llama)
+iptables -P INPUT DROP
+iptables -A INPUT -i $ITF_EXT -j externa-interna
+iptables -A INPUT -i $ITF_INT -j interna-if
+iptables -P OUTPUT ACCEPT
+ 
+# Forward
+iptables -A FORWARD -i $ITF_EXT -o $ITF_INT -j externa-interna
+iptables -A FORWARD -i $ITF_INT -o $ITF_EXT -j interna-externa
+iptables -A FORWARD -j DROP
+ 
+ 
+# De afuera hacia adentro (no sean inicio de seccion)
+iptables -A externa-interna -p tcp ! --syn -s $MAIL_SERVER --sport smtp -j ACCEPT
+iptables -A externa-interna -p tcp ! --syn -s $MAIL_SERVER --sport pop-3 -j ACCEPT
+iptables -A externa-interna -p tcp ! --syn -s $WEB_SERVER --sport ftp -j ACCEPT
+iptables -A externa-interna -p icmp --icmp-type pong -j ACCEPT
+ 
+ 
+# De adentro hacia afuera.
+iptables -A interna-externa -d $MAIL_SERVER -p tcp --dport smtp -j ACCEPT
+iptables -A interna-externa -d $MAIL_SERVER -p tcp --dport pop-3 -j ACCEPT
+iptables -A interna-externa -d $WEB_SERVER -p tcp --dport ftp -j ACCEPT   
+ iptables -A interna-externa -p icmp --icmp-type ping -j ACCEPT
+ 
+ 
+# Interna-if
+iptables -A interna-if -p icmp --icmp-type ping -j ACCEPT
+iptables -A interna-if -p icmp --icmp-type pong -j ACCEPT
+iptables -A interna-if -s 200.26.92.0/24 -d 200.26.92.4 -p tcp -j ACCEPT
+ 
+ 
+# Postrouting
+iptables -t nat -A POSTROUTING -o $ITF_EXT -j MASQUERADE                                                                                         
 
