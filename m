@@ -1,14 +1,11 @@
-From: Eric Ellis <eellis@mail.co.gilchrist.fl.us>
-Subject: Re: learning firewall
-Date: Sat, 04 Sep 2004 17:34:36 -0400
+From: Steve Turnbull <steve.turnbull@yhgfl.net>
+Subject: No chain/target/match by that name
+Date: Sun, 05 Sep 2004 15:31:24 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <413A34EC.3040507@mail.co.gilchrist.fl.us>
-References: <20040902191645.GA28800@omega.lacnic.net.uy>	<20040903102543.GI3755@metastasis.org.uk>	<1094215486.3029.4.camel@Quark>
-	<1094222078.25616.17.camel@nostromo.bgsecm.com>
+Message-ID: <413B233C.3000601@yhgfl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1094222078.25616.17.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,51 +15,91 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: Jose Maria Lopez <jkerouac@bgsec.com>
 
-Jose Maria Lopez wrote:
-> El vie, 03 de 09 de 2004 a las 14:44, Miguel Angel Amador L escribi=C3=B3=
-:
->=20
->>Hi All,
->> I have a questions, what module i must be install for the P2P
->>conections ? (sorry for my english, is very slow)
->> Thnx a lot=20
->>
->>Regards
->> Miguel Amador L.
->>
->=20
->=20
-> The port I use to block P2P (or to allow them if you want) are:
->=20
-> KAZAA 1214/tcp
-> NAPSTER 8888/tcp 7777/tcp 8875/tcp
-> EDONKEY/EMULE 4662/tcp 4663/tcp
-> WINMX 6699/tcp
->=20
-> But have in mind that some of this programs can use SOCKS proxies or
-> even standard ports like port 80/tcp to send or receive traffic. It
-> can be a little tricky to stop them (easier to allow them, just open
-> this ports and they will run).
->=20
->=20
-I will be the first of many to say the following:
+Hi
 
-Don't allow everything and drop what you don't want to get in.  This is=20
-bad form from a security standpoint, as there will almost always be new=20
-things that use different ports.  Best practice is to drop everything,=20
-and allow what you want through explicitly.  The initial set up might be=20
-more difficult, and your rule list probably longer than the other way,=20
-but in the end, your network security is what matters, and this practice=20
-will help ensure that much better.
+Our web server is configured;
+Debian (Woody) (No X installed)
+Kernel 2.4.23 - configured with iptables in mind
+iptables v1.2.6a
 
---=20
-Eric Ellis
-Gilchrist County Sheriff's Department
-IT Coordinator
-eellis@mail.co.gilchrist.fl.us
-352-463-3181
+When we start the firewall script, we get this message;
+'No chain/target/match by that name'
+
+The firewall works however, but is constantly logging;
+'Sep  5 16:00:52 www kernel: Input: IN=eth0 OUT= 
+MAC=00:e0:81:29:01:75:00:07:85:06:c2:e1:08:00 SRC=195.92.195.93 
+DST=195.92.38.54 LEN=302 TOS=0x00 PREC=0x00 TTL=61 ID=0 DF PROTO=UDP 
+SPT=53 DPT=32833 LEN=282'
+
+Something is ammis here, and we can't ping out from the server with the 
+firewall running, also, we can't use Lynx to browse. Turn the firewall 
+off and all is well for both of these.
+
+Has anybody got any ideas what is wrong? Our firewall rule is below.
+
+Regards
+Steve
+
+
+
+#!/bin/sh
+
+
+#
+# This is the firewall up script.
+#
+
+#
+# Lets start by dropping all incoming traffic and allowing all
+# outbound traffic
+#
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+
+
+
+# Flush any existing rules...
+iptables -F
+
+
+# Allow any established connections to come on through...
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+# This is a web server. We only require access to http ports
+# 80,21,53 and 443. New ports to allow will be added here...
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+#ssh
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+#ftp
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+
+#DNS
+iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+iptables -A INPUT -p udp --dport 53 -j ACCEPT
+
+
+# Allow the loopback connection...
+iptables -A INPUT -i lo -j ACCEPT
+
+
+# Log stuff that doesn't match above rules...
+iptables -A INPUT -j LOG --log-prefix="Input: "
+
+-- 
+Steve Turnbull
+Digital Content Developer
+YHGfL Foundation
+
+t 01724 275030
+e steve.turnbull@yhgfl.net
+
 
