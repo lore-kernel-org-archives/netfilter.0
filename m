@@ -1,12 +1,13 @@
-From: "Elmshauser, Erik" <erike@pbgnw.com>
-Subject: RE: Accessing problems from the inside network
-Date: Mon, 24 Mar 2003 09:22:30 -0800
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: FTP server
+Date: Mon, 24 Mar 2003 19:00:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0FD2E5E35F0C0D41AEA66C9C6F39F30D086AF9@HERMES.pbgnw.com>
+Message-ID: <000d01c2f22f$4848f200$0401000a@sterenborg.info>
+References: <1048523044.1188.16.camel@bordercollie>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <1048523044.1188.16.camel@bordercollie>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +18,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Miguel Manso <mmanso@yahoo.com>, netfilter@lists.netfilter.org
+To: 'Chris Garringer' <chris.garringer@tic.toshiba.com>
+Cc: 'Netfilter List' <netfilter@lists.netfilter.org>
 
-> -----Original Message-----
-> From: Miguel Manso [mailto:mmanso@yahoo.com]
-> Sent: Sunday, March 23, 2003 6:06 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Accessing problems from the inside network
->=20
-> Now, I've this rule:
->=20
-> iptables -t nat -A PREROUTING -i ppp0 -d 123.123.123.101 -j DNAT --to
-> 192.168.1.10
->=20
-> which redirects all the traffic from the 123.123.123.101 IP to the
-internal
-> 192.168.1.10 ip.
->=20
-	You can't be too specific here, this rule DNATs any traffic
-coming in the ppp0 interface going to 123.123.123.101 to the internal
-address 192.168.1.10.
+> No. lsmod shows ip_conntrack, ipt_state,iptable_filter, ip_tables,
+> ipt_LOG .  This server is running RedHat 7.3 with a RH kernel, I have
+> not re-compiled the kernel.  I tried loading ip_conntrack_ftp once
+> (insmod) and lsmod showed it in, but unused.
 
-> I've masquerade activated and I thought everything was doing fine... I
-can
-> access my internal machine from outside and today, I've found i've a
-problem.
->=20
-> When I'm on the 192.168.1.10 machine and I try, let's say, a 'ssh
-> 123.123.123.101' I can't access it. I mean, I can access ouside
-machines, I
-> can
-> access my internal machine from the outside but from my internal
-network I
-> can't access my own machine if I refer to it using it public IP.
->=20
-> Any suggestion?
->
-	when you are on the 192.168.1.10 machine, your traffic probably
-comes into the firewall on interface eth0, therefore the DNAT rule
-doesn't match it.  Add another rule for the interface that 192.168.1.10
-is on, or remove the '-i ppp0' from the above rule.
+Unused doesn't mean it doesn't work. It means that *no other* module is
+using *that* module.
+Here you can see what I mean.
 
-	Also, when you have the firewall doing dnat back to the same
-network, you should also alter the source in those packets to get the
-192.168.1.10 machine to reply to itself through the firewall, or the
-session probably won't work.  Use something like this:
+[rob@firewall rob]$ lsmod
+<...>
+ip_conntrack_ftp        5056   1 (autoclean)
+ip_nat_ftp              3936   0 (unused)
+iptable_nat            20820   3 (autoclean) [ipt_MASQUERADE ip_nat_ftp]
+ip_conntrack           26508   5 (autoclean) [ipt_MASQUERADE ipt_state
+ip_conntrack_ftp ip_nat_ftp iptable_nat]
+<...>
 
-iptables -t nat -A POSTROUTING -i eth0 -s 192.168.1.0/24 \
- -d 192.168.1.10 -j SNAT --to $LAN_IP
+iptable_nat is being used by ipt_MASQUERADE and ip_nat_ftp.
+ip_conntrack is being used by ipt_MASQUERADE, ipt_state,
+ip_conntrack_ftp and ip_nat_ftp.
 
-where the eth0 is the interface attached to your network, and $LAN_IP is
-the LAN IP of that interface.
-	--Erik
+A look in my original modules (RH73 kernel 2.4.18-3) and I'm seeing :
+ip_conntrack_ftp.o
+ip_nat_ftp.o
+Which means you should have these too.
+
+You need it for passive ftp.
+So, if you load the modules ; does it work then ?
 
 
-Rev. Dr. Erik C Elmshauser D.D.
-Head of I.T.
-Pacific Benefits Group NW LLC
-erike@pbgnw.com
-Phone  - 800.259.0455
-Fax    - 800.662.0082
- There are 10 kinds of people in the world,
-Those that can do binary arithmetic, and those that can't.
+Gr,
+Rob
 
 
