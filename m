@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Followup on Checkpoint VPN through Iptables
-Date: Thu, 26 Sep 2002 15:31:36 +0100
+From: Matt Ryanczak <ryanczakm@arin.net>
+Subject: RE: Stopping greedy http clients!
+Date: 26 Sep 2002 11:51:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209261431.g8QEVfv29808@vulcan.rissington.net>
-References: <5.1.0.14.2.20020926073737.00acd7f0@pop.mindspring.com>
+Message-ID: <1033055519.27083.9.camel@vegeta>
+References: <Pine.LNX.4.44.0209241639480.8352-100000@dns.toxicfilms.tv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-JUa6vvWtaYKf2fq3ZjEX"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.0.14.2.20020926073737.00acd7f0@pop.mindspring.com>
+In-Reply-To: <Pine.LNX.4.44.0209241639480.8352-100000@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +18,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-On Thursday 26 September 2002 1:03 pm, David A Golden wrote:
-
-> I've got Checkpoint SecuRemote working from a windows client to my office
-> Checkpoint firewall through a linux netfilter firewall/router/NAT box
-> without having to specify a specific client on the internal network in the
-> pre-routing.
-
-> Voila.  It worked.  I'm not sure if all of this is necessary (e.g. the AH
-> protocol bit) but I haven't had the time/chance/inclination to do a
-> methodical trial and error test of shutting off each rule to try and break
-> it.
-
-You shouldn't need to remove the rules to see what breaks - simply try doing:
-
-iptables -L -n -x -v
-
-which will list the rules and give you packet / byte counters to show which 
-ones have matched packets going through the system.   You can then tell if 
-any of the rules seem unnecessary, because those counters will remain at zero.
+To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
 
-Antony.
+--=-JUa6vvWtaYKf2fq3ZjEX
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
--- 
+Checkout mod_bandwidth for apache @=20
+http://www.snert.com/Software/mod_throttle/
 
-This email was created using 100% recycled electrons.
+On Tue, 2002-09-24 at 10:41, Maciej Soltysiak wrote:
+> > Or use something (not netfilter related) like CBQ or HTB which implemen=
+t
+> > bandwidth throttling.
+> > I found CBQ more difficult to setup than HTB, but the choice is yours.
+> There is a 3rd party module to apache, that allows to setup bandwidth and
+> concurrent connections, without making classes for traffic via tc.
+> I do not remember the nam right now, but it exists :)
+>=20
+> Regards,
+> Maciej Soltysiak
+--=20
+Matt Ryanczak
+System Administrator
+American Registy of Internet Numbers
+ryanczakm@arin.net
+(o)703.227.9869
+(m)703.926.2595
+
+--=-JUa6vvWtaYKf2fq3ZjEX
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA9ky0e4rWUM5pQQm0RAk+vAKCTMl3fbg9lsIx3EsC7R9cY/GSOuwCg3POj
+FA11/VHiac1sij0vPEX1CxI=
+=Kjf1
+-----END PGP SIGNATURE-----
+
+--=-JUa6vvWtaYKf2fq3ZjEX--
+
 
