@@ -1,13 +1,18 @@
 From: saint <nagajuna@optushome.com.au>
-Subject: Thanks Ken.
-Date: 04 Feb 2003 02:04:17 +1100
+Subject: Consequences
+Date: 04 Feb 2003 02:50:59 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044284657.9027.67.camel@juna.cypherworld.org>
-References: <GNECIOACDBCPDCMNJLJJEEMHCBAA.kkilgore@wt.net>
+Message-ID: <1044287458.9025.82.camel@juna.cypherworld.org>
+References: <1044278051.9027.50.camel@juna.cypherworld.org>
+	 <20030203112909.133454d2.brblueser@uol.com.br>
+	 <1044281797.9025.60.camel@juna.cypherworld.org>
+	 <20030203124402.62d81f9e.brblueser@uol.com.br>
+	 <1044284315.9027.64.camel@juna.cypherworld.org>
+	 <20030203130900.75c2bf9a.brblueser@uol.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <GNECIOACDBCPDCMNJLJJEEMHCBAA.kkilgore@wt.net>
+In-Reply-To: <20030203130900.75c2bf9a.brblueser@uol.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,90 +23,98 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ken Kilgore <kkilgore@wt.net>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Andre Costa <brblueser@uol.com.br>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hmm, I think this and Andre's message will solve all my problems.
-Thanks.
-Here goes.
+There have been a number of problems that I have but I believed
+it had nothing to do with syntax errors or any missing rules on 
+my behalf.
+I'll have to sit back and study these problems taking into
+consideration you recommendations ( and Ken's).
+How far reaching I not sure yet but I will say that I have conflicting
+chains-> different userdefined chains, default policy of DROP
+(INPUT/OUTPUT/FORWARD/POST-PRE ROUTING/ MANGLE ) drops everything
+as expected and remains dropping everthing eventhough I have the service
+exlicitly and carefully enabled are just some of these problems.
 
-Santos.
+I don't know what's causing them because, as I have indicated, syntax &
+everthing else is fine.  Ofcourse because I don't know I'm looking for a
+possible scapegoat and initialisation + ifconfig stuff is one thing I
+haven't comes to terms with yet -> so hence my suspicion that other
+things could've been affected by this.
 
-On Tue, 2003-02-04 at 01:51, Ken Kilgore wrote:
-> This is what I am doing.  I have dhcp for my external ip address assignment.
+Let you know though when I figure it out.  Personally I want to finish
+it before my summer break -> then its back to uni.
+
+Santos
+
+
+On Tue, 2003-02-04 at 02:09, Andre Costa wrote:
+> You're welcome, Santos, I am glad I could be of help =)
 > 
-> EXTIP=`/sbin/ifconfig "$EXTIF" | grep inet | cut -d":" -f 2 | cut -d" " -f
-> 1`
-> INTIP=`/sbin/ifconfig "$INTIF" | grep inet | cut -d":" -f 2 | cut -d" " -f
-> 1`
+> I am curious: what kind of "far-reaching consequences"? Could you
+> please ellaborate?
 > 
-> Ken Kilgore
+> Happy firewalling ;)
 > 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of saint
-> Sent: Monday, February 03, 2003 7:42 AM
-> To: Netfilter Mailing List
-> Subject: RE: iptables grep problems
+> Andre
 > 
+> On 04 Feb 2003 01:58:35 +1100
+> saint <nagajuna@optushome.com.au> wrote:
 > 
-> Hi Khanh,
-> 
-> I already have #!/bin/bash.  My firewall script works. When
-> I first learnt how to build one everyone was saying use eth0.
-> But I have now learnt to dynamically configure eth0.
-> I know how to print out the info from the command line but
-> when I include the same command in my script all hell breaks lose.
-> And the { print $2 } bit -> you should see what it does.
-> 
-> Santos
-> 
-> On Tue, 2003-02-04 at 00:34, Khanh Tran wrote:
-> > Are you trying to assign your external interface's IP to a variable for
-> > something?  What does $2 look like?  Chances are you are trying to do
-> > something with $2 as an IP, but really the value is probably set for
-> > "addr:1.2.3.4".  You may also want to add a #!/bin/bash, or whatever your
-> > shell is to the top of the script if you are getting the right variable
-> > assignment.
-> >
-> > Khanh Tran
-> > Network Operations
-> > Sarah Lawrence College
-> >
-> > -----Original Message-----
-> > From: saint [mailto:nagajuna@optushome.com.au]
-> > Sent: Monday, February 03, 2003 8:14 AM
-> > To: Netfilter Mailing List
-> > Subject: iptables grep problems
-> >
-> >
-> > Hi all,
-> >
-> > It seems I'm in a bit of a bother.  Here's my problem:
-> > I have a semi-permanent IP address provided by my ISP
-> > and I can't do one of two things:
-> > 1. use eth0, and
-> > 2. use a combination of grep, awk, & ifconfig.
-> >
-> > Normally, if I issue this from the bash shell:
-> >
-> > $ifconfig eth0 | grep 'inet addr' | awk '{print $2}'
-> >
-> > I get the intended result i.e the external interface's IP address.
-> > So why can't I get anything when I put this in the firewall script?
-> > Actually, I do get something: ERRORS!
-> >
-> > If someone would kindly help me with this problem
-> > and relieve my suffering it'll be very much appreciated.
-> >
-> > Thanks.
-> >
-> > Santos.
-> > Still learning.
-> >
-> >
-> >
-> 
-> 
+> > I think I get it and I think you've just solve a nagging
+> > problem that I have.  I have wrote my own script, took me awhile
+> > though.
+> > 
+> > And I think it does have (have been) some far-reaching consequences.
+> > 
+> > Thanks again.
+> > 
+> > 
+> > On Tue, 2003-02-04 at 01:44, Andre Costa wrote:
+> > > Hi Santos,
+> > > 
+> > > there has been a discussion about this a while ago on this ML, I am
+> > > forwarding you the msg which has a nice proposal to solve this.
+> > > Basically it involves:
+> > > 
+> > > * writing your own fw script (e.g. your rc.firewall)
+> > > 
+> > > * put a symlink to it on /etc/init.d *BEFORE* the iptables link
+> > > there, so that your script is called first (this means prepeding the
+> > > symlink name with a 'S-number' lower than the one associated to
+> > > iptables startup script)
+> > > 
+> > > Please notice that you might have to remove the initialization part
+> > > of/etc/sysconfig/iptables and put it at the beginning of your
+> > > rc.firewall script, otherwise iptables-restore might choke or you
+> > > might even undo what you have done on rc.firewall (these are wild
+> > > guesses, make sure you test it properly). I am talking about all
+> > > rules like
+> > > 
+> > > *filter
+> > > :FORWARD DROP [0:0]
+> > > :INPUT DROP [0:0]
+> > > :OUTPUT ACCEPT [0:0]
+> > > 
+> > > at the top of /etc/sysconfig/iptables
+> > > 
+> > > HTH
+> > > 
+> > > Andre
+> > > 
+> > > On 04 Feb 2003 01:16:37 +1100
+> > > saint <nagajuna@optushome.com.au> wrote:
+> > > 
+> > > > Thank Andre:  that's makes sense. So what on Earth do I do
+> > > > when my firewall reboots and I can't be sure of the IP address?
+> > > > Could I put the rc.firewall script in /etc/rc.d/ ? and have run at
+> > > > boot time from /etc/init.d/ ? 
+> > > > I'm using SuSE 8.1 and I can actually put a line in
+> > > > /etc/init.d/boot.local that will execute my rc.firewall.
+> > > > 
+> > > > Santo.
+> > > > Happy to learn.
+> > 
 > 
 
 
