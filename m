@@ -1,10 +1,9 @@
-From: "Eric Wood" <eric@interplas.com>
-Subject: h323 support?
-Date: Tue, 18 Feb 2003 14:00:03 -0500
+From: Aaron Sethman <androsyn@ratbox.org>
+Subject: ip6tables on sparc64(and probably others as well)
+Date: Tue, 18 Feb 2003 14:18:50 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <012f01c2d77f$f1dff540$9100000a@intgrp.com>
+Message-ID: <Pine.LNX.4.50.0302181417210.3329-100000@squeaker.ratbox.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,31 +14,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-RH 7.3, 2.4.18-10 kernel
 
-Does anyone have a quick fix to get h323 support going?  I need to allow MS
-Netmeetings through and just doing this:
+This patch is necessary to get ip6tables functioning properly on sparc64.
+Not sure about other platforms however.
 
-323_ports="389 522 1503 1720 1731"
-for port in $h323_ports; do
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d 66.41.122.14 --dport
-$port -j DNAT --to 10.0.0.145:$port
-iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 10.0.0.145 --dport $port -m
-state--state NEW -j ACCEPT
-done
+Regards,
 
-doesn't work (so I've heard).  I have to load a conntrack module
-specifically for h323.  Is there a way I can simply compile the module
-against my active running kernel, or does the iptables-1.2.5-3 source rpm
-have to be patched and rebuilt?
+Aaron
+--- net/ipv6/netfilter/ip6_tables.c.orig	2002-11-28 18:53:15.000000000 -0500
++++ net/ipv6/netfilter/ip6_tables.c	2003-02-10 04:32:43.000000000 -0500
+@@ -101,10 +101,8 @@
+ 	unsigned int hook_entry[NF_IP6_NUMHOOKS];
+ 	unsigned int underflow[NF_IP6_NUMHOOKS];
 
-Thanks,
--Eric Wood
+-	char padding[SMP_ALIGN((NF_IP6_NUMHOOKS*2+2)*sizeof(unsigned int))];
+-
+ 	/* ip6t_entry tables: one per CPU */
+-	char entries[0];
++	char entries[0] ____cacheline_aligned;;
+ };
 
-PS. Any other easier standard than h323 that gets video and sound going for
-cameras? I don't need file transfer, whiteboard, chatting , etc....
-
+ static LIST_HEAD(ip6t_target);
+@@ -1450,8 +1448,7 @@
+ 	int ret;
+ 	struct ip6t_table_info *newinfo;
+ 	static struct ip6t_table_info bootstrap
+-		= { 0, 0, 0, { 0 }, { 0 }, { }, { } };
+-
++		= { 0, 0, 0, { 0 }, { 0 }, { } };
+ 	MOD_INC_USE_COUNT;
+ 	newinfo = vmalloc(sizeof(struct ip6t_table_info)
+ 			  + SMP_ALIGN(table->table->size) * smp_num_cpus);
 
