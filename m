@@ -1,12 +1,14 @@
-From: "Manikandan" <manikandan@manikandan.org>
-Subject: PPTP clients behind iptables firewall.
-Date: Tue, 30 Mar 2004 19:27:32 +0530
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: Iptables and kernel 2.6.4 on slackware 9.1
+Date: Tue, 30 Mar 2004 16:49:10 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <JFEPKPDIGFAKJOGHOICDOECFCAAA.manikandan@manikandan.org>
+Message-ID: <200403310049.i2V0nDsV009290@server5.bandwidthco.com>
+References: <000c01c41595$34b4a1a0$0200a8c0@whyzpc>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0015_01C4168D.0BF6F3F0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000c01c41595$34b4a1a0$0200a8c0@whyzpc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,105 +18,82 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Erik Ahlner' <whyz@home.se>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+ 
+For whatever reason, it sounds like you state table is filling up, and thus,
+it appears the firewall has stopped working because it cannot track any new
+connections.  After the state table cleans itself out over time, things seem
+to start working again. You cat check your state table by doing a: cat
+/proc/net/ip_conntrack.
 
-------=_NextPart_000_0015_01C4168D.0BF6F3F0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-Dear all,
-
-	I am running RedHat Linux 9 with kernel 2.4.20-8, with iptables
-iptables-1.2.7a-2, which acts as a gateway/firewall for my LAN
-10.35.57.0/24. 
-
-	I do  SNAT to one public IP in my firewall to allow traffic from LAN
-to Internet.
-
-	My LAN PPTP clients are not able to establish more than one
-connection at a time to my VPN server (Internet).
-
-		Please assist me in resolving this issue.
-
-Advance thanks.
-
-Regards,
-Manikandan
+How many connections that the connection tracking table can hold depends
+upon a variable that can changed. The default value depends on how much
+memory you have. In general, you are allocated about 8000 connections for
+every 128 MB of RAM. You can read and set your settings through the
+/proc/sys/net/ipv4/ip_conntrack_max setting. Example: echo "65000" >
+/proc/sys/net/ipv4/ip_conntrack_max. Mind you, this is just a hunch.
 
 
-------=_NextPart_000_0015_01C4168D.0BF6F3F0
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Erik Ahlner
+Sent: Monday, March 29, 2004 5:53 AM
+To: netfilter@lists.netfilter.org
+Subject: Iptables and kernel 2.6.4 on slackware 9.1
 
-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
-CoAIIAYAAAAAAMAAAAAAAABGAAAAADaFAAABAAAAAQAAAAAAAAAeAAuACCAGAAAAAADAAAAAAAAA
-RgAAAAA3hQAAAQAAAAEAAAAAAAAAHgAMgAggBgAAAAAAwAAAAAAAAEYAAAAAOIUAAAEAAAABAAAA
-AAAAAAsADYAIIAYAAAAAAMAAAAAAAABGAAAAAIKFAAABAAAACwA6gAggBgAAAAAAwAAAAAAAAEYA
-AAAADoUAAAAAAAADADyACCAGAAAAAADAAAAAAAAARgAAAAARhQAAAAAAAAMAPYAIIAYAAAAAAMAA
-AAAAAABGAAAAABiFAAAAAAAACwBSgAggBgAAAAAAwAAAAAAAAEYAAAAABoUAAAAAAAADAFOACCAG
-AAAAAADAAAAAAAAARgAAAAABhQAAAAAAAAIB+A8BAAAAEAAAABG4Tkjz9pVPrzh0stAvG9UCAfoP
-AQAAABAAAAARuE5I8/aVT684dLLQLxvVAgH7DwEAAACcAAAAAAAAADihuxAF5RAaobsIACsqVsIA
-AFBTVFBSWC5ETEwAAAAAAAAAAE5JVEH5v7gBAKoAN9luAAAAQzpcRG9jdW1lbnRzIGFuZCBTZXR0
-aW5nc1xNYW5pa2FuZGFuXExvY2FsIFNldHRpbmdzXEFwcGxpY2F0aW9uIERhdGFcTWljcm9zb2Z0
-XE91dGxvb2tcb3V0bG9vay5wc3QAAwD+DwUAAAADAA00/TcAAAIBfwABAAAAOQAAADxKRkVQS1BE
-SUdGQUtKT0dIT0lDRE9FQ0ZDQUFBLm1hbmlrYW5kYW5AbWFuaWthbmRhbi5vcmc+AAAAAAMABhCD
-JIeJAwAHEFEBAAADABAQAAAAAAMAERAAAAAAHgAIEAEAAABlAAAAREVBUkFMTCxJQU1SVU5OSU5H
-UkVESEFUTElOVVg5V0lUSEtFUk5FTDI0MjAtOCxXSVRISVBUQUJMRVNJUFRBQkxFUy0xMjdBLTIs
-V0hJQ0hBQ1RTQVNBR0FURVdBWS9GSVJFVwAAAAA3bg==
+hello!
 
-------=_NextPart_000_0015_01C4168D.0BF6F3F0--
+I've recently reentered this mailinglist and thus i don't know if this
+question has been asked before.. i hope i'm not alone with this problem!
+
+Last week I bought a new harddrive for my box, and installed slackware 9.1
+(had 8.0 earlier) and compiled kernel 2.6.4 (had 2.4.22 earlier). At first,
+everything seems to be fine, iptables runs.
+But after half an hour or so, iptables just stops working. It's only
+iptables that does this (i suppose), the server/router still has connection
+to the internet and the computers behind it.
+(I.e i have a ventrilo server running on the router, and i can still talk to
+users connecting to it from the internet, while i'm connected to it from
+inside the lan).
+
+After about 5 minutes of downtime iptables suddenly starts working again,
+and the computers on the NAT has internet access again.
+
+These are my rules:
+
+IPTABLES=/usr/sbin/iptables
+EXTIF="eth0"
+INTIF="eth1"
+
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT $IPTABLES -A FORWARD -i
+$INTIF -o $EXTIF -j ACCEPT
+
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+
+
+Nothing here has changes since i was running kernel 2.4.22.
+
+What could be the problem?
+Anyone else who has experienced this?
+
+
+I'm using iptables v1.2.9
+
+
+Regards
+    Erik Ahlner
+
+
+
 
 
