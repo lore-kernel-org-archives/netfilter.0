@@ -1,13 +1,10 @@
-From: "Andrew J. Meader" <ameader@corp.lcom.net>
-Subject: Re: ftp connection tracking
-Date: Tue, 29 Jul 2003 07:52:19 -0500
+From: "nilesh_cne" <nilesh_cne@indiatimes.com>
+Subject: upload form uplink and download different downlink
+Date: Tue, 29 Jul 2003 18:11:23 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F266E03.7050106@corp.lcom.net>
-References: <200307291322.04698.heinrici76@gmx.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <200307291246.SAA01959@WS0005.indiatimes.com>
+Reply-To: "nilesh_cne"<nilesh_cne@indiatimes.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307291322.04698.heinrici76@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +14,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Axel Heinrici <heinrici76@gmx.de>
-Cc: netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi all'
+can some one help me
 
-I just ran into this just yesterday. I was forgetting to load 
-ip_conntrack_ftp in my iptables init script. For grins, here is a snip 
-from my init script:
+1. i have vsat downlink (only downlink) 128 kbps
+2. i have leased line of 128kbps uplink/downlink (both uplink as well as downlink)
 
-# Firewall Modules ~ assuming modularized kernel
-    /sbin/modprobe ip_tables
-    /sbin/modprobe iptable_nat
-    /sbin/modprobe ip_conntrack
-    /sbin/modprobe ip_conntrack_ftp
+vsat terminates in to my linux box through capture card
+and my leased line terminates it into another  lancard on same machine.
 
-YMMV - your modules may vary :)
+i want such that my all traffic coming from internal lan
+should go through uplink of leased line and come back from vsat downlink .
+pls send me the rules of iptables
+so that i can utilize my downlink.
 
-ajm
 
-Axel Heinrici wrote:
 
->Hi
->
->I have problem connecting to a ftp-server on a non-standard port. I 
->remember there was an option to be set upon inserting the 
->kernel-module. The documentation on module-options seems a little weird 
->to me, and I can't find a clear answer.
->The Situation is simple. My computer and the router/firewall have 
->non-private IPs. Hence no Masquerading/SNAT is done. But the firewall 
->has to be set up denying any connection going out except for services 
->allowed explicitly. FTP is working fine (even active) when connecting 
->to servers on port 21. 
->What options do I have to aply when inserting the modules?
->
->greetings
->	Axel
->
->
->  
->
+vsat(downlink)
+-->--------|  
+128k	   |
+	   LinuxBox ------local lan-----192.168.1.*
+128k	   |
+-----<->---|
+leasedline(uplink/downlink)
+
+
+thanx in advance 
+niel
+
+
+Get Your Private, Free E-mail from Indiatimes at http://email.indiatimes.com
+
+ Buy The Best In BOOKS at http://www.bestsellers.indiatimes.com
+
+Bid for for Air Tickets on Air Sahara Flights at Prices Lower Than Before. Just log on to http://airsahara.indiatimes.com and Bid Now !
 
 
