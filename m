@@ -1,14 +1,13 @@
 From: Sasa Stupar <sasa@stupar.homelinux.net>
 Subject: Re: MAC address and iptables
-Date: Mon, 01 Mar 2004 07:42:50 +0100
+Date: Mon, 01 Mar 2004 10:34:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4042DB6A.8090506@stupar.homelinux.net>
-References: <4041ED0A.9070001@stupar.homelinux.net> <40422B1D.5010406@stupar.homelinux.net> <40425D27.60604@stupar.homelinux.net> <200402292203.59216.Antony@Soft-Solutions.co.uk>
+Message-ID: <404303AB.4030602@stupar.homelinux.net>
+References: <4041ED0A.9070001@stupar.homelinux.net> <40422B1D.5010406@stupar.homelinux.net> <40425D27.60604@stupar.homelinux.net> <200402292203.59216.Antony@Soft-Solutions.co.uk> <4042DB6A.8090506@stupar.homelinux.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------030609090005050703060905"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200402292203.59216.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <4042DB6A.8090506@stupar.homelinux.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,129 +17,14 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Netfilter-List <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
---------------030609090005050703060905
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Nevermind, I have solved the problem myself.
 
-   > If you can post your ruleset in a format we can understand
-("iptables -L -nvx;
-> iptables -L -t nat -nvx" is good), keep the ruleset to the smallest possible 
-> number which shows the problem you have, and explain what you changed when 
-> the problem started, we may be able to help.
+Thank you all for helping me out.
 
-OK, I have done ruleset in the format you have advised and they are
-attached. I have made two pair: on before (working config) and one after
-the change. I have named it as follows:
-- for command "iptables -L -nvx" they are called iptables-before and
-iptables-after
-- for command "iptables -L -t nat -nvx" they are called
-iptables-nat-before and iptables-nat-after
-
-I hope that it is now more readable. Sorry, but I am new to this.
-
-Thank you again for helping me,
 Sasa
 
 
-
-
---------------030609090005050703060905
-Content-Type: application/x-zip-compressed;
- name="iptables.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="iptables.zip"
-
-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
-AAAAAA==
---------------030609090005050703060905--
 
