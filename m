@@ -1,12 +1,13 @@
-From: Roberto Nibali <ratz@tac.ch>
-Subject: Re: iptables and linuxVirtualServer
-Date: Fri, 04 Oct 2002 11:17:36 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: understanding ip_conntrack entry
+Date: Fri, 4 Oct 2002 10:36:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D9D5CB0.7020307@tac.ch>
-References: <71FD63241A2DD511AFED00010236A4B33224BF@LIVAUDAIS>
+Message-ID: <200210040936.g949aHL10516@vulcan.rissington.net>
+References: <000f01c26b18$2d114990$3201a8c0@leonardo> <3D9D00B0.8080901@iprimus.com.au> <33337.194.98.166.58.1033720304.squirrel@postmail.alphalink.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <33337.194.98.166.58.1033720304.squirrel@postmail.alphalink.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tim Cronin <tim@13-colonies.com>
-Cc: "'Walther@gehag-dsk.de'" <Walther@gehag-dsk.de>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Hi,
+On Friday 04 October 2002 9:31 am, Eric Leblond wrote:
 
-Tim Cronin wrote:
-> yup, I've checked the packet exchange for a single page request.
-> 
-> the problem is that since lvs is handling the NAT for http
-> iptables doesn't look like it's tracking state.
+> >>my remote machines. My question is .... if this connection is marked as
+> >>ESTABLISHED, shouldnt it appear on 'netstat -an' entries ??? I think it
+> >>should, but it's not appearing there .....
+>
+> Netstat give you information about sockets created on your box
+> and not about your box acting as a router.
 
-Yes, you're right and I was wrong redirecting you to the netfilter mailinglist. 
-We will solve it on the LVS mailinglist and if there are problems with netfilter 
-we will come back, ok?
+That is true, indeed.
 
-> if I let iptables handle nat to the web server the line below
-> works.
+> That's why you don't see things appearing in ip_conntrack if your machine
+> is not or source or destination of the packet.
 
-Yes, it is clearly the NF_STOLEN interaction of LVS in the NAT part of the code.
+Also true, however in this case the netfilter machine *was* one of the 
+endpoints of the connection :-)
 
-Sorry for the confusion I created,
-Roberto Nibali, ratz
+Antony.
+
 -- 
-echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' | dc
 
+All matter in the Universe can be placed into one of two categories:
+
+1. things which need to be fixed
+2. things which will need to be fixed once you've had a few minutes to play 
+with them
 
