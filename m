@@ -1,54 +1,49 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: Iptables and Kernel
-Date: Mon, 12 Apr 2004 16:16:53 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <36070.9628942006$1081802745@news.gmane.org>
-References: <407A27B2.4000101@rd.arkonnetworks.com> <200404121822.03874.Antony@Soft-Solutions.co.uk> <407AE8E8.7000102@rd.arkonnetworks.com>
+From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
+Subject: Re: Making a Bridging firewall
+Date: Mon, 12 Apr 2004 13:47:04 -0400
+Sender: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Message-ID: <MPG.1ae4a01fed9fd6ad9896aa@localhost>
+References: <407AD23A.3030905@leaplab.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <407AE8E8.7000102@rd.arkonnetworks.com>
-Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
+Return-path: <netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Errors-To: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmI2yCS0tKOigE@public.gmane.org>
+List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIRj+87qQpzpCql8G6E966Ow@public.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIFcjs2lY4wUfKtGCp0j7rLg@public.gmane.org>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Norman Zhang <norman.zhang@rd.arkonnetworks.com>, netfilter@lists.netfilter.org
+To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
 
-On April 12, 2004 03:07 pm, Norman Zhang wrote:
-> Antony Stone wrote:
-> > On Monday 12 April 2004 6:05 pm, Norman Zhang wrote:
-> >>I just downloaded 2.6.5, may I ask where should I check to see if h323
-> >>modules are included? On www.netfilter.org, I see pom-20031219 and
-> >>pomng-20040302. Is it safe to assume, that pomng includes pom?
-> >
-> > You might find the following postings from the archives relevant here:
-> >
-> > http://lists.netfilter.org/pipermail/netfilter/2003-December/049362.html
-> >
-> > http://lists.netfilter.org/pipermail/netfilter/2003-December/049310.html
->
-> Thank you so much. From the postings, it looks like 2.6.x is still
-> lacking some features that are available in 2.4.x. I'm setting up a
-> firewall with NAT and hoping to able to do Netmeeting and MSN Instant
-> Messenger. Would 2.4.x's netfilter patches sufficient to protect my LAN?
-	
-	I'm running 2.6.3. with iptables 1.2.9 and p-o-m-ng h323 patch -- they work
-	for me -- but I'm referring to a home lan ond only one netmeeting seesioon 
-	from the LAN  -- we haven't tried multiple sessions from inside the lan ... 
-	either to the same netmeeting sessioon or to different ones.
+> Hello.. I've been wanting to rewrite my firewall for a little bit but 
+> i'm not that familiar with iptables..  Up until now i've had a shorewall 
+> based firewall that also did bridging between my gateway and a VPN 
+> gateway over the internet (to link our houses.)  I used the bridge-nf 
+> patch on the 2.4 kernel to be able to manage the bridge traffic and 
+> block certain broadcast packets (like DHCP)  I've now upgraded to the 
+> 2.6 kernel because i heard it may fix some other issues i was having but 
+> now my bridge (DHCP blocking) rules no longer work... I'd like to get 
+> rid of shorewall and write my own IPTables in the hopes that i could get 
+> my ability to control the bridge back.  Can anyone make any suggestions, 
+> or point to a guide that does this with the 2.6 kernel?
 
-		
-	Alistair Tonner
+I found "Linux Firewalls", 2nd ed., by Robert Ziegler, to be an 
+excellent, complete guide to packet filter firewalls in general, and 
+iptables in particular.  None of it is specific to kernel 2.4, as far as 
+I'm aware.  After reading it I built my firewall with kernel 2.4, and it 
+continues to work just fine in kernel 2.6.
 
->
-> Regards,
-> Norman
+I'm not familiar with the bridge-nf patch, but you might be able to 
+implement your bridge using just the FORWARD table.
+
+Good luck,
+Andrew. 
+
+-- 
+To reply by email, replace "deadspam.com" by "alumni.utexas.net"
+
 
