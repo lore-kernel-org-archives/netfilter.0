@@ -1,11 +1,12 @@
 From: Michael Thompson <mike@thompsonmike.co.uk>
 Subject: Re: Filtering on MAC Addresses
-Date: Fri, 04 Feb 2005 15:08:03 +0000
-Message-ID: <42038FD3.40901@thompsonmike.co.uk>
+Date: Fri, 04 Feb 2005 15:18:40 +0000
+Message-ID: <42039250.4040402@thompsonmike.co.uk>
 References: <42037F7D.2070804@thompsonmike.co.uk> <42038855.8050709@mnemon.de>
+	<42038FD3.40901@thompsonmike.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42038855.8050709@mnemon.de>
+In-Reply-To: <42038FD3.40901@thompsonmike.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,8 +20,12 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Is the MAC Address case sensitive?
+Apologys.
 
-I have noticed that IPTables puts it in lower case, I have it in upper 
-case. Could this be the problem?
+Was having a remarkable dumb moment, the script I was using to write out 
+the iptables chain was wrong.......
+
+Apologys for that.... :(
+
+God I feel like a muppet!
 
