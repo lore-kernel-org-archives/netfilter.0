@@ -1,12 +1,14 @@
-From: Chris Wilson <chris@netservers.co.uk>
-Subject: Re: DNAT question..
-Date: Thu, 24 Jul 2003 10:42:38 +0100 (BST)
+From: Wolfgang Pichler <madmin@dialog-telekom.at>
+Subject: RE: backroute problem
+Date: 24 Jul 2003 11:53:03 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0307241040530.20694-100000@localhost>
-References: <200307241556.53796.rio@martin.mu>
+Message-ID: <1059047582.1959.36.camel@defiant.dialog>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A15BF94@wardrive.citadelcomputer.com.au>
+	 <1059035062.1937.2.camel@defiant.dialog>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307241556.53796.rio@martin.mu>
+In-Reply-To: <1059035062.1937.2.camel@defiant.dialog>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +18,113 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Rio Martin." <rio@martin.mu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi Rio,
+i've no tryied it with the mark solution
 
-> > You need to SNAT internal connections so that replies go via the
-> > firewall instead of directly to the client, otherwise the firewall
-> > cannot reverse the DNAT and the client drops the reply packet.
-> > Try this rule:
-> > iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.0/24 -d 192.168.1.2
-> > --dport 80 -j SNAT --to 192.168.1.1
+i've done:
+(firewall)
+$IPTABLES -t mangle -A PREROUTING -p tcp --dport smtp -d $MAILSERVER -j
+MARK --set-mark 1
+$IPTABLES -t nat -A PREROUTING -p tcp --dport smtp -d $MAILSERVER -j
+DNAT --to-destination $LAN_MAILSERVER:25
+(Marked the packet with 1 and Prerouted it to the internal mailserver)
+
+(mailserver)
+in /etc/iproute2/rt_tables an entrie with "201 newip" (i have no idea
+for what 201 stands and i can't find an answer to this in the linux 2.4
+advanced Routing howto - can someone point me to the right palce ?)
+
+then
+ip rule add fwmark 1 table newip
+and
+ip route add default via firewall dev eth0 table newip
+
+but it still doesn't work, why ?
+
+mfG
+Wolfi
+
+
+Am Don, 2003-07-24 um 08.24 schrieb Wolfgang Pichler:
+> i am not an expert - but how can i use iproute2 routing by source ip ?
+> If i understand the whole thing right then the webserver doesn't get the
+> ip of the firewall as source ip - it gets the original ip - so - how can
+> iproute2 then know which packet was comming from the firewall and which
+> packet was comming from the old gateway.
 > 
-> i dont know, i tried but it still wont connect to webserver.
-> Connection Refused.
+> But another thing come to mind: Wouldn't it be possible to Mark the
+> packets on the firewall - and then tell iproute2 to route marked packets
+> to the firewall back ?
+> 
+> mfG
+> Wolfi
+> 
+> Am Mit, 2003-07-23 um 21.58 schrieb George Vieira:
+> > You have to use iproute2 to route by source IP and not destination (default gateway).
+> > 
+> > There is an iptables patch in p-o-m which does some funky iproute stuff too but not sure the name.. have a look
+> > 
+> > Thanks,
+> > ____________________________________________
+> > George Vieira
+> > Systems Manager
+> > georgev@citadelcomputer.com.au
+> > 
+> > Citadel Computer Systems Pty Ltd
+> > http://www.citadelcomputer.com.au
+> > 
+> > -----Original Message-----
+> > From: Wolfgang Pichler [mailto:madmin@dialog-telekom.at]
+> > Sent: Thursday, July 24, 2003 6:03 AM
+> > To: netfilter@lists.netfilter.org
+> > Subject: backroute problem
+> > 
+> > 
+> > hi all,
+> > 
+> > we have got new ip addresses - the old one's still exists so that i can
+> > migrate them to the new ones.
+> > 
+> > the old ip's are directly assigned to the web/mail server (i know that
+> > this isn't good - but i havn't had a fireall at this time) - now i have
+> > a seperate firewall which has the new ip's assigned to it.
+> > 
+> > Now i'd like to change the dns entries so that the traffic goes over the
+> > new ip's (a 4 MBit line ;-) ) - the problem i have is:
+> > 
+> > when a packet on the new ip comes then it gets prerouted by the firewall
+> > to the webserver - the webserver gets the packet with the original
+> > source address - now to webserver wants to answer to the packet - but
+> > becuase of the old ip's the webserver have a default route with the old
+> > ip and try's to route the packet over the old gateway - and not back to
+> > the firewall... You know - that can't work.
+> > 
+> > I am now searching for a solution for this problem. Can netfilter help
+> > me with this problem - or do i have to use iproute (i havn't ever done
+> > something with iproute) help me ?
+> > 
+> > Can i mark the packet's so the the webserver can send them back in the
+> > right direction ?
+> > 
+> > mfG
+> > Wolfi
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> 
+> 
+> 
+> 
+> 
+> 
 
-Is it possible that an earlier rule in the POSTROUTING chain is overriding 
-this one? Could you try:
 
-	iptables -t nat -I POSTROUTING -s 192.168.1.0/24 -d 192.168.1.2
-		-p tcp --dport 80 -j MASQUERADE
-
-If that doesn't work, please send your ruleset (iptables -L -n -v; 
-iptables -t nat -L -n -v) and tcpdump of packets on the internal interface 
-of your firewall when you try to connect.
-
-Cheers, Chris.
--- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
 
