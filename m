@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Bad argument `53'
-Date: Thu, 10 Oct 2002 07:34:28 +0100
+From: Oskar Andreasson <blueflux@koffein.net>
+Subject: Re: how many chains are part of the mangle table?
+Date: Thu, 10 Oct 2002 08:41:18 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021010063434.WSKG7631.mta03-svc.ntlworld.com@there>
-References: <002a01c27003$2c9d14e0$0201a8c0@com>
+Message-ID: <Pine.LNX.4.44.0210100838560.1673-100000@laptop1.agatha>
+References: <Pine.LNX.4.44.0210091834470.17861-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002a01c27003$2c9d14e0$0201a8c0@com>
+In-Reply-To: <Pine.LNX.4.44.0210091834470.17861-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +16,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+Cc: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On Thursday 10 October 2002 3:17 am, David F. Strauch wrote:
+This is on the TODO list actually, but I haven't gotten around to fix it. 
+If you look at http://www.frozentux.net/presentations/ I know one of the 
+presentations there "contain" the mangle-5-hook patch (at least info about 
+it=)). 
 
-> I?ve just started writing the script to allow DNS Loopkups as a client with
-> the following:
->
-> iptables -A OUTPUT -o $INTERNET -p udp \
->          -s $IPADDR --sport $UNPRIVPORTS \
->          -d $NAMESERVER --dport 53 -j ACCEPT
+I will fix that problem up and have a new version out in a couple of days.
 
-Why are you specifying Source Address and Port on an OUTPUT rule ?
+On Wed, 9 Oct 2002, Robert P. J. Day wrote:
 
-> iptables -A INPUT  -i $INTERNET -p udp \
->          -s $NAMESERVER --sport 53 \
->          -d $IPADDR --dport $UNPRIVPORTS -j ACCEPT
-
-Is it really necessary to specify Destination Address and Port on an INPUT 
-rule ?   How many addresses do you have on your interface, and why would you 
-only want some of them to receive DNS replies ?
-
-> When I execute the script with sh /etc/rc.d/rc.firewalls I receive Bad
-> argument `53' for every instance of either  --dport 53 or --sport 53.  I?ve
-> also tried --destination-port and --source-port with out any success.
-
-Check what the earlier variables in the command contain.   I think you'll 
-probably find one (or more) of them is empty.
-
-Antony.
+> On Wed, 9 Oct 2002, Antony Stone wrote:
+> 
+> > You might want to check the latest version of Oskar's tutorial at 
+> > http://iptables-tutorial.frozentux.net and see if he talks about all five 
+> > chains having mangle hooks now ?
+> 
+> nope.  that's the version i've been reading, actually.
+> 
+> rday
+> 
+> 
+> 
 
 -- 
+----
+Oskar Andreasson
+http://www.frozentux.net
+http://iptables-tutorial.frozentux.net
+http://ipsysctl-tutorial.frozentux.net
+mailto:blueflux@koffein.net
 
-Abandon hope, all ye who enter here.
-You'll feel much better about things once you do.
 
