@@ -1,8 +1,8 @@
 From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: iptables Help
-Date: Mon, 31 May 2004 09:20:37 -0700
+Subject: RE: ftp mark
+Date: Mon, 31 May 2004 09:30:43 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E319@alderaan.smgtec.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E31A@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,21 +17,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: vinay@technoinfotech.com, netfilter@lists.netfilter.org
+To: Krystian <optimusprime@o2.pl>, netfilter@lists.netfilter.org
 
-Vinay, this isn't a simple problem that can be applied to a standardf
-template. To get some info on balancing and sculpting lines, see
-http://lartc.org or http://linux-ip.net/html/linux-ip.html=20
+Krystian wrote:
+> hi
+>=20
+> i have a router/nating box with linux on it. can anybody tell me how
+> to mark outgoing ftp active/passive connections ?
 
-They have enough reference material to get you through the process.
+If you mark a conntrack with the CONNMARK extension, the RELATED traffic
+to that session are also marked. Otherwise, you have to make all RELATED
+traffic with a single mark.
 
-You also have to note something else. If the two ISP line aren't from
-the same ISP, there's no guarantee this'll work at all. The problem is
-that each set of IP addresses tied to your PC are pointed to by your
-ISP. If your ISP finds you sending sources packets from a network that
-isn't theirs, they have all the right in the world to block those
-packets. Both Sender/Receiver have to have the same address to make
-connections.
+The best way to apply marks would be a sub-chain so that you can process
+other operations after MARKING them. PS this is from memory so syntax
+could be off a bit.
 
-Good luck.
+# Ingress marking (mostly for Ingress filters and Policy Routing)
+iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j ACCEPT
+iptables -t mangle -A PREROUTING -d 0/0 --dport 21 -j MARK --set-mark
+0x111
+iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
+
+# Egress marking (mostly for QOS operations)
+iptables -t mangle -A POSTROUTING -j CONNMARK --restore-mark
+iptables -t mangle -A POSTROUTING -m mark ! --mark 0 -j ACCEPT
+iptables -t mangle -A POSTROUTING -o ${if_inet} --dport 21 -j MARK
+--set-mark 0x111
+iptables -t mangle -A POSTROUTING -j CONNMARK --save-mark
 
