@@ -1,10 +1,13 @@
-From: aksingh@hss.hns.com
-Subject: ip_queue_maxlen
-Date: Fri, 7 May 2004 11:49:11 +0530
+From: Joe Riley <irie@networks.org>
+Subject: Download speeds drastically reduced through iptables
+Date: Fri, 7 May 2004 00:10:12 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFF3757E9C.8AD303A0-ON65256E8D.00226C14@hss.hns.com>
+Message-ID: <20040507071012.20BD77266@sitemail.everyone.net>
+Reply-To: irie@networks.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,33 +18,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+dear mailing list.
+I am having a problem with my iptables setup, the server sharing the connection (192.168.0.1) gets download speeds of 120kb/sec, the problem is is that the box being masqueraded (192.168.0.2) - behind the firewall only gets no more than 30-40kb/sec. this slow speed is comparable to a 256kbit isdn .. and it really bothers me.
+
+what is the secret for unlocking the speed in iptables?
+
+here is my script:
+-----------------------------------------------------
+#!/bin/sh
+ifconfig eth0 inet 192.168.0.1 netmask 255.255.255.0 broadcast 192.168.0.255
+modprobe ip_tables
+modprobe iptable_filter
+modprobe ip_conntrack
+modprobe ip_conntrack_ftp
+modprobe ip_conntrack_irc
+modprobe iptable_nat
+modprobe ip_nat_ftp
+modprobe ip_nat_irc
+echo 1 > /proc/sys/net/ipv4/ip_forward
+/usr/sbin/iptables -t nat -A PREROUTING -d 65.77.170.112 -p tcp --dport 1:64999 -j DNAT --to 192.168.0.2
+/usr/sbin/iptables -t nat -A PREROUTING -d 65.77.170.112 -p udp --dport 1:65535 -j DNAT --to 192.168.0.2
+/usr/sbin/iptables -t nat -A POSTROUTING -o wlan0 -s 192.168.0.2 -j MASQUERADE
+/usr/sbin/iptables -t nat -P POSTROUTING ACCEPT
+#block worm ports
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 5000 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 1025 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 445 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 139 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 135 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p udp --dport 123 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p udp --dport 135 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p udp --dport 137 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p udp --dport 138 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p udp --dport 445 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p udp --dport 500 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p udp --dport 1032 -j DROP
+/usr/sbin/iptables -A FORWARD -d 192.168.0.2 -p udp --dport 1900 -j DROP
+/usr/sbin/iptables -A INPUT -i wlan0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+/usr/sbin/iptables -A INPUT -i wlan0 -p tcp -m tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+/usr/sbin/iptables -A INPUT -i wlan0 -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+/usr/sbin/iptables -A INPUT -i wlan0 -p tcp -m tcp --tcp-flags FIN,RST FIN,RST -j DROP
+/usr/sbin/iptables -A INPUT -i wlan0 -p tcp -m tcp --tcp-flags ACK,FIN FIN -j DROP
+/usr/sbin/iptables -A INPUT -i wlan0 -p tcp -m tcp --tcp-flags ACK,URG URG -j DROP
 
 
 
 
-hi,
 
- Whats the maximum number of packets that are queued by ip_queue for the
-user space to handle ... is it 1024 as defined in
-/proc/sys/net/ipv4/ip_queue_maxlen ? That is a max of 1024 packets are
-queued by the kernel, and can we change this value somehow ?
-
-
-thanks
-Amit
-
-"DISCLAIMER: This message is proprietary to Hughes Software Systems Limited
-(HSS) and is intended solely for the use of the individual to whom it is
-addressed. It may contain  privileged or confidential information and
-should not be circulated or used for any purpose other than for what it is
-intended. If you have received this message in error, please notify the
-originator immediately. If you are not the intended recipient, you are
-notified that you are strictly prohibited from using, copying, altering, or
-disclosing the contents of this message. HSS accepts no responsibility for
-loss or damage arising from the use of the information transmitted by this
-email including damage from virus."
-
+_____________________________________________________________
+Proud member of United Networks Email, visit or report abuse at  http://networks.org/
 
