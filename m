@@ -1,12 +1,11 @@
-From: "primero@hdr-roma.it" <primero@fastwebnet.it>
-Subject: Re: web server behind firewall
-Date: Wed, 22 Dec 2004 19:52:49 +0100
-Message-ID: <41C9C281.2080809@hdr-roma.it>
-References: <1103737938.17922.55.camel@localhost.localdomain>
+From: Sasa Stupar <sasa@stupar.homelinux.net>
+Subject: What's this?
+Date: Wed, 22 Dec 2004 19:57:11 +0100
+Message-ID: <B8AA56031371696C3C526854@[192.168.10.245]>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1103737938.17922.55.camel@localhost.localdomain>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +17,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mohammad Khan <mkhan@lextranet.com>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-Mohammad Khan wrote:
+Hi!
 
->Hello List:
->
->I would like to setup a web server behind my firewall.
->Where can I get more documentation/tutorials/How-to?
->
->Thanks in advance.
->
->Mohammad
->
->
->
->
->  
->
-www.netfilter.org ;)
+I have found following lines in my mail log:
+----------
+Dec 22 18:10:13 xmail imap[29555]: SQUAT failed to open index file
+Dec 22 18:10:13 xmail imap[29555]: SQUAT failed
+----------
+I am running FC3+Sendmail+Cyrus-imapd.
 
-bye
+What is SQUAT? I don't remember setting this up.
+
+Sasa
 
