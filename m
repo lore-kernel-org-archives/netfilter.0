@@ -1,14 +1,12 @@
-From: Matthew Strait <quadong@users.sourceforge.net>
-Subject: Re: where is ipt_layer.h
-Date: Mon, 2 Feb 2004 08:47:23 -0600 (CST)
+From: Kiran Kumar <immidi_kiran@yahoo.com>
+Subject: Re: iptc_* implementation queries
+Date: Mon, 2 Feb 2004 19:57:45 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.60.0402020844140.3769@dsl093-017-216.msp1.dsl.speakeasy.net>
-References: <012101c3e992$0a5d75a0$c2bf09ca@huecal>
- <Pine.LNX.4.60.0402020809060.3769@dsl093-017-216.msp1.dsl.speakeasy.net>
- <014d01c3e998$49b056e0$c2bf09ca@huecal>
+Message-ID: <20040203035745.34657.qmail@web14005.mail.yahoo.com>
+References: <s01e5eb1.078@prv-mail25.provo.novell.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <014d01c3e998$49b056e0$c2bf09ca@huecal>
+In-Reply-To: <s01e5eb1.078@prv-mail25.provo.novell.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: hare ram <hareram@sol.net.in>
-Cc: lartc@mailman.ds9a.nl, netfilter@lists.samba.org, l7-filter-developers@lists.sf.net
+To: Jambunathan Jambunathan <kjambunathan@novell.com>, netfilter@lists.netfilter.org
 
-> i am using the following things
->
-> iptables-1.2.9-layer7-0.4.1.patch
-> layer7-kernel2.4patch-qos-0.4.1b
+--- Jambunathan Jambunathan <kjambunathan@novell.com>
+wrote:
+> I am interested in knowing the netfilter
+> infrastructure and I would
+> like to know how iptables communicates with
+> netfilter ( user to
+> kernel space communication ) I understand that it
+> happens through
+> raw sockets through setsockot and getsockopt. Also
+> there are a
+> good number of iptc_* calls that are declared in
+> libiptc.h which
+> are used by the iptables user space tool. I would
+> like to know 
+> where I can see the implementations for these iptc_*
+> calls. 
 
-You are using the QoS version of the kernel patch and the Netfilter
-(iptables) version of the userspace patch.  You need to either use QoS
-with iproute2 or Netfilter with iptables.
+  These are in the libiptc directory of the iptables
+module of cvs.
 
--matthew
+
+=====
+Regards,
+Kiran Kumar Immidi
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free web site building tool. Try it!
+http://webhosting.yahoo.com/ps/sb/
 
