@@ -1,13 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Network mapping from internal and external
-Date: Mon, 04 Oct 2004 06:42:24 -0400
+From: Nick Taylor <nickt@lightlink.com>
+Subject: Re: Possible Simple Configuration gone wrong
+Date: Mon, 4 Oct 2004 10:27:09 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096886543.22962.83.camel@wolfpack.ljm.dom>
-References: <200410040342.i943gOqM012108@ylpvm15.prodigy.net>
+Message-ID: <Pine.GSU.4.58.0410041013010.18968@adore.lightlink.com>
+References: <41607945.8040802@Home.dataforce.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200410040342.i943gOqM012108@ylpvm15.prodigy.net>
+In-Reply-To: <41607945.8040802@Home.dataforce.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,73 +16,98 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Dataforce <Dataforce@Home.dataforce.org.uk>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, 2004-10-03 at 23:42, Gregory Gerard wrote:
-> I'm not sure how to describe my setup and intended network in iptables
-> parlance. Have searched much and can't find anything that matches my
-> situation.
-> 
->  
-> 
-> I have 5 static IPs from my ISP. Out the Ethernet end of my DSL box I see
-> those 5 IPs directly. I have no control over the router but that's fine.
-> 
->  
-> 
-> I have many more than 5 machines in my network.
-> 
->  
-> 
-> Internally, I have 10.9.x.x (255.255.0.0).
-> 
->  
-> 
-> I would like to setup iptables such that 4 of the external IP addresses map
-> completely map onto exactly 4 internal IP addresses. The fifth external
-> address will simply be used to NAT for internal only machines.
+On Sun, 3 Oct 2004, Dataforce wrote:
+> To: netfilter@lists.netfilter.org
+> Subject: Possible Simple Configuration gone wrong
+>
+> the iptables machine has the ip 82.133.x.x on eth1, and 192.168.0.5 on eth0
+>
+> (82.133.x.x) [Internet]----[iptables]----[Machine 1] (192.168.0.6)
+>                                  |--------[Machine 2] (192.168.0.2)
+>                                  `--------[Other Machines]
+>
+> I setup a port forward as follows:
+> iptables -A PREROUTING -t nat -i eth0 -p tcp --dst 82.133.x.x --dport
+> 3389 -j DNAT --to 192.168.0.6:3389
+>
+> iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 3389 -j DNAT --to
+> 192.168.0.6:3389
+>
+> iptables -t nat -A POSTROUTING --dst 192.168.0.6 -p tcp --dport 3389 -j
+> SNAT --to-source 82.133.x.x
+>
+> iptables -A POSTROUTING -t nat -j MASQUERADE
+>
+> now, this allows machine2 AND internet clients to connect to port 3389
+> on 82.133.x.x and get to machine1
+>
+> however, according to machine1, all clients appear to have come from
+> 192.168.0.5
+>
+> I would like it setup so that lan clients appear to come from
+> 192.168.0.5 (so that packets get routed correctly
+> [machine1]--[iptables]--[machine2] not [machine1]--[machine2]) where as
+> packets from the internet appear to come from the correct ip.
+>
+> i have tried replacing
+> iptables -A POSTROUTING -t nat -j MASQUERADE
+>
+> with
+>
+> iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j SNAT --to-source
+> 82.133.x.x
+>
+> iptables -t nat -A POSTROUTING -s ! 192.168.0.0/16 -j MASQUERADE
+>
+> (suggested by a friend)
+>
+> and vice versa (swapping the !) however it either prevents external
+> connections compeltey or gives the same effect as before.
+>
+> is what i would like possible with iptables? or will i jsut have to live
+> with all clients appearing as 192.168.0.5
+>
+> thanks
+>
+> -DF
+>
+IMHO, this is a bit of a kludge.  I am reading between the lines here a
+little, but...  I assume that the connection from machine2 isn't made
+directly to machine1, since they're in the same subnet, they would direct
+deliver if they were allowed to.  Ie, in your client software on machine2,
+if you enter the address 192.168.0.2, rather than 82.133.x.x, you'll see
+192.168.0.6.  However, if you enter 82.133.x.x, you're doomed forever to
+see 192.168.0.5.  A little reflection should show you why this is a limit
+of TCP/IP, and not netfilter per se.
 
-assuming 1 of the 5 IP's is actually assigned to your netfilter
-machine's external nic (i.e. 1.1.1.2), you need to add IP aliases for
-the remaining 4 IP's (1.1.1.3 - 1.1.1.6):
+192.168.0.6 innitiates a connection to 82.133.x.x, which generates a SYN
+packet like this:
+192.168.0.6 -> 82.133.x.x
+This packet is transmitted to the default gateway, at 192.168.0.5.
+The gateway mangles the headers so that now it looks like
+192.168.0.5 -> 192.168.0.2
+and retransmits it.
 
-ip addr add 1.1.1.3 dev $EXTERNAL_IF
-ip addr add 1.1.1.4 dev $EXTERNAL_IF
-ip addr add 1.1.1.5 dev $EXTERNAL_IF
-ip addr add 1.1.1.6 dev $EXTERNAL_IF
+Now, 192.168.0.2 sees a connection from 192.168.0.5, responds
+appropriately, and 192.168.0.5 uses connection tracking to remember that
+*this* connection should get sent back to 192.168.0.6, so it rewrites the
+headers and retransmits.
 
-setup 1:1 outbound NAT:
+If instead, the *gateway* transmitted a packet to 192.168.0.2 with
+192.168.0.6 in the header, the reply packet would be sent directly to
+192.168.0.6, without hitting the gateway again, which would NOT satisfy
+TCP, since 192.168.0.6 *thinks* it's talking to 82.133.x.x, it wouldn't
+recognize a return packet with the address 192.168.0.2.
 
-  iptables -t nat -A POSTROUTING -o $EXTERNAL_IF -s 10.9.1.3 \
-    -j SNAT --to-source 1.1.1.3
-  iptables -t nat -A POSTROUTING -o $EXTERNAL_IF -s 10.9.1.4 \
-    -j SNAT --to-source 1.1.1.4
-  iptables -t nat -A POSTROUTING -o $EXTERNAL_IF -s 10.9.1.5 \
-    -j SNAT --to-source 1.1.1.5
-  iptables -t nat -A POSTROUTING -o $EXTERNAL_IF -s 10.9.1.6 \
-    -j SNAT --to-source 1.1.1.6
-
-setup many:1 outbound NAT:
-
-  iptables -t nat -A POSTROUTING -o $EXTERNAL_IF -s 10.9.0.0/16 \
-    -j SNAT --to-source 1.1.1.2
-
-you don't specifically say whether you want the 4 1:1 NAT's to map for
-inbound traffic as well, but if you do:
-
-  iptables -t nat -A PREROUTING -i $EXTERNAL_IF -d 1.1.1.3 \
-    -j DNAT --to-destination 10.9.1.3
-  iptables -t nat -A PREROUTING -i $EXTERNAL_IF -d 1.1.1.4 \
-    -j DNAT --to-destination 10.9.1.4
-  iptables -t nat -A PREROUTING -i $EXTERNAL_IF -d 1.1.1.5 \
-    -j DNAT --to-destination 10.9.1.5
-  iptables -t nat -A PREROUTING -i $EXTERNAL_IF -d 1.1.1.6 \
-    -j DNAT --to-destination 10.9.1.6
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+To make a long story short, you either use the gateway for nat, or you
+don't.  There's no logical meaning to half-natting, it would only break
+things.  If you NAT the address, then the server will always think it's
+talking to the gateway, otherwise, you can use the native IP of the
+server, as long as routability is satisfied (for example being directly
+connected to the same ehternet and on the same subnet should work fine)
 
