@@ -1,10 +1,8 @@
-From: Michael Tautschnig <michael.tautschnig@zt-consulting.com>
+From: Pmishra@in.safenet-inc.com
 Subject: RE: Single IP
-Date: Fri, 4 Mar 2005 10:40:17 +0100 (CET)
-Message-ID: <Pine.LNX.4.62.0503041033580.7410@L01.THNET>
-References: <20686C579479DC438276A726FE80CDAA0294C9B9@INEXCH1>
+Date: Fri, 4 Mar 2005 16:30:37 +0530
+Message-ID: <20686C579479DC438276A726FE80CDAA0294CBD3@INEXCH1>
 Mime-Version: 1.0
-In-Reply-To: <20686C579479DC438276A726FE80CDAA0294C9B9@INEXCH1>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,10 +13,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: michael.tautschnig@zt-consulting.com, Pmishra@in.safenet-inc.com
+Cc: netfilter@lists.netfilter.org
+
+Please see my answer below.
+
+- What is the client using to access your services? A web-browser?
+I Open the the portal page and click on the some link then my own service
+start and listen the server.
+- What "services" are you providing? Websites?
+I have two application name is VPX and FNC.
+- You can't have more than one application listening on port 80, so how are
+you dealing with that issue?
+My requirement is OPEN ONE tunnel( between server and client) and all the
+data will send via this tunnel. and In server side I check the packet and
+forward To appropriate server as per FLAG. 
+- why do you stick to 1 IP and 1 port?
+Because If client use some firewall the may be he open only single port for
+communicate with server.
+
+Thanks
+Pradeep
+
+
+-----Original Message-----
+From: Michael Tautschnig [mailto:michael.tautschnig@zt-consulting.com]
+Sent: Friday, March 04, 2005 3:10 PM
 To: Pmishra@in.safenet-inc.com
 Cc: netfilter@lists.netfilter.org
+Subject: RE: Single IP
+
 
 
 > That's My question,
@@ -51,4 +77,3 @@ are you dealing with that issue?
 
 Thanks,
 Michael
-
