@@ -1,12 +1,13 @@
-From: bernard <bernard@gers.net>
-Subject: Re: hostname forwarding
-Date: Thu, 12 Dec 2002 13:20:41 +0100
+From: Filip Sneppe <filip.sneppe@cronos.be>
+Subject: Re: Inserting rules is extremly slow :((
+Date: 12 Dec 2002 13:25:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <p04330100ba1e2c781c57@[62.147.36.224]>
-References: <Pine.LNX.4.33.0212111606240.17876-100000@www.csbenter.at>
+Message-ID: <1039695920.475.42.camel@xbox>
+References: <3df87716.1a99.0@unacs.bg>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0212111606240.17876-100000@www.csbenter.at>
+In-Reply-To: <3df87716.1a99.0@unacs.bg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,54 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: nedco@unacs.bg
+Cc: netfilter@lists.netfilter.org
 
-Thank again for your valuable help.
+On Thu, 2002-12-12 at 12:46, nedco@unacs.bg wrote:
+> 
+> Hi,
+>  How to insert fast about 20000 rules in iptables.
+>  If some document will be help , please let me know  :)
+> 
+Hi,
 
-So apache can take http requests to do that but what's about the 
-other protocols ?
+man iptables-save 
+man iptables-restore
 
-It seems that squid can do a transparent proxy for some of them.
+That's the only solution to your performance problem at this moment...
 
-Do I need to use a specific solutions for each different protocol I 
-want to set and what solution to use for the most common (telnet, 
-pop, imap, ftp, ...) ?
+Regards,
+Filip
 
-Bernard
-
->this is not possible using ipotables
->
->Apache however can very well handle this ..
->
->
->On Wed, 11 Dec 2002, bernard wrote:
->
->>  I'm using iptables to redirect external requests depending on their
->>  port/protocol like this :
->>
->>	hostname A:80 -> public ip -> iptables -> 192.168.1.1:80
->>	hostname B:80 -> public ip -> iptables -> 192.168.1.1:80
->>
->>  It works pretty well, thanks to iptables :-)
->>
->>  Now I want to redirect on a hostname basis on different private ip's
->>  like this :
->>
->>	hostname A:80 -> public ip -> iptables -> 192.168.1.1:80
->>	hostname B:80 -> public ip -> iptables -> 192.168.1.2:80
->>
->>  Does anyone know a solution ?
->>
->>  Thanks for your help.
->>
->>  Bernard
->>
->
->--
->---
->Kind Regards
->Patrick Maartense (using Pine on a Text Console)
 
 
