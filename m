@@ -1,9 +1,9 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: simple nat question
-Date: Wed, 03 Jul 2002 09:00:52 +0200
+From: "R. Sterenborg" <rsterenborg@xs4all.nl>
+Subject: Re: Unable to apply pptp patch
+Date: Wed, 3 Jul 2002 09:22:46 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D22A124.8050606@knowledgefactory.co.za>
-References: <Pine.LNX.4.30.0207021225140.7072-100000@gilgamesh.eos.SilentMedia.com>
+Message-ID: <002901c22262$6e42b4c0$153fa8c0@hslbrabantzuid.nl>
+References: <000c01c2222e$157ed9b0$0a02a8c0@s3ac>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -16,46 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ben <bench@silentmedia.com>
-Cc: NetFilter <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Hi Ben
+----- Original Message -----
+From: "Rowan Reid" <rreid@studio3arc.com>
+To: <netfilter@lists.samba.org>
+Sent: Wednesday, July 03, 2002 3:08 AM
+Subject: Unable to apply pptp patch
 
-iptables is clever enough to know and remember where the original packet 
-came from and will automagically do the translation necessary for the 
-return packets.
+> Has anyone been able to apply the pptp patch to a 2.4.4 or above kernel
+> I've used rusties patch-o-matic with the make pending-pom_patches
+> Whenever I get to the pptp patch it fails. Several others fail too.  I
+> tried on a 2.4.8 and a 2.4.4 kernel.
+>
+I think there are multiple PPTP patches available.
+I got mine from http://www.impsec.org/linux/masquerade/ip_masq_vpn.html and
+it works like a charm.
+There are patches for 2.4.12, 2.4.15 and 2.4.17.
 
-Ray
+The Netfilter website says that the PPTP patch that can be downloaded on
+their site has a limitation so you can only make one pptp connection to one
+host - not stopping you to make another connection to another host.
+I don't know if the one I use has the same limitation.
 
-Ben wrote:
-> I've got a basic nat setup:
-> 
->   internet
->      |
-> +====+=====+ eth0: 1.2.3.4
-> | firewall |
-> +====+=====+ eth1: 10.0.0.1
->      |
-> +====+=====+ eth0: 10.0.0.2
-> |  server  |
-> +==========+
-> 
-> 
-> What I would like is for packets coming from the server (10.0.0.2) to get
-> SNAT'd to the firewall's IP address, 1.2.3.4. It seems easy enough to do:
-> 
-> iptables -t nat -A POSTROUTING -o eth0 -s 10.0.0.2 -j SNAT --to 1.2.3.4
-> 
-> But now I don't see how return packets are going to make it back to my
-> server, because the firewall is going to think they are destined for it.
-> If I add the rule:
-> 
-> iptables -t nat -A PREROUTING -d 1.2.3.4 -i ! eth0 -j DNAT --to 10.0.0.2
-> 
-> Then it seems I loose the ability for the firewall to run anything
-> accessable to the outside world, like ssh.
-> 
-> 
+I have it up and running with the 2.4.17 kernel.
+No problems encountered here (yet). Just patched the kernel and recompiled
+it.
+Then I compiled a new iptables and it worked.
+
+Rob
 
 
