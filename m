@@ -1,12 +1,10 @@
-From: "Yogini Parkhi" <yparkhi@bivio.net>
-Subject: RE: measure traffic
-Date: Tue, 8 Oct 2002 16:27:45 -0700
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: a little unclear on user-defined chains
+Date: Tue, 8 Oct 2002 19:28:05 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <385DA3327471554CA86AACAA2BBB8130250E7D@plstnexc01.corp.networkrobots.com>
+Message-ID: <Pine.LNX.4.44.0210081919330.9285-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,74 +14,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Payal <payal@hotpop.com>, netfilter@lists.netfilter.org
-
-Hi Payal,
-I think you can just run cron jobs and take a snapshot of the ifconfig =
-command or iptables -L -v  command. Then compare the outputs with dates =
-and you will have the stats you need.
-
-You can also zero the counters every hour if you want with iptables -Z =
-after you save the counters for the last hour.
-You can have your cron job add up packets etc.=20
-
-Hope this helps,
-Yogini
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
 
------Original Message-----
-From: Payal [mailto:payal@hotpop.com]
-Sent: Tuesday, October 08, 2002 11:56 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: measure traffic
+  i wanted to extend my current iptables config to use some user-defined
+chains, until i realized that i'm a little confused by them.  here's the
+problem (which could very well be trivial).
 
-Hi,
-Thanks a lot all for the mail.
-Well, I was thining more on lines of traffic every hour/day/week/month
-etc. Cos' then I can challenge the server farm guys that their stats are
-wrong.
-Well, about ipac-ng I heard it has some problems with iptables 1.2.5 and
-kernel 2.4.x. Does it work properly with these two?
-Thanks a lot and bye.
--Payal
-On Mon, Oct 07, 2002 at 09:17:33PM +0100, Antony Stone wrote:
-> On Monday 07 October 2002 7:58 pm, PayalR wrote:
->
-> > Hi,
-> > I have a small urgent problem. As I told you all before, I have my =
-single
-> > Linux box at a server farm where I have to pay per Mb of data =
-transmitted.
-> > I have a doubt that those guys there are cheating me. They are =
-taking more
-> > money than actual data transmitted. Can I use iptables to log all =
-incoming
-> > and outgoing data and see total incoming/outgoing data in a =
-day/week/month?
->
-> Why not just use the byte counters in ifconfig ?
->
-> eg: ifconfig eth1
->
-> eth1      Link encap:Ethernet  HWaddr 00:02:2D:05:3F:8D
->           inet addr:192.168.44.101  Bcast:192.168.44.255  =
-Mask:255.255.255.0
->           UP BROADCAST NOTRAILERS RUNNING  MTU:1500  Metric:1
->           RX packets:1930 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:1950 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:100
->           RX bytes:912045 (890.6 Kb)  TX bytes:265386 (259.1 Kb)
->           Interrupt:9 Base address:0x100
->
-> So this machine I'm on now has received 912045 bytes and sent 265386 =
-bytes
-> since the interface was initialised....
->
-> Antony.
->
-> --
->
-> The difference between theory and practice is that
-> in theory there is no difference, whereas in practice there is.
+  while there are three built-in chains (INPUT, OUTPUT, FORWARD), 
+you never add a new rule just to a chain, you add it to a table
+*within* that chain (the default table being "filter").  so far,
+so good.  for better or worse, i've always viewed my collection
+of netfilter rules as being in a 2-dimensional array, 
+chains versus tables.  so some of my rules will be part of the
+(mangle,PREROUTING) entry in the matrix, other rules will be in
+the (filter,FORWARD) entry and so on.
+
+  so what happens with a user-defined chain?  i can create a new
+chain with
+
+  # iptables -N newchain
+
+but, as above, i don't just add rules to the new chain, i have to 
+add them to a combination of the new chain and an existing table,
+as in 
+
+  # iptables -A newchain (rest of rule)		# default filter table
+  # iptables -A newchain -t nat (rest of rule)  # goes in nat table
+
+is this correct so far?  i ask since, in every example i've *ever*
+seen, folks create user-defined chains solely for filtering, and
+never for nat or mangle.  aren't you allowed to do this?  
+
+  and based on that, if i create a new chain, and i can add new rules
+in any of the three tables (again, i've never seen this used for
+anything but filtering), then if i jump to my new user-defined chain,
+will it only process the rules that match the table of the rule i
+jumped from?
+
+  is this making any sense?  or have i just badly misunderstood
+how user-defined chains work?
+
+rday
+
 
