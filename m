@@ -1,12 +1,11 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: forwarding based on hostname
-Date: Mon, 4 Aug 2003 08:07:52 +1000
+From: "Lawrence - D" <ingsiong@daltron.com.pg>
+Subject: linux firewall/IPTABLES Vs Mediaring VOip
+Date: Mon, 4 Aug 2003 12:04:30 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C022@wardrive.citadelcomputer.com.au>
+Message-ID: <00a501c35a2c$beaac7b0$7700000a@lawrencewin2k>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +16,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ian McBeth <imcbeth@telus.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Are you allowing DNS? Are you clients able to make DNS requests from =
-behind the firewall?
+Hi,
+    I'm new to Linux RedHat O/S. My RedHat 8.0 is connected by  lease line
+to internet service. I'm running Squid for proxy service. I implement the
+medium level firewall with default setting on linux firewall/IPTABLES.
+    Now my LAN user want to use mediaring VOIP service. I check the website
+FAQ and found the following :-
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+10. Can the Prepaid Service work behind a firewall?
+The Prepaid Calls Service currently supports PC-to-Phone calls from behind
+firewalls. If you are connected to the Internet using LAN, you may be behind
+a firewall, which will prevent you from connecting to our Internet gateways.
+To make calls from behind your firewall, you need to set the firewall
+settings by clicking on the link "Settings" on the web page and select "Use
+Firewall" for SOCKS5.
+To use NAT firewall, you will need to open or ask your Network Administrator
+to open the following outgoing ports for UDP and TCP: 51719(UDP), 51720(TCP)
+and 1800-1810(UDP).
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-=20
+    Can anyone guide me how to open the port on server so that my LAN user
+can use Mediaring ?
 
------Original Message-----
-From: Ian McBeth [mailto:imcbeth@telus.net]
-Sent: Monday, August 04, 2003 6:44 AM
-To: 'Daniel Chemko'
-Cc: netfilter@lists.netfilter.org
-Subject: RE: forwarding based on hostname
+Best Regards,
 
-
-Hey=20
-
-I am not using the domain name to connect to the mail server that is
-hidden behind the Nat firewall box as I can not connect to it with the
-domain name but I can connect to it via the IP address.  What am I doing
-wrong?
-
-Thanks
+Lawrence Tang
 
 
