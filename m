@@ -1,7 +1,7 @@
-From: Jason Opperisano <opie@817west.com>
+From: Jesper Lund <jesper@ballbreaker.dk>
 Subject: Re: After 14 hours of brainpain...
-Date: Mon, 03 Jan 2005 06:52:29 -0500
-Message-ID: <1104753148.6489.0.camel@hubcap.ljm.dom>
+Date: Mon, 3 Jan 2005 12:55:00 +0100
+Message-ID: <20050103125500.059f8045.jesper@ballbreaker.dk>
 References: <E6A0AAEA-5D1F-11D9-83E1-000A95B981B6@knoxville.se>
 	<1104716217.6477.7.camel@hubcap.ljm.dom>
 	<46D3EF59-5D62-11D9-B917-000A95B981B6@knoxville.se>
@@ -22,35 +22,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2005-01-03 at 03:34, Andreas Pettersson wrote:
-> So it should look like something like this instead.. ?
-> What does the -I do? and why is the order so important (just curious 
-> and wants to learn).
-> 
-> -- CUT HERE --
-> 
-> iptables -t nat -A POSTROUTING -o eth1 -d ! $INET_IP -j SNAT --to 
-> $INET_IP
-> 
-> iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
-> --clamp-mss-to-pmtu
-> 
-> ## WWW Forwarding ...
-> iptables -A FORWARD -i eth1 -o eth0 -p tcp -d 192.168.1.30 --dport 80 
-> -j ACCEPT
-> iptables -t nat -A PREROUTING -i eth1 -p tcp -d $INET_IP --dport 80 -j 
-> DNAT --to 192.168.1.30:80
-> 
-> -- CUT HERE --
+> What does the -I do? and why is the order so important (just
+> curious and wants to learn).
 
-yup.
+The -I menas to Insert a rule in the the top of a chain rather
+than adding it to the bottom of a chain.
 
--j
+The order of the rules are important, because a packet starts
+traversing the chains, and the first rule a packets matches, it
+jumps to a target, and stops traversing that chains. Unless the
+target is LOG, RETURN and some others.
 
---
-"When will I learn? The answer to life's problems aren't at the bottom
- of a bottle, they're on TV!"
-	--The Simpsons
-
+/Jesper
 
