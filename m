@@ -1,10 +1,9 @@
-From: "David S. Ahern" <dahern@avaya.com>
-Subject: location of source code for kernel modules
-Date: Tue, 21 Oct 2003 13:13:22 -0600
+From: "dimitri borjac" <dimitri_borjac@hotmail.com>
+Subject: ipsec and iptables...
+Date: Wed, 22 Oct 2003 10:53:42 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F958552.2020107@avaya.com>
+Message-ID: <Law10-F72Dn9cvKluev00001ba1@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,25 +15,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Where can I find the source for the kernel modules that do connection 
-limiting? I see a userspace library for iplimit in the 1.2.8 userspace 
-source, but no corresponding module in the 2.4.20 kernel source. Has 
-this module been dropped? A google search indicates iplimit may have 
-changed names to connlimit, and indeed the cvs repository shows a 
-connlimit userspace library. However, I cannot find source for that 
-kernel module either.
+Hi,
 
-Essentially what I want is a match to limit the number of simultaneous 
-connections to a tcp port (from any IP address). Any suggestions?
+do you know where i can find any interesting documentation about the 
+interoperability/compatibility of ipsec with iptables ...?
+and more precisely regarding the eventual UDP encapsulation (NAT-T) and the 
+pass-through technology used for VPN ?
 
-Also, just how is the source for the kernel modules maintained relative 
-to the userspace code? Can you get the kernel source from the 
-netfilter.org web site (or cvs)?
+any link or help would be appreciated :)
+thanks !
 
--- 
-david ahern
-dahern@avaya.com
+Dimo
+
+_________________________________________________________________
+Hotmail : un compte GRATUIT qui vous suit partout et tout le temps ! 
+http://g.msn.fr/FR1000/9493
 
 
