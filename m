@@ -1,13 +1,13 @@
-From: Negrea Mihai <mike@spidernet.co.ro>
-Subject: Re: Redirecting incoming traffic to 127.0.0.1
-Date: Fri, 21 Mar 2003 16:51:11 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: state matching vrs prerouting.... ???
+Date: 21 Mar 2003 16:14:46 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303211651.16884.mike@spidernet.co.ro>
-References: <1048257065.1493.137.camel@localhost.localdomain>
+Message-ID: <1048259686.6912.10.camel@elendil.intranet.cartel-securite.net>
+References: <20030321145311.14296.qmail@web40203.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1048257065.1493.137.camel@localhost.localdomain>
+In-Reply-To: <20030321145311.14296.qmail@web40203.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Henry Ritzlmayr <h.ritzlmayr@gmx.at>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Le ven 21/03/2003 =E0 15:53, SBlaze a =E9crit :
+> # iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j DROP
+> # iptables -A INPUT -p udp -i eth0 -m state --state ESTABLISHED,RELATED=
+ -j
+> ACCEPT
+>=20
+> # CounterStrike NAT Line
+> #
+> iptables -t nat -A PREROUTING -p udp --dport 27015 -i eth0 -j DNAT
+> --to-destination 192.168.1.25:27015
+>=20
+> Ok the UDP filters physically come before my CounterStrike line. In rea=
+ding
+> Oskar's tutorial I as under the impression that the nat tables rules to=
+ok
+> precedence before the filter tables....
 
-Maybe the packets reach your service listening on the localhost but they=20
-cannot get to the client because it has the source 127.0.0.1
+They have. Moreover, there's no filter chain at NF_IP_PRE_ROUTING hook.
 
-Try SNAT-ing those packets:
-iptables -t nat -A POSTROUTING -p tcp -s 127.0.0.1 -j SNAT --to 172.16.17=
-2.12
+> However the UDP rules drop the incoming CS requests before they are
+> prerouted... What gives?=20
 
-hope I understood the problem
+Once your packet has been handled by NAT stuff, it has to be authorized
+by filter stuff. In your ruleset, two things are quite strange to me.
 
-All the best,
+First, your filtering rules are in INPUT chain. As far as I understand
+your point, you are trying to nat CS stuff to an internal host. So
+packets will get routed, and so have to be filtered in FORWARD chain.
 
-- --=20
-Negrea Mihai
-http://www.negrea.net
+Second, you drop packets with state NEW. If you do so, no one will be
+able to connect.
 
-On Friday 21 March 2003 16:31, Henry Ritzlmayr wrote:
-> I have a service running on a box wich is only able to bind to 127.0.0.=
-1
-> (hardcoded and I can=B4t get the source to change it). Since I want to =
-use
-> it from any other box the only way to solve that I think is to nat
-> incoming packets to 127.0.0.1.
->
-> IPTABLES -t nat -A PREROUTING -p tcp -d 172.16.172.12 -j DNAT
-> --to-destination 127.0.0.1
->
-> and many others wich I tried don=B4t work.
->
-> If I understood REDIRECT correctly it only changes to the local IP wher=
-e
-> the packet came in (in my situation 172.16.172.12) wich also not solves
-> the problem.
->
-> any ideas?
->
-> Henry
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE+eybk8hhhNOp8KlQRAiRpAJ9h3NJ7OLgMhBnPG+ToZ9dAweXAOwCg3R/4
-WtZ8kbHYrihBupFC91nPUeg=3D
-=3DPFnF
------END PGP SIGNATURE-----
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security expert  - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
 
