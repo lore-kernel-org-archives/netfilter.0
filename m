@@ -1,50 +1,81 @@
-From: Fabrice MARIE <fabrice@celestix.com>
-Subject: Re: failed to patch the kernel "2.4.19"!
-Date: Thu, 19 Sep 2002 10:32:47 +0800
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209191032.47457.fabrice@celestix.com>
-References: <001e01c25f29$1a3d2d70$0201a8c0@winxp>
-Reply-To: fabrice@celestix.com
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: [PATCH] multiple devices with ranges match support
+Date: Thu, 19 Sep 2002 08:47:57 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20020919084757.K3810@sunbeam.de.gnumonks.org>
+References: <Pine.LNX.4.44L.0209172347190.10390-102000@hunger.screamingdaemon.com> <20020918220257.GF10465@oknodo.bof.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001e01c25f29$1a3d2d70$0201a8c0@winxp>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2KJW3tE6NdndVjxo"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20020918220257.GF10465@oknodo.bof.de>; from bof@bof.de on Thu, Sep 19, 2002 at 12:02:57AM +0200
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Bryan Ko <bryanko@i-cable.com>, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Patrick Schaaf <bof@bof.de>
+Cc: Jay Schulist <jschlst@linux-sna.org>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-On Wednesday 18 September 2002 23:36, Bryan Ko wrote:
-> Hi there,
-> I have some torubles to patch kernel 2.4.19 with the
-> patch-o-matic-20020825, below is the error messages:
-> [root@zs patch-o-matic-20020825]# ./runme pending
-> KERNEL_DIR=/usr/src/linux-2.4.19 ERROR: Invalid option
-> KERNEL_DIR=/usr/src/linux-2.4.19
-> Would anyone know what is wrong with my command? Thanks a lot!!!! =)
-> Bryan Ko
 
-Hello,
+--2KJW3tE6NdndVjxo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-you should use it the other way around :
-[root@zs patch-o-matic-20020825]# KERNEL_DIR=/usr/src/linux-2.4.19 ./runme pending
+On Thu, Sep 19, 2002 at 12:02:57AM +0200, Patrick Schaaf wrote:
+> On Tue, Sep 17, 2002 at 11:47:42PM -0700, Jay Schulist wrote:
+> > Hello Harald,
+> > Here is a new match which allows the user to match by using multiple co=
+mma
+> > seperated devices each with range support.
+> >=20
+> > Iptables userspace patch is against a clean iptables-1.2.7a
+> > Kernel patch is against a clean linux-2.4.19
+> >=20
+> > mdev v1.2.7a options:
+> >  --i dev[,dev:dev,dev...]       match inbound device(s)
+> >  --o dev[,dev:dev,dev...]       match outbound device(s)
+>=20
+> Wishlist item:
+>=20
+> In the future, I wish the indev/outdev were gone from the generic
+> iptables rule, replaced with exactly such a match as Jay is presenting.
 
-Have a nice day,
+yes. This is what I have in mind with pkt_tables.  I am going to post a
+first, preliminary patch today.
 
-Fabrice.
---
-Fabrice MARIE
-Senior R&D Engineer
-Celestix Networks
-http://www.celestix.com/
+> best regards
+>   Patrick
 
-"Silly hacker, root is for administrators"
-       -Unknown
+--=20
+Live long and prosper
+- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+GCS/E/IT d- s-: a-- C+++ UL++++$ P+++ L++++$ E--- W- N++ o? K- w--- O- M+=
+=20
+V-- PS++ PE-- Y++ PGP++ t+ 5-- !X !R tv-- b+++ !DI !D G+ e* h--- r++ y+(*)
+
+--2KJW3tE6NdndVjxo
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE9iXMdXaXGVTD0i/8RAmRJAJ4octO0ZuolvYv/yCW2L2G1Rqka5QCeLN7Z
+cGf25yUp1dNu5kPcRgsLfuc=
+=8G0+
+-----END PGP SIGNATURE-----
+
+--2KJW3tE6NdndVjxo--
 
