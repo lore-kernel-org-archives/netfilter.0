@@ -1,15 +1,11 @@
-From: Tom Marshall <tommy@home.tig-grr.com>
-Subject: Re: finding out the culprit ip
-Date: Thu, 4 Sep 2003 14:13:20 -0700
+From: "Dennis Mills" <Dennis.Mills@TrackRight.com.au>
+Subject: server on firewall as well as client nat'd behind it
+Date: Thu, 4 Sep 2003 21:59:15 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030904211320.GA8959@home.tig-grr.com>
-References: <20030905183420.GA1850@linux.local>
+Message-ID: <OF3D847E8C.1368DE0F-ONCA256D97.003BA593-CA256D97.0041EBC3@trackright.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
+Content-Type: multipart/alternative; boundary="=_alternative 0041EBBDCA256D97_="
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030905183420.GA1850@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,50 +17,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
+This is a multipart message in MIME format.
+--=_alternative 0041EBBDCA256D97_=
+Content-Type: text/plain; charset="us-ascii"
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ok, here's the situation:
 
-I'm not very familiar with 'doze viruses, but one of my machines was
-infected last week (my first virus, w00!)  The infected machine generated
-tons of ARP requests.  Perhaps you can try running tcpdump and watch for
-clients that generate an abnormally large amount of ARP traffic.
+firewall is running pptpd, and so needs INPUT chain rules to accept tcp 
+port 1723 and gre packets.
+client behind the firewall initiates an outbound pptp session to a remote 
+pptp server, which the firewall masquerades.
 
-On Sat, Sep 06, 2003 at 12:04:20AM +0530, Payal Rathod wrote:
-> Hi,
-> A particular machine in my LAN is affected by SoBig virus and is sending
-> mails to remote sites. I need to find that IP. The only lead I have is
-> that it is that IP which is generating maximum SMTP traffic. How do I
-> find it out and block it (or maybe clean it)?
->=20
-> Any ideas on this?
-> With warm regards,
-> -Payal
->=20
-> --=20
-> "Visit GNU/Linux Success Stories"
-> http://payal.staticky.com
-> Guest-Book Section Updated.
+The client pptp session fails because the inbound gre packets from the 
+remote pptp server are seen by the INPUT rule that's there for the local 
+pptp server, and so presumably never get to the nat table or any stateful 
+inspection that would route them back to the nat'd client.
+Removing the INPUT rules allows the nat'd pptp client to establish a 
+connection to the remote server fine.
 
---=20
-It is by the fortune of God that, in this country, we have three benefits:
-freedom of speech, freedom of thought, and the wisdom never to use either.
-        -- Mark Twain
+Is there any way to have a ruleset that will allow the local pptp server 
+on the firewall to co-exist with nat'd pptp clients behind it?
 
---UlVJffcvxoiEqYs2
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Any help greatly appreciated.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+Regards,
 
-iEYEARECAAYFAj9XqvAACgkQFMm9uvwPXW5umwCfdPmP0yuT5fmRxiCiNIUVSS60
-l+AAnRxDjaFy2LIv3mOICTT1Evt5RbNi
-=eMRC
------END PGP SIGNATURE-----
+Dennis
+---
+Dennis Mills,   Director,   Track Right Technology Pty Ltd
+Phone: +61 3 9533 0200,   Fax: +61 3 9533 0211,   Mobile: +61 414 303 429
+Email: Dennis.Mills@TrackRight.com.au
+Web: http://www.TrackRight.com.au
+A member of CRCinabox: http://www.crcinabox.org
+--=_alternative 0041EBBDCA256D97_=
+Content-Type: text/html; charset="us-ascii"
 
---UlVJffcvxoiEqYs2--
+
+<br><font size=2 face="sans-serif">Ok, here's the situation:</font>
+<br>
+<br><font size=2 face="sans-serif">firewall is running pptpd, and so needs INPUT chain rules to accept tcp port 1723 and gre packets.</font>
+<br><font size=2 face="sans-serif">client behind the firewall initiates an outbound pptp session to a remote pptp server, which the firewall masquerades.</font>
+<br>
+<br><font size=2 face="sans-serif">The client pptp session fails because the inbound gre packets from the remote pptp server are seen by the INPUT rule that's there for the local pptp server, and so presumably never get to the nat table or any stateful inspection that would route them back to the nat'd client.</font>
+<br><font size=2 face="sans-serif">Removing the INPUT rules allows the nat'd pptp client to establish a connection to the remote server fine.</font>
+<br>
+<br><font size=2 face="sans-serif">Is there any way to have a ruleset that will allow the local pptp server on the firewall to co-exist with nat'd pptp clients behind it?</font>
+<br>
+<br><font size=2 face="sans-serif">Any help greatly appreciated.</font>
+<br>
+<br><font size=2 face="sans-serif">Regards,</font>
+<br>
+<br><font size=2 face="sans-serif">Dennis<br>
+---<br>
+Dennis Mills, &nbsp; Director, &nbsp; Track Right Technology Pty Ltd<br>
+Phone: +61 3 9533 0200, &nbsp; Fax: +61 3 9533 0211, &nbsp; Mobile: +61 414 303 429<br>
+Email: Dennis.Mills@TrackRight.com.au<br>
+Web: http://www.TrackRight.com.au<br>
+A member of CRCinabox: http://www.crcinabox.org</font>
+--=_alternative 0041EBBDCA256D97_=--
 
