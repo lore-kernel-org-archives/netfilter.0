@@ -1,8 +1,8 @@
-From: paridhi bansal <paridhibansal@yahoo.com>
-Subject: PLS help..........
-Date: Wed, 5 Feb 2003 22:54:02 -0800 (PST)
+From: Yingfei Dong <dong@cs.umn.edu>
+Subject: Netfilter performance data
+Date: Thu, 6 Feb 2003 11:22:32 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030206065402.12045.qmail@web10804.mail.yahoo.com>
+Message-ID: <Pine.GSO.4.33.0302061120080.12087-100000@venus.cs.umn.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,39 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have observed that  with iptables nat enabled ,
-return ICMP pkts(not the TCP pkts) directly enter
-INPUT hook without passing through Prerouting
-hook???Why is this so????
+hi, there,
 
-Is it possible to redirect a pkt from INPUT hook to
-prerouting hook?????
+We want to build a secure gateway. Netfilter is a very nice tool. We are
+very interested to know about the preformance of netfilter. If anybody
+could point out some doc and site inclduing netfilter performance data, I
+will very appreciate.
 
-By the way, i am using iptables queuing(libipq for
-queuing pkts to user spaceapplication that is doing
-the nat..I am checking that if the pkt has come to
-prerouting, then do so and so..Because, actually the
-ICMP reply pkt is not meant for nat box but other m/c
-inside LAN,my appliocation shld reNAt it to ip of
-destination m/c and then forward it.. but if it enters
-input hook, i have no control of redirecting the pkt
-to the destination m/c on LAN even if i reNAT it
-correctly)
+thanks a lot.
 
-Pls somebody help me out of this situation..IT'sreally
-URGENT...............
+===================================================
+Yingfei Dong
+4-192 EECS Building,
+200 Union Street, SE            Tel: 612-624-3798
+Minneapolis, MN 55455           FAX: 612-625-0572
+===================================================
 
-Thanx in advvance,
-Paridhi
-
-
-
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
 
