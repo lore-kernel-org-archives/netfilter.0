@@ -1,13 +1,12 @@
-From: Eric Leblond <eleblond@init-sys.com>
-Subject: Re: Network bandwidth usage monitor
-Date: 07 Feb 2003 17:51:40 +0100
+From: "Sven Bolt" <sven_bolt@fastmail.fm>
+Subject: Some webpages inaccessible through IPTables
+Date: Fri, 07 Feb 2003 10:40:27 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044636705.7633.1.camel@tech004>
-References: <001001c2cec6$d6310b20$0200a8c0@whyzpc>
+Message-ID: <20030207184027.346DC232BA@www.fastmail.fm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001001c2cec6$d6310b20$0200a8c0@whyzpc>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +16,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2003-02-07 at 17:34, Erik Ahlner wrote:
-> Hi!
->=20
-> I have used IPtraf for measuring how much of my network is beeing used fo=
-r a
-> while now, but since I got 100mbit connection it doesn't fulfill my
-> needs..when downloading thing in 5 megabytes/second, Iptraf says
-> 300kb/second.. not very accurate huh?
+Hello,
+I saw the problem already on the list, but ther was no solution to it:
+I use an iptables-gateway 1.2.6a on debian with kernel 2.4.18 with just 
 
-traffic monitor in iptraf is not really accurate. use "detailed
-statitistc information". It's really more accurate.
+echo 1 > /proc/.../ip_forward
+and iptables --table at -A POSTROUTING -j MASQUERADE
 
---=20
-=C9ric Leblond
-courriel : eleblond@init-sys.com
+I can access through this gateway most webpages, but for example
+www.ebay.com among several others I can't access.
+What could the problem be?
 
+Thanks for any help
+
+Sven Bolt
+-- 
+  Sven Bolt
+  sven_bolt@fastmail.fm
+
+-- 
+http://fastmail.fm - The professional email service
 
