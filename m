@@ -1,11 +1,13 @@
-From: "Steven Y. Ko" <sko@uiuc.edu>
-Subject: One interface forwarding (wireless ad-hoc
- mode)?
-Date: Sun, 30 Jan 2005 20:41:22 -0600
-Message-ID: <eedd11cb.c7105adb.b6e9c00@expms5.cites.uiuc.edu>
+From: Josh Nerius <jnerius@gmail.com>
+Subject: Re: use of the limiting options
+Date: Sun, 30 Jan 2005 21:44:48 -0600
+Message-ID: <4f3930a7050130194460efd21a@mail.gmail.com>
+References: <Pine.LNX.4.53.0501251248340.24829@altaica>
+Reply-To: Josh Nerius <jnerius@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.53.0501251248340.24829@altaica>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +19,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Tib <tib@tigerknight.org>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Hello, 
 
-I'm wondering whether my problem can be solved with 
-netfilter/iptables or there's any simple solution. This 
-problem looks very simple, but I couldn't find a solution 
-yet.
+A few thoughts/comments on your situation.  
 
-I'm configuring an wireless ad-hoc network with three 
-laptops;
+1. You are correct, limit does not keep track of source. You may find
+the 'recent' module useful if you wish to do this.
 
-A ---- B ---- C
+2. You may want to simplify things by easing up on the limit. Doing
+something like 1/minute with a burst of 3 would still prevent
+bruteforcing (or your password ir *really* insecure ;-) ) but at the
+same time, give you a little more protection from DoS.
 
-where A and C can only talk to B, and B can talk to both A 
-and C. A and C cannot talk to each other. I'd like to 
-configure B so that A can talk to C via B (and vice versa). 
-The addresses are,
-A: 192.168.0.1
-B: 192.168.0.2
-C: 192.168.0.3
+3. In the setup you mention, the limit would *not* reset itself every
+10 minutes. limit basically says, "ok, he said 6 in an hour, so if I
+see 6 in the first 5 seconds,  that's it for the rest of this hour..."
+(and the burst is just the number of packets it has to see in the
+given time increment before it'll start counting off hits)
 
-Since this is an wireless ad-hoc network, every machine has 
-only one (wireless) interface, so B should receive a packet 
-through its interface eth0 and forward it through eth0 
-again. Currently, A, B, and C only have the same basic 
-routing table;
+4. As Mark mentioned, you definitely want to add a rule to accept
+packets that are related to an already established ssh connection.
+Otherwise, as he mentioned, once your connection is established, it'd
+use up all the packets alloted in limit and then your ssh session
+would die. A rule like `iptables -I INPUT -i eth0 -p tcp --dport 22 -m
+state --state ESTABLISHED -j ACCEPT` would do this quite nicely.
+Notice the -I INPUT...this can be changed to -A but the -I will put it
+at the top of your chain. This rule needs to be above the limit rule
+in order to function properly.
 
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric 
-Ref    Use Iface
-192.168.0.0   *               255.255.255.0   U     0      
-0        0 eth0
-169.254.0.0     *               255.255.0.0     U     0      
-0        0 eth0
-127.0.0.0       *               255.0.0.0       U     0      
-0        0 lo
+5. Don't let Jason get to you :-P
 
-B cannot forward packets with this routing table. Can I use 
-netfilter/iptables to make this network work? or is there 
-any solution?
+Hope this information proves to be helpful :-)
 
-Thanks,
-Steve
+Josh Nerius
+
+
+
+-- 
+Math problems? Call 1-800-[(10x)(13i)^2]-[sin(xy)/2.362x]
+
+
+On Tue, 25 Jan 2005 12:54:54 -0600 (CST), Tib <tib@tigerknight.org> wrote:
+> 
+> I'd like to use the --limit and --limit-burst options to protect my sshd
+> from dictionary password attacks. Considering the userbase and activity
+> level I'd say that something like this would suit me just fine.
+> 
+> --limit 6/hour
+> --limit-burst 2
+> 
+> This would limit it to two connect/login attempts at first, and then one
+> more every 10 minutes.. correct?
+> 
+> Would this be the proper command to use? I'm trying to just limit
+> connections from the outside world, not from the local network, hence the
+> address as a destination:
+> 
+> iptables -A INPUT --d 66.80.174.210 --dport 22   \
+>    --limit 6/hour --limit-burst 2
+> 
+> <EOL>
+> Tib
+> 
+>
 
