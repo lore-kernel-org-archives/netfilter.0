@@ -1,14 +1,11 @@
-From: Jan Humme <jan.humme@xs4all.nl>
-Subject: Re: icmp redirect
-Date: Wed, 10 Jul 2002 20:31:08 +0200
+From: Mark Tessier <mt@open2web.com>
+Subject: script particularities
+Date: Wed, 10 Jul 2002 14:41:09 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <0207102031080D.04513@Lms>
-References: <0207101911210A.04513@Lms> <20020710174901.LOAD23840.mta03-svc.ntlworld.com@there>
-Reply-To: jan.humme@xs4all.nl
+Message-ID: <20020710144109.5448cc69.mt@open2web.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020710174901.LOAD23840.mta03-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,48 +16,33 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-On Wednesday 10 July 2002 19:46, Antony Stone wrote:
-> On Wednesday 10 July 2002 6:11 pm, Jan Humme wrote:
-> > I am developing an application that will eventually run on a PC with two
-> > ethernet cards; unfortunately the development PC that I use has only one
-> > ethernet card (eth0) and no available slots (except for one that I need
-> > for another purpose).
-> >
-> > Doesn't matter, during the development I can have both applications use
-> > eth0 instead, if I can only stop the icmp redirect messages that the
-> > kernel sends back to the source, whenever it finds out that it is
-> > forwarding a packet via the same eth0 interface on which it came in.
-> >
-> > Of course, I can choke the icmp redirect message using iptables, but is
-> > there a better (proper) way, to prevent the message from being generated?
->
-> Does it help if you put two addresses onto eth0 from different subnets (eg
-> 192.168.0.1 and 172.16.0.1) so that icmp redirect is no longer appropriate
-> (because this is used only between machines on a single subnet) ?
+Is there anyone out there who has deployed the choke firewall script found in chapter 6 of R. Ziegler's book "Linux Firewalls". I have been trying to get this script to work with zero success. Furthermore, there are things about this script that don't make sense to me, such as in the section named "# allow outgoing pings to anywhere". In this section you have the following rule:
 
+iptables -A FORWARD -o $DMZ_INTERFACE -p icmp \
+         --icmp-type echo-request -s $LAN_ADDRESSES \
+         -m state --state NEW -j ACCEPT
 
-That is exactly what I am doing, and lo-and-behold! tcpdump reveals an 
-icmp-redirect message.
+My question is, where is the rule for allowing incoming responses to those pings. I've looked around in the script and can't find it, which is not to say that it isn't there.
 
-=> 192.168.255.254: my firewall/internet gateway
-=> 192.168.0.1 (eth0) alias 1.2.3.254 (eth0:0) my development machine, using 
-192.168.255.254 as the gateway
-=> 1.2.3.4 my Windoze test machine, using 1.2.3.254 as its gateway
+Second mystery: You find the following at the beginning of the script, where the environment variables are initialized:
 
-So when the Windoze machine tries to ping, say 194.134.32.32, it forwards the 
-packet to 1.2.3.254, who forwards it back onto the same eth0 towards 
-192.168.255.254.
+CLASS_A="10.0.0.0/8"                 # class A private networks
+CLASS_B="172.16.0.0/12"              # class B private networks
+CLASS_C="192.168.0.0/16"             # class C private networks
 
-Also, an icmp-redirect message is sent back to the Windoze-machine, telling 
-it to forward those packets straight to 192.168.255.254 from now on.
+This is all typical of what you'd find in most scripts, but the fact is in this script, that's the last time CLASS_A, CLASS_B, etc are mentioned. In other words, there's no rule specific to denying packets coming from a CLASS_A private network. Why would one initialize a CLASS_A variable if it's never going to be used, I wonder? Is there some other rule used in this script that makes using a rule specifically denying access to packets coming from a CLASS_A private network obsolete? 
 
+Finally, I use the following rule:
 
-> Then your other machines which are talking to it can pretend that one
-> address is eth0 and the other address is eth1.
+iptables -L FORWARD -v -x 
 
-I wouldn't know how to tell this to my test Windoze box.
+to see where an icmp or tcp packet gets dropped. This way, I at least have a vague idea where to start fixing my script. But in my case, all counters remain steadfastly at zero, no matter how many packets die trying to get through. This makes me wonder whether iptables is working at all, or partially working since maybe I negleted to modprobe certain modules. 
 
-Jan Humme.
+Anyway, I'd be happy to hear from someone who knows this script and its particularities.
+
+Thanks,
+
+Mark
 
