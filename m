@@ -1,11 +1,13 @@
-From: George Agnelli <george@mattandgeorge.com>
-Subject: VPN Masquerading not working
-Date: Sun, 13 Oct 2002 21:34:34 +0100
+From: Phil Howard <phil-netfilter@ipal.net>
+Subject: Re: how to block 10000's of addresses?
+Date: Sun, 13 Oct 2002 17:05:50 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B9CF976A.389%george@mattandgeorge.com>
+Message-ID: <20021013170550.A16894@hamal.ipal.net>
+References: <20021013095628.D15824@hamal.ipal.net> <Pine.LNX.4.44.0210131215410.17397-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0210131215410.17397-100000@localhost.localdomain>; from rpjday@mindspring.com on Sun, Oct 13, 2002 at 12:25:50PM -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +18,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-Hi, I'm having a really hard time trying to get a VPN client behind my
-iptables firewall/gateway to connect to a win2k vpn server. I really hope
-someone can help with this as I don't know what else to try. I'm running
-iptables 1.2.5 on redhat 7.3 kernel 2.4.18-3. I have set up normal ip
-masquerading and that works great. But when it comes to connecting my win2k
-laptop to the vpn server it just times out on authentication and I get a
-connection error. As far as I know all the settings on the laptop are
-correct, it will connect to the vpn server if I plug it direct into the DSL
-modem. 
+On Sun, Oct 13, 2002 at 12:25:50PM -0400, Robert P. J. Day wrote:
 
-I have been through the VPN Masquerading How To, the Masquerading How To and
-the Packet Filtering How To but I still can't seem to get it right. I've
-also been through some of the previous threads on this list to no avail.
-Below is an iptables -v -L which shows the rules I currently have I know
-it's not a safe firewall, but for now I just want to get VPN working. Some
-of these have been set up based on advice from other threads. I'm not sure
-if I really need them. The Default policy is accept so I don't see why the
-packets are not getting in.
+| On Sun, 13 Oct 2002, Phil Howard wrote:
+| 
+| > The initial inspiration is for filtering spam.  But I can see other
+| > uses, and am looking at this for broader re-usable purposes which
+| > would be initially deployed to filter spamming servers.
+| 
+| for spam, what about things like spamassassin?  or other spam-filtering
+| tools?  of course, using iptables means you can stop that stuff much
+| sooner at the network level.  so here's a couple of thoughts:
 
-(Sorry if the wrapping makes this hard to read!)
-Chain INPUT (policy ACCEPT 2 packets, 656 bytes)
- pkts bytes target     prot opt in     out     source
-destination        
-    0     0 ACCEPT     tcp  --  any    any     anywhere             anywhere
-tcp spt:1723 
+I already reject mail during the SMTP transaction.  Accepting it and
+running through spamassassin after delivery would just be a greater
+level of load.  I'm trying to reduce it.
 
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination        
-    0     0 LOG        all  --  any    any     $EXTERNALIP
-$VPNSERVERIP LOG level warning prefix `VPN '
-    0     0 LOG        all  --  any    any     $VPNSERVERIP
-$EXTERNALIP     LOG level warning prefix `VPN '
-    0     0 ACCEPT     gre  --  any    any     anywhere             anywhere
-    0     0 ACCEPT     udp  --  any    any     $VPNSERVERIP
-$VPNCLIENTIP multiport ports isakmp,2746
-    0     0 ACCEPT     udp  --  any    any     $EXTERNALIP
-$VPNSERVERIP multiport ports isakmp,2746
+| 
+| 1) if you really have this kind of filtering need, consider getting
+|    a separate hardware filter to do this kind of processing.  no
+|    matter how cleverly you set up your netfilter rules, it's going
+|    to cost you processing time.  what you're asking for might just
+|    be a little overwhelming to ask of iptables.  might be time to
+|    check into a custom box that can handle tens of thousands of rules
+|    so your system doesn't have to deal with it.
 
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination 
+If each packet did a lookup into a tree object of some sort based on the
+source address, and possibly discarded, that should reduce the processing.
+The challenge is finding the method.  Maybe the policy routing will do
+this, but from its skimpy documentation (I don't know if I have found it
+all, yet) it also looks like it is doing a linear search.
 
-Could anyone who has got this working post the iptables rules they used?
-Thanks, George
 
+| 2) if you're really determined to use iptables, consider building a
+|    bunch of user-defined chains to create a tree structure for the
+|    rules to speed up processing.  as far as i can tell, you can do
+|    this:
+| 
+|    # iptables -N network1
+|    # iptables -N network2
+|    # iptables -N network3
+|    ...
+| 
+|    # iptables -A INPUT -s 1.0.0.0/8 -j network1
+|    # iptables -A INPUT -s 2.0.0.0/8 -j network2
+|    ...
+| 
+|    you'd then add to the user-defined chain network1 all rules for
+|    filtering from source addresses on the 1.0.0.0 class A network.
+|    (this is just a hypothetical example, of course.)  and just keep
+|    going.
+| 
+|    if you want to be really clever, write a script of some kind that
+|    reads, in a simple format, all the filtering you want to do, and
+|    dynamically builds a nicely-balanced B-tree or something so that
+|    you have the optimal tree structure, and rebuild the filtering
+|    rules whenever your filtering needs change.
+
+That certainly looks like it could do it with a lower level of processing.
+
+-- 
+-----------------------------------------------------------------
+| Phil Howard - KA9WGN |   Dallas   | http://linuxhomepage.com/ |
+| phil-nospam@ipal.net | Texas, USA | http://ka9wgn.ham.org/    |
+-----------------------------------------------------------------
 
