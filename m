@@ -1,9 +1,8 @@
-From: Alexey Talikov <alexey_talikov@texlab.com.uz>
-Subject: simple error in extensions/libipt_ROUTE.c
-Date: Thu, 20 Jun 2002 16:30:27 +0500
+From: Brad Chapman <kakadu_croc@yahoo.com>
+Subject: Where did netfilter.org/iptables.org go?
+Date: Thu, 20 Jun 2002 05:32:08 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <ZWYXC9KGRLXLKB676ON62KFZX93FDDC.3d11bcd3@ALEXEY>
-Reply-To: alexey_talikov@texlab.com.uz
+Message-ID: <20020620123208.83253.qmail@web10905.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
@@ -17,25 +16,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
-Cc: delaunois@info.ucl.ac.be
+To: netfilter <netfilter@lists.samba.org>
 
-in extensions/libipt_ROUTE.c
-line 60 and 77
-also change " if (check_inverse(optarg, &invert)) " to
-"  if (check_inverse(optarg, &invert, NULL, 0))  "
+Everyone,
 
+     Does anyone know why www.netfilter.org and www.iptables.org point to
+lists.netfilter.org/mailman/listinfo? Fortunately netfilter.samba.org and
+netfilter.gnumonks.org are still OK.
 
------------------------------------
-mailto:alexey_talikov@texlab.com.uz
-BR
-Alexey Talikov
-FORTEK
------------------------------------
+Brad
 
+=====
+Brad Chapman
 
+Permanent e-mail: kakadu_croc@yahoo.com
 
-
-
-
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
 
