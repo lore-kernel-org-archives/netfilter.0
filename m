@@ -1,13 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: set up my DMZ
-Date: Fri, 17 Sep 2004 07:13:31 -0400
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: Blocking Netranges Based on IP-to-Country CSV
+Date: Fri, 17 Sep 2004 12:46:13 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095419610.1886.1.camel@wolfpack.ljm.dom>
-References: <web-3590363@infinito.it>
+Message-ID: <20040917114613.GP452@metastasis.org.uk>
+References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-3590363@infinito.it>
+Content-Disposition: inline
+In-Reply-To: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +19,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-09-17 at 05:37, hamals@infinito.it wrote:
-> #!/bin/bash
+On Thu, Sep 16, 2004 at 09:33:03AM -0700, Hudson Delbert J Contr 61 CS/SCBN wrote:
 > 
-> 
-> iptables -F
-> 
-> iptables -t nat -F
-> 
-> iptables -t mangle -F
-> 
-> # filter table everythingd is ACCEPT  only to follow the 
-> easyest way#
-> 
-> iptables -P INPUT ACCEPT
-> iptables -P FORWARD ACCEPT
-> iptables -P OUTPUT ACCEPT
-> 
-> ## make DMZ -> internet ##
-> 
-> iptables -t nat -A POSTROUTING -s 192.168.2.1 -o eth1 -j 
-> SNAT --to-source 82.190.228.52
-> 
-> 
-> ## make internet -> DMZ ##
-> 
-> iptables -t nat -A PREROUTING -i eth1 -d x.x.x.52 -j DNAT 
-> --to-destination 192.168.2.1
+> why do this ?
 
-sysctl -w net.ipv4.ip_forward=1
+There's a good set of reasons on:
 
--j
+http://ip-to-country.webhosting.info/
+
+> seems a bit nasty in nature.
+
+Depends how you use the information.  And to be honest considering the
+reputation of some sources of traffic, such as Korea and South America,
+which might be unlikely to have legitimate connections to your site, it
+would be handy to block them all.
+
+> we dont even do this sort of thing? see email addy...
+
+But you're a worldwide organisation, and I think there's much more that
+you can do with this than just block.  For example, has anything figured
+out a way to tie this into logging rules, it would great to see which
+countries I'm being attacked from.
 
 -- 
-Jason Opperisano <opie@817west.com>
-
+mors omnia vincit
 
