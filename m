@@ -1,9 +1,12 @@
-From: Kevin Van Workum <kevin_vanw@yahoo.com>
-Subject: udp port forwarding from internal network to internet
-Date: Thu, 27 Jan 2005 05:00:55 -0800 (PST)
-Message-ID: <20050127130055.38382.qmail@web30903.mail.mud.yahoo.com>
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: How to drop ping silently??
+Date: Thu, 27 Jan 2005 08:30:40 -0500 (EST)
+Message-ID: <23331.142.169.215.10.1106832640.squirrel@142.169.215.10>
+References: <Pine.LNX.4.61.0501270958520.18509@quasar.las.ic.unicamp.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.61.0501270958520.18509@quasar.las.ic.unicamp.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,24 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Guilherme Cesar Soares Ruppert <ruppert@las.ic.unicamp.br>
+Cc: netfilter@lists.netfilter.org
 
-I'm new to netfilter and iptables and need to get
-something up and running fast. I don't have time to
-read up and learn the details right now.
+On Thu, January 27, 2005 7:14 am, Guilherme Cesar Soares Ruppert said:
+>
+> [...]
+> Is there any whay to drop these packet silently, without let the ping k=
+now
+> that he was blocked. I am programamming an application and I need this
+> behavior. I want that ping believes that his packets were sent, but in
+> fact, they were dropped.
 
-I have one server machine connected to the internet
-via a cable modem with a static IP and a small
-internal network (10.0.0.0). All machines have the 2.4
-kernel. I have a user who needs to run an application
-on a few machines on the internal network. This
-application needs to connect to a server located on
-the internet via a udp port. How can I use iptables
-(or a proxy or whatever) to do this?
+Use -j REJECT instead of -j DROP. You cannot act like if ping was receive=
+d
+on the other side tho.
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+`iptables -j REJECT -h' for a list of icmp reject type.
+
+>
+> Is it necessary to write a netfilter module to do that? Or is that
+> impossible to do in the netfilter architecture?
+
+Depends what you want the user to see.
+Maybe some more info would help ?
+
+>
+> Tks
+>
+> Guilherme Ruppert
+>
+>
+>
+HTH,
+
+Samuel
+
 
