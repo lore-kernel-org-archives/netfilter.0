@@ -1,13 +1,13 @@
-From: "Michael K" <micke@klintan.se>
-Subject: RE: problems filtering ms file shares
-Date: Mon, 2 Jun 2003 16:33:32 +0200
+From: Gladson George <georgc@FARMINGDALE.EDU>
+Subject: varadero
+Date: Mon, 02 Jun 2003 09:33:56 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001201c32913$f1d8f1b0$0200a8c0@klintan.local>
-References: <3EDB4DEE.4000001@ncl.ac.uk>
+Message-ID: <2CE951F1A7DC0644A33B9F763D2029C0012A2892@mail.it.farmingdale.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+ boundary="Boundary_(ID_dcObTvzRNWSucf/nPHan9A)"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EDB4DEE.4000001@ncl.ac.uk>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,167 +17,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
+--Boundary_(ID_dcObTvzRNWSucf/nPHan9A)
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: QUOTED-PRINTABLE
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
-> Matthew Pocock
-> Sent: Monday, June 02, 2003 3:15 PM
-> To: netfilter@lists.netfilter.org
-> Subject: problems filtering ms file shares
-> 
-> 
-> Hi,
-> 
-> I'm having trouble setting fire wall rules on a bridge. I'm 
-> running rh9, 
-> and
-> have patched the kernel with 
-> bridge-nf-0.0.10-against-2.4.20.diff and 
-> ebtables-v2.0.003_vs_2.4.20.diff as well as installing the utilities 
-> brctl and
-> ebtables.
-> 
-> Using iptables (editing my uni2lan & lan2uni chains), I seem 
-> to be able to control what goes through the firewall well 
-> enough to convince ping, http, nmap and traceroute (with and 
-> without the -I option) that protocols & ports are reachable or not.
-> 
-> However, windows file sharing seems go go right through. If I 
-> pull either cable out of the bridge, then windows file 
-> sharing across the bridge 
-> stops (no
-> supprise there), but if the cable is in, file sharing is 
-> always functional, even if I set all chains to deny 
-> everything (by uncommenting the debugging rules below).
-> 
+I was wondering if anyone knew what appz uses the following ports. =
+=0D=0A =0D=0Avaradero-0      4837/tcp   Varadero-0=0D=0Avaradero-0   =
+   4837/udp   Varadero-0 =0D=0Avaradero-1      4838/tcp   Varadero-1=
+=0D=0Avaradero-1      4838/udp   Varadero-1=0D=0Avaradero-2      4839=
+/tcp   Varadero-2=0D=0Avaradero-2      4839/udp   Varadero-2=0D=0A=
+=0D=0A =0D=0A=0D=0A =0D=0A=0D=0AGladson George, Network/Instructional=
+ Computing Support=0D=0AFarmingdale State =0D=0A2350 Broadhollow Rd.=
+=0D=0AFarmingdale, New York 11735-1021=0D=0APhone : 631-420-2642 =
+=0D=0AE-Mail: GLADSON.GEORGE@FARMINGDALE.EDU=0D=0A=0D=0A =0D=0A=0D=
+=0A=
 
-What I can see is that filesharing can go into the firewall (-P INPUT
-ACCEPT, -P OUTPUT ACCEPT)
-And Lan can acces filesharing to universe (-A FORWARD -i eth1 -o eth0 -j
-lan2uni, -A lan2uni -j ACCEPT)
-Is this what you expect? Where should filesharing not go thrue? Firewall
-itself or to other computers?
+--Boundary_(ID_dcObTvzRNWSucf/nPHan9A)
+Content-type: text/html; charset=iso-8859-1
+Content-transfer-encoding: QUOTED-PRINTABLE
 
+<html>=0D=0A=0D=0A<head>=0D=0A<meta http-equiv=3DContent-Type content=
+=3D"text/html; charset=3Diso-8859-1">=0D=0A<meta name=3DGenerator con=
+tent=3D"Microsoft Word 10 (filtered)">=0D=0A=0D=0A<style>=0D=0A<!--=
+=0D=0A /* Style Definitions */=0D=0A p.MsoNormal, li.MsoNormal, div.M=
+soNormal=0D=0A=09{margin:0in;=0D=0A=09margin-bottom:.0001pt;=0D=0A=
+=09font-size:12.0pt;=0D=0A=09font-family:"Times New Roman";}=0D=0Aa:l=
+ink, span.MsoHyperlink=0D=0A=09{color:blue;=0D=0A=09text-decoration:u=
+nderline;}=0D=0Aa:visited, span.MsoHyperlinkFollowed=0D=0A=09{color:p=
+urple;=0D=0A=09text-decoration:underline;}=0D=0Apre=0D=0A=09{margin:0=
+in;=0D=0A=09margin-bottom:.0001pt;=0D=0A=09font-size:10.0pt;=0D=0A=
+=09font-family:"Courier New";}=0D=0Aspan.EmailStyle17=0D=0A=09{font-f=
+amily:Arial;=0D=0A=09color:windowtext;}=0D=0A@page Section1=0D=0A=
+=09{size:8.5in 11.0in;=0D=0A=09margin:1.0in 1.25in 1.0in 1.25in;}=
+=0D=0Adiv.Section1=0D=0A=09{page:Section1;}=0D=0A-->=0D=0A</style>=
+=0D=0A=0D=0A</head>=0D=0A=0D=0A<body lang=3DEN-US link=3Dblue vlink=
+=3Dpurple>=0D=0A=0D=0A<div class=3DSection1><pre><font size=3D2 face=
+=3D"Courier New"><span=0D=0Astyle=3D'font-size:10.0pt'>I was wonderin=
+g if anyone knew what appz uses the following ports. </span></font></=
+pre><pre><font=0D=0Asize=3D2 face=3D"Courier New"><span style=3D'font=
+-size:10.0pt'>&nbsp;</span></font></pre><pre><font=0D=0Asize=3D2 face=
+=3D"Courier New"><span style=3D'font-size:10.0pt'>varadero-0=A0=A0=
+=A0=A0=A0 4837/tcp=A0=A0 Varadero-0</span></font></pre><pre><font=
+=0D=0Asize=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>=
+varadero-0=A0=A0=A0=A0=A0 4837/udp=A0=A0 Varadero-0 </span></font></p=
+re><pre><font=0D=0Asize=3D2 face=3D"Courier New"><span style=3D'font-=
+size:10.0pt'>varadero-1=A0=A0=A0=A0=A0 4838/tcp=A0=A0 Varadero-1</spa=
+n></font></pre><pre><font=0D=0Asize=3D2 face=3D"Courier New"><span st=
+yle=3D'font-size:10.0pt'>varadero-1=A0=A0=A0=A0=A0 4838/udp=A0=A0 Var=
+adero-1</span></font></pre><pre><font=0D=0Asize=3D2 face=3D"Courier N=
+ew"><span style=3D'font-size:10.0pt'>varadero-2=A0=A0=A0=A0=A0 4839/t=
+cp=A0=A0 Varadero-2</span></font></pre><pre><font=0D=0Asize=3D2 face=
+=3D"Courier New"><span style=3D'font-size:10.0pt'>varadero-2=A0=A0=
+=A0=A0=A0 4839/udp=A0=A0 Varadero-2</span></font></pre>=0D=0A=0D=0A<p=
+ class=3DMsoNormal><font size=3D2 face=3DArial><span style=3D'font-si=
+ze:10.0pt;=0D=0Afont-family:Arial'>&nbsp;</span></font></p>=0D=0A=
+=0D=0A<p class=3DMsoNormal><font size=3D2 face=3DArial><span style=
+=3D'font-size:10.0pt;=0D=0Afont-family:Arial'>&nbsp;</span></font></p=
+>=0D=0A=0D=0A<p class=3DMsoNormal><font size=3D2 face=3DArial><span s=
+tyle=3D'font-size:10.0pt;=0D=0A font-family:Arial'>Gladson George</sp=
+an></font><font size=3D2 face=3DArial><span=0D=0Astyle=3D'font-size:1=
+0.0pt;font-family:Arial'>, Network/Instructional Computing=0D=0ASuppo=
+rt<br>=0D=0AFarmingdale State <br>=0D=0A</span></font><font size=3D2 =
+face=3DArial><span style=3D'font-size:10.0pt;font-family:=0D=0A  Aria=
+l'>2350 Broadhollow Rd.</span></font><font size=3D2 face=3DArial><spa=
+n=0D=0Astyle=3D'font-size:10.0pt;font-family:Arial'><br>=0D=0A</span>=
+</font><font size=3D2 face=3DArial><span style=3D'font-size:10.0pt;fo=
+nt-family:=0D=0A  Arial'>Farmingdale</span></font><font size=3D2 face=
+=3DArial><span=0D=0A style=3D'font-size:10.0pt;font-family:Arial'>, <=
+/span></font><font size=3D2=0D=0A  face=3DArial><span style=3D'font-s=
+ize:10.0pt;font-family:Arial'>New York</span></font><font=0D=0A size=
+=3D2 face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial'>=
+ </span></font><font=0D=0A  size=3D2 face=3DArial><span style=3D'font=
+-size:10.0pt;font-family:Arial'>11735-1021</span></font><font=0D=0Asi=
+ze=3D2 face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial=
+'><br>=0D=0APhone&nbsp;: 631-420-2642 <br>=0D=0AE-Mail: <a href=3D"ma=
+ilto:GLADSON.GEORGE@FARMINGDALE.EDU">GLADSON.GEORGE@FARMINGDALE.EDU</=
+a></span></font></p>=0D=0A=0D=0A<p class=3DMsoNormal><font size=3D3 f=
+ace=3D"Times New Roman"><span style=3D'font-size:=0D=0A12.0pt'>&nbsp;=
+</span></font></p>=0D=0A=0D=0A</div>=0D=0A=0D=0A</body>=0D=0A=0D=0A</=
+html>=0D=0A=00=
 
-
-> Down at the bottom of the netfilter/iptables docs, it says I 
-> should be 
-> using
-> the physdev module to match bridge ports, but it seems that 
-> this module 
-> is not
-> present on my system. Other docs say that it is only needed 
-> for kernels 
-> 2.5.44
-> and greater...
-> 
-> iptables-restore v1.2.7a: Couldn't load match
-> `physdev':/lib/iptables/libipt_physdev.so: cannot open shared object 
-> file: No
-> such file or directory
-> 
-> tcpdump (run seperately on eth0 and eth1) seems to be showing exactly 
-> what you
-> would expect given the firewall rules & doesn't show the packets 
-> transmitting
-> information between the two PCs, but the two PCs still are doing file 
-> sharing.
-> 
-> I'm feeling bewildered.
-> 
-> I use this script to set up the bridge:
-> 
-> /usr/sbin/brctl addbr br0
-> /usr/sbin/brctl stp br0 off
-> /usr/sbin/brctl addif br0 eth0
-> /usr/sbin/brctl addif br0 eth1
-> /sbin/ifconfig eth0 down
-> /sbin/ifconfig eth1 down
-> /sbin/ifconfig eth0 0.0.0.0 up
-> /sbin/ifconfig eth1 0.0.0.0 up
-> /sbin/ifconfig br0 128.240.227.17
-> echo "1" > /proc/sys/net/ipv4/ip_forward
-> /sbin/route add default gw 128.240.227.251
-> 
-> My iptables config looks like this:
-> 
-> ##############################################################
-> ################
-> #
-> # iptables config file written by Matthew Pocock 
-> (matthew.pocock@ncl.ac.uk) #
-> 
-> ## main chains
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD DROP [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :lan2uni - [0:0]
-> :uni2lan - [0:0]
-> 
-> ##############################################################
-> ################
-> #
-> ## debugging rules
-> #-A FORWARD -j DROP
-> #-A INPUT -j DROP
-> #-A OUTPUT -j DROP
-> 
-> ##############################################################
-> ################
-> #
-> ## drop all invalid packets, iregardless
-> -A FORWARD -m state --state INVALID -j DROP
-> 
-> ## split traffic depending upon direction
-> -A FORWARD -i eth0 -o eth1 -j uni2lan
-> -A FORWARD -i eth1 -o eth0 -j lan2uni
-> 
-> ##############################################################
-> ################
-> #
-> ## let everything out - is this a good plan?
-> ## we should realy be a bit more careful here, but hey-ho
-> -A lan2uni -j ACCEPT
-> 
-> ##############################################################
-> ################
-> #
-> ## let only specific things in
-> 
-> ## stuff we've seen before should get through
-> -A uni2lan -m state --state RELATED,ESTABLISHED -j ACCEPT
-> 
-> ## accept some new connections for 'nice' protocols
-> ## we know they are new, as we've dropped all invalid things earlier, 
-> and just
-> ## now we let related & established through.
-> 
-> ## ping, ssh
-> -A uni2lan -p icmp -j ACCEPT
-> -A uni2lan -p tcp --dport 22 -j ACCEPT
-> 
-> ## drop everything else comming in
-> -A uni2lan -j REJECT
-> 
-> 
-> 
-> COMMIT
-> 
-> 
-> Thanks,
-> 
-> Matthew
-> 
-> 
-
-
-/Klintan
-
-
+--Boundary_(ID_dcObTvzRNWSucf/nPHan9A)--
 
