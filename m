@@ -1,13 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: DNAT/SNAT and logging
-Date: Mon, 19 Jan 2004 10:21:36 -0500
+From: Andre Correa <andre.correa@pobox.com>
+Subject: Re: IMQ Replacement
+Date: Mon, 19 Jan 2004 11:33:42 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <400BF600.9060005@Loudoun-Fairfax.com>
-References: <1074524662.2456.23.camel@ankarloo.got.volvo.net>
+Message-ID: <400BDCB6.2000208@pobox.com>
+References: <1068652569.27810.450.camel@cumulus>	 <Pine.LNX.4.58.0311131244400.13900@fhynpb.envafyvqr.arg> <1074352525.4761.1389.camel@peterlaptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1074524662.2456.23.camel@ankarloo.got.volvo.net>
+In-Reply-To: <1074352525.4761.1389.camel@peterlaptop>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +18,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: peter@empoweringsolutions.com
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Johan Ankarloo wrote:
 
->Hi
->
->Does anyone know how to log a DNAT/SNAT connection? When logging a NAT
->connection you also want to know the origin source/destination/port of
->that packet. Is that possible?
->
->  
->
+I've being using IMQ with 2.4.23 here with no probs too. I've already 
+tried to discuss this topic here and in other lists but got no answer. 
+Writting to the last maintainner didn't helped much...
 
-Sure. The easiest way to do it is to add a matching log rule just before 
-the nat rule:
+Some time ago there was a posting, maybe in LARTC, about a guy that 
+started a parallell IMQ project, but I've never heard about hin anymore...
 
-iptables -t nat -A POSTROUTING -o $Net_Interface -j LOG --log-prefix 
-"SNAT: "
-iptables -t nat -A POSTROUTING -o $Net_Interface -j SNAT --to $Net_IP
+I would like to contribute/coordinate in an effort to put IMQ back on 
+its track. It is an important feature that is being left behind.
 
-Jeff
+Peter, maybe we should join, put a new site up with documentation 
+updates, maintain 2.4.x patchs and later think what to do with 2.6. We 
+may find other people interrested in coding and helping...
+
+Anybody else care about it?
+
+let us know...
+
+cheers
+
+Andre
+
+
+
+Peter Frischknecht wrote:
+> I have been using IMQ with great success for the last few months.  The
+> particular network where this is used has 400+ nodes, and IMQ performs
+> flawlessly.
+> 
+> As anyone who uses IMQ will tell you, the only alternatives are:
+> 1 - Install another router, just to perform NAT
+> 2 - Install 2 additional NICs in the Linux gateway with a Xover cable
+> between them
+> 
+> Is there another piece of software that performs the job of IMQ?
+> It is great being able to shape traffic AND masquerade packets in one
+> box.  How else can it be done?
+> 
+> We shape traffic individually for each client.  Generic traffic shapping
+> rules that regulate the entire pipe would not work for us.
+> 
+> The fact that IMQ is unmaintained is nerve wrecking.  It is difficult
+> enough to install the thing with the sources and documentation
+> available.  It will only become more difficult as the kernel evolves and
+> we move to 2.6.x.
+> 
+> I don't think I have the knowledge to mainatin the source code.  But I
+> believe in the concept so much that I might just take up the code
+> maintenance.  Hoepefully some other folks will join in.  Maybe we can
+> convince enough folks to incorporate it into 2.6.x.
+> 
+> Any help, comments or even flames will be appreciated.  It is time for a
+> solution to this problem.
+> 
+> Peter
+> 
+> 
+> 
 
 
