@@ -1,12 +1,14 @@
-From: Harry <hari76@omantel.net.om>
-Subject: Bandwidth Monitor
-Date: Sat, 08 May 2004 12:57:25 +0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ip/snat + port/dnat
+Date: Sat, 8 May 2004 10:06:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006001c434da$7c6400e0$36b4fea9@SABNANIS>
+Message-ID: <200405081006.35368.Antony@Soft-Solutions.co.uk>
+References: <Pine.LNX.4.44.0405072300190.16707-100000@dns.media-lab.com.pl>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="Boundary_(ID_rPnyC8+ZjdSc9+ubqfew4w)"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0405072300190.16707-100000@dns.media-lab.com.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,65 +18,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Friday 07 May 2004 10:09 pm, R=F3=BFa=F1ski Sergiusz wrote:
 
---Boundary_(ID_rPnyC8+ZjdSc9+ubqfew4w)
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+> I need dissable routing to smtp servers, and enable smtp on non-standar=
+d
+> port. Like this:
+>
+> -p tcp -s 192.168/16 -dport 25 -j DENY
 
-Hi All,
-I have a DSL connection which has a bandwidth capacity of 3GB a month...having said that I have 16 machines hooked up on the network with a linux server, is there a away to capture/monitor the total consumption of bandwidth utilised per machine or server basis.This is complicated as I have squid also for caching.....did a lot of reserch there were some scripts for iptables but I cant figure out how to use it ?Has anyone used something like this B4?Help is really appreciated.
+iptables -A FORWARD -p tcp -s 192.168.0.0/16 --dport 25 -j DROP
 
-Regards
+> -p tcp -s 192.168/16 --dport 2525 -j TARGET_LIKE_SNAT --to $ext_if --to=
+-port
+> 25
 
-Harry
+iptables -A POSTROUTING -t nat -p tcp --dport 2525 -j SNAT --to $extIF:25
 
+> don't change destination ip.
+> possible?
 
+Is that what you wanted?
 
+Antony.
 
+--=20
+In science, one tries to tell people
+in such a way as to be understood by everyone
+something that no-one ever knew before.
 
-"In all this world, there is only you
-When all else ceases, there is only you"  
--- to my MASTER!
-    Harish
-harish@sabnanis.com 
-harish.sabnani@cyberhutoman.com 
+In poetry, it is the exact opposite.
 
---Boundary_(ID_rPnyC8+ZjdSc9+ubqfew4w)
-Content-type: text/html; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+ - Paul Dirac
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
-<META content="MSHTML 6.00.2800.1106" name=GENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=#ffffff>
-<DIV><FONT face=Verdana size=2>Hi All,</FONT></DIV>
-<DIV><FONT face=Verdana size=2>I have a DSL connection which has a bandwidth 
-capacity of 3GB a month...having said that I have 16 machines hooked up on the 
-network with a linux server, is there a away to capture/monitor the total 
-consumption of bandwidth utilised per machine or server basis.This is 
-complicated as I have squid also for caching.....did a lot of reserch there were 
-some scripts for iptables but I cant figure out how to use it ?Has anyone used 
-something like this B4?Help is really appreciated.</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>Regards</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>Harry</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>"In all this world, there is only you<BR>When all 
-else ceases, there is only you"&nbsp; <BR>-- to my MASTER!<BR>&nbsp;&nbsp;&nbsp; 
-Harish<BR><A href="mailto:harish@sabnanis.com">harish@sabnanis.com</A> <BR><A 
-href="mailto:harish.sabnani@cyberhutoman.com">harish.sabnani@cyberhutoman.com</A> 
-</FONT></DIV></BODY></HTML>
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
 
---Boundary_(ID_rPnyC8+ZjdSc9+ubqfew4w)--
 
