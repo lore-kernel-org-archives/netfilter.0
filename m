@@ -1,15 +1,14 @@
-From: Les Mikesell <les@futuresource.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: the impossible "iptables -C" option
-Date: Sat, 24 Jul 2004 13:46:22 -0500
+Date: Sat, 24 Jul 2004 21:13:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1090694781.17721.43.camel@les-home.futuresource.com>
-References: <01be01c4710c$440a79e0$5100a8c0@egp>
-	 <200407240856.03201.Antony@Soft-Solutions.co.uk>
-	 <1090664200.2012.21.camel@grendel>
+Message-ID: <200407242113.48128.Antony@Soft-Solutions.co.uk>
+References: <01be01c4710c$440a79e0$5100a8c0@egp> <1090664200.2012.21.camel@grendel> <1090694781.17721.43.camel@les-home.futuresource.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090664200.2012.21.camel@grendel>
+In-Reply-To: <1090694781.17721.43.camel@les-home.futuresource.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,30 +19,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Sat, 2004-07-24 at 05:16, Chris Brenton wrote:
+On Saturday 24 July 2004 7:46 pm, Les Mikesell wrote:
 
-> The problem is a majority of the time check would end up reporting "it
-> depends". For example what if you try and check what would happen to "a
-> packet coming from the Internet to an internal system from 22/TCP to an
-> upper port number, with the ACK flag set and "foo" in the payload. You
-> may not have a rule that specifically lets this traffic through, but it
-> might actually pass if it ends up being a state match due to an initial
-> outbound SYN packets. So how iptables would handle this packet "depends"
-> on what traffic went by prior to it.
+> I have a situation where I can see strange results with tcpdump and would
+> like to know what combination of rules is causing it.
 
-I'm not sure how that affects the ability to report what it would
-do with a packet "right now" and why, or the users need for this
-report when trying to debug a problem.  I have a situation where
-I can see strange results with tcpdump and would like to know
-what combination of rules is causing it.
+I suggest you take some of the features you can see from the tcpdump output 
+and create some logging rules to find out how far through your ruleset the 
+packets are getting.
 
----
-  Les Mikesell
-   les@futuresource.com
+Regards,
 
+Antony.
 
+-- 
+Tax inspectors are just accountants who work for the evil dictators of 
+democracy.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
