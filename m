@@ -1,7 +1,7 @@
 From: Rudi Starcevic <tech@wildcash.com>
-Subject: Iptables Network Performance
-Date: Wed, 23 Feb 2005 17:24:30 -0800
-Message-ID: <421D2CCE.50702@wildcash.com>
+Subject: Port-forwarding Perfomance
+Date: Wed, 23 Feb 2005 17:33:56 -0800
+Message-ID: <421D2F04.8090100@wildcash.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
@@ -19,24 +19,33 @@ To: netfilter@lists.netfilter.org
 
 Hi,
 
-Could iptables really reduce network speed by more than 50%.
+I have www port-forwarding setup and running OK.
 
-It is hard to believe but that seems to be my predicament right now.
+However I wonder if they way I have configured it is not the most 
+optimal for speed and performance.
 
-For this test I have a 12 meg file.
+I have a default policy of DROP with a total of about 30 rules.
 
-When I download this from my Linux box is get a download speed of 47.23K/s
+These rules below do my www port-forwarding, can you see if there is a 
+better way to do this ?
 
-When I move this 12 meg file to an internal web server and port-forward
-to it from the Linux box I see a download rate of 11.70K/s
+# ENABLE FORWARDING / NAT / MASQUERADING
+echo "1" > /proc/sys/net/ipv4/ip_forward
 
-Does this sound reasonable?
+# NAT Forwarding Setup
+$IPTABLES --table nat --append POSTROUTING --out-interface $ETH0 -j 
+MASQUERADE
+$IPTABLES -A FORWARD -i $ETH1 -j ACCEPT
+$IPTABLES -A FORWARD -i $ETH0 -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-If I move my Port-forwarding rule higher up woudld it help?
+# http Port-Forwarding setup
+$IPTABLES -t nat -A PREROUTING -i $ETH0 -p tcp --dport 80 -d $MEDIA1_IP 
+-j DNAT --to $MEDIA1_LO:80
 
-Thanks
-Regards
-Rudi      
+Many thanks,
+Kind regards
+Rudi
 
 
 -- 
