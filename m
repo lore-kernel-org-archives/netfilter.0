@@ -1,13 +1,10 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Port 25
-Date: 08 Feb 2005 14:52:28 +0100
-Message-ID: <1107870748.13418.17.camel@nostromo.bgsecm.com>
-References: <Pine.LNX.4.05.10502071325260.15692-100000@darkstar.sysinfo.com>
-	<1107854056.17398.1.camel@nostromo.bgsecm.com>
-	<1107868554.4399.4.camel@hubcap.ljm.dom>
+From: Alaios <alaios@yahoo.com>
+Subject: Re: how to change the tos
+Date: Tue, 8 Feb 2005 05:54:40 -0800 (PST)
+Message-ID: <20050208135440.74798.qmail@web54701.mail.yahoo.com>
+References: <1107868209.5144.3.camel@jasiiitosh.nexusmgmt.com.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1107868554.4399.4.camel@hubcap.ljm.dom>
+In-Reply-To: <1107868209.5144.3.camel@jasiiitosh.nexusmgmt.com.nexusmgmt.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +15,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Cc: Netfilter users list <netfilter@lists.netfilter.org>
 
-El mar, 08 de 02 de 2005 a las 14:15, Jason Opperisano escribi=C3=B3:
-> i propose that the exact opposite is true.  why should i make my
-> firewall undertake the effort of generating a RST packet for every yaho=
-o
-> on the Internet that wants to scan my IP range for TCP 139, 445, etc.
->=20
-> DROP-ing a packet doesn't take any real effort on the firewall's part;
-> whereas generating a RST packet adds at least some overhead--which in
-> the extreme case could be significant.
->=20
-> -j
+Thx .. .The only reason for me to apply the ftos patch
+is because i want to give the tos field whatever value
+i want...
+Thx again
+--- "John A. Sullivan III"
+<jsullivan@opensourcedevel.com> wrote:
 
-I see your point, but just googling a bit:
+> On Tue, 2005-02-08 at 04:46 -0800, Alaios wrote:
+> > Hi i want to apply the patch ftos in order to
+> change
+> > the tos field in ip packets...
+> > The problem is that i don't know how to do that
+> > One guy suggest me the
+> > http://www.paksecured.com/patches/
+> > but the patch is for the 2.4 kernel  but i use the
+> > 2.6.10 kernel.
+> > In addition to this i have noticed that the 2.6
+> kernel
+> > has the following option
+> > CONFIG_IP_NF_MATCH_TOS
+> > I don't know if i need to compile it as module or
+> i
+> > should insert them directly to the kernel...
+> > Afte recompiling the kernel i have run the make
+> > KERNEL_DIR=/usr/src/linux-2.6.10 but still the
+> command
+> > 
+> > iptables -t mangle -A PREROUTING -i eth0 -p tcp
+> > --dport 22 -j TOS --set-tos 15
+> > iptables v1.2.11: Bad TOS Value
+> > Any suggestion?
+> <snip>
+> I do not believe 15 is a valid value in iptables. 
+> Try
+> iptables -t mangle -A PREROUTING -i eth0 -p tcp
+> --dport 22 -j TOS -h to
+> see the valid values - John
+> -- 
+> John A. Sullivan III
+> Open Source Development Corporation
+> +1 207-985-7880
+> jsullivan@opensourcedevel.com
+> 
+> If you would like to participate in the development
+> of an open source
+> enterprise class network security management system,
+> please visit
+> http://iscs.sourceforge.net
+> 
+> 
 
-http://www.chiark.greenend.org.uk/~peterb/network/drop-vs-reject
 
-so things are maybe somewhat more complex.
-
-Regards.
-
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
