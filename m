@@ -1,13 +1,14 @@
-From: <listuser@sally.epygi.de>
-Subject: RE: (no subject)
-Date: Tue, 29 Jun 2004 16:29:20 +0200
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Re: remote telnet is blocked when internal ping is ongoing
+ (re-submit)
+Date: Tue, 29 Jun 2004 09:16:23 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BDEHJGPIKNLKJJBCCFPLAEIICOAA.listuser@sally.epygi.de>
-References: <200406291508.45532.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040629091623.28dbe449@mgalepc.utilitran.com>
+References: <LCENIFAENEHNMKDCGDGBAENECJAA.lindazhu@utstar.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406291508.45532.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <LCENIFAENEHNMKDCGDGBAENECJAA.lindazhu@utstar.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,92 +21,123 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-HiHo!
+Hello,
 
-If you still want to log, try to change you LD to this:
+	The problem is most likely not related to iptables and is related to the network card. What type of network card are
+you using ?? Do you know the buffer sizes ??
 
-Stop macro:
-$IPT -N LD
-$IPT -A LD -m limit --limit 2/minute -j LOG
-$IPT -A LD -j DROP
+If this nic is a server class network card the send and receive buffers should almost be equal. You will find with
+desktop network cards that the receive buffer is twice or three times greater then the send buffer. You are most likely
+"flooding" the network card with your large ping packets at that rate ... causing it to not be able to accept the telnet
+connection or at least slow it down.
 
-This will drop everything put into LD, but log only a few.
-Be aware that quite a lot packets will be dropped silently.
-I assume you used the limit to prevent your log from flodding
+Michael.
 
-Actually i would prefer Antony's version. Just drop 'em, without
-logging :)
 
-ciao
-  markus 
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-> Sent: Dienstag, 29. Juni 2004 16:09
-> To: netfilter@lists.netfilter.org
-> Subject: Re: (no subject)
+On Tue, 29 Jun 2004 10:34:36 -0400
+"Linda Zhu" <lindazhu@utstar.com> wrote:
+
+> Hi,
+> 
+> This is Linda from UTStarcom. I have problems with iptable configuration.
+> 
+> The problem happens on one card. The card has two ethernet interfaces:
+> One is 172.16.xx.xx, and another is 192.168.xx.xx. The 172.16.xx.xx
+> interface
+> is used for remotely acceccing the card. The 192.168.xx.xx interface
+> receives
+> and transmit traffic.
+> 
+> Part of our iptable configuration is attached below.
+> 
+> In normal case, user can remotely telnet into this card with no problme.
+> The problem occurs when we run ping from 196.168.xx.xx interface at a fast
+> rate.
+> 
+> e.g. ping -i 0.01 -s 1400 192.168.100.2, then the remote telnet to
+> 172.168.xx.xx
+> interface is blocked.
+> 
+> In the iptable configuration, we have one rule:
+> 
+> $IPTABLES -A allowed_tcp -p TCP --syn -m limit --limit 1/second -j ACCEPT
+> 
+> If we change the limit from 1/second to 20/second, then with one ping
+> session,
+> the telnet will be successful. After that, if we run two ping sessions:
+> e.g.
+> ping -i 0.01 -s 1400 192.168.100.2
+> ping -i 0.01 -s 1400 192.168.100.3
+> 
+> then telnet is blocked again.
+> 
+> Then if we change the limit from 20/second to 100/second, remote telnet
+> success.
+> With the 100/second, even 4 ping sessions ongoing at same time, the remote
+> telnet is OK.
+> 
+> Basically, we don't setup any firewall for 192.168.xx.xx interface. My
+> question
+> is why the ping on 192.168.xx.xx interface will affect the remote telnet.
+> The two
+> interface are in different IP groups and on different hardware. Please
+> advice.
+> 
+> Thank you,
+> Linda
+> 
+> ================== part of our iptable configuration =======================
+> 
+> ###
+> # Create separate chains for TCP,UDP,ICMP to traverse
+> #
+> #
+> 
+> $IPTABLES -N allowed_tcp
+> $IPTABLES -N tcp_packets
+> $IPTABLES -N udp_packets
+> $IPTABLES -N icmp_packets
+> #$IPTABLES -N allowed_ping
+> 
+> #
+> # Allowed chain
+> #
+> 
+> $IPTABLES -A allowed_tcp -p TCP --syn -m limit --limit 1/second -j ACCEPT
+> $IPTABLES -A allowed_tcp -p TCP -m state --state ESTABLISHED,RELATED -j
+> ACCEPT
+> $IPTABLES -A allowed_tcp -p TCP -j DROP
+> 
+> #
+> # TCP rules
+> #
+> 
+> ### Telnet ###
+> $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 23 -j allowed_tcp
 > 
 > 
-> On Tuesday 29 June 2004 2:49 pm, Richard Gutery wrote:
+> #
+> # ICMP rules
+> #
 > 
-> > Stop macro:
-> > $IPT -N LD
-> > $IPT -A LD -j LOG
-> > $IPT -A LD -j DROP
-> 
-> That has me really confused.   I was expecting you to say that $STOP expanded 
-> to the word DROP, or some other valid target for the -j option on the 
-> netfilter command line.
-> 
-> > $STOP=LD (LD = Log and Drop)
-> 
-> I don;t quite see how you can use this after -j on an iptables rule, 
-> however...
-> 
-> > $IPT = /sbin/iptables
-> >
-> > I need to totally block all packets to and from this address 64.246.26.185.
-> > So BLOCK means BLOCK.
-> >
-> > We OpenBSD users usually mean blocking as dropping the silly thing on the
-> > floor. No ifs, ands or buts. Just gone...
-> 
-> Oh, I understood what you meant by "block" - I wasn't sure which packets you 
-> wanted to block, though, since it wasn't clear whether we were talking about 
-> source or destination addresses, and forwarding through the firewall or going 
-> to/from it directly.
-> 
-> > As for the limiting, I simply copied a rule that was already in a
-> > firestarter script. So if I need to change the rule, I would be more than
-> > willing. Am I to assume that this is a bad rule?
-> 
-> Well, it certainly won't BLOCK (using your definition above) - it will rate 
-> limit - which means that some packets will still come through.
-> 
-> I suggest the following:
-> 
-> iptables -I INPUT -s 64.246.26.185 -j DROP
-> iptables -I OUTPUT -d 64.246.26.185 -j DROP
-> iptables -I FORWARD -s 64.246.26.185 -j DROP
-> iptables -I FORWARD -d 64.246.26.185 -j DROP
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-> the mechanics are German, the lovers are French, the entertainment is 
-> American, and everything is organised by the Swiss.
-> 
-> In Hell, the police are German, the chefs are British, the beer is American, 
-> the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-> and everything is organised by the Italians.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
+> $IPTABLES -A icmp_packets -p ICMP -s 0/0 -m limit --limit
+> 3/second --icmp-type 8
+>  -j ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type pong -j ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type port-unreachable -j
+> ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
 > 
 > 
 > 
+> 
+> 
+> 
+
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
