@@ -1,15 +1,14 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Re: Redirection to local lan, isn't DNAT method unsafe.
-Date: Thu, 22 Apr 2004 13:49:21 +1000
+From: cc <cc@belfordhk.com>
+Subject: Re: Reaching internal computers through the external ipaddress inside
+ private network
+Date: Thu, 22 Apr 2004 12:47:18 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040422034921.GS3095@samad.com.au>
-References: <40696C1A.5080400@personalsoft.com.br> <002a01c417c2$d94db7e0$de0aa8c0@comp>
+Message-ID: <40874E56.80503@belfordhk.com>
+References: <40850EA0.7090206@dev.null.se>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ixDgnS8AC6zwmyK0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <002a01c417c2$d94db7e0$de0aa8c0@comp>
+In-Reply-To: <40850EA0.7090206@dev.null.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,69 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Christopher Abrahamsson sighed and wrote::
 
---ixDgnS8AC6zwmyK0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Apr 01, 2004 at 10:25:06AM +0200, Bo Jacobsen wrote:
-> I use DNAT to redirect traffic from the external lan eth0 (192.168.1.1) t=
-o a
-> specific host (192.168.10.10) on the internal lan (eth1) like this:
->=20
-> iptables -t nat -A PREROUTING  -p tcp --dport 80  -d 192.168.1.1 -j DNAT=
-=20
->     --to 192.168.10.10 -i eth0
->=20
-> and then I allow the redirected traffic:
-> iptables -a FORWARD -p tcp --dport 80  -d 192.168.10.10 ........
->=20
-> It works as expected but with this aproach, it's actually possible from t=
-he outside
-> to find out what internal ip, the http server is located at !.
-> All one has to do is sending to 192.168.10.1, 192.168.10.2, 192.168.10.3 =
-etc.  (to=20
-> eth0 on the outside) until one hits the server. The rules allows it.
-
-The 192.168.0.0/24 is a non internet routeable address, meaning all ISP
-drop this address range.
-
-Pretty sure you might be able to capture this in prerouting (mangle) and
-drop it there, although your not meant to drop/filter table
-
-also if you have rp_filter on (for the internet interface) it would probabl=
-y capture it first before
-it hits netfilter=20
+> Hi
+>
+> I've been trying to solve this problem for quite some time now, but i
+> can't really figure out how...
+> Here's my current setup:
+>                               _ my computer (10.0.0.3)
+>                              |
+> internet - iptables gateway -|- my server(web, mail etc) (10.0.0.2)
+>             (212.181.43.20)  |
+>                              |_ a bunch of other computers (10.0.0.x)
+>
+>
+I believe you firstly need to do a NAT prerouting and then after the
+forward lines, you need a POSTROUTING NAT command.  Here's my
+stab at this, given your situation:
 
 
->=20
-> I have not been able to figure out how to solve this problem.
->=20
->=20
-> Any suggestions.
->=20
-> Thanks in advance
-> Bo Jacobsen
->=20
->=20
->=20
->=20
+iptables -t nat -A PREROUTING -i eth1 -p tcp -d 212.181.43.20 \
+               --dport 80 -j DNAT --to 10.0.0.2
 
---ixDgnS8AC6zwmyK0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+#not too sure if the next line is needed.
+iptables -A FORWARD -i eth1 -p tcp --dport 80 -j ACCEPT
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+iptables -t nat -A POSTROUTING -o eth1 -p tcp --dst 10.0.0.2 \
+           --dport 80 -s 10.0.0.3 -j SNAT --to-source 212.181.43.20
 
-iD0DBQFAh0DBkZz88chpJ2MRAvakAJCimj/xfnudHDJ17Brt/qGjH5QAoLMPZADd
-+3e/HCPzPplJpe98GxZN
-=4aAy
------END PGP SIGNATURE-----
+Mind you, I think the last line above, the --to-source should be
+pointing to your gateway's internal IP and not the external one.
+If your gateway's internal IP is 10.0.0.20, then the above should
+be:
 
---ixDgnS8AC6zwmyK0--
+iptables -t nat -A POSTROUTING -o eth1 -p tcp --dst 10.0.0.2 \
+           --dport 80 -s 10.0.0.3 -j SNAT --to-source 10.0.0.20
+
+Can someone point out if I got the above correct?
+
+Edmund
+
 
