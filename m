@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: doing NAT on udp broadcast traffic (for LAN tcp/ip gaming)
-Date: Wed, 9 Oct 2002 22:09:04 +0100
+Subject: Re: Problem with counting
+Date: Wed, 9 Oct 2002 22:22:41 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021009210911.KFIZ459.mta02-svc.ntlworld.com@there>
-References: <Pine.LNX.4.44.0210091128000.4531-100000@home.apu.edu>
+Message-ID: <20021009212244.KUSR459.mta02-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210070023330.17224-100000@balthasar.nuitari.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210091128000.4531-100000@home.apu.edu>
+In-Reply-To: <Pine.LNX.4.44.0210070023330.17224-100000@balthasar.nuitari.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +20,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 09 October 2002 7:49 pm, Chris Len wrote:
+On Tuesday 08 October 2002 5:44 am, Nuitari wrote:
 
-> I'm trying to create a psuedo-bridge between wireless and ethernet
-> interface. All works well, except detection of lan game servers. These
-> clients send out a global udp broadcast (255.255.255.255) to the game
-> server's dst port, and the server replies. Currently however, I cannot nat
-> this traffic.
+> On Sun, 6 Oct 2002, Antony Stone wrote:
+
+> > > iptables -P FORWARD ACCEPT
+> >
+> > Ugh :-(   Horrible.
+> >
+> > > for HOST in $INTERNAL_HOSTS; do
+> > >
+> > >         $IPTABLES -A FORWARD -o $EXTERNAL_INTERFACE -d $HOST -j ACCEPT
+> > >         $IPTABLES -A OUTPUT -o $EXTERNAL_INTERFACE -d $HOST -j ACCEPT
+> >
+> > Why would a packet ever leave your external interface, with a destination
+> > address of one of your internal machines ?
+> >
+> > >         $IPTABLES -A FORWARD -i $EXTERNAL_INTERFACE -s $HOST -j ACCEPT
+> > >         $IPTABLES -A INPUT -i $EXTERNAL_INTERFACE -s $HOST -j ACCEPT
+> >
+> > Why would a packet ever come in through your external interface with a
+> > source address of one of your internal machines ?
+> >
+> > What are these rules supposed to do ?
 >
-> Is there any way to make this work?
+> They are some rules I wrote after the exemple provided with bw_acct (see
+> below) didn't work well.
 
-I do not believe there is unless you turn your pseudo-bridge into a real 
-bridge.
+I suggest you sort these out and make sure your firewall is doing what it is 
+supposed to (ie that the rules you have a processing packets in the way you 
+expect) before trying to extend the system further to do traffic counting as 
+well.
 
-The reason is simple: broadcasts do not get routed.   A firewall with 
-different network ranges on the two interfaces is a router.   Therefore you 
-cannot send broadcasts across a firewall set up the way yours is.
-
-If you set up full bridging, so that both interfaces were on the same IP 
-address and therefore both sides of the machine were the same network, then 
-broadcasts would travel across it.
-
-You can't send broadcasts across a router even if you NAT them first.
-
-Antony.
+Antony
 
 -- 
 
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
