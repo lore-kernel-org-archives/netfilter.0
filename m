@@ -1,8 +1,8 @@
 From: Peteris Krumins <newsgroups@lf.lv>
-Subject: Match bits
-Date: Sun, 30 Mar 2003 21:23:24 +0300
+Subject: Packet
+Date: Sun, 30 Mar 2003 20:28:58 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <115493390628.20030330212324@lf.lv>
+Message-ID: <138490123800.20030330202858@lf.lv>
 Reply-To: Peteris Krumins <newsgroups@lf.lv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -21,11 +21,8 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
- Is there a way to match single bit (two bits, byte etc.) in a packet using iptables?
- (without queuing to userspace)
-
- For example i'd like to match bit 41 in IP packet - reserved flag.
- or if bits 42 and 43 both are not set..
+ If the packet has invalid checksum (IP header, etc.) it is dropped by the kernel,
+ right?
 
  
 P.Krumins
