@@ -1,12 +1,13 @@
-From: "Gavin" <gavin@raha.com>
-Subject: Re: nmap
-Date: Wed, 23 Oct 2002 12:06:49 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Are ok those rules to not filter smtp?
+Date: Wed, 23 Oct 2002 10:35:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <014801c27a73$856bfdf0$583a29c4@ghome>
-References: <1035264046.15391.85.camel@hyperno><20021022174245.13d2766b.fonetica@tiscali.it><plopm31y6icovs.fsf@drizzt.dyndns.org><20021022211221.3d91e4fb.fonetica@tiscali.it><plopm3vg3ub2vw.fsf@drizzt.dyndns.org><20021023003527.50af26db.fonetica@tiscali.it> <plopm3d6q1sj3a.fsf@drizzt.dyndns.org>
+Message-ID: <200210230935.g9N9ZxL02289@vulcan.rissington.net>
+References: <02101721054005.10974@linux1.egovernment>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <02101721054005.10974@linux1.egovernment>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,19 +20,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> But... what do you want to do by filtering OUTPUT ? Sure, you can drop
-INVALID
-> packets, filter floods, stop packets coming from root and so on, but if
-you
-> want to allow normal internet activity from the box, you have to allow NEW
-> connections on OUTPUT to any host/port...
+On Friday 18 October 2002 12:54 am, Alfredo Muchut wrote:
 
-There's always a (good) chance that someone will comprimise the machine and
-use it to DDOS, scan, spam etc - filtering output to allow only what you
-need for normal usage (dns, web, ping etc) makes it less useful as a hacked
-box.
+> When I send a mail, there is a delay of  15 second. Why is this problem?
 
-Gavin
+I'd guess it's the remote mail server sending an IDENT request and getting no 
+response.
 
+Antony.
 
+-- 
+
+There are two possible outcomes.
+
+If the result confirms the hypothesis, then you've made a measurement.
+If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
 
