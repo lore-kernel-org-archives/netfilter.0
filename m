@@ -1,10 +1,11 @@
-From: Jon Ferguson <ferguson@omegasoftware.co.uk>
-Subject: Help for IP Masquerading and Win2k
-Date: 19 May 2003 13:22:03 +0000
+From: Jun Sun <jsun@mvista.com>
+Subject: Is this firewall breakable?
+Date: Thu, 15 May 2003 18:27:28 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053350526.25406.28.camel@Enterprise>
+Message-ID: <3EC43E80.3090604@mvista.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------000307010208040606080908"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,60 +16,258 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm a newbie to iptables and am on RH8.0.
+This is a multi-part message in MIME format.
+--------------000307010208040606080908
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Perhaps someone can set me strait on my setup.
+Hi,
 
-(I've reviewed the 14 May thread Help for IP Masquerading, and followed
-the tutorial at
-www.yolinux.com/TUTORIALS/LinuxTutorialNetworkGateway.html but am still
-having probs.)
+I have a pretty standard setup.  A linux gateway connects to Internet 
+through cable modem and a subnet behind it.  I run web server, sendmail 
+and sshd on the gateway machine.
 
-I have an RH8.0 box as my gateway, behind which I have a local net with
-a Win2k box. I'm using a dialup connection and have setup static ips on
-my internal network: 192.168.0.1 for the gateway box, 192.168.0.2 for
-the win2k box.  I've also setup Squid.
+I have been using ipchains and it seems to be successful so far. 
+Machine was broken twice two years ago but has not been broken ever 
+since, after I tightened the rules.
 
-I've run the script in the www.yolinux.com tutorial:
+I now want to move to redhat 9 and I probably want to use iptables. 
+After looking around the net, I come up with the following firewall 
+rules.  See the attachment.  I did some local tests.  It looks ok.
 
-iptables --flush
-iptables --table nat --flush
-iptables --delete-chain
-iptables --table nat --delete-chain
+Can some of you experts take a look, just to make sure there are no 
+obvious mistakes or holes?  I like to continue my peaceful 
+intrusion-free life that I enjoyed in the last two years ... :)
 
-iptables --table nat --append POSTROUTING --out-interface ppp0 -j
-MASQUERADE
-iptables --append FORWARD --in-interface eth0 -j ACCEPT
+Thanks in advanced.  Please cc your reply to my email address.
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Cheers.
 
-What I find is that if I set up my browser to use the SQUID proxy server
-I can get through no problem and browse the net.
+Jun
 
-However since I'm doing IP Masquerading shouldn't I be able to see the
-internet if I turn off the Use of a proxy server as well?
+--------------000307010208040606080908
+Content-Type: text/plain;
+ name="rc.firewall"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="rc.firewall"
 
-I have setup the Local Area Connection properties for TCP/IP in Win2K:
-Ip address: 192.168.0.2
-Subnet mask: 255.255.255.0
-default gateway: 192.168.0.1 (my RH8.0 box)
+#!/bin/sh
+#
+# rc.firewall - Initial SIMPLE IP Firewall script for Linux 2.4.x and iptables
+#
+# Copyright (C) 2001  Oskar Andreasson &lt;bluefluxATkoffeinDOTnet&gt;
+#
 
-Preferred DNS server: 213.1.119.97 (my ISP)
-alt.: 213.1.119.98
+# JSUN :
+# 	I like all allowed ports to be grouped together, easier to modify
+#	later
+#
 
-Can anyone see what I'm missing????
+###########################################################################
+#
+# 1. Configuration options.
+#
 
-The reason I'm doing all this is so that I can use a windows VPN Client
-to connect through the network to a VPN server somewhere else off in
-hyperspace. But for now I'm just testing using a IE.
+# debugs
+set -x
+DEBUG_LEVEL=INFO
+# $DEBUG_LEVEL_LEVEL=DEBUG
 
-Thanks for all your help.
+# interfaces
+EXTIF="eth0"
+EXTIP=`ifconfig $EXTIF | awk '/inet addr/ { gsub(".*:", "", $2) ; print $2 }'`
+EXTBROAD=`ifconfig $EXTIF | awk '/inet addr/ { gsub(".*:", "", $3) ; print $3
+}'`
+EXTGW=`/sbin/route -n | grep -A 4 UG | awk '{ print $2}'`
 
-Jon
+echo External IP: $EXTIP
+echo External broadcast: $EXTBROAD
+echo Default GW: $EXTGW
+echo " --- "
+
+INTIP="192.168.0.2"
+INTLAN="192.168.0.0/16"
+#INTIF="eth1"
+INTIF="wlan0"
+
+echo Internal Interface: $INTIF
+echo Internal IP: $INTIP
+echo Internal LAN: $INTLAN
+echo " --- "
+
+LOIF="lo"
+LOIP="127.0.0.1"
+
+BROADCAST="255.255.255.255"
+
+#
+# 1.5 IPTables Configuration.
+#
+
+IPTABLES="/sbin/iptables"
 
 
+# JSUN: are these necessary?
+
+# /sbin/depmod -a
+
+# /sbin/modprobe ip_tables
+# /sbin/modprobe ip_conntrack
+# /sbin/modprobe iptable_filter
+# /sbin/modprobe iptable_mangle
+# /sbin/modprobe iptable_nat
+# /sbin/modprobe ipt_LOG
+# /sbin/modprobe ipt_limit
+# /sbin/modprobe ipt_state
+
+#/sbin/modprobe ipt_owner
+#/sbin/modprobe ipt_REJECT
+#/sbin/modprobe ipt_MASQUERADE
+#/sbin/modprobe ip_conntrack_ftp
+#/sbin/modprobe ip_conntrack_irc
+#/sbin/modprobe ip_nat_ftp
+#/sbin/modprobe ip_nat_irc
+
+###########################################################################
+#
+# 3. /proc set up.
+#
+
+#
+# 3.1 Required proc configuration
+#
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+#
+# 3.2 Non-Required proc configuration
+#
+
+#echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter
+#echo "1" > /proc/sys/net/ipv4/conf/all/proxy_arp
+#echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+###########################################################################
+#
+# 4. rules set up.
+#
+
+#
+# Cleanup and set initial policies
+#
+
+# Set policies
+$IPTABLES -t filter -P INPUT DROP
+$IPTABLES -t filter -P OUTPUT DROP
+$IPTABLES -t filter -P FORWARD DROP
+
+$IPTABLES -t nat -P PREROUTING ACCEPT
+$IPTABLES -t nat -P POSTROUTING ACCEPT
+$IPTABLES -t nat -P OUTPUT ACCEPT
+
+$IPTABLES -t mangle -P PREROUTING ACCEPT
+$IPTABLES -t mangle -P OUTPUT ACCEPT
+
+# flush old chains
+$IPTABLES -t filter -F
+$IPTABLES -t nat -F
+$IPTABLES -t mangle -F
+
+# delete user defined chains
+$IPTABLES -t filter -X
+$IPTABLES -t nat -X
+$IPTABLES -t mangle -X
+
+
+#
+# 4.1.4 INPUT chain
+#
+
+# $IPTABLES -A INPUT -p tcp -j bad_tcp_packets
+
+# we trust INTIF and LOIF, to a large degree
+$IPTABLES -A INPUT -p ALL -i $INTIF -s $INTLAN -j ACCEPT
+$IPTABLES -A INPUT -p ALL -i $LOIF -s $LOIP -j ACCEPT
+$IPTABLES -A INPUT -p ALL -i $LOIF -s $INTIP -j ACCEPT
+$IPTABLES -A INPUT -p ALL -i $LOIF -s $EXTIP -j ACCEPT
+
+# we take broadcast packages from INTIF
+$IPTABLES -A INPUT -p ALL -i $INTIF -s 0.0.0.0 -d 255.255.255.255 -j ACCEPT
+
+# JSUN: can we just use a simplified version?
+#$IPTABLES -A INPUT -p ALL -i $INTIF -j ACCEPT
+#$IPTABLES -A INPUT -p ALL -i $LOIF -j ACCEPT
+
+
+# established connections can go through
+$IPTABLES -A INPUT -p ALL -d $EXTIP -m state --state ESTABLISHED,RELATED \
+	-j ACCEPT
+
+# initiation packets are allowed on selected TCP ports
+$IPTABLES -A INPUT -p TCP --syn -s 0/0 --dport ssh -j ACCEPT
+$IPTABLES -A INPUT -p TCP --syn -s 0/0 --dport smtp -j ACCEPT
+$IPTABLES -A INPUT -p TCP --syn -s 0/0 --dport http -j ACCEPT
+#$IPTABLES -A INPUT -p TCP --sync -s 0/0 --dport https -j allowed
+
+# JSUN: do we need to worry about ntp port?  We will see
+
+# only take echo-request(8), echo-reply(0) and time-exceeded(11) for icmp
+$IPTABLES -A INPUT -p ICMP -s 0/0 --icmp-type echo-reply -j ACCEPT
+$IPTABLES -A INPUT -p ICMP -s 0/0 --icmp-type echo-request -j ACCEPT
+$IPTABLES -A INPUT -p ICMP -s 0/0 --icmp-type time-exceeded -j ACCEPT
+
+#
+# If you have a Microsoft Network on the outside of your firewall, you may 
+# also get flooded by Multicasts. We drop them so we do not get flooded by 
+# logs
+#
+#$IPTABLES -A INPUT -i $EXTIF -d 224.0.0.0/8 -j DROP
+
+#
+# Log weird packets that don't match the above.
+#
+
+# exclude some annoying packets from logging
+$IPTABLES -A INPUT -d $EXTBROAD -j DROP 
+$IPTABLES -A INPUT -d $BROADCAST -j DROP 
+
+$IPTABLES -A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG \
+	--log-level $DEBUG_LEVEL --log-prefix "IPT INPUT packet died: "
+
+#
+# 4.1.5 FORWARD chain
+#
+
+# Accept the packets we actually want to forward
+$IPTABLES -A FORWARD -i $INTIF -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Log weird packets that don't match the above.
+$IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG \
+	--log-level $DEBUG_LEVEL --log-prefix "IPT FORWARD packet died: "
+
+#
+# 4.1.6 OUTPUT chain
+#
+
+# Special OUTPUT rules to decide which IP's to allow.
+$IPTABLES -A OUTPUT -p ALL -s $LOIP -j ACCEPT
+$IPTABLES -A OUTPUT -p ALL -s $INTIP -j ACCEPT
+$IPTABLES -A OUTPUT -p ALL -s $EXTIP -j ACCEPT
+
+# Log weird packets that don't match the above.
+$IPTABLES -A OUTPUT -m limit --limit 3/minute --limit-burst 3 -j LOG \
+	--log-level $DEBUG_LEVEL --log-prefix "IPT OUTPUT packet died: "
+
+######
+# 4.2 nat table
+#
+
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to-source $EXTIP
+
+--------------000307010208040606080908--
 
 
