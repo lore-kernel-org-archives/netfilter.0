@@ -1,13 +1,16 @@
-From: Krishna Prasanth <krishnap@teneoris.com>
-Subject: Re: (no subject)
-Date: Mon, 31 May 2004 17:23:30 +0530
+From: Sheldon Hearn <sheldonh@starjuice.net>
+Subject: Re: skip other iptables marking if packet is already marked
+Date: Mon, 31 May 2004 13:56:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <opr8u4ngt3u1jv19@192.168.1.10>
-References: <E1BUl7h-0008Sb-0a@vishnu.netfilter.org>
+Message-ID: <1086004606.9100.15.camel@axl.seasidesoftware.co.za>
+References: <020701c446e0$44e95ee0$0100a8c0@newlife>
+	 <1085991395.26732.12.camel@anduril.intranet.cartel-securite.net>
+	 <1085996196.9107.5.camel@axl.seasidesoftware.co.za>
+	 <1086004005.26732.14.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1BUl7h-0008Sb-0a@vishnu.netfilter.org>
+In-Reply-To: <1086004005.26732.14.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +20,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: mz@sea.uni-linz.ac.at
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Ming-Ching Tiew <mingching.tiew@redtone.com>, netfilter@lists.netfilter.org
 
-Hi!
-   How about blocking Stream connections, which are mostly RTP, RTSP(Real 
-Audio uses this)??
-   In this case VoIP traffic may not work(in case if you have).
-   I think even other Applications like (winamp) uses similar traffic which 
-we can
-   block using iptables.
+On Mon, 2004-05-31 at 13:46, Cedric Blancher wrote:
 
-   Pls correct me if i'm wrong somewhere.
+> > Really?  No mark and mark 0 are different?
+> 
+> Well, I though. I just check and I was wrong. Sorry, my fault.
 
-regards
--prasanth
-On Mon, 31 May 2004 13:39:21 +0200, Markus Zeilinger 
-<mz@sea.uni-linz.ac.at> wrote:
+No worries;  it gave me an opportunity to promote the "CONNMARK
+restore-mark creates conntrack entry?" thread, on which I'm pretty
+desperate for feedback.
 
->  Hi!
->
-> Do not know whether there is a patch available via patch-o-matic for such
-> things. But I think a http proxy should handle such things? Cause you 
-> have
-> to do application level filtering and that's a duty of a http proxy I 
-> would
-> say!
->
-> Cheers,
-> Markus
->
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Ivan
-> Sent: Monday, May 31, 2004 1:19 PM
-> To: netfilter@lists.netfilter.org
-> Subject: (no subject)
->
-> Hi,
-> I am looking for a solution to block streaming media using iptables.
-> I have found that some of my users are listening to radio stations using
-> internet, which has pumped up the
-> internet bill significantly, and of course put a choke on my internet 
-> links.
-> Does anyone know of a solution for blocking just the streaming media
-> traffic from any web site, while still allowing
-> the access to the website it self?
->
-> Thanks,
->
-> Ivan
->
->
+Oops, I did it again!  Britney Spears would be proud. ;-)
+
+Ciao,
+Sheldon.
 
 
 
--- 
-Using M2, Opera's revolutionary e-mail client: http://www.opera.com/m2/
 
