@@ -1,11 +1,14 @@
-From: capa@cuao.edu.co
-Subject: Sunscreen, pix, iptables
-Date: Wed, 10 Jul 2002 00:35:07 -0400 (EDT)
+From: Alexey Talikov <alexey_talikov@texlab.com.uz>
+Subject: Re: H.323 and 2.4.18 kernel problem
+Date: Wed, 10 Jul 2002 10:11:02 +0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1026275707.3d2bb97b23457@mail.cuao.edu.co>
+Message-ID: <PLZY834371QP761V5YNHOL2VRLEB7296.3d2bc1e6@ALEXEY>
+References: <3D2AF840.E4674BFA@uni-bielefeld.de>
+Reply-To: alexey_talikov@texlab.com.uz
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <3D2AF840.E4674BFA@uni-bielefeld.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,12 +18,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org, Marcus Schopen <marcus.schopen@uni-bielefeld.de>
 
-Please, something can help me and compare iptables, sunscreen and pix. What=
- is=20
-the best ?? thank=B4s.
+Version of iptables
+-----------------------------------
+mailto:alexey_talikov@texlab.com.uz
+BR
+Alexey Talikov
+FORTEK
+-----------------------------------
 
-                             CAPA
+
 
