@@ -1,9 +1,12 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: --dport/--sport clarification
-Date: Mon, 31 Jan 2005 16:45:52 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10501311643430.18954-100000@darkstar.sysinfo.com>
+From: Samuel Jean <sj-netfilter@cookinglinux.org>
+Subject: Re: --dport/--sport clarification
+Date: Mon, 31 Jan 2005 17:00:14 -0500
+Message-ID: <41FEAA6E.1040202@cookinglinux.org>
+References: <Pine.LNX.4.05.10501311643430.18954-100000@darkstar.sysinfo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.05.10501311643430.18954-100000@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,31 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "R. DuFresne" <dufresne@sysinfo.com>
+Cc: netfilter@lists.netfilter.org
 
+R. DuFresne wrote:
+> ipfwadm and I believe ipchains allowed port ranges, as in 135:139.  Does
+> this worj te same with --dport/--sport?  My reading indicates the list or
+> 'range' requires that the ports be a comma seperated list, rather then the
+> ole 'range' option of old.
 
-ipfwadm and I believe ipchains allowed port ranges, as in 135:139.  Does
-this worj te same with --dport/--sport?  My reading indicates the list or
-'range' requires that the ports be a comma seperated list, rather then the
-ole 'range' option of old.
+No, it still stands in iptables.
 
-Thanks,
+--sport 80:5000 is allowed.
 
+However, --sports (which is an option to multiport or mport matches) does take
+list of port.
 
-Ron DuFresne
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
+--sports 22,80,25,110,...
 
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
+> 
+> Thanks,
+> 
+> 
+> Ron DuFresne
 
+Did I misunderstand your question ?
+
+Samuel
 
