@@ -1,11 +1,14 @@
-From: "security" <security@lea-linux.com>
-Subject: list delete bug: kernel crash
-Date: Tue, 31 Aug 2004 01:34:22 +0200
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: Need to replace a SonicWall firewall with an iptables firewall.
+Date: Tue, 31 Aug 2004 01:02:50 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <003701c48ee9$e1ad1f40$0a00a8c0@aziz>
+Message-ID: <20040831000249.GH20169@metastasis.org.uk>
+References: <7C9884991ADAE0479C14F10C858BCDF56794C2@alderaan.smgtec.com>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF56794C2@alderaan.smgtec.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,41 +18,31 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all,
+On Mon, Aug 30, 2004 at 03:23:58PM -0700, Daniel Chemko wrote:
 
-I hope i mail in the right mailing list.
+> > Not knowing what split-dns was, I googled it. If I understand it
+> > correctly it seems that this is only needed when you use a single,
+> > common domain for both internal and external systems. All our
+> > external systems (both between the firewall and the router, and in
+> > the DMZ) are in "domain.com" and all our internal systems are in
+> > "sub.domain.com", so we don't need split-dns, right?
 
+Probably a good idea anyway - you probably don't want external users
+using your DNS server in the same way that internal hosts do - i.e.
+making recursive lookups.  Also while it isn't much of an information
+leak, stopping Internet users looking up hosts in sub.domain.com won't
+do any harm.
 
-Sometime my kernel crash (i must reset my computer) and i have this logs:
+Also with the use of "view" this is pretty easy to do with BIND 9.  If
+you don't have a copy of "DNS and BIND" you should be able to find
+something useful via Google or equivalent search engine.
 
-Aug 30 20:42:24 gateway kernel: NF_IP_ASSERT:
-net/ipv4/netfilter/ip_conntrack_core.c:1115(ip_conntrack_alter_reply)
-Aug 30 20:42:24 gateway kernel: NF_IP_ASSERT:
-net/ipv4/netfilter/ip_conntrack_core.c:1115(ip_conntrack_alter_reply)
-Aug 30 20:44:24 gateway kernel: LIST_DELETE:
-net/ipv4/netfilter/ip_conntrack_core.c:300
-`&ct->tuplehash[IP_CT_DIR_REPLY]'(f3cedca4) not in
- &ip_conntrack_hash[hr].
+Sorry, a little off-topic....
 
-I have search in bugzilla and google and, apparently, this bug has been solve
-since kernel 2.6.5.
-But i have kernel 2.6.8.1 and i have try kernel 2.6.6 and 2.6.7: same crash
-
-But it hard to "see" because i can stay 1 week without crash, or 5mn.
-
-I have the "local NAT" activated.
-
-I have made a bugzilla report:
-https://bugzilla.netfilter.org/bugzilla/show_bug.cgi?id=236
-
-If you need more informations, want me to made debug trace etc... i can, just
-ask me and tell me how do that :)
-
-Thanks.
-
-
-
+-- 
+mors omnia vincit
 
