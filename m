@@ -1,11 +1,13 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: Establish new connection.
-Date: Mon, 16 Oct 2000 13:14:08 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ip_conntrack_lock not readlocked? anyone?
+Date: Wed, 16 Oct 2002 21:27:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000401c037ad$a4675840$6601a8c0@s3ac>
+Message-ID: <20021016202804.CXMH17202.mta01-svc.ntlworld.com@there>
+References: <F2421sZV4CllPF6p0V700001255@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F2421sZV4CllPF6p0V700001255@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'iptables-list' <netfilter@lists.samba.org>
+To: netfilter@lists.netfilter.org
 
+On Wednesday 16 October 2002 9:18 pm, hallian hallian wrote:
 
+> <html><div style='background-color:'><DIV>
+> <DIV><FONT face=Arial size=2>hello -</FONT></DIV>
+> <DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
 
+Please do not post html to this mailing list.
 
+Antony.
 
-I'm writing a small script to parse through my logs and filter nodes
-trying to establish new connections to filtered ports.  Below is a
-typical entry what part of that log entry tells me that this person is
-trying to establish a new connection.
+-- 
 
-
-Oct 16 05:42:57 s3a-www kernel: IN=eth1 OUT=
-MAC=00:04:75:b1:3d:6c:00:60:49:01:5a:de:08:00 SRC=216.99.233.253
-DST=**.**.76.66 LEN=72 TOS=0x00 PREC=0x00 TTL=241 ID=8598 DF PROTO=UDP
-SPT=53 DPT=1592 L
-EN=52
- 
-Rowan Reid
-Job Captain, 
-Systems Administrator
-STUDIO 3 ARCHITECTS
-909  982  1717
-
+What is this talk of software 'release' ?
+Our software evolves and matures until it becomes capable of escape,
+leaving a bloody trail of designers and quality assurance people in its wake.
 
