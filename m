@@ -1,11 +1,12 @@
-From: Simon Kitching <simon@ecnetwork.co.nz>
-Subject: connection dropping for large data flows
-Date: Mon, 10 Nov 2003 17:08:01 +1300
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: RE: firewalled dns clients
+Date: Mon, 10 Nov 2003 13:01:03 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1068437281.1517.23.camel@pcjohns.ecnnz.ecnetwork.co.nz>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8E3F@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,79 +17,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Chris Brenton <cbrenton@chrisbrenton.org>
+Cc: "Netfilter \"Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
-Hi,
 
-I'm trying to set up iptables on a RedHat 8.0 server. I've got a setup
-I'm happy with, except for one major problem; I hope someone can help.
+Thanks Goetz and Chris!
 
-When I SSH to the machine, I can run commands, vi, etc. However when I
-run any command which generates more than a few lines of output, the ssh
-session hangs (from the perspective of the ssh client).
+I'll try that now. Sorry for the late reply. Just got in the office.
 
-Examples of commands that cause the "hang":
- * ls -l
- * more some-reasonable-size-file
- * ps -efl
 
-I presume I'm missing something simple, like a rule for "fragmented
-packets" or something similar. The iptables rules I am using are below.
+Cheers,
 
-Help would be much appreciated!
+fritz <www.mesedilla>
+---
++ Basta Ikaw Lord
 
-One other minor problem: I can't get "ping" from the server back to
-itself to work either. I can't tell whether the machine can be pinged
-from any other host, because there are other firewalls between my
-desktop and the target server and I don't currently have access to
-another host on the same network as the target server. Is this perhaps
-because the ping "acknowledgement" packet isn't being allowed back in?
 
-Thanks in advance,
+-----Original Message-----
+From: Chris Brenton [mailto:cbrenton@chrisbrenton.org]
+Sent: Friday, November 07, 2003 6:33 PM
+To: Fritz Mesedilla
+Cc: Netfilter "Mailing List (E-mail)
+Subject: Re: firewalled dns clients
 
-Simon
 
-------- iptables.conf
+On Thu, 2003-11-06 at 22:49, Fritz Mesedilla wrote:
+>
+> I tried this and nothing happened.
+> $IPTABLES -A INPUT -p tcp --sport 53 -j ACCEPT
+> even a
+> $IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
 
-# don't forward any packets; this isn't a router!
-iptables -P FORWARD DROP
-iptables -F FORWARD
-                                                                                                                 # allow all packets outbound
-iptables -P OUTPUT ACCEPT
-iptables -F OUTPUT
+Try:
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source x.x.x.x
+iptables -A FORWARD -p udp -i eth1 -s y.y.y.y -d 0/0 --dport 53 -j
+ACCEPT
+iptables -A FORWARD -p tcp -i eth1 -s y.y.y.y -d 0/0 --dport 53 -j
+ACCEPT
 
-# deny inbound packets unless explicitly allowed
-# by other rules
-iptables -P INPUT DROP
-iptables -F INPUT
-                                                                                                                 # generic sanity rule that checks packet types;
-#   connection request (syn) packets are ok
-#   packets related to existing connections are ok
-# anything else is probably bad.
-                                                                                                                 iptables -N okay
-iptables -A okay -p TCP --syn -j ACCEPT
-iptables -A okay -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A okay -p TCP -j DROP
-                                                                                                                 # allow ping, for convenience
-iptables -A INPUT -p ICMP --icmp-type ping -j ACCEPT
+x.x.x.x =3D Firewall's legal external IP address=20
+y.y.y.y =3D internal private subnet=20
+eth0 =3D external interface (change to eth1 if needed)
+eth1 =3D internal interface (change to eth0 if needed)
 
-# allow connections from the local host back to
-# any port on the local host.
-iptables -A INPUT -p ALL -s 127.0.0.1 -j okay
-                                                                                                                 # Bloody IBM's MQSeries endmqm tool appears to need to connect
-# from the external ip address of this machine back to itself.
-#
-# If this host's ip address changes, then the line below needs
-# to be changed appropriately.
-iptables -A INPUT -p ALL -s xxx.xxx.xxx.xxx -j okay
-                                                                                                                 # allow incoming SSH from any host
-iptables -A INPUT -p TCP --destination-port 22 -j okay
+HTH,
+C
 
-# allow incoming NTP (Network Time Protocol) UDP packets
-iptables -A INPUT -p UDP --destination-port 123 -j okay
 
-# allow incoming MQ from any host
-iptables -A INPUT -p TCP --destination-port 1414 -j okay
-                                                                                                                 
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
