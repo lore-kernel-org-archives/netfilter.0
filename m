@@ -1,15 +1,12 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: libipt_drop.so: cannot open shared object file
-Date: Tue, 29 Jun 2004 09:01:52 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ip_conntrack_tcp Errors
+Date: Tue, 29 Jun 2004 09:46:18 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040629070152.GA2037@zion.homelinux.com>
-References: <40E10006.3060805@tigerteam.net>
+Message-ID: <Pine.LNX.4.33.0406290938140.22926-100000@blackhole.kfki.hu>
+References: <1088437519.13933.218.camel@spudgun.dhcp.internal>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <40E10006.3060805@tigerteam.net>
+In-Reply-To: <1088437519.13933.218.camel@spudgun.dhcp.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,56 +16,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Andy Walden <andy@tigerteam.net>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Evgeni Vachkov <evgeni.vachkov@investis.com>
 Cc: netfilter@lists.netfilter.org
 
+On 28 Jun 2004, Evgeni Vachkov wrote:
 
---a8Wt8u1KmwUX3Y2C
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > > patch? ...Or perhaps it is some other problem with other parts of the
+> > > kernel?
+> > It seems to me that you have applied the tcp window tracking patch from pom-ng.
+> > The problem is that the client and the server have done the first step of the
+> > three way handshake, and are in sync, but the firewall for some reason is not.
+> > So it drops the SYN/ACK, and thus forcing the client to retransmit its SYN and
+> > initiate a new session (as descibed in the source code of the patch)
+> >
+> > My advice is if you have applied this patch, to remove it, and test the load on the
+> > firewall again.
+>
+> As far as I can figure out we are running with
+> patch-o-matic-ng-20040302. I can see that the latest is
+> patch-o-matic-ng-20040621. Is this problem present at the version we are
+> running and is the new version still having the window tracking issues?
 
+SACK support was added to the patch in patch-o-matic-ng-20040621 with some
+minor fixes, compared to patch-o-matic-ng-20040302. It does not hurt to
+upgrade but I don't expect that it'd behave differently in your test.
 
-Hi Andy,
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
-On Tue, Jun 29, 2004 at 01:37:10AM -0400, Andy Walden told us:
->=20
-> # ./iptables -I INPUT -s 217.238.177.2 -j drop
-> iptables v1.2.11: Couldn't load target=20
-> `drop':/usr/local/lib/iptables/libipt_drop.so: cannot open shared object=
-=20
-> file: No such file or directory
-
-try DROP instead of drop, then it should work.
-
-
-Sven
-
->=20
-> I just started getting this one day. Searches show only three hits for=20
-> that file and there is no sign of it in my distrobution or the source=20
-> package. Any ideas as to what I'm seeing here? Thanks for the time.
->=20
-> --=20
-> Best Regards,
-> Andy Walden
->=20
-
---=20
-Linux zion 2.6.7 #1 Thu Jun 17 10:44:26 CEST 2004 i686 athlon i386 GNU/Linux
- 09:00:59  up 3 days, 13:51,  4 users,  load average: 2.17, 2.10, 2.02
-
---a8Wt8u1KmwUX3Y2C
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFA4RPgo4FAdB2PneQRArp3AKCA+XUxkxCWdrw8po0GAxfGGYE+0wCfZbvE
-url/F+l6306p5kB9NtgxmCM=
-=i9Ac
------END PGP SIGNATURE-----
-
---a8Wt8u1KmwUX3Y2C--
 
