@@ -1,13 +1,13 @@
-From: Patrick Schaaf <bof@bof.de>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: detection of the third tcp packet in a tcp connection setup
-Date: Thu, 27 Jun 2002 20:53:19 +0200
+Date: Thu, 27 Jun 2002 19:52:54 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627205319.E2890@oknodo.bof.de>
+Message-ID: <20020627185257.SUCU19225.mta07-svc.ntlworld.com@there>
 References: <20020627182753.GS31466@cannon.eng.us.uu.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020627182753.GS31466@cannon.eng.us.uu.net>; from ramin@cannon.eng.us.uu.net on Thu, Jun 27, 2002 at 02:27:53PM -0400
+In-Reply-To: <20020627182753.GS31466@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,23 +18,20 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Hi Ramin,
+On Thursday 27 June 2002 7:27 pm, Ramin Alidousti wrote:
 
+> Hi,
+>
 > Does anyone have a good solution to catch the third (ACK) packet
 > in a tcp connection setup?
 
-Maybe you could use the CONNMARK patch, found in patch-o-matic?
-Mark the conntrack one way for the first packet of a new connection,
-and later match on that mark, changing it to something else when that
-match hits.
+Is the --ctstatus connection tracking extension any use ?   The value 
+SEEN_REPLY will tell you when the second packet's come in, and ASSURED will 
+match the third packet....
 
-Thanks for a nice idea from the "how do I bend iptables into a
-programming language" department. :-)
+ 
 
-best regards
-  Patrick
+Antony.
 
