@@ -1,13 +1,13 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: PPTP+NAT+MASQ anyone?
-Date: Wed, 11 Dec 2002 12:49:53 +0100
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+Subject: RE: PPTP+NAT+MASQ anyone?
+Date: Wed, 11 Dec 2002 14:29:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212111249.53924.roy@karlsbakk.net>
-References: <200212091226.23888.roy@karlsbakk.net> <200212091558.22457.roy@karlsbakk.net> <1039447047.25961.47.camel@tux>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019A41@hslex01.hslbz.local>
+References: <200212111249.53924.roy@karlsbakk.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1039447047.25961.47.camel@tux>
+In-Reply-To: <200212111249.53924.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Martin Josefsson <gandalf@wlug.westbo.se>
+To: 'Roy Sigurd Karlsbakk' <roy@karlsbakk.net>
 Cc: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-> > I've tried all the ones I can find.
-> > When trying to apply the pptp-conntrack-nat.patch, I get errors apply=
-ing
-> > it. Do I need to hand patch this thing? I've tried with 2.4.{18,19,20=
-}
->
-> Did you run './runme pending' first like the documentation tells you?
+> yes. I get this error message when trying to patch 2.4.{19|20}. 
 
-yes. I get this error message when trying to patch 2.4.{19|20}.=20
+I compiled my 2.4.20 kernel yesterday (with pptp, h323, etc, etc) using
+POM-20021208 just to test if I got any errors ; I don't and I have the
+kernel up and running.
 
-Testing... pptp-conntrack-nat.patch NOT APPLIED ( 8 missing files)
-The extra/pptp-conntrack-nat patch:
-   Author: Harald Welte <laforge@gnumonks.org>
-   Status: Beta
+But I do get errors when compiling iptables-1.2.7a. I will post this in
+another thread.
 
-   This adds CONFIG_IP_NF_PPTP:
-   Connection tracking and NAT support for PPTP.
 
-   Note that this code currently has limitations
-   - can only NAT connections from PNS to PAC
-   - doesnt' support multiple calls within one session
-
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?]
-
-roy
-
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
-
-Computers are like air conditioners.
-They stop working when you open Windows.
+Rob
 
 
