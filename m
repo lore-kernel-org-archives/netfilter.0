@@ -1,11 +1,11 @@
-From: Vagner Machado <VAMachado@sispro.com.br>
-Subject: RE: Unauthorized Activity Detection using IPTables
-Date: Fri, 13 Dec 2002 13:25:10 -0300
+From: "Paul & Tisha Sinclair" <ptams@earthlink.net>
+Subject: Firewall Error
+Date: Fri, 6 Dec 2002 14:09:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <C01FA3FA475FB04AA54D083D5E637EE109AEE6@siscannet.sispro.com.br>
+Message-ID: <000001c29d5b$0c5b9af0$0a00a8c0@WinXp1>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2A2C4.34F2EAE0"
+	boundary="----=_NextPart_000_0001_01C29D31.23871990"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,53 +18,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C2A2C4.34F2EAE0
-Content-Type: text/plain
+------=_NextPart_000_0001_01C29D31.23871990
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-See  <http://www.psionic.com/products/portsentry.html>
-http://www.psionic.com/products/portsentry.html
------Original Message-----
-From: Amit Kumar Gupta [mailto:amitkumar.gupta@wipro.com] 
-Sent: sexta-feira, 13 de dezembro de 2002 11:44
-To: netfilter@lists.netfilter.org
-Subject: Unauthorized Activity Detection using IPTables
+Hello, 
+ 
+       My name is Paul and I have a problem I would like to know if you
+can fix my error. 
+This is error I received when I try to open a port. {An error occured
+when checking your current IPtables configuration : 
+/lib/modules/2.4.18-3smp/kernel/net/ipv4/netfilter/ip_tables.o:
+init_module: Device or resource busy
+/lib/modules/2.4.18-3smp/kernel/net/ipv4/netfilter/ip_tables.o: insmod
+/lib/modules/2.4.18-3smp/kernel/net/ipv4/netfilter/ip_tables.o failed
+/lib/modules/2.4.18-3smp/kernel/net/ipv4/netfilter/ip_tables.o: insmod
+ip_tables failed
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters
+iptables v1.2.5: can't initialize iptables table `filter': iptables who?
+(do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+This may indicate that your kernel does not support IPtables.}.
+                                                Running 7.2 Redhat
+I would like to open a port but I get this message. Please see if you
+have any suggestion. 
+ 
+Thanks
+Paul
 
-
-Hi,
- 
- 
-I want to know how to detect unauthorized activities in firewall using
-IPtables.
-If any user tries for some unauthorized service, I should be able to log it
-and drop it.
- 
- 
-Please give suggestions.
- 
-Thanks & Regards.
- 
-Amit
-
-------_=_NextPart_001_01C2A2C4.34F2EAE0
-Content-Type: text/html
+------=_NextPart_000_0001_01C29D31.23871990
+Content-Type: text/html;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML xmlns=3D"http://www.w3.org/TR/REC-html40" xmlns:o =3D=20
-"urn:schemas-microsoft-com:office:office" xmlns:w =3D=20
-"urn:schemas-microsoft-com:office:word"><HEAD>
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
 charset=3Dus-ascii">
-<TITLE>Message</TITLE>
 
-<META content=3DWord.Document name=3DProgId>
-<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR>
-<META content=3D"Microsoft Word 10" name=3DOriginator><LINK=20
-href=3D"cid:filelist.xml@01C2A2E4.3969E680" rel=3DFile-List><!--[if gte =
-mso 9]><xml>
+
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C29D2C.8FC48CA0">
+<!--[if gte mso 9]><xml>
  <o:OfficeDocumentSettings>
   <o:DoNotRelyOnCSS/>
  </o:OfficeDocumentSettings>
@@ -83,52 +87,72 @@ mso 9]><xml>
   <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
  </w:WordDocument>
 </xml><![endif]-->
-<STYLE>@page Section1 {size: 8.5in 11.0in; margin: 1.0in 1.25in 1.0in =
-1.25in; mso-header-margin: .5in; mso-footer-margin: .5in; =
-mso-paper-source: 0; }
-P.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; =
-mso-style-parent: ""; mso-pagination: widow-orphan; =
-mso-fareast-font-family: "Times New Roman"
-}
-LI.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; =
-mso-style-parent: ""; mso-pagination: widow-orphan; =
-mso-fareast-font-family: "Times New Roman"
-}
-DIV.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"; =
-mso-style-parent: ""; mso-pagination: widow-orphan; =
-mso-fareast-font-family: "Times New Roman"
-}
-A:link {
-	COLOR: blue; TEXT-DECORATION: underline; text-underline: single
-}
-SPAN.MsoHyperlink {
-	COLOR: blue; TEXT-DECORATION: underline; text-underline: single
-}
-A:visited {
-	COLOR: purple; TEXT-DECORATION: underline; text-underline: single
-}
-SPAN.MsoHyperlinkFollowed {
-	COLOR: purple; TEXT-DECORATION: underline; text-underline: single
-}
-SPAN.EmailStyle17 {
-	COLOR: windowtext; FONT-FAMILY: Arial; mso-style-type: =
-personal-compose; mso-style-noshow: yes; mso-ansi-font-size: 10.0pt; =
-mso-bidi-font-size: 10.0pt; mso-ascii-font-family: Arial; =
-mso-hansi-font-family: Arial; mso-bidi-font-family: Arial
-}
-SPAN.SpellE {
-	mso-style-name: ""; mso-spl-e: yes
-}
-SPAN.GramE {
-	mso-style-name: ""; mso-gram-e: yes
-}
-DIV.Section1 {
-	page: Section1
-}
-</STYLE>
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:windowtext;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt =
+412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 <!--[if gte mso 10]>
 <style>
  /* Style Definitions */=20
@@ -145,71 +169,156 @@ DIV.Section1 {
 	font-size:10.0pt;
 	font-family:"Times New Roman";}
 </style>
-<![endif]--></HEAD>
-<BODY lang=3DEN-US style=3D"tab-interval: .5in" vLink=3Dpurple =
-link=3Dblue>
-<DIV><FONT face=3DVerdana size=3D2><SPAN class=3D232112316-13122002>See =
-<A=20
-href=3D"http://www.psionic.com/products/portsentry.html"><FONT=20
-color=3D#000000>http://www.psionic.com/products/portsentry.html</FONT></=
-A></SPAN></FONT></DIV>
-<BLOCKQUOTE dir=3Dltr style=3D"MARGIN-RIGHT: 0px">
-  <DIV></DIV>
-  <DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr =
-align=3Dleft><FONT=20
-  face=3DTahoma size=3D2>-----Original Message-----<BR><B>From:</B> =
-Amit Kumar Gupta=20
-  [mailto:amitkumar.gupta@wipro.com] <BR><B>Sent:</B> sexta-feira, 13 =
-de=20
-  dezembro de 2002 11:44<BR><B>To:</B>=20
-  netfilter@lists.netfilter.org<BR><B>Subject:</B> Unauthorized =
-Activity=20
-  Detection using IPTables<BR><BR></FONT></DIV>
-  <DIV class=3DSection1>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial">Hi,<o:p></o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">I want to know how to =
-detect=20
-  unauthorized activities in firewall using <SPAN=20
-  class=3DSpellE>IPtables</SPAN>.<o:p></o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">If any user tries for =
-some=20
-  unauthorized service, I should be able to log it and drop=20
-  it.<o:p></o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Please give=20
-  suggestions.<o:p></o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><SPAN class=3DGramE><FONT face=3DArial =
-size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Thanks &amp;=20
-  Regards.</SPAN></FONT></SPAN><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial"><o:p></o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
-Arial">Amit<o:p></o:p></SPAN></FONT></P></DIV></BLOCKQUOTE></BODY></HTML=
+<![endif]-->
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:.5in'>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hello, <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><span
+style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+</span>My name is
+Paul and I have a problem I would like to know if you can fix my error. =
+<o:p></o:p></span></font></p>
+
+<p><font size=3D2 color=3Dblack face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>This is error I received when I try to open a port. =
+{</span></font>An
+error <span class=3DSpellE>occured</span> when checking your current =
+<span
+class=3DSpellE>IPtables</span> <span class=3DGramE>configuration =
+:</span> <o:p></o:p></p>
+
+<p class=3DMsoNormal style=3D'tab-stops:45.8pt 91.6pt 137.4pt 183.2pt =
+229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt =
+641.2pt 687.0pt 732.8pt'><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:
+"Courier =
+New";color:black'>/lib/modules/2.4.18-3smp/kernel/net/ipv4/netfilter/ip_t=
+ables.o:
+<span class=3DSpellE>init_module</span>: Device or resource =
+busy<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'tab-stops:45.8pt 91.6pt 137.4pt 183.2pt =
+229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt =
+641.2pt 687.0pt 732.8pt'><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:
+"Courier =
+New";color:black'>/lib/modules/2.4.18-3smp/kernel/net/ipv4/netfilter/ip_t=
+ables.o:
+<span class=3DSpellE>insmod</span>
+/lib/modules/2.4.18-3smp/kernel/net/ipv4/netfilter/ip_tables.o =
+failed<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'tab-stops:45.8pt 91.6pt 137.4pt 183.2pt =
+229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt =
+641.2pt 687.0pt 732.8pt'><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:
+"Courier =
+New";color:black'>/lib/modules/2.4.18-3smp/kernel/net/ipv4/netfilter/ip_t=
+ables.o:
+<span class=3DSpellE>insmod</span> <span class=3DSpellE>ip_tables</span> =
+failed<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'tab-stops:45.8pt 91.6pt 137.4pt 183.2pt =
+229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt =
+641.2pt 687.0pt 732.8pt'><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:
+"Courier New";color:black'>Hint: <span class=3DSpellE>insmod</span> =
+errors can be
+caused by incorrect module parameters, including invalid IO or IRQ =
+parameters<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'tab-stops:45.8pt 91.6pt 137.4pt 183.2pt =
+229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt =
+641.2pt 687.0pt 732.8pt'><span
+class=3DSpellE><span class=3DGramE><font size=3D2 color=3Dblack =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New";color:black'>iptables</span></font></span></span><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:
+"Courier New";color:black'> v1.2.5: can't initialize <span =
+class=3DSpellE>iptables</span>
+table `filter': <span class=3DSpellE>iptables</span> who? (<span =
+class=3DGramE>do</span>
+you need to <span =
+class=3DSpellE>insmod</span>?)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'tab-stops:45.8pt 91.6pt 137.4pt 183.2pt =
+229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt =
+641.2pt 687.0pt 732.8pt'><font
+size=3D2 color=3Dblack face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:
+"Courier New";color:black'>Perhaps <span class=3DSpellE>iptables</span> =
+or your
+kernel needs to be upgraded.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'>This may indicate that your =
+kernel does
+not support <span =
+class=3DSpellE>IPtables</span>.}.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'><span
+style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;
+</span>Running 7.2 <span =
+class=3DSpellE>Redhat</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'>I would like to open a port but I =
+get this
+message. Please see if you have any suggestion. =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'><o:p>&nbsp;</o:p></span></font></p=
 >
 
-------_=_NextPart_001_01C2A2C4.34F2EAE0--
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'>Thanks<o:p></o:p></span></font></p=
+>
+
+<p class=3DMsoNormal><font size=3D3 color=3Dblack face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:black'>Paul</span></font><font size=3D2 =
+face=3DArial><span
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0001_01C29D31.23871990--
+
 
