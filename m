@@ -1,64 +1,61 @@
-From: Oskar Andreasson <blueflux@koffein.net>
-Subject: [RELEASE] New version of iptables and ipsysctl tutorials
-Date: Sat, 26 Apr 2003 16:07:45 +0200 (CEST)
-Sender: lartc-admin@mailman.ds9a.nl
-Message-ID: <Pine.LNX.4.44.0304261551090.15921-100000@laptop1.agatha>
+From: "Brad Morgan" <B-Morgan@concentric.net>
+Subject: RE: Local rule for Port Forward
+Date: Sat, 26 Apr 2003 09:44:36 -0600
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <002201c30c0a$c106cb00$0400a8c0@bradmorgan>
+References: <1051344354.14942.2.camel@il.npn>
 Mime-Version: 1.0
-Return-path: <lartc-admin@mailman.ds9a.nl>
-Errors-To: lartc-admin@mailman.ds9a.nl
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1051344354.14942.2.camel@il.npn>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: pnelson@neatech.com, 'Netfilter List' <netfilter@lists.samba.org>
 
-Hi All,
 
-Just to let people know, there are now new versions of the iptables 
-tutorial, and the ipsysctl tutorial available. 
 
-The iptables-tutorial was released the 24th in version 1.1.18, mainly a
-gather up on all the feedback I have gotten from people around the world.  
-Thanks to everyone for the feedback! I am currently considering to release
-another new version rather soon, mainly some small fixes that was too late
-to get into this version, and getting PS/PDF up to work again (possible). 
-There is also a spanish translation ongoing, as well as a stalled 
-portuguese translation. If anyone wants to work on it, it's in the source 
-tree (src.tgz from the homepage). 
-Homepage: 
-http://iptables-tutorial.frozentux.net
+>  I'm doing port forwarding to a server that runs jabber and everything
+>  works fine, I did notice that if I bring up a jabber client on the
+>  firewall itself I do not get connected.  While this isn't really
+>  needed... I don't totally understand why it doesn't work.  Being
+>  inquisitive... well I just gots to know why!  Can anyone shed some
+>  light?
+>=20
+>  My rules for the jabber port forward are:
+>=20
+>  iptables -A FORWARD
+>           -i $ExIF -d $JabIP -p tcp --dport $JabPort
+>           -j ACCEPT
+>  iptables -A PREROUTING
+>           -t nat -d $ExIP -p tcp --dport $JabPort
+>           -j DNAT --to-destination $JabIP
+>  iptables -A POSTROUTING
+>           -t nat -d $JabIP -p tcp --dport $JabPort
+>           -j SNAT --to-source $InIP
 
-The ipsysctl-tutorial is released just now, on the 26th, in version 1.0.3, 
-consisting of a lot of minor updates. Details updated, added some 
-explanations (jiffies, arp_filter), TCP tuning information, etc. This 
-version also fixes the PS and PDF format. I'm still holding my thumbs for 
-the PDF one though, since I didn't do any specific work to get it to 
-run.. hence, if you believe in miracles...;). 
-Homepage:
-http://ipsysctl-tutorial.frozentux.net
+The reason why jabber doesn't work on the firewall is because the =
+PREROUTING
+rule sends the packet to jabber server as requested.  It never reaches =
+the
+INPUT chain or the client running on the firewall.
 
-Comments are more than welcome, and I am finally up to date with mails (I 
-think noone should have unreplied mails from christmas anymore at 
-least...). This means everyone should get replies within at least 2-3 days 
-now=). 
+An excellent reference for how packets traverse the iptables chains can =
+be
+found at http://iptables-tutorial.frozentux.net by Oskar Andreasson.  He
+just posted a new version.
 
-And if you excuse me, I'm going to bed, 3 hours of sleep per day in 2
-weeks is taking its toll:)
+Regards,
 
--- 
-----
-Oskar Andreasson
-http://www.frozentux.net
-http://iptables-tutorial.frozentux.net
-http://ipsysctl-tutorial.frozentux.net
-mailto:blueflux@koffein.net
+Brad Morgan
+ =20
 
-_______________________________________________
-LARTC mailing list / LARTC@mailman.ds9a.nl
-http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
+
+
