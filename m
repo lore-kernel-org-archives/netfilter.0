@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: [Fwd: Question with WebMail + Mail Server]
-Date: Sat, 24 Apr 2004 14:10:59 +0100
+From: Micha Silver <Micha@arava.co.il>
+Subject: RE: I have no idea why this doesn't work...(further details)
+Date: Sat, 24 Apr 2004 16:47:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404241410.59333.Antony@Soft-Solutions.co.uk>
-References: <408A6290.B684D53D@ita.org.mo>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <8118CC0EE4FDF94AA1C785BD746EF2A69DB2B5@eshetb>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <408A6290.B684D53D@ita.org.mo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,50 +15,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: 'Garison Piatt' <todo@garisonpiatt.com>
+Cc: netfilter@lists.netfilter.org
 
-On Saturday 24 April 2004 1:50 pm, edwardspl@ita.org.mo wrote:
+> 
+> 
+> > > > is there any good reason why you are not using ssh?
+> > > Didn't know about it.  I just downloaded PuTTY.
+> >Does that, um, gulp, imply that you're using Windows !?
+> 
+> Yeah, 'fraid so.
 
-> Dear All,
->
-> There is Firewall + WebMail + Mail Server in a computer machine ( Linux
-> Server ) :
->
-> Firewall is using iptables, protocol of WebMail ( IMP 3.2.3 ,
-> http://horde.org/imp ) is using imap/notls and port is using 143, and
-> the Mail Server is using imap ( come with Fedora Core 1 Linux ).
->
-> iptables ruls :
->
-> iptables -P INPUT DROP
-> iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
->
-> But I have the following the problem :
-> http://marc.free.net.ph/message/20040318.053223.3f53fbd8.html
->
-> So, who can help me to fix this kind of problem ?
+You DO know that Putty is a full featured ssh client, don't you??
+Loose the telnet...
 
-1. Does the problem go away if you (temporarily) change the default INPUT 
-policy to ACCEPT instead of DROP?
+--Micha
 
-2. What OUTPUT rules do you have (specifically, are you allowing in the reply 
-packets)?
-
-3. I suggest using a packet sniifer (eg: ethereal), or add some LOGging 
-statements to your INPUT & OUTPUT chains to see what packets are actually 
-present.
-
-Regards,
-
-Antony.
-
--- 
-"Black holes are where God divided by zero."
-
- - Steven Wright
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> 
+> Mahalo,
+> -garison 
+> 
 
