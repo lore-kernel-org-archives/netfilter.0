@@ -1,11 +1,15 @@
-From: Jonathan G - Mailing List <email-lists@surestorm.com>
-Subject: Newbie :: Block IP Range seems not to work
-Date: Sun, 05 Oct 2003 15:05:41 +0200
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Change iptables log format
+Date: Sun, 5 Oct 2003 16:08:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F801725.6050207@surestorm.com>
+Message-ID: <20031005140859.GC5758@sunbeam.de.gnumonks.org>
+References: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LC6PSvEsRImd411h"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,51 +19,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: "Lasse B. Jensen" <gymer@odense.kollegienet.dk>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
 
-i'm a newbie in iptables (i have only used commercial products but never 
-tried to  write my own rules step by step).
+--LC6PSvEsRImd411h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have read the iptables manual, and other related to server 
-configuration but in my case it seems not to work. I'm sure i'm doing 
-somrething wrong but i don't know what exactly.
+On Thu, Oct 02, 2003 at 04:40:05PM +0200, Lasse B. Jensen wrote:
+> Is it possible to change the log format of iptables?
 
-I want to learn to do it fine to modify the default rules that comes 
-with IPCop fireall to fit my needs at home.
+not without modifying the sourcecode of ipt_LOG.c
 
-What i need is to block an ip range completely. I have a internal web 
-server. Over my firewall i make a port forward to send all traffic that 
-arrives at the firewall to the web server. The firewall own the public 
-ip address of my site.
+you can alternatively start using ulogd, where you only have to modify
+userspace code if you want to log in a special format...
 
-I have used a syntax like this:
+> Lasse B. Jensen
 
-iptables -A CUSTOMINPUT -s <RANGE> -j DROP
-iptables -A CUSTOMFORWARD -p tcp -s <RANGE> -d <WebSrvIp> --dport 80
-iptables -A PORTFWACCESS -p tcp -s <RANGE> -d <WebSrvIp> --dport 80 -j DROP
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-CUSTOMINPUT is a chain of INPUT type
-     - CUSTOMINPUT  all  --  0.0.0.0/0            0.0.0.0/0
-CUSTOMFORWARD is a chain of FORWARD type
-     - CUSTOMFORWARD  all  --  0.0.0.0/0          0.0.0.0/0
-PORTFWACCESS is a chain of FORWARD type
-     - PORTFWACCESS  all  --  0.0.0.0/0           0.0.0.0/0
+--LC6PSvEsRImd411h
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-TIA
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-jonathan
+iD8DBQE/gCX7XaXGVTD0i/8RAnrwAJ9jW2xw3LT+5WHSwFmAZmZ0qCHvnwCfemMr
+yDbTB62b6+WiG9us+DuKeDE=
+=MIki
+-----END PGP SIGNATURE-----
 
--- 
-___________________________________________________________________
-  Jonathan Gonzalez - SureStorm.com Security Site - Madrid/MA/SPAIN
-  http://www.surestorm.com - GnuPG Key ID = 0xAA3EAC08
-
-  /"\
-  \ /  ASCII RIBBON CAMPAIGN
-   X   Against HTML mail & Microsoft attachments
-  / \
-
+--LC6PSvEsRImd411h--
 
