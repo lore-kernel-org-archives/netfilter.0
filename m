@@ -1,14 +1,10 @@
-From: Alistair Tonner <alistair@nerdnet.ca>
-Subject: Re: redirection trouble
-Date: Fri, 28 Nov 2003 14:25:07 -0300
+From: "Akos Szalkai" <szalkai@2fkft.com>
+Subject: mangle after nat in the postrouting chain
+Date: Fri, 28 Nov 2003 18:33:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <oprzcyn5vbj23193@192.168.2.1>
-References: <004a01c3a282$a1430cc0$de0018ac@admin.monash.edu.my> <oprx3kv6lddpszyy@192.168.2.1>
-Reply-To: alistair@nerdnet.ca
+Message-ID: <20031128173350.GJ5232@2fkft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <oprx3kv6lddpszyy@192.168.2.1>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,139 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: =?iso-8859-15?Q?Mart=EDn?= <martin@familia-fiumara.com.ar>, eturner@monash.edu.my
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On November 4, 2003 12:15 am, Mart=C3=ADn wrote:
-> Ok, I think I got it... but does not work. I see the traffic being
-> redirected, but the conection gets lost, I got this in the snuiffer:
->
-> 02:02:51.640513 192.168.2.1 > 192.168.2.5: icmp: 192.168.2.1 udp port 100=
-00
-> unrachable [tos 0x40]
->
-> Any Idea?
+Hello,
 
+is there any kind of patch (or even consideration to create one) for
+packet mangling in the POSTROUTING chain after NAT?  (At least as far as
+I see, right now it's mangle first, then NAT.)  I can also see the
+advantages of mangle before NAT, so perhaps the ideal solution would be
+mangling twice on the POSTROUTING chain, if it is possible.
 
-	Ummm what exists between the linux NAT box and the internet itself?
+The situation where I would find mangling after NAT very handy is the
+following.  I have two independent internet connections, and a few NAT
+rules which eventually decide the source address of the outgoing packet.
+And only now, knowing the source address is it possible to route the
+packet correctly.  Since we are way after routing here, only mangle
+could help.
 
-	Do you have another router in there?=20
-	what is meant by: ( eth0 192.168.1.10 > adsl ppp0 IP dinamic)
-	Typically adsl direct connected routers to ppp daemons should=20
-	NOT have an ip on the ethernet interface unless you need to manage
-	the router.  However I digress.
-=09
-	Can you see the packet (after DNATting) on the way out ppp0?
-=09
-	What if any other rules have you in the FORWARD chain.
-=09
-	*thunks head on table* You will need to FORWARD the packets through the=20
-	box as well as DNATting the packets.
-=09
-	iptables -I FORWARD -p udp -s 192.168.2.5 -d 200.24.24.200 --dport 10000 -=
-j=20
-ACCEPT
-=09
-	And again, depeinding on the presence of ESTABLISHED RELATED rules you may=
-=20
-need to return them through the FORWARD chain
+Please correct me if I am not understanding things correctly.
 
-	Sometimes assumption of anything will get us in trouble.=20
+Akos
 
-
->
->
->
->
-> En Tue, 4 Nov 2003 11:20:42 +0800, Edmund Turner <eturner@monash.edu.my>
->
-> escribi=C3=B3:
-> > Martin, Alistairs explanation and solution is correct.
-> > In short 192.168.2.5 will only see traffic thru and fro 192.168.2.1
-> > @port 10000. Put a packet analyser or a sniffer on 192.168.2.5 to
-> > confirm.
-> > In Iptables if you do a prerouting as such :
-> >
-> > #This will redirect all packets to 192.168.2.1 dport 10000 to
-> > 200.24.24.200:10000
-> >
-> > iptables -t nat -I PREROUTING -i eth1 -d 192.168.2.1 -p udp --dport
-> >
-> >> 10000 -j DNAT --to 200.45.45.200:10000
-> >
-> > You don=E2=80=99t have to worry about the packets coming in back from
-> > 200.24.24.200. They will be tracked and sent back to 192.168.2.5 as
-> > source IP of 192.168.2.1. Im not sure which module is responsible for
-> > this, but I think its done by the ip_conntrack module. Maybe someone can
-> > enlighten us on this?
-> >
-> >
-> > Regards
-> > edmund
-> >
-> >> -----Original Message-----
-> >
-> > From: netfilter-admin@lists.netfilter.org
-> > [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Mart=C3=ADn
-> > Sent: Tuesday, November 04, 2003 10:37 AM
-> > To: alistair@nerdnet.ca
-> > Cc: netfilter@lists.netfilter.org
-> > Subject: Re: redirection trouble
-> >
-> > En Mon, 3 Nov 2003 21:21:09 -0500, Alistair Tonner <Alistair@nerdnet.ca>
-> >
-> > escribi=C3=B3:
-> >> On November 3, 2003 08:53 pm, Mart=C3=ADn wrote:
-> >>> This is the situation:
-> >>>
-> >>>
-> >>>
-> >>> Internal LAN machine (192.168.2.5)
-> >>>
-> >>>
-> >>>
-> >>> (eth1 192.168.2.1) NAT LINUX ( eth0 192.168.1.10 > adsl ppp0 IP
-> >
-> > dinamic)
-> >
-> >>> Server 200.45.45.200 (service at port 10000)
-> >>>
-> >>>
-> >>>
-> >>> This is what I intend to do:
-> >>> For particular reasons, I need that a soft at 192.168.2.5 comunicate
-> >>> with a
-> >>> server with a service at port 10000 (UDP), but this can=C2=B4t be done
-> >>> through
-> >>> normal NAT. So i want to establish a link between both (server and
-> >>> 192.168.2.5) manually useing the NAT LINUX
-> >>> So, 192.168.2.5 comunicates to 192.168.2.1 port 10000, the NAT LINUX
-> >>> redirect this traffic to the server 200.45.45.200 port 10000. The
-> >
-> > server
-> >
-> >>> will respond to the NAT LINUX who will redirect this traffic to
-> >>> 192.168.2.5
-> >>> (port 10000 also)
-> >>> I try to do all this in this way:
-> >>>
-> >>>
-> >>> iptables -t nat -I PREROUTING 1 -i eth1 -d 192.168.2.1 -p udp --dport
-> >>>
-> >>> 10000
-> >>> -j DNAT --to 200.45.45.200
-> >>>
-> >>> iptables -t nat -I POSTROUTING 1 -o eth0 -p udp --dport 10000 -j SNAT
-
-=2D-=20
-
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-=09
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
-
-
+-- 
+Akos Szalkai <szalkai@2f.hu>
+IT Consultant, CISA
+2F 2000 Szamitastechnikai es Szolgaltato Kft.
+Tel: (+36-1)-4887700  Fax: (+36-1)-4887709  WWW: http://www.2f.hu/
 
