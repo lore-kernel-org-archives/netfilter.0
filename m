@@ -1,14 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ipsec troubles
-Date: Fri, 15 Oct 2004 15:33:36 -0400
+From: kate <kate7234@yahoo.com>
+Subject: services for predetermined IP addresses
+Date: Fri, 15 Oct 2004 12:41:15 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041015193336.GA7878@bender.817west.com>
-References: <20041015184450.GA7688@bender.817west.com>
-	<0f4001c4b2ea$fbafa460$49caa8c0@caris.priv>
+Message-ID: <20041015194115.58352.qmail@web21525.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <0f4001c4b2ea$fbafa460$49caa8c0@caris.priv>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,39 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Fri, Oct 15, 2004 at 04:12:58PM -0300, Peter Marshall wrote:
-> Thank you again for the quick reply ... I am not sure if your suggestion
-> will work though ... my vpn server is not on my firewall .. it is between my
-> internal and external ... so basically, the troubling packets will come in
-> through my external firewall, hit the vpnserver, leave the vpnserver and
-> head to my internal firewall.  They are then supposed to pass through to the
-> server that has the webpage I am trying to get to, and then return the page
-> back accross the vpn link to the remote server ....
-> 
-> I guess what I am getting at is there is no ipsec_if on the firewall ..as
-> the vpn server is a standalone server ....
-> 
-> Peter
+Hello,
 
-couple of things:
+As I see increased scans on my IP address, I want to
+limit access to only predetermined IP address ranges
+for certain services - Is the following the correct
+way to do this?
 
-first--you only can control the packets that leave your network sent to
-the remote network.  if they have a problem on their end as well--they
-need to fix it at their side...
+<snip>
+# (Part A) Rules for incoming packets from Internet
+# Packets for established connections
+iptables -A INPUT -p ALL -d $ETH0_IP -m state --state
+ESTABLISHED,RELATED -j ACCEPT
 
-that being said--find the last place in your network where packets
-destined for the remote VPN network are in the clear, and apply the
-TCPMSS rule there.  if i'm understanding you correctly--this would be on
-your internal firewall and you would identify the packets by their
-destination network...maybe like:
+# (Part B) TCP Rules
+iptables -A INPUT -p TCP -i eth0 -s 123.45.1.1
+--destination-port 21 -j okay # userA
+iptables -A INPUT -p TCP -i eth0 -s 123.45.0/16
+--destination-port 22 -j okay  #users A - Z
+</snip>
 
-  iptables -A FORWARD -i $INSIDE_IF -o $OUTSIDE_IF -p tcp --syn \
-    -d $REMOTE_VPN_NET -j TCPMSS --set-mss 1440
+So I understand -
+ONLY User A can ftp, and all those in 123.45. can ssh
+, BUT no-one else on the Internet can request services
+?
 
--j
+Thanks in advance
+Kate
 
--- 
-Jason Opperisano <opie@817west.com>
+
+		
+_______________________________
+Do you Yahoo!?
+Declare Yourself - Register online to vote today!
+http://vote.yahoo.com
 
