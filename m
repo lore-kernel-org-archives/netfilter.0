@@ -1,10 +1,14 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: [PATCH] admin-prohibited option. Let us look at it again.
-Date: Wed, 9 Apr 2003 17:28:41 +0200 (CEST)
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: SNAT help
+Date: 09 Apr 2003 18:25:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0304091722270.12113@dns.toxicfilms.tv>
+Message-ID: <1049905548.14655.130.camel@raylinux.internal>
+References: <Pine.LNX.4.44.0304091046430.19561-100000@eccweb1.edina.k12.mn.us>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-pwyGUuUa4HWQu9AGaguN"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0304091046430.19561-100000@eccweb1.edina.k12.mn.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,156 +18,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hello,
 
-Harald wrote in:
-http://lists.netfilter.org/pipermail/netfilter-devel/2002-December/009962.html
+--=-pwyGUuUa4HWQu9AGaguN
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-that we should add this option and make an INCOMPATIBILITIES file as Jozsef
-suggested. Also as Jozsef suggested this patch does not have kernel version
-checking, just a warning in the man page, the INCOMPATIBILITIES file and
-the '-j REJECT --help' message.
+Where did you put that rule? Does it come before your other SNAT rules?
 
-Please recall our exchange of opinions back then and review the patch to
-the netfilter tree:
+Are you running a transparent web cache (like squid)?
 
- patch-o-matic/extra/admin-prohib.patch      |   34 ++++++++++++++++++++++++++++
- patch-o-matic/extra/admin-prohib.patch.help |    9 +++++++
- userspace/INCOMPATIBILITIES                 |    6 ++++
- userspace/extensions/libipt_REJECT.c        |   16 ++++++++++++-
- userspace/iptables.8                        |    7 ++++-
- 5 files changed, 69 insertions(+), 3 deletions(-)
+Ray
 
-Regards,
-Maciej
+On Wed, 2003-04-09 at 17:47, Scott Johnson wrote:
+> I apologize if this message appears twice... I got a bounce on it the=20
+> first time.
+>=20
+> I'm new to iptables so I very much appreciate any help I can get.
+>=20
+> I've been digging through information for about 1.5 weeks now and got mos=
+t=20
+> things to work, however I'm stumped on one thing...
+>=20
+> I've got masquerading going on for the 3000+ work stations I have in=20
+> house.  In addition, I've got some good basic firewalling going on, I'm=20
+> still working on the rules, but I'm happy they're working as well as they=
+=20
+> are.
+>=20
+> Now, I've got a few PC's that need a different public IP address from the=
+=20
+> masses.  So I'm trying to assign a static NAT to these.  When I assign th=
+e=20
+> static nat rule, it never gets used.
+>=20
+> For example:
+>=20
+> eth0 - internal
+> eth1 - dmz
+> eth2 - external
+>=20
+> iptables -t nat -A POSTROUTING -s 10.1.3.35/32 -o eth2 -j SNAT --to=20
+> 1.2.3.4
+> (where 1.2.3.4 is the public address that I'm assigning)
+> ip address add 1.2.3.4 dev eth2
+>=20
+> creates a rule that looks like:
+>=20
+>    0     0 SNAT       all  --  *      eth2    10.1.3.35           =20
+> 0.0.0.0/0          to:1.2.3.4
+>=20
+> When I go check my ip address at an external site, I keep getting the=20
+> public interface IP address.
+>=20
+> Again, any and all help is MUCH appreciated.
+>=20
+> Thanks!
+>   Scott=20
+>=20
 
-diff -Nru netfilter.orig/patch-o-matic/extra/admin-prohib.patch netfilter/patch-o-matic/extra/admin-prohib.patch
---- netfilter.orig/patch-o-matic/extra/admin-prohib.patch	1970-01-01 01:00:00.000000000 +0100
-+++ netfilter/patch-o-matic/extra/admin-prohib.patch	2003-04-09 16:43:50.000000000 +0200
-@@ -0,0 +1,34 @@
-+diff -Nru linux.bak/include/linux/netfilter_ipv4/ipt_REJECT.h linux/include/linux/netfilter_ipv4/ipt_REJECT.h
-+--- linux.bak/include/linux/netfilter_ipv4/ipt_REJECT.h	2003-04-08 20:21:22.000000000 +0200
-++++ linux/include/linux/netfilter_ipv4/ipt_REJECT.h	2003-04-09 16:40:05.000000000 +0200
-+@@ -9,7 +9,8 @@
-+ 	IPT_ICMP_ECHOREPLY,
-+ 	IPT_ICMP_NET_PROHIBITED,
-+ 	IPT_ICMP_HOST_PROHIBITED,
-+-	IPT_TCP_RESET
-++	IPT_TCP_RESET,
-++	IPT_ICMP_ADMIN_PROHIBITED
-+ };
-+
-+ struct ipt_reject_info {
-+diff -Nru linux.bak/net/ipv4/netfilter/ipt_REJECT.c linux/net/ipv4/netfilter/ipt_REJECT.c
-+--- linux.bak/net/ipv4/netfilter/ipt_REJECT.c	2003-04-08 20:21:56.000000000 +0200
-++++ linux/net/ipv4/netfilter/ipt_REJECT.c	2003-04-09 16:41:07.000000000 +0200
-+@@ -1,6 +1,7 @@
-+ /*
-+  * This is a module which is used for rejecting packets.
-+  * Added support for customized reject packets (Jozsef Kadlecsik).
-++ * Added support for ICMP type-3-code-13 (Maciej Soltysiak). [RFC 1812]
-+  */
-+ #include <linux/config.h>
-+ #include <linux/module.h>
-+@@ -330,6 +331,9 @@
-+ 	case IPT_ICMP_HOST_PROHIBITED:
-+     		send_unreach(*pskb, ICMP_HOST_ANO);
-+     		break;
-++    	case IPT_ICMP_ADMIN_PROHIBITED:
-++		send_unreach(*pskb, ICMP_PKT_FILTERED);
-++		break;
-+ 	case IPT_TCP_RESET:
-+ 		send_reset(*pskb, hooknum == NF_IP_LOCAL_IN);
-+ 	case IPT_ICMP_ECHOREPLY:
-diff -Nru netfilter.orig/patch-o-matic/extra/admin-prohib.patch.help netfilter/patch-o-matic/extra/admin-prohib.patch.help
---- netfilter.orig/patch-o-matic/extra/admin-prohib.patch.help	1970-01-01 01:00:00.000000000 +0100
-+++ netfilter/patch-o-matic/extra/admin-prohib.patch.help	2003-04-09 16:47:14.000000000 +0200
-@@ -0,0 +1,9 @@
-+Author: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-+Status: Working, causes incompatibilities.
-+
-+This patch adds --reject-with admin-prohib option to the REJECT targe
-+making it compliant with RFC 1812 and making an incompatibility
-+with kernels that do not support this ipt_REJECT.c option.
-+
-+Usage of this option with kernels that do not support will effect in
-+a DROP, not REJECT.
-diff -Nru netfilter.orig/userspace/INCOMPATIBILITIES netfilter/userspace/INCOMPATIBILITIES
---- netfilter.orig/userspace/INCOMPATIBILITIES	1970-01-01 01:00:00.000000000 +0100
-+++ netfilter/userspace/INCOMPATIBILITIES	2003-04-09 16:53:01.000000000 +0200
-@@ -0,0 +1,6 @@
-+INCOMPATIBILITIES:
-+
-+- The REJECT target has an '--reject-with admin-prohib' option which used
-+  with kernels that do not support it, will result in a plain DROP instead
-+  of REJECT.  Use with caution.
-+  Kernels that do support it:
-diff -Nru netfilter.orig/userspace/extensions/libipt_REJECT.c netfilter/userspace/extensions/libipt_REJECT.c
---- netfilter.orig/userspace/extensions/libipt_REJECT.c	2003-04-08 21:49:15.000000000 +0200
-+++ netfilter/userspace/extensions/libipt_REJECT.c	2003-04-09 16:59:53.000000000 +0200
-@@ -9,6 +9,16 @@
- #include <iptables.h>
- #include <linux/netfilter_ipv4/ip_tables.h>
- #include <linux/netfilter_ipv4/ipt_REJECT.h>
-+#include <linux/version.h>
-+
-+/* If we are compiling against a kernel that does not support
-+ * IPT_ICMP_ADMIN_PROHIBITED, we are emulating it.
-+ * The result will be a plain DROP of the packet instead of
-+ * reject. -- Maciej Soltysiak <solt@dns.toxicfilms.tv>
-+ */
-+#ifndef IPT_ICMP_ADMIN_PROHIBITED
-+#define IPT_ICMP_ADMIN_PROHIBITED	IPT_TCP_RESET + 1
-+#endif
 
- struct reject_names {
- 	const char *name;
-@@ -35,7 +45,9 @@
- 	{"icmp-host-prohibited", "host-prohib",
- 	 IPT_ICMP_HOST_PROHIBITED, "ICMP host prohibited"},
- 	{"tcp-reset", "tcp-reset",
--	 IPT_TCP_RESET, "TCP RST packet"}
-+	 IPT_TCP_RESET, "TCP RST packet"},
-+	{"icmp-admin-prohibited", "admin-prohib",
-+	 IPT_ICMP_ADMIN_PROHIBITED, "ICMP administratively prohibited (*)"}
- };
+--=-pwyGUuUa4HWQu9AGaguN
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
- static void
-@@ -64,6 +76,8 @@
- "                                a reply packet according to type:\n");
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
- 	print_reject_types();
-+
-+	printf("(*) See man page or read the INCOMPATIBILITES file for compatibility issues.\n");
- }
+iD8DBQA+lEmMh1fuR/Bv+ygRAtAoAJ0Sts6Ewty+uk3GFxWGAyEErc3WSgCgnP/K
+KoPjiUVyAS2Xngm2dP2gCrA=
+=qAts
+-----END PGP SIGNATURE-----
 
- static struct option opts[] = {
-diff -Nru netfilter.orig/userspace/iptables.8 netfilter/userspace/iptables.8
---- netfilter.orig/userspace/iptables.8	2003-04-08 21:49:17.000000000 +0200
-+++ netfilter/userspace/iptables.8	2003-04-09 17:11:20.000000000 +0200
-@@ -852,8 +852,9 @@
- .BR icmp-host-unreachable ,
- .BR icmp-port-unreachable ,
- .BR icmp-proto-unreachable ,
--.BR "icmp-net-prohibited or"
--.BR icmp-host-prohibited ,
-+.BR icmp-net-prohibited ,
-+.BR "icmp-host-prohibited or"
-+.BR "icmp-admin-prohibited (*)"
- which return the appropriate ICMP error message (\fBport-unreachable\fP is
- the default).  The option
- .B tcp-reset
-@@ -862,6 +863,8 @@
- .I ident
- (113/tcp) probes which frequently occur when sending mail to broken mail
- hosts (which won't accept your mail otherwise).
-+.TP
-+(*) Using icmp-admin-prohibited with kernels that do not support it will result in a plain DROP instead of REJECT
- .SS SNAT
- This target is only valid in the
- .B nat
+--=-pwyGUuUa4HWQu9AGaguN--
+
 
