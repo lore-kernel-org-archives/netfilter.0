@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Unknown <unknown@unknown.invalid>
 Subject: Re: script firewall -- munged to OT -- very OT
-Date: Wed, 14 Apr 2004 01:05:56 +0100
+Date: Tue, 13 Apr 2004 20:53:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404140105.56106.Antony@Soft-Solutions.co.uk>
-References: <20040413212810.35514.qmail@web40506.mail.yahoo.com> <200404132302.20098.Antony@Soft-Solutions.co.uk> <200404131923.23985.Alistair Tonner <>>
+Message-ID: <24828.8360926837$1081905496@news.gmane.org>
+References: <20040413212810.35514.qmail@web40506.mail.yahoo.com> <>> <200404140105.56106.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <>
+From: Alistair Tonner <>
+In-Reply-To: <200404140105.56106.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,31 +22,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 14 April 2004 12:23 am, Alistair Tonner wrote:
-
-> On April 13, 2004 06:02 pm, Antony Stone wrote:
-> > "640 kilobytes (of RAM) should be enough for anybody."
+On April 13, 2004 08:05 pm, Antony Stone wrote:
+> On Wednesday 14 April 2004 12:23 am, Alistair Tonner wrote:
+> > On April 13, 2004 06:02 pm, Antony Stone wrote:
+> > > "640 kilobytes (of RAM) should be enough for anybody."
+> > >
+> > >  - Bill Gates
 > >
-> >  - Bill Gates
+> > 	Antony -- I love yer sigs... And back then I was already cursing the
+> > bugger.
+> >
+> > 	(for what its worth, I was running DRDos at the time....)
 >
-> 	Antony -- I love yer sigs... And back then I was already cursing the
-> bugger.
+> Thanks for the compliment.   And I'll bet now you run FreeDos and Wine :) 
+> ?
 >
-> 	(for what its worth, I was running DRDos at the time....)
+	Slackware or Gentoo 2.6.3 winex 3.3.1
+	(with vmware lurking about at work)
 
-Thanks for the compliment.   And I'll bet now you run FreeDos and Wine :)  ?
-
-Regards,
-
-Antony.
-
--- 
-Your work is both good and original.  Unfortunately the parts that are good 
-aren't original, and the parts that are original aren't good.
-
- - Samuel Johnson
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> Regards,
+>
+> Antony.
 
