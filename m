@@ -1,14 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: could someone translate these rules inot plain english
-Date: Thu, 22 Jan 2004 10:04:48 +0100
+From: "Christian Gmeiner" <christian@visual-page.de>
+Subject: Re: Problem with connection-tracking and FTP
+Date: Thu, 22 Jan 2004 09:14:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040122100448.1845bf6b.arnt@c2i.net>
-References: <33682.66.65.52.125.1074751856.squirrel@sojourn.dyndns.org>
-	<400F6EF4.2060608@lintelsys.com.au>
+Message-ID: <002001c3e0bf$b25e3680$0600a8c0@blackbox>
+References: <002001c3df6e$a97416e0$0600a8c0@blackbox> <20040122074528.5fe4905a.arnt@c2i.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <400F6EF4.2060608@lintelsys.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +17,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Arnt Karlsen <arnt@c2i.net>, Iptables Netlist <netfilter@lists.netfilter.org>
 
-On Thu, 22 Jan 2004 17:34:28 +1100, 
-Alex Satrapa <alex@lintelsys.com.au> wrote in message 
-<400F6EF4.2060608@lintelsys.com.au>:
+ebegin, eend, einfo,... are all functions form the Gentoo-Linux.
 
->  Technical wrote:
->  > -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j
->  > ACCEPT
-> 
->  For this chain (presumably packets inbound to the network), accept
->  any packets that are part of established TCP connections (ie: a SYN
->  packet for the connection has gone out from the network), or related
->  to UDP packets that have gone out through the firewall.
-> 
-> > -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
-> 
-> Otherwise, reject the packet by sending back an ICMP message telling
-> the remote host that communication with its intended target is 
-> administratively prohibited.
+So it looks like this:
 
-.."Otherwise, " is not part of this last rule.  "Otherwise, " could
-understood as a context where these 2 rules appear as shown. 
+* Setting /proc options...                                               [
+ok ]
+* Takeing care of IANA...                                                [
+ok ]
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+The * is green, [] are blue and the ok is also green. If it fails the ok is
+repleaced with an red !!
+
+So this is only for good looking: :)
+
+Greets, Christian
+
+----- Original Message ----- 
+From: "Arnt Karlsen" <arnt@c2i.net>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, January 22, 2004 7:45 AM
+Subject: Re: Problem with connection-tracking and FTP
+
+
+> On Tue, 20 Jan 2004 17:01:26 +0100,
+> "Christian Gmeiner" <christian@visual-page.de> wrote in message
+> <002001c3df6e$a97416e0$0600a8c0@blackbox>:
+>
+> > Hi everybody.
+> >
+> > I am working on a little firewall script. Everything works just fine,
+> > but i dont get the ftp protocoll working.
+> >
+> > I call this two function to get ftp working:
+> >
+> > # ==================================
+> > FTP()
+> > {
+> >     ebegin "Seting rules for active/passive FTP"
+>
+> ..<snip>
+>
+> >     eend $?
+> > }
+>
+> ..does whatever which is supposed to parse this,
+> understand "ebegin" and "eend" ???
+>
+> -- 
+> ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+> ...with a number of polar bear hunters in his ancestry...
+>   Scenarios always come in sets of three:
+>   best case, worst case, and just in case.
+>
+>
+>
+
 
 
