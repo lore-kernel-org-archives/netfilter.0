@@ -1,9 +1,11 @@
-From: aksingh@hss.hns.com
-Subject: RE: libipq -- 90 mbps
-Date: Thu, 13 May 2004 10:51:34 +0530
+From: =?iso-8859-1?q?Sameer=20Gurung?= <sameersworld@yahoo.co.in>
+Subject: NAT and Transparent proxy
+Date: Thu, 13 May 2004 10:14:42 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF4E812F4D.3FF6EA33-ON65256E93.001D2456@hss.hns.com>
+Message-ID: <20040513091442.90722.qmail@web8304.mail.in.yahoo.com>
+Reply-To: g_sameer75@yahoo.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,143 +17,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Paul Albert <palbert@rovingplanet.com>
-Cc: netfilter@lists.netfilter.org
-
-
-
-
-
-Thanks Paul
-
- Thats really encouraging to know ;-) ... well I can tweak ip_queue_maxlen
-using sysctl, but is there any upper limit allowed there ?
-I have no idea bout rmem_default, whats that ?. Userland process refers to
-the user space process that was using libipq , right ?.
-
-good words to begin my day
-Amit
-
-
-
-
-"Paul Albert" <palbert@rovingplanet.com>@lists.netfilter.org on 05/13/2004
-12:10:56 AM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    <netfilter@lists.netfilter.org>
-cc:
-
-Subject:    RE: libipq -- 90 mbps
-
-
-Amit -
-
-I've gotten upwards of 250 Mbps using libipq and the QUEUE target with
-gig interfaces.
-
-We tweeked both ip_queue_maxlen and rmem_default and nice'ed the
-userland process that was reading from the netlink to get those values.
-
-Good luck!
-
-Paul
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
-aksingh@hss.hns.com
-Sent: Wednesday, May 12, 2004 4:01 AM
 To: netfilter@lists.netfilter.org
-Subject: libipq -- 90 mbps
+
+Hi all,
+
+I have the current set up as follows;
+
+Linux box running PCQLinux 2004 (based on fedora core
+1...check out the site pcquest.com. its a great
+distribution ) with 2 NIC .... eth1 connected 2 the
+internet and eth0 to the local network
+
+
+I run squid on the same box that runs the firewall
+(iptables). I have turned on transparent proxying with
+the following rules
 
 
 
 
+iptables -t nat -A PREROUTING  -i $LAN_IFACE -p tcp -j
+REDIRECT --to-port 3128 
 
-Hi
+iptables -t nat -A POSTROUTING -o $INET_IFACE -j SNAT
+--to-source $INET_IP
 
-  can libipq support traffic at the rate of say 90 mbps/sec ?
+The rule works fine....But I also use the firewall box
+as a workstation and allow access from it to the
+internet via the output chain. The rules being (where
+LAN_IP=192.168.2.1 and INET_IP = static ip given by
+isp )
 
-    we can increase the ipq_queue_maxlen using sysctl system call, but
-is
-   there any upper limit on this queue size ? or can we give it any
-value
-   till sizeof(int)
-   has anybody here ever tried this much traffic while using ip_queue
-and
-   libipq ?
-
-
-TIA
-Amit
+iptables -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
+iptables -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+iptables  -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
 
 
+What i want now is all net access from this (firewall)
+box to go through the squid server (i.e. port 3128).
+So I add a rule above the OUTPUT rules that says  
+
+iptables -t nat -A OUTPUT -o $INET_IFACE -p tcp -j
+REDIRECT --to-port 3128
+but it doesn't work..
+
+Can anybody help me.
+
+Thanks all,
 
 
-
-"Daniel Chemko" <dchemko@smgtec.com>@lists.netfilter.org on 05/12/2004
-03:48:57 AM
-
-Sent by:    netfilter-admin@lists.netfilter.org
+Sameer
 
 
-To:    <alucard@kanux.com>, <netfilter@lists.netfilter.org>
-cc:
-
-Subject:    RE: forwarding on the same NIC
+=====
 
 
-> To make matters worse, the second webserver is IIS and I have no idea
-> how to use IP Multiplexing on Win2k, I could do it in linux but
-> Windows systems are not my expertise. What I'm going to do -if I get
-> the permission- is this: Install a 2nd nic on the 2nd webserver so
-> the IP address that is being used doesn't get affected and I will
-> configure it's router to the linux box so it can redirect packets
-> where they should go...
-
-You are either not grasping how difficult what your trying to do, or you
-haven't used proper the wording. Source Routing from windows == blah! If
-you're relying on windows to do routing, I pity thou.
-
-
-To the best of my knowledge, you have:
-x.x.x.254 ROUTER
-   |--x.x.x.1 Linux Server 1  (default route x.x.x.254)
-   |--x.x.x.2 Windows IIS (default route x.x.x.254)
-
-You have the router forwarding a public IP address and PATing it to
-x.x.x.1. You want x.x.x.1:8080 to go to x.x.x.2:80
-
-To get this to work, use:
-
-# Allow any established traffic to traverse the machine
-iptables -A FORWARD -m state ESTABLISHED,RELATED -j ACCEPT
-# Forward the packet destined for 8080 to the windows machine on port 80
-iptables -t nat -A PREROUTING --destination x.x.x.1 -p tcp --dport 8080
--j DNAT --to x.x.x.2:80
-# Allow new web traffic into the network
-iptables -A FORWARD --destination x.x.x.2 -p tcp --dport 80 -j ACCEPT
-# Forces the windows box to route back to you before leaving the network
-iptables -t nat -A POSTROUTING --destination x.x.x.2 -p tcp --dport 80
--j SNAT --to x.x.x.1
-
-The order of traversal becomes:
-
-Router->Firewall->Windows->Firewall->Router
-Instead of
-Router->Firewall->Windows->Router
-The later breaks as I've described earlier.
-
-
-
-
-
-
-
-
+________________________________________________________________________
+Yahoo! India Matrimony: Find your partner online. http://yahoo.shaadi.com/india-matrimony/
 
