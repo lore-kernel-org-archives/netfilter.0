@@ -1,51 +1,49 @@
-From: "Gary Cote" <gcote@transat-tech.com>
-Subject: Will netfilter patches be submitted to kernel base?
-Date: Mon, 23 Jun 2003 14:48:44 -0500
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <OKEKIACJCGNKMLKPKIIKEENFCOAA.gcote@transat-tech.com>
+From: Jason White <jdw-netfilter@jdwhite.org>
+Subject: Forcing source port with NAT
+Date: Mon, 23 Jun 2003 15:02:47 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20030623200247.GB28900@jdwhite.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Greetings,                                                                      
+  I have an application, Zephyr Messaging Service, which uses a client          
+application that sends out UDP packets on port 2104.  The Zephyr server         
+will refuse packets from the client if the source address is not 2104.          
+I want to run this application behind a NAT on one given machine.  I            
+need a way to ensure that packets from this one machine with a source           
+address of 2104 go through the NAT that they emerge on port 2104 of the         
+external ip address.  To diagram a packet:                                      
+                                                                                
+[Intenal machine-10.0.0.2:2104] --> [NAT internal: 10.0.0.1] -->                
+  [NAT external: 200.200.200.200: 2104] --> ///internet/// ...                  
+                                                                                
+Basically, I need to ensure that anything coming in on 200.200.200.200:2104     
+goes to 10.0.0.2:2104 and anything going out from 10.0.0.2:2104 goes out        
+200.200.200.200:2104.                                                           
 
-Can anyone brief me on whether there's any sort of master
-plan to submit the netfilter patches into the kernel base?
-And further, whether there's any thought to back porting 
-them to 2.4.x? If effort is the limiting factor, then my
-company may be sufficiently motivated to cough up some
-free time.
+I know how to map the external to internal, but internal to external            
+isn't immediately obvious                                                       
+                                                                                
+Thanks,                                                                         
+-Jason        
 
-Or ... let me ask you this:
-
-I'm specifically interested in the pptp-conntrack-nat patch.
-I noticed that the patch modifies ip_conntrack_core.c and
-ip_nat_core.c. Aside from what appear to be debug statements,
-it looks like a net change of *two* lines of code. The rest of
-the patch consists of new files.
-
-Would it be possible to get only those small changes into the 
-kernel base? Then, we'd be able to build the GRE/PPTP helpers 
-as loadable modules and not have to patch the kernel.
-
-We're something of a value-added reseller. We bundle our system
-software within a linux workstation. We've so far managed to run 
-our product on off-the-shelf distros and would prefer not to get
-into the business of building, shipping, and maintaining custom
-kernels.
-
-Thoughts would be appreciated.
-
-
-
+-- 
+Jason White (jdw-netfilter@jdwhite.org)  http://www.jdwhite.org/~jdwhite
+Jabber:jdwhite@jabber.org  IRC:irc.netbsd.org/{jdwhite,jdw}
+AIM:jdwhite90125  Yahoo:jdwhite89  ICQ:9295078  MSN:jdwhite89@hotmail.com
+GPG KeyID: 0x74CF850D/1F57 465A 1357 BA39 2BEF  5629 6E1C 2B20 74CF 850D
 
