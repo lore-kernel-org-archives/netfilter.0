@@ -1,14 +1,15 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: Protecting multiple webservers
-Date: Wed, 12 Jan 2005 10:37:56 -0500 (EST)
-Message-ID: <36015.142.169.215.10.1105544276.squirrel@142.169.215.10>
-References: <15069645.1105491740310.JavaMail.rct@kale>
-	<200501120401.01332.bob@zooid.com>
-	<399701c4f8b9$7031da10$b000a8c0@cybergeneration.com>
+From: Tom Marshall <tommy@home.tig-grr.com>
+Subject: Re: ipt_string and Kernel 2.6 !!URGENT!!
+Date: Wed, 12 Jan 2005 07:28:11 -0800
+Message-ID: <20050112152811.GA28242@home.tig-grr.com>
+References: <1105537635.3751.22.camel@hubcap.ljm.dom>
+	<20050112151142.79460.qmail@web26102.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <399701c4f8b9$7031da10$b000a8c0@cybergeneration.com>
+Content-Disposition: inline
+In-Reply-To: <20050112151142.79460.qmail@web26102.mail.ukl.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +20,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Maxime Ducharme <mducharme@cybergeneration.com>
+To: Roland Kaeser <roli8200@yahoo.de>
 Cc: netfilter@lists.netfilter.org
 
-On Wed, January 12, 2005 10:14 am, Maxime Ducharme said:
-> Hello
 
-Hi Maxime !
+--KsGdsel6WgEHnImy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I do not think you can automagically forward packets,
-> DNAT module allows multiple hosts in to --to-destination
-> parameter, but hosts will be used at random
+> I JUST WANT TO RUN THE IPT_STRING ON A KERNEL 2.6.
 
-Indeed. However, I guess NETMAP target could do the trick.
+Jason is correct, IPT_STRING is a toy and should not be used for filtering
+packets on a firewall in an enterprise setup.  What happens to your
+IPT_STRING match when someone sends TCP packets one byte at a time?
 
-http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-NETMAP
+A transparent proxy with a userspace application level filter is likely a
+better choice.
 
-> Have a nice day
+--=20
+If you have received this email in error, you are required to shred it
+immediately, add some nutmeg, three egg whites and a dessertspoonful of
+caster sugar.  Whisk until soft peaks form, then place in a warm oven for 40
+minutes.  Remove promptly and let stand for 2 hours before adding some
+decorative kiwi fruit and cream.  Then notify me immediately by return email
+and eat the original message.
 
-Same for you!
+--KsGdsel6WgEHnImy
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
->
-> Maxime Ducharme
-> Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-Samuel
+iEYEARECAAYFAkHlQgsACgkQFMm9uvwPXW6f1gCgkbsHriSOBhI5l107ppj0cRvG
+RKsAnRohonOPOXQISSix1YAVtafZ/8ZM
+=Iba3
+-----END PGP SIGNATURE-----
 
+--KsGdsel6WgEHnImy--
 
