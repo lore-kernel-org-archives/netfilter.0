@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FORWARD question
-Date: Fri, 21 Nov 2003 11:34:51 +0000
+Subject: Re: http acces
+Date: Fri, 21 Nov 2003 11:37:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311211134.hALBYt724579@onyx.rockstone.co.uk>
-References: <20031121104239.37088.qmail@web40804.mail.yahoo.com>
+Message-ID: <200311211137.hALBbt724587@onyx.rockstone.co.uk>
+References: <1069364822.3fbd3656723b4@roma-hme1> <200311202254.hAKMss723777@onyx.rockstone.co.uk> <1069411624.3fbded284f7f1@paris-hme1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031121104239.37088.qmail@web40804.mail.yahoo.com>
+In-Reply-To: <1069411624.3fbded284f7f1@paris-hme1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Friday 21 November 2003 10:42 am, Nick wrote:
+On Friday 21 November 2003 10:47 am, skydive wrote:
 
-> Thanks Antony, I got it. Once nat and conntrack
-> helpers are implemented correctly, I don't have to
-> worry about it anymore :-)
->
-> There is one last thing, though(I promise it's the
-> last one ;-)
->
-> When I said that only port 21 is open I meant that on
-> the router machine only this port accepts NEW client
-> connections. The other ports will accept only
-> ESTABLISHED and RELATED. I defined this in my INPUT
-> rules.
+> C=F3pia Antony Stone <Antony@Soft-Solutions.co.uk>:
 
-I hope you didn't define them in INPUT :)   I hope you mean FORWARD!?
+> > See if
+> > http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-10.html
+> > answers your question.
+> >
+> > Antony.
 
-The INPUT chain is *only* used for packets which are addressed *to* the 
-firewall machine itself - not for packets which are being routed through it 
-to some other machine.   Those packets go through FORWARD.
+> ok.. i got it to work just fine. although i need 3
+> rules: 1 prerouting,1 forward, 1 postrouting!
 
-> Do I need to accept NEW client connections to port 20
-> as well ? I know it's used for active FTP and I
-> thought FTP client never sends NEW to port 20, only
-> ESTABLISHED.
+Indeed.   NAT rules between machines on a single network are always a bit=
+=20
+messy, and have the possibly undesirable side-effect that the server thin=
+ks=20
+all the connections are coming from the Firewall - although if this doesn=
+'t=20
+matter, then things work fine once you've worked out that packets have to=
+ be=20
+NATted in both directions between client and server.
 
-No, packets coming in on port 20 as part of an ective FTP connection will 
-count as RELATED.
+> danke !
 
-That's the magic of protocol helpers :)
+Bitte :)
 
 Antony.
 
--- 
+--=20
 
-Success is a lousy teacher.   It seduces smart people into thinking they 
-can't lose.
+Wanted: telepath.   You know where to apply.
 
- - William H Gates III
-                                                     Please reply to the list;
-                                                           please don't CC me.
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
 
