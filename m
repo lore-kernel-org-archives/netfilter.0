@@ -1,14 +1,13 @@
-From: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?=<varyag18@mail.ru>
-Subject: Re[2]: iptables ceases to work after night
-Date: Thu, 11 Sep 2003 14:28:18 +0400
+From: Pascal Vilarem <pvilarem-ml@9online.fr>
+Subject: Re: iptables ceases to work after night
+Date: Thu, 11 Sep 2003 13:17:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E19xOgU-000D0o-00.varyag18-mail-ru@f17.mail.ru>
-References: <16770b1670ae.1670ae16770b@tm.net.my>
-Reply-To: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?=<varyag18@mail.ru>
+Message-ID: <3F6059B5.1090107@9online.fr>
+References: <E19xL7G-000NJQ-00.varyag18-mail-ru@f10.mail.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <16770b1670ae.1670ae16770b@tm.net.my>
+In-Reply-To: <E19xL7G-000NJQ-00.varyag18-mail-ru@f10.mail.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +17,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: kluivert@tm.net.my
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+what does iptables-save returns on the morning ?
+
+is it different from what it returns when forwarding is ok ?
+
+if you find differences... there is something to find that alters 
+netfilter config
+(a firewall script ? something like an iptables-restore script ?)
+
+if you don't find differences :
+
+check if the ip_forward parameter is still 1 (maybe there's something 
+that switch it off
+by night ?)
+
+stop netfilter and check if something can go through your netcard...
+if no... i'd suggest to check the driver of the netcard... and perhaps 
+the netcard itself.
+if yes forget this point
+
+check to see if resetting netfiler and giving again the config is enough...
+-> maybe there's a memory problem that drives your netfilter version to 
+crash
+
+check the known bugs related to your kernel version and your netfilter 
+version...
+
+you'd maybe have to compile a new kernel...
 
 
-It's interesting idea.What can be still problems?
+hope this can help,
+Pascal
 
------Original Message-----
-From: kluivert@tm.net.my
-To: varyag18@mail.ru
-Date: Thu, 11 Sep 2003 15:46:56 +0800
-Subject: Re: iptables ceases to work after night
 
-> 
-> > Yesterday at evening my packet filter with iptables worked 
-> > fine.Today at morning , I see that he don't forwarding packet from 
-> > DMZ to local and back.And this thing I see every morning.After I 
-> > reboot my machine it's work fine.I think that my 3com cards have 
-> > some bugs.In log there no entries about this . My rules is:
-> 
-> Check your cron jobs, maybe something is resetting some parameters back 
-> to the defaults in the early hours of the morning.
-> 
-> 
+Vladimir Potapov wrote:
+
+>Yesterday at evening my packet filter with iptables worked fine.Today at morning , I see that he don't forwarding packet from DMZ to local and back.And this thing I see every morning.After I reboot my machine it's work fine.I think that my 3com cards have some bugs.In log there no entries about this . My rules is:
+>
+>
+>#Allow from local to DMZ and back
+>
+>
+>-A FORWARD -d 192.168.1.0/255.255.255.0 -i eth1 -o eth2 -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT 
+>
+>-A FORWARD -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+>
+>-A FORWARD -s 192.168.1.0/255.255.255.0 -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m tcp --dport 80 --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
+>
+>-A FORWARD -s 192.168.1.0/255.255.255.0 -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m tcp --dport 3128 --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
+>
+>-A FORWARD -s 192.168.1.0/255.255.255.0 -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m tcp --dport 25 --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
+>
+>-A FORWARD -s 192.168.1.0/255.255.255.0 -d 192.168.5.0/255.255.255.0 -i eth2 -o eth1 -p tcp -m tcp --dport 110 --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
+>
+>
+>
+>  
+>
+
 
