@@ -1,9 +1,10 @@
 From: Iva "Cabric" Cabric <ivac@gnjilux.srk.fer.hr>
 Subject: Re: ULOG with -m state
-Date: Tue, 26 Nov 2002 12:34:34 +0100
+Date: Tue, 26 Nov 2002 11:54:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021126113434.GC9457@gnjilux.srk.fer.hr>
+Message-ID: <20021126105429.GB9457@gnjilux.srk.fer.hr>
 References: <20021122155352.GA5665@gnjilux.srk.fer.hr> <200211241945.38762.netfilter@newkirk.us>
+Reply-To: ivac@fly.srk.fer.hr
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
@@ -22,31 +23,29 @@ Content-Transfer-Encoding: 7bit
 To: Joel Newkirk <netfilter@newkirk.us>
 Cc: netfilter@lists.netfilter.org
 
-More update,....
-I have put new iptables version (1.2.7a-7 from Debian), and no
-change:
+Since mailman is blocking me here is reply again...
 
-$ iptables -A INPUT -j ULOG -p tcp -m state --state NEW
-iptables v1.2.7a: You must specify `--state'
-Try `iptables -h' or 'iptables --help' for more information.
+On Sun, Nov 24, 2002 at 07:45:38PM -0500, Joel Newkirk wrote:
+> > $ iptables -A ssh -j ULOG -p tcp -m state --state NEW
+> >
+> > reports:
+> >
+> > iptables v1.2.6a: You must specify `--state'
+> > Try `iptables -h' or 'iptables --help' for more information.
+> >
+> > but using DROP works fine:
+> >
+> > $ iptables -A ssh -j DROP -p tcp -m state --state NEW
+> 
+> Does the ULOG target work in other uses, IE "iptables -A FORWARD -j ULOG" ?
 
-also it looks that ULOG is not working at all:
+Nope, it gives same error:
 
-Chain INPUT (policy ACCEPT 128K packets, 77M bytes)
- pkts bytes target     prot opt in     out     source               destination         
- 5065  374K ACCEPT     all  --  *      *       xxx.xxx.xxx.xxx/19     xxx.xxx.xxx.xxx    
-    0     0 ACCEPT     all  --  *      *       xxx.xxx.xxx.xxx/18     xxx.xxx.xxx.xxx    
- 4022  338K ULOG       all  --  *      *       0.0.0.0/0            0.0.0.0/0          ULOG copy_range 0 nlgroup 1 prefix `INPUT:DROP' queue_threshold 1 
-12630 1061K ULOG       all  --  *      *       0.0.0.0/0            0.0.0.0/0          ULOG copy_range 0 nlgroup 1 prefix `INPUT:DROP' queue_threshold 50 
-12630 1061K DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0          
+$ iptables -A FORWARD -j ULOG -p tcp -m state --state NEW
+iptables v1.2.6a: You must specify `--state'
 
-kernel is matching packets but ulogd doesnt produce any output in log
-files. I have tried to strace ulogd but it just waits in "recvfrom(6,",
-and according to lsof descriptor 6 is:
-
-ulogd   21070 root    6u  sock    0,0         322745 can't identify protocol
-
-Any help appreciated.
+with INPUT and OUTPUT, also same thing. I'm not doing anything special
+(like NAT, conntrack, ftp, ...), just plain INPUT filtering.
 
 -- 
 @
