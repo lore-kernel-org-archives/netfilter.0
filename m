@@ -1,10 +1,10 @@
-From: Emilio Casbas <ecasbas@unav.es>
-Subject: tcp incomplete log
-Date: Thu, 15 Jul 2004 12:15:03 +0200
+From: Payal Rathod <payalrathod@gmail.com>
+Subject: a NAT question
+Date: Thu, 15 Jul 2004 16:21:17 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40F65927.80104@unav.es>
+Message-ID: <f51b72bc04071503513a7b2dd0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms000306040802070602070503"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,115 +15,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
-This is a cryptographically signed message in MIME format.
-
---------------ms000306040802070602070503
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
 Hi,
-
-I found curious log like this in my iptables log:
-
-Jul 13 07:21:48 orfeo kernel: ICMP INPUT IN=eth0 OUT= 
-MAC=00:30:6e:36:5d:23:00:d0:95:4c:5c:d8:08:00 SRC=207.159.62.1 
-DST=my-server-ip LEN=56 TOS=0x00 PREC=0x00 TTL=236 ID=56340 PROTO=ICMP 
-TYPE=3 CODE=13 [SRC=my-server-ip DST=63.240.81.5 LEN=48 TOS=0x00 
-PREC=0x00 TTL=126 ID=58670 PROTO=TCP INCOMPLETE [8 bytes] ]
-
-The server, is a squid proxy
-I have looking for this on previous post, but I am
-a bit confused.
-
-
-Thanks in advance.
-Emilio C.
-
-
-
-
---------------ms000306040802070602070503
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIL5zCC
-A6swggMUoAMCAQICAQIwDQYJKoZIhvcNAQEEBQAwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQI
-EwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUg
-TmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAwDgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkB
-FgtjdGlAdW5hdi5lczAeFw0wMDEyMDcxODM0NTlaFw0xMDEyMDUxODM0NTlaMIGSMQswCQYD
-VQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoT
-FlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1D
-QS0xMTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXMwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
-MIGJAoGBAMnPtNu0DY74Cy8ADkGWQ+P+o0tADrVZ4Lcp7XrTO/DBsviqY2K90SPnjTq4iaHq
-nPR3NtP5NITlgeOriB6Qz0rP2cIyPbvj+omMNcjLNMKwjzN/Xlz/PQHtc7uB475qcRI2Upf0
-efcCuZ+2c9Bh8whAR6yBPMZYBOf/CnTOGhiXAgMBAAGjggEQMIIBDDAdBgNVHQ4EFgQU5IiI
-QsdSywUHw6MhYN5TwgPUKoIwgbwGA1UdIwSBtDCBsYAULcM6eDF7f4FPgfZNagFP7vaHJMqh
-gZWkgZIwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1w
-bG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAw
-DgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkBFgtjdGlAdW5hdi5lc4IBADAMBgNVHRME
-BTADAQH/MAsGA1UdDwQEAwIBBjARBglghkgBhvhCAQEEBAMCAQYwDQYJKoZIhvcNAQEEBQAD
-gYEAX1CIwLZPpFS3JvoHEHZ5Ot5NnfQfQP7P8c0obKsenSVSD5ikiif1FTpZV71IhMBA+CIp
-I5yGHD2lJhRmU8mxydPc4Duc8Vq5yw5TEtbgFamszQDaloFLKVqgsizZ6ljB0X2N/oGKOr70
-BNaayTRZuGaqBRwL9rOtQAPuUVWvvOAwggQYMIIDgaADAgECAgIDSTANBgkqhkiG9w0BAQQF
-ADCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25h
-MR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxEzARBgNV
-BAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0aUB1bmF2LmVzMB4XDTAyMTEwNDEy
-MDc1MVoXDTA0MTEwMzEyMDc1MVowgaYxCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJh
-MREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEM
-MAoGA1UECxMDQ1RJMSMwIQYDVQQDExplbWlsaW8gam9zZSBjYXNiYXMgamltZW5lejEeMBwG
-CSqGSIb3DQEJARYPZWNhc2Jhc0B1bmF2LmVzMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
-gQCjUTWXn5KebVC7S9O1gDRZP3Rk7RhmhfDAwwiGdl762ICY8DhMAkQ8bmhCy/Xka1sNiFQA
-Mgoj0UfVZTX221BWOzHZdaPimyxBTO42jsnvU9D+Q9BAIzRwI/FrBLw4LGngPgGaifQtAdet
-hRiHHCQGj63Ra53JNc1IOFqJo0qdxwIDAQABo4IBZTCCAWEwCQYDVR0TBAIwADARBglghkgB
-hvhCAQEEBAMCBaAwLAYJYIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmlj
-YXRlMB0GA1UdDgQWBBQ1ww0xtTIZCwn1KzaqzfR0rRxjpTCBvAYDVR0jBIG0MIGxgBTkiIhC
-x1LLBQfDoyFg3lPCA9QqgqGBlaSBkjCBjzELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
-cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
-MQwwCgYDVQQLEwNDVEkxEDAOBgNVBAMTB1VOQVYtQ0ExGjAYBgkqhkiG9w0BCQEWC2N0aUB1
-bmF2LmVzggECMDUGA1UdHwQuMCwwKqAooCaGJGh0dHBzOi8vZ2FuZGFsZi5jdGkudW5hdi5l
-cy91bmF2LmNybDANBgkqhkiG9w0BAQQFAAOBgQC8A7UirMJ77vP8eGoeFXCNMV20V+0uWzqs
-Kuu8UqsAbYF3t32SLFO4eQdJILSHIafDqj+L5Qy53UzXgBY0Hu3MheLf6V5U4nwd03ukBGXg
-1Zs9vBqMzGria1D0YjBTYqip7TQTT6mPFMb/Loek0/pmn/q/r45z0w8Cs6ljMKM51zCCBBgw
-ggOBoAMCAQICAgNJMA0GCSqGSIb3DQEBBAUAMIGSMQswCQYDVQQGEwJFUzEQMA4GA1UECBMH
-TmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoTFlVuaXZlcnNpZGFkIGRlIE5h
-dmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1DQS0xMTEaMBgGCSqGSIb3DQEJ
-ARYLY3RpQHVuYXYuZXMwHhcNMDIxMTA0MTIwNzUxWhcNMDQxMTAzMTIwNzUxWjCBpjELMAkG
-A1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQK
-ExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxIzAhBgNVBAMTGmVtaWxp
-byBqb3NlIGNhc2JhcyBqaW1lbmV6MR4wHAYJKoZIhvcNAQkBFg9lY2FzYmFzQHVuYXYuZXMw
-gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKNRNZefkp5tULtL07WANFk/dGTtGGaF8MDD
-CIZ2XvrYgJjwOEwCRDxuaELL9eRrWw2IVAAyCiPRR9VlNfbbUFY7Mdl1o+KbLEFM7jaOye9T
-0P5D0EAjNHAj8WsEvDgsaeA+AZqJ9C0B162FGIccJAaPrdFrnck1zUg4WomjSp3HAgMBAAGj
-ggFlMIIBYTAJBgNVHRMEAjAAMBEGCWCGSAGG+EIBAQQEAwIFoDAsBglghkgBhvhCAQ0EHxYd
-T3BlblNTTCBHZW5lcmF0ZWQgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFDXDDTG1MhkLCfUrNqrN
-9HStHGOlMIG8BgNVHSMEgbQwgbGAFOSIiELHUssFB8OjIWDeU8ID1CqCoYGVpIGSMIGPMQsw
-CQYDVQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNV
-BAoTFlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTEQMA4GA1UEAxMHVU5B
-Vi1DQTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXOCAQIwNQYDVR0fBC4wLDAqoCigJoYk
-aHR0cHM6Ly9nYW5kYWxmLmN0aS51bmF2LmVzL3VuYXYuY3JsMA0GCSqGSIb3DQEBBAUAA4GB
-ALwDtSKswnvu8/x4ah4VcI0xXbRX7S5bOqwq67xSqwBtgXe3fZIsU7h5B0kgtIchp8OqP4vl
-DLndTNeAFjQe7cyF4t/pXlTifB3Te6QEZeDVmz28GozMauJrUPRiMFNiqKntNBNPqY8Uxv8u
-h6TT+maf+r+vjnPTDwKzqWMwoznXMYIDUTCCA00CAQEwgZkwgZIxCzAJBgNVBAYTAkVTMRAw
-DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
-YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
-KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwCQYFKw4DAhoFAKCCAg0wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDQwNzE1MTAxNTAzWjAjBgkqhkiG9w0B
-CQQxFgQUbd35CbodhjBp4AKfRDQhshKTOf0wUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0D
-BzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwIC
-ASgwgaoGCSsGAQQBgjcQBDGBnDCBmTCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
-cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
-MQwwCgYDVQQLEwNDVEkxEzARBgNVBAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0
-aUB1bmF2LmVzAgIDSTCBrAYLKoZIhvcNAQkQAgsxgZyggZkwgZIxCzAJBgNVBAYTAkVTMRAw
-DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
-YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
-KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwDQYJKoZIhvcNAQEBBQAEgYACRyB8/yDZBxpH
-ShbzVzP7wd4XYILT4A4nGPXcGRc+8hLUKvQpD8FsbqFm2VKQznyoeMViw1bMZuf8WkkB2J8E
-yWAedITvwAxrEhy+wsxfIO2MtwQ8IcTAcVaSpImuqE5Fw57fwh4ltcu3iLouCFLaUA29YMg4
-YMksU1mOYxlUZwAAAAAAAA==
---------------ms000306040802070602070503--
-
+We have been allocated 2 more IPs by our ISP for a period of 1 month
+for our purpose. Now these 2 IPs will be assigned to 2 Windows
+machines which are to be accessed from outside. We want port 21 or one
+machine to be accessed from outside and port 80 and 9001, 25 of other
+machine. Which is the best way to allow access to these machines from
+outside still having them under my firewall? I thought of having ip
+aliases on the Linux box and forwarding the connections to the
+respective windows box.
+Can someone explain an easy way for this? 
+With warm regards,
+-Payal
 
