@@ -1,14 +1,15 @@
-From: Mike <1100100@gmail.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Policy Misunderstanding: RTFM Guidance Requested.
-Date: Wed, 1 Sep 2004 12:40:15 -0400
+Date: Wed, 01 Sep 2004 12:43:12 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <8ca4228204090109403a267f54@mail.gmail.com>
-References: <200409011323.i81DNQAi040521@jkcpub.iserver.net>
-Reply-To: Mike <1100100@gmail.com>
+Message-ID: <1094056991.1824.4.camel@wolfpack.ljm.dom>
+References: <7768933ECEDCA644AF7908B278CF125D021454@exchange.datec.com.fj>
+	<3063e5040831212267c70f95@mail.gmail.com>
+	<8ca42282040901045464650094@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409011323.i81DNQAi040521@jkcpub.iserver.net>
+In-Reply-To: <8ca42282040901045464650094@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +20,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Deepak Seshadri <dseshadri@broadbandmaritime.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 1 Sep 2004 09:27:22 -0400, Deepak Seshadri
-<dseshadri@broadbandmaritime.com> wrote:
-> 
-> Hi Mike,
-> 
-> I will email you a diagram on the packet flow inside the kernel. Probably
-> that would make things easier in understanding where each chain exists
-> inside the kernel.
-> 
-> Regards,
-> Deepak
+On Wed, 2004-09-01 at 07:54, Mike wrote:
+> I thought I had seen others on this list discuss starting with a
+> completely closed router that denies all traffic - INPUT, OUTPUT, and
+> FORWARD; filter, nat, and mangle.
 
-Deepak,
+yes, you have.  i don't personally agree with this (with respect to nat
+& mangle).
 
-The light is coming in slowly.  :-)
-I am now able to follow the diagram you sent by reading along in the
-Andreasson Iptables Tutorial 1.1.19.
+> echo "   Set the filter/nat/mangle packet Matching Table Policy."
+> $IPTABLES -t filter -P INPUT DROP
+> $IPTABLES -t filter -P OUTPUT DROP
+> $IPTABLES -t filter -P FORWARD DROP
 
-Very cool stuff.
+good, good...
 
-Mike
+> $IPTABLES -t nat -P PREROUTING DROP
+> $IPTABLES -t nat -P POSTROUTING DROP
+> $IPTABLES -t nat -P OUTPUT DROP
+> $IPTABLES -t mangle -P INPUT DROP
+> $IPTABLES -t mangle -P OUTPUT DROP
+> $IPTABLES -t mangle -P FORWARD DROP
+> $IPTABLES -t mangle -P PREROUTING DROP
+> $IPTABLES -t mangle -P POSTROUTING DROP
+
+bad...  you will be in a world of hurt trying to get anything to work
+with the policies of every nat & mangle chain set to drop.
+
+filter in the filter table
+nat in the nat table
+mangle in the mangle table
+
+the ultimate FM:
+  http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
+
 
