@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Peter Marshall" <peter.marshall@caris.com>
 Subject: Re: Established / related
-Date: Tue, 29 Jun 2004 20:25:14 +0100
+Date: Tue, 29 Jun 2004 16:47:12 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406292025.14289.Antony@Soft-Solutions.co.uk>
-References: <004c01c45e07$8fcd1260$49caa8c0@caris.priv> <200406291946.24501.Antony@Soft-Solutions.co.uk> <005501c45e0d$0352f290$49caa8c0@caris.priv>
-Reply-To: "netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <006a01c45e11$df1692b0$49caa8c0@caris.priv>
+References: <004c01c45e07$8fcd1260$49caa8c0@caris.priv> <200406291946.24501.Antony@Soft-Solutions.co.uk> <005501c45e0d$0352f290$49caa8c0@caris.priv> <200406292025.14289.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005501c45e0d$0352f290$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,12 +19,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
+Thank you for your help.
+
+Peter
+
+
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Tuesday, June 29, 2004 4:25 PM
+Subject: Re: Established / related
+
+
 On Tuesday 29 June 2004 8:12 pm, Peter Marshall wrote:
 
-> shouldn't the reply be taken care of by the established,related rule below?
+> shouldn't the reply be taken care of by the established,related rule
+below?
 
-No, because the reply will be coming *from* $IPSERVER, and your rule in the 
-FORWARD chain calling the user-defined chain only matches packets with 
+No, because the reply will be coming *from* $IPSERVER, and your rule in the
+FORWARD chain calling the user-defined chain only matches packets with
 $IPSERVER as the destination address.
 
 > (I am probably just missing something blatantly obvious)
@@ -84,7 +95,10 @@ PS: I've chosen the sig on this response specially for you :)
 9 of the remaining 10% are routing problems in the other direction.
 The remaining 1% might be something else, but check the routing anyway.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
+
 
 
