@@ -1,12 +1,14 @@
-From: "Mark Goldberg" <goldber@globalcrossing.net>
-Subject: More H.323 questions
-Date: Mon, 01 Sep 2003 22:36:39 -0700
+From: Julian Gomez <kluivert@tm.net.my>
+Subject: Re: Maximum Number of Chains
+Date: Wed, 3 Sep 2003 12:22:05 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309020523.WAA28180@smtp08.phx.gblx.net>
-Reply-To: "Mark Goldberg" <goldber@globalcrossing.net>
+Message-ID: <20030903042205.GB3740@propaganda.localdomain>
+References: <3F50250D.70405@freespace-networks.net>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <3F50250D.70405@freespace-networks.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +19,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-I've built kernel 2.4.22 with the h.323 extensions from pom. Iptables is 1.2.8. I installed teh new kernel and included the following rules:
+On Sat, Aug 30, 2003 at 12:16:13AM -0400, Paul Caritj spoke thusly:
+>Greetings, I hope everyone is well.
+>Though I suspect the subject line adequately conveys my question, I will 
+>restate it: Does anyone out there know the maximum number of chains per 
+>table?
 
-Basically, I want to only establish h.323 with a specific ip after I initiate it from an internal machine on the network normally using NAT.
+No idea what is the maximum. But the more rules you add, the slower the
+additions become (I think Harald mentioned this previously). 
 
-/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1503 -i eth0 -j LOG --log-level 6 --log-prefix "1503 in "  >>/var/log/netfiltersetup.log 2>&1
-/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1720 -i eth0 -j LOG --log-level 6 --log-prefix "1720 in "  >>/var/log/netfiltersetup.log 2>&1
-/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -i eth0 -j LOG --log-level 6 --log-prefix "Anything else in "  >>/var/log/netfiltersetup.log 2>&1
+Also, if you have a long list of rules (eg: 700 different rules within the
+FORWARD chain) -- and you decide to remove rule #467. All the rules need to
+be copied to a temporary area, rule #467 removed, everything from the
+temporary buffer copied back. That adds to the slowness.
 
-/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1503 -i eth0 -j DNAT --to $DEST  >>/var/log/netfiltersetup.log 2>&1
-/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1720 -i eth0 -j DNAT --to $DEST  >>/var/log/netfiltersetup.log 2>&1
-
-There are no errors in netfiltersetup.log.
-
-Iptables -L -v -n does not show the rules, but iptables-save does show them.
-
-Nothing is logged and it does not seem to work. Before the rules were added, incoming to 1503 and 1720 triggered another rule that logged them.
-
-Ethereal does not show any packets coming in that match the above. It did before the rules were added.
-
-If anyone has a suggestion or can explain why listing the rules does not show any PREROUTING or POSTROUTING rules, please let me know.
-
-I'm basically at a loss as to what to do next. Troubleshooting tips are welcome. Thanks.
-
-
-
-Mark Goldberg
-goldber@globalcrossing.net
-
-
-
+I think the devel guys are working on tweaking the table type used in the
+2.5/2.6 kernels. They should be able to shed more information, or you can
+dig through the archives.
 
