@@ -1,11 +1,10 @@
-From: Pablo Neira <pablo@eurodev.net>
-Subject: Re: TIME extension rule not matching under (Fedora) kernel 2.6.9?
-Date: Sat, 05 Mar 2005 15:42:05 +0100
-Message-ID: <4229C53D.2060604@eurodev.net>
-References: <200503042355.j24NtSu3027597@mail79.megamailservers.com>
+From: Horacio =?iso-8859-1?Q?J=2E_Pe=F1a?= <horape@tinuviel.compendium.com.ar>
+Subject: what is blocking packets before netfilter?
+Date: Sun, 6 Mar 2005 00:17:43 -0300
+Message-ID: <20050306031742.GB952@tinuviel.compendium.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503042355.j24NtSu3027597@mail79.megamailservers.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,24 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Kevin Stadlmayer <kevins@wirelessedge.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Kevin Stadlmayer wrote:
-> I have patched the kernel with the patch-o-matic, and any rules that I add
-> show up in the iptables rules listing.  However, no packets are matching the
-> rules.  I can create a rule that is identical to the TIME based rule,
-> without the TIME constraint, and the rule matches fine.  As soon as I add
-> the "-m time" component to the rule, no more matching.
+I have:
 
-There has been some discussion about TIME in netfilter-devel, have a 
-look at the mail archive.
+# iptables -L -n -t mangle -v
+Chain INPUT (policy ACCEPT 19862 packets, 1603K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+    0     0 LOG        all  --  eth0   *       192.168.2.0/24       0.0.0.0=
+/0           LOG flags 0 level 4
 
-https://lists.netfilter.org/pipermail/netfilter-devel/2005-January/018136.html
+# iptables -L -n -t filter -v
+Chain INPUT (policy ACCEPT 17061 packets, 1410K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+    0     0 LOG        all  --  eth0   *       192.168.2.0/24       0.0.0.0=
+/0           LOG flags 0 level 4
 
-Those changes are still pending to be applied to pom-ng.
+# tcpdump -nvvvpe icmp
+tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 96 by=
+tes
+15:44:34.189337 00:08:a1:6c:39:00 > 00:0a:e6:2d:90:77, ethertype IPv4 (0x08=
+00), length 98: IP (tos 0x0, ttl64, id 1016, offset 0, flags [DF], length: =
+84) 192.168.2.1 > 10.5.0.1: icmp 64: echo request seq 63491
 
---
-Pablo
+00:0a:e6:2d:90:77 is my MAC.
+
+/proc/sys/net/ipv4/conf/*/rp_filter are 0.
+/proc/sys/net/ipv4/conf/*/forwarding are 1.
+
+What could be eating the packets? Shouldn't iptables see anything that come=
+s to the interface?
+
+Thanks,
+					HoraPe
+---
+Horacio J. Pe=F1a
+horape@compendium.com.ar
+horape@uninet.edu
 
