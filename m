@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: z-newnat16 again......
-Date: 24 Oct 2002 10:53:15 +0200
+From: "Matthew Donofrio" <mdonof2@pride.hofstra.edu>
+Subject: Re: How exactly does RELATED work in Connection Tracking?
+Date: Wed, 23 Oct 2002 08:57:06 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1035449595.8915.4.camel@elendil>
-References: <000a01c27ac3$21285d20$3200a8c0@dualcon.com.br>
+Message-ID: <000b01c27aac$d6b2a270$09c809c0@PENT4>
+References: <000801c2798e$a7dcfd70$09c809c0@PENT4> <1035325277.10494.18.camel@elendil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000a01c27ac3$21285d20$3200a8c0@dualcon.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Juliano Dapper <juliano@dualcon.com.br>
+Content-Type: text/plain; charset="us-ascii"
+To: Cedric Blancher <blancher@cartel-securite.fr>
 Cc: netfilter@lists.netfilter.org
 
-Le mer 23/10/2002 =E0 20:36, Juliano Dapper a =E9crit :
-> [root@teste /]# lsmod
-> Module                  Size  Used by    Not tainted
-> ipt_MASQUERADE          1184   0  (autoclean)
-> iptable_filter          1728     0  (unused)
-> iptable_nat            14420   0  [ipt_MASQUERADE]
-> ip_conntrack         22188   1  [ipt_MASQUERADE iptable_nat]
-> ip_tables              10528   5  [ipt_MASQUERADE iptable_filter iptabl=
-e_nat]
->=20
-> [root@teste /]# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> iptables: Invalid argument
->=20
-> Linux teste.dualcon.com.br 2.4.19 #1 Qua Out 23 11:54:48 BRST 2002 i586=
- unknown
+>Connection tracking relies on data structures. In those, to be quick,
+>you have tuples that are used to recognise packets going both ways. A
+>tuple is a set of datas that caracterize a packet for Netfilter. Theses
+>tuples are used firstly to build conntrack table entries, and then to
+>try to match theses entries against further packets. That means when you
+>see a packet, you can calculate its own tuple, and then compare it to
+>the ones that are in data structures that represent current conntracked
+>flows.
 
-As someone pointed out before, is your iptables build according to that
-kernel ? I mean, do you use iptables 1.2.7a ?
+>When a packet reaches the box, then Netfilter looks at it, extract from
+>the header its own tuple and then compares it to known tuples that are
+>part of current conntracked connections. If it matches one of theses
+>tuples, then it is ESTABLISHED. It is also compared to all expectations.
+>If it matches one expectation, then we know this packet is RELATED (and
+>if it does not match anything, it is NEW). Then, we can create a new
+>structure for him with tuples and so on and treat the flow as others.
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+The tuple is just the source address and destination address for a
+particular packet, correct?  So is it safe to say that the  only fields that
+are compared for connection tracking are the source and destination
+addresses?  So, if a packet comes in and the source and destination
+addresses match an entry in the conntrack state table, then we can say that
+it is part of some ESTABLISHED connection.  Thanks again.
+
+-Matt
+
 
