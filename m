@@ -1,11 +1,13 @@
-From: <alexis@tpys.com.ar>
-Subject: RE: iptables and samba
-Date: Thu, 27 May 2004 16:28:35 -0000
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: ftp
+Date: Thu, 27 May 2004 18:43:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <twig.1085675315.20438@baicom.com>
-References: <BAY15-F10BvW8XADQQW000127bc@hotmail.com>
+Message-ID: <20040527164327.6B8A1DBD@sterenborg.info>
+References: <117001c44406$bbca33e0$49caa8c0@caris.priv>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F10BvW8XADQQW000127bc@hotmail.com>
+In-Reply-To: <117001c44406$bbca33e0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,98 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: azeem ahmad <azeem484@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-it seems a name resolution issue.
+> Sorry to post the same question again .... I am at a loss as 
+> to what to put for rules for my ftp server (which is behind 
+> the firewall).
+> I know they go on the forward chain ....
+> There are going to be people connecting to it with a username 
+> / password and also anonymously from outside ...
+>  
+> My main question I guess is should I set it up for passive or 
+> active transfers ....
+> Or, does the RELATED option take care of those problems >
 
-check if you're using WINS or DNS and make sure you're allowing those ports 
-in orden to resolve the names. and it will work just fine
+Use ip_conntrack_ftp and ip_nat_ftp.
+Something like (with information from your previous post) :
 
-azeem ahmad <azeem484@hotmail.com> dijo:
+modprobe ip_conntrack_ftp
+modprobe ip_nat_ftp
 
-> 
-> no one out there could help me?
-> 
-> >From: "azeem ahmad" <azeem484@hotmail.com>
-> >To: netfilter@lists.netfilter.org
-> >Subject: iptables and samba
-> >Date: Sun, 23 May 2004 09:20:52 +0000
-> >
-> >hi
-> >i m using the script below
-> >---------------------------------------------------------------------------
-----------------------------------------------------------
-> >iptables -F
-> >iptables -t nat -F
-> >iptables -P INPUT DROP
-> >iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> >iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-> >iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
-> >iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
-> >iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
-> >iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
-> >iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
-> >iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
-> >
-> >iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
-> >#iptables -t nat -A PREROUTING -p udp --dport 80 -j REDIRECT --to-port 8080
-> >
-> >iptables -P FORWARD DROP
-> >iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 443       -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 5000      -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 5001      -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 5005      -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 5050      -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 7000      -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 28805     -j ACCEPT
-> >iptables -A FORWARD -i eth0 -p tcp --dport 51215     -j ACCEPT
-> >
-> >iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> >---------------------------------------------------------------------------
-----------------------------------------------------------
-> >
-> >i have two shares on samba server "Soft and linux" in these shares there 
-> >are many folders. whenever i run the above script and then i open the 
-share 
-> >it takes atleast 4  minutes to open the share. but it doesnt take time 
-> >while browsing inside share.
-> >mean there is a folder on soft share like soft/adobe/acrobat/acrobat6
-> >when i double click on soft it takes atleast 4 minutes but after that when 
-> >i click on adobe then acrobat then acrobat6 it takes now time it just 
-brose 
-> >them normally. same problem is with the other share named linux.
-> >but if i dont run this script then all shares work fine with no delay
-> >
-> >i dont know what is the udp port 80 for but i just saw its traffic on my 
-> >network in iptraf so i included it in my script
-> >
-> >Regards
-> >Azeem
-> >
-> >_________________________________________________________________
-> >Add photos to your e-mail with MSN 8. Get 2 months FREE*. 
-> >http://join.msn.com/?page=features/featuredemail
-> >
-> >
-> 
-> _________________________________________________________________
-> The new MSN 8: smart spam protection and 2 months FREE*  
-> http://join.msn.com/?page=features/junkmail
-> 
-> 
-> 
+$IPT -P FORWARD DROP
+$IPT -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+$IPT -A FORWARD -i eth0 -o eth1 -d <ip_ftpsvr> -p tcp \
+  --dport 21 --j ACCEPT
+$IPT -t nat -A PREROUTING -i eth0 -p tcp --dport 21 \
+  -j DNAT <ip_ftpsvr>
 
 
-
--- 
-
-
+Gr,
+Rob
 
 
