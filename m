@@ -1,10 +1,9 @@
-From: "William L. Thomson Jr." <support@obsidian-studios.com>
-Subject: Translation from ipchains to iptables
-Date: 09 Apr 2003 14:59:16 -0400
+From: "Allan Dover" <bigaldover@hotmail.com>
+Subject: RH 8.0 iptables nf-bridge  help please
+Date: Wed, 09 Apr 2003 15:51:54 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049914757.1360.10.camel@wlt.obsidian-studios.com>
+Message-ID: <F83sNfTjD4EXKduNqBQ000229cd@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,64 +14,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-If someone would be so kind as to help me translate the following
-ipchains commands to iptables, that would be great.
+Hello Everyone,
 
-Basically I need DNAT, or PAT, what ever you want to call it.
-However the tricky part is that each internal IP will have at least two
-external IP's. So depending upon which interface the traffic is
-traversing I need it's internal IP changed to one on that interfaces
-network. Confused yet?
+I have searched through the archives and havent found an answer to my
+problem, o here it is.
+I am running RH 8.0 Kernel 2.4.19-8.5.27
+Used Netfilter patch bridge-nf-0.0.7-against-2.4.19.diff
+IPTABLES v1.2.6a
+followed the instructions line for line in Firewalling for free.
+Enabled 802.1b bridging and Netfilter options as well as IPTABLES firewall 
+in the kernel config.
 
-Here are my current working ipchains commands
+The Bridge works great packets go throught it no problem.
+eth0 0.0.0.0 promisc
+eth1 0.0.0.0 promisc
+bridge 127.0.0.1 promisc up
 
-ip addr add 127.0.0.1/8 brd 127.0.0.255 dev lo
-ip addr add 192.168.1.250/24 brd 192.168.1.255 dev eth0
-ip addr add 10.1.0.2/16 brd 10.1.255.255 dev eth1
-ip addr add 10.1.0.99/16 brd 10.1.255.255 dev eth1
-ip addr add 10.2.0.2/16 brd 10.2.255.255 dev eth2
-ip addr add 10.2.0.59/16 brd 10.2.255.255 dev eth2
+I am running Snort 2 and I see the traffice going from host to internet and 
+Vice versa.
 
-ipmasqadm portfw -a -P tcp -L 10.1.0.99   443 -R 192.168.1.1    443
-ipmasqadm portfw -a -P tcp -L 10.1.0.99   143 -R 192.168.1.1    143
-ipmasqadm portfw -a -P tcp -L 10.1.0.99   110 -R 192.168.1.1    110
-ipmasqadm portfw -a -P tcp -L 10.1.0.99    81 -R 192.168.1.1     81
-ipmasqadm portfw -a -P tcp -L 10.1.0.99    80 -R 192.168.1.1     80
-ipmasqadm portfw -a -P tcp -L 10.1.0.99    25 -R 192.168.1.1     25
-ipmasqadm portfw -a -P tcp -L 10.1.0.99    22 -R 192.168.1.1     22
-ipmasqadm portfw -a -P tcp -L 10.1.0.99    21 -R 192.168.1.1     21
+I have copied the IPTABLES Script from Firewalling for Free and added a few 
+extra lines to suit my DNS Servers and different Web Servers.
 
-ipmasqadm portfw -a -P tcp -L 10.2.0.59   443 -R 192.168.1.1    443
-ipmasqadm portfw -a -P tcp -L 10.2.0.59   143 -R 192.168.1.1    143
-ipmasqadm portfw -a -P tcp -L 10.2.0.59   110 -R 192.168.1.1    110
-ipmasqadm portfw -a -P tcp -L 10.2.0.59    81 -R 192.168.1.1     81
-ipmasqadm portfw -a -P tcp -L 10.2.0.59    80 -R 192.168.1.1     80
-ipmasqadm portfw -a -P tcp -L 10.2.0.59    25 -R 192.168.1.1     25
-ipmasqadm portfw -a -P tcp -L 10.2.0.59    22 -R 192.168.1.1     22
-ipmasqadm portfw -a -P tcp -L 10.2.0.59    21 -R 192.168.1.1     21
+IPTables doesnt seem to be doing anything I can scan using NMAP from my HOME 
+PC. Iptables is Loaded at boot, and when i type iptable -L i see all my 
+rules and chains, just as they appear in the docs.
 
-ipchains -A forward -s 192.168.1.0/24 -j MASQ
+Anyone have any ideas How I can get the IPTables portion to stop hackers 
+from snooping around my network, I have also created rules that should stop 
+the Slammer virus from getting in and messing up any servers that users may 
+have forgotten to patch.
 
-I have researched this some time ago, but never came up with a solution.
-I did some brief research today, but most DNAT examples I come across
-are dealing with a single ip. Where as stated above for each internal
-machine, I have at least two external IP's
+Any help on this is appreciated.
 
-Any help or comments is greatly appreciated.
+Thanx,
+Allan
+bigaldover@hotmail.com
 
-Thank you
 
--- 
-Sincerely,
-William L. Thomson Jr.
-Support Group
-Obsidian-Studios, Inc.
-3548 Jamestown Ln.
-Jacksonville, FL 32223
-Phone/Fax  904.260.2445
-http://www.obsidian-studios.com
+_________________________________________________________________
+Protect your PC - get McAfee.com VirusScan Online  
+http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
 
 
