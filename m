@@ -1,8 +1,8 @@
-From: bobo <boboaq@163.com>
-Subject: What is the difference between modprobe and insmod?
-Date: Fri, 20 Dec 2002 15:11:7 +0800
+From: Torsten Puls <lists@pumpum.de>
+Subject: Fw: Re: What is the difference between modprobe and insmod?
+Date: Fri, 20 Dec 2002 09:27:02 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021220070647.BA0B01C959464@sm181.163.com>
+Message-ID: <20021220082702.290C51B7B18@webbox10.server-home.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,18 +16,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
-Cc: bobowd@sohu.com, bobowd@sohu.com
+To: IP <netfilter@lists.netfilter.org>
 
-  
+Hello
 
-         While writing IPtables scripts,there are two command:  modprobe and insmod.
+>   
+> 
+>          While writing IPtables scripts,there are two command:  modprobe and insmod.
+> 
+>          In some example,some use : modprobe ip_tables,but others use: insmod  ip_tables.
+> 
+>          Why?  Is there difference between them?
+> 
+>           
+>          Thanks
+> 
+> 
+modprobe make "insmod with dependencies"
+insmod make "insmod without dependencies"
 
-         In some example,some use : modprobe ip_tables,but others use: insmod  ip_tables.
 
-         Why?  Is there difference between them?
-
-          
-         Thanks
-
+Greetz Torsten
 
