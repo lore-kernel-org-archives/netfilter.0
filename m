@@ -1,10 +1,10 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: SNAT
-Date: Wed, 13 Nov 2002 12:21:04 +0100
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: IPtables accounting ...
+Date: 13 Nov 2002 15:24:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B32101998D@hslex01.hsl-brabantzuid.nl>
+Message-ID: <1037193855.4553.25.camel@rayw.knowledgefactory.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-1Dkh/MbskVnG3OC2GRLE"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,33 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
-
-> > > > iptables -t nat -I POSTROUTING -p udp -s 192.168.0.1 --sport 53 -j
-> > > > SNAT --to-source 200.200.200.1:53
-
-> > > I don't know if dns traffic is always sent *from* 53/udp, but I do
-> > > know it is always sent *to* 53/udp.
-
-> > Not *always* :-)   Sometimes it goes to 53/tcp...
-
-> I think that the DNS traffic goes only on 53/tcp when transfering
-> zones, and it uses the 53/udp for the queries.
->
-> Also, if you use the BIND implementation of the DNS server, you
-> can specify the source port, so the traffic can go from
-> 53/udp to 53/udp
-
-Of course you're right.
-Anyway, I interpret the original question as how to SNAT normal dns traffic
-because the rule he wrote was using the udp protocol for *source* port
-53/udp, which doesn't have to match *all* dns traffic (if it does).
-That's why I mentioned that I don't know if dns traffic always come *from*
-port 53/udp (here it doesn't ; it uses some port above 1024), but I do know
-it's going *to* port 53/udp.
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Rob
+--=-1Dkh/MbskVnG3OC2GRLE
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Where do I do iptables accounting?
+
+For example: If I have users on a private LAN surfing via a proxy on the
+firewall and I have web servers in a DMZ also being routed via the
+firewall, where do I put my accounting rules? In the FORWARD chain, or
+the INPUT chain, or both?
+
+Ray
+--=20
+
+--=-1Dkh/MbskVnG3OC2GRLE
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA90lJ/h1fuR/Bv+ygRAojeAJ4tGCyFInNouIgRtL0qG1qHgDtoDQCgoOMf
+HHFOMj4e2p0ANiv3PiJEE6g=
+=Ezkz
+-----END PGP SIGNATURE-----
+
+--=-1Dkh/MbskVnG3OC2GRLE--
 
 
