@@ -1,9 +1,10 @@
-From: babula allu <allubabula@yahoo.com>
-Subject: How to fill a ipt_entry structure to add a rule using iptc_append_entry()
-Date: Tue, 22 Jun 2004 04:54:22 -0700 (PDT)
+From: Ernst Lehmann <lehmann@acheron.franken.de>
+Subject: ipsec in kernel 2.6 and conn tracking
+Date: Tue, 22 Jun 2004 00:03:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040622115422.45768.qmail@web20027.mail.yahoo.com>
+Message-ID: <1087855434.26562.28.camel@hadley.lv426.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,32 +16,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 Hi,
 
+am I right, that at the momenent there is no working code for netfilter
+with connection_tracking with ipsec in kernel2.6 ??
 
-I am trying to add a simple rule to INPUT chain using
-iptc_append_entry  but it fails.It says invalid
-argument.
+after some hours of reading the list, and trying:
 
- I also tried sending the same ipt_entry structure
-which was returned by the iptc_first_rule API.In this
-case iptc_append _entry doesn't return an error but
-iptables -L doesn't display the rule in the list also.
+- kernel 2.6.7
+- patch-o-matic-ng (20040620), only with:
+	- nf_reset
+	- ipsec-XX-* 
 
-If somebody knows about the cause and solution please
-help me.
+I also tried kernel 2.6.3 with the same patches....
+
+my setup is as followed:
+
+network1 -> firewall1 ->internet -> firewall2 -> network2
+
+Betwenn firewall1 and firewall2 is a ipsec tunnel established. And it is
+working. The firewall1 one is desingend for conn-track connections to
+network2.
+
+my default rule in forward-chain has as the first rule:
+
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 
-thanks
-Babula
+but it does not seem to work, if I put a LOG rule just behind it, I get
+the packets logged, but the conn-tracking does not handle them.
 
 
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail is new and improved - Check it out!
-http://promotions.yahoo.com/new_mail
+Have I missed anything ?? Or is kernel 2.6 with ipsec and netfilter not
+realy useable at the moment ??
+
+Thanks in advance for any help regarding this problem....
+
+
+
+-- 
+
+Bye
+
+	Ernst
+---------
+Ernst Lehmann             Email: lehmann@acheron.franken.de
+
+
 
