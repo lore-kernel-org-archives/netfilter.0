@@ -1,39 +1,69 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Iptables HowTo ?
-Date: Thu, 9 Oct 2003 08:42:34 +1000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C469@wardrive.citadelcomputer.com.au>
+From: Harald Welte <laforge@netfilter.org>
+Subject: please report iptables-1.2.9rc1  bugs!
+Date: Thu, 9 Oct 2003 01:29:53 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20031008232953.GQ25743@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xFawzEZLoq+g1Byu"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQZXRlciBNYXJzaGFsbCBbbWFp
-bHRvOnBldGVyLm1hcnNoYWxsQGNhcmlzLmNvbV0NCj4gU2VudDogV2VkbmVzZGF5LCA4IE9jdG9i
-ZXIgMjAwMyA5OjQ5IFBNDQo+IFRvOiBHZW9yZ2UgVmllaXJhOyBab3VwOyBuZXRmaWx0ZXJAbGlz
-dHMubmV0ZmlsdGVyLm9yZw0KPiBTdWJqZWN0OiBSZTogSXB0YWJsZXMgSG93VG8gPw0KPiANCj4g
-DQo+IGh0dHA6Ly93d3cubGludXhzZWN1cml0eS5jb20vcmVzb3VyY2VfZmlsZXMvZmlyZXdhbGxz
-L0lQVGFibGVzLVR1dG9yaWFsL2lwdGFibGVzLXR1dG9yaWFsLmh0bWwNCj4gVGhpcyBpcyB0aGUg
-YmVzdCBpcHRhYmxlcyB0dXRvcmlhbCBJIGF2ZSBzZWVuIG91dCB0aGVyZS4NCg0KVGhhdCdzIGFu
-b3RoZXIgdGhpbmcsIFRoYXQgdHV0b3JpYWwgKGN1cnJlbnRseSAxLjEuMTkgYW5kIFlFUywgaXQn
-cyB2ZXJ5IHZlcnkgZ29vZCBwbGFjZSBmb3IgcmVmZXJlbmNlIGFuZCBsZWFybmluZykgaXMgd2hl
-cmUgSSByZWFsbHkgZ290IGlwdGFibGVzIHdvcmtpbmcgZm9yIG1lIHRoZSBiZXN0LiBJdCByZWFs
-bHkgb3BlbmVkIG15IGV5ZXMgdG8gaG93IGl0IHdvcmtzIGFuZCBob3cgdXNpbmcgLS1zdGF0ZSBF
-U1RBQkxJU0hFRCBjaGFuZ2VzIHRoZSB3YXkgcGFja2V0cyB0cmF2ZXJzZSB0aGUgY2hhaW5zIGFu
-ZCBob3cgaXQgZGlmZmVycyBmcm9tIGlwY2hhaW5zIChlZWVlaWtrayEhISkgYW5kIHNvIG9uLi4N
-Cg0KDQpUaGFua3MsDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xw0KR2VvcmdlIFZpZWlyYQ0KU3lzdGVtcyBNYW5hZ2VyDQpnZW9yZ2V2QGNpdGFkZWxjb21wdXRl
-ci5jb20uYXUNCg0KQ2l0YWRlbCBDb21wdXRlciBTeXN0ZW1zIFB0eSBMdGQNCmh0dHA6Ly93d3cu
-Y2l0YWRlbGNvbXB1dGVyLmNvbS5hdQ0K
+
+--xFawzEZLoq+g1Byu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+I know that already about 2600 people have downloaded the iptables
+1.2.9rc1 package from the netfilter server (ftp and http downloads
+only).
+
+Yet, I have not received a single bug report / comment / ... so far.
+
+Again, this is a test release.  If you are running this on your machine
+and experience any problems, please report back to us (preferredly via
+http://bugzilla.netfilter.org/).
+
+if there are no bug reports until sunday (oct-12), I will have to assume
+that there are no bugs - and thus release the final 1.2.9 version.
+
+thanks.
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--xFawzEZLoq+g1Byu
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/hJ3xXaXGVTD0i/8RAr0KAJ9ZQvgvIVGmylCL1Wlk4znBeW+nvwCfX8Vx
+j0bmp90NuQP6hjdtrosL/wQ=
+=JEYH
+-----END PGP SIGNATURE-----
+
+--xFawzEZLoq+g1Byu--
 
