@@ -1,10 +1,10 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Jeff's Rules
-Date: Mon, 17 Nov 2003 15:51:15 -0500
+From: trainier@kalsec.com
+Subject: Re: irc
+Date: Mon, 17 Nov 2003 15:55:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB934C3.6080001@Loudoun-Fairfax.com>
+Message-ID: <OF3489540F.204A1A44-ON85256DE1.0071CE7C-85256DE1.0072EC94@kal.kalsec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,51 +15,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: nf <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-It's been a busy day on the mailing list and I've already spent far more 
-time online than I should have, so I think this is a good time to share 
-"Jeff's Unofficial Rules for Using a Mailing List":
+The ident thing is partially true.  EFnet (the network I use), does claim 
+to require ident.  If you actually look though, it initiates the 
+connection, before it sends out it's ident request. 
 
-1.  If you're going to ask a question please be specific -- Saying "I 
-installed iptables and my system is broken, can u help me?" just doesn't 
-work. Anyone who bothers to answer a question like that will spend 5 
-e-mails just trying to figure out what your problem is. If you want 
-help, we need to know as much about your configuration, your rules, and 
-the exact symptoms of your problem as possible. Give us the info we need 
-to solve the problem.
+I am not concerned at all with dcc.  dcc was a huge mistake and should've 
+never been implemented into irc. 
+I am, however, interested in the nat irc handlers.  Where do I get them 
+and how do I use them? What're they for?
 
-2.  We want to help you but we don't work for you -- We will freely 
-share our knowledge, time, and experience with you, but you have to do 
-the work. We simply don't have time or the interest to configure your 
-system or write your rules. Make your best effort then show what you've 
-done. We'll try and guide you to the answer you need. We don't want you 
-to feel intimidated or afraid to ask for advice. On the other hand if 
-you say something really dumb, we may snicker a bit. See rule 4.
+Regards,
 
-3.  There are many very, very smart people who contribute to this list 
-who are experts in source code, rule design, firewall theory, and Linux 
-in general. The knowledge of the entire netfilter community is at your 
-fingertips. Treat them with respect and say thanks once in awhile.
+Tim
 
-4.  Don't take things so seriously -- While nobody wants to be bothered 
-by foolishness, off topic questions, and idle chitchat, it's ok to crack 
-a joke once and awhile. We work hard and are usually under lots of 
-stress. A light moment breaks up the day and makes things just a bit 
-more enjoyable.
 
-5.  Don't spam the list with nonsense -- This is not the place for 
-resumes and sales pitches. While I don't set the rules for this list, I 
-can tell you that I don't mind an announcement of a related program, 
-script, or product, and long as it's brief and in text. Above all 
-*never* send out annoying e-mails like this one.
 
-These rules do not reflect the opinions of the netfilter.org or anyone 
-else that matters. Follow these rules at your own risk. Your mileage may 
-vary. Do not take with alcohol.
 
-Jeff
+Antony Stone <Antony@Soft-Solutions.co.uk>
+Sent by: netfilter-admin@lists.netfilter.org
+11/17/2003 03:05 PM
+
+ 
+        To:     netfilter@lists.netfilter.org
+        cc: 
+        Subject:        Re: irc
+
+
+On Monday 17 November 2003 7:56 pm, Alistair Tonner wrote:
+
+>                If you've several systems that want to connect and do DCC 
+you
+>                will want to make sure you load the conntrack and nat irc
+>                handlers from iptables ... they aren't needed for plain 
+connections,
+>                but are for DCC sends/recieves.
+
+Indeed, however I assumed that anyone interested in the security of having 
+a 
+firewall wouldn't be using insecure things like DCC.   However, your 
+reminder 
+that there is a conntrack helper for this protocol is a good one.
+
+>                As a rule these days a LOT of irc servers want an identd 
+reply ...
+>                identd is a horrible security problem, but you can use 
+several
+>                alternatives ... I've a python script that acts as a 
+chrooted identd
+>                server -- works a charm replying with random numbers ....
+
+You mean they actually require an identd response before allowing a 
+connection (rather than just making it take a bit longer than usual)?
+
+What's the point in that?   It adds nothing to security, adds very little 
+to 
+logging opportunities, and only interferes with people trying to keep 
+their 
+networks to themselves.
+
+Ho Hum; it's a strange world on the Internet....
+
+Antony.
+
+-- 
+
+The idea that Bill Gates appeared like a knight in shining armour
+to lead all customers out of a mire of technological chaos
+neatly ignores the fact that it was he who, by peddling
+second-rate technology, led them into it in the first place.
+
+ - Douglas Adams in The Guardian, August 25, 1995
+                                                     Please reply to the 
+list;
+                                                           please don't CC 
+me.
+
+
 
 
 
