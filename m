@@ -1,11 +1,11 @@
-From: "Dev" <devietf@hotmail.com>
-Subject: ip6_queue.o module missing in Red Hat linux 9 with 2.4.20-8 kernel
-Date: Thu, 15 Apr 2004 21:11:58 +0100
+From: "James" <james@bluetrident.net>
+Subject: forwarding all ports from a particular IP?
+Date: Fri, 16 Apr 2004 15:04:46 +1200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY14-DAV12Qk5qAElA00019b12@hotmail.com>
+Message-ID: <E1BEJdE-0005aN-Ho@ht8b10.server4sale.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0075_01C4232E.49C45D50"
+	boundary="----=_NextPart_000_0051_01C423C4.29FFD210"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,52 +20,135 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0075_01C4232E.49C45D50
+------=_NextPart_000_0051_01C423C4.29FFD210
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-Dear netfilter users
+Hi,
 
-I am using redhat linux 9 with 2.4.20-8 kernel.  I need the modules =
-ip6_queue.o to run an aodv routing protocol. But i couldnt find the =
-ip6_queue.o modules is /lib/modules/2.4.20/kernel/net/ipv6/netfilter. In =
-that directory i have other netfilter modules like ip6_tables.o =
-ip6table_filter.o etc.... Can any one please let me how i should make =
-the modules ip6_queue.o
+ 
 
-Many thanks
+I was wondering if anybody could tell me how to setup a rule that forwards
+all inbound packets from a particular IP, regardless of the ports, on to a
+machine on the local network? If so, what would this rule look like?
 
-Dev
-------=_NextPart_000_0075_01C4232E.49C45D50
+ 
+
+I was also wondering if it is possible to forward an entire IP range, or the
+DNS using wildcards? For example forwarding all connections from *.aol.com
+regardless of the port onto a specific IP? If this is possible, could
+anybody tell me how I would go about it?
+
+ 
+
+Thanks,
+
+James
+
+ 
+
+
+------=_NextPart_000_0051_01C423C4.29FFD210
 Content-Type: text/html;
-	charset="iso-8859-1"
+	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Dear netfilter users</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am using redhat linux 9 with 2.4.20-8 =
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
-kernel.&nbsp; I need the modules ip6_queue.o to run an aodv routing =
-protocol.=20
-But i couldnt find the ip6_queue.o modules is=20
-/lib/modules/2.4.20/kernel/net/ipv6/netfilter. In that directory i have =
-other=20
-netfilter modules like ip6_tables.o ip6table_filter.o etc.... Can any =
-one please=20
-let me how i should make the modules ip6_queue.o</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Many thanks</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Dev</FONT></DIV></BODY></HTML>
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
-------=_NextPart_000_0075_01C4232E.49C45D50--
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I was wondering if anybody could tell me how to setup =
+a rule
+that forwards all inbound packets from a particular IP, regardless of =
+the
+ports, on to a machine on the local network? If so, what would this rule =
+look
+like?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I was also wondering if it is possible to forward an =
+entire
+IP range, or the DNS using wildcards? For example forwarding all =
+connections
+from *.aol.com regardless of the port onto a specific IP? If this is =
+possible,
+could anybody tell me how I would go about =
+it?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>James<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0051_01C423C4.29FFD210--
+
 
