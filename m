@@ -1,13 +1,14 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Need help have some questions...
-Date: Sun, 24 Aug 2003 23:24:04 -0400
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: NetFilter rules break when freeswan is enabled
+Date: Sun, 24 Aug 2003 20:26:59 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030825032403.GA26945@cannon.eng.us.uu.net>
-References: <20030818205223.GA3993@cannon.eng.us.uu.net> <20030823205158.60796.qmail@web40210.mail.yahoo.com>
+Message-ID: <DKEDJAAMDCDBHFKPBEMPIEKBCHAA.markee@bandwidthco.com>
+References: <Pine.SOL.4.30.0308231003440.27161-100000@ericps.crc.uiuc.edu>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030823205158.60796.qmail@web40210.mail.yahoo.com>
+In-Reply-To: <Pine.SOL.4.30.0308231003440.27161-100000@ericps.crc.uiuc.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: SBlaze <dagent.geo@yahoo.com>
-Cc: nf <netfilter@lists.netfilter.org>
+To: Marcelo Medici <gaucho@ericps.crc.uiuc.edu>, netfilter@lists.netfilter.org
 
-On Sat, Aug 23, 2003 at 01:51:58PM -0700, SBlaze wrote:
+Are you are using SNAT?  If so, this may be your problem.  Depending on
+whether or not you are using ESP vs. AH, you may be encrypting the IP header
+and this will break your system.
 
-> A question to Ralf about the second lawyer of a firewall. Is a circut relay
-> also known as a bridge?
-
-In general:
-
-layer 1 -> repeater
-layer 2 -> bridge
-layer 3 -> router
-
-Now, what does the circuit relay do? Does it just amplify the signal? Or does
-it terminate, reconstruct and forward the information?
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Marcelo Medici
+Sent: Saturday, August 23, 2003 8:08 AM
+To: netfilter@lists.netfilter.org
+Subject: NetFilter rules break when freeswan is enabled
 
 
-> 
-> Also a question to Ramin. You make note in that last post of basically dealing
-> with the HTTP protocol on the HTTP application level.... are you referreing to
-> web server(apache) ?
+Hello,
+I am currently seeing a problem on a machine running iptables 1.2.6.
+The machine acts as a masquerade gateway for a group of rfc1918 addresses.
+When I enable ipsec0 via the freeswan project, all forwarding using nat
+ceases. The gateway server itself still has reachability outward, as well
+as inward to the private network. It is only the masquerading that stops.
 
-No. What I said is: Filtering based on the specifics of an application is best
-done by a specialized module which knows enough about that particular protocol.
+Has anyone seen this type of behavior before? My iptables config is quite
+large, but I can post it if a response requires it.
 
-Ramin
+Thank you.
 
-> 
-> Thanks to all who are helping out. I see a soloution coming about. With a
-> little more help I and some others I know may get there.
-> 
-> Thanks
-> SBlaze
-> 
-> =====
-> "Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
-> 
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! SiteBuilder - Free, easy-to-use web site design software
-> http://sitebuilder.yahoo.com
+
+
 
