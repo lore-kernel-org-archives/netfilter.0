@@ -1,10 +1,13 @@
-From: "Vosburgh, Brian P, CTR, WHS-BB" <bvosburgh@whs.mil>
-Subject: Intercept name lookup discover SA and alter reply?
-Date: Fri, 20 Sep 2002 15:45:11 -0400
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Internal ip exiting network on firewall external nic despight rule
+Date: Fri, 20 Sep 2002 13:59:10 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <86E43FEDC7E2D411B9610002A50900EB881B7D@ddsmttayz076.ref.whs.mil>
+Message-ID: <000a01c260e8$91e2bc30$0801a8c0@s3ac>
+References: <20020920190549.NZVO16609.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <20020920190549.NZVO16609.mta05-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,29 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-I've seen iptables used to block SPAM via dnsbl so I'm wondering... can
-iptables watch UDP 53, inspect for a specific name query
-(server.company.com), remap the address to a closer server?  I know I can do
-it with F5's 3DNS, essentially detect where a client is coming from and
-redirect to a closer server.  Since 3DNS is glorified BSD/IPFilter I'm
-hoping that Linux 2.4.x running NetFilter could do the equivilant.
-
-It would be even better if iptables would know (via TCP connect) if the
-alternate server were up or down and if down resort to the main server.
-
-Thanks in advance for any info.
+ your firewall on eth1, however what I 
+> don't understand 
+> it why it would be picked up by a rule in your INPUT chain, 
+> because this 
 
 
-Brian Vosburgh
-WHS Network Engineering
-Work: 703-614-4888
-Cell: 703-867-2317
+I should have mentioned the internal machine is masquaraded. Therefore
+It should go to the input chain no ?
 
-"Moore's Law is too slow for us." 
-- Shin'ichi Okamoto, CTO for Sony Computer Entertainment
 
+> packet is not destined for the firewall itself - it is 
+> destined for machine 
+> 216.99.233.76 chimmx04.algx.net, and should therefore be 
+> passing through your 
+> FORWARD chain (even if it does come in and go out the same 
+> interface, it'll 
+> still go through the FORWARD chain).
 
 
