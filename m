@@ -1,13 +1,16 @@
-From: Karol Tomala <ktomala@tgc.pl>
-Subject: RE: Serious NAT problem
-Date: Tue, 30 Mar 2004 12:23:09 +0200
+From: Cody Harris <hchs@ns.sympatico.ca>
+Subject: Re: Not forwarding?
+Date: Tue, 30 Mar 2004 07:33:47 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080642189.2754.163.camel@wolverine.waw.tgc.pl>
-References: <7C9884991ADAE0479C14F10C858BCDF5122F31@alderaan.smgtec.com>
+Message-ID: <20040330073347.65b31438@darna.vectec.net>
+References: <20040328155231.32b07799@darna.vectec.net>
+	<200403292242.16217.Antony@Soft-Solutions.co.uk>
+	<20040329185640.3c8c3da9@darna.vectec.net>
+	<200403300848.16537.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122F31@alderaan.smgtec.com>
+In-Reply-To: <200403300848.16537.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +20,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-W li=B6cie z pon, 29-03-2004, godz. 21:59, Daniel Chemko pisze:=20
-> Karol Tomala wrote:
-> > Hello!
-> > I have a question regarding netfilter. I have been looking for an
-> > answer for two days and I'm hopeless. That's why I have decided to
-> > ask for help here.
+On Tue, 30 Mar 2004 08:48:16 +0100,
+Someone named Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
 
-[cut]
+> On Monday 29 March 2004 11:56 pm, Cody Harris wrote:
+> 
+> I think you've got it now.
 
-> 1. If the default gateway on the 172 network is not your firewall, then
-> this will break, because replies to the 10 network will trickle through
-> your default router, not this firewall.
+Great!
 
-Network 172.18. shouldn't be obviously visible from network 10.128. Only
-particular hosts should be transparently mapped to the 10.128. network
-IP addresses. Unfortunatelly this firewall is not default gateway for
-172.18. network.=20
+> 
+> The only thing I would comment on what you said above is the phrase "routing 
+> decision":
+> 
+> Netfilter does not make routing desicions - the Linux kernel does that, even 
+> when you're not running netfilter.   Netfilter simply adds the ability to 
+> drop some packets *instead* of routing them on (in the filter tables), or to 
+> change where they're addressed to (in the nat table), although note in the 
+> latter case it's still the kernel routing mechanism which decides how they 
+> get to their (new) destination.
 
-> 2. The DNAT rule is all you need if you just want to establishe
-> conntections TO the 172 network. The SNAT rule is all you need to
-> establishe connections TO the 10 network.
+So instead of changing the decision, it changes the packet to change the routing decision? If we've covered the NAT table, what's the mangle table?
 
-How should proper rule look like? Something like:
+> 
+> I sometimes tell people "a firewall is a router which can say No".
+> 
+> Regards,
+> 
+> Antony.
+> 
+> -- 
+> How I want a drink, alcoholic of course, after the heavy chapters involving 
+> quantum mechanics.
+> 
+>  - 3.14159265358979
+> 
+>                                                      Please reply to the list;
+>                                                            please don't CC me.
+> 
+> 
 
-iptables -t nat -A PREROUTING -i eth2 -s 10.128.2.64/255.255.255.224 -d
-10.128.2.70 -j SNAT --to-destination 172.18.5.2
 
-
-> 3. You must either bind the .70 address to your eth2, or you have to
-> proxy arp the address to the interface. Otherwise, requests for .70 in
-> the 10 network will return failure. EG:
-> ip addr add 10.128.2.70/16 dev eth2
-
-I don't want to bind additional addresses for eth2. I have done a:
-echo 1 > /proc/sys/net/ipv4/conf/eth2/proxy_arp
-But still pinging 10.128.2.70 gives nothing but "arp who-has 10.128.2.70
-tell 10.128.2.66" on tcpdump -i eth2 output. Could you help me a little
-with setting proxy-arp properly?
-
-Greetings,
---
-Karol Tomala
-
+-- 
++------------------+-----------------------------+
+| Cody Harris      | --------------------------- |
+| ---------------- | --------------------------- |
++------------------+-------+---------------------+---+
+| *Sigh*. No key.                                    |
++----------------------------------------------------+
 
