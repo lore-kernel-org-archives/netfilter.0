@@ -1,13 +1,11 @@
-From: Juergen Stohr <juergen.stohr@lpr.e-technik.tu-muenchen.de>
-Subject: Re: bug? blocked packets get shadowed to internal network
-Date: Thu, 14 Aug 2003 17:07:55 +0200
+From: Payal Rathod <payal-iptables@staticky.com>
+Subject: iptables with real ips
+Date: Fri, 15 Aug 2003 20:49:43 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030814170755.A25916@rcs.ei.tum.de>
-References: <Pine.LNX.4.44.0308141501421.31438-100000@localhost> <Pine.LNX.4.44.0308141506450.31438-100000@localhost>
+Message-ID: <20030815151943.GA1513@linux.local>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0308141506450.31438-100000@localhost>; from chris@netservers.co.uk on Thu, Aug 14, 2003 at 03:07:54PM +0100
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,22 +17,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Chris Wilson <chris@netservers.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Chris,
-> > I've noticed some problems with TCP resets not being generated properly in
-> > recent kernels (since 2.4.19 I think). Could you try REJECT without
-> > tcp-reset, and see if the ICMP error is sent out of the correct interface?
-> 
-> It's the same issue. We don't see the TCP resets because they are being
-> sent out of the wrong interface. I'm investigating. In the mean time you 
-> can try REJECT without tcp-reset, that works for us.
-> 
+Hi,
+First excuse for mailing a new question before commenting about previous.
+It is that I get 20 mins 2 times a day net access only (dial-up).
+I download all mails once and send/comment once.
 
-Yes, REJECT without tcp-reset works as expected.
+Fortunately for me, a friend of mine has agreed to let me try Linux and
+iptables at his office and hey I get paid $50 for it too :):):)
+But their are some contraints which I want you to give opinion about.
 
-thanks,
-	juergen
+- RH Linux 7.2 (default kernel)
+- 4 real ips (thru' some router)
+- all traffic should pass thru' Linux firewall
+- I cannot recompile kernel and change anything other than firewall on
+  the box. I will be killed if I crash that box.
+- One windows machine has a webserver and ftp server accessible thru'
+  outside world. Can I make people from outside access that box but the
+  traffic should pass thru' Linux box first and its firewall rules?
+  I think that when someone from outside asks about windows http server,
+  Linux box should accept it and pass to windows server. But techinically
+  I don't know if it possible. What should I be looking at?
+- One more windows box with real ip is connecting to a machine in Europe
+  thru VPN. This VPN is allowed only for that windows ip. Can I make
+  this VPN traffic pass thru' Linux box and still it should appear as
+  not originating from the Linux ip but from windows ip to the remote
+  server?
 
+These questions may sound stupid but I never have used more than 1 live
+ip and that too only 2 times.
+
+Thanks a lot for the time in advance and eagerly waiting for any replies
+on this.
+
+With warm regards,
+-Payal
+
+-- 
+"Visit GNU/Linux Success Stories"
+http://payal.staticky.com
+Guest-Book Section Updated.
 
