@@ -1,13 +1,13 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: RELATED emulation without ip_conntrack
-Date: Thu, 24 Oct 2002 12:45:52 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: How exactly does RELATED work in Connection Tracking?
+Date: Thu, 24 Oct 2002 11:06:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210241245.52685.roy@karlsbakk.net>
-References: <200210231602.00745.roy@karlsbakk.net> <200210231518.g9NFI4L02942@vulcan.rissington.net>
+Message-ID: <200210241006.g9OA6gL04057@vulcan.rissington.net>
+References: <000801c2798e$a7dcfd70$09c809c0@PENT4> <1035325277.10494.18.camel@elendil> <000b01c27aac$d6b2a270$09c809c0@PENT4>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210231518.g9NFI4L02942@vulcan.rissington.net>
+In-Reply-To: <000b01c27aac$d6b2a270$09c809c0@PENT4>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,57 +18,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 23 October 2002 17:17, Antony Stone wrote:
-> On Wednesday 23 October 2002 3:02 pm, Roy Sigurd Karlsbakk wrote:
-> > hi
+On Wednesday 23 October 2002 4:57 pm, Matthew Donofrio wrote:
+
+> >Connection tracking relies on data structures. In those, to be quick,
+> >you have tuples that are used to recognise packets going both ways. A
+> >tuple is a set of datas that caracterize a packet for Netfilter. Theses
+> >tuples are used firstly to build conntrack table entries, and then to
+> >try to match theses entries against further packets. That means when you
+> >see a packet, you can calculate its own tuple, and then compare it to
+> >the ones that are in data structures that represent current conntracked
+> >flows.
 > >
-> > I've got this video server streaming @ ~250Mbps, so I really don't wa=
-nt
-> > to waste cpu cycles on ip_conntrack.
-> >
-> > how can I test for tcp flags to allow me to do a poor-man's-conntrack=
-?
+> >When a packet reaches the box, then Netfilter looks at it, extract from
+> >the header its own tuple and then compares it to known tuples that are
+> >part of current conntracked connections. If it matches one of theses
+> >tuples, then it is ESTABLISHED. It is also compared to all expectations.
+> >If it matches one expectation, then we know this packet is RELATED (and
+> >if it does not match anything, it is NEW). Then, we can create a new
+> >structure for him with tuples and so on and treat the flow as others.
 >
-> Treat packets with SYN set, and ACK, FIN and RST clear as NEW connectio=
-ns.
-> Treat packets with SYN and ACK set, FIN and RST clear as NEW replies.
-> Treat packets with ACK set, SYN, FIN and RST clear as ESTABLISHED
-> connections.
-> Treat packets with FIN or RST set (probably ACK too) as terminating
-> connections.
+> The tuple is just the source address and destination address for a
+> particular packet, correct?
 
-ok. My system has a private network and a public network. the private is =
-open=20
-to everyone connected on it. The public is open only to the video service=
-=20
-(tcp/1234) and icmp. Does the following look reasonable?
+No.   For TCP and UDP packets the tuple also contains the source and 
+destination port numbers.
 
-iptables -I INPUT -i eth0 -j ACCEPT
-iptables -I INPUT -i eth1 -p icmp -j ACCEPT
-iptables -I INPUT -i eth1 -p tcp --dport 1234 --tcp-flags SYN,ACK,FIN,RST=
- \
-=09SYN -j ACCEPT
-iptables -I INPUT -i eth1 -p tcp --dport 1234 --tcp-flags SYN,ACK,FIN,RST=
- \
-=09SYN ACK -j ACCEPT
-iptables -I INPUT -i eth1 -p tcp --dport 1234 --tcp-flags SYN,ACK,FIN,RST=
- \
-=09FIN,RST -j ACCEPT
-iptables -I INPUT -i eth1 -p tcp --dport 1234 --tcp-flags SYN,ACK,FIN,RST=
- \
-=09ACK,FIN,RST -j ACCEPT
-iptables -I INPUT -j LOG --log-prefix "Illegal packet" --limit 5/second \
-=09--limit-burst 10
-iptables -I INPUT -j DROP
+> So is it safe to say that the  only fields
+> that are compared for connection tracking are the source and destination
+> addresses?
 
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
+No, otherwise if a client connected to a server using http, and then set up a 
+new connection to the same server by ssh (same IP addresses, different port 
+numbers), they would appear to be the same connection !
 
-Computers are like air conditioners.
-They stop working when you open Windows.
+> So, if a packet comes in and the source and destination
+> addresses match an entry in the conntrack state table, then we can say that
+> it is part of some ESTABLISHED connection.  Thanks again.
 
+If a packet comes in and the source and destination addresses and port 
+numbers match an entry in the conntrack state table (with source and 
+destination either way round, to allow for reply packets) then we can say 
+that it is part of some ESTABLISHED connection.   You're welcome.
+
+Antony.
+
+-- 
+
+How I want a drink, alcoholic of course, after the heavy chapters
+involving quantum mechanics.
+
+ - 3.14159265358979
 
