@@ -1,10 +1,14 @@
-From: J Kim <jindor@yahoo.com>
-Subject: Re: Differentiating direct, and redirected access?
-Date: Mon, 18 Oct 2004 19:15:26 -0700 (PDT)
+From: active <active@despammed.com>
+Subject: Re: Add modulos to iptables
+Date: Mon, 18 Oct 2004 22:51:42 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041019021526.55373.qmail@web50905.mail.yahoo.com>
+Message-ID: <20041018205142.GA15325@actisystem.net>
+References: <1098130368.2439.7.camel@admin.ucbcba.edu.bo>
+Reply-To: active@despammed.com
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1098130368.2439.7.camel@admin.ucbcba.edu.bo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +22,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Thank you very much Jason, Jose, Aleksandar, and
-&#1051;&#1086;&#1078;&#1077;&#1095;&#1085;&#1080;&#1082; for all the replies. I
-chose the simplest suggestion (putting drop rule before redirect in nat
-prerouting chain), and now it works perfect. You guys are great.
+In data 18/10/2004 alle 16:12:48 -0400, Jorge Enrique ha scritto:
+> Hi everybody.... I want to add more modules iptables like mport,
+> account, etc how can i do????
 
-Jinsuk Kim
+You should patch your kernel sources with POM (Patch-O-Matic).
+You can find it on the Netfilter site.
 
-
-		
-_______________________________
-Do you Yahoo!?
-Declare Yourself - Register online to vote today!
-http://vote.yahoo.com
+--
+bye,
+active
 
