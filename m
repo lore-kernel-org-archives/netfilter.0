@@ -1,13 +1,14 @@
-From: Sherman Boyd <meekrob@mitosys.com>
-Subject: Re: New iptables "cookbook"
-Date: Wed,  4 Dec 2002 10:44:39 -0700
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: iptables management problem
+Date: Wed, 4 Dec 2002 12:16:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039023879.3dee3f07c1502@meth.gravital.net>
-References: <1038950722.3ded2142edaef@meth.gravital.net>
+Message-ID: <200212041216.34729.netfilter@newkirk.us>
+References: <F139OSnJTycBI0c0deU0002173e@hotmail.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1038950722.3ded2142edaef@meth.gravital.net>
+In-Reply-To: <F139OSnJTycBI0c0deU0002173e@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +19,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Afshin Lamei <linux_st@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-My apologies to anyone who tried to view the iptables cookbook in IE.  I'm using
-AxKit to generate html from an xml document on the fly, IE doesn't seem to like
-this.  I've generated a static HTML page here for IE users:
+On Wednesday 04 December 2002 11:35 am, Afshin Lamei wrote:
+> I have installed the Iptables 1.2.6a according to the netfilter's docum=
+ent,
+> but It doesn't act as a service.
+> Do I need to manually setup my firewall after each system boot up?
+> --afshin
 
-http://gentoo.mitosys.com/iptables-cookbook.html
+In the default setup, yes.  One solution is to create a script (name it=20
+firewall for convenience) in /etc/rc.d/init.d (well, at least with some=20
+distros, such as RedHat) and links to it as /etc/rc.d/rc5.d/Sxxfirewall a=
+nd=20
+/etc/rc.d/rc3.d/Sxxfirewall (where xx is a number to start it at your cho=
+sen=20
+point in the starting sequence, relative to the other Sxx script links fo=
+r=20
+each of those runlevels, again RedHat - your distro may differ).  As long=
+ as=20
+you have a valid script named (ie) /etc/rc.d/init.d/firewall then "servic=
+e=20
+firewall start" will start it.  The links in rc5.d and rc3.d will cause i=
+t to=20
+be automatically started in each of those runlevels.  If you want, you ca=
+n=20
+write your script to support start, stop, and restart, the standard=20
+parameters most such scripts support, but that isn't necessary to buildin=
+g=20
+the firewall at system boot.  If there are no parameters supported, then =
+when=20
+it is invoked during boot with the 'start' parameter the script will simp=
+ly=20
+ignore the parameter and execute anyway.
 
-Again thanks for looking, and please let me know what you think.
+j
 
-Sherman Boyd
-meekrob@mitosys.com
-
-
-Quoting Sherman Boyd <meekrob@mitosys.com>:
-
-> Hi everyone,
-> 
-> I'm writing an "iptables cookbook" a Gentoo Linux specific iptables tutorial.
-> 
-> After working on this sucker late into the night I'm sure there are tons of
-> errors and inconsistencies, so if you are interested please read the doc and
-> send me an email pointing out it's flaws.  (BTW I know the GFDL is under a
-> code
-> listing, that will be resolved before I publish the doc)  
-> 
-> You can find it here:
-> http://gentoo.mitosys.com/iptables-cookbook.xml
-> 
-> I'm looking for feedback on technical accuracy as well as style.  Be
-> brutally
-> honest, you won't hurt my feelings, but please be brief.
-> 
-> Thank you for your time,
-> 
-> Sherman Boyd
-> meekrob@mitosys.com
-> 
-> 
 
