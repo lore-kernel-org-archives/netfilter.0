@@ -1,13 +1,14 @@
-From: Mikhail Zotov <e-boogie@yandex.ru>
-Subject: Re: [OBORONA-SPAM]  more limiting fun
-Date: Fri, 11 Feb 2005 18:53:40 +0300
-Message-ID: <200502111853.40434.e-boogie@yandex.ru>
-References: <Pine.LNX.4.53.0502110936210.1996@altaica>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: RELATED ICMP packets of type 3
+Date: Fri, 11 Feb 2005 10:49:55 -0500
+Message-ID: <20050211154955.GA2644@bender.817west.com>
+References: <200502111757.16352.e-boogie@yandex.ru>
+	<20050211150635.GA2371@bender.817west.com>
+	<200502111641.19968.victor@nk.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.53.0502110936210.1996@altaica>
 Content-Disposition: inline
+In-Reply-To: <200502111641.19968.victor@nk.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,30 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Friday 11 February 2005 18:43, Tib wrote:
-> Ok, I've done some fiddling but still have some issues. I went with some
-> recommendations on what people said and here's what I have. The first
-> three rules of my startup set are as follows:
+On Fri, Feb 11, 2005 at 04:41:19PM +0100, Victor Julien wrote:
+> > yes.  personally (for whatever that is worth), i allow ICMP Types 3, 11,
+> > and 12 [*].
 > 
-> iptables -A INPUT -i eth0 -p tcp --dport 22 -m state \
->   --state ESTABLISHED -j ACCEPT
-> 
-> iptables -A INPUT -i eth0 -p tcp --destination-port 22 -m limit \
-> --limit 15/hour --limit-burst 5
-> 
-> The problem is that it still does exactly what it did before, namely that
-> it doesn't respond at all once those rules are in place. Anyone have an
-> idea what's going on? I know my ssh port isn't getting hammered THAT hard.
+> Will these all be accepted by the accepting all RELATED packets? Or do i need 
+> extra rules to allow them?
 
-AFAIU, the last line is incomplete: there is nowhere to "jump".
-As for me, I would have added 
+in theory--they are RELATED.  in practice, i allow them explicitly.
+looking at one of my firewalls, it appears as though there are ICMP Type
+3 packets that get past the RELATED rule and hit the explicit allow rule,
+but the counters for the explicit allow for types 11 and 12 are at 0.
 
--m state --state NEW
-
-to it for clarity.
+-j
 
 --
-Mikhail
+"Me lose brain? Uh, oh! Ha ha ha! Why I laugh?"
+        --The Simpsons
 
