@@ -1,12 +1,16 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: can't patch with patch-o-matic
-Date: Tue, 18 Feb 2003 13:48:04 +0100 (CET)
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: How to block all ports except port 21,22,80,8080 ???
+Date: 18 Feb 2003 13:45:51 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0302181347040.8568-100000@blackhole.kfki.hu>
-References: <5.2.0.9.2.20030218133202.01c1dc20@172.26.0.8>
+Message-ID: <1045572351.17068.2.camel@kermit.spenneberg.de>
+References: <1045555939.94722.jacob_chan@so-net.net.tw> 
+	<1045558628.1967.29.camel@kermit.spenneberg.de>
+	<1045560648.1913.39.camel@kermit.spenneberg.de> 
+	<3E5207B9.7C2BEDFA@patrick.at>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.2.0.9.2.20030218133202.01c1dc20@172.26.0.8>
+In-Reply-To: <3E5207B9.7C2BEDFA@patrick.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +20,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Luis Miguel Cruz Miranda <luismi@b2bi.es>
-Cc: raymondl@knowledgefactory.co.za, Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Tue, 18 Feb 2003, Luis Miguel Cruz Miranda wrote:
+Am Die, 2003-02-18 um 11.15 schrieb Patrick Maartense:
+> it would be MUCH better to
+> 
+> iptables -p INPUT DROP # default drop
+> then allow only these ports
+> iptables -A INPUT -p tcp -m multiport  --dport 21,22,80,8080 -j ACCEPT
+Sure. Even this little script has to be improved to be accepted as a
+"firewall script". Stuff like Conntrack, Egress and Ingress Filter are
+missing. 
+But a short questions gets a short answer.
 
-> I have patch command installed, the problem is: why I  can't use
-> tcp-window-tracking patch?
+Cheers,
 
-Probably because you use an older release. Check out the cvs and apply the
-patch from there.
+Ralf
 
-Regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+-- 
+Ralf Spenneberg
+RHCE, RHCX
 
+IPsec/PPTP Kernels for Red Hat Linux:  
+http://www.spenneberg.com/.net/.org/.de
+Honeynet Project Mirror:                http://honeynet.spenneberg.org
+Snort Mirror:                           http://snort.spenneberg.org
 
