@@ -1,13 +1,18 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: sub interface filtering
-Date: Wed, 2 Apr 2003 21:38:47 +0200
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: deny cgi scanner
+Date: Wed, 2 Apr 2003 21:32:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000c01c2f94f$7ac57a10$0401000a@sterenborg.info>
-References: <000b01c2f947$feb84a80$8b01a8c0@win2k.com>
+Message-ID: <20030402213223.22195ff5.arnt@c2i.net>
+References: <3E89CD8A.5020007@gmx.ch>
+	<1049219263.4784.14.camel@elendil.intranet.cartel-securite.net>
+	<3E89EBE5.5090804@gmx.ch>
+	<20030401200652.GY18434@ns.snowman.net>
+	<20030402012310.180c7aac.arnt@c2i.net>
+	<20030402125401.GC18434@ns.snowman.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000b01c2f947$feb84a80$8b01a8c0@win2k.com>
+In-Reply-To: <20030402125401.GC18434@ns.snowman.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +23,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Stephen Frost <sfrost@snowman.net>
+Cc: netfilter@lists.netfilter.org
 
-> Hi guys I have the following setup and rules. And I cant seem to get
-the filtering to work.
-> eth2:0
->=20
-> <routeable internetIP/28>
->=20
-> eth2:1
->=20
-> <routeable internetIP/28>
+On Wed, 2 Apr 2003 07:54:01 -0500, 
+Stephen Frost <sfrost@snowman.net> wrote in message 
+<20030402125401.GC18434@ns.snowman.net>:
 
-AFAIK it is because you cannot filter eth<x>:y (but you can filter the
-IP address of course).
+> * Arnt Karlsen (arnt@c2i.net) wrote:
+> > On Tue, 1 Apr 2003 15:06:52 -0500, 
+> > Stephen Frost <sfrost@snowman.net> wrote in message 
+> > <20030401200652.GY18434@ns.snowman.net>:
+> > > # Bad guy detected!  Add his IP to the badguy list!
+> > > iptables -A BADCHAIN -m recent --set --name badguy -j DROP # Add
+> > > IP to list
+> > 
+> > ..this also shoots down the good guys with servers on dynamic dns, 
+> > using an old recycled-by-the-isp bad guy's ip.
+> 
+> That's why there's a time limit to it.  
 
+..ah, "-m recent", missed that one.  ;-)
 
-Rob
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
 
