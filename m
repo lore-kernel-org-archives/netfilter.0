@@ -1,10 +1,13 @@
-From: mailinglists@belfin.ch
-Subject: AW: default policy
-Date: Fri, 1 Nov 2002 17:48:52 +0100
+From: "Leonardo A. de Camargo" <leonardo@openware.com.br>
+Subject: RES: NAT, SNAT, FORWARD, what i use ?
+Date: Thu, 31 Oct 2002 14:31:55 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <31347F3CE518D6118ACB00A0246AD0560B2401@mx.snizek.ch>
+Message-ID: <NGBBLIMDELLHLIKGLDNNMEEBCBAA.leonardo@openware.com.br>
+References: <200211011625.gA1GPBe15063@vulcan.rissington.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200211011625.gA1GPBe15063@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,57 +17,78 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Rob' <rwideman@austin.rr.com>, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+
+>> I have machines xxx.zzz.yyy.www (conected to internet, via eth0) and a
+>> 196.10.10.1
+>Just out of interest, where did you get that IP address from ?
+
+Just some IP from my mind, it is internal, just used between those two
+machines=B4s eth1.
 
 
-Hi
+>iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j DNAT --to
+>196.10.10.1
+>iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+>iptables -A FORWARD -p tcp --dport 80 -d 196.10.10.1 -j ACCEPT
+>This will allow you to contact your internal web server using a browser on
+>the Internet, by contacting xxx.zzz.yyy.www
 
-> I have been looking at several scripts checking the default 
-> policies on
-> them.
-> Some include items that others don't.  Oscars tutorial 
-> doesn't cover all of
-> these compared to Ziegler's book.  I have been wondering if 
-> the following
-> covers ALL built-in chains?
-> iptables -P INPUT   DROP
-> iptables -P OUTPUT  DROP
-> iptables -P FORWARD DROP
+Actually it didnt work, i set up info loggin and nothing were being logged
+in port 80.
+I dropped all my rules and set up ACCEPT policy on all chains, nothin
+happened too.
 
-These will do the job (in most cases). 
-iptables -P INPUT DROP will stop everything trying to hit your bastion host.
-iptables -P OUTPUT DROP will stop everything leaving your bastion host.
-iptables -P FORWARD DROP will stop everything trying to get through your
-bastion host.
-These policies cover all network adatpers in your system.
 
-> Ziegler's book states that it should be this (it was never 
-> put in these
-> words but this is what I am gathering from my reading):
-> iptables -t nat    -P PREROUTING  DROP
-> iptables -t nat    -P OUTPUT      DROP
-> iptables -t nat    -P POSTROUTING DROP
-> iptables -t mangle -P PREROUTING  DROP
-> iptables -t mangle -P OUTPUT      DROP
-> iptables -t filter -P INPUT       DROP
-> iptables -t filter -P OUTPUT      DROP
-> iptables -t filter -P FORWARD     DROP
+>I would tell you how to do the same thing for telnet, but I think you
+should
+>be using SSH instead :-)   Maybe you can work it out from the rules above
+>anyway though...
 
-Of course you can do that. But this is multiple pleonasm. I.e. if you drop
-PREROUTING you don't have to drop INPUT anymore. If your DROP Policy covers
-every built-in chain you must write a rule for every DROPed chain to allow a
-certain action. Your filter becomes unclear and thus, hard to read and hard
-to manage.  
+i know ssh is safer, thats just for experimental purpose, im very new with
+iptables.
 
-> The last seems to be the most thorough but i cant find 
-> anywhere that covers
-> this in detail.
-> Are these all of the built-in chains?
+I=B4ll put my lil script to set this up, it runs in xxx.zzz.yyy.www=B4s rc.=
+local
+:
 
-Yes.
- 
-HTH
-Philipp
+echo "1" > /proc/sys/net/ipv4/ip_forward	# This goes in 196.10.10.1 too
+iptables -F
+iptables -F -t mangle
+iptables -F -t nat
+iptables -P OUTPUT DROP
+iptables -P INPUT DROP
+iptables -P FORWARD  DROP
+service inet stop
+service inet start
+iptables -A INPUT -j LOG --log-level info --log-prefix FIREWALL:
+iptables -A OUTPUT -j LOG --log-level info --log-prefix FIREWALL:
+iptables -t NAT -A PREROUTING -j LOG --log-level info --log-prefix FIREWALL:
+iptables -A INPUT -p tcp -m tcp --dport 23 -j ACCEPT
+iptables -A INPUT -p icmp -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport 20 -j ACCEPT
+iptables -A OUTPUT -p tcp -m tcp --dport 1024:65535 -j ACCEPT
+iptables -A OUTPUT -p icmp -j ACCEPT
+ifconfig eth1 down
+ifconfig eth1 196.10.10.2
+ifconfig eth1 up
+iptables -A INPUT -j DROP -s 196.10.10.0/24 -i ! eth1
+iptables -A INPUT -j DROP -s ! 196.10.10.0/24 -i eth1
+iptables -A INPUT -j DROP -d 196.10.10.255
+iptables -A INPUT -j DROP -d xxx.zzz.yyy.255
+iptables -A INPUT -j DROP -d 255.255.255.255
+iptables -A OUTPUT -j DROP -d 196.10.10.255
+iptables -A OUTPUT -j DROP -d xxx.zzz.yyy.255
+iptables -A OUTPUT -j DROP -d 255.255.255.255
+iptables -A FORWARD -j ACCEPT -m state --state ESTABLISHED
+iptables -A FORWARD -j ACCEPT -m state --state RELATED
+iptables -A OUTPUT -p tcp -m tcp --dport 53 -j ACCEPT
+iptables -A OUTPUT -p udp -m tcp --dport 53 -j ACCEPT
+iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j DNAT --to
+196.10.10.1
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p tcp --dport 80 -d 196.10.10.1 -j ACCEPT
+
 
