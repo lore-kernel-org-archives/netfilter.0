@@ -1,15 +1,13 @@
-From: Michael Gale <mgale@utilitran.com>
-Subject: Re: Leaky ip_conntrack_ftp in Red Hat kernels
-Date: Fri, 12 Dec 2003 12:44:24 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Weird TCP flags?
+Date: Fri, 12 Dec 2003 21:21:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031212124424.0475e61f.mgale@utilitran.com>
-References: <1071251376.6079.22.camel@smoogen1.lanl.gov>
-	<20031212115147.58d95778.mgale@utilitran.com>
-	<1071256412.4890.10.camel@smoogen1.lanl.gov>
+Message-ID: <200312122121.37954.Antony@Soft-Solutions.co.uk>
+References: <003101c3c065$f61ad790$13fea8c0@melita.com> <200312121438.24448.Antony@Soft-Solutions.co.uk> <200312121105.19702.JALaramie@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1071256412.4890.10.camel@smoogen1.lanl.gov>
+In-Reply-To: <200312121105.19702.JALaramie@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,51 +18,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
+On Friday 12 December 2003 4:05 pm, Jeffrey Laramie wrote:
 
-Well ... I have not heard of any other problems such as this .. but that does not mean that this does not exist. Second I meant that RH has been known to make kernel modifications .. which means maybe they did something else in the kernel which is affecting the ip_conn... module.
+> The TTL of his packet was about 60 secs lower than what I usually see which
+> makes Chris's explanation sound likely. How does TTL get calculated? Does
+> each host set a new TTL for it's packets or does it calculate it from the
+> time of the original SYN packet?
 
-Also I believe RH has stopped releasing RH Desktop because RH9 was there last release. Now they are releasing it under a different name. Starts with a "F" I think .. not sure.
+No, TTL doesn't mean "TIME to live" any more (it did when the Internet was 
+being invented, but pretty soon the meaning changed and TTL no longer has 
+anything to do with time).
 
-So I guess now you would have to start paying for RH server class version or use the new desktop version which I hear is full of bugs.
+TTL is actually a "maximum hop count", specifying the number of routers (and 
+remember, a netfilter firewall is a router too) a packet is allowed to pass 
+through before it "expires" and gets thrown away (with an ICMP "TTL expired" 
+packet being returned to the source address on the packet which just 
+expired).
 
-I personally stick with Slackware -- not major changes and they are not going anywhere.
+The easiest way (I think) to explain how this is used is to consider the 
+traceroute program and what it does:
 
-Michael.
+traceroute sends out three packets to some destination address with TTL=1.
 
+The first router they come to decrements the TTL (all routers do this) and if 
+the TTL is now = 0, the router discards the packet, and returns an ICMP "TTL 
+expired" to the source address (ie: the machine which started the traceroute 
+command).   The source address for this ICMP packet is that of the router, 
+which is how the traceroute program tells you the address (and, by reverse 
+DNS, also the name) of the first router the packet went through.
 
-On Fri, 12 Dec 2003 12:13:32 -0700
-Stephen Smoogen <smoogen@lanl.gov> wrote:
+Then traceroute sends three packets to the same destination address, this time 
+with TTL = 2.
 
-> On Fri, 2003-12-12 at 11:51, Michael Gale wrote:
-> > Hello,
-> > 
-> > 	Why not use another distro ... one that does not all the stable running linux kernel.
-> > 
-> 
-> Well that is always possible within the next 2 years. I do not
-> understand the second part of your sentance.
-> 
-> > Since this only seems to be a problem with RH ... who ... well lets face it. 
-> > 
-> > May not be around much longer ...
-> > 
-> 
-> I have heard this sooo many times in the last 10 years, I have given up
-> believing that this will be the last year RH will be around. 
-> 
-> -- 
-> Stephen John Smoogen		smoogen@lanl.gov
-> Los Alamos National Lab  CCN-5 Sched 5/40  PH: 4-0645
-> Ta-03 SM-1498 MailStop B255 DP 10S  Los Alamos, NM 87545
-> -- So shines a good deed in a weary world. = Willy Wonka --
-> 
-> 
+The first router decrements the TTL and passes the packets on (because that's 
+what routers do, and TTL is not = 0).
+
+The second router decrements TTL, finds that it now = 0, and responds with the 
+ICMP packet (this time from the source address of the second router, so 
+traceroute can tell you that, too).
+
+traceroute then just keeps on sending out packets with higher and higher TTLs, 
+waiting for all the ICMP responses to come back, and successive packets get 
+further and further, until traceroute receives either a "port unreachable" or 
+a genuine response packet, which means that the packets reached the real 
+destination.   Then traceroute stops, and you have a record of all the 
+routers the packets went through on their way to the destination.
+
+traceroute normally sends UDP packets to port numbers which are unlikely to be 
+listening (therefore the expected response from the final destination is ICMP 
+port unreachable).
+
+Note that due to dynamic routing across the Internet, there's no guarantee 
+that every packet will follow the same route on its way to the destination, 
+so traceroute outputs can be misleading, but it's a good start.
+
+Hope this helps explain a bit about TTL.....
+
+Antony.
 
 
 -- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+The truth is rarely pure, and never simple.
+
+ - Oscar Wilde
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
