@@ -1,14 +1,17 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Request about MAC Address (cross posted to ebtables and
-	netfilter)
-Date: Thu, 23 Sep 2004 10:35:30 -0400
+Subject: Re: nat and dns
+Date: Thu, 23 Sep 2004 10:44:07 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095950130.1750.22.camel@wolfpack.ljm.dom>
-References: <1403218a040923054731f66fed@mail.gmail.com>
+Message-ID: <1095950647.1750.30.camel@wolfpack.ljm.dom>
+References: <415290B1.5030401@imag.fr>
+	<20040923103428.GK27327@metastasis.org.uk>
+	<20040923110943.14715.qmail@arcoscom.com>
+	<20040923112331.GL27327@metastasis.org.uk>
+	<1095948833.1750.9.camel@wolfpack.ljm.dom>  <4152DEE3.6010007@pbl.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a040923054731f66fed@mail.gmail.com>
+In-Reply-To: <4152DEE3.6010007@pbl.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,28 +24,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-09-23 at 08:47, Mohamed Eldesoky wrote:
-> I have seen this on my logs
-> Destination: 00:0c:76:e7:fa:a9 (Micro-St_e7:fa:a9)
+On Thu, 2004-09-23 at 10:34, Aleksandar Milivojevic wrote:
+> Theoretically (since I don't know of any such implementation), it is 
+> perfectly legal to have resolver library that first tries TCP, and than 
+> UDP :-P
 > 
-> I have searched for the manufacturer assigned this mac, and I failed !!
-> Anyone knows anything about such manufacturer ??
+> Of course, such approach would be waste of network resources (sending 
+> one UDP datagram one way, and another the other way is usually at least 
+> as fast as only establishihg new TCP connection without sending any data 
+> through it).
+> 
+> Anyhow, I don't see why are you going red when you see TCP port 53 open? 
+>   If it is possible for random internet site to fetch zone from DNS 
+> server, it is misconfiguration of DNS server, not of the firewall.  OSI 
+> layers and all that stuff, you know ;-).  
 
-according to:  http://standards.ieee.org/regauth/oui/index.shtml
+it comes from the days of BIND offering up remote root exploits more
+often that i care to remember.  not allowing TCP 53 through the firewall
+allowed one to get a least a couple of winks over the course of a night.
 
-a search for 000c76 yields:
+> If your DNS server does not 
+> allow you to restrict who can do zone transfers, that you should 
+> seriously consider switching to different DNS server that does.  
 
-00-0C-76   (hex)		MICRO-STAR INTERNATIONAL CO., LTD.
-000C76     (base 16)		MICRO-STAR INTERNATIONAL CO., LTD.
-				No 69, Li-De Street, Jung-He City, Taipe
-				Taipei  
-				TAIWAN, REPUBLIC OF CHINA
-
-googling for MICRO-STAR INTERNATIONAL leads us to:
-
-        http://www.msicomputer.com/
-        
-i'd guess the MAC is from an onboard NIC from one of their motherboards.
+just adding layers to the onion.
 
 -j
 
