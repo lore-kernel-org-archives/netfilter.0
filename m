@@ -1,10 +1,12 @@
-From: "dravya" <dravya@magma.ca>
-Subject: recompile kernel with CONNMARK and NTH TARGETS?
-Date: Fri, 20 Aug 2004 15:17:57 -0400 (EDT)
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: recompile kernel with CONNMARK and NTH TARGETS?
+Date: Fri, 20 Aug 2004 12:41:47 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408201917.i7KJHvvT006227@webmail1.magma.ca>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E35C@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,44 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter mailing list <netfilter@lists.netfilter.org>
+To: dravya <dravya@magma.ca>, Netfilter mailing list <netfilter@lists.netfilter.org>
 
 
+> iptables v1.2.7a: Couldn't load target
+> `CONNMARK':/lib/iptables/libipt_CONNMARK.so: cannot open shared
+> object file: No such file or directory=20
 
-Hi all,
+/lib/iptables/libipt_CONNMARK.so will not exist unless you rebuild your
+userspace (iptables) tools. I believe that best one for you would have
+been the 1.2.9 set of tools. So, download the tarball, uncompress,
+change the Makefile to make sure to change the prefixes (see below)to
+that of your distribution. Run it with:
+# KERNEL_DIR=3D<my_sources> make
+# KERNEL_DIR=3D<my_sources> make install
 
-I have been tring now for a while to compile the kernel with the CONNMARK  and NTH
-Targets... without any success... I patched the kernel (2.4.20-8) with patch-o-matic
-Dec2003 release and i used the following patches with the following commands:
-
-[ ]# ./runme extra/CONNMARK.patch
-[ ]# ./runme base/nth.patch
-
-I then enabled the targets in xconfig and compiled the kernel. After running the following
-command:
-[ ]# sudo /sbin/iptables -t mangle -A PREROUTING -j CONNMARK 
-I get:
-iptables v1.2.7a: Couldn't load target `CONNMARK':/lib/iptables/libipt_CONNMARK.so: cannot
-open shared object file: No such file or directory
-
-I try loading the module manually from
-(/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/ipt_CONNMARK.o) and it says:
-"unresolved symbol ip_conntrack_get_Rf1eafad5" and says something abt it is not licensed
-under GPL correctly...
-
-I then recompiled the kernel with the following option OFF:
-
-loadable module support --> Set version information on all module symbols y or n --> n
-
-Now I don't see the ipt_CONNMARK.o module at all in the directory:
-/lib/modules/2.4.20-8/kernel/net/ipv4/netfilter/    Thus can't load it and it doesn't load
-automatically.
-
-I am at a complete loss.... :( Can I get some tips.... 
-Thank you very much ...
-
-Dravya
-
-I then recompiled the
+PREFIXES
+By the kernel version, I assume you're running RH9. I think redhat uses
+the following directory prefixes:
+LIBDIR=3D/lib
+BINDIR=3D/sbin
+MANDIR=3D/usr/man
+INCDIR=3D/usr/include
 
