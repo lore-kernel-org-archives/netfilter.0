@@ -1,8 +1,9 @@
-From: Subramanian Thenralmani <sthenral@yahoo.com>
-Subject: Is iptables masq supports IPsec pass-thru or not?
-Date: Wed, 12 Mar 2003 11:42:06 -0800 (PST)
+From: "Joaquin Henriquez Alzola (REE)"
+	 <Joaquin.Henriquez-Alzola@ree.ericsson.se>
+Subject: RE: RE : netfilter/iptables problems on solaris
+Date: Wed, 12 Mar 2003 20:43:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030312194206.13499.qmail@web14305.mail.yahoo.com>
+Message-ID: <8C1856C372A7574291A56C3B7000A7AEF58255@eestqnt104>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,43 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: 'Franck ZOCCOLO ' <franck@zoccolo.com>, "'netfilter@lists.netfilter.org '" <netfilter@lists.netfilter.org>
 
-HI,
+ 
+Then I am not going to be able to use the turtle firewall. Any other firewalls for Solaris that you would recommend. This is a sit back.
 
-my second VPN client (Extranet Access Client) gives
-the following error message:
-
-BannerSock: The attempt to connect timed out without
-establishing a connection.
-
-i am using 
-
-Extranet Access Client
-windows 2000
-linux firewall with iptables masq.
-
-Is iptables masq supports IPsec pass-thru or not? or
-is there any other way to make my ipsec client
-connections up through linux firewall with iptables. 
-
-regards
+Joaquin
 
 
+-----Original Message-----
+From: Franck ZOCCOLO
+To: Joaquin Henriquez Alzola (REE); netfilter@lists.netfilter.org
+Sent: 3/12/03 8:33 PM
+Subject: RE : netfilter/iptables problems on solaris
 
+> I have problems on the compilation of netfilter/iptables on Solaris 8.
 
-
-=====
-Subramanian ThenralMani
-Team Leader
-Yukthi Systems Pvt. Ltd.
-#178, 5th Main, J.P.Nagar 3rd Phase,
-Bangalore-560 074
-Phone #:6582923
-Reach me at:9845211913
-
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Web Hosting - establish your business online
-http://webhosting.yahoo.com
+Don't waste time trying to use netfilter on Solaris... Netfilter ONLY
+works on Linux.
 
