@@ -1,11 +1,14 @@
-From: ccmike@isugw.indstate.edu
-Subject: IPTables Feature set and performance.
-Date: Mon, 2 Dec 2002 13:25:40 -0500
+From: andre.correa@pobox.com
+Subject: Too many ARP entries and Re: sendto: No buffer space available
+Date: Mon, 2 Dec 2002 18:28:36 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212021325.41118.ccmike@isugw.indstate.edu>
+Message-ID: <14127620470.20021202182836@pobox.com>
+References: <571705138.20021202111645@pobox.com>
+Reply-To: Andre Docena Correa <andre.docena@pobox.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <571705138.20021202111645@pobox.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,88 +20,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Cc: andre.correa@pobox.com
 
 
-O wise netfilter guruz, I pray unto thee in hopes you can answer my most=20
-humble questions.=20
+Hi, I am writting to answer myself and send a new question to the list.
+I've had problems in my NAT/PPPoE box, with traffic stopping suddenly
+and then coming back in a few seconds and I've found that my neighbour
+table was getting full. When it is full, no new ARP entries can be
+created and no new traffic can happen. Now I encreased this values:
 
-I have been all over the net and looked thru the mailing list archives, b=
-ut=20
-cannot find an answer to questions that have been asked a number of times=
-,=20
-but never with the proper specifications, so I will attempt to ask in a m=
-ore=20
-proper form.
+echo 512 > /proc/sys/net/ipv4/neigh/default/gc_thresh1
+echo 2048 > /proc/sys/net/ipv4/neigh/default/gc_thresh2
+echo 4096 > /proc/sys/net/ipv4/neigh/default/gc_thresh3
 
-First: netfilter vs pix
+But  there  is  still a question for me. Looking at my arp table, I
+see that there are =~ 150 entries, seconds passing and more entries
+coming, 20 seconds after I can have =~1100, it goes on until it reachs
+=~2200  entries,  then it goes back to the =~100 and starts over again.
 
-considering packet filtering only, and ignoring the "extra" things such a=
-s vpn=20
-and pretty gui, administration costs, purchase price, and CYA.
+I  have  less  then  50  NAT users. Is it normal to have some many ARP
+entries with this variation? Looking the ARP table I see my "Internet"
+interface with lots of entries, with internet host IP addresses and my
+gateway's NIC MAC address.
 
-What things can I do with an iptables firewall that I cannot do with a pi=
-x=20
-firewall,  I know about log tagging, but what else?
+Isn't ARP supposed to keep entries just to local network systems?
 
-If the "costs" are not an issue, and the cisco extras are not necessary, =
-would=20
-you go with a pix or a netfilter solution and why? (skip the 'cause linux=
-=20
-rulez answers).
+Is it all normal? And if so, how big can gc_threash[1,2,3] be?
 
-It seems that every time that this question was asked in the past the ans=
-wer=20
-was "pix comes with cisco CYA", or "what about the admin overhead", or=20
-"depends on your requirements".  I am interested (as I am sure others are=
-) in=20
-the technical differences.  I am not trying to build a business case. =20
+tks in advance.
 
-Second: Performance
+Andre
+andre.correa@pobox.com
 
-If I make a monolithic kernel with everything stripped out of it except f=
-or=20
-the code I need to run a netfilter firewall with stateful inspection, and=
- I=20
-have only the basic ruleset (everything out, established+mail+web+ssh in,=
-=20
-drop illegal ip addresses and flag combinations). basically a network noi=
-se=20
-filter. How many new connections per second can I expect to handle on wha=
-t=20
-type of box?  What type of thruput should I expect on what type of box?
 
-Please note, I have both types of firewalls, and I am just trying to plan=
- out=20
-how many of what I should put where and why.  I really would prefer to us=
-e=20
-netfilter over pix, it will be an educational exercise for me.  I can D/L=
-=20
-freeswan, and all the other goodies, and have plenty of boxen lying aroun=
-d=20
-collecting dust, lots of time and get paid no matter what I decide to do =
-(see=20
-sig).
 
-There has to be someone, somewhere, who understands what I am asking and =
-has=20
-the answers.  I have the asbestos underwear properly installed, so flame =
-on.=20
-I will summarize back to the list.
+On 02/12/02, andre.correa@pobox.com wrote:
 
-- --=20
-Mike Taylor.  GSEC          Non Impediti Ratione Cogitationis
-Coordinator of Systems Administration and Network Security
-Indiana State University.                      Rankin Hall Rm 039
-210 N 7th St.                                           Terre Haute, IN.
-Voice: 812-237-8843
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+acpc> Hi list,
 
-iD8DBQE966WlknPysOadsKcRAj8HAJ0fYo3EBa9dcjKB/rbwcNRCKE+RpwCgulCb
-38DjnIigdHaCkyWmWbpkyNA=3D
-=3DmReT
------END PGP SIGNATURE-----
+acpc> I  have  a  Linux  2.4.19  box  doing NAT, PPPoE, Traffic Shapping and
+acpc> Firewalling.  It  is  a  2xPIII  733MHz with 512Mb RAM. Everything was
+acpc> working  just  fine  until 5 or 6 days ago we started having some strange
+acpc> behavior.
+
+acpc> Under  moderate  traffic,  15  to  20  NAT users, we find that traffic
+acpc> suddenly  stops  for 10 or 15 seconds and then comes back. During this
+acpc> periods  I've  figured  out  that  if I ping my interfaces or Internet
+acpc> addresses I get:
+
+acpc> sendto: No buffer space available
+acpc> ping: sent 64 octets to xxx.xxx.xxx.xxx, ret=-1
+
+acpc> I've  made  lots  of  searchs  in  mailling lists, Internet and in the
+acpc> kernel  source  but couldn't work on it.
+
+acpc> Can you guys help me to solve this problem?
+
+acpc> tks in advance for your help and attention.
+
+acpc> Andre
+acpc> andre.correa@pobox.com
+
+
+
+
+Andre Correa
+andre.docena@pobox.com
+
 
