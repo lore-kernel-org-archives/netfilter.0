@@ -1,11 +1,10 @@
-From: Iva "Cabric" Cabric <ivac@gnjilux.srk.fer.hr>
-Subject: ULOG with -m state
-Date: Fri, 22 Nov 2002 16:53:52 +0100
+From: "Jihoon Chung" <difro1234@hotmail.com>
+Subject: IRC DCC between 2 clients on the same net.
+Date: Fri, 15 Nov 2002 17:37:13 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021122155352.GA5665@gnjilux.srk.fer.hr>
+Message-ID: <F67clWvGA46w9aobrAQ0001208a@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,44 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-Hello,
-I have found a bug in iptables when "-j ULOG" and "-m state" are
-used together, for example:
+I have 2 clients behind a masquerading gateway.
 
-$ iptables -A ssh -j ULOG -p tcp -m state --state NEW
+When one of them DCC SEND to the outside world, everything's fine. (Thanks
+to ip_conntrack_irc/ip_nat_irc)
 
-reports:
+But when I DCC-SEND from one client to the other client on the same
+network, it doesn't work.  The sending side fails almost immediately.
 
-iptables v1.2.6a: You must specify `--state'
-Try `iptables -h' or 'iptables --help' for more information.
+Is this normal?
+I'm using kernel 2.4.17.
 
-but using DROP works fine:
 
-$ iptables -A ssh -j DROP -p tcp -m state --state NEW
-(no error)
-
-$ iptables -L ssh
-target     prot opt source               destination         
-ACCEPT     tcp  --  anywhere             xxx.xxx.xxx.xxx    state ESTABLISHED
-DROP       tcp  --  anywhere             anywhere           state NEW 
-(first rule is not important...)
-
-Kernel is 2.4.19, iptables are v1.2.6a and system is Debian based
-(iptables are from .deb packet, and kernel is manually bulit from
-kernel-source-2.4.19).
-
-I haven't found anything about that in changelog for v1.2.7a, but
-maybe it has been already fixed. Anyone else with same problem?
-
-p.s.
-
-It could also be Debian specific problem, in that case I'll send
-bug report to them, but I would like to check with you first.
-
-TIA
+_________________________________________________________________
+Tired of spam? Get advanced junk mail protection with MSN 8. 
+http://join.msn.com/?page=features/junkmail
 
 
