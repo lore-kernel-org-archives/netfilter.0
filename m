@@ -1,40 +1,82 @@
-From: Jan Humme <jan.humme@xs4all.nl>
-Subject: fragmentation flag
-Date: Wed, 10 Jul 2002 21:42:25 +0200
-Sender: netfilter-admin@lists.samba.org
-Message-ID: <0207102142250F.04513@Lms>
-Reply-To: jan.humme@xs4all.nl
+From: PayalR <payal@hotpop.com>
+Subject: Re: bandwidth again maybe O T
+Date: Thu, 5 Sep 2002 12:42:47 +0530
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <44941.1693065942$1031210845@news.gmane.org>
+References: <200209041908.49707@.> <200209041527.g84FRpv31480@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.samba.org>
-Errors-To: netfilter-admin@lists.samba.org
-List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
-List-Post: <mailto:netfilter@lists.samba.org>
-List-Subscribe: <http://lists.samba.org/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.samba.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209041527.g84FRpv31480@vulcan.rissington.net>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
-List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-I am not sure about the fragmentation option: -f.
+Hi,
+Thanks a lot for mails. Well, I think I get the general idea.
+> However, to measure the amount of http traffic going to/from a specific=
+ IP
+> address, put a couple of rules such as this in your FORWARD chain:
+> iptables -I FORWARD -d a.b.c.d -p tcp --dport 80
+> iptables -I FORWARD -s a.b.c.d -p tcp --sport 80
 
-I understand that this flag is not needed "if you use connection tracking".
+I wanted for all protocol and not just http so I modified your rule a bit=
+=20
+like,
+iptables -I FORWARD -d 192.168.0.1 -p tcp
+iptables -I FORWARD -s 192.168.0.1 -p tcp
 
-But what exactly is meant by "if you use connection tracking" ? Does it mean: 
-"if the ip_conntrack module is loaded", or does it mean: "if you have rules 
-using NEW, ESTABLISHED etc" ?
+These are the only two rules I have.
 
-And is it correct that, in that case, all fragmented packets will be 
-unfragmented before they hit any chains, so I will not see any unfragmented 
-packets anyway?
+I tried to test it using=20
+#iptables -L FORWARD -x -v
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out     source            =
+  =20
+destination
+       0        0            tcp  --  any    any     localhost.localdomai=
+n =20
+anywhere
 
-And in case I do need to use the -f option, then in which chains and in which 
-rules?
+       0        0            tcp  --  any    any     anywhere            =
+=20
+localhost.localdomain
 
-BTW: I am using iptables v1.2.1a.
+I tried pinging it few times, connecting to port 25, telnet, 80 etc. fom =
+the=20
+local machine. But the number of bytes above do not change.
+What must be wrong?
+Thanks a lot in advance and bye.
+-Payal
 
-Jan Humme.
+
+
+
+
+>
+> You might want to run this command in a cron job every day (or perhaps =
+more
+> frequently) and then you can calculate daily traffic patterns throughou=
+t a
+> month etc.
+>
+> You can reset the counters with
+>
+> iptables -Z FORWARD
+>
+> If you combine the -Z option with the earlier command, you will find ou=
+t
+> the values of the counters and then they will be (atomically) reset to =
+zero
+> so you can start counting a new day from zero.
+>
+> Antony.
 
