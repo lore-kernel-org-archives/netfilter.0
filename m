@@ -1,12 +1,14 @@
-From: "Robert Czechonski" <mlody@elpec.com>
-Subject: connlimit problem
-Date: Wed, 14 Jul 2004 11:37:06 +0200 (CEST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: connlimit problem
+Date: Wed, 14 Jul 2004 11:00:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3470.80.51.249.26.1089797826.squirrel@www.elpec.com>
-Reply-To: mlody@elpec.com
+Message-ID: <200407141100.14587.Antony@Soft-Solutions.co.uk>
+References: <3470.80.51.249.26.1089797826.squirrel@www.elpec.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3470.80.51.249.26.1089797826.squirrel@www.elpec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,19 +21,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello
-I have kernel 2.4.25 and iptables 1.2.11. When I typed:
+On Wednesday 14 July 2004 10:37 am, Robert Czechonski wrote:
 
-iptables -p tcp --syn --dport 80 -m connlimit --connlimit-above 80 -j REJECT
+> Hello
+> I have kernel 2.4.25 and iptables 1.2.11. When I typed:
+>
+> iptables -p tcp --syn --dport 80 -m connlimit --connlimit-above 80 -j
+> REJECT
+>
+> The system responded:
+>
+> iptables v1.2.11: no command specified
+> Try `iptables -h' or 'iptables --help' for more information.
+>
+> Anyone can tell me what did I wrong?
 
-The system pesponded:
+Sure.   You forget to tell iptables where you wanted to place the rule.   You 
+have to specify "-I <chain>" or "-A <chain>" where <chain> is one of INPUT, 
+OUTPUT or FORWARD.
 
-iptables v1.2.11: no command specified
-Try `iptables -h' or 'iptables --help' for more information.
+I would assume you meant to put this rule in your INPUT or FORWARD chains, 
+considering what it does.
 
-Anyone can tell me what did I wrong?
+Regards,
+
+Antony.
+
 -- 
+"The problem with television is that the people must sit and keep their eyes 
+glued on a screen; the average American family hasn't time for it."
 
-Robert
+ - New York Times, following a demonstration at the 1939 World's Fair.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
