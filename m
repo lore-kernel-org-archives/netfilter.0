@@ -1,12 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: not sure if 'iptables -Z' needed/useful/superfluous here..
-Date: Fri, 14 Jan 2005 09:18:45 -0500
-Message-ID: <1105712325.3661.14.camel@hubcap.ljm.dom>
-References: <20050114060327.GA8917@spawar.navy.mil>
+From: "Jorge Agrelo" <jagrelo@novadevices.com>
+Subject: Re: Limit module accept negation?
+Date: Fri, 14 Jan 2005 09:36:11 -0500
+Message-ID: <41E7928B.29373.52B9723@localhost>
+References: <41E71E70.4080703@cookinglinux.org>
+Reply-To: jagrelo@novadevices.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050114060327.GA8917@spawar.navy.mil>
+In-reply-to: <41E71F62.30208@cookinglinux.org>
+Content-description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,55 +20,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Samuel Jean <sj-netfilter@cookinglinux.org>
+Cc: netfilter@lists.netfilter.org
 
-On Fri, 2005-01-14 at 01:03, seberino@spawar.navy.mil wrote:
-> When I want to start from scratch in my firewall
-> script I usually do this:
+Thanks Samuel, after I apply the patch, How look like the rule with 
+limit to drop packets flowing above 1p/s
+
+Regards
+
+On 13 Jan 2005 at 20:24, Samuel Jean wrote:
+
+> Samuel Jean wrote:
+> > The patch below is against ipt_limit.c from 2.6.10. It's *untested* but 
+> > reflects what I told you. It's just an exemple of how you can make
+> > this module behaving the other way arround.
+> > 
 > 
-> $IPTABLES -t filter -F
-> $IPTABLES -t mangle -F
-> $IPTABLES -t nat    -F
-
-which flushes all the rules out of those tables
-
-> $IPTABLES -t filter -X
-> $IPTABLES -t mangle -X
-> $IPTABLES -t nat    -X
-
-which deletes all chains in those tables.
-
-> I'm not sure if -Z switch does anything useful after this violent
-> scrubbing of my iptables...
-
-it still does what it would do any other time.
-
-> $IPTABLES -Z
+> Doh! crapy patch. Attached good one. I hope.
 > 
-> By the way... is this correct/better/wrong??
 
-if your intention is to zero your byte counters--then it's correct.  if
-your intention is to retain your byte counters across reloads--then it's
-wrong.
 
-> $IPTABLES -t filter -Z
-> $IPTABLES -t mangle -Z
-> $IPTABLES -t nat    -Z
-> 
-> I read man page on iptables but it still was not clear if I need
-> -Z to 'reset the byte count' and other stuff like it says it will do.
-
-people that rely on byte counters for accounting type uses probably
-don't use -Z when they reload their rules.  i only use the counters as
-an indication of rule hits--so i do reset the counters every time i
-reload my rules.  but it's not a question of right or wrong.
-
--j
-
---
-"The only monster here is the gambling monster that has enslaved your
- mother! I call him Gamblor, and it's time to snatch your mother from
- his neon claws!"
-	--The Simpsons
 
 
