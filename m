@@ -1,73 +1,75 @@
-From: coreteam@netfilter.org
-Subject: netfilter.org system maintainance on Feb 26
-Date: Mon, 23 Feb 2004 10:36:02 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20040223093602.GC13386@sunbeam.de.gnumonks.org>
-Reply-To: Harald Welte <laforge@netfilter.org>
+From: "Shaju" <shaju_mc@hotmail.com>
+Subject: Debug
+Date: Mon, 23 Feb 2004 13:06:58 +0530
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <BAY7-DAV50ii08N8yxd00027876@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0036_01C3FA0D.EB18DD60"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, coreteam@netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---E13BgyNx05feLLmH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+------=_NextPart_000_0036_01C3FA0D.EB18DD60
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hi,
 
-On Thursday, Februrary 26th there will be a scheduled system maitainance
-of the netfilter.org systems.  The scheduled timeframe is=20
-		9:00 - 11:00 UTC
+         I have setup gateway-proxy firewall using redhat linux 7.1 and =
+i have replaced the default  /etc/rc.d/init.d/iptables script with my =
+own script, and restart the iptables service. It shows me done. when i =
+tried "service iptables status" it shows iptables stopped. please help =
+me to fix this issue.
 
-Expect all netfilter.org services to be affected, including the master
-website, rsync, ftp, mailinglists, CVS, bugzilla.
+Thanks in advance
 
-The reason for maintainance is a re-organization of the network,
-including re-numbering of our IP address space.
+Shaju M.C
 
-DNS records will be given a very short TTL in order to facilitate the IP
-address changes.
 
-Sorry for any inconvenience,
+------=_NextPart_000_0036_01C3FA0D.EB18DD60
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-	Harald Welte (for the netfilter coreteam)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3D"MS Sans Serif" size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3D"MS Sans Serif" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"MS Sans Serif"=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I have setup=20
+gateway-proxy firewall using redhat linux 7.1 and i have replaced the=20
+default&nbsp; /etc/rc.d/init.d/iptables script with my own script, and =
+restart=20
+the iptables service. It shows me done. when i tried "service iptables =
+status"=20
+it shows iptables stopped. please help me to fix this =
+issue.</FONT></DIV>
+<DIV><FONT face=3D"MS Sans Serif" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"MS Sans Serif" size=3D2>Thanks in =
+advance</FONT></DIV>
+<DIV><FONT face=3D"MS Sans Serif" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"MS Sans Serif" size=3D2>Shaju M.C</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3D"MS Sans Serif" =
+size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---E13BgyNx05feLLmH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAOcmCNfqJzMqajVsRAl2eAJ4+vWYWiv3iEIhN3d/umP3cINhl8wCbBtdT
-WxwHNlrJ1c2ygm5QnmtnnAA=
-=rSXU
------END PGP SIGNATURE-----
-
---E13BgyNx05feLLmH--
+------=_NextPart_000_0036_01C3FA0D.EB18DD60--
 
