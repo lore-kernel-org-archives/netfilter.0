@@ -1,13 +1,13 @@
-From: "Klemen Kecman" <klemen@sting.si>
-Subject: Re: Trouble rejecting connections
-Date: Thu, 29 Jan 2004 10:00:03 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Destination NAT
+Date: Thu, 29 Jan 2004 09:13:53 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006101c3e646$49e8f950$6a02a8c0@klemen>
-References: <E1AlxPY-00033X-P8@aphex.cyberpixels.com>
-Reply-To: "Klemen Kecman" <klemen@sting.si>
+Message-ID: <200401290913.54045.Antony@Soft-Solutions.co.uk>
+References: <147E1D375819F44680C3E5BFB6424C52DFC450@bcexc01.bue299.comafi.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <147E1D375819F44680C3E5BFB6424C52DFC450@bcexc01.bue299.comafi.com.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,153 +18,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: Ben <nigma@nigma.info>
+To: netfilter@lists.samba.org
 
-Still I think your problem will go away if you move LOG target above "# Open
-ports for server/services"
+On Wednesday 28 January 2004 2:21 pm, Alejandro Zaidel wrote:
 
-Klemen Kecman
-Sting d.o.o.
-Computer I.T.
+> Can I address a packet to more than one IP address at the same time ??
+>
+> I have   iptables -t nat -A PREROUTING -i eth1 -j DNAT --to
+> 5.6.7.8-5.6.7.10  as an example, but I want to send the packets to both=
+ 7.8
+> and also 7.10
+>
+> Is it possible to do ???
 
-Slackware user till the grave!
+No.   You cannot use netfilter to create duplicates of packets.   Netfilt=
+er=20
+will perform various operations on the packets which exit, but it won't m=
+ake=20
+multiple versions of what was originally one packet.
 
------ Original Message -----
-From: "Ben" <nigma@nigma.info>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, January 28, 2004 10:39 PM
-Subject: RE: Trouble rejecting connections
+Regards,
 
+Antony.
 
-> Perhaps I explained incorrectly.  I want to be able to specifically deny
-an
-> IP address all access to the server at all.  I'm doing this with a line
-that
-> looks something like this
->
-> $IPTABLES -A INPUT -s blocked.ip.address.here -j DROP
->
-> However, when I do that, I am able to still connect from from
-> blocked.ip.address.here.  That's the main thing I am concerned with.
->
-> Otherwise, my logging and lo lines work, so I'm going to stick with
-leaving
-> well enough alone.
->
-> Thanks for your help,
->
-> Ben Prince
->
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Klemen Kecman
-> Sent: Wednesday, January 28, 2004 4:49 AM
-> To: netfilter@lists.netfilter.org
-> Cc: Ben
-> Subject: Re: Trouble rejecting connections
->
-> Place log target above all rules or create LOG chain.
-> Why use double drop?
-> If the default policy is set to DROP, there is no need for aditional drop
-> rules.
-> Allso fix the lo line .. it can be writen much simpler like $IPT -A
-INPUT -p
-> ALL -i $IF_LO -j ACCEPT $IPT -A OUTPUT -p ALL -o $IF_LO -j ACCEPT
->
-> ----- Original Message -----
-> From: "Ben" <nigma@nigma.info>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Wednesday, January 28, 2004 10:19 AM
-> Subject: Trouble rejecting connections
->
->
-> > Hello all,
-> >
-> > I'm having trouble rejecting connections using iptables.  I am using
-> cPanel
-> > / WHM on a RedHat 7.3 a machine and iptables installed from
-> > iptables-1.2.8-8.72.3.i386.rpm .  I am using a script for my policy,
-> > it looks like this.
-> >
-> >
-> > //Start script
-> > IPTABLES="/sbin/iptables"
-> >
-> > #Flush everything, start from scratch
-> > $IPTABLES -F
-> >
-> > #Set default policies to DROP
-> > $IPTABLES -P INPUT DROP
-> > $IPTABLES -P FORWARD DROP
-> >
-> > #Allow all lo traffic
-> > $IPTABLES -A INPUT -i lo -s 0.0.0.0/0 -d 0.0.0.0/0 -j ACCEPT
-> >
-> > #Allow all related and established connections $IPTABLES -A INPUT -m
-> > state --state RELATED,ESTABLISHED -j ACCEPT
-> >
-> > #Set default OUTPUT policy to ACCEPT
-> > $IPTABLES -P OUTPUT ACCEPT
-> >
-> > # Open ports for server/services
-> > $IPTABLES -A INPUT -p tcp --dport 20 -j ACCEPT $IPTABLES -A INPUT -p
-> > tcp --dport 21 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 22 -j
-> > ACCEPT $IPTABLES -A INPUT -p tcp --dport 25 -j ACCEPT $IPTABLES -A
-> > INPUT -p tcp --dport 37 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 43
-> > -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT $IPTABLES -A
-> > INPUT -p udp --dport 53 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 80
-> > -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 110 -j ACCEPT $IPTABLES -A
-> > INPUT -p tcp --dport 113 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport
-> > 143 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 443 -j ACCEPT
-> > $IPTABLES -A INPUT -p tcp --dport 465 -j ACCEPT $IPTABLES -A INPUT -p
-> > udp --dport 465 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 873 -j
-> > ACCEPT $IPTABLES -A INPUT -p udp --dport 873 -j ACCEPT $IPTABLES -A
-> > INPUT -p tcp --dport 993 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport
-> > 995 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 2082 -j ACCEPT
-> > $IPTABLES -A INPUT -p tcp --dport 2083 -j ACCEPT $IPTABLES -A INPUT -p
-> > tcp --dport 2086 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 2087 -j
-> > ACCEPT $IPTABLES -A INPUT -p tcp --dport 2089 -j ACCEPT $IPTABLES -A
-> > INPUT -p tcp --dport 2095 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport
-> > 3306 -j ACCEPT $IPTABLES -A INPUT -p tcp --dport 6666 -j ACCEPT
-> >
-> > #Enable Blogger support (non-standards compliant piece of dogshit that
-> > it
-> > is)
-> > $IPTABLES -A INPUT -s 66.102.15.83 -j ACCEPT $IPTABLES -A INPUT -s
-> > 216.34.7.186 -j ACCEPT
-> >
-> > #Add passive-mode people here
-> > #$IPTABLES -A INPUT -s xxx.xxx.xxx.xxx -j ACCEPT
-> >
-> > #Add DENY people here
-> > #$IPTABLES -A INPUT -s 000.000.000.000 -j DROP $IPTABLES -A INPUT -s
-> > blocked.ip.address.here -j DROP
-> >
-> > #Logging
-> > $IPTABLES -A INPUT -j LOG --log-prefix "INPUTDEFAULT: "
-> >
-> > #Save rules
-> > iptables-save > /etc/sysconfig/iptables
-> >
-> > #Restart for rules to take effect
-> > service iptables restart
-> > //End script
-> >
-> > The problem is that I can still connect from blocked.ip.address.here.
-> What
-> > did I miss?
-> >
-> > Ben Prince
-> > Cyber Pixels
-> > Systems Administrator
-> > ben@cyberpixels.com
-> >
-> >
->
->
->
->
->
+--=20
+There are two possible outcomes:
+
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discover=
+y.
+
+ - Enrico Fermi
+
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
 
 
