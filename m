@@ -1,12 +1,13 @@
-From: "Mark Ayad" <mark@javamark.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Destination NAT Onto the Same Network Problem
-Date: Wed, 10 Jul 2002 16:51:11 +0200
+Date: Wed, 10 Jul 2002 15:57:51 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000b01c22821$3c6b1e00$0300a8c0@W2KP01>
-References: <001601c22819$406b6a30$0300a8c0@W2KP01> <200207101422.g6AEMi812683@vulcan.rissington.net>
+Message-ID: <200207101457.g6AEvw812845@vulcan.rissington.net>
+References: <001601c22819$406b6a30$0300a8c0@W2KP01> <200207101422.g6AEMi812683@vulcan.rissington.net> <273150000.1026311894@wookie.shorewall.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <273150000.1026311894@wookie.shorewall.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,88 +17,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
 
-Nice try but no luck
+On Wednesday 10 July 2002 3:38 pm, Tom Eastep wrote:
 
-$IPTABLES -t nat -A POSTROUTING -o $INTIF -i $INTIF -j
-
-can't use -i in POSTROUTING
-
-So I tried
-
-$IPTABLES -t nat -A POSTROUTING -o $INTIF 192.168.0.0/24 -j MASQUERADE
-
-No luck there although this time the rule is correct.
-
-So I tried
-
-$IPTABLES -t nat -A POSTROUTING -o $INTIF 192.168.0.3 -j MASQUERADE
-
-...but no success.
-
-I know this is a silly problem, since I could used the internal IP of the
-web server, but I want to crack this to be sure the server can be reached
-via the external address. At the moment I confirm this using a web
-anonymiser.
-
-Mark
-
-
-
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.samba.org>
-Sent: Wednesday, July 10, 2002 4:22 PM
-Subject: Re: Destination NAT Onto the Same Network Problem
-
-
-> On Wednesday 10 July 2002 2:54 pm, Mark Ayad wrote:
->
-> > I have a problem with the following Firewall Script which works fine
-apart
-> > from when I try to INTERNALLY connect to the webserver 192.168.0.3:80
-> > using the public IP which if I'm right should be the same as $EXTIF. The
-> > internal machine I'm launching the request from is actually the
-webserver
-> > (but that shouldn't matter).
+> <Antony@Soft-Solutions.co.uk> wrote:
+> > This one looks a bit odd to me, even though I've written it myself, but=
+ I
+> > think it should do the trick:
 > >
-> > I know I'm missing a line from what I read in
-> >
-http://netfilter.samba.org/unreliable-guides/NAT-HOWTO/NAT-HOWTO.linuxdoc-1
-> >0 .html and I've tried nearly every combination I can think of except the
-> > one that works that is.
-> >
-> > So whats the missing line ?
-> >
-> > $IPTABLES -A INPUT -p tcp --syn --destination-port 80 -j ACCEPT
-> > $IPTABLES -A INPUT -p tcp --syn -j DROP
-> >
-> > $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
-> > $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-> > $IPTABLES -A FORWARD -j LOG
-> >
-> > $IPTABLES -t nat -A PREROUTING -p tcp -i eth0 --dport 80 -j
-> > DNAT --to-destination 192.168.0.3:80
-> >
-> > $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+> > $IPTABLES -t nat -A POSTROUTING -o $INTIF -i $INTIF -j MASQUERADE
 >
-> This one looks a bit odd to me, even though I've written it myself, but I
-> think it should do the trick:
->
-> $IPTABLES -t nat -A POSTROUTING -o $INTIF -i $INTIF -j MASQUERADE
->
-> If it doesn't, then just use the standard version:
->
-> $IPTABLES -t nat -A POSTROUTING -o $INTIF -s a.b.c.d/n -j MASQUERADE
->
-> where a.b.c.d/n is your internal network range.
->
->
->
-> Antony.
->
->
+> "-i" can't be used in the POSTROUTING hook.
 
+Oh.   I knew you couldn't use -o in PREROUTING, because the routing hasn't =
+
+been done yet, but I would have thought that POSTROUTING would remember whe=
+re=20
+the packet came in from ?
+
+Ho Hum.
+
+> > $IPTABLES -t nat -A POSTROUTING -o $INTIF -s a.b.c.d/n -j MASQUERADE
+> >
+> > where a.b.c.d/n is your internal network range.
+>
+> That's better -- since the internal interface usually has a static addres=
+s,
+> the following is preferable:
+>
+> $IPTABLES -t nat -A POSTROUTING -o $INTIF -s a.b.c.d/n -j SNAT --to-source
+> $INTIP
+
+Yes, agreed.   SNAT is much more efficient than MASQUERADE, on each packet =
+
+going through the machine.
+
+By the way, since I made my last posting on this, I noticed that Mark's=20
+PREROUTING DNAT rule specified the input interface, which should be changed=
+=20
+to match the IP address instead, to enable translation of packets which com=
+e=20
+in from the other interface as well:
+
+$IPTABLES -t nat -A PREROUTING -d a.b.c.d -p tcp --dport 80 -j=A0DNAT --to =
+
+192.168.0.3
+
+where a.b.c.d is the ext IP of the firewall.
+
+=20
+
+Antony.
 
