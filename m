@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: AW: snat dnat question
-Date: Sat, 6 Jul 2002 11:04:57 +0100
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
+Subject: RE: FTP failed
+Date: Sat, 6 Jul 2002 20:40:55 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207061005.g66A52803299@vulcan.rissington.net>
-References: <8C14C590A51EB74285ADCA3DAD1A9DD705C283@hilgert-srv1.internal.hilgert.de>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA25C@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <8C14C590A51EB74285ADCA3DAD1A9DD705C283@hilgert-srv1.internal.hilgert.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,19 +15,65 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: 'Oskar Andreasson' <blueflux@koffein.net>, 'Mitsuo HAMADA' <mhamada@qwanty.com>, netfilter@lists.samba.org
 
-On Saturday 06 July 2002 10:11 am, Thomas Hilgert wrote:
+Beacuse then your not running a firewall, your running a router..
 
-> Hi George,
-> What I do is a telnet mail.mailwatch.com 25 to emulate a smtp connection.
-> When I do this from my Firewall directly it works fine. If I try this from
-> my LAN (10.1.0.0/24) it works. But if I try the same thing from my DMZ
-> (10.2.0.0/24) if doesn't answer.
+why bother doing that, just don't run any rules at all..
 
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
+My point is that if a new device is added or dynamically added (ppp+) then
+it's automatically assumed ACCEPTED... I prefer it DROPped (-P) and find out
+later why than accepted and not find out at all....
+ANyway.. he had eth0 ONLY so there was no point putting rules if he's
+accepting anything but /dev/lo
 
- 
 
-Antony.
+-----Original Message-----
+From: Oskar Andreasson [mailto:blueflux@koffein.net]
+Sent: Friday, 05 July 2002 8:21 PM
+To: George Vieira; 'Mitsuo HAMADA'; netfilter@lists.samba.org
+Subject: RE: FTP failed
+
+
+
+> BTW: Why is it I'm seeing so many people using the ! so much?? I actually
+> never use it except for possibly #!/bin/bash and that's it.
+>
+
+Because it's simple and timesaving, both for you and the firewall,
+basically. For example, why write:
+
+iptables -i eth0 -j ACCEPT
+iptables -i eth1 -j ACCEPT
+iptables -i eth2 -j ACCEPT
+iptables -i eth3 -j ACCEPT
+iptables -i tr0 -j ACCEPT
+iptables -i ppp0 -j ACCEPT
+
+When you could write:
+
+iptables -i ! lo -j ACCEPT
+
+This is an extremely simple example, of course, but still valid. It puts
+less stress on you, as well as cpu cycles.
+
+Have a nice day,
+
+----
+Oskar Andreasson
+http://iptables-tutorial.haringstad.com
+http://people.unix-fu.org/andreasson/
+mailto: blueflux@koffein.net
+
+> thanks,
+> George Vieira
+> Systems Manager
+> Citadel Computer Systems P/L
+> http://www.citadelcomputer.com.au
+>
+>
+>
+>
+
 
