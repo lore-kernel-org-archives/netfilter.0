@@ -1,8 +1,8 @@
-From: "Matthew G. Marsh" <mgm@paktronix.com>
-Subject: [OT] Policy Routing Book is slowly being released online
-Date: Fri, 20 Sep 2002 10:50:13 -0500 (CDT)
+From: Patrick Noziska <pnoziska@yahoo.com>
+Subject: Newbie question: Where is ip_conntrack_h323.c ?
+Date: Fri, 20 Sep 2002 10:56:32 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.43.0209201040550.13498-100000@netmonster.pakint.net>
+Message-ID: <20020920175632.99466.qmail@web11103.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,39 +14,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: netfilter-devel@lists.netfilter.org
+
+I just download and compiled iptables-1.2.7a and applieed the "extra" patch-o-matic set, but the
+primary reason I upgraded from the iptables 1.2.5 that comes with RH 7.3 was that I didn't see a
+h323 conntrack module (specifically, ip_conntrack_h323.c ) .
+
+Where is it? What did I do wrong?
+
+Thanks
+Patrick
 
 
-I apologize for the cross posting. I am slowly converting the Policy
-Routing book from paper to online edition. I was going to wait and release
-the whole thing but it is taking some time and I have had several requests
-to release as I convert. So SNS:
-
-http://www.policyrouting.org/PolicyRoutingBook/index.html
-
-Direct Table of Contents for Online edition:
-
-http://www.policyrouting.org/PolicyRoutingBook/ONLINE/TOC.html
-
-Whatever chapters are linked in the online TOC are the ones available. I
-am working my way through the entire book. And am also adding some text
-with an eye to adding many more examples and discussions (such as have
-erupted here on occasion).
-
-Sorry again for the interuption - please continue with your normal
-discussions...
-
---------------------------------------------------
-Matthew G. Marsh,  President
-Paktronix Systems LLC
-1506 North 59th Street
-Omaha  NE  68104
-Phone: (402) 932-7250 x101
-Email: mgm@paktronix.com
-WWW:  http://www.paktronix.com
---------------------------------------------------
-
+__________________________________________________
+Do you Yahoo!?
+New DSL Internet Access from SBC & Yahoo!
+http://sbc.yahoo.com
 
