@@ -1,12 +1,12 @@
-From: "Arrizabalaga, Saioa" <sarrizabalaga@ceit.es>
-Subject: bytes counting
-Date: Fri, 23 Apr 2004 15:42:48 +0200
+From: "krv" <krv@kaevee.com>
+Subject: Re: Synfloods - SNAT slow down
+Date: Fri, 23 Apr 2004 19:13:04 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <086C43C9A9A1A541BFDFABCFDA05F58901448BAB@mailnew.tecnun.es>
+Message-ID: <007601c42938$e74199c0$2800a8c0@jupiter>
+References: <005201c428d1$a2ab2ea0$2800a8c0@jupiter> <200404230801.57077.lists@edeca.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +19,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello everyone,
+----- Original Message -----
+From: "David Cannings" <lists@edeca.net>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, April 23, 2004 12:31 PM
+Subject: Re: Synfloods - SNAT slow down
 
-I have been reading some mails in this listing and it is said the best
-place to count bytes/packets is the mangle table, but I have a problem.
 
-I have three network cards in my linux box: eth0 (private LAN), eth1
-(private LAN) and eth2 (internet).
+> On Friday 23 April 2004 02:23, krv wrote:
+> > We have a Linux gateway (2.4.22) which does NAT for all local hosts.
+> > Where there is ICMP or SYN floods to be forwarded, the gateway starts
+> > slowing down an there will be serious drop in packets being forwarded.
+>
+> You could try using the limit match in your FORWARD chain, with --limit
+> and --limit-burst to limit the number of ICMP or packets with only the
+> SYN flag set per second.  Your gateway would still have to process the
+> packets, at least as far as deciding to drop them, but would not have to
+> forward them on so you might see an improvement in performance.
+>
+> If you do examine this route, be careful you don't quench good ICMP
+> packets as there is no retransmission in ICMP and you'll never know if
+> certain wanted messages didn't get through.  For example, host X is
+> sending you an ICMP flood so netfilter starts to drop ICMP packets, but
+> host Y tries to send you a host unreachable message.
+>
+> Also don't forget that even if you decide not to forward the packets they
+> are still there "on the wire", thus you will not see any improvement with
+> external speeds.
+>
+> David
+>
+I have two thousand hosts and two thousand forward rules :(
 
-I would like to count the bytes/packets from/to 192.168.0.50 (it is in
-eth0) that goes/comes to/from internet (eth2).
+Even if I completely block a attacking host, the gateway is getting bogged
+down.
+The gateway would be processing atleast 30Mbps at peak loads.
 
-These are the rules I have:
+KRV
 
-iptables -A POSTROUTING -t mangle -o eth2 -s 192.168.0.50
-
-With this rule I catch all the packets going from 192.168.0.50 to eth2,
-but I know where to put the rule to catch the packets going from eth2 to
-192.168.0.50, because as far as I can see it, when I put the rule:
-iptables -A PREROUTING -t mangle -i eth2 -d 192.168.0.50 nothing is
-caught because the packet has not been SNAT-ed yet. Am I wrong?
-
-Any help would be appreciated.
-
-Saioa Arrizabalaga
 
 
