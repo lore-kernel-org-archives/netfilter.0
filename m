@@ -1,10 +1,10 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: Net modules fail on compile with 2.5.52 and up kernel
-Date: Wed, 08 Jan 2003 13:46:05 -0800
+From: Jackfritt <jackfritt@boh.de>
+Subject: length match problem
+Date: Wed, 08 Jan 2003 23:14:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001f01c2b75f$58e453d0$6601a8c0@s3ac>
+Message-ID: <3E1CA2BF.6050707@boh.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,31 +15,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Ok I have the following problem.
+
+iptables -A OUTPUT -o ppp0 -p tcp -m length --length :40 -j MARK 
+--set-mark 10
+
+That should mark all ACK's or not ?
+
+When I try to do this I get the error:
+
+iptables: Invalid argument
+
+I found out that this has something to do with the length match.
+Because not used I don't get an error message. I looked around and found 
+an example in netfilter-extensions-HOWTO with icmp:
+
+iptables -A INPUT -p icmp --icmp-type echo-request -m length --length 
+86:0xffff -j DROP
+
+When I try to do something like this it doesn't work too :(
+
+So now my question is what am I doin wrong ?
+
+Sorry I'm not an iptables guy an I only tried a script from somewhere 
+else. But this one line doesn't work.
+
+anyone can help me ?
 
 
-Anyone who has been keeping up with my post probale is aware of my
-plight trying to set up a VPN. Initially I had an IPTables firewall and
-tried to allow PPTP traffic through with unsatisfying results. Then I
-scrapt the idea to use IPSec I passed over freeswan and tried to use the
-2.5.50 Kernel level IPSEC implimentation. My problem is the 2.5.50
-version has problems booting to a resierfs using initrd so I decided to
-use 2.5.52, then 2.5.54 both of which crap out while compiling the net
-modules. Eg below
+Thx
 
 
-I keep getting errors  simular to that listed below when I run make
-modules_install. This happens for 2.5.52, and 2.5.54. 
-
-depmod: *** Unresolved symbols in
-/lib/modules/2.5.54/kernel/net/netlink/netlink_dev.ko
- 
-Rowan Reid
-Job Captain, 
-Systems Administrator
-STUDIO 3 ARCHITECTS
-909  982  1717
+Joerg Esser
 
 
