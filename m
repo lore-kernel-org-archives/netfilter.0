@@ -1,12 +1,12 @@
-From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
+From: Subodh Srivastava <subodh_sri@yahoo.com>
 Subject: Re: Where did netfilter.org/iptables.org go?
-Date: Thu, 20 Jun 2002 13:33:47 +0100
+Date: Thu, 20 Jun 2002 05:46:12 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1e9e01c21856$b9b535b0$3200a8c0@jungle.funkybadger.org>
-References: <20020620123208.83253.qmail@web10905.mail.yahoo.com>
+Message-ID: <20020620124612.27618.qmail@web14603.mail.yahoo.com>
+References: <1e9e01c21856$b9b535b0$3200a8c0@jungle.funkybadger.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <1e9e01c21856$b9b535b0$3200a8c0@jungle.funkybadger.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,18 +17,33 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+Content-Transfer-Encoding: 7bit
+To: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>, netfilter <netfilter@lists.samba.org>
 
-Brad Chapman asked:
 
->      Does anyone know why www.netfilter.org and www.iptables.org
-point to
-> lists.netfilter.org/mailman/listinfo? Fortunately
-netfilter.samba.org and
-> netfilter.gnumonks.org are still OK.
+--- "Adam D. Barratt"
+<netfilter.list@adam-barratt.org.uk> wrote:
+> Brad Chapman asked:
+> 
+> >      Does anyone know why www.netfilter.org and
+> www.iptables.org
+> point to
+> > lists.netfilter.org/mailman/listinfo? Fortunately
+> netfilter.samba.org and
+> > netfilter.gnumonks.org are still OK.
+> 
+> They both work fine from here (.uk).
+Nope they are not working fine from .uk also. its
+pointing to lists.netfilter.org/mailman/listinfo
+>
+Subodh 
+> Adam
+> 
+> 
 
-They both work fine from here (.uk).
 
-Adam
-
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
 
