@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: use of the limiting options
-Date: Wed, 26 Jan 2005 11:17:27 -0500
-Message-ID: <20050126161727.GA6583@bender.817west.com>
-References: <Pine.LNX.4.53.0501251248340.24829@altaica>
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: (no subject)
+Date: Wed, 26 Jan 2005 11:26:56 -0500
+Message-ID: <876ef97a0501260826514b150d@mail.gmail.com>
+References: <20050126155823.97452.qmail@web52304.mail.yahoo.com>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.53.0501251248340.24829@altaica>
+In-Reply-To: <20050126155823.97452.qmail@web52304.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +19,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: mohammad Mahbubur rahman <mahbub71@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, Jan 25, 2005 at 12:54:54PM -0600, Tib wrote:
+On Wed, 26 Jan 2005 07:58:23 -0800 (PST), mohammad Mahbubur rahman
+<mahbub71@yahoo.com> wrote:
+> Hi,
+> I am working on an Adhoc network running kernel AODV
+> version 2.1 (on Redhat linux kernel 2.4.20). The AODV
+> is running fine. Now I am trying to queue some packets
+> onto the user space for modification using libipq
+> library. But incase of running the libipq example
+> program, i have to load the ip_queue module by
+> modprobe ip_queue first. When i load this module and
+> running the example program, the machines are hanged.
+> Can anyone please tell me why??
 > 
-> I'd like to use the --limit and --limit-burst options to protect my sshd
-> from dictionary password attacks. Considering the userbase and activity
-> level I'd say that something like this would suit me just fine.
-> 
-> --limit 6/hour
-> --limit-burst 2
-> 
-> This would limit it to two connect/login attempts at first, and then one
-> more every 10 minutes.. correct?
-> 
-> Would this be the proper command to use? I'm trying to just limit
-> connections from the outside world, not from the local network, hence the
-> address as a destination:
-> 
-> iptables -A INPUT --d 66.80.174.210 --dport 22   \
->    --limit 6/hour --limit-burst 2
+> Can anyone pls suggest me how i can get some packets
+> onto the user space for modification incase of ad hoc
+> network???
 
-that's a fantastic way to DoS yourself.  so after 8 idiots try to
-connect to your SSH server--you're locked out from connecting yourself
-for an hour...*brilliant*.
+AFAIK, the current Linux implementation of AODV uses ip_queue.
+Therefore, due to the limitations of ip_queue, you can't then use
+anything else that would use ip_queue while you're running that. Where
+did you get your implementation? Is it this one:
 
-try some real security measures instead of snake oil:
+http://user.it.uu.se/~henrikl/aodv/
 
-- disable password auth on your SSHD and only allow public key auth
+or this one?:
 
-- filter access to your SSHD by source IP, if possible
+http://w3.antd.nist.gov/wctg/aodv_kernel/
 
-- use some sort of VPN access (IPSec/OpenVPN/etc) to get to your SSHD,
-  and only allow access that way.
+If its the latter, disregard all of the above.
 
--j
-
---
-"Please do not offer my god a peanut"
-        --The Simpsons
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
