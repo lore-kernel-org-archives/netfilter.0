@@ -1,13 +1,13 @@
-From: "Mehmet AK" <mehmet.ak@kolayyol.net>
-Subject: Re: map internal ip
-Date: Sun, 28 Mar 2004 13:26:10 +0300
+From: "IT Clown" <iptables@mailbox.co.za>
+Subject: Re: client on local network
+Date: Sun, 28 Mar 2004 12:49:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c414af$2a155550$de00a8c0@homelande0hze1>
-References: <1079722569.1980.52.camel@kaos.mpsnet.net.mx> <200403191918.05189.Antony@Soft-Solutions.co.uk>
-Reply-To: "Mehmet AK" <mehmet.ak@kolayyol.net>
+Message-ID: <web-269324379@mail01.infosat.net>
+References: <200403280948.45991.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200403280948.45991.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,89 +18,118 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-hi Antony.
+Hi
 
-yo can do this with iproute2  .  You have to mark TCP packet with iptables
-like an example
+I have just finished reading netfilter howto and im just
+over halfway with Oskar Andreasson's tutorial.Here is my
+rule again does this look correct?
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+-A INPUT -i lo -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+-A INPUT -i eth0 -s 192.168.0.1 -p tcp -d 192.168.0.11 -m
+multiport --sport 80,8080 -j ACCEPT
+-A INPUT -i eth0 -s 192.168.0.1 -p tcp -d 192.168.0.11
+--sport 53 -j ACCEPT
+-A OUTPUT -o eth0 -d 192.168.0.1 -p tcp -s 192.168.0.11 -m
+multiport --dport 80,8080 -j ACCEPT
+-A OUTPUT -o eth0 -d 192.168.0.1 -p udp -s 192.168.0.11
+--dport 53 -j ACCEPT
+COMMIT
 
-ip route add default via 148.245.164.1 table 40 # this is your default
-router
-iptables -t mangle -I PREROUTING -d 150.50.53.5  -j MARK --set-mark 0x10  #
-mark who goes 150.50.53.5
-ip rule add fwmark 0x10 table 40      #
+192.168.0.1 is my firewall and proxy.
 
+Regards
 
-best regards
-
-Mehmet AK
-
-
-
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, March 19, 2004 10:18 PM
-Subject: Re: map internal ip
-
-
-> On Friday 19 March 2004 6:56 pm, Omar Armas wrote:
+On Sun, 28 Mar 2004 09:48:45 +0100
+ Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+> On Sunday 28 March 2004 9:31 am, IT Clown wrote:
+> 
+> > Hi
+> >
+> > i have setup a local network users iptables as follow
+> to
+> > access webpages:
+> >
+> > :INPUT DROP [0:0]
+> >
+> > -A INPUT -i eth0 -p tcp -m multiport --sport 80,8080 -j
+> ACCEPT
+> 
+> Let's just look at the above two rules I have extracted
+> from your ruleset.
+> 
+> The first says "default policy is to drop all incoming
+> packets" (good idea).
+> 
+> The second says "accept all TCP packets coming in through
+> eth0 from any 
+> address to any service providing the source port is 80 or
+> 8080" (not such a 
+> good idea).
+> 
+> This will allow anything to connect to anything it can
+> find (or run a port 
+> scan etc) so long as the remote system uses source port
+> 80 or 8080.
+> 
+> > I would like to know the way i set it up is it correct
+> or is there a better
+> > way.The client can browse.
+> 
+> I really would recommend you do what was suggested to you
+> on Friday by David 
+> Cannings:
+> 
+> > There are three things I would suggest.  The first is
+> reading two
+> > tutorials on
+> http://www.netfilter.org/documentation/index.html -
+> > specifically the "packet filtering HOWTO" and the "NAT
+> HOWTO".
+> >
+> > The second is Oskar's excellent iptables tutorial, at
+> >
 >
-> > I have the following config:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html.
 > >
-> > (public ip)
-> > eth0
-> > Firewall
-> > eth1 (150.50.53.4)
-> >
-> > 148.145.133.1 (vpn router)
-> >
-> > 150.50.57.0/24
-> > (LAN, including a server with 150.50.57.2)
-> >
-> > *Class 150.50.57.0/24 is routed to 148.245.164.1
-> >
-> > I want that when people(from eth1 lan) goes to 150.50.53.5, be
-> > redirected to 150.50.57.2.
-> >
-> > I tried:
-> >
-> > iptables -t nat -A PREROUTING 150.50.53.5 -j DNAT --to-destination
-> > 150.50.57.2
-> >
-> > But doesn't seem to be working. Any idea if it is possible and how to do
-> > it?
->
-> That looks correct.   Do you have a suitable FORWARD rule to allow the
-> translated packets through the firewall?
->
-> Does 150.50.57.2 know how to route the replies back again (through the
-> firewall)?
->
-> How are you testing?
->
-> I'm not sure I understand the significance of the "VPN router" shown on
-your
-> diagram with only a single IP address - can you explain further what this
-> means, and what is its relevance to the setup?
->
+> > The third is taking a while to work out what ports the
+> services you
+> > mention work on.  A basic feel for how TCP/IP
+> connections work would help
+> > too.  The knowledge that in most cases a client chooses
+> a port >1024 and
+> > connects to the service port should suffice.  People on
+> the list could
+> > easily list the ports you need to allow or deny but
+> you'll learn a
+> > tremendous amount by spending 10 minutes working it
+> out.
+> 
 > Regards,
->
+> 
 > Antony.
->
+> 
 > -- 
-> Never write it in Perl if you can do it in Awk.
-> Never do it in Awk if sed can handle it.
-> Never use sed when tr can do the job.
-> Never invoke tr when cat is sufficient.
-> Avoid using cat whenever possible.
+> The first fifty percent of an engineering project takes
+> ninety percent of the 
+> time, and the remaining fifty percent takes another
+> ninety percent of the 
+> time.
+> 
 >
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
+                                                     Please
+> reply to the list;
 >
->
+                                                          
+> please don't CC me.
+> 
+> 
 
+__________________________________________________________________________
+http://www.webmail.co.za/dialup Webmail ISP - Cool Connection, Cool Price
 
