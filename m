@@ -1,9 +1,8 @@
-From: "vincent blondel" <vincent.blondel@chello.be>
-Subject: h.323 firewall
-Date: Thu, 14 Nov 2002 19:18:48 +0100
+From: "David Wynter" <david@roamware.com>
+Subject: Required iptables restart each boot?
+Date: Thu, 14 Nov 2002 18:16:28 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000d01c28c0a$473ff290$057ba8c0@wxcsmtp450>
-Reply-To: "vincent blondel" <vincent.blondel@chello.be>
+Message-ID: <LPECIAHGIGJJHHELMIDLIEAGDAAA.david@roamware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,127 +16,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter list <netfilter@lists.netfilter.org>
+
 
 Hi,
 
-I want to implement in our organisation a complete video conferencing
-infrastructure but I am completely novice
-in this matter. I read a lot of documentation these last days but there are
-some points that stay not clear.
+I have an iptables script that works just fine. But when I have to reboot my
+Linux box it runs the iptables script (it has chkconfig as 2345 08 92). But
+none of my PCs on the LAN can see the Internet until I do "services iptables
+restart" then they can. But my Linux box can see the Internet prior to this
+iptables restart? Any explanation as to why this is so?
 
-As you can see it above, we want to open domains DEV1 and DEV2 to the net
-for h.323 traffic.
+I have another problem too. I am not sure it is related to iptables. I have
+iptables on my linux box attached to my LAN. The LAN has 2 PCs a Win98
+notebook and a W2K Server PC. The former can ping the gateway IP address,
+but the latter cannot. The former is 10.0.0.5 and the latter is 10.0.0.6
+both within the range of the lansubnet declared in the iptables script
+(10.0.0.0/8). The W2K Server can FTP to the Linux box only via the internet
+not directly to the gateway IP (10.0.0.1). I have made sure that packet
+filtering on the W2K box id OFF. Any ideas on why the W2K PC cannot access
+any service on ports I have allowed on the Linux box with iptables running
+when the Win98 notebook can? By the way FORWARD'ed packets are fine for all
+PCs on the LAN.
 
-The current situation incorporates :
 
-          10.66.0.xxx
-     +---------------+
-     | SMC7008BR |
-     +---------------+
-          10.66.1.xxx
-                   DEV2
-                |           |
-  +---------+-+   +--+--------+
-  | slack 8.0 |   | Slack 8.0 |
-  +-----------+   +-----------+
-                      192.168.0.xxx   +-----+       10.66.0.xxx
-                                             | pp0 |  +---------------+
-                                             +--+--+  |   switch      |
-                                                 |       +---------------+
-                                                 |         DMZ
-                                                 +-------+  +-------------+
-                                                 |  NS2  |   | NS1
-|
-                      10.66.0.xxx          |  HTTP2| | HTT1        |
-                 +---------------+         +-------+  | FTP           +--ISP
-                 |  SMC7008BR|                        | SMTP       |
-                 +---------------+                        +-------------+
-                  192.168.0.xxx                            192.168.0.xxx
-                     DEV1
-                  |            |
- +-----------+-+      +-+---------+
- |   linux         | .... |    w2k      |
- +-------------+      +-----------+
-  GnomeMeeting         NetMeeting
+Regards
 
-- a firewall iptables on NS1 and NS2
-- communcication with the net is passing through our DMZ zone
-- DMZ integrates 2 servers linux slackware 8.0 / kernel 2.4.18 /
-patch-o-matic-20020825 / iptables 1.2.7a
-- DMZ is configured with nat feature for traffic between DEV1/DEV2 and the
-net
-- DEV1/DEV2 includes some 15 users with webcams and/or H323 compliant
-equipment.
+David Wynter
 
-So the problems I encounter are the following :
-
-- As all I could see on the net, all config examples represent configuration
-with one client using h.323 protocol
-
-  #! /bin/bash
-  EXTERNAL_IF=eth0
-  EXTERNAL_IP=mon.ip.pub.lic
-  PCA_HOST=mon.ip.pri.vee
-
-  $IPTABLES=/usr/local/sbin/iptables
-
-  /sbin/modprobe -a -k -s -v ip_nat_h323
-
-  logger -s "H323 Ports"
-  H323_PORTS="389 522 1503 1720 1731 8080"
-  for PORT in $H323_PORTS; do
-  $IPTABLES -t nat -A PREROUTING -i $EXTERNAL_IF -p tcp -d $EXTERNAL_IP \
-  --dport $PORT -m state --state NEW,ESTABLISHED,RELATED \
-  -j DNAT --to-destination $PCA_HOST -v
-  done
-
-  logger -s "H323 Ports"
-  H323_PORTS="389 522 1503 1720 1731 8080"
-  for PORT in $H323_PORTS; do
-  $IPTABLES -t nat -A PREROUTING -i $EXTERNAL_IF -p udp -d $EXTERNAL_IP \
-  --dport $PORT -m state --state NEW,ESTABLISHED,RELATED \
-  -j DNAT --to-destination $PCA_HOST -v
-
-  ... I found above iptables config example but problem for me is I have 15
-users and not one
-
-- I have installed iptables/NAT on my DMZ servers but I remarked some
-clients as GnomeMeeting 0.94 are full NAT compliant
-  ... so what does it mean, that my linux clients will have some troubles
-because I use two products producing NAT
-  ... capabilities ??? and what about Ms Netmeeting and ip_nat_h323 ???
-
-- I patched my kernels 2.4.18 with patch-o-matic-20020825 to use ip_nat_h323
-  ... ok but is this module a solution for me to redirect h.323 traffic
-between
-  ...     internet          --> 10.66.0.xxx --> 192.168.0.xxx
-  ...     internet          --> 10.66.0.xxx --> 10.66.1.xxx
-  ...     192.168.0.xxx --> 10.66.0.xxx --> internet
-  ...     10.66.1.xxx     --> 10.66.0.xxx --> internet
-
-  but the problem is I have concurrent connections .
-
-- I read yesterday that it is possible to concentrate h.323 connections on a
-gatekeeper as OpenH323 Gatekeeper
-  ... do you think I have to use a gatekeeper with iptables ???
-
-So maybe you can find my questions stupid or without any sense but I repeat
-it I got no experience with this.
-
-So, with information I received I imagine to impelement my h.323
-infrastructure as mentionned below.
-
-- configuring iptables on NS1 (10.66.0.1) with the script mentionned above
-and replacing PCA_HOST with ip adress of NS2 (10.66.0.2)
-- installing OpenH323 gatekeeper on NS2 (10.66.0.2)
-- configuring all clients with gatekeeper NS2 (10.66.0.2).
-
-So, thanks for any comment, remark, experience, suggestions and/or
-corrections on what I mentionned above.
-Thanks in advance.
-
-Vincent
-
+roamware Ltd.
+(+44) (0) 208 922 7539 B.
+(+44) (0) 7879 605 706 M.
+david@roamware.com
 
 
