@@ -1,11 +1,13 @@
-From: "bino-psn" <bino@indoakses-online.com>
-Subject: iptables net-snmp modules ?
-Date: Sun, 12 Oct 2003 09:00:49 +0700
+From: Herman <Herman@AerospaceSoftware.com>
+Subject: Invalid friggen argument
+Date: Sun, 12 Oct 2003 01:41:15 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002101c39064$aa8b2180$0300a8c0@indoaksesbno>
+Message-ID: <200310120141.15894.Herman@AerospaceSoftware.com>
+Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,17 +20,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear All.
+Hi everybody,
 
-Just like monitoring SQUID with mrtg, I'm looking away to monitor the
-iptables stats using snmpd and mrtg.
+I am trying to get port forwarding to work.  I had it working some time ago 
+gawdknows what changed...
 
-Is ther any way to let IPtables use netsnmp to provide stats to the snmp
-managers ?
-i'm looking some kind of MIB / module base solutions, since currently I did
-"pass" methode of net-snmp.
+Now, I get this result with iptables 1.2.7a-2mdk and with 1.2.9rc1:
 
-Sincerely
--bino-
+# iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 6390 \
+ -j DNAT --to 192.168.10.245
+iptables: Invalid argument
 
+I can cut and paste a line from a howto and I still get 'invalid argument' - 
+grrr...
+
+Any ideas?
+
+Cheers
+-- 
+Herman
 
