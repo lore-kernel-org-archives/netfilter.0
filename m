@@ -1,13 +1,9 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: Re: Stateless NAT in 2.6 (was Re: UDP Forwarding)
-Date: Tue, 22 Feb 2005 18:04:38 +0800
-Message-ID: <020e01c518c5$eb982d90$0100a8c0@newlife>
-References: <1108784264.14727.11.camel@jasiiitosh.nexusmgmt.com>
-	<1109057218.5505.4.camel@jasiiitosh.nexusmgmt.com>
-	<014701c518b7$19102f20$0100a8c0@newlife>
-	<1109061936.5505.72.camel@jasiiitosh.nexusmgmt.com>
+From: BERTRAND =?iso-8859-1?Q?Jo=EBl?= <mt1@systella.fr>
+Subject: ROUTE target and --continue
+Date: Tue, 22 Feb 2005 11:50:12 +0100
+Message-ID: <20050222105012.GA16180@rayleigh.systella.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter users list <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+	Hello,
 
-> Yes, exactly.  They are very small footprint appliances running ucLinux
-> and I would not want to void any warranties by cross compiling and
-> adding binaries to the image.  Thanks for such a quick response - John
+	I'm trying to use ROUTE target with SNAT. For me, ROUTE works very
+	fine without --continue, but I need to add SNAT. Without SNAT, all
+	routed packets come from 192.168.0.130 and they have to come from
+	192.168.1.1...
 
-That totally defeat the spirit of open source. I would throw it away and
-put in other small footprint appliances which I have full source. There
-are many such devices around.
+	Without --continue, they are good routed. To do SNAT, I have added
+	--continue and I obtain :
 
-Anyway, it's probably not helping your situation at all. 
+Root kant:[/var/lib/iptables] > iptables -t mangle -n -v -L | grep ROUTE
+    7   280 ROUTE      tcp  --  *      *       192.168.0.130
+	0.0.0.0/0           tcp spts:3000:3001 ROUTE gw:192.168.1.254
+	continue
 
-Sorry won't help much.
+Root kant:[/var/lib/iptables] > iptables -t nat -n -v -L | grep LOG  
+    0     0 LOG        tcp  --  *      *       192.168.0.130
+	0.0.0.0/0           tcp spts:3000:3001 LOG flags 0 level 4 prefix
+	`SNAT : ' 
 
-Cheers.
+	Look at "0" on the nat table... And without --continue, I can see my
+	packets on eth2 (192.168.1.1). With continue, no one packet... Where
+	is the mistake ?
 
+	Regards,
 
-
+	JKB
 
