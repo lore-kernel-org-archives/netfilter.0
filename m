@@ -1,12 +1,11 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: iptables dnat to loopback
-Date: Fri, 6 Aug 2004 13:13:13 -0400
+From: Simon Lodal <simonl@parknet.dk>
+Subject: DNAT hiding routers behind it
+Date: Fri, 06 Aug 2004 19:25:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC905124D@asimail2.alphanumeric.com>
+Message-ID: <4113BEF9.5090706@parknet.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: damian_g@speedy.com.ar
 
-PiBVbmZvcnR1bmF0ZWx5LCBpdCBkb2VzIG5vdCBzZWVtIHRvIHdvcmsgZWl0aGVyID0oDQo+IE9u
-IHRoZSBzZXJ2ZXIgaXRzZWxmIGkgY2FuIGB0ZWxuZXQgMTI3LjAuMC4xIDMzMDZgDQo+IGFuZCBj
-b25uZWN0IHRvIHRoZSBsaXN0ZW5pbmcgbXlzcWwgcHJvY2Vzcy4gQnV0DQo+IGFmdGVyIGFkZGlu
-ZyB0aGlzIHJ1bGU6DQo+DQo+IGlwdGFibGVzIC1BIFBSRVJPVVRJTkcgLXQgbmF0IC1wIHRjcCAt
-cyAoY2xpZW50IGFkZHJlc3MpIC0tZHBvcnQgXA0KPiAzMzA2IC1qIFJFRElSRUNUIC0tdG8tcG9y
-dHMgMzMwNg0KPg0KPiBJIHNpdCBpbiB0aGUgY2xpZW50IGJveCBhbmQgYHRlbG5ldCAoc2VydmVy
-IGlwIGFkZHJlc3MpIDMzMDZgDQo+IGFuZCBqdXN0IGdldCBhICJjb25uZWN0aW9uIHJlZnVzZWQi
-Lg0KPg0KPiBBbSBpIG1pc3Npbmcgc29tZXRoaW5nPyBJcyB0aGUgcnVsZSBvaz8gSSBoYXZlIGFs
-c28gdHJpZWQNCj4gcmVtb3ZpbmcgdGhlICItLXRvLXBvcnRzIiBvcHRpb24gdG8gbGVhdmUgdGhl
-IHBvcnQgdW5jaGFuZ2VkLA0KPiBidXQgdGhlIHJlc3VsdCBpcyB0aGUgc2FtZS4NCg0KeWVzLS1t
-eSBwb3N0IHdhcyBtaXNsZWFkaW5nLiAgUkVESVJFQ1QgZG9lcyBub3QgcHJlY2lzZWx5IGRvIHdo
-YXQgeW91IHdhbnQuICBpdCByZXdyaXRlcyB0aGUgZGVzdGluYXRpb24gSVAgYWRkcmVzcyBvZiB0
-aGUgcGFja2V0IHRvIGJlIHRoZSBwcmltYXJ5IElQIG9mIHRoZSBpbnRlcmZhY2UgdGhlIHBhY2tl
-dCBpcyByZWNlaXZlZCBvbi4gIGkganVzdCB2ZXJmaWVkIHRoaXMgYnkgcG9raW5nIHRocm91Z2gg
-Ii91c3Ivc3JjL2xpbnV4L25ldC9pcHY0L25ldGZpbHRlci9pcHRfUkVESVJFQ1QuYyItLXNvbWV3
-aGVyZSBhcm91bmQgbGluZSA4NSwgeW91J2xsIHNlZTogDQoNCiAgICAgICAgICAgICAgICAvKiBH
-cmFiIGZpcnN0IGFkZHJlc3Mgb24gaW50ZXJmYWNlLiAqLw0KICAgICAgICAgICAgICAgIG5ld2Rz
-dCA9IGluZGV2LT5pZmFfbGlzdC0+aWZhX2xvY2FsOw0KDQp3aGljaCB3aWxsIG5vdCBnZXQgdGhl
-IHBhY2tldCB0byAxMjcuMC4wLjEuDQoNCmhvd2V2ZXIsIGFmdGVyIHNvbWUgZnVydGhlciB0ZXN0
-aW5nLS15b3VyIG9yaWdpbmFsIEROQVQgKnNob3VsZCogd29yay0tdGhlIHByb2JsZW0gaXMgcHJv
-YmFibHkgc29tZXdoZXJlIGluIHlvdXIgZmlsdGVyIHJ1bGVzLiAgaSBqdXN0IHRlc3RlZCB0aGlz
-IHdpdGggYSBtYWNoaW5lIHRoYXQgaGFzIHNlbmRtYWlsIGJvdW5kIG9ubHkgdG8gMTI3LjAuMC4x
-Og0KDQojIG5ldHN0YXQgLWxudCB8IGdyZXAgMjUNCnRjcCAgICAgICAgMCAgICAgIDAgMTI3LjAu
-MC4xOjI1ICAgICAgICAgICAgMC4wLjAuMDoqICAgICAgICAgICAgICAgTElTVEVODQoNCiNpcHRh
-YmxlcyAtdCBuYXQgLUkgUFJFUk9VVElORyAtaSBldGgwIC1wIHRjcCAtZCAxNzIuMzAuMzAuMiAt
-LWRwb3J0IDI1IC1qIEROQVQgLS10byAxMjcuMC4wLjE6MjUNCg0KdGhlIGxvZyBlbnRyeSBhc3Nv
-Y2lhdGVkIHdpdGggdGhlIGluY29taW5nLCBETkFULWVkIHBhY2tldCBtYXkgbm90IGxvb2sgZXhh
-Y3RseSBhcyB5b3Ugc3VzcGVjdDsgaG93ZXZlci4gIHRoaXMgaXMgd2hhdCBwb3BwZWQgaW50byBt
-eSBsb2dzIHVwb24gYSBzdWNjZXNzZnVsICJ0ZWxuZXQgMTcyLjMwLjMwLjIgMjUiICh0aGUgcGFj
-a2V0IGlzIHJlY2VpdmVkIGluIHRoZSBJTlBVVCBjaGFpbiwgYnR3KToNCg0KQXVnICA2IDEzOjA2
-OjMzIGZ3IGtlcm5lbDogSU49bG8gT1VUPSBNQUM9MDA6MDA6MDA6MDA6MDA6MDA6MDA6MDA6MDA6
-MDA6MDA6MDA6MDg6MDAgU1JDPTEyNy4wLjAuMSBEU1Q9MTI3LjAuMC4xIExFTj02MCBUT1M9MHgw
-MCBQUkVDPTB4MDAgVFRMPTY0IElEPTIxMDQxIERGIFBST1RPPVRDUCBTUFQ9MzU4MDEgRFBUPTI1
-IFdJTkRPVz0zMjc2NyBSRVM9MHgwMCBTWU4gVVJHUD0wDQoNCm5vdGUgdGhlIGluYm91bmQgaW50
-ZXJmYWNlIGlzICJsbyIgYW5kIGJvdGggdGhlIHNyYyBhbmQgZHN0IElQJ3MgYXJlIDEyNy4wLjAu
-MS4gIGlmIHlvdSBuZWVkIHRvIGZpbHRlciB0aGlzIGtpbmQgb2YgY29ubmVjdGlvbi0tbWFrZSBz
-dXJlIHlvdSBzcGVjaWZ5IGEgIi1zIHgueC54LngiIGluIHlvdXIgRE5BVCBydWxlLg0KDQpzb3Jy
-eSBhYm91dCBteSBlYXJsaWVyIHBvc3QuLi4gaG9wZSAqdGhpcyogb25lIGhlbHBzLi4uDQoNCi1q
-DQo=
+
+I am traceroute'ing a DNAT'ed host. Surprisingly, all routers between 
+the DNAT'ing firewall and the host appear as the IP address I am 
+traceroute'ing. Is this intended? Can it be controlled in some way? (it 
+is not necessarily bad)
+
+Example:
+traceroute to 217.116.235.62 (217.116.235.62), 30 hops max, 38 byte packets
+  1  192.168.0.2 (192.168.0.2)  4.152 ms  0.875 ms  0.865 ms
+  2  217.116.235.62 (217.116.235.62)  1.928 ms  1.272 ms  1.430 ms
+  3  217.116.235.62 (217.116.235.62)  2.013 ms  2.338 ms  2.330 ms
+
+Line 1: DNAT'ing firewall.
+Line 2: A router.
+Line 3: DNAT'ed host.
+
+I would the expect the router to show up with it's own IP address, not 
+the original target address.
+
+
+Simon
 
