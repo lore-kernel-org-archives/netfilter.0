@@ -1,13 +1,12 @@
-From: Kim Jensen <kimj@dawn.dk>
-Subject: Re: I want to find a good script to make my firewall up
-Date: Sun, 30 Mar 2003 14:45:24 +0200
+From: Oskar Andreasson <blueflux@koffein.net>
+Subject: Re: what are the possible chain policies?
+Date: Sun, 30 Mar 2003 15:03:16 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303301445.24591.kimj@dawn.dk>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAuo8zdkdi7k61lwTUcExU18KAAAAQAAAAM1xGwRSTKEeEwmE17uy8+AEAAAAA@surson.com.br>
+Message-ID: <Pine.LNX.4.44.0303301458320.19498-100000@laptop1.agatha>
+References: <Pine.LNX.4.44.0303291426440.7401-100000@dell>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAuo8zdkdi7k61lwTUcExU18KAAAAQAAAAM1xGwRSTKEeEwmE17uy8+AEAAAAA@surson.com.br>
+In-Reply-To: <Pine.LNX.4.44.0303291426440.7401-100000@dell>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +16,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: FRANCO <facatena@surson.com.br>, 'Changho Choi' <choi@cs.umn.edu>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+Cc: iptables mailing list <netfilter@lists.netfilter.org>
 
-On Sunday 30 March 2003 14:25, FRANCO wrote:
-> Good morning,
->
-> could they find out where I get a SCRIPT for maintaining my FIREWALL th=
-e
-> best configured possible and more I also hold?
->
-> Thank you very much
->
-Please specify your needs - there are many different ways of setting up a=
-=20
-firewall, so unless we know what you wish for, then it is hard for us to=20
-help.
+Hi,
 
-Nomatter, you can find some good guidelines for setting up your firewall =
-in=20
-the netfilter documentation.
+First of all, sorry to everyone who's tried to contact me or mailed me 
+during the last couple of months or so. Ive been tremenduously overworked 
+since around Christmas, and hence all the delays on my part. I am 
+currently trying to catch up, but I am still under heavy load so...
 
-/Kim
+On Sat, 29 Mar 2003, Robert P. J. Day wrote:
+
+> 
+>   i was just summarizing the behavior of iptables and i'm puzzled
+> by a contardiction between the man page and oskar's tutorial.
+> 
+>   regarding possible chain policies, oskar lists DROP, ACCEPT
+> and REJECT.
+> 
+
+REJECT is not true, and I don't know where I got that one. It was fixed
+earlier today, and should be out in a week or so with the rest of the
+updates I am trying to gather up right now.
+
+>   the man page, however, suggests all of ACCEPT, DROP, QUEUE
+> or RETURN, which seems a bit odd.
+
+ACCEPT and DROP should work. Possibly QUEUE as well, but RETURN sounds 
+strange. RETURN should be the default policy on user created chains, but 
+what good can it do on systemspecified chains? 
+
+Of course, I am only speculating here since I haven't had the time to 
+actually read the code so...
+
+> 
+>   since i've only used DROP or ACCEPT until now, i'm not sure
+> what the right answer is.
+> 
+>   anyone?
+> 
+> rday
+> 
+> 
+> 
+
+-- 
+----
+Oskar Andreasson
+http://www.frozentux.net
+http://iptables-tutorial.frozentux.net
+http://ipsysctl-tutorial.frozentux.net
+mailto:blueflux@koffein.net
 
 
