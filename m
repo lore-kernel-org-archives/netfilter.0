@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Ben Russo <ben@umialumni.com>
 Subject: Re: NAT only - No connection tracking
-Date: Mon, 11 Nov 2002 20:05:34 +0000
+Date: 11 Nov 2002 15:16:00 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021111200541.IDEJ3711.mta02-svc.ntlworld.com@there>
-References: <00f701c28970$f3587bc0$0bc8c80a@dolphin> <200211111106.gABB6ue27802@vulcan.rissington.net>
+Message-ID: <1037045760.3428.47.camel@ben.mis.tnsi.com>
+References: <20021111192103.14755.qmail@web40910.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200211111106.gABB6ue27802@vulcan.rissington.net>
+In-Reply-To: <20021111192103.14755.qmail@web40910.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists" <netfilter@lists.netfilter.org>
+To: Brad Chapman <kakadu_croc@yahoo.com>
+Cc: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-On Monday 11 November 2002 11:06 am, Antony Stone wrote:
+On Mon, 2002-11-11 at 14:21, Brad Chapman wrote:
+> Mr. Antony,
+> 
+> --- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+> > On Monday 11 November 2002 11:34 am, Brad Chapman wrote:
+> > 
+> > > > How can I make my iptable to do just NAT, no connection tracking?
+> > > >
+> > > > Basically, I want to make my iptable to become a NAT device without
+> > > > stateful inspection.
+> > > > It this possible?
+> > >
+If you don't want connection tracking but want NAT just use the old
+ipchains instead of iptables.
 
-> On Monday 11 November 2002 10:56 am, yenjet.chan@eglobal.com.my wrote:
-> > Hi all,
-> >
-> > How can I make my iptable to do just NAT, no connection tracking?
->
-> Yes - just don't compile connection tracking support in, and don't try to
-> use the -m state match.
+-Ben.
 
-I was wrong.   I forgot that when you compile the kernel, the netfilter 
-options start with "Connection tracking (required for NAT) ?"
-
-Therefore you are correct, you cannot do NAT without connection tracking.
-
-Sorry for the misleading (nay, incorrect !) advice earlier....
-
-Antony.
-
--- 
-
-The difference between theory and practice is that
-in theory there is no difference, whereas in practice there is.
 
