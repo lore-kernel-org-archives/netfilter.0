@@ -1,9 +1,10 @@
-From: Michael Tautschnig <michael.tautschnig@zt-consulting.com>
-Subject: Re: (no subject)
-Date: Thu, 3 Mar 2005 14:43:09 +0100 (CET)
-Message-ID: <Pine.LNX.4.62.0503031442280.6114@L01.THNET>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: HTTP Redirection WAS: (no subject)
+Date: Thu, 3 Mar 2005 11:32:15 -0500
+Message-ID: <20050303163215.GA5439@bender.817west.com>
 References: <20686C579479DC438276A726FE80CDAA0294C777@INEXCH1>
 Mime-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <20686C579479DC438276A726FE80CDAA0294C777@INEXCH1>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,11 +16,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pmishra@in.safenet-inc.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+On Thu, Mar 03, 2005 at 12:11:22PM +0530, Pmishra@in.safenet-inc.com wrote:
+> 
 > Hi Team,
 > My requirement is Use SingleIP and different port with different web based
 > application .
@@ -29,8 +31,20 @@ Cc: netfilter@lists.netfilter.org
 > hint send by client.
 > Is it possible in Linux ?
 
-Well, what is the "hint", sent by the client?
+REDIRECT all incoming TCP port 80 traffic to apache+mod_rewrite and
+rewrite based on the HOST: Header request.
 
-Thanks,
-Michael
+if all the web sites run on the same server, you could also simply do
+name-based virtual hosting (this also utilizes the HOST: Header,
+btw--see a pattern yet?).
+
+there are roughly 8 million examples of how to do each of the above
+available on the 'net.
+
+-j
+
+--
+"Lisa, if you don't like your job you don't strike. You just go in
+ there every day and do it really half-assed. That's  the American way."
+        --The Simpsons
 
