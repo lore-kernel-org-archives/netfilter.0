@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: matching on ICMP responses
-Date: Sun, 18 Jul 2004 22:09:28 +0100
+From: gypsy <gypsy@iswest.com>
+Subject: string match fails to find anything/everything
+Date: Sun, 18 Jul 2004 15:03:40 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407182209.28604.Antony@Soft-Solutions.co.uk>
-References: <40FAE42A.6090300@metaloft.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <40FAF3BC.59D053F0@iswest.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40FAE42A.6090300@metaloft.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,41 +18,35 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 18 July 2004 9:57 pm, Dirk Morris wrote:
+Facts:
+iptables 1.2.9 built against kernel v 2.4.25 or .26 depending on which
+computer.
+kernel 2.4.26
+os fingerprinting only works on the internal interface,  not eth1.
+"tcpdump -n -i eth1 -w /tmp/dump" clearly shows the text I am attempting
+to match.
+I have a test bed with very little traffic so that using a string match
+will not bog down.
+Repeats on 3 different computers all running Slackware 9.1.
+Several other POM / POM-NG modules are installed.
 
-> Is there a way to match only certain ICMP responses that relate to
-> certain other sessions.
->
-> example: is there a rule/match I can use to specify that I want to block
-> all ICMP port unreachable errors, but _only_ in response to UDP packets (not
-> TCP).
+Problem:
+No matter what text is in $STRING, iptables fails to see the match.
 
-Why would you get an ICMP message in response to a TCP port being unreachable?
+iptables -I INPUT -m string --string $STRING -j LOG
 
-TCP will either return RST, or simply won't return the SYN-ACK packet, and 
-eventually the client will timeout.   There should be no ICMP packets 
-involved.
+"iptables -nvL | grep STRING" has zeros in the counters.
 
-> Or maybe both TCP and UDP, but only port 123. etc etc.
+Example:
+Replace $STRING with "oreilly".  From a remote computer run "lynx
+http://myurl/oreilly" and variants until at least 30 pages have been
+displayed to be certain that at least one packet is not so fragmented
+that "oreilly" isn't there (see also Facts above).  On the "myurl"
+computer iptables counters are zero.
 
-If you want to match ICMP packets which are in response to an unsuccessful UDP 
-packet to port 123, you could try the "string" match?   It has the 
-disadvantage (which for most other purposes is a severe one) that it will 
-only match strings contained competely within one packet, however in this 
-case I think all the data you will be interested in will be in one packet, 
-therefore it might be a good solution to the problem.
+QUESTION:
+How can I find out why the string match fails to find the intended
+text?  (Later on I may ask how to fix that...)
 
-Regards,
-
-Antony.
-
--- 
-Perfection in design is achieved not when there is nothing left to add, but 
-rather when there is nothing left to take away.
-
- - Antoine de Saint-Exupery
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+gypsy
 
