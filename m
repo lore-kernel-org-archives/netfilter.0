@@ -1,11 +1,13 @@
-From: Scott van Looy <scott@ethosuk.org.uk>
-Subject: what have I done wrong to make 1.2.7a not compile?
-Date: 20 Feb 2003 00:48:27 +0000
+From: "Ian Douglas" <ian@icreditvision.com>
+Subject: RE: using iptables for poor-man's load balancing?
+Date: Wed, 19 Feb 2003 16:55:22 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045702107.1406.22.camel@pixel.ethosuk.org.uk>
+Message-ID: <HMEBKOCKLOOEJGIOMFAPIEKBFJAA.ian@icreditvision.com>
+References: <200302191930.05271.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-0mXaNa5VVx6wZUFO+FAD"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <200302191930.05271.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,40 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@newkirk.us, netfilter@lists.netfilter.org
 
+> The only reason I can think of (now) that all your traffic went to the
+> first on the list is that there simply wasn't any load to speak of.  How
+> were you testing?
 
---=-0mXaNa5VVx6wZUFO+FAD
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+By blasting traffic at the system that's doing the packet forwarding. Perhaps I
+can write some different code on the web servers that will hold the connection
+for a while (ie: call a perl script that does a 'sleep 60' or something) and
+test it that way.
 
-extensions/libipt_ROUTE.c: In function `print':
-extensions/libipt_ROUTE.c:119: structure has no member named `if_name'
-extensions/libipt_ROUTE.c:120: structure has no member named `if_name'
-extensions/libipt_ROUTE.c:122: structure has no member named `if_index'
-make: *** [extensions/libipt_ROUTE_sh.o] Error 1
+> Multiple simultaneous connections?
 
-What's wrong then? :)
---=20
-Scott van Looy - email:me@ethosuk.org.uk | web:www.ethosuk.org.uk
-PGP Fingerprint: 7180 5543 C6C4 747B 7E74  802C 7CF9 E526 44D9 D4A7
-      -------------------------------------------
-      |/// /// /// /// WIDE LOAD /// /// /// ///|
-      -------------------------------------------
+Yes. I have a script that cycles through a perl script (I'll call it
+blasticv.pl) that calls another perl script (I'll call it icv.pl) with 3 varying
+parameters... each occurrence of that icv.pl makes a connection to the web
+server to send and retrieve a chunk of data. "blasticv.pl" cycles through and
+calls icv.pl 100 times with each of the 3 parameters, and not sleeping at all in
+the loop. This should simulate 300 requests on the web servers that, given the
+timing to complete a single request, would mean we'd have about 200 active
+requests at the peak of activity, yet every single 'hit' on the systems landed
+on 1.1, and not a single hit on 1.12.
 
-Your ignorance cramps my conversation.
+> it will simply keep sending traffic to the first
+> on the list, only using the next one if there is more traffic
+> 'currently' (presumably based on the connection-tracking data) on the
+> first destination than on the second.
 
---=-0mXaNa5VVx6wZUFO+FAD
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+... which is what I read, also, yet it seemed that causing a good volume of busy
+traffic didn't forward anything to 1.12
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+-id
 
-iD8DBQA+VCXbfPnlJkTZ1KcRAogPAJ9ezI+IaPCnqJorN1MfCdIyLrMLOwCeJPTb
-QjbC/OFAJSo+dgttQECwx/E=
-=fgXO
------END PGP SIGNATURE-----
-
---=-0mXaNa5VVx6wZUFO+FAD--
 
