@@ -1,13 +1,12 @@
-From: "Tim Evans" <tkevans@tkevans.com>
-Subject: Re: [OT] Re: advantage and disadvantage between iptables and ISAServer?
-Date: Wed, 25 Feb 2004 12:18:37 -0400
+From: "Maciej Soltysiak" <solt@dns.toxicfilms.tv>
+Subject: Re: advantage and disadvantage between iptables and ISAServer?
+Date: Wed, 25 Feb 2004 17:17:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040225161837.M90192@tkevans.com>
-References: <Sea1-F121KV8iOFQeYm0000bd96@hotmail.com> <20040225084959.471bb675@mgalepc.utilitran.com> <200402251607.58278.Antony@Soft-Solutions.co.uk>
-Reply-To: tkevans@tkevans.com
+Message-ID: <001b01c3fbba$e14cc720$0e25fe96@pysiak>
+References: <Sea1-F121KV8iOFQeYm0000bd96@hotmail.com> <20040225084959.471bb675@mgalepc.utilitran.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200402251607.58278.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +17,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 25 Feb 2004 16:07:58 +0000, Antony Stone wrote
-> On Wednesday 25 February 2004 3:49 pm, Michael Gale wrote:
-> 
-> > I will give Microsoft this ... they make a nice user friendly desktop
-> > OS that my mom can use.
-> 
-> Apple arguably do a better one.
+> I am not to familure with ISA because the M$ admins here tell me it is not
+worth
+> the enough to test it out. I would assume it is like any other M$ product
+though
+> ... you need double or triple the hardware to run it as compared to
+iptables.
+Agree, oh, this is true. Currently w2k3 runs very bad on:
+p4 1,5ghz, 384MB
+with a few of the services setup: AD, WMS, IIS (HTTP+FTP), SUS, SMS.
 
-But does Mom want to build a firewall?
---
-Tim Evans, TKEvans.com, Inc.    |    5 Chestnut Court
-tkevans@tkevans.com             |    Owings Mills, MD 21117
-http://www.tkevans.com/         |    443-394-3864
-http://www.come-here.com/News/  |    
+
+> You are stuck with the options the M$ provides instead of the endless
+> possibilities the a Unix or Linux could offer.
+Well, sort of. iptables is very powerfull, but I think that upcomming isa
+2004
+is going to be modular and pluggable too, plus it will certainly address
+popular
+security issues like: p2p (yes, it is a security issue), worms, network
+attacks
+that have signatures: slammer, floods, land, dos, etc...
+Like checkpoint's SmartDefense.
+
+
+I have not been using isa, but only read and seen a presentation of isa
+2004,
+It is possible that is going to be a powerfull tool. No information about
+stability,
+propably it'd depend on which version of windows you are running and how
+stable it is. Performance? No idea.
+
+Regards,
+Maciej
 
 
