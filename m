@@ -1,13 +1,12 @@
-From: "Aldo S. Lagana" <alagana@discmail.com>
-Subject: RE: Possible huge iptables memory leakage
-Date: Thu, 31 Jul 2003 15:42:12 -0400
+From: "Juliano Murlick" <jmurlick@sicredi.com.br>
+Subject: source mac address
+Date: Thu, 31 Jul 2003 17:02:32 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307311943.h6VJhjjX018060@discmail.com>
-References: <62264464249.20030731222306@lf.lv>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAArnhC4pMfykCnPZlPMhHrI8KAAAAQAAAA9QxKLSpdOESQ12+Zk6/CxgEAAAAA@sicredi.com.br>
+Reply-To: <jmurlick@sicredi.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <62264464249.20030731222306@lf.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,110 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Peteris Krumins' <newsgroups@lf.lv>, netfilter@lists.netfilter.org
-
-I run many different Linux systems ranging in physical memory from 128M =
-to
-5Gig (that's RAM!) both with and without iptables:
-
-The funny thing about Linux is - if you give it RAM - it will use =
-it....I am
-sure someone more in tune with mem management will set me straight, but =
-it
-seems that Linux will always grab up 90% of all physical memory after it =
-has
-been running for a while...
-
-To make a short story long - unless you are tracking all connections =
-(and
-there are many dynamic connections) I would not be too quick to blame
-iptables - I mean the amount of ram you are using in 30Meg - is this the
-80's???
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peteris =
-Krumins
-Sent: Thursday, July 31, 2003 3:23 PM
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello,
+How can i log the source mac address ? I'm logging every dropped packet,
+my log is like it :=20
 
- I suspect there is a huge memory leakage in one or more of the
- iptables modules or iptables core.
- The scenario is simple, i set up a test-machine and let different
- traffic flow through it.
- It's located near the central backbone of my company, so different
- traffic flows through.
- Different iptables matches/targets are used.
+Jul 15 08:51:26 fwwan kernel: IPT: INPUT DROPPED IN=3Deth0 OUT=3D
+MAC=3D00:00:00:00:00:00:00:00:8827:42:00:08:00 SRC=3DIP1 DST=3DIP2 =
+LEN=3D60
+TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D52070 DF PROTO=3DTCP SPT=3D43812 =
+DPT=3D25
+WINDOW=3D5840 RES=3D0x00 SYN URGP=3D0
 
- There are no applications running which could make memory leaks.
- The Linux is custom built and takes up 12MB of disk space.
- Only a single getty process is running and if i log in correctly a
- shell - bash. Verifying the memory usage w/ `free' i see no userland
- application is taking up that much memory alltogether, but the memory
- usage is still growing.
+that mac is a destin address, i wanna log the source, is it possible ?
 
-two hours before:
-used memory: 26304KB
+Thanks in advance,
+Att,
+Juliano Murlick
 
-now:
-used memory: 29204KB
 =20
-and the usage grows every hour around 1.5 MB.
-The data flow is around 8mbit/s at a constant rate.
 
-If i flush all the rules, the memory is not freed but it is not
-growing anymore.
+=20
 
-The Linux is - 2.4.22-pre6 patched w/ patch-o-matic-20030714
-Iptables are 1.2.8 patched w/ patch-o-matic-20030714
+=20
 
-Have some memory leaks recently been fixed?
+=20
+=20
 
-I am tomorrow to try 2.4.22-pre9 and the latest patch-o-matic.
+ATs,
+Juliano Murlick
+SICREDI Servi=E7os - Tecnologia
+jmurlick@sicredi.com.br
+<mailto:jmurlick@sicredi.com.br(51> (51) 3358-4977 / (51) 9951-3888
+
+=20
 
 
-here's a list of used iptable modules:
-(is there a way to find out how much memory each module uses?)
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.504 / Virus Database: 302 - Release Date: 24/7/2003
 
-ipt_mark                 440   2  (autoclean)
-^- used to match some marked values
-ipt_mport                696   4  (autoclean)
-^- used to match some mports
-ipt_state                568   4  (autoclean)
-^- used to -j MARK only ESTABLISHED,RELATED traffic
-ipt_psd                42824   2  (autoclean)
-^- used to derect portscans
-ipt_ttl                  600   1  (autoclean)
-^- used to fake outgoing ttl
-ipt_limit                952   6  (autoclean)
-^- used to limit some dataflow
-ipt_MARK                 824 316  (autoclean)
-^- mark much packets for fun
-iptable_nat            20728   0  (autoclean) (unused)
-^- not used
-ipt_REJECT              3192   1  (autoclean)
-^- reject some traffic
-iptable_filter          1668   1  (autoclean)
-^- a must
-ip_conntrack_ftp        4016   0  (unused)
-ip_conntrack_irc        3184   0  (unused)
-ip_conntrack           25736   4  [ipt_state iptable_nat =
-ip_conntrack_ftp
-ip_conntrack_irc]
-^- used to connection-track.
-ip_queue                5020   1
-ipt_XOR                 1208   2  (autoclean)
-^- used to encrypt some of the traffic.
-iptable_mangle          2192   1  (autoclean)
-^- used to match some packets in mangle table
-ip_tables              13720  15  [ipt_mark ipt_mport ipt_state ipt_psd
-ipt_ttl ipt_limit ipt_MARK iptable_nat ipt_REJECT iptable_filter ipt_XOR
-iptable_mangle]
-^- a must
 
 
 
