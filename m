@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: MS Messenger
-Date: Tue, 12 Nov 2002 21:11:31 +0000
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: Time based rules ...
+Date: Thu, 14 Nov 2002 15:07:01 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021112211133.CBFI18329.mta06-svc.ntlworld.com@there>
-References: <Pine.LNX.4.33.0211121036290.3900-100000@ts1.alberni.net>
+Message-ID: <02df01c28bc1$626488e0$13fcc5cb@nextto>
+References: <1037199668.4556.30.camel@rayw.knowledgefactory.co.za> <200211141038.36884.dharmu@nsecure.net> <1037248941.4556.54.camel@rayw.knowledgefactory.co.za> <200211141144.21999.dharmu@nsecure.net>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0211121036290.3900-100000@ts1.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +18,72 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: dharmu@nsecure.net, Raymond Leach <raymondl@knowledgefactory.co.za>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Tuesday 12 November 2002 6:38 pm, Aaron Clausen wrote:
+yes
 
-> I'm running iptables, and have a user claiming that they cannot use MS
-> Messenger.  I have no other complaints, but I'm not exactly sure if any
-> other users are actually using MS Messenger?  Does there have to be special
-> connection tracking.
+P-O-m support the time module
+
+please check the Netfilter
+
+hare
+----- Original Message -----
+From: "Dharmendra.T" <dharmu@nsecure.net>
+To: "Raymond Leach" <raymondl@knowledgefactory.co.za>
+Cc: "Netfilter Mailing List" <netfilter@lists.netfilter.org>
+Sent: Thursday, November 14, 2002 11:44 AM
+Subject: Re: Time based rules ...
+
+
+> But I don't think we can specify the time option in iptables. If any
+modules
+> are there using which we can specify the time let us know.
 >
-> I'm also blocking the MS file sharing ports at the router.  Would this
-> cause the problem?
+> Regards,
+> Dharmendra.T
+> Linux Security Expert
+> www.nsecure.net
+> dharmu@nsecure.net
+> On Thursday 14 November 2002 10:12, Raymond Leach wrote:
+> > Hi
+> >
+> > Yes, all my chains default policies are set to DROP.
+> >
+> > I believe in taking the paranoid approach to security: assume everything
+> > is bad and then only allow what you know to go where you want it to. I'm
+> > sure you know the cliche by now :- 'where do you want to go today?'
+> >
+> > On Linux we know where we want to go ...
+> >
+> > Ray
+> >
+> > On Thu, 2002-11-14 at 07:08, Dharmendra.T wrote:
+> > > What is the default polic you have set for? I guess it is by dropping
+all
+> > > the packets froom the forward chain and then you are allowing
+> > > accordingly. Regards,
+> > > Dharmendra.T
+> > > Linux Security Expert
+> > > www.nsecure.net
+> > > dharmu@nsecure.net
+> > >
+> > > On Wednesday 13 November 2002 20:31, Raymond Leach wrote:
+> > > > Hi
+> > > >
+> > > > Is there a way to put time restrictions on rules?
+> > > > For eaxmple, something like:
+> > > >
+> > > > iptables -A FORWARD -i eth0 -p tcp -sport 1024: -dport 1024: -time
+> > > > 0700:1700 -j DROP
+> > > >
+> > > > It would be nice ...
+> > > >
+> > > > Ray
+>
+> --
+>
+>
+>
 
-I don't know about MS Massager specifically, but you could investigate what's 
-going on by logging the packets which get dropped from this particular user's 
-IP address- that should at least tell you what protocol they're trying to 
-use...
-
-Put this at the end of your FORWARD chain, just before the default drop:
-
-iptables -A FORWARD -s a.b.c.d -j LOG --log-prefix="MSM user: "
-
-where a.b.c.d is the IP address of the user who's complaining.
-
-Antony.
-
--- 
-
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
 
