@@ -1,13 +1,12 @@
-From: "David Busby" <busby@pnts.com>
-Subject: Re: Exposing Internal Host on Private network to Internet
-Date: Mon, 23 Jun 2003 10:26:34 -0700
+From: "Tony Thompson" <tony.thompson@stone-ware.com>
+Subject: Do I need to write a module?
+Date: Mon, 23 Jun 2003 13:43:35 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b701c339ac$a05f63b0$1100000a@busbydev>
-References: <007901c33941$05434ce0$0a00000a@BOBHITT>
-Reply-To: "David Busby" <busby@pnts.com>
+Message-ID: <sef70417.087@mail.stone-ware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Bobby Hitt <Bobby.Hitt@bscnet.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-A: SNAT/DNAT
+I am investigating an option to use netfilter to allow/deny traffic from
+the local subnet based on rules/accounting information that is in
+another (Java based) system.  I am new to netfilter so, I can someone
+offer some suggestions:
 
-Start here: http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-6.html
-and read through section 10 then search archives for examples
+1. Is netfilter the right place to hook or should I look at a firewall
+that may provide some higher level hooks for authentication and
+accounting?
 
-/B
------ Original Message ----- 
-From: "Bobby Hitt" <Bobby.Hitt@bscnet.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, June 22, 2003 21:36
-Subject: Exposing Internal Host on Private network to Internet
+2. If I should hook into netfilter, is it a good idea to call into a
+JVM from a netfilter module?
 
+3. I am not sure what kind of control I have when using the userspace
+driver but, should I use that in this situation?  Can I use that
+directly from Java so I wouldn't have the hassel of calling into a JVM
+from a native process?
 
-> Hello all,
->
-> I have a network using Linux as a gateway/firewall running NAT. This works
-> perfectly to allow 5 internal hosts running Windows 2000/XP/Win98/Linux
-> access to the Internet. Also the Linux gateway is running openVPN which
-> allows me a secure connection to my Linux server in Connecticut for my
-> Windows machines.
->
-> I have setup a Windows 2000 Server on my network here running VPN server
-> that I want to be exposed to the the outside to allow Windows clients
-> running the VPN client to access the inside network here via the Windows
-> 2000 server. I know I need to route ports 1723 47 for PPTP and 500 and
-50-51
-> for IPSec to the Windows 2000 Server, but have no idea how to do this with
-> iptables.
->
-> I used to run a cable router that allowed one host to be exposed to the
-> Internet, which is how I want to setup the Linux router.
->
-> Any help is appreciated,
->
-> Bobby
->
+If anyone can offer any other suggestions or examples, that would be
+appreciated.
 
+Thanks.
+Tony
 
