@@ -1,12 +1,11 @@
-From: Kevin McConnell <kevymac@yahoo.com>
-Subject: Re: RedHat kernel & H323patch
-Date: Tue, 13 May 2003 11:27:27 -0700 (PDT)
+From: <mariano@netpad.com.ar>
+Subject: Source IP Address
+Date: Tue, 13 May 2003 16:29:18 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030513182727.98436.qmail@web40309.mail.yahoo.com>
-References: <ABEKJILKOKKGGDJKHKDFGEBHCBAA.patrick@vikus.com>
+Message-ID: <01fa01c31985$f29f8070$fb01a8c0@zion>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ABEKJILKOKKGGDJKHKDFGEBHCBAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +16,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter EMAIL <netfilter@lists.netfilter.org>
-Cc: Patrick Ahler <patrick@vikus.com>
+To: netfilter@lists.netfilter.org
+
+This is my first message to the list, so Hi ! to everyone.
+
+I need to change the source IP field in certain TCP packets coming out of
+one of my machines, for the IP of another of my machines. I think that it
+must be done through IPTABLES rules, using SNAT inside postrouting. I am
+right ? How should I configure this ? Any suggestions ?
+
+Cheers,
+           Mariano
 
 
---- Patrick Ahler <patrick@vikus.com> wrote:
-> Just wondering if anyone here has successfully
-> patched the linux-2.4.18-14
-> kernel released w/ RedHat 8 for H323?
-
-I've never gotten most of these patches to work with
-RH stock kernels. I always start with a vanilla kernel
-and apply patches one at a time until one of them
-doesn't work. Then I stop right there and take that
-one out and  continue on down the list.
-
-
-=====
-Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
 
