@@ -1,11 +1,14 @@
-From: krzysztof.gostkowski@galileo.net.pl
-Subject: Autoreply: Re: forwarding traffic to different hosts
-Date: Sat, 28 Aug 2004 02:37:34 +0200 (CEST)
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: bind 9 and iptables
+Date: Sat, 28 Aug 2004 01:44:36 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040828003734.9BC3857A9F@mail.guide.cz>
+Message-ID: <20040828004436.GB22322@metastasis.org.uk>
+References: <web-420408468@mail01.infosat.net> <412F9B73.9010603@pbl.ca>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <412F9B73.9010603@pbl.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,20 +18,42 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I am currently out of office till 28 august.
-In urgent cases please contact marcin.pilarski@galileo.net.pl
+On Fri, Aug 27, 2004 at 03:37:07PM -0500, Aleksandar Milivojevic wrote:
 
-Krzysztof Gostkowski
-Network Specialist & Technical Support
-Galileo Polska 
-Al. Jana Paw=B3a II 12 
-00-124 Warszawa 
-Tel.: +48 22 850 9997 
-tel.kom.: 506100603 
-Fax: +48 22 850 9991 
-E-mail: krzysztof.gostkowski@galileo.net.pl
-Web site: www.galileo.net.pl
+<snip>
+
+> By the above rules, you are not allowing your clients to connect to your 
+> DNS server (you are only allowing DNS server to send queris outside). 
+> What you need is:
+> 
+> iptables -A INPUT -m state --state ESTABLISHED
+> iptables -A INPUT -p icmp -m state --state RELATED
+> 
+> iptables -A INPUT -i int_if -p udp --sport 1024: --dport 53 \
+>    -m state --state NEW -j ACCEPT
+> iptables -A INPUT -i int_if -p tcp --sport 1024: --dport 53 \
+>    -m state --state NEW -j ACCEPT
+
+Out of interest, why only permit packets with a source port of 1024 and
+above?  This rule might not pass DNS requests if they come from a local
+DNS server being used internally, if it's set up with a "query-source"
+of port 53.  Also the use of source ports is OS dependant, so if you're
+going to watch this why not pick the range the OS uses?  The range of
+your Linux system can be found via
+
+cat /proc/sys/net/ipv4/ip_local_port_range
+
+or
+
+sysctl net.ipv4.ip_local_port_range
+
+Apologies if I'm being pedantic, just wondering if I've missed
+something...
+
+-- 
+mors omnia vincit
 
