@@ -1,12 +1,10 @@
-From: "Timothy Webster" <timothyw@outblaze.com>
-Subject: over a 1,000,000,000 individual ips to block
-Date: Thu, 24 Jun 2004 22:57:32 +0800
+From: "Manestro Oliveira" <manestro123@hotmail.com>
+Subject: Re: bypassing a prerouting rule
+Date: Fri, 25 Jun 2004 17:27:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040624145732.25300.qmail@team.outblaze.com>
+Message-ID: <BAY22-F9LKfUkngan0V000b8c81@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +14,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+Cc: john.sullivan@nexusmgmt.com
 
-I have a need to block 1 -> 2 million ips. 
-This edge firewall will be blocking dos attackers, spammers
-from hitting our proxys, and mail/web servers.
-I also need to be able to reload the 1 -> 2 million blocked 
-ips from time to time as they change. 
-But this list is not changing continuously.
+>On Wed, 2004-06-23 at 09:24, Manestro Oliveira wrote:
+>Hi,
+>       I am a begginer to Linux and I have a PREROUTING rule that makes 
+>port redirection on incoming packages. But there is a server that don`t 
+>accept that, and works only without that rule. How can I bypass the rule 
+>for that server specifically?
+>
+>      If iptables works by matching rules and leaving the other ones 
+>without checking them, then I should insert a rule before that and the 
+>problem is solved. Is this correct?
+>
+>      Sorry if the question might be stupid, but I am taking the chance for 
+>being stupid now (and maybe not forever). >)
+<snip>
+>Yes, you can place an ACCEPT rule before the REDIRECT rule and that will
+>halt processing in the PREROUTING chain for that match.  Thanks for
+>asking :-) - John
+>--
 
-Thoughts how to do this?
-What would you recommend for a hardware?
-The iptables set patch, what else?
+   From what I've learned so far, one can only use on chain PREROUTING the 
+tables nat and mangle.
+How can I use an ACCEPT rule on these tables? Doesn't that suppose to use 
+the filter table, which can't be used in the PREROUTING chain?
 
+Thanks
 
-I need to come of with a plan so I can begin testing for
-deployment.
+_________________________________________________________________
+MSN Hotmail, o maior webmail do Brasil.  http://www.hotmail.com
 
-Thanks,
-
--Tim
 
