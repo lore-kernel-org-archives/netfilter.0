@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: What is missed for port forwarding
-Date: Sat, 6 Mar 2004 18:47:28 +0000
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: tcpdump and iptables ..
+Date: Sat, 06 Mar 2004 19:46:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403061847.28569.Antony@Soft-Solutions.co.uk>
-References: <20040306183657.GB836@glorybox.de>
+Message-ID: <1078598785.3118.10.camel@anduril.intranet.cartel-securite.net>
+References: <FD1B6DC5FFF43C4888DCC155FE8C1FFE70CC74@7xch10ka.sevenspace.local>
+	 <1078589808.2066.3.camel@localhost>
+	 <200403061812.31256.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040306183657.GB836@glorybox.de>
+In-Reply-To: <200403061812.31256.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +19,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-On Saturday 06 March 2004 6:36 pm, Kai Weber wrote:
+Le sam 06/03/2004 =E0 19:12, Antony Stone a =E9crit :
+> tcpdump sees ethernet frames,=20
+> IPX and similar traffic which are not even IP based, as well as complet=
+ely=20
+> different media types such as 802.11b headers.   All this gets stripped=
+ off=20
+> before reaching netfilter (with the exception of MAC addresses, but eve=
+n=20
+> there, netfilter can't tell whether a packet arrived by ethernet or 802=
+.11).
 
-> I have a router where only masquerading and some QOS is enabled. I have
-> a problem with port forwarding HTTP.
->
-> The only rules I use (sorry for long lines):
+Just a notice about 802.11 stuff.
 
-(Sorry my mailer has wrapped them)
+The way tcpdump will see traffic coming from a wireless link depends on
+the wifi interface state. If the interface is in normal operation mode
+(managed, ad-hoc or master), it will see frames as usual ethernet ones,
+just as it was sniffing a wired link. If the interface is in monitor
+mode, then it will see the frames will full 802.11 header.
 
-> $IPTABLES -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> $IPTABLES -t nat -A PREROUTING -p tcp --dport 10143 -j DNAT --to
-> 192.168.1.2:22
-> $IPTABLES -t nat -A PREROUTING -p tcp --dport 8888 -i ppp0
-> -j DNAT --to 192.168.1.2:80
->
-> The first DNAT rule works without a problem. I can ssh directly to my
-> machine.
+BTW, I can confirm tcpdump will see outgoing traffic as it is after
+POSTROUTING chain, and incoming one as it is before PREROUTING. I've
+just checked playing with TTL on pings.
 
-Which machine is that (192.168.1.2)?   Is it the machine running the above 
-rules, or another machine on yur internal LAN, with packets being routed by 
-the netfilter box?
-
-> But the requests to port 8888 seems not to be answered or come
-> through. To bad I only have switch which has no port mirroring to listen
-> to the whole traffic and find out the problem.
->
-> Any ideas what I should try or I miss?
-
-Do you have a FORWARD rule allowing traffic to 192.168.1.2:80?
-
-Do you have a rule allowing the reply packets (probably an ESTABLISHED,RELATED 
-rule)?
-
-What happens if you telnet to port 80 on 192.168.1.2?   Is there a service 
-listening on that port?
-
-Antony.
-
--- 
-If builders made buildings the way programmers write programs, then the first 
-woodpecker to come along would destroy civilisation.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
