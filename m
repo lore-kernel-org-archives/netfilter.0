@@ -1,15 +1,11 @@
-From: cbaker@bbbscentralohio.org
-Subject: Re: [Announce] PacketFlow firewall generator
-Date: Tue, 26 Nov 2002 17:07:59 -0500
+From: "Dan Egli" <dan@shortcircuit.dyndns.org>
+Subject: Samba Blocked? (repost)
+Date: Tue, 26 Nov 2002 15:10:06 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DE3AA6F.28057.1689A35@localhost>
-References: <3DE2FF32.7030308@users.sourceforge.net>
-Reply-To: cbaker@bbbscolumbus.org
+Message-ID: <001d01c29598$b3087a00$1e00a8c0@yamatto>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <3DE2FF32.7030308@users.sourceforge.net>
-Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,60 +18,60 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-It sounds good. What else do I need to have installed for this to 
-work? What type of dependencies will it have?
+Ok. I'm a fair bit confused here. I'm trying to setup a IPtables filter set
+that will block certain ports and allow others. It seems to work perfectly
+for anything other than Samba. If I try:
 
-> 
-> I would like to announce the initial public release of a new tool
-> called PacketFlow.  It is a free command line XML based iptables
-> firewall generator.  I would like to invite you to download and
-> evaluate it.
-> 
-> The basic concept of PacketFlow is that of "security levels."*  Every
-> interface has a security level, and it indicates how much the
-> interface is trusted.  By  default connections may made from a high
-> security interface to a low security interface. By default,
-> connections may not be made from  a low security interface to a high
-> security interface. Both may be overridden with access lists.
-> 
-> Several examples are included in the download.  These include dial-up,
-> broadband, single DMZ, and multiple DMZ examples.  These should
-> illustrate the basics of the configuration file.  There are a few
-> features that are not yet shown in the samples, but hopefully they
-> will be shown soon.
-> 
-> PacketFlow is currently able to generate complete rule sets.  Current
-> development is focusing on better configuration validation and sanity
-> checking.  That said, the rule sets generated from a valid
-> configuration file do work well.  You are strongly encouraged to read
-> through the generated rules for yourself.
-> 
-> PacketFlow currently does not support generating NAT rules, but I hope
-> to add that in the future.  Any recommendations on a syntax for NAT
-> rules would be appreciated.
-> 
-> I would appreciate any feedback that you could provide.  There is a
-> FAQ on the home page listed below, and the source may be downloaded
-> from the project page.  Please submit any bugs that you find to the
-> bug tracking system on the SourceForge site.
-> 
-> Sincerely,
-> 
-> Paul Frieden
-> 
-> Home page:		http://packetflowfw.sourceforge.net
-> Project page:	http://sourceforge.net/projects/packetflowfw/
-> 
-> 
-> * This is very similar to the security-levels used by the PIX firewall
-> 
-> 
-> 
+smbclient //myserver/shared1, it fails to connect. But using the IP in place
+of it:
+smbclient //192.168.0.2/shared1 works just fine. I am specifically allowing
+NetBIOS-ns, NetBIOS-ssn, and NetBIOS-dgm. Still no go. What's wrong?
 
-Chris Baker -- technical specialist
-614-839-2447x108
-cbaker@bbbscolumbus.org
-Big Brothers Big Sisters of Central Ohio
-www.bbbscolumbus.org
+Thanks!
+-- Dan
+
+tables:
+
+#!/bin/bash
+IPT=/sbin/iptables
+# step 1 - ensure iptables are loaded
+modprobe ip_conntrack_ftp
+# that should pull in all dependant modules
+#step 2  SET DEFAULT POLICY
+
+$IPT -P INPUT DROP
+$IPT -P OUTPUT ACCEPT
+$IPT -P FORWARD DROP
+
+# step 3 FLUSH THE TABLES
+$IPT -F INPUT
+$IPT -F OUTPUT
+$IPT -F FORWARD
+$IPT -t nat -F PREROUTING
+$IPT -t nat -F POSTROUTING
+$IPT -t nat -F OUTPUT
+
+# setp 4 - setup rules
+$IPT -A INPUT -p tcp -m multiport --dports smtp,ftp,telnet,ssh -j ACCEPT
+$IPT -A INPUT -p tcp -i eth0 -m multiport --dports
+telnet,ssh,domain,nntp,ntp,printer,pop3,imap,http,https,netbios-ns,netbios-d
+gm,netbios-ssn -j ACCEPT
+$IPT -A INPUT -p udp -i eth0 -m multiport --dports
+domain,ntp,netbios-ns,netbios-dgm,netbios-ssn -j ACCEPT
+$IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+$IPT -A INPUT -j LOG
+
+$IPT -A FORWARD -i eth0 -j ACCEPT
+$IPT -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+$IPT -A FORWARD -j LOG
+# step 5 - enable NAT
+$IPT -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 64.122.31.38
+# step 6 - setup the proc files for a propper firewall
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+P.S. With these rules, it should only log packets that are failing, and I
+see the packets on port 137 in the log, so I don't know what's wrong.
 
 
