@@ -1,8 +1,8 @@
 From: "Diego Sarasua" <debian@sarasuasys.com.ar>
-Subject: Re: [REPOST] PPTP+NAT+MASQ anyone?
-Date: Thu, 26 Dec 2002 20:09:01 -0300
+Subject: Re: [REPOST] PPTP+NAT+MASQ anyone? (!!!!!!!!!!!!!!!!!! SORRY BAD LINK !!!!!!!!!!!!!!!!!)
+Date: Thu, 26 Dec 2002 20:10:37 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009601c2ad33$c9af4740$6400a8c0@diego>
+Message-ID: <009a01c2ad34$023927c0$6400a8c0@diego>
 References: <200212091226.23888.roy@karlsbakk.net> <1039624902.20562.91.camel@tux> <200212111754.46937.roy@karlsbakk.net> <200212231415.09766.roy@karlsbakk.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -17,16 +17,13 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Roy Sigurd Karlsbakk <roy@karlsbakk.net>, netfilter@lists.netfilter.org
+To: Roy Sigurd Karlsbakk <roy@karlsbakk.net>, Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-i have used Newnat Kernel patch it Works Awesome
-http://www.kfki.hu/~kadlec/sw/netfilter/newnat6.html
-apply , make menuconfig , select pptp masquerade and DONE !!!
-
-im currently using this patch with 7 clients over the gateway without any
-trouble.
-Please Forgive my english
+http://roeder.goe.net/~koepi/newnat.html
+this is the newnat patch link
+sorry again
 Diego
+
 ----- Original Message -----
 From: "Roy Sigurd Karlsbakk" <roy@karlsbakk.net>
 To: "Netfilter mailinglist" <netfilter@lists.netfilter.org>
