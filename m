@@ -1,12 +1,14 @@
-From: "Carl Farrington" <carl@compsup.net>
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
 Subject: RE: SNAT: I'm going insane
-Date: Sat, 31 Jan 2004 19:00:53 -0000
+Date: Sat, 31 Jan 2004 11:20:59 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <739652C2AFA4834AAB5986A215F68CEC01656A@svr1.home.compsup.net>
+Message-ID: <200401311920.i0VJKn2O019262@server5.bandwidthco.com>
+References: <739652C2AFA4834AAB5986A215F68CEC01656A@svr1.home.compsup.net>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <739652C2AFA4834AAB5986A215F68CEC01656A@svr1.home.compsup.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,11 +19,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Carl Farrington' <carl@compsup.net>, netfilter@lists.netfilter.org
+
+Why would you want to DNAT all the return packets?  Assuming the connection
+was established from the inside, should not the state table handle this?
+Now, if you are permitting a new connection from the outside, then you would
+of course want to DANT that through to the correct host.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Carl Farrington
+Sent: Saturday, January 31, 2004 11:01 AM
 To: netfilter@lists.netfilter.org
+Subject: RE: SNAT: I'm going insane
 
 Sorry to hijack your discussion so to speak, but this has raised my
-curiosity. Why would someone want to do this? And for it to work,
-presumably you would have 206.230.187.15 DNAT everything else back to
+curiosity. Why would someone want to do this? And for it to work, presumably
+you would have 206.230.187.15 DNAT everything else back to
 10.2.2.2 ?
 
 Is it a bit like doing MASQ but without the full packet-modification?
@@ -31,56 +45,58 @@ Is it a bit like doing MASQ but without the full packet-modification?
 > Sent: 31 January 2004 07:05
 > To: netfilter@lists.netfilter.org
 > Subject: SNAT: I'm going insane
->=20
+> 
 > This ought to be the simplest thing in the world, and I have rules
 like
-> this that work.  I hope someone can see something glaringly wrong with
+> this that work.  I hope someone can see something glaringly wrong with 
 > what I'm doing here:
->=20
-> I want to SNAT all traffic from an internal address (10.2.2.2) to an
+> 
+> I want to SNAT all traffic from an internal address (10.2.2.2) to an 
 > external one.  So I add to my rules:
->=20
+> 
 > iptables -t nat -I POSTROUTING -s 10.2.2.2 -j SNAT --to-source
 > 206.230.187.15
->=20
+> 
 > I test and my ssh traffic is passing perfectly; I go out to machines
 on
 > the net and they show me coming in from 206.230.187.15.
->=20
+> 
 > But some--BUT NOT ALL--of my UDP traffic seems to be heading out
 without
 > any change.
->=20
+> 
 > A short sniff on the *output* interface shows:
->=20
-> 02:31:56.696763 10.2.2.2.4569 > blah.blah.net.4569: udp 25 (DF) [tos
+> 
+> 02:31:56.696763 10.2.2.2.4569 > blah.blah.net.4569: udp 25 (DF) [tos 
 > 0x10]
->=20
-> 02:31:58.699259 10.2.2.2.4569 > blah.blah.net.4569: udp 25 (DF) [tos
+> 
+> 02:31:58.699259 10.2.2.2.4569 > blah.blah.net.4569: udp 25 (DF) [tos 
 > 0x10]
->=20
+> 
 > 02:32:06.704660 10.2.2.2.4569 > blah.blah.net.4569: udp 12 (DF) [tos
 0x10
->=20
-> And the packet counters (which I reset for the test) show nothing
+> 
+> And the packet counters (which I reset for the test) show nothing 
 > passing through:
->=20
+> 
 >      0     0 SNAT       all  --  *      eth1    10.2.2.2
 > 0.0.0.0/0        to:206.230.187.15
->=20
+> 
 > UDP traffic going to port 5036, which is heading from this same
 machine
 > to the same remote endpoint machine, gets NATted perfectly.
->=20
+> 
 > ***************************************
->=20
+> 
 > Does anyone know what I'm doing wrong?  Other similar rules in this
 same
 > table seem to be doing just what they need to. . . .
->=20
-> Thanks in advance for anyone who might be able to offer a potential
+> 
+> Thanks in advance for anyone who might be able to offer a potential 
 > explanation.
->=20
+> 
 > B.
+
+
 
 
