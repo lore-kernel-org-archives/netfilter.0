@@ -1,8 +1,7 @@
-From: Rahul Hirve <rahulhirve@gmail.com>
-Subject: How to enable NAT and Firewall in uClinux
-Date: Thu, 31 Mar 2005 11:50:43 +0530
-Message-ID: <54d79d810503302220477dadb4@mail.gmail.com>
-Reply-To: Rahul Hirve <rahulhirve@gmail.com>
+From: Andrea Ratto <andrearatto@yahoo.it>
+Subject: irc dcc incoming transfers truncated after a while
+Date: Thu, 31 Mar 2005 13:13:58 +0200
+Message-ID: <1112267638.21083.14.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,14 +18,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all
- I am using uClinux for implementing Router on IXDP 425 platform. I
-am able to use IP forwarding, now I want to put NAT and Firewall in it.
-Can anyone tell me how to implement these things since i guess they
-are supported by uClinux.
+Hello List!
+I am running a SuSE based router and NAT gateway. It uses the
+SuSEFirewall iptables based script, which saved me a lot of tweaking.
+Everything works great except irc dcc file transfers. I am not talking
+about uploads from internal network (those works because I use forwarded
+ports) but about downloads. After a minute or so the firewall blocks
+some packages killing the transfer.
+Of course i have modprobed ip_nat_irc and ip_conntrack_irc that SuSE
+didn't load by default, but the problem remains. So I was wondering if
+there is something I still need to do (some iptables command to make use
+of the modules?). I haven't found any doc so I am asking the list.
+Thank very much. Bye
 
-so how to enable NAT and Firewall in this?
 
-Thanks in advance
-Rahul
+
 
