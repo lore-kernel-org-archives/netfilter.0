@@ -1,10 +1,10 @@
-From: "Samuel Jean" <sjean@cookinglinux.org>
-Subject: RE: Is it possible to
-Date: Wed, 9 Jun 2004 14:29:19 -0400 (EDT)
+From: Arthur Kerpician <arthur@bluechip.ro>
+Subject: selective port forwarding
+Date: Wed, 09 Jun 2004 22:48:46 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <33325.207.236.167.50.1086805759.squirrel@207.236.167.50>
+Message-ID: <40C7699E.7060806@bluechip.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,78 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi,
+I have this very simple network layout:
+1. Firewall server (host1.domain.com) with eth1 (external static IP) and 
+eth0 (internal IP)
+2. The firewall server do masquerading for LAN
+3. Other server (host2) on LAN with eth0 (internal IP)
+So, the only external IP is on the host1.domain.com.
+I want to forward some of the ssh traffic to host2, based on the hostname.
+eg:
+when trying to ssh to host1.domain.com the firewall server (host1) will 
+reply and
+when trying to ssh to host2.domain.com the firewall server will forward 
+the traffic to host2 inside the LAN
 
-<adsnat@yahoo.com> wrote:
->Hi,
->I have a Linux 9.0 server with iptables firewall.
+I  know that what I'm looking for has to do with DNAT, but I really 
+don't know where to start. The DNS is configured to map host1.domain.com 
+and host2.domain.com to the same external IP on host1.
 
-Where did you get it?! I'm running that 'old' Linux 2.6.6 :-)
-
->It ditributes Internet bandwidth to 5 clients. I can
->monitor all 5 clients with the Firewall properly.  one
->of the clients becomes server for another network and
->start distributing Internet bandwidth further to that
->network.
-
-Is it NAT'ing or just forwarding other subnet's packets ?
-
->I want to stop that client to distribute bandwidth
->further. With Iptables OR any other technology is it
->possible to do so?
->Thanks for support.
-
-Well, sure it is possible with iptables.
-
-In the case where the second server is only forwarding packets (like
-a router does), you could setup a rule like that:
-
-$rejected_subnet is the subnet you don't want to provide bandwith to.
-(ex: rejected_subnet=3D192.168.1.0/24)
-
-iptables -I FORWARD -s $rejected_subnet -j DROP
-
-Then, all traffic coming from that subnet will be dropped.
-
-Case 2) That server is masquerading (NAT) outbound traffic.
-
-Then, in my knowledge, it's impossible to distinguish effectivily
-NAT'ed packet from a real source one. (Sorry, if i'm wrong.)
-
-A not reliable work-around consist of analyzing the Time To Live (TTL)
-of packets coming from the $rejected_subnet. Once you find a difference
-between 'bad ones' and 'good ones', setup a rule with the TTL extension.
-
-For analyzing, you could start with:
-
-iptables -I FORWARD -s $second_server_ip -j LOG --log-prefix "Analyzing
-TTL:  "
-
-After a few days, look in syslog.
-
-$ cat /var/log/syslog | grep "Analyzing TTL: "
-
-Look for the lowest TTL...
-
-Then, do as follow.
-
-ex: Good TTL -> 255
-    Bad TTL -> 254
-    Second server IP -> 192.168.0.10
-
-iptables -I FORWARD -s 192.168.0.10 -m ttl --ttl-eq 254 -j DROP
-
-But as you may expect, yes, there is a way to change the TTL before the
-packet goes out. So, that setup isn't good anymore if that server changed
-it. Possibly done by -j TTL available in the mangle table.
-
-Good luck,
-
---=20
-Samuel Jean
-SysAdmin & NetAdmin
-at cookinglinux.org
+Thanks,
+Arthur
 
 
