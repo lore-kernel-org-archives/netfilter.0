@@ -1,8 +1,8 @@
 From: Jochen Vogel <jvogel@it-sec.de>
-Subject: AW: GRE/PPTP and modules
-Date: Thu, 29 Apr 2004 17:19:06 +0200
+Subject: AW: ipt_tos.ko vs ipt_TOS.ko
+Date: Thu, 29 Apr 2004 17:31:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D3DD55FDB74AD511BA5100500416368053E88E@ORION>
+Message-ID: <D3DD55FDB74AD511BA5100500416368053E88F@ORION>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Received: **stripped**
@@ -17,23 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: 'Cedric Blancher' <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-> > Do i need any modules?
-> 
-> Yes. you need GRE and PPTP conntrack modules (PPTP 
-> conntracking depends on GRE conntracking) :
-> 
-> 	ip_conntrack_proto_gre
-> 	ip_conntrack_pptp
-> 
-> If you use NAT, you'll need additional modules as well :
-> 
-> 	ip_nat_proto_gre
-> 	ip_nat_pptp
-> 
-I use fedora1.0 and cant find this modules.
-I think thats in the patchomatic.
-What should i do to get the modules?
+Hi,
+
+I doesnt load ipt_TOS.ko in the script but if i do lsmod i can see
+ip_tables 15096 11 [iptable_mangle ipt_TOS ipt_tos ipt_ULOG ipt_MASQUERADE
+ipt_state ipt_LOG iptable_nat iptable_filter]
+
+Did the module load himself?
+
+
+In the script i do
+$IPT -A PREROUTING -t mangle -p TCP --sport 80  -j TOS --set-tos 16
+$IPT -A PREROUTING -t mangle -p TCP --dport 80  -j TOS --set-tos 16
+
+
+In the log i can see
+IN=eth1 OUT=ppp0 SRC=192.168.63.4 DST=212.185.47.48 LEN=40 TOS=0x08
+PREC=0x00 TTL=127 ID=62141 DF PROTO=TCP SPT=2531 DPT=80 WINDOW=64952
+RES=0x00 ACK URGP=0
+
+If fill up the bandwidth with an ftp download i doesnt feel an priorizing of
+http traffic.
+Any idea whats wrong? 
 
