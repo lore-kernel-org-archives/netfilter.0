@@ -1,10 +1,10 @@
-From: chad@isolv.net
-Subject: broadcasting netbios into a dmz
-Date: Mon,  2 Jun 2003 07:23:26 -0700
+From: Phil Dibowitz <phil@ipom.com>
+Subject: IP Tables State 1.3
+Date: Sun, 01 Jun 2003 03:49:48 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054563806.3edb5dde3306b@www.isolv.net>
+Message-ID: <3ED9DA4C.6020703@ipom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,27 +15,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have an interesting problem.  We are trying to forward NetBIOS packets from a 
-single host to our dmz, with out much success.  We have our protected network 
-on eth1 and the DMZ is attached to eth0.  We have one host that we would like 
-to broadcast via both apple talk and NetBIOS, but we don't want to let all 
-netbios/appple talk traffic out to the DMZ.  
+IPTables Users,
 
-I came up with the following statements:
+I have released IP Tables State (IPTState) 1.3. For those not familiar 
+with the project, its simply "top" for your state table. Users have 
+often said "you don't know your firewall until you can see it in real 
+time"... and that's exactly what the aim is.
 
-$IPT  -A FORWARD -i $localnet -o eth0+ -p udp --sport 137:139 -d 128.59.47.127 -
--dport 137:139 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+The new release includes dynamic width column size, DNS reverse lookups, 
+all kinds of sorting options, and much more. You can check out the 
+project here:
 
-$IPT -t nat -A PREROUTING -p udp -s 10.0.0.137 --sport 137:139 -j DNAT --to 
-128.59.47.127:137:139
+http://www.phildev.net/iptstate/
 
-but it doesn't work.  Any ideas?
+Its very small and very clean. Enjoy.
 
-C  
+Thanks,
+-- 
+Phil Dibowitz                             phil@ipom.com
+Freeware and Technical Pages              Insanity Palace of Metallica
+http://www.phildev.net/                   http://www.ipom.com/
 
+"They that can give up essential liberty to obtain a little temporary
+safety deserve neither liberty nor safety."
+  - Benjamin Franklin, 1759
 
 
 
