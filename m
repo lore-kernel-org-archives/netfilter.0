@@ -1,13 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: IPTABLES syntax problem.
-Date: Tue, 23 Dec 2003 10:06:18 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: TCP Flags
+Date: Tue, 23 Dec 2003 15:14:44 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1072191976.2184.355.camel@grendel>
-References: <20031223133703.24761.qmail@web60409.mail.yahoo.com>
+Message-ID: <200312231514.44888.Antony@Soft-Solutions.co.uk>
+References: <1072191926.27047.2.camel@zippo.root-system.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031223133703.24761.qmail@web60409.mail.yahoo.com>
+In-Reply-To: <1072191926.27047.2.camel@zippo.root-system.com.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: ads nat <adsnat@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 2003-12-23 at 08:37, ads nat wrote:
-> I modified rules as follows :
-> 
-> ###########
-> -A INPUT -p tcp ! --tcp-flags SYN SYN -m state --state
-> NEW -j LOG --log-prefix " New not syn: "
+On Tuesday 23 December 2003 3:05 pm, zippo wrote:
 
-<snip>
+> Hi all!
+>
+> I need if anyone can send me a list with all the invalid combinations of
+> TCP flags.
 
-> Applying iptables firewall rules: iptables-restore
-> v1.2.6a: Unknown arg `--tcp-flags'
+Try http://www.securityfocus.com/infocus/1200
 
-Well this could be your problem. Try upgrading to 1.2.8 or later. Could
-be the option is not supported in older version, especially as an
-inverse. 
+Antony.
 
-To isolate whether its your script or a version issue, try running the
-iptables command straight from the command line and see if you get the
-same error.
+-- 
+The difference between theory and practice is that in theory there is no 
+difference, whereas in practice there is.
 
-HTH,
-C
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
