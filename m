@@ -1,13 +1,10 @@
-From: Raphael Jacquot <raphael.jacquot@imag.fr>
-Subject: Re: Two NICS with same IP and same client IP
-Date: Wed, 02 Feb 2005 11:28:03 +0100
-Message-ID: <4200AB33.1010308@imag.fr>
-References: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>
-	<4200A1F3.8030609@imag.fr>
-	<5172.57.66.65.39.1107338261.squirrel@57.66.65.39>
+From: "Christoph Leser" <Leser@sup-logistik.de>
+Subject: connect overlapping private networks using dialup ppp
+Date: Tue, 1 Feb 2005 22:20:06 +0100
+Message-ID: <3E779DE9F923CA46A9BD3313B56EA3C30386D3@win2000.sup-logistik.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <5172.57.66.65.39.1107338261.squirrel@57.66.65.39>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +15,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?Herv=E9?= <herve@lucidia.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Herv=E9 wrote:
->>having 2 interfaces on the same box with the same IP address
->>
->>repeat after me :
->>
->>WILL NOT WORK
->=20
->=20
-> Well, I can't see why not. Can you explain?
+Hi,
 
-uh, because that's how routing in the server PC works. you have to have=20
-a different address for each interface.
-your best bet is to either use the same interface (and change one of the=20
-client's IP to something else (like 192.168.100.3) like so :
+maybe a comman question, but I was unable (or simply too stupid) to find =
+an answer in the mailing lists:
 
-server             |         __________         client 1
-eth0:192.168.100.1 |--------| ethernet |------| 192.168.0.2
-                    |        |  switch  |
-                             |__________|------| 192.168.0.3
-                                                 client 2
+I need to connect my private network ( 10.1.0.0/24 ) to several other =
+private networks not under my control ( my customers sites ). For =
+simplicity asume all these customer networks use 192.168.0.0/24.
 
-or... change one of the subnets to use a different prefix, like so :
+I imagine to address the network of the n'th customer as
 
-Server             |         | Client 1
-eth0:192.168.100.1 |---------| 192.168.100.2
-                    |                              | Client 2
-eth1:192.168.101.1 |------------------------------| 192.168.101.2
+10.1.n.x
+
+that is I would like to address=20
+
+host 192.168.0.x of my first  customer site as 10.1.1.x
+host 192.168.0.x of my second customer site as 10.1.2.x
+
+I imagine to set up, for each customer site, a ppp dialup interface, =
+with address 10.1.x.254.
+
+So when I open a connection to 10.1.3.1, the third ppp interface should =
+be selected, and a dialup connection established.
+
+To make this work, some sort of SNAT and DNAT would be need, after the =
+routing decision has been made, before the packet is send over the ppp =
+link:
+
+I would like to have:=20
+
+the source address to be replaced by my official IP address ( so my =
+customer can setup the return route w/o any conflicts )
+
+the destination address to be replaced by the corresponding address in =
+my customers private network:  In the above example I send to 10.1.3.1, =
+and this gets replaced by 192.168.0.1,
+as 10.1.3.15 would be replaced by 192.168.0.15.
+
+This would give me a one to one correspondence for each of my customers =
+nodes ( assuming all use a class C subnet ).
+
+Did I make it clear what I would like to accomplish? ( Or do you think =
+that's all rubbish ? )
+
+Could that be done with iptables?=20
+Or are there better ways do accomplish this?
+
+
+Mit freundlichen Gr=FC=DFen
+
+Christoph Leser
+S&P Computersysteme GmbH
+Systemhaus f=FCr Logistik
+
+Tel: 0711 726410
+Mail: leser@sup-logistik.de
 
