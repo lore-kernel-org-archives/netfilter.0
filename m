@@ -1,10 +1,10 @@
-From: "Dev" <devietf@hotmail.com>
-Subject: ip6_queue.o compiled for redhat 9
-Date: Sat, 17 Apr 2004 17:13:14 +0100
+From: "IT Clown" <iptables@mailbox.co.za>
+Subject: passive ftp
+Date: Sat, 17 Apr 2004 19:50:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY14-DAV20VnFSbykn0001b877@hotmail.com>
+Message-ID: <web-287943006@mail01.infosat.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,12 +18,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
+Hi 
 
-If any has the ip6_queue.o module compiled in the 2.4.20 kernel ( with
-gcc 3.2.2-5 for red hat)..please let me know
+I am having some trouble to access passive mode ftp sites.I
+have a firewall with ip forwarding enabled.When a pc on the
+network want to access passive ftp servers i need to do the
+following in my rules ( on the server ):
 
-If any one has can you please send it as an attachment to me
+-A OUTPUT -p tcp -m multiport --dport 21,20 -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i eth0 -j ACCEPT
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-- Dev
+But i do not want every query to be forwarded i only want
+say ftp access to be forwarded. Why does the following not
+work ( on the server ):
+
+-A FORWARD -p tcp -i eth0 -o ppp0 --dport 20 -j ACCEPT
+-A FORWARD -p tcp -i eth0 -o ppp0 --dport 21 -j ACCEPT
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+Regards
+______________________________________________________________
+Herbalife Independent Distributor http://www.healthiest.co.za
 
