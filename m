@@ -1,10 +1,12 @@
-From: "Mike O" <mikeeo@msn.com>
-Subject: Re: Netfilter vs commercial
-Date: Mon, 09 Aug 2004 16:48:25 +0000
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Netfilter vs commercial
+Date: Mon, 9 Aug 2004 12:34:51 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY4-F16p4k1Cz5WqET0000e7bd@hotmail.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051250@asimail2.alphanumeric.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,100 +16,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Michael Gale <michael.gale@utilitran.com>, netfilter@lists.netfilter.org
 
-John,
+>
+> I would like to know how people on this list ... which I know might be =
+a biased opinion feel how a Netfilter firewall
+> box .. properly configured would compare in security to a commercial =
+firewall.
 
-Would you mind elaborating on your comment about Netfilter's stateful engine 
-being weaker than Checkpoint's? and how would the window tracking patch make 
-it more secure. We have checkpoint here and have ran into problems, where 
-checkpoint has limited us in the way we do things here and I have always 
-wanted to implement netfilter but couldn't because it's open source.
+it would be equivalent--given that both firewalls are configured by =
+"experts."  the majority of my day job involves check point fw-1/vpn-1 =
+consulting.  as far as "firewall filtering capabilities" (for lack of a =
+a better term), you can build a firewall using netfilter that has at =
+least the same; if not more, functionality as fw-1/vpn-1.  the path of a =
+packet through the fw-1 kernel (from memory--don't quote me on this):
 
-Thanks,
+- drop all packets with IP Options set
+  netfilter:  "-m ipv4options --any-opt -j DROP" -OR- "-j IPV4OPTSSTRIP"
 
-Mike
+- drop spoofed packets (anti-spoofing)
+  netfilter:  easy enough to setup with iterations on "-s $INTERNAL_NET =
+-i ! $INTERNAL_IF -j DROP" etc...
 
+- if packet is not "new" compare to state table
+  netfilter:  use "-m state --state ESTABLISHED,RELATED" to allow =
+replies to established connections=20
 
->From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
->To: Michael Gale <michael.gale@utilitran.com>
->CC: netfilter@lists.netfilter.org
->Subject: Re: Netfilter vs commercial
->Date: Mon, 09 Aug 2004 12:02:52 -0400
+- if packet is "new" compare to security policy rule base
+  netfilter:  use "-p tcp --syn -m state --state NEW -j ACCEPT" to =
+accept new connections (for TCP at least)
 >
->On Mon, 2004-08-09 at 11:30, Michael Gale wrote:
-> > Hello,
-> >
-> > 	I know this question has most likely come up a few times and most 
->people ask about performance and through put. But my
-> > question seems to me a little different.
-> >
-> > I would like to know how people on this list ... which I know might be a 
->biased opinion feel how a Netfilter firewall
-> > box .. properly configured would compare in security to a commercial 
->firewall.
-> >
-> > I do not want to compare performance or stats on through put but the 
->strength of the firewall. The reason I am asking is
-> > to at the moment we are using Netfilter based firewalls which I have 
->setup Squid and Frox and many other application
-> > level filters.
-> >
-> > Now some people in the company want to replace them with CheckPoints or 
->WatchGuard firewalls. Which is fine ... security
-> > should be done in layers ... but the way I see it I will still need the 
->linux boxes to run squid and frox unless the
-> > appliance allows you to install software from other sources (most likely 
->not) or use custom config files (like my own
-> > squid.conf -- most likely not).
->
->It's a difficult question to answer without access to the internals of
->the proprietary products.  I would assume the basic stateful inspection
->engine of netfilter is weaker than that of Checkpoint.  However, this
->may very well be remedied when one adds the window tracking patch.
->
->Other internals remain a bit of a mystery.  For example, if I remember
->correctly, one can specify MSRPC as a protocol with Checkpoint and it
->will properly handle the port shift.  One the other hand, one cannot do
->this in netfilter.  One must open 135/tcp and then all high ports.  Yes,
->I know that one should never do this on the Internet but what about
->internal firewalling and VPN firewalls.  Now it could very well be that
->is all Checkpoint does but they've simplified it in the user interface.
->I do know that we have had to do that with other commercially available
->firewalls.
->
->There are two other important issues of security that do not necessarily
->relate to the actual internals.  One is how well the management
->interface shields one from human error.  For example, this is one of the
->chief advantages of the ISCS interface for netfilter
->(http://iscs.sourceforge.net).  Not only does it reduce the time to
->configure security by over 90% but it dramatically reduces the exposure
->to human error.  Unfortunately, it has not yet been released.  On the
->other hand, from what I recall, the WatchGuard and Checkpoint interfaces
->are really just GUI rule configurators and do little to insulate the
->administrator against human error (such as putting a rule in the wrong
->order or making it conflict with another subsystem like NAT or VPN).  I
->believe all of the other user interfaces for netfilter also fall into
->this rule configurator category.
->
->Finally, there is the degree of control.  This is where netfilter has a
->distinct advantage.  The degree of flexibility that one has to configure
->netfilter to do exactly what one wants it to do by command line or
->script or even editing the source code is outstanding.  One can also
->tinker with the related subsystems such as iproute2 or *swan to
->coordinate various security and network activities to an extraordinary
->level.  I do not recall such flexibility in other products.
->
->I do hope this is the type of answer you were looking for - John
->--
->John A. Sullivan III
->Open Source Development Corporation
->Financially sustainable open source development
->http://www.opensourcedevelopmentcorp.com
->
->
+> I do not want to compare performance or stats on through put but the =
+strength of the firewall. The reason I am asking is
+> to at the moment we are using Netfilter based firewalls which I have =
+setup Squid and Frox and many other application
+> level filters.
 
+beyond basic stateful filtering--you can enable higher-level security =
+checks using application-level gateways as you are currently doing.  =
+check point refers to this as "application intelligence" which allows =
+you to do things like blocking user-agent strings in HTTP =
+communications.  there's is absolutely *nothing* that check point can do =
+here that you can't do with squid.  conversely--there's plenty you can =
+do with squid that you cannot do with application intelligence.  check =
+point point to the fact that the application intelligence checks run =
+in-kernel as opposed to user space, which i'm sure is much faster.  not =
+sure if the speed difference is actually relevant though.  my experience =
+with this has been that application intelligence gives people just =
+enough capability to make them really want a true, full-blown =
+application level gateway--which is precisely what check point has =
+argued against since its inception.
 
+check point's real selling point is in their management =
+architecture--the ability for a security admin that either lacks the =
+time or expertise to manage rulebases on many firewalls (100's) with a =
+suite of pretty GUI management applications (rule editor, log viewer, =
+status viewer).  if you have just a few firewalls, and are competant =
+with shell/perl scripting--you could be much happier managing your =
+firewalls through an SSH connection.
+
+if you really know what you're doing and have very specific filtering =
+goals in mind--you'll probably be happier with netfilter in the long =
+run, as it will allow amazingly granular control of how/when/why packets =
+get filtered.
+
+dunno if this helps, but i'm also not sure that the question isn't just =
+a wee bit too high in flame-bait content (i understand you didn't intend =
+it as such).
+
+-j
 
