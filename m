@@ -1,11 +1,13 @@
-From: "louie miranda" <lmiranda@chikka.com>
-Subject: Forwarding problem, :( port redirection!
-Date: Mon, 24 Feb 2003 16:12:51 +0800
+From: =?iso-8859-1?Q?Rasmus_B=F8g_Hansen?= <moffelist@amagerkollegiet.dk>
+Subject: Re: How to stop SPAM from Internal users
+Date: Mon, 24 Feb 2003 09:22:23 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <045a01c2dbdc$8964ae00$0b00000a@nocpc3>
+Message-ID: <Pine.LNX.4.44.0302240916190.1142-100000@grignard.amagerkollegiet.dk>
+References: <07c601c2dbd4$5ab5aa80$13fcc5cb@Housecall>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <07c601c2dbd4$5ab5aa80$13fcc5cb@Housecall>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,48 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: hare ram <hareram@sol.net.in>
+Cc: netfilter@lists.netfilter.org
 
-Im trying just to forward simple ftp, 21 request into my internal machine.
-Im typing this but it does not work..
+On Mon, 24 Feb 2003, hare ram wrote:
 
-any ideas?
+> I have One Public IP assigned to eth0
+> i have Private network 192.168.1.0/24 connected to eth1
+>
+> how can stop, some one spamming from internal IP
+> i get from lot queries from other host saying that
+> my Public IP is spamming .....
+>
+> 1 ) how do i stop them spaming or relaying mails from internal PC
 
+Setup a local SMTP server. Block port 25 from any host except the mail
+server. Thus your local users will need to use your local server.
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d 10.0.0.11 --dport 21 -j
-DNAT --to 203.190.72.108:21
-iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 203.190.72.108 --dport 21 -j
-ACCEPT
+> 2) how to stop scanning from internal ip to any external IP
 
+You can't unless you want to block internet access entirely. You can
+however limit the speed with the 'limit' module - effectively making
+scanning impossible.
 
-eth0: Internet
-eth1: LAN
+> 3) how do i kick the user who is infected with the virus and block them a=
+nd
+> notify to admin
 
+You have to know what IP, they're on and then block all traffic from
+that host - and make sure they do not change IP.
 
-Doc: http://www.knowplace.org/netfilter/syntax.html#conf6
-================================
-Destination NAT the packets (changes the destination IP address in the IP
-header and port number in the TCP/UDP header)
-    iptables -t nat -A PREROUTING -i eth0 -p protocol -d
-ip_address_of_eth0 --dport original_port_number -j DNAT --to
-destination_ip_address:destination_port_number
-Forward the natted packets (allow the natted packet to be forwarded)
-    iptables -A FORWARD -i eth0 -o eth1 -p protocol -d
-destination_ip_address --dport destination_port_number -j ACCEPT
-================================
+/Rasmus
 
-
-
-
-
-
-
-
-
---
-thanks,
-louie miranda
-
+--=20
+-- [ Rasmus "M=F8ffe" B=F8g Hansen ] --------------------------------------=
+-
+"Nothing would please me more than being able to hire ten programmers
+and deluge the hobby market with good software."
+                                                   -- Bill Gates 1976
+We are still waiting ....
+----------------------------------[ moffe at amagerkollegiet dot dk ] --
 
 
