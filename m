@@ -1,11 +1,10 @@
-From: "Tiziano Arbizzani" <tiziano@digibyte.it>
-Subject: Some strange connection timeout
-Date: Mon, 7 Apr 2003 14:48:14 +0200
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: sqlnet 8 connexion and iptables 1.2.6a
+Date: Mon, 7 Apr 2003 09:20:02 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <525F9FE5E1B9A94FB35994B770FF43D821683B@powerthree.digibyte.it>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF50C7004@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2FD03.F4845958"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,205 +16,234 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?Q?St=E9phane_Klein?= <sklein@aquitaine-valley.fr>, richardo@start-global.com
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+You need a conntrack module to enable the RELATED session tracking. =
+Otherwise, how do you suppose iptables knows to open that particular =
+port?
 
-------_=_NextPart_001_01C2FD03.F4845958
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+-----Original Message-----
+From: St=E9phane Klein [mailto:sklein@aquitaine-valley.fr]=20
+Sent: Monday, April 07, 2003 1:24 AM
+To: 'richardo@start-global.com'
+Cc: 'netfilter@lists.netfilter.org'
+Subject: RE: sqlnet 8 connexion and iptables 1.2.6a
 
-Hi all, I am a rather newbie in firewall issues.
-=20
-I have noticed this little problem: I am installing a network with some
-linux-boxes-router for a little sized firm in my hometown.
-=20
-These boxes have a ADSL router connected to an ethernet card and an ISDN
-internal modem for backup purpose.=20
-Every remote office have one of this boxes to connect its LAN to the
-central headquarters LAN via a VPN tunnel.
-=20
-Every box at startup tries if the ADSL is up pinging a sure Ip server,
-and if it's so it tries to establish a VPN connection to headquarters.
-After this it tries to ping a server in the HQ lan, and nothing happens
-since the HQ server continues responding to pings (like an heartbeat).
-=20
-If the HQ server stops responding to pings it tries to ping a sure
-server on the internet and if there's no response it realizes adsl is
-down, dials the ISDN provider and  try to connect via VPN to the HQ.
-=20
-Let's come to the problem : after the ADSL is fallen, ISDN is set up and
-the VPN is established, for a couple of minutes the server in the HQ lan
-is not 'ping'able.=20
-=20
-Routing is OK, (I must changes routing tables after the interface swap),
-firewall rules are (IMHO) ok, but server starts responding only after
-some time.
-=20
-There 's some kind of timeout, perhaps a cached value that must become
-stale, but I can't realize if the problem comes from the DNS or ARP
-cache or the ip_conntrack table.=20
-=20
-I tried to clear both caches, using ip_dynaddr, using SNAT or
-MASQUERADING, lowering the timeouts values in
-proc/sys/net/ipv4/route/gc* files, but I can't work around the problem.
-=20
-Thanks a lot and every help is truly appreciated.
-=20
-Hi all
-=20
-------------------------------------------------------------
- Tiziano Arbizzani - Area Tecnica / Sviluppo SW
-DIGIBYTE SERVIZI E SISTEMI INFORMATICI
-------------------------------------------------------------
-  Assistenza - Vendita - Consulenza - Formazione
- Networking - Internetworking - Internet Provider
-------------------------------------------------------------
-  via Marziale, 9 - 40128 - Bologna (Italia)
- Tel. +39 051 6388614 Fax +39 051 323735
-  www.powerstation.it - digibyte@powerstation.it
-Appliance Server CubeLibre       www.cubelibre.it
-<http://www.cubelibre.it/>=20
+Hi,=20
+
+Thanks for your interest and response.
+
+I looked for interesting logs last week, and i found sqlnet in working =
+like
+this:
+
+first, the client connects to the server on 1521 port, second, the =
+server
+tells client to connect to=20
+a random port. At last, the client try to connect to the server, but the
+port is not opened.
+
+I was thinking the related component could help to resolve the problem, =
+but
+it is not the case.
+Here are the logs:
+
+Apr  4 12:55:26 fw kernel: RULE 0 -- ACCEPT IN=3Deth0 OUT=3Deth0
+SRC=3D192.168.0.208 DST=3DORACLE-IP LEN=3D44 TOS=3D0x00 PREC=3D0x00 =
+TTL=3D127 ID=3D463 DF
+PROTO=3DTCP SPT=3D1487 DPT=3D1521 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
+Apr  4 12:55:26 fw kernel: RULE 3 -- DROP IN=3Deth0 OUT=3Deth0 =
+SRC=3D192.168.0.208
+DST=3DORACLE-IP LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D1999 DF =
+PROTO=3DTCP
+SPT=3D1488 DPT=3D1089 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
+Apr  4 12:55:36 fw kernel: RULE 3 -- DROP IN=3D OUT=3Deth0 =
+SRC=3D192.168.0.239
+DST=3D192.168.0.208 LEN=3D72 TOS=3D0x00 PREC=3D0xC0 TTL=3D255 ID=3D26567 =
+PROTO=3DICMP
+TYPE=3D5 CODE=3D1 GATEWAY=3DORACLE-IP [SRC=3D192.168.0.208 =
+DST=3DORACLE-IP LEN=3D44
+TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D9423 DF PROTO=3DTCP SPT=3D1488 =
+DPT=3D1089
+WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0 ]
+Apr  4 12:55:36 fw kernel: RULE 3 -- DROP IN=3Deth0 OUT=3Deth0 =
+SRC=3D192.168.0.208
+DST=3DORACLE-IP LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D9423 DF =
+PROTO=3DTCP
+SPT=3D1488 DPT=3D1089 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
+Apr  4 12:55:49 fw kernel: RULE 3 -- DROP IN=3D OUT=3Deth0 =
+SRC=3D192.168.0.239
+DST=3D192.168.0.208 LEN=3D72 TOS=3D0x00 PREC=3D0xC0 TTL=3D255 ID=3D26568 =
+PROTO=3DICMP
+TYPE=3D5 CODE=3D1 GATEWAY=3DORACLE-IP [SRC=3D192.168.0.208 =
+DST=3DORACLE-IP LEN=3D44
+TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D10191 DF PROTO=3DTCP SPT=3D1488 =
+DPT=3D1089
+WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0 ]
+Apr  4 12:55:49 fw kernel: RULE 3 -- DROP IN=3Deth0 OUT=3Deth0 =
+SRC=3D192.168.0.208
+DST=3DORACLE-IP LEN=3D44 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D10191 DF =
+PROTO=3DTCP
+SPT=3D1488 DPT=3D1089 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
+
+192.168.0.239 is an ip of the firewall, 208 is the client.
+
+regards=20
+
+Stephane
+
+-----Message d'origine-----
+De : richardo@start-global.com [mailto:richardo@start-global.com]
+Envoy=E9 : lundi 7 avril 2003 09:58
+=C0 : St=E9phane Klein
+Objet : RE: sqlnet 8 connexion and iptables 1.2.6a
 
 
 
-------_=_NextPart_001_01C2FD03.F4845958
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hi Stephane,
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE>Messaggio</TITLE>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>Hi =
-all, I am a=20
-rather newbie in firewall issues.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>I have =
-noticed this=20
-little problem: I am installing a network&nbsp;with =
-some&nbsp;linux-boxes-router=20
-for a little sized firm in my hometown.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D298452612-07042003></SPAN></FONT><FONT=20
-face=3DArial size=3D2><SPAN =
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>These =
-boxes have a=20
-ADSL router connected to an ethernet card and an ISDN internal modem for =
-backup=20
-purpose. </SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D298452612-07042003>Every&nbsp;remote=20
-office have one of this boxes to connect&nbsp;its&nbsp;LAN to the =
-central=20
-headquarters LAN&nbsp;via a VPN tunnel.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>Every =
-box at startup=20
-tries if the ADSL is up pinging a sure Ip server, and if it's so&nbsp;it =
-tries=20
-to&nbsp;establish&nbsp;a VPN connection&nbsp;to headquarters.&nbsp; =
-After=20
-this&nbsp;it tries to ping a server in the HQ lan, and nothing happens =
-since the=20
-HQ server continues responding to pings (like an =
-heartbeat).</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>If =
-the&nbsp;HQ=20
-server stops responding to pings&nbsp;it tries to ping a sure server on =
-the=20
-internet and if there's no response&nbsp;it realizes adsl is =
-down,&nbsp;dials=20
-the ISDN provider and&nbsp; try to connect via VPN to the=20
-HQ.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>Let's =
-come to the=20
-problem : after the ADSL is fallen,&nbsp;ISDN is set up and the VPN is=20
-established, for a couple of minutes the server in the HQ lan is not =
-'ping'able.=20
-</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D298452612-07042003>Routing is OK, (I=20
-must changes routing tables after the interface swap),&nbsp; firewall =
-rules are=20
-(IMHO) ok, but&nbsp;server starts responding only after some=20
-time.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>There =
-'s some kind=20
-of timeout, perhaps a cached value that must become stale,&nbsp;but I =
-can't=20
-realize if the problem comes from the DNS or ARP cache or the =
-ip_conntrack=20
-table. </SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>I =
-tried to clear=20
-both caches, using ip_dynaddr, using SNAT or MASQUERADING, lowering the =
-timeouts=20
-values in proc/sys/net/ipv4/route/gc* files, but I can't work around the =
+The rules below look as though they do allow RELATED and ESTABLISHED
+packets back through the firewall ... there are some logging rules, are =
+you
+getting any relevant information in the log files ?
 
-problem.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>Thanks =
-a lot and=20
-every help is truly appreciated.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D298452612-07042003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D298452612-07042003>Hi=20
-all</SPAN></FONT></DIV>
-<DIV>&nbsp;</DIV><FONT color=3D#0000ff><FONT face=3D"Comic Sans MS" =
-size=3D2>
-<P align=3Dleft><FONT face=3D"Comic Sans MS" color=3D#0000ff=20
-size=3D2>------------------------------------------------------------</FO=
-NT><BR><FONT=20
-face=3D"Comic Sans MS" size=3D2>&nbsp;Tiziano Arbizzani -&nbsp;Area =
-Tecnica /=20
-Sviluppo SW<BR><B><FONT color=3D#ff0000><FONT face=3D"Comic Sans MS" =
-size=3D2>DIGIBYTE=20
-SERVIZI E SISTEMI INFORMATICI<BR></FONT></B></FONT></FONT><FONT=20
-face=3D"Comic Sans MS" color=3D#0000ff=20
-size=3D2>------------------------------------------------------------<BR>=
-&nbsp;</FONT>=20
-<FONT face=3D"Comic Sans MS" color=3D#008080 size=3D2>Assistenza - =
-Vendita -=20
-Consulenza - Formazione<BR>&nbsp;Networking - Internetworking - Internet =
+Regards,
+Richard.
 
-Provider<BR></FONT><FONT face=3D"Comic Sans MS" color=3D#0000ff=20
-size=3D2>------------------------------------------------------------<BR>=
-&nbsp;</FONT>=20
-<FONT face=3D"Comic Sans MS" size=3D2>via Marziale, 9 - 40128 - Bologna=20
-(Italia)<BR>&nbsp;Tel. +39 051 6388614 Fax +39 051 323735<BR>&nbsp;<U>=20
-</U></FONT><U><FONT face=3D"Comic Sans MS" color=3D#0000ff=20
-size=3D2>www.powerstation.it</FONT></U><FONT face=3D"Comic Sans MS" =
-size=3D2>=20
--</FONT><U> <FONT face=3D"Comic Sans MS" color=3D#0000ff=20
-size=3D2>digibyte@powerstation.it</FONT></U><BR></FONT><FONT =
-face=3D"Comic Sans MS"=20
-size=3D2>Appliance Server CubeLibre&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; <A=20
-href=3D"http://www.cubelibre.it/">www.cubelibre.it</A><BR></FONT></P></FO=
-NT></FONT><FONT=20
-color=3D#0000ff>
-<P align=3Dleft><FONT face=3D"Comic Sans MS" =
-size=3D2></P></FONT></FONT><FONT=20
-color=3D#0000ff></FONT></DIV></BODY></HTML>
-=00
-------_=_NextPart_001_01C2FD03.F4845958--
+Richard Oatridge
+Head of IT, Start-global Ltd
+http://www.start-global.com
+tel :  +44 1564 779297
+email : richardo@start-global.com
+
+
+|--------+----------------------------------->
+|        |          St=E9phane Klein           |
+|        |          <sklein@aquitaine-valley.|
+|        |          fr>                      |
+|        |          Sent by:                 |
+|        |          netfilter-admin@lists.net|
+|        |          filter.org               |
+|        |                                   |
+|        |                                   |
+|        |          04/04/2003 13:06         |
+|        |                                   |
+|--------+----------------------------------->
+=20
+>------------------------------------------------------------------------=
+---
+----------------------------------------------|
+  |
+|
+  |       To:     "'richardo@start-global.com'" =
+<richardo@start-global.com>
+|
+  |       cc:     "'netfilter@lists.netfilter.org'"
+<netfilter@lists.netfilter.org>                                         =
+|
+  |       Subject:     RE: sqlnet 8 connexion and iptables 1.2.6a
+|
+=20
+>------------------------------------------------------------------------=
+---
+----------------------------------------------|
+
+
+
+
+iptables -L gives me:
+
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere           state
+RELATED,ESTABLISHED
+RULE_1     all  --  oracle_srv_ip        anywhere           state NEW
+RULE_2     all  --  192.168.0.41         anywhere           state NEW
+RULE_3     all  --  anywhere             anywhere
+
+Chain FORWARD (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere           state
+RELATED,ESTABLISHED
+RULE_0     icmp --  anywhere             oracle_srv_ip      icmp type 8
+code 0 state NEW
+RULE_0     tcp  --  anywhere             oracle_srv_ip      tcp dpt:1521
+state NEW
+RULE_1     all  --  oracle_srv_ip        anywhere           state NEW
+RULE_2     all  --  192.168.0.41         anywhere           state NEW
+RULE_3     all  --  anywhere             anywhere
+ACCEPT     all  --  anywhere             anywhere           state =
+RELATED
+
+Chain OUTPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere           state
+RELATED,ESTABLISHED
+RULE_0     icmp --  anywhere             194.250.29.100     icmp type 8
+code 0 state NEW
+RULE_0     tcp  --  anywhere             194.250.29.100     tcp dpt:1521
+state NEW
+RULE_3     all  --  anywhere             anywhere
+
+Chain RULE_0 (4 references)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere           LOG level =
+debug
+prefix `RULE 0 -- ACCEPT '
+ACCEPT     all  --  anywhere             anywhere
+
+Chain RULE_1 (2 references)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere           LOG level =
+info
+prefix `RULE 1 -- ACCEPT '
+ACCEPT     all  --  anywhere             anywhere
+
+Chain RULE_2 (2 references)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere           LOG level =
+info
+prefix `RULE 2 -- ACCEPT '
+ACCEPT     all  --  anywhere             anywhere
+
+Chain RULE_3 (3 references)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere           LOG level =
+info
+prefix `RULE 3 -- DROP '
+DROP       all  --  anywhere             anywhere
+
+
+
+-----Message d'origine-----
+De : richardo@start-global.com [mailto:richardo@start-global.com]
+Envoy=E9 : vendredi 4 avril 2003 13:51
+=C0 : St=E9phane Klein
+Objet : Re: sqlnet 8 connexion and iptables 1.2.6a
+
+
+
+Hi Stephane,
+
+Are you allowing RELATED and ESTABLISHED packets back through the =
+firewall
+? if not, it may solve the problem ....
+
+
+Regards,
+Richard.
+
+Richard Oatridge
+Head of IT, Start-global Ltd
+http://www.start-global.com
+tel :  +44 1564 779297
+email : richardo@start-global.com
+
+
+
+
+
+
 
