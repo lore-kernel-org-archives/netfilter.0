@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: moving old ips to new ips..forwarding
-Date: Fri, 5 Jul 2002 15:40:52 +0100
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: VPN connection error : the specified port is not connected.
+Date: Fri, 5 Jul 2002 11:28:10 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207051440.g65Eex802164@vulcan.rissington.net>
-References: <Pine.LNX.4.21.0207051355420.5181-100000@grabak.talker.com>
+Message-ID: <001601c22438$923f0f90$0601a8c0@sundaram>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0013_01C22417.0B0A5730"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.21.0207051355420.5181-100000@grabak.talker.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,87 +16,297 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Friday 05 July 2002 3:25 pm, Cygnus - Flirttown Coder wrote:
+This is a multi-part message in MIME format.
 
-> On Fri, 5 Jul 2002, Antony Stone wrote:
-> > On Friday 05 July 2002 2:27 pm, Cygnus - Flirttown Coder wrote:
-> > > Scenario:
-> > > X number of clients (with 1 or more ips bound to a box)
-> > > behind Cisco Catalysts, behind Cisco 3600, behind Internet
-> > >
-> > > Problem:
-> > > We want to move clients off our non-portable IP range and onto our arin
-> > > range.
-> >
-> > Why ?   This sounds less secure, less portable, more expensive and less
-> > future-proof to me.
->
-> because our current bandwidth provider is killing us on our T3 charges,
-> and we can't move if our clients are on a non-portable IP range from them.
+------=_NextPart_000_0013_01C22417.0B0A5730
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Okay.   Now that I understand your meaning of the word 'clients', my 
-objections no longer stand :-)
+Hi,
 
-> > If you NAT them in one direction, they must be NATted in the other
-> > direction as well.   Machines WILL get extremely upset if they contact IP
-> > a.b.c.d and then get a reply from IP w.x.y.z (ie it simply won't work).
->
-> that presents quite a problem. short of changing each customer's gateway
-> from the router to the forwarder. and even so, if the forwarder was
-> routing outbound traffic for a customer server (and, what, NATing it to
-> say the source ip is the old ip instead?) how does it know that the
-> inbound request that came in that's being responded to is from an old ip
-> or new ip?
+I have installed the poptop VPN server. When I try to connect from =
+windows 2000, I am getting the following=20
+message.
 
-> For example:
->  * server has ip of x.x.x.x, DNS resolves to this, outside services
->    connect to this, etc..
->  * server changes ip from x.x.x.x to y.y.y.y
->  * forwarder routes INBOUND x.x.x.x to y.y.y.y
->  * by your info, forwarder must also route OUTBOUND for requests to
->    x.x.x.x, changing OUTBOUND source ip to x.x.x.x (to correlate IP
->    request was sent to, with, IP answer came from)
->  * now, after DNS and other people outside update IP info, connections
->    comes into the customer server for y.y.y.y, BUT, OUTBOUND traffic is
->    still going to 'forwarder', when is changing the source IP to the old
->    one. so requests from came into y.y.y.y and going out with answers
->    labeled as x.x.x.x
+Error 619: the specified port is not connected
 
-Don't worry about this.   Netfilter will sort it all out for you.
 
-The address translation works like this:
+In my log message I am getting following messages
 
-iptables -A PREROUTING -d a.b.c.d -j DNAT --to w.x.y.z
 
-ie any packets addressed to a.b.c.d are changed so that they go to w.x.y.z 
-instead.
+Jul  5 11:08:32 localhost pptpd[3701]: MGR: Manager process started
+Jul  5 11:09:17 localhost pptpd[3706]: MGR: Launching =
+/usr/local/sbin/pptpctrl to ha
+ndle client
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: local address =3D =
+192.168.1.234
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: remote address =3D =
+192.168.2.234
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: pppd options file =3D =
+/etc/ppp/options
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Client 205.133.76.142 =
+control connectio
+n started
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Received PPTP Control =
+Message (type: 1)
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Made a START CTRL CONN RPLY =
+packet
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: I wrote 156 bytes to the =
+client.
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Sent packet to client
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Received PPTP Control =
+Message (type: 7)
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Set parameters to 1525 =
+maxbps, 64 windo
+w size
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Made a OUT CALL RPLY packet
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Starting call (launching =
+pppd, opening
+GRE)
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: pty_fd =3D 5
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: tty_fd =3D 6
+Jul  5 11:09:17 localhost pptpd[3707]: CTRL (PPPD Launcher): Connection =
+speed =3D 1152
+00
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: I wrote 32 bytes to the =
+client.
+Jul  5 11:09:17 localhost pptpd[3707]: CTRL (PPPD Launcher): local =
+address =3D 192.168
+.1.234
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Sent packet to client
+Jul  5 11:09:17 localhost pptpd[3707]: CTRL (PPPD Launcher): remote =
+address =3D 192.16
+8.2.234
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Received PPTP Control =
+Message (type: 15
+)
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Set parameters to 1525 =
+maxbps, 64 windo
+w size
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Made a OUT CALL RPLY packet
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Starting call (launching =
+pppd, opening
+GRE)
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: pty_fd =3D 5
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: tty_fd =3D 6
+Jul  5 11:09:17 localhost pptpd[3707]: CTRL (PPPD Launcher): Connection =
+speed =3D 1152
+00
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: I wrote 32 bytes to the =
+client.
+Jul  5 11:09:17 localhost pptpd[3707]: CTRL (PPPD Launcher): local =
+address =3D 192.168
+.1.234
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Sent packet to client
+Jul  5 11:09:17 localhost pptpd[3707]: CTRL (PPPD Launcher): remote =
+address =3D 192.16
+8.2.234
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Received PPTP Control =
+Message (type: 15
+)
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Got a SET LINK INFO packet =
+with standar
+d ACCMs
+Jul  5 11:09:17 localhost pptpd[3706]: GRE: =
+read(fd=3D5,buffer=3D804d9c0,len=3D8196) from
+PTY failed: status =3D -1 error =3D Input/output error
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: PTY read or GRE write =
+failed (pty,gre)=3D
+(5,6)
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Client 205.133.76.142 =
+control connectio
+n finished
+Jul  5 11:09:17 localhost pptpd[3706]: CTRL: Exiting now
+Jul  5 11:09:17 localhost pptpd[3701]: MGR: Reaped child 3706
 
-It is vital that you ensure that the return packets from w.x.y.z to the 
-outside world go back through the NAT system, because when they do, the 
-source address of the replies will get automagically changed from w.x.y.z to 
-a.b.c.d (no additonal rules needed - don't even try to put any in because it 
-will make a mess).
+----------------------
+[root@localhost log]# iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+tcprules   all  --  anywhere             anywhere
 
-However, any paackets which are really addressed to w.x.y.z, even if they go 
-through the iptables NAT machine, will not get translated on the way in 
-(because they do not match "-d a.b.c.d") therefore the return packets will 
-not get translated on the way out.
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+tcprules   all  --  anywhere             anywhere
 
-Hence a network client on the Internet which contacts a server on a.b.c.d 
-will actually be contacting a server on w.x.y.z but will continue to get 
-replies from a.b.c.d; however a network client on the Internet which contacts 
-w.x.y.z will get a reply from w.x.y.z and all will be well.
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
-Hope this helps.
+Chain tcprules (2 references)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere           state =
+RELATED,ESTABLISHE
+D
+ACCEPT     all  --  anywhere             anywhere           state NEW
 
-By the way, what bandwidth is your Internet link ?   Don't you think it would 
-be a good idea to put an actual firewall in the link so that you can at least 
-provide some filtering on the system ?
+any help
+-SR
 
- 
+------=_NextPart_000_0013_01C22417.0B0A5730
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Antony.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2462.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have installed the poptop VPN server. =
+When I try=20
+to connect from windows 2000, I am getting the following=20
+<DIV><FONT face=3DArial size=3D2>message.</FONT></DIV></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Error 619: the specified port is not=20
+connected</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>In my log message I am getting =
+following=20
+messages</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Jul&nbsp; 5 11:08:32 localhost =
+pptpd[3701]: MGR:=20
+Manager process started<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: =
+MGR:=20
+Launching /usr/local/sbin/pptpctrl to ha<BR>ndle client<BR>Jul&nbsp; 5 =
+11:09:17=20
+localhost pptpd[3706]: CTRL: local address =3D =
+192.168.1.234<BR>Jul&nbsp; 5=20
+11:09:17 localhost pptpd[3706]: CTRL: remote address =3D=20
+192.168.2.234<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: pppd =
+options=20
+file =3D /etc/ppp/options<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: =
+CTRL:=20
+Client 205.133.76.142 control connectio<BR>n started<BR>Jul&nbsp; 5 =
+11:09:17=20
+localhost pptpd[3706]: CTRL: Received PPTP Control Message (type:=20
+1)<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: Made a START =
+CTRL CONN=20
+RPLY packet<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: I wrote =
+156=20
+bytes to the client.<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: =
+CTRL: Sent=20
+packet to client<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: =
+Received=20
+PPTP Control Message (type: 7)<BR>Jul&nbsp; 5 11:09:17 localhost =
+pptpd[3706]:=20
+CTRL: Set parameters to 1525 maxbps, 64 windo<BR>w size<BR>Jul&nbsp; 5 =
+11:09:17=20
+localhost pptpd[3706]: CTRL: Made a OUT CALL RPLY packet<BR>Jul&nbsp; 5 =
+11:09:17=20
+localhost pptpd[3706]: CTRL: Starting call (launching pppd,=20
+opening<BR>GRE)<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: =
+pty_fd =3D=20
+5<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: tty_fd =3D =
+6<BR>Jul&nbsp; 5=20
+11:09:17 localhost pptpd[3707]: CTRL (PPPD Launcher): Connection speed =
+=3D=20
+1152<BR>00<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: I wrote =
+32 bytes=20
+to the client.<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3707]: CTRL (PPPD =
+
+Launcher): local address =3D 192.168<BR>.1.234<BR>Jul&nbsp; 5 11:09:17 =
+localhost=20
+pptpd[3706]: CTRL: Sent packet to client<BR>Jul&nbsp; 5 11:09:17 =
+localhost=20
+pptpd[3707]: CTRL (PPPD Launcher): remote address =3D=20
+192.16<BR>8.2.234<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: =
+Received=20
+PPTP Control Message (type: 15<BR>)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Jul&nbsp; 5 11:09:17 localhost =
+pptpd[3706]: CTRL:=20
+Set parameters to 1525 maxbps, 64 windo<BR>w size<BR>Jul&nbsp; 5 =
+11:09:17=20
+localhost pptpd[3706]: CTRL: Made a OUT CALL RPLY packet<BR>Jul&nbsp; 5 =
+11:09:17=20
+localhost pptpd[3706]: CTRL: Starting call (launching pppd,=20
+opening<BR>GRE)<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: =
+pty_fd =3D=20
+5<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: tty_fd =3D =
+6<BR>Jul&nbsp; 5=20
+11:09:17 localhost pptpd[3707]: CTRL (PPPD Launcher): Connection speed =
+=3D=20
+1152<BR>00<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: I wrote =
+32 bytes=20
+to the client.<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3707]: CTRL (PPPD =
+
+Launcher): local address =3D 192.168<BR>.1.234<BR>Jul&nbsp; 5 11:09:17 =
+localhost=20
+pptpd[3706]: CTRL: Sent packet to client<BR>Jul&nbsp; 5 11:09:17 =
+localhost=20
+pptpd[3707]: CTRL (PPPD Launcher): remote address =3D=20
+192.16<BR>8.2.234<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: =
+Received=20
+PPTP Control Message (type: 15<BR>)<BR>Jul&nbsp; 5 11:09:17 localhost=20
+pptpd[3706]: CTRL: Got a SET LINK INFO packet with standar<BR>d=20
+ACCMs<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: GRE:=20
+read(fd=3D5,buffer=3D804d9c0,len=3D8196) from<BR>PTY failed: status =3D =
+-1 error =3D=20
+Input/output error<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: =
+PTY read=20
+or GRE write failed (pty,gre)=3D<BR>(5,6)<BR>Jul&nbsp; 5 11:09:17 =
+localhost=20
+pptpd[3706]: CTRL: Client 205.133.76.142 control connectio<BR>n=20
+finished<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3706]: CTRL: Exiting=20
+now<BR>Jul&nbsp; 5 11:09:17 localhost pptpd[3701]: MGR: Reaped child=20
+3706</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>----------------------</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>[root@localhost log]# iptables =
+-L<BR>Chain INPUT=20
+(policy ACCEPT)<BR>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination<BR>tcprules&nbsp;&nbsp; all&nbsp; --&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+anywhere</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Chain FORWARD (policy=20
+ACCEPT)<BR>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination<BR>tcprules&nbsp;&nbsp; all&nbsp; --&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+anywhere</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Chain OUTPUT (policy=20
+ACCEPT)<BR>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Chain tcprules (2=20
+references)<BR>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination<BR>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; --&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+state=20
+RELATED,ESTABLISHE<BR>D<BR>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
+--&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;=20
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+state=20
+NEW</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>any help</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>-SR</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0013_01C22417.0B0A5730--
+
 
