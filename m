@@ -1,14 +1,13 @@
-From: Nick Drage <nickd@funkyjesus.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Logging Portscans
-Date: Mon, 21 Oct 2002 12:18:14 +0100
+Date: Mon, 21 Oct 2002 12:27:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021021121814.G3805@funkyjesus.org>
+Message-ID: <200210211127.g9LBRSL31548@vulcan.rissington.net>
 References: <20021021093912.87487.qmail@web40709.mail.yahoo.com>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20021021093912.87487.qmail@web40709.mail.yahoo.com>; from natasha3641@yahoo.com on Mon, Oct 21, 2002 at 02:39:12AM -0700
+In-Reply-To: <20021021093912.87487.qmail@web40709.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,27 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, Oct 21, 2002 at 02:39:12AM -0700, Tasha Smith wrote:
+On Monday 21 October 2002 10:39 am, Tasha Smith wrote:
+
 > Hii,
 > I was wandering why iptables is NOT logging to my /var/log/messages/ NMAPS
-> stealth port scans or when i telnet any port?.  Here are what the first part of
-> my rules look like. How can u add some rules soo i can see (LOG) all ports scans
-> or connection attemps on my machine????
-> iptables 1.2.7
-> kernel 2.4.19
+> stealth port scans or when i telnet any port?.  Here are what the first
+> part of my rules look like. How can u add some rules soo i can see (LOG)
+> all ports scans or connection attemps on my machine????
+>
+> # I tryed to put in a logging rule here and it didnt log the port scan!
+> iptables -A INPUT -i eth0 -p tcp \
+>          --dport 111 -j LOG-prefix "DROP sunrpc: "
+>
+> # I tryed a LOG Policy here too like this!
+> iptables -i INPUT -p tcp -j LOG --log-prefix "log-tcp-test: "
+>
+> iptables -A INPUT -m state --state ESTABLSIHED,RELATED -j ACCEPT
+> iptables -A FOWARD -m state --state ESTABLSIHED,RELATED -j ACCEPT
+> iptables -A OUTPUT -m state --state ESTABLSIHED,RELATED -j ACCEPT
+>
+> And then after this i have all stuff that is allowed on my machine like
+> DNS, DHCP, and my forwarding rules!
 
-Out of interest, why log all port scans?
+I notice you have rules in both the INPUT and the FORWARD chains, but your 
+LOG rules are only in INPUT.
 
-Also, do keep a close eye on this when you get it working - depending on the
-kind of site you're running iptables on you might find your logs filling up
-*very* quickly.
+Are you trying to scan the firewall itself, or perhaps a machine on the other 
+side, which is being routed by the firewall ?   You might need the LOG rules 
+in the FORWARD chain.
 
-<snip>
+So long as we assume that the various typos in the rules you've given are not 
+actually in the scripts you are using (eg -i instead of -I, misspellings of 
+ACCEPT, FORWARD and ESTABLISHED) then there's no reason why you shouldn't be 
+logging all TCP packets using your "log-tcp-test" rule shown above.
+
+Antony.
 
 -- 
-FunkyJesus System Administration Team
 
+The first ninety percent of an engineering project takes ninety percent
+of the time, and the last ten percent takes the remaining ninety percent.
 
