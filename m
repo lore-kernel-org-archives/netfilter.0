@@ -1,264 +1,50 @@
-From: Ed Suominen <ed@eepatents.com>
-Subject: IPT2SH: Auto-Generate IPTABLES Configuration Script
-Date: Wed, 26 Mar 2003 12:02:53 -0800
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <3E82076D.9070707@eepatents.com>
+From: Kelly Setzer <Kelly.Setzer@placemark.com>
+Subject: Re: block kazaa
+Date: Tue, 25 Mar 2003 15:45:45 -0600
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20030325214545.GA1817@placemark.com>
+References: <20030325183312.2501.87766.Mailman@kashyyyk> <5.2.0.9.0.20030325212147.00ba2e88@mail.clara.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <5.2.0.9.0.20030325212147.00ba2e88@mail.clara.net>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: paulc@ibiblio.org
+Cc: netfilter@lists.netfilter.org
 
-Below is a Bash script that looks at your current IPTABLES configuration 
-and attempts to generate a Bash script that will reproduce it. The 
-generated script can be edited to do advanced configuration of what an 
-existing firewall program gives you and can be used as an rc.d script 
-for startup configuration instead of the firewall program. Thus it is 
-more flexible than iptables-save and iptables-restore.
+On Tue, Mar 25, 2003 at 09:27:16PM +0000, paulc@ibiblio.org wrote:
+> The way I block Kazaa (and the other file sharing applications) is a 
+> blanket ban on all ports by default. I then open the ports as I think is 
+> appropriate at the firewall. These only include the port 23 for anyone 
+> wishing to use telnet. All web and ftp style ports on 80, 21 and the like 
+> are handled by a web-proxy to prevent using them for other purposes. All 
+> incoming connects (and lots of ICMP messages) are dropped by the firewall 
+> also.
 
-It seems to work pretty well, but I believe there are still some loose 
-ends. So I wouldn't (yet) recommend it for production systems.
+In my personal experience, that still allows kazaa clients to download
+files.  Uploads are prevented, and that's a good thing if you're
+committed to stopping p2p traffic.  However it's only half a solution.
 
-I've had a lot of fun with the project, and there seems to be a real 
-need for it, but just can't take any more time out to work on it. If 
-anyone is interested using in maintaining the script (under the GPL), 
-please feel free to do so. I'd certainly appreciate an email indicating 
-your interest. Ideally, I'd like to see it distributed with 
-iptables-save/restore.
+The reality is, fighting p2p traffic is a losing battle.  I suspect
+that's one of those things that will have to be addressed by corporate
+policy/enforcement and with host-based restrictions (don't let users
+install software on their own boxes).
 
-Don't let all the SED/AWK code scare you -- It's pretty straightforward 
-text parsing stuff.
+Kelly
 
-Have fun!
-
--Ed
-
--------------
-#!/bin/sh
-# [IP] [T]ables [to] [SH]ell Script IPtables parsing utility
-# Copyright (c) 2003 by Edwin A. Suominen, http://www.eepatents.com
-# Registered Patent Agent & Technology Consultant
-# Electrical Engineering * DSP * mySQL * Programming * Networking
-#
-# This script is licensed under the GNU Public License as last
-# published prior to the copright year by the Free Software
-# Foundation, which license is incorporated herein by reference.
-#
-
-### Functions
-usage() {
-     echo \
-"Usage: `basename $0` ?-f <FILTER dump>? \
-?-m <MANGLE dump>? ?-n <NAT dump>?"
-}
-
-makestr() {
-     eval local X=\"$`echo $1`\"
-     if [ -z $X ]; then
-         # ...from shell
-         $IPT -L -n -v -t `echo $1 |tr [:upper:] [:lower:]` |tr '\n' '~'
-     else
-         # ...from file
-         cat $1 |tr '\n' '\\n'
-     fi
-}
-
-### Setup
-## Write temporary awk scripts
-TMP=/tmp/.ipt2sh
-echo '{
-if($1=="Chain") {
-   # Beginning of Chain Section
-   printf "%da\n%db # %s\n",NR,NR,$0 > LEFT
-   CHAIN=$2
-   if($3~/\policy/) {
-     # Built-in Chain
-     printf "-P %s %s\n",CHAIN,$4 > TOP
-   } else {
-     # User-defined Chain
-     printf "-N %s\n",CHAIN > TOP
-   }
-   printf "%da~%db~",NR,NR > RIGHT
-
-} else {
-   # Rule Definition
-   if($3!="target" && NF > 0) {
-     printf "%d -A %s",NR,CHAIN > LEFT;
-     if($6!="*") { printf " -i %s",$6 > LEFT }
-     if($7!="*") { printf " -o %s",$7 > LEFT }
-     if($2~/tcp|udp|icmp/) { printf " -p %s",$4 > LEFT }
-     printf " -s %s -d %s -j %s\n",$8,$9,$3 > LEFT
-     printf "%d",NR > RIGHT
-     for(i=10; i <= NF; i++)
-       printf " %s",$i > RIGHT
-     printf "~" > RIGHT
-   } else { if($1~/^#/) {
-       printf "%d %s\n",NR,$0 > LEFT
-       printf "%d~",NR > RIGHT
-   }}
-}} END { printf "99999\n\n" > LEFT }' > $TMP-awk-1
-
-echo '
-function parsebits(x,  d,y) {
-   d=16*substr(x,3,1)+substr(x,4,1); y=""
-   if(and(d,32)) { printf "%sURG",y; y="," }
-   if(and(d,16)) { printf "%sACK",y; y="," }
-   if(and(d,8)) { printf "%sPSH",y; y="," }
-   if(and(d,4)) { printf "%sRST",y; y="," }
-   if(and(d,2)) { printf "%sSYN",y; y="," }
-   if(and(d,1)) { printf "%sFIN",y; y="," }
-   if(y=="") { printf "NONE" }
-} {
-
-printf "%s",$1; i=1; flag=""; protocol=" --protocol tcp"
-while(i<=NF) {
-   i++
-   if($i~/tcp|udp/) continue
-   if($i~/^dpt/) {
-     printf "%s --dport %s",protocol,substr($i,index($i,":")+1); i++
-     protocol=""
-   }
-   if($i~/^spt/) {
-     printf "%s --sport %s",protocol,substr($i,index($i,":")+1); i++
-     protocol=""
-   }
-   if($i=="state") { printf " -m state --state %s",$(++i) }
-   if($i=="TOS") {
-     if($(++i)=="set") {
-       printf " --set-tos %s",$(++i)
-     } else {
-       printf " -m tos --tos %s",$(++i)
-     }
-   }
-   if($i=="reject-with") { printf " --reject-with %s",$(++i) }
-   if($i~/^limit/) {
-     if (flag!="limit") { printf " -m limit"; flag="limit" }
-     if($(++i)~/avg/) { printf " --limit %s",$(++i) }
-     if($(++i)~/burst/) { printf " --limit-burst %d",$(++i) }
-   }
-   if($i~/LOG/ || flag=="log") {
-     flag="log"
-     if($(i+1)=="level") {
-       printf " --log-level %d",$(++i)
-     } else { if($(i+1)=="prefix") {
-       printf " --log-prefix "; i++
-       while(++i<=NF) { printf " %s",$i }
-     } else {
-       i++
-     }}
-   }
-   if($i~/^to:/) {
-     x=substr($i,index($i,":")+1); i++
-     if($1=="SNAT") {
-       printf " --to-source %s",x
-     } else {
-       printf " --to-destination %s",x
-     }
-   }
-   if($i~/^flags:/) {
-     printf "%s --tcp-flags ",protocol
-     x=substr($i,index($i,":")+1)
-     if(substr(x,1,1)=="!") { printf "! "; x=substr(x,2) }
-     split(x,hex,"/")
-     parsebits(hex[1])
-     printf " "
-     parsebits(hex[2])
-   }
-} printf "\n"
-} END { printf "99999\n\n" }' > $TMP-awk-2
-
-## Read specified iptables dump files or generate dumps
-while getopts :n:m:f:o: OPTION
-do
-     case $OPTION in
-     n)
-         NAT=$OPTARG
-     ;;
-     m)
-         MANGLE=$OPTARG
-     ;;
-     f)
-         FILTER=$OPTARG
-     ;;
-     *)
-         usage
-     ;;
-     esac
-done
-
-## Misc definitions
-# Define iptables command
-IPT=`whereis iptables |awk '{print $2}'`
-# Read IPtables dumps
-FILTER=`makestr FILTER`
-MANGLE=`makestr MANGLE`
-NAT=`makestr NAT`
-
-## BEGIN output header
-echo "
-#!/bin/sh
-# Generated `date +%x` by ipt2sh
-# [IP] [T]ables [to] [SH]ell Script IPtables parsing utility
-# by Edwin A. Suominen, http://www.eepatents.com
-# Registered Patent Agent & Technology Consultant
-# Electrical Engineering * DSP * mySQL * Programming * Networking
-
-### Initialize iptables
-IPT=$IPT
-for i in filter mangle nat
-do
-     \$IPT -t \$i -F
-     \$IPT -t \$i -X
-     \$IPT -t \$i -Z
-done
-
-### Initialize chains" > $TMP-top
-## END output header
-
-
-### Parse dump for each table
-for i in FILTER MANGLE NAT
-do
-     ### Pass 1: Parse the tabulated parts of dump text
-     eval IN=\"\$`echo $i`\"
-     echo "$IN" |tr '~' '\n' | \
-       awk -f $TMP-awk-1 LEFT=$TMP-left RIGHT=$TMP-right-1 TOP=$TMP-top-1
-
-     ### Pass 2: Parse the extra stuff in dump text
-     cat $TMP-right-1 |awk -f $TMP-awk-2 RS=~ | \
-       tr "[\`\']" "\"" > $TMP-right
-
-     join $TMP-left $TMP-right | \
-       cut --delim=' ' -f2- | \
-       sed s/^[0-9].*$// |sed "s/^\-/-t `echo $i | \
-         tr [:upper:] [:lower:]` -/" | \
-         awk '{ if($1~/^\-/) {\
-           printf "$IPT %s\n",$0 } else { print $0 } }' | \
-           sed 's/0\.0\.0\.0\/0/0\/0/g' | \
-           sed 1i"### Table: $i" > $TMP-$i
-
-     ### Fix chain definition lines added for this table
-     cat $TMP-top-1 |sed "s/^\-/\$IPT -t `echo $i | \
-       tr [:upper:] [:lower:]` -/" >> $TMP-top
-done
-
-### Massage output before directing to stdout
-echo -e "\n" >> $TMP-top
-cat $TMP-top $TMP-FILTER $TMP-MANGLE $TMP-NAT
-echo -e "###EOF"
-
-### Delete temp files
-rm $TMP*
-
-### EOF
-
+--
+Kelly Setzer, System Administrator/Architect - Placemark Investments
+14180 Dallas Pkwy, Suite 200, Dallas, TX 75240
+kelly.setzer@placemark.com  http://www.placemark.com
+(972)404-8100x41 (work)       (214) 287-3464 (cell)
 
