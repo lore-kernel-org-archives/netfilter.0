@@ -1,9 +1,9 @@
-From: "M" <micke@klintan.se>
-Subject: Re: (no subject)
-Date: Fri, 28 Mar 2003 15:05:43 +0100
+From: pieter claassen <pieter@openauth.co.uk>
+Subject: Ipqueue slows down network scan
+Date: 28 Mar 2003 13:42:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00a901c2f533$1f6d7700$7055e00a@Michael>
-References: <BAY1-F203e7sjbmDoP60000558c@hotmail.com>
+Message-ID: <1048858974.925.12.camel@pc-dt>
+Reply-To: pieter@openauth.co.uk
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,43 +17,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Bryan Schmidt <absolut_bryan@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Hello,
 
------ Original Message -----
-From: "Bryan Schmidt" <absolut_bryan@hotmail.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, March 28, 2003 2:31 AM
-Subject: (no subject)
+I am running ipqueue and snort-inline. However, I find that the moment
+that I add
+iptables -A FORWARD -j QUEUE
 
+nmap scans slow down by an order of magnitude.
 
-> I am getting the following message when trying to use iptable (iptable -L)
-> "iptables v1.2.6a: can't initialize iptables table `filter': iptables who?
-> (do yo
-> u need to insmod?)
-> Perhaps iptables or your kernel needs to be upgraded."
->
-> It seems that I can't access any of the tables (filter,nat, or mangle).
-> Does the kernel need to be modified?  How do I go about this? I am running
-> Debain 3.0r1 on an UtraII.
->
-> Thanks,
->
-> Bryan Schmidt, MCSE, MCP + Internet
-> Area101, Inc.
-> MIS Director
->
+It is quite important for me to understand why this is happening. Any
+help is appreciated.
 
-Often this is that ipchains is loaded in memory. Remove ipchains from memory
-with 'rmmod' command. Load the ip_tables module with 'insmod' or modprobe.
+Also, the firewall machine cpu and mem load is real low, so it certainly
+doesn't see to be running out of capacity (10 Mb network)
 
-In Red Hat it would be...
-# chkconfig ipchains off
-# chkconfig iptables on
-# rmmod ipchains
-# insmod ip_tables
+Could a machine start dropping packets even though there is not
+significant CPU or Mem load and where will it report dropped packets?
 
-/Klitnan
+The kernel has the br-nf patches loaded and the firewall is in bridged
+mode.
+
+Thanks,
+pieter
+-- 
+-----------------------------
+Pieter Claassen
+pieter@openauth.co.uk
+http://www.openauth.co.uk
+
+OpenAuth
+Tel: 01344 390530
+DDI: 01344 390630/390631
+Fax number: 01344 390700
+Mobile:  0776 665 6924
+
+Highview House
+Charles Square
+Bracknell
+Berkshire
+RG12 1DF
+
+TERMS AND CONDITIONS
+(i)The information contained in this email and attachments is only
+intended for the addressed recipient(s) and may not be distributed or
+viewed by any other party without the explicit consent of the sender. If
+you have received this message by accident, please contact Pieter
+Claassen (pieter@openauth.co.uk) and destroy any electronic or physical
+copies of the information contained in it, immediately.
+(ii)This email is not certified to be virus free and OpenAuth accepts no
+liability for losses arising from you receiving this email.
+(iii)Any digital signatures (if present) used to authenticate this
+email, only serves to allow you to verify the originating email address
+of the sender and should not be relied upon to prove identity or base
+financial transactions on, unless the Certificate Practice Statement
+that the signature references, explicitly states differently.
+(iv)This email may be subjected to further terms and conditions as
+published on the company website at http://www.openauth.co.uk. If you
+need to rely on the information contained in this email in any way, then
+you should read those terms and conditions to understand how much you
+can trust the information in this email.
+(v)OpenAuth retains the copyright on any relevant material that is
+included in this email.
 
 
