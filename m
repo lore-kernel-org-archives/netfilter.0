@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Strange behavior on the list
-Date: Tue, 10 Feb 2004 10:11:27 +0000
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: How to block sending mail from local network.
+Date: Sat, 7 Feb 2004 21:17:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402101011.27643.Antony@Soft-Solutions.co.uk>
-References: <430A69044C6@fargas.com>
+Message-ID: <20040207201732.93A41382@sterenborg.info>
+References: <4024C335.7080705@ergolight-sw.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <430A69044C6@fargas.com>
+In-Reply-To: <4024C335.7080705@ergolight-sw.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,24 +20,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 06 February 2004 10:30 am, Marc Fargas wrote:
+> I want to block smtp operations from the local network so the 
+> viruses/worms will be blocked.
+> 
+> I tried a command:
+> $IPTABLES -A OUTPUT -p TCP -i $LAN_IFACE -s $LAN_IP_RANGE 
+> --dport smtp 
+> -j DROP
+> but it did nothing.
 
-> When you ask M$ Outlook to reply a mesage in the lists it replays to the
-> original sender nor the list itself. That shouldn't be that way, should?
+No, the INPUT and OUTPUT chains are for filtering the local machine : de
+firewall itself.
+If you want to block clients, you should use the FORWARD chain.
 
-There are *lots* of things about M$ Outlook which shouldn't be that way.
+You could use a rule like this one :
+$IPTABLES -A FORWARD -i $LAN_IFACE -s $LAN_IP_RANGE -p tcp --dport 25 -j
+DROP
+or
+$IPTABLES -A FORWARD -i $LAN_IFACE -s $LAN_IP_RANGE -p tcp --dport 25 -j
+REJECT --reject-with tcp-reset
 
-Antony.
+I suppose you're running your own mailserver ? Otherwise none of your
+clients are able to send email.
 
--- 
-There are two possible outcomes:
 
- If the result confirms the hypothesis, then you've made a measurement.
- If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Gr,
+Rob
 
 
