@@ -1,13 +1,10 @@
-From: "Rob" <rwideman@austin.rr.com>
-Subject: RE: ftp server issue, trying to DL 1.2.7a
-Date: Thu, 5 Sep 2002 22:49:17 -0500
+From: Steve Mickeler <steve@neptune.ca>
+Subject: ip_conntrack_max setting wrt UNREPLIED entries
+Date: Fri, 6 Sep 2002 00:26:51 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NEENJAPFEAIEMGMNIGFLAELBCCAA.rwideman@austin.rr.com>
-References: <000a01c2552c$d39e63d0$0401000a@win2k>
+Message-ID: <Pine.LNX.4.44.0209060020300.13684-100000@triton.neptune.on.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000a01c2552c$d39e63d0$0401000a@win2k>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +14,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
->>Do a make menuconfig or make xconfig or whatever.
->>Configure nothing, just exit with saving the .config
->>Now go ahead and do ./runme pending etc.
->>It should work now.
 
-GREAT, Thanks
-new problem...i compiled the kernel and i get these errors:
-**the first few lines are the actual compilation to show you where it is**
---------------
-gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -Wno-tri
-graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpre
-ferred-stack-boundary=2 -march=i586   -nostdinc -I
-/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=ip_nat_pro
-to_tcp  -c -o ip_nat_proto_tcp.o ip_nat_proto_tcp.c
-gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -Wno-tri
-graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpre
-ferred-stack-boundary=2 -march=i586   -nostdinc -I
-/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=ip_nat_pro
-to_udp  -c -o ip_nat_proto_udp.o ip_nat_proto_udp.c
-gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -Wno-tri
-graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpre
-ferred-stack-boundary=2 -march=i586   -nostdinc -I
-/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=ip_nat_pro
-to_icmp  -c -o ip_nat_proto_icmp.o ip_nat_proto_icmp.c
-ld -m elf_i386 -r -o iptable_nat.o ip_nat_standalone.o ip_nat_rule.o
-ip_nat_helper.o ip_nat_core.o ip_nat_proto_unknown.o ip_nat_proto_tcp.o
-ip_nat_proto_udp.o ip_nat_proto_icmp.o
-gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -Wno-tri
-graphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpre
-ferred-stack-boundary=2 -march=i586   -nostdinc -I
-/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=ipt_helper
-  -c -o ipt_helper.o ipt_helper.c
-ipt_helper.c: In function `match':
-ipt_helper.c:46: wrong type argument to unary exclamation mark
-ipt_helper.c:51: incompatible types in assignment
-ipt_helper.c:67: structure has no member named `name'
-ipt_helper.c:68: structure has no member named `name'
-make[3]: *** [ipt_helper.o] Error 1
-make[3]: Leaving directory `/usr/src/linux/net/ipv4/netfilter'
-make[2]: *** [first_rule] Error 2
-make[2]: Leaving directory `/usr/src/linux/net/ipv4/netfilter'
-make[1]: *** [_subdir_ipv4/netfilter] Error 2
-make[1]: Leaving directory `/usr/src/linux/net'
-make: *** [_dir_net] Error 2
+We're using this linux box as a router/firewall in an asyncronous route
+setup.
+
+I had /proc/sys/net/ipv4/ip_conntrack_max set to 32768 and the CPU seemed
+to be consumed at nailed at 100% use and appeared to be spending all its
+time dealing with the tens of thousands of UNREPLIED entries in
+/proc/net/ip_conntrack due to the async routing.
+
+With the ip_conntrack_max set at 32768 I was able to push about 10Mbps for
+a minute or so and then it wouldnt pass any more than 1-2Mbps.
+
+I changed /proc/sys/net/ipv4/ip_conntrack_max to 3072 and now the box is
+currently pushing about 25Mbps with the cpu at 90% idle. It should get up
+over 70Mbps tomorrow.
+
+Now the question I have is concerning the ip_conntrack table.
+
+# wc -l /proc/net/ip_conntrack
+   2919 /proc/net/ip_conntrack
+
+# grep -v UNREPLIED /proc/net/ip_conntrack | wc -l
+    318
+
+Since the ip_conntrack will simply drop any UNREPLIED entries it needs to
+to make room for more entries, and I really only have just over 300 real
+connections that need tracking, am I hurting myself in any way by keeping
+the ip_conntrack_max setting at 3072 ?
+
+I'm seeing tonnes of messages like this via dmesg
+
+NET: 752 messages suppressed.
+ip_conntrack: table full, dropping packet.
+
+But I am not actually seeing any dropped packets or data loss.
+
+
+[-] Steve Mickeler [ steve@neptune.ca ]
+
+[|] Todays root password is brought to you by /dev/random
+
+[+] 1024D/9AA80CDF = 4103 9E35 2713 D432 924F  3C2E A7B9 A0FE 9AA8 0CDF
+
+
+
+
+
 
 
