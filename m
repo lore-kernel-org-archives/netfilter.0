@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables -j REDIRECT
-Date: Wed, 07 Jul 2004 16:57:57 +0200
+From: "IZEM Farid" <Farid.IZEM@abxlogistics.fr>
+Subject: Problem or not on SNAT and Forwarding Rules
+Date: Wed, 7 Jul 2004 18:36:26 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1089212276.3299.19.camel@anduril.intranet.cartel-securite.net>
-References: <1276578354.20040706010841@dinfo.ru>
+Message-ID: <B732FD42D68974438C1451C73C1D030FD1F573@FR92EX02.eu.abxlogistics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C46440.B6FD4629"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1276578354.20040706010841@dinfo.ru>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +17,364 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: =?koi8-r?Q?=F3=C5=D2=C7=C5=C5=D7_?= =?koi8-r?Q?=F3=C5=D2=C7=C5=CA_?= =?koi8-r?Q?=EE=C9=CB=CF=CC=C1=C5=D7=C9=DE?= <serg@dinfo.ru>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Le lun 05/07/2004 =C3=A0 23:08, =D0=A1=D0=B5=D1=80=D0=B3=D0=B5=D0=B5=D0=B2=
- =D0=A1=D0=B5=D1=80=D0=B3=D0=B5=D0=B9 =D0=9D=D0=B8=D0=BA=D0=BE=D0=BB=D0=B0=
-=D0=B5=D0=B2=D0=B8=D1=87 a =C3=A9crit :
-> how can I manage packets incoming from 80 port to my LAN?
-> All chains and tables(OUTPUT:mangle,nat,filter and
-> POSTROUTING:mangle,nat) shows that one go from
-> local_ip_of_gateway:3128.
-> But tcpdump started at LAN interface shows that packets go from real
-> ip addresses and src_port 80....
-> In what chain and table netfilter replaces SRC_ip & SRC_port back by
-> real?
+This is a multi-part message in MIME format.
 
-After POSTROUTING, so you are not able to match them. But what you can
-do is use CONNMARK target and connmark match to spot thoses connections.
+------_=_NextPart_001_01C46440.B6FD4629
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Something like :
+Hi all,
 
-	iptables -A PREROUTING -t mangle -i LAN -p tcp --dport 80 \
-		-j CONNMARK --set-mark 0x01
+=20
 
-Now, every packet that belongs to a connection beginning by one of
-theses packets will get connmarked with 0x01. To match them back, use
-connmark match like this :
+I'm currently experiencing some problems with SNAT=20
 
-	-m connmark --mark 0x01
+And I think I made a bad configuration in order to have that problem.
 
-Hope it will help.
+=20
+
+We have the following situation:=20
+
+=20
+
+            MYCLIENT --> MYFIREWALL --> CUSTOMERFIREWALL --> =
+CLIENT-CUSTOMER
+
+=20
+
+MyClient ip address is: 192.168.1.12
+
+MyClient ip address is source nated: 172.19.93.101
+
+Client-Customer ip address is: 172.19.92.100
+
+=20
+
+I have implemented the following rules:=20
+
+=20
+
+            Iptables -A POSTROUTING -s 192.168.1.12 -d =
+172.19.92.0/255.255.255.0 -p tcp -m tcp -j SNAT --to-source =
+172.19.93.101=20
+
+Iptables -A TBTSNAT -s 172.19.92.100 -d 192.168.1.12 -i eth0 -o eth1 -p =
+tcp -m tcp --sport 10040 --dport 1023:65535 -j ACCEPT
+
+Iptables -A FORWARD -j TBTSNAT
+
+=20
+
+I think I should be because of SNAT occurs after the forwarding rules :=20
+
+            Iptables -A POSTROUTING -s 192.168.1.12 -d =
+172.19.92.0/255.255.255.0 -p tcp -m tcp -j SNAT --to-source =
+172.19.93.101
+
+            Iptables -A TBTSNAT -s 172.19.92.100 -d 172.19.93.101 -i =
+eth0 -o eth1 -p tcp -m tcp --sport 10040 --dport 1023:65535 -j ACCEPT
+
+            Iptables -A FORWARD -j TBTSNAT
+
+=20
+
+I'm wrong?
+
+=20
+
+Thanks you for you help,
+
+=20
+
+Best regards
+
+=20
+
+Farid IZEM
+
+Ing=E9nieur Syst=E8me Unix
+
+Soci=E9t=E9 ABX Logistics France
+
+48-50, route principale du port
+
+92232 Gennevilliers
+
+T=E9l. : 01-41-47-61-78
+
+Email : farid.izem@abxlogistics.fr
+
+=20
 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+------_=_NextPart_001_01C46440.B6FD4629
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"PersonName"/>
+<!--[if !mso]>
+<style>
+st1\:*{behavior:url(#default#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DFR link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi all,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>I&#8217;m currently experiencing some problems =
+with
+SNAT <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>And I think I made a bad configuration in =
+order to
+have that problem.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>We have the following situation: =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 MYCLIENT =
+</span></font><font size=3D2
+face=3DWingdings><span lang=3DEN-GB =
+style=3D'font-size:10.0pt;font-family:Wingdings'>=E0</span></font><font
+size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:10.0pt;font-family:Arial'> MYFIREWALL
+</span></font><font size=3D2 face=3DWingdings><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Wingdings'>=E0</span></font><font size=3D2 =
+face=3DArial><span
+lang=3DEN-GB style=3D'font-size:10.0pt;font-family:Arial'> =
+CUSTOMERFIREWALL </span></font><font
+size=3D2 face=3DWingdings><span lang=3DEN-GB =
+style=3D'font-size:10.0pt;font-family:
+Wingdings'>=E0</span></font><font size=3D2 face=3DArial><span =
+lang=3DEN-GB
+style=3D'font-size:10.0pt;font-family:Arial'> =
+CLIENT-CUSTOMER<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>MyClient ip address is: =
+192.168.1.12<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>MyClient ip address is source nated: =
+172.19.93.101<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>Client-Customer ip address is: =
+172.19.92.100<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>I have implemented the following rules: =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Iptables -A =
+POSTROUTING -s 192.168.1.12 -d
+172.19.92.0/255.255.255.0 -p tcp -m tcp -j SNAT --to-source =
+172.19.93.101 <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-indent:35.4pt'><font size=3D2 =
+face=3DArial><span
+lang=3DEN-GB style=3D'font-size:10.0pt;font-family:Arial'>Iptables -A =
+TBTSNAT -s 172.19.92.100
+-d 192.168.1.12 -i eth0 -o eth1 -p tcp -m tcp --sport 10040 --dport =
+1023:65535 -j
+ACCEPT<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'text-indent:35.4pt'><font size=3D2 =
+face=3DArial><span
+lang=3DEN-GB style=3D'font-size:10.0pt;font-family:Arial'>Iptables -A =
+FORWARD -j
+TBTSNAT<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>I think I should be because of SNAT occurs =
+after the
+forwarding rules : <o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Iptables -A =
+POSTROUTING -s 192.168.1.12 -d
+172.19.92.0/255.255.255.0 -p tcp -m tcp -j SNAT --to-source =
+172.19.93.101<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Iptables -A =
+TBTSNAT -s 172.19.92.100 -d 172.19.93.101
+-i eth0 -o eth1 -p tcp -m tcp --sport 10040 --dport 1023:65535 -j =
+ACCEPT<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Iptables -A =
+FORWARD -j TBTSNAT<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>I&#8217;m wrong?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>Thanks you for you =
+help,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>Best regards<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Farid IZEM</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Ing=E9nieur Syst=E8me =
+Unix</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Soci=E9t=E9 ABX Logistics =
+France</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>48-50, route principale du =
+port</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>92232 Gennevilliers</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>T=E9l. : 01-41-47-61-78</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Email : <st1:PersonName =
+w:st=3D"on">farid.izem@abxlogistics.fr</st1:PersonName></span></font><o:p=
+></o:p></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C46440.B6FD4629--
 
