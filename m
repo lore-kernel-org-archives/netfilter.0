@@ -1,15 +1,11 @@
-From: "Alexander W. Janssen" <yalla@ynfonatic.de>
-Subject: Re: Some webpages inaccessible through IPTables
-Date: Fri, 7 Feb 2003 22:21:08 +0100
+From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solucoesip.net>
+Subject: question on rating SYN packets
+Date: Fri, 7 Feb 2003 19:01:24 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030207212108.GB2023@ynfonatic.de>
-References: <20030207184027.346DC232BA@www.fastmail.fm>
+Message-ID: <002b01c2cef4$74f9b860$3201a8c0@ESTACAO>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+g7M9IMkV8truYOl"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030207184027.346DC232BA@www.fastmail.fm>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,40 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter ML <netfilter@lists.samba.org>
 
 
---+g7M9IMkV8truYOl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    Hello Guys,
 
-Can you access this pages from the firewall itself? Is your
-internet-connection some flavour of DSL? It could be a MTU problem. Especia=
-lly
-some Windows Clients tend to have problems with the MTU (Windows ME for
-instance).
+    I'm trying to modify my script firewalls for not allowing a LOT of
+connections being established on a specific port in a very small period of
+time. I know I could easily do this using a rule like:
 
-Alex.
+iptables -A INPUT -p tcp --dport XX -m state --state NEW -m limit --limit
+Y/s -j ACCEPT
 
 
---=20
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
-l."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
+    Altough, with this rule, I would be globally limiting connections for
+that specific port in Y connections per second. I would like to know if it's
+possible building a rule that would allow, for example, 1 SYN packet per
+second PER host. In this case, I wouldnt have a 'global' limit of SYN
+packets. In fact, I would have a SYN limitation for EACH host.
 
---+g7M9IMkV8truYOl
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+    Question: is it possible for building a rule like this ? Is there any
+filter on patch-o-matic tree that would allow this kind of rule ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Weitere Infos: siehe http://www.gnupg.org
 
-iEYEARECAAYFAj5EI0QACgkQEMMZKORQoYLf8gCfUdzkA9fHtAmdhZEI/vt8LYqt
-2gAAni4woyr7uw2Jx5/iy9jLtRqNgjzO
-=vENP
------END PGP SIGNATURE-----
+    Sincerily,
+    Leonardo Rodrigues
+    Solu=E7=F5es IP
 
---+g7M9IMkV8truYOl--
 
