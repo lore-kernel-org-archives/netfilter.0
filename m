@@ -1,12 +1,13 @@
-From: "Michael Hudin" <hudin@zoetrope.com>
-Subject: Re: Help with POP3/SMTP and MASQ
-Date: Mon, 10 Jun 2002 15:17:23 -0700
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: TCP delay, SMTP errors
+Date: Mon, 10 Jun 2002 18:18:54 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <00ae01c210cc$9872ac20$52cfd3cf@michael>
-References: <F21XZZTHfyQgeDKvPEk0000a6ad@hotmail.com>
+Message-ID: <20020610221854.GA22998@cannon.eng.us.uu.net>
+References: <001601c210bf$d1a5fef0$2901a8c0@amos>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <001601c210bf$d1a5fef0$2901a8c0@amos>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,112 +18,56 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Nathan Cassano <nathan@cjhunter.com>
+Cc: netfilter@lists.samba.org
 
-The problem looks like it is in your forwarding rules.  You are telling it
-to forward but you're not telling it from where to where, so you would need
-something along the lines of -A FORWARD -i eth0 -o eth1 -p tcp -m
-tcp --dport 110 -j ACCEPT if eth0 is your external and eth1 your internal.
-You may need to invoke this slightly differently because I use the
-iptables-save setup, not a script.
+Hi Nathan,
 
-This should be a starting point.  There may be other things that aren't
-working as well.
+First you have to find out what the reason of this delay is. Eg, is this
+because of the load on the server or the client or is it because of the
+poor layer 2 medium (lots of collisions...) or any other reason.
 
--michael
+Are you here implying that the delay is because of the NAT'ed architecture?
+What does a simple ping show delay-wise? What is the routing to and from
+that external host? Is it assymetric? What happens if you connect to this
+external host from the external interface of the firewall itself? Are you
+still experiencing delays? Is this only happening with TCP or all types of
+packets would have the same delay?
 
------ Original Message -----
-From: "Linux Tek" <linuxtek2002@hotmail.com>
-To: <netfilter@lists.samba.org>
-Sent: Monday, June 10, 2002 2:37 PM
-Subject: Help with POP3/SMTP and MASQ
+You see, it's not very easy to diagnose your delay problem without answering
+to these and (apparently) many other questions.
 
+Ramin
 
-> Hello...
-> I've had had no luck getting POP3/SMTP going through my RedHat 7.1 2.4
-> kernel iptables box.  I have been able to setup incoming FTP connections
-> through my firewall, but no luck on the email.  Here's my script...I've
-> pretty much added alot of extra stuff hoping that something would work and
-I
-> could figure it out from there, but so far nothings worked.  I must be
-> missing something obvious!
->
-> Any help is appreciated, and thanks to everyone who takes the time to
-> respond!
->
->
-> #Beginning of script
-> #this was from someone's sample script..to load the modules.
->
-> /sbin/modprobe ip_tables
-> /sbin/modprobe ip_conntrack
-> /sbin/modprobe iptable_filter
-> /sbin/modprobe iptable_mangle
-> /sbin/modprobe iptable_nat
-> /sbin/modprobe ipt_LOG
-> /sbin/modprobe ipt_limit
-> /sbin/modprobe ipt_state
->
-> #
-> # 2.2 Non-Required modules
-> #
->
-> #/sbin/modprobe ipt_owner
-> #/sbin/modprobe ipt_REJECT
-> #/sbin/modprobe ipt_MASQUERADE
-> #/sbin/modprobe ip_conntrack_ftp
-> #/sbin/modprobe ip_conntrack_irc
->
->
->
-> #some basic MASQ stuff so I can hit the internet!
-> cp /home/main/ip_forward /proc/sys/net/ipv4
-> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
->
-> #rules for ftp in...working right now
->
-> iptables -A FORWARD -p tcp --dport 21 -j ACCEPT
-> iptables -A FORWARD -p tcp --dport 20 -j ACCEPT
->
-> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 21 -j DNAT --to
-> 10.0.0.7:21
-> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 20 -j DNAT --to
-> 10.0.0.7:20
->
-> iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 10.0.0.7 --dport 21 -j
-ACCEPT
-> iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 10.0.0.7 --dport 20 -j
-ACCEPT
->
-> #rules for FTP out... NOT USED!!!!!!!!!
-> #iptables -t nat -A POSTROUTING -p tcp --sport 21 -j ACCEPT
-> #iptables -t nat -A POSTROUTING -p tcp --sport 20 -j ACCEPT
-> #iptables -A INPUT -p tcp --sport 21 -j ACCEPT
-> #iptables -A INPUT -p tcp --sport 20 -j ACCEPT
->
-> #iptables -A OUTPUT -p tcp --sport 21 -j ACCEPT
-> #iptables -A OUTPUT -p tcp --sport 20 -j ACCEPT
->
->
-> #for POP3 and SMTP mail
-> iptables -t nat -A POSTROUTING -p tcp -j MASQUERADE --to-ports 25
-> iptables -t nat -A POSTROUTING -p tcp -j MASQUERADE --to-ports 110
->
-> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 25 -j ACCEPT
-> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 110 -j ACCEPT
->
-> iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
-> iptables -A FORWARD -p tcp --dport 110 -j ACCEPT
->
-> iptables -t nat -A POSTROUTING -p tcp --sport 25 -j ACCEPT
-> iptables -t nat -A POSTROUTING -p tcp --sport 110 -j ACCEPT
->
-> _________________________________________________________________
-> Get your FREE download of MSN Explorer at
-http://explorer.msn.com/intl.asp.
->
->
->
->
+On Mon, Jun 10, 2002 at 01:45:50PM -0700, Nathan Cassano wrote:
 
+> 
+> Hi folks,
+> 	Our website (on an internal NAT'ed network) connects our email
+> server (on an external network). The website uses a SMTP PHP class to
+> send mail using socket connections. The problem is a delay in connecting
+> to the mail server that causes the class to quit prematurely. I fixed
+> the problem by adding a function call to sleep(1) after fsockopen() but
+> this is a hack. Is there a better way to fix this TCP delay? I tried
+> setting the TOS value to Minimize-Delay but I didn't see any difference.
+> Any suggestions are welcome. 
+> 
+> Nathan
+> 
+> PHP script 
+> <?php
+> 
+> $this->connection = fsockopen("mail.server.tld", 25, $errno, $errstr,
+> 30);
+> 
+> socket_set_timeout($this->connection, 10, 0);
+> 
+> $smtp_greeting = fgets($this->connection, 512);
+> 
+> ?>
+> 
+> $IPTABLES -A OUTPUT -t mangle -p tcp --dport 25 -j TOS --set-tos
+> Minimize-Delay
+> 
 
