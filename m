@@ -1,11 +1,11 @@
 From: "rruegner" <robowarp@gmx.de>
-Subject: (no subject)
-Date: Thu, 19 Feb 2004 14:19:45 +0100
+Subject: ./runme pptp-conntrack-nat kernel 2.6.3
+Date: Thu, 19 Feb 2004 14:28:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006e01c3f6eb$0cc74800$32640a0a@robopc>
+Message-ID: <00c501c3f6ec$35ef5d20$32640a0a@robopc>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_006B_01C3F6F3.6CBB0EB0"
+	boundary="----=_NextPart_000_00C0_01C3F6F4.95678B30"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,10 +20,13 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_006B_01C3F6F3.6CBB0EB0
+------=_NextPart_000_00C0_01C3F6F4.95678B30
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+
+Sorry for sending twice i forgot the subject
+
 
 Hi,Iptabletistas and all Filter Gurus up to the Delta Quadrant
 
@@ -35,7 +38,7 @@ i tried searching the list with google but
 got no results what else may added to make the module compile, may =
 someone enlight me?
 Best Regards   
-------=_NextPart_000_006B_01C3F6F3.6CBB0EB0
+------=_NextPart_000_00C0_01C3F6F4.95678B30
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -48,6 +51,9 @@ charset=3Diso-8859-1">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Sorry for sending twice i forgot the=20
+subject</FONT></DIV>
+<DIV><BR></DIV>
 <DIV>
 <DIV><FONT face=3DArial size=3D2>Hi,Iptabletistas and all Filter Gurus =
 up to the=20
@@ -72,6 +78,6 @@ module compile, may someone enlight me?</FONT></DIV>
 Regards&nbsp;</FONT>&nbsp;&nbsp;<FONT=20
 size=3D1></DIV></FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_006B_01C3F6F3.6CBB0EB0--
+------=_NextPart_000_00C0_01C3F6F4.95678B30--
 
 
