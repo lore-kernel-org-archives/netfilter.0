@@ -1,12 +1,12 @@
-From: "Caracal - G. Hostettler" <100112_2660@bluewin.ch>
-Subject: Re: Problem with connection-tracking and FTP
-Date: Wed, 21 Jan 2004 15:43:06 +0100
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: netfiltering and ethernet bridging doesn't appear to work as advertised, help!
+Date: Wed, 21 Jan 2004 08:55:15 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002001c3e02c$e8458980$017ca8c0@lucens.caracal.ch>
-References: <200401210532.i0L5WclB022675@server5.bandwidthco.com> <001801c3e015$d6a86100$0600a8c0@blackbox>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731014BE786@coxhpexg.coxhp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,76 +17,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Christian Gmeiner <christian@visual-page.de>
-Cc: netfilter list <netfilter@lists.netfilter.org>
-
-> I can connect to the FTP-Server and login... but then wehen the directory
-listening should come it hangs. I have no idea, why this is so.
-> Should i post the output of 'iptables -L -n -v --line-numbers'?
->
-> Thanks, Christian Gmeiner
-
-Mmmmh.
-
-Just to make you feel less alone:
-I have a similar problem. What is happening is that the ftp server (in my
-case proftpd) denies access as it thinks that the PORT command comes from a
-spoofed address.
-I have something like this in the log:
-
-Refused PORT xxx,xxx,xxx,xxx,9,115. The first part of IP address is OK. It
-is the good originating one, aka the internal leg of the firewall.
-But who in the hell adds those two numbers at the end ???
-
-Of course there is a fast and VERY UNSECURE solution: Just add the statement
-"AllowForeignAddress on" to your proftpd.conf cfg file, or any similar
-statement to your FTP of choice cfg, if possible. Do it just to test if the
-PORT command works, then REMOVE IT! Once again, this is a severe security
-risk on spoofed ftp control connection IP addresses.
-
-If anybody has a single idea of who/why/what are these two added bytes at
-the end of the IP seen by the PORT command, I will be pretty happy to know
-and possibly understand ;-)
-
-GH
-
------ Original Message ----- 
-From: Christian Gmeiner
-To: markee@bandwidthco.com ; netfilter@lists.netfilter.org
-Sent: Wednesday, January 21, 2004 12:58 PM
-Subject: Re: Problem with connection-tracking and FTP
+To: netfilter@lists.netfilter.org
 
 
-Thanks... I have now used your rule set:
+I can attest that it does work.  Hang in there.
 
-    # CONTROL PORT (Active & Passive Mode)
-    iptables -A INPUT -i ${EXT_INT} -p tcp --source-port
-${UNPRIVPORTS} --destination-port 21 -m state --state NEW -j
-LOG --log-prefix "FTP ACCESS -> "
-    iptables -A INPUT -i ${EXT_INT} -p tcp --source-port
-${UNPRIVPORTS} --destination-port 21 -m state --state NEW -j ACCEPT
+As for patching, it is my understanding that the statement about 'newer
+kernels' is only half right.  You do not need to patch your kernel to
+add bridging functionality (just enable it in the menu).  You DO need to
+patch it if you want to use netfilter to filter said bridge traffic.  I
+use this patch:
+http://bridge.sourceforge.net/devel/bridge-nf/bridge-nf-0.0.7-against-2.
+4.19.diff
 
-    # DATA PORT (Active Mode)
-    iptables -A OUTPUT -o ${EXT_INT} -p tcp --source-port
-20 --destination-port ${UNPRIVPORTS} -m state --state NEW -j
-OG  --log-prefix "FTP A-DATA -> "
-    iptables -A OUTPUT -o ${EXT_INT} -p tcp --source-port
-20 --destination-port ${UNPRIVPORTS} -m state --state NEW -j ACCEPT
+With only that patch, I have successfully enabled bridges netfilter
+under both RedHat 7.3 and 9.
 
-    # DATA PORT (Passive Mode)
-    iptables -A INPUT -i ${EXT_INT} -p tcp --source-port
-${UNPRIVPORTS} --destination-port ${UNPRIVPORTS} -m state --state NEW -j
-LOG --log-prefix "FTP P-DATA -> "
-    iptables -A INPUT -i ${EXT_INT} -p tcp --source-port
-${UNPRIVPORTS} --destination-port ${UNPRIVPORTS} -m state --state NEW -j
-ACCEPT
+To clarify a tad on the chains, INPUT and OUTPUT refer to traffic for
+and from the firewall itself.  FORWARD refers to traffic crossing the
+firewall.  These are two separate things and the rules do not effect
+chains they aren't applied to.  For example, your rule...
 
-I can connect to the FTP-Server and login... but then wehen the directory
-listening should come it hangs. I have no idea, why this is so.
-Should i post the output of 'iptables -L -n -v --line-numbers'?
+	iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-v
 
-Thanks, Christian Gmeiner
+...needs a FORWARD counterpart (if you also want that behavior on
+traffic crossing the firewall):
 
-< snipped history>
+	iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j
+ACCEPT -v
 
+Also your policy on FORWARD is accept.  Your post didn't show any
+FORWARD drop rules, so if traffic is passing right through the firewall
+with these rules, well, it's working correctly.  On the other hand, if
+you switch them all to FORWARD then there is no filtering on traffic to
+the firewall.
+
+Hope that helps.
+
+
+Bob
 
