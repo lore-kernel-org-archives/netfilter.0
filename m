@@ -1,13 +1,13 @@
 From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: how to stop broadcasts using iptables
-Date: Tue, 27 Apr 2004 09:46:01 -0500
+Date: Tue, 27 Apr 2004 09:56:51 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <408E7229.40001@pbl.ca>
-References: <20040427123529.HVYI23570.viefep19-int.chello.at@localhost>
+Message-ID: <408E74B3.6000906@pbl.ca>
+References: <20040427131900.JCWU23570.viefep19-int.chello.at@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040427123529.HVYI23570.viefep19-int.chello.at@localhost>
+In-Reply-To: <20040427131900.JCWU23570.viefep19-int.chello.at@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,40 +21,14 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 sschlesi@chello.at wrote:
-> hi, 
-> 
-> I'm trying to stop broadcasts getting forwarded, but I'm  not sure how to do 
-> this. i read that *.255 - which are afaik broadcast addresses - doesnt 
-> guarantie that its a broadcast. then i read that its possible by matching the 
-> mac address, because broadcast will have ff:ff:ff:ff:ff:ff . but I'm not sure 
-> if that's all  nonsense.
+> my policies are set to -P FORWARD ACCEPT because its just an simple ethernet router, w/o nat and stuff.
+> so i thought iptables'll also forward broadcasts from one net to the other.
 
-IP broadcast address does not need to end with 255.  It is convention on 
-C class subnets to give it address of 255 (all ones), however 
-theoretically it can be any address, as long as you define it as 
-broadcast address on all of your machines.  If you subnet C class to 
-even smaller subnets and use "all ones" convetion for broadcast address, 
-broadcast address will not end in 255 (for example, using "all ones" 
-convetion, broadcast address of 192.168.1.0/25 would be 192.168.1.127). 
-  Same goes for A or B class subnets (If your network is defined as 
-192.168.0.0/16, broadcast address (using convention) would be 
-192.168.255.255, so in this case 192.168.12.255 is not broadcast 
-address, it's just a host in 192.168.0.0/16).
-
-However, do note that 255.255.255.255 is always valid broadcast address!
-
-The answer to your second question is, yes, on Ethernet 
-ff:ff:ff:ff:ff:ff is always an (Ethernet) broadcast.  Ethernet 
-broadcasts are not the same as IP broadcast.  However, IP broadcasts 
-packets will be encapsulated into Ethernet broadcast packets (unless you 
-have something really wrong in your configuraion).  Do note that I saw 
-at least one broken higher level protocol implementation (no, it wasn't 
-IP) that spit out everything using Ethernet broadcasts.
-
-As David already told you, broadcasts should not be routed (if you want 
-them to be routed, you usually need to read tips-and-tricks section in 
-your router configuration, and do something to make it work).  So the 
-router is the place to have them blocked.
+No.  Netfilter is not going to forward them all-by-itself.  The packet 
+will end up in FORWARD chain only if the kernel decides it needs to 
+route it from one interface to another.  So, if your kernel is not 
+routing broadcast packets (it shouldn't by default), you will not see 
+them in FORWARD chain.
 
 -- 
 Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
