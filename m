@@ -1,12 +1,14 @@
-From: Herman <Herman@AerospaceSoftware.com>
-Subject: The Great Big Portforwarding Secret
-Date: Sun, 12 Oct 2003 20:07:37 -0600
+From: JM <jerome@gmanmi.tv>
+Subject: Re: iptables help..
+Date: Mon, 13 Oct 2003 11:12:04 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310122007.37833.Herman@AerospaceSoftware.com>
-Reply-To: Herman@AerospaceSoftware.com
+Message-ID: <200310131112.04067.jerome@gmanmi.tv>
+References: <200310101245.55993.jerome@gmanmi.tv> <1065763796.1650.21.camel@kermit>
+Reply-To: jerome@gmanmi.tv
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1065763796.1650.21.camel@kermit>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,31 +20,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Ralf Spenneberg <lists@spenneberg.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hi everybody,
+hi,
 
-It appears that the netfilter_mangle module is required for nat to work 
-properly.  
+i added LOGging on server_A
 
-I would like to thank Redhat for their very nice rc.firewall-2.4-stronger 
-script.  It works mostly - just this teenie little problem with it...
+log all INPUT and FORWARD to messages log file... and for some reason nothing 
+is comming up...
 
-Port forwarding now finally works and I can play Nectarine Radio on my laptop 
-with a decent set of rules in the firewall.
+[ having nightmares on this.. : (  ]
 
-So, now I can try the government Java applet port forwarding problem and if I 
-can get that to work somehow, then I can finally fix my client's machine.
+TIA
 
-Thanks to everybody who read my desperate pleas and offered suggestions.
+On Friday 10 October 2003 13:29, Ralf Spenneberg wrote:
+> Am Fre, 2003-10-10 um 06.45 schrieb JM:
+> > i want to access the http server on "remote server x" from LAN.. without
+> > going through the internet.. so what i did is setup DNAT on "remote
+> > server A" but somehow its not working..
+> >
+> > this is my ruleset..
+> >
+> > NAT
+> > -A PREROUTING -d serverA_IP -p tcp -m tcp --sport 1024:65535 --dport 81
+> > -j DNAT --to-destination serverx_IP:80
+> >
+> > FILTER
+> > -A INPUT -p tcp -s LAN_IP/24 --sport 1024:65535 -d serverA_IP --dport 81
+> > -j LOG --log-prefix "INPUT packets:" -A FORWARD -d  serverx_IP -p tcp -m
+> > tcp --sport 1024:65535 --dport 80 -m state --state NEW -j ACCEPT -A
+> > FORWARD -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+> > -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> > -A FORWARD -p tcp -j LOG --log-prefix "FORWARD packets:"
+>
+> So how does it not work? What error messages do you see? Did you enable
+> routing on server_A? You probably want an SNAT rule too, because
+> otherwise server_X will try to answer directly to the LAN. That might
+> create problems doing conntrack on server_A and your Firewall protecting
+> the LAN.
+>
+> Cheers,
+>
+> Ralf
 
-Ten past eight pm and time for a cocktail to celebrate...
-
-Cheers,
--- 
-Herman Oosthuysen 
-B.Eng(E), MIEEE
-Aerospace Software Ltd.
-Ph: 1.403.241-8773, Cell: 1.403.852-5545, Fx: 1.403.241-8841
-Herman@AerospaceSoftware.com, http://www.AerospaceSoftware.com
 
