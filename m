@@ -1,12 +1,12 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: Module Examples
-Date: Tue, 15 Apr 2003 18:57:38 +0200 (CEST)
+From: "Keller Nicolas" <nicolas.keller@slb.de>
+Subject: Multiple Source Addresses
+Date: Tue, 15 Apr 2003 18:28:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0304151856360.9976@dns.toxicfilms.tv>
-References: <000c01c30367$e2b5dcb0$790e8f0a@mystro.mystrotv.com>
+Message-ID: <22FCCF057850DB48B98178E1811374830DA6D9@slra07.slb.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000c01c30367$e2b5dcb0$790e8f0a@mystro.mystrotv.com>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,17 +16,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Craig Mahonchak <cmahonchak@mystrotv.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> Where can I find some simple Netfilter module examples?
-Try the patch-o-matic patches.
-They are perfect examples how to write matches/targets.
-If you want to write conntrack helpers and nat modules, please
-read the netfilter-hacking-howto.
+Hi!
 
-Regards,
-Maciej Soltysiak
+I want to log every packet that *doesn't* come from IP1 and IP2 (because
+these two hosts should be the only one that communicate with the
+Firewall). Up to now I couldn't figure out a way to do this, as it is
+NOT possible to include multiple source addresses in one line, like
+this:
+
+iptables -A INPUT -s !192.168.43.1 !192.168.43.2 -j LOG
+
+Anyone can show me a way to get this to work?
+
+Thank you very much!
+
+Nicolas Keller
 
