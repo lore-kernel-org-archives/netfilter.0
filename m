@@ -1,9 +1,9 @@
-From: "David Ruggles" <david@safedatausa.com>
-Subject: Re: Quick Routing question
-Date: Wed, 5 Mar 2003 09:30:35 -0500
+From: "Newton" <newton@netfids.com>
+Subject: Module for Oracle with NAT
+Date: Wed, 5 Mar 2003 10:21:49 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ae01c2e323$ca9b6fa0$1f0016ac@daviddesktop>
-References: <016701c2e28a$239fbab0$1f0016ac@daviddesktop> <20030305010744.5828b6d3.arnt@c2i.net>
+Message-ID: <008e01c2e32a$f302e520$99e0e20a@int.tp.com.pe>
+References: <3e660b98.769a.0@unacs.bg>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,29 +17,92 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+Hi,
+
+Friends Do you know if are there any module of kernel to work Oracle with
+NAT ,????
+
+Newton.
+
 
 ----- Original Message -----
-From: "Arnt Karlsen" <arnt@c2i.net>
-Subject: Re: Quick Routing question
+From: <nedco@unacs.bg>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, March 05, 2003 9:37 AM
+Subject: iptables dropping wrong packets
 
-[Snipped Dig commands]
 
 >
-> ..you run a _root_ name server and come here asking us amateur newbies
-> with less than 25 yrs internet experience for netfilter advice????? ;-)
 >
-
-I hope you're joking. 172.22.x.x is inside the Class B non-routable
-addresses set aside by RFC 1918
-
-Thanks,
-David Ruggles
-
-CCNA MCSE (NT) CNA A+
-Network Engineer, Safe Data, Inc
-910-285-7200    david@safedatausa.com
-0100011101101111011001000110110001101111011101100110010101110011011110010110
-111101110101
+>
+> Hi,
+>
+> looks like some of correct packes are droped
+>
+> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+> num   pkts bytes target     prot opt in     out     source
+destination
+>
+> 1    36142   16M ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+>          TOS
+> match 0x00
+> 2     168K   54M ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+>          TOS
+> match 0x10
+> 3       27  1782 LOG        all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+>          LOG
+> flags 0 level 4
+> 4       27  1782 DROP       all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+>
+>
+>
+> in log we can see that TOS of packets is 0x0 they are also packets with
+0x10
+>
+>
+>
+> Mar  5 04:32:10 proliant kernel: IN=eth0 OUT=eth1 SRC=62.176.73.4
+DST=62.176.105.30
+> LEN=76
+> TOS=0x00 PREC=0xC0
+> Mar  5 04:32:15 proliant kernel: IN=eth0 OUT=eth1 SRC=62.176.73.4
+DST=62.176.105.30
+> LEN=76
+> TOS=0x00 PREC=0xC0
+> Mar  5 04:32:18 proliant kernel: IN=eth1 OUT=eth0 SRC=212.5.149.252
+DST=212.5.134.3
+> LEN=87
+> TOS=0x00 PREC=0xC0
+> Mar  5 04:32:19 proliant kernel: IN=eth0 OUT=eth2 SRC=62.176.73.4
+DST=62.176.106.69
+> LEN=88
+> TOS=0x00 PREC=0xC0
+> Mar  5 04:32:19 proliant kernel: IN=eth0 OUT=eth1 SRC=62.176.73.4
+DST=62.176.105.30
+> LEN=76
+> TOS=0x00 PREC=0xC0
+> Mar  5 04:32:29 proliant kernel: IN=eth0 OUT=eth2 SRC=195.230.9.159
+DST=62.176.106.69
+> LEN=48
+> TOS=0x00 PREC=0x8
+> Mar  5 04:32:31 proliant kernel: IN=eth0 OUT=eth1 SRC=62.176.73.4
+DST=62.176.105.30
+> LEN=76
+> TOS=0x00 PREC=0xC0
+> Mar  5 04:32:32 proliant kernel: IN=eth0 OUT=eth2 SRC=195.230.9.159
+DST=62.176.106.69
+> LEN=48
+> TOS=0x00 PREC=0x8
+>
+> Am I doing something wrong?
+>
+> 10x in advance
+> Nedko
 
 
