@@ -1,14 +1,10 @@
-From: "Ed Street" <blacknet@simplyaquatics.com>
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
 Subject: RE: Most stable firewall distro
-Date: Wed, 3 Jul 2002 21:06:51 -0400
+Date: Thu, 4 Jul 2002 11:15:40 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <004d01c222f7$14b57ce0$0a01a8c0@ed>
-References: <200FAA488DE0D41194F10010B597610D2BA213@JUPITER>
-Reply-To: <blacknet@simplyaquatics.com>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA214@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA213@JUPITER>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,7 +15,27 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'blacknet@simplyaquatics.com'" <blacknet@simplyaquatics.com>
 Cc: netfilter@lists.samba.org
+
+Not that I've had any security problems under Linux ;) *whole bunch of
+people search my IP and start attacking ;P )
+
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: Ed Street [mailto:blacknet@simplyaquatics.com]
+Sent: Thursday, 04 July 2002 11:07 AM
+Cc: netfilter@lists.samba.org
+Subject: RE: Most stable firewall distro
+
 
 Hello,
 
