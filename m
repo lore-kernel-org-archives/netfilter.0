@@ -1,13 +1,11 @@
-From: Whit Blauvelt <whit@transpect.com>
-Subject: Re: DNAT from an IP address that does not exist to another that exists
-Date: Thu, 7 Aug 2003 08:03:30 -0400
+From: "Martin Djernaes" <martin@djernaes.dk>
+Subject: (newbie) SNAT woes
+Date: Thu, 7 Aug 2003 16:14:56 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030807120330.GA16731@china.patternbook.com>
-References: <004e01c35caf$86bd4910$200aa8c0@thorin> <006201c35cb0$e2f396c0$200aa8c0@thorin>
+Message-ID: <16448.128.107.253.37.1060265696.squirrel@mail.djernaes.dk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <006201c35cb0$e2f396c0$200aa8c0@thorin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Carlo Florendo <carlo@hq.astra.ph>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, Aug 07, 2003 at 02:55:28PM +0800, Carlo Florendo wrote:
+Hi,
 
-> So this means that:     
-> 
-> iptables -t nat -I POSTROUTING -s 192.168.30.0/24 -d 192.168.30.11 \ -j MASQUERADE  (your solution)
-> 
-> and 
-> 
-> iptables -I POSTROUTING -t nat -s 192.168.30.0/24 -o $INTDEV -d \ 
->     192.168.30.11 -j SNAT --to 192.168.30.1 (c/o George Vieira)
-> 
-> are equivalent (given that 192.168.30.1 is the gateway).
+I realise that you have seen mails like mine lots of time before, but I
+have spend hours reading howtos and googling for some hint as to why my
+very simple setup doesn't work.
 
-They get you to the same place. But it's said that SNAT is more resource
-efficient.
+I have a simple box which just is suppose to do normal NATing of outgoing
+traffic so it uses the public IP address.
 
-Whit
+I thought that I had it all setup right (that was at least what I
+understood from everything I read), so here is my nat table:
+
+# iptables -t nat -v -L
+Chain PREROUTING (policy ACCEPT 1774 packets, 193K bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+
+Chain POSTROUTING (policy ACCEPT 1443 packets, 77156 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+    0     0 SNAT       all  --  any    eth1    anywhere            
+anywhere           to:11.22.33.44
+
+Chain OUTPUT (policy ACCEPT 317 packets, 23092 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+
+Now if I ping an external IP address from another box on the "inside" and
+run "tcpdump -ni eth1" on the gateway box, I will see the source address
+being unchanged! (and I don't get an icmp echo reply back).
+
+So what did I miss? Isn't it just a oneliner to turn SNAT on?
+
+Martin
+
+
 
