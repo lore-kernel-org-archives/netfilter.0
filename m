@@ -1,11 +1,14 @@
-From: Vilmos Branyik <vbranyik@piopc.com>
-Subject: RE: Call for testing: patch-o-matic-ng
-Date: Tue, 23 Dec 2003 19:30:26 -0700
+From: Vinayakam Murugan <vinayakm@theargoncompany.com>
+Subject: Re: Packets missing state ?
+Date: Wed, 24 Dec 2003 09:42:39 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <30E7B49F378ED711AC0F00E02917CD8B10E657@POLLY>
+Message-ID: <200312240942.40069.vinayakm@theargoncompany.com>
+References: <200312231828.59518.rajiv@theargoncompany.com> <200312231907.58135.vinayakm@theargoncompany.com> <1072187752.809.114.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1072187752.809.114.camel@elendil.intranet.cartel-securite.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,79 +18,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Vilmos Branyik <vbranyik@piopc.com>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Alistair
+> These packets are delayed ones, probably due to high latency (heavy load
+> on line ?). Most of the time, there's not much to worry about,
+> especially on DSL line when upload goes up.
 
-Why are you using my name and email address for your posting?
+How can i uniquely identify such packets so that I don't log them and just 
+drop them? Is this possible? 
 
-Vilmos
+> Seems that someone wants to ask some DNS stuff to your box :) Maybe this
+> IP is declared somewhere as authoritative for a domain or someone use it
+> as forwarder.
 
-> -----Original Message-----
-> From: Vilmos Branyik=20
-> Sent: Tuesday, December 23, 2003 5:52 PM
-> To: kilobug@freesurf.fr; Harald Welte
-> Cc: Netfilter Development Mailinglist; Netfilter Mailinglist
-> Subject: Re: Call for testing: patch-o-matic-ng
->=20
->=20
-> On December 23, 2003 07:26 pm, Ga=EBl Le Mignot wrote:
-> > Hello Harald, hello netfiler list ;)
-> >
-> > I did  some tests on which  patch from the patch-o-matic =20
-> works on 2.6
-> > and which ones don't compile. Here is the complete result=20
-> of my tests.
-> >
-> > I just try compiling them (after applying patches on a=20
-> vanilla 2.6.0),
-> > I didn't try to load or use them.
-> >
-> > I've noticed too that when  a patch doesn't apply, pom-ng=20
-> doesn't seem
-> > to display it - or do it so fast that I don't notice it.
-> >
-> >
-> 	Agreed -- same here -- offlist to Harald as well since=20
-> I think my perl is weirding out on us.
->=20
-> 	Alistair
->=20
+My primary objective is to log suspicious packets only. Any pointers on how I 
+can do that?
 
-Matt Branyik
-www.piopc.net
-(719) 784-6955=20
+-- 
+Warm Regards
+~~~~~~~~~~~~~~~~~~~~~~~
+Vinayakam Murugan
 
-> -----Original Message-----
-> From: Vilmos Branyik=20
-> Sent: Tuesday, December 23, 2003 5:52 PM
-> To: kilobug@freesurf.fr; Harald Welte
-> Cc: Netfilter Development Mailinglist; Netfilter Mailinglist
-> Subject: Re: Call for testing: patch-o-matic-ng
->=20
->=20
-> On December 23, 2003 07:26 pm, Ga=EBl Le Mignot wrote:
-> > Hello Harald, hello netfiler list ;)
-> >
-> > I did  some tests on which  patch from the patch-o-matic =20
-> works on 2.6
-> > and which ones don't compile. Here is the complete result=20
-> of my tests.
-> >
-> > I just try compiling them (after applying patches on a=20
-> vanilla 2.6.0),
-> > I didn't try to load or use them.
-> >
-> > I've noticed too that when  a patch doesn't apply, pom-ng=20
-> doesn't seem
-> > to display it - or do it so fast that I don't notice it.
-> >
-> >
-> 	Agreed -- same here -- offlist to Harald as well since=20
-> I think my perl is weirding out on us.
->=20
-> 	Alistair
->=20
+Viruses getting you down?
+Get your virus protected mailbox at http://www.tassm.com
+
+Linux: The choice of a GNU generation
+
 
