@@ -1,14 +1,11 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: Could be a stupid question...
-Date: Tue, 18 May 2004 14:42:18 +0100
+From: alucard@kanux.com
+Subject: forwarding
+Date: Tue, 18 May 2004 10:22:07 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405181442.18063.gdh@acentral.co.uk>
-References: <200405172155.06592.dennis@airstrike.co.nz> <200405171126.28093.Antony@Soft-Solutions.co.uk> <200405190108.50311.dennis@airstrike.co.nz>
+Message-ID: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405190108.50311.dennis@airstrike.co.nz>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,27 +18,97 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 18 May 2004 14:08, Dennis Morgan wrote:
+Hi there again,
 
-> Hi
-> Thanks Antony for the suggestion about using SQUID in a reverse proxy
-> configuration..    Your suggestion actually come at a pretty good time,
-> bcos it solves another problem.. Thanks...
->
-> Also Gavin, that package, i am going to test it later on, when i am back in
-> the office in the test lab to see if i can get it to work...  It will just
-> mean i will have to upgrade the linux router to 2.6 so i can use it..
+   I finally decided to add a second card to both, the server and the
+client to be able to forward packets from port 8080 in server 1 to port
+80 in server 2 and somehow this packets are not going thru, let me
+explain my scenario
 
-Yep, it's another good reason to learn about 2.6 sooner rather than later.. my 
-own pressing problem with 2.6 is the native IPSec not having an 'ipsec0' 
-interface (as was discussed on this list quite recently)..
+                           Internet Address
+                            Nat'ed Address
+                            ---------------
+                            |  Linux Box  |
+                  Server 1  |10.73.219.156|nat'ed' address
+                            | 192.168.0.1 |2nd NIC to forward packets
+                            ---------------
+                                 8080
+                                   |
+                                   |
+                                  80
+                            ---------------
+                            |  web server |
+                  Server 2  | 192.168.0.2 |
+                            |             |
+                            ---------------
 
-I may actually apply the FreeS/WAN patches and remove the kernel native stuff, 
-to be honest. 
 
-Once I get that cracked, I'll be doing some layer 7 filtering on the firewall 
-here :)
+- Server 1 has a natted addres using it's 10.73; what I'm trying to do is
+that evrything that comes to 10.73.219.156:8080 gets forwarded to
+192.168.0.2:80.
 
-Cheers,
-Gavin.
+- Server 1 functions as a webserver and that's why I'm using port 8080 in
+order to forward packets to port 80 in server 2
+
+- Here's my Server 1's /etc/rc.d/rc.firewall script because somehow it's
+not working:
+
+-----
+echo "Borrando posibles reglas anteriores..."
+iptables -F
+iptables -X
+
+echo "Habilitando politicas de negacion total de paquetes"
+
+iptables -P FORWARD DROP
+iptables -P INPUT DROP
+
+echo "Reglas para paquetes de entrada y salida"
+
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+##internas
+iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+
+#para el forward
+echo 0 > /proc/sys/net/ipv4/ip_forward
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
+iptables -t nat -A PREROUTING -d 192.168.0.1 -p tcp --dport 8080 \
+    -j DNAT --to-destination 192.168.0.2:80
+echo 1 > /proc/sys/net/ipv4/ip_forward
+-----
+
+I have done this many times and somehow this time is not working, that
+means that I have changed many things using postrouting, nat and dnat. Is
+it because any missconfiguration on Server 2's route? here's the output:
+
+-----
+[root@linserv root]# route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+192.168.0.0     *               255.255.255.0   U     0      0        0 eth1
+10.73.216.0     *               255.255.252.0   U     0      0        0 eth0
+169.254.0.0     *               255.255.0.0     U     0      0        0 eth0
+127.0.0.0       *               255.0.0.0       U     0      0        0 lo
+default         192.168.0.1     0.0.0.0         UG    0      0        0 eth1
+-----
+
+Is it because I have to use different INPUT rules? for what I know, INPUT
+rules are only for the packets going to the computer itself.
+
+Any suggestions will be great
+Thanks a lot as usual to this great mailing list
+
+Juan
+
+
 
