@@ -1,11 +1,11 @@
-From: "Christopher Davis" <cldavis@speakeasy.net>
-Subject: Packet Flags & ICMP errors
-Date: Sat, 17 May 2003 23:27:57 -0400
+From: "Calvin" <calvinproject@ihug.com.au>
+Subject: using libiptc in module?
+Date: Sun, 18 May 2003 16:05:38 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <KOELJFLIIGOBCCBACPGBCEEHCAAA.cldavis@speakeasy.net>
+Message-ID: <001901c31d03$81658f90$96dc6f89@toowoomba>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0020_01C31CCB.F2FAD710"
+	boundary="----=_NextPart_000_0016_01C31D57.52B96D70"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,23 +20,20 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0020_01C31CCB.F2FAD710
+------=_NextPart_000_0016_01C31D57.52B96D70
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-I'm trying to setup an iptables rule to bounce back an icmp error message on
-a firewall if a packet is sent with the syn and fin flags only --
+Der all,
 
-A packet with SYN flag set only -- accept
-A packet with FIN flag set only -- accept
-A packet with SYN & FIN flag -- reject Is it possible to choose the error
-code?
+is it possible to use/include the libiptc for change the iptables in a =
+module?
 
-Thank you for any help you can offer on this.
-Christopher Davis
+Thanks.
 
-------=_NextPart_000_0020_01C31CCB.F2FAD710
+Calvin
+------=_NextPart_000_0016_01C31D57.52B96D70
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -45,35 +42,20 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D841261403-18052003>I'm =
-trying to setup=20
-an iptables rule to bounce back an icmp error message on a firewall if a =
-packet=20
-is sent with the syn and&nbsp;fin flags only&nbsp;--</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D841261403-18052003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D841261403-18052003>A =
-packet with SYN=20
-flag set only -- accept</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D841261403-18052003>A =
-packet with FIN=20
-flag set only -- accept</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D841261403-18052003>A =
-packet with SYN=20
-&amp; FIN flag -- reject Is it possible to choose the error=20
-code?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D841261403-18052003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D841261403-18052003>Thank =
-you for any=20
-help you can offer on this.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D841261403-18052003>Christopher=20
-Davis</SPAN></FONT></DIV></BODY></HTML>
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#c0c0c0>
+<DIV><FONT face=3DArial size=3D2>Der all,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>is it possible to use/include the =
+libiptc for=20
+change the iptables in a module?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Calvin</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_0020_01C31CCB.F2FAD710--
-
+------=_NextPart_000_0016_01C31D57.52B96D70--
 
 
