@@ -1,9 +1,8 @@
-From: funny guy <asteriskmail@yahoo.com>
-Subject: Multiple PPTP clients behind NAT
-Date: Sun, 12 Sep 2004 19:22:08 -0700 (PDT)
+From: "Joe Clark" <joeclark@iastate.edu>
+Subject: Re: Problems Compiling userspace NF_QUEUE handler
+Date: Sun, 12 Sep 2004 23:00:34 -0500 (CDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040913022208.11511.qmail@web52510.mail.yahoo.com>
-Mime-Version: 1.0
+Message-ID: <3402312810402551@webmail.iastate.edu>
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,61 +13,51 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: JC <solemnphoenix@yahoo.co.uk>, Joe Clark <joeclark@iastate.edu>, netfilter@lists.netfilter.org
 
-Dear All,
+Well, this will be like the blind leading the blind here, but... this site was
+helpful to me: http://www.linuxjournal.com/article.php?sid=7184 (although it
+didn't address the NF_QUEUE issues that I needed to know about).  My end goal
+here, by the way, is to introduce artificial delay in all outgoing packets to
+simulate a slow link, so I don't need to do any mangling of anything, so I
+didn't look into that very much.
 
-I wish to establish multiple PPTP connection through
-and linux NAT machine with the following scenario:
+I have noticed too that the documentation for netfilter seems to
+be...um...scattered a little, and not exactly complete.  Maybe I'm just looking
+in the wrong places.  But a good page with a simple description of what the
+absolute basic necessities are would be nice (kernel_module.c & userspace.c
+files, for example, including dependencies on, say, libipq).
+- Joe
 
-PPTP client 1->|                       |->PPTP Server
-1
-               |                       |
-PPTP client 2->|                       |->PPTP Server
-2
-               |->NAT->...Internet...->|
-... ... ...  ->|                       |->... ... ...
-               |                       |
-PPTP client n->|                       |->PPTP Server
-n
-
-I recompiled Kernel 2.4.26 with the patch
-patch-o-matic-20031219 from www.netfilter.org and I
-recompiled iptables v1.2.11
-
-I have the required modules loaded:
-ip_conntrack_proto_gre
-ip_conntrack_pptp
-ip_nat_proto_gre
-ip_nat_pptp
-iptable_nat
-ip_conntrack
-ip_tables
-iptable_filter
-
-However, the iptables rules stated in
-http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-pptp-conntrack-nat
-are incomplete. Therefore, I cannot establish multiple
-connections successfully. The scenario is as
-following:
-1. I can setup two connections at the same time (the
-signalling seems working)
-2. However, only one client is able to ping the
-machines in the server network 
-3. If two machines try to ping at that same time, one
-of them will fail (the data path seems not working)
-
-Can anyone suggest the correct iptable rules for me?
-or anyone can give me other helps?
-
-Thanks in advance.
+> Hi,
+>  
+> I couldnt help replying to this message, although it is not really to offer any
+help but to ask for help myself...
+>  
+> I am currently trying to implement a kernel module that does some packet
+mangling and all I can say is that I'm really lost in some issues.
+>  
+> Could you please point out some references? 
+> Maybe there are some code snippets/examples of how to read things off the packet
+header (like source/destination port)?
+>  
+> thanx for any help in advance
+>  
+> regards,
+> JC
+>  
+> 
+> 
+> Destroying all hope... one line of code at a time.
+> 		
+> ---------------------------------
+>  ALL-NEW Yahoo! Messenger - all new features - even more fun!  
 
 
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail - 50x more storage than other providers!
-http://promotions.yahoo.com/new_mail
+
+
+
 
