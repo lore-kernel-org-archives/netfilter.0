@@ -1,12 +1,10 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: default policy
-Date: Fri, 1 Nov 2002 18:22:00 -0500 (EST)
+From: "SB CH" <chulmin2@hotmail.com>
+Subject: traffic checking tool available?
+Date: Sat, 02 Nov 2002 05:28:12 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0211011820180.3625-100000@dell>
-References: <NEENJAPFEAIEMGMNIGFLGEABCEAA.rwideman@austin.rr.com>
+Message-ID: <F159lKNyKpGGYUnfuIu00015a5f@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NEENJAPFEAIEMGMNIGFLGEABCEAA.rwideman@austin.rr.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,41 +14,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="euc-kr"; format="flowed"
+Content-Transfer-Encoding: base64
+To: netfilter@lists.netfilter.org
 
-On Thu, 31 Oct 2002, Rob wrote:
-
-> I have been looking at several scripts checking the default policies on
-> them.
-> Some include items that others don't.  Oscars tutorial doesn't cover all of
-> these compared to Ziegler's book.  I have been wondering if the following
-> covers ALL built-in chains?
-> iptables -P INPUT   DROP
-> iptables -P OUTPUT  DROP
-> iptables -P FORWARD DROP
-
-nope, only for the filter table.
- 
-> Ziegler's book states that it should be this (it was never put in these
-> words but this is what I am gathering from my reading):
-> iptables -t nat    -P PREROUTING  DROP
-> iptables -t nat    -P OUTPUT      DROP
-> iptables -t nat    -P POSTROUTING DROP
-> iptables -t mangle -P PREROUTING  DROP
-> iptables -t mangle -P OUTPUT      DROP
-> iptables -t filter -P INPUT       DROP
-> iptables -t filter -P OUTPUT      DROP
-> iptables -t filter -P FORWARD     DROP
-
-while this is missing the newer chains in the mangle table, the
-bigger issue is what it even means to put DROP policies on chains
-in the nat and mangle tables.
-
-apparently, it's legal -- i tried it and it took the policy
-assignment.  i just have no idea what it means to do this.
-
-rday
-
-
+SGVsbG8gLGFsbC4KClNvbWUgY29tbWVyY2lhbCBmaXJld2FsbHMgc2F5IHRoYXQgaGUgY2FuIGRv
+IGZpcmV3YWxsaW5nIHdpdGhvdXQgcGFja2V0IApsb3NzIHVwIHRvIDcwTSB0cmFuc21pc3Npb24g
+YXQgZ2VuZXJhbCBmaXJld2FsbCBhbmQgNTAwfjYwME0gYXQgR2lnYWJpdCAKRmlyZXdhbGwuClNv
+IEkgd291bGQgbGlrZSB0byB0ZXN0IHRoZSB0cmFuc21pc3Npb24gY2FwYWJpbGl0eSBvZiB0aGUg
+aXB0YWJsZXMgCmZpcmV3YWxsLgpEbyB5b3Uga25vdyBhbnkgYXZhaWxhYmxlIHRvb2wgb3Igc2l0
+ZSB0byBjaGVjayB0cmFuc21pc3Npb24gY2FwYSBvciAKcGVyZm9ybWFuY2U/CgpBbnkgY29tbWVu
+dHMgYXJlIHNvIHRoYW5rIHlvdS4KClRoYW5rcyBpbiBhZHZhbmNlLgoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCsH1sccg
+waS6uCCwocDlILr8uKOw7SDG7cfPsNQguri9xyC89iDA1r3AtM+02S4gTVNOIMH1sccvxfXA2iAg
+Cmh0dHA6Ly93d3cubXNuLmNvLmtyL3N0b2NrLyAKCgo=
