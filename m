@@ -1,10 +1,10 @@
-From: Payal <rpayal@indiainfo.com>
-Subject: iptables : masq
-Date: Thu, 13 Jun 2002 15:28:27 +0530
+From: Juri Haberland <list-linux.netfilter.users@spoiled.org>
+Subject: Re: TCP delay, solved
+Date: Thu, 13 Jun 2002 09:59:42 +0000 (UTC)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <ae9qdl$trm$2@main.gmane.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <news2mail-ae9qee$vvr$1@babel.spoiled.org>
+References: <0fbe01c2122e$f0783300$2901a8c0@amos> <200206122002.g5CK2nA02787@Networker.rockstone.co.uk>
+Reply-To: Juri Haberland <juri@koschikode.com>
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,55 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Hi,
-As I said earlier I am using Mdk Linux 8.2 with kernel 2.4.18. I am tryin=
-g to=20
-shift from ipchains to iptables for a simple reson that I cannot connect =
-to=20
-one particular ftp site where ip_masq_ftp was required in earlier version=
-s of=20
-kernel. Now this module is no longer available. So, I have to shift to=20
-iptables since connecting to that site is really imp.
-But I am having a problem. I read briefly NAT and iptables HOWTOs and dec=
-ided=20
-the rule,
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+Antony Stone <Antony@soft-solutions.co.uk> wrote:
+> On Wednesday 12 June 2002 5:33 pm, Nathan Cassano wrote:
+> 
+>> Well you learn something new every day. Today I learned inetd does ident
+>> checks on it's clients.
+> 
+> Yes, it's called tcpwrappers, and has been pretty standard on systems for I'd 
+> say about four years now :-)
 
-My loaded modules by lsmod include,
-ipt_MASQUERADE          1504   5  (autoclean)
-iptable_mangle          2336   0  (autoclean) (unused)
-iptable_nat            15988   1  (autoclean) [ipt_MASQUERADE]
-ip_conntrack           15180   1  (autoclean) [ipt_MASQUERADE iptable_nat=
-]
-iptable_filter          1952   0  (autoclean)
-ip_tables              11584   6  [ipt_MASQUERADE iptable_mangle iptable_=
-nat=20
-iptable_filter]
+That might not be true. Actually it depends on how the tcpwrappers are
+compiled. AFAIK the tcpwrappers are compiled with ident lookup by
+default but these are only done when you have a line like:
 
-But my problem is that inspite of giving the above command I have,
+in.ftpd: user@192.168.0.
 
-#iptables --list
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
+in your hosts.access file. So in general the tcpwrappers do not do ident
+lookups.
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+>> This is annoying, is there a way you can turn
+>> this off inside inetd?
+> 
+> Yes, it's the bit on each line of /etc/inetd.conf which says "/usr/sbin/tcpd" 
+> - it does an ident lookup and logs the access to syslog before handing the 
+> connection over to the real daemon.
+> 
+> If you don't want this to happen them remove the "/usr/sbin/tcpd" from 
+> inetd.conf and just have the standard daemon listed there on its own.
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+This is a very bad advice as the tcpwrappers are a standard security
+tool which shouldn't be disabled!
+And it won't help in cases of telnet and ftp as they do their ident lookups
+themselfs!
 
-What is wrong now? Why is'nt my rule listed?
-I even have 1 in /proc/sys/net/ipv4/ip_forward.
-Please do tell as early as possible or atleast tell me how to get it work=
-ing=20
-under ipchains.
+The only way to go is to use iptables to reject those lookups.
 
-Thanks a lot in advance and bye.
--Payal
-p.s i have some problems with my present email address, it would be great=
- if=20
-you can cc the mail to payal99  @  cyberspace.org
+Cheers,
+Juri
+
+-- 
+Juri Haberland  <juri@koschikode.com> 
+
 
