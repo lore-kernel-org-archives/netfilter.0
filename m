@@ -1,11 +1,13 @@
-From: hellbreak <hellbreak@vrlteam.org>
-Subject: Problem with MSN and UPNPD
-Date: Fri, 27 Feb 2004 00:28:51 +0000
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Problem with MSN and UPNPD
+Date: Fri, 27 Feb 2004 14:54:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040227002851.73ad342d.hellbreak@vrlteam.org>
+Message-ID: <20040227135429.06249C7B@sterenborg.info>
+References: <20040227002851.73ad342d.hellbreak@vrlteam.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040227002851.73ad342d.hellbreak@vrlteam.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,14 +20,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi to all, i have try to install linux-igd but when i try to start the upnpd damon with 
+> Hi to all, i have try to install linux-igd but when i try to 
+> start the upnpd damon with 
+
+Perhaps this is the wrong list..
+
+> upnpd ppp0 eth1
+> the daemon start and kill soon.
+> 
+> Nothing in /var/log/messagges help me to understand the problem :-(
+
+http://linux-igd.sourceforge.net/
+Here you can find the linux-idg list.
 
 
-upnpd ppp0 eth1 
-the daemon start and kill soon.
+Gr,
+Rob
 
-Nothing in /var/log/messagges help me to understand the problem :-(
-
-
-Thx a lot .
 
