@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Final IPTables script (hopefully)
-Date: Wed, 29 Dec 2004 15:07:35 -0500
-Message-ID: <1104350854.7318.62.camel@hubcap.ljm.dom>
-References: <6.1.2.0.0.20041228154423.18f8ee30@corpmail.courtesymortgage.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Saving IPTable rules..oops
+Date: Wed, 29 Dec 2004 15:15:04 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10412291453001.27815-100000@darkstar.sysinfo.com>
+References: <1104345151.1976.28.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6.1.2.0.0.20041228154423.18f8ee30@corpmail.courtesymortgage.com>
+In-Reply-To: <1104345151.1976.28.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,89 +16,82 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Cc: Netfilter users list <netfilter@lists.netfilter.org>
 
-On Tue, 2004-12-28 at 18:48, Jason Williams wrote:
-> #Custom chains
-> 
-> $IPTABLES -N tcp_packets
+On Wed, 29 Dec 2004, John A. Sullivan III wrote:
 
-typo:  $IPTABLES -N bad_tcp_packets
+> On Wed, 2004-12-29 at 13:03, Jason Williams wrote:
+> > Morning.
+> > 
+> > Well, spent a better part of the night playing with IPTables. Tried out 
+> > some rules, tweaked this, broke that. Was a lot of fun.
+> > 
+> > Anyway, as I am getting ready to make one of my servers go live, I realized 
+> > something that I completely overlooked. Very important thing I might add.
+> > 
+> > Basically, once you put all your rules into IPTables via the command line, 
+> > how do you save your rules? I saw a command, iptables-save, but that just 
+> > outputs the rules in a readable format.
+> > 
+> > I started thinking and came up with the following:
+> > 
+> > 1) Does iptables read the init script in /etc/init.d/ upon bootup of a 
+> > server/box and use those rules for the system?
+> > 
+> > or
+> > 
+> > 2) Does it read a plain text file some where an use those rules instead?
+> > 
+> > wasn't quite sure and since im going on 22 hours without sleep, im positive 
+> > I missed it some where.
+> > 
+> > With that in mind, was hoping someone could fill in the details.
+> > 
+> > IF it is the case the the system reads the iptables init script upon 
+> > bootup/restart, that means I need to work on my scripting. :)
+> > 
+> > Anyways, hoping for a little clarity here.
+> > 
+> > Cheers,
+> > 
+> > 
+> > Jason
+> The way I've typically seen it work is that the init.d/iptables script
+> calls iptables-restore and passes it the /etc/sysconfig/iptables file. 
+> This file is written when you do init.d/iptables save.
 
-> # bad_tcp_packets chain
-> 
-> $IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK -m state 
-> --state NEW -j REJECT --reject-with tcp-reset
-> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG 
-> --log-prefix "New not syn:"
-> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
 
-you also never jump to this custom chain anywhere in your rules below. 
-maybe you wanted:
+perhaps on redhat and debian, and maybe suse systems that have moved away
+from the standard upon which linux was formed, namely bsd.  Those dists
+that retain their bsd layouts have no /etc/init.d directory, everything
+lies under /etc/rc.d/.  They also lack the red-hat layout of a
+/etc/sysconfig/ directory.  And it's a shame things are seperating out in
+the linux world like this as many of the tools and toys bewing created
+either conform to the new redhat layouts or follow older established
+standards.  Thus, some tools that have been coming out the past few years
+are only good under redhat or debian or suse, and fail to function if they
+compile at all, without being hacked prior to a make, and sometimes my
+skills are not enough to hack them into compiling at all uunder a
+different, more standard dist. <sigh>
 
-  $IPTABLES -A INPUT -j bad_tcp_packets
-  $IPTABLES -A FORWARD -j bad_tcp_packets
 
-but i don't really know for sure.
+Thanks,
 
-> Like the idea of this rule. Trying to prevent NMAP scans, xmas scans etc.
-> 
-> # Rules for incoming packets from the internet.
-> 
-> $IPTABLES -A INPUT -p ALL -d $INET_IFACE -m state --state 
-> ESTABLISHED,RELATED -j ACCEPT
+Ron DuFresne
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
-typo:  "-d $INET_IFACE" expands to "-d eth0" my guess is you either mean
-"-d $INET_IP" or "-i $INET_IFACE" from your explanation below i guess
-it's the latter.
-
-and the "-p ALL" is still unnecessary...
-
-> $IPTABLES -A INPUT -i $LAN_IFACE -s 172.16.1.2 --dport 22 -j ACCEPT
-> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
-> 
-> Should allow traffic to flow freely from the firewall to the internet and 
-> accept returning connections. No connections from the internet that are 
-> intiated will be accepted.
-> Acceping SSH from 172.16.1.2 on the private LAN.
-> Accceptin loopback interface.
-> 
-> # Accept the packets we actually want to forward
-> 
-> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -i $LAN_IFACE -o $INET_IFACE -s $LAN_IP_RANGE -j ACCEPT
-> 
-> Pass out private LAN traffic and return it. First rule is in line for 
-> better performance.
-> 
-> # Special OUTPUT rules to decide which IP's to allow.
-> 
-> $IPTABLES -A OUTPUT -j ACCEPT
-> 
-> Simple enough.
-> 
-> 
-> #NAT SETUP
-> 
-> $IPTABLES -t nat -A POSTROUTING -s $LAN_IP -o $INET_IFACE -j SNAT 
-> --to-source $INET_IP
-> 
-> Do SNAT for trafffic on the private LAN.
-
-typo:  $LAN_IP = 192.168.0.2; which i'm guessing is the IP of the
-firewall itself.  i think you mean $LAN_IP_RANGE
-
-> Feel good about these rules. Just wante to ask one last time before I go 
-> live, in case i booger it up and need help
-
-the theory is good; just missing some polish in the execution.
-
--j
-
---
-"Kids, you tried your best and you failed miserably. The lesson is,
- never try."
-	--The Simpsons
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
 
