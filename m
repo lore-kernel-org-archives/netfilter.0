@@ -1,15 +1,15 @@
 From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: Blocking Netranges Based on IP-to-Country CSV
-Date: Sun, 19 Sep 2004 12:09:53 +0300
+Subject: Re: Port forwarding
+Date: Sun, 19 Sep 2004 13:06:21 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a0409190209416c12b9@mail.gmail.com>
-References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
-	<20040917114613.GP452@metastasis.org.uk>
+Message-ID: <1403218a04091903066f329dc0@mail.gmail.com>
+References: <1095429469.1886.41.camel@wolfpack.ljm.dom>
+	<-4718906956710508172@unknownmsgid>
 Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040917114613.GP452@metastasis.org.uk>
+In-Reply-To: <-4718906956710508172@unknownmsgid>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +19,35 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?KUCKAERTZ_R=E9gis_-_NVISION?= <regis@nvision.lu>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Fri, 17 Sep 2004 12:46:13 +0100, Nick Drage <nickd@metastasis.org.uk> wrote:
-> On Thu, Sep 16, 2004 at 09:33:03AM -0700, Hudson Delbert J Contr 61 CS/SCBN wrote:
-> >
-> > why do this ?
-> 
-> There's a good set of reasons on:
-> 
-> http://ip-to-country.webhosting.info/
-> 
-> > seems a bit nasty in nature.
-> 
-> Depends how you use the information.  And to be honest considering the
-> reputation of some sources of traffic, such as Korea and South America,
-> which might be unlikely to have legitimate connections to your site, it
-> would be handy to block them all.
-> 
+you can set it in /etc/sysctl.conf
 
-I don't like this reason at all, but let me agree with you temporarily.
-What if a client with good reputation "ie, from your country :-)" is
-spending his vacation in South America, and wanted to check something
-in your website ??
 
-> > we dont even do this sort of thing? see email addy...
-> 
-> But you're a worldwide organisation, and I think there's much more that
-> you can do with this than just block.  For example, has anything figured
-> out a way to tie this into logging rules, it would great to see which
-> countries I'm being attacked from.
-> 
-> --
-> mors omnia vincit
-> 
-> 
+On Fri, 17 Sep 2004 16:09:59 +0200, KUCKAERTZ R=E9gis - NVISION
+<regis@nvision.lu> wrote:
+> > stupid question:  is IP forwarding enabled (sysctl
+> > net.ipv4.ip_forward)?
+>=20
+> argh, last week there was a maintenance cycle in our datacenter and every
+> machine was rebooted. I thought
+>=20
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+>=20
+> would be persistant but I was wrong. Also I forgot to check if it was sti=
+ll
+> there after the reboot. Really sorry, this is time lost!
+>=20
+> Thank you very much, good job!
+>=20
+> R=E9gis
+>=20
+>=20
 
 
 
--- 
+--=20
 Mohamed Eldesoky
 www.eldesoky.net
 RHCE
