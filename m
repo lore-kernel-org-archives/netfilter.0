@@ -1,8 +1,8 @@
 From: "Frischknecht Peter" <peter@empoweringsolutions.com>
 Subject: Kernel: NET: messages suppressed (I am sure it has been covered before)
-Date: Thu, 23 Oct 2003 09:34:10 -0500
+Date: Thu, 23 Oct 2003 09:55:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F41DBB59549A54482D4FC25AEEDCBE11FB2B4@MAIL-06VS.atlarge.net>
+Message-ID: <3F41DBB59549A54482D4FC25AEEDCBE18B9A9D@MAIL-06VS.atlarge.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -25,14 +25,12 @@ I am getting slammed.  My server will display anywhere from a few
 hundred to 50K messages suppressed.
 
 Previous posters have suggested that if I go early enough in my logs,
-that I will find the original suppressed message.
-NOT TRUE.
+that I will find the original suppressed message. NOT TRUE.
 
 I am desperate.  These messages are an indication of a larger problem,
-but I am unable to diagnose what.
-My network is fairly small (650 nodes), and I have been receiving these
-messages time and again.  Sometimes every 3 hours, sometimes every 3
-days. =20
+but I am unable to diagnose what. My network is fairly small (650
+nodes), and I have been receiving these messages time and again.
+Sometimes every 3 hours, sometimes every 3 days. =20
 
 Network analizers (Ntop, iptraf) have been unable to identify the source
 of the traffic.  If I run these utilities on the server, they freeze
@@ -58,7 +56,7 @@ ANY help would be appreciated.
 
 Here is a sample:
 ****
-[root@ess-uvce root]# grep "kernel: NET" /var/log/messages;
+[root@ess-uvce root]# grep "kernel: NET" /var/log/messages
 Oct 21 15:34:00 ess-uvce kernel: NET: 205 messages suppressed.
 Oct 21 15:34:05 ess-uvce kernel: NET: 33484 messages suppressed.
 Oct 21 15:34:10 ess-uvce kernel: NET: 33264 messages suppressed.
@@ -95,12 +93,5 @@ Oct 22 06:36:58 ess-uvce kernel: NET: 22651 messages suppressed.
 Oct 22 06:37:03 ess-uvce kernel: NET: 28761 messages suppressed.
 Oct 22 06:37:08 ess-uvce kernel: NET: 32997 messages suppressed.
 Oct 22 06:37:13 ess-uvce kernel: NET: 31389 messages suppressed.
-Oct 22 06:37:18 ess-uvce kernel: NET: 24475 messages suppressed.
-Oct 22 06:37:23 ess-uvce kernel: NET: 30712 messages suppressed.
-Oct 22 06:37:28 ess-uvce kernel: NET: 34532 messages suppressed.
-Oct 22 06:37:33 ess-uvce kernel: NET: 29573 messages suppressed.
-Oct 22 06:37:38 ess-uvce kernel: NET: 25571 messages suppressed.
-Oct 22 06:37:43 ess-uvce kernel: NET: 26330 messages suppressed.
-Oct 22 06:37:48 ess-uvce kernel: NET: 30778 messages suppressed.
 ********
 
