@@ -1,15 +1,17 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: MAC addresses
-Date: Sat, 11 Sep 2004 20:54:12 -0400
+From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
+Subject: Re: Problems Pinging the Internet w/this script (nfcan: addressed
+	to exclusive sender for this address)
+Date: Sat, 11 Sep 2004 21:15:08 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094950452.5506.4.camel@wolfpack.ljm.dom>
-References: <200409111150.50506.bulliver@badcomputer.no-ip.com>
-	<1094941410.3925.20.camel@wolfpack.ljm.dom>
-	<200409111726.53499.bulliver@badcomputer.no-ip.com>
+Message-ID: <20040912011508.GA8425@salty>
+References: <41439912.2090701@juno.com>
+Reply-To: nfcan.x.jimlaur@dfgh.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409111726.53499.bulliver@badcomputer.no-ip.com>
+Content-Disposition: inline
+In-Reply-To: <41439912.2090701@juno.com> (from Jesse rv on Sat, Sep 11,
+	2004 at 20:32:18 -0400)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +21,39 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sat, 2004-09-11 at 20:26, Darren Kirby wrote:
-> I will look into this. I assume however that I would need to keep port 23 open 
-> for everyone on the public side for this to work. I was hoping to drop the 
-> packets from everyone except my notebook, hence the original question. Is 
-> there no way to do this?
+On 2004.09.11 20:32, Jesse rv wrote:
+> Here's a script I'm using to create some tables which will only allow in on  
+> ports I'm running services. One of the problems I'm havng is that I can't  
+> ping the Internet with a DNS address from this machine. I've allowed  
+> everything in the OUTPUT table and can ping the Internet when using a  
+> straight IP, but when I type in "ping google.com" the machine hangs for a  
+> few seconds and gives me a server request error. I know it's something with  
+> my rules because when I flush them all I can ping google.com just fine. Any  
+> ideas would be greatly appreciated. I'm guessing it's something trivial but  
+> can't put my finger on it yet.
+> 
+> thanks
+........
+> 
+> # Adding Permittable Network/Hosts/Ports to Input Table on Internal  
+> Interface
+> 
+>  # Allowing DNS,FTP,SSH,Webmin,HTTP,SWAT,and Samba to Server
+> 
+>  $RULE -A INPUT -i $INSIDEINT --proto icmp --icmp-type any -j ACCEPT
+.......
+>  $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 53 -d $INSIDEIP -j ACCEPT
+.......
 
-if you're looking for a secure way to manage your firewall from the
-internet without allowing "-s 0/0 --dport 22" type access; you probably
-want to setup some sort of VPN access for yourself.
+One thing, at least, is that you have to allow DNS on both tcp and upd.
+So you also need a rule like this:
 
-openvpn ( http://openvpn.sourceforge.net/ ) is a very nice option for
-this.
+   $RULE -A INPUT -i $INSIDEINT --proto udp --dport 53 -d $INSIDEIP -j ACCEPT
 
--j
+HTH
 
--- 
-Jason Opperisano <opie@817west.com>
-
+Jim
 
