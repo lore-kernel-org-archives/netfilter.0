@@ -1,10 +1,11 @@
-From: Christian Cernuschi <christian@cernuschi.com>
-Subject: Redirection - considerations
-Date: Wed, 9 Apr 2003 13:05:45 +0200
+From: =?ISO-8859-15?Q?Javier_Miguel_Rodr=EDguez?=
+ <javier.miguel@talika.eii.us.es>
+Subject: Limit of --log-prefix
+Date: Tue, 08 Apr 2003 00:39:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304091305.45463.christian@cernuschi.com>
+Message-ID: <3E91FE2E.1030603@talika.eii.us.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,23 +16,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-it think it's impossible! (keeping the source address... of course)
-
-an example
-
-A - Client starting connection
-B - Server reached by A
-C - Destination Server
 
 
+    Hello
 
-A calls B
-B sends packets to C with source address A
-C tries to respond to A!!!=20
-A doesn't know C (then drops packet)
+    Is there any patch available to increase the default limit of 31 
+chars of --log-prefix?
 
-am i right?
+    Thank you for your support
+
+
 
