@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: traceroute
-Date: Thu, 01 Jul 2004 14:15:54 +0200
+From: Sheldon Hearn <sheldonh@starjuice.net>
+Subject: Re: MARK and routing issue
+Date: Thu, 01 Jul 2004 14:23:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088684154.4124.2.camel@anduril.intranet.cartel-securite.net>
-References: <Pine.LNX.4.33.0407011119540.29206-100000@blackhole.kfki.hu>
+Message-ID: <1088684583.2889.62.camel@axl.seasidesoftware.co.za>
+References: <267354A234DF4D46AA6AE56E1240BEF0A48E@tv.wcslnet.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0407011119540.29206-100000@blackhole.kfki.hu>
+In-Reply-To: <267354A234DF4D46AA6AE56E1240BEF0A48E@tv.wcslnet.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Steve Wakelin <steve@wcsl.net>
+Cc: netfilter@lists.netfilter.org
 
-Le jeu 01/07/2004 =E0 11:21, Jozsef Kadlecsik a =E9crit :
-> Actually UDP based traceroute uses ports in the range 33434-33523.
+On Thu, 2004-07-01 at 01:58, Steve Wakelin wrote:
 
-Just an add-on for those who want to allow traceroute through a
-Netfilter firewall in FORWARD : Windows traceroute uses ICMP echo
-requests. Thus, ICMP echo has to be accepted in order to have it work
-from Windwos boxes.
+> I am simply ;-( trying to MARK packets and then route them according to
+> the mark.
+> 
+> [root@localhost sysconfig]# ip rule
+> 0:      from all lookup local
+> 32760:  from all fwmark 0x6 lookup T4
+> 32761:  from all fwmark 0x5 lookup T3
+> 32762:  from 192.168.252.1 lookup T2
+> 32763:  from 192.168.253.1 lookup T1
+> 32764:  from 192.168.252.1 lookup T2
+> 32765:  from 192.168.253.1 lookup T1
+> 32766:  from all lookup main
+> 32767:  from all lookup default
 
+I can't see what you're doing wrong, because I don't understand advanced
+routing well enough.  However, this works for me:
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+ip rule add prio 100 fwmark 1 table 100
+ip rule add prio 100 fwmark 5 table 5
+ip route add local 0/0 dev lo table 100
+ip route default via 172.16.6.2 table 5
+
+Obviously, you don't want that "local 0/0" route, but the point is that,
+using table (instead of lookup, which I don't know how to use), I get
+mark-based routing that works.
+
+Hope that helps.
+
+Ciao,
+Sheldon.
+
 
