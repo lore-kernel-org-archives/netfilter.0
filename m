@@ -1,9 +1,8 @@
-From: Oleg Savostyanov <savostyanov@internetplustravel.ru>
-Subject: pptp-conntrack-nat
-Date: Thu, 27 Nov 2003 18:34:15 +0300
+From: Juan Hernandez <alucard@kanux.com>
+Subject: simple questions to finally understand netfilter
+Date: 27 Nov 2003 11:41:59 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <13121614429.20031127183415@internetplustravel.ru>
-Reply-To: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Message-ID: <1069947718.9126.39.camel@webmail.aeropostal.com.ve>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,61 +16,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Lista de netfilter <netfilter@lists.netfilter.org>
 
-I tryed to install extra package - pptp-conntrack-nat
-but failed to do this.
+Hi there...
 
-The script tells me "Could not find place to slot in
-ip_conntrack.h line", while testing and if I force it to install,
-it installs.
-And after that I do not see additional configure options while
-configuring my kernel.
-Do you have any ideas what to do?
+I'm using this script and I'd like to understand it a bit better...
+This is redirecting everything that comes from to port 25 to another
+server and this router is also a webserver.. Let me see if I understand
+every step
 
+1) This rule tells netfilter to drop any packet forwarding I guess
+iptables -P FORWARD DROP
 
-Welcome to Rusty's Patch-o-matic!
-Kernel:    /usr/src/kernel-source-2.4.18
-Userspace: /usr/src
-Each patch is a new feature: many have minimal impact, some do not.
-Almost every one has bugs, so I don't recommend applying them all!
--------------------------------------------------------
-Testing... pptp-conntrack-nat.patch NOT APPLIED (8 missing files)
-The extra/pptp-conntrack-nat patch:
-   Author: Harald Welte <laforge@gnumonks.org>
-   Status: Beta
-   This adds CONFIG_IP_NF_PPTP:
-   Connection tracking and NAT support for PPTP.
-   Note that this code currently has limitations
-   - can only NAT connections from PNS to PAC
-   - doesnt' support multiple calls within one session
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?]
-Testing patch extra/pptp-conntrack-nat.patch...
-   Placed new Config.in line
-   Placed new Configure.help entry
-   Placed new Makefile line
-   Placed new Makefile line
-   Placed new ip_conntrack.h line
-   Placed new ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-TEST FAILED: patch NOT applied.
-[Press enter to continue]
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] f
-Applying patch extra/pptp-conntrack-nat.patch...
-Failed to patch copy of /usr/src/kernel-source-2.4.18
+2) This one only accepts related and stablished packets
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-  
+3) This one forwards everything from the mailserver to the outside i
+guess
+iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 25 -j ACCEPT
 
--- 
-working tel.+7-095-933-2033
-mob. tel.+7-095-790-5354
-Regards Oleg
-Oleg                          mailto:savostyanov@internetplustravel.ru
+4) and this rule redirects everything in port 25 to the mailserver
+iptables -t nat -A PREROUTING -d 192.168.0.1 -p tcp --dport 25 -j DNAT
+--to-destination 192.168.0.2:25
+
+Now these are the questions I have about netfilter
+
+1) What does the first rules do exactly?? 
+
+2) How come if I add this rule to redirect everything from port 666 to
+the mailserver's ssh port it doesnt work?? 
+
+iptables -t nat -A PREROUTING -d 192.168.0.1 -p tcp --dport 666 -j DNAT
+--to-destination 192.168.0.2:22 
+
+Is it because I have to make another rule to forward the packets comming
+back from the mailserver's ssh? how come is not using the one alredy in
+(number 2)? 
+
+3) How do I use DROP with a range of port in oder to close everyhing
+else to the outside? or is there other way to do it??
+
+Thanks a lot for your help...
+
+Juan
+
 
 
