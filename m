@@ -1,8 +1,8 @@
-From: xiao shao <shao@tela.cs.tuat.ac.jp>
-Subject: help about libipq
-Date: Mon, 25 Nov 2002 20:49:33 +0900
+From: Tomasz Wrona <twr@wp.pl>
+Subject: -m helper --helper pptp ?
+Date: Mon, 25 Nov 2002 11:44:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021125114931.C658C79004@btrans.tela.cs.tuat.ac.jp>
+Message-ID: <4710803634.20021125114458@wp.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,34 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter_user <netfilter@lists.netfilter.org>
+To: netfilter@lists.samba.org
 
-I am programming with libipq and I got such a problem.
+Hi,
 
-First I get a packet via NETLINK socket
-ipq_packet_msg_t *m = ipq_get_packet(packet);
-unsigned char *payload = m->payload;
-and this works well
+How do You think, is it valid to use such a match case ?
 
+  -m helper --helper pptp
+  -m helper --helper h323
 
-then I send this packet to another program by usual AF_UNIX socket
-write(sockfd, m, sizeof(ipq_packet_msg_t));
-write(sockfd, payload, m->data_len);
-and this works well, too
+  Personaly I used it but I have never seen if this rules had counted
+  anything.
 
+Regards,
+tw                   
+--
 
-at last, I recerive this packet in another propram and try to
-reinject it into kernel
-read(sockfd, &m, sizeof(m));
-read(sockfd, payload, m.data_len);
-rval = ipq_set_verdict(h, m.packet_id, user_verdict, m.data_len,
-						payload);
+-----------
+ ck.eter.tym.pl
 
-and this does not work well. Although it seems that the packet has 
-been reinjected into the kernel, the packet is never sent out of my 
-computer. I do this test with a ping packet. (iptables -A OUTPUT
--p icmp -j QUEUE) And I did not catch this ping packet through the
-ether interface by a packet captuer.
-
-Excuse me for the poor English, and thanks for your help. 
 
