@@ -1,11 +1,13 @@
-From: Payal Rathod <payal-iptables@staticky.com>
-Subject: redirection and nat
-Date: Fri, 22 Aug 2003 17:12:35 +0530
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: connection and bandwidth monitoring program
+Date: Tue, 19 Aug 2003 17:26:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030822114235.GA1500@linux.local>
+Message-ID: <20030819172620.158a0dbc.arnt@c2i.net>
+References: <3F37B5BB.4060708@cidm.be>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <3F37B5BB.4060708@cidm.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-In my friend's office where I am trying to put a Linux server, I am
-facing some problems.
+On Mon, 11 Aug 2003 17:26:51 +0200, 
+Olivier Mayeres <Olivier.Mayeres@cidm.be> wrote in message 
+<3F37B5BB.4060708@cidm.be>:
 
-They have connectivity from 2 ISPs thru' Router A and Router B.
-Now in office people from 192.168.10.1 - 192.168.10.7 use Router B to
-reach internet and the rest Router A.
+> I find this program: http://natmonitor.sourceforge.net/
 
-I want Linux to be put in such a way so that it accepts connections from
-all machines and redirects them to router A and B. Before this they will
-be checked against some rules like whether they are allowed to access
-external SMTP or not etc. Is this setup possible?
+..that flashy "ENTER FLASH ENHANCED SITE
+(Flash 6 player plugin required)" speaks LOUDLY against it.
 
-How will I use redirection here? I can redirect for a particular port
-but am not getting the syntax for directing any package to particular
-router's ip.
-
-Do I need NAT here? If so, kindly tell the logic I have to use this with
-NAT. In NAT I have to specify an interface like,
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-But here I will be using 2 interfaces. What will I use then in above
-rule? And what should be my default gateway? Does it bind to a
-particular ip? BTW, I will be using squid too here. Please remember this
-too.
-
-Thanks a lot and eagerly waiting for any input on this.
-
-With warm regards,
--Payal
-
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
