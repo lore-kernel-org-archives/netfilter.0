@@ -1,11 +1,9 @@
-From: "Cedric Blancher" <blancher@cartel-securite.fr>
-Subject: Re: to patch, or not to patch?
-Date: Thu, 27 Mar 2003 17:53:33 +0100
+From: John Mathey <jmathey@attbi.com>
+Subject: using iptables and masquerade to change IP in data portion
+Date: Thu, 27 Mar 2003 10:56:18 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001301c2f481$67a1a300$0e0aa8c0@Nussele>
-References: <1048778825.17439.7.camel@midgard.guardium.com>
+Message-ID: <5.2.0.9.2.20030327104706.01c2fff8@mail>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,36 +14,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Joe Judge <joe_judge@guardium.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
------ Original Message -----
-From: "Joe Judge" <joe_judge@guardium.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, March 27, 2003 4:27 PM
-Subject: to patch, or not to patch?
+Hello all,
+I don't even think this is possible, but I have an application which I 
+believe is embedding the source IP address in the data portion of the 
+packets. The masquerading is doing it's job and modifying the source IP on 
+the way out, but that is only the header portion of the packet. Are there 
+any utilities out there that will allow me to parse the the data portion of 
+the packet for IP addresses and replace them with the masqueraded IP? I 
+believe I may be able to write something myself to do it, but before I head 
+down that path, I thought I'd see if anyone else had run into this? The 
+problem is that when the recipient receives this, ( this is a proprietary 
+application), he pulls the senders IP out of the data portion, not the 
+header. Also, what utilities are available to dump the packet completely, 
+including the data portion? Something like tcpdump would be nice, just for 
+udp?
 
-> Should I do the Patch-o-matic to get the ROUTE patch?
-> or is there a way to do this?
+My Network:
 
-If you don't want to use patch-o-matic and still get something close to
-ROUTE target, than use MARK target and advanced routing stuff as described
-in Linux Advanced Routing and Traffic Control HOWTO on http://lartc.org/.
+------------------------------- 
+-----------------------------------------------------------
+|                       |                         | 
+eth0                                        |
+|                       |---------------------------->| 
+192.168.1.1                             |
+|    192.168.1.0/24    |                          |             N A 
+T     eth1          |
+|                       |                         | 
+    12.238.44.52     | ---------------------------> INTERNET
+------------------------------- 
+-----------------------------------------------------------
 
-It is quite simple. You mark all packets you want to route differently.
-Then, you create an alternate routing table based on this very mark using
-iproute2 stuff. ROUTE target does it all in one shot, it is imho more
-simple, but you'll have to use POM, so build a new kernel and iptables from
-sources. MARK+iproute2 does not need POM usage, but likely needs a kernel
-build as your current one may not support advanced routing stuff, especially
-use Netfilter mark as routing key.
-
---
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curit=
-=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Thanks in advance
+John
 
 
 
