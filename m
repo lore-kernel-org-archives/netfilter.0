@@ -1,11 +1,12 @@
-From: Taner Halicioglu <netfilter@taner.net>
-Subject: Bug?  ICMPs sent by REJECT are not getting SNAT'd...
-Date: Wed, 2 Apr 2003 00:03:56 -0800
+From: David Shifflett <shifflett@nps.navy.mil>
+Subject: Re: NAT and UDP
+Date: Mon, 31 Mar 2003 15:52:14 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030402080356.GP13972@boom.net>
+Message-ID: <3E88D4AE.7090303@nps.navy.mil>
+References: <000d01c2f55a$f4d13bd0$c00a7883@ad.nps.navy.mil> <200303301233.46424.netfilter@newkirk.us>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,59 +16,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@newkirk.us
+Cc: netfilter@lists.netfilter.org
 
-Hi, I have a somewhat convoluted setup, so I'll try to describe it.
+It just so happens that we are NATing just one client.
+Our device is a gateway/network authenticator between the client
+and the network.
+So here is how we solved the issue:
+OIP=192.168.0.31
+IIP=192.168.1.100
+MYP=xxx   #Port for device specific traffic
 
-DSL provider gave me a /29 for my machines
-	(say, 200.1.1.0/29)
-DSL provider also supplied a /30 to go between DSL modem and the DSLAM.
-	(say, 201.1.1.0/30 - irrelevant here, really)
-I am using a random /30 to go between the DSL modem and my firewall
-	(say, 10.1.1.0/30)
+echo "Configuring IP Masquerading..."
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -F; iptables -t nat -F; iptables -t mangle -F
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $OIP
+iptables -t nat -A PREROUTING -i eth0 -p udp --dport $MYP -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -j DNAT --to $IIP
 
-Here is the visual:
+This SNATs all traffic from the client to the net
+and DNATs almost all traffic from the net to the client
+except for some traffic to our device itself.
 
-    [ISP]
-      |
-      | [201.1.1.0/30 - irrelevant]
-      |
-+------------+
-| DSL router |
-+------------+ = 10.1.1.2
-      |
-      | [10.1.1.0/30]
-      |
-+------------------+ eth1 = 10.1.1.1
-| Firewall machine |
-+------------------+ eth0 = 200.1.1.1
-      |
-      | [200.1.1.0/29]
-      |
-   [INSIDE]
+Are there any other rules I should add in for safety sake?
+I suppose I could add a DROP rule for UDP traffic from the client
+with a source port of $MYP.
+
+Thanks for your help
+David Shifflett
+
+Joel Newkirk wrote:
+
+>On Friday 28 March 2003 01:50 pm, Jean Khosalim wrote:
+>  
+>
+>>Does NAT work for UDP in general, and TFTP in particular?
+>>The man page has lots of UDP specific options
+>>do those only apply to filtering, and not NAT?
+>>    
+>>
+>
+>For UDP in general it works wonderfully.  For TFTP I've never tried it, 
+>but with the conntrack and nat helpers it should be fine.  The 
+>UDP-specific options I'm aware of are simply matching options, usable in 
+>any table/chain to match the rule more precisely to specific traffic.  
+>IE, with conntrack and nat helpers installed, and a rule for 
+>ESTABLISHED,RELATED in the filter FORWARD chain (with a DROP policy), 
+>you could narrow down the FORWARD rule to ACCEPT only "-p udp --dport 
+>69", and the same for the SNAT rule, and the rest would be handled for 
+>you.  Then (barring other ACCEPT rules in FORWARD) only TFTP would be 
+>permitted through.  Port 69 being its initial connection, and any others 
+>(data) being handled by the helpers as RELATED traffic.  Once you load 
+>the conntrack and nat helpers, the data ports are RELATED in FORWARD, 
+>and RELATED is automatically matched with its 'parent' connection in the 
+>SNAT rule.
+>
+>If you're trying to do this stateless, without conntrack, I don't think 
+>you'll be successful SNATting a complex protocol like TFTP with your 
+>apparent setup.  If only one client needs to connect with TFTP, you can 
+>try SNATting its outbound connections, then DNATting any TFTP reply 
+>traffic to that specific client.  I suspect this isn't the case, though.
+>
+>  
+>
+>>Thanks for any help.
+>>Jean Khosalim and David Shifflett
+>>    
+>>
+>
+>j
+>
+>
+>  
+>
 
 
-For right now, my firewall rules are basiclaly nothing - I pass everything
-thru the firewall machine.
-
-I soon realised that since I'm using a non-routed address for the "outside"
-interface of the firewall, I run into issues trying to initiate any
-connection from the fw machine, so I added:
-
- iptables -t nat -A POSTROUTING -o eth1 -s 10.1.1.1 -j SNAT --to-source 200.1.1.1
-
-This works for 99% of the traffic sourced on the firewall machine, it seems.
-
-One thing it DOES NOT work for, is the ICMP (and probably RST - didn't try)
-packets that are generated by the REJECT target.  These get sourced from the
-unroutable address, and since my ISP wisely filters things like that, the
-ICMP never makes it to the sender.
-
-Am I doing something wrong, or is this a bug?
-
-Thanks,
-
-	-Taner
 
