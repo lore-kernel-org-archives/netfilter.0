@@ -1,10 +1,13 @@
-From: Michael Goldish <michael.goldish@gmail.com>
-Subject: Problem with connrate
-Date: Wed, 2 Feb 2005 03:18:41 +0000
-Message-ID: <200502020318.42074.michael.goldish@gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: bad tcp packets?
+Date: Wed, 2 Feb 2005 08:56:25 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0502020852020.24248@blackhole.kfki.hu>
+References: <41FE32D4.4000103@usna.edu>
+	<1107193476.9909.4.camel@nostromo.bgsecm.com>
+	<Pine.CYG.4.58.0502010731340.544@MI340a.chem.mathsci.usna.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <Pine.CYG.4.58.0502010731340.544@MI340a.chem.mathsci.usna.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,80 +18,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Kevin Van Workum <vanw@MI340a.chem.mathsci.usna.edu>
+Cc: Jose Maria Lopez <jkerouac@bgsec.com>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hello,
+On Tue, 1 Feb 2005, Kevin Van Workum wrote:
 
-This is my first post to this list. I've just started using iptables and I 
-very much like it, except for two little things --
+> On Mon, 31 Jan 2005, Jose Maria Lopez wrote:
+>
+> > El lun, 31 de 01 de 2005 a las 14:29, Kevin Van Workum escribi=C3=B3:
+> > > I'm learning about iptables and am working through the example script=
+s
+> > > in Oskar Andreasson's Iptables Tutorial 1.1.19. So I have the followi=
+ng
+> > > rules:
+> > >
+> > > iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LO=
+G
+> > > --log-prefix "New not syn:"
+> > > iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DR=
+OP
+> > >
+> > > My understanding of this rule is that all NEW tcp packets should by S=
+YN
+> > > also. So if they are not NEW and SYN, then we should log them and dro=
+p
+> > > them. I guess Andreasson wants to log them because they may indicate =
+a
+> > > problem of some sort. So in my log file, I get this:
+> > >
+> > > Jan 30 20:09:27 server kernel: New not syn:IN=3D OUT=3Dlo SRC=3D10.0.=
+0.100
+> > > DST=3D10.0.0.100 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D7678 D=
+F PROTO=3DTCP
+> > > SPT=3D34928 DPT=3D143 WINDOW=3D32767 RES=3D0x00 ACK PSH FIN URGP=3D0
+> > >
+> > > So what's the problem with these packets? It looks like some client i=
+s
+> > > contacting the imapd (which is running on my firewall) with some bad =
+tcp
+> > > packets?
+> >
+> > NEW without SYN packets can occur but they are very uncommon, the
+> > rule proposed it's correct in the 99% of the systems, but if you
+> > have a program or daemon that doesn't make the SYN/ACK-SYN/ACK
+> > correctly then you maybe have to allow this packets.
+>
+> Is there a way to determine which program or daemon is producing these
+> packets?
 
+Any program or daemon may do, considering the following scenario: there
+are established connections going through your firewall and you remove
+then load in again the ip_conntrack module.
 
-(1) I tried the following command:
+But the packages above are more probably late FIN packets: the conection
+was deleted from the conntrack table and then a delayed FIN packet
+belonging to the deleted connection arrived.
 
-iptables -A OUTPUT -m connrate --connrate 1024 -j ACCEPT
-
-and got this error message:
-
-iptables v1.2.11: Couldn't load match 
-`connrate':/usr/local/lib/iptables/libipt_connrate.so: cannot open shared 
-object file: No such file or directory
-
-(other match modules like connmark seem to work fine)
-
-To solve this I tried looking for related config options in my kernel and I 
-think I pretty much enabled everything (I know it's not a good idea). Then I 
-recompiled iptables but I still don't seem to have libipt_connrate.so. I've 
-noticed that there's a .C file with a similar name in my iptables source 
-tree, but it probably just doesn't get compiled for some reason.
-
-I also tried using patch-o-matic, which brings me to my second problem:
-
-
-
-
-(2) No patch in patch-o-matic could be applied. I tried:
-
-KERNEL_DIR=/usr/src/linux 
-IPTABLES_DIR=/home/cyber/Installs/iptables-1.2.11 ./runme base
-
-and got:
-
-Kernel:   2.6.10, /usr/src/linux
-Iptables: 1.2.11, /home/cyber/Installs/iptables-1.2.11
-Each patch is a new feature: many have minimal impact, some do not.
-Almost every one has bugs, so don't apply what you don't need!
--------------------------------------------------------
-Already applied: CLASSIFY_more-hooks amanda_offset-fix
-
-Testing conntrack-acct... not applied
-The conntrack-acct patch:
-   Author: Harald Welte <laforge@netfilter.org> 
-   Status: Stable
-
-If you enable this option, the connection tracking code will keep
-per-flow packet and byte counters. 
-
-Those counters can be used for flow-based accounting or the `connbytes' match.
-
-If unsure, say N.
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
-cannot apply (10 rejects out of 12 hunks)
------------------------------------------------------------------
-
-This happened for every patch that followed.
-
-The patch-o-matic I downloaded was patch-o-matic-ng-20050130.
-
-
-
-
-
-
-
-(I'm using Slackware 10 with kernel 2.6.10)
-
-Sorry for the long post and the for the newbie questions. But if you can help 
-me somehow I'll be grateful.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
