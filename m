@@ -1,51 +1,48 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Memory leaks in ip_conntrack?
-Date: Tue, 11 Nov 2003 00:12:58 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311110013.hAB0D1j17251@agate.rockstone.co.uk>
-References: <EFBADA8C200C2B418DA39734FD15475B0B204E@skat.sky.com> <200311101903.09886.Alistair@nerdnet.ca>
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Memory leaks in ip_conntrack?
+Date: Mon, 10 Nov 2003 16:20:19 -0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E37C7@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311101903.09886.Alistair@nerdnet.ca>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Alistair@nerdnet.ca, Kishore Dharmavaram <kishored@servgate.com>, netfilter@lists.netfilter.org
+Cc: netfilter-devel@lists.netfilter.org
 
-On Tuesday 11 November 2003 12:03 am, Alistair Tonner wrote:
+Ack! (slaps head)
 
-> On November 10, 2003 03:10 pm, Kishore Dharmavaram wrote:
->
-> 	Kishore:
->
-> 	what is set in /proc/sys/net/ipv4/tcp_wmem?
->
-> 	I suspect that what is STOPPing the network is there ..
-> 	cat /proc/sys/net/ipv4/tcp_wmem -- on my system the max is ...
-> 	!! 131072 !!
->
-> 	Maybe you've maxed your memory allocation for TCP?
+I was a victim of this! I finally have a reason for all those annoying
+TCP window error messages! Who knows, I may actually have 'traffic'
+through my gateway at this rate.
 
-People may find /usr/src/linux/Documentation/networking/ip-sysctl.txt helpful 
-in understanding this and other entries in /proc/sys/net/ipv4
+-----Original Message-----
+From: Alistair Tonner [mailto:Alistair@nerdnet.ca]=20
+Sent: Monday, November 10, 2003 4:03 PM
+To: Kishore Dharmavaram; netfilter@lists.netfilter.org
+Cc: 'netfilter-devel@lists.netfilter.org'
+Subject: Re: Memory leaks in ip_conntrack?
 
-Antony.
+On November 10, 2003 03:10 pm, Kishore Dharmavaram wrote:
 
--- 
+	Kishore:
 
-Programming is a Dark Art, and it will always be. The programmer is
-fighting against the two most destructive forces in the universe:
-entropy and human stupidity. They're not things you can always
-overcome with a "methodology" or on a schedule.
- - Damian Conway, Perl God
-                                                     Please reply to the list;
-                                                           please don't CC me.
+	what is set in /proc/sys/net/ipv4/tcp_wmem?
+
+	I suspect that what is STOPPing the network is there ..=20
+	cat /proc/sys/net/ipv4/tcp_wmem -- on my system the max is ...=20
+	!! 131072 !!
+=09
+	Maybe you've maxed your memory allocation for TCP?
+
 
