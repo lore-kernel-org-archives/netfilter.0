@@ -1,11 +1,10 @@
-From: netfilter@serverguy.net
-Subject: Problem with SNAT and same port number
-Date: Mon, 23 Feb 2004 13:30:59 +1000
+From: =?iso-8859-1?q?rohit=20persaie?= <persaie@yahoo.co.in>
+Subject: help, regarding advantages of custom chains
+Date: Mon, 23 Feb 2004 03:40:19 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402231330.59035.netfilter@serverguy.net>
-Reply-To: netfilter@serverguy.net
+Message-ID: <20040223034019.96988.qmail@web25210.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,31 +18,16 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi all,
 
-I am wanting to change the source address of outgoing packets that have a=
- src=20
-port of 53.
+I want to know the advantates and disadvantages of
+using 
+custom chains for managing packet flow.
 
-I have tried=20
-/sbin/iptables -A POSTROUTING -p tcp -t nat -o bond0 --sport 53 -j SNAT=20
---to-source 192.168.0.1:53
+with regards,
+rohit
 
-This doesnt work, it seems to be that you cant SNAT to a port the same as=
- the=20
-original src port because
-
-/sbin/iptables -A POSTROUTING -p tcp -t nat -o bond0 --sport 53 -j SNAT=20
---to-source 192.168.0.1
-
-/sbin/iptables -A POSTROUTING -p tcp -t nat -o bond0 --sport 53 -j SNAT=20
---to-source 192.168.0.1:52
-
-both works, but obviously not the same results as I wanted because the sr=
-c=20
-port is also changed.
-
-Is there any other way to do what I am wanting??
-
-TIA
+________________________________________________________________________
+Yahoo! India Insurance Special: Be informed on the best policies, services, tools and more. 
+Go to: http://in.insurance.yahoo.com/licspecial/index.html
 
