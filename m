@@ -1,10 +1,10 @@
-From: Andreas Jellinghaus <aj@dungeon.inka.de>
-Subject: iptables and 2.5.* ipsec
-Date: 14 May 2003 11:53:59 +0200
+From: Jaroslaw Zdrzalek <zdrzalek@silpion.de>
+Subject: quering byte counts for user defined chains/rules using libiptc
+Date: Fri, 23 May 2003 14:56:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1052906039.6883.24.camel@simulacron>
+Message-ID: <5.1.0.14.0.20030523143241.00a87008@mail.silpion.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="us-ascii"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,29 +15,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-
-How does 2.5.* ipsec and netfilter interact?
-
-I guess this way, but I'm not sure:
-(encrypted) network card -> routing -> INPUT -> decrypt
-(decrypted) ipsec -> routing -> INPUT/FORWARD 
-
-A normal packet is processed this way:
-ipsec -> routing -> INPUT/FORWARD 
-
-The first is easy to see: proto 50 or 51 (or udp port 500 for ike).
-But how can I see whether an unencrypted packet came in unencrypted
-or came in encrypted via ipsec?
-
-with freeswan I could match -i ipsec0, but with kernel 2.5.* there
-is no ipsec0 device. What shall I use instead? fwmark?
-
-Thanks for your help.
-
-Regards, Andreas
+<html>
+dear all,<br><br>
+my prog, which uses libiptc, queries byte counts for a single rule in an
+user defined chain (ipXXX.XXX.XXX.XXX)<br><br>
+here comes a sample code:<br>
+...<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>h
+= iptc_init(tablenamefilter);<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>if
+(!h) slog(LOG_ERR, &quot;Can't initialize:
+%s\n&quot;,iptc_strerror(errno));<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>now
+= time(NULL);<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>for
+(chain = iptc_first_chain(&amp;h); chain; chain =
+iptc_next_chain(&amp;h))//ITERATE CHAINS<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>{<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>ip
+= chain+2;//2==strlen(chainprefix);<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>if(strncmp(chain,chainprefix,2)!=0)
+continue;<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>struct
+ipt_counters *count = NULL;<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>count
+= iptc_read_counter(chain, 1, &amp;h);<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>if(count
+== NULL) slog(LOG_ERR,&quot;iptc_read_counter(%s, 1, &amp;h); returns
+NULL&quot;,chain);<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>else<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>{<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>bytecnt
+= count-&gt;bcnt;<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>slog(LOG_INFO,&quot;iptc_read_counter(%s,
+1, &amp;h); returns %u&quot;,chain,bytecnt);<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>}<br>
+......<br>
+the problem is that it always returns 0.<br>
+with iptables -L -v i get real counts<br><br>
+the version of iptables is 1.2.8 (stable)<br><br>
+if yoe have any suggestions please reply to my email,<br>
+because i am not a list member<br><br>
+thanks in advance<br><br>
+jaroslaw<br><br>
+<x-sigsep><p></x-sigsep>
+<hr>
+<font face="Courier New, Courier">Jaroslaw
+Zdrzalek&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+| e-mail
+<a href="mailto:zdrzalek@silpion.de">zdrzalek@silpion.de</a><br>
+Leiter Anwendungsentwicklung&nbsp; | web&nbsp;&nbsp;&nbsp;
+<a href="http://www.silpion.de/" eudora="autourl">www.silpion.de</a><br>
+Silpion IT-Solutions GmbH&nbsp;&nbsp;&nbsp;&nbsp; | tel&nbsp;&nbsp;&nbsp;
++49 (40) 54 00 71 20<br>
+Pinnasberg
+29-33&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+| fax&nbsp;&nbsp; +49 (40) 54 00 71 19<br>
+20359
+Hamburg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+| mobil&nbsp; +49 (170) 87 82 96 9<br>
+<hr>
+</font><tt><br>
+</html>
 
 
