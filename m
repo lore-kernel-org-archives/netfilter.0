@@ -1,11 +1,10 @@
-From: "Nazghul" <nazghul@lostland.de>
-Subject: Routing depending on source address or destination port
-Date: Sat, 8 Jun 2002 11:08:01 +0200
+From: g38@rdsbv.ro
+Subject: (no subject)
+Date: Sat, 08 Jun 2002 12:31:58 +00300 (EEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <002b01c20ecb$fdf161c0$0200a8c0@dvteam.de>
+Message-ID: <1023528718.3d01cf0e162e2@mail.rdsbv.ro>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002C_01C20EDC.C17A31C0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,125 +15,116 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; q="1.0"
 To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+This being my first firewall, I would like those of you who are more experienced and have the time to take a look and point the mistakes I did (and perhaps some improvements would be appreciated)
 
-------=_NextPart_000_002C_01C20EDC.C17A31C0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+The box is intended to act as a www and mail server and to masquerade an internal network with private ip's
 
- 
- 
-I had a careful look in the list archives, bu did not find anything
-appropriate. In case I have overseen something, redirects are welcome.
- 
-On our network there are two routers maintaining different internet
-connections. The first uses a DSL connection, the second a satellite
-link (with incredible high bandwith, but the latency is a
-pain-in-the-a**).
- 
-The goal is to use the DSL connection for all interactive tasks like ssh
-etc., and also for all outbound connections from the administrators
-workstation. All other traffic should use the (high latency) satellite
-link.
- 
-Let's say the internal network would use 192.168.0.0/24. The default
-router is 192.168.0.254. This is a linux box with 2.4 kernel. The .254
-address is bound to eth2. eth0 is connected with the DSL modem (so it
-has no IP address, the DSL connection uses ppp0). eth1 gets it's address
-by DHCP from the satellite modem. The administrator's box has the
-address 192.168.0.2
- 
-Of course the system has to use some kind of NAT for the connections
-between the local network and the internet.
- 
-Someone told me that iptables/netfilter should be able to perform the
-job. Unfortunately I have no clue how. 
- 
-Any kind of help will be greatly appreciated.
- 
-rm
+The rules I'm not sure of are commented (and I have some questions for the masquerade, but I'll RTFM on this one - still I must ask if I did the masq rules correctly in the firewall below)
 
-------=_NextPart_000_002C_01C20EDC.C17A31C0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+thanks a lot,
+petre
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Nachricht</TITLE>
 
-<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT =
-color=3D#000080>I had=20
-a careful look in the list archives, bu did not find anything =
-appropriate. In=20
-case I have overseen something, redirects are=20
-welcome.</FONT></SPAN></STRONG></DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080></FONT></SPAN></STRONG>&nbsp;</DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT =
-color=3D#000080>On=20
-our network there are two routers maintaining different internet =
-connections.=20
-The first uses a DSL connection, the second a satellite link (with =
-incredible=20
-high bandwith, but the latency is a=20
-pain-in-the-a**).</FONT></SPAN></STRONG></DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080></FONT></SPAN></STRONG>&nbsp;</DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT =
-color=3D#000080>The=20
-goal is to use the&nbsp;DSL connection for all interactive tasks like =
-ssh etc.,=20
-and also for all outbound connections from the administrators =
-workstation. All=20
-other traffic should use the (high latency) satellite=20
-link.</FONT></SPAN></STRONG></DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080></FONT></SPAN></STRONG>&nbsp;</DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT =
-color=3D#000080>Let's=20
-say the internal network would use 192.168.0.0/24. The default router is =
+#!/bin/sh
 
-192.168.0.254. This is a linux box with 2.4 kernel. The .254 address is =
-bound to=20
-eth2. eth0 is connected with the DSL modem (so it has no IP address, the =
-DSL=20
-connection uses ppp0). eth1 gets it's address by DHCP from the satellite =
-modem.=20
-The administrator's box has the address =
-192.168.0.2</FONT></SPAN></STRONG></DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080></FONT></SPAN></STRONG>&nbsp;</DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT =
-color=3D#000080>Of=20
-course the system has to use some kind of NAT for the connections =
-between the=20
-local network and the internet.</FONT></SPAN></STRONG></DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080></FONT></SPAN></STRONG>&nbsp;</DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080>Someone told me that iptables/netfilter should be able =
-to perform=20
-the job. Unfortunately I have no clue how. </FONT></SPAN></STRONG></DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080></FONT></SPAN></STRONG>&nbsp;</DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT =
-color=3D#000080>Any=20
-kind of help will be greatly appreciated.</FONT></SPAN></STRONG></DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080></FONT></SPAN></STRONG>&nbsp;</DIV>
-<DIV align=3Dleft><STRONG><SPAN class=3D468165708-08062002><FONT=20
-color=3D#000080>rm</FONT></SPAN></STRONG></DIV></BODY></HTML>
+IPEXT="193.xxx.xxx.xxx"
+IPT="/usr/sbin/iptables"
 
-------=_NextPart_000_002C_01C20EDC.C17A31C0--
+
+echo "Cleaning ..."
+for i in filter nat mangle
+do
+$IPT -t $i -F
+$IPT -t $i -X
+done
+
+echo "Initial rules ..."
+$IPT -P INPUT ACCEPT
+$IPT -P OUTPUT ACCEPT
+$IPT -P FORWARD DROP
+
+#loopback
+$IPT -A INPUT -i lo -p all -j ACCEPT
+$IPT -A OUTPUT -o lo -p all -j ACCEPT
+
+echo -e "\nMASQUERADING ...\n"
+echo "Masquerading 192.168.20.0/24"
+# set up masquerading for everything not destined to the localnets
+$IPT -t nat -A POSTROUTING -s  192.168.20.0/24 -o eth1 -j MASQUERADE
+$IPT -t nat -A POSTROUTING -d  192.168.20.0/24 -o eth1 -j MASQUERADE
+
+$IPT -A FORWARD -s 192.168.20.0/24 -j ACCEPT
+$IPT -A FORWARD -d 192.168.20.0/24 -j ACCEPT
+
+
+#echo "FWD: Allow all connections OUT and only existing and related ones IN"
+#$IPT -A FORWARD -i eth0 -s 192.168.20.0/24 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+#$IPT -A FORWARD -i eth1 -o eth0 -d 192.168.20.0/24 -j ACCEPT
+#$IPT -A FORWARD -i eth0 -s 192.168.10.5 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+#$IPT -A FORWARD -i eth1 -o eth0 -d 192.168.10.5 -j ACCEPT
+$IPT -A FORWARD -j LOG
+$IPT -A FORWARD -j DROP
+
+echo -e "- Enabling SNAT (MASQUERADE) funtionality on eth0"
+$IPT -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+echo -e "\nDone.\n"
+
+###
+
+echo "no snmpd access from the exterior"
+$IPT -A INPUT -p udp -s 0/0 --dport 161 -j DROP
+
+#cut all which appears to be loopback talking to eth's
+$IPT -A INPUT -p all -s localhost  -i eth+ -j DROP
+
+#cut all syn's except those for incoming http & ssh & smtp & pop3
+#$IPT -A INPUT -i eth0 -p tcp --syn --destination-port 80 -j ACCEPT
+#$IPT -A INPUT -i eth0 -p tcp --syn --destination-port 22 -j ACCEPT
+#$IPT -A INPUT -i eth0 -p tcp --syn --destination-port 25 -j ACCEPT
+#$IPT -A INPUT -i eth0 -p tcp --syn --destination-port 110 -j ACCEPT
+#$IPT -A INPUT -p tcp --tcp-flags ALL SYN -j DROP
+
+echo "Syn flood protection..."
+$IPT -N DoS
+$IPT -A INPUT -j DoS
+$IPT -A DoS -p icmp --icmp-type echo-request \
+        -m limit --limit 10/s -j RETURN
+$IPT -A DoS -p icmp --icmp-type echo-request \
+        -m limit -j LOG --log-level warn \
+                --log-prefix "DoS (PING)" \
+                --log-tcp-options \
+                --log-ip-options
+$IPT -A DoS -p icmp --icmp-type echo-request -j REJECT
+
+#cut access from private addresses to eth1
+$IPT -A INPUT -i eth0 -s 10.0.0.0/8 -j DROP
+$IPT -A INPUT -i eth0 -s 172.16.0.0/12 -j DROP
+$IPT -A INPUT -i eth0 -s 192.168.0.0/16 -j DROP
+
+echo "cut ssh except from trusted hosts"
+echo "allow from"
+echo "          - 1"
+$IPT -A INPUT -i eth0 -p tcp -s 193.xxx.xxx.x -d $IPEXT --dport 22 -j ACCEPT
+echo "          - 1"
+$IPT -A INPUT -i eth0 -p tcp -s 193.xxx.xxx.xxx -d $IPEXT --dport 22 -j ACCEPT
+echo "          - 3"
+$IPT -A INPUT -i eth0 -p tcp -s 193.xxx.xxx.xxx -d $IPEXT --dport 22 -j ACCEPT
+echo "          - 4"
+$IPT -A INPUT -i eth0 -p tcp -s 193.xxx.xxx.xx -d $IPEXT --dport 22 -j ACCEPT
+echo "cut all"
+$IPT -A INPUT -i eth0 -p tcp --dport 22 -j DROP
+
+
+
+
+
+
+
+
+
+
 
 
