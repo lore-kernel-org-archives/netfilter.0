@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: (no subject)
-Date: Thu, 20 Jun 2002 14:55:10 +0100
+From: "Scott Ware" <wsware@hotmail.com>
+Subject: NAT loopback
+Date: Thu, 20 Jun 2002 09:56:10 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206201355.g5KDtHU32667@vulcan.rissington.net>
-References: <9AB58396B028D411B2110050040C7AD80173CE49@pc213-104.indigo.ie>
+Message-ID: <F58UIHNkjgJKVApwOLZ00003810@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <9AB58396B028D411B2110050040C7AD80173CE49@pc213-104.indigo.ie>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,24 +14,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-On Thursday 20 June 2002 2:47 pm, Niall Murphy wrote:
+With the iptables is it possible to allow NAT clients to talk to each other 
+through the External IP address?
 
-> hi all,
-> I be very gratefully for any help..
-> my firewall has 2 nic's the external one's ip 194.125.213....  but behind
-> the firewall I have a proxy server and an email server with ip's
-> 192.0.0.106 and 192.0.0.253. I know I need to use DNAT and SNAT to send
-> internet packets to them but i do not know how to add aliases to  the eth0
-> so that i can route packets to my firewall and then DNAT them on...
-> does any one know how to use this "ip add address" command   ( maybe even a
-> example or two)
+One example I and talking about is, say you have a web server on an internal 
+machine and the port is forwarded so anyone browsing to your external IP 
+address is directed to that machine. I would  like it to work when internal 
+clients browse to the External IP that they also get  forwarded to that 
+internal machine.
 
-http://defiant.coinet.com/iproute2/quickie-ip.html
+The issue is with peer-to-peer applications.  I need to be able to let 2 
+internal PC talk to each other through the external IP address, this is the 
+only way they can talk to each other and the internet at the same time.
 
- 
+External IP 64.118.165.23
+  PC#1 192.168.1.10
+  PC#2 192.168.1.11
 
-Antony.
+NAT port forwarding setup
+  Port 3405 udp/tcp -> 192.168.1.10
+  Port 3406 udp/tcp -> 192.168.1.11
+
+192.168.1.10 connects to an external server and all the peers are told about 
+each other and begin to talk, port 3405 is used for this client
+
+192.168.1.11 connects to the same server and all the peers are told about 
+each other and begin to talk, except 192.168.1.11 wants to talk to 
+64.118.165.23 on port 3405 and 192.168.1.10 wants to talk to 64.118.165.23 
+on port 3406. This traffic just seems to get lost...
+
+Any help with this?
+
+-Scott
+
+
+_________________________________________________________________
+Send and receive Hotmail on your mobile device: http://mobile.msn.com
+
 
