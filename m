@@ -1,13 +1,13 @@
 From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Performance losings with iptables
-Date: 20 May 2003 09:50:01 +0200
+Subject: Re: Newbie netfi;ter question
+Date: 20 May 2003 09:48:24 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053417001.1964.86.camel@kermit.spenneberg.de>
-References: <007d01c31965$fe099ce0$3a51a8c0@memmingen>
+Message-ID: <1053416904.2024.83.camel@kermit.spenneberg.de>
+References: <3EBD073B.2050603@verizon.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007d01c31965$fe099ce0$3a51a8c0@memmingen>
+In-Reply-To: <3EBD073B.2050603@verizon.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Michael Albrecht <michael@crypta.net>
+To: Ken Kachnowich <ken.kachnowich@verizon.net>
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Am Die, 2003-05-13 um 17.40 schrieb Michael Albrecht:
-> Hello,
-> i use iptables with Debian-Linux (2.4.20).
-> Wenn i install 150 Input-Chains like this:
-> iptables -A input -s 192.168.81.xxx
-> i will lose a lot of perfomance (for example: apache take a lot of time, =
-ssh ...)
-> Wenn i show the perfomance with vmstat - vmstat says that 99 % is idel...
-> Wer is the Problem ???
-I doubt that iptables itself is responsible for the performance loss. I
-rather suspect name resolution.
-Can you post you rules or at least some timing information?
+Am Sam, 2003-05-10 um 16.05 schrieb Ken Kachnowich:
+> Hi,
+>=20
+>    I have created a very simple module to use netfilters. I
+> display some info from the sk_buff structures.
+> The protocol field always has an 8 in it.
+If you are reading the ethernet header, the protocol field is supposed
+to be 8!
+
+>=20
+> What does the 8 mean? I would expect this to indicate this is
+> an IP packet of some type, but so far I have not found a header
+> or any docs that explains it. Where would be a good place for me
+> to find these things out (please don't say read the kernel source).
+8 means IP (in the ethernet header).
 
 Cheers,
 
