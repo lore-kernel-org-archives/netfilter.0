@@ -1,13 +1,14 @@
-From: cc <cc@belfordhk.com>
-Subject: Re: I can't resolve DNS name
-Date: Sat, 30 Aug 2003 09:33:39 +0800
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: port redirect for locally generated request
+Date: Fri, 29 Aug 2003 20:33:41 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4FFEF3.7010405@belfordhk.com>
-References: <0afd01c36e54$67e73620$0221a0c0@DANIEL>
+Message-ID: <DKEDJAAMDCDBHFKPBEMPMEPACHAA.markee@bandwidthco.com>
+References: <000801c36e35$3f7cee60$8c01a8c0@RSUNDARAM>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0afd01c36e54$67e73620$0221a0c0@DANIEL>
+In-Reply-To: <000801c36e35$3f7cee60$8c01a8c0@RSUNDARAM>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +19,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Group <netfilter@lists.netfilter.org>
+To: Sundaram Ramasamy <sun@percipia.com>, netfilter@lists.netfilter.org
 
-Daniel Arjona wrote:
+Use REDIRECT:
 
-> Hello:
-> 
-> I tried to configure an iptables firewall, but i can't.  I need cofigure
-> this to use FTP, Kazaa, Internet, ICQ and access the IMAP server of Netscape
-> with my Netscape Client.
-> 
-> Observations:
-> I have LRH 8.0 and iptables is in the my unique server with squid, qmail and
-> others.
-> My router is directly connected to the NIC of the server.
-> When i try to connect to any FTP Server, i recieve this message "I can't
-> resolve DNS name"
-> I can't do ping to any IP Address
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
-Try the following:
-
-1) Ping your loopback.
-2) ping your server's Internal IP.
-3) Ping anyone one of your LAN IP.
-
-4) Ping your router.  (You didn't mention if
-your router has an IP.  I'm assuming it has.)
-
-You didn't mention from where you were trying to connect.
-
-5) If the above pings correctly, then check if you've
-set up your routing tables correctly.  What happens
-when you enter 'route'?  What's the ip of your eth0?
+specify an interface if necessary.
 
 
-I don't know if the above might help.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Sundaram
+Ramasamy
+Sent: Friday, August 29, 2003 6:56 AM
+To: netfilter@lists.netfilter.org
+Subject: port redirect for localy generated request
+
+
+
+Hi,
+
+With this rule incoming request for port 80 redirected to port 8080. But
+this is not working localy generated request.
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -d LISTEN_IP -j DNAT --to
+LISTEN_IP:80
+
+How will i redirected local request port 80 to port 8080 ?
+
+Thanks
 
 
 
