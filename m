@@ -1,10 +1,9 @@
-From: Torsten Puls <netfilter@pumpum.de>
-Subject: Re: iptables -m time does mot work
-Date: Fri, 01 Nov 2002 16:05:57 +0100
+From: =?ISO-8859-1?Q?Thomas_B=F6rnert?= <tboernert@tbits.net>
+Subject: ip_conntrack_ftp doesn't work with ftp proxy
+Date: Tue, 29 Oct 2002 17:49:25 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E187dMz-0004XD-00@kashyyyk.netfilter.org>
+Message-ID: <Pine.LNX.4.33.0210291738230.22949-100000@obelix.intra.tbits.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,14 +14,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: IP <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hello
+Hello,
 
-I have seen it on the following site:
+i hope anyone can help me.
 
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-3.html#ss3.17
+network-chart
 
-Regards Torsten
+linuxbox ----- firewall ---- internet
+
+on the firewall runs a ftp proxy (suse proxy-suite on port 8082)
+i've the following rules
+
+iptables -A INPUT -p tcp -s $local_net --sport 1024:65535 -d
+$firewall_internal_ip --dport 8082 -m state --state NEW,ESTABLISHED -j
+ACCEPT
+
+ipatbles -A OUTPUT -p tcp -s $firewall_internal_ip --sport 8082 -d
+$local_net --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -p tcp -s $local_net --sport 1024:65535 -d
+$firewall_internal_ip --dport 1024:65535 -m state ESTABLISHED,RELATED
+
+.....
+
+from the client i do the following
+
+ftp ip_firewall 8082
+login to a ftp server like redhat or so
+do "ls"
+then the kernel rejects the third rule written upper.
+
+if i change the rule from RELATED to NEW, the it's working, but this
+is not a solution.
+
+Thanks for help!
+
+- Thomas
+
+
 
