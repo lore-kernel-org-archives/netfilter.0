@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Routing a VPN.....confused
-Date: Sat, 13 Dec 2003 22:17:24 -0500
+From: Joel Newkirk <firewalldude@newkirk.us>
+Subject: Re: DNATing packets sent to the NATing box
+Date: Sat, 13 Dec 2003 23:55:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071371844.1900.4.camel@jasiiitosh.nexusmgmt.com>
-References: <1071368662.3630.37.camel@Psycho>
+Message-ID: <1071377734.2091.928.camel@alpha.newkirk.us>
+References: <20031214005212.GA8217@tinuviel.compendium.com.ar>
+Reply-To: firewalldude@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1071368662.3630.37.camel@Psycho>
+In-Reply-To: <20031214005212.GA8217@tinuviel.compendium.com.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +19,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mbrei@carolina.rr.com
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: horape@tinuviel.compendium.com.ar
+Cc: netfilter@lists.netfilter.org
 
-iptables and FreeS/WAN play very nicely together.  There are some
-documents in the massive collection of documentation with FreeS/WAN that
-treat using FreeS/WAN and a firewall together.  There are also some
-slightly out of date slide shows at http://iscs.sourceforge.net on using
-iptables, iproute2 and FreeS/WAN together.  You may find those helpful. 
-Good luck - John
+On Sat, 2003-12-13 at 19:52, horape@tinuviel.compendium.com.ar wrote:
+> I've a system that at its core has an UDP proxy that's the performance
+> bottleneck. I wanted to use the DNAT kernel facilities to replace my
+> code with the very tuned one on netfilter.
+> 
+> I'm adding a rule that says something like this:
+> 
+> /sbin/iptables -t nat -A PREROUTING -d myip -p udp -m udp --dport 5000 -j DNAT
+> 		--to-destination otherip:18918
 
-On Sat, 2003-12-13 at 21:24, Matt Brei wrote:
-> Hi all,
+Try:
+
+/sbin/iptables -t nat -A PREROUTING -d myip -p udp --dport 5000 -j DNAT
+--to otherip:18918
+
+And ensure you are letting traffic for -d otherip -p udp --dport 18918
+through FORWARD chain.
+
+> but the rule never see the packets (they never got to the chain)
 > 
-> I'm trying to set up a VPN with my buddy back in Chicago.  We're both
-> using iptables to nat our Internet connection to the rest of the LAN and
-> filter out all the naughtiness on the cable modem connection.  So far,
-> we've tried FreeS/WAN on the iptables routers, but as soon as we start
-> the ipsec service, it kills the Internet connection.  
-> 
-> Now I know this sounds like a FreeS/WAN problem, and it probably is, but
-> the mailing list seems to be down, and the netfilter people are great,
-> so I'm asking you.  Hopefully someone can give me some advice, or point
-> me in another direction. 
-> 
-> Is the ipsec service supposed to block the rest of the Internet?  If
-> this is supposed to happen, is there a way to stop it or will we need to
-> use 2 machines with public IP addresses?  Provided we can get the VPN
-> working, is there a way to use iptables to nat the VPN connection to the
-> rest of the LAN?  Basically we would like to use a PC with iptables and
-> whatever ipsec software just like you would use a Cisco PIX.
-> 
-> Thanks for your time,
-> Matt
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+> I assume that it's because I've a socket listening on udp:5000, and it seems
+
+Nope.
+
+> reasonable what's happening... I'd like to add a PREPREROUTING chain that
+> is processed before deciding if the packet is for a local socket, can somebody
+> give me a hint on where to look for it?
+
+If it's for local, it can be seen in Mangle Prerouting, then Nat
+Prerouting, then Mangle Input, then Filter Input.
+
+> Saludos,
+> 					HoraPe
+> ---
+> Horacio J. Pea
+> horape@compendium.com.ar
+horape@uninet.edu
+
+j
+
 
 
