@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DHCP /MAC
-Date: Sat, 8 Nov 2003 12:14:51 +0000
+From: kannel sms <kannel_sms@yahoo.com>
+Subject: DHCP /MAC
+Date: Sat, 8 Nov 2003 05:05:17 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311081214.hA8CEuj15455@agate.rockstone.co.uk>
-References: <20031108114309.82218.qmail@web60203.mail.yahoo.com>
+Message-ID: <20031108130517.88285.qmail@web60210.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031108114309.82218.qmail@web60203.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +15,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Saturday 08 November 2003 11:43 am, kannel sms wrote:
 
-> This dhcp server specially allcate for Cable modem
-> system . That cable modem has a MAC addresses. I'm
-> sure.
+As u said i did all , but it will not reach my
+requirement, because when i added that rule with a
+specific MAC address , according to ur mail it will
+allow  to get all the dhcp facilities . 
+But other machines also doing samething . so seems to
+be somewhere has a small problem , 
 
-Yes, a cable modem will have a MAC address.   Your first posting mentioned 
-dial-up users, so I assumed you meant standard analogue telephone system 
-dial-up modems.
+i will give u my tabless info
 
-> If u can tell me how to implement that MAC blocking
-> for the LAN , i can manage that methods for cable
-> modem as well.
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+#######################################################################################################################
+iptables -A INPUT -i lo -m state --state NEW -j ACCEPT
+iptables -A OUTPUT -o lo -m state --state NEW -j
+ACCEPT
 
-I would create a user-defined chain which ACCEPTs the desired MAC addresses 
-and DROPs all others:
-
+iptables -A INPUT -m state --state RELATED,ESTABLISHED
+-j ACCEPT
+iptables -A OUTPUT -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -m state --state NEW -j ACCEPT
+####################################################################################################################
 iptables -N MACcheck
-iptables -A MACcheck -m mac --mac-source aa.bb.cc.dd.ee.ff -j ACCEPT
-iptables -A MACcheck -m mac --mac-source uu.vv.ww.xx.yy.zz -j ACCEPT
+iptables -A MACcheck -m mac --mac-source
+00.50.BA.50.36.25 -j ACCEPT
 iptables -A MACcheck -j DROP
 
-(Add as many ACCEPT lines as you want to match MAC addresses)
-
-Then, if you want to restrict packets coming in to the netfilter box itself:
-
 iptables -I INPUT -i eth0 -j MACcheck
+######################################################################################################################
+iptables -A INPUT -p udp -s 192.168.30.0/24 --dport 67
+-i eth0 -m state --state NEW -m mac --mac-source
+00:50:BA:50:36:25 -j
+ACCEPT
+iptables -A INPUT -p tcp -s 192.168.30.0/24 --dport 67
+-i eth0 -m state --state NEW -m mac --mac-source
+00:50:BA:50:36:25 -j
+ACCEPT
 
-or if you want to restrict packets going through the netfilter box to 
-somewhere else:
+iptables -A INPUT -p udp -s 192.168.30.0/24 --dport 68
+-i eth0 -m state --state NEW -m mac --mac-source
+00:50:BA:50:36:25 -j
+ACCEPT
+iptables -A INPUT -p tcp -s 192.168.30.0/24 --dport 68
+-i eth0 -m state --state NEW -m mac --mac-source
+00:50:BA:50:36:25 -j
+ACCEPT
 
-iptables -I INPUT -i eth0 -j MACcheck
 
-(Adjust eth0 for whichever interface your cable modems are connected).
-
-Antony.
-
-PS: If you want to reply, please reply to the list, not to me personally.
-
--- 
-
-You can spend the whole of your life trying to be popular,
-but at the end of the day the size of the crowd at your funeral
-will be largely dictated by the weather.
-
- - Frank Skinner
-                                                     Please reply to the list;
-                                                           please don't CC me.
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
