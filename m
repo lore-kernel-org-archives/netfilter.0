@@ -1,11 +1,11 @@
-From: "Wallwork, Nathan" <nwallwo@pnm.com>
+From: Ralf Spenneberg <lists@spenneberg.org>
 Subject: Re: Need help have some questions...
-Date: Mon, 18 Aug 2003 14:53:25 -0600 (MDT)
+Date: 18 Aug 2003 23:09:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0308181429300.19455-100000@nwallwo-linux.corp.pnm.com>
+Message-ID: <1061240992.1628.56.camel@kermit>
 References: <20030818201333.57194.qmail@web40202.mail.yahoo.com>
-Reply-To: "Wallwork, Nathan" <nwallwo@pnm.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20030818201333.57194.qmail@web40202.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,47 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: SBlaze <dagent.geo@yahoo.com>
-Cc: nf <netfilter@lists.netfilter.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 18 Aug 2003, SBlaze wrote:
-> How am I supposed to proxy apache? Why should I have to? Is it not a firewalls
+Am Mon, 2003-08-18 um 22.13 schrieb SBlaze:
+> To Ralf, the netfilter team, and the whole of the OS community
+>=20
+> How am I supposed to proxy apache? Why should I have to? Is it not a fire=
+walls
 > job to protect a system(and LAN behind it)? This is a very valid form of
 > protection I'm asking for here.
+You sure are correct in pointing out that firewalls are supposed to
+protect a system and maybe a LAN behind it.=20
+You have to remember (or read up on) that there are basically 3
+different technologies available to technically implement a firewall:
+1. Packetfilter like netfilter and ipchains
+2. Circuit Relays like socks
+3. Application level gateways like fwtk
 
-You are asking for a different sort of protection than what firewalls are 
-generally expected to provide.
+All three work on different network layers and have access to different
+information.=20
+Basically a packet filter has only access to the headers of the IP
+packet (yes, I know that netfilter has the string match), but they
+cannot reassemble the whole datastream and base their decision on it (at
+least not yet). This means, that a packetfilter cannot find the
+destination email address in an smtp data stream. It just does not have
+the intelligence built in.=20
 
+A circuit relay is a quite dumb proxy that just filters connections but
+still cannot see inside.
 
-> Anyone who runs apache and logs(which is EVERYONE who runs apache unless they
-> are brain dead or don't care about security) is constantly BOMBARDED DAILY with
-> CODE/RED and NIMDA(and I'm sure other types of invalid requests they would like
-> to protect against).
+An application level gateway is more or less a proxy written for the
+specific protocol. It cannot access the packet headers anymore but it
+sees the data stream. It can understand and parse the SMTP protocol and
+filter based on the data send.
 
-Yeah, so what?  Apache can handle that.  You can configure Apache to discard 
-those requests without filling up your log files, if that's the concern.
-You can run a proxy to deal with it.  You have plenty of options.
+Now since Netfilter is a packet filter, you do not (and probably will
+never) have the possibility to filter based on domains but only on IP
+addresses.
+If your domains use two different IP addresses it is easy to redirect
+because netfilter can access the IP header holding the information.
 
+By the way, even commercial packet filters like Checkpoint use a proxy
+for this functionality.=20
 
->   If this can not be done I would love for someone to give me a half technical
-> half lamen's terms explanation. I honestly don't think I'm asking so much of
-> the  iptables firewall that I should have to go proxying things and
-> circumventing things here and there.
+Cheers,
 
-Rejecting packets based on source or destination or port number or a number of 
-other things is easy.  Building an awareness of the HTTP protocol into the 
-kernel modules so that netfilter can parse an HTTP conversation isn't 
-appropriate.  Inspecting lots of packets is better handled outside the kernel.
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-IP, TCP, UDP, and ICMP are all low-level protcols. 
-
-HTTP is a high-level protocol.
-
-Rejecting based on content is more appropriately handled by a user-level tool 
-which is designed to handle the specific user-level protocol involved, in this
-case an HTTP proxy would be a good choice.
-
-
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
