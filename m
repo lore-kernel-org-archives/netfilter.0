@@ -1,9 +1,8 @@
-From: Alin Nastac <mrness@technosoft.ro>
-Subject: Re: iptables question - how to securely allow *just* outgoing smtp
-Date: Tue, 25 Jun 2002 09:55:46 +0300
+From: "Jacob Hansen" <luffe@diku.dk>
+Subject: Netfilter after kernel 2.4.3 ??
+Date: Tue, 25 Jun 2002 09:05:23 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D1813F2.29FFD372@technosoft.ro>
-References: <20020621083228.A21833@spawar.navy.mil> <200206211535.g5LFZbU03196@vulcan.rissington.net> <20020622102824.A32585@spawar.navy.mil>
+Message-ID: <001001c21c16$b00597d0$6e01a8c0@raptor>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -17,17 +16,30 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Christian Seberino <seberino@spawar.navy.mil>
-Cc: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Christian Seberino wrote:
+Hi,
 
-> I *could* define $SSH_PORT and $SMPT_PORT but
-> doesn't iptables recognize ssh and smtp /already/
-> as 22 and 25?
+I am working on a packet-mangling module for Netfilter (actually I am
+extending another guys work: http://piconet.sourceforge.net/). The
+modules implements Ad Hoc Networking for Linux as a kernel module. The
+module hooks into pre_route, local_in and local_out handlers to provide
+ad hoc routing.
 
-iptables recognise all ports names from /etc/services. You could use
---dport ssh instead --dport 22. Still, you must add before that -p tcp.
-Without that, iptables cannot interpret --dport.
+The modele was initially developed for kernel 2.4.3 and on this version
+everything works as expected. For some bizarre reason, when I use a
+later kernel, TCP connections have problems. (i.e. I can connect via
+ftp, login, look at directory contents but when I start downloading a
+file - nothing happens).
+
+Now I ask, what changes have been made since 2.4.3, that apparently
+breaks functionality of the module? Any ideas?
+
+
+Best regards, 
+
+
+Jacob
+
 
 
