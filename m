@@ -1,16 +1,10 @@
-From: Navneet Choudhary <navneetkc@gmail.com>
-Subject: Re: Fwd: Linux as router (Gateway Server)
-Date: Sun, 13 Feb 2005 22:51:42 +0530
-Message-ID: <1dceb01205021309217f5b06b0@mail.gmail.com>
-References: <1dceb012050211233357e23dd4@mail.gmail.com>
-	<1dceb01205021123483860fb86@mail.gmail.com>
-	<1108216901.4462.27.camel@hubcap.ljm.dom>
-	<4f3930a705021214026db11902@mail.gmail.com>
-	<420EB7C3.7040303@hotpop.com>
-Reply-To: Navneet Choudhary <navneetkc@gmail.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: Fwd: Linux as router (Gateway Server)
+Date: Sun, 13 Feb 2005 09:24:41 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019976@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <420EB7C3.7040303@hotpop.com>
+Content-Transfer-Encoding: quoted-printable
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,21 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Georgi Alexandrov <tehlists@hotpop.com>
+To: Navneet Choudhary <navneetkc@gmail.com>, Josh Nerius <jnerius@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-> hello josh.
-> 
-> I stand 100% with Jason O.'s opinion ..
-> netfilter/iptables has nothing to do with squid binding to some/any port.
-> whoever had to do his homework ... i beleive has done it.
-> Accessing that port is something different (-i lo -j ACCEPT), but i
-> beleive that's not the case.
+Wouldn't it just easier to put a log statement before the drop so you
+can see what iptables is dropping?  This might really simplify your
+troubleshooting.
 
-any pointer?
+Besides Google, log files are your friends as well.  If your default
+rule is to DROP everything but the log isn't catching anything then you
+have another problem otherwise you'll know immediately which ports to
+open.
 
-> regards,
-> Georgi Alexandrov
-> 
->
+
+Gary Smith
+
+
 
