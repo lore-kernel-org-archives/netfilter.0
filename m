@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Selecting interface
-Date: Mon, 29 Sep 2003 08:47:48 +1000
+From: "Jon Pol" <john@pinoylinux.sytes.net>
+Subject: REDIRECT incoming Port to IP
+Date: Mon, 29 Sep 2003 11:34:10 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C379@wardrive.citadelcomputer.com.au>
+Message-ID: <006c01c3863a$8c3785e0$51df7dcb@expi>
+References: <E1A3UZL-000289-3y@bear.dns-nac-zone.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0069_01C3867D.99DF0630"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,129 +17,101 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Dragos C." <Dragos_Cinteza@web.de>, netfilter@lists.netfilter.org
-
-
-I'm a little confused by your question (probably too early in the =
-morning for me... need 3 cups of coffee.. not 2 ;)  )
-
-Routing takes care of the ethernet devices when packets flow through. If =
-you don't specify the ethernet device, it'll then apply to ALL devices.
-
-So if a packet was received from the internet on a w.x.y.z IP on the =
-external device and you had the below command :
-
-        /sbin/iptables -t mangle -A INPUT -s 192.168.1.1 -j MARK =
---set-mark 1
-
-The external packet would traverse this rule and should someone spoof =
-the source IP address as 192.168.1.1 then the rule would activate..
-
-Always specify the ethernet device where possible.
-
-Hope this was of some help...otherwise rephrase your question please =
-while I wake up.. ;P
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-
-
------Original Message-----
-From: Dragos Cinteza [mailto:Dragos_Cinteza@web.de]
-Sent: Sunday, 28 September 2003 11:27 AM
 To: netfilter@lists.netfilter.org
-Subject: Selecting interface
 
+This is a multi-part message in MIME format.
 
-        HI
+------=_NextPart_000_0069_01C3867D.99DF0630
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-          I have a box with 2 interfaces that is routing pakets from
-        mi  LAN  to the internet. I mark packets that enter on the lan
-        interface,  marks coresponding to the IPs on LAN. Here are the
-        rules:
+Just a quick newbie Q:
 
-        /sbin/iptables -t mangle -A INPUT --in-interface eth0 -s =
-192.168.1.1 -j MARK --set-mark 1
-        /sbin/iptables -t mangle -A INPUT --in-interface eth0 -s =
-192.168.1.2 -j MARK --set-mark 2
-        /sbin/iptables -t mangle -A INPUT --in-interface eth0 -s =
-192.168.1.3 -j MARK --set-mark 3
-        /sbin/iptables -t mangle -A INPUT --in-interface eth0 -s =
-192.168.1.4 -j MARK --set-mark 4
-        /sbin/iptables -t mangle -A INPUT --in-interface eth0 -s =
-192.168.1.5 -j MARK --set-mark 5
-        /sbin/iptables -t mangle -A INPUT --in-interface eth0 -s =
-192.168.1.6 -j MARK --set-mark 6
-        /sbin/iptables -t mangle -A INPUT --in-interface eth0 -s =
-192.168.1.7 -j MARK --set-mark 7
-        /sbin/iptables -t mangle -A OUTPUT --out-interface eth0 -d =
-192.168.1.1 -j MARK --set-mark 1
-        /sbin/iptables -t mangle -A OUTPUT --out-interface eth0 -d =
-192.168.1.2 -j MARK --set-mark 2
-        /sbin/iptables -t mangle -A OUTPUT --out-interface eth0 -d =
-192.168.1.3 -j MARK --set-mark 3
-        /sbin/iptables -t mangle -A OUTPUT --out-interface eth0 -d =
-192.168.1.4 -j MARK --set-mark 4
-        /sbin/iptables -t mangle -A OUTPUT --out-interface eth0 -d =
-192.168.1.5 -j MARK --set-mark 5
-        /sbin/iptables -t mangle -A OUTPUT --out-interface eth0 -d =
-192.168.1.6 -j MARK --set-mark 6
-        /sbin/iptables -t mangle -A OUTPUT --out-interface eth0 -d =
-192.168.1.7 -j MARK --set-mark 7
+I want to redirect incoming/outgoing traffic ports (1024-65535)  to a =
+certain IP Address (192.168.0.10). that is;
 
-        /sbin/iptables -t mangle -A PREROUTING --in-interface eth0 -s =
-192.168.1.1 -j MARK --set-mark 1
-        /sbin/iptables -t mangle -A PREROUTING --in-interface eth0 -s =
-192.168.1.2 -j MARK --set-mark 2
-        /sbin/iptables -t mangle -A PREROUTING --in-interface eth0 -s =
-192.168.1.3 -j MARK --set-mark 3
-        /sbin/iptables -t mangle -A PREROUTING --in-interface eth0 -s =
-192.168.1.4 -j MARK --set-mark 4
-        /sbin/iptables -t mangle -A PREROUTING --in-interface eth0 -s =
-192.168.1.5 -j MARK --set-mark 5
-        /sbin/iptables -t mangle -A PREROUTING --in-interface eth0 -s =
-192.168.1.6 -j MARK --set-mark 6
-        /sbin/iptables -t mangle -A PREROUTING --in-interface eth0 -s =
-192.168.1.7 -j MARK --set-mark 7
-        /sbin/iptables -t mangle -A POSTROUTING --out-interface eth0 -d =
-192.168.1.1 -j MARK --set-mark 1
-        /sbin/iptables -t mangle -A POSTROUTING --out-interface eth0 -d =
-192.168.1.2 -j MARK --set-mark 2
-        /sbin/iptables -t mangle -A POSTROUTING --out-interface eth0 -d =
-192.168.1.3 -j MARK --set-mark 3
-        /sbin/iptables -t mangle -A POSTROUTING --out-interface eth0 -d =
-192.168.1.4 -j MARK --set-mark 4
-        /sbin/iptables -t mangle -A POSTROUTING --out-interface eth0 -d =
-192.168.1.5 -j MARK --set-mark 5
-        /sbin/iptables -t mangle -A POSTROUTING --out-interface eth0 -d =
-192.168.1.6 -j MARK --set-mark 6
-        /sbin/iptables -t mangle -A POSTROUTING --out-interface eth0 -d =
-192.168.1.7 -j MARK --set-mark 7
+incoming/outgoing traffic ---- > 203.x.x.x(destination port 1024-65535) =
+-----> REDIRECT -----> (192.168.0.10)
 
-            I  am  wondering what interface and what packets (incoming
-        or  outgoing to that interface) are assumed if I don't specify
-        in   the   rules  "--out-interface  eth0"  (eth0  is  the  lan
-        interface).
+any hint?
 
-            I  use  the  INPUT  and  OUTPUT  too  because I have squid
-            passing the pakets from port 80.
-       =20
-
-       =20
-
-
-  TheBat! 2.00.6 natural e-mail system(tm)
- adresa de e-mail: Dragos_Cinteza@web.de
+Thanks.
+JP
 
 
 
+------=_NextPart_000_0069_01C3867D.99DF0630
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML xmlns=3D"http://www.w3.org/TR/REC-html40" xmlns:o =3D=20
+"urn:schemas-microsoft-com:office:office" xmlns:w =3D=20
+"urn:schemas-microsoft-com:office:word"><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2726.2500" name=3DGENERATOR>
+<STYLE>@page Section1 {size: 8.5in 11.0in; margin: 1.0in 1.25in 1.0in =
+1.25in; }
+P.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+LI.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+DIV.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+A:link {
+	COLOR: blue; TEXT-DECORATION: underline
+}
+SPAN.MsoHyperlink {
+	COLOR: blue; TEXT-DECORATION: underline
+}
+A:visited {
+	COLOR: purple; TEXT-DECORATION: underline
+}
+SPAN.MsoHyperlinkFollowed {
+	COLOR: purple; TEXT-DECORATION: underline
+}
+P.MsoAutoSig {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+LI.MsoAutoSig {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+DIV.MsoAutoSig {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+SPAN.EmailStyle17 {
+	COLOR: windowtext; FONT-FAMILY: Arial; mso-style-type: personal-compose
+}
+DIV.Section1 {
+	page: Section1
+}
+</STYLE>
+</HEAD>
+<BODY lang=3DEN-US vLink=3Dpurple link=3Dblue bgColor=3D#d6f4fe>
+<DIV><FONT face=3DArial size=3D2>Just a quick newbie Q:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I want to redirect incoming/outgoing=20
+traffic&nbsp;ports (1024-65535) &nbsp;to a certain IP Address =
+(192.168.0.10).=20
+that is;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>incoming/outgoing traffic ---- &gt;=20
+203.x.x.x(destination port 1024-65535) -----&gt; REDIRECT -----&gt;=20
+(192.168.0.10)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>any hint?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>JP</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0069_01C3867D.99DF0630--
 
 
