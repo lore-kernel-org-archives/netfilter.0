@@ -1,11 +1,15 @@
-From: MOUDARIR Mohamed <moudarir@Richbond.ma>
-Subject: RE: MSN throught Linux
-Date: Mon, 6 Oct 2003 15:04:32 -0000
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Can't DROP spoofed packet. Bug or feature ?
+Date: Mon, 06 Oct 2003 17:00:38 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <14C5057BC852D611BAC400E0299AA10F020455@MAILSERV>
+Message-ID: <1065452437.822.108.camel@elendil.intranet.cartel-securite.net>
+References: <52208.212.239.118.101.1065447313.squirrel@www.frumar.it>
+	 <1065448509.815.56.camel@elendil.intranet.cartel-securite.net>
+	 <53468.212.239.118.101.1065450686.squirrel@www.frumar.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <53468.212.239.118.101.1065450686.squirrel@www.frumar.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +20,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: 'Carlos Santos' <csantos@csantos.net>, netfilter@lists.netfilter.org
+To: pigi@pigi.org
+Cc: netfilter@lists.netfilter.org
 
-Ok, i try some other soft like Eyeball or PalTalk and they work as well =
-as
-MSN .
-webcam, voice and chatting all this features are involved.
-in the other hand we can control the port that will be used by this =
-tools,
-but in MSN it use dynamic port and with upnp you must open several =
-port.
-So i hope that user will be comprehensive, if not SIP or H323 standard =
-have
-to change .
-we create computer science not to complicate our life :)
+Le lun 06/10/2003 =E0 16:31, pigi a =E9crit :
+> Anyway this is the workaround, but I would like to DROP it in my rules =
+if
+> possible, so the packet cannot reach the routing point in kernel.
+> Is this possible ?
 
------Message d'origine-----
-De : Carlos Santos [mailto:csantos@csantos.net]
-Envoy=E9 : lundi 6 octobre 2003 12:46
-=C0 : netfilter@lists.netfilter.org
-Objet : RE: MSN throught Linux
+Yes you can. Just desactivate rp_filters (echo 0 >
+/proc/sys/net/ipv4/conf/all/rp_filters) and filter within INPUT and
+FORWARD chains, according to your routing table. But you'll have to
+handle all cases, what can be tricky if you have many interfaces. Or do
+it within PREROUTING chain which is not the prefered place for
+filtering.
 
+What I told you before was why your packet did not reach INPUT chain.
 
-
-
-Hi,
-
-I've been trying (on and off, on my spare time) to get my firewall =
-(RedHat=20
-9 Shrike) to allow MSN, Netmeeting and Yahoo webcam conversations to =
-take=20
-place. I've been keeping up with some of the threads that have been =
-started=20
-lately about this subject and what I would like to know before going =
-any=20
-further is: is UPNP a security risk ? I don't want to end up with a =
-vault=20
-like front door and have all the back windows and doors wide open with=20
-"come on in" signs, if you know what I mean. I do want be able to =
-connect=20
-to other users with webcams but not at the expense of security provided =
-by=20
-the firewall. Please let me know what your thoughts are on this, =
-please.
-
-Thanks,
-Carlos.
-
-
-
-*****************************************
-Carlos Santos
-csantos@csantos.net
-*****************************************=20
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
