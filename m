@@ -1,13 +1,14 @@
-From: "HareRam" <hareram@sol.net.in>
-Subject: NAT and NAT
-Date: Sat, 14 Sep 2002 14:53:38 +0530
+From: Stewart Thompson <stewart.thompson@shaw.ca>
+Subject: RE: fxp doesnt work & connection tracking
+Date: Sat, 14 Sep 2002 03:58:22 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ec01c25bd0$6a8f5a20$7cfcc5cb@humanpc>
-References: <5.1.0.14.2.20020912090056.012e6d48@linda> <200209121022.g8CAMTv09831@vulcan.rissington.net> <052701c25a4f$eb00a740$7cfcc5cb@humanpc> <200209121354.g8CDssv10202@vulcan.rissington.net>
-Reply-To: "HareRam" <hareram@sol.net.in>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPGEKBCOAA.stewart.thompson@shaw.ca>
+References: <Pine.LNX.4.44.0209141218320.20369-100000@server.piarista-kkt.sulinet.hu>
+Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <Pine.LNX.4.44.0209141218320.20369-100000@server.piarista-kkt.sulinet.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +19,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: NagyZ <nagyz@piarista-kkt.sulinet.hu>, netfilter@lists.netfilter.org
 
-Hi all 
+Hi:
 
-i have ADSL connection
-ADSL provider didnot provide Public IP
-he is doing NAT with ADSL router
+	I don't see any rules to accept new connections. You are only
+allowing Established and Related connections. So another machine will
+never be able to start a connection. I am not familiar with fxp. Is the
+connection to your firewall machine, or forwarded to an internal machine?
+The output might work because I don't see any rules here to prevent outgoing
+connections. You might have to post your whole rule set so we can see
+exactly what you are trying to do.
 
-iam trying to have Redhat Box as a gateway for all
-my ADSL router ip is 192.168.40.1
-my router (linux is 192.168.40.2, gateway is 192.168.40.1)
-now any Router (Linux) another ethernet start from 192.168.30.1
-and client ip start from 192.168.30.2.... 253.
-iam running transparent Squid also
-
-and i have another Link which is Public IP also connected to same network
-here iam using another Linux Server with Different IP block
-192.169.100.1 ethernet 1 and clients are from 192.168.100.2 onwards
+Stu.......
 
 
-now iam looking
-i want to club both network to one  IP block and Serve them load balance
-is this NAT and NAT os possible
-is there any performance issues
-is there any limitations
-how do the load automatically shift if link 1 down to link 2
-how do the load automatically shift if link 2 down to link 1
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of NagyZ
+Sent: September 14, 2002 3:22 AM
+To: netfilter@lists.netfilter.org
+Subject: fxp doesnt work & connection tracking
 
-any sample URL or script will be appriciated
+hi!
 
-thanks
-hare
+if i apply these rules, then incoming fxp's dont work (outgoing is still
+work).. any idea?
+:
+iptables -N szabalyok
+iptables -A szabalyok -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A szabalyok -p tcp --dport 21 -d <ip> -j ACCEPT
+iptables -A szabalyok -p tcp --dport 22 -d <ip> -j ACCEPT
+iptables -A szabalyok -p tcp --dport 1024: -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+iptables -A szabalyok -j DROP
+iptables -A INPUT -j szabalyok
+iptables -A FORWARD -j szabalyok
 
+other:
+before that, i did:
+modprobe ip_conntrack_ftp ports=21,etc,etc
+modprobe ip_conntrack_irc ports=6667,6668,6669,7000,31337
 
+but in lsmod i see:
+ip_conntrack_irc        2400   0  (unused)
+ip_conntrack_ftp        3136   0  (unused)
+
+why is that? if i understand the howto correctly, it should be unused..
+any idea?
+
+NagyZ
 
 
 
