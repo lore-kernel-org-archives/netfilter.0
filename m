@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ip_conntrack.ftp.c and ip_nat_ftp.c and DNAT
-Date: Tue, 18 Jun 2002 09:19:34 +0100
+From: Paulo Andre <PAndre@autopage.altech.co.za>
+Subject: Iptables redirecting
+Date: Tue, 18 Jun 2002 12:48:16 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206180819.g5I8JbA28591@Networker.rockstone.co.uk>
-References: <02061815431200.01908@luoqiang>
+Message-ID: <CC845BB8BC74D6119934000347DD23E87C0BE2@jhbmail.autopage.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <02061815431200.01908@luoqiang>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,23 +15,19 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
 
-On Tuesday 18 June 2002 8:43 am, luoqiang wrote:
+I have a simple/stupid question:
+Can someone give me the pros/cons of the following situation.
+1- Running a firewall that forwards all smtp traffic to another (internal)
+ip address --- DNAT
+2- Running a firewall that forwards all smtp traffic to another (internal)
+ip address --- running mail server on firewall that redirects the traffic
 
-> Hi,all
->
->     After reading the hacking howto and the code of ip_conntack_ftp.c and
-> ip_nat_ftp.c,I want to write a module for DNAT to achieve the purpose as
-> follows:
+Thanks
 
-> iptables -A PREROUTING -t nat -p udp -d 159.226.1.1 --dport 5003
-> -j DNAT --to 192.168.1.2:5003
+Paulo 
 
-Excuse my ignorance here, but why do you need to write a module for this ?   
-Why can't you just do it with a rule such as the one you've written ?
 
- 
-
-Antony.
 
