@@ -1,13 +1,13 @@
-From: Axel Heinrici <heinrici76@gmx.de>
-Subject: Re: Slow FTP through NAT box...
-Date: Sat, 14 Sep 2002 12:47:12 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Iptables --owner-uid
+Date: Sat, 14 Sep 2002 12:22:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209141247.12366.heinrici76@gmx.de>
-References: <3D8299CC.1CFC740A@itdimensions.com>
+Message-ID: <20020914112228.DMUD13709.mta07-svc.ntlworld.com@there>
+References: <39778BFB9C25BA429794B15B50AEC781045422@server-dcms>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D8299CC.1CFC740A@itdimensions.com>
+In-Reply-To: <39778BFB9C25BA429794B15B50AEC781045422@server-dcms>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hello
+On Saturday 14 September 2002 11:36 am, Didier Hung Wan Luk wrote:
 
-> Hi List;
+> Hello All,
 >
-> I'm fighthing with NATing issues almost 3 days. Now I'm facing
-> problem, that It take extremly long to get passive ftp access to the
-> machine after NAT box. I can access it just using ftp command line
-> client from Linux machine and none from Win working even PASV mode is
-> enabled. But anyway initial handshaking take a pretty long, let's say
-> 2 minutes. Box do nothing else just translate range from priavte IP
-> range to normal Inet range.
+> I have a question about iptables with the --owner-uid option..
 >
-> Other services works pretty well as ssh, web. But FTP driving me
-> slightly mad. Do anybody out there have any idea what I did wrong or
-> when I can find some info about? Probably I read whole Google. Or I'm
-> blind or what...
-Take a look at the ident service. Enable it or block it with "-j=20
-REJECT". Otherwise you sometimes have to wait for the ident connection=20
-to time out
+> Is it possible to create rules with iptables based on users?
+>
+> i.e can I say that user marry(uid=513) can telnet out but user
+> John(uid=601) cannot?
 
-Axel
+Only if those users are telnetting out from your firewall machine (which 
+implies they have accounts on it, and are logged in to it, which is not a 
+recommended arrangement for a firewall).
 
+> In the iptables man it is said that --owner-? (owner module) can match
+> characteristics of locally-generated packets only.. if this is the case
+> then I cannot use it in an environment where all my clients are windows
+> clients and the server is a Samba PDC with iptables. Am I right? Or is
+> there another way to do this?
+
+You are correct.   --owner-uid only knows about the locally-owning process, 
+therefore there is no meaningful owner match for forwarded packets.
+
+There may be some way you can get Samba to link user ID to IP address, and 
+then from there generate some netfilter rules to restrict what each user can 
+do ?
+
+Antony.
+
+-- 
+
+The first ninety percent of an engineering project takes ninety percent
+of the time, and the last ten percent takes the remaining ninety percent.
 
