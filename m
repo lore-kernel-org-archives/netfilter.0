@@ -1,15 +1,14 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: forwarding
-Date: Tue, 18 May 2004 10:58:45 -0400
+Date: Tue, 18 May 2004 15:56:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084892325.6417.40.camel@localhost>
-References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105>
-	 <1084891180.6410.18.camel@localhost>
-	 <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
+Message-ID: <200405181556.15769.Antony@Soft-Solutions.co.uk>
+References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105> <1084891180.6410.18.camel@localhost> <34002.200.44.170.105.1084891760.squirrel@200.44.170.105>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
+In-Reply-To: <34002.200.44.170.105.1084891760.squirrel@200.44.170.105>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,79 +19,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: alucard@kanux.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 2004-05-18 at 10:57, alucard@kanux.com wrote:
-> Hi there again...
-> 
-> Here's my changed rule:
-> 
-> -------
-> echo "Borrando posibles reglas anteriores..."
-> iptables -F
-> iptables -X
-> 
-> echo "Habilitando politicas de negacion total de paquetes"
-> 
-> iptables -P FORWARD DROP
-> iptables -P INPUT DROP
-> 
-> echo "Reglas para paquetes de entrada y salida"
-> 
-> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> 
-> #iptables -A INPUT -p tcp --dport 21 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 25 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-> 
-> 
-> ##internas
-> iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
-> iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
-> 
-> #para el forward
-> echo 0 > /proc/sys/net/ipv4/ip_forward
-> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
-> iptables -t nat -A PREROUTING -d 10.73.219.156 -p 6 --dport 8080 \
->     -j DNAT --to-destination 192.168.0.2:80
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> -------
-> 
-> and after I executed this, here's my nmap output
-> 
-> -------
-> root@mail:~# nmap 10.73.219.156
-> 
-> (The 1652 ports scanned but not shown below are in state: filtered)
-> PORT     STATE SERVICE
-> 22/tcp   open  ssh
-> 25/tcp   open  smtp
-> 80/tcp   open  http
-> 143/tcp  open  imap
-> 3306/tcp open  mysql
-> --------
-> 
-> Should I show something else? for what I know, it should be forwarding
-> packets but is not... port 8080 is not open as nmap shows, any
-> suggestions?
-> 
-> Thanks a lot as usual...
-> Juan
-Although it probably did, are you sure nmap scanned port 8080? How about
-nmap -sT -p 8080 10.73.219.156
+On Tuesday 18 May 2004 3:49 pm, alucard@kanux.com wrote:
 
-I would then trace both the wire and the iptables rules to find out
-where it is breaking - John 
+> > [JAS - isn't the packet coming in on 10.73.219.156? In other words, your
+> > NAT rule should be:
+> > iptables -t nat -A PREREOUTING -d 10.73.219.156 -p 6 --dport 8080 -j
+> > DNAT --to-destination 192.168.0.2:80]
+>
+> -p 6? I've never seen this before, what is that rule trying to do?
+
+It's a slightly unconventional way to specify TCP :)
+
+Protocols have numbers (after all, *everything* has numbers when a computer 
+gets involved...), and TCP happens to be protocol number 6; UDP is protocol 
+number 17, and ICMP is protocol number 1.
+
+See /etc/protocols on your own machine for more examples.
+
+Regards,
+
+Antony.
+
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+There are two possible outcomes:
+
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
