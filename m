@@ -1,9 +1,12 @@
-From: Rajesh Menon <secure2k4rrm@yahoo.com>
-Subject: IPTables connection limitiing rule meaning
-Date: Mon, 1 Nov 2004 11:55:27 -0800 (PST)
-Message-ID: <20041101195527.75983.qmail@web53503.mail.yahoo.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: IPTables connection limitiing rule meaning
+Date: Mon, 1 Nov 2004 15:38:28 -0500
+Message-ID: <20041101203827.GA19234@bender.817west.com>
+References: <20041101195527.75983.qmail@web53503.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20041101195527.75983.qmail@web53503.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +21,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+On Mon, Nov 01, 2004 at 11:55:27AM -0800, Rajesh Menon wrote:
+> Hello,
+> 
+> I have a rule in my output chain as follows:
+> 
+> iptables -A OUTPUT -o <external-IF> -m limit --limit
+> 15/minute --limit-burst 10 -j LOG --log-prefix
+> "GW->Intet: "
+> 
+> 1. Would this rule LOG packets as long as the rule is
+> matched?
 
-11/1
+yes--conditional on your limit match.  read rusty's description on the
+"hysteresis door" algorithm used by limit/limit-burst under "Other Match
+Extensions" at:
 
-Hello,
+http://netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-7.html
 
-I have a rule in my output chain as follows:
+> 2. If the limit is reached (15/min) would the packets
+> stop going to the next rule in the chain? 
 
-iptables -A OUTPUT -o <external-IF> -m limit --limit
-15/minute --limit-burst 10 -j LOG --log-prefix
-"GW->Intet: "
+no--"-j LOG" is a non-terminating match (packets will never stop
+traversing rules/chains/tables when they match)
 
-1. Would this rule LOG packets as long as the rule is
-matched?
+> 3. Supposing I have this rule after the above rule 
+> 
+> iptables -A OUTPUT -j ACCEPT
 
-2. If the limit is reached (15/min) would the packets
-stop going to the next rule in the chain? 
+this rule matches all packets, and no rules after this rule will match
+in the OUTPUT chain.
 
-3. Supposing I have this rule after the above rule 
+-j
 
-iptables -A OUTPUT -j ACCEPT
-
-Would this over-ride the above rule applicable for the
-external interface?
-
-Thank You.
-Menon
-
-
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Check out the new Yahoo! Front Page. 
-www.yahoo.com 
- 
-
+--
+"No jury in the world is going to convict a baby ... Maybe Texas."
+        --The Simpsons
 
