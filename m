@@ -1,12 +1,14 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: duplicating packets to other interface
-Date: Tue, 14 Dec 2004 16:43:16 +1000
-Message-ID: <41BE8B84.8040000@snapgear.com>
-References: <1102900009.41bceb29f2fac@www.banda.lv>
+From: jorge alonso <livebrain@gmail.com>
+Subject: Fwd: iptables & ifconfig wrong packet accounting
+Date: Tue, 14 Dec 2004 06:53:56 +0000
+Message-ID: <c65016fb041213225326c55a98@mail.gmail.com>
+References: <c65016fb041212222114c8a41f@mail.gmail.com>
+	<1102971862.3629.23.camel@hubcap.ljm.dom>
+Reply-To: jorge alonso <livebrain@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1102900009.41bceb29f2fac@www.banda.lv>
+In-Reply-To: <1102971862.3629.23.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +19,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: zhuupa@banda.lv
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-zhuupa@banda.lv wrote:
-> internet == [:eth0 router eth1:] == ids sensor (192.168.0.0/16)
->             [             eth2:] == clients (10.0.0.0/8) 
-> 
-> so far it's a router which routes (nat) packets between external network
-> and clients. i added ids sensor to eth1 interface and would like incoming
-> packets on eth0 interface to be duplicated to eth1 so that ids sees them.
+isnt that only used at the beginning, when dhcp obtain the ip ? 
+i dont understand the arp dhcp process :(
 
-Get the ROUTE extension from patch-o-matic-ng and use the --tee option.
 
--- 
-Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
+
+---------- Forwarded message ----------
+From: Jason Opperisano <opie@817west.com>
+Date: Mon, 13 Dec 2004 16:04:22 -0500
+Subject: Re: iptables & ifconfig wrong packet accounting
+To: netfilter@lists.netfilter.org
+
+
+On Mon, 2004-12-13 at 01:21, jorge alonso wrote:
+
+
+> i'm trying to do traffic accounting with iptables but the received
+> packets from iptables (iptables -L -v) and packets from ifconfig dont
+> match.
+> ifconfig counts more packets is it normal ?
+
+my guess would be that 'ifconfig' counts packets such as arp and dhcp
+requests/replies that never make it up to the netfilter hooks.
+
+-j
+
+--
+"Default! The two sweetest words in the English language!"
+        --The Simpsons
 
