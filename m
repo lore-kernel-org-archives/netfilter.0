@@ -1,13 +1,13 @@
 From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: bandwidth problems [Linux 2.4.20] [iptables 1.2.7a]
-Date: Tue, 10 Feb 2004 13:01:04 -0500
+Subject: RE: [Users] Samba and IPsec
+Date: Tue, 10 Feb 2004 13:09:00 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1076436064.2016.35.camel@ca.gts.nexusmgmt.com>
-References: <E1Aqbgf-0000sd-OV@vishnu.netfilter.org>
+Message-ID: <1076436540.2018.44.camel@ca.gts.nexusmgmt.com>
+References: <000e01c3efff$664f2e30$7600a8c0@Barry>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E1Aqbgf-0000sd-OV@vishnu.netfilter.org>
+In-Reply-To: <000e01c3efff$664f2e30$7600a8c0@Barry>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,102 +18,122 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: XXmas@gmx.at
+To: barry.brosnihan@sunmarkproduce.com
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 2004-02-10 at 12:28, root@scheuchenstuel.com wrote:
-> Hi!
->  
-> My configuration:
-> =================
-> 
-> O-------------o    O-----------------------o
-> |    WinXP    |    |    eth0     |   eth1  |
-> | 10.10.1.100 |----| 10.10.1.254 | D H C P |----INTERNET
-> |             |    |             |         |
-> O-------------o    O-----------------------o
->   My Computer           My NAT-Computer
-> 
-> NAT-Computer:
->   Linux 2.4.20-4GB
->   load average: 0.08, 0.05, 0.06
->   iptables v1.2.7a
-> All the NICs I use are 3com 3C905-TX
-> 
-> When I do some bandwidth tests on the NAT-Computer
-> (provider's service page) my bandwidth is about 1MBit/second
-> When I do the same on my computer I only get about 100kbit/second
-> 
-> Now I wonder if there are any problems with my configuration...?
-> Would be nice if you could help me...
-> 
-> Thanks in advance
-> Florian St.
-> 
-> Root(AT)scheuchenstuel(DOT)com
-> 
-> 
-> My iptables-configuration:
-> ==========================
-> 
-> ############################################################################
-> ######
-> 
-> #!/bin/bash
-> #
-> 
-> modprobe iptable_nat
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> 
-> ########## CLEARING TABLES
-> iptables -F
-> iptables -t nat -F
-> iptables -t mangle -F
-> iptables -X
-> 
-> ########## SETTING POLICIES
-> iptables -P INPUT DROP
-> iptables -P OUTPUT ACCEPT
-> iptables -P FORWARD DROP
-> 
-> ########## NAT
-> iptables -A INPUT -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-> 
-> ########## LOOPBACK SETTINGS
-> iptables -A INPUT -i lo -j ACCEPT
-> iptables -A INPUT -s 127.0.0.1/32 -j ACCEPT
-> 
-> ########## EXTERNAL OPEN PORTS
-> iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
-> 
-> ########## INTERNAL OPEN PORTS
-> iptables -A INPUT -s 10.10.1.100/32 -j ACCEPT
-> 
-> ######### NAT FORWARDING
-> iptables -A FORWARD -s 10.10.1.100/32 -j ACCEPT
-> iptables -A FORWARD -d 10.10.1.100/32 -j ACCEPT
-> 
-> ############################################################################
-> ######
+Very good point! There are two ways around the dynamic addressing.  The
+simple and less secure way is to assume that if someone is authorized to
+establish a tunnel, they can access any resource on the network.  In
+that case, you can merely identify valid packets as arriving on an ipsec
+interface and dispense with identifying the user by ip address.
 
-The rules look a little unusual; in fact, they look downright
-dangerous.  You may want to read a good iptables tutorial such as the
-one by Oskar Andreasson.  You can find a link to it on the netfilter.org
-web site.  You can also find some slide shows in the training section at
-http://iscs.sourceforge.net 
+We take a very different approach on the ISCS project.  We want to allow
+Joe user different access in the tunnel than Joe administrator.  Thus,
+we want to distinguish between different users.  To that end, we have a
+little bash script that is called out of the updown o/f swan script.  It
+examines the DER_ASN.1_ID passed during IKE (thanks to Andreas Steffen
+and his team for exposing this information in the X.509 patch), compares
+it to a list of group memberships based upon possible values for the
+fields in the ID, and dynamically creates the iptables rules for the
+user's current address.  When the user ends their session, the rules are
+deleted.  The scripts need to be revised to also check the CA's
+identity.  They are available in the CVS of the ISCS project at
+http://sourceforge.net/projects.iscs 
 
-However, I do not think your rules would create a throughput problem. 
-How are you measuring your throughput?
+It all depends on how much security is reasonable for the environment. 
+Good luck - John
+
+On Tue, 2004-02-10 at 12:57, barry.brosnihan@sunmarkproduce.com wrote:
+> Would I put 0.0.0.0 for a roadwarrior with a non-static ip?
+> 
+> 
+> -----Original Message-----
+> From: John A. Sullivan III [mailto:john.sullivan@nexusmgmt.com] 
+> Sent: 10 February 2004 17:48
+> To: barry.brosnihan@sunmarkproduce.com
+> Subject: RE: [Users] Samba and IPsec
+> 
+> Perhaps I misunderstand your topology.  10.1.1.6 in the example would be
+> the Samba server to which you are trying to connect.
+> 
+> The example I gave would be appropriate to a gateway between two
+> networks.  If, on the other extreme, we are connecting a public road
+> warrior to a standalone Samba server running O/F S/WAN, the rule might
+> look something like:
+> iptables -A INPUT -s 35.87.99.3 -i ipsec0 -d 133.65.8.33 -p 17 --dport
+> 138 -m state --state NEW -j ACCEPT
+> where 35.87.99.3 is the road warrior and 133.65.8.33 is the Samba
+> server.
+> 
+> On Tue, 2004-02-10 at 12:14, barry.brosnihan@sunmarkproduce.com wrote:
+> > Is 10.1.1.6 the client? I am connecting through a PPP connection. 
+> >  
+> > 
+> > 
+> > -----Original Message-----
+> > From: John A. Sullivan III [mailto:john.sullivan@nexusmgmt.com] 
+> > Sent: 10 February 2004 17:00
+> > To: barry.brosnihan@sunmarkproduce.com
+> > Cc: users@mj2.freeswan.org
+> > Subject: Re: [Users] Samba and IPsec
+> > 
+> > On Tue, 2004-02-10 at 11:22, barry.brosnihan@sunmarkproduce.com wrote:
+> > > I know how to open the ports normaly like, but I am not sure how to
+> > open
+> > > them just for the IPSEC side? 
+> > >  
+> > > 
+> > > 
+> > > 
+> > >  -----Original Message-----
+> > > From: users-owner@mj2.freeswan.org
+> > [mailto:users-owner@mj2.freeswan.org]
+> > > On Behalf Of Reinhold Plew
+> > > Sent: 10 February 2004 15:46
+> > > To: users@mj2.freeswan.org
+> > > Subject: Re: [Users] Samba and IPsec
+> > > 
+> > > Hi,
+> > > 
+> > > barry.brosnihan@sunmarkproduce.com schrieb:
+> > > 
+> > > > I know this question has been asked many time's but I have never
+> > ever
+> > > > come aross an answer that has actually. I have a Freeswan server
+> > being
+> > > > connected to by a OpenSSh client. The client can connect fine but
+> > they
+> > > > are unable to connect to any of my Samba share's. I can ping the
+> > box's
+> > > > and telnet them and ssh into them. I have heard that I need to
+> open
+> > > > ports 137-139tcp/udp for the ipsec only. Is this right and how do
+> I
+> > do
+> > > > it?
+> > > 
+> > > yes, thats right. afaik you need to open port 445 too
+> > > 
+> > <snip>
+> > You can make your iptables rule apply to the ipsec interface only,
+> e.g.,
+> > iptables -A FORWARD -i ipsec0 -s 192.168.4.0/24 -d 10.1.1.6 -p 17
+> > --dport 138 -m state --state NEW -j ACCEPT
+> > 
+> > I think the FWBuilder GUI (http://www.fwbuilder.org) now supports
+> > opens/wan but I'm not sure.  That would make configuration easier.
+> When
+> > ISCS is finished, it will make configuring such communications much
+> > easier.
+> > 
+> > There are some slideshows about using opens/wan and iptables together
+> at
+> > http://iscs.sourceforge.net Good luck - John
 -- 
 John A. Sullivan III
 Chief Technology Officer
 Nexus Management
 +1 207-985-7880
 john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
 
 
