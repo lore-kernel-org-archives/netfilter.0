@@ -1,12 +1,12 @@
-From: Tony Zafiropoulos <tonyz@ctitek.com>
-Subject: Re: Examples
-Date: Thu, 27 Jun 2002 15:09:14 -0500 (CDT)
+From: "Daniel Khan" <dk@webcluster.at>
+Subject: DNAT in OUTPUT chain
+Date: Thu, 27 Jun 2002 22:28:49 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.21.0206271505580.24066-100000@jagd.ctitek.com>
-References: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
+Message-ID: <FIEPIOLBGHKEOJANBEKMKELHCCAA.dk@webcluster.at>
+Reply-To: <dk@webcluster.at>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,62 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
+Hello List,
 
-I have found www.linuxguruz.org/iptables very helpful
+I have a Problem with NAT on RedHat 7.3/iptables v1.2.5.
 
-The Monmotha is an extremely well done script
+I have 2 Hosts. I want to redirect every connection to Port 3306 on Host1 to
+Port 3306 on Host2.
+That is no problem as long I make an external connection (Prerouting).
 
-http://monmotha.mplug.org/firewall/firewall/2.3/rc.firewall-2.3.8-pre6
+I also need to redirect connections to localhost:3306.
+According to the Howto's I need to set this in the OUTPUT chain.
+So I use exactly the syntax from the HOWTO's:
 
-(I have no relation to either website, I just use the schtuff)
+iptables -A OUTPUT -t nat -p tcp --dport 3306 -j DNAT --to 10.1.0.212:3306
 
+iptables reports:
+"Invalid Argument"
 
-GO GERMANY!!
-WC2002
+I've allready played arround using -i lo, etc. The same errors.
+It simply seems as if DNAT on OUTPUT isn't possible, but the HOWTO's say it
+is.
 
+I also read, that OUTPUT DNAT was a Problem in 2001, but that's long ago I
+think.
 
-Tony
+Please help!
 
+Thanks in advance
 
-
-
-On Thu, 27 Jun 2002, Daniel Curry wrote:
-
-> I was just at the netfilter.org web site, looking for some example
-> IPTables scripts for various solutions.  Does anyone have any
-> suggestions on where I might find some well documented examples to
-> satisfy a server with an internal and external network connection,
-> sendmail, apache, DHCP (internal only), MySQL, IPSEC/PPTP services
-> (hosted and pass through), inbound POP/IMAP?
-> 
-> Thanks
-> 
-> Daniel Curry
-> IT Manager
-> Cariocas
-> 625 Second Street 
-> Suite 201
-> San Francisco, CA 94107 
-> ph: 415-348-6516
-> fx: 415-348-6505 
-> cell: 510-579-6680
-> 
-> "If A equals success, then the formula is: A = X + Y + Z, 
-> X is work. Y is play. Z is keep your mouth shut." 
->   - Albert Einstein
-> 
-> 
-
--- 
-Tony Zafiropoulos
-FixMyVirus.com
-Cel: 314-504-3974
-tonyz@fixmyvirus.com
-Best way to reduce your virus exposure?
-Run Linux - Replace Windows one system at a time.
+Daniel Khan
 
 
