@@ -1,14 +1,12 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: sniffing the forwarded packets
-Date: Mon, 10 Mar 2003 22:49:43 +0000
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: sniffing the forwarded packets
+Date: Mon, 10 Mar 2003 17:13:49 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030310224943.GK1025@miggy.org>
+Message-ID: <007401c2e752$53e02c10$3864a8c0@discmail.com>
 References: <ABEKJILKOKKGGDJKHKDFMECCCAAA.patrick@vikus.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5VuzLDXibKSJvVYD"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <ABEKJILKOKKGGDJKHKDFMECCCAAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,48 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Patrick Ahler <patrick@vikus.com>
-Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Patrick Ahler' <patrick@vikus.com>, 'netfilter EMAIL' <netfilter@lists.netfilter.org>
 
+'sniffing' usually refers to listening on a specific interface - that's
+why the tools you tried, do that.
 
---5VuzLDXibKSJvVYD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have found that by first declaring what I am looking for, I can
+usually get a good idea of it by tcpdump, etc.  In other words - if I
+want to know who from my LAN 192.168.0.* is going where, I look at the
+internal interface and grep for port 80:
+tcpdump -i eth0 port 80
 
-On Mon, Mar 10, 2003 at 04:05:28PM -0500, Patrick Ahler wrote:
-> What can I use to view the packets passing through my router/firewall? I'=
-ve
-> tried tethereal but that only seems to be able to capture on the specific
-> devices (eth1 or eth2) not the packets being forwarded, can anyone help?
+If I need to know why an IPSec tunnel isn't coming up, I look at the
+external interface and grep for those packets:
+tcpdump -i eth2 port 500
 
-  Unfortunately that's just how it works.  Any packet sniffer attaches
-to a device and only sees the packets that go through that specific
-device.
+I used to use ksnuffle to dump all the daily packets on the inside LAN
+going to 80 to a file and then did some grepping through for a report of
+internet usage; now I redirect port 80 to squid and use squid data files
+for my reports
 
-  The best you can do is run multiple sniffers, one per interface.
-*Possibly* you might be able to use tcpdump for this and then write
-something to interleave the packets from the timestamps.
+aldo
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org 
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
+> Patrick Ahler
+> Sent: Monday, March 10, 2003 4:05 PM
+> To: netfilter EMAIL
+> Subject: sniffing the forwarded packets
+> 
+> 
+> What can I use to view the packets passing through my 
+> router/firewall? I've tried tethereal but that only seems to 
+> be able to capture on the specific devices (eth1 or eth2) not 
+> the packets being forwarded, can anyone help?
+> 
+> 
 
---5VuzLDXibKSJvVYD
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj5tFocACgkQzbc+I5XfxKc0NwCgmReMrrIdqUosyNJS0RtG/1Lq
-ZIEAnRvCyMtXxEILitqDy6/97EWYiYaE
-=MTqh
------END PGP SIGNATURE-----
-
---5VuzLDXibKSJvVYD--
 
