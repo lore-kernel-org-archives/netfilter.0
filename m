@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NAT Forwarding Problem
-Date: Mon, 16 Sep 2002 20:27:24 +0100
+From: "Arif Mahmood" <arif786@rogers.com>
+Subject: RE: Upgrade Iptables...
+Date: Mon, 16 Sep 2002 15:23:41 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020916192726.EKDW287.mta02-svc.ntlworld.com@there>
-References: <001201c25dae$0d31dee0$6501a8c0@JCC>
+Message-ID: <001101c25db6$90e19890$3a00a8c0@am>
+References: <000901c25d82$4b822ff0$d201a8c0@hornet>
+Reply-To: <arif786@rogers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001201c25dae$0d31dee0$6501a8c0@JCC>
+In-Reply-To: <000901c25d82$4b822ff0$d201a8c0@hornet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,93 +21,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 16 September 2002 7:22 pm, Chen Ding wrote:
+Hi Raj, 
 
-> Hi All,
->
-> I have four machines in the setting:
->     Machine A:             192.168.1.81                 RedHat 7.3
->     Machine B:             192.168.1.17                 RedHat 7.3
->     Machine C:             192.168.1.101               Microsoft XP
->     Machine D:             An public IP address      RedHat 7.3
->
-> On Machine A, I have just one Rule:
->
->     iptables -t nat -A PREROUTING -d 192.168.1.81 -j DNAT --to-destination
-> 192.168.1.17
->
->---- pings:
->     1. Machine C to ping 192.168.1.81:         OK (should actually ping
-> 192.168.1.17)
->     2. Machine C to ping 192.168.1.17:         OK
->     3. Machine A to pring 192.168.1.17:        OK
+How do I do the  patch-o-matic, I mean if you send me the steps to do
+patch-o-matic on RedHat 7.3.  I couldn't find the  patch-o-matic
+documentations.
 
-You should be aware that ping does not care whether it gets replies from the 
-same address as it sent requests to.   What is actually happening here is 
-that you are sending an echo-request from machines A and C to addresses 81 
-and 17, but in both cases you are getting replies from 17.
+I'm new to Linux and trying to learn as much as can with the help of you
+guys....
 
-ICMP is happy doing this.   So is UDP.   TCP is not.
+Thanks and Best Regards,
+Arif
+ 
 
->     telnet:
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Raj
+Wurttemberg
+Sent: Monday, September 16, 2002 9:09 AM
+To: 'Didier Hung Wan Luk'; 'Netfilter Mailing List'
+Subject: RE: Upgrade Iptables...
 
-Telnet is a TCP protocol.
 
->     1. Machine C to telnet 192.168.1.17:       OK
->     2. Machine A to telnet 192.168.1.17:       OK
->     3. Machine C to telnet 192.168.1.81:       No response
+> I have redhat 7.3 with kernel linux-2.4.18-10 and I want to use 
+> iptables 1.2.7a.
+> 
+> When I compile iptables do I need to recompile my kernel to use the 
+> 1.2.7a version of iptables?
 
-This is what I would expect to happen.
+Hello Didier,
 
-> According to the rule, when Machine C telneting Machine A, Machine A should
-> forward packets to Machine B, resulting in telneting Machine B. If use
-> netstat, it did tell us that Machine A forwarded several packets.
+You will want to apply the patch-o-matic to your kernel and then
+recompile your kernel prior to compiling and using the 1.2.7a version of
+iptables. I could be wrong, but I do not think that the default RedHat
+kernel has all of the necessary iptables modules.
 
-Yes, but what happens to the replies from B ???
+/*Raj*/
 
-> However, if I change the rule on Machine A to forward all packets to
-> Machine D, everything works just fine. Machine C can telnet Machine A,
-> which ends up telneting Machine D.
 
-Correct, because A is a *router* between C and D.   A is not a router between 
-C and B - they are both on the same subnet.
 
-> My questions are:
->     1. Is there anything wrong in my understanding of iptables?
-
-No, but you haven't fully thought through the routing inthis situation.
-
-Here's a clue:
-
-C sends TCP packet to port 23 (telnet) on machine A.   A DNATs this packet 
-and sends it on to B.   B receives it and replies to the source address, 
-which is C.
-
-Therefore C has sent a packet to A, and got a reply from B.   TCP doesn't 
-work like this, therefore C is confused and unhappy.
-
-If you want this situation to work (is there really any good reason why C has 
-to telnet A instead of B directly ?) you must make sure that the *reply* 
-packets from B go back through A in order to get to C, so that they get 
-reverse NATted on their way back through A.
-
-The two easiest ways to do this are:
-
-1. Set up a route on B telling it to route packets via A.
-
-2. Source NAT the packets at A as well as destination NATting them, so thet 
-when they reach B, they have a source of A, B replies to A, A reverse SNATs 
-and reverse DNATs the packets, and they return to C.
-
-You may want to consult the documentation on this:
-
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
-
-Antony.
-
--- 
-
-Anyone that's normal doesn't really achieve much.
-
- - Mark Blair, Australian rocket engineer
 
