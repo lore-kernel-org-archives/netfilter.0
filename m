@@ -1,10 +1,9 @@
-From: aw-netfilter@mw-itcon.de
-Subject: Re: Can't get DNS forwarded
-Date: Thu, 26 Sep 2002 09:13:47 +0200
+From: Oskar Andreasson <blueflux@koffein.net>
+Subject: Logging stealth scans with connection tracking enabled. (fwd)
+Date: Thu, 26 Sep 2002 07:19:20 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020926071347.12988.qmail@mw-itcon.de>
+Message-ID: <Pine.LNX.4.44.0209260717330.1623-100000@laptop1.agatha>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,32 +14,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: glfaulk@cox.net
 
-I think one problem is with the DNATs you've setup: 
 
-> # b) forward WWW to FS02
-> iptables -t nat -A PREROUTING -i eth0 -p tcp -d 208.250.60.72 -j DNAT
-> --to-destination 192.168.100.2:80
-I would read 'DNAT all traffic originally for 208....72 to 192.....2:80' 
-this means also DNS. You sould include '--dport 80' to DNAT only http 
-traffic (As you did under c) for 25). 
+Hi all,
 
-> # c) forward SMTP to FS02
-> iptables -t nat -A PREROUTING -i eth0 -p tcp -d 208.250.60.72 --dport 25 -j
-> DNAT --to-destination 192.168.100.2:25
-this is fine. 
+Sorry about this, but I simply don't have the time to reply to this mail. 
+Please send the mail to the CC'ed adress as well, when you reply.
 
-Regards,
-Andreas
- ------------------------------------------------------------
-Andreas Wolff
-Menzebach und Wolff IT-Consulting 
+Thanks!
 
-phone: +49 7503 916 716 - 2, mobile: +49 160 7 54 11 53
-email: Andreas.Wolff@mw-itcon.de
-http:  www.mw-itcon.de
- ------------------------------------------------------------
-> echo " DONE
+-- 
+----
+Oskar Andreasson
+http://www.frozentux.net
+http://iptables-tutorial.frozentux.net
+http://ipsysctl-tutorial.frozentux.net
+mailto:blueflux@koffein.net
+
+---------- Forwarded message ----------
+Date: 23 Sep 2002 15:31:26 -0400
+From: Gus Faulk <glfaulk@cox.net>
+To: blueflux@koffein.net
+Subject: Logging stealth scans with connection tracking enabled.
+
+Hi Oskar. I have been reading your iptables tutorial and have found it
+very informative. I am writing a firewall and I have run into a problem
+that I cannot find any info on. Here is my problem.
+
+If I use the following lines every thing works fine.
+
+iptables -A INPUT -i eth0 -p tcp --tcp-flags ALL FIN -m limit --limit
+5/m -j LOG --log-prefix "Stealth FIN "
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m state --state INVALID -j DROP
+
+Using the above lines I can use nmap to do a FIN scan and the log rule
+will catch it and log it.
+
+But when I put in the following lines it does not log it anymore.
+
+iptables -A INPUT -i eth0 -p tcp --tcp-flags ALL FIN -m limit --limit
+5/m -j LOG --log-prefix "Stealth FIN "
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m state --state INVALID -j DROP
+iptables -A INPUT -m state --state NEW -j DROP
+
+I was under the impression that the way the packets went down the chains
+were first seen first hit and the log line would get hit first. But it
+must not work that way. 
+
+So I then got the idea that I would use the nat PREROUTING table to log
+scans like this because the nat PREROUTING chain gets hit before the
+filter rules or so I thought.
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --tcp-flags ALL FIN -m
+limit --limit 5/m -j LOG --log-prefix "Stealth FIN "
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m state --state INVALID -j DROP
+iptables -A INPUT -m state --state NEW -j DROP
+
+But it does not work. It seems to me that if I log in the nat PREROUTING
+chain that it would hit that before it even got to the filter INPUT
+state match chain. Can you offer any help as to what I am doing wrong or
+will it just not work. Thanks.
+
+
 
