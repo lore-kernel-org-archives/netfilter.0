@@ -1,10 +1,14 @@
-From: Kees VandenBroek <kvdb@caip.rutgers.edu>
-Subject: No www and ftp using NAT
-Date: Mon, 8 Jul 2002 13:08:34 -0400 (EDT)
+From: Jan Humme <jan.humme@xs4all.nl>
+Subject: Re: Clear Iptables chains?
+Date: Mon, 8 Jul 2002 19:14:34 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.GSO.4.44.0207081307250.2326-100000@caip.rutgers.edu>
+Message-ID: <0207081914340A.14428@Lms>
+References: <839BF5387528D311AD5D00902751CFC301B0419A@HAVASSMX> <02070818341908.14428@Lms> <20020708170139.UTNE19225.mta07-svc.ntlworld.com@there>
+Reply-To: jan.humme@xs4all.nl
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020708170139.UTNE19225.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -14,55 +18,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
 
-Hi,
+On Monday 08 July 2002 19:01, Antony Stone wrote:
+> On Monday 08 July 2002 5:34 pm, Jan Humme wrote:
+> > On Monday 08 July 2002 17:22, Antony Stone wrote:
+> > > I'd prefer to see:
+> > > iptables -P INPUT DROP
+> > > iptables -P OUTPUT DROP
+> > > iptables -P FORWARD DROP
+> > >
+> > > Then you add in the rules for the stuff your definitely know you want
+> > > to allow.
+> >
+> > Certainly.
+> >
+> > What about default policies for the nat and mangle tables?
+>
+> Those should be ACCEPT, unless you're being sneaky/clever, and you
+> definitely know what you are doing..
+>
+> The reasons are simple:
+>
+> 1. The choice of whether to block or accept packets should be done in the
+> filtering table - that's what it's for.   The nat table is for address
+> translation, and the mangle table is for packet mangling.   Don't drop
+> packets in the nat table; drop them in the filter table.
 
-I have a cable internet connection on eth0, eth1 and eth2 are my internal
-networks. The gateway is running kernel 2.4.18 on debian 3.0 prerelease
-with iptables 1.2.6a.
-
-From a machine on the eth1 network, I can:
-'ping www.tweakers.net' without problems.
-So resolving and icmp works.
-I can login into MSN messenger and Jabber but not to ICQ.
-So part of the connectivity is ok.
-But I cannot surf the web or receive data from an FTP connection.
-
-I tried tons of example scripts but they don't seem to work.
-Any ideas?
-
-This is the script I use for nat:
-
-insmod ip_tables
-insmod ip_conntrack
-insmod ip_conntrack_ftp
-insmod ip_conntrack_irc
-insmod iptable_nat
-insmod ip_nat_ftp
-
-iptables --flush
-iptables --flush --table nat
-iptables --delete-chain
-iptables --table nat --delete-chain
-
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-
-iptables --table nat --append POSTROUTING --out-interface eth0 -j
-MASQUERADE
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-# tried this, doesn't work..
-#iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -jTCPMSS
---clamp-mss-to-pmtu
-
-Cheers,
-Kees
+Makes perfect sense.
 
 
+> 2. If you start setting default policies of anything except ACCEPT in the
+> nat or mangle tables, it's very easy to stop all traffic through your
+> firewall, and spend some time scratching your head trying to figure out
+> why, because there are no rules in the filter table causing the behaviour
+> you observe.
+
+..........as I already found out...............(!).
+
+Jan Humme.
 
