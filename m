@@ -1,10 +1,12 @@
-From: =?unknown-8bit?q?=BD=DC?= <zijiepan@163.com>
-Subject: =?gb2312?B?c3FsbmV0IHByb2JsZW0=?=
-Date: Sat, 18 Oct 2003 19:09:40 +0800 (CST)
+From: "Joel" <zealous@bonbon.net>
+Subject: Re: Is Linux IPTABLES firewall comparable with license Firewall
+Date: Sat, 18 Oct 2003 15:23:48 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F911F74.00001E.21384@bj222.163.com>
+Message-ID: <001c01c3955d$bc700160$61a1a0ca@lin>
+References: <20031018091807.26000.qmail@web20711.mail.yahoo.com>
+Reply-To: "Joel" <zealous@bonbon.net>
 Mime-Version: 1.0
-Content-Type: Multipart/Alternative; boundary="Boundary-=_iIZhtlcKodPYPkhOeGfUVNNCgQfB"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,25 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, ads nat <adsnat@yahoo.com>
 
---Boundary-=_iIZhtlcKodPYPkhOeGfUVNNCgQfB
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
+Linux based products generally use iptables for firewall.
+i dont know much checkpoint.
+firewall using iptables is mostly used on the internet..
+if u know what u want to open and what u have to block then iptables is the
+ultimate choice.
+i dont have issues with it.
 
-Hi all:
-   We use oracle server, with sql*net dynamic port(not MTS). i tried to
-find a patch for sql*net,but failed. is there any one have the sqlnet conntrack/nat modules?
---Boundary-=_iIZhtlcKodPYPkhOeGfUVNNCgQfB
-Content-Type: text/html
-Content-Transfer-Encoding: 8bit
+joel
 
-Hi&nbsp;all:<br>&nbsp;&nbsp;&nbsp;We&nbsp;use&nbsp;oracle&nbsp;server,&nbsp;with&nbsp;sql*net&nbsp;dynamic&nbsp;port(not&nbsp;MTS).&nbsp;i&nbsp;tried&nbsp;to<br>find&nbsp;a&nbsp;patch&nbsp;for&nbsp;sql*net,but&nbsp;failed.&nbsp;is&nbsp;there&nbsp;any&nbsp;one&nbsp;have&nbsp;the&nbsp;sqlnet&nbsp;conntrack/n<br>at&nbsp;modules?<br><font style='font-size:12pt'>
-<br>
-==============================================<br>
-<a target=_blank href='http://vip.163.com' title='http://vip.163.com'><font color=green><b>������������������������������������������������������������������������������������������30������������������������������~</b></a><br>
-<a target=_blank href='http://mail.163.com' title='http://mail.163.com'><font color=red><b>������������������������������������������������������������������������ 25������������������ 4������������������������</b></a><br>
-<a target=_blank href='http://popo.163.com' title='http://popo.163.com'><font color=green><b>������������������������������������������������������������ ������������������������������������������������������������!</b></a><br><br>
+----- Original Message -----
+From: "ads nat" <adsnat@yahoo.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Saturday, October 18, 2003 2:48 PM
+Subject: Is Linux IPTABLES firewall comparable with license Firewall
 
---Boundary-=_iIZhtlcKodPYPkhOeGfUVNNCgQfB--
+
+> Hi,
+> I don't know whether this is right list for my
+> question.
+>
+> I am facing basic problem while convincing to users. I
+> have implemented IPTABLES firewall on my Linux 8.0
+> server. I am frequently asked by users which
+> firewall/security measures are taken for my network.
+> My competitors use Checkpoint Firewall.
+> Can somebody guide me how to convince my users that
+> Linux IPTABLES Firewall is technically at par with
+> commercial Firewall such as checkpoint.
+>
+> Also if same security policies are adopted for
+> IPTABLES and checkpoint, Is IPTABLES technically at
+> par with commercial FIREWALLs?
+>
+> Thanks
+>
+>
+>
+>
+> __________________________________
+> Do you Yahoo!?
+> The New Yahoo! Shopping - with improved product search
+> http://shopping.yahoo.com
+>
+
+
 
