@@ -1,9 +1,12 @@
-From: Jean Hoderd <jhoderd@yahoo.com>
-Subject: Accounting for national/international traffic
-Date: Tue, 21 Dec 2004 00:55:18 -0800 (PST)
-Message-ID: <20041221085518.92203.qmail@web42105.mail.yahoo.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: State RELATED and more then one conntrack helper
+Date: Tue, 21 Dec 2004 11:04:32 +0100
+Message-ID: <1103623472.4631.1.camel@anduril.intranet.cartel-securite.net>
+References: <1103616152.41c7d898dbee0@webmail.kwsoft.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1103616152.41c7d898dbee0@webmail.kwsoft.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,54 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: lst_hoe01@kwsoft.de
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Le mardi 21 d=E9cembre 2004 =E0 09:02 +0100, lst_hoe01@kwsoft.de a =E9crit =
+:
+> Is there a possibility to limit this matching to only a special module??
 
-Here's the situation: in many countries it is customary for IPS's to
-have separate quotas for national/international traffic (in my case the
-limits are 20GB/2GB per month).
+See helper match.
 
-Now, given an IP address, knowing whether it is national or
-international is a solved problem: there are publicly available lists
-with the ranges of national IP addresses.
+helper match v1.2.11 options:
+[!] --helper string        Match helper identified by string
 
-The problem: how to keep track of the monthly internet usage divided
-into national/international traffic.
+So restricting to ftp helper :
 
-Please note that I am not interested in enforcing quotas per se (the
-"quota" module, I believe).  Rather, I would simply like to know what
-is the total traffic per category since the beginning of the month.
-
-I have searched netfilter's repository, and it seems that the
-ipt_account module might do the trick.  However, since I am still a
-newbie with netfilter, I am having some trouble defining the actual
-rules to make it work.  Let us imagine, for instance, that I have n
-ranges of national IP addresses.  Adding them to a "national" counter
-seems easy:
-
-iptables -A INPUT -m account --addr "range1" --aname national
-iptables -A INPUT -m account --addr "range2" --aname national
-...
-iptables -A INPUT -m account --addr "rangen" --aname national
-
-The question is: how do I implement the logic for all non-matching
-ranges, which should be added to an "international" counter?
-Furthermore, I have already plenty of rules in my firewall, and I wish
-that the traffic accounting would not interfere with them.
-
-Thanks in advance for any help you can give me!
-Regards,
-Jean
+	-m helper --helper ftp
 
 
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Send a seasonal email greeting and help others. Do good. 
-http://celebrity.mail.yahoo.com
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
