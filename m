@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how to block files with specific extensions
-Date: Fri, 6 Sep 2002 11:48:43 +0100
+From: "Logu" <logumail@gmx.net>
+Subject: Monitoring NAT functionality
+Date: Fri, 6 Sep 2002 17:49:12 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209061048.g86Amnv01907@vulcan.rissington.net>
-References: <20020906100410.27681.qmail@web12902.mail.yahoo.com>
+Message-ID: <00ea01c2559f$9f03e9b0$5f0110ac@kovaiteam.com>
+References: <20020906100410.27681.qmail@web12902.mail.yahoo.com> <200209061048.g86Amnv01907@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020906100410.27681.qmail@web12902.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +17,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-On Friday 06 September 2002 11:04 am, saravanan sakthi wrote:
+hi all
+Is there a tool that can be run in a machine where nat rules are put to see
+if the packets are properly nated.
+That is I want to see the packets(I mean only the source and destination)
+before and after nating.  I tried with tcpdump. Is there any other tool to
+simply monitor this with timestamp.
 
-> Dear friend,
->  iam usind rc.firewall for NATing. This Linux box acts
-> as a gateway for my client systems to connect to the
-> internet. now here i want to block files with certain
-> extensions passing to my client machines. please help
-> me ...
+Thanks and regards
+-Logu
 
-You need a content filtering system (proxy server) to do this - netfilter is 
-a packet filter and cannot do what you want.
 
-You might be tempted to use the string match in iptables to match file 
-extensions but it will not work completely and you will almost certainly get 
-both:
-files you want to block actually passing through
-files or other commands you want to accept being blocked
-
-I suggest you look into something like Squid or Hogwash.
-
-Antony.
-
--- 
-
-Documentation is like sex:
-when it's good, it's very very good;
-when it's bad, it's still better than nothing.
 
