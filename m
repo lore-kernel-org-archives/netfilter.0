@@ -1,13 +1,16 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Invalid argument in -j SNAT
-Date: Tue, 2 Dec 2003 21:18:29 +0100
+From: Michael Gale <mgale@utilitran.com>
+Subject: Re: Setting a default policy does not work :(
+Date: Tue, 2 Dec 2003 17:49:13 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031202201831.EAB3C1710@sterenborg.info>
-References: <13211830200.20031202215027@internetplustravel.ru>
+Message-ID: <20031202174913.2a61fc64.mgale@utilitran.com>
+References: <20031202083315.212b9e05.mgale@utilitran.com>
+	<1070380411.2057.21.camel@grendel>
+	<200312021107.39011.JALaramie@Loudoun-Fairfax.com>
+	<20031202210347.3e151a19.arnt@c2i.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <13211830200.20031202215027@internetplustravel.ru>
+In-Reply-To: <20031202210347.3e151a19.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,17 +21,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Oleg Savostyanov' <savostyanov@internetplustravel.ru>, netfilter@lists.netfilter.org
-
-> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 
-> XXX.XXX.XXX.XXX
-> with an error "iptables: Invalid argument" I suspect, that an argument
-> is XXX.XXX.XXX.XXX
-
-Did you compile and load the module iptable_nat ?
+To: netfilter@lists.netfilter.org
 
 
-Gr,
-Rob
+Hello,
 
+	Thanks for the help so far -- it must of been the location I had placed the default policy in the file or maybe some other rule. But everything is working fine now. 
+
+Michael
+
+
+On Tue, 2 Dec 2003 21:03:47 +0100
+Arnt Karlsen <arnt@c2i.net> wrote:
+
+> On Tue, 2 Dec 2003 11:07:39 -0500, 
+> Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote in message 
+> <200312021107.39011.JALaramie@Loudoun-Fairfax.com>:
+> 
+> > On Tuesday 02 December 2003 10:53, Chris Brenton wrote:
+> > > On Tue, 2003-12-02 at 10:33, Michael Gale wrote:
+> > > > Inserting the following to the bottom of my firewall script:
+> > > >
+> > > > ### Causes all traffic to or from the box on either interface to
+> > > > #be
+> > > > dropped regardless of all other rules.
+> > > >
+> > > > iptables --policy INPUT DROP
+> > > > iptables --policy OUTPUT DROP
+> > > > iptables --policy FORWARD DROP
+> > >
+> > > Try:
+> > > iptables -P INPUT DROP
+> > > iptables -P OUTPUT DROP
+> > > iptables -P FORWARD DROP
+> > >
+> > > Works for me on multiple firewalls using multiple interfaces.
+> > >
+> > 
+> > OK, now *I'm* confused. Aren't they the same command?
+> 
+> ..supposely, according to the man page, but if OP is using a 
+> development version off his own cvs tree or somesuch, all 
+> bets are off.  ;-)
+> 
+> -- 
+> ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+> ...with a number of polar bear hunters in his ancestry...
+>   Scenarios always come in sets of three: 
+>   best case, worst case, and just in case.
+> 
+> 
+> 
+
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
