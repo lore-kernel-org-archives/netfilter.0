@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ipchains to iptables NAT/MASQ conversion question.
-Date: Wed, 3 Jul 2002 23:28:04 +0100
+Subject: Re: Most stable firewall distro
+Date: Wed, 3 Jul 2002 23:34:01 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020703222806.RNQT295.mta03-svc.ntlworld.com@there>
-References: <OJEKLLDJMPFGONMBIJEFOEHECEAA.karl@unfiw.com>
+Message-ID: <20020703223403.RTWE295.mta03-svc.ntlworld.com@there>
+References: <200207031723.AA92536958@mail.ev1.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <OJEKLLDJMPFGONMBIJEFOEHECEAA.karl@unfiw.com>
+In-Reply-To: <200207031723.AA92536958@mail.ev1.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,37 +20,48 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Wednesday 03 July 2002 10:27 pm, Karl Kopper wrote:
+On Wednesday 03 July 2002 11:23 pm, riffraff wrote:
 
-> I am trying upgrade a long list of ipchains rules to iptables and am stuck.
-> On ipchains I was able to create "ACCEPT" rules in the forward chain that
-> would cause some packets (based usually on source IP address AND port
-> number) to simply pass through the firewall unmasqueraded (they were kicked
-> out of the chain before the MASQ rule).
+> ---------- Original Message ----------------------------------
+> From: "Miguel Laborde" <miguel.laborde@canada.com>
+> Date: Wed, 3 Jul 2002 18:22:38 -0400
 >
-> How can I accomplish the same thing using iptables?
+> >Hello all,
+> >	I have a question here for those of you who use iptables heavily in a
+> >production environment. Right now I am about to replace a older Mandrake
+> >(release 7.2) with an updated linux firewall however before I go ahead and
+> >do that, I'm interested in knowing what you people consider the most
+> > stable distribution for a linux firewall.
+> >	I realize that the underlying OS and iptables software is common across
+> > all distributions however some distributions apply patches which others
+> > don't, and as result might be better suitable as a firewall.
+> >
+> >
+> >	Thanks for your time,
+> >				Miguel
+>
+> I just used redhat 7.0 (I think, it's been a while), and removed everything
+> that was completely unnecessary, then compiled a whole new kernel (I had
+> to; I'm using the bridge-netfilter patch).  So, it isn't much of a redhat
+> anymore, just uses redhat paths and rpm.
 
-The FORWARD chain in IPtables allows or blocks packets going through the 
-firewall, nothing to do with NAT.
+I agree with this approach.   A firewall shouldn't really be any recognisable 
+distro, because distros basically differ in all the add-ons they include 
+around the kernel, nearly all of which you should not have on a firewall.
 
-The nat table in the POSTROUTING chain handles all Source NAT, so if you want 
-some packets to be SNATted, and others not, put a rule into the POSTROUTING 
-chain which only matches the packets you want NATted, with a target of SNAT.
+And, as suggested above, you really ought to compile your own kernel for a 
+firewall, too, so it contains what you want and doesn't contain what you 
+don't want, therefore you start from ftp://ftp.kernel.org and 'make config' 
+(or whichever variation of that you prefer).
 
-eg suppose you have two internal network ranges, one routable and one 
-private, and you want to SNAT packets from the private network, but not 
-packets from the routable network:
+The 'distro' I would really like to see people use for firewalls is Linux 
+From Scratch, because this is expressly designed to contain only the tools 
+you choose for a specific job, and not a whole bunch that someone else 
+thought might come in handy one day.....
 
-# allow packets from inside net to outside
-iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
-# allow replies back again
-iptables -A FORWARD -i eth0 -m state --state ESTABLISHED, RELATED -j ACCEPT
+Not the easiest thing to play with though, admittedly.
 
-# NAT the private range on the way out
-iptables -A POSTROUTING -t nat -s 192.168.0.0/16 -o eth0 -j SNAT --to 
-12.34.56.78
-
-Should do what you need...
+http://www.linuxfromscratch.org
 
  
 
