@@ -1,14 +1,12 @@
-From: Nick Drage <nickd@funkyjesus.org>
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
 Subject: Re: How to prevent smurf atacks?
-Date: Wed, 5 Jun 2002 14:55:30 +0100
+Date: Wed, 5 Jun 2002 16:04:06 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020605145530.A2090@funkyjesus.org>
-References: <LAW2-F126qZNn1NCpEq000166b1@hotmail.com>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <Pine.LNX.4.21.0206051559001.3749-100000@dns.toxicfilms.tv>
+References: <20020605145530.A2090@funkyjesus.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <LAW2-F126qZNn1NCpEq000166b1@hotmail.com>; from pijoman@hotmail.com on Wed, Jun 05, 2002 at 01:27:41PM +0000
+In-Reply-To: <20020605145530.A2090@funkyjesus.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,28 +16,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: Nick Drage <nickd@funkyjesus.org>
+Cc: netfilter@lists.samba.org
 
-On Wed, Jun 05, 2002 at 01:27:41PM +0000, Francisco Alfonso Martinez Lopez wrote:
+> A Smurf attack is effective just by the sheer weight of traffic sent to you,
+> rather than because of any weakness in your host, so unfortunately there is
+> nothing you can do on your host to harden it against this type of onslaught.
+How about:
+- blocking ICMP directed at broadcast addreses?
+- setting /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts to 1
+- adding anti-spoofing rules, smurf attacks may have spoofed IPs, and that
+  is when the attack gets its sharp edge. It may be spoofed as if it is
+  originating from your network.
 
-> Hi everybody,how I can denied smurf atacks over my host,it's a single
-> connection to Internet,any possibilitie of denied smurf atack on the
-> firewall?(my host execute dual boot:suse linux&windows)
+The same goes for fraggle attacks, those are UDP brodcast packets to
+unserved ports with spoofed IPs.
 
-A Smurf attack is effective just by the sheer weight of traffic sent to you,
-rather than because of any weakness in your host, so unfortunately there is
-nothing you can do on your host to harden it against this type of onslaught.
+If the destination and source IPs are in the same subnet, we can have
+the net attacking itself.
 
-That's my understanding anyway, security related terms can become quite
-imprecise over time, so I think we're discussing the same thing.
+I guess that is what we are talking about.
 
-> Thanks in advance,folks!!(...and sorry for my english)
+Regards,
+Maciej Soltysiak
 
-No problem :)
-
--- 
-FunkyJesus System Administration Team
 
 
