@@ -1,13 +1,14 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: AW: patch-o-matic question.
-Date: Wed, 11 Sep 2002 11:24:44 +0200
+From: Fabrice MARIE <fabrice@celestix.com>
+Subject: Re: Filtering Nimda, Code Red and Code Red II
+Date: Wed, 11 Sep 2002 17:58:56 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209111124.44719.roy@karlsbakk.net>
-References: <MCBBJCMMKGNGCAHNCFNAIEKHCFAA.carsten@cphome.netz>
+Message-ID: <200209111758.56593.fabrice@celestix.com>
+References: <Pine.LNX.4.33.0209091917581.31845-100000@panda.center-f1.ru> <3D7EFBCF.70406@fugmann.dhs.org> <00a601c259ee$57f815c0$6500a8c0@systemsadmin>
+Reply-To: fabrice@celestix.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <MCBBJCMMKGNGCAHNCFNAIEKHCFAA.carsten@cphome.netz>
+In-Reply-To: <00a601c259ee$57f815c0$6500a8c0@systemsadmin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: hannespaul@gmx.net, Carsten <carsten.puhl@web.de>, netfilter@lists.samba.org
+To: "Joe de Vera Jr." <jhoedv@we-amuse.com>, netfilter@lists.netfilter.org
 
-On Tuesday 10 September 2002 14:54, Carsten wrote:
-> Set the environment variable before the command:
-> KERNEL_DIR=3D/usr/src/linux-2.4 ./runme pending
-> or:
-> export KERNEL_DIR=3D/usr/src/linux-2.4
-> ./runme pending
+On Thursday 12 September 2002 07:52, Joe de Vera Jr. wrote:
+> hello fellas,
+> can i make use of the iptables scripting to disable the access pages... for
+> example for code red it access /default.ida page while in nimda /root.exe
+> and cmd.exe
+> is there a way to dis allow this..
+> thanks
+> Joe
 
-then - it won't work. it still tells you it's not set
+Hello,
 
-so - change the documentation
+you really shouldn't use iptables for such purpose as there is no clean
+and proper way to it in iptables. iptables is a packet filter. What you
+need is an filtering application proxy, in your case a filtering HTTP proxy.
+Read-on the mailing archive, and the iptables FAQ if you want to know
+the full details.
 
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
+Have a nice day,
 
-Computers are like air conditioners.
-They stop working when you open Windows.
+Fabrice.
+--
+Fabrice MARIE
+Senior R&D Engineer
+Celestix Networks
+http://www.celestix.com/
 
+"Silly hacker, root is for administrators"
+       -Unknown
 
