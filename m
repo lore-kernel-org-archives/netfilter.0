@@ -1,14 +1,10 @@
-From: Erik Bourget <erik@midmaine.com>
-Subject: Re: Three kernel Oops/panic/BUG ksymoopses (kernel BUG at
- buffer.c:539)
-Date: Sat, 03 Jan 2004 16:50:33 -0500
+From: "sp3 sp3" <sp3@hotmail.com>
+Subject: RE: NetBios iptables trouble with small TCP packets
+Date: Sat, 03 Jan 2004 22:44:14 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <87ekugzopi.fsf@midmaine.com>
-References: <Pine.LNX.4.44.0401031352040.2301-100000@poirot.grange>
+Message-ID: <BAY1-F494QzPW8AAkjt0000729e@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0401031352040.2301-100000@poirot.grange> (Guennadi
- Liakhovetski's message of "Sat, 3 Jan 2004 13:54:27 +0100 (CET)")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +14,95 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
+To: markee@bandwidthco.com
+Cc: netfilter@lists.netfilter.org
 
-Guennadi Liakhovetski <g.liakhovetski@gmx.de> writes:
 
-> On Fri, 2 Jan 2004, Erik Bourget wrote:
+
+
+>From: "Mark E. Donaldson" <markee@bandwidthco.com>
+>Reply-To: <markee@bandwidthco.com>
+>To: "'sp3 sp3'" <sp3@hotmail.com>, <netfilter@lists.netfilter.org>
+>Subject: RE: NetBios iptables trouble with small TCP packets
+>Date: Fri, 2 Jan 2004 19:41:02 -0800
 >
->> I had a very bizarre situation where four boxes in the same rack all
->> simultaneously (within 30 minutes) hard-locked with Oops messages.  The
->> boxes
+>Questions:
 >
-> An obvious idea - after reading an article about a break-in into Debian
-> and others' boxes - sure you weren't cracked?
+>1. Are we to assume that large files (>256kb) transfer just fine? Or, is
+>there a problem with them too?
 
-Yeah, that was a concern and I'm relatively sure that's not the case because
+No, there is no problem with big files.
 
-*) chkrootkit says so (mod some hidden processes that are reported by a bug in
- chkrootkit according to Google)
+>
+>2. Which direction is the transfer?  NT -> W2K or W2K -> NT?
 
-*) The crashy boxes were all installed with 2.4.23, not upgraded, so the big
- Debian vulnerability didn't exist
+W2K -> NT.
 
-*) The only open ports to the outside world are running SMTP and POP3 as
- non-root no-shell accounts, and it's running qmail which seems simple and
- safe enough.
+>
+>3. By transfer, do you really mean "copy" using File & Print sharing?  I'm
+>assuming this to be the case you say you are using NBT.
 
-- Erik Bourget
+I map a network drive, autehntication is requested, and the network drive is 
+mapped with success.
+Yes, copy and paste.
+>
+>4.  Are these machines (both NT & W2K) members of a domain, and if so is it
+>the same domain?
+
+NT is member of a domain. W2K is not member of any domain.
+
+>What is the setup here.
+
+On the NT server we have some files that must be accessed by the w2k 
+machines (on the other network). Each w2k machine have as the default 
+gateway the firewall that does the source nat.
+To reach the nt server, i'm not using NetBios names nor lmhosts, just plain 
+ip address.
+
+>This is necessary to know because
+>SMB must negotiate the means of authentication and then authenticate before
+>any transfer can take place.
+>
+
+>5.  What rules do you have in place that you feel should permit the SMB
+>packets to pass through the firewall?
+
+I dont filter any traffic that exits the firewall via output nor via 
+forward.
+The default policy for forward is accept, for output is accept and for input 
+is drop.
+At the input chain i permit all the established and related traffic.
+I permit just ssh on the input chain. All the rest is logged.
+Any suspicios packet (invalid IP and or netmask is logged and dropped).
+
+I have tested the same rules with another firewall runnig the same linux 
+version, and all is ok.
+
+>
+>6.  What does the "Windump" output on the sending machine show for the
+>packets generated during the "hang period" when run as "windump -n -vv -xX
+>-i2"?
+
+I dont know what windump is, but it seams looking at the parametrs that it 
+is something like tcpdump.
+
+I have runned a tcpdump on the exterior interface of the fw, and saw nothing 
+suspecios. The source IP was the firewall (source nat ok) and the 
+destination was ok too.
+The last packet that is sent has the direction of fw->NT and i dont seen any 
+repply (ack) to it.
+After some time the nag error message just displays it self on the W2K 
+machine.
+
+I will post the windump/tcpdump result on my next message to the list.
+
+
+Thanks for the repply.
+
+_________________________________________________________________
+The new MSN 8: smart spam protection and 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
 
 
