@@ -1,12 +1,13 @@
-From: "=?ISO-8859-1?Q?Bj=F6rn=20Reese?=" <ReeseB@minimax.de>
-Subject: Server crash after LIST_DELETE in Log
-Date: Wed, 24 Mar 2004 17:04:20 +0100
+From: Victor Julien <victor@nk.nl>
+Subject: Re: newbie question : ip_conntrack_ftp
+Date: Wed, 24 Mar 2004 17:44:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <s061bfaf.021@odnw1.minimaxgmbh.de>
+Message-ID: <4061BADB.7040206@nk.nl>
+References: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr> <406070EC.3010601@nk.nl> <406137CE.4000203@public.srce.hr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <406137CE.4000203@public.srce.hr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-** Low Priority **
+Hi Mihael,
 
-Hello,
+In debian stable there is a package 'kernel-image-2.4.18-1-686' (note: 
+there is no 'i' with 686, my mistake ;).
 
- I have a strange Problem with (I guess) the Netfilter. I have a Proxy-Serv=
-er running, that is dual-homed with a transparent Squid on one Interface =
-listening. After some time, the syslog lists these messages:
+This is in stable, so you probably want it instead of the 'testing' variant.
 
-Mar 24 15:36:18 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntrack_=
-core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(e96c0d64) not in &ip_conntrack=
-_hash[hr].
-Mar 24 15:36:39 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntrack_=
-core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(dd67fd24) not in &ip_conntrack=
-_hash[hr].
-Mar 24 15:36:55 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntrack_=
-core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(dc976864) not in &ip_conntrack=
-_hash[hr].
+Regards,
+Victor
 
-5 seconds more...
-and the server freezes...
-
-Sometimes the machine runs well for a whole week, sometimes a few hours.
-
-I've googled around for it, and saw some other people having equal =
-Problems, most of the time with older kernels.
-
-The Hardware I use is a Compaq ProLiant DL 380, OS is S.u.S.E Linux 9.0 =
-with a self-compiled 2.63 Kernel, and iptables 1.2.9. I've had earlier =
-versions of iptables & Linux running, but the Problem stayed the same.
-
-It'd be really nice, if someone's got a clue about that.
-
-Best Regards and thanks in advance for any hints.
-
-bj=F6rn
-
-
-
-
-
+Mihael Kukec wrote:
+> Victor Julien wrote:
+> 
+>> You're probably running the 'bf24' kernel (which kame with the 
+>> bootdisk). If you use 'kernel-image-2.4.18-1-i686' you do have the 
+>> modules. So you can use 'apt-get install kernel-image-2.4.18-1-i686' 
+>> (if you have an i686). Beware though, you need to modify your 
+>> lilo.conf because of initrd (instructions will be on the screen when 
+>> you install).
+> 
+> 
+> Kernel that came originally was 2.2.20. I upgraded to 2.4.18-686. There
+> is no such image (kernel-image-2.4.18-1-i686) in latest stable or
+> testing packages, but there is kernel-image-2.4.25-1-686 in testing. I
+> will try with that...
+> 
+> 
+> Mihael
+> 
+> 
+> 
 
 
