@@ -1,12 +1,13 @@
-From: "Leonardo Rodrigues" <leolistas@solucoesip.net>
-Subject: Re: How to ACCEPT or DENY or DROP and also LOG in the same rule ?
-Date: Thu, 4 Jul 2002 12:18:52 -0300
+From: Ross Vandegrift <ross@willow.seitz.com>
+Subject: Re: IPsec & FreeS/WAN
+Date: Thu, 4 Jul 2002 13:59:13 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <019b01c2236e$1b62cdf0$3201a8c0@leonardo>
-References: <005701c2236a$b69ddde0$0a01a8c0@ed> <200207041500.g64F0sU32109@vulcan.rissington.net>
+Message-ID: <20020704175913.GA27072@willow.seitz.com>
+References: <200FAA488DE0D41194F10010B597610D2BA1F6@JUPITER> <200207030925.g639PfU28723@vulcan.rissington.net> <20020703190127.GB19157@willow.seitz.com> <20020703191224.LSGV19225.mta07-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <20020703191224.LSGV19225.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,58 +18,38 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
+On Wed, Jul 03, 2002 at 08:12:22PM +0100, Antony Stone wrote:
+> On Wednesday 03 July 2002 8:01 pm, Ross Vandegrift wrote:
+> > Does anyone distribute the FreeS/WAN kernel code as a patch instead of
+> > the crazy scriptish system they use?  I've never been able to get that
+> > part working without many hours of fudging.  And after that, I'd *never*
+> > want to have to do it again.  OTOH, if someone had a way to make diffs,
+> > that would be very easy.
+> 
+> What kernel source do you start from ?
 
-    Short answer: you cant. ipchains '-l' options doesnt exists in iptables
+I start from a clean, bleeding edge tree in the 2.4 series.  I usually
+apply a few misc patches: Andrew Morton's lowlatency, any available
+reiserfs fixes, sometime and AC series patch.  Unfortunately, my HDD
+died a week or two ago and I'm limping along on borrowed disk until my
+RMA is fuffilled, so I can't check where the problem was.
 
-    Workaround: if you really need this to be done in one rule, you can
-create a chain with those two commands and them use it.
+Part of the problem was that there wasn't an easy way to just run the
+kernel patching script.  IIRC, the scripts configure FreeS/WAN, and then
+run something like "make config dep clean bzImage modules" in the kernel source
+tree.  I'd much rather do "make patch" in the FreeS/WAN source tree, and
+then be left to my own devices to build the KLIPS kernel.  Again, I'd
+have hacked on this problem if my HDD hadn't died.
 
-iptables -N log_drop
-iptables -A log_drop -j LOG --log-prefix "blabla: " .....
-iptables -A log_drop -j DROP
+Perhpas when I get it back I'll do some work to make this part easier -
+especially since were running into VPN type problems where I work.
+What's the relative performance difference between an encrypted
+vtun or vpnd session and an IPSec session?
 
-    then, in your other chains, when you need something to be dropped and
-logged, you can do:
-
-iptables -A INPUT -s something -d someaddress -j log_drop
-
-    This meets your 'requirements', as you're logging and dropping in the
-SAME rule and you wont have unnecessary rules, as the 'log and drop' will be
-created just once.
-
-    Of course, '-j log_drop' can be used all the times you need it .....
-
-    This should do the trick ..... in fact, you'll HAVE to do something like
-this, as ipchains '-l' really doesnt exists here.
-
-    I think you should think how good this can be. For example. I have a
-script firewall based on iptables and I have lots of 'log drop' rules. Which
-one of them has a special log-prefix setting. I use each one of them in
-different situations, so my log shows exactly the dropped packet and WHERE
-it was dropped ( log-preffix ). I can easily know if a packet was dropped on
-the forward rule, input rule ......
-
-    Sincerily,
-    Leonardo Rodrigues
-
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.samba.org>
-Sent: Thursday, July 04, 2002 12:00 PM
-Subject: Re: How to ACCEPT or DENY or DROP and also LOG in the same rule ?
-
-
-> On Thursday 04 July 2002 3:54 pm, Ed Street wrote:
->
-> > Hello,
-> >
-> > Actually you can:
-> > Rule #1 is to log
-> > Rule #2 is to deny
->
-> The original question was: I want to both DENY and LOG *in the same rule*.
-
-
+Ross Vandegrift
+ross@willow.seitz.com
 
