@@ -1,13 +1,11 @@
-From: Paul Annesley <paul.annesley@gmail.com>
-Subject: Re: lots of tcp port 445 traffic
-Date: Tue, 7 Dec 2004 09:56:20 +1100
-Message-ID: <99fb058804120614564f38abef@mail.gmail.com>
-References: <41B48EB0.3030307@phreaker.net>
-Reply-To: Paul Annesley <paul.annesley@gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset issue
+Date: Tue, 7 Dec 2004 08:22:26 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0412070821290.7834@blackhole.kfki.hu>
+References: <294d5daa0412061327651c1648@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41B48EB0.3030307@phreaker.net>
+In-Reply-To: <294d5daa0412061327651c1648@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mark Moseley <moseleymark@gmail.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Tue, 07 Dec 2004 00:54:08 +0800, ro0ot <ro0ot@phreaker.net> wrote:
-> Hi,
-> 
-> I get lots of tcp port 445 traffic when I do a tcpdump -n port 445,
-> could it be an attack?
+On Mon, 6 Dec 2004, Mark Moseley wrote:
 
-Many viruses hammer TCP port 445 attempting to exploit MS Windows
-vulnerabilities.  They attempt to establish TCP sessions on dport 445
-to a massive amount of P addresses.. this can fill up
-/proc/net/ip_conntrack in no time, amongst other things.
-
-> 
-> I check on the syslog files at /var/log/syslog, it shows this as below: -
-> 
-> Dec  7 00:36:40 fw01 kernel: Neighbour table overflow.
-> Dec  7 00:36:46 fw01 kernel: NET: 32 messages suppressed.
-> Dec  7 00:36:46 fw01 kernel: Neighbour table overflow.
-> Dec  7 00:36:51 fw01 kernel: NET: 27 messages suppressed.
-> Dec  7 00:36:51 fw01 kernel: Neighbour table overflow.
-> Dec  7 00:38:14 fw01 kernel: NET: 6 messages suppressed.
-> Dec  7 00:38:14 fw01 kernel: Neighbour table overflow.
-> 
-> When I try to ping my router IP address, I get this message below: -
-> 
-> connect: No buffer space available
-> 
-> I did tried running the below command and it seems not helping much: -
-> 
-> iptables -I cus2jarwan -p tcp --dport 445 -j REJECT --reject-with tcp-reset
-> 
-> or
-> 
-> iptables -I cus2jarwan -p tcp --dport 445 -j DROP
-> 
-
-You definately don't want to use -J REJECT - this will do more harm
-than good, as it will be generating an ICMP unreachable message for
-each port 445 packet.
-
-> How can I stop this tcp port 445 traffic?  Or how can I prevent it?
-
-Use the drop rule you mentioned.  Apply it to INPUT and also FORWARD.
-
-If possible;
-- remove the viruses
-- disable the infected computer(s) switch port(s) until cleaned
-- unplug the infected computer(s) from the network until cleaned
-
-Regards,
-Paul
-
-> 
-> Regards,
-> ro0ot
-> 
+> I decided to play with ipset (2.0), but I seem to be running into an
+> issue with creating rules. I wonder if I'm missing something silly or
+> not.
 >
+> When I issue the command:
+>
+> ipset -N foo iphash --resize 0   (straight from the Tips page)
+>
+> I get the error:
+>
+> ipset v2.0: Error from kernel: Protocol not available
+
+You have to load in at least the ip_set kernel module.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
