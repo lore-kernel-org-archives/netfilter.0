@@ -1,9 +1,9 @@
-From: "Manuel Schmitz" <Port17@gmx.net>
-Subject: -m iplimit
-Date: Wed, 23 Mar 2005 22:16:37 +0100 (MET)
-Message-ID: <7866.1111612597@www37.gmx.net>
+From: Claude Brisson <claude@renegat.net>
+Subject: port restricted cone behaviour
+Date: Wed, 23 Mar 2005 22:49:40 +0100
+Message-ID: <1111614580.3657.11.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,37 +14,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi folks,
 
-I would like to limit the number of connections an IP is allowed to open.
-(My server is a woody router box.)
+I noticed that on some occasions, iptables does not behave strictly as a
+port restricted cone NAT.
 
-# iptables -A FORWARD -s 192.168.0.203 -m iplimit --iplimit-above 100 -j
-DROP
+That is, when I reuse an internal udp socket towards a new external
+host/port, iptables will SOMETIMES use a new mapping port... is it a
+known behaviour? a bug? a feature?
 
-The result is always:
-# iptables: No chain/target/match by that name
+distrib debian woody
+kernel: v2.4.18-bf2.4
+iptables: v1.2.6a 
 
-I can't load the module iplimit:
-# modprobe ipt_iplimit
-# modprobe: Can't locate module ipt_iplimit
-
-while
-# modprobe ipt_limit
-works fine.=20
-
-I found the libipt_iplimit.so module in the same place as lipipt_limit.so.
-So, why doesn't it work?=20
-
---Manuel
+-- 
+Claude
 
 
-
-
---=20
-"Happy ProMail" bis 24. M=E4rz: http://www.gmx.net/de/go/promail
-Zum 6. Geburtstag gibt's GMX ProMail jetzt 66 Tage kostenlos!
 
