@@ -1,12 +1,15 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: UnhandledForward
-Date: Thu, 16 Oct 2003 11:45:28 -0700
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: time modules problem
+Date: Thu, 16 Oct 2003 16:56:07 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E3741@alderaan.smgtec.com>
+Message-ID: <200310161656.07200.Alistair@nerdnet.ca>
+References: <003d01c393b2$9484d1a0$710aa8c0@N>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <003d01c393b2$9484d1a0$710aa8c0@N>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +20,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Czezz <czezz@o2.pl>, netfilter@lists.netfilter.org
-
-Seems to be for a game called soldat (http://www.soldat.prv.pl/)
-Reference: =
-http://www.udpsoft.com/forum/printpage.cgi?forum=3D1&topic=3D840
+To: sean <sean@ms.dnss.org>, netfilter@lists.netfilter.org
 
 
------Original Message-----
-From: Czezz [mailto:czezz@o2.pl]=20
-Sent: Thursday, October 16, 2003 11:41 AM
-To: netfilter@lists.netfilter.org
-Subject: UnhandledForward
-
-Hello everyone,
-
-here is my question:
-I added this  line to my rc.firewall
-
-   iptables -A FORWARD -i eth1 -j LOG --log-prefix
-"IPT:UnhandledForward:"
-
-to check why I cant connect to some server...and in syslog it received
-me this:
-   Oct 16 19:05:59 slack kernel: IPT:UnhandledForward:IN=3Deth1 =
-OUT=3Dppp0
-SRC=3D192.168.1.251 DST=3D62.111.129.3 LEN=3D36 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D127
-ID=3D17885 PROTO=3DUDP SPT=3D23083 DPT=3D13073 LEN=3D16
-   Oct 16 19:07:44 slack kernel: IPT:UnhandledForward:IN=3Deth1 =
-OUT=3Dppp0
-SRC=3D192.168.1.251 DST=3D62.111.129.3 LEN=3D36 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D127
-ID=3D18107 PROTO=3DUDP SPT=3D23083 DPT=3D13073 LEN=3D16
-   Oct 16 19:10:27 slack kernel: IPT:UnhandledForward:IN=3Deth1 =
-OUT=3Dppp0
-SRC=3D192.168.1.251 DST=3D62.111.129.3 LEN=3D36 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D127
-ID=3D18888 PROTO=3DUDP SPT=3D23083 DPT=3D13073 LEN=3D16
-   Oct 16 19:11:08 slack kernel: IPT:UnhandledForward:IN=3Deth1 =
-OUT=3Dppp0
-SRC=3D192.168.1.251 DST=3D62.111.129.3 LEN=3D36 TOS=3D0x00 PREC=3D0x00 =
-TTL=3D127
-ID=3D19078 PROTO=3DUDP SPT=3D23083 DPT=3D13073 LEN=3D16
-
-Does anyone can help my to analize this lines above and maybe give my
-some hint?
-  =20
- --
-Best regards,
 
 
+
+On October 16, 2003 02:56 am, sean wrote:
+> i get some problem that cannt del law like
+> adding success
+> iptables -A FORWARD -p tcp -m time --timestart 08:00 --timestop 16:00
+> --days Mon -j ACCEPT
+>
+>  delete fail
+> iptables -D FORWARD -p tcp -m time --timestart 08:00 --timestop 16:00
+> --days Mon -j ACCEPT iptables: Bad rule (does a matching rule exist in that
+> chain?)
+	
+	Try:
+	locate rule:
+	iptables -L -n --line numbers  |more
+	
+	choose your rule line number from the list
+	
+	iptables -D FORWARD (line number)
+
+	to delete the rule.
+
+
+-- 
+
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
