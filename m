@@ -1,11 +1,13 @@
-From: Bryan Hundven <bryanhundven@yahoo.com>
-Subject: [OT]netfilter documents font...
-Date: Tue, 10 Dec 2002 05:12:59 -0800 (PST)
+From: Torsten Puls <toto@pumpum.de>
+Subject: Re: Time Patch on 1.2.6a
+Date: Sat, 14 Dec 2002 13:44:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021210131259.85166.qmail@web20810.mail.yahoo.com>
-Reply-To: bhundven@users.sourceforge.net
+Message-ID: <E18NBed-0008V9-00@kashyyyk.netfilter.org>
+References: <F81QkQiHR9dIzQZt9KA0000ca21@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F81QkQiHR9dIzQZt9KA0000ca21@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,19 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-I was trying to convert the a4-ps documents to pdf, and I was wondering
-what font you guys used.
+Hello,
 
-thanks,
+I work with Debian/GNU Linux Woody 3.0
+Anyway.
 
-bryan
-bhundven at users sourceforge net
+download patch-o-matic.tar.gz from netfilter.org
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+cd /usr/src
+tar -xzvf patch-o-matic.tar.gz
+
+cd patch-o-matic
+
+KERNEL_DIR=/usr/src/linux ./runme pending
+
+or/and
+
+KERNEL_DIR=/usr/src/linux ./runme base
+
+and/or
+
+KERNEL_DIR=/usr/src/linux ./runme extra
+
+so that's it.
+
+Now you can recompile your new Kernel.
+
+Greetz Torsten
 
