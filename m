@@ -1,11 +1,10 @@
-From: "Egor Tur" <worldeb@ukr.net>
-Subject: REJECT rules with tcp-reset.
-Date: Thu, 29 Jan 2004 20:15:53 +0200
+From: "Srinivasa Hebbar" <sshebbar@yahoo.com>
+Subject: FORWARDING and NAT chains
+Date: Thu, 29 Jan 2004 19:32:57 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1AmGhl-00039e-00@hammer.ukr.net>
-Reply-To: "Egor Tur" <worldeb@ukr.net>
+Message-ID: <001901c3e670$a4bd2250$3d40000a@wisdom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,26 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: shebbar@india.tejasnetworks.com
 
-Hi folk.
-How can I correctly create rules with REJECT and tcp-reset.
-If I do
-eth0 - NET, eth1 LAN
-iptables -A FORWARD -i eth0 -o eth1 -p tcp --sport 1024: -d MY.LAN.IP --dport 113 -j REJECT --reject-with tcp-reset
-iptables -A FORWARD -i eth1 -o eth0 -p tcp ! --syn --dport 1024: -s MY.LAN.IP --sport 113 -j ACCEPT
-iptables -t nat -A PREROUTING -i eth0 -p tcp --sport 1024: -d MY.NET.IP --dport 113 -j DNAT --to MY.LAN.IP:113
-I wait long time when I try connect with ftp & mail services.
-(And I see some attempts to connect to auth service)
-If I try REJECT --reject-with icmp-port-unreachable
-this work quickly but slowly then I permit authentication.
-When I try use INPUT & OUTPUT chains I have the same situation.
- 
-nat & mangle tables have ACCEPT policy, filter - DROP
- 
-What can I do in order to use tcp-reset?
-  
-iptables 1.2.9, kernel 2.4.24, REJECT rules compile in kernel.
- 
-Thanx.
+Hello,
 
+I believe that the NAT PREROUTING and POSTROUTING will 
+always takes place for all the incoming/outgoing packets
+irrespective of whether the packet is destined to the node or not.
+
+I have a situvation that if the dest. IP address of the packet is
+for the local node, then apply NAT rule, otherwise it should simply
+forward the packet according to the routing table.
+
+How can I achive the above?
+
+Any help is very much appreciated.
+
+Regards,
+S. Hebbar.
 
