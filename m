@@ -1,13 +1,11 @@
-From: "danyvip (at) pattco.ro" <danyvip@pattco.ro>
-Subject: Re: High CPU usage + Kernel option
-Date: Thu, 08 Apr 2004 22:24:35 +0300
+From: Roeland Moors <roelandmoors@pandora.be>
+Subject: change TTL value
+Date: Thu, 8 Apr 2004 18:13:34 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4075A6F3.8040607@pattco.ro>
-References: <4072B238.6050509@xana.ro> <1081262572.24338.37.camel@raylinux.internal> <4072C5E1.60306@xana.ro>
+Message-ID: <20040408161334.GA2396@home.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4072C5E1.60306@xana.ro>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,99 +15,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-you could always use arp -f filename to have few rules in iptables.. 
-alitle bit less cpu consumtion..
-if the main problem is ssh logging try port shaping and alocate 5kbfor 
-ssh..
-hope it helps,
+I'm trying to change the value of the TTL field with this line:
+$IPTABLES -t mangle -A PREROUTING -i $INET_IFACE -p igmp -j TTL --ttl-inc 1
 
-danyvip
--- 
+But when I try to execute this I have this error:
+iptables: No chain/target/match by that name
 
+This seems to be the problem: -j TTL --ttl-inc 1
+But I found it in the manpage:
+iptables -j TTL --help:
+...
+ --ttl-inc value               Increment TTL by <value>
+... 
 
+What am I doing wrong?
 
-Vlad Adomnicai wrote:
+uname -a:
+Linux server 2.6.2 #1 Thu Apr 8 12:02:31 CEST 2004 i686 GNU/Linux
 
-> With vmstat the sys is at 100%. User process is 1-2%.
-> The machine doesn't do anything except routing and filtering with 
-> iptables.
-> There is also a script that runs every minute that updates the 
-> iptables rules, but it only lasts for about 1 second under medium cpu 
-> load.
->
-> Vlad Adomnicai
->
->
-> Ray Leach wrote:
->
->> On Tue, 2004-04-06 at 15:35, Vlad Adomnicai wrote:
->>  
->>
->>> Hi,
->>>   I have a K6/2 333 machine with 64Mb of RAM and two network cards. 
->>> (3c509 and an Intel one both with TCP cheksum offloading and Cpu )
->>>   I use Fedora Core 1 with the default kernel    and iptables 1.2.9.
->>>
->>>   At high traffic through the router (6-7Mbytes/second) the CPU goes 
->>> to 100% and I can't even log on to it through SSH:
->>> [root@root web]# ssh 192.168.200.1 -C -v
->>> OpenSSH_3.5p1, SSH protocols 1.5/2.0, OpenSSL 0x0090701f
->>> debug1: Reading configuration data /etc/ssh/ssh_config
->>> debug1: Applying options for *
->>> debug1: Rhosts Authentication disabled, originating port will not be 
->>> trusted.
->>> debug1: ssh_connect: needpriv 0
->>> debug1: Connecting to 192.168.200.1 [192.168.200.1] port 22.
->>> debug1: Connection established.
->>> debug1: identity file /root/.ssh/identity type -1
->>> debug1: identity file /root/.ssh/id_rsa type -1
->>> debug1: identity file /root/.ssh/id_dsa type -1
->>>    and stands there until a timeout occures.
->>>   On the network behind the router are aproxymately 200 users for 
->>> which I have about 200 iptables rules  like this iptables -A FORWARD 
->>> -s <ip> -m mac --mac-source <mac> -j ACCEPT and 200   iptables -A 
->>> FORWARD -d <ip> -j ACCEPT, to allow passage only for the machines 
->>> with the corect pair of ip/mac. I could give up the last 200 rules, 
->>> as they don't serve a real purpose in limiting the access but they 
->>> are used only for bandwidth monitoring / ip.
->>>   Does anyone know how to lower the cpu usage with this 
->>> configuration?   
->>
->> It should be very low ...
->>
->>  
->>
->>> tweaks of any kind? Would a 2.6 kernel improve the situation? I have 
->>> also seen an option in the 2.4 kernels CONFIG_NET_HW_FLOWCONTROL 
->>> (Forwarding between high speed interfaces) but there it is written 
->>> that it supports only some network devices and I don't know about 
->>> 3coms or intel ones.
->>>
->>>  Any one has any ideas? another way of setting the rules? another 
->>> filtering method? tweaking parameters? or at least what kind of 
->>> system will it be necessary for this setup to be able to at least 
->>> log on to the machine and do something on it. Also, would a FreeBSD 
->>> be more suitable for this on the same configuration?
->>>
->>>   
->>
->> Run something like sar, vmstat, top on the machine during high usage to
->> see if there is another proc running that may be causing the high cpu
->> usage. Do you run squid on that machine? If so, check the memory config
->> ...
->>
->>  
->>
->>> Thanks in advance for any informations.
->>> Vlad Adomnicai
->>>
->>>   
->>
->
->
->
+modprobe -l:
+/lib/modules/2.6.2/kernel/net/ipv4/ipip.ko
+/lib/modules/2.6.2/kernel/net/ipv4/ip_gre.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/iptable_nat.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/iptable_mangle.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/iptable_filter.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_ttl.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_tos.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_tcpmss.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_state.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_recent.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_pkttype.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_owner.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_multiport.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_mark.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_mac.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_limit.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_length.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_iprange.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_helper.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_esp.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_ecn.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_dscp.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_conntrack.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_ah.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_ULOG.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_TOS.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_TCPMSS.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_SAME.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_REJECT.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_REDIRECT.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_NETMAP.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_MASQUERADE.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_MARK.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_LOG.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_ECN.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_DSCP.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ipt_CLASSIFY.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ip_tables.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ip_nat_irc.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ip_nat_ftp.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ip_conntrack_irc.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ip_conntrack.ko
+/lib/modules/2.6.2/kernel/net/ipv4/netfilter/ip_conntrack_ftp.ko
 
 
