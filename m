@@ -1,12 +1,13 @@
-From: Naleendra@dms.lanka.net
-Subject: Re:Re: proxying along with iptables
-Date: Sat, 2 Nov 2002 14:31:23 +0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: AW: default policy
+Date: Sat, 2 Nov 2002 11:08:56 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <A590F7F751E6D6118C0800104B0DF37304CDA4@MAILGATE>
+Message-ID: <20021102110903.MEF292.mta03-svc.ntlworld.com@there>
+References: <31347F3CE518D6118ACB00A0246AD0560B2405@mx.snizek.ch>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2824A.3A5FC1A0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <31347F3CE518D6118ACB00A0246AD0560B2405@mx.snizek.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Saturday 02 November 2002 8:18 am, mailinglists@belfin.ch wrote:
 
-------_=_NextPart_001_01C2824A.3A5FC1A0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+> Who's Ziegler?
 
-Hi Lists/ Anthony,
+Rober Ziegler; Linux Firewalls; New Riders 2nd Ed 2001; ISBN 0735710996
 
-	Protocols : ftp, http, dns
+http://www.bookpool.com/.x/ndmjrgo08i/sm/0735710996
 
-	Basic requirements are: Web site caching
-				Accounting purposes for users in a Nt/2000
-user base
+> > You should never set any default policy other than ACCEPT on
+> > a nat or mangle table.
+> >
+> > I sometimes think it was a bad idea even to make it possible.
+>
+> No, I don't think so. It's hard for beginners, yes. But once you understand
+> what iptables is capable of (compared to other commercial products) you
+> actually are glad that there is a product giving you control over
+> everything.
+> Defining the policies for every chain is such a freedom.
 
- Thanks
+Can you think of a situation where it would be a good idea to set a default 
+policy other than ACCEPT for a nat or mangle table ?
 
- nal
+Antony.
 
-------_=_NextPart_001_01C2824A.3A5FC1A0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+-- 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>Re:Re: proxying along with iptables</TITLE>
-</HEAD>
-<BODY>
+90% of network problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi Lists/ Anthony,</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">Protocols : ftp, http, dns</FONT>
-</P>
-
-<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">Basic requirements are: Web site caching</FONT>
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
-FACE=3D"Arial">Accounting purposes for users in a Nt/2000 user =
-base</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;Thanks</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;nal</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2824A.3A5FC1A0--
 
