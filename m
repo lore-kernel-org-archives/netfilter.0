@@ -1,10 +1,9 @@
-From: Pablo Allietti <pablo@lacnic.net>
-Subject: dnat work only for 5 minutes
-Date: Mon, 31 Jan 2005 09:32:01 -0300
-Message-ID: <20050131123201.GA27247@omega.lacnic.net.uy>
+From: Alabama <alabama@interia.pl>
+Subject: iptables
+Date: Mon, 31 Jan 2005 12:31:19 +0100
+Message-ID: <5.2.0.9.0.20050131123100.02a937a0@pazim.home.pl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,38 +14,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi all again.
-
-i have this rules
-
-iptables -A FORWARD -j ACCEPT -p tcp --dport 1350
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d 200.20.0.2 --dport
-1350 -j DNAT  --to 192.168.1.79:22
-
-iptables -A FORWARD -j ACCEPT -p tcp --dport 1351
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d 200.20.0.2 --dport
-1351 -j DNAT  --to 192.168.1.143:22
-
-iptables -A FORWARD -j ACCEPT -p tcp --dport 81
-iptables -t nat -A PREROUTING -i eth0 -p tcp -d 200.20.0.2  --dport
-4381 -j DNAT  --to 192.168.1.143:80
+Dear All,
+I have linux router with 3 NIC cards.
+One is an internet interface. Second is my LAN network and third is public 
+addresses network.
+I am using iptables. My LAN network works perfectly filtering packets. I 
+have problems with my public addresses network- I would like this network 
+to work without any filtering and just can't do it.
+Could give me advice how to pass by iptables or how to set up iptables to 
+route traffic to public addresses without any filtering?
+Best regards
+Andy 
 
 
-and the problem is that this rules work for a while and down.... i have
-a port dnatting to ICMP and work very well, anybody can say me what
-happend?
-
-firewall 200.20.0.2 Fedora Core2
-server 192.168.1.143 freebsd
-
-thanks a lot.
--- 
-
-
---------------
+----------------------------------------------------------------------
+Najlepsze auto, najlepsze moto... >>> http://link.interia.pl/f1841
 
 
