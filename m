@@ -1,13 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: differences between win and unix tcp clients.
-Date: Tue, 16 Mar 2004 07:41:17 -0500
+From: <netfilter@sbgit.com>
+Subject: How to build an good and secure firewall script?
+Date: 16 Mar 2004 12:52:20 UT
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1079440877.2021.71.camel@grendel>
-References: <024b01c40b4f$e3341620$3f32a8c0@ds.ig.com.br>
+Message-ID: <DIIE.0000011900002AC1@sbgit.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <024b01c40b4f$e3341620$3f32a8c0@ds.ig.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +16,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Fabiano Reis <silos.reis@ig.com.br>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 2004-03-16 at 07:12, Fabiano Reis wrote:
->
-> iptables -A INPUT -p tcp --source 192.168.0.2 --dport 23 -j REJECT
-> iptables -A INPUT -p tcp --source 192.168.0.3 --dport 23 -j REJECT
->  
-> On the Solaris machine: a very fast response that the connection was
-> refused.
->  
-> On the Windows 2000 machine: after for about 20 seconds I got the
-> message that the connect failed (I thing this is the same as
-> connection refused).
+Hi there,
+after i postet some script idears (these are not my scripts) i want to
+create my own and custom script for iptables.
 
-If you don't specify a reject option, the default is an ICMP port
-unreachable. This is an odd thing to return for a closed TCP port, as
-normally it would be an ACK/RST.
+So how to build my own and custom script?
 
-So I'm guessing that Solaris handles this like an ACK/RST while Windows
-handles this like any generic type 3 error. Doing a:
+I need the fallowing capatibilities:
+VPN Redidirection to my Internal VPN Server (PPTP)
+EDONKEY Redirection to my own Workstation
+SMTP Accept on the Firewall Server
+HTTP Redirection to my internal HTTP Server
+Active FTP Transfer for internal Clients 
+Ping from internal to outside nets but not from extern to intern
 
--J REJECT --reject-with tcp-reset
+Maybe there exiting some tamplates where i can insert my custom rules?
+And maybe there existing some rule tamplates, for vpn ... ?
 
-would produce more consistent results, however you are running such an
-old version of iptables I *think* that version was still returning bad
-sequence numbers on the RST's. It might work for you, it might not. You
-should really upgrade.
+I have installed the newest iptables version!
 
-HTH,
-C
+My Network Design looks like this:
 
+internet <-> router <-> firewall <-> lokal net (192.168.1.0)
+            |      |    |       |
+         dyn IP    |    |       |
+               10.0.0.1 |       |
+                        |       |
+                     10.0.0.2   |
+                       (eth0)   |
+                                |
+                          192.168.1.221
+                               (eth1)
+
+Sorry, but i'm realy confused in building fw script, i tried some 
+script from the internet, but all having errors in the syntax.
+
+Thanx for any help and good idears.
+Peter
 
 
