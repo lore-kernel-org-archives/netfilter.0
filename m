@@ -1,8 +1,8 @@
 From: "Andrej Ricnik" <lemmetink@hotmail.com>
 Subject: Re: block downloads on file type
-Date: Wed, 23 Apr 2003 01:02:46 +0000
+Date: Wed, 23 Apr 2003 01:00:58 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea2-F46wKHvyo3DjFb0001b3ab@hotmail.com>
+Message-ID: <Sea2-F13fzbEgZgCqej0001b549@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,7 +16,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
 I don't think this is a task for netfilter, you might
 want to look at http://dansguardian.org/?page=introduction
@@ -32,8 +32,9 @@ h--- r++ z?
 ------END GEEK CODE BLOCK------
 
 
+
 _________________________________________________________________
-The new MSN 8: smart spam protection and 2 months FREE*  
+Tired of spam? Get advanced junk mail protection with MSN 8. 
 http://join.msn.com/?page=features/junkmail
 
 
