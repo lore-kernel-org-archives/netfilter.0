@@ -1,13 +1,12 @@
-From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: RE: I thought ssh is port #22 ?!!
-Date: Thu, 01 Apr 2004 20:27:34 +0200
+From: "Adam Kennedy" <akennedy@niesc.k12.in.us>
+Subject: Having NAT issues
+Date: Thu, 1 Apr 2004 14:30:38 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080844053.26229.111.camel@localhost>
-References: <7C9884991ADAE0479C14F10C858BCDF567928A@alderaan.smgtec.com>
+Message-ID: <20040401192728.M69316@niesc.k12.in.us>
+References: <20040401192505.3100.69461.Mailman@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF567928A@alderaan.smgtec.com>
+In-Reply-To: <20040401192505.3100.69461.Mailman@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +17,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-tor, 01.04.2004 kl. 19.20 skrev Daniel Chemko:
+This is driving me up a wall.
+I have a NAT entry such as thus:
 
-> > Here's how it works. The server listens on port 22. The client opens a
-> > connection to the server, and tells the server which return port to use.
-> > If you do "netstat -an" you will see the server talking on port 22, and
-> > the client talking on some high numbered port like 32873. The high
-> > number port used is random. It will change from one session to the next.
-> >
-> > This is true not just for ssh - it is true for most tcp applications.
+iptables -t nat -A PREROUTING -d 1.2.3.4 \
+        -p tcp --dport 5631 -j DNAT --to 192.168.1.1
 
-> Unfortunately I have the "privilage" of maintaining a customer TCP
-> protocol which cans you if your source and destination ports aren't as
-> specified by their fcked up protocol!!
 
-Nevertheless, that's how TCP works, for every customer in the Universe.
-Sack your customer, and get another?.
+The thing doesn't work. If I run a telnet session from the NAT box to the
+internal machines port of 5631, it responds. But, when doing that from the
+outside world, it doesn't. And yes the outside IP is bound to the NAT box, as
+eth0:2 actually. This is a pcAnywhere connection, but I doubt that pcAnywhere
+cares as it works on other servers, just not this one.
 
-It would be better if you learned not to top post and to quote
-correctly.
+Some stats of the server:
+iptables 1.2.9
+kernel 2.6.3 (also tried 2.4.25)
+gcc 3.2.3
+libc 2.3.2
 
---Tonni
 
--- 
+Any ideas?
 
-mail: billy - at - billy.demon.nl
-http://www.billy.demon.nl
+--
+Northern Indiana ESC
+Adam Kennedy - akennedy@niesc.k12.in.us
+Linux Specialist / Network Administrator
+Phone: (574) 254-0111 x113
+Toll Free: 800-326-5642
+Fax: (574) 254-0148
 
 
