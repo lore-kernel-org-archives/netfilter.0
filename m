@@ -1,11 +1,11 @@
-From: "Leonardo Lombardo" <leo.lombardo@tiscali.it>
-Subject: passive ftp and file sharing
-Date: Mon, 9 Jun 2003 11:42:56 +0200
+From: "B H R Balaji" <balaji@sol.net.in>
+Subject: MASQ problem
+Date: Tue, 10 Jun 2003 10:00:48 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EE063BC000042A9@mail-4.tiscali.it>
-Reply-To: leo.lombardo@tiscalinet.it
+Message-ID: <00c801c32f09$1134f400$c2bf09ca@Housecall>
+Reply-To: "B H R Balaji" <balaji@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,33 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hi all,
-
-a question for you: how can I set my iptables firewall so that natted lan=
-
-users can use ftp in passive mode and have winmx, dc, audiogalaxy, ....
-blocked ? I've tried out all that scripts/lists of ip/... i've found on
-the net but nothing... the only way I found to block file sharing is to
-close all ports 800:65535 but this way passive ftp is blocked too.... :((=
-
-I'm a very beginner with iptables so please be patient...
-
-p.s.: now I use firewall-jay script to manage iptables.
-
-Thanks to all in advance :)
-##############################################
-
-Leonardo Lombardo - leo.lombardo@tiscalinet.it
-
-##############################################
-
-__________________________________________________________________
-Tiscali ADSL Light Sempre a 1 euro al giorno! E in piu' telefoni gratis.
-Abbonati entro il 31 maggio, l'attivazione e 'gratuita.    
-http://point.tiscali.it/adsl/index.shtml
+To: netfilter@lists.samba.org
 
 
+
+HI
+
+i have 20 alias interface, iam not able to MASQ using that interface, is
+this iptables supports this option
+
+[root@netxpress root]# iptables -I FORWARD -i eth0:1  -s
+92.168.100.0/24  -j MASQUERADE
+Warning: wierd character in interface `eth0:1' (No aliases, :, ! or *).
+iptables: Target problem
+
+
+hare
 
 
