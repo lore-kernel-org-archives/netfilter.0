@@ -1,10 +1,10 @@
-From: "Nikolai Dahlem" <Nikolai.Dahlem@epygi.de>
-Subject: (no subject)
-Date: Wed, 24 Sep 2003 15:53:07 +0200
+From: "Chen Jian" <ChenJ@yztech.com.cn>
+Subject: a problem about NAT.
+Date: Wed, 24 Sep 2003 22:07:40 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DAELKAPIKOFAFFKELNHOAEADCAAA.Nikolai.Dahlem@epygi.de>
+Message-ID: <DEEOLEFPFOLKFJHILOGBCEEOCAAA.ChenJ@yztech.com.cn>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,51 +16,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+aGksIGFsbA0KVGhlcmUgYXJlIDMgbWFjaGluZSBiZWhpbmQgdGhlIE5BVCBzZXJ2ZXIuIFdoZW4g
+dGhlIDMgbWFjaGluZSByZXF1ZXN0IHRoZSBzYW1lIFdlYiBzZXJ2ZXIgb3V0c2lkZSwgTkFUIHVz
+ZSAzIGRpZmZlcmVudCBzb3VyY2UgcG9ydCB0byBkaXN0aW5ndWlzaCB0aGUgMyBjb25uZWN0aW9u
+Lg0KTXkgcHJvYmxlbSBpcyB3aGVuIHRoZSAzIG1hY2hpbmUgaGF2ZSB0aGUgc2FtZSBzb3VyY2Ug
+cG9ydCAsIGhvdyBuZXRmaWx0ZXIgaGFuZGxlIGl0ID8gSSBhbHNvIHdhbnQgdG8ga25vdyB3aGVy
+ZSB0aGUgaGFuZGxlIGNvZGUgaXMgLiBUaGFua3MgLg0KLS0NCg==
 
-I'm trying to conntrack/nat a udp-based protocol with a server listening on
-port x. My problem is, that the conntrack-helper sees all incoming and
-outgoing packets of the control connection, while the nat-helper is only
-called for outgoing packets. Due to the nature of the protocol I need
-IP_NAT_HELPER_F_ALWAYS to mangle the contents of both outgoing and incoming
-packets (even when there are no expected connections).
-
-The scenario is the following:
-
-PC1 -> MASQ -> server
-
-The conntrack module gets a packet from PC1 (src port x, dst port x) and
-parses the protocol.
-The nat_module mangles the packet content and the packet is send of to the
-server with the source address of MASQ (src port x, dst port x).
-The conntrack_module receives a packet from Server (src port: high, dst port
-x) and parses the protocol.
-The nat_module isn't called.
-
-I reqister my modules with the following tuples:
-
-nat_module:
-hlpr->tuple.dst.protonum = IPPROTO_UDP;
-hlpr->tuple.src.u.udp.port = port x;
-hlpr->mask.src.u.udp.port = 0xFFFF;
-hlpr->mask.dst.protonum = 0xFFFF;
-hlpr->flags = IP_NAT_HELPER_F_ALWAYS;
-
-conntrack_module:
-hlpr->tuple.src.u.udp.port = port x;
-hlpr->tuple.dst.protonum = IPPROTO_UDP;
-hlpr->mask.src.u.udp.port = 0xFFFF;
-hlpr->mask.dst.protonum = 0xFFFF;
-
-
-/proc/net/ip_conntrack lists both connections (answer&reply) as unreplied.
-Can someone explain to me why the reply is seen as a new connection ?
-
-
-regards
-
-Nikolai Dahlem
 
 
