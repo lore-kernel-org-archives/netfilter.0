@@ -1,11 +1,13 @@
-From: ke chen <linux_kurt@yahoo.com>
-Subject: Iptables Make Rules On Different Interface? "iptables - L" shows no difference!
-Date: Sun, 6 Jun 2004 13:57:59 -0700 (PDT)
+From: Tobias DiPasquale <cbcgtt@gmail.com>
+Subject: Re: FIB LPM algorithm
+Date: Mon, 7 Jun 2004 08:11:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040606205759.47086.qmail@web41703.mail.yahoo.com>
+Message-ID: <9e3aacf4040607051129edfb01@mail.gmail.com>
+References: <9e3aacf40406070423583216f@mail.gmail.com> <200406071302.15598.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-2010730573-1086555479=:46554"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200406071302.15598.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,47 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
---0-2010730573-1086555479=:46554
-Content-Type: text/plain; charset=us-ascii
+On Mon, 7 Jun 2004 13:02:15 +0100, Antony Stone
+<antony@soft-solutions.co.uk> wrote:
+> Er, what do LPM and FIB mean please?   I think I know netfilter quite well,
+> and I've not come across these abbreviations so far...
 
-hi all,
-I want to make iptables impose different rules on two ethernet interfaces.
+LPM = Longest Prefix Match, the algorithm used to match an IP to a
+particular route based on the route's destination network spefication.
 
-I would like to make restriction on external interface (eth0), but allow any traffic in and out of internal interface (eth1).
-iptables -A INPUT -i eth1 -s 0/0 -d 0/0 -j ACCEPT
-iptables -A OUTPUT -o eth1 -s 0/0 -d 0/0 -j ACCEPT
+FIB = Forwarding Information Base, the data structure used by the
+kernel to hold packet routing information.
 
-when applying these rules, iptables -L
-it shows 
-Chain INPUT (policy DROP)
-target prot opt source destionation
-Accept all -- anywhere anywhere
+There are 3 or 4 files in net/ipv4/ devoted entirely to the FIB (which
+are called in route.c in the same subdir). Thinking more about this,
+though, it was probably a mistake posting this to the netfilter
+list... it seems more of a question that should be asked of the
+linux-net list.
 
-Chain OUTPUT (policy DROP)
-target prot opt source destionation
-Accept all -- anywhere anywhere
+As well, I just found a small section on the FIB in Chapter 18 of
+Understanding the Linux Kernel (2nd Edition) but its not really as
+specific as I would like with respect to the exact LPM algorithm used.
 
-There is no place to differentiate interface eth0 or eth1
+I will repost my original message to linux-net but will also be
+amenable to any direction that may come from this list, as well.
+Thanks again :)
 
-Anyone could give me some hints?
-
-Thank you in advance.
-
-BEST REGARDS
-kurt 
-
-
-		
----------------------------------
-Do you Yahoo!?
-Friends.  Fun. Try the all-new Yahoo! Messenger
---0-2010730573-1086555479=:46554
-Content-Type: text/html; charset=us-ascii
-
-<DIV>
-<DIV class=postcolor>hi all,<BR>I want to make iptables impose different rules on two ethernet interfaces.<BR><BR>I would like to make restriction on external interface (eth0), but allow any traffic in and out of internal interface (eth1).<BR>iptables -A INPUT -i eth1 -s 0/0 -d 0/0 -j ACCEPT<BR>iptables -A OUTPUT -o eth1 -s 0/0 -d 0/0 -j ACCEPT<BR><BR>when applying these rules, iptables -L<BR>it shows <BR>Chain INPUT (policy DROP)<BR>target prot opt source destionation<BR>Accept all -- anywhere anywhere<BR><BR>Chain OUTPUT (policy DROP)<BR>target prot opt source destionation<BR>Accept all -- anywhere anywhere<BR><BR>There is no place to differentiate interface eth0 or eth1<BR><BR>Anyone could give me some hints?<BR><BR>Thank you in advance.<BR><BR>BEST REGARDS<BR>kurt </DIV><!-- THE POST --></DIV><p>
-		<hr size=1><font face=arial size=-1>Do you Yahoo!?<br>Friends.  Fun. <a href="http://messenger.yahoo.com/">Try the all-new Yahoo! Messenger</a>
---0-2010730573-1086555479=:46554--
+--
+Tobias DiPasquale
+[ 0x63626367545440676d61696c2e636f6d ]
 
