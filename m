@@ -1,12 +1,14 @@
-From: "olivier" <netfilter.org@olivier.us>
-Subject: Re: How to run iptables insert command  on linux  box as non root user?
-Date: Fri, 30 May 2003 15:13:40 -0700
+From: Julian Gomez <kluivert@tm.net.my>
+Subject: Re: Skipping connection tracking for certain traffic types?
+Date: Sat, 31 May 2003 15:18:43 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <019901c326f8$b9c646f0$16199340@xpc>
-References: <20030530213702.19708.93703.Mailman@kashyyyk>
+Message-ID: <20030531071843.GA1765@floyd>
+References: <20030527192155.V20519@poliisi.iki.fi>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20030527192155.V20519@poliisi.iki.fi>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +19,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-How about using "sudo", and specifying your apache user into the
-/etc/sudoers ?
+On Tue, May 27, 2003 at 10:49:56PM +0300, Ville Mattila spoke thusly:
+>Correct me on this if I'm wrong: It is a feature of Netfilter that
+>whenever conntrack is registered in kernel, then for example any UDP
+>packet passing through the firewall causes the state table to be consulted
+>resulting in either update of an old state entry if found or creation of a
+>new state.
 
-> From: "Israel Zavalza Bahena" <izavalza@hotmail.com>
-> To: netfilter@lists.netfilter.org
-> Subject: How to run iptables insert command  on linux  box as non root
-user?
-> Date: Fri, 30 May 2003 16:18:59 -0500
->
->
->
-> Hello
->
->
-> I need to run IPTABLES on a linux box from a CGI on apache web server, but
-i
-> need to run as apache user, not as root user, to avoid a secure
-> vulnerability over the apache web server.
->
-> Do i need to recompile iptables or the kernel ?
->
-> Someone has done it before ?
->
-> Thanks for your comments.
->
->
-> Ing. Israel Zavalza Bahena
-> Technology Strategic Manager of
-> INTERTIENDAS Network Center
+I think there is a NOTRACK patch in p-o-m, but haven't checked really. I
+kind of remember Henrik Nordstrom talking about it before, but a quick
+websearch only turns up this.
 
-
+http://lists.netfilter.org/pipermail/netfilter-devel/2001-September/
+005541.html
 
