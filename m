@@ -1,10 +1,12 @@
-From: "Rodre Ghorashi-Zadeh" <rodrico7@hotmail.com>
-Subject: ip_nat_ftp module and freeswan IPSEC module don't work together?
-Date: Fri, 23 Jan 2004 02:41:46 +0000
+From: Rakotomandimby Mihamina <mrakotom@free.fr>
+Subject: port 389
+Date: Fri, 23 Jan 2004 08:27:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY10-F42llTdrrcwv1000519cf@hotmail.com>
+Message-ID: <200401230827.13331.mrakotom@free.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,56 +16,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hello , 
+I asked for some frineds of mine to scan mly host , and they all find my 389 
+port opened . here is the report , for those who understand french : 
+http://www.tsenagasy.com/forum/viewtopic.php?p=33992#33992
 
-I am having a really weird problem with the ip_nat_ftp module and the [Free=
-=20
-S/WAN] ipsec module. When I have the ipsec module loaded (with or without=20
-any tunnels configured) the FTP Data connections to any active type FTP=20
-servers get screwed up. What happens is that I am able to connect and login=
-=20
-to the server, I am able to do an 'ls' or 'get' operation once. On=20
-subsiquent operations that require the use of the data channel the system=20
-hangs. I used tcpdump on the firewall to see what 'PORT' commands where=20
-being sent to the server. This is where I noticed that the first 'PORT'=20
-command was getting it's IP address rewritten from the clients internal=20
-address to the clients external address, thus the ip_nat_ftp module works a=
-s=20
-expected. However, on subsiquent 'PORT' commands, from within the same FTP =
+i dont understand what's happening :
 
-session, the IP address in the 'PORT' command is my client machines interna=
-l=20
-IP address, so the remote server freaks out and drops (TCP RESET) the=20
-connection. If I stop the IPSEC service (unload ipsec.o module) the 'PORT' =
+netstat | grep 389 
+gives nothing , and
+this is my set of rules .
+would you help me to see , what is wrong ? or is the 389 just an "answer" 
+port ?
 
-commands internal IP address gets rewritten to the clients external IP=20
-adddress each and every time I do a 'get' or 'ls' operation.
 
-Now the really wierd part. When I have the IPSEC module loaded and a tunnel=
-=20
-configured, and I use FTP to access an FTP server that resides on the other=
-=20
-end of the tunnel the ip_nat_ftp module is able to rewrite the 'PORT'=20
-commands IP address each and every time, hence the active FTP works like a =
+iptables -P INPUT DROP
+iptables -A INPUT -p tcp --syn -m limit --limit 1/s -j ACCEPT
+iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s 
+-j ACCEPT
+iptables -A INPUT -i ppp0 -m unclean -j LOG --log-level debug --log-prefix 
+"unclean_: "
+iptables -A INPUT -i ppp0 -m unclean -j DROP
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp --dport 20 -j ACCEPT
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 8090 -j ACCEPT
+iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+iptables -A INPUT -p tcp --dport 10080 -j ACCEPT
+iptables -A INPUT -p tcp --dport 9000 -j ACCEPT
+iptables -A INPUT -p icmp -j ACCEPT
+iptables -A INPUT -p tcp --syn -m limit --limit 10/s -j LOG --log-level debug 
+--log-prefix "syn_flood_attack_: "
+iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 10/s 
+-j LOG --log-level debug --log-prefix "port_scan_attack_: "
+iptables -A INPUT -j LOG --log-level debug --log-prefix "dropped_input_: "
 
-charm through the tunnel. Weird Huh?
-
-I am using kernel 2.4.20, iptables 1.2.8, patch-o-matic 20030107, and Free =
-
-S/WAN 2.01.
-
-Any help regarding this matter would be greatly appreciated. Thanks in=20
-advance.
-
-=AEodre
-
-_________________________________________________________________
-Help STOP SPAM with the new MSN 8 and get 2 months FREE*  =20
-http://join.msn.com/?page=3Ddept/bcomm&pgmarket=3Den-ca&RU=3Dhttp%3a%2f%2fj=
-oin.msn.com%2f%3fpage%3dmisc%2fspecialoffers%26pgmarket%3den-ca
+-- 
+Rakotomandimby Mihamina Andrianifaharana
+Tel : +33 2 38 76 43 65
+http://stko.dyndns.info/site_principal/Members/mihamina
 
 
