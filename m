@@ -1,11 +1,15 @@
-From: "Josh Berry" <josh.berry@linknet-solutions.com>
-Subject: Re: connlimit / iplimit patch
-Date: Mon, 6 Oct 2003 08:33:07 -0500 (CDT)
+From: "pigi" <pigi@pigi.org>
+Subject: Re: Can't DROP spoofed packet. Bug or feature ?
+Date: Mon, 6 Oct 2003 16:31:26 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <51799.204.214.145.6.1065447187.squirrel@mail.linknet-solutions.com>
+Message-ID: <53468.212.239.118.101.1065450686.squirrel@www.frumar.it>
+References: <52208.212.239.118.101.1065447313.squirrel@www.frumar.it>
+    <1065448509.815.56.camel@elendil.intranet.cartel-securite.net>
+Reply-To: pigi@pigi.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1065448509.815.56.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,24 +20,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: netfilter@lists.netfilter.org
 
-Sorry if you have gotten this multiple times, I keep getting bounce backs
-from my server.
+>
+> Do you have rp_filters activated ? If so, packet is dropped at first
+> routing point for kernel checks reverse path. Activate martians logging
+> to confirm this :
+>
+> 	echo 1 > /proc/sys/net/ipv4/conf/all/log_martians
+Thx for the reply.
+Anyway this is the workaround, but I would like to DROP it in my rules if
+possible, so the packet cannot reach the routing point in kernel.
+Is this possible ?
 
-I figured out the issue after a lot of trial and error.  I had to edit the
-Makefile under the extensions directory for the iptables source.  I also
-had to go to the CVS and download the libipt_connlimit.c code and stick it
-in the extensions directory.  In the Makefile, edit the PF_EXT_SLIB: line
-(about the 8th down), where you see a list of the other extensions (ah
-conntrack dscp ecn esp helper etc...).  Somewhere in there add connlimit.
+Pigi
 
-At this point you should be able to compile iptables and use the connlimit
-match as long as you have already patched the kernel and compiled it
-properly.
-
-Hope this Helps
-
-
-Josh Berry
 
