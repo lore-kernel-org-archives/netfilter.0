@@ -1,15 +1,12 @@
-From: ASHISH <ashishis@gmail.com>
-Subject: Fwd: Block outbound host to specific port(s) using Masq./NAT?
-Date: Tue, 4 Jan 2005 14:36:34 +0530
-Message-ID: <558224e305010401066da5a05d@mail.gmail.com>
-References: <5dda57be050103135225b4e665@mail.gmail.com>
-	<1104789905.6759.8.camel@hubcap.ljm.dom>
-	<558224e3050103150559aea7cc@mail.gmail.com>
-Reply-To: ASHISH <ashishis@gmail.com>
+From: malware@t-online.de (Michael Mueller)
+Subject: Re: Matching IPSEC encapsulated traffic with connection tracking
+Date: Tue, 04 Jan 2005 10:16:33 +0100
+Message-ID: <41DA5EF1.7050306@t-online.de>
+References: <41DA5373.5080404@gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <558224e3050103150559aea7cc@mail.gmail.com>
+In-Reply-To: <41DA5373.5080404@gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,90 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.netfilter.org
 
-Sometimes knowing something about the protocol amy help. For example
-all ymessenger messages start with the string "YMSG" as a header in
-application payload. I believe you can use string match to detect such
-packets and drop them.
+Hi,
 
- iptables -A FORWARD -m string --string 'YMSG' -j DROP
+Robert Dahlem wrote:
+> The problem is to combine these two scenarios: make both netfilter and
+> IPSEC active at the same time.
+[...]
+> # SYN packet
+> HostA kernel: Debug INPUT:IN=eth1 OUT=
+>     MAC=00:0a:5e:4d:0f:12:00:0a:5e:4d:10:42:08:00
+>     SRC=10.133.127.197 DST=10.133.126.6
+>     LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=5559 DF
+>     PROTO=TCP SPT=1023 DPT=22 WINDOW=5840 RES=0x00 SYN URGP=0
 
-I haven't analysed any other IM protocol as of now, but i'm sure a
-little bit of googling will help ya out of the situation.
+This packet causes the problem because the encapsulated TCP (transport 
+mode) or IP packet (tunnel mode) is not inspected and due the connection 
+tracking does not know of.
 
-
-On Mon, 03 Jan 2005 17:05:06 -0500, Jason Opperisano <opie@817west.com> wrote:
-> On Mon, 2005-01-03 at 16:52, Jerry2A wrote:
-> > Hello - this is probably a dumb question....I'm using iptables for my
-> > home network (DSL) and I have masquerading, some port forwarding,
-> > etc., etc., and everything works great...EXCEPT....I have a situation
-> > where I occaisionally want to block outbound traffic from a certain
-> > host inside to a certain destination IP and/or port.  For example, I'd
-> > like to block one host from within my network from using Instant
-> > Messenger but still allow web surfing.  I've been able to dynamically
-> > block ALL outbound access to the internet but I'm unable to restrict
-> > access to certain destination ports.
-> >
-> > So this works:
-> > iptables -A INPUT -s 10.1.1.10 -j DROP
-> > iptables -A OUTPUT -d 10.1.1.10 -j DROP
-> > iptables -A FORWARD -d 10.1.1.10 -j DROP
-> >
-> > And I thought I could do something like this:
-> > iptables -A OUTPUT -s 10.1.1.10 -p tcp -m tcp --dport 5190 -j DROP
-> > iptables -A FORWARD -d 10.1.1.10 -p tcp -m tcp --dport 5190 -j DROP
-> > ....but it has no effect.
-> >
-> > I've tried different combinations of "-d and -s" and "--dport and
-> > --sport" just to see if I was doing something backwards....no dice.  I
-> > was wondering if I needed to set up some kind of pre or post routing
-> > because of the masquerading?
-> >
-> > Any help would be appreciated.
-> >
-> > Thanks!
-> >
-> > Jerry A.
->
-> first--NAT/MASQ has nothing to do with this--we're talking about
-> FILTER-ing here.
->
-> second--INPUT and OUTPUT have nothing to do with blocking Internet
-> access for a host behind a gateway--that is the domain of FORWARD.
->
-> third--whatever rule you use to block access from host 10.1.1.10 needs
-> to come *before* any rule that allows all traffic from network
-> 10.1.1.0/24 or from interface $inside.
->
-> finally:
->
->   iptables -I FORWARD -p tcp -s 10.1.1.10 --dport 5190 -j DROP
->
-> will insert a rule as the first rule in FORWARD that drops port 5190
-> traffic from 10.1.1.10.
->
-> keep in mind that blocking IM apps from connecting is often much more
-> complicated than dropping a single port, as they have a habit of
-> tunneling themselves through port 80.
->
-> -j
->
-> --
-> "I have thought this through. First, I will send Bart the money to
->  fly home. Then I will murder him."
->         --The Simpsons
->
->
+Robert, you may want to look into the mailing list archive of the 
+developer list (https://lists.netfilter.org/pipermail/netfilter-devel/) 
+and/or the current patch-o-matic. January last year there was a 
+discussion on the developer list with the topic "NAT before IPsec with 
+2.6" which caused  Harald Welte to produce a patch which may be of help 
+to you. I have no idea of the current state of this.
 
 
---
-cheers
-Ashish
-
-
--- 
-cheers
-Ashish
+Michael
 
