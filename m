@@ -1,14 +1,12 @@
-From: Alistair Tonner <Alistair@alistairt.ath.cx>
-Subject: Re: Iptables --owner-uid
-Date: Sat, 14 Sep 2002 10:14:19 -0400
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: Im stupid or its broken
+Date: Sun, 15 Sep 2002 12:00:47 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020914141419.GC24368@Ajftl1.ajfthome.on.ca>
-References: <39778BFB9C25BA429794B15B50AEC781045424@server-dcms>
+Message-ID: <3D845A4F.80308@fugmann.dhs.org>
+References: <200209131029.g8DATBQ32523@bergelmer.thn.htu.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <39778BFB9C25BA429794B15B50AEC781045424@server-dcms>; from DidierH@frci.net on Sat, Sep 14, 2002 at 07:53:29 -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,93 +16,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: Didier Hung Wan Luk <DidierH@frci.net>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mats Blomstrand <mats.blomstrand@htu.se>
+Cc: netfilter@lists.netfilter.org
 
+Mats Blomstrand wrote:
+> 
+>   root@wsk0 # iptables -t nat -A POSTROUTING -o eth0 \
+>               -s 192.168.0.0/24 -j SNAT --to-source 193.10.192.63
+> 
+> and the do
+> 
+>   root@wsk0 # echo 1 > /proc/sys/net/ipv4/ip_forward
+> 
+> it does what I want. Ie, i can ping from node to the outside
+> and the node can do nfs-mounts from master.
+> 
+> ** However!! If I reboot the node it can still ping to the outside
+> but it cant no longer do the nfs mount:
+This should work.
 
-	What I'm reading is that the process generating the packets
-	(for owner match to work) has to be a process running on the
-	box on which iptables firewall is running.  If the packets are
-	coming through the forward chain (i.e. from downstream pc's)
-	there is no way of matching UID (owner) as there is no owning
-	process generating the packet.  You might be better off matching
-	MAC addresses in this case ...
+Could you please verify that you can do NFS-mounts without the rules
+applied.
 
+Also, does the server logs (/var/log/messages) tell you anything of why 
+the node is not allowed to connect?
 
+ > PS: Versions ...
+ >   root@wsk0 # iptables --version
+ >   iptables v1.2.3
+ >   root@wsk0 # uname -sr
+ >   Linux 2.4.7-10smp
+ >   root@wsk0 #
+thats some old version there.
+I strongly suggest that you upgrade to kernel 2.4.19, and iptables >= 
+1.2.7. These version are filled with bugs. Upgrading might (though I 
+doubt it) help with the problem.
 
-On 2002.09.14 07:53 Didier Hung Wan Luk wrote:
-> I may be wrong but I am in confusion here..
-> If I am using Samba as a PDC and all my win clients are members of the
-> samba domain... are they not using the uid given by Samba? Which is
-> itself mapped to a unix user (id) then if this is the case it should
-> work is it not..??
-> 
-> 
-> 
-> Regards,
-> 
-> Didier Hung Wan Luk
-> FRCI, Sibotie House
-> L'Anse Courtois
-> Pailles
-> Tel: 230-2869636
-> Fax: 230-2869629
-> 
-> 
-> -----Original Message-----
-> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-> Sent: Saturday, September 14, 2002 3:22 PM
-> To: Netfilter Mailing List
-> Subject: Re: Iptables --owner-uid
-> 
-> On Saturday 14 September 2002 11:36 am, Didier Hung Wan Luk wrote:
-> 
-> > Hello All,
-> >
-> > I have a question about iptables with the --owner-uid option..
-> >
-> > Is it possible to create rules with iptables based on users?
-> >
-> > i.e can I say that user marry(uid=513) can telnet out but user
-> > John(uid=601) cannot?
-> 
-> Only if those users are telnetting out from your firewall machine
-> (which
-> implies they have accounts on it, and are logged in to it, which is
-> not a
-> recommended arrangement for a firewall).
-> 
-> > In the iptables man it is said that --owner-? (owner module) can
-> match
-> > characteristics of locally-generated packets only.. if this is the
-> case
-> > then I cannot use it in an environment where all my clients are
-> windows
-> > clients and the server is a Samba PDC with iptables. Am I right? Or
-> is
-> > there another way to do this?
-> 
-> You are correct.   --owner-uid only knows about the locally-owning
-> process,
-> therefore there is no meaningful owner match for forwarded packets.
-> 
-> There may be some way you can get Samba to link user ID to IP address,
-> and
-> then from there generate some netfilter rules to restrict what each
-> user can
-> do ?
-> 
-> Antony.
-> 
-> --
-> 
-> The first ninety percent of an engineering project takes ninety
-> percent
-> of the time, and the last ten percent takes the remaining ninety
-> percent.
-> 
-> 
-> 
+Regards
+Anders Fugmann
+
+--
+Author of FIAIF
+Fiaif Is An Intelligent Firewall
+http://fiaif.fugmann.dhs.org
+
 
 
