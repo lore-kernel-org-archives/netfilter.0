@@ -1,13 +1,9 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Dynamic DNS
-Date: Wed, 09 Mar 2005 12:03:03 +0100
-Message-ID: <1110366184.7542.24.camel@nostromo.bgsecm.com>
-References: <20050309062542.GA27660@gw.home.tux-labor.de>
-	<1110359242.7542.7.camel@nostromo.bgsecm.com>
-	<20050309103543.GU4657@metastasis.org.uk>
+From: Geert van der Ploeg <netfilter@geert.triple-it.nl>
+Subject: iptables-restore: commit not at end of table
+Date: Wed, 09 Mar 2005 12:43:02 +0100
+Message-ID: <422EE146.1070808@geert.triple-it.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20050309103543.GU4657@metastasis.org.uk>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,48 +14,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El mi=C3=A9, 09-03-2005 a las 10:35 +0000, Nick Drage escribi=C3=B3:
-> On Wed, Mar 09, 2005 at 10:07:22AM +0100, Jose Maria Lopez Hernandez wr=
-ote:
-> > El mi=C3=A9, 09-03-2005 a las 07:25 +0100, Sebastian Docktor escribi=C3=
-=B3:
->=20
-> > > I want to allow a Dynamic DNS Client to Access the SSH-Server on my
-> > > Firewall. But I don't want to open SSH for all IPs, Is it possible
-> > > that iptables always looks up the ip address from the hostname, so
-> > > that only the ip has access which is registrated under the dyndns?
-> >=20
-> > I don't understand your problem. If you know your IP you can block
-> > based on that IP.
->=20
-> The OP's problem is that the DNS will stay the same, say
-> hostname.dyndns.net, but that the IP address associated with that name
-> will change.  So as soon as the IP address changes, his rulebase is out
-> of date.
+Hi all,
 
-You are right. I didn't read the post well, I was thinking *he* was
-the one with the dynamic IP, now I see it's the client to his
-server who has it. That's a real problem, now I realize.
+After updating a firewall from iptables 1.2.7a to a later version, my
+ruleset doesn't work anymore.
+It fails on COMMIT-lines that are not at the end of a table definition.
+I used commits for cutting my (sometimes quite large) rulesets into
+smaller parts and make sure I always keep a working configuration, even
+if some rules fail.
 
-Sorry and regards.
-
---=20
-
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+For example:
+ - define management-access definitions (allow SSH from
+management-stations, etc)
+ - COMMIT
+ - define other rules that get changed a lot and thus have a larger
+chance of containing errors.
 
 
+Having looked at the source-code, I discovered that it is caused by some
+extra checks on 'in_table' (in iptables-restore.c), which got inserted
+between 1.2.7a and 1.2.8. The changelog doesn't say why.
+
+
+My questions:
+
+1. Does anybody know what was the reason for the extra checks?
+
+2. Is the effect of not-working-commits-in-middle-of-table-definition
+intended or not? If so, what was the intention?
+
+2. Did anybody use those commits like I did? And if so, how do you
+accomplish the same without this feature?
+
+3. Is this the right list to ask these questions or should they be asked
+on the developer-list?
+
+
+Thanks!
+
+Geert van der Ploeg
 
