@@ -1,40 +1,40 @@
-From: "Brandon Hall" <Jodious33@hotmail.com>
-Subject: Fw: random patch with 2.6 kernel?
-Date: Sun, 13 Feb 2005 02:44:29 -0600
-Message-ID: <BAY102-DAV7C13F81B5F47E104FE791AE690@phx.gbl>
+From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
+Subject: Re: [OT] New router with NIC (4-port HUB) recommandation
+Date: Sun, 13 Feb 2005 04:24:13 -0500
+Message-ID: <cun67s$ceg$1@sea.gmane.org>
+References: <20050213083054.GL16546@freenet.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
 List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: netfilter@lists.netfilter.org
+	<mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Errors-To: netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
 
- Subject: Re: random patch with 2.6 kernel?
+> I am installing a new Router and have some problems with the NIC's,
+> because I need to much  :-)
+> 
+> I have 4 ADSL-Modem Router (4 IP's, each 8 MBit/512 kBit) which I
+> like to connect to one (!) NIC. Because of lacking place for an
+> external HUB/Switch I like to buy a NIC with a 4-port-HUB inside.
+> 
+> Can anyone recommand such 100 MBit NIC ?
+> (I do not have very much money curently)
+
+I am currently using an Asound AL500P 4-port PCI hub.  It cost about $13 on
+pricewatch.  It has an ADMtek AN983B chipset, and runs with the tulip
+driver.  This is a dirt-cheap solution-- a single chipset serving a 4-port
+hub.  But it has been working just fine in our home LAN for most of a year
+now.  
+
+You may also want to ask on comp.os.linux.hardware.
 
 
- ok i'm feeling really dumb here guyz :)  i got the latest patch-o-matic
- patch, not 1.3 but the other from the netfilter site.  I'm beginning to
- think that this is still a bit out of my league.
- you said:
-
-> Where did you find it ? I hope you didn't get it there :
-> https://lists.netfilter.org/pipermail/netfilter-devel/2004-November/017491.html
-
- this link takes me to what?  from what the later posts say, do i need this
- link?  maybe a slightly revised?  if i cut and paste this, what do i put it
- in and where do i put it?  if it will simplify things i am totally willing
- to revert to the 2.4 kernel, its going to be a box under my desk
- anyway(doesn't have to be fast or pretty).  wont even have a monitor, i'm
- going to use ssh.  the only thing i need to do is get this script at the
- link working on my box with whatever means necessary
-
- http://linux.com.lb/wiki/index.pl?node=Load%20Balancing%20Across%20Multiple%20Links when i opened the link that you supplied i had no idea what i was seeing:(  it looks like a page i would have gotten when i ran patch-o-matic butthe rest was foreign.  if there isn't a decently easy way to do a randommatch with the 2.6 kernel then i'll scrap the idea and 2.4 it, if there iscan i get a walkthrough?  or am i just doing something really silly, trying to impliment "even" load balancing without buying hardware to do so. Thank you all for your patients with me over this time consuming subjectand any help from anyone to get this working on either a 2.4 or 2.6 kernelto balance my cable modem's will be GREATLY appreciated :)Brandon
 
