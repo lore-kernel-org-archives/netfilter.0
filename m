@@ -1,7 +1,7 @@
-From: Jason Opperisano <opie@817west.com>
+From: Les Mikesell <les@futuresource.com>
 Subject: Re: Saving IPTable rules..oops
-Date: Wed, 29 Dec 2004 15:29:07 -0500
-Message-ID: <1104352147.7318.73.camel@hubcap.ljm.dom>
+Date: Wed, 29 Dec 2004 14:30:39 -0600
+Message-ID: <1104352238.2940.29.camel@moola.futuresource.com>
 References: <Pine.LNX.4.05.10412291453001.27815-100000@darkstar.sysinfo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,39 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "R. DuFresne" <dufresne@sysinfo.com>
+Cc: Netfilter users list <netfilter@lists.netfilter.org>, "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
 
-On Wed, 2004-12-29 at 15:15, R. DuFresne wrote:
+On Wed, 2004-12-29 at 14:15, R. DuFresne wrote:
+
+> > The way I've typically seen it work is that the init.d/iptables script
+> > calls iptables-restore and passes it the /etc/sysconfig/iptables file. 
+> > This file is written when you do init.d/iptables save.
+> 
+> 
 > perhaps on redhat and debian, and maybe suse systems that have moved away
-> from the standard upon which linux was formed, namely bsd. 
+> from the standard upon which linux was formed, namely bsd.
 
-linux has no roots in *BSD.  linux uses the concepts of run levels;
-wheres *BSD does not.  run levels are a concept taken from System V
-style systems like Solaris 2.x+. 
+Linux is a kernel and it leans more in the sysV direction.  As I
+recall, the early versions supported termio.h, not sgtty.h before things
+converged to the posix termios.h
 
->  Those dists
+> Those dists
 > that retain their bsd layouts have no /etc/init.d directory, everything
-> lies under /etc/rc.d/.  They also lack the red-hat layout of a
-> /etc/sysconfig/ directory.  And it's a shame things are seperating out in
+> lies under /etc/rc.d/. 
+
+Retain?  Perhaps you mean 'were built separately', omitting the sysv
+init functionality?
+
+> And it's a shame things are seperating out in
 > the linux world like this as many of the tools and toys bewing created
 > either conform to the new redhat layouts or follow older established
-> standards.  Thus, some tools that have been coming out the past few years
-> are only good under redhat or debian or suse, and fail to function if they
-> compile at all, without being hacked prior to a make, and sometimes my
-> skills are not enough to hack them into compiling at all uunder a
-> different, more standard dist. <sigh>
+> standards.  
 
-the linux standards base is an attempt to address your concerns:
+SysV and bsd styles separated before Linux was invented. It's a shame
+they never converged and that bsd style distributions still don't have
+a decent way to start and stop services.
 
-  http://www.linuxbase.org/
+---
+  Les Mikesell
+   les@futuresource.com
 
-my guess is that the /etc/sysconfig/ concept will be part of it (if it's
-not already--i haven't read through the whole thing).
-
--j
-
---
-"Another day, another box of stolen pens."
-	--The Simpsons
 
 
