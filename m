@@ -1,13 +1,11 @@
-From: Mike Andersen <mike@src.no>
-Subject: Re: Idea: Check session source and destination
-Date: Thu, 29 Apr 2004 14:49:11 +0200
+From: "Maurizio Li Vigni" <servizispeciali@halleysicilia.it>
+Subject: Re: H.323 problem for newbie!
+Date: Thu, 29 Apr 2004 18:28:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9D157DFC-99DB-11D8-8B47-000A957FD99E@src.no>
-References: <Pine.LNX.4.44.0404271453370.23700-100000@filer.marasystems.com>
-Mime-Version: 1.0 (Apple Message framework v613)
+Message-ID: <HNEKIEMAEFLDPAFNPEBGEEECCAAA.servizispeciali@halleysicilia.it>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0404271453370.23700-100000@filer.marasystems.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +15,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: Netfilter Developers List <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Apr 27, 2004, at 15:00, Henrik Nordstrom wrote:
+Thanx for info, but i've already read this manual. If possible i'd like to
+have some configuration example of ip_conntrack_h323 and nat_conntrack_h323.
+I have another problem when compile with p-o-m the kernel, the following
+message results: xxxxx doesn't look like a kernel tree to me. My system use
+Redhat 9 with kernel version 2.4.20-31.9, the Source RPM installed in the
+directoy /usr/src/redhat/SOURCES but there isn't the Makefile. How resolve
+this problem ??
 
-> netfilter conntrack requires traffic to be successfully forwarded to
-> operate correctly. If you drop traffic then netfilter assumes that 
-> packet
-> was dropped and never forwarded.
->
-> If you are mirroring then you must never drop or reject any packets as
-> this will disturb the connection tracking, but you can make whatever 
-> other
-> decisions on the packets you like.
+Thank you for help
+(and sorry for my bad english)
 
-Ah.  This is a point where my assumptions has failed. :)
-
-So, when I can't use DROP in iptables, can I do it with ebtables 
-instead?  That is, is it possible to mark packets with iptables and 
-drop them with ebtables?  Something like this:
-
-iptables -t mangle -A PREROUTING -m conntrack --ctorigdst <int> -j 
-ACCEPT
-iptables -t mangle -A PREROUTING -j MARK --set-mark 1
-
-ebtables -t nat -A POSTROUTING --mark 1 -j DROP
-
-I know that this exact example does not work, but not why it fails.
-
-I'm starting to believe that what I want to achieve here is impossible 
-with iptables/ebtables, and any ideas on what I should try/explore 
-would me most welcome.
-
-mike
--- 
-"It is a lesson which all history teaches wise men, to put trust in
-  ideas, and not in circumstances."            --Ralph Waldo Emerson
+Maurizio Li Vigni
 
 
