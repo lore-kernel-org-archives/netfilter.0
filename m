@@ -1,8 +1,8 @@
-From: Jason Cook <jg0327@yahoo.com>
-Subject: Port Redirection with iptables
-Date: Tue, 16 Dec 2003 07:21:52 -0800 (PST)
+From: "Hurley, Michael" <MHurley@law.uconn.edu>
+Subject: logging to console
+Date: Tue, 16 Dec 2003 10:59:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031216152152.37192.qmail@web41114.mail.yahoo.com>
+Message-ID: <AD8D39C727CBD411BB2C0090273A727408F9ED49@mortimer.law.uconn.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,55 +16,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-Cc: cookj@dennis.capemayschools.com
+To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-I am trying to install Linux as a firewall and caching
-server with iptables and Linux.  I 
-need to do this transparently.
+Using iptables 1.2.8-8.72.3 on Red Hat Linux 7.3, kernel 2.4.20-20.7.
 
-I installed Red Hat Linux 9.  Ran all of the updates
-nice and smooth.  Turned on ip forwarding.  
-Configured Squid...and tested it by specifying the
-servers ip address and port 3128 from the 
-browser.  Works great.  Here the options I had changed
-in the config file.
+Haven't found a solution to this so far: iptables LOG is logging to console.
+This only occurs on the consoles directly connected to the machine. Logging
+in remotely does not have this problem.
 
-http_port 3128
-http_access deny to_localhost
-acl our_networks src 10.0.0.0/8
-http_access allow our_networks
-httpd_accel_host virtual
-httpd_accel_port 80
-httpd_accel_with_proxy on
-httpd_accel_uses_host_header on
+Here's what I've tried so far, w/o success:
+set log-level to notice, added kern.=notice /var/log/firewall to
+syslog.conf, restarted syslogd.
+set log-level to warning, added kern.=warning /var/log/firewall to
+syslog.conf, restarted syslogd.
 
-For iptables I used 
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
-80 -j REDIRECT --to-port 3128
+Still keeps on logging to local consoles. (BTW, kern.* is not accounted for
+in syslog.conf).
 
-I then try to browse the internet from a client
-through the firewall and nothing.
+I haven't tried setting the printk values yet (at present, the values are 6
+4 1 7)--unsure of what the consequences might be of tinkering with that.
 
-When I run iptables -t nat -nv -L
-
-Chain PREROUTING (policy ACCEPT 31254 packets, 3971K
-bytes)
- pkts bytes target     prot opt in     out     source 
-             destination
-    0     0 REDIRECT   tcp  --  eth1   *      
-0.0.0.0/0            0.0.0.0/0          tcp dpt:80
-redir ports 3128
-
-PREROUTING is accepting packets...but none are
-processes by the redirect rule.
+What is the best way to stop this irritating behavior? Thanks,
 
 
-I've been pulling my hair out for about a week.  Can
-anyone help?  
-
-__________________________________
-Do you Yahoo!?
-New Yahoo! Photos - easier uploading and sharing.
-http://photos.yahoo.com/
+Michael Hurley
+mhurley@law.uconn.edu 
 
