@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Max Concurrent Session
-Date: Fri, 10 Dec 2004 16:45:25 -0500
-Message-ID: <1102715125.3135.102.camel@hubcap.ljm.dom>
-References: <1102705899.4516.50.camel@JOKER.INFOWORLD.CL>
+From: Federico Lucifredi <flucifredi@acm.org>
+Subject: RE: is this 1969 ? Are we on the moon yet?
+Date: Fri, 10 Dec 2004 17:13:55 -0500
+Message-ID: <41BA1FA3.7000709@acm.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1102705899.4516.50.camel@JOKER.INFOWORLD.CL>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-12-10 at 14:11, Miguel Angel Amador L wrote:
-> Hi All
->  I need implement a firewall that support 2000 concurrent sessions, it
-> is posible with Iptables/Netfiler ?? 
->  What need to do?
+Hello List,
 
-depending on your architecture and netfilter kernel options--each
-conntrack entry will take up somewhere around 300 bytes.  on my specific
-machine here--it's 332 bytes per conntrack.  another machine i have
-(with more POM patches applied), that value is 360 bytes.  let's be safe
-and assume each conntrack entry takes 400 bytes.
+>Message: 10
+>Date: Fri, 10 Dec 2004 22:22:35 +0100
+>From: "Rob Sterenborg" <rob@sterenborg.info>
+>Subject: RE: is this 1969 ? Are we on the moon yet?
+>To: <netfilter@lists.netfilter.org>
+>Message-ID: <20041210212225.15F772F433@kshira.sterenborg.info>
+>Content-Type: text/plain;	charset="US-ASCII"
+>
+>netfilter-bounces@lists.netfilter.org wrote:
+>  
+>
+>>> err, Why oh Why is all netfilter mail coming from 1969 ? Is
+>>> Doug Engelbart in charge of this project ?
+>>    
+>>
+>
+>Uh.. Not here it isn't.
+>
+>
+>Gr,
+>Rob
+>  
+>
+Well.... here the clock is set to Dec 10th, 2004. Why are all my digests 
+coming from 1969? don't tell me its the timezone =)
 
-400 * 2000 = 800000 bytes = 781 kilobytes
+-Federico
 
-so you would need 781 kb of non-pageable kernel memory available for
-iptables connection tracking.
+ 
+_________________________________________
+-- "'Problem' is a bleak word for challenge" - Richard Fish
 
-normally, ip_conntrack_max is set to:
-
-$TOTAL_RAM_IN_BYTES / 16384 = ip_conntrack_max
-
-the minimum value this auto-calculation will use 128 and the max is
-65536.
-
-so to support 2000 tracked connections--you would need at least:
-
-2000 * 16384 = 32 MB
-
-the point of all this is that the breaking point in your case is not the
-number of simultaneous connections--how much bandwidth are those 2000
-connections going to be pushing through this firewall?  1.544 Mbps?  100
-Mbps?  1 Gbps?
-
--j
-
-PS -- all these calculations are for i386 architecture only.
-
---
-"I have thought this through. First, I will send Bart the money to
- fly home. Then I will murder him."
-	--The Simpsons
-
+Muad'Dib of Caladan (Federico L. Lucifredi)- Harvard University & BU
+http://metcs.bu.edu/~lucifred
 
 
