@@ -1,13 +1,12 @@
-From: "freedom" <freedom10@idemation.com>
-Subject: RE: firewall failover / cluster
-Date: Thu, 19 Dec 2002 22:21:40 -0600
+From: Vincent Lim <vincent.lim@nestac.com>
+Subject: Re: How to  load these modules?
+Date: Fri, 20 Dec 2002 15:32:49 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000301c2a7df$4d60cb90$0501020a@compname3>
-References: <3E028951.8090800@gmx.ch>
+Message-ID: <3E02C7A1.1446C5B5@nestac.com>
+References: <20021220032315.3B1701D110BCC@sm181.163.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E028951.8090800@gmx.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Hauser Marcel' <marcel_hauser@gmx.ch>, netfilter@lists.netfilter.org
+To: bobo <boboaq@163.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>, "bobowd@sohu.com" <bobowd@sohu.com>
 
-Partially along this same subject, I am curious what is currently being
-used in a fault tolerant AND load-balanced iptables configuration.
-Perhaps a better question...is anybody using iptables in a HA, Load
-balancing scenario?
+bobo wrote:
+> 
+>      Hello  all:
+> 
+>            While I am studying iptables,I read such contents from a tutorial as bellow:
+> 
+>   "the rc.firewall.txt neede the following options to be compiled to kernel or as modules..
+> 
+>   .CONFIG_PACKET
+>   .CONFIG_NETFILTER
+>   .CONFIG_IP_NF_CONNTRACK
+> ..........
+> 
+>    I find some moudles of REDHAT 7.2 in /lib/modules/2.4.7-10/kernel/net/ipv4/netfilter,
+>  but the modules'name are not the same as the above.  There are about 20 modules in the directory.
+> 
+>   Why?
+> 
+>   How could I do?   How could I get these modules?
 
-Thanks!
-Kameron
+I did a check on /usr/src/linux/net/ipv4/netfilter/Makefile and found
+the following line:
+obj-$(CONFIG_IP_NF_CONNTRACK) += ip_conntrack.o
 
+This (I think) means that if "CONFIG...." is selected, then the module
+that corresponds to this selection is ip_conntrack.o
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org [mailto:netfilter-
-> admin@lists.netfilter.org] On Behalf Of Hauser Marcel
-> Sent: Thursday, December 19, 2002 9:07 PM
-> To: netfilter@lists.netfilter.org
-> Subject: firewall failover / cluster
-> 
-> hi all
-> 
-> What are you guys using in order to provide a fault toleranced
-iptables
-> firewall (master / slave ?)
-> 
-> Cheers Marcel
-> 
-> 
-> 
+then in /usr/src/linux/net/Makefile
 
+subdir-$(CONFIG_NETFILTER)  += ipv4/netfilter
 
+I think this meant that all modules in ipv4/netfilter would be needed
+for that selection.
+
+-- 
+Vincent Lim
+Software Engineer
+NESTAC Solution Sdn Bhd
+vincent.lim@nestac.com | +(6012) 659-6609
 
