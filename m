@@ -1,13 +1,10 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: netfilter resets TCP conversation that was DNATed from the local machine to another
-Date: Sun, 29 Jun 2003 23:55:25 +0200
+From: Greg Stark <gsstark@mit.edu>
+Subject: Masquerading connections terminated inside on both ends
+Date: 29 Jun 2003 17:59:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030629235525.216360cb.arnt@c2i.net>
-References: <3EFD10A2.6020807@adsl-209-204-165-151.sonic.net>
+Message-ID: <87k7b44kb7.fsf@stark.dyndns.tv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EFD10A2.6020807@adsl-209-204-165-151.sonic.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +15,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, 27 Jun 2003 20:50:58 -0700, 
-Michael <freeware@adsl-209-204-165-151.sonic.net> wrote in message 
-<3EFD10A2.6020807@adsl-209-204-165-151.sonic.net>:
 
-> Dear netfilter gods,
-> 
-> I have a configuration, so:
-> 
-> /------------\ .0.2     .{0,1}.1 /----------\ 1.2.3.4  (          )
-> | Web server |-----+-------------| firewall |---------(  Internet  )
-> \------------/     |        eth0 |  Squid   | eth1     (          )
->                     |             \----------/
-> /---------\ .1.2   |
-> | browser |--------/
-> \---------/
-> 
-> - The 192.168.{0,1}. subnets run on the same wire.
+I imagine this is a FAQ but I haven't seen it discussed. I have a server and a
+client machine both on the inside of my masquerading router. I can access the
+server from the outside fine, and i can access the internet fine from the
+client. But I'm not clear how to arrange things so I can reach the server from
+the client. 
 
-..with what subnet?  /23 oughtta work.
+Right now I have an entry in /etc/hosts to reach the server at its internal IP
+address. However this isn't idea because then every client machine needs this
+configuration or needs to use internal dns servers, and because then the
+server needs to be specially configured and might not behave exactly the same
+was in testing as it will from the outside.
+
+My outside ip address is on the ppp0 interface. The server address is on eth1.
+The client address is currently on eth1 as well but will eventually be on
+eth2.
+
+If I use masquerading rules based on the interface, which I prefer because it
+seems simpler and less prone to abuse, then the machine doesn't even try to
+NAT the packets since they're not coming in from ppp0.
+
+If I write the rules to masquerade anything with a destination address of my
+external ip address then it tries to DNAT the packets which is great, except
+it doesn't do SNAT as well so the source address is still the internal address
+on which interface the machine isn't expecting packets.
+
+So I guess what I want the router to do for such connections is to do both
+SNAT and DNAT. It should rewrite the packets coming from the client->router to
+be from router->server and the return packets to be from router->client.
+
+Is this even possible? What would the rules look like? 
+
+It seems this is a common situation. Does everyone just special case their
+internal machines to use the internal addresses of their servers? It seems I
+would want to use the internal address for privileged connections, but use the
+external address for accessing normal externally accessible services to be
+sure that I'm getting the same behaviour someone outside would see.
 
 -- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+greg
 
 
