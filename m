@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Output Chain Problem...
-Date: Fri, 18 Jun 2004 14:02:51 +0100
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: icq
+Date: Fri, 18 Jun 2004 06:15:41 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406181402.51862.Antony@Soft-Solutions.co.uk>
-References: <005d01c45531$f6f4bfd0$800101df@lvl.digidyne.ca>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D472860@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005d01c45531$f6f4bfd0$800101df@lvl.digidyne.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,74 +15,80 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Alistair Tonner' <Alistair@nerdnet.ca>, netfilter@lists.netfilter.org
+
+A,
+
+	you just dont get it...
+
+	the access itself is risky for an enterprise.
+
+	small home lans are not relevant in this conversation.
+
+	the setup for rpc mimics some of the port nonsense that
+rpc/portmapper
+	type of architectures is the problem.
+
+	the client-2-client interface is the security problem in and of
+itself.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Alistair Tonner
+Sent: Wednesday, June 16, 2004 7:26 PM
 To: netfilter@lists.netfilter.org
+Subject: Re: icq
 
-On Friday 18 June 2004 1:44 pm, Eric Poulin wrote:
 
-> Good Day,
+On June 16, 2004 05:03 pm, Hudson Delbert J Contr 61 CS/SCBN wrote:
+> the rpc like tendencies of icq make it not worth the trouble to manage
+> access to/from it.
 >
->     I'm trying to harden a bit my firewall, who as been working perfectly
-> in the last 2 years. However, on of the chain I have never played with was
-> the OUTPUT chain. I never though that there could be a security breach with
-> the Default policy set to "ACCEPT" on it, but it goes against security
-> "best practices".
+> ~piranha
+
+	? rpc like ? 
+
+> Not sure about recent versions, but with old versions you could only do
+> simple things like messaging when using NAT only.
+> If you wanted to do things like chat and/or filetransfer, you needed a
+> socks server. I guess this still holds.
+> NEC had a free socks5 server for *nix once, but stopped providing it.
+> It's now Permeo's (www.permeo.com) but AFAIK not free any more. If you
+> need it ; there's a source version on rpmfind.net.
 >
->     Now, packet flow through a chain from top to bottom, and will hit the
-> Default Policy if no rules are match... My first test was to put those
-> rules in my output chain(That was completly empty before).
+	
+	Although there are already some answers here, the extended
+attributes
+	for icq can be managed in a small home lan situation by properly
+configuring
+	the clients (set the ports on which connections can be recieved to a
+
+	different specific range per client) and then forward the
+appropriate range
+	of  ports per client from the firewall.  In my case at home, I have
+three
+	internal clients that are permanently forwarded.  You can't filter
+on source
+	address as icq -> icq transfers are client to client.  For standard
+chatting 
+	however, nothing need be done save the initial connection out to 
+	login.icq.com and an established related rule.  Some folks might
+find that
+	they have to send the initial message through the servers (window
+clients 
+	auto fallback to this state, licq has to be told to do it) but after
+the 
+	first message out from behind the firewall, if the
+ESTABLISHED,RELATED rule
+	is in place, chat messages work just fine.
+
+	Alistair Tonner.
+
+
+
 >
-> iptables -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
-> iptables -A OUTPUT -p ALL -s 192.168.0.0/24 -j ACCEPT
-> iptables -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-
-That second rule suggests to me that you are slightly mistaken about what 
-packets go through the OUTPUT chain - you have allowed all packets sourced 
-from an entire Class C, so I suspect you think that all packets from your 
-local network, which pass through the Firewall, are traversing the OUTPUT 
-chain?
-
-In fact, the only packets which go through OUTPUT are those originating on the 
-machine itself - any which are being routed through it go through FORWARD 
-instead (and they don't go through INPUT, either...).
-
->     After this, I did try to set the Default policy to drop... Strangely, I
-> lost my ssh connection(but as expected, all my NAT rules continued to work
-> perfectly).
-
-Do you mean for connections which were already in place (ESTABLISHED), or new 
-ones which you set up after changing the rules?   Bear in mind that existing 
-connections will largely be handled in the background, rather than by your 
-ruleset - most rules only apply to the first packets of new connections.
-
-> So I changed the policy to accept again, and decided to log
-> every packet hitting the bottom of the chain(Without results, so I have
-> added a general ACCEPT rule for testing):
 >
->     To my surprise, nothing seems to hit my LOG rule, and even the overall
-> ACCEPT rule... But again, as soon as I change the default policy to DROP, I
-> can't communicate with the box.
-
-And when that happens, do you get any packets LOGged before being DROPped?
-
-I'm not too surprised nothing gets logged when it's working (as I explained 
-above, those will probably be established connections), however I *would* 
-expect something to get logged when you cannot connect.   Basically, you want 
-to log when there's a problem, not when it's working fine :)
-
-Regards,
-
-Antony.
-
--- 
-In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-the mechanics are German, the lovers are French, the entertainment is 
-American, and everything is organised by the Swiss.
-
-In Hell, the police are German, the chefs are British, the beer is American, 
-the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-and everything is organised by the Italians.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+> Gr,
+> Rob
 
