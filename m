@@ -1,12 +1,13 @@
-From: "Chip Shabazian" <chip@shabazian.com>
-Subject: QOS/TC
-Date: Fri, 4 Jul 2003 15:08:23 -0700
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Source IP ADDRESS
+Date: Sat, 5 Jul 2003 12:53:37 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BA12368A8F510340A0CD3D5A7D42A37C04739F@mail.zeus.shabazian.com>
+Message-ID: <FDEMKKNJDLAJDPNDPCDDKEAINFAA.georgev@citadelcomputer.com.au>
+References: <20030704162814.28056.qmail@web41504.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20030704162814.28056.qmail@web41504.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +18,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Bissio <bissio2000@yahoo.it>, netfilter@lists.netfilter.org
+
+Because the software your using is telling the server your connected to what
+your IP is. Much like FTP does and ICQ etc..etc.. which is why special
+connection tracking modules are required for those services.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Bissio
+Sent: Saturday, July 05, 2003 2:28 AM
 To: netfilter@lists.netfilter.org
+Subject: Source IP ADDRESS
 
-I'm hoping to get some help regarding bandwidth restriction.  Basically,
-I have a system that is functioning as a router/firewall at a colo site.
-It's got 10 ethernet interfaces in it so that I could give each person
-their own subnet.  I'm fine with the routing and firewalling, but I want
-to be able to restrict certain people to various levels of throughput
-since I have to pay when we go over our 1Mb cap.  From what I've been
-able to determine, I need to use tc to setup qdisc's, but I have not
-been able to find any good references either online or in print that
-will explain clearly to someone who doesn't understand these tools how
-to setup these queues.  I will probably put something together for
-reference if anyone can help me understand these tools.
 
-=20
+Hi all,
 
-What would be really nice, is if someone could give me the commands to
-setup these queues, and explain what each item in the command is.  I
-realize this is a lot of work, but I'll gladly take any help I can get,
-and give back to the community what I am able to come up with.
+I've a problem with masq... sometimes when i connect
+to pubblic chat or other web services from my lan, i
+see my source ip address (private network) listed. I
+would see my pubblic ip address listed... i use this
+rule:
 
-=20
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o
+eth1 -j SNAT --to public.ip.address
 
-If this is NOT the right list for this question, please don't send
-flames my way.  A pointer to where I should go would be appreciated.
+and in FORWARD rule:
 
-=20
+iptables -A FORWARD -p tcp -i eth0 -o eth1 -s
+192.168.0.0/24 --dport 1:1023 -j ACCEPT
 
-Thanks,
+iptables -A FORWARD -p tcp -i eth1 -o eth0 -d
+192.168.0.0/24 --dport 1024:65535 ! --syn -j ACCEPT
 
-=20
+Why my private ip addres (192.168.0.10) is listed
+instead my public address???
 
-Chip
+Thanks
+Bissio
+
+
+______________________________________________________________________
+Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus,
+il filtro Anti-spam
+http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/
+
 
 
