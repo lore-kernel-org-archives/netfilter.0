@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: wireless security
-Date: Thu, 10 Jun 2004 14:28:46 +0100
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: Expanation needed for Connection Tracking with NAT One-Way
+Date: Thu, 10 Jun 2004 08:32:30 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406101428.46072.Antony@Soft-Solutions.co.uk>
-References: <0b5b01c44ee2$f2e7cef0$49caa8c0@caris.priv>
-Reply-To: "netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <40C862EE.6010304@pbl.ca>
+References: <40C3B3E9@webmail.wichita.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0b5b01c44ee2$f2e7cef0$49caa8c0@caris.priv>
+In-Reply-To: <40C3B3E9@webmail.wichita.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,58 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Tish Best <tish.best@wichita.edu>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 10 June 2004 1:03 pm, Peter Marshall wrote:
+Tish Best wrote:
+> I am able to see the first TCP SYN packet travel from A through B to D.  At 
+> this point Router B has an ip_conntrack entry from A to D.  I then see the 
+> reply travel from D to C.  C successfully performs NAT translation, and the 
+> packet is sent to Router B with a source of C and a destination of B.  I added 
+> logging to the iptables entries in Router B, and I see the packet get 
+> translated in both the PREROUTING and the POSTROUTING tables, but the packet 
+> is never sent.  I never see a new conntrack entry for this packet.
 
-> Hi guys,
->
-> I am sure someone has been faced with this problem, and I was just
-> wondering what the possible solutions are.  A city wide free wireless
-> network has just expanded to cover the area encompassing our building.  The
-> provider of this is also the provider of our Internet (via fiber).  It was
-> decided that it would be advantageous for some of our employees to be able
-> to use this wireless network when we bring in clients etc.  This of course
-> opens a large possibility of problems concerning crap getting onto our
-> network (especially if they are connected to wireless and plugged into the
-> network).
->
-> We have made it a policy that a personal firewall be installed on all
-> firewalls, and that at no time is a wireless card to be plugged into a
-> laptop while connected to our LAN.  This of course does not do much for
-> internal cards ....
->
-> Is there anyway at all that I can firewall this ?  Or is there a way o
-> prevent the two networks from being active at the same time .. I am at a
-> bit of a loss here.
+Sounds logical to me that you don't see new conntrack entry for return 
+packet.  B never saw SYN sent with IP src B and dst C, so it can't 
+relate the return packet with IP src C and dst B to anything.  I don't 
+think connection tracking works at all with asymentric routing.  My 
+guess is that return packet would end up in INVALID state (try logging 
+"-m state --state INVALID", I guess you'll see it there).
 
-A firewall can only filter traffic which passes through it.   Therefore if you 
-are worried about traffic from someone else's wireless client, routing 
-through a wireless client on your premises, and thence getting in to your 
-wired network, your firewall (currently positioned, I would guess, between 
-your wired network and your Internet link) can do nothing to stop such 
-traffic.   It doesn't come in to your network through the firewall, so the 
-firewall can't stop it.
-
-If you do enforce a policy that no machine is allowed to have simultaneous 
-connections to the wireless and wired networks, as well as having a firewall 
-on each wireless machine, you shouldn't have a problem, however I'd still 
-think about putting an IDS of some sort (such as Snort) onto your internal 
-network as a way of keeping an eye on any strange traffic which does turn up.
-
-Regards,
-
-Antony.
+Theoretically, connection tracking could work for asymentric routing, 
+but it would require B and C exchanging information about states of 
+connections (which is not possible with iptables, and I don't know of 
+any product that has this functionality), and they would have to have 
+insight of each others configuration (which they don't).
 
 -- 
-"It would appear we have reached the limits of what it is possible to achieve 
-with computer technology, although one should be careful with such 
-statements; they tend to sound pretty silly in five years."
-
- - John von Neumann (1949)
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
