@@ -1,12 +1,13 @@
-From: Mike McLean <libolt@libolt.net>
-Subject: Continuing Tribes 2 problems with NAT
-Date: Fri, 21 Nov 2003 12:42:05 -0700
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: iptables for ADSL
+Date: Fri, 21 Nov 2003 15:47:07 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311211242.05614.libolt@libolt.net>
+Message-ID: <20031121204707.GA24283@cannon.eng.us.uu.net>
+References: <02b601c3b065$30bf3a50$0200a8c0@ale>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <02b601c3b065$30bf3a50$0200a8c0@ale>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,70 +18,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Alejandro Cabrera Obed <sisdis@tournet.com.ar>
+Cc: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-Hi,
+On Fri, Nov 21, 2003 at 04:25:06PM -0300, Alejandro Cabrera Obed wrote:
 
-I have a tribes 2 server behind an iptables NAT system.  I have forwared the 
-ports for Tribes 2 to the server.  It connects to the master server and show 
-sup in the servers list.  However it shows up with it's internal IP address, 
-not the public IP the network connects to the internet with.  This seems to 
-cause problems for those outside the lan trying to connect to the server.
+> Hi people !!!
+> 
+> I have a basic doubt: I want to connect my Linux with iptables to Intrenet
+> via ADSL. Just one question:
+> 
+> Do I have to set
+> echo "1" > /proc/sys/net/ipv4/ip_dynadrr
+> in order to work with dynamic addresses asigned by my ISP ????
 
-Below I have listed my iptables rules set.  Any help is appreciated:
+Take a look at Documentation/networking/ip_dynaddr.txt of your
+kernel source tree.
 
-iptables -F
-iptables -F INPUT
-iptables -F OUTPUT
-iptables -F FORWARD
-iptables -F -t mangle
-iptables -F -t nat
-iptables -X
+In short you do not need this.
 
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+Ramin
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 37373 -j DNAT --to 
-192.168.0.1:37373
-
-# Tribes 2 ports forwarded
-iptables -t nat -A PREROUTING -i eth0 -p udp --dport 27999 -j DNAT --to 
-192.168.0.7:27999
-
-iptables -t nat -A PREROUTING -i eth0 -p udp --dport 28000 -j DNAT --to 
-192.168.0.7:28000
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 28000 -j DNAT --to 
-192.168.0.7:28000
-iptables -A FORWARD -i eth0 -o eth1 -p udp -d 192.168.0.7 --dport 28000 -j 
-ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 192.168.0.7 --dport 28000 -j 
-ACCEPT
-
-iptables -t nat -A PREROUTING -i eth0 -p udp --dport 28001 -j DNAT --to 
-192.168.0.7:28001
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 28001 -j DNAT --to 
-192.168.0.7:28001
-iptables -A FORWARD -i eth0 -o eth1 -p udp -d 192.168.0.7 --dport 28001 -j 
-ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 192.168.0.7 --dport 28001 -j 
-ACCEPT
-
-iptables -t nat -A PREROUTING -i eth0 -p udp --dport 28001:29000 -j DNAT --to 
-192.168.0.7:28001-
-29000
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15101 -j DNAT --to 
-192.168.0.7:15101
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15104 -j DNAT --to 
-192.168.0.7:15104
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15024 -j DNAT --to 
-192.168.0.7:15024
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15206 -j DNAT --to 
-192.168.0.7:15206
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 15800 -j DNAT --to 
-192.168.0.7:15800
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-
-Mike
-
+> 
+> Thanks a lot
+> 
+> Ale
+> 
 
