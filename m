@@ -1,13 +1,13 @@
-From: Frank Smith <fsmith@hoovers.com>
-Subject: Re: Connection Rate Limiting
-Date: Thu, 15 May 2003 11:31:24 -0500
+From: "P.Italiaander" <pc-secure@home.nl>
+Subject: Re: NOT acceptable "/etc/sysconfig/network-scripts/ifup" script !!!
+Date: Thu, 15 May 2003 17:42:26 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <43210000.1053016283@hoovers-59.hoovers.com>
-References: <Pine.GSO.4.44.0305150852190.7322-100000@dudester.spoontail.com>
+Message-ID: <200305151742.26913.pc-secure@home.nl>
+References: <200305142155.31623.pc-secure@home.nl> <200305150215.56631.pc-secure@home.nl> <20030515145236.7044bbf1.arnt@c2i.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.44.0305150852190.7322-100000@dudester.spoontail.com>
+In-Reply-To: <20030515145236.7044bbf1.arnt@c2i.net>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,50 +18,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Daniel David Benson <dan@spoontail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-I use this to rate-limit spiders:
+Op donderdag 15 mei 2003 14:52, schreef Arnt Karlsen:
 
-iptables -A FORWARD -p tcp -s xxx.xxx.xxx.xxx --dport 80 -m limit --limit 20/m -j ACCEPT
+> ..I know, ipup _is_ buggy, my hint was more on Red Hats somewhat
+> sloppy QA attitude.  I mean, if I should _not_ use RH9 to route
+> traffic, I would like to know _that_ from the docs.
+>
+> ..does Mandrake or Debian turn their rear end onto _whoever_ like RH-9
+> does in https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=89171 ???
 
-Frank
 
---On Thursday, May 15, 2003 08:58:25 -0700 Daniel David Benson <dan@spoontail.com> wrote:
+I've checked , but Mandrake 9.1 is not effected with that bug.
+Thanks for mention it. 
+On Debian i don't know  ,don't have it , i use OpenBSD en Linux SuSe , Redhat 
+,Mandrake.
 
->
-> Hopefully this one hasn't been answered before.  We need to rate
-> limit on a per source IP address to port 80.  We are seeing certain
-> web servers suffer from resource starvation under a DDOS attack.
-> The solution to this problem is rate limit the number of
-> connections any source IP address can make.  Is this possible
-> to do with iptables?  I have searched just about everything and
-> I can't seem to find anything.  I know I can do traffic shaping
-> with iproute2, but I don't think that is the direction I want
-> to take.
->
-> I know there is -limit in iptables, but unless I don't clearly
-> understand the implementation this limit is matched against
-> the resource and not on a per source.  So, you have 5 source
-> IPs comming in with requests all of which effect the counters
-> global instead of each source having their own counter.
->
-> We have tried mod_throttle for apache...but that crashes quite
-> a bit as the tables grow.  Plus. I want to stop the attacks
-> before the apache level.
->
-> Any help on this would be greatly appreciated.
->
-> Thanks!
->
-> -Dan
->
->
+Does anyone have tested yet,  my patched /sbin/ifup file, for iptables-script 
+??
+
+Pascal
 
 
 
---
-Frank Smith                                             fsmith@hoovers.com
-Systems Administrator                                  Voice: 512-374-4673
-Hoover's Online                                          Fax: 512-374-4501
+
 
