@@ -1,13 +1,12 @@
-From: <g_netfilter@netfids.com>
-Subject: RE: H/A
-Date: Sun, 25 May 2003 22:49:56 -0500 (CDT)
+From: "Voltaire Pascual" <voltaire@voltaire.servebeer.com>
+Subject: help: ip_nat_pptp/ip_nat_conntrack
+Date: Mon, 26 May 2003 12:55:43 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <30325.200.48.226.214.1053920996.squirrel@www.netfids.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CD8@wardrive.citadelcomputer.com.au>
+Message-ID: <019b01c32343$10866510$6400a8c0@homes>
+References: <2CE951F1A7DC0644A33B9F763D2029C0016FB0E4@mail.it.farmingdale.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CD8@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,53 +19,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-And.. what about:
+Hi there,
 
-http://www.keepalived.org/
+do you know where to find ip_nat_pptp/ip_conntrack_pptp  patches for kernel
+2.4.20? I tried searching in google but didn't find any good guide for
+newbie. The reason why im doing this is to allow my private network to
+connect to the VPN simultaneously.
 
-Im getting confused...
+I have these files installed but can I ask your help how to install these as
+modules?
 
-George, please if you are running a H/A cluster, please could you give me
-more information about your configuration? or recomended configuration?
+"/usr/src/linux-2.4.20/net/ipv4/netfilter"
+ip_nat_pptp.c
+ip_conntrack_pptp.c
 
-Thanks in advance.
+I cant find "pptp connection tracking" support in "make
+menuconfig/Networking Options/Netfilter Configuration"
 
-Geffrey
+Appreciate your help.
 
-
-> High Availability linux
->
-> http://www.linux-ha.org/
->
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
->
-> Citadel Computer Systems Pty Ltd
-> http://www.citadelcomputer.com.au
->
-> Phone   : +61 2 9955 2644
-> HelpDesk: +61 2 9955 2698
->
->
-> -----Original Message-----
-> From: g_netfilter@netfids.com [mailto:g_netfilter@netfids.com]
-> Sent: Monday, May 26, 2003 12:45 PM
-> To: netfilter@lists.netfilter.org
-> Subject: H/A
->
->
-> Hi friends, I have some boxes running iptables and i works well. But
-> now I need to configure a failover solution, please could you give me
-> some links to start reading? I need to consider Netfilter/Iptables and
-> FreeSwan in the same box and with a failover configuration.
->
-> Thanks in advance.
->
-> Geffrey.
-
-
+/TIA.
+VP.
 
 
