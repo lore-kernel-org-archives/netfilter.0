@@ -1,12 +1,13 @@
-From: "Jesse W. Asher" <jasher1@tampabay.rr.com>
-Subject: Re: The posting of HTML format messages to this List!!!!
-Date: Tue, 11 Jun 2002 07:13:40 -0400
+From: Jose Celestino <japc@co.sapo.pt>
+Subject: Re: nslookup vs. dig
+Date: Tue, 11 Jun 2002 12:12:11 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D05DB64.20702@tampabay.rr.com>
-References: <3D053986.8010303@ozemail.com.au>
+Message-ID: <20020611111210.GA16001@co.sapo.pt>
+References: <Pine.LNX.4.04.10206041555420.15358-100000@lysa> <Pine.LNX.4.04.10206041600230.15358-100000@lysa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.04.10206041600230.15358-100000@lysa>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,54 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
+Words by Michael Montero [Tue, Jun 04, 2002 at 04:02:25PM -0400]:
+> However, I'm not sure why digging domains would work consistently all the
+> time then suddenly trigger nslookup to work.  To prove it's not some type
+> of caching I'll nslookup a domain and get temporary failure in name
+> resolution.  Then I'll dig a completely different domain and get results
+> successfully.  Then I will return to nslookup the first domain....which I
+> did not lookup using dig.  And it resolves.  Everything thereafter
+> resolves fine.
+> 
+> If however, I then do:
+> 
+> nslookup
+> 
+> server [any name server]
+> some.domain.com
+> 
+> It fails....times out.  All the time.  I'm assuming my rules are blocking
+> this.  I'm just not sure how.....how the dig utility differs from
+> nslookup.
+> 
 
-And why should people continue to use an older paradigm rather than 
-using a newer one?  Are you suggesting that perhaps we should all go 
-back to using ASCII editors instead of word processors?
+Dig doesn't try to resolve the reverse for the dns server and fail if it
+can't. Check it out.
 
-My response to this is instead of asking everyone else to limit 
-themselves perhaps you should either upgrade your mail reader to one 
-that handles HTML or come to the conclusion that the rest of the world 
-would prefer to live in a richer email environment and learn to live 
-with it.  HTML in email is here to stay and, I for one, will not go back.
-
-Michael wrote:
-
-> Hi,
->
-> I am mainly a lurker, I just read posts to keep abreast of iptables 
-> /netfilter...
->
-> BUT Am getting increasingly irritated by people posting HTML encoded 
-> messages to this list. I am sure I am not alone.
->
-> Since I have subscribed to the daily "message digest", I get summaries 
-> of the traffic. Any HTML encoded messages makes a short message three 
-> times as long, with html JUNK all through the digest.
->
-> I used to just filter out any email with html tags in it-- anyone that 
-> sends me html encoded messgaes is usually either a spammer or someone 
-> I don't want to hear from anyway....If I left it filtered then I'd 
-> receive 1 out of 5 netfilter message digests....because of the html.
->
-> If anyone reads this, can you please just take the very brief moment 
-> to TURN OFF html encoding for your messages ?? Please ???
->
-> Cheers,
-> Michael
->
->
->
 
 -- 
-Jesse W. Asher
-
-"They that can give up essential liberty to purchase a little temporary
-safety, deserve neither liberty or safety."  - Benjamin Franklin
-
-
-
+Jose Celestino <japc@co.sapo.pt> SAPO.pt::Systems http://www.sapo.pt
+---------------------------------------------------------------------
+Quod licet Iovi non licet bovi.
+(What Jove may do, is not permitted to a cow.)
 
