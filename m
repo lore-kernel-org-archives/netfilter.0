@@ -1,8 +1,8 @@
-From: maillist <maillist@tnss.com>
-Subject: Help Martians are attacking
-Date: Sun, 14 Sep 2003 01:24:21 -0500
+From: Paul Caritj <pcaritj@riovia.net>
+Subject: Deleting Rules
+Date: Sun, 14 Sep 2003 05:00:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F640995.2FD00934@tnss.com>
+Message-ID: <3F642E1B.8010801@riovia.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,26 +15,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Is there any way to get more info, using iptables or the kernel about
-the martians?
+Simple Question:
 
-Can someone clarify the difference between source and from in the log
-message?
+Is it possible to delete rules without complete knowledge of its 
+contents? E.g., Would it be possible to delete all rules that match a 
+source ip of X?
 
-kernel - kernel generated messages matched ll header:
-00:50:bf:70:68:98:00:e0:d0:01:06:ec:08:00
-kernel generated messages matched martian source x.x.x.1 from 127.0.0.1,
-on dev eth1
-kernel - kernel generated messages matched ll header:
-ff:ff:ff:ff:ff:ff:00:e0:d0:01:06:ec:08:00
-kernel - kernel generated messages matched martian source x.x.x.0 from
-127.0.0.1, on dev eth1
+If not, can anyone reccomend a workaround? I am creating rules on the 
+fly and setting them to mark packets with a flag that would not be 
+knowable subsequently. (Rather, unknowable unless there is no solution 
+to this problem and I am forced to keep some sort of log...eew)
 
--- 
-Arno Karner aka Behind the Muffs
-West 7th St., St. Paul aka smell, Minn
-http://tnss.com/noise_stink
+
+Thanks,
+Paul
+
 
