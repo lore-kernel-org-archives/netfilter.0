@@ -1,11 +1,13 @@
-From: "hard__ware" <hard__ware@hotmail.com>
-Subject: Getting rid of the masses of ip_conntrack messages
-Date: Mon, 2 Dec 2002 05:07:27 +1000
+From: Othmar Pasteka <pasteka@kabsi.at>
+Subject: Re: Getting rid of the masses of ip_conntrack messages
+Date: Sun, 1 Dec 2002 21:57:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE33LTrpwACkWHZqYW800004167@hotmail.com>
+Message-ID: <20021201205710.GA3239@davinci>
+References: <20021201100429.GB18712@davinci> <000001c29978$f3221ea0$0401000a@robbysan.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <000001c29978$f3221ea0$0401000a@robbysan.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,21 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Rob Sterenborg <rsterenborg@xs4all.nl>
+Cc: netfilter@lists.netfilter.org
 
-Please try to give a more detailed info on your setup
+Hi,
 
-like Rules ect . Because i use DNAT / SNAT / with FTP
-and  ip_conntrack_ftp & ip_nat_ftp  allot with IPTables
-and have never found / seen those messages ? 
+On Sun, Dec 01, 2002 at 09:33:46PM +0100, Rob Sterenborg wrote:
+> > So far i googled a bit but just found that someone else had that
+> > as well, but didn't find an answer :(. Answers are greatly
+> > appreciated.
+> Found with google, from :
+> http://lists.netfilter.org/pipermail/netfilter-devel/2002-March/007320
+> .html
 
-maybee thats cuz i dont log much anymore ..
+Yes, maybe I didn't make myself clear, but here again, how can I
+suppress such messages?
 
-i just drop / reject a Shitload  .. .lol 
-
-let me know how ya go ... 
-
-cyas,
- 
-Hard__warE
+so long
+Othmar
 
