@@ -1,11 +1,13 @@
-From: "Jan" <Oblivion@tiscali.be>
-Subject: Netfilter and multiple internet connections
-Date: Tue, 15 Oct 2002 13:55:41 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IPSec passthrough with iptables
+Date: Tue, 15 Oct 2002 14:00:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00d701c27441$c9578e90$0100a8c0@obsidian>
+Message-ID: <200210151300.g9FD0vL23616@vulcan.rissington.net>
+References: <B9D1A7D2.3DF9%george@mattandgeorge.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <B9D1A7D2.3DF9%george@mattandgeorge.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,34 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Tuesday 15 October 2002 12:09 pm, George Agnelli wrote:
 
-I have a kernel 2.4.19 machine running netfilter (1.2.7a) and performing NAT
-for my internal network.  The machine has two internet connections, one ADSL
-and one via a cable provider.  I select the provider by changing the default
-gateway at the netfilter machine.
+> I'm having a similar problem and am not very experienced yet with iptab=
+les.
+>
+> > Make sure you are forwarding (both ways :-) protocol 50 (ESP), protoc=
+ol
+> > 51 (AH) and UDP sport 500 / dport 500 (IKE).
+>
+> Could you show me the best way to write this in iptables syntax?
 
-The strange thing I noticed:  when I am using cable as the default gateway,
-my firewall ruleset shows the multicast query the provider's router is
-sending me on a regular base.  But when I change the default gateway to
-direct all outgoing traffic via the ADSL link, there are no more log entries
-showing the multicast query over the cable modem.
+iptables -A FORWARD -p esp -j ACCEPT
+iptables -A FORWARD -p ah -j ACCEPT
+iptables -A FORWARD -p udp --sport 500 --dport 500 -j ACCEPT
 
-Although when I dump the packets on the cable interface, I do see the
-Multicast queries.  The firewall ruleset stays the same.  I compared the
-loaded version, only different in packet counters.
+You may wish to add some -s and/or -d source & destination address=20
+restrictions on the above rules, eg:
 
-I suspect one of the kernel parameters (/proc/sys/net/...) influences this
-behaviour.  But I don't know which one.
-Or is this behaviour netfilter specific?
-Do the packets which netfilter doesn't see get further into my machine?  Or
-are they dropped by the kernel?
+iptables -A FORWARD -p esp -s a.b.c.d -d w.x.y.z -j ACCEPT
+iptables -A FORWARD -p esp -s w.x.y.z -d a.b.c.d -j ACCEPT
 
-Thanks,
-Jan
+where a.b.c.d and w.x.y.z are the two IPsec gateways which need to=20
+communicate.
 
+Antony.
 
+--=20
+
+This email is intended for the use of the individual addressee(s) named a=
+bove=20
+and may contain information that is confidential, privileged or unsuitabl=
+e=20
+for overly sensitive persons with low self-esteem, no sense of humour, or=
+=20
+irrational religious beliefs.
+
+If you have received this email in error, you are required to shred it=20
+immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
+caster sugar. =A0 Whisk until soft peaks form, then place in a warm oven =
+for 40=20
+minutes. =A0 Remove promptly and let stand for 2 hours before adding some=
+=20
+decorative kiwi fruit and cream. =A0 Then notify me immediately by return=
+ email=20
+and eat the original message.
 
