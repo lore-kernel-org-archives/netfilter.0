@@ -1,11 +1,14 @@
-From: "Garcia Ruiz" <gar_ruiz@teleline.es>
-Subject: Kernel module iptable_drop
-Date: Thu, 15 May 2003 20:51:55 +0200
+From: "P.Italiaander" <pc-secure@home.nl>
+Subject: Re: NOT acceptable "/etc/sysconfig/network-scripts/ifup" script !!!
+Date: Thu, 15 May 2003 21:46:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008701c31b13$2949d920$05001aac@breton1>
+Message-ID: <200305152146.17228.pc-secure@home.nl>
+References: <200305142155.31623.pc-secure@home.nl> <200305151742.26913.pc-secure@home.nl> <20030515194843.6c8876f2.arnt@c2i.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030515194843.6c8876f2.arnt@c2i.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,16 +21,37 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am trying to build a firewall with firewall builder. It makes a rule
-refered to the kernel iptable_drop module but in fact it doesn't exist in my
-box. I think that all modules refered to iptables are compiled as modules in
-my linux kernel. Does anyone know what the iptable_drop module is? I have
-iptables version 1.2.6a (maybe it is an old module that doesn't exist
-anymore).
+Op donderdag 15 mei 2003 19:48, schreef u:
+> On Thu, 15 May 2003 17:42:26 +0200,
+> "P.Italiaander" <pc-secure@home.nl> wrote in message
+>
+> <200305151742.26913.pc-secure@home.nl>:
+> > Op donderdag 15 mei 2003 14:52, schreef Arnt Karlsen:
+> > > ..I know, ipup _is_ buggy, my hint was more on Red Hats somewhat
+> > > sloppy QA attitude.  I mean, if I should _not_ use RH9 to route
+> > > traffic, I would like to know _that_ from the docs.
+> > >
+> > > ..does Mandrake or Debian turn their rear end onto _whoever_ like
+> > > RH-9 does in
+> > > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=89171 ???
+> >
+> > I've checked , but Mandrake 9.1 is not effected with that bug.
+> > Thanks for mention it.
+> > On Debian i don't know  ,don't have it , i use OpenBSD en Linux SuSe ,
+> > Redhat ,Mandrake.
+> >
+> > Does anyone have tested yet,  my patched /sbin/ifup file, for
+> > iptables-script ??
+>
+> ..the wifi part of it works fine, but it _introduces_ bug # 89171,
+> I tested with a thinkpad 760 ED I use as AP, it runs RH-7.3.
+>
+> ..it looks like Red Hat cannot use mac addresses to ID nics.
 
-Regards,
 
-Juan
+hmm... , I really thought ,that after my update , this shoud be fixed ??
+since syntax is changed.
+I 've looked but can't find patch anywhere , do you have one ?
 
-
+Pascal 
 
