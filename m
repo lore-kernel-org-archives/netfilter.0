@@ -1,13 +1,13 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: How will I mesure my bandwith
-Date: Tue, 5 Nov 2002 21:25:33 +0530
+From: Ben Russo <ben@umialumni.com>
+Subject: Re: weird interface !
+Date: 05 Nov 2002 11:55:47 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <047001c284e3$c6180220$13fcc5cb@nextto>
-References: <Pine.GSO.4.40.0211041029270.5446-100000@amazonas.robotic.dlr.de> <004501c284d1$0336ceb0$8c01a8c0@sundaram>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <1036515355.8715.48.camel@ben.mis.tnsi.com>
+References: <F1727WxS6brk1aRcC8a00003047@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F1727WxS6brk1aRcC8a00003047@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sundaram Ramasamy <sun@percipia.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-MRTG
+On Tue, 2002-11-05 at 11:41, web master wrote:
+> 
+> 
+> 
+> hello
+> i'm running a redhat machine and while checking
+> [root@localhost root]# ifconfig -a
+...
+> tunl0     Link encap:IPIP Tunnel  HWaddr
+>           NOARP  MTU:1480  Metric:1
+>           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+>           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+>           collisions:0 txqueuelen:0
+>           RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+> 
+> i see tunl0 and i dont know who made it and why is it there its always 0.0 b 
+> and its always there even if ppp0 isnt up , so i'd like to investigate this 
+> , is my machine compromised or a software made it , please help me with it .
 
-hare
------ Original Message -----
-From: "Sundaram Ramasamy" <sun@percipia.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, November 05, 2002 7:11 PM
-Subject: How will I mesure my bandwith
+This looks like a virtual network interface created by the tun.o kernel
+module.
 
+Check the output of 'lsmod' and see if you see any modules with "tun" in
+the name.  You can also do a search on Google for "vtund"
 
-> Hi,
->
-> We have 512kbps connection to our office, How will I measure my bandwidth.
->
-> I used following link, it show only 368.2kbps. Is there any other method
-to
-> test this.
->
-> Thanks
-> Sundaram
->
->
->
+-Ben.
 
 
