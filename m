@@ -1,13 +1,12 @@
-From: Manuel Samper <manuel@samper.dyndns.org>
-Subject: Re: Rejecting udp
-Date: Thu, 6 Mar 2003 20:53:59 +0100
+From: "..." <betolourenco@ig.com.br>
+Subject: Re: Rule matchup in iptables
+Date: Thu, 6 Mar 2003 18:08:30 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030306195359.GA28937@quark.lan>
-References: <000801c2e1aa$3fc8f660$0200a8c0@klintan.local> <003f01c2e1e2$2d9bd100$0301a8c0@hotpop3> <33803.192.222.90.38.1046775610.squirrel@pelorus.org>
+Message-ID: <022101c2e424$8bcf2800$32050a0a@rlourenco>
+References: <20030306124758.GB23703@talika.eii.us.es>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <33803.192.222.90.38.1046775610.squirrel@pelorus.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Skip Morrow, on Tuesday, Mar  4 2003 at 12:00, wrote:
-> I am trying to remember my networking class (/me shakes the cobwebs out)
-> 
-> I think that the original question is a good question.  UDP packets
-> (legitimately) arriving at my computer are not acknowledged.  That is, I
-> don't tell the sender "Yeah, I got that packet.  Thanks."  Nor, do I tell
-> the sender "Whoops.  I didn't quite get all of that last packet.  Could
-> you send it again?" So, REJECTing a UDP packet doesn't make sense.  The
-> sender isn't looking for any type of OK message or anything for that
-> matter.  In fact, where would the REJECT message go?  Does the sender even
-> have a listen port open?
-> 
-> But then again, I could be completely wrong.
+try:
 
-Maybe. UDP connectionless means any protocol lying on top should
-implement their own connection tracking mechanism if it wants one, tftp
-is an example that comes to my mind (http://www.ietf.org/rfc/rfc1350.txt
-if you are curious).
+iptables -L -nv
 
-I don't knwon the SMB internals, but it's wise to reject a blocked port
-from inside your lan instead of let any timeouts expire, as someone
-noted.
+and with the return you can view your consume (ammount of packets) and set
+the rules in order to optimize the hits.
 
-	Manuel
+
+...
+----- Original Message -----
+From: "Javier Miguel Rodr=EDguez" <javier@talika.eii.us.es>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, March 06, 2003 9:47 AM
+Subject: Rule matchup in iptables
+
+
+>
+> Hello
+>
+> I have a iptables based firewall, with 5 gigabit ethernet
+> adapters and almost 8000 rules (ouch!). This is a "test bed", (still) not
+a
+> production enviroment
+>
+> I can see delays in traffic when crosses the firewall
+> (miliseconds). I want to optimize the firewall rules (we use a LOT of
+> VoIP) , so this is my question: Is there any way to know when a packet
+matches a rule?
+> -j LOG is not feasible (thousands of packets per second). I want something
+like this:
+>
+> Last two hours:
+>
+> Rule 1: 15000 hits, 150 megabytes
+> Rule 2: 3500 hits, 34 megabytes
+> Rule 3: 9675 hits, 2 megabytes
+> ad infinitum...
+>
+> Other question? How can I test iptables rules? In ipchains I
+> could try them, but with iptables do I have to generate fake traffic?
+>
+> Thank you for your support.
+>
+>
+>
+
 
