@@ -1,9 +1,9 @@
-From: seberino@spawar.navy.mil
+From: Christian Seberino <seberino@spawar.navy.mil>
 Subject: these INPUT and OUTPUT rules blocking more than desired....
-Date: Mon, 28 Feb 2005 17:43:08 -0800
-Message-ID: <20050301014308.GA18177@spawar.navy.mil>
+Date: Mon, 28 Feb 2005 09:07:00 -0800
+Message-ID: <1109610420.1096.41.camel@seberino.spawar.navy.mil>
 Mime-Version: 1.0
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,7 +15,6 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
 The snippet below was intended to *ONLY* allow types of traffic that
@@ -25,6 +24,10 @@ and HTTP.
 These services don't work.  It seems like they need more than /one/
 port opened.  Or, they need something else I'm forgetting.
 Any help would be greatly appreciated.....
+
+
+
+
 
       # INPUT
 
@@ -69,4 +72,7 @@ Any help would be greatly appreciated.....
                    -p udp --dport $PORT                 \
                    -j ACCEPT
       done
+                                   
+
+
 
