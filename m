@@ -1,10 +1,11 @@
-From: =?gb2312?q?wain=20wen?= <wain_wen@yahoo.com.cn>
-Subject: Why the http response is so slow with Total Control
-Date: Tue, 4 Jun 2002 11:46:44 +0800 (CST)
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: Help NEEDED--sos !!
+Date: Tue, 04 Jun 2002 09:38:10 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020604034644.36656.qmail@web21408.mail.yahoo.com>
+Message-ID: <3CFC3D2A.9030409@inbox.lv>
+References: <Pine.LNX.4.33.0206031349460.4790-100000@blackhole.kfki.hu> <3CFB5ED0.1020204@inbox.lv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,62 +16,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.samba.org
 
-IApIaToKIApCZWxvdyBpcyBteSBuZXR3b3JrIHRvcG9sb2d5ICggbiA9IDYwICk6CiAKCmludGVy
-bmV0IC0tLS0tLS0tLS0tIGxpbnV4IGJveCAtLS0tLS0tLS0gUEMxCiAgICAgICAgIEFEU0woMTAy
-NGspICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8LS0tLS0tLS0g
-UEMyCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8LS0tLS0tLS0gUENuCiAKSWYgdGhlIGxpbnV4IGJveCBvbmx5IHNlcnZlcnMg
-YXMgZ2F0ZXdheSwgZXZlcnl0aGluZwppcyBvay5Ib3dldmVyLCBib3NzIHdhbnRzIHRvIGNvbnRy
-b2wgdGhlIGZsb3cgb2YgZXZlcnkKUEMsIG15IGNvbmZpZ3VyYXRpb24gaXMgOgogCiMgdGMgcWRp
-c2MgbGlzdCBkZXYgZXRoMSAgIC8vIGV0aDEgaXMgdGhlIGludGVybmFsCmludGVyZmFjZSBvZiBs
-aW51eCBib3ggd2hpY2ggaXAgaXMgMTkyLjE2OC4wLjEKIAogcWRpc2Mgc2ZxIDgwMTI6IHF1YW50
-dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAKIHFkaXNjIHNmcSA4MDExOiBxdWFudHVtIDE1MTRiIHBl
-cnR1cmIgMTVzZWMgCiBxZGlzYyBzZnEgODAxMDogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2Vj
-IAogcWRpc2Mgc2ZxIDgwMGY6IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAKIHFkaXNjIHNm
-cSA4MDBlOiBxdWFudHVtIDE1MTRiIHBlcnR1cmIgMTVzZWMgCiBxZGlzYyBzZnEgODAwZDogcXVh
-bnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAogcWRpc2Mgc2ZxIDgwMGM6IHF1YW50dW0gMTUxNGIg
-cGVydHVyYiAxNXNlYyAKIHFkaXNjIHNmcSA4MDBiOiBxdWFudHVtIDE1MTRiIHBlcnR1cmIgMTVz
-ZWMgCiBxZGlzYyBzZnEgODAwYTogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAogcWRpc2Mg
-Y2JxIDEwOiByYXRlIDEwME1iaXQgKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8Kbm8tdHJhbnNtaXQK
-IAogI3RjIGNsYXNzIGxpc3QgZGV2IGV0aDEKIAogY2xhc3MgY2JxIDEwOjExIHBhcmVudCAxMDox
-IGxlYWYgODAxMjogcmF0ZSAxME1iaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNt
-aXQKIGNsYXNzIGNicSAxMDogcm9vdCByYXRlIDEwME1iaXQgKGJvdW5kZWQsaXNvbGF0ZWQpCnBy
-aW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNicSAxMDoyNTYgcGFyZW50IDEwOjEgbGVhZiA4MDBjOiBy
-YXRlIDI1NktiaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNi
-cSAxMDoxIHBhcmVudCAxMDogcmF0ZSAxMDBNYml0IHByaW8gNQogY2xhc3MgY2JxIDEwOjgxOTIg
-cGFyZW50IDEwOjEgbGVhZiA4MDExOiByYXRlIDhNYml0Cihib3VuZGVkLGlzb2xhdGVkKSBwcmlv
-IG5vLXRyYW5zbWl0CiBjbGFzcyBjYnEgMTA6NjQgcGFyZW50IDEwOjEgbGVhZiA4MDBhOiByYXRl
-IDY0S2JpdAooYm91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdAogY2xhc3MgY2JxIDEw
-OjUxMiBwYXJlbnQgMTA6MSBsZWFmIDgwMGQ6IHJhdGUgNTEyS2JpdAooYm91bmRlZCxpc29sYXRl
-ZCkgcHJpbyBuby10cmFuc21pdAogY2xhc3MgY2JxIDEwOjEwMjQgcGFyZW50IDEwOjEgbGVhZiA4
-MDBlOiByYXRlIDFNYml0Cihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRyYW5zbWl0CiBjbGFz
-cyBjYnEgMTA6NDA5NiBwYXJlbnQgMTA6MSBsZWFmIDgwMTA6IHJhdGUgNE1iaXQKKGJvdW5kZWQs
-aXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNicSAxMDoxMjggcGFyZW50IDEwOjEg
-bGVhZiA4MDBiOiByYXRlIDEyOEtiaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNt
-aXQKIGNsYXNzIGNicSAxMDoyMDQ4IHBhcmVudCAxMDoxIGxlYWYgODAwZjogcmF0ZSAyTWJpdAoo
-Ym91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdCAgICAgIAogCiMgdGMgZmlsdGVyIGxp
-c3QgZGV2IGV0aDEKIAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMy
-IAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoIDgwMDogaHQK
-ZGl2aXNvciAxIAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZo
-CjgwMDo6ODAwIG9yZGVyIDIwNDgga2V5IGh0IDgwMCBia3QgMCBmbG93aWQgMTA6MTI4Cm1hdGNo
-IGMwYTgwMDNmL2ZmZmZmZmZmIGF0IDE2CiBmaWx0ZXIgcGFyZW50IDEwOiBwcm90b2NvbCBpcCBw
-cmVmIDEwMCB1MzIgZmgKODAwOjo4MDEgb3JkZXIgMjA0OSBrZXkgaHQgODAwIGJrdCAwIGZsb3dp
-ZCAxMDoxMjgKbWF0Y2ggYzBhODAwM2UvZmZmZmZmZmYgYXQgMTYKIGZpbHRlciBwYXJlbnQgMTA6
-IHByb3RvY29sIGlwIHByZWYgMTAwIHUzMiBmaAo4MDA6OjgwMiBvcmRlciAyMDUwIGtleSBodCA4
-MDAgYmt0IDAgZmxvd2lkIDEwOjEyOAptYXRjaCBjMGE4MDAwZi9mZmZmZmZmZiBhdCAxNgogZmls
-dGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoCjgwMDo6ODAzIG9yZGVy
-IDIwNTEga2V5IGh0IDgwMCBia3QgMCBmbG93aWQgMTA6MTI4Cm1hdGNoIGMwYTgwMDExL2ZmZmZm
-ZmZmIGF0IDE2CiAuLi4uICAgIAogCkluIG15IG9waW5pb24sIGV2ZXJ5IElQIHNob3VsZCBoYXZl
-IG9ubHkgMTI4a2JpdHMuSXQKaXMgdHJ1ZSB3aGVuIEkgZG93bmxvYWQgZmlsZXMgd2l0aCBmdHAu
-QnV0IHRoZSBodHRwCnJlc3BvbnNlIGlzIHZlcnkgdmVyeSBzbG93LGV2ZW4gaWYKdGhlcmUgaXMg
-b25seSBvbmUgcGVyc29uIG9ubGluZS4gV2hlbiBQQzEgZG93bmxvYWQKZmlsZXMgLCBvdGhlciBQ
-QyBwaW5nIHRoZSBnYXRld2F5IHNob3VsZCB0YWtlIG1vcmUKdGhhbiAzMDAgbXMgLlNvbWV0aGlu
-ZyBtdXN0IGJlIHdyb25nIHdpdGggbXkKY29uZmlndXJhdGlvbi4gCklzIHRoZSBwZXJmb3JtYW5j
-ZSBwcm9ibGVtID8gSG93ZXZlciwgdGhlIGlkbGUgaXMKYWJvdXQgOTAlLkJ5IHRoZSB3YXkgSSBi
-b3VuZGxlZCB0aGUgSVAgYW5kIHRoZSBNQUMKYWRkcmVzcyB3aXRoIGFycC4gCiAKVGh4LgogCgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkRvIFlvdSBZYWhvbyE/IAoyMDAyxOrKwL3nsa3IutDb9+nVvSDRxbui1tC5+r7bvbnI1bqrCmh0
-dHA6Ly9jbi5maWZhd29ybGRjdXAueWFob28uY29tLwoK
+Arindam Haldar wrote:
+> hi,
+> yes..:)... sorry for being a little cryptic ;)... but u guessed it right 
+> !..so i will summarize my 2 Question in this listing-->
+> 1)i am getting these messages in my /var/log/messages..
+> 
+>  iptables v1.2.7-20020423 with  kernel 2.4.18 & patched htb3.3-020512 & 
+> imq-2.4.18...
+> May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840 
+> &ip_conntrack_lock not readlocked
+> May 30 05:10:04 cab1 kernel: ASSERT ip_nat_core.c:739
+> &ip_conntrack_lock_R71150de5 readlocked
+> May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:91
+> &ip_conntrack_lock_R71150de5 readlocked
+> 
+> this pattern message is being received every minute. !.. this system is 
+> on RH-7.2 with 512mb ram & has been running for a month now but the 
+> mesages started coming since may 30 !...
+> 
+more info to the above from the server--->
+# watch 'sort -nr -k 2 /proc/slabinfo'
+buffer_head        34508  34560     96  864  864    1
+dentry_cache       10665  10680    128  356  356    1
+inode_cache         7501   7544    480  938  943    1
+ip_dst_cache        2437   2800    192  140  140    1
+ip_conntrack        1249   1884    320  124  157    1
+# cabneigh all |wc -l
+      17
+# cat /proc/sys/net/ipv4/ip_conntrack_max
+32248
+# ls /lib/modules/2.4.18/kernel/net/ipv4/netfilter/
+ip_conntrack_egg.o      iptable_nat.o      ipt_LOG.o         ipt_realm.o
+ip_conntrack_ftp.o      ip_tables.o        ipt_mac.o    ipt_record_rpc.o
+ip_conntrack_h323.o     ipt_ah.o           ipt_mark.o     ipt_REDIRECT.o
+ip_conntrack_irc.o      ipt_connmark.o     ipt_MARK.o       ipt_REJECT.o
+ip_conntrack.o          ipt_CONNMARK.o     ipt_MASQUERADE.o  ipt_state.o
+ip_conntrack_rpc_tcp.o  ipt_conntrack.o    ipt_MIRROR.o     ipt_string.o
+ip_conntrack_rpc_udp.o  ipt_dscp.o         ipt_mport.o      ipt_tcpmss.o
+ip_nat_ftp.o            ipt_DSCP.o         ipt_multiport.o  ipt_TCPMSS.o
+ip_nat_h323.o           ipt_esp.o          ipt_NETLINK.o     ipt_time.o
+ip_nat_irc.o            ipt_helper.o       ipt_nth.o         ipt_tos.o
+ip_nat_snmp_basic.o     ipt_IMQ.o          ipt_owner.o       ipt_TOS.o
+ip_pool.o               ipt_iplimit.o      ipt_pkttype.o     ipt_ttl.o
+ip_queue.o              ipt_ipv4options.o  ipt_pool.o        ipt_TTL.o
+iptable_filter.o        ipt_length.o       ipt_POOL.o        ipt_ULOG.o
+iptable_mangle.o        ipt_limit.o        ipt_psd.o         ipt_unclean.o
+#
+
+so surely something is wrong when i get the above said messages on 
+/var/log/messages---EVERY ONE MIN...& even at none peak time like late 
+midnight !! ...
+
+can someone tell me whats wrong ?..how can i solve this problem??
+
+
+> regards
+> A.H
+> 
+
+
