@@ -1,11 +1,12 @@
-From: Eugene Joubert <eugenej@centratel.co.za>
-Subject: RE: Firewall hacking tools
-Date: Tue, 11 Feb 2003 15:53:32 +0200
+From: "Doug Yeager" <doug@aircomwireless.net>
+Subject: denying local traffic
+Date: Tue, 11 Feb 2003 10:06:40 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B848917C9D07D71199C5005004D778B8017B35@TELECOMS04>
+Message-ID: <000101c2d1df$3166fb60$bb00a8c0@DOUG1>
+Reply-To: <doug@aircomwireless.net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2D1D4.F70224E0"
+	boundary="----=_NextPart_000_0002_01C2D1B5.4890F360"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,81 +17,297 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: 'Michael K' <micke@klintan.se>, netfilter@lists.netfilter.org
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C2D1D4.F70224E0
-Content-Type: text/plain
-
-Nmap is a good start...Linux based....
-
------Original Message-----
-From: Michael K [mailto:micke@klintan.se] 
-Sent: 11 02 2003 14:05 PM
 To: netfilter@lists.netfilter.org
-Subject: Firewall hacking tools
 
+This is a multi-part message in MIME format.
 
-Hi
+------=_NextPart_000_0002_01C2D1B5.4890F360
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-I'm setting up a firewall-lab using Redhat 7.3 and iptables. And wish to try
-the firewall capabilities and my security. Any tools that can: probe my
-ports, send DOS attacks, TCP syn flooding, Udp flooding, ping flooding,
-fragment bombs and other things that I don't know of.
+I'm using nocat as a wireless gateway w/ the hostap driver. This is 
+Great because I should be able to use iptables firewall rules to 
+Administer things. I've had some success w/ these rules as I'm new to 
+iptables.
+ 
+What I can't figure out is how to block local traffic between clients 
+on the LAN. Basically, I want them to be invisible to each other but 
+be able to get to the internet through the gateway.
+Right now they can get to the internet but can see each other's shares
+and so forth.
+ 
+What should be the iptables commands for doing this.
+ 
+My lan is 192.168.19.0/255.255.255.0
+ 
+Help would be great as I've attempted many things w/o success.
+ 
+Thx,
+doug
+ 
 
-What tools do I need? Don't care if the utils run on Linux or Windows.
-
-Regards Michael "Klintan"
-
-
-
-------_=_NextPart_001_01C2D1D4.F70224E0
-Content-Type: text/html
+------=_NextPart_000_0002_01C2D1B5.4890F360
+Content-Type: text/html;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
 charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>RE: Firewall hacking tools</TITLE>
-</HEAD>
-<BODY>
 
-<P><FONT SIZE=3D2>Nmap is a good start...Linux based....</FONT>
-</P>
 
-<P><FONT SIZE=3D2>-----Original Message-----</FONT>
-<BR><FONT SIZE=3D2>From: Michael K [<A =
-HREF=3D"mailto:micke@klintan.se">mailto:micke@klintan.se</A>] </FONT>
-<BR><FONT SIZE=3D2>Sent: 11 02 2003 14:05 PM</FONT>
-<BR><FONT SIZE=3D2>To: netfilter@lists.netfilter.org</FONT>
-<BR><FONT SIZE=3D2>Subject: Firewall hacking tools</FONT>
-</P>
-<BR>
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C2D1B5.454E7290">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:EnvelopeVis/>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
 
-<P><FONT SIZE=3D2>Hi</FONT>
-</P>
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:.5in'>
 
-<P><FONT SIZE=3D2>I'm setting up a firewall-lab using Redhat 7.3 and =
-iptables. And wish to try the firewall capabilities and my security. =
-Any tools that can: probe my ports, send DOS attacks, TCP syn flooding, =
-Udp flooding, ping flooding, fragment bombs and other things that I =
-don't know of.</FONT></P>
+<div class=3DSection1>
 
-<P><FONT SIZE=3D2>What tools do I need? Don't care if the utils run on =
-Linux or Windows.</FONT>
-</P>
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>I'm
+using <span class=3DSpellE>nocat</span> as a wireless gateway w/ the =
+<span
+class=3DSpellE>hostap</span> driver. This is =
+<o:p></o:p></span></font></p>
 
-<P><FONT SIZE=3D2>Regards Michael &quot;Klintan&quot;</FONT>
-</P>
-<BR>
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>Great
+because I should be able to use <span class=3DSpellE>iptables</span> =
+firewall
+rules to <o:p></o:p></span></font></p>
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2D1D4.F70224E0--
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>Administer
+things. I've had some success w/ these rules as I'm new to =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><span
+class=3DSpellE><span class=3DGramE><font size=3D2 face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>iptables</span></font></span></span><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'><span
+style=3D'mso-spacerun:yes'>&nbsp;</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>What
+I can't figure out is how to block local traffic between clients =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><span
+class=3DGramE><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>on</span></font></span><font size=3D2
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>
+the LAN. Basically, I want them to be invisible to each other but =
+<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><span
+class=3DGramE><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>be</span></font></span><font size=3D2
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>
+able to get to the internet through the =
+gateway.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>Right
+now they can get to the internet but can see each other's =
+shares<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><span
+class=3DGramE><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>and</span></font></span><font size=3D2
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'> so
+forth.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'><span
+style=3D'mso-spacerun:yes'>&nbsp;</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>What
+should be the <span class=3DSpellE>iptables</span> commands for doing =
+<span
+class=3DGramE>this.</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'><span
+style=3D'mso-spacerun:yes'>&nbsp;</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>My
+<span class=3DSpellE><span class=3DGramE>lan</span></span> is
+192.168.19.0/255.255.255.0<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'><span
+style=3D'mso-spacerun:yes'>&nbsp;</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>Help
+would be great as I've attempted many things w/o =
+success.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'><span
+style=3D'mso-spacerun:yes'>&nbsp;</span><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>Thx,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal =
+style=3D'mso-layout-grid-align:none;text-autospace:none'><span
+class=3DSpellE><span class=3DGramE><font size=3D2 face=3D"Courier =
+New"><span
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'>doug</span></font></span></span><font
+size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier =
+New"'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0002_01C2D1B5.4890F360--
+
 
