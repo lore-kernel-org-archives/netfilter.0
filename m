@@ -1,13 +1,13 @@
-From: "Gerry Weaver" <gerryw@objectivedomain.com>
-Subject: RE: iptables bridge filter question
-Date: Thu, 18 Mar 2004 14:12:53 -0600
+From: "Stuart Lamble" <stu@gateway10.homeip.net>
+Subject: DNAT not working
+Date: Thu, 18 Mar 2004 22:26:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ILECICAFAJIIMPBBLMEAKELJCPAA.gerryw@objectivedomain.com>
-References: <ILECICAFAJIIMPBBLMEAAELECPAA.gerryw@objectivedomain.com>
+Message-ID: <000101c40d27$5ce6ed20$0464a8c0@stu>
+Reply-To: <stu@gateway10.homeip.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0002_01C40D38.206FBD20"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ILECICAFAJIIMPBBLMEAAELECPAA.gerryw@objectivedomain.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,72 +17,103 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+This is a multi-part message in MIME format.
 
-Firstly, thanks for the suggestions. Please let me explain further. I want
-to setup an anti-spoofing rule that will block packets coming in on the
-external interface, which have a source address of my internal net. The
-problem is that I have a router that sits in the external side of the
-bridge. I need to stop spoofed packets while still allowing my router.
-Shouldn't the following allow my router by mac address and then drop
-everything else that's coming in with a source address of my internal net?
+------=_NextPart_000_0002_01C40D38.206FBD20
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
 
-EXTERNAL_IFACE="eth0"
-INTERNAL_NET="10.10.10.0/24"
-ROUTER_MAC="00:00:00:00:00:00"
+Hello netfilter lists
+ 
+Can any one help me here. I have the following rule...
+ 
+iptables -t nat -A PREROUTING -i ppp0 -p tcp -d $FW-EXT-IP --dport 22 -j
+DNAT --to 192.168.100.6:22
+ 
+Simply put I want to allow ssh from the internet to a server on my LAN,
+192.168.100.6
+My FORWARD rule is default accept.
+ 
+I understand that a packet comes into the firewall on an interface and
+then gets PREROUTED as above the gets passed to FORWARD = accept then to
+the destination???
+ 
+Why is it not working? Do i need to do any special kernel, modprobe
+things?
+Thanks
+Stu
 
-iptables -N tcp_packets
-iptables -N udp_packets
-
-iptables -A INPUT -p tcp -i $EXTERNAL_IFACE -j tcp_packets
-iptables -A INPUT -p udp -i $EXTERNAL_IFACE -j udp_packets
-
-
-iptables -A tcp_packets -i eth0 -m mac --mac-source $ROUTER_MAC -j ACCEPT
-iptables -A tcp_packets -p tcp -j DROP -s $INTERNAL_NET -j DROP
-
-
-iptables -A udp_packets -i eth0 -m mac --mac-source $ROUTER_MAC -j ACCEPT
-iptables -A udp_packets -p udp -j DROP -s $INTERNAL_NET -j DROP
-
-Thanks,
-Gerry
-
-
-
-
-
-
-
-[Gerry Weaver]  -----Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Gerry Weaver
-Sent: Thursday, March 18, 2004 2:28 AM
-To: netfilter@lists.netfilter.org
-Subject: iptables bridge filter question
-
-
-Hello All,
-
-I have setup a bridging firewall. I want to drop packets on the external
-interface, which have source addresses on my internal network. However, the
-firewall/bridge sits between my T1 router and the rest of my LAN. Is there a
-way to drop the packets mentioned previously, but allow the router? I guess
-a rule could be created that uses the routers mac address as a match. I've
-been playing around with this, but I'm not getting the result I want. I
-could sure use some advice on this.
-
-[ LAN xx.xx.xx.0/24 ]<==>[ bridge/firewall ]<==>[ router xx.xx.xx.254/24 ]
-
-
-Thanks in advance,
-Gerry
 ---
 Outgoing mail is certified Virus Free.
 Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.576 / Virus Database: 365 - Release Date: 1/30/2004
+Version: 6.0.631 / Virus Database: 404 - Release Date: 3/17/2004
+ 
+
+------=_NextPart_000_0002_01C40D38.206FBD20
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3DWindows-1252">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D040242220-18032004>Hello =
+netfilter=20
+lists</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D040242220-18032004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D040242220-18032004>Can =
+any one help me=20
+here. I have the following rule...</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D040242220-18032004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D040242220-18032004>iptables -t nat -A=20
+PREROUTING -i ppp0 -p tcp -d $FW-EXT-IP --dport 22 -j DNAT --to=20
+192.168.100.6:22</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D040242220-18032004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D040242220-18032004>Simply =
+put I want to=20
+allow ssh from the internet to a server on my LAN,=20
+192.168.100.6</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D040242220-18032004>My =
+FORWARD rule is=20
+default accept.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D040242220-18032004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D040242220-18032004>I =
+understand that a=20
+packet comes into the firewall on an interface and then gets PREROUTED =
+as above=20
+the gets passed to FORWARD =3D accept then to the=20
+destination???</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D040242220-18032004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D040242220-18032004>Why is =
+it not=20
+working? Do i need to do any special kernel, modprobe=20
+things?</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D040242220-18032004>Thanks</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D040242220-18032004>Stu</SPAN></FONT></DIV></BODY></HTML>
+<BR>
+
+<P><FONT SIZE=3D2>---<BR>
+Outgoing mail is certified Virus Free.<BR>
+Checked by AVG anti-virus system (http://www.grisoft.com).<BR>
+Version: 6.0.631 / Virus Database: 404 - Release Date: 3/17/2004<BR>
+</FONT> </P>
+
+------=_NextPart_000_0002_01C40D38.206FBD20--
 
 
