@@ -1,8 +1,8 @@
-From: "per jarevez" <perj8@hotmail.com>
-Subject: ipt_TARPIT generating illegal traffic ... skips POSTROUTING
-Date: Sat, 14 Jun 2003 22:05:04 +0000
+From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
+Subject: Re: load balancing?
+Date: Sat, 14 Jun 2003 22:28:16 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea1-F105d3G2VgUg8M0005ffd0@hotmail.com>
+Message-ID: <OFF909B862.8E351B6B-ON03256D46.0007E741@LocalDomain>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,42 +14,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Joel Newkirk <netfilter@newkirk.us>
+Cc: Jean-Yves Simon <lethalwp@tiscali.be>, netfilter@lists.netfilter.org
 
-Some packets 
-(http://lists.netfilter.org/pipermail/netfilter/2003-June/044844.html) not 
-masqueraded and routed out raw with src address of my internal box.
 
-In addition to the thread above,
-# tcpdump -npi ppp1 net 65.24/16
-I get nothing no packets when they are showing on ppp0. Both tcpdumps are 
-running simultaneously.
-# tcpdump -npi ppp0 net 65.24/16
-17:10:05.055600 65.24.XXX.238.56992 > 65.XXX.XXX.2.2662: S 
-3924597812:3924597812(
-0) win 52000 <mss 1460> (DF)
-17:10:05.055885 10.1.0.100.2662 > 65.24.XXX.238.56992: S 
-2933399770:2933399770(0
-) ack 3924597813 win 5 (DF)
-...
+if you want load balancing, you should look at http://www.keepalived.org
+and/or http://www.linuxvirtualserver.org/
 
-The router must be generating the replies, I looked into the PREROUTING and 
-FORWARD chains of my iptables firewall.  These packets were matching the 
-TARPIT target in my FORWARD chain after they have been DNAT to 10.1.0.100 in 
-PREROUTING!
+--
+Forster
 
-So of course ipt_TARPIT must be responsible for generating the replies 
-without going through the POSTROUTING chain.  None of the reply packets by 
-ipt_TARPIT were masqueraded!  I removed ipt_TARPIT target and everything is 
-okay now.
 
-ipt_TARPIT should forward its reply packets through POSTROUTING though!  and 
-not directly out the interface.  This is a ipt_TARPIT bug.
+Joel Newkirk <netfilter@newkirk.us>@lists.netfilter.org on 06/14/2003
+12:36:55 PM
 
-_________________________________________________________________
-Add photos to your e-mail with MSN 8. Get 2 months FREE*.  
-http://join.msn.com/?page=features/featuredemail
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    Jean-Yves Simon <lethalwp@tiscali.be>
+cc:    netfilter@lists.netfilter.org
+Subject:    Re: load balancing?
+
+
+
+On Sat, 2003-06-14 at 07:54, Jean-Yves Simon wrote:
+> Hello,
+>
+> I'm curious if load balancing can be done with iptables, like for
+> example forwarding incoming web requests to one of the multiple web
+> servers behind the firewall.
+>
+> Or is a third party software needed?
+
+If all you need is to distribute requests evenly across a range of IPs
+you can use the rule:
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to
+10.10.10.1-10.10.10.16
+
+This example would attempt to distribute incoming HTTP requests evenly
+across the specified range of 16 IPs.
+
+j
+
+
+
+
+
 
 
