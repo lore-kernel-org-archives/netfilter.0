@@ -1,10 +1,11 @@
-From: Khanh Tran <khanh@slc.edu>
-Subject: RE: Custom kernel won't load iptables modules
-Date: Sun, 16 Feb 2003 03:52:38 -0500
+From: "Nadav Har'El" <nyh@math.technion.ac.il>
+Subject: conntrack too eager to track everything
+Date: Sun, 16 Feb 2003 12:25:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E5@EXCHANGE>
+Message-ID: <20030216102510.GA19285@fermat.math.technion.ac.il>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,83 +17,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jason Corekin <jason@corekin.no-ip.com>, netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-Sometimes Linux, especially boxes upgraded from previous RedHat installs,
-hold onto the ipchains modules.  Try:
+In a transparent-proxy-like application, I'm redirecting connections
+forwarded through the machine and destined to some port (say, 80) into
+a local port.
+Tracking these NATed connections by conntrack is obviously necessary, so
+the ip_conntrack modules needs to be run.
 
-/sbin/chkconfig --level=2345 ipchains off
-/sbin/rmmod ipchains
+However, in some cases most of the connections (as much as 100%) that pass
+through the computer, or originate in it, or a destined to it, have nothing
+to do with these NATed connections. There is absolutely no reason to track
+these other connections, as no iptables filters, NAT, or anything else will
+ever affect them.
 
-Then insert your iptables modules.
+So I was wondering, is there a way for me to configure ip_conntrack (or
+modify its code) not to track any connections except those explictly created
+by netfilter while doing NAT?
 
-Khanh Tran
-Network Operations
-Sarah Lawrence College
+Note that what bothers me isn't only the issue of time wasted while
+needlessly tracking connections - it's more the space issue of the space
+needed to track all these (potentially, hundreds of thousands) connections,
+and what happens when the connection tracking hash-tables gets filled up.
 
+I'd be greatful for any hints or pointers,
 
------Original Message-----
-From: Jason Corekin [mailto:jason@corekin.no-ip.com]
-Sent: Sunday, February 16, 2003 1:24 AM
-To: netfilter@lists.samba.org
-Subject: Custom kernel won't load iptables modules
+	Nadav.
 
-
-Does anybody no why I can not get my custom compiled kernel to load it's
-iptables modules?
-
-I am running on RedHat 8.0.  I have everything else working, but iptables
-goes to load I get the messages
-
-Feb 15 20:36:10 corekin iptables: Starting iptables:
-Feb 15 20:36:10 corekin iptables:
-/lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
-Feb 15 20:36:10 corekin iptables: Hint: insmod errors can be caused by
-incorrect module parameters, including invalid IO or IRQ parameters.
-Feb 15 20:36:10 corekin iptables: You may find more information in syslog or
-the output from dmesg
-Feb 15 20:36:10 corekin iptables: init_module: Device or resource busy
-Feb 15 20:36:10 corekin iptables:
-/lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
-insmod
-/lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o
-failed
-Feb 15 20:36:10 corekin iptables:
-/lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
-insmod ip_tables failed
-Feb 15 20:36:10 corekin iptables: iptables v1.2.6a: can't initialize
-iptables table `filter': iptables who? (do you need to insmod?)
-Feb 15 20:36:10 corekin iptables: Perhaps iptables or your kernel needs to
-be upgraded.
-Feb 15 20:36:10 corekin iptables:
-/lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
-Feb 15 20:36:10 corekin iptables: Hint: insmod errors can be caused by
-incorrect module parameters, including invalid IO or IRQ parameters.
-Feb 15 20:36:10 corekin iptables: You may find more information in syslog or
-the output from dmesg
-Feb 15 20:36:10 corekin iptables: init_module: Device or resource busy
-Feb 15 20:36:10 corekin iptables:
-/lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
-insmod
-/lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o
-failed
-Feb 15 20:36:10 corekin iptables:
-/lib/modules/2.4.18-24.8.0custom/kernel/net/ipv4/netfilter/ip_tables.o:
-insmod ip_tables failed
-Feb 15 20:36:10 corekin iptables: iptables-restore v1.2.6a:
-iptables-restore: unable to initializetable 'nat'
-Feb 15 20:36:10 corekin iptables:
-Feb 15 20:36:10 corekin iptables: Try `iptables-restore -h' or
-'iptables-restore --help' for more information.
-Feb 15 20:36:10 corekin rc: Starting iptables: failed
-
-I have attached my configuration file if that will help.
-
-I explicitly made sure that fast switching was turned off, but beyond that I
-do not know what else could conflict with iptables.
-
-Thanks in advance
-
-Jason Corekin
-
+-- 
+Nadav Har'El                        |      Sunday, Feb 16 2003, 14 Adar I 5763
+nyh@math.technion.ac.il             |-----------------------------------------
+Phone: +972-53-245868, ICQ 13349191 |A messy desk is a sign of a messy mind.
+http://nadav.harel.org.il           |An empty desk is a sign of an empty mind.
 
