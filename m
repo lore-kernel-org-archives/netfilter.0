@@ -1,12 +1,13 @@
-From: "Daniel Arjona" <darjona@transito.gob.pa>
-Subject: FTP, Kazaa, Internet, ICQ and access the IMAP server of Netscape with my netscape client
-Date: Mon, 25 Aug 2003 15:44:13 -0500
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: iptables 'make' killed my box
+Date: Mon, 25 Aug 2003 22:51:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <032d01c36b49$a4dc6e00$0221a0c0@DANIEL>
-Reply-To: "Daniel Arjona" <darjona@transito.gob.pa>
+Message-ID: <20030825225128.006e9bc6.arnt@c2i.net>
+References: <812338CA-D728-11D7-B488-000393DB0944@caffeinemediainc.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <812338CA-D728-11D7-B488-000393DB0944@caffeinemediainc.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,90 +20,58 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello:
+On Mon, 25 Aug 2003 14:18:19 -0400, 
+Scott Gaertner <scott@caffeinemediainc.com> wrote in message 
+<812338CA-D728-11D7-B488-000393DB0944@caffeinemediainc.com>:
 
-I tried to configure an iptables firewall, but i can't.  I need cofigure
-this to use FTP, Kazaa, Internet, ICQ and access the IMAP server of Netscape
-with my Netscape Client.
-I'm a Linux newbie.
-Please Help me!!!
+> Hello,
+> 
+> I tried to build iptables 1.2.8 today, and failed miserably.  My
+> system is Debian Linux - 2.4.18-c3 kernel, i686.
 
-Observations:  iptables firewall, mail server and proxy server are installed
-in the same server. It's not recomended, but i don`t have other choice.
+..I would think you want 2.4.21 and possibly pom, to go with 1.2.8.
 
-Regards,
+..and your transcript smells like a kernel panic or a power surge or 
+somesuch, I don't see anything bad in what you have posted here.
 
-DANIEL ARJONA
-PD:  SEE MY IPTABLES SCRIPT
+..kernel panic hint;  toss in an "append="panic 20" or somesuch, to 
+your boot loader and cli and (which file?) in /proc, to avoid further 
+such embarrasment, "panic 20" reboots the box in 20 secs on a panic.
 
+> 
+> I downloaded the package, entered the directory, typed "make 
+> KERNEL_DIR=/usr/src/kernel-source-2.4.18/", and after a listing of 
+> found extensions, I lost connection to the box.  (Complete transcript 
+> at end of message).  I can no longer even ping any address on that 
+> network. (The machine was acting as a router as well).
+> 
+> I am trying to get physical access to the machine, and when (if) I get
+> it, my time there will be extremely limited.  I would *greatly* 
+> appreciate any suggestions along the following lines --
+> 
+> - Could the 'make' command alone have killed my box, or must it have 
+> been a coincidence?
+> 
+> - If it was iptables, can anyone give me a hint as to how to reverse 
+> the effects as efficiently and quickly as possible?
+> 
+> - Alternatively, is this normal behavior, and do I just need to 
+> complete the install and open up traffic?
+> 
+> Any help would be appreciated -- I was acting quickly to block an 
+> influx of spam, and my actions have affected a lot of people.
+> 
+> Thank you in advance,
+> 
+> -Scott Gaertner
+>   scott@caffeinemediainc.com
+>   917-495-4276
+> 
 
-## eth1 = my local interface
-## eth0 = public network interface
-## XXX.XXX.XXX.0/24 = My local subnet
-
-## FLUSH
-iptables -F
-iptables -X
-iptables -Z
-iptables -t nat -F
-
-## DEFAULT POLICIES
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -t nat -P PREROUTING ACCEPT
-iptables -t nat -P POSTROUTING ACCEPT
-
-## LOCAL HOST
-iptables -A INPUT -i lo -j ACCEPT
-
-
-## ACCEPT ACCESS FROM THE LOCAL NETWORK & LOCAL INTERFACE
-iptables -A INPUT -s XXX.XXX.XXX.0/24 -i eth1 -j ACCEPT
-
-## SMTP Port
-iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 25 -j ACCEPT
-
-## POP3 Port
-iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 110 -j ACCEPT
-
-## FORWARDS TO HTTP PORT
-iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 80 -j ACCEPT
-
-## FORWARDS TO HTTPS PORT
-iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 443 -j ACCEPT
-
-## FORWARDS TO IMAP PORT
-iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 143 -j ACCEPT
-
-## FORWARDS TO KAZAA PORT
-iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 1214 -j
-ACCEPT
-
-## FORWARD TO DNS QUERIES PORT
-iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 53 -j ACCEPT
-iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p udp --dport 53 -j ACCEPT
-
-## FORWARDS TO FTP PORT
-iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -p tcp --dport 21 -j ACCEPT
-
-## DENIED FORWARD FOR THE OTHERS PORTS
-iptables -A FORWARD -s XXX.XXX.XXX.0/24 -i eth1 -j DROP
-
-## MASQUERADING OF THE LOCAL NETWORK
-iptables -t nat -A POSTROUTING -s XXX.XXX.XXX.0/24 -o eth0 -j MASQUERADE
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-iptables -A INPUT -s 0.0.0.0/0 -i eth0 -p tcp --dport 1:1024 -j DROP
-iptables -A INPUT -s 0.0.0.0/0 -i eth0 -p udp --dport 1:1024 -j DROP
-
-## CLOSE WEBMIN PORT
-iptables -A INPUT -s 0.0.0.0/0 -i eth0 -p tcp --dport 10000 -j DROP
-
-echo " OK . Verifique que lo que se aplica con: iptables -L -n"
-
-# END
-
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
