@@ -1,10 +1,13 @@
-From: "Chun Fung, John Yuen" <zeroz000@hotmail.com>
-Subject: Question: ipq_read() returning "Received message truncated"
-Date: Tue, 05 Aug 2003 23:47:56 -0400
+From: Edmund <cc@belfordhk.com>
+Subject: Re: pktstat and netfilter
+Date: Wed, 06 Aug 2003 12:02:54 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY2-F35MXehYSoOZzH0000ad86@hotmail.com>
+Message-ID: <3F307DEE.70505@belfordhk.com>
+References: <3F2F6235.5080100@belfordhk.com> <1060072266.749.8.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1060072266.749.8.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,34 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hi all,
+Cedric Blancher wrote:
 
-I am a newbie in using libipq. Currently, I am experiencing a problem 
-regarding truncated message. Occassionally, ipq_read() will return an error 
-(rc = -1) and the error message says "Received truncated message". My code 
-currently ignores that error and have the system continue processing. 
-However, some packets seem to be staying in the ip queue (by checking 
-'/proc/net/ip_queue'), which will cause the queue to fill up eventually. I 
-checked the number of such error, and it matches exactly the number of 
-packets staying in the queue. I am just wondering if anyone knows the cause 
-of such error, and what's the proper way of handling it?
+> It's quite wierd as one would like to capture the very traffic that is
+> sent to the wire or traffic recieved from the wire unaltered, whatever
+> active ruleset.
+> 
 
-In addition, I am wondering whether the ipq_read() and set_verdict() calls 
-are thread safe. Should I put mutex locks around these two function calls? 
-Putting mutex locks seem to set the errno to EINTR. I am just wondering if 
-this is necessary at all.
+What's even weird is that during a www session, most of the
+packets would originate from my NAT firewall's IP, but one
+or two (in a sequence) would show a LAN IP.
 
-Thank you in advance for any help.
+I'm confused as to why this is happening.
 
-Best Regards,
-John
+Has anyone encountered something similar?
 
-_________________________________________________________________
-Help STOP SPAM with the new MSN 8 and get 2 months FREE*   
-http://join.msn.com/?page=features/junkmail
+
+
 
 
