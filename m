@@ -1,13 +1,10 @@
-From: "Gary Smith" <gary@primeexalia.com>
-Subject: RE: Restrict LAN users to send mail to Internet but allow to send
-	mail	to other LAN user.
-Date: Wed, 27 Oct 2004 13:47:54 -0700
+From: "dravya" <dravya@magma.ca>
+Subject: icmp packets going over wrong link for Local traffic!!!
+Date: Wed, 27 Oct 2004 16:51:25 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <21245695958BF041875A6C39D08F9EBA1C3C21@vjo-mails-03.primeexalia.com>
+Message-ID: <200410272051.i9RKpPoW018624@webmail2.magma.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Aleksandar Milivojevic <amilivojevic@pbl.ca>, netfilter@lists.netfilter.org
-
-True...  Sometimes I should read it twice... :)
-=20
-Gary
-
-________________________________
-
-From: netfilter-bounces@lists.netfilter.org on behalf of Aleksandar =
-Milivojevic
-Sent: Wed 10/27/2004 12:16 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: Restrict LAN users to send mail to Internet but allow to =
-send mail to other LAN user.
+Content-Transfer-Encoding: 7bit
+To: Netfilter mailing list <netfilter@lists.netfilter.org>, netfilter-devel@lists.netfilter.org
 
 
+Hi all,
 
-Gary Smith wrote:
-> You would still need netfilter to prevent other users from using the =
-internet as a back door.  For example, financial firms must log all =
-incoming and outgoing smtp traffic.  To accomplish this you need to =
-ensure that your users cannot access external SMTP servers otherwise =
-they could sent out unlogged messages.  We have done this in the past =
-for a few companies.  This forces the user to use the sendmail server =
-for their email.  I think this is the goal of the requester.
+I have applied the Masquerade patch suggested by Rusty (and now Herbert) and everything
+works just fine. All packets are masqueraded correctly even when there are multiple
+interfaces.
 
-Which is exactly what my first sentence said: "I will assume that LAN
-users are allowed to connect to mail server only, and not to outside
-world".  BTW, this is something that should be done by default.
-Financial firm or not.
+However, there are icmp dest unreachable messages that still go over the wrong link. i.e.
+source addr of the wrong link. Since it is local traffic, it will not go through the
+masquerading code as the socket would exist ( (*pskb)->sk ) will exist, thereby returning
+with NF_ACCEPT and bypassing the masquerade code. 
 
---
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Therefore the problem lies someplace else.... has anyone encountered this problem
+before??? I know there was a similar issue with arp requests but don't know what came out
+of that.
 
+Any tips or suggestions are welcome.
 
+Thanks
 
+Dravya
 
