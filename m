@@ -1,12 +1,11 @@
-From: "zlatko" <zlatko@zh.mine.nu>
-Subject: IPSEC pass through
-Date: Sun, 20 Apr 2003 19:48:55 +1000
+From: "Stuart Clark" <netfilter@spacelink.com.au>
+Subject: nat table not working - 'iptables -L nat' (do you need to insmod?)
+Date: Wed, 23 Apr 2003 09:28:31 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F8EDBC2CF916E440B8D8F678412D4D8FE9A0@pmcmail.pmc.local>
+Message-ID: <002301c30926$e310eb90$0100a8c0@yogi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,12 +18,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,=20
-=20
-Does iptables ver 1.2.6 has capability to do IPSEC VPN pass through NAT
-and DNAT on protocols 50 and 51?=20
-=20
-Thank you.
-=20
-Zlatko.
+Hi
+
+When I try and add a rule to the nat table it seems to work but when I
+do 'iptables -L nat' I get the error 
+
+'iptables: Table does not exist (do you need to insmod?)'
+
+All the other tables are there when I do 'iptables -L' but no nat table.
+
+How can I get this working?
+
+I don't want to recompile the kernel
+
+Machine Specifications
+
+Pentium2, 266Mhz
+64meg Ram
+Redhat 7.3
+iptables-1.2.5-3.rpm
+
+
+Here is my module config
+
+#
+# 2.1 Required modules
+#
+
+/sbin/modprobe ip_tables
+/sbin/modprobe ip_conntrack
+/sbin/modprobe iptable_filter
+/sbin/modprobe iptable_mangle
+/sbin/modprobe iptable_nat
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_limit
+/sbin/modprobe ipt_state
+/sbin/modprobe ip_nat_ftp
+
+#
+# 2.2 Non-Required modules
+#
+
+#/sbin/modprobe ipt_owner
+#/sbin/modprobe ipt_REJECT
+/sbin/modprobe ipt_MASQUERADE
+/sbin/modprobe ip_conntrack_ftp
+#/sbin/modprobe ip_conntrack_irc
+#/sbin/modprobe ip_nat_irc
+
+
 
