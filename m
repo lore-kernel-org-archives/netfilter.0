@@ -1,12 +1,10 @@
-From: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
-Subject: Re: make: *** [../ipset/libipt_set.h] Error 1
-Date: Thu, 27 Jan 2005 22:30:31 +0100
-Message-ID: <41F95D77.5000902@arcoscom.com>
-References: <41F94138.6050207@arcoscom.com>
+From: Marc Perkel <marc@perkel.com>
+Subject: Port Forwarding Help
+Date: Thu, 27 Jan 2005 15:50:37 -0800
+Message-ID: <41F97E4D.2090709@perkel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41F94138.6050207@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +15,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Well, I don't know if this "work around" can work, but editing=20
-<iptables_dir>/extensions/ipt_SET.c and ipt_set.c comenting the #include=20
-"../ipset/libipt_set.h" directive, now the make works.
+I hope this is the right list. I need help.
 
-Any developer can confirm this "patch"?
+This is something that should be simple for all you smart people out there.
 
-Thanks
+I have 2 email servers that I want to communicate with each other. Both 
+have port 25 open. But - they only bind on port 25 to specific IP 
+addresses. So - what I want to do is this:
 
-    Samuel D=EDaz Garc=EDa
-     Director Gerente
-ArcosCom Wireless, S.L.L.
+I want to do an ssh tunnel to the other server. SSH doesn't do that 
+gracefully - but I did get it to work listening on port 26 and piping to 
+port 25.
 
-mailto:samueldg@arcoscom.com
-http://www.arcoscom.com
-m=F3vil: 651 93 72 48
-tlfn/fax: 956 70 13 15
+ssh -f -N -C -L 26:localhost:25 destination
+
+So - here's what I want to do. I want to port forward 1 ip address on 
+port 25 on the local machine to port 26 so for example :
+
+127.0.0.2 on port 25 to 127.0.0.2 on port 26 so if I connect to 
+127.0.0.2 on port 25 it goes over the tunnel to the other server.
+
+It can be that hard - but I'm just not very smart.
+
+Thanks in advance for your help.
+
+-- 
+Marc Perkel - marc@perkel.com
+
+Spam Filter: http://www.junkemailfilter.com
+    My Blog: http://marc.perkel.com
+My Religion: http://www.churchofreality.org
+~ "If it's real - we believe in it!" ~
 
 
-Samuel D=EDaz Garc=EDa wrote:
-> After applying patch-o-matic-ng-20040621 (the last stable released)=20
-> successfully, compile & install my patched kernel and trying compile=20
-> iptables-1.2.11, the 'make KERNEL_DIR=3D/usr/src/linux-2.4.29' (obviously=
-,=20
-> my patched kernel is a 2.4.29), I get this error:
->=20
-> Making dependencies: please wait...
-> Something wrong... deleting dependencies.
-> make: *** [../ipset/libipt_set.h] Error 1
->=20
-> I think I need the 'ipset' sources, where are them?
-> where do I need copy them to make iptables (and modules) sucessfully?
->=20
-> Thanks
->=20
-> (sorry for my english)
->=20
 
