@@ -1,12 +1,12 @@
-From: "KB" <kburke@synapsehcs.com>
-Subject: Re: H.323 Patch
-Date: Thu, 21 Nov 2002 18:16:37 -0500
+From: Wasim Bashir <wasim.bashir@nexor.co.uk>
+Subject: ftp forwarding
+Date: Mon, 18 Nov 2002 09:47:38 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00d201c291b4$0a7dc2b0$0301a8c0@synapse.com>
-References: <Pine.LNX.4.33.0211191105100.14950-100000@ts1.alberni.net>
-Reply-To: "KB" <kburke@synapsehcs.com>
+Message-ID: <002801c28ee7$88a1cd50$e6353fc1@nexor.co.uk>
+Reply-To: "wasim.bashir" <wasim.bashir@nexor.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+              boundary="----=_NextPart_000_0029_01C28EE7.88A1CD50"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,36 +17,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-How do I get off this mailing list?
+This is a multi-part message in MIME format.
 
------ Original Message ----- 
-From: "Aaron Clausen" <maureen-taocow@alberni.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, November 19, 2002 2:06 PM
-Subject: H.323 Patch
+------=_NextPart_000_0029_01C28EE7.88A1CD50
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+I've been trying to forward port 21 to an ftp server on another machine, IP
+address  10.0.0.199.
+
+eth1 - external (connected to the net)
+eth0 - internal
+
+/sbin/iptables -A FORWARD -p tcp -i eth1 --dport 21 -j ACCEPT
+/sbin/iptables -A PREROUTING -t nat -p tcp -i eth1 --dport 21 -j DNAT --to
+10.0.0.199:21
+
+but can't get it to work..
+
+any ideas ?
 
 
-> I am trying to patch the 2.4.5 kernel for H.323 connection tracking, but
-> this is what I get:
-> 
-> Testing patch extra/h323-conntrack-nat.patch...
->    Placed new Config.in line
->    Placed new Config.in line
->    Placed new Configure.help entry
->    Placed new Makefile line
-> Could not find place to slot in ip_conntrack.h line
-> Could not find place to slot in ip_conntrack.h line
-> Could not find place to slot in ip_conntrack.h line
-> TEST FAILED: patch NOT applied.
-> 
-> Is there some previous patch I am supposed to apply?
-> 
-> -- 
-> Aaron Clausen
-> 
-> 
+------=_NextPart_000_0029_01C28EE7.88A1CD50
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+
+
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D625434409-18112002>Hi,</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D625434409-18112002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D625434409-18112002>I've =
+been trying to=20
+forward port 21 to an ftp server on another machine, IP address=20
+&nbsp;10.0.0.199.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D625434409-18112002></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D625434409-18112002>eth1 - =
+external=20
+(connected to the net)</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D625434409-18112002>eth0 - =
+
+internal</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN =
+class=3D625434409-18112002></SPAN></FONT><FONT=20
+face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>/sbin/iptables -A FORWARD -p tcp -i =
+eth1 --dport 21=20
+-j ACCEPT<BR><SPAN class=3D625434409-18112002>/</SPAN>sbin/iptables -A =
+PREROUTING=20
+-t nat -p tcp -i eth1 --dport 21 -j DNAT --to 10.0.0.199:21</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><SPAN class=3D625434409-18112002><FONT face=3DArial size=3D2>but =
+can't get it to=20
+work..</FONT></SPAN></DIV>
+<DIV><SPAN class=3D625434409-18112002><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D625434409-18112002><FONT face=3DArial size=3D2>any =
+ideas=20
+?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D625434409-18112002></SPAN>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0029_01C28EE7.88A1CD50--
 
 
