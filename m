@@ -1,11 +1,13 @@
-From: mdew <mdew@mdew.dyndns.org>
-Subject: New Script
-Date: 10 Jan 2003 01:38:56 +1300
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: New Script
+Date: Thu, 9 Jan 2003 14:38:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042115936.423.58.camel@nirvana>
+Message-ID: <20030109143801.09b1f7cf.arnt@c2i.net>
+References: <1042115936.423.58.camel@nirvana>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1042115936.423.58.camel@nirvana>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,148 +18,166 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Ok, after taking a few samples from scripts in the mailing list, Ive
-come up with this...hopefully my edonkey problem has been solved with
-this script. I havent actually tested this yet, Probably tomorrow (its a
-bit late)
+On 10 Jan 2003 01:38:56 +1300, 
+mdew <mdew@mdew.dyndns.org> wrote in message 
+<1042115936.423.58.camel@nirvana>:
 
-current Router setup.
-(Internet) 210.54.175.12->eth0---Router--->eth1 10.0.0.6 -=> 10.0.0.x
+> Ok, after taking a few samples from scripts in the mailing list, Ive
+> come up with this...hopefully my edonkey problem has been solved with
+> this script. I havent actually tested this yet, Probably tomorrow (its
+> a bit late)
+> 
+> current Router setup.
+> (Internet) 210.54.175.12->eth0---Router--->eth1 10.0.0.6 -=> 10.0.0.x
+> 
+> 
+> 
+> #!/bin/bash
+> 
+> IPTABLES="/sbin/iptables"
+> PAUL="10.0.0.9"
+
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+
+..the open barn door.  Echo 0 here, and 1 again
+at the very end of this script.
+ 
+> echo "Executing The Firwall..."
+> echo ""
+> echo -n "Loading Modules..."
+> /sbin/modprobe ip_conntrack_ftp
+> /sbin/modprobe ip_conntrack_irc
+> /sbin/modprobe ip_nat_irc
+> /sbin/modprobe ip_nat_ftp
+> /sbin/modprobe ipt_state
+> /sbin/modprobe ipt_limit
+> /sbin/modprobe ipt_LOG
+> echo -n "Done"
+> 
+> $IPTABLES -F INPUT
+> $IPTABLES -F OUTPUT
+> $IPTABLES -F FORWARD
+> $IPTABLES -P INPUT ACCEPT
+> $IPTABLES -P OUTPUT ACCEPT
+> 
+> echo "Allow unlimited traffic on the loopback interface"
+> $IPTABLES -A INPUT -i lo -j ACCEPT
+> $IPTABLES -A OUTPUT -o lo -j ACCEPT
+> 
+> echo "Refusing spoofed packets pretending to be from your IP address"
+> $IPTABLES -A INPUT -s 210.54.175.12 -j DROP
+> 
+> echo "Allow SSH"
+> # Is this correct?
+> $IPTABLES -A INPUT -i eth0 -p tcp --sport 22 -j ACCEPT
+> $IPTABLES -A INPUT -i eth1 -p tcp --sport 22 -j ACCEPT
+> $IPTABLES -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
+> $IPTABLES -A INPUT -i eth1 -p tcp --dport 22 -j ACCEPT
+> 
+> echo "Allow ftp"
+> $IPTABLES -A INPUT -p tcp --sport 21 -m state --state ESTABLISHED -j
+> ACCEPT
+> $IPTABLES -A OUTPUT -p tcp --dport 21 -m state --state NEW,ESTABLISHED
+> -j ACCEPT
+> 
+> echo "Active ftp"
+> $IPTABLES -A INPUT -p tcp --sport 20 -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A OUTPUT -p tcp --dport 20 -m state --state ESTABLISHED -j
+> ACCEPT
+> 
+> echo "Passive ftp"
+> $IPTABLES -A INPUT -p tcp --sport 1024:65535 --dport 1024:65535 -m
+> state--state ESTABLISHED -j ACCEPT
+> $IPTABLES -A OUTPUT -p tcp --sport 1024:65535 --dport 1024:65535 -m
+> state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> echo "Allow DNS"
+> $IPTABLES -A INPUT -p tcp --sport 53 -j ACCEPT
+> $IPTABLES -A INPUT -p udp --sport 53 -j ACCEPT
+> $IPTABLES -A OUTPUT -p tcp --dport 53 -j ACCEPT
+> $IPTABLES -A OUTPUT -p udp --dport 53 -j ACCEPT
+> 
+> echo "Allow SFTP"
+> $IPTABLES -A OUTPUT -p tcp --dport 115 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --sport 115 -j ACCEPT
+> 
+> echo "Allow HTTP"
+> $IPTABLES -A OUTPUT -p tcp --dport 80 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --sport 80 -j ACCEPT
+> 
+> echo "Allow https"
+> $IPTABLES -A OUTPUT -p tcp --dport 443 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --sport 443 -j ACCEPT
+> 
+> echo "Rejecting all connections to 135:139"
+> $IPTABLES -N NETBIOS
+> $IPTABLES -A INPUT -p udp --sport 135:139 -j NETBIOS
+> $IPTABLES -A INPUT -p tcp --sport 135:139 -j NETBIOS
+> $IPTABLES -A INPUT -p udp --dport 135:139 -j NETBIOS
+> $IPTABLES -A INPUT -p tcp --dport 135:139 -j NETBIOS
+> $IPTABLES -A NETBIOS -j LOG --log-prefix "IPTABLES NETBIOS: "
+> $IPTABLES -A NETBIOS -j DROP
+> 
+> echo "Limit port 4665 traffic to PAUL"
+> $IPTABLES -N PAULS_STUFF
+> $IPTABLES -A FORWARD -p tcp -s $PAUL --dport 4665 -m limit --limit
+> 1/hour -j PAULS_STUFF
+> $IPTABLES -A FORWARD -p udp -s $PAUL --dport 4665 -m limit --limit
+> 1/hour -j PAULS_STUFF
+> $IPTABLES -A FORWARD -p udp -s $PAUL --sport 4665 -m limit --limit
+> 1/hour -j PAULS_STUFF
+> $IPTABLES -A FORWARD -p tcp -s $PAUL --sport 4665 -m limit --limit
+> 1/hour -j PAULS_STUFF
+> $IPTABLES -A PAULS_STUFF -j LOG --log-prefix "IPTABLES PAUL: "
+> $IPTABLES -A PAULS_STUFF -j ACCEPT
+> 
+> echo "Allowing SMTP"
+> $IPTABLES -A OUTPUT -p tcp --dport 25 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --sport 25 -j ACCEPT
+> 
+> echo "Allowing POP3"
+> $IPTABLES -A OUTPUT -p tcp --dport 110 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --sport 110 -j ACCEPT
+> 
+> echo "Allowing Ident"
+> $IPTABLES -A OUTPUT -p tcp --dport 113 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --sport 113 -j ACCEPT
+> 
+> echo "Allowing Netmeeting/MSN"
+> $IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 1863 -j \
+>         REDIRECT --to-ports 1863
+> $IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 389 -j \
+>         REDIRECT --to-ports 389
+> $IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 522 -j \
+>         REDIRECT --to-ports 522
+> 	
+> echo "Allowing EDonkey2k/Emule"
+> echo "See: http://www.emule-project.net/faq/ports.htm"
+> # should i use any -A FORWARD or PREROUTING here?
+> $IPTABLES -A OUTPUT -p tcp --dport 4661 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --sport 4661 -j ACCEPT
+> $IPTABLES -A OUTPUT -p tcp --dport 4662 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --sport 4662 -j ACCEPT
+> $IPTABLES -A OUTPUT -p udp --dport 4665 -j ACCEPT
+> $IPTABLES -A INPUT -p udp --sport 4665 -j ACCEPT
+> $IPTABLES -A OUTPUT -p udp --dport 4672 -j ACCEPT
+> $IPTABLES -A INPUT -p udp --sport 4672 -j ACCEPT
+> 
+> $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+> 
+> 
+> 
 
 
-
-#!/bin/bash
-
-IPTABLES="/sbin/iptables"
-PAUL="10.0.0.9"
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-echo "Executing The Firwall..."
-echo ""
-echo -n "Loading Modules..."
-/sbin/modprobe ip_conntrack_ftp
-/sbin/modprobe ip_conntrack_irc
-/sbin/modprobe ip_nat_irc
-/sbin/modprobe ip_nat_ftp
-/sbin/modprobe ipt_state
-/sbin/modprobe ipt_limit
-/sbin/modprobe ipt_LOG
-echo -n "Done"
-
-$IPTABLES -F INPUT
-$IPTABLES -F OUTPUT
-$IPTABLES -F FORWARD
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -P OUTPUT ACCEPT
-
-echo "Allow unlimited traffic on the loopback interface"
-$IPTABLES -A INPUT -i lo -j ACCEPT
-$IPTABLES -A OUTPUT -o lo -j ACCEPT
-
-echo "Refusing spoofed packets pretending to be from your IP address"
-$IPTABLES -A INPUT -s 210.54.175.12 -j DROP
-
-echo "Allow SSH"
-# Is this correct?
-$IPTABLES -A INPUT -i eth0 -p tcp --sport 22 -j ACCEPT
-$IPTABLES -A INPUT -i eth1 -p tcp --sport 22 -j ACCEPT
-$IPTABLES -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
-$IPTABLES -A INPUT -i eth1 -p tcp --dport 22 -j ACCEPT
-
-echo "Allow ftp"
-$IPTABLES -A INPUT -p tcp --sport 21 -m state --state ESTABLISHED -j
-ACCEPT
-$IPTABLES -A OUTPUT -p tcp --dport 21 -m state --state NEW,ESTABLISHED
--j ACCEPT
-
-echo "Active ftp"
-$IPTABLES -A INPUT -p tcp --sport 20 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT -p tcp --dport 20 -m state --state ESTABLISHED -j
-ACCEPT
-
-echo "Passive ftp"
-$IPTABLES -A INPUT -p tcp --sport 1024:65535 --dport 1024:65535 -m state
---state ESTABLISHED -j ACCEPT
-$IPTABLES -A OUTPUT -p tcp --sport 1024:65535 --dport 1024:65535 -m
-state --state ESTABLISHED,RELATED -j ACCEPT
-
-echo "Allow DNS"
-$IPTABLES -A INPUT -p tcp --sport 53 -j ACCEPT
-$IPTABLES -A INPUT -p udp --sport 53 -j ACCEPT
-$IPTABLES -A OUTPUT -p tcp --dport 53 -j ACCEPT
-$IPTABLES -A OUTPUT -p udp --dport 53 -j ACCEPT
-
-echo "Allow SFTP"
-$IPTABLES -A OUTPUT -p tcp --dport 115 -j ACCEPT
-$IPTABLES -A INPUT -p tcp --sport 115 -j ACCEPT
-
-echo "Allow HTTP"
-$IPTABLES -A OUTPUT -p tcp --dport 80 -j ACCEPT
-$IPTABLES -A INPUT -p tcp --sport 80 -j ACCEPT
-
-echo "Allow https"
-$IPTABLES -A OUTPUT -p tcp --dport 443 -j ACCEPT
-$IPTABLES -A INPUT -p tcp --sport 443 -j ACCEPT
-
-echo "Rejecting all connections to 135:139"
-$IPTABLES -N NETBIOS
-$IPTABLES -A INPUT -p udp --sport 135:139 -j NETBIOS
-$IPTABLES -A INPUT -p tcp --sport 135:139 -j NETBIOS
-$IPTABLES -A INPUT -p udp --dport 135:139 -j NETBIOS
-$IPTABLES -A INPUT -p tcp --dport 135:139 -j NETBIOS
-$IPTABLES -A NETBIOS -j LOG --log-prefix "IPTABLES NETBIOS: "
-$IPTABLES -A NETBIOS -j DROP
-
-echo "Limit port 4665 traffic to PAUL"
-$IPTABLES -N PAULS_STUFF
-$IPTABLES -A FORWARD -p tcp -s $PAUL --dport 4665 -m limit --limit
-1/hour -j PAULS_STUFF
-$IPTABLES -A FORWARD -p udp -s $PAUL --dport 4665 -m limit --limit
-1/hour -j PAULS_STUFF
-$IPTABLES -A FORWARD -p udp -s $PAUL --sport 4665 -m limit --limit
-1/hour -j PAULS_STUFF
-$IPTABLES -A FORWARD -p tcp -s $PAUL --sport 4665 -m limit --limit
-1/hour -j PAULS_STUFF
-$IPTABLES -A PAULS_STUFF -j LOG --log-prefix "IPTABLES PAUL: "
-$IPTABLES -A PAULS_STUFF -j ACCEPT
-
-echo "Allowing SMTP"
-$IPTABLES -A OUTPUT -p tcp --dport 25 -j ACCEPT
-$IPTABLES -A INPUT -p tcp --sport 25 -j ACCEPT
-
-echo "Allowing POP3"
-$IPTABLES -A OUTPUT -p tcp --dport 110 -j ACCEPT
-$IPTABLES -A INPUT -p tcp --sport 110 -j ACCEPT
-
-echo "Allowing Ident"
-$IPTABLES -A OUTPUT -p tcp --dport 113 -j ACCEPT
-$IPTABLES -A INPUT -p tcp --sport 113 -j ACCEPT
-
-echo "Allowing Netmeeting/MSN"
-$IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 1863 -j \
-        REDIRECT --to-ports 1863
-$IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 389 -j \
-        REDIRECT --to-ports 389
-$IPTABLES -t nat -A PREROUTING -i eth0 -p tcp --dport 522 -j \
-        REDIRECT --to-ports 522
-	
-echo "Allowing EDonkey2k/Emule"
-echo "See: http://www.emule-project.net/faq/ports.htm"
-# should i use any -A FORWARD or PREROUTING here?
-$IPTABLES -A OUTPUT -p tcp --dport 4661 -j ACCEPT
-$IPTABLES -A INPUT -p tcp --sport 4661 -j ACCEPT
-$IPTABLES -A OUTPUT -p tcp --dport 4662 -j ACCEPT
-$IPTABLES -A INPUT -p tcp --sport 4662 -j ACCEPT
-$IPTABLES -A OUTPUT -p udp --dport 4665 -j ACCEPT
-$IPTABLES -A INPUT -p udp --sport 4665 -j ACCEPT
-$IPTABLES -A OUTPUT -p udp --dport 4672 -j ACCEPT
-$IPTABLES -A INPUT -p udp --sport 4672 -j ACCEPT
-
-$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
 
