@@ -1,10 +1,13 @@
-From: "dimitri borjac" <dimitri_borjac@hotmail.com>
-Subject: iptables and ipsec
-Date: Wed, 22 Oct 2003 11:12:56 +0000
+From: Willy Tarreau <willy@w.ods.org>
+Subject: Re: [PATCH-2.4-POM] NF_REPEAT was ignored !
+Date: Wed, 22 Oct 2003 13:54:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law10-F118TFur2iz2M00009655@hotmail.com>
+Message-ID: <20031022115439.GA10634@alpha.home.local>
+References: <DAAAFFB7B8C62F40BC87BF3E729F79E101199092@ibfdmail.ibfd.oin>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <DAAAFFB7B8C62F40BC87BF3E729F79E101199092@ibfdmail.ibfd.oin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,23 +17,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Gaby Schilders <G.Schilders@ibfd.org>
+Cc: netfilter list <netfilter@lists.netfilter.org>
 
-Hi,
+> There are quite recent changes to the tcp-window-tracking patches.
 
-do you know where i can find any interesting documentation about the=20
-interoperability/compatibility of ipsec with iptables ...?
-what's more regarding the eventual UDP encapsulation and the pass-through=20
-technology ?
+At least not since the last one I sent, it seems :-)
 
-any link or help would be appreciated :)
-thanks !
+> Also, I was wondering if this might not be better suited for the developer
+> list?
 
-Dimo
+indeed, I replied to a previous mail, hence this cross-posting. The nfdev
+list was also cc'd.
 
-_________________________________________________________________
-Trouvez l'=E2me soeur sur MSN Rencontres ! http://g.msn.fr/FR1000/9551
+Cheers,
+Willy
 
 
