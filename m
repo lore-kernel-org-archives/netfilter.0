@@ -1,11 +1,14 @@
-From: "VDMB mail" <conradw@vdmb.com.au>
-Subject: Netfilter Denies everything, even --Policy ACCEPT
-Date: Sun, 16 May 2004 15:27:07 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: unknown data
+Date: Sun, 16 May 2004 14:59:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <KIEKJEOOGJONEKMFNHLHCELLCHAA.conradw@vdmb.com.au>
+Message-ID: <200405161459.04374.Antony@Soft-Solutions.co.uk>
+References: <BAY15-F39ORIKg9qZBT00067c7d@hotmail.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <BAY15-F39ORIKg9qZBT00067c7d@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,68 +21,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Sunday 16 May 2004 12:01 pm, azeem ahmad wrote:
 
-Hi,
+> hi all
+> a machine (192.168.0.106) from my LAN is continously sending this data to
+> server (192.168.0.100) as shown below in the output of tcpdump. althought
+> the data isnt too much but i m wondering what this data is for
+> ---------------------------------------------------------------------------
+> 15:38:36.412035 arp who-has 192.168.0.106 tell 192.168.0.100
+> 15:38:36.412269 arp reply 192.168.0.106 is-at 0:8:c7:99:b6:75
+> 15:49:26.543540 192.168.0.106.35847 > 192.168.0.100.1900 udp 132 [ttl 1]
 
-IPTABLES is blocking all network traffic, whilst all connections work fine
-without it.
+USP port 1900 is M$ PnP service.   I suggest you disable this on machine 
+192.168.0.106
 
-Setup : Redhat 8 / 2.4.18-27.8.0  with HP Raid driver patch. (I hope this is
-not a cause of the problem.)
+Regards,
 
-IPtables version v1.2.8
+Antony.
 
-Without iptables, i.e. stopping the service  '/etc/init.d/iptables stop'
-everything works and communicates fine. Ping anything on my network, and the
-loopback interface just nicely.
+-- 
+Perfection in design is achieved not when there is nothing left to add, but 
+rather when there is nothing left to take away.
 
-When starting the service '/etc/init.d/iptables start' any form of network
-communication is totally blocked, even with the following (BUT VERY OPEN)
-script;
+ - Antoine de Saint-Exupery
 
-iptables --flush
-iptables --policy INPUT ACCEPT
-iptables --policy OUTPUT ACCEPT
-
-iptables -A INPUT -j LOG
-iptables -A OUTPUT -j LOG
-
-Have checked services with chkconf, iptables is running, as well as echo, in
-fact most things are, although there is no ipchains present(thus no clash).
-Have checked ps -aux, syslogd, klogd and xinetd are all running.
-
-Output from 'iptables -L' is;
-
-Chain INPUT(policy ACCEPT)
-LOG 	all -- anywhere 	anywhere 	LOG level debug prefix 'Trace INPUT: '
-Chain FORWARD(policy DROP)
-Chain OUTPUT (policy ACCEPT)
-LOG 	all -- anywhere 	anywhere 	LOG level debug prefix 'Trace OUTPUT: '
-
-Output from ping (for any ip address) is;
-ping 127.0.0.1
-ping: sendmsg: Operation not permitted
-
-Nothing appears in either /var/log/messages or /var/log/kernel (from
-syslog.conf  kern.*    /var/log/kernel ). This is the worst part. I can't
-see anything happening anywhere. I have a Samba server running, and it is
-logging the same sendmsg error for the netbios port(137).
-
-I have searched for hours to solve this, and there appears to be something
-stopping packets at the iptables level, as without iptables installed, there
-is clear connections everywhere. Even rebooting the machine made no
-difference, as much as I expected.
-
-Being a novice, with a few years experience, I have always been able to get
-things solved with stuff on the net. This one has really got me beat.
-
-Thanks in advance,
-Conrad
----
-This email has been checked by a virus scanner, although the end reciever is
-responsible for their own scanning and checking of email and attachments.
-Outgoing mail is certified Virus Free by Virus scanner.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.668 / Virus Database: 430 - Release Date: 24/04/2004
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
