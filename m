@@ -1,9 +1,8 @@
-From: "Postmaster" <iptables-pmd0052@promind.de>
+From: "Jan Brand \(Postmaster\)" <iptables-pmd0052@promind.de>
 Subject: Re: question about -t nat
-Date: Sun, 20 Jun 2004 01:25:22 +0200
+Date: Sun, 20 Jun 2004 01:53:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000601c45654$b22cf970$6900a8c0@W2K>
-References: <000701c45626$e27411a0$6900a8c0@W2K> <1087670301.2051.0.camel@localhost>  <000b01c45637$42d805a0$6900a8c0@W2K> <1087683517.2052.3.camel@localhost>
+Message-ID: <000901c45658$ac4636d0$6900a8c0@W2K>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,19 +18,12 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Hmmm . . . I'll have to defer to others who know more about modules.  I
-> always compile mine as part of the kernel just in case.  I see the
-> iptable_nat so I'm not sure what's missing.  Is there any chance the
-> userland tools are mismatched to the kernel?
-> -- 
+it realy looks like an error. on an fourth mashine ( i have to much
+mashines) my rule works fine too. and i think i have the answer. the first
+and the fourth mashine, both have CONFIG_KMOD --> y. i hope there is an
+other way as made an new kernel.
 
-unfortunately not. otherwise i could change something. both machines are
-clean and selfmade from scratch.
-the differential of the second mashine is the kernelversion 2.4.22 with
-CONFIG_KMOD --> y. but on the real firewall i wont do anything automaticly.
-on a third mashine kernel 2.4.26, iptables 1.2.9 and all of modules are
-build in kernel, a rule with DNAT in a userchain also wont work. i believe
-nearly in an error on the second mashine :(
+best regards
 
 Jan
 
