@@ -1,13 +1,10 @@
-From: Eddahbi Karim <installation_fault_association@yahoo.fr>
-Subject: Re: UDP connections and Conntrack...
-Date: Fri, 09 Jan 2004 08:09:09 +0100
+From: "Martin Leduc" <marled3@hotmail.com>
+Subject: Re: Problem behind my DMZ
+Date: Fri, 09 Jan 2004 09:54:42 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1073625593.8810.17.camel@gamux>
-References: <Pine.LNX.4.33.0401080815350.19652-100000@blackhole.kfki.hu>
+Message-ID: <Law9-F354jsKlkag7KO00012b91@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0401080815350.19652-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +14,94 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: ramin@cannon.eng.us.uu.net
 Cc: netfilter@lists.netfilter.org
 
-Le jeu 08/01/2004 =E0 08:22, Jozsef Kadlecsik a =E9crit :
-> On Wed, 7 Jan 2004, Eddahbi Karim wrote:
->=20
+> > Good evening folks,
+> >
+> > Sorry to answer you so late, and thank you for your informations.  I'm 
+>so
+> > exited, I have make test and, basicly, it's working.  Tomorow is the
+> > official test.  I keep you informed.
+> >
+> > The only thing I can't figure out is the /32 netmask address for an 
+>address
+> > having a /28.  Why dont put the /28?
+> >
+> > Of course I try it but the route program have reject this entries.  Can 
+>you
+> > explain to me?
+> >
+> > Other thing.  It is possible than I can't reach other machine placed 
+>before
+> > the firewall BOX having address IP in the same range than my firewall 
+>box
+> > after having put the /32 host in my route table?
+> >
+> > Example:
+> > 192.168.1.1  ISP GAteway
+> > 192.168.1.2  Server (Any kind)
+> > 192.168.1.3  Firewall BOX (Eth0)
+> > 192.168.1.3  Firewall BOX (eth1)
+> > 192.168.1.4  Server Behind Firewall BOX
+> >
+> > Ping Test result
+> > ---------------------------
+> > 192.168.1.4 can reach 192.168.1.3
+> > 192.168.1.4 can reach 192.168.1.1
+> > 192.168.1.4 can't reach 192.168.1.2
+> >
+> > In the same test
+> >
+> > 192.168.1.2 can reach 192.168.1.1
+> > But not 1.3 and 1.4
+> >
+> > I ask that because if I check my DSL route table, I see the same
+> > configuration like
+> >
+> > Destination     Gateway         Genmask         Flags Metric Ref    Use
+> > Iface
+> > 67.68.140.1     0.0.0.0         255.255.255.255 UH    0      0        0 
+>ppp0
+> > 192.168.1.1   0.0.0.0         255.255.255.0   U     0      0        0 
+>eth0
+> > 127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 
+>lo
+> > 0.0.0.0         67.68.140.1     0.0.0.0         UG    0      0        0 
+>ppp0
+> >
+> > I can ping 67.68.140.1, .2, .3, .4, .5, etc....
+> >
+> > Can you explain?
+>
+>Is your IP forwarding turned on?
 
-[snip]
+Yes, it is.  Can you explain to me why /32 against /28 netmask, or tell me 
+where I can get the documentation?
 
-Thanks for these explanations, It's more clear now :).
+>
+> >
+> >
+> > Now the configuration :D
+>
+>Please use the "ip" utility instead of ifconfig/route/arp/... It's much 
+>easier
+>and more powerful...
 
---=20
---
-Eddahbi Karim
+Ok I will tried, but is not installed by default with slackware.  I will 
+search where I can get it.
 
-Phone :
-(33) (0)6 61 30 57 77
+>
+>Ramin
 
-France
+Regards and thanks in advance
+
+Martin
+
+_________________________________________________________________
+MSN Search, le moteur de recherche qui pense comme vous !  
+http://fr.ca.search.msn.com/
 
 
