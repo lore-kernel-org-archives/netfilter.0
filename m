@@ -1,13 +1,13 @@
-From: jordi <jordi@grn.es>
-Subject: Re: POP/SMTP traffic graphics.
-Date: Tue, 8 Apr 2003 11:06:46 +0200 (CEST)
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: psd and active ftp mode
+Date: Wed, 09 Apr 2003 13:03:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0304081102130.3199-100000@chemical.grn.es>
-References: <200304081053.15957.carles@descom.es>
+Message-ID: <3E93FE15.8020006@rtij.nl>
+References: <136459744507.20030409032210@lf.lv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304081053.15957.carles@descom.es>
+In-Reply-To: <136459744507.20030409032210@lf.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Carles Xavier Munyoz =?iso-8859-15?q?Bald=F3?= <carles@descom.es>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Peteris Krumins <newsgroups@lf.lv>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 8 Apr 2003, Carles Xavier Munyoz [iso-8859-15] Bald=F3 wrote:
+Peteris Krumins wrote:
 
-Hi Carles.
+>hello,
+>
+> i was just testing psd match and w/ ftp active mode.
+>
+> I created 10000 files on the ftp server and set my ftp client to
+> active mode and let it download those files while having
+> `iptables -A INPUT -p tcp -m psd -j REJECT --reject-with tcp-reset`
+> (with psd default threshold/weigh values).
+> The psd matched 3136 packets.
+>
+> Ftp server went mad issuing:
+>  425: Unable to build data connection: Connection refused
+>
+> This means i cannot relay on psd and block 'possible portscans'?
+> Any suggestions?
+>
+> The same would happen, if i created some rules with limit match..
+>
+>  
+>
 
-=09Check the tools available at http://www.caida.org
-which allow to graph all internet traffic by service/protocol.
+I never have this problem. I think you should accept RELATED before the 
+psd match.
 
-=09regards,
-
-> Is there any way using NetFilter to get the bandwidth usage of this kind =
-of
-> traffic data to build the corresponding MRTG traffic graphics ?
-
-+------------------------------------------------+
-! Jordi Bruguera i Cortada         jordi@grn.es  !
-! Cap T=E8cnic                                     !
-! GRN Serveis Telem=E0tics, SL Tel. +34 972 230000 !
-+------------------------------------------------+
+Martijn
 
 
 
