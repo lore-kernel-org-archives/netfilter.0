@@ -1,14 +1,15 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: ipv4 and ipv6 tables
-Date: Fri, 27 Aug 2004 18:30:34 -0400
+From: "it clown" <suse@mailbox.co.za>
+Subject: Re: bind 9 and iptables
+Date: Sat, 28 Aug 2004 01:32:20 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200408271830.34871.Alistair@nerdnet.ca>
-References: <412FB0D4.8080303@pbl.ca>
+Message-ID: <web-420590607@mail01.infosat.net>
+References: <D5C9032B2B09C64EA2409D6214E91AC90512F9@asimail2.alphanumeric.co
+	m>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <412FB0D4.8080303@pbl.ca>
-Content-Disposition: inline
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512F9@asimail2.alphanumeric.co
+	m>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,34 +22,71 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On August 27, 2004 06:08 pm, Aleksandar Milivojevic wrote:
-> Ok, if I have good old ipv4 packet, or good new ipv6 packet they will go
-> through respective chains in respective tables (either for ipv4 or
-> ipv6).  But how about ipv6-in-ipv4 packets?  How is this handled when
-> packet is forwarded (especially by ipv6 enabled host)?  How does the
-> packet traverse tables and chains once it reach destination and is
-> unwrapped from its ipv4 wrapper (does it go through both ipv4 and ipv6
-> tables and chains)?  Any other special cases to watch for to prevent
-> packets that should be blocked to go through ipv6 back door?
+Hi Again,
 
-	When the IPV6 packet is wrapped up in IPV4 it becomes an
-	ipv4 protocol 41 packet.
+Damn it still not working why i said it was working was was
+because of cached ip's as soon as i tried to access a site
+that hasn't been cached it would give me a unknown host
+error.
 
-	You need to allow protocol 41 through the ipv4 rules to let the ipv6-in-ipv4 
-stuff through.
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
 
-	in my case 
+iptables -A INPUT -p udp -i eth0 -s 192.168.0/24 -d
+192.168.0.1 --dport 53 -j ACCEPT
+iptables -A INPUT -p tcp -i eth0 -s 192.168.0/24 -d
+192.168.0.1 --dport 53 -j ACCEPT
+iptables -I OUTPUT -m state --state ESTABLISHED,RELATED -j
+ACCEPT
 
-	iptables -I INPUT 3 -p 41 -s {ipaddress of tunnel server} -d {my external 
-ipv4 address} -j ACCEPT
-	iptables -I OUTPUT 7 -p 41 -s {my external ipv4 address} -d {ipaddress of 
-tunnel server} -j ACCEPT
+iptables -I INPUT -i lo -j ACCEPT
+iptables -I OUTPUT -o lo -j ACCEPT
 
-	you would likely want the rules in different locations in INPUT and OUTPUT 
+iptables -A FORWARD -i eth0 -o ppp0 -p tcp -j ACCEPT
+iptables -A FORWARD -i eth0 -o ppp0 -p udp -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+
+Thats my rules im trying to get dns to work atm.
+
+When i comment these out everything works fine:
+
+#iptables -P INPUT DROP
+#iptables -P OUTPUT DROP
 
 
-	Alistair Tonner
-	
-	(after bouncing head on desk for days trying to get mine working, I'll make 
-yer life a little easier)
+On Fri, 27 Aug 2004 17:19:07 -0400
+ "Jason Opperisano" <Jopperisano@alphanumeric.com> wrote:
+> > Hi
+> >
+> > Thanks this seemed to have done the trick.I had to add
+> > another rule for tcp aswell. Is it possible for these
+> rules
+> > to slow my browsing abit? Because it seems asif my
+> browsing
+> > is abit slower now since i used the rules?
+> 
+> quick answer:  no.
+> 
+> long answer:  it has been discussed on this list
+> previously that connection tracking DNS queries/responses
+> on or for a busy DNS server (i think the number was ~ 200
+> queries/second) will slow the name resolution process
+> down.  the reason being that the state creation adds
+> noticeable, unnecessary latency, as most (all?) queries
+> are one packet request--one packet response.
+> 
+> somehow i don't think this applies here.
+> 
+> oh--and i'll chime in with the obligatory:  don't run a
+> DNS (or any other) server on your firewall.
+> 
+> -j
+> 
+
+_____________________________________________________________________
+For super low premiums ,click here http://www.dialdirect.co.za/quote
 
