@@ -1,12 +1,14 @@
-From: Rahul Jadhav <rahul@iatp.org>
-Subject: Re: Can somebody help me with setting up a server behind a sdsl router?
-Date: Mon, 16 Dec 2002 13:51:42 -0600
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: problem with UN-DNAT, source is same machine
+Date: Mon, 16 Dec 2002 16:22:46 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DFE2ECE.2080901@iatp.org>
-References: <010801c2a527$782dcbd0$5d01a8c0@jason>
+Message-ID: <200212161622.46685.netfilter@newkirk.us>
+References: <3DF2E9D3.6010006@technologist.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DF2E9D3.6010006@technologist.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,56 +18,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jason Corekin <jason@corekin.no-ip.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Frank Wallingford <frank.wallingford@technologist.com>, netfilter@lists.netfilter.org
 
-Jason!
-Did you guys try
-1. enabling 'nat translations' on the router.
-2. setting up 'nat server list' and if one already exists, (which is 
-generally the case) add your mail server's ip to the list.
-I believe your problem can be solved by doing just that.
-good luck!
-Rahul
+On Sunday 08 December 2002 01:42 am, Frank Wallingford wrote:
+> Here's one I can't quite wrap my head around.
 
-Jason Corekin wrote:
+> iptables -t nat -A OUTPUT -d 192.168.0.100 --dport 22 \
+>    -j DNAT --to 192.168.0.200
+>
+> Now, I'm only trying to get this one case working:
+>
+> (from machine 192.168.0.100:) ssh 192.168.0.100
+>
+> and I'd like it to connect to 192.168.0.200. I'm not sure why it
+> isn't.
 
-> I have a friend who is trying to setup a Netopia R7100 sdsl router.  I 
-> know that this is not a netfilter specific question, but it is largely 
-> the same stuff, just a different implementation. He has a few 
-> different publicly registered static ip's and has had one of the 
-> assigned to the dsl connection and has had it configured to pass the 
-> connection then to another router that is NATing for his internal 
-> network.  Now he wants to use another one of his publicly registered 
-> static ip's for his mail server, which we are trying to plug into one 
-> of the unused jacks on the built it hub on the R7100.  The problem is 
-> that we can not get the R7100 to respond to more then one public 
-> address.  Is there a way that we should be able to setup the R7100 
-> such that it would route the second address through it to the mail 
-> server?  How would the rest of the internet know to talk to the R7100 
-> to get to his mail server?  This sounds like just a basic routing 
-> issue but my knowledge is limited.
->  
-> Thanks for any help you might offer
->  
-> Jason Corekin
+>  From what I understand, this should be the case:
+> (1) The packet starts as
+> =09SOURCE: 192.168.0.100:port_a (some random port)
+> =09DEST:   192.168.0.100:22
+> (2) While traversing the OUTPUT chain in the NAT table, it's changed:
+> =09SOURCE: 192.168.0.100:port_a
+> =09DEST:   192.168.0.200:22
+> (3) The packet is sent out
+> (4) Host 192.168.0.200 sees it and sends the reply
+> =09SOURCE: 192.168.0.200:22
+> =09DEST:   192.168.0.100:port_a
+> (5) The packet arrives, and is un-snat'd:
+> =09SOURCE: 192.168.0.100:22
+> =09DEST:   192.168.0.100:port_a
+> (6) The local process sees a reply from the local machine, and accepts
+> it.
+>
+> What's actually happening is that it's getting as far as (4), and the
+> reply comes in, but the local process doesn't accept it. I'm guessing
+> this is because it wasn't un-snat'd correctly, or I'm doing something
+> wrong.
 
+Are you sure you are allowing it through the INPUT chain?  You can=20
+confirm whether or not it is reaching that point with two log rules, one=20
+as first in PREROUTING, one as first in INPUT.  If it hits both, then it=20
+is likely being dropped in INPUT, but is getting unDNATted properly.  If=20
+it gets here, check the info on the packet logged at the INPUT chain and=20
+make sure that you have a rule to allow it through.
 
-
--- 
-         __  __     __   __	
-        /_/ /_ \  _/ /  /  \	Institute for Agriculture
-       __  __/ / \  _/ / / /	and Trade Policy
-      / / /   /  / /  / __/	2105 First Ave S
-     / / / / /  / /_ / /	Minneapolis MN 55404
-     \/  \__/   \__/ \/		http://www.iatp.org
-
-       I N F O R M A T I O N   T E C H N O L O G Y
-
-The best things in life are done by people with nowhere to turn.
-                                -The Blind Assassin (Margaret Atwood)
-
-
-
+j
 
