@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: sub interface filtering
-Date: Wed, 2 Apr 2003 15:56:00 -0500
+Subject: Re: "connection tracking" and "Connection state"?
+Date: Wed, 2 Apr 2003 16:04:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304021556.00113.netfilter@newkirk.us>
-References: <000b01c2f947$feb84a80$8b01a8c0@win2k.com>
+Message-ID: <200304021604.16256.netfilter@newkirk.us>
+References: <F9fFM7FJ5l7rOwSbiqW0000601a@hotmail.com> <00d301c2f92d$2e7b9210$2700a8c0@video>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000b01c2f947$feb84a80$8b01a8c0@win2k.com>
+In-Reply-To: <00d301c2f92d$2e7b9210$2700a8c0@video>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +19,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Mike <mikeeo@msn.com>, netfilter@lists.netfilter.org
+To: "Intercom@x" <intercomax@yahoo.com.br>, Netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 02 April 2003 01:45 pm, Mike wrote:
-> Hi guys I have the following setup and rules. And I cant seem to get
-> the filtering to work.
-
-> iptables -t nat -A PREROUTING -p tcp <routeable internetIP/28> --dport
-> 80 -j DNAT --to 192.168.1.197
+On Wednesday 02 April 2003 10:33 am, intercomax@yahoo.com.br wrote:
+> Hi all,
 >
-> iptables -t nat -A PREROUTING -p tcp <routeable internetIP/28> --dport
-> 443 -j DNAT --to 192.168.1.197
-> iptables -t nat -A POSTROUTING -o eth2 -s 192.168.1.197 -j SNAT --to
-> <routeable internetIP/28
+> Is it possible to redirect any url request to another address, from an
+> internal nat address requesting a valid url to a internal specific
+> address? Something like  iptables -t nat -A PREROUTING -p tcp -d
+> 192.168.0.0/255.255.0.0 --dport 80 -j DNAT --to-destination
+> 192.168.5.254:80 ?
 
-> but when I scan eth2:1 or eth2:2 from an outside machine I can see ALL
-> the local services (ssh, ptptp,dns etc..) Is connection not passing
-> the forwading chain?
-
-You are DNATting dport 80 and dport 443, but the remainder of the ports=20
-are not being DNATted, so they still target the firewall box.  You'd=20
-need to DNAT all connections to the specified IP, then DROP all except=20
-ports 80 and 443 in FORWARD to avoid this.
-
-Of course, this also shows that you are letting lots of (all?!?) ports=20
-through the INPUT chain to the box itself from outside, which you should=20
-lock down as well...  A DROP policy on INPUT is called for, then ACCEPT=20
-required ports from eth2 for externally-accessed services (if any) and=20
-ACCEPT required (or all if desired) ports from the LAN machines.
+Yes.  However with your scenario above, if the client making the request=20
+is in 192.168.0.0/16 then it will connect directly to the host, not=20
+through the firewall.  If the destinations being redirected are public=20
+IPs with a local client, and the DNAT target is also local, then it is=20
+also necessary to add:
+iptables -t nat -A POSTROUTING -p tcp --dport 80 -d 192.168.5.254 -j SNAT=
+=20
+--to {FirewallLocalIP}
+So that replies will be sent to the firewall to be unDNATted (and now=20
+unSNATted) to show the IP the client expects a reply from.
 
 j
 
