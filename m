@@ -1,14 +1,12 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: Multiple VPN Masquerading Works !! Thanks Everyone !
-Date: Sun, 08 Sep 2002 19:04:53 -0700
+From: "Didier Hung Wan Luk" <DidierH@frci.net>
+Subject: RE: Iptables rules...
+Date: Mon, 9 Sep 2002 08:06:08 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPOEPPCNAA.stewart.thompson@shaw.ca>
-References: <1031533259.3437.59.camel@hyperno>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <39778BFB9C25BA429794B15B50AEC78104E968@server-dcms>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <1031533259.3437.59.camel@hyperno>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +17,80 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rommy Taslim <rommyt@transportservices.com.au>, netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+Thanks :-))
 
-Rommy:
+Didier Hung Wan Luk
+FRCI, Sibotie House
+L'Anse Courtois
+Pailles
+Tel: 230-2869636
+Fax: 230-2869629
+
 
 -----Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Rommy Taslim
-Sent: September 8, 2002 6:01 PM
-To: netfilter@lists.netfilter.org
-Subject: Multiple VPN Masquerading Works !! Thanks Everyone !
+From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]=20
+Sent: Saturday, September 07, 2002 2:37 PM
+To: Netfilter Mailing List
+Subject: Re: Iptables rules...
 
-Hi All,
+On Saturday 07 September 2002 10:39 am, Didier Hung Wan Luk wrote:
 
-I just want to thank you all for the time and help to get my multiple
-vpn masquerading works.
+> Hi All,
+>
+>
+> I am new to firewall/iptables can someone help me to clear up some =
+concepts
+> about firewalling?
+>
+> If my default rule for the input chain of my external interface is =
+DROP
+> need I again specify to DROP packets in the INPUT chain of my external
+> interface?
 
-Thanks to Harald Welte, Rob Sterenborg, Stewart Thompson, hard_ware
-(till now I don't really know your name, sorry), and anyone else that I
-forgot to mention here (sorry about that) but have been helpfull for me.
+There is only one INPUT chain.   The rules and the default policy apply =
+to=20
+all interfaces.
 
-Turns out my problem was because my routing isn't right. The pptp server
-should have a default gateway to the netfilter box (like hard_ware
-said), and also in my iptables rules I need to set the default rules to
-DROP for INPUT and OUTPUT. I guess it won't work if we have ACCEPT for
-all INPUT and OUTPUT when we try to do DNAT (correct me if I'm wrong).
+> #My Default rule
+> iptables -P INPUT DROP
+>
+> #Drop all attempts on my ext. interface trough port 6000:6063
+>
+> iptables -A INPUT -i ppp0 -p tcp --dport 6000:6063 -j DROP
+>
+> If I am right I think that I need not include a rule again saying to =
+drop
+> packets to my 6000;6063 ports since I do not have a rule saying to =
+accept
+> connections on these ports...
 
-Stu-This won't prevent things from working as long as you aren't trying to
-forward and use the same ports on the Firewall Machine. Things won't
-quite work the way you expect. Using the Drop Policy is just good
-security. However, it is jut one facet of security. Disabling unused
-functions, your hosts and access files etc are all part of it.
+If you have a default DROP policy, then you should not (normally) need =
+to=20
+specify any DROP rules.   If you do not have a rule ACCEPTing certain=20
+packets, then they will be DROPped by default.   That is what the policy =
+is=20
+for.
 
-Well, that what I think. Sorry if I still got this all wrong. But the
-main thing is my multiple vpn masquerading works fine now. Once again,
-thanks to all of you guys that have spared some times to help me out. I
-really appreciate it.
-Glad to hear you got things straitened out.
+For example:
 
-Stu........
+iptables -P INPUT DROP
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 
+will drop SMTP traffic on port 25, because there is no rule ACCEPTing =
+it.
 
+These rules will also drop POP3, IMAP, FTP, IDENT.......   everything =
+except=20
+HTTP.
 
-Regards,
-Rommy
+Antony.
 
+--=20
+
+90% of network problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
 
 
