@@ -1,12 +1,13 @@
-From: Aaron Clausen <maureen-taocow@alberni.net>
-Subject: Re: cbq.init and iptables NAT routing
-Date: Thu, 3 Oct 2002 13:15:57 -0700 (PDT)
+From: "Yogini Parkhi" <yparkhi@bivio.net>
+Subject: RE: log all dropped packets
+Date: Thu, 3 Oct 2002 15:20:00 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0210031314220.27868-100000@ts1.alberni.net>
-References: <1033672321.682.12.camel@elendil>
+Message-ID: <385DA3327471554CA86AACAA2BBB81302513D9@plstnexc01.corp.networkrobots.com>
+Reply-To: "Yogini Parkhi" <yparkhi@bivio.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1033672321.682.12.camel@elendil>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Aaron Clausen <maureen-taocow@alberni.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="euc-kr"
+To: SB CH <chulmin2@hotmail.com>, netfilter@lists.netfilter.org
 
-On 3 Oct 2002, Cedric Blancher wrote:
->
-> Imho, you must have set up your eth0 rule with SNAT address, which does
-> not work, as explained below.
+For Q1. You can do a little trick and create a user chain called LOGDROP =
+and then use that.
+e.g.
+iptables -N LOGDROP
+iptables -j LOG -log-preifx "LOGDROP: "
 
-Here's the portion of my iptables script which sets up NAT.  Maybe you can
-gleam something more from this.  It should be noted that I'm not using NAT
-for security purposes, and I have it set up so my local public subnet can
-see the NAT addresses.
+now, where ever you were using target DROP, use LOGDROP instead. This =
+way you can make sure you log things before dropping.
 
-iptables -t nat -A PREROUTING -i eth0 -d 64.251.69.2 -j DNAT --to 10.102.106.2
-iptables -t nat -A POSTROUTING -o eth0 -s 10.102.106.2 -j SNAT --to 64.251.69.2
-iptables -t nat -A PREROUTING -i eth0 -d 64.251.69.3 -j DNAT --to 10.101.106.2
-iptables -t nat -A POSTROUTING -o eth0 -s 10.101.106.2 -j SNAT --to 64.251.69.3
+For logging traffic handled by default policy you will have to have a =
+last rule in all default chains - INPUT, OUTPUT, FORWARD that logs =
+traffic with the right prefix.
 
-iptables -t nat -A POSTROUTING -o eth0 -s 10.101.104.0/21 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o eth0 -s 10.102.104.0/21 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o eth0 -s 10.103.104.0/21 -j MASQUERADE
+Iptables -A INPUT -j LOG -log-prefix "INPUTDEFAULT: "
+Iptables -A INPUT -j LOG -log-prefix "FORWARDDEFAULT: "
+Iptables -A INPUT -j LOG -log-prefix "OUTPUTDEFAULT: "
+
+Hope this helps you.
+-Y
 
 
--- 
-Aaron Clausen
 
+-----Original Message-----
+From: SB CH [mailto:chulmin2@hotmail.com]
+Sent: Tuesday, October 01, 2002 6:19 PM
+To: netfilter@lists.netfilter.org
+Subject: log all dropped packets
+
+Hello, all.
+
+my two questions are similar.
+
+Question1.
+I would like to log all Dropped packet.
+How can I write a log about all dropped packet?
+
+
+Question2.
+Surely, my default policy is DROP.
+and one can't log about related default Policy.
+How can I log packet information about default policy related?
+
+
+Thanks in advance.
+
+
+
+_________________________________________________________________
+=BA=B8=B4=D9 =BA=FC=B8=A3=B0=ED =BA=B8=B1=E2 =C6=ED=C7=D1 =B4=BA=BD=BA. =
+=BF=C0=B4=C3=C0=C7 =C8=AD=C1=A6=B4=C2 MSN =B4=BA=BD=BA=BF=A1=BC=AD =
+=C8=AE=C0=CE=C7=CF=BC=BC=BF=E4.
+http://www.msn.co.kr/news/
 
