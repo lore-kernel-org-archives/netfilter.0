@@ -1,16 +1,13 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: learning firewall
-Date: 05 Sep 2004 18:35:40 +0200
+From: Jose Maria Lopez <jkerouac@eresmas.com>
+Subject: Re: No chain/target/match by that name
+Date: 05 Sep 2004 18:41:03 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094393906.3726.2.camel@nostromo.bgsecm.com>
-References: <20040902191645.GA28800@omega.lacnic.net.uy>
-	<20040903102543.GI3755@metastasis.org.uk>	<1094215486.3029.4.camel@Quark>
-	<1094222078.25616.17.camel@nostromo.bgsecm.com>
-	<413A34EC.3040507@mail.co.gilchrist.fl.us>
+Message-ID: <1094402462.3726.6.camel@nostromo.bgsecm.com>
+References: <413B233C.3000601@yhgfl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <413A34EC.3040507@mail.co.gilchrist.fl.us>
+In-Reply-To: <413B233C.3000601@yhgfl.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,66 +18,106 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: Eric Ellis <eellis@mail.co.gilchrist.fl.us>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El s=C3=A1b, 04 de 09 de 2004 a las 23:34, Eric Ellis escribi=C3=B3:
-> Jose Maria Lopez wrote:
-> > El vie, 03 de 09 de 2004 a las 14:44, Miguel Angel Amador L escribi=C3=
-=B3:
-> >=20
-> >>Hi All,
-> >> I have a questions, what module i must be install for the P2P
-> >>conections ? (sorry for my english, is very slow)
-> >> Thnx a lot=20
-> >>
-> >>Regards
-> >> Miguel Amador L.
-> >>
-> >=20
-> >=20
-> > The port I use to block P2P (or to allow them if you want) are:
-> >=20
-> > KAZAA 1214/tcp
-> > NAPSTER 8888/tcp 7777/tcp 8875/tcp
-> > EDONKEY/EMULE 4662/tcp 4663/tcp
-> > WINMX 6699/tcp
-> >=20
-> > But have in mind that some of this programs can use SOCKS proxies or
-> > even standard ports like port 80/tcp to send or receive traffic. It
-> > can be a little tricky to stop them (easier to allow them, just open
-> > this ports and they will run).
-> >=20
-> >=20
-> I will be the first of many to say the following:
->=20
-> Don't allow everything and drop what you don't want to get in.  This is=
-=20
-> bad form from a security standpoint, as there will almost always be new=
-=20
-> things that use different ports.  Best practice is to drop everything,=20
-> and allow what you want through explicitly.  The initial set up might b=
-e=20
-> more difficult, and your rule list probably longer than the other way,=20
-> but in the end, your network security is what matters, and this practic=
-e=20
-> will help ensure that much better.
+El dom, 05 de 09 de 2004 a las 16:31, Steve Turnbull escribió:
+> Hi
+> 
+> Our web server is configured;
+> Debian (Woody) (No X installed)
+> Kernel 2.4.23 - configured with iptables in mind
+> iptables v1.2.6a
+> 
+> When we start the firewall script, we get this message;
+> 'No chain/target/match by that name'
+> 
 
-I totally agree with that. If you look at our project bastion-firewall
-you should note that it always uses a deny policy and then open the
-ports you want to. What I was referring to it was that many people want
-to allow P2P, and that allowing P2P it's easier than blocking them, but
-of course the default policy in any modern firewall should be to deny
-all ports and then allow the traffic in some of them.
+You should check your firewall script and find the rule
+that it's giving the error, just run it with "bash -x <script>"
+and you can see line by line what's happening. Maybe it's
+a misspelling of a rule.
 
+> The firewall works however, but is constantly logging;
+> 'Sep  5 16:00:52 www kernel: Input: IN=eth0 OUT= 
+> MAC=00:e0:81:29:01:75:00:07:85:06:c2:e1:08:00 SRC=195.92.195.93 
+> DST=195.92.38.54 LEN=302 TOS=0x00 PREC=0x00 TTL=61 ID=0 DF PROTO=UDP 
+> SPT=53 DPT=32833 LEN=282'
+> 
 
---=20
+This is DNS normal traffic I think, so you shouldn't be logging
+it.
+
+> Something is ammis here, and we can't ping out from the server with the 
+> firewall running, also, we can't use Lynx to browse. Turn the firewall 
+> off and all is well for both of these.
+> 
+
+If you turn the policy to deny and then the firewall script gives an
+error and exits then you don't have the ports you need open and that's
+the problem.
+
+> Has anybody got any ideas what is wrong? Our firewall rule is below.
+> 
+> Regards
+> Steve
+> 
+> 
+> 
+> #!/bin/sh
+> 
+> 
+> #
+> # This is the firewall up script.
+> #
+> 
+> #
+> # Lets start by dropping all incoming traffic and allowing all
+> # outbound traffic
+> #
+> 
+> iptables -P INPUT DROP
+> iptables -P FORWARD DROP
+> iptables -P OUTPUT ACCEPT
+> 
+> 
+> 
+> # Flush any existing rules...
+> iptables -F
+> 
+> 
+> # Allow any established connections to come on through...
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> 
+> # This is a web server. We only require access to http ports
+> # 80,21,53 and 443. New ports to allow will be added here...
+> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+> iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+> 
+> #ssh
+> iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+> 
+> #ftp
+> iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+> 
+> #DNS
+> iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+> iptables -A INPUT -p udp --dport 53 -j ACCEPT
+> 
+> 
+> # Allow the loopback connection...
+> iptables -A INPUT -i lo -j ACCEPT
+> 
+> 
+> # Log stuff that doesn't match above rules...
+> iptables -A INPUT -j LOG --log-prefix="Input: "
+-- 
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
 jkerouac@bgsec.com
 bgSEC Seguridad y Consultoria de Sistemas Informaticos
 http://www.bgsec.com
-ESPA=C3=91A
+ESPAÑA
 
 The only people for me are the mad ones -- the ones who are mad to live,
 mad to talk, mad to be saved, desirous of everything at the same time,
