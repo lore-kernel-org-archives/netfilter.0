@@ -1,9 +1,11 @@
-From: pdcleyn <pdcleyn@uia.ua.ac.be>
-Subject: Buffering
-Date: Wed, 6 Nov 2002 11:44:10 +0100 (CET)
+From: Carlos.facanha <carlos.facanha@frontier.com.br>
+Subject: Question on INPUT and PREROUTING chains
+Date: Wed, 6 Nov 2002 19:14:16
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33L2.0211061134130.24372-100000@pcinf26.uia.ac.be>
+Message-ID: <E189XVl-0008TW-00@kashyyyk.netfilter.org>
+Reply-To: Carlos.facanha <carlos.facanha@frontier.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,54 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+I have a Linux box used as NAT server and firewall. All requests on its port
+80 are forwarded to a local webserver inside my network. I want to block
+access to all services including http from a specific external host.
 
-My question: Does the ip_queue module has a limited buffer for received
-packets per stream and if so can I change its size?
+I'm using the following rule to block the host
 
-Why ...
+iptables -A INPUT -i $extint -s $hostip -j DROP
 
-I want to write an application that buffers incomming data from a network
-connection into a circular buffer and reinject these packets onto the
-network when I want this to happen.
+and this one to do the NAT
 
-My first idea was to use the QUEUE target and using a userspace program to
-postpone the verdict to a later moment. Its a simple change of the sample
-code provided in the libipq manpage, putting each packet into an array
-and if the array is filled I flush it by issueing a verdict on every
-packet.
+iptables -t nat -A PREROUTING -p tcp --dport 80 -d $extip -j DNAT --to
+$webserverip:80
 
-As long as the array is nog to big and thus is flushed regularly, all is
-fine. However increasing the buffer showed that the QUEUE stoped accepting
-packets after a fixed number, depending on the payload of the packets. So
-I asume there is a limited buffer per stream in de ip_queue module and
-thus my question is can I change its size?
+The problem is that the host is blocked from accessing all services but
+http. I've already checked if there are any rules before that ACCEPT the
+request. It seems that prerouted packets are bypassing the INPUT chain.
 
-Another question, is this the right appraoch or should I write my own
-target?
+Is it correct? If not, what am I doing wrong?
 
-Thanks,
+TIA
 
-Peter
+Carlos Fa=E7anha
 
--- 
- _______________
-/ Peter De Cleyn\
--------------------------------------------------------
-| Phone:                +32 (0)3 820.24.18            |
-| Fax:                  +32 (0)3 820.24.21            |
-| email:                peter.decleyn@uia.ua.ac.be    |
-|                                                     |
-| University of Antwerp (UIA)                         |
-| Dept. Mathematics and Computer Science              |
-| PATS Research Group                                 |
-| Universiteitsplein 1                                |
-| B-2610 Wilrijk                                      |
-| Belgium                                             |
--------------------------------------------------------
+
+________________________________________________
+Este email foi enviado por Frontier.mail
 
 
