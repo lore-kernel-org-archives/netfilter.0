@@ -1,12 +1,11 @@
-From: "Paul Albert" <palbert@rovingplanet.com>
-Subject: iptables and 802.1q tagging
-Date: Tue, 27 May 2003 11:22:44 -0600
+From: Drew Einhorn <drew.einhorn@starband.net>
+Subject: vpn between networks with private ip network segment conflicts
+Date: 27 May 2003 10:03:20 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <661F9268BBA8CB4EB92CC12B8C42F06901F63B@pluto.rovingplanet.com>
+Message-ID: <1054051400.1836.56.camel@lo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter list <netfilter@lists.netfilter.org>
 
-Hi -=20
+My LAN uses network segments 192.168.0.0/24, 192.168.1.0/24, etc.
+So does the remote network I need to vpn to (probably using some flavor
+of pptp).
 
-I'm using a box with 2 network interfaces as a bridge with iptables.  I
-was attempting to send packets that were 802.1Q tagged to the QUEUE
-target and didn't see them as expected.  After checking out my
-configuration, it seemed that everything was working as expected (I
-fully expected something to be incorrect).
+Is there an odd nat variant that will solve this problem.
+Probably need to do some kind of dns transformation on each side.
 
-I googled to determine whether an iptables bridge that is filtering on
-IP addresses would be smart enough to pick up on the fact that the
-packets have 802.1Q tags or not.  No definitive answer was found.  My
-question is just that - does iptables notice that the tag is present or
-will it not know what to do with such a packet?
+Is there any easy solution.  Perhaps it would be easier (but not easy)
+to get the network segments renumbered on one end or the other.
 
-Thanks,
-Paul
+-- 
+Drew Einhorn <drew.einhorn@starband.net>
+
 
