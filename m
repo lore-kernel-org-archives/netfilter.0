@@ -1,12 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Can I add a module to a prebuilt kernel?
-Date: Thu, 3 Jun 2004 09:52:26 +0200 (CEST)
+Subject: RE: magle, filter & FORWARD
+Date: Thu, 3 Jun 2004 10:02:42 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0406030949440.10743-100000@blackhole.kfki.hu>
-References: <20040602190641.GQ18797@wellnow.com>
+Message-ID: <Pine.LNX.4.33.0406030956100.10743-100000@blackhole.kfki.hu>
+References: <20040602193313.85458.qmail@web41711.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040602190641.GQ18797@wellnow.com>
+In-Reply-To: <20040602193313.85458.qmail@web41711.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +18,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jeff Gordon <jeff.gordon@wellnow.com>
+To: "Kevin D. White" <web_crawlz@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-On Wed, 2 Jun 2004, Jeff Gordon wrote:
+On Wed, 2 Jun 2004, Kevin D. White wrote:
 
-> > Jeff Gordon wrote:
-> > > I'm running a RH ES 3 system, and it appears _support_ for ipt_recent
-> > > is included in the kernel but libipt_recent.so is nowhere to be found.
-> > > Kernel source for the prebuilt kernel in the distribution is available.
-> >
-> > In general, if a kernel feature is built into the kernel there is no
-> > appropriate module file. Because the functionality is in the kernel.
->
->  - If I do 'modprobe ipt_recent' and then 'lsmod |grep ip',
->    I see 'ipt_recent' at the top of listing.
->
->  - However, if I then add a rule with '-m recent' in it,
->    iptables complains it can't find libipt_recent.so.
+> Netfilter is made up of 5 subsystems, Pre-routing,
+> Input, Forward, Output and Post-routing.  These
+> subsystems are governed by three tables, nat, magle,
+> filter.  The elements of these tables have the
+> following characteristics.  First there is a 'hook' or
+> subsystem identifier (i.e. PREROUTING, INPUT, FORWARD,
+> etc), then there is a condition and finally there is
+> an Action/Target.  All received packets begin in the
+> Pre-routing subsystem, the Pre-routing subsystem
+> accesses the nat table and looks for all it's hooks
+> (all elements with PREROUTING).  Then the same is done
+> with the mangle table.  A routing decision is made,
+> and the packet would either move into the Input
+> subsystem or the Forward subsystem were the tables for
+> those subsytems would be accessed and so on.  All
+> packets end up in the Post-routing subsystem before
+> leaving an interface.
 
-That's the iptables shared library for recent match, which is missing from
-your systems. In other words the iptables binary lacks the recent match
-support and thus you cannot use the feature available in the kernel.
+Sorry, but the wording used above is incorrect and misleading.
+
+Netfilter is *not* made of five subsystems and PREROUTING etc are
+definitely not subsystems of netfilter.
+
+> I am intentionally ignoring user created hooks.
+
+Just consider if you not ignore user created chains (not hooks): were
+they also netfilter "subsystems"?
+
+Hooks, built-in chains, subsystems and tables are well covered in the
+howtos and the tutorials. Please read them.
 
 Best regards,
 Jozsef
