@@ -1,10 +1,11 @@
-From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
-Subject: Multi source/destination ip address
-Date: Mon, 21 Feb 2005 15:33:19 +0100
-Message-ID: <200502211533.19645.marcin.giedz@eulerhermes.pl>
+From: dave frost <dj.frost@blueyonder.co.uk>
+Subject: solaris
+Date: Mon, 21 Feb 2005 14:53:11 +0000
+Message-ID: <4219F5D7.6030306@blueyonder.co.uk>
+References: <200502211533.19645.marcin.giedz@eulerhermes.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+In-Reply-To: <200502211533.19645.marcin.giedz@eulerhermes.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,23 +16,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Hello...
+is netfilter available for solars ? any docs on this would be apreciated
 
-Today I have stopped on next problem. I've just want to block almost all 
-connection on 80 port in my router with destination list's addresses. 
-"Almost" because some connection are forwarded to another router in my LAN. 
-So this is the rule:
+cheers
 
-iptables -A FORWARD -p tcp -port 80 -d ! 192.168.131.0/24 && 192.168.110.0/24 
--j  DROP
-
-But it doesn't work.... in iptables spec. -d is only connect with single 
-address not list. I found also iprange extension but it doesn't suit me. Is 
-it possible to have list destination/source addresses in iptables rule?
-
-Thanks,
-Marcin
+dave
 
