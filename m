@@ -1,13 +1,12 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: IPTABLES + IPROUTE2
-Date: Fri, 23 Jan 2004 20:04:57 -0500
+From: Sven Riedel <sr@gimp.org>
+Subject: Filtered Port 21 somewhat open - iptables weirdness?
+Date: Sat, 24 Jan 2004 02:48:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040124010457.GA8126@cannon.eng.us.uu.net>
-References: <EHENIKBEJAMHPLPJOJBPCEDKDIAA.lucho@galix.com>
+Message-ID: <20040124014842.GA9219@localnet>
+Reply-To: sr@gimp.org
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <EHENIKBEJAMHPLPJOJBPCEDKDIAA.lucho@galix.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "L.Malinov" <lucho@galix.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, Jan 23, 2004 at 01:44:38PM +0200, L.Malinov wrote:
+Hi,
+one of the machines I administer to is running iptables with an input
+policy of drop, and allows only a few, selected services. Ftp is most
+definitely not among them, and there is no ftp server installed on the
+machine in question. 
 
-> Hi there,
-> 
-> I have the following configuration: Local Net with Linux RedHat 9.0 Squid
-> proxy server (with one net card) and 2 gateways - router1 and router2. The
-> default gateway for everyone including the proxy is router1. I'd like, the
-> http request from the local net sent to the proxy to be forwarded to the
-> Internet via router2. I'm trying the following configuration:
-> 
-> iptables -A OUTPUT -o eth0 -t mangle -p tcp --dport 80 -j MARK --set-mark 2
+nmap -P0 -sS reports that among the expected, port 21 is open.
+telnetting to port 21 shows indeed a successful connect:
+radagast@angmar:~>telnet <machine> 21
+Trying <ip>...
+Connected to <machine>
+Escape character is '^]'.
+^]
+telnet> quit
 
-A suggestion: remove "-o eth0" from the above.
+But it just sits there, no welcoming banner, no response to obvious
+ascii-commands.
 
-> echo 202 www.out >> /etc/iproute2/rt_tables
-> ip rule add fwmark 2 table www.out
-> ip route add default via router2 dev eth0 table www.out
-> 
-> It looks like the packets go through the right chain under iptables and get
-> marked, however after that they still don't get forwarded via router2 but
-> router1. What could be wrong in this config and is this possible to achieve
-> at all with the above configuration?
-> 
-> Regards
-> 
-> L.Malinov
-> 
+At the same time the kernel logs report that my telnet packets are being
+blocked by iptables. hping2 -A gets reset packets from that port as
+well, as if it weren't filtered, while amap shows me nothing of value. 
+
+Is this maybe some ip_conntrack weirdness? I already sweeped the machine
+as well as I could and so far I came up with no indication for a rootkit
+or backdoor. 
+
+Regs,
+Sven
+-- 
+Sven Riedel                      sr@gimp.org
+Liebigstr. 38 
+30163 Hannover                  "Python is merely Perl for those who
+                                 prefer Pascal to C" (anon)
 
