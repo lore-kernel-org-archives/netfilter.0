@@ -1,13 +1,14 @@
-From: Beppe <ipt@beep.mine.nu>
-Subject: Re: More H.323 questions
-Date: Wed, 03 Sep 2003 12:02:24 +0200
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: ip_contrackt message
+Date: Sat, 30 Aug 2003 22:21:18 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F55BC30.1040801@beep.mine.nu>
-References: <200309020523.WAA28180@smtp08.phx.gblx.net>
+Message-ID: <DKEDJAAMDCDBHFKPBEMPGEAMCIAA.markee@bandwidthco.com>
+References: <3F4D1828.8070605@nas.at>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200309020523.WAA28180@smtp08.phx.gblx.net>
+In-Reply-To: <3F4D1828.8070605@nas.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +18,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: ea@nas.at, netfilter@lists.netfilter.org
 
-Hi Mark,
+Can't say I've ever seen this before but I might venture to guess you State
+Table has filled up and can accept no more connections.   The number of
+connection allowed by default is determined by the amount of RAM your
+machine has, i.e. 128 MB of RAM you will get 8192 possible entries and with
+256 MB of RAM you will get 16376 entries, etc. You might try increasing the
+number of permitted table entries by setting
+/proc/sys/net/ipv4/ip_conntrack_max to a
+higher number and see if the system corrects itself.  This is just a guess.
 
-Mark Goldberg wrote:
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Erwin Ambrosch
+Sent: Wednesday, August 27, 2003 1:44 PM
+To: netfilter@lists.netfilter.org
+Subject: ip_contrackt message
 
-> I've built kernel 2.4.22 with the h.323 extensions from pom. Iptables is 1.2.8. I installed teh new kernel and included the following rules:
-> 
-> Basically, I want to only establish h.323 with a specific ip after I initiate it from an internal machine on the network normally using NAT.
-> 
-> /usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1503 -i eth0 -j LOG --log-level 6 --log-prefix "1503 in "  >>/var/log/netfiltersetup.log 2>&1
-> /usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1720 -i eth0 -j LOG --log-level 6 --log-prefix "1720 in "  >>/var/log/netfiltersetup.log 2>&1
-> /usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -i eth0 -j LOG --log-level 6 --log-prefix "Anything else in "  >>/var/log/netfiltersetup.log 2>&1
-> 
-> /usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1503 -i eth0 -j DNAT --to $DEST  >>/var/log/netfiltersetup.log 2>&1
-> /usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1720 -i eth0 -j DNAT --to $DEST  >>/var/log/netfiltersetup.log 2>&1
-> 
 
-Check if your h.323 module is loaded, do lsmod (if its a module) if not 
-modprobe it.
+Hi all,
 
-I don't realy know but, shouldn't the state be ESTABLISHD and RELATED?
+I'm using iptables-1.2.5-3 and got the following messages in my logfile.
+Please can one say me what exactly does this mean.
 
-> There are no errors in netfiltersetup.log.
+....
+Aug 27 16:28:59 paul kernel: NET: 6 messages suppressed.
+Aug 27 16:28:59 paul kernel: ip_conntrack: table full, dropping packet.
+Aug 27 16:29:04 paul kernel: NET: 7 messages suppressed.
+Aug 27 16:29:04 paul kernel: ip_conntrack: table full, dropping packet.
+Aug 27 16:29:08 paul kernel: NET: 7 messages suppressed.
+Aug 27 16:29:08 paul kernel: ip_conntrack: table full, dropping packet.
+Aug 27 16:29:14 paul kernel: NET: 9 messages suppressed.
+Aug 27 16:29:14 paul kernel: ip_conntrack: table full, dropping packet.
+Aug 27 16:29:19 paul kernel: NET: 7 messages suppressed.
+Aug 27 16:29:19 paul kernel: ip_conntrack: table full, dropping packet.
+....
 
-There ar no errors :)
 
-> 
-> Iptables -L -v -n does not show the rules, but iptables-save does show them.
+Thanks in advance
 
-The default table is filter you have just appended in the nat table
+Erwin
 
-try
-iptables -L PREROUTING -t nat -v -n
 
-> 
-> Nothing is logged and it does not seem to work. Before the rules were added, incoming to 1503 and 1720 triggered another rule that logged them.
-> Ethereal does not show any packets coming in that match the above. It did before the rules were added.
-> 
-> If anyone has a suggestion or can explain why listing the rules does not show any PREROUTING or POSTROUTING rules, please let me know.
-> 
-> I'm basically at a loss as to what to do next. Troubleshooting tips are welcome. Thanks.
-> 
-> 
-> 
-> Mark Goldberg
-> goldber@globalcrossing.net
-> 
-> 
 
-Take care,
-::Beppe
 
 
