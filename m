@@ -1,11 +1,12 @@
-From: Andre Majorel <aym-retliften@teaser.fr>
-Subject: Distinguishing between local FTP uploads and remote FTP downloads
-Date: Sat, 8 Jan 2005 15:06:40 +0100
-Message-ID: <20050108140640.GA18766@teaser.fr>
+From: Andy Furniss <andy.furniss@dsl.pipex.com>
+Subject: Re: how to block udp frag?
+Date: Sat, 08 Jan 2005 15:53:31 +0000
+Message-ID: <41E001FB.80807@dsl.pipex.com>
+References: <2E314DE03538984BA5634F12115B3A4E01BC4203@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E01BC4203@email1.mitretek.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +17,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Cc: netfilter@lists.netfilter.org
 
-For traffic shaping purposes, I'd like to distinguish (-j MARK)
-between ftp-data packets resulting from me uploading something to
-a remote host and ftp-data packets resulting from a remote
-download from me.
+Piszcz, Justin Michael wrote:
+> Yes, if you use NAT, you cannot block fragmented packets.
 
-The goal is, of course, to be able to upload at full speed without
-letting remote hosts hog my upload bandwidth at the same time.
+Assuming my testing isn't too lame then you can drop with a policer. It 
+will still let the last packet through though, as the match is on the 
+more fragments flag. I suppose using the next field could do them all - 
+but I don't know how to say not with u32.
 
-Is there any way to do that ?
+tc qdisc add dev eth0 handle ffff: ingress
 
-Thanks in advance.
+tc filter add dev eth0 parent ffff: prio 1 protocol ip u32 \
+match ip protocol 17 0xff \
+match u8 0x20 0x20 at 6 \
+police rate 1kbit burst 10 drop \
+flowid :1
 
---=20
-Andr=E9 Majorel <URL:http://www.teaser.fr/~amajorel/>
-Do not use this account for regular correspondence.
-See the URL above for contact information.
+The rate is irrelevant here, it's the burst 10 that means that only 
+packets <= 10 bytes will ever pass.
+
+To delete it do
+
+tc qdisc del dev eth0 handle ffff: ingress
+
+To see stats -
+
+tc -s qdisc ls dev eth0
+
+Andy.
+
+PS
+
+I had to remove jason from the cc as my isps mailserver threw a domain 
+not found.
+
+> 
+> 
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Bruno Wallace
+> Sent: Monday, January 03, 2005 7:39 AM
+> To: Jason Opperisano; netfilter@lists.netfilter.org
+> Subject: Re: how to block udp frag?
+> 
+> the iptables dont see this traffic..
+> 
+> 
+> On Sat, 1 Jan 2005 19:08:45 -0500, Jason Opperisano <opie@817west.com> wrote:
+> 
+>>On Sat, Jan 01, 2005 at 09:58:41PM -0200, Bruno Wallace wrote:
+>>
+>>>hello,
+>>>how to block this?????
+>>>
+>>>20:53:44.628586 83.102.166.15 > xxx.xxx.151.35: udp (frag 1720:25@512)
+>>>(ttl 53, len 45)
+>>>0x0000   4500 002d 06b8 0040 3511 2599 5366 a60f        E..-...@5.%.Sf..
+>>>0x0010   c896 9723 11ef 0035 0019 1e70 71f7 0100        ...#...5...pq...
+>>>0x0020   0001 0000 0000 0000 0000 0200 0100             ..............
+>>>20:53:47.197264 83.102.166.24 > xxx.xxx.151.34: udp (frag
+>>>48577:25@512) (ttl 53, len 45)
+>>>0x0000   4500 002d bdc1 0040 3511 6e87 5366 a618        E..-...@5.n.Sf..
+>>>0x0010   c896 9722 11ef 0035 0019 1e68 71f7 0100        ..."...5...hq...
+>>>0x0020   0001 0000 0000 0000 0000 0200 0100             ..............
+>>>20:53:49.306206 83.102.166.76 > xxx.xxx.145.115: udp (frag
+>>>21990:25@512) (ttl 53, len 45)
+>>>0x0000   4500 002d 55e6 0040 3511 dbdd 5366 a64c        E..-U..@5...Sf.L
+>>>0x0010   c896 9173 11ef 0035 0019 23e3 71f7 0100        ...s...5..#.q...
+>>>0x0020   0001 0000 0000 0000 0000 0200 0100             ..............
+>>>20:53:49.529603 83.102.166.7 > xxx.xxx.146.119: udp (frag
+>>>26427:25@512) (ttl 53, len 45)
+>>>0x0000   4500 002d 673b 0040 3511 c9c9 5366 a607        E..-g;.@5...Sf..
+>>>0x0010   c896 9277 11ef 0035 0019 2324 71f7 0100        ...w...5..#$q...
+>>>0x0020   0001 0000 0000 0000 0000 0200 0100
+>>>
+>>>thanks
+>>>Bruno Wallace
+>>
+>>either (a) use a default deny policy that doesn't allow UDP traffic or
+>>(b) in your rules where you accept UDP traffic, specify "! -f" which,
+>>according to the man page:
+>>
+>>  When the "!" argument precedes the "-f" flag, the rule will only match
+>>  head  fragments, or unfragmented packets.
+>>
+>>-j
+>>
+>>
+> 
+> 
+> 
+
+
 
