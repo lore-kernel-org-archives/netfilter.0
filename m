@@ -1,11 +1,9 @@
-From: "Wesley Jay Deypalan" <wjdeypalan@ictuscomm.net>
-Subject: block kazaa using iptables
-Date: Thu, 24 Apr 2003 19:28:52 +0800 (PHT)
+From: Firer Icy <naifire@yahoo.com>
+Subject: NAT Pool and Kerberos
+Date: Tue, 22 Apr 2003 20:20:46 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <33407.202.138.166.5.1051183732.squirrel@mail.ictuscomm.net>
-Reply-To: wjdeypalan@ictuscomm.net
+Message-ID: <20030423032046.50069.qmail@web40603.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,16 +15,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Dear stuff,
 
-Is there a way to block kazaa using iptables?Already tried blocking port
-1214 but to no avail, I heard that kazaa change ports if it cannot connect
-using 1214.
-TIA,
+Thank you for your software which made me easy to use
+NAT.
 
-wesley
+I have some questions about Firestarter. 
+
+I have Computer
+- Clients(172.16.1.2 - 172.16.1.50) inside NAT
+- NAT (eth0 - 172.16.1.1 and eth1 - 10.0.8.24)
+- Kerberos Server (10.0.8.19)
+- Application Server (10.0.8.22)
+
+1. How could I setup Firestarter to use NAT Pool
+(Firestarter generate IP range : 10.0.8.50 - 10.0.8.55
+for Clients to connect with my Servers)?
+
+2. How could I setup Firestarter for Kerberos Protocol
+?
+
+I wait for your kindness recommendation.
+
+best regards,
+
+Tanasak Prasertsri
+IT Student, Thammasart University, Thailand.
 
 
+__________________________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo
+http://search.yahoo.com
 
