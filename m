@@ -1,12 +1,12 @@
 From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Programming without using iptables
-Date: Wed, 30 Mar 2005 10:07:28 +0200
-Message-ID: <1112170048.7456.9.camel@nostromo.bgsecm.com>
-References: <20050330024432.21809.qmail@web41728.mail.yahoo.com>
+Subject: Re: Problemas REDIRECT
+Date: Wed, 30 Mar 2005 10:10:45 +0200
+Message-ID: <1112170246.7456.12.camel@nostromo.bgsecm.com>
+References: <1112134095.8721.76.camel@admin.ucbcba.edu.bo>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050330024432.21809.qmail@web41728.mail.yahoo.com>
+In-Reply-To: <1112134095.8721.76.camel@admin.ucbcba.edu.bo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,53 +20,44 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mar, 29-03-2005 a las 18:44 -0800, Suchitra H escribi=C3=B3:
-> Hi Everyone ,
->                          I am working on a firewall project , where I n=
-eed to replace the iptables part ( which is complicated ) with my own cod=
-e ( hopefully it will be simpler ) , making use of libiptc. The whole ide=
-a is to program as though iptables dosent exist and write my own code whi=
-ch is capable of performing all the commands and output the desired resul=
-ts.  I have been able to do so for listing the chains , policy and counte=
-rs. Now I want to set the policy for a built-in chain.  Is it possible to=
- do so using libiptc ? Or is there any other altrenative to this???
->                  Not able to find any suitable resource on the net. Jus=
-t one - Querying libiptc - HOWTO , which has been of great help but is ve=
-ry limited.=20
->                   Any suggestions , solutions to the above problem woul=
-d be of great help!=20
-> =20
-> Suchitra.
+El mar, 29-03-2005 a las 18:08 -0400, Jorge Enrique escribi=C3=B3:
+> Hola a todos, una pregunta se me presento problemas con mis reglas de m=
+i
+> firewall.
+>=20
+> Estado probando los redireccionamientos la idea es la siguiente:
+>=20
+>=20
+>               Internet
+>                  |
+> 		 |
+> 		 V
+>=20
+>  		Firewall  ----> Server web
+> 			    |
+> 			    |-> Usuario1
+>=20
+>  Configure primero para q desde internet lo vean a mi server web
+>=20
+>  iptables -A PREROUTING -s 0/0 -d IP_PUBLICA -j DNAT -to IP_SERVER_WEB
+>=20
+>  Esto funciona bien pero los usuarios de mi red privada no la pueden
+> acceder a mi sito en mi server web, pero desde afuera si..
+>=20
+>  estado viendo lo siguiente pero no me esta funcionando
+>=20
+>  iptables -A PREROUTING -s RED_PRIVADA -d IP_PUBLICA -p tcp --dport 443
+> -j REDIRECT -to-ports 443
 
-I'd like to advise you that the Querying libiptc HOWTO has a big
-error in it's examples, that makes the programas allocate memory
-and then not free it. So the programs get bigger and bigger in
-memory and you get a DOS.
+=C2=BFQue se supone que quieres hacer con esta regla? Seg=C3=BAn est=C3=A1=
+ no
+hace nada, simplemente redirige del puerto 443 al 443, lo que
+no tiene sentido.
 
-We discovered this when we wrote the bastion-firewall-stats
-daemon, that uses libiptc to read the iptables counters.
+And if you can please post in English, because it's the language
+used in the list.
 
-We sent an email to the author of the HOWTO but we have not
-received any response and the HOWTO it's still untouched.
-
-The trick it's that you have to free the memory after reading
-the counters, so the code it's something like:
-
-      if ( !(h =3D iptc_init(tablename)) )  {
-         syslog(LOG_INFO,"bfs error initializing: %s\n", iptc_strerror
-(errno))
-         exit(errno);
-      }
-
-That allocates memory. And then:
-
-      iptc_free(&h);
-
-To free the memory. This line it's the one not included in the
-HOWTO.
-
-If you want you can download our GPL code at:
-http://www.bgsec.com/downloads.html
+>   Cual puede ser el problema o donde me estoy equivocando, ayuda????
 
 Regards.
 
