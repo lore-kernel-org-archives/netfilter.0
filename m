@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: alucard@kanux.com
 Subject: Re: forwarding
-Date: Tue, 18 May 2004 15:56:15 +0100
+Date: Tue, 18 May 2004 11:12:56 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405181556.15769.Antony@Soft-Solutions.co.uk>
-References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105> <1084891180.6410.18.camel@localhost> <34002.200.44.170.105.1084891760.squirrel@200.44.170.105>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <34103.200.44.170.105.1084893176.squirrel@200.44.170.105>
+References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105> 
+    <1084891180.6410.18.camel@localhost> 
+    <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
+    <1084892325.6417.40.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <34002.200.44.170.105.1084891760.squirrel@200.44.170.105>
+In-Reply-To: <1084892325.6417.40.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,36 +23,42 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 18 May 2004 3:49 pm, alucard@kanux.com wrote:
 
-> > [JAS - isn't the packet coming in on 10.73.219.156? In other words, your
-> > NAT rule should be:
-> > iptables -t nat -A PREREOUTING -d 10.73.219.156 -p 6 --dport 8080 -j
-> > DNAT --to-destination 192.168.0.2:80]
+> Although it probably did, are you sure nmap scanned port 8080? How about
+> nmap -sT -p 8080 10.73.219.156
 >
-> -p 6? I've never seen this before, what is that rule trying to do?
+> I would then trace both the wire and the iptables rules to find out
+> where it is breaking - John
 
-It's a slightly unconventional way to specify TCP :)
+Yes, it filters now but now it seems that the problem is in the 2nd server
+because I try to telnet to server 1's 8080 port and I get no response. Is
+it any missconfiguration on the router? take a look at this:
+----
+root@mail:~# nmap -sT -p 8080 10.73.219.156
 
-Protocols have numbers (after all, *everything* has numbers when a computer 
-gets involved...), and TCP happens to be protocol number 6; UDP is protocol 
-number 17, and ICMP is protocol number 1.
+Starting nmap 3.48 ( http://www.insecure.org/nmap/ ) at 2004-05-18 11:06 VET
+Interesting ports on mail.aeropostal.com.ve (10.73.219.156):
+PORT     STATE    SERVICE
+8080/tcp filtered http-proxy
+----
 
-See /etc/protocols on your own machine for more examples.
+the webserver in server 2 is working perfectly but im not able to reach it
+from server one, look at this in server 2, maybe im doing something wrong
 
-Regards,
+[root@linserv root]# route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+192.168.0.0     *               255.255.255.0   U     0      0        0 eth1
+10.73.216.0     *               255.255.252.0   U     0      0        0 eth0
+169.254.0.0     *               255.255.0.0     U     0      0        0 eth0
+127.0.0.0       *               255.0.0.0       U     0      0        0 lo
+default         192.168.0.1     0.0.0.0         UG    0      0        0 eth1
 
-Antony.
 
--- 
-There are two possible outcomes:
+Thanx a lot for this great help
+Juan
 
- If the result confirms the hypothesis, then you've made a measurement.
- If the result is contrary to the hypothesis, then you've made a discovery.
 
- - Enrico Fermi
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
