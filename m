@@ -1,13 +1,10 @@
-From: "Brad Morgan" <B-Morgan@concentric.net>
-Subject: RE: Port Forwarding only works outside?
-Date: Tue, 10 Dec 2002 10:43:21 -0700
+From: Justin Kay <jkay@nwrecc.org>
+Subject: RE: iptables and Poptop
+Date: Tue, 10 Dec 2002 12:58:47 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NABBJOOEOFODEALNMJAJCEFPHFAA.B-Morgan@concentric.net>
-References: <1039537731.7136.10.camel@sander>
+Message-ID: <11FE00AA8C43D311ABE3000629B0CB481398E5@DBSISERVER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1039537731.7136.10.camel@sander>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,58 +15,107 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sander Sneekes <sander@dmdsecure.com>, Todd Hartman <thartman@bass-inc.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@tommi.org'" <netfilter@tommi.org>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Given the netmask in the original post I think the first rule should be:
+You were right on.  It was a ppp issue.  Thanks for the tip.
 
-iptables -t nat -A POSTROUTING -s 192.168.1.0/25 -j MASQUERADE
+Justin
 
-Regards,
 
-Brad
 
 -----Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Sander Sneekes
-Sent: Tuesday, December 10, 2002 9:29 AM
-To: Todd Hartman
-Cc: 'netfilter@lists.netfilter.org'
-Subject: Re: Port Forwarding only works outside?
+From: netfilter@tommi.org [mailto:netfilter@tommi.org]
+Sent: Monday, December 09, 2002 1:05 PM
+To: Justin Kay
+Cc: Netfilter (E-mail)
+Subject: Re: iptables and Poptop
 
 
-try 
+I belive this is a PPP issue, try looking up the ppp proxyarp
+option.
 
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j MASQUERADE
-iptables -A FORWARD -p tcp --dport 25 -d 192.168.1.29 -j ACCEPT
-iptables -A PREROUTING -t nat -p tcp --dport 25 -d x.x.x.x -j DNAT --to
-192.168.1.29
+- Tomas Edwardsson
+- Unix/Linux Support
+- Opin Kerfi HF
 
-x.x.x.x = eth0 external ip
-
-On Tue, 2002-12-10 at 16:31, Todd Hartman wrote:
-> I've come across an issue I just don't know how to solve. I'm not even
-> certain it's an issue with iptables itself, but I thought that someone
-> here might have run across this before and have some advice.
->  
-> I've got a RH7.3 box set up with two NICs. Eth0 is external and eth1
-> is internal. Internal network is 192.168.1.* with netmask
-> 255.255.255.128. I need to forward traffic on eth0, port 25 to
-> 192.168.1.29. The firewall is 192.168.1.1 - both in the same subnet as
-> I understand it.
->  
-> When I forward SMTP traffic to 192.168.1.29 and try to telnet to port
-> 25 to test SMTP, it just sits there, unresponsive. BUT, if I forward
-> eth0 port 25 traffic to a machine out on the internet, it works just
-> fine.
->  
-> I suspect a networking problem, but I don't know well enough to pin it
-> down myself.
->  
-> -T
->  
-
-
-
-
+On Mon, Dec 09, 2002 at 11:26:30AM -0700, Justin Kay wrote:
+> From: Justin Kay <jkay@nwrecc.org>
+> To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+> Subject: iptables and Poptop
+> X-Mailer: Internet Mail Service (5.5.2653.19)
+> Date: Mon, 9 Dec 2002 11:26:30 -0700
+> 
+> I am trying to set up a server as a firewall/vpn server.  I am using
+> iptables 1.2.6a and poptop 1.1.3.  I can connect to the poptop server just
+> fine from the internet.  I can ping to the 10.0.0.1 address that my poptop
+> server uses on the internal interface from the poptop client, but I don't
+> get any further that that.  I can't ping anything else internally (ten net
+> addresses) and I can't ping out to the address issued to the poptop client
+> from a LAN machine.  Any ideas on where to look?
+> 
+> Rules:
+> 
+> ########################## Policy Section #########################
+> 
+> $IPTABLES -P INPUT DROP
+> $IPTABLES -P OUTPUT DROP
+> $IPTABLES -P FORWARD DROP
+> 
+> ####################### User defined chains #####################
+> 
+> $IPTABLES -N icmp_packets
+> 
+> $IPTABLES -A icmp_packets -p ICMP --icmp-type 8 -j ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP --icmp-type 11 -j ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP --icmp-type 3 -j ACCEPT
+> $IPTABLES -A icmp_packets -p ICMP -s $LAN_IP_RANGE -j ACCEPT
+> 
+> ########################## Input Section ################################
+> 
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LAN_IP -j ACCEPT
+> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $INET_IP -j ACCEPT
+> $IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
+> 
+> $IPTABLES -A INPUT -p ALL -d $INET_IP -m state --state ESTABLISHED,RELATED
+\
+> 	-j ACCEPT
+> $IPTABLES -A INPUT -p TCP --dport 1723 -j ACCEPT
+> $IPTABLES -A INPUT -p 47 -j ACCEPT
+> 
+> $IPTABLES -A INPUT -i ppp+ -j ACCEPT
+> 
+> $IPTABLES -A INPUT -p ICMP -j icmp_packets
+> 
+> $IPTABLES -A INPUT -j LOG --log-prefix "INPUT chain "
+> ########################### Forward Section #############################
+> 
+> $IPTABLES -A FORWARD -i $INET_IFACE -p tcp -d $NT --dport 25 -j ACCEPT
+> $IPTABLES -A FORWARD -i $INET_IFACE -p tcp -d $NT --dport 110 -j ACCEPT
+> $IPTABLES -A FORWARD -i $INET_IFACE -p tcp -d $TETON --dport 80 -j ACCEPT
+> $IPTABLES -A FORWARD -i $INET_IFACE -p tcp -d $TETON --dport 443 -j ACCEPT
+> #$IPTABLES -A FORWARD -p ICMP -j icmp_packets
+> $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -i ppp+ -o $LAN_IFACE -j ACCEPT
+> $IPTABLES -A FORWARD -i $LAN_IFACE -o ppp+ -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -j LOG --log-prefix "FORWARD chain "
+> ########################### Output Section ###############################
+> 
+> $IPTABLES -A OUTPUT -p ALL -o ppp+ -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $INET_IP2 -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT 
+> 
+> $IPTABLES -A OUTPUT -j LOG --log-prefix "OUTPUT packet died: "
+> 
+> ########################## end script ####################################
+> 
+> Justin 
 
