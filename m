@@ -1,11 +1,12 @@
-From: Gerard G.Dangca II <dangca@furukawa.co.jp>
-Subject: hello
-Date: Wed, 12 Jun 2002 16:30:32 +0900
+From: "Pascal C. Kocher" <pascal.kocher@netbeat.biz>
+Subject: IP Personality 20020427 breaks ip_conntrack_ftp
+Date: Wed, 12 Jun 2002 09:50:17 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <02061216302400.01850@DHY119>
+Message-ID: <08690CFFD361A946AE65793A726D276902DEAE@smirnoff.netbeat-security.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,25 +18,21 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
+Cc: ippersonality-devel@lists.sourceforge.net
 
-Hello,
+Hi all
 
-hi!  i just visited your site http://www.iptables.org/contact.html#list and 
-it really did help me a lot. thanks!
+Using the ippersonality patch on a vanilla 2.4.18 kernel seems to break
+ip_conntrack_ftp. Note that there is no nat involved, but I suppose it
+would also break ip_nat_ftp!
 
-but i still have some questions.  can you teach me how to configure a 
-subnetwork in kernel 2.4.  im a newbie with Linux networking.
+We used the patch to randomize ISNs of all TCP connections. This works
+fine for simple protocols. But FTP doesn't work, apparently since the
+expectation (Data channel) does not "back-randomize" the ISN for the
+hidden System.
 
-I want to set up a private network in my TurboLinux using 1 network interface 
-card.  I read this can be achieved with Ip Alias.  so i did, but to no avail.
+Was this already a known issue?
 
-can you please give me some pointers, where to begin and how to troubleshoot. 
-
-thank you very much!
-
-
-Dangca, Gerard II G.
-Furukawa Elec. Japan
-
-
+Best regards,
+Pascal.
 
