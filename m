@@ -1,13 +1,13 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: next topic:  --limit and --burst-limit
-Date: 31 Oct 2002 14:51:05 +0100
+Date: 31 Oct 2002 15:04:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1036072265.21852.20.camel@elendil>
-References: <Pine.LNX.4.44.0210310553200.29866-100000@localhost.localdomain>
+Message-ID: <1036073063.21852.34.camel@elendil>
+References: <Pine.LNX.4.44.0210310704480.30108-100000@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210310553200.29866-100000@localhost.localdomain>
+In-Reply-To: <Pine.LNX.4.44.0210310704480.30108-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,37 +21,43 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: "Robert P. J. Day" <rpjday@mindspring.com>
 Cc: netfilter mailing list <netfilter@lists.netfilter.org>
 
-Le jeu 31/10/2002 =E0 12:00, Robert P. J. Day a =E9crit :
-> this suggests that, if you add a rule incorporating a limit,
-> a match would imply that you *haven't* exceeded the limit and
-> that you don't necessarily want to take any countermeasures.
-
-Yes it is. You match packets that are _below_ the limit. When filtering,
-you usually specifiy things that are acceptable.
-=20
->   from one tutorial, here's the lines that deal with=20
-> syn-flooding protection:
+Le jeu 31/10/2002 =E0 13:15, Robert P. J. Day a =E9crit :
+> example:
+> 	limit: 3/hour
+> 	burst: 5
 >=20
->   iptables -N syn-flood
->   iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
->   iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
->   iptables -A syn-flood -j DROP
->  =20
-> this seems to match the man page -- in the "syn-flood" user-defined
-> chain, if you match the limit rule, you're still fine and you return.
-> otherwise, you drop the packet that forced you to exceed the limit.
+> what does this mean?  it means that i start with a bucket of 5 tokens
+> and, every time a matching packet comes in, i can accept it by paying
+> a token.  simple as that.    when i run out of tokens, i can't accept
+> any more packets until i get more tokens.
 
-That's true. If you don't return, then you're over the limit anbd get
-logged.
+That's it. It another interesting point of vue ;)
+=20
+> and with a limit of 3/hour, every 20 minutes, i get another token dropp=
+ed
+> into my bucket, up to a maximum of my burst value of 5, so that i can=20
+> accept more packets.  that's it.  is it really that simple?
 
->   so, have i understood this correctly?  thanks for your patience.
+You begin with 8 tokens and that's you maximum number of tokens. 5 for
+the burst (lower part of my bucket), and 3 that are time dependant
+(upper part of the bucket).
+Each time you receive a packet, you pay it with a token, so you can pay
+for 8 packets within the first _hour_. Then, at the end of this first
+hour, you will get three more tokens up to 8 tokens.
 
-On these two points, you're right.
+I can be wrong, but that's what I understood from the HOWTO, as for 1/s
+limit with burst of 5, you first accept 6 packets.
+
+Moreover, limit does not imply average value. You say 3 packets in an
+hour. If you loose all your toeksn within the first second, then you
+won't be able to match anything till the next hour. That's why limit
+match is not really applicable for trafic shaping as an example.
+
+Hope I've been more clear.
 
 --=20
 C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+IT systems and networks security expert  - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
 PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
