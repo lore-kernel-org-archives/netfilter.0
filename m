@@ -1,12 +1,16 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: iptables help..
-Date: Mon, 13 Oct 2003 13:04:05 +1000
+From: Gerd Zemella <gzemella@gmx.net>
+Subject: Re: Port forwarding doesn't work.
+Date: Mon, 13 Oct 2003 09:13:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C4A0@wardrive.citadelcomputer.com.au>
+Message-ID: <1066029196.4010.1.camel@Marvin>
+References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com>
+	 <200310121411.00898.Herman@AerospaceSoftware.com>
+	 <1065994862.3562.10.camel@Marvin>
+	 <200310121604.06545.Herman@AerospaceSoftware.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative; boundary="=-wcWR9vdvKkli7Lxdegsq"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200310121604.06545.Herman@AerospaceSoftware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,54 +20,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: jerome@gmanmi.tv, Ralf Spenneberg <lists@spenneberg.org>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: Herman@AerospaceSoftware.com
+Cc: netfilter@lists.netfilter.org
 
-> > FORWARD -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-You have it accepting packets before it gets LOGged.. Put the LOG line =
-above all others..
-> > -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> > -A FORWARD -p tcp -j LOG --log-prefix "FORWARD packets:"
 
-Also, if your DNATing to a local webserver on the same network, it won't =
-work without a SNAT as per jeromes suggestion as you have to make it =
-look like the firewall is MAQUERADing your lan to an outside address BUT =
-it's really inside, so your webserver will see all packets as the =
-firewall and not local hosts...
+--=-wcWR9vdvKkli7Lxdegsq
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
+Hi Herman,
 
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
+Am Mon, den 13.10.2003 schrieb Herman um 00:04:
 
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
+> Well, here goes:
+> iptables -t nat -I PREROUTING  -d 192.168.10.100 -j DNAT --to 192.168.10.245
 
-> -----Original Message-----
-> From: JM [mailto:jerome@gmanmi.tv]
-> Sent: Monday, 13 October 2003 1:12 PM
-> To: Ralf Spenneberg
-> Cc: Netfilter
-> Subject: Re: iptables help..
->=20
->=20
-> hi,
->=20
-> i added LOGging on server_A
->=20
-> log all INPUT and FORWARD to messages log file... and for=20
-> some reason nothing=20
-> is comming up...
->=20
-> [ having nightmares on this.. : (  ]
->=20
-> TIA
->=20
->=20
+did you wrote this --to? you must write --to-destination!
+
+
+> iptables: Target problem
+> 
+> At least, now the error message changed and the only difference from before is 
+> the -I instead of -A.
+> 
+> So, with -A, I get Invalid Argument, and with -I, I get Target Problem.  Both 
+> cases don't work and the rule doesn't get added.
+> 
+> Can anybody give me a clue?
+> 
+> Cheers,
+
+--=-wcWR9vdvKkli7Lxdegsq
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.9">
+</HEAD>
+<BODY>
+Hi Herman,<BR>
+<BR>
+Am Mon, den 13.10.2003 schrieb Herman um 00:04:
+<BLOCKQUOTE TYPE=CITE>
+<PRE><FONT COLOR="#737373"><I>Well, here goes:
+iptables -t nat -I PREROUTING&nbsp; -d 192.168.10.100 -j DNAT --to 192.168.10.245</I></FONT></PRE>
+</BLOCKQUOTE>
+did you wrote this --to? you must write --to-destination!<BR>
+<BR>
+<BLOCKQUOTE TYPE=CITE>
+<PRE><FONT COLOR="#737373"><I>iptables: Target problem
+
+At least, now the error message changed and the only difference from before is 
+the -I instead of -A.
+
+So, with -A, I get Invalid Argument, and with -I, I get Target Problem.  Both 
+cases don't work and the rule doesn't get added.
+
+Can anybody give me a clue?
+
+Cheers,</I></FONT></PRE>
+</BLOCKQUOTE>
+</BODY>
+</HTML>
+
+--=-wcWR9vdvKkli7Lxdegsq--
+
 
