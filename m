@@ -1,13 +1,13 @@
-From: Florian Boelstler <euphoria@web.de>
-Subject: Re: Strange behavior on the list
-Date: Tue, 10 Feb 2004 18:40:40 +0100
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: bandwidth problems [Linux 2.4.20] [iptables 1.2.7a]
+Date: Tue, 10 Feb 2004 13:01:04 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40291798.9050503@web.de>
-References: <430A69044C6@fargas.com>
+Message-ID: <1076436064.2016.35.camel@ca.gts.nexusmgmt.com>
+References: <E1Aqbgf-0000sd-OV@vishnu.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <430A69044C6@fargas.com>
+In-Reply-To: <E1Aqbgf-0000sd-OV@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +18,102 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: XXmas@gmx.at
+Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Tue, 2004-02-10 at 12:28, root@scheuchenstuel.com wrote:
+> Hi!
+>  
+> My configuration:
+> =================
+> 
+> O-------------o    O-----------------------o
+> |    WinXP    |    |    eth0     |   eth1  |
+> | 10.10.1.100 |----| 10.10.1.254 | D H C P |----INTERNET
+> |             |    |             |         |
+> O-------------o    O-----------------------o
+>   My Computer           My NAT-Computer
+> 
+> NAT-Computer:
+>   Linux 2.4.20-4GB
+>   load average: 0.08, 0.05, 0.06
+>   iptables v1.2.7a
+> All the NICs I use are 3com 3C905-TX
+> 
+> When I do some bandwidth tests on the NAT-Computer
+> (provider's service page) my bandwidth is about 1MBit/second
+> When I do the same on my computer I only get about 100kbit/second
+> 
+> Now I wonder if there are any problems with my configuration...?
+> Would be nice if you could help me...
+> 
+> Thanks in advance
+> Florian St.
+> 
+> Root(AT)scheuchenstuel(DOT)com
+> 
+> 
+> My iptables-configuration:
+> ==========================
+> 
+> ############################################################################
+> ######
+> 
+> #!/bin/bash
+> #
+> 
+> modprobe iptable_nat
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> 
+> ########## CLEARING TABLES
+> iptables -F
+> iptables -t nat -F
+> iptables -t mangle -F
+> iptables -X
+> 
+> ########## SETTING POLICIES
+> iptables -P INPUT DROP
+> iptables -P OUTPUT ACCEPT
+> iptables -P FORWARD DROP
+> 
+> ########## NAT
+> iptables -A INPUT -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+> 
+> ########## LOOPBACK SETTINGS
+> iptables -A INPUT -i lo -j ACCEPT
+> iptables -A INPUT -s 127.0.0.1/32 -j ACCEPT
+> 
+> ########## EXTERNAL OPEN PORTS
+> iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
+> 
+> ########## INTERNAL OPEN PORTS
+> iptables -A INPUT -s 10.10.1.100/32 -j ACCEPT
+> 
+> ######### NAT FORWARDING
+> iptables -A FORWARD -s 10.10.1.100/32 -j ACCEPT
+> iptables -A FORWARD -d 10.10.1.100/32 -j ACCEPT
+> 
+> ############################################################################
+> ######
 
-Marc Fargas wrote:
-> When you ask M$ Outlook to reply a mesage in the lists it replays to the
-> original sender nor the list itself. That shouldn't be that way, should?
+The rules look a little unusual; in fact, they look downright
+dangerous.  You may want to read a good iptables tutorial such as the
+one by Oskar Andreasson.  You can find a link to it on the netfilter.org
+web site.  You can also find some slide shows in the training section at
+http://iscs.sourceforge.net 
 
-This also happens with Mozilla 1.5 on Debian/Sarge.
-
-AFAIK, if "Reply-To" does not exist, it uses the sender's address always.
-
-
-- --
-Public PGP key is available on common key servers.
-
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
-
-iD8DBQFAKReYwT2gPfZm6tURAsdzAKCNzeTJkK1MZwcy5BviIi8BIufHgQCfZ485
-ddV6ZlGoZ6L4rPi4LyskeL4=
-=NAx4
------END PGP SIGNATURE-----
+However, I do not think your rules would create a throughput problem. 
+How are you measuring your throughput?
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
