@@ -1,13 +1,13 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: Re: LAN accessing DMZ
-Date: Mon, 19 Jul 2004 07:13:27 -0400
+From: "Joel n.solanki" <zealous@bonbon.net>
+Subject: Re: Mangle
+Date: 19 Jul 2004 18:24:12 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040719111327.GB26450@tranquility.scriptkitchen.com>
-References: <f51b72bc040718062373640612@mail.gmail.com> <200407181859.47417.Antony@Soft-Solutions.co.uk> <20040718185129.GA679@tranquility.scriptkitchen.com> <200407182012.13539.Antony@Soft-Solutions.co.uk>
+Message-ID: <1090241651.3769.3.camel@joel.d2visp.com>
+References: <a05ad8750407190342530d09c2@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200407182012.13539.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <a05ad8750407190342530d09c2@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Sun, Jul 18, 2004 at 08:12:13PM +0100, Antony Stone wrote:
-> > >
-> > > I do not understand how you can connect through this ruleset to TCP port
-> > > 10000
-> >
-> > I have squid on this machine. Is it because of that?
-> > Is it passing thru' squid cos' I enter in my browser
-> > https://10.10.10.2:10000
+Post yur iptables ruleset...
+and y using mangle instead of nat 
+anything special ????
+
+Regards,
+Joel n.solanki
+Systems Administrator
+D2V ISP PVT LTD
+
+On Mon, 2004-07-19 at 16:12, Murugavel Thiruvengadam wrote:
+> we have few clients connected in LInux  firewall
 > 
-> Yes.   A web proxy running on the same machine means that the INPUT and OUTPUT 
-> rules apply, not the FORWARD rules.
+>          switch ---- firewall--------internet
+>            |          |              |
+> 200pcs |       pvtip           pubip
+> 
+>  all  --  *      *       0.0.0.0/0            0.0.0.0/0          
+> SMANG --to-ip  <PUBLIC IP>
+> 
+> -A FORDNS -j SMANG --to-ip PUBLIC Ip
+> 
+> while sending a request to DNS we are using (mangle.) client's source 
+> port  . the same port we are using to send a request to dns. while
+> coming back.  assume that 3 person used the same port. DNS return
+> traffice not going to respective client. can anyone please advise.
+> 
+> it was working fine with nat. we are right now using mangle
+> 
+> Regards
+> TM
+> 
 
-Oh! got it now. But now the problem I faced was that my users could not
-use hotmail. But once I allowed FORWARD for port 443 they could easily.
-Now, if you say FORWARD rules are not applied for web proxy on same machine,
-why do i need to open port 443 for hotmail, where as I have declared 443 as
-Safe_port in squid's configuration file.
 
-With warm regards,
--Payal
 
