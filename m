@@ -1,15 +1,10 @@
-From: Fabrice MARIE <fabrice@netfilter.org>
-Subject: Re: Simulate Poor Network Conditions?
-Date: Sun, 29 Dec 2002 15:39:50 +0800
+From: "Jason H. Zalmanowitz" <jason@zalnet.net>
+Subject: Gobbling my bandwidth?
+Date: Sun, 29 Dec 2002 17:13:36 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200212291539.51377.fabrice@netfilter.org>
-References: <3BAC15E02315BC4783152AC5E9621BB501C7BA20@trcexcsrv01.trcinc.com>
-Reply-To: fabrice@netfilter.org
+Message-ID: <5.1.0.14.0.20021229171331.00b09690@mail.zalnet.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3BAC15E02315BC4783152AC5E9621BB501C7BA20@trcexcsrv01.trcinc.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +14,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Bill Binko <Bill.Binko@trcinc.com>, "Michael B. Allen" <miallen@eskimo.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Hi all,
 
-Hello,
+I've scoured the mailing list and can't find anything, so I figure I'll 
+start a new topic...
 
-On Saturday 28 December 2002 01:42, Bill Binko wrote:
-> NISTNet is what you want to use for this.  It is not related to Netfilter,
-> but it does exactly what you want.  When we used it, the X client was very
-> buggy, but the command line rocked: http://snad.ncsl.nist.gov/itg/nistnet/
-> (Not only that, but you get to use some of those tax dollars :)
-> Bill
+I'm running a Debian GNU/Linux box for a router / firewall at home.  Using 
+a 2.4.19 customed kernel, Pentium MMX, IPTables 1.2.6a, and Narc 
+auto-configuration script for IPTables.  I've got the same configuration 
+running on a webhosting box, except its running a p4 1.5.
 
-You can also use nth, random and limit matches along with the DROP target.
-http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO.html
+My problem is that intermittently (and only as of lately) has my connection 
+been dropping to ~4000ms for a roundtrip... and after 15-20 minutes it 
+resumes back to its normal ~80ms.  Does anyone know whats causing this?
 
-Have a nice day,
+Logging is off, and afaict the rules are optimized.  When I stop IPTables 
+and just try pinging google, my ping time returns to 80... but as soon as I 
+fire IPTables up again, it raises the ping time to ~4000ms.
 
-Fabrice.
---
-Fabrice MARIE
+Theres nothing listing in my processes (ps aux or top) that indicate 
+anything related to IPTables or narc... I am absolutely stumped - as this 
+has only happened in the past 2 days after 3 months of running solid.
 
-"Silly hacker, root is for administrators"
-       -Unknown
+Any and all help is greatly appreciated.
+
+Jason Zalmanowitz
+-www.zalnet.net 
+
 
