@@ -1,10 +1,13 @@
-From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
-Subject: Re: nmap
-Date: Tue, 22 Oct 2002 16:19:28 -0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: what filtering to do on the OUTPUT chain?
+Date: Tue, 22 Oct 2002 21:03:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF82B207AC.47A157E9-ON03256C5A.0069B126@LocalDomain>
+Message-ID: <20021022200357.TCVO1554.mta07-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210221455120.15018-100000@localhost.localdomain>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0210221455120.15018-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,73 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
+On Tuesday 22 October 2002 7:57 pm, Robert P. J. Day wrote:
 
-I  had problems on scanning through netfilter depending on the kind of scan
-you run.. One of the problems you may face in case you run a ACK scan from
-a segment that has the permition for the traffic, you will have your
-conntrack full in a few seconds with ESTABLISHED connections that will take
-long to disappear.. The same will happen when portscanning from the
-firewall box with a default policy for OUTPUT set as ACCEPT.
+>   i've had a number of people tell me that, while they put a
+> good deal of thought into their INPUT filtering, they simply
+> ACCEPT all outgoing traffic since, if their input filtering
+> is working properly, there's no reason to stop outgoing
+> packets.
 
-One of the ways to fix this is to increase the size of the conntrack.. I
-use to do that when creating the box by changing the source code and
-recompiling the kernel... but I dont know if there are any side effects on
-doing that..
+There's no reason to filter outgoing packets unless you don't trust the=20
+applications running on your machine.
 
---Regards,
+If you don't trust what's running on your machine, then you should probably=
+=20
+fix more than just what netfilter allows.
 
-Forster
+Antony
 
+--=20
 
+This email is intended for the use of the individual addressee(s) named abo=
+ve=20
+and may contain information that is confidential, privileged or unsuitable =
 
+for overly sensitive persons with low self-esteem, no sense of humour, or=20
+irrational religious beliefs.
 
-Antony Stone <Antony@Soft-Solutions.co.uk>@lists.netfilter.org on
-10/22/2002 03:31:42 PM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    netfilter@lists.netfilter.org
-cc:
-Subject:    Re: nmap
-
-
-
-On Tuesday 22 October 2002 4:42 pm, antonio wrote:
-
-> Hi Everyone,
->
-> Just a question:
-> I want to set up a firewall box with iptables in which I can use nmap.
-> Which ports/protocols can I set to ACCEPT and which to DROP?
-
-Do you mean you want to run nmap on a box also running netfilter, to scan
-other machines ?
-
-If so, set your OUTPUT policy to ACCEPT, set your INPUT policy to DROP with
-a
-single rule:
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-and you'll be able to scan other machines and get the replies back, but
-anything new coming in to your machine will be blocked.
-
-If I didn't understand correctly what you wanted to do please give more
-details.
-
-Antony.
-
---
-
-Which part of 'apt-get dist-upgrade' do you not understand ???
-
-
-
-
+If you have received this email in error, you are required to shred it=20
+immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
+caster sugar. =A0 Whisk until soft peaks form, then place in a warm oven fo=
+r 40=20
+minutes. =A0 Remove promptly and let stand for 2 hours before adding some=20
+decorative kiwi fruit and cream. =A0 Then notify me immediately by return e=
+mail=20
+and eat the original message.
 
