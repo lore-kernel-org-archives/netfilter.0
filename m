@@ -1,12 +1,13 @@
-From: Tom Eastep <teastep@shorewall.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: HTTP Port forwarding issues
-Date: Mon, 08 Jul 2002 12:44:19 -0700
+Date: Mon, 8 Jul 2002 20:49:16 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D29EB93.9080109@shorewall.net>
+Message-ID: <20020708194919.BSXL19225.mta07-svc.ntlworld.com@there>
 References: <001f01c226b6$eb0a4f60$6702a8c0@internal.monstersolutions.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <001f01c226b6$eb0a4f60$6702a8c0@internal.monstersolutions.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,38 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Big Daddy <bigdaddy@monster-solutions.net>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Big Daddy wrote:
+On Monday 08 July 2002 8:37 pm, Big Daddy wrote:
+
 > all,
->      for some reason i can get my smtp and pop3 to route from 
-> the  internet, but i cannot get http requests to forward correctly.
-> 
->  iptables -A FORWARD -p tcp -i eth0 -d $int_ip -p tcp --dport http -m 
-> state --state NEW -j ACCEPT
->  iptables -A FORWARD -p tcp -i eth0 -d $int_ip -p tcp --dport smtp -m 
-> state --state NEW -j ACCEPT (works)
->  iptables -A FORWARD -p tcp -i eth0 -d $int_ip -p tcp --dport pop3 -m 
-> state --state NEW -j ACCEPT (works)
-> 
->  iptables -t nat -A PREROUTING -d $ext_ip -p tcp --dport smtp -j DNAT 
-> --to-destination $int_smtp:25 (works)
->  iptables -t nat -A PREROUTING -d $ext_ip -p tcp --dport pop3 -j DNAT 
-> --to-destination $int_pop3:110 (works)
->  iptables -t nat -A PREROUTING -d $ext_ip -p tcp --dport http -j DNAT 
-> --to-destination $int_http:80
-> 
->  web server is running IIS5.
-> any help would be great!
+>      for some reason i can get my smtp and pop3 to route from the 
+> internet, but i cannot get http requests to forward correctly.
 
-More than likely your ISP is blocking incoming HTTP requests.
+Okay, so what's not working ?
 
--Tom
--- 
-Tom Eastep    \ Shorewall - iptables made easy
-AIM: tmeastep  \ http://www.shorewall.net
-ICQ: #60745924  \ teastep@shorewall.net
+Are the incoming requests not getting to the server, or is the server trying 
+to do some sort of reverse DNS lookup, or is the response not getting out 
+again ?
 
+Put some LOGging rules onto your firewall to see what packets are or aren't 
+flowing, or else just try
+
+iptables -L -n -v -x
+iptables -L -n -v -x -t nat
+
+and see what packets seem to be where.
+
+ 
+
+Antony.
 
