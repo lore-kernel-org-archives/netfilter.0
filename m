@@ -1,13 +1,12 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: iptables for ADSL
-Date: Fri, 21 Nov 2003 15:47:07 -0500
+From: Leonid Veytser <veytser@cs.bu.edu>
+Subject: Checksumming Issues
+Date: Fri, 21 Nov 2003 15:15:30 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031121204707.GA24283@cannon.eng.us.uu.net>
-References: <02b601c3b065$30bf3a50$0200a8c0@ale>
+Message-ID: <Pine.SOL.4.20.0311211514050.16319-100000@csa.bu.edu>
+References: <Pine.SOL.4.20.0311111752590.29271-100000@csa.bu.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <02b601c3b065$30bf3a50$0200a8c0@ale>
+In-Reply-To: <Pine.SOL.4.20.0311111752590.29271-100000@csa.bu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +16,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Alejandro Cabrera Obed <sisdis@tournet.com.ar>
-Cc: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Fri, Nov 21, 2003 at 04:25:06PM -0300, Alejandro Cabrera Obed wrote:
+A general question about checksumming. If I change the destination address
+in the IP header, then of course I need to recalculate the IP header
+checksum. But do I have to recalculate the checksum of the next protocol
+header (ie TCP, UDP, etc)?
 
-> Hi people !!!
-> 
-> I have a basic doubt: I want to connect my Linux with iptables to Intrenet
-> via ADSL. Just one question:
-> 
-> Do I have to set
-> echo "1" > /proc/sys/net/ipv4/ip_dynadrr
-> in order to work with dynamic addresses asigned by my ISP ????
+Thanks.
 
-Take a look at Documentation/networking/ip_dynaddr.txt of your
-kernel source tree.
 
-In short you do not need this.
-
-Ramin
-
-> 
-> Thanks a lot
-> 
-> Ale
-> 
 
