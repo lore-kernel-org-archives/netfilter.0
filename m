@@ -1,8 +1,8 @@
-From: Justin Kay <jkay@nwrecc.org>
-Subject: DNAT
-Date: Thu, 12 Dec 2002 11:00:55 -0700
+From: "Andrew Magnus" <xanadian9@hotmail.com>
+Subject: Port Forwarding issue
+Date: Thu, 12 Dec 2002 16:39:22 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <11FE00AA8C43D311ABE3000629B0CB481398F3@DBSISERVER>
+Message-ID: <F73asSmz6UuEhjJ8uT60000483a@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,19 +14,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-When using a linux box to DNAT to some other boxes in a private address
-space, do you need to alias all of the public ip addresses that you will be
-doing DNAT for on the linux box?
+I, unfortunately, have found myself in a position where I need to use 
+Windoze 2000 for NAT (ICS).  Can anyone quickly recommend a good port 
+forwarding utility I can use?  Thanks.
 
-internet--->208.224.51.10 (LINUX PUB IP FAKE) Linux/DNAT---> 10.10.20.15
-other box
-	    208.224.51.11 (alias used for other box)  IS THIS NEEDED in
-order for it to work?	
+_________________________________________________________________
+MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*. 
+http://join.msn.com/?page=features/virus
 
-
-Justin
 
