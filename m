@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: 2 ISPs again
-Date: Fri, 10 Dec 2004 14:20:08 -0500
-Message-ID: <1102706408.3135.46.camel@hubcap.ljm.dom>
-References: <40842.213.33.127.134.1102705404.squirrel@webmail.vnc.at>
+Subject: Re: is this 1969 ? Are we on the moon yet?
+Date: Fri, 10 Dec 2004 14:23:45 -0500
+Message-ID: <1102706625.3135.48.camel@hubcap.ljm.dom>
+References: <41B9F53E.2060302@acm.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <40842.213.33.127.134.1102705404.squirrel@webmail.vnc.at>
+In-Reply-To: <41B9F53E.2060302@acm.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,48 +20,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-12-10 at 14:03, Andreas Grabner wrote:
-> Hi,
-> i try to get the following work for days now and realy need some hints.
-> My situaution:
-> I have 2 independent links to the internet. I would like to get
-> connections from the internet to an internal host work, regardless to
-> which of my external IP.
-> I tried it by marking packets coming in EXTIF1 and set up a own routing
-> table for marked packets. But it seems the routing does not work bacause
-> teh packets disappear between PREROUTING and FORWARD.
-> Please help!
+On Fri, 2004-12-10 at 14:13, Federico Lucifredi wrote:
+> err, Why oh Why is all netfilter mail coming from 1969 ? Is Doug 
+> Engelbart in charge of this project ?
 > 
-> Some config lines:
-> # ip rule ls
-> 0:      from all lookup local
-> 32765:  from all fwmark        1 lookup post.out
-> 32766:  from all lookup main
-> 32767:  from all lookup default
-> 
-> # ip ro sh tab post.out
-> 192.168.100.0/24 dev eth0  scope link  src 192.168.100.3
-> default via EXTIP2 dev eth2
-> 
-> # iptables -L -nv -t mangle
-> 1624  113K MARK       all  --  eth2   *       0.0.0.0/0
-> 0.0.0.0/0           MARK set 0x1
-> Thanks for any Tips, Documentation links ...
-> 
-> Andreas Grabner
+> -Federico
 
-the trick is to make sure that replies to requests that come in from
-ISP1 go back out ISP1.  dchemko@ seems to be the "connmark master" when
-it comes to this stuff--have a look at:
+huh?
 
-  http://marc.theaimsgroup.com/?l=netfilter&m=108094979204392&w=2
-
-for a very thorough example.
-
--j 
+-j
 
 --
-"My cat's breath smells like cat food."
+"Please do not offer my god a peanut"
 	--The Simpsons
 
 
