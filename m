@@ -1,8 +1,8 @@
-From: Dan Nguyen <dnguyenanh@yahoo.com>
-Subject: handle packets by libipq
-Date: Thu, 5 Aug 2004 23:14:45 -0700 (PDT)
+From: Rajesh Pethe <rajesh_pethe2003@yahoo.com>
+Subject: Problem configuring masquerading Gateway on RedHat 9.0...
+Date: Thu, 5 Aug 2004 23:44:04 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040806061445.88423.qmail@web41510.mail.yahoo.com>
+Message-ID: <20040806064404.96275.qmail@web50209.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,31 +18,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all,
 
-I posted this in devel- mailling, but it seem is wrong place. So I
-post here to hope the helping.
+Dear Sirs,
 
-I plan to use libipq to do the following:
-1. capture all packet (both ipv4 and ipv6) on user-space.
-2. Modify the captured packet (may tranlate even protocol, i.e
-replace ipv4 packet by ipv6 packet).
-3. Reinject modified packet to kernel.
+As mentioned in the 'NAT-HOWTO' I've done the
+following to configure my Linux box as masquerading
+gateway for internal network :
+#iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+and
+#echo 1 > /proc/sys/net/ipv4/ip_forward
 
-The 1st and 2nd tasks had solution by modify the libipq and use rfc.
-But I had not have solution in 3nd task.
+The problem is I can ping or telnet a remote host from
+an internal network but browsers say 'unknown host'
+when I try to load a remote site.
 
-Please help me to roadmap.
+Please help me with this problem.
 
-Thanks for your considering.
-Dan Nguyen
-PS: Sorry if I send to the wrong mailling.
+Regards
+Rajesh
 
 
 
 		
-__________________________________
+_______________________________
 Do you Yahoo!?
-Yahoo! Mail Address AutoComplete - You start. We finish.
-http://promotions.yahoo.com/new_mail 
+Express yourself with Y! Messenger! Free. Download now. 
+http://messenger.yahoo.com
 
