@@ -1,11 +1,10 @@
-From: "Jeffrey B. Murphy" <jbmurphy@gmail.com>
-Subject: iptables and arpd
-Date: Thu, 31 Mar 2005 14:04:36 -0500
-Message-ID: <89629fe005033111041b245b9d@mail.gmail.com>
-Reply-To: "Jeffrey B. Murphy" <jbmurphy@gmail.com>
+From: rsnel@cube.dyndns.org
+Subject: 26sec+forwarding, bug or PEBKAC?
+Date: Thu, 31 Mar 2005 22:16:40 +0200
+Message-ID: <20050331201640.GA1401@cube.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +16,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I sent this to the honeypots list but I got no takers. I was hoping
-someone here might be able to help me. My question involves the
-interaction between iptables and arpd. arpd is used in the honeyd
-project (http://www.honeyd.org/tools.php).
+Hello list,
 
-I have a fedora core 3 box and I have the following iptables script:
+I hope this is the right list, as my problem appears to be about both
+iptables and (native (as in: managed with setkey)) IPSec.
 
-# IptablesScript
-iptables -F
-iptables -X
+Short version: 
 
-# Set Default Policy to drop everything
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+packets from ipsec tunnel seem to get lost before they enter the the 
+FORWARD chain with kernel 2.6.11. There is no problem with 2.6.8-2-k6 
+(Debian kernel with 26sec) and there is no problem with ipsec turned 
+off.
 
-I believe that this should block all traffic going to and from the
-machine (Ip address of 192.168.0.3)
-So I ping 192.168.0.3 and get no response back (As I expected)
+Long version:
 
-When I add arpd into the mix with honeyd bound to the arpd ip (192.168.0.5)
+Two networks:
 
-I ping the arpd/honeyd IP of 192.168.0.5 from a different machine and
-I get no response back (as I expected)
+192.168.2.0/24 wired home network
+192.168.3.0/30 wireless network
 
-BUT my honeyd sees the traffic:
-honeyd[PID]: Sending ICMP Echo Reply: IPAddyOfHoneyPot -> SourceMachine
-honeyd[PID]: couldn't send packet: Operation not permitted
+Three hosts
 
-So I don't understand why the traffic is getting to the arpd/honeyd
-process if my iptables is dropping everything?
-I understand why I am getting the "honeyd[PID]: couldn't send packet:
-Operation not permitted" as the default OUTPUT chain is drop. But why
-is the traffic getting by my INPUT chain?
+cube, router/firewall: eth1 192.168.2.2 wlan0 192.168.3.1 eth0 82.157.. 
+eniac, workstation: eth0 192.168.2.1 
+toppie, laptop: wlan0 192.168.3.2 
 
-I realize that arpd and honeyd are not applicable to the list, but I
-received no replies (I guess I am out of karma) on the honeyd list or
-from the maintainer of the arpd project.
+On 192.168.3.0/30 ipsec is used, relevant excerpt: ipsec.conf (cube):
+spdflush;
 
-Any help is appreciated.
-And Thanks.
+spdadd 192.168.3.0/30 0.0.0.0/0 any -P in ipsec
+        esp/tunnel/192.168.3.2-192.168.3.1/require;
+
+spdadd 0.0.0.0/0 192.168.3.0/30 any -P out ipsec
+        esp/tunnel/192.168.3.1-192.168.3.2/require;
+
+the firewall on cube is configured as follows (only
+for testing, the usual config is more complicated but it
+exhibits the same problem).
+
+all the policies are 'ACCEPT'
+and traffic from eth0 is DROPped at INPUT (and forwarding
+is enabled at /proc/sys/net/ipv4/ip_forward).
+
+cube and toppie can ping eachother, cube and eniac also. But eniac and 
+toppie can't ping eachother.
+
+For example:
+
+eniac pings toppie: (REQ=echo request, RPL=echo reply and ESP=encryped 
+packet) the log is aquired on cube by prepending a LOG target to all 
+chains using a script much alike 
+http://iptables-tutorial.frozentux.net/scripts/rc.test-iptables.txt 
+and by removing information that I think isn't important, to make it 
+fit on 80 cols
+
+Eniac sends an echo-request.
+
+REQ mangle PRE_R:IN=eth1 OUT= SRC=192.168.2.1 DST=192.168.3.2 LEN=84 
+REQ nat    PRE_R:IN=eth1 OUT= SRC=192.168.2.1 DST=192.168.3.2 LEN=84 
+REQ mangle FWD:IN=eth1 OUT=wlan0 SRC=192.168.2.1 DST=192.168.3.2 LEN=84 
+REQ filter FWD:IN=eth1 OUT=wlan0 SRC=192.168.2.1 DST=192.168.3.2 LEN=84 
+
+From here on the packet gets encrypted.
+
+ESP mangle POST_R:IN= OUT=wlan0 SRC=192.168.3.1 DST=192.168.3.2 LEN=152 
+ESP nat    POST_R:IN= OUT=wlan0 SRC=192.168.3.1 DST=192.168.3.2 LEN=152 
+
+It leaves cube and toppie sends a reply.
+
+ESP mangle PRE_R:IN=wlan0 OUT= SRC=192.168.3.2 DST=192.168.3.1 LEN=152 
+ESP mangle INPUT:IN=wlan0 OUT= SRC=192.168.3.2 DST=192.168.3.1 LEN=152
+ESP filter INPUT:IN=wlan0 OUT= SRC=192.168.3.2 DST=192.168.3.1 LEN=152
+
+The packet gets decrypted.
+
+RPL mangle PRERT:IN=wlan0 OUT= SRC=192.168.3.2 DST=192.168.2.1 LEN=84
+
+After this the echo reply from toppie does not appear in the log; the 
+packet does not enter the INPUT chain and it also does not enter the 
+(expected) FORWARD chain.
+
+This happens with linux-2.6.11 (vanilla). The ping works if IPSec is 
+turned off (i.e. setkey -F -P on cube and toppie). And it also works 
+in 2.4.27-2-k6 (a Debian kernel (which has 26sec patched in)). 
+
+So, is it a bug, feature, or just misconfiguration? Can you reproduce?
+I would appreciate any insight on this problem.
+
+Thanks.
+
+Greetings,
+
+Rik.
 
