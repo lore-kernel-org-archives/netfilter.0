@@ -1,9 +1,10 @@
-From: Salman <almetador@yahoo.com>
-Subject: help for ftp
-Date: Thu, 5 Jun 2003 14:27:57 -0700 (PDT)
+From: Dean Gakis <phiz@shaw.ca>
+Subject: Clearing ip_conntrack table
+Date: Fri,  6 Jun 2003 15:36:31 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030605212757.82031.qmail@web20610.mail.yahoo.com>
+Message-ID: <1054935391.3ee1095fac554@phiz.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,18 +16,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hello guruz,
+Is there a way of clearing ip_conntrack table other then attempting to unload
+the module (almost always unsuccessfully)?  I have a dual ISP setup using
+CONNMARK and iproute2, but when I have a script fail over the default gateway to
+the backup ISP, the entires in the ip_conntrack are still forwarding sessions to
+the wrong interface since they are marked in the conntrack.  This continues
+until the timers expire in the table and they are flushed out.  Is there anyway
+of clearing the table similar to pfctl -F state on BSD?
 
-I am unable to use ftp service from host to connect to
-any other machine on LAN even to my gateway server.
-any help would be appreciateable.
-I am using linux kernel 2.4.7-10 with my own firewall script.
-
-__________________________________
-Do you Yahoo!?
-Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
-http://calendar.yahoo.com
 
