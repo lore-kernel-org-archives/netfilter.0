@@ -1,12 +1,11 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Authentication in a Firewall Question
-Date: Wed, 25 Aug 2004 14:50:50 -0400
+From: "Mardaga Stephan" <smardaga@brutele.be>
+Subject: Masquerade don't masquerade
+Date: Wed, 25 Aug 2004 21:05:07 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512E2@asimail2.alphanumeric.com>
+Message-ID: <003601c48ad6$819497d0$c6ea44d4@famille>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,57 +18,61 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Hello there,
->
-> I'm trying to do something similar.
->
-> When an enduser tries to go to Internet, the browser is redirected to =
-an
-> authentication page, then the webserver that contains that page =
-inserts
-> a rule in the firewall to allow that computer to go to Internet.
->
-> It must be something like this, as no programs should be installed on
-> the enduser's machine.
->
-> What I was trying to do (without success) was, set a redirector policy
-> that applies to the unauthenticated traffic. The thing is that
-> redirection and dynamic nat are defined on different rules =
-(PREROUTING,
-> POSTROUTING). This is if I'm working with nat, I haven't thought of a
-> way to require authentication when just routing.
->
-> Some of the things I'm trying:
-> ## redirector
-> $IPTABLES -t nat -A PREROUTING -i $LAN_IFACE -p TCP --destination-port
-> 80 -j REDIRECT --to-port 81 # The web server listens on port 81
->
-> ## insert rule for each client
-> $IPTABLES -t nat -I POSTROUTING -o $INTERNET_IFACE -m mac --mac-source
-> $CLIENT_MAC -j MASQUERADE
->
->
-> Any thoughts are welcome.
+Hello,
 
-i did this for a hotel:
+I'm new on this forum and hope you will help me.
 
-  iptables -t nat -A PREROUTING -i $LAN_IFACE -p tcp --syn --dport 80 -j =
-authenticated
-  iptables -t nat -A PREROUTING -i $LAN_IFACE -p tcp --syn --dport 80 -j =
-REDIRECT --to-port 81
+I'm building a Debian server and it is the basic stage.
+I wish to run Iptables with masquerade.
 
-  iptables -N authenticated
 
-as people authenticate, add rules to the "authenticated" chain like:
+detailed problem report could be find @ this address :
+http://homeusers.brutele.be/smardaga/masquerade/
 
-  iptables -A authenticated -s x.y.w.z -j ACCEPT
+resume :
 
-the performance hit was that the initial SYN of an HTTP request of an =
-authenticated client had to go through every single other authenticated =
-IP before it matched (this example was a class C, so 253 other rules).  =
-i tested it with 500 rules in the authenticated chain and didnt see much =
-of any performance hit...YMMV.
+ PC1                      Debian Serveur                     PC2
+ |                       Eth0      Eth1                      |
+ |.1                    .50|         |.1                   .2|
+ |                         |         |                       |
+ |                         |         |                       |
+ ---------------------------         -------------------------
+      192.168.0.x/24                       192.168.1.x/24
 
--j
+
+Masquerade don't work when pinging from PC2 (192.168.1.2) to PC1
+(192.168.0.1). PC1 receives icmp packet with IP source address 192.168.1.2.
+
+tcpdump on eth0 :
+
+20:30:25.472725 192.168.1.2 > 192.168.0.1: icmp: echo request
+20:30:30.972679 192.168.1.2 > 192.168.0.1: icmp: echo request
+20:30:36.472321 192.168.1.2 > 192.168.0.1: icmp: echo request
+20:30:41.972217 192.168.1.2 > 192.168.0.1: icmp: echo request
+20:30:47.472049 192.168.1.2 > 192.168.0.1: icmp: echo request
+20:30:52.972084 192.168.1.2 > 192.168.0.1: icmp: echo request
+
+ iptables release 1.2.6a
+ Linux  2.4.18-bf2.4 #1 Son Apr 14 09:53:28 CEST 2002 i686 unknown
+
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere           LOG level
+warning
+MASQUERADE  all  --  192.168.1.0/24       anywhere
+LOG        all  --  anywhere             anywhere           LOG level
+warning
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Any help and/or suggestions will be accepted gratefully.
+
+Thanks in advance,
+
+Stephan Mardaga
 
 
