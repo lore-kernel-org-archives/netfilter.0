@@ -1,13 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: HELP! Transparent Proxy using bridging 2.6.9 and REDIRECT on
- different subnet
-Date: Wed, 23 Mar 2005 18:35:31 -0600
-Message-ID: <42420B53.4090700@riverviewtech.net>
-References: <2F413D5F33545D4A8465BBEE900238CC3FA777@cymmail.cymphonix.com>
+Subject: Re: Using NAT to relay traffic
+Date: Wed, 23 Mar 2005 18:37:20 -0600
+Message-ID: <42420BC0.6030700@riverviewtech.net>
+References: <42420275.7030909@vsahost.com>
 Reply-To: gtaylor@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <2F413D5F33545D4A8465BBEE900238CC3FA777@cymmail.cymphonix.com>
+In-Reply-To: <42420275.7030909@vsahost.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Trevor Paskett <tpaskett@cymphonix.com>
-Cc: coreteam@netfilter.org, netfilter@lists.netfilter.org
+To: Jared Cook <jared@vsahost.com>
+Cc: netfilter@lists.netfilter.org
 
-One thing that I forgot to mention is that if you are DROPing FORWARD traffic in your filter / FORWARD table you will need to ACCEPT traffic that come sin your LAN interface and back out your LAN interface.
+The problem that you are having when you port forward traffic from Box A to Box B is that the returning traffic comes directly from Box B to the client that sent the traffic in the first place thus you have an incorrect communications path.  Ironically I just had to work on a situation sort of similar to this one.  What I did in my situation to accomplish this was to DNAT the traffic destined to Box A over to Box B, like you have done.  You also need to SNAT the traffic leaving Box A on it's way Box B to be from Box A's IP so that when Box B replies it will reply back to Box A which will in turn reply back to the client system.  Thus you no longer have a triangle of client to Box a to Box B to client but rather client to Box A to Box B to Box A to client.  Let me know what your network config looks like if you would like me to come up with some iptables rules for you.
 
-iptables -t filter -A FORWARD -i ${LAN} -o ${LAN} -j ACCEPT
-
-You could possibly put a -s and -d match in place to tighter constraints on what is forwarded around the LAN.
+Reference my replies to "HELP! Transparent Proxy using bridging 2.6.9 and REDIRECT on	different subnet" thread for an example or email me and I'll try to provide more help.
 
 
 
 Grant. . . .
 
-Trevor Paskett wrote:
-> Thanks for your reply. Our product is a Linux based product that uses
-> netfilter. We have Squid and a filtering engine on our box. We are
-> strong supporters of netfilter. Our customers have many subnets behind
-> our box because of where it is placed in their network. Bringing up
-> alias's on br0 for each of their subnets that are not even on that
-> broadcast domain is a big band aid :). I think this is somehow a bug in
-> ip_nat_core.c and will investigate that further and have cc'd
-> coreteam@netfilter.org and hopefully that will get to Rusty who wrote
-> it.
+Jared Cook wrote:
+> I have two servers on two different networks.  I am running a service on 
+> box A that I am transitioning to box B.  While I wait on DNS to 
+> propagate, I would like to do some iptables magic to send traffic from 
+> box A to box B using NAT.  For instance, when pop3 email users connect 
+> to box A, I would like box A to send the request to box B 
+> transparantly.  Is this possible?  I have had success doing port 
+> forwarding to the local machine, but when I specify box B as the "--to", 
+> it doesn't work.  Any help would be greatly appreciated.
 > 
-> As for the SNAT I think Jason Opperisano's response is correct.
-> Everything works great, except somewhere in ip_nat_core.c the src port
-> is getting changed to 1 from 80. I have attached an ethereal dump to
-> show this happening and a dump when it does what it is supposed to.
-> Everything between the 2 is the same, except after I captured the
-> no_work.cap, I did
+> Thanks,
+> Jared
 > 
-> ifconfig br0:0 192.168.255.165
-> 
-> So it had an IP on the test machine's subnet. Of course it worked fine
-> and that capture is work.cap
-> 
-> Thanks for all your help.
-> 
-> Trevor Paskett
-> Cymphonix Programmer - CCNA, CWNA
-> P: 801-938-1500 F: 801-938-1501
-
 
