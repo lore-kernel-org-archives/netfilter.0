@@ -1,14 +1,13 @@
-From: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>
-Subject: Re: transparent proxy
-Date: Fri, 27 Feb 2004 11:00:56 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Loopback traffic..
+Date: Fri, 27 Feb 2004 17:18:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402271100.56511.danielf@supportteam.net>
-References: <003901c3fd0e$88a3c6f0$2a245cc2@cea05>
+Message-ID: <200402271718.37113.Antony@Soft-Solutions.co.uk>
+References: <200402271655.i1RGtGvF018952@discmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003901c3fd0e$88a3c6f0$2a245cc2@cea05>
-Content-Disposition: inline
+In-Reply-To: <200402271655.i1RGtGvF018952@discmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,40 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Tomasz Macioszek <tomekm@cea.pl>, Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-That rule should work fine, make sure you compiled squid with:
+On Friday 27 February 2004 4:54 pm, Aldo S. Lagana wrote:
 
-./configure --enable-linux-netfilter 
+> I noticed on one of my netfilter gateways, I am seeing a lot of loopback
+> traffic.  It is high-port number traffic.  I don't recall ever seeing any
+> loopback traffic before.
+>
+> I run iptables, squid, frees/wan, poptop, portsentry, squidguard...it's
+> weird - I have another box that runs those and has 0 loopback traffic..
 
-But for more usefull info :)
-Here is a nice HOW-TO
-http://en.tldp.org/HOWTO/TransparentProxy.html
+Is there any difference in /etc/hosts, or the DNS resolution for the two 
+machines when they want to look up (a) their own hostnames, or (b) 
+"localhost" ?
 
-
-On Friday 27 February 2004 02:48, Tomasz Macioszek wrote:
-> Hello!
-> I have a Linux server acting as a gateway between internal network and
-> internet. The iptables rule set have been working  good for long time.
-> I have configured squid on this server. When I have set internal network
-> client to use directly proxy server it has worked properly. But when I have
-> set iptable to redirect all http traffic to squid  port (3128) it didn't
-> work (transparent proxy).
-> This is my iptable rule:
-> iptables -t nat -A PREROUTING -p TCP --dport 80 -j REDIRECT --to-port 3128
-> I think that all options in my kernel are set properly.
-> I don't know why it doesn't work
-> I set tcpdump to listen on 3128 port and when client tried to connect to
-> web server on port 3128 showed only first IP  package of this connection
-> and connections failed.
-> Could you send me a solution for this problem?
-> Best regards
-> Tomek
+Antony.
 
 -- 
-_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_
-Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
-The distance between nothing and infinity is always the same no matter how 
-close you get to nothing.
+Wanted: telepath.   You know where to apply.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
