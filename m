@@ -1,8 +1,9 @@
-From: Eric Ellis <eellis@mail.co.gilchrist.fl.us>
-Subject: Can't interpret this log entry
-Date: Fri, 24 Sep 2004 11:53:35 -0400
+From: Askar <askarali@gmail.com>
+Subject: strange traffic
+Date: Fri, 24 Sep 2004 21:53:59 +0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <415442FF.1060304@mail.co.gilchrist.fl.us>
+Message-ID: <a0f69e504092408533ebc42d7@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,32 +16,32 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-I'm slightly confused about this log entry that I'm seeing pop up in my 
-syslog.
+hi all 
+can someone tell me  what type of traffic is this....
+#tcpdump -n port not 22 -c 100 and -t host xxx.xx.xx.xx
 
-The firewall is 200.21.1.254, on a private net.
+xx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
 
-Sep 24 11:57:03 firewall kernel: IN=eth0 OUT= 
-MAC=00:40:05:3d:51:e9:00:50:3e:ed:28:a0:08:00 SRC=200.175.75.101 DST=200.2
-1.1.254 LEN=56 TOS=0x00 PREC=0x00 TTL=43 ID=10814 PROTO=ICMP TYPE=3 
-CODE=3 [SRC=200.21.1.254 DST=200.175.75.101 LEN=48 T
-OS=0x00 PREC=0x00 TTL=102 ID=2554 DF PROTO=TCP INCOMPLETE [8 bytes] ] 
+xxx... is our client IP we are getting lot of like these.. days with
+different source ip each time.
+regards
 
-
-it *almost* looks like my box is sending an ICMP query, and getting a 
-"port closed" response.  The thing that bothers me about this is that I 
-don't allow ICMP to talk on the box at all, so I shouldn't be sending 
-ICMP, or if the machine tries to, I should be getting it logged, as I'm 
-logging all of my drops.
-
-Confused.
 -- 
-Eric Ellis
-Gilchrist County Sheriff's Department
-IT Coordinator
-eellis@mail.co.gilchrist.fl.us
-352-463-3181
+(after bouncing head on desk for days trying to get mine working, I'll make
+yer life a little easier)
 
