@@ -1,11 +1,14 @@
-From: David Nillesen <dave@absoluteevil.com>
-Subject: Crashes under load on on Alpha running linux 2.6.7 + pppoe + pppd
-Date: Sat, 07 Aug 2004 14:42:04 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DNAT hiding routers behind it
+Date: Sat, 7 Aug 2004 08:37:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1091853724.3474.54.camel@hecate>
+Message-ID: <200408070837.38949.Antony@Soft-Solutions.co.uk>
+References: <4113BEF9.5090706@parknet.dk> <200408062356.16206.Antony@Soft-Solutions.co.uk> <411443B8.8090202@parknet.dk>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <411443B8.8090202@parknet.dk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +21,59 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-There is a lot of links in the chain here that could be going wrong, but
-I thought I'd start with the netfilter lists.
+On Saturday 07 August 2004 3:51 am, Simon Lodal wrote:
 
-The problem is most evident when I start up a bittorrent session. After
-running for an hour or so the Alpha gateway box reboots itself. I have
-never been able to catch it happening, so I'm not sure what errors I
-get. The kernel just reboots and the server attempts to restart itself.
+> > My guess is that you have a MASQUERADE rule with no interface specified -
+> > so packets get the source address of the firewall whether they're going
+> > out or coming in?
+>
+> masquerading or snat (tried both, no difference):
+> root@fw # iptables -t nat -A POSTROUTING -o eth0 -s 10.44.252.2 -j SNAT
+> --to-source 10.44.8.10
+>
+> No other iptables rules are defined yet.
+>
+> simonl@pc $ traceroute -q1 -I 192.168.1.11
+> traceroute to 192.168.1.11 (192.168.1.11), 30 hops max, 38 byte packets
+>   1  10.44.252.1 (10.44.252.1)  4.297 ms
+>   2  10.44.8.1 (10.44.8.1)  3.892 ms
+>   3  192.168.44.1 (192.168.44.1)  4.826 ms
+>   4  192.168.1.11 (192.168.1.11)  5.095 ms
+>
+> All good. Now for the fun (dnat to another host at similar distance):
+> root@fw # iptables -t nat -A PREROUTING -i vmnet2 -s 10.44.252.2 -d
+> 192.168.1.11 -j DNAT --to-destination 192.168.2.11
+>
+> simonl@pc $ traceroute -q1 -I 192.168.1.11
+> traceroute to 192.168.1.11 (192.168.1.11), 30 hops max, 38 byte packets
+>   1  10.44.252.1 (10.44.252.1)  1.854 ms
+>   2  192.168.1.11 (192.168.1.11)  9.378 ms
+>   3  192.168.1.11 (192.168.1.11)  17.237 ms
+>   4  192.168.1.11 (192.168.1.11)  3.783 ms
+>
+> See?
 
-I have a 512/512 kbit link and am usually able to get a combined
-throughput of 60-70kbytes per second. Under those circumstances I
-usually get an hour or two before the system crashes.
+Yes.   Strange.   I think I'd like to see the output of "traceroute -q1 -I 
+192.168.2.11" (with or without the DNAT rule, shouldn't make any difference).
 
-Under lighter loading it does appear to take longer before it crashes.
-
-I am masquerading/SNATing a LAN behind the firewall. The problem occurs
-if I use SNAT or MASQ.
-
-I can also run a bittorrent client on the Alpha or on the LAN host.
-Again the problem still occurs, regardless of where the client is. I
-have tried multiple bittorrent clients.
-
-I can download entire Debian archives without too many problems however,
-so I thought it might have something to do with the sheer number of
-incoming and outgoing connections that need to be maintained to keep a
-bittorrent session running.
-
-My friends have the same config on an Intel box and it performs
-flawlessly.
-
-I have tried running dnetc as an articial CPU load, but it makes no
-difference. The box appears to be stable normally so long as it has no
-pppoe/ppp load so I dont think its hardware.
-
-I run Debian testing Linux on Alpha gateway for my network.
-
-iptables 1.2.9-10
-kernel 2.6.7 (same problem existed on 2.6.6)
-pppoe 3.5-3
-
-I am running a Netcomm wireless DSL router setup to work as an ADSL
-modem via pppoe.
-
-I have a statefull firewall setup, nothing hugely complex mainly a lot
-of sanity checks then a few accepts with a default deny at the end.
-
-I am using ip_nat_ftp and ip_conntrack_ftp in addition to the standard
-connection tracking modules.
-
-
-If there are any suggestions, known problems or things you could think
-of I should check, it would be much appreciated.
+Also, can you put a packet sniffer such as ethereal on the link 10.44.8.10 - 
+10.44.8.1 to see what packets are really leaving your firewall to the rest of 
+the network?
 
 Regards,
-Dave
+
+Antony.
+
+-- 
+"Reports that say that something hasn't happened are always interesting to me, 
+because as we know, there are known knowns; there are things we know we know. 
+We also know there are known unknowns; that is to say we know there are some 
+things we do not know. But there are also unknown unknowns - the ones we 
+don't know we don't know."
+
+ - Donald Rumsfeld, US Secretary of Defence
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
