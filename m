@@ -1,8 +1,8 @@
 From: Paulo Andre <pandre@darkstar.nom.za>
-Subject: QOS
-Date: 19 Dec 2002 08:48:24 +0200
+Subject: kazaa
+Date: 19 Dec 2002 10:08:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040280504.11113.140.camel@bigblue>
+Message-ID: <1040285287.11114.143.camel@bigblue>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,8 +18,10 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Which is the better package to use for QOS??
-HTB or CBQ..???
+I know that this is an old topic but I have done some reading and am
+still stuck.
+I have opened tcp and udp for port 1214 outgoing, but Kazaa is still not
+connecting am I missing something..???
 
 Paulo
 
