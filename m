@@ -1,8 +1,11 @@
-From: Michael Tautschnig <michael.tautschnig@zt-consulting.com>
-Subject: False alarms of invalid packets
-Date: Wed, 23 Feb 2005 10:48:44 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0502231015000.8085@l01.thnet>
+From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+Subject: Re: Port-forwarding Perfomance
+Date: Wed, 23 Feb 2005 11:56:09 +0100
+Message-ID: <1109156169.11713.2.camel@nostromo.bgsecm.com>
+References: <421D2F04.8090100@wildcash.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <421D2F04.8090100@wildcash.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,26 +16,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hello!
+El mi=C3=A9, 23-02-2005 a las 17:33 -0800, Rudi Starcevic escribi=C3=B3:
+> Hi,
+>=20
+> I have www port-forwarding setup and running OK.
+>=20
+> However I wonder if they way I have configured it is not the most=20
+> optimal for speed and performance.
+>=20
+> I have a default policy of DROP with a total of about 30 rules.
+>=20
+> These rules below do my www port-forwarding, can you see if there is a=20
+> better way to do this ?
+>=20
+> # ENABLE FORWARDING / NAT / MASQUERADING
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+>=20
+> # NAT Forwarding Setup
+> $IPTABLES --table nat --append POSTROUTING --out-interface $ETH0 -j=20
+> MASQUERADE
 
-As of kernel 2.6.10 ( AFAIK it didn't happen with 2.6.6 ) I'm frequently 
-noting valid packets that are matched by
+The only thing I can say about your rules it's that if you
+know the firewall IP it's much better to use SNAT than
+MASQUERADE, because you gain some speed with it.
 
--A FORWARD -i $INET_IF -p tcp ! --syn -m conntrack --ctstate NEW -j LOG --log-tcp-sequence --log-tcp-options --log-ip-options --log-prefix \"ILLEGAL CONNECT \"
--A FORWARD -i $INET_IF -p tcp ! --syn -m conntrack --ctstate NEW -j DROP
+> $IPTABLES -A FORWARD -i $ETH1 -j ACCEPT
+> $IPTABLES -A FORWARD -i $ETH0 -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+>=20
+> # http Port-Forwarding setup
+> $IPTABLES -t nat -A PREROUTING -i $ETH0 -p tcp --dport 80 -d $MEDIA1_IP=
+=20
+> -j DNAT --to $MEDIA1_LO:80
 
-The log then reports:
+The rule it's OK, I don't know how you can do it better to achieve
+more speed.
 
-ILLEGAL CONNECT IN=eth0 OUT=eth4 SRC=... DST=... LEN=88 TOS=0x00 PREC=0x00 TTL=54 ID=51407 DF PROTO=TCP SPT=59161 DPT=993
-SEQ=419025884 ACK=1649134821 WINDOW=65535 RES=0x00 ACK PSH URGP=0 OPT (0101080A8B9F9B5983C5BFAB)
+> Many thanks,
+> Kind regards
+> Rudi
 
-This happens for connections established for a longer time, such as IMAP, 
-HTTP or SSH .
+Regards.
 
-Thanks in advance,
-Michael
+--=20
+
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
+
 
