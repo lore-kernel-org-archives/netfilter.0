@@ -1,13 +1,15 @@
-From: "giovanni costagliola" <giovanni.costagliola@nexusat.it>
-Subject: Active FTP and NATting: troubles
-Date: Fri, 16 Apr 2004 16:48:12 +0200
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: iptables newbie questions
+Date: Fri, 16 Apr 2004 10:52:30 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BFEIJHPOPCCMOPEKHHMOAEOCDCAA.giovanni.costagliola@nexusat.it>
-References: <Pine.LNX.4.58.0404160851070.27976@seraph.dst.usb.ve>
+Message-ID: <42948.0749801316$1082128216@news.gmane.org>
+References: <407F9DA0.80008@bsdmon.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0404160851070.27976@seraph.dst.usb.ve>
+From: Alistair Tonner <>
+In-Reply-To: <407F9DA0.80008@bsdmon.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,55 +20,95 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: matthieu <matthieu@bsdmon.com>, netfilter@lists.netfilter.org
 
-hallo all,
-	I'm implementing a firewall which, moreover, NATs all the incoming connections to internal private addresses. I'm experiencing some
-problems configuring active FTP and, honestly, I cannot figure out what's going wrong. I'm coming to get your help.
+On April 16, 2004 04:47 am, matthieu wrote:
+> hi
+> i have three questions about iptables:
+>
+> 1/
+>
+> i read the packet-filtering howto
+> (http://netfilter.org/documentation/HOWTO//packet-filtering-HOWTO.html) the
+> first example uses the ip_conntrack module, which allows the state match
+> rule, as in the following rules :
+>
+> iptables -A block -m state --state NEW -j REJECT
+>
+> on the other hand, my red hat 9 was automatically configured by lokkit with
+> something that looks similar but without using ip_conntrack:
+>
+> iptables -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --syn -j REJECT
+>
+> what are the exact differences between these two ways of doing the same
+> thing ? (Is it related to the way fragments are handled ?)
 
-Scenarios:
+	Not knowing redhat's lokkit script (which is sorta proprietary) -- 
+	The first rule you list simply cans all "new" connections that 
+	get passed to the "block" chain.  To truly understand the block chain, one must 
+	contemplate what rules put packets into it, the second, lokkit, rule blocks all 
+	packets wth only syn set, agin, you need to contemplate what rules are putting
+	packets into the chain to understand what it will accomplish. -- There is a 
+	slight difference in what the two rules will drop, but as I am coming off a rather rough
+	night at work the finer point escapes me.
 
-Internet <-> FW <-> DMZ
+>
+> 2/
+>
+> about fragments (see
+> http://netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-7.html)
+>
+> in the paragraph "specifying fragments", it says:
+> "If you are doing connection tracking or NAT, then all fragments will get
+> merged back together before they reach the packet filtering code, so you
+> need never worry about fragments."
+>
+> but 5 lines below, it also says that we can only filter the first fragment,
+> because further fragments don't have their tcp header.
+>
+> so, are fragments merged or not ? Does it mean that by default, fragments
+> are not merged but that as soon as we use nat or ip_conntrack they are
+> merged ? This is what i understand but i just want a confirmation..
+>
+	I f you are NOT doing connection tracking or NAT you will see the *first* fragment
+	in a TCP stream -- you can set rules on that ... 
 
-I'm natting all public addresses to private ones.
+> 3/
+>
+> i'm new to linux so this one may seem trivial, but let's ask it:
+> how are netfilter routing and other kernel routing related ?
+> i mean:
+> there is a /sbin/route command that lists a routing table, and we can also
+> modify this table. but there is also some routing in iptables, as far as i
+> understand. also, browsing through some howtos i saw mentions of a iproute2
+> command All of this is very confusing to me, so what is the architecture of
+> all this ? i already read "The journey of a packet through the linux 2.4
+> network stack" by harald welte but it did not help clarifying the overall
+> scheme
 
-Let's suppose my server has the public ip IP_PUBLIC and the private ip IP_PRIVATE.
+	netfilter routing: we will alter the packet to follow a route.
+	     (effectively the nat and mangle *prerouting* tables are just that -- they sit out front 
+	      of the kernel routing tables, and the nat/mangle *postrouting* see the packets after they are
+	     routed)
 
-I've loaded the following kernel modules:
-ip_conntrack
-ip_conntrack_ftp
-ip_nat_ftp
+	kernel routing: we will decide, based on the routing tables where a packet will go
 
-I stated, initially, the following statement
+	ioproute2: we can mark, alter and manage the packet through both:
+	           iptables can "mark" a packet and use that mark to pass it through the firewall rules, 
+	           and ---- IF i've been reading correctly this mark can be seen by iproute2 to handle 
+	 	  the passage through the kernel routing tables. 
+	         Once installed it effectively replaces the default kernel routing.
+	
+	iproute2 is not by default installed on most distributions, and adds much facility for 
+	managing routing ...  
 
-iptables -t nat -A PREROUTING -d IP_PUBLIC -j DNAT --to-destination IP_PRIVATE
+	PLEASE NOTE: ---> My explaination might be a little thin, and slightly foggy considering my sleep deprivation but its to the best of my ability.
 
-after some test I've added the following statement too:
 
-iptables -t nat -A POSTROUTING -s IP_PRIVATE -j DNAT --to-source IP_PUBLIC
+	Alistair Tonner
+	
 
-to allow natting of FTP server incoming connections to the clients.
 
-Q1. Am I right argumented such I did? Or the 2nd statement is pleonastic?
-
-I see that, adding the second rule, some matching occurr.
-
-then I enabled the traffic issuing the following four statements:
-
-iptables -A CHAIN_INBOUND  -d IP_PRIVATE -p tcp --dport ftp-data -m state --state ESTABLISHED -j ACCEPT
-iptables -A CHAIN_OUTBOUND -s IP_PRIVATE -p tcp --sport ftp-data -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A CHAIN_INBOUND  -d IP_PRIVATE -p icmp -m state --state RELATED -j ACCEPT
-iptables -A CHAIN_OUTBOUND -s IP_PRIVATE -p icmp -m state --state RELATED -j ACCEPT
-
-Q2. The last two rules should allow icmp traffic "related" to the ftp connection. Are they legal? In the sense that iptables can
-handle them appropriately recognizing the fact they are related to the FTP transfer?
-
-looking at iptables statistics, while attempt to connect via active ftp to the host, I don't see any matching of the rules
-concerning ftp-data channell
-
-Q3. where I'm wronging?
-
-thanx for your time
-*g
-
+>
+> thanks in advance
 
