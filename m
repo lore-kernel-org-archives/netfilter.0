@@ -1,11 +1,13 @@
-From: Max Yin <max.yin@msa.hinet.net>
-Subject: Port range forwarding
-Date: Mon, 12 Jan 2004 20:43:16 +0800
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: source-mac filtering
+Date: Mon, 12 Jan 2004 10:52:02 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E4DB60AD-44FC-11D8-842F-000A95DA9C9A@msa.hinet.net>
-Mime-Version: 1.0 (Apple Message framework v609)
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040112155202.GA8023@cannon.eng.us.uu.net>
+References: <Sea1-F7gMiX6AZCFgXe000520e9@hotmail.com> <20040111163756.GA6168@cannon.eng.us.uu.net> <1073847935.13069.16.camel@carve.personal.localdomain> <200401120110.08378.Alistair Tonner <>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200401120110.08378.Alistair Tonner <>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,26 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter-admin@lists.netfilter.org
+Cc: "Tarek W." <mailinglists1@hotpop.com>, netfilter@lists.netfilter.org
 
-Hi,
-I'm not sure if this question is already been asked before or not, 
-because I can't find any discussion before.
+On Mon, Jan 12, 2004 at 01:10:08AM -0500, netfilter-admin@lists.netfilter.org wrote:
 
-I want to setup a port forwarding rule that will translate a specified 
-port range to another port range, for example:
+> 	I'll accept that .. but I have a question ... is ARP routing not 
+> 	related?? 
+> 	Are ARP queries not ethernet broadcasts on a similar level to 
+> 	DHCP broadcasts??
 
-iptables -t nat -A PREROUTING -i eth0 -j DNAT -p tcp --dport 3100:3500 
---to-destination \
-192.168.2.60:2100-2500
+I don't understand the question.
 
-But I found that all connections from 3100 to 3500 will be mapped to 
-2100 port only, not 3100 to 2100, 3101 to 2101, etc.
+ARP as in do_arp() is being called by IP stack itself. DHCP broadcasts
+are application invoked calls.
 
-So, how can I make it? or is it possible ?
+Now, can you rephrase the question again?
 
-Thanks
-Max
+Ramin
 
+> 
+> 	(okay .. thats mighty off topic ..but perhaps its something we can 
+> 	consider network related)
+> 
+> 	Alistair
 
