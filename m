@@ -1,13 +1,12 @@
-From: "Sebastian" <netfilter@basti79.de>
-Subject: RE: Snuffing out hackers
-Date: Wed, 16 Jul 2003 23:14:34 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: connecting to a SMTP/POP server on the internet
+Date: Thu, 17 Jul 2003 07:45:06 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000f01c34bdf$415d9c70$0200a8c0@basti79>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DF7@alderaan.smgtec.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF2A@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122DF7@alderaan.smgtec.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,79 +17,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Daniel Chemko' <dchemko@smgtec.com>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: system administrator <sysadmails@yahoo.com>, netfilter@lists.netfilter.org
 
-Hi there...
+Can you do it from the linux box? Are you running DSL, which by then you =
+need to lower your outgoing MTU?
+Have you logged any packets?
+Have you run a tcpdump?
 
-Just a thought:
-If you are getting many of those packtes, than it should be possible to
-catch one of it with tcpdump to find out senders MAC address. This will
-pearhaps allow to find you the source, if it's realy located on your
-internal network.
+and the list goes on.....
 
-Greets
-Sebastian.
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 
 
 -----Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Daniel Chemko
-Sent: Wednesday, July 16, 2003 10:22 PM
-To: Aldo S. Lagana; netfilter@lists.netfilter.org
-Subject: RE: Snuffing out hackers
-
-
-I am on Shaw, but none of these addresses are used for anything to do
-with my network.
-
-I am doing some pretty anal filtering, but then again, I may be missing
-something pretty obvious. I have rp_filter at 2 and source routing
-disabled.
-
-PS: I am getting MANY of these packets. These packets are not getting
-through to their targets, but if someone is persistent enough to keep
-trying, I assume they must be able to do something malicious.
-
------Original Message-----
-From: Aldo S. Lagana [mailto:alagana@discmail.com] 
-Sent: Wednesday, July 16, 2003 12:32 PM
-To: Daniel Chemko; netfilter@lists.netfilter.org
-Subject: RE: Snuffing out hackers
-
-Both IP addresses are assigned to cable ISPs.
-
-Name:    h24-87-243-251.vc.shawcable.net
-Address:  24.87.243.251
-
-Name:    d57-108-11.home.cgocable.net
-Address:  24.57.108.11
-
-Not sure if either of them are your ISP?  But I would contact both ISPs
-with your log data if you really cared.  Are you running squid?  A
-webserver?
-
-
-
-
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Daniel Chemko
-Sent: Wednesday, July 16, 2003 2:58 PM
+From: system administrator [mailto:sysadmails@yahoo.com]
+Sent: Thursday, July 17, 2003 1:11 AM
 To: netfilter@lists.netfilter.org
+Subject: connecting to a SMTP/POP server on the internet=20
 
-I am getting some disturbing packet traffic hitting my firewall. Here
-goes:
 
-IN=eth4 OUT=eth5 SRC=24.87.243.251 DST=24.57.108.11 LEN=76 TOS=0x00
-PREC=0xC0 TTL=25
-4 ID=17431 PROTO=ICMP TYPE=3 CODE=3 [SRC=24.57.108.11 DST=24.87.243.251
-LEN=48 TOS=0x00 PREC=0x00 TTL=117 ID=15860 DF PROTO=TCP SPT=
-3161 DPT=80 WINDOW=16384 RES=0x00 SYN URGP=0 ]
+Hi there,
 
-None of the addresses listed in the packets are from my networks, but
-what is more disturbing is that eth4 is my internal network interface.
-Can anyone see (baring an internal intrusion has occurred) how this can
-happen?
+We want to connect to a SMTP/POP server on the
+internet from our LAN with:
+                                                     =20
+                        =20
+iptables -A FORWARD -i eth0 -p tcp -j ACCEPT
+iptables -A FORWARD -i eth0 -p udp -j ACCEPT
+iptables -A FORWARD -j DROP
+iptables -t nat -o eth1 -A POSTROUTING -j MASQUERADE
+                                                     =20
+                        =20
+When we try to access from the workstation to the POP
+server we get a message: 'connection to x.com timed
+out', we can however access the mail on the firewall -
+even if the connection is slow.
+                                                     =20
+                        =20
+Please help us out ...
+                                                     =20
+                        =20
+# Our general setup:
+# RedHat 8.0 firewall with iptables installed on PII
+400MHz
+# eth0 =3D our LAN and eth1 =3D Internet
+# cat /proc/sys/net/ipv4/ip_forward =3D> 1
+# gateway on workstation in LAN pointing to firewall
+# gateway defined for eth1 pointing to router
 
-It definitely appears to be an exploit on my configuration or something.
+Thanks in advance,
+
+Frank
+
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
 
