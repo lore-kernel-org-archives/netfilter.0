@@ -1,13 +1,13 @@
-From: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>
-Subject: Re: load balancing
-Date: Mon, 3 Feb 2003 10:30:53 -0600
+From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
+Subject: RE: Consequences
+Date: Mon, 3 Feb 2003 11:57:09 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302031030.53569.danielf@supportteam.net>
-References: <1044280193.16953.15.camel@sander> <1044282910.16954.25.camel@sander>
+Message-ID: <IMEDICLPAGAOCBLCCKLPIEDPENAA.netfilter@darrelldieringer.com>
+References: <1044287458.9025.82.camel@juna.cypherworld.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1044282910.16954.25.camel@sander>
+In-Reply-To: <1044287458.9025.82.camel@juna.cypherworld.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,68 +18,153 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sander Sneekes <sander@dmdsecure.com>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: saint <nagajuna@optushome.com.au>, Netfilter List <netfilter@lists.samba.org>
 
-Im going to be working on one of these later this year it's my understanding 
-that you would want to use the nth patch and the state table and SNAT to 
-accoplish this. 
+Hello,
 
-From the nth patch.
-------------------------
-2) Unique rule for every packet.  This is an easy and quick
-   method to produce load-balancing for both inbound and outbound.
-   example:
-   iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7              
---every 3 --packet 0 -j SNAT --to-source 10.0.0.5
-   iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7              
---every 3 --packet 1 -j SNAT --to-source 10.0.0.6
-   iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7              
---every 3 --packet 2 -j SNAT --to-source 10.0.0.7
-   This example evenly splits connections between the three SNAT
-   addresses.
+It has been quite awhile since I first set up my rules, so be advised
+that my suggestions may be a bit off (and subject to correction by
+others, of course)...
 
-   By using the mangle table and iproute2, you can setup complex
-   load-balanced routing.
-------------------------
+As a general rule, you should not do any packet filtering in
+PREROUTING / POSTROUTING / MANGLE.  Those chains are for things like
+SNAT / DNAT and a variety of other manipulations.  You should only be
+dropping traffic in INPUT / OUTPUT / FORWARD (and your user-defined
+filter table chains).
 
-Here's a site with good infos on the patches available.
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO.html
+I remember having the same problem as you, and I'm pretty sure it was
+because I originally tried to use a default DROP policy on
+PRE/POSTROUTING & MANGLE.  Unless you duplicate all of your INPUT /
+FORWARD rules in PREROUTING, the incoming traffic you wish to permit
+will match the default DROP policy there (and subsequently die) before
+it ever gets to the filter table.  Same is true for your OUTPUT rules.
 
-Hope this helps. 
+I hope this helped.
 
-On Monday 03 February 2003 08:35, Sander Sneekes wrote:
-> currently i'm using this line
+If you post your rules, I'm sure someone will advise you of the
+precise problem.
+
+Darrell Dieringer - Madison, WI
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of saint
+> Sent: Monday, February 03, 2003 9:51 AM
+> To: Andre Costa; Netfilter Mailing List
+> Subject: Consequences
 >
-> iptable -t nat -A PREROUTING -d X.X.X.X -p tcp --dport http -j DNAT
-> --to-dest 192.168.0.100-192.168.0.111
 >
-> this this the job but the if i use the same client it always uses 100
-> for ex.
+> There have been a number of problems that I have but I believed
+> it had nothing to do with syntax errors or any missing rules on
+> my behalf.
+> I'll have to sit back and study these problems taking into
+> consideration you recommendations ( and Ken's).
+> How far reaching I not sure yet but I will say that I have
+> conflicting
+> chains-> different userdefined chains, default policy of DROP
+> (INPUT/OUTPUT/FORWARD/POST-PRE ROUTING/ MANGLE ) drops everything
+> as expected and remains dropping everthing eventhough I
+> have the service
+> exlicitly and carefully enabled are just some of these problems.
 >
-> but we need to do some preformance test with 3 client's so everytime a
-> client
-> does a reqeust to the http server i want to get it for a different
-> server.
+> I don't know what's causing them because, as I have
+> indicated, syntax &
+> everthing else is fine.  Ofcourse because I don't know I'm
+> looking for a
+> possible scapegoat and initialisation + ifconfig stuff is
+> one thing I
+> haven't comes to terms with yet -> so hence my suspicion that other
+> things could've been affected by this.
 >
-> anybody ?
+> Let you know though when I figure it out.  Personally I
+> want to finish
+> it before my summer break -> then its back to uni.
 >
-> thanks
-> Sander
+> Santos
 >
-> On Mon, 2003-02-03 at 14:49, Sander Sneekes wrote:
-> > Hi all,
+>
+> On Tue, 2003-02-04 at 02:09, Andre Costa wrote:
+> > You're welcome, Santos, I am glad I could be of help =)
 > >
-> > I need to load balance between 2 webserver
-> > what is the most fastest way of doing this?
-> > With iptables? if yes wich line's do i need to use
-> > i have a RH 7.2 with iptables running already doing
-> > al network traffic
+> > I am curious: what kind of "far-reaching consequences"? Could you
+> > please ellaborate?
 > >
-> > cheers
-> > Sander
+> > Happy firewalling ;)
+> >
+> > Andre
+> >
+> > On 04 Feb 2003 01:58:35 +1100
+> > saint <nagajuna@optushome.com.au> wrote:
+> >
+> > > I think I get it and I think you've just solve a nagging
+> > > problem that I have.  I have wrote my own script, took me awhile
+> > > though.
+> > >
+> > > And I think it does have (have been) some far-reaching
+> consequences.
+> > >
+> > > Thanks again.
+> > >
+> > >
+> > > On Tue, 2003-02-04 at 01:44, Andre Costa wrote:
+> > > > Hi Santos,
+> > > >
+> > > > there has been a discussion about this a while ago on
+> this ML, I am
+> > > > forwarding you the msg which has a nice proposal to
+> solve this.
+> > > > Basically it involves:
+> > > >
+> > > > * writing your own fw script (e.g. your rc.firewall)
+> > > >
+> > > > * put a symlink to it on /etc/init.d *BEFORE* the
+> iptables link
+> > > > there, so that your script is called first (this
+> means prepeding the
+> > > > symlink name with a 'S-number' lower than the one
+> associated to
+> > > > iptables startup script)
+> > > >
+> > > > Please notice that you might have to remove the
+> initialization part
+> > > > of/etc/sysconfig/iptables and put it at the beginning of your
+> > > > rc.firewall script, otherwise iptables-restore might
+> choke or you
+> > > > might even undo what you have done on rc.firewall
+> (these are wild
+> > > > guesses, make sure you test it properly). I am
+> talking about all
+> > > > rules like
+> > > >
+> > > > *filter
+> > > > :FORWARD DROP [0:0]
+> > > > :INPUT DROP [0:0]
+> > > > :OUTPUT ACCEPT [0:0]
+> > > >
+> > > > at the top of /etc/sysconfig/iptables
+> > > >
+> > > > HTH
+> > > >
+> > > > Andre
+> > > >
+> > > > On 04 Feb 2003 01:16:37 +1100
+> > > > saint <nagajuna@optushome.com.au> wrote:
+> > > >
+> > > > > Thank Andre:  that's makes sense. So what on Earth do I do
+> > > > > when my firewall reboots and I can't be sure of the
+> IP address?
+> > > > > Could I put the rc.firewall script in /etc/rc.d/ ?
+> and have run at
+> > > > > boot time from /etc/init.d/ ?
+> > > > > I'm using SuSE 8.1 and I can actually put a line in
+> > > > > /etc/init.d/boot.local that will execute my rc.firewall.
+> > > > >
+> > > > > Santo.
+> > > > > Happy to learn.
+> > >
+> >
+>
+>
+>
 
--- 
-Daniel Fairchild - Chief Security Engineer | danielf@supportteam.net
-The distance between nothing and infinity is always the same no matter how 
-close you get to nothing.
 
