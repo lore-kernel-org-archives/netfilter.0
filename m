@@ -1,13 +1,14 @@
-From: "Michael Frank" <mhf@linuxmail.org>
-Subject: Re: Possible to block ports by user group?
-Date: Tue, 06 Jul 2004 00:35:42 +0800
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: NAT Helper or UPnP?
+Date: Mon, 5 Jul 2004 10:56:54 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <opsaoa1s2d4evsfm@smtp.pacific.net.th>
-References: <opsal65hoe4evsfm@smtp.pacific.net.th> <1088953144.11637.57.camel@anduril.intranet.cartel-securite.net> <opsande9km4evsfm@smtp.pacific.net.th> <200407051034.16368.Alistair@nerdnet.ca>
+Message-ID: <SERVER7T2NqFJ3sl3xb000000a7@server7.bandwidthco.com>
+References: <200407050848.23707.gdh@acentral.co.uk>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407051034.16368.Alistair@nerdnet.ca>
+In-Reply-To: <200407050848.23707.gdh@acentral.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +18,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="iso-8859-1"
-To: Alistair Tonner <Alistair@nerdnet.ca>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Gavin Hamill' <gdh@acentral.co.uk>, netfilter@lists.netfilter.org
 
-On Mon, 5 Jul 2004 10:34:16 -0400, Alistair Tonner <Alistair@nerdnet.ca> =
-wrote:
+ 
 
-> On July 5, 2004 12:29 am, Michael Frank wrote:
->> On Sun, 04 Jul 2004 16:59:04 +0200, Cedric Blancher
-> <blancher@cartel-securite.fr> wrote:
->> > Le dim 04/07/2004 =E0 15:16, Michael Frank a =E9crit :
->> >> Would like to block ports depending on the group in use
->> >
->> > See owner match :
->> >
->> > cbr@anduril:~$ iptables -m owner --help
->> > iptables v1.2.11
->> > [...]
->> > OWNER match v1.2.11 options:
->> > [!] --uid-owner userid     Match local uid
->> > [!] --gid-owner groupid    Match local gid
->> > [!] --pid-owner processid  Match local pid
->> > [!] --sid-owner sessionid  Match local sid
->> > [!] --cmd-owner name       Match local command name
->> >
->> > --gid-owner seems to satisfy your needs.
->>
->> Thank you for the pointer. This works very well.
->>
->> I think there is a problem though wrt ICMP requests. The following
->> rule allows _everyone_ to ping, but I would expect only root to be abl=
-e to.
->>
->> ACCEPT     all  --  anywhere             anywhere           OWNER UID =
-match
->> root
->>
->> This rule has no effect on ICMP i am mhf and can't ping.
->>
->> ACCEPT     all  --  anywhere             anywhere           OWNER UID =
-match
->> mhf
->>
->> This is with Vanilla kernel 2.4.24. Any know issue here?
->>
->
-> 	I would suggest that in all likelyhood your ping/traceroute are setuid=
- root.
-> 	*grin*
->
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Gavin Hamill
+Sent: Monday, July 05, 2004 12:48 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: NAT Helper or UPnP?
 
-ping must be root or suid root, the packet count of  "UID match root"
-increases with ping and nmap does work non root.
+On Monday 05 July 2004 08:29, Antony Stone wrote:
 
-Thank you :)
+> I know this is by no means a detailed reply, but I would say it comes 
+> down to one word - "security".
 
-	Michael
+I'll second that.
 
+Microsoft released a long article extolling the virtues of UPnP where it
+pitches the system as a replacement for X.10 home automation, (e.g. 
+everything including your alarm clock is UPnP enabled, and gets synchronised
+/ alarms set by a central server), with only a small mention of the hideous
+firewall 'features'
 
+UPnP moves policy and security decisions from the firewall ruleset where
+they properly belong to a userspace app running on Windows - forgive me, but
+the designer of this system seems like a candidate for the Darwin Awards of
+the most dangerous and stupid network idea ever - just think the next
+version of Sasser / Fizzer would open ports on your $50 UPnP-enabled
+firewall and make you be an even bigger zombie host.
 
+And all in the name of 'ease of use' - bah. Let's hope a huge lawsuit
+against Netgear / Belkin / other low-end router manufr. puts an end to this
+disease.
 
+gdh
 
+How about a third. Permitting Microsoft's UPnP through you firewall is
+equivalent to taking all the curtains down in your house and letting the
+entire world look inside. But alas, they may not be content with just
+viewing as they may see some things they might like and will eventually
+break in at night and take them.
 
 
 
