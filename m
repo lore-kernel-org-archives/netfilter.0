@@ -1,13 +1,9 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: dummy target?
-Date: Fri, 18 Mar 2005 15:41:26 +0100
-Message-ID: <20050318144126.GA2604@zion.homelinux.com>
-References: <423ADBAC.4020406@uplink-verein.ch>
+From: Arthur Kerpician <arthur@bluechip.ro>
+Subject: VPN Masq
+Date: Fri, 18 Feb 2005 17:13:22 +0200
+Message-ID: <42160612.806@bluechip.ro>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
-Content-Disposition: inline
-In-Reply-To: <423ADBAC.4020406@uplink-verein.ch>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,62 +14,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Moritz Gartenmeister <moritz@uplink-verein.ch>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi all,
+Please consider the following config:
 
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+VPN CLIENT
+----------------------
+External IP: 123.123.123.123
+Internal VPN IP: 10.0.0.2
+Default gw: 10.0.0.1
 
+VPN SERVER
+-----------------------
+External IP: 231.231.231.231
+Internal VPN IP: 10.0.0.1
 
-Hi Moritz,
+All traffic on the VPN client is routed through the VPN server using:
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+ipatbles -A FORWARD -s 10.0.0.0/24 -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -j REJECT //block the rest
 
-On Fri, Mar 18, 2005 at 02:46:20PM +0100, Moritz Gartenmeister told us:
-> hi all
->=20
-> i want to use the counters for statistic stuff. i already have a working=
-=20
-> example. but i want to get numbers for pakets, which i acutally have no=
-=20
-> rule for (e.g. all incoming traffic).
-> is there a dummy target? like:
-> $IPTABLES -t mangle -A PREROUTING -m physdev --physdev-in $INET_IF -j DUM=
-MY
->=20
-> dummy target: do nothing, do not terminate, do just increment counters.
+eth0: external NIC on the server
 
-just don't provide the '-j TARGET' on the commandline, then you'll
-have a rule (with its counters) which "does" nothing...
-
-
-HTH
-
-Sven
-
->=20
-> cheers
-> moritz
->=20
->=20
-
---=20
-Linux zion 2.6.11-mm3 #1 Sun Mar 13 00:10:52 CET 2005 i686 athlon i386 GNU/=
-Linux
- 15:40:16 up 5 days, 15:08,  1 user,  load average: 0.23, 0.06, 0.02
-
---d6Gm4EdcadzBjdND
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFCOuiWo4FAdB2PneQRAlU/AJ4lCXVxvwACyRy3lcujI9fXmen+LACeKhVY
-Zb/Cw/cRX2uHpJUGwWXOKuM=
-=AVrh
------END PGP SIGNATURE-----
-
---d6Gm4EdcadzBjdND--
+Ok, the gw works on the client so I have internet connection on it. The 
+problem occurs when an external host tries to access for example the 
+http server on the client (http://123.123.123.123) or pinging the 
+client. Since the default gw on the client is the vpn server, I did a 
+tcpdump -i tap0 (vpn interface) on the server to display some echo 
+replies on the pings. And I received (on tap0 interface) these echo 
+replies which weren't routed back to the pinging host. The output was:
+21:11:14.983343 123.123.123.123 > 111.111.111.111: icmp: echo reply (DF)
+where 111.111.111.111 is the host from where I started to ping.
+Somewere on the vpn server the packets are filtered and not sent to the 
+pinging host. Same for all the connections which have as destination 
+client's external IP. How can I use client's services for external 
+hosts? Some tweaks on client's routing table or the server's packet 
+mangling is faulty?
+Thanks,
+Arthur
 
