@@ -1,9 +1,11 @@
-From: Khanh Tran <khanh@slc.edu>
-Subject: RE: Protocol wise graphs
-Date: Thu, 13 Feb 2003 08:39:16 -0500
+From: "Diego Sarasua" <debian@sarasuasys.com.ar>
+Subject: Re: PPTP/GRE NAT patch for 2.4.20 kernel
+Date: Thu, 13 Feb 2003 11:12:56 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5C7@EXCHANGE>
+Message-ID: <00dc01c2d36a$03414b00$6400a8c0@diego>
+References: <Pine.LNX.4.44.0302130334350.17214-100000@lucy.troja.mff.cuni.cz> <20030213092522.GE28593@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,29 +17,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Anoop S <anoop@it-om.com>, netfilter@lists.netfilter.org
+To: Petr Vagera <pvg@lucy.troja.mff.cuni.cz>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-ntop is supposed to do this well, but it was always a bit unstable for me...
-
-Khanh Tran
-Network Operations
-Sarah Lawrence College
-
-
------Original Message-----
-From: Anoop S [mailto:anoop@it-om.com]
-Sent: Thursday, February 13, 2003 8:17 AM
-To: netfilter@lists.netfilter.org
-Subject: Protocol wise graphs
-
-
-hi list
-i need to log and graph the traffic passing thru my gateway.
-i need to show graphs per user/per protocol. if u can pls suggest some
-tools for this.
-
-thanx
+try http://roeder.goe.net/~koepi/newnat.html
+it works for me
+the modules to load and work :
+modprobe ip_nat_pptp
+modprobe ip_nat_proto_gre
 
 
 
