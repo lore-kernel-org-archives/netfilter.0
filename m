@@ -1,13 +1,10 @@
-From: Craig Steadman <spinout@yakbox.shacknet.nu>
-Subject: Re: Port Redirection with iptables
-Date: Wed, 17 Dec 2003 13:35:51 +0800
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: quickie - exclamation point with multiport
+Date: Wed, 17 Dec 2003 08:25:13 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071639350.4959.104.camel@e500>
-References: <20031216152152.37192.qmail@web41114.mail.yahoo.com>
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA57C5D@OST_EXCH_USR5>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031216152152.37192.qmail@web41114.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,96 +15,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Cook <jg0327@yahoo.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>, cookj@dennis.capemayschools.com
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi Jason
-This works for me on RedHat9...
+Hi there
 
-Squid config mods for transparent proxying :
+Justa quick one - I use $DMZPORTS to define the ports I wish to be allowed
+inbound on the forward chain - can I use 
 
-        http_port       3128
-        httpd_accel_host virtual
-        httpd_accel_port 80
-        httpd_accel_with_proxy on
-        httpd_accel_uses_host_header on
+! -m multiport --dports $DMZPORTS
 
+to mean "any port that isn't specified by $DMZPORTS"?
 
-Basic IPTABLES setup:
+Thanks and mince pies to all!
 
-#!/bin/bash
-# enable ip forward
-echo 1 > /proc/sys/net/ipv4/ip_forward
-                                                                                                              
-/sbin/iptables --flush
-/sbin/iptables -t nat --flush
-/sbin/iptables -t mangle --flush
-/sbin/iptables --policy INPUT ACCEPT
-/sbin/iptables --policy OUTPUT ACCEPT
-/sbin/iptables --policy FORWARD ACCEPT
-/sbin/iptables -t nat --policy PREROUTING ACCEPT
-/sbin/iptables -t nat --policy OUTPUT ACCEPT
-/sbin/iptables -t nat --policy POSTROUTING ACCEPT
-/sbin/iptables -t mangle --policy PREROUTING ACCEPT
-/sbin/iptables -t mangle --policy OUTPUT ACCEPT
-                                                                                                              
-# enable destination port redirect from 80 to 3128
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j \
-REDIRECT --to-port 3128
-
-Cheers
-	Craig
+Steve 
 
 
-
-On Tue, 2003-12-16 at 23:21, Jason Cook wrote:
-> I am trying to install Linux as a firewall and caching
-> server with iptables and Linux.  I 
-> need to do this transparently.
-> 
-> I installed Red Hat Linux 9.  Ran all of the updates
-> nice and smooth.  Turned on ip forwarding.  
-> Configured Squid...and tested it by specifying the
-> servers ip address and port 3128 from the 
-> browser.  Works great.  Here the options I had changed
-> in the config file.
-> 
-> http_port 3128
-> http_access deny to_localhost
-> acl our_networks src 10.0.0.0/8
-> http_access allow our_networks
-> httpd_accel_host virtual
-> httpd_accel_port 80
-> httpd_accel_with_proxy on
-> httpd_accel_uses_host_header on
-> 
-> For iptables I used 
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
-> 80 -j REDIRECT --to-port 3128
-> 
-> I then try to browse the internet from a client
-> through the firewall and nothing.
-> 
-> When I run iptables -t nat -nv -L
-> 
-> Chain PREROUTING (policy ACCEPT 31254 packets, 3971K
-> bytes)
->  pkts bytes target     prot opt in     out     source 
->              destination
->     0     0 REDIRECT   tcp  --  eth1   *      
-> 0.0.0.0/0            0.0.0.0/0          tcp dpt:80
-> redir ports 3128
-> 
-> PREROUTING is accepting packets...but none are
-> processes by the redirect rule.
-> 
-> 
-> I've been pulling my hair out for about a week.  Can
-> anyone help?  
-> 
-> __________________________________
-> Do you Yahoo!?
-> New Yahoo! Photos - easier uploading and sharing.
-> http://photos.yahoo.com/
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
