@@ -1,12 +1,13 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: multiple external interfaces
-Date: Thu, 31 Oct 2002 23:09:26 +0100
+From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
+Subject: RE: BUG(?) - SNAT causes networking to stop.
+Date: Thu, 31 Oct 2002 16:37:58 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DC1AA16.1050904@fugmann.dhs.org>
-References: <001501be3d85$bf2b8e40$0200000a@workstation>
+Message-ID: <IMEDICLPAGAOCBLCCKLPMEINEEAA.netfilter@darrelldieringer.com>
+References: <Pine.LNX.4.44.0210311202110.21650-100000@robotron.office.tiedyenetworks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0210311202110.21650-100000@robotron.office.tiedyenetworks.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: James Stickland <jamesstickland@sympatico.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: mike-netfilter@tiedyenetworks.com, netfilter@lists.netfilter.org
 
-James Stickland wrote:
 
-> however, i would like to run my client/workstation's internet connection 
-> from the same router, but using different external interface and 
-> internal ethernet.
-> for example, i would like the pots dialup line interface masqueraded to 
-> eth2, so that all computers connected to eth2 use the ip address of the 
-> ppp device connected to dialup.
->  
-> here is how i vision it:
->  
-> internet--dial_up-->ppp1(/dev/ttyS3)-->router-->eth2-->crossover_cable-->client
->  
-> could anyone help me in doing so?  is it just a matter of some 
-> additional iptables entries, or does this run deeper? please help, and 
-> cc reply directly to jamesstickland@sympatico.ca 
-> <mailto:jamesstickland@sympatico.ca>
->  
-Netfilter cannot change how packages are routed. For this you need the 
-iproute2 package. See "Linux Advanced Routing & Traffic Control"[1] for 
-more information. You may need to use netfilter to mark packages but 
-this is all explained on [1].
+I had a goofy problem quite awhile ago that sounds a lot like yours -
+I couldn't ping the router box from the LAN unless the router box was
+already pinging the particular LAN box from which I was trying to ping
+the router.
 
-[1] http://lartc.org
+I didn't use strace, but tcpdump showed me that the packets were
+indeed _not_ on the wire.
 
-Regards
-Anders Fugmann
+After banging my head for awhile, I tried a different (identical)
+network card in the router for the LAN.  The unusual ping problem was
+gone immediately without a single change to the firewall rules.
 
---
-Author of FIAIF
-FIAIF is an intelligent firewall.
-http://fiaif.fugmann.dhs.org
+It's worth a shot.
 
+Darrell Dieringer - Madison, WI
+
+
+> -----Original Message-----
+>
+> Howdy folks,
+>
+> 	I've got a router I am experamenting with SNAT on.
+> I've hit a
+> situation where local ping processes are forced to stop
+> transmitting (get
+> caught in a loop on sendmsg() ) until the box receives
+> packets from some
+> external source (ping it from another machine on the
+> network for example),
+> and then it wakes right up without missing a beat.
+> Experamentally, I've
+> had ping waiting for several minutes this way. Typically
+> it's able to fire
+> off say 10 packets (and get replies) before it starts
+> hanging. Using
+> larger packets - say, 3000 bytes, results in only being
+> able to fire off 3
+> before stopping. I'm running tcpdump to verify that it's
+> not emitting
+> packets and strace to verify it's stuck looping on
+> sendmsg(). Very weird.
+>
 
 
