@@ -1,9 +1,9 @@
-From: Khanh Tran <khanh@slc.edu>
-Subject: RE: MRTG
-Date: Tue, 22 Apr 2003 08:29:49 -0400
+From: davidsen@tmr.com (bill davidsen)
+Subject: Re: host names and IPs
+Date: 22 Apr 2003 16:05:06 GMT
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC64ECFE@EXCHANGE>
-Mime-Version: 1.0
+Message-ID: <b83p7i$tg8$1@gatekeeper.tmr.com>
+References: <003301c305a1$c04ab1a0$0500a8c0@effenberger>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,49 +14,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick Ahler <patrick@vikus.com>
-Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I've used mrtg-eth (http://sourceforge.net/projects/mrtg-eth/) and ssh very
-successfully to accomplish this...
+In article <003301c305a1$c04ab1a0$0500a8c0@effenberger>,
+Florian Effenberger <floeff@arcor.de> wrote:
 
-Khanh Tran
-Network Operations
-Sarah Lawrence College
-1 Mead Way
-Bronxville, NY 10708
+| I'm on Linux 2.4.20 with iptables 1.2.7a. I have a syntax as follows:
+| 
+| ===
+| iptables -A INPUT -p tcp -s www.myhostname.com --dport 53 -j ACCEPT
+| ===
 
+What is it you're trying to do here? A packet with your source address
+would be going through the OUTPUT table, no? An INPUT packet with your
+own IP would be spoofed. Are you trying to accept DNS requests from
+yourself, in tcp (instead of normal udp) mode?
 
------Original Message-----
-From: Ashley M. Kirchner [mailto:ashley@pcraft.com]
-Sent: Monday, April 21, 2003 4:56 PM
-To: Patrick Ahler
-Cc: netfilter EMAIL
-Subject: Re: [NetFilter] MRTG
+| Now it seems that www.myhostname.com is resolved only the first time the
+| rule is set and that a fixed IP address is stored.
+| 
+| However, www.myhostname.com has a dynamically assigned address and I would
+| like to have iptables resolve the IP address everytime.
+| 
+| Is that possible? If yes, how? Or will it produce too much load?
 
+There are several ways to re-resolve it, but I'm not clear on why you
+don't just specify by interface.
 
-Patrick Ahler wrote:
-
->Anyone tried using MRTG to monitor network usage through their
->firewalls/routers? If so, how is it possible to get linux to reply to SNMP
->Get messages?
->  
->
-    Um, install net-snmp?
-
+How about some clarification on what you're trying to do, rather than
+how you want to do it?
 -- 
-W | I haven't lost my mind; it's backed up on tape somewhere.
-  +--------------------------------------------------------------------
-  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
-  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
-  Photo Craft Laboratories, Inc.            .     3550 Arapahoe Ave. #6
-  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A.
-
-
-
-
-
-
+bill davidsen <davidsen@tmr.com>
+  CTO, TMR Associates, Inc
+Doing interesting things with little computers since 1979.
 
