@@ -1,16 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Fwd: set up my DMZ
-Date: Sun, 19 Sep 2004 09:40:07 -0400
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: RE: Blocking Netranges Based on IP-to-Country CSV
+Date: Sun, 19 Sep 2004 11:59:59 -0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095601207.1723.4.camel@wolfpack.ljm.dom>
-References: <web-3246067@infinito.it>
-	<1095356390.2489.70.camel@wolfpack.ljm.dom>
-	<1403218a0409190112632977da@mail.gmail.com>
-	<1403218a040919011254781075@mail.gmail.com>
+Message-ID: <E1C934O-0006ir-00@deer.gmane.org>
+References: <20040919110923.GB706@metastasis.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a040919011254781075@mail.gmail.com>
+In-Reply-To: <20040919110923.GB706@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,22 +18,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
 
-On Sun, 2004-09-19 at 04:12, Mohamed Eldesoky wrote:
-> >   ip address add x.x.x.52 dev eth1
-> >   ip address add x.x.x.53 dev eth1
+Feel's just great reading this from south america. 
+ 
+
+-----Mensaje original-----
+De: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] En nombre de Nick Drage
+Enviado el: Domingo, 19 de Septiembre de 2004 8:09
+Para: netfilter@lists.netfilter.org
+Asunto: Re: Blocking Netranges Based on IP-to-Country CSV
+
+On Sat, Sep 18, 2004 at 03:25:47PM +0200, Pascal Vilarem wrote:
+> my 2 cts :
+
+> >Depends how you use the information.  And to be honest considering 
+> >the reputation of some sources of traffic, such as Korea and South 
+> >America, which might be unlikely to have legitimate connections to 
+> >your site, it would be handy to block them all.
 > >
-> 
-> He really needs to do this step ????
-> The firewall is his gateway !!
+> let me disagree... youre gonna drop eberybody from one country... most 
+> of them are innofensive...
+> and more : the really bad guys will just have to hack a good looking 
+> computer in a "good" country.
+> And then they will bypass this miraculous system...
 
-yes.  he does.  the firewall is his gateway on the inside/dmz.  these IP
-aliases are on the outside, internet-facing interface.
+It is unlikely that blocking packets according to their source country will
+be the only step in a security system, however it will filter out a lot of
+the traffic that subsequent systems have to deal with.
 
--j
+> You will just FEEL safe but you wont be at all... and you'll just hit 
+> everybody but your "target" :-\
 
--- 
-Jason Opperisano <opie@817west.com>
+That would be an error in the use of the system, not in the system itself.
+It's just a tool.
+
+> It IS ab bit nasty... and more : it is blind ineffective.
+
+No it isn't - say I've got a VPN gateway for my 1000 home users to connect
+into the corporate network.  I know some of them are in Britain, France and
+Germany, so I just want to permit connections from those three countries
+because I know they're possibly legitimate.  I know my employees don't live
+anywhere else, so I can filter out any traffic from any other country, so
+reducing the attacks that the other software on the VPN gateway has to deal
+with.
+
+> >But you're a worldwide organisation, and I think there's much more 
+> >that you can do with this than just block.  For example, has anything 
+> >figured out a way to tie this into logging rules, it would great to 
+> >see which countries I'm being attacked from.
+>
+> If you're dealing with "bad guys" you'd better invest in a Intrusion 
+> prevention system...  start on a snort or prelude basis for example...
+> then you'd be able to adapt dynamically netfilter.
+
+That still wont' tell me which country I'm being attacked from, I'd be
+interested to see if certain countries deserve the reputation they have.
+
+As for dynamically adaprtive rules... does anyone here have experience of
+using these?  Or easy or difficult is it to fake the source of an attack and
+so block legitimate traffic?
+
+> if you have to protect some data, authenticate your users/customers no 
+> matter from which country they are.
+
+Yes - this system certainly isn't a replacement for that, but then it
+doesn't purport to be afaict.
+
+Oh, and how far off-topic are we yet? ;)
+
+--
+mors omnia vincit
+
 
 
