@@ -1,12 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Limit Virus Effects on Web Server
-Date: 07 Jan 2005 00:48:49 +0100
-Message-ID: <1105023418.20638.15.camel@nostromo.bgsecm.com>
-References: <20050105144413.15525.qmail@webmail02.mesa1.secureserver.net>
+Subject: Re: Ethernet port redirection
+Date: 07 Jan 2005 00:48:46 +0100
+Message-ID: <1105023356.21389.13.camel@nostromo.bgsecm.com>
+References: <000d01c4f33a$5ac1f590$eaab9385@gagan>
+	<20050105155239.GB24445@bender.817west.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050105144413.15525.qmail@webmail02.mesa1.secureserver.net>
+In-Reply-To: <20050105155239.GB24445@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,24 +21,46 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mi=C3=A9, 05 de 01 de 2005 a las 15:44, Benjamin Bostow escribi=C3=B3:
-> I have a gateway that directs all internal web traffic to my website.
-> The site makes use of extensive DB calls. When someone with a virus
-> that connects to port 80 plugs in behind the gateway the DB goes to
-> 100% CPU usage. I am trying to limit this and try to filter out virus
-> traffic from browser/user traffic. I was thinking I could use kinda the
-> same rule as I have for preventing ping attacks but it doesn't seem to
-> work. I have tried using "iptables -t nat -I PREROUTING 1 -p tcp -m tcp
-> --dport 80 -m limit --limit 5/s --limit-burst 10 -j redirection_chain".=
-=20
-> It seems that all traffic no matter how great still goes to my
-> webserver. Also, is there a way to drop packets over a certain amount
-> per time from one user?
+El mi=C3=A9, 05 de 01 de 2005 a las 16:52, Jason Opperisano escribi=C3=B3=
+:
+> On Wed, Jan 05, 2005 at 08:52:06PM +0530, Navneet wrote:
+> > Hi,
+> >=20
+> > Now, pease check this out :-
+> > I was trying to run squid in transparent mode(Transparent Proxying) ?
+> >=20
+> > System details:
+> > RedHat Linux 9
+> > eth0 133.147.171.169/8 [Internal NIC]
+> > eth1 172.21.133/14        [External NIC]
 >=20
-> Benjamin
+> maybe i'm being silly--but it sure looks to me like eth0 is external an=
+d
+> eth1 is internal.
+>=20
+> > All http request get REDIRECTED to squid  at eth0(Internal).It should=
+ work
+> > as Gateway by means of eth1(External).
+> >=20
+> > i've done this:
+> > 1.Enabled IP forwarding
+> > #echo "1" >/proc/sys/net/ipv4/ip_forward
+> > 2.iptables (Netfilter) PORT REDIRECTION:
+> > #iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
+> > REDIRECT --to-port 3128
+>=20
+> are you *positive* that you don't mean eth1 there?
+>=20
+> -j
+>=20
+> --
+> "Ah, good ol' trustworthy beer. My love for you will never die."
+>         --The Simpsons
 
-Maybe an IPS like snort with the bleeding-rules can be useful to
-drop some of this traffic.
+I would like to add that maybe he have not configured the
+squid proxy properly, it need to be configured to do the
+transparent proxy thing. If you don't do it the iptables
+rules are useless.
 
 --=20
 Jose Maria Lopez Hernandez
