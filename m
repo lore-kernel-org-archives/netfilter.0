@@ -1,8 +1,11 @@
-From: "Knight, Steve" <Steve.Knight@bskyb.com>
-Subject: RE: hi alistair ;))
-Date: Mon, 8 Dec 2003 13:52:12 -0000
+From: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Subject: iptables: Invalid argument with PPTP conntrack enabled
+Date: Mon, 8 Dec 2003 17:44:06 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA57BAB@OST_EXCH_USR5>
+Message-ID: <57370162285.20031208174406@internetplustravel.ru>
+Reply-To: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -13,70 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Am I a complete plum [it wouldn't be the first time] but what does
+Hello,
 
-[][][] to you all=20
+Iam trying to build the system, capable of making NAT for pptp
+connections
+Debian 3, Kernel 2.4.22(with debian patches) patch-o-matic 20030912
 
-actually mean?  Tick boxes?  Squares?  Nestle Shreddies to us all?
+I found that if I apply PPTP patch to my kernel and compile it with
+GRE protocol support and
+PPTP protocol support
+the simple command
+iptables -t nat -A POSTROUTING -o eih0 -j SNAT --to-source $myIP
+failed to execute
+with the following:  iptables: Invalid argument
 
-Sorry!
-
-Steve
-
-
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of zynkx
-Sent: 7 December 2003 4.08
-To: Alistair Tonner
-Cc: netfilter@lists.netfilter.org
-Subject: hi alistair ;))
+May be it's a bug in a patch-o-matic PPTP patch?
+Is there anybody, who succeeded building the system capable of
+masquariding more than one PPTP connection to one server
+outside your lan?
 
 
-i am just about to try it but the project i should=20
-lead concerning this is not being done yet :) i think=20
-it will be running very very soon!=20
-
-by that time i will be in a position to negotiate ;)))
-
-hehe!!
-
-tanx a lot for caring" i really apreciate it!!
-
-[][][]'s to you all ;))
+On Wed, Nov 19, 2003 at 01:48:07AM +0300, Oleg Savostyanov wrote:
+> Hello , Harald
+> I tryed to install extra package, written by you -
+> pptp-conntrack-nat
+> but failed to do this.
+please report such problems to netfilter@lists.gnumonks.org, or
+netfilter-devel@lists.gnumonks.org (like documented on
+http://www.netfilter.org/contact.html).
+also, which version of patch-o-matic were you using?
+> Do you have any ideas what to do?
+Martin Josefsson is the patch-o-matic maintainer, maybe he can help you.
 
 
 
-unix is user friendly. it's just selective when=20
-choosing=20
-friends.
-
--------------------------------------------------
-Email Enviado utilizando o servi=E7o MegaMail
-
-
-
-
-.
-
-
------------------------------------------------------------------------
-Information in this email may be privileged, confidential and is=20
-intended exclusively for the addressee.  The views expressed may
-not be official policy, but the personal views of the originator.
-If you have received it in error, please notify the sender by return
-e-mail and delete it from your system.  You should not reproduce,=20
-distribute, store, retransmit, use or disclose its contents to anyone.
-=20
-Please note we reserve the right to monitor all e-mail
-communication through our internal and external networks.
------------------------------------------------------------------------
+Oleg                          mailto:savostyanov@internetplustravel.ru
 
 
