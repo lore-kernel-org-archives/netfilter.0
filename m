@@ -1,14 +1,13 @@
-From: "Alex Chen" <alex_chen@sbcglobal.net>
-Subject: RE: Is iptables available for Mac OS 10.X
-Date: Thu, 19 Jun 2003 21:21:32 -0700
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: IPv6 Router and NAT/connection tracking
+Date: 20 Jun 2003 02:24:48 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000a01c336e3$6e932900$020201c0@sweethome>
-References: <Pine.LNX.4.44.0306191953510.27709-100000@mooned.org>
-Reply-To: <alex_chen@sbcglobal.net>
+Message-ID: <1056090288.4482.193.camel@alpha.newkirk.us>
+References: <1074720319.1055981347734.JavaMail.Administrator@pumbaa>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0306191953510.27709-100000@mooned.org>
+In-Reply-To: <1074720319.1055981347734.JavaMail.Administrator@pumbaa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,62 +18,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Internet Protocol version Six <inet6@mail.be>
+Cc: netfilter@lists.netfilter.org
 
-Thanks for the information, Ed.
+On Wed, 2003-06-18 at 20:09, Internet Protocol version Six wrote:
+> I'm connected via IPv6-in-IPv4 and I have a /48 assigned to this
+> box, and I want the box to act as a router for my machines which
+> it's doing nicely, only the conntrack thing is annoying the hell
+> outta me ;) Will that solve it (ACCEPTING in both directions)?
+> 
+> And so what you are saying is that I should do this?:
+> iptables -I INPUT -p 41 -j ACCEPT
+> iptables -I OUTPUT -p 41 -j ACCEPT
+> iptables -I PREROUTING -p 41 -j ACCEPT -> not sure about this one
+> 
+> or am I wrong/forgetting something? :)
+> 
+> Thanks for your help, greatly appreciated
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Edward Moon
-Sent: Thursday, June 19, 2003 5:57 PM
-To: Aldo S. Lagana
-Cc: alex_chen@sbcglobal.net; netfilter@lists.netfilter.org
-Subject: RE: Is iptables available for Mac OS 10.X
+AFAIK that is correct.  (however the PREROUTING one wouldn't work, would
+need to be NAT table, and would be unnecessary anyway since that chain
+is supposed to have an ACCEPT policy - NAT in NAT table, filter in
+FILTER table)  The two rules, INPUT and OUTPUT, should overcome any
+failure of the state machine to recognize intermittent tunnel traffic as
+ESTABLISHED.
 
+Regarding 'internal' ipv6 traffic within your network, I suspect you
+should be using ip6tables there if needed.  (ip6tables won't see 6in4
+tunnel traffic though, since the tunnel itself is IPv4)
 
-FYI,
+I haven't configured my gateway as an ipv6 router yet, however.  I have
+a single address ATM from freenet6.  When I get the chance to tinker (a
+few weeks from now at least) I want to configure ipv6 on my desktop as
+well as my server and see what there is to see.
 
-You don't need to even 'get' ipfw on Mac OS X. It's there by default (at
-/sbin/ipfw).
+j
 
-When you enable the firewall under System Preferences -> Sharing ->
-Firewall, you are using a dumbed down GUI to ipfw.
-
-If you check freshmeat.net or www.versiontracker.com, you'll find a number
-of GUI frontends available for ipfw on Mac OS X.
-
-On Thu, 19 Jun 2003, Aldo S. Lagana wrote:
-
-> Date: Thu, 19 Jun 2003 15:48:22 -0400
-> From: Aldo S. Lagana <alagana@discmail.com>
-> To: alex_chen@sbcglobal.net, netfilter@lists.netfilter.org
-> Subject: RE: Is iptables available for Mac OS 10.X
->
-> I would think it may be easier to get ipfw (the BSD firewall equivalent to
-> iptables) since as you say the Mac OSX is a BSD derivative
->
->
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Alex Chen
-> Sent: Thursday, June 19, 2003 3:41 PM
-> To: netfilter@lists.netfilter.org
->
-> Is there a port of iptables done on Mac OS 10.X anywhere?
-> If not, is it easy to do the port ourselves?
->
-> If I understand correctly, there are two parts of iptables,
-> kernel space and user space and what we use in the RPM is
-> only user space.  It need the kernel space change compiled
-> into the kernel, e.g. Linux.  If so, does anyone know if
-> the Mac OS kernel, based on BSD I believe, supports the user
-> space part of the iptables?
->
-> Any help is appreciated.
->
-> Alex Chen
->
->
->
 
 
