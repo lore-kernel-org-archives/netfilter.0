@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Bridge/VPN question.
-Date: Wed, 23 Jun 2004 10:08:40 +0100
+From: "Dharmendra T." <dharmu@nsecure.net>
+Subject: Re: Ip accounting Help
+Date: 23 Jun 2004 14:46:28 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406231008.40635.Antony@Soft-Solutions.co.uk>
-References: <041201c45865$cb810cf0$c10da8c0@arvmobile> <1087980148.7626.35.camel@dharmu.nsecure.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1087982216.7624.46.camel@dharmu.nsecure.net>
+References: <1087962571.2041.10.camel@joel.d2visp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1087980148.7626.35.camel@dharmu.nsecure.net>
+In-Reply-To: <1087962571.2041.10.camel@joel.d2visp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +18,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Joel <zealous@bonbon.net>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 23 June 2004 9:42 am, Dharmendra T. wrote:
+hi Joel,
 
-> Hi,
->
-> Are there any other rules you have defined? If no, this may work:
->
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -P FORWARD DROP
->
-> iptables -A FORWARD -o eth0 -p tcp -m tcp -d <approved mail server>
-> --dport 25 -j ACCEPT
->  iptables -A OUTPUT -o eth0 -p tcp -m tcp -d <approved mail server>
-> --dport 25 -j ACCEPT
-
-The above rules (if you are propsing them as a complete ruleset) are a highly 
-secure system - nothing will get through it, and nothing will get to 
-communicate with the box itself.
-
-Why?
-
-1. You have a default DROP policy on FORWARD (good idea), and a rule allowing 
-packets to TCP port 25 on a specific server, but no rule allowing replies 
-back again.   Therefore no traffic gets *through* the machine.
-
-2. You have a default DROP policy on INPUT, and no rules in the INPUT chain 
-allowing anything at all, therefore no packets can get in (which makes the 
-rule in the OUTPUT chain allowing some packets out somewhat pointless).
+ There are lot of packages available on the net for ip accounting. Just
+choose for yours.
 
 Regards,
 
-Antony.
+Dharmendra T.
+Linux Security and Admin,
+www.nsecure.net
+
+This message is intended for the addressee only. It may contain privileged or confidential information. If you have received
+ this message in error, please notify the sender and destroy the message immediately. Unauthorised use or reproduction of 
+this message is strictly prohibited.
+
+On Wed, 2004-06-23 at 09:19, Joel wrote:
+> Hi all,
+> 
+> Currently I am working on Ip accounting in linux.
+> My system is Redhat 9.0 with iptables v1.2.7a
+> This redhat is doing Squid-Caching/ Nat/ Bandwidth management with tc/
+> Real ip forwarding.
+> 
+> I want to do Ip accounting of upload and download. I want to know how
+> much per ip bandwidth consumption is ? 
+> 
+> As i m doing source nat and Real ip forwarding, FORWARD chain will have
+> bytes counters. So FORWARD chain will give the correct figure of how
+> much the ip has used the bandwidth ???
+> 
+> I dont want to create new chain, I want to collect the data from
+> INPUT/OUTPUT/FORWARD chains if that are accurate.
+> 
+> Awaiting for help..
+> Excuse me for my English.
+> 
+> Joel n.solanki
+> Systems Administrator
+> D2V ISP PVT LTD.
+> (M) 91-9825500258
+> 
+> 
+> 
 
 -- 
-"Black holes are where God divided by zero."
 
- - Steven Wright
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
