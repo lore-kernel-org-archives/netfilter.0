@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Email Server Timeouts
-Date: Thu, 19 Feb 2004 19:15:44 +0000
+Subject: Re: iptables together with kernel version 2.4.17
+Date: Thu, 19 Feb 2004 19:17:55 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402191915.45211.Antony@Soft-Solutions.co.uk>
-References: <20040218203304.24484.34213.Mailman@netfilter-sponsored-by.noris.net> <3515.192.168.2.103.1077216554.squirrel@mail.empirekosher.com>
+Message-ID: <200402191917.55280.Antony@Soft-Solutions.co.uk>
+References: <4034E14E.8050204@siemens.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3515.192.168.2.103.1077216554.squirrel@mail.empirekosher.com>
+In-Reply-To: <4034E14E.8050204@siemens.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,47 +20,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 19 February 2004 6:49 pm, Corey Furman wrote:
+On Thursday 19 February 2004 4:16 pm, Simon Pelckmans wrote:
 
-> Thanks, Antony.  Just because I do a thing, doesn't mean I know why I do
-> it :P
+> Hi,
 >
-> I (believe it or not) close those ports because I did not think anything
-> would use them, and I sort of approach the firewall as:
->     + close everything
->     + poke holes where needed
+> I'm trying to upgrade my iptables code in the kernel (version 2.4.17)
+> but this fails
 
-That is a good approach, however I think you need to read about what 
-"stateful" means for netfilter, because this feature means you can block all 
-inbound ports, *except the ones needed for replies, on connections which are 
-current*, with only a singel rule in your INPUT chain.
+How does it fail?   What is the problem?
 
-> This may sound like a stupid question, but why aren't the SMTP and POP
-> ports sufficient?
+> I want to bring my iptables code on the same level as the latest code.
+>
+> Is there a specific patch for the 2.4.17 kernel, on the website I see
+> only 2.4.18 kernel references.
 
-Those are destination ports.   Your INPUT rule was blocking the replies back 
-to the source ports.
-
-In case you're not sure how TCP and UDP connections work, a machine connects 
-*to* a well-known port number (eg TCP port 25 in the case of SMTP), but it 
-connects *from* more or less any port it likes (from 1 to 65535), depending 
-on what it happens to choose at the time the connection gets made (yes, 
-successive connections will use different source port numbers).
-
-It is important that your ruleset allows in the reply packets, as well as 
-allowing out the initial connection packet.
-
-In fact, just as a reminder, I will choose the sig on this email 
-specifically...
+Why not bring your kernel up to date as well?   2.4.17 is just over 2 years 
+old (21st December 2001)....
 
 Regards,
 
 Antony.
 
 -- 
-90% of networking problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
+Documentation is like sex.
+When it's good, it's very very good.
+When it's bad, it's still better than nothing.
 
                                                      Please reply to the list;
                                                            please don't CC me.
