@@ -1,10 +1,13 @@
-From: "Jurrie Overgoor" <jurrie@pcamobile.com>
-Subject: VPN masquerade and ftp-multi patches for 2.4.2-2
-Date: Thu, 10 Oct 2002 12:24:42 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Fw: How to remove Established Connection
+Date: Fri, 11 Oct 2002 13:30:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF218529EB.946E0C7E-ONC1256C4E.0037BAFE@PCA>
+Message-ID: <200210111230.g9BCUlL19231@vulcan.rissington.net>
+References: <00e301c270e7$09c5a7e0$7cfcc5cb@humanpc> <002d01c270fe$86ca3c80$7cfcc5cb@humanpc> <3DA696C3.5000508@iprimus.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DA696C3.5000508@iprimus.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +18,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-Hello there,
+On Friday 11 October 2002 10:15 am, Michael wrote:
 
-I'm currently in the proces of recompiling my kernel. It's version 2.4.2-2
-(I don't want to upgrade, as I'm afraid it will break stuff).
-I want to make a vpn server. Therefore I need the patch to get the
-ip_pptp_nat module and the ip_conntrack_pptp module....
-Besides that, I also want the ftp-multi patch so I can route ftp ports not
-at 21.
+> HareRam wrote:
+> >then ? how do i remove my establish client, when we do some accounting
+> >when he logged out, he should not get any browsing, as well as he should
+> > be removed from internet
+> >how can i achieve
+> >
+> >please guide me alternative method to achieve this
+>
+> You remove the rule that accepts the established connection.
+>
+> I have a specific rule for each host that is forwarded through firewall.
+> If I want to allow the host, I add the rule in FORWARD chain:
+>
+> ACCEPT     all  --  *      eth0    <ip_of_host>
+> 0.0.0.0/0          state RELATED,ESTABLISHED
+>
+> When I want to stop them I just remove the rule. Even if the established
+> entry appears and lingers in /proc/net/ip_conntrack, it can't go anywhere.
+> At least that's how it seems to work for me... Am I wrong??
 
-But the problem is I cannot find the patches! Can anyone help me? How are
-they called, and where can I download them?
+Depending on how many established connections you want to cut off, compared 
+to how many new connections you want to allow, it could be easier to do this 
+the other way around:
 
-I already did this on a 2.4.18-3 kernel with succes. I found the
-vpn-masquerade patch for that kenel (it's called
-netfilter-pptp-2.4.17-rev2.patch.gz)
-I didn't need the ftp-multi patch for that machine... I also tried other
-patches for previous and latter versions, but they did not patch 100%, so I
-doubt they'll work.
+have a standard rule:
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+in your FORWARD chain, and then insert a rule *before* this one to 
+specifically block the IP you want to disconnect:
+iptables -I FORWARD -s a.b.c.d -j REJECT
 
-Then there is an other thing I'd like to know: I use iptables v1.2.6a, do I
-need to compile iptables also to get support for the ports= command? Or is
-recompiling the kernel (and the modules ofcourse) enough?
+This will then make sure that packets from that address do not get as far as 
+the ESTABLISHED, RELATED rule, and therefore are no longer allowed through 
+the machine.
 
-Greetz -- Jurrie
-jurrie@pcamobile.com
+Antony.
 
-Please reply to me, I'm not on the mailing list. Thanks.
+-- 
 
+KDE 3.0.3 contains an important fix for handling SSL certificates.  Users of 
+Internet Explorer, which suffers from the same problem but which
+does not yet have a fix available, are also encouraged to switch to KDE 3.0.3.
 
+http://www.kde.org/announcements/announce-3.0.3.html
 
