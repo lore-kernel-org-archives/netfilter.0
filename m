@@ -1,163 +1,85 @@
-From: "Garcia, Josep Maria" <jgarcia@al-pi.com>
-Subject: Error: Failed to send netlink message: Message too long
-Date: Mon, 10 Nov 2003 20:34:28 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5E3E0516DCAD211AB1400A0C9DCFD180800E0F3@colomers>
+From: Kishore Dharmavaram <kishored@servgate.com>
+Subject: RE: Memory leaks in ip_conntrack?
+Date: Mon, 10 Nov 2003 12:00:04 -0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B204D@skat.sky.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3A7C1.A7C633B4"
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+Cc: "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Hi Anthony & all,
+Yes,  iam seeing a lot of "ip_conntrack: table full, dropping packet."
+messages in dmesg. 
+ip_conntrack_max is 131072 not 13072, my mistake, '1' might have got deleted
+in my email.
+-Kishore
 
-------_=_NextPart_001_01C3A7C1.A7C633B4
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-> Hello,
->=20
-> I'm using the test program intercept.c. The IP packets are not read
-> properly. The fields of the IP header are wrong (For exemple: id:
-> 335956080, mark: 0 , hook: 0, datalen: 36200864). Then when I set the
-> veredict with ipq_set_veredict, I receive an error from the function
-> "Failed to send netlink message: Message too long".=20
->=20
-> What's the problem?
->=20
-> Thank you.
->=20
-> Joseph.
->=20
->=20
-______________________________________________________=20
-Si desitja m=E9s informaci=F3 sobre Al-Pi telecomunicacions (Catalana =
-de
-Telecomunicacions, S.O.X. S.A.) i els nostres serveis, si us plau =
-visiti'ns
-ara a www.al-pi.com=20
-
-La informaci=F3 d'aquest missatge electr=F2nic =E9s confidencial, =
-personal i
-intransferible i nom=E9s est=E0 dirigida a la/les adre=E7a/ces =
-indicades a dalt.
-Si vost=E8 llegeix aquest missatge per equivocaci=F3, l'informem que =
-queda
-prohibida la seva divulgaci=F3, =FAs o distribuci=F3, completa o en =
-part, i li
-preguem que ho notifiqui immediatament a la persona que ho ha enviat i
-esborri el missatge original juntament amb els seus fitxers annexos =
-sense
-llegir-lo ni gravar-lo.=20
-Gr=E0cies.=20
+-----Original Message-----
+From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+Sent: Sunday, November 09, 2003 2:46 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: Memory leaks in ip_conntrack?
 
 
-Si desea m=E1s informaci=F3n sobre Al-Pi telecomunicacions (Catalana de
-Telecomunicacions, S.O.X. S.A.) y nuestros servicios, por favor =
-vis=EDtenos
-ahora en www.al-pi.com=20
+On Sunday 09 November 2003 6:26 am, Alistair Tonner wrote:
 
-La informaci=F3n de este mensaje electr=F3nico es confidencial, =
-personal e
-intransferible y s=F3lo est=E1 dirigida a la(s) direcci=F3n(es) =
-indicadas arriba.
-Si usted lee este mensaje por equivocaci=F3n, le informamos de que =
-est=E1
-prohibida su divulgaci=F3n, uso o distribuci=F3n, completo o en parte, =
-y le
-rogamos que lo notifique inmediatamente a la persona que lo ha enviado =
-y
-borre el mensaje orginal junto con sus ficheros anexos sin leerlo ni
-grabarlo.=20
-Gracias.=20
+> On November 8, 2003 10:43 pm, Antony Stone wrote:
+> > On Sunday 09 November 2003 3:08 am, Kishore Dharmavaram wrote:
+> > > Hi Herald & All,
+> > >
+> > > I verified & I find my 2.4.20 is already patched with UNCONFIRMED
+> > > connections fix.
+> > >
+> > > How it possible that /proc/slabinfo shows a lot more ip_conntracks
+than
+> > > are shown in "/proc/net/ip_conntrack"?. /proc/slabinfo shows that
+> > > maximum possible conntracks, 131072, are being currently used but
+> > > /proc/net/ip_conntrack  shows only 21 connections. My box is refusing
+> > > new connections because max conntracks have reached.
+> >
+> > Are you getting any messages "ip_conntrack : table full, dropping
+packet"
+> > in your syslog or kernel log output?
+> >
+> > If not, how do you know that the box is refusing new connections because
+> > max conntracks have been reached?
+>
+> 	if /proc/slabinfo is showing memory OBJECTS not CONNECTIONS.
+> 		and 13072 != 131072
+>
+> 	I'm not sure what those objects are but as I follow my reading of
+slabinfo
+> *all* objects acllocated are counted in htere...   I'm not sure what all
+> gets allocated by ip_conntrack -- developers would be better at that
 
+Yes, but I'm asking what evidence you have that the box is *refusing new 
+connections*, and that it is doing so *because the maximum number of 
+conntracks has been reached*?
 
-------_=_NextPart_001_01C3A7C1.A7C633B4
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Are you getting any messages "ip_conntrack : table full, dropping packet"
+in your syslog or kernel log output?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2650.12">
-<TITLE>Error: Failed to send netlink message: Message too long</TITLE>
-</HEAD>
-<BODY>
+Antony
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hello,</FONT>
-</P>
+-- 
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">I'm using the test program =
-intercept.c. The IP packets are not read properly. The fields of the IP =
-header are wrong (For exemple: id: 335956080, mark: 0 , hook: 0, =
-datalen: 36200864). Then when I set the veredict with ipq_set_veredict, =
-I receive an error from the function &quot;Failed to send netlink =
-message: Message too long&quot;. </FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">What's the problem?</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Thank you.</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Joseph.</FONT>
-</P>
-<BR>
-
-<P><I><FONT =
-SIZE=3D2>______________________________________________________ =
-</FONT></I>
-<BR><I><FONT SIZE=3D2>Si desitja m=E9s informaci=F3 sobre Al-Pi =
-telecomunicacions (Catalana de Telecomunicacions, S.O.X. S.A.) i els =
-nostres serveis, si us plau visiti'ns ara a www.al-pi.com =
-</FONT></I></P>
-
-<P><I><FONT SIZE=3D2>La informaci=F3 d'aquest missatge electr=F2nic =
-=E9s confidencial, personal i intransferible i nom=E9s est=E0 dirigida =
-a la/les adre=E7a/ces indicades a dalt. Si vost=E8 llegeix aquest =
-missatge per equivocaci=F3, l'informem que queda prohibida la seva =
-divulgaci=F3, =FAs o distribuci=F3, completa o en part, i li preguem =
-que ho notifiqui immediatament a la persona que ho ha enviat i esborri =
-el missatge original juntament amb els seus fitxers annexos sense =
-llegir-lo ni gravar-lo. </FONT></I></P>
-
-<P><I><FONT SIZE=3D2>Gr=E0cies. </FONT></I>
-</P>
-<BR>
-
-<P><I><FONT SIZE=3D2>Si desea m=E1s informaci=F3n sobre Al-Pi =
-telecomunicacions (Catalana de Telecomunicacions, S.O.X. S.A.) y =
-nuestros servicios, por favor vis=EDtenos ahora en www.al-pi.com =
-</FONT></I></P>
-
-<P><I><FONT SIZE=3D2>La informaci=F3n de este mensaje electr=F3nico es =
-confidencial, personal e intransferible y s=F3lo est=E1 dirigida a =
-la(s) direcci=F3n(es) indicadas arriba. Si usted lee este mensaje por =
-equivocaci=F3n, le informamos de que est=E1 prohibida su divulgaci=F3n, =
-uso o distribuci=F3n, completo o en parte, y le rogamos que lo =
-notifique inmediatamente a la persona que lo ha enviado y borre el =
-mensaje orginal junto con sus ficheros anexos sin leerlo ni grabarlo. =
-</FONT></I></P>
-
-<P><I><FONT SIZE=3D2>Gracias. </FONT></I>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C3A7C1.A7C633B4--
+If you want to be happy for an hour, get drunk.
+If you want to be happy for a year, get married.
+If you want to be happy for a lifetime, get a garden.
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
 
