@@ -1,14 +1,11 @@
-From: "James B. Hiller" <jhiller@visi.net>
-Subject: Re: linux-2.6.9-rc1 compilation and configuration issue (fwd)
-Date: Wed, 8 Sep 2004 16:41:32 -0400 (EDT)
+From: Joe Drago <joe@gotdoofed.com>
+Subject: round robin SNAT, multiple "to IP" setup, AIM issue?
+Date: Wed,  8 Sep 2004 15:33:11 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409082041.i88KfW6j017244@bassett.home.org>
-References: <413F56CB.2090509@pbl.ca>
+Message-ID: <1094682791.413f88a75fabc@www.gotdoofed.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <413F56CB.2090509@pbl.ca> from "Aleksandar Milivojevic" at Sep 08,
-	2004 02:00:27 PM
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,60 +16,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi!
+[fixed resend with proper email]
 
-> Jose Maria Lopez wrote:
-> [snip]
-> > there are things simply impossible.
-[snip snip]
-> 
-> Becoming way off topic, anyhow...
+I have a simple setup for a Linux router with two interfaces. One interface
+(eth1) is my internal side, running the 10.176.60.1/22, and the other interface
+(eth0) has 10 public IP addresses on it, similar to 5.5.5.0/23 (first 3 octets
+changed to 5.5.5 to protect the innocent. :-)
 
-Well, actually, not really - from following a post that Jason provided me
-yesterday in response to my re-posted question, you can easily see how
-the modularity/patching issue is to some degree a factor in the behavior
-I was asking about.
+Internet - [eth0 5.5.5.60-5.5.5.69] - NAT - [eth1 10.176.60.1/22] - Clients
 
-Here was Jason's post to me; notice the post he references:
----------------------------------------------------
-On Tue, 2004-09-07 at 19:33, James B. Hiller wrote:
-> Hi!
-> 
-> No takers?  Or have I put this in the wrong forum?  If I have, please
-> let me know where to go with it.
+To configure this device, I use a series of commands, listed here. Mind you, the
+only change from my real config is the public IPs have been replaced with the
+"5.5.5.0" range.
 
-[snip]
 
-2.6.9-rc1 seems pretty bleeding edge...  the 2.6 series has kind of
-become a test branch as it is, but sheesh--that's really out there.  do
-you have a "gotta have it" reason to run this kernel?  if not--i'd say
-stick with the "release" version:  2.6.8.1...  seems these kind of
-compilation issues would be par-for-the-course on an "rc" kernel.
+ifconfig eth0 up
+ifconfig eth1 up
+ifconfig eth0 5.5.5.60 netmask 255.255.254.0
+ip addr add 5.5.5.61/23 dev eth0
+ip addr add 5.5.5.62/23 dev eth0
+ip addr add 5.5.5.63/23 dev eth0
+ip addr add 5.5.5.64/23 dev eth0
+ip addr add 5.5.5.65/23 dev eth0
+ip addr add 5.5.5.66/23 dev eth0
+ip addr add 5.5.5.67/23 dev eth0
+ip addr add 5.5.5.68/23 dev eth0
+ip addr add 5.5.5.69/23 dev eth0
+ifconfig eth1 10.176.60.1 netmask 255.255.252.0
+route add default gw 5.5.5.1
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 5.5.5.60-5.5.5.69
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-anyways...if you must--you should probably be following the
-netfilter-devel list (and linux-kernel for that matter)--check out the
-post from Harald Welte (with patch):
 
-http://marc.theaimsgroup.com/?l=netfilter-devel&m=109346594923412&w=2
------------------------------------------------------
 
-If you follow that one backward and forward, you'll see other very
-related patch/modularity discussion, and how the issue most likely
-influences exactly what I asked about.
+This setup has worked perfect for me for a while, but recently I noticed that
+when I try to connect to the AOL Instant Messenger service, it refuses to
+complete the connection. I recorded the conversation with Ethereal and realized
+that it was talking to two servers over at AOL. One of them provided the
+authentication, and the other one was what carried on the regular AIM conversation.
 
-And also note that it became a topic on both the netfilter-devel list
-and the linux-kernel list.
+This is the very reason it seems to break. The AIM client (tried the real AIM
+client running on an XP work laptop and gaim/Debian on my work machine) attempts
+to connect to the auth server. The linux router chooses the next available WAN
+IP for this connection (let's say 5.5.5.60 port 5190). Once the authentication
+completes, it attempts to connect to the main AIM server (port 5190 again), in
+which the linux router chooses 5.5.5.61 to talk to this. The IP discrepancy is a
+no-no to the second server, and sends me away.
 
-So... I'd say, not OT that much, or even at all!
+To make a long story short (TOO LATE!), I need to figure out a way to have the
+Linux box use the same IP for both connections to the AIM servers. My first idea
+was to potentially route all traffic destined for port 5190 across one of the
+ten WAN IPs, but then I wondered if there was a way to have the linux router
+"prefer" to use the same WAN IP as much as possible without resorting to a
+1-to-1 setup. There are more than 10 clients, so that really isn't an option.
 
-BTW - from the info in that thread, I more or less got the answer I was
-trying to get:  my config choices most likely should be expected to work;
-it's principally an issue with this particular release; and I should expect
-that it will get better.
+Any advice is appreciated, including potential fixes to the generic config as it
+is. I don't claim to be an expert on any of this. :-D
 
-thx,
-jbh
+Joe Drago
+StreamLine Communications
+
+
 
