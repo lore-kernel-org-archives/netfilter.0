@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNS with iptables
-Date: Thu, 11 Dec 2003 09:59:11 +0000
+Subject: Re: is it possible only with iptables
+Date: Thu, 11 Dec 2003 10:05:29 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312110959.11243.Antony@Soft-Solutions.co.uk>
-References: <4D365C260C742A4AABFBF2EE41B7E59F312D8D@itfbsv01.itservices.intern>
+Message-ID: <200312111005.29112.Antony@Soft-Solutions.co.uk>
+References: <200312101928.27882.petre@kgb.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4D365C260C742A4AABFBF2EE41B7E59F312D8D@itfbsv01.itservices.intern>
+In-Reply-To: <200312101928.27882.petre@kgb.ro>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 05 December 2003 2:31 pm, Centkowski, Peter (SSFB) wrote:
+On Wednesday 10 December 2003 5:28 pm, Petre Bandac wrote:
 
-> Helo
+> I have 2 linux machines - linux_1 and linux_2
+>
+> linux_1 has behind it a subnet with routable adresses (not private)
+>
+> I want that all the traffic incoming from the subnet behind linux_1 and
+> going to port 80 to be redirected to linux_2, and from linux_2 go on the
+> internet
+>
+> I presumed that a -j SNAT --to-source IP_linux_2 should be enough, but
+> apparently it isn't
 
-220  :)
+If you want to redirect packets which would normally go somewhere else, so 
+that they go to machine linux_2 instead, this is either DNAT, or a routing 
+table question (using something slightly more sophisticated than usual, such 
+as source-based routing and iproute2).
 
-> Kann ich statt IP-Adresse auch ein Name in Iptables verwenden?
+DNAT will clearly send the packets to linux_2 for you, but then they won't go 
+any further, because they've reached their destination.
 
-Yes, you can use both hostnames and IP addresses in netfilter rules, howe=
-ver=20
-any hostnames are resolved to an address only once, when you put the rule=
- in.  =20
-You cannot get netfilter to resolve names every time it sees a packet, fo=
-r=20
-example.
+> should I issue a SNAT rule on linux_2 too, or it should run something like
+> squid there ?
 
-> Es geht um Dyndns und damit einem Problem...
-
-Ja, das ist ein Problem :(
-
-Viele Gr=FC=DFe
+Maybe you should run something like squid there - tell us why you want the 
+port 80 packets specifically to go via linux_2 rather than any other route 
+from linux_1 to the Internet....
 
 Antony.
 
---=20
-The difference between theory and practice is that in theory there is no=20
-difference, whereas in practice there is.
+-- 
+Most people are aware that the Universe is big.
 
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+ - Paul Davies, Professor of Theoretical Physics
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
