@@ -1,13 +1,14 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: assigning alias ip address
-Date: 10 Sep 2004 18:37:55 +0200
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: No Internet Connection
+Date: Fri, 10 Sep 2004 12:56:51 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094820804.26973.20.camel@nostromo.bgsecm.com>
-References: <003c01c496e3$b6416c60$f82ffea9@black>
+Message-ID: <1094835410.1900.151.camel@wolfpack.ljm.dom>
+References: <20040910144901.42036.qmail@web50204.mail.yahoo.com>
+	<4141D921.8020100@pbl.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <003c01c496e3$b6416c60$f82ffea9@black>
+In-Reply-To: <4141D921.8020100@pbl.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +18,47 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El vie, 10 de 09 de 2004 a las 05:10, John Black escribi=C3=B3:
-> How does assigning alias IP address work?
->=20
-> I have one network jack coming into my server room.=20
-> eth0  10.10.10.10
->=20
-> I have two servers with public IP address.
-> this assigns them, right?
-> ifconfig eth0:10 192.168.1.10 netmask 255.255.255.0
-> ifconfig eth0:11 192.168.2.11 netmask 255.255.255.0
->=20
-> iptables -t nat -A PREROUTING -d 192.168.1.10 -i eth0 \
->                 -j DNAT --to-destination 10.10.10.11
-> iptables -t nat -A PREROUTING -d 192.168.2.11 -i eth0 \
->                 -j DNAT --to-destination 10.10.10.12
->=20
-> When a mail or web request is made from the internet. =20
-> How does it know where the servers are?
->=20
-> thanks
-> John
+On Fri, 2004-09-10 at 12:41, Aleksandar Milivojevic wrote:
+> > $IPTABLES -N tcp_invalidos
+> > 
+> > $IPTABLES -A tcp_invalidos -p tcp --tcp-flags SYN,ACK
+> > SYN,ACK \
+> > -m state --state NEW -j REJECT --reject-with tcp-reset
+> > $IPTABLES -A tcp_invalidos -p tcp ! --syn -m state
+> > --state NEW -j LOG \
+> > --log-prefix "Novo nao SYN:"
+> > $IPTABLES -A tcp_invalidos -p tcp ! --syn -m state
+> > --state NEW -j DROP
+> 
+> Here's the place where you made an error.  When you reach end of 
+> "tcp_invalidos" chain, default policy for INPUT/OUTPUT/FORWARD chains 
+> will be applied (which is DROP).  Which means, all packets will be 
+> dropped by the firewall.
 
-The new kernel networking code named iproute2 doesn't make
-any differences between IPs assigned to an interfaces or
-aliased IPs. You can assign any number of IPs to an interface,
-and this can be primary IPs or secundary IPs, but for the
-kernel it's just another IP assigned to the machine (really
-it's more complex, the IPs are assigned to services, not any
-hardware in particular).
+i don't know that i agree with this statement.  when a packet reaches
+the end of custom chain "tcp_invalidos" and has not matched any rules in
+that chain--it should return to the calling chain where it left off;
+i.e.
 
-So when a request is made from the internet the routing code
-just looks in it's tables what routes it have to use, and
-as the IPs are assigned to the same machine it sends the
-request to the machine you have assigned the IPs.
+        iptables -P INPUT DROP
+        iptables -A INPUT -j badstuff
+        iptables -A INPUT -j goodstuff
+        iptables -A INPUT -j LOG
+        
+a packet not matching any rule in "badstuff" will return to INPUT, and
+then jump to "goodstuff"...  if the packet doesn't match any rule in
+"goodstuff" it will return to INPUT, get logged, and *then* get dropped,
+as it has hit the end of the INPUT chain and not matched any rules. 
+only then does the POLICY of the chain get enforced.
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+-j
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
+We don't smoke and we don't chew, and we don't go with girls that do. --
+Walter Summers
+=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
 
 
