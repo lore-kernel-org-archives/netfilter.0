@@ -1,12 +1,12 @@
-From: David Shifflett <shifflett@nps.navy.mil>
-Subject: Re: NAT and UDP
-Date: Mon, 31 Mar 2003 15:52:14 -0800
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: sub interface filtering
+Date: Mon, 7 Apr 2003 09:48:27 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E88D4AE.7090303@nps.navy.mil>
-References: <000d01c2f55a$f4d13bd0$c00a7883@ad.nps.navy.mil> <200303301233.46424.netfilter@newkirk.us>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF50C7005@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,80 +16,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@newkirk.us
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: chenqunwei@yahoo.com, netfilter@lists.netfilter.org
 
-It just so happens that we are NATing just one client.
-Our device is a gateway/network authenticator between the client
-and the network.
-So here is how we solved the issue:
-OIP=192.168.0.31
-IIP=192.168.1.100
-MYP=xxx   #Port for device specific traffic
+http://lartc.org/
 
-echo "Configuring IP Masquerading..."
-echo 1 > /proc/sys/net/ipv4/ip_forward
-iptables -F; iptables -t nat -F; iptables -t mangle -F
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $OIP
-iptables -t nat -A PREROUTING -i eth0 -p udp --dport $MYP -j ACCEPT
-iptables -t nat -A PREROUTING -i eth0 -j DNAT --to $IIP
+-----Original Message-----
+From: Qunwei Chen [mailto:chenqunwei@yahoo.com]=20
+Sent: Friday, April 04, 2003 5:31 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: sub interface filtering
 
-This SNATs all traffic from the client to the net
-and DNATs almost all traffic from the net to the client
-except for some traffic to our device itself.
+I tried the google for "Advanced Traffic and Routing Howto" but failed=20
+to find it. Does anyone have the location of this document?
 
-Are there any other rules I should add in for safety sake?
-I suppose I could add a DROP rule for UDP traffic from the client
-with a source port of $MYP.
+Thanks in advance,
 
-Thanks for your help
-David Shifflett
+Qunwei
 
-Joel Newkirk wrote:
+Daniel Chemko wrote:
 
->On Friday 28 March 2003 01:50 pm, Jean Khosalim wrote:
->  
+>The Advanced Traffic and Routing Howto had everything I needed. It can
+>show you how to setup its IP settings etc.. If you want to integrate
+>into IPTables, the following example shows how simply this can be
+>accomplished.
 >
->>Does NAT work for UDP in general, and TFTP in particular?
->>The man page has lots of UDP specific options
->>do those only apply to filtering, and not NAT?
->>    
->>
+>$ ip address list
+>1: lo: <LOOPBACK,UP> mtu 16436 qdisc noqueue=20
+>    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+>    inet 127.0.0.1/8 brd 127.255.255.255 scope host lo
+>2: eth0: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
+>    link/ether 11:11:11:11:11:11 brd ff:ff:ff:ff:ff:ff
+>    inet 192.168.1.2/24 brd 192.168.1.255 scope global eth0
+>    inet 192.168.1.111/32 scope global eth0
+>3: eth1: <BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast qlen 100
+>    link/ether 11:11:11:11:11:11 brd ff:ff:ff:ff:ff:ff
+>    inet 192.168.2.1/24 brd 192.168.1.255 scope global eth1
 >
->For UDP in general it works wonderfully.  For TFTP I've never tried it, 
->but with the conntrack and nat helpers it should be fine.  The 
->UDP-specific options I'm aware of are simply matching options, usable in 
->any table/chain to match the rule more precisely to specific traffic.  
->IE, with conntrack and nat helpers installed, and a rule for 
->ESTABLISHED,RELATED in the filter FORWARD chain (with a DROP policy), 
->you could narrow down the FORWARD rule to ACCEPT only "-p udp --dport 
->69", and the same for the SNAT rule, and the rest would be handled for 
->you.  Then (barring other ACCEPT rules in FORWARD) only TFTP would be 
->permitted through.  Port 69 being its initial connection, and any others 
->(data) being handled by the helpers as RELATED traffic.  Once you load 
->the conntrack and nat helpers, the data ports are RELATED in FORWARD, 
->and RELATED is automatically matched with its 'parent' connection in the 
->SNAT rule.
+>You notice that there are 2 addresses on the same interface eth0. I
+want
+>to forward each IP address to a separate machine on a different subnet
+>in this case, so I would do the following:
 >
->If you're trying to do this stateless, without conntrack, I don't think 
->you'll be successful SNATting a complex protocol like TFTP with your 
->apparent setup.  If only one client needs to connect with TFTP, you can 
->try SNATting its outbound connections, then DNATting any TFTP reply 
->traffic to that specific client.  I suspect this isn't the case, though.
+>iptables -t nat -A PREROUTING -j DNAT --destination 192.168.1.2 --to-
+>destination 192.168.2.2
 >
->  
+>iptables -t nat -A PREROUTING -j DNAT --destination 192.168.1.111 --to-
+>destination 192.168.2.111
 >
->>Thanks for any help.
->>Jean Khosalim and David Shifflett
->>    
->>
->
->j
+>You could have included "-i eth0" if you really wanted to, but unless
+>you have the same IP address bolted to different interfaces, I don't
+see
+>that mattering much.=20
 >
 >
->  
+>-----Original Message-----
+>From: Mike [mailto:mikeeo@msn.com]=20
+>Sent: Wednesday, April 02, 2003 12:34 PM
+>To: Daniel Chemko; netfilter@lists.netfilter.org
+>Subject: Re: sub interface filtering
 >
+>I hate to ask but do you have and example of using iproute2 for IP
+>address aliases?
+>
+>Thanks,
+>Mike
+>
+>
+> =20
+>
+
 
 
 
