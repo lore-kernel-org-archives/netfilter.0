@@ -1,11 +1,12 @@
-From: Payal Rathod <payal-iptables@staticky.com>
-Subject: please advise on this rule
-Date: Wed, 13 Aug 2003 23:54:44 +0530
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: please advise on this rule
+Date: Tue, 12 Aug 2003 11:51:42 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030813182443.GA1468@linux.local>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E1F@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,8 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: Payal Rathod <payal-iptables@staticky.com>, netfilter@lists.netfilter.org
+
+Source field doesn't matter since traffic destined for the internal
+(private) network will only pass through that chain if you define DNAT
+rules for them.
+
+The port 80 rule seems ok, but trusting something like that where a user
+can change their IP's or use different port numbers, it is pretty light
+security for anyone who knows what they are doing.
+
+-----Original Message-----
+From: Payal Rathod [mailto:payal-iptables@staticky.com]=20
+Sent: Wednesday, August 13, 2003 11:25 AM
 To: netfilter@lists.netfilter.org
+Subject: please advise on this rule
 
 Hi,
 Does this FORWARD chain look ok in a simple NAT network where the Linux
@@ -40,8 +54,9 @@ Thanks a lot and eagerly waiting for the reply.
 With warm regards,
 -Payal
 
--- 
+--=20
 "Visit GNU/Linux Success Stories"
 http://payal.staticky.com
 Guest-Book Section Updated.
+
 
