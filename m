@@ -1,12 +1,10 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: active firewall
-Date: Tue, 23 Sep 2003 18:18:25 -0700 (PDT)
+From: "akshaysalkar" <akshaysalkar@indiatimes.com>
+Subject: iptables forward rulesets woes
+Date: Wed, 24 Sep 2003 10:35:49 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309231812340.4494@xena.cft.ca.us>
-References: <03092320103102.01185@slinky.exmosys.com>
-Mime-Version: 1.0
+Message-ID: <200309240448.KAA10542@WS0005.indiatimes.com>
+Reply-To: "akshaysalkar"<akshaysalkar@indiatimes.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <03092320103102.01185@slinky.exmosys.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,29 +14,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Nik Trevallyn-Jones <nik@designer.com.au>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 23 Sep 2003, Nik Trevallyn-Jones wrote:
->    As a result of experiences deploying PortSentry behind an ipchains
-> firewall recently, I started considering how iptables could be used to deploy
-> a dynamic firewall which would be able to modify itself in response to
-> predefined events. As far as I can see, such features would require extension
-> modules.
+i was refering to the book on linux net admin by olaf kirch
+the example gives
+'a organization having a firewall machine to allow internal users to be able to access WWW servers on the internet but no other traffic to be passed'
+the iptable rules given are
+iptables -F FORWARD
+iptables -P FORWARD DROP
+iptables -A FORWARD -m tcp -p tcp -s 0/0 --sport 80 -d 172.16.1.0/24 --syn -j DROP
+iptables -A FORWARD -m tcp -p tcp -s 172.16.1.0/24  --sport 80 -d 0/0 -j ACCEPT
+iptables -A FORWARD -m tcp -p tcp -d 172.16.1.0/24  --dport 80 -s 0/0 -j ACCEPT
 
-Take a look at the ULOG target which will send a copy of the packet to a
-netlink socket.  A listening daemon can then do wierd and wonderful
-modifications to the tables.  There's the issue that the table changes
-wouldn't happen until the daemon got the CPU, so a few :-) milliseconds
-delay could be expected, but in the scenario you described, that would be
-tolerable.
+i dont kinda understand this...
+firstly 2nd line whats the -P. i guess its the default policy. but i could have given as
+iptables -A FORWARD -j DROP
 
-The less brains are in the kernel, the less things can go wrong and
-splatter.  Hope this helps.
+2nddly 3rd line why the -j DROP i thought it should be ACCEPT
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+3rdly since it says access the WWW servers on the internet why is it that on the 4th linethe --sport is 80
+the source doesnt necessarily have to be 80 it could be any unprivileged port. the --dport should be infact 80
+
+and the last line also seems confusing to me. where the -d is the network-ip
+
+please help me/ suggest.
+
+regards
+
+
+
+
+
+
+
+Get Your Private, Free E-mail from Indiatimes at http://email.indiatimes.com
+
+ Buy The Best In BOOKS at http://www.bestsellers.indiatimes.com
+
+Bid for for Air Tickets @ Re.1 on Air Sahara Flights. Just log on to http://airsahara.indiatimes.com and Bid Now !
+
 
