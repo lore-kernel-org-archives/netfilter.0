@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: dhcp server is working but there are no rules allowing it
-	using a drop policy
-Date: Tue, 08 Mar 2005 10:01:10 -0500
-Message-ID: <1110294069.4670.2.camel@hubcap.ljm.dom>
-References: <422D8F3E.9000806@rhcs.de>
+From: "Alex" <alex_oz@gmx.net>
+Subject: ARP mangling in CLUSTERIP
+Date: Tue, 8 Mar 2005 18:01:23 +0100 (MET)
+Message-ID: <17045.1110301283@www71.gmx.net>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <422D8F3E.9000806@rhcs.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 2005-03-08 at 06:40, richard hauswald wrote:
-> Hi all,
-> my problem is a verry strange one, so i think i did a configuration 
-> failure. But i can't find him.
-> i made a listung of my iptables rules using the -L parameter and finaly 
-> a tcpdump wich should show you, that dhcp is working - well i couldnt 
-> post hte windowsxp bubble wich says that i got a wunderfull wlan 
-> connection...
-> 
-> -------------------------------------
+Hi folks,
 
-<--snip-->
+as far as I can see from the CLUSTERIP source all ARP-Responses are
+manipulated so that the clients get an multicast MAC (the cluster-MAC
+address). But what about ARP-requests from the nodes itself? Such a request
+is not mangled by the module and thus contains the original non-cluster-MAC.
+This changes the clients ARP entry to a non multicast-MAC.
+I reproduced this case and pinged a two node cluster. After a while node 2
+makes an arp request using the NIC's MAC and not the Cluster's MAC. From
+that moment the other node doesn't see any cluster traffic. Is it not yet
+implemented?
+Do I have any misconception?
 
-most DHCP implementations these days operate (read:  generate and
-receive packets) at the BPF layer, which is below where netfilter hooks
-into the IP stack; therefore your iptables rules never see the packets.
-
--j
-
---
-"I bet Einstein turned himself all sorts of colors before he invented
- the light bulb."
-	--The Simpsons
-
+-- 
+SMS bei wichtigen e-mails und Ihre Gedanken sind frei ...
+Alle Infos zur SMS-Benachrichtigung: http://www.gmx.net/de/go/sms
 
