@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: fragmentation code
-Date: Tue, 4 Jun 2002 15:29:09 +0100
+From: Jeff Bonner <lunar@comcast.net>
+Subject: RE: block Kazaa download
+Date: Tue, 04 Jun 2002 10:56:47 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206041429.g54ETBA15771@Networker.rockstone.co.uk>
-References: <3CEF4F3E0000A925@ims3c.cp.tin.it>
+Message-ID: <000701c20bd8$0cfaa6f0$0200a8c0@JEFF>
+References: <172011389.1023183763@[192.168.13.4]>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CEF4F3E0000A925@ims3c.cp.tin.it>
+In-Reply-To: <172011389.1023183763@[192.168.13.4]>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,18 +18,38 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: 'netfilter' <netfilter@lists.samba.org>
 
-On Tuesday 04 June 2002 3:21 pm, luigicart@tin.it wrote:
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org 
+> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Erik Pagel
+> Sent: Tuesday, June 04, 2002 3:43 AM
+> To: Allan Parreno; netfilter
+> Subject: Re: block Kazaa download
 
-> Hi I'm Luigi.Where I can find in the kernel the fragmentation code for
-> packet IP/TCP?
+> > anybody has a sample how to block Kazaa download?
+> 
+> beside blocking the ports Kazaa use, you can also try to 
+> block the hole kazaa domain.
+> That should do the job because the login needs access to a 
+> kazaa server. 
+> Without a connection to a kazaa index-server your user are 
+> not able to share  or load any files.
 
-Hi Luigi.
+Argh, I didn't think of that.  ;)  It would indeed be the best
+option.  You're absolutely right, until it can talk to the main
+server, it's dead in the water -- it grays out all the options.
 
-You could start with /usr/src/linux/net/ipv4/ip_fragment.c ?
+I want to say it's "desktop.kazaa.com" IIRC, but according to
+at least one site I read, you have to block the entire range of
+213.248.112.0/24.
 
+Something else I should have thought about previously was to
+search Google for that answer:
 
-Antony.
+  http://google.com/search?q=block+kazaa
+
+Jeff Bonner
+
 
 
