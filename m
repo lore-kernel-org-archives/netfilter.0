@@ -1,13 +1,11 @@
-From: Marco Colombo <marco@esi.it>
-Subject: Re: Is Linux based Gateway/Firewall feasible
-Date: Fri, 9 Jul 2004 14:35:49 +0200 (CEST)
+From: Eric Ellis <eellis@mail.co.gilchrist.fl.us>
+Subject: IPtables FORWARD syntax question/error
+Date: Fri, 09 Jul 2004 12:12:38 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0407091216430.31223-100000@Megathlon.ESI>
-References: <1089359194.1993.3.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <40EEC3F6.7050306@mail.co.gilchrist.fl.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1089359194.1993.3.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +15,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Sudheer Divakaran <sudheer@svw.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Fri, 9 Jul 2004, Cedric Blancher wrote:
+I've just started messing with iptables so I can start walling off 
+certain parts of my network from the rest of it.  Right now, I have a 
+test bed set up with a slackware 10 install, packet forwarding on, and 
+masquerading working, so I'm moving data fine, since the box that I use 
+for daily work is behind this beta box.
 
-> Le jeu 08/07/2004 =E0 16:30, Sudheer Divakaran a =E9crit :
-> >     If I'have mislead anyone, I'm Sorry.  I was talking about NATing.
->=20
-> Definitly use Linux then. From all the firewalls I tested and used,
-> Netfilter is the most complete, efficient and easy-going NAT solution I
-> ever seen. You can perform any kind of NAT you want, either for good or
-> baaaaaaad stuff :P
+I have installed Squid on the box so I can log all web requests done by 
+my users on the back side of the firewall.  This too works, as I can 
+tail -f the log and watch myself browse.
 
-For NAT, you'd better list which applications you need to support.
-Some of them need (mostly due to bad design) special support on=20
-the NAT box. Linux won't support all of them.
+The problem is coming from the following item that I want to implement:
+I have a webcache/external proxy on the network that I want to route all 
+web traffic from Squid to.  I assumed the following to work:
 
-Of course this is true for any NAT solution, Cisco included.
-So first make sure you have all the functionality you need.
+iptables -t nat -A OUTPUT -p tcp --dport 80 -j DNAT --to-destination 
+xx.xx.xx.xx:8080
 
-I think you may find the following link useful:
-http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO-5=
-.html
+the thing is that it gives me the error "invalid argument".  Here's what 
+else I've tried, with errors:
 
-.TM.
---=20
-      ____/  ____/   /
-     /      /       /			Marco Colombo
-    ___/  ___  /   /		      Technical Manager
-   /          /   /			 ESI s.r.l.
- _____/ _____/  _/		       Colombo@ESI.it
+root@firewall:/etc# iptables -t nat -A POSTROUTING -p tcp --dport 80 -j 
+DNAT --to-destination xx.xx.xx.xx:8080
+iptables: Invalid argument 
 
+root@firewall:/etc# iptables -t nat -A OUTPUT -p tcp --dport 80 -j DNAT 
+--to-destination xx.xx.xx.xx:8080
+iptables: Invalid argument 
+
+root@firewall:/etc# iptables -A OUTPUT -p tcp --dport 80 -j DNAT 
+--to-destination xx.xx.xx.xx:8080
+iptables: Invalid argument 
+
+root@firewall:/etc# iptables -A OUTPUT -p tcp --dport 80 -j DNAT 
+--to-destination xx.xx.xx.xx
+iptables: Invalid argument 
+
+
+All the above assumes that I should be treating Squid as a source on the 
+box, which is why I'm using the OUTPUT chain.  If I'm wrong here, let me 
+know.
+
+The troubling thing that I'm having here is that I don't know what about 
+the rule that I'm requesting to set up is borked, and I can't really 
+find any material on it in the past few days that I've been looking.  It 
+*appears* to be a valid rule, according to what I've read at 
+http://iptables-tutorial.frozentux.net/ and other various 
+documentation/HOW-TOs/newb help references.  I think I'm missing 
+something *really* obvious, but I don't have the depth to find it.
+
+
+/me sighs.  Thanks for your help in advance.
 
