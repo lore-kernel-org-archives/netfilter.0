@@ -1,13 +1,10 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Problem iptables DNAT.
-Date: 18 Jun 2003 07:32:02 +0200
+From: Tasha Smith <tashamaillist@yahoo.com>
+Subject: Trying to setup EMULE and IIS on LAN machine, behind firewall.
+Date: Wed, 18 Jun 2003 01:31:35 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055914322.7293.11.camel@kermit.spenneberg.de>
-References: <001801c334eb$529a2ae0$0b01a8c0@mypc>
+Message-ID: <20030618083135.92164.qmail@web80511.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001801c334eb$529a2ae0$0b01a8c0@mypc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,99 +14,215 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: zufeng huang <zufeng@hotpop.com>, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Am Die, 2003-06-17 um 18.12 schrieb zufeng huang:
-> Hi, all
->=20
->  I have a Linux box with RedHat 9.0 installed(eth0:218.xxx.xxx,eth1:192.1=
-68.0.1), this box is a firewall&proxy. Now I want external user can access =
-my internal web server via the firewall box.
->=20
-> According to RedHat 9.0's manual and the posts in internet, I used the fo=
-llowing command.
->=20
-> #iptables -t nat -A PREROUTING -p TCP -d xxx.xxx.xxx.xxx --dport 80 -j DN=
-AT --to 192.168.0.5:80
-This just accomplishes DNAT. You still have to allow the packets
-through, like:
-iptables -A FORWARD -p tcp -d 192.168.0.5 --dport 80 -m state --state
-NEW -j ACCEPT
+Hi Boys
 
-By the way, when adding a tcpdump, please make sure you already know
-what you are talking about. Only include it if you know it will help to
-resolve the issue. If you just want to capture http traffic using
-tcpdump, do:
-tcpdump tcp port 80
-This would get rid of the dns, icmp and netbios packets.
+Hi im running RedHat 7.3 - 2.4.20 Iptables 1.2.7a on my FIREWALl/ROUTER machine.I am
+having some probles creating some rules for 2 programs im running on my WIndows 2000
+machine which is behind the FIREWALL/ROUTER machine (LAN). First im trying to get
+EMULE(P2P) working properly, those of you who are familiar with it...I keep getting
+a LOWID error even though i created a FORWARD rule. I can connect to the network but
+with a LOWID for those of you who do not know what that means here is a link to what
+it is. 
+http://www.edonkey2000.com/documentation/lowid.html
 
-Cheers,
+I think i need a rule to FORWARD my connection straight to my windows 2000 machine.
+Secondly i want to run IIS on my windows 2000 machine, What would be the rules soo
+my LINUX(FIREWALL/ROUTER) would FORWARD request to my WINDOWS machine on the LAN.
+WOuld these 2 rules for EMULE and IIS be similiar? Thanks for the help guys.
 
-Ralf
->=20
-> But I can't access the internal web server from outside.
->=20
-> Use tcpdump to get the following packets:
->=20
-> 21:57:18.274817 192.168.0.85.1331 > 218.77.120.200.25460: udp 49
-> 21:57:18.450579 218.77.120.200 > 192.168.0.85: icmp: 218.77.120.200 udp p=
-ort 25460 unreachable [tos 0xc0]
-> 21:57:18.968829 192.168.0.5.netbios-ns > 192.168.0.255.netbios-ns: NBT UD=
-P PACKET(137): QUERY; REQUEST; BROADCAST
-> 21:57:18.969963 0.00:30:48:23:04:33.455 > 0.ff:ff:ff:ff:ff:ff.455: ipx-ne=
-tbios 50
-> 21:57:19.057680 61.144.148.161.50660 > 192.168.0.5.http: S 5685372:568537=
-2(0) win 8192 <mss 1452,nop,nop,sackOK> (DF)
-> 21:57:19.718043 192.168.0.5.netbios-ns > 192.168.0.255.netbios-ns: NBT UD=
-P PACKET(137): QUERY; REQUEST; BROADCAST
-> 21:57:19.749255 0.00:30:48:23:04:33.455 > 0.ff:ff:ff:ff:ff:ff.455: ipx-ne=
-tbios 50
-> 21:57:20.468067 192.168.0.5.netbios-ns > 192.168.0.255.netbios-ns: NBT UD=
-P PACKET(137): QUERY; REQUEST; BROADCAST
-> 21:57:20.528584 0.00:30:48:23:04:33.455 > 0.ff:ff:ff:ff:ff:ff.455: ipx-ne=
-tbios 50
-> 21:57:22.020715 61.144.148.161.50660 > 192.168.0.5.http: S 5685372:568537=
-2(0) win 8192 <mss 1460,nop,nop,sackOK> (DF)
-> 21:57:23.444576 arp who-has 192.168.0.85 tell 192.168.0.1
-> 21:57:23.444815 arp reply 192.168.0.85 is-at 0:e0:4c:ef:55:f8
-> 21:57:23.533007 218.17.247.6.http > 192.168.0.85.1383: R 562882410:562882=
-410(0) ack 2793007952 win 0
-> 21:57:24.054574 arp who-has 192.168.0.5 tell 192.168.0.1
-> 21:57:24.054674 arp reply 192.168.0.5 is-at 0:30:48:23:4:33
-> 21:57:27.919595 0.00:30:48:23:04:33.4010 > 0.ff:ff:ff:ff:ff:ff.452:ipx-sa=
-p-resp[|ipx 64]
-> 21:57:28.024632 61.144.148.161.50660 > 192.168.0.5.http: S 5685372:568537=
-2(0) win 8192 <mss 1460,nop,nop,sackOK> (DF)
-> 21:57:29.248044 192.168.0.100.netbios-ns > 192.168.0.255.netbios-ns: NBT =
-UDP PACKET(137): QUERY; REQUEST; BROADCAST
-> 21:57:29.248486 192.168.0.100.netbios-dgm > 192.168.0.255.netbios-dgm: NB=
-T UDP PACKET(138)
-> 21:57:33.839985 192.168.0.100.netbios-ns > 192.168.0.255.netbios-ns: NBT =
-UDP PACKET(137): QUERY; REQUEST; BROADCAST
-> 21:57:34.581878 192.168.0.100.netbios-ns > 192.168.0.255.netbios-ns: NBT =
-UDP PACKET(137): QUERY; REQUEST; BROADCAST
-> 21:57:35.332929 192.168.0.100.netbios-ns > 192.168.0.255.netbios-ns: NBT =
-UDP PACKET(137): QUERY; REQUEST; BROADCAST
-> 21:57:40.026871 61.144.148.161.50660 > 192.168.0.5.http: S 5685372:568537=
-2(0) win 8192 <mss 1460,nop,nop,sackOK> (DF)
-> 21:57:43.191397 arp who-has 192.168.0.5 tell 192.168.0.4
-> 21:58:18.987637 arp who-has 192.168.0.5 tell 192.168.0.222=20
->=20
-> As I said, this box is a proxy too, so the above packets maybe contain un=
--useful messages to analysis where the problem is.
->=20
-> Anybody can help me?=20
->=20
-> thanks,
->=20
-> zufeng
---=20
-Ralf Spenneberg
-RHCE, RHCX
+Here are my rules:
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                   =20
-http://honeynet.spenneberg.org
+#Where my iptables are located
+iptables="/usr/local/sbin/iptables"
+ 
+# This will also update my ipaddress.
+IP_INET=`/sbin/ifconfig eth0 | grep inet | cut -d: -f2 | cut -d\  -f1`
+
+# Remove any existing rules from all chains.
+$iptables --flush
+$iptables -t nat --flush
+$iptables -t mangle --flush
+
+# Unlimited access on the loopback interface.
+$iptables -A INPUT  -i lo -j ACCEPT
+$iptables -A OUTPUT -o lo -j ACCEPT
+	
+# Set the default policy to drop.
+$iptables --policy INPUT DROP
+$iptables --policy FORWARD DROP
+$iptables --policy OUTPUT ACCEPT
+
+$iptables -t nat --policy PREROUTING ACCEPT
+$iptables -t nat --policy OUTPUT ACCEPT
+$iptables -t nat --policy POSTROUTING ACCEPT
+
+$iptables -t mangle --policy PREROUTING ACCEPT
+$iptables -t mangle --policy OUTPUT ACCEPT
+
+# All of the bits are cleared
+$iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+$iptables -A FORWARD -p tcp --tcp-flags ALL NONE -j DROP
+# SYN and FIN are both set
+$iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+$iptables -A FORWARD -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+# SYN and RST are both set.
+$iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+$iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+# FIN and RST are both set
+$iptables -A INPUT -p tcp --tcp-flags FIN,RST FIN,RST -j REJECT
+$iptables -A FORWARD -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
+# FIN is the only bit set, without the expected accompanyuing ACK
+$iptables -A INPUT -p tcp --tcp-flags ACK,FIN FIN -j DROP
+$iptables -A FORWARD -p tcp --tcp-flags ACK,FIN FIN -j REJECT
+# PSH is the only bit set, without the expected accompaying ACK
+$iptables -A INPUT -p tcp --tcp-flags ACK,PSH PSH -j DROP
+$iptables -A FORWARD -p tcp --tcp-flags ACK,PSH PSH -j REJECT
+# URG is the only bit set, without the expected accompayning ACK
+$iptables -A INPUT -p tcp --tcp-flags ACK,URG URG -j DROP
+$iptables -A FORWARD -p tcp --tcp-flags ACK,URG URG -j DROP
+
+# Allow stateful connections 
+$iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+$iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+$iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Drop Invalid connection
+$iptables -A INPUT -m state --state INVALID -j LOG \
+          --log-prefix "Invalid input: "
+$iptables -A INPUT -m state --state INVALID -j DROP
+         
+$iptables -A OUTPUT -m state --state INVALID -j LOG \
+          --log-prefix "Invalid output: " 
+$iptables -A OUTPUT -m state --state INVALID -j DROP
+
+$iptables -A FORWARD -m state --state INVALID -j LOG \
+          --log-prefix "Invalid forward: "
+$iptables -A FORWARD -m state --state INVALID -j DROP
+ 
+# Allow Access for DNS UDP for my ISP DNS server.
+if [ "$CONNECTION_TRACKING" = "1" ]; then
+   $iptables -A OUTPUT -o eth0 -p udp \
+            -s $IP_INET --sport 1024:65535 \
+            -d 111.xx.4.130 --dport 53 \
+            -m state --state NEW -j ACCEPT
+fi
+
+$iptables -A OUTPUT -o eth0 -p udp \
+         -s $IP_INET     --sport 1024:65535 \
+         -d 111.xx.4.130 --dport 53 -j ACCEPT
+
+
+if [ "$CONNECTION_TRACKING" = "1" ]; then
+    $iptables -A OUTPUT -o eth0 -p udp \
+             -s $IP_INET --sport 1024:65535 \
+             -d 111.xx.4.150 --dport 53 \
+             -m state --state NEW -j ACCEPT
+fi
+
+$iptables -A OUTPUT -o eth0 -p udp \
+         -s $IP_INET --sport 1024:65535 \
+         -d 111.xx.4.150 --dport 53 -j ACCEPT
+       
+$iptables -A INPUT -i eth1 -p udp --dport 53 -j ACCEPT
+
+# Allow access for my ISP DHCP server.
+if [ "$CONNECTION_TRACKING" = "1" ]; then
+    $iptables -A OUTPUT -o eth0 -p udp \
+             -s $IP_NET --sport 1024:65535 \
+             -d 111.xx.4.129 --dport 67 \
+             -m state --state NEW -j ACCEPT
+fi
+
+$iptables -A OUTPUT -o eth0 -p udp \
+         -s $IP_INET      --sport 1024:65535 \
+         -d 111.xx.4.129  --dport 67 -j ACCEPT
+
+$iptables -A INPUT -i eth0 -p udp \
+         -s 111.xx.4.129 --sport 67 \
+         -d $IP_INET     --dport 1024:65535 -j ACCEPT
+
+# Allow outgoing access for ftp sites
+if [ "$CONNECTION_TRACKING" = "1" ]; then
+    $iptables -A OUTPUT -o eth0 -p tcp \
+              -s $IP_INET --sport 1024:65535 \
+              --dport 21 -m state --state NEW -j ACCEPT
+
+$iptables -A OUTPUT -o eth0 -p tcp \
+          -s $IP_INET --sport 1024:65535 \
+          --dport 21 -j ACCEPT
+fi
+
+# Allow my Windows machine to SSH here on Port 22
+$iptables -A INPUT -i eth1 -p tcp --dport 22 -j ACCEPT
+
+# Allow access to remote webservers PORT 80.
+if [ "$CONNECTION_TRACKING" = "1" ]; then
+    $iptables -A OUTPUT -o eth0 -p tcp \
+             -s $IP_INET --sport 1024:65535 \
+             --dport 80 -m state --state NEW -j ACCEPT
+fi
+
+$iptables -A OUTPUT -o eth0 -p tcp \
+         -s $IP_INET --sport 1024:65535 \
+         --dport 80 -j ACCEPT
+
+$iptables -A INPUT -i eth0 -p tcp ! --syn \
+          --sport 80 \
+          -d $IP_INET --dport 1024:65535 -j ACCEPT
+
+#Allow access from LAN to this Webserver for ACID+WebMin
+$iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT 
+$iptables -A INPUT -i eth1 -p tcp --dport 10000 -j ACCEPT
+
+# Attempt to connect to HHTPS 443 connections.
+if [ "$CONNECTION_TRACKING" = "1" ]; then
+    $iptables -A OUTPUT -o eth0 -p tcp \
+              -m state --state NEW --dport 443 \
+              --sport 1024:65535 \
+              -j ACCEPT
+fi
+
+$iptables -A OUTPUT -o eth0 -p tcp \
+         -s $IP_INET --sport 1024:65535 \
+         --dport 443 -j ACCEPT
+ 
+$iptables -A INPUT -i eth0 -p tcp \
+          --sport 443 \
+         -d $IP_INET --dport 1024:65535 -j ACCEPT
+
+$iptables -A INPUT -i eth1 -p tcp --dport 1241 -j ACCEPT
+
+
+# Allow ping ICMP coming from LAN interface.
+$iptables -A INPUT -i eth1 -p icmp \
+	  -s 192.168.0.0/24 -j ACCEPT	 
+
+#These are my Forwarding rules.
+$iptables -A FORWARD -i eth1 -p tcp --dport 80 -j ACCEPT
+$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 25,80,110,443 -j ACCEPT
+$iptables -A FORWARD -i eth1 -p tcp --dport 21 -j ACCEPT
+$iptables -A FORWARD -i eth1 -p tcp --dport 22 -j ACCEPT
+$iptables -A FORWARD -i eth1 -p udp --dport 1863 -j ACCEPT
+$iptables -A FORWARD -i eth1 -p tcp --dport 1863 -j ACCEPT
+$iptables -A FORWARD -i eth1 -p tcp --dport 1214 -j ACCEPT
+$iptables -A FORWARD -i eth1 -p udp --dport 1214 -j ACCEPT
+$iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 4242,4224,4661,6667 -j
+ACCEPT
+$iptables -A FORWARD -i eth1 -p udp -m multiport --dport 4662,4672 -j ACCEPT
+
+#Enables Packet Forwarding
+$iptables -t nat -A POSTROUTING -o eth0  -j MASQUERADE
+
+echo 1 > /proc/sys/net/ipv4/ip_forward 
+
+Tasha@---<-----
+
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
