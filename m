@@ -1,11 +1,14 @@
-From: Samuel Richard <Samuel.Richard@USherbrooke.ca>
-Subject: Help building shared version of libiptc library (libiptc.so)
-Date: Mon, 19 Jul 2004 16:14:07 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Squid Accelerator configuration
+Date: Mon, 19 Jul 2004 22:00:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1090268046.3172.9.camel@localhost.localdomain>
+Message-ID: <200407192200.10863.Antony@Soft-Solutions.co.uk>
+References: <OF79696C32.B5892048-ON85256ED6.006F014E-85256ED6.0070F054@banquo.mc.duke.edu >
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <OF79696C32.B5892048-ON85256ED6.006F014E-85256ED6.0070F054@banquo.mc.duke.edu >
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +21,37 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Monday 19 July 2004 9:33 pm, Jim Matthews wrote:
 
-I am trying to use jnetfilter, which requires that I generate a shared
-version of libiptc.  Here's what they say:
+> Antony
+>
+> Thanks for the reply.
+>
+> I added port 113 to the "allow" list and when I tried to reconnect to the
+> Squid box, those 113 port packets are still being dropped.  Any idea why
+> the port 80 packets are being dropped as well?  I think my rules are setup
+> correctly, so I'm not sure why they're not being allowed.  I'm attaching
+> my rules if someone would like to take a look and see what's happening.
 
-"In order to get the jnetfilter package to work, you also have to
-download the source code of iptables (from www.netfilter.org or
-www.iptables.org), and modify the Makefile slightly to generate a shared
-version of the libiptc.a library (libiptc.so)."
+Maybe my earlier explanation was not entirely clear.
 
-They also privide us with a modified version of the makefile which looks
-like that:
+The squid *server* is the ident *client* - it initiates the connection to the 
+ident server running on the http client.
 
-TOPLEVEL_INCLUDED=YES
-NETFILTER_VERSION=1.2.1a
-CFLAGS=-Wl,-export-dynamic -fPIC -shared -DNETFILTER_VERSION=\"1.2.1a\"
+The rules for TCP port 113 in your ruleset seem to assume the opposite - that 
+one machine is both http and ident client, and the other machine is both http 
+and ident server.
 
-libiptc/libiptc.so : Makefile.libiptc libiptc/libiptc.c
-	gcc $(CFLAGS) libiptc/libip4tc.c -o libiptc/libiptc.so
+Regards,
 
-I tried to modify my makefile without any success...  Does anyone know
-how to do this?
+Antony.
 
-Thanks,
+-- 
+I love deadlines.   I love the whooshing noise they make as they go by.
 
-Sam
+ - Douglas Noel Adams
 
-
-
- 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
