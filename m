@@ -1,11 +1,10 @@
-From: justin <cmbb@dslr.net>
-Subject: DOS/Crikey attacks, and ip_conntrack
-Date: Sun, 19 Jan 2003 13:52:55 -0500
+From: "Evan Borgstrom" <evan@unixpimps.org>
+Subject: Strange setup
+Date: Sun, 19 Jan 2003 16:35:59 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <61535048953.20030119135255@dslr.net>
-Reply-To: justin <cmbb@dslr.net>
+Message-ID: <1648.10.35.120.83.1043012159.squirrel@mail.unixpimps.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,56 +18,54 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I've got sort of a strange setup that I'm looking to accomplish some
+strange async routing. I know how I want to accomplish it and am pretty
+sure that I can do it with netfilter but just can't seem to find the
+proper way.
 
-this
- http://www.qorbit.net/documents/maximizing-firewall-availability.htm
+Here's the rundown on the network setup:
 
-is a very interesting paper on the limitations of commercial
-firewalls when their state tables are filled by DOS attacks.
-It shows that even with a capability for two MILLION tracked
-connections, a DOS attack using spoofed IPs, of 21mbit, will
-fill this table up.. and the DOS succeeds.
-
-The paper does not talk about netfilter/iptables, except to
-point out that syncookies are a linux/bsd feature, that
-mitigate SYN flood attack.
-
-My question is this, ip_conntrack can be filled up fairly
-easily with UNREPLIED entries. There seems to be some confusion
-in the archives of this list as to whether behavior at the
-limit is good or not:
-
-1. With a hashsize of 16384, on a machine with 2gb of memory
-or more, will the table fill up before
-kernel memory is exhausted instead, and bad things happen?
-is there any protection/tests built in that stop conntrack
-filling kernel memory before it fills its set max table size?
-
-2. When the ip_conntrack table is full, are old UNREPLIED
-connections dropped to make room for new entries? (this,
-the DOS attack will not succeed), or, are random UNREPLIED
-entries removed, or, are packets just dropped?
-
-3. Do kernel SYNcookies stop additional ip_conntract table
-entries, when the kernel decides to start issuing them?
-
-4. Using the patch for NOTRACK, that provides a path that
-does not add an entry to the session table, does this mean
-the only thing that will break is any ESTABLISHED tests
-elsewhere in the rules? or does it break NAT completely
-and thus can only be used for packets coming in for services
-on the local box, not any hidden NAT'd services?
-
-Ie: NOTRACK can be used for tcp/80 path only, correct?
--->port 80-->firewall+webserver---nat+portfwding--->other services
-
-or is this also ok
---->port 27015 udp-->firewall---->nat+portfwding--->game servers
-where the udp path is marked NOTRACK?
+[ LAN ] --
+[ DMZ ] -- [ Firewall/Router ] -- [ WAN ]
+                    |
+                    |
+                 [ WLAN ]
 
 
-thanks, any answers would be very helpful.
+The WLAN is between myself and a couple of other people in my building to
+provide redundant paths out of each of our networks and is working
+beautifully. We all advertise (via BGP) blocks close to us to each to
+provide the shortest path as well.
 
--Justin
+Comming from the WAN I have a /29 routed to the DMZ which services a
+number of machines that provide different services.
+
+The firewall/router is a linux box that is running iptables.
+
+
+Now the problem:
+Because of the advertisments comming over the WLAN I now have about 40
+routes in the kernel routing table. Most of them are not very specific
+since we advertise our ISP's blocks to each other, so I have routes for
+/16's, /21's, etc... What happens is when someone that resides in one of
+these blocks that I'm getting advertisements for tries to access an
+address in my /29 their return path follows the advertisment over the
+WLAN.
+
+Using the iproute2 package I've created a second routing table with a
+single default route out my WAN default route. I'm hopping that there's a
+way to tag the connection in the conntrack table and then -j MARK it when
+a related,established packet comes back so that I use the iproute2 package
+to specify that the second routing table will be used.
+
+Anyone know of a way that I can accomplish this?
+
+Thanks in advance,
+Evan
+
+-- 
+Evan Borgstrom <evan@unixpimps.org>
+http://www.unixpimps.org - SIG:ILL
+
 
 
