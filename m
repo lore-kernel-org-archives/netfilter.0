@@ -1,14 +1,9 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: Re: availability of ROUTE target
-Date: Sun, 6 Mar 2005 12:45:08 -0500
-Message-ID: <876ef97a05030609454e917567@mail.gmail.com>
-References: <Pine.LNX.4.61.0503060105470.9386@forty-thieves.cis.upenn.edu>
-	<876ef97a05030609126e4aa085@mail.gmail.com>
-	<Pine.LNX.4.61.0503061233100.9386@forty-thieves.cis.upenn.edu>
-Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
+From: "Rakotomandimby (R12y) Mihamina" <mihamina@mail.rktmb.org>
+Subject: I cant flush rules
+Date: Sun, 06 Mar 2005 20:41:34 +0100
+Message-ID: <1110138094.6856.65.camel@debian>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.61.0503061233100.9386@forty-thieves.cis.upenn.edu>
+Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,27 +14,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Yun Mao <maoy+netfilter@cis.upenn.edu>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Sun, 6 Mar 2005 12:34:41 -0500 (EST), Yun Mao
-<maoy+netfilter@cis.upenn.edu> wrote:
-> Thanks for the info. I only found this URL,
-> 
-> http://www.netfilter.org/patch-o-matic/pom-extra.html
-> 
-> which illustrates how to use ROUTE target and author's email address, but
-> I still can't find the patch.
-> 
-> http://www.netfilter.org/patch-o-matic/ appears to be almost empty.
+Hello,
+I have one big problem with my iptables 1.2.11 on a Debian testing box.
+Though I explicitely drop, some connections can be done.
+The iptables-save output is also strange.
 
-Yeah, you want patch-o-matic-ng, sorry. Patch-o-matic is pretty dead.
-Here's the link for the latest pom-ng:
+http://www.etud-orleans.fr/Members/mihamina/divers/rules.txt/file_view
 
-http://netfilter.org/downloads.html#pomng-20050130
+And here is the output of iptables-save:
+http://www.etud-orleans.fr/Members/mihamina/divers/ipt-save.txt/file_view
 
--- 
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+As you see, although I tried to flush, ...
+
+The critical thing is I'm running a test daemon listening on port 8000,
+and it can be accessed though I told to DROP by default...
+
+What did I do wrong ?
+--=20
+ASPO Infog=E9rance       http://aspo.rktmb.org/activites/infogerance
+Unofficial FAQ fcolc   http://faq.fcolc.eu.org/
+LUG sur Orl=E9ans et alentours (France).
+T=E9l : 02 34 08 26 04 / 06 33 26 13 14
+
 
