@@ -1,11 +1,11 @@
-From: "Manikandan" <mani@manikandan.org>
-Subject: FW: PPTP clients behind iptables firewall.
-Date: Tue, 30 Mar 2004 19:33:27 +0530
+From: Fabiano Bonin <fabiano@personalsoft.com.br>
+Subject: Re: Redirecting ports on localhost
+Date: Tue, 30 Mar 2004 11:15:01 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <JFEPKPDIGFAKJOGHOICDEECGCAAA.mani@manikandan.org>
+Message-ID: <406980E5.6080107@personalsoft.com.br>
+References: <20040330133505.22298.90925.Mailman@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0018_01C4168D.DF994460"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,111 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+ > On Tuesday 30 March 2004 13:46, Fabiano Bonin wrote:
 
-------=_NextPart_000_0018_01C4168D.DF994460
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+>> I need to access this service from other hosts through ETH0 interface
+>> (ip 192.168.0.254). The other hosts are in the same network.
+>> I already enabled "NF_NAT_LOCAL" kernel option (btw, all netfilter
+>> options are enabled in my kernel), and the commands i'm using are
+>> these:
+>  
+>
+> NF_NAT_LOCAL is for NAT'ing connections that originate on the local 
+> machine (ie the netfilter machine).  I don't believe it will do what you 
+> want though I may be incorrect.
+
+>> iptables -F
+>> iptables -F -t nat
+>> iptables -A OUTPUT -t nat -p tcp -o lo -d 192.168.0.254 --dport 5050 -j
+>> REDIRECT --to-ports 5050
+>> echo "1" > /proc/sys/net/ipv4/ip_forward
+>  
+>
+
+> I don't think you need anything special to do this however your rule says 
+> "any packets going out on loopback to 192.168.0.254".  The only machine 
+> on your network that would send packets to 192.168.0.254 on loopback is 
+> the machine with that IP itself.
+
+> Can you not make that daemon listen on an interface IP as well as 
+> 127.0.0.1?  This way other hosts could connect to 192.168.0.254:5050.  
+> Other hosts that try to access port 5050 on your machine will simply come 
+> through the INPUT chain, no NAT needed.  If you can't, or don't want to 
+> for good reason, I am sure it would be possible with DNAT. 
+
+This daemon is a SSH tunnel to a remote machine. I couldn't enable interfaces other than lo to listen on that port, even enabling the option 'remote ports accept connections from other hosts' in the client program (putty). I'm almos sure this is a SSH protocol limitation due to security reasons, so probably my only choice is through iptables.
+
+> Perhaps I misunderstand what you are trying to accomplish, apologies if 
+> so.
+
+Most probably you understood what i am trying to do, and the way i'm trying (as shown in the examples) is entirelly wrong. I used iptables few times before and i'm not skilled with it.
+
+Maybe you can show the command needed to my case (i.e., using DNAT as you told above). Sorry if i'm asking too much...
+I just need the hosts on my local network can access this port through server's eth0.
+
+Thanks again.
+
+> David
 
 
-Dear all,
-
-	I am running RedHat Linux 9 with kernel 2.4.20-8, with iptables
-iptables-1.2.7a-2, which acts as a gateway/firewall for my LAN
-10.35.57.0/24. 
-
-	I do  SNAT to one public IP in my firewall to allow traffic from LAN
-to Internet.
-
-	My LAN PPTP clients are not able to establish more than one
-connection at a time to my VPN server (Internet).
-
-		Please assist me in resolving this issue.
-
-Advance thanks.
-
-Regards,
-Manikandan
-
-
-------=_NextPart_000_0018_01C4168D.DF994460
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
-
-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
-CnByzXH7gJCntimoPZAsg+KRL5I/75NPinSD4pTfUBFAy9Ge8f5zrBBbIK5RhoE9UC2AYTCfmbKb
-AKwQnIC3oHVlqDZ/kC+yX7NvtH+Ub5V1ubVB/GR2FaBHsKyTllCoPRpwu59QHnBzl+aW0FKAa06B
-PxWgubWV5kRBlrm5tn0AAcYgAAALAAGACCAGAAAAAADAAAAAAAAARgAAAAADhQAAAAAAAAMAA4AI
-IAYAAAAAAMAAAAAAAABGAAAAABCFAAAAAAAAAwAHgAggBgAAAAAAwAAAAAAAAEYAAAAAUoUAACdq
-AQAeAAmACCAGAAAAAADAAAAAAAAARgAAAABUhQAAAQAAAAQAAAA5LjAAHgAKgAggBgAAAAAAwAAA
-AAAAAEYAAAAANoUAAAEAAAABAAAAAAAAAB4AC4AIIAYAAAAAAMAAAAAAAABGAAAAADeFAAABAAAA
-AQAAAAAAAAAeAAyACCAGAAAAAADAAAAAAAAARgAAAAA4hQAAAQAAAAEAAAAAAAAACwANgAggBgAA
-AAAAwAAAAAAAAEYAAAAAgoUAAAEAAAALADqACCAGAAAAAADAAAAAAAAARgAAAAAOhQAAAAAAAAMA
-PIAIIAYAAAAAAMAAAAAAAABGAAAAABGFAAAAAAAAAwA9gAggBgAAAAAAwAAAAAAAAEYAAAAAGIUA
-AAAAAAALAFKACCAGAAAAAADAAAAAAAAARgAAAAAGhQAAAAAAAAMAU4AIIAYAAAAAAMAAAAAAAABG
-AAAAAAGFAAAAAAAAAgH4DwEAAAAQAAAAEbhOSPP2lU+vOHSy0C8b1QIB+g8BAAAAEAAAABG4Tkjz
-9pVPrzh0stAvG9UCAfsPAQAAAJwAAAAAAAAAOKG7EAXlEBqhuwgAKypWwgAAUFNUUFJYLkRMTAAA
-AAAAAAAATklUQfm/uAEAqgA32W4AAABDOlxEb2N1bWVudHMgYW5kIFNldHRpbmdzXE1hbmlrYW5k
-YW5cTG9jYWwgU2V0dGluZ3NcQXBwbGljYXRpb24gRGF0YVxNaWNyb3NvZnRcT3V0bG9va1xvdXRs
-b29rLnBzdAADAP4PBQAAAAMADTT9NwAAAgF/AAEAAAAzAAAAPEpGRVBLUERJR0ZBS0pPR0hPSUNE
-RUVDR0NBQUEubWFuaUBtYW5pa2FuZGFuLm9yZz4AAAMABhCDJIeJAwAHEFEBAAADABAQAAAAAAMA
-ERAAAAAAHgAIEAEAAABlAAAAREVBUkFMTCxJQU1SVU5OSU5HUkVESEFUTElOVVg5V0lUSEtFUk5F
-TDI0MjAtOCxXSVRISVBUQUJMRVNJUFRBQkxFUy0xMjdBLTIsV0hJQ0hBQ1RTQVNBR0FURVdBWS9G
-SVJFVwAAAABC1Q==
-
-------=_NextPart_000_0018_01C4168D.DF994460--
 
 
