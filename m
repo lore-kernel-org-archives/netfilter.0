@@ -1,13 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
+From: Alistair Tonner <Alistair@nerdnet.ca>
 Subject: Re: irc+iptables
-Date: Sat, 02 Oct 2004 07:51:25 -0400
+Date: Sat, 2 Oct 2004 12:20:59 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096717884.22962.69.camel@wolfpack.ljm.dom>
+Message-ID: <200410021220.59702.Alistair@nerdnet.ca>
 References: <web-460534879@mail01.infosat.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <web-460534879@mail01.infosat.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,45 +21,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sat, 2004-10-02 at 05:03, it clown wrote:
+On October 2, 2004 05:03 am, it clown wrote:
 > Hi All,
-> 
+>
 > i am having some trouble in getting irc working through
 > iptables and squid.When i put a forwarder in my iptables
 > rule i can connect to irc but when i want to go through the
 > proxy i have no luck.I have loaded the ip_nat_irc and
 > tried:
-> 
+>
 > -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT
 > --to-ports 3128.
-
-which is a nat rule redirecting tcp port 80 traffic to your squid cache
-running on tcp port 3128.
-
+>
 > I have made the changes in squid to allown port 6667.
 > Port 6667 is allowed OUT.
 
-what has has led you to believe that squid can proxy IRC traffic?  i may
-be out of the loop, but AFAIK, squid supports proxying for:  HTTP,
-HTTPS, FTP, Gopher, and WAIS.
+	Squid itself will not proxy IRC that I'm aware of.  When you say 
+	'Forwarder' -- I take it you allow the connection out directly to the 
+	IRC server with a rule in the FORWARD chain.  
+	
+	What (client) are you using to connect to IRC through the proxy?
+	And --- for what it's worth why do you believe that Squid will 
+	proxy the IRC connection?
 
-even if it did support proxying for IRC, you're only redirecting port
-80.
-
-for IRC, you'll need to use a forward rule along the lines of:
-
-  iptables -A FORWARD -i $INSIDE_IF -p tcp --syn --dport 6667 -j ACCEPT
-
-HTH...
-
--j
-
-disclaimer:  the rules contained in this message are meant to illustrate
-the requested functionality only, and not intended as a recommendation
-of best practices.  never execute any commands without fully
-understanding the implications.
-
--- 
-Jason Opperisano <opie@817west.com>
-
+	There are web based clients that can run through proxies, 
+	however they are completely java based, and the connection
+	is from the webserver end to the IRC server.  There is a java 
+	applet that someone cooked up that has the initial connection
+	from the webserver, but requires that the client can see the 
+	internet without filtering as subsequent traffic is from the client 
+	to the IRC server, across not well known ports, and this also 	
+	has some other issues that make it unwise to use.
+	
+	Alistair Tonner
+	RSO Technical Services, 
+	HPUX Support
 
