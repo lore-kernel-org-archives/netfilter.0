@@ -1,13 +1,12 @@
-From: "R. Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: FTP client behind a gateway
-Date: Tue, 29 Oct 2002 16:09:40 +0100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: Ping With Iptables.
+Date: Tue, 29 Oct 2002 16:34:16 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001d01c27f5d$34ac5330$0401000a@robbysan.org>
-References: <3DBE7636.6060301@bol.com.br>
+Message-ID: <Pine.LNX.4.44.0210291631160.29974-100000@dns.toxicfilms.tv>
+References: <F136m4qBbs8ltIzn9rZ00010163@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DBE7636.6060301@bol.com.br>
+In-Reply-To: <F136m4qBbs8ltIzn9rZ00010163@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +16,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Julio Cesar Ody' <julioody@bol.com.br>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: =?iso-8859-1?B?SOlsaW8gRHViZXV4?= <hdubeux@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-> Hello. I don't know if anybody else faced this problem, but when I'm
-> behind a gateway (using iptables to perform NAT), I can connect to
-any
-> FTP server (using the client machines behind the gate) but when I
-> request a directory listing by using the "ls" command, it refuses to
-> enter passive mode. The same doesn't happen when I do it with the
-> gateway machine. Any solutions or ideas ? Thanks again.
+Hello,
 
-If you compiled these as modules ;
-do you have the ip_nat_ftp and ip_conntrack_ftp modules loaded (lsmod)
-?
+> I have a Linux Box as a Gateway of my network. And i want do allow internal
+> machines to ping the Internet but i also want to block external machines to
+> ping my Gateway. Is this is possible plz send me something... Thanx.
 
+#let the internal net ping the world
+iptables -A FORWARD -p icmp -s $YOUR_NET -j ACCEPT
 
-Rob
+#disallow the world to ping the gateway
+iptables -I INPUT -p icmp -d $GATEWAY_IP -j DROP
+
+Of course this is very rough, i do not know your rulesets, it is possible
+that it can be done better to suit your current chains and rules.
+
+Note, the -I INPUT - if we have other icmp rules, they may ACCEPT the
+pings earlier than if we had just appended the rule, hence we're
+inserting.
+
 
 
