@@ -1,13 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Quick Routing question
-Date: Wed, 5 Mar 2003 01:07:44 +0100
+From: ImpulseFG@netscape.net
+Subject: Re: Re: Port Forwarding and opening ports.
+Date: Tue, 04 Mar 2003 20:50:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030305010744.5828b6d3.arnt@c2i.net>
-References: <016701c2e28a$239fbab0$1f0016ac@daviddesktop>
+Message-ID: <05827A37.4C4D508C.0256A0D0@netscape.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=-------59255974c5d2bec59255974c5d2bec
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <016701c2e28a$239fbab0$1f0016ac@daviddesktop>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,112 +16,265 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 4 Mar 2003 15:10:43 -0500, 
-"David Ruggles" <david@safedatausa.com> wrote in message 
-<016701c2e28a$239fbab0$1f0016ac@daviddesktop>:
 
-> I'm trying to learn netfilter so I've got a very simple setup.
-> 
-> I've got a Linux box with three interfaces. (I'm not using eth0
-> currently) I've got two networks (eth2: 172.22.0.0 & eth1: 10.0.0.0)
-> I entered the following on the Linux box:
-> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 10.9.0.254 (eth1's
-> IP address)
-> 
-> I've got a machine on each network: machine A is on 172.22.0.0 and
-                                                      /\/\/\
-[arnt@lana z-bru]$ dig -x 172.22.0.0
+---------59255974c5d2bec59255974c5d2bec
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
 
-; <<>> DiG 9.2.1 <<>> -x 172.22.0.0
-;; global options:  printcmd
-;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 57296
-;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 0
+Joel Newkirk <netfilter@newkirk.us> wrote:
 
-;; QUESTION SECTION:
-;0.0.22.172.in-addr.arpa.       IN      PTR
+Thanks for the fix on the loopback interface. The goal of this firewall is:
+- To forward the desired ports for ftp, http, and Half-life to "charlee"
+- To nat my own connection and any other connections behind the firewall/router, it is the gateway for this connections.
 
-;; AUTHORITY SECTION:
-22.172.in-addr.arpa.    10800   IN      SOA     prisoner.iana.org.
-hostmaster.root-servers.org. 2002040800 1800 900 604800 604800
+Problems:
+- Problems opening ssh to the router. With out dissabling NAT.
 
-;; Query time: 556 msec
-;; SERVER: 192.168.1.1#53(192.168.1.1)
-;; WHEN: Wed Mar  5 01:00:01 2003
-;; MSG SIZE  rcvd: 118
+I used the command. $iptables -t nat -A PREROUTNG -d 128.x.x.x -j DNAT --to   192.168.1.2-192.168.1.255
+To do the routing internet access behind the router. It works for my compuer on 192.168.1.10 and when I run a browser or update "charlee" though ssh. I'm not sure if this is the best way to do it. I would guess that this  ineffecent. I previously used masquerading but I know that this command uses way less, system resources, than masquerade. 
 
-[arnt@lana z-bru]$ dig prisoner.iana.org
+I would like to use the command. $iptables -t nat -A PREROUTING -d 128.x.x.x -p all --dport ! 22 -j DNAT --to 192.168.1.2-192.168.1.255
+But the all command doesn't work. (Even though it is described in the man pages.) Or jump to a custom table. But I don't know how to do that with nat. So if anyone knows a better way to do this please tell me.
 
-; <<>> DiG 9.2.1 <<>> prisoner.iana.org
-;; global options:  printcmd
-;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 18283
-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 7, ADDITIONAL: 3
+In writing this e-mail, I realized my problems with getting that port open, thanks to looking at the modified script by j.  It seems in my hast of revising this script. That I had --sport instead of --dport in the routing. I also realized that for tcp, I still had 22 included in routing. :-@ . What an oversight.
 
-;; QUESTION SECTION:
-;prisoner.iana.org.             IN      A
+Anyways both problems are solved now. I included the revised script. If anyone knows a better way to do this natting plase post. Thanks j.
 
-;; ANSWER SECTION:
-prisoner.iana.org.      3600    IN      A       192.175.48.1
+                            -Impulse 
 
-;; AUTHORITY SECTION:
-iana.org.               172800  IN      NS      a.iana-servers.net.
-iana.org.               172800  IN      NS      ns.isi.edu.
-iana.org.               172800  IN      NS      ns.ripe.net.
-iana.org.               172800  IN      NS      ns.apnic.net.
-iana.org.               172800  IN      NS      ns.icann.org.
-iana.org.               172800  IN      NS      rip.psg.com.
-iana.org.               172800  IN      NS      svc00.apnic.net.
+>On Tuesday 04 March 2003 03:56 pm, ImpulseFG@netscape.net wrote:
+>> I have iptables setup to port forward ftp , web, and a game server to
+>> another server on the local network. It works great. I have also set
+>> it up so it only accepts incoming and outgoing connections on port 22.
+>> I'm having 2 problems and a couple of questions.
+>>
+>> 1. I can ssh into the machine which is 192.168.1.1 from any computer
+>> on the local network. But I can't run X programs without allowing all
+>> incoming and outgoing connections on this machine. I've tried:
+>> $iptables -A INPUT -i eth1 -j ACCEPT
+>>             $iptables -A OUTPUT -o eth1 -j ACCEPT
+>>
+>> This wouldn't fix the problem. So I tried.
+>>             $iptables -A INPUT -s 192.168.1.2-192.168.1.255 -j ACCEPT
+>>             $iptables -A OUTPUT -d 192.168.1.2-192.68.1.255 -j ACCEPT
+>>
+>> This didn't work either. Only only accepting all incomeing and
+>> outgoing connections would.
+>
+>Try
+>
+>$iptables -A INPUT -i lo -j ACCEPT
+>$iptables -A OUTPUT -o lo --j ACCEPT
+>
+>to let the box talk to itself...
+>
+>> 2. I'm having problems with the nat features.
+>>     I want to be able to ssh into the routing machine from of the
+>> local network but I can't. I have it set to accept local connections
+>> on port 22 for udp and tcp. But nat is nating the packets before it
+>> can accept them.
+>>     The only way I am able to get them to accept them is to disable
+>> nat. I tried natting all the ports around 22. See the attache script
+>> but for some reason that wouln't work either.
+>>
+>> Does anyone have any idea how to do this?
+>
+>In your script you have lots of rules with "-j DNAT --to
+>192.168.1.2-192.168.1.255" - do you really want to spread all this
+>traffic out across all these addresses?  This construction will take any
+>connection coming in on a matching port and send it to the first address
+>in that list that doesn't currently have traffic, or the one with the
+>lowest traffic.
+>
+>My impression of what you want is that you want to DNAT a handful of
+>specific connections to specific destinations, and then allow return
+>traffic from the internet to reach the proper client, am I right?  I've
+>attached your original script trimmed to the essentials and then
+>commented by myself, and also attached a proposed replacement script
+>that will allow the local machines to connect out, and outside
+>connections only to SSH on the gateway or the three DNATs to "charlee".
+>If I'm way off-base on your intentions here I apologize.
+>
+>j
+>
 
-;; ADDITIONAL SECTION:
-a.iana-servers.net.     10847   IN      A       192.0.34.43
-ns.isi.edu.             10847   IN      A       128.9.128.127
-ns.icann.org.           10847   IN      A       192.0.34.126
+__________________________________________________________________
+The NEW Netscape 7.0 browser is now available. Upgrade now! http://channels.netscape.com/ns/browsers/download.jsp 
 
-;; Query time: 127 msec
-;; SERVER: 192.168.1.1#53(192.168.1.1)
-;; WHEN: Wed Mar  5 01:00:47 2003
-;; MSG SIZE  rcvd: 268
+Get your own FREE, personal Netscape Mail account today at http://webmail.netscape.com/
 
-[arnt@lana z-bru]$
+---------59255974c5d2bec59255974c5d2bec
+Content-Type: application/octet-stream; name="rc.firewall-2.4.mailing"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="rc.firewall-2.4.mailing"
+Content-Description: rc.firewall-2.4.mailing
 
-..you run a _root_ name server and come here asking us amateur newbies
-with less than 25 yrs internet experience for netfilter advice????? ;-)
+IyEvYmluL3NoCiMKIyByYy5maXJld2FsbC0yLjQKRldWRVI9MC43MgojCgojIFRoZSBsb2Nh
+dGlvbiBvZiB0aGUgaXB0YWJsZXMgYW5kIGtlcm5lbCBtb2R1bGUgcHJvZ3JhbXMKIwojCUlm
+IHlvdXIgTGludXggZGlzcmlidXRpb24gY2FtZSB3aXRoIGEgY29weSBvZiBpcHRhYmxlcyAK
+Iwltb3N0IGxpa2VseSBhbGwgdGhlIHByb2dyYW1zIHdpbGwgYmUgbG9jYXRlZCBpbiAvc2Jp
+bi4gSWYKIwl5b3UgbWFudWFsbHkgY29tcGlsZWQgaXB0YWJsZXMsIHRoZSBkZWZhdWx0IGxv
+Y2F0aW9uIHdpbGwKIwliZSBpbiAvdXNyL2xvY2FsL3NiaW4KIwojICoqIFBsZWFzZSB1c2Ug
+dGhlICJ3aGVyZWlzIGlwdGFiYmxlcyIgY29tbWFuZCB0byBmaWd1cmUgb3V0CiMgKiogd2hl
+cmUgeW91ciBjb3B5IGlzIGFuZCBjaGFuZ2UgdGhlIHBhdGggYmVsb3cgdG8gcmVmbGVjdAoj
+ICoqIHlvdXIgc2V0dXAKIwojCklQVEFCTEVTPS9zYmluL2lwdGFibGVzCiNJUFRBQkxFUz0v
+dXNyL2xvY2FsL3NiaW4vaXB0YWJsZXMKREVQTU9EPS9zYmluL2RlcG1vZApJTlNNT0Q9L3Ni
+aW4vaW5zbW9kCgoKI1NldHRpbmcgdGhlIEVYVEVSTkFMIGFuZCBJTlRFUkFMIGludGVyZmFj
+ZXMgZm9yIHRoZSBuZXR3b3JrCiMKIwlFYWNoIElQIE1hc3F1ZXJhZGUgbmV0d29yayBuZWVk
+cyB0byBoYXZlIGF0IGxlYXN0IG9uZQojCWV4dGVybmFsIGFuZCBvbmUgaW50ZXJuYWwgbmV0
+d29yay4gVGhlIGV4dGVybmFsIG5ldHdvcmsgCiMgCWlzIHdoZXJlIHRoZSBuYXR0aW5nIHdp
+bGwgb2NjdXIgYW5kIHRoZSBpbnRlcmFsIG5ldHdvcmsKIwlzaG91bGQgcHJlZmVyYWJseSBi
+ZSBhZGRlc3NlZCB3aXRoIGEgUkZDMTkxOCBwcml2YXRlIGFkZHJlcwojCXNjaGVtZS4KIwoj
+CUZvciB0aGlzIGV4YW1wbGUsICJldGgwIiBpcyBleHRlcm5hbCBhbmQgImV0aDEiIGlzIGlu
+dGVybmFsCiMKIwojCU5PVEU6CUlmIHRoaXMgZG9lc24ndCBFWEFDVExZIGZpdCB5b3VyIGNv
+bmZpZ3VyYXRpb24sIHlvdSBtdXN0CiMJCWNoYW5nZSB0aGUgRVhUSUYgb3IgdGhlIElOVElG
+IHZhcmlhYmxlcyBhYm92ZS4gRm9yIGV4YW1wbGU6CiMKIwpFWFRJRj0iZXRoMCIKSU5USUY9
+ImV0aDEiCgoKIz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQojPT1ObyBlZGl0aW5nIGJleW9uZCB0
+aGlzIGxpbmUgaXMgcmVxdWlyZWQgZm9yIGluaXRpYWwgTUFTUSB0ZXN0aW5nIAkgPT0KCgpl
+Y2hvIC1lbiAiCWxvYWRpbmcgbW9kdWxlZXM6ICIKCiMgTmVlZCB0byB2ZXJpZnkgdGhhdCBh
+bGwgbW9kdWxlcyBoYXZlIGFsbCByZXF1aXJlZCBkZXBlbmRlbmNpZXMKIwplY2hvICIJLSBW
+ZXJpZnlpbmcgdGhhdCBhbGwga2VyZWwgbW9kdWxlcyBhcmUgb2siCiRERVBNT0QgLWEKCiMg
+V2l0aCB0aGUgbmV3IElQVEFCTEVTIGNvZGUsIHRoZSBjb3JlIE1BU1EgZnVuY3Rpb25hbGl0
+eSBpcyBub3cgZWl0aGVyCiMgbW9kdWxhciBvciBjb21waWxpZWQgaW50byB0aGUga2VyZWwu
+IFRoaXMgSE9XVE8gc2hvd3MgQUxMIElQVEFCTEVTCiMgb3B0aW9ucyBhcyBNT0RVTEVTLiBJ
+RiB5b3VyIGtlcm5lbCBpcyBjb21waWxlZCBjb3JyZWN0bHksIHRoZXJlIGlzCiMgTk8gbmVl
+ZCB0byBsb2FkIHRoZSBrZXJuZWwgbW9kbHVsZXMgbWFudWFsbHkuCiMKIyAgTk9URTogVEhl
+IGZvbGxvd2luZyBpdGVtcyBhcmUgbGlzdGVkIE9OTFkgZm9yIGluZm9ybWF0aW9uYWwgcmVh
+c29ucy4KIwkgVGhlcmUgaXMgbm8gcmVhc29uIHRvIG1hbnVhbCBsb2FkIHRoZXNlIG1vZHVs
+ZXMgdW5sZXNzIHlvdXIKIwkga2VybmVsIGlzIGVpdGhlciBtaXMtY29uZmlndXJlZCBvcmUg
+eW91IGludGVudGlvbmFsbHkgZGllYWJsZWQKIwkgdGhlIGtlcm5lbCBtb2R1bGUgYXV0b2xv
+YWRlci4KIwoKIyBVcG9uIHRoZSBjb21tYW5kcyBvZiBzdGFydGluZyB1cCBJUCBNYXNxIG9u
+IHRoZSBzZXJ2ZXIsIHRoZSAKIyBmb2xsb3dpbmcga2VybmVsIG1vZHVsZXMgd2lsbCBiZSBh
+dXRvbWF0aWNhbGx5IGxvYWRlZDoKIwojIE5PVEU6IE9ubHkgbG9hZCB0aGUgSVAgTUFTUSBt
+b2R1bGVzIHlvdSBuZWVkLiBBbGwgY3VycmVudCBJUCBNQVNRCiMJbW9kdWxlcyBhcmUgc293
+biBiZWxvdyBidXQgYXJlIGNvbW1lbnRlZCBvdXQgZnJvbSBsb2FkaW5nLgojPT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT0KCmVjaG8gIi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSIKCiNMb2FkIHRoZSBtYWluIGJvZHkgb2Yg
+dGhlIElQVEFCTEVTIG1vZHVsZSAtICJpcHRhYmxlIgojICAtIExvYWRlZCBhdXRvbWF0aWNs
+bHkgd2hlbiB0aGUgImlwdGFibGVzIiBjb21tYW5kIGlzIGludm9rZWQKIwojICAtIExvYWRl
+ZCBtYW51YWxseSB0byBjbGVhbiB1cCBrZXJuZWwgYXV0by0gbG9hZGluZyB0aW1pbmcgaXNz
+dWVzCiMKZWNobyAtZW4gImlwX3RhYmxlcywgIiAKJElOU01PRCBpcF90YWJsZXMKCgojTG9h
+ZCB0aGUgSVBUQUJMRVMgZmlsdGVyaW5nIG1vZHVsZSAtICJpcHRhYmxlX2ZpbHRlciIKIyAt
+IExvYWRlZCBhdXRvbWF0aWNhbGx5IHdoZW4gZmlsdGVyIHBvbGljZXMgYXJlIGFjdGl2YXRl
+ZAoKI0xvYWQgdGhlIHN0YXRlZnVsIGNvbm5lY3Rpb24gdHJhY2tpbmcgZnJhbWV3b3JrIC0g
+ImlwX2Nvbm50cmFjayIKIwojIFRoZSBjb25udHJhY2sgbW9kdWxlIGluIGl0c2VsZiBkb2Vz
+IG5vdGhpbmcgd2l0aG91dCBvdGhlciBzcGVjaWZpYwojIGNvbm50cmFjdCBtb2R1bGVzIGJl
+aW5nIGxvYWRlZCBhZnRlcndhcmVkcyBzdWNoIGFzIHRoZSAiaXBfY29ubnRyYWNrX2Z0cCIK
+IyBtb2R1bGUKIwojIC0JVGhpcyBtb2R1bGUgaXMgbG9hZGVkIGF1dG9tYXRpY2FsbHkgd2hl
+biBNQVNRIGZ1bmN0aW9uYWxpdHkgaXMgCiMJZW5hYmxlZAojCiMgLSAJTG9hZGVkIG1hbnVh
+bGx5IHRvIGNsZWFuIHVwIGtlcmVsIGF1dG8tbG9hZGluZyB0aW1pbmcgaXNzdXJlcwojCmVj
+aG8gLWVuICJpcF9jb25udHJhY2ssICIgCiRJTlNNT0QgaXBfY29ubnRyYWNrCgoKI0xvYWQg
+dGhlIEZUUCB0cmFja2luZyBtZWNoYW5pc20gZm9yIGZ1bGwgRlRQIHRyYWNraW5nCiMKIyBF
+bmFibGVkIGJ5IGRlZmF1bHQgLS0gaW5zZXJ0IGEgIiMiIG9uIHRoZSBuZXh0IGxpbmUgdG8g
+ZGVhY3RpdmF0ZQojCmVjaG8gLWVuICJpcF9jb25udHJhY2tfZnRwLCAiCiRJTlNNT0QgaXBf
+Y29ubnRyYWNrX2Z0cAoKI0xvYWQgdGhlIElSQyB0cmFja2luZyBtZWNoYW5pc20gZm9yIGZ1
+bGwgSVJDIHRyYWNraW5nCiMKIyBFbmFibGVkIGJ5IGRlZmF1bHQgLS0gaW5zZXJ0IGEgIiMi
+IG9uIHRoZSBuZXh0IGxpbmUgdG8gZGVhY3RpdmF0ZQojCmVjaG8gLWVuICJpcF9jb250cmFj
+a19pcmMsICIKJElOU01PRCBpcF9jb25udHJhY2tfaXJjCgojTG9hZCB0aGUgZ2VybmFsIElQ
+VEFCTEVTIE5BVCBjY29kZSAtICJpcHRhYmxlX25hdCIKIyAtIAlMb2FkZWQgYXV0b21hdGlj
+YWxseSB3aGVuIE1BU1EgZnVuY3Rpb25hbGl0eSBpcyB0dXJuZWQgb24KIwojICAtIExvYWRl
+ZCBtYW51YWxseSB0byBjbGVhbiB1cCBrZXJuZWwgYXV0by1sb2FkaW5nIHRpbWluZyBpc3N1
+cmVzCiMKZWNobyAtZW4gImlwdGFibGVfbmF0LCAiCiRJTlNNT0QgaXB0YWJsZV9uYXQKCiNM
+b2FkcyB0aGUgRlRQIE5BVCBmdW5jdGlvbmFsaXR5IGludG8gdGhlIGNvcmUgSVBUQUJMRVMg
+Y29kZQojIFJlcXVpcmVkIHRvIHN1cHBvcnQgbm9uIC1QQVNWIEZUUC4KIwojIEVuYWJsZWQg
+YnkgZGVmYXVsdCAtLSBpbnNlcnQgYSAiIyIgb24gdGhlIG5leHQgbGluZSB0byBkZWFjdGl2
+YXRlIAojCmVjaG8gLWVuICJpcF9uYXRfZnRwLCAiCiRJTlNNT0QgaXBfbmF0X2Z0cAoKCiNM
+b2FkcyB0aGUgSVJDIE5BVCBmdW5jdGlvbmFsaXR5IGludG8gdGhlIGNvcmUgSVBUQUJMRVMg
+Y29kZQojIFJlcXVpcmVkIHRvIHN1cHBvcnQgTkFUIG9mIElSQyBEQ0MgcmVxdWVzdHMKIwoj
+IERpc2FibGVkIGJ5IGRlZmF1bHQgLS0gcmVtb3ZlIHRoZSAiMyIgb24gdGhlIG5leHQgbGlu
+ZSB0byBhY3RpdmF0ZQojCiNlY2hvIC1lICJpcF9uYXRfaXJjLCAiCiMkSU5TTU9EIGlwX25h
+dF9pcmMKCmVjaG8gIi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tIgoKIyBKdXN0IHRvIGJlIGNvbXBsZXRlLCBoZXJlIGlz
+IGEgbGlzdCBvZiB0aGUgcmVtYWluaW5nIGtlcm5sIG1vZHVsZXMKIyBhbmQgdGhlaXIgZnVu
+Y3Rpb24uIFBsZWFzZSBub3RlIHRoYXQgc2VydmVyYWwgbW9kdWxlcyBzaG91bGQgYmUgb25s
+eQojIGxvYWRlZCBieSB0aGUgY29ycmVjdCBtYXN0ZXIga2VybmVsIG1vZHVsZSBmb3IgcHJv
+cGVyIG9wZXJhdGlvbi4KIyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojCiMgICBpcHRfbWFyayAgICAgLSAgIFRo
+aXMgdGFyZ2UgbWFya3MgYSBnaXZlciBwYWNrZXQgZm9yIGZ1dHJlIGFjdGlvbgojICAgCQlU
+SGlzIGF1dG9tYXRpY2FsbHkgbG9hZHMgdGhlIGlwdF9NQVJLIG1vZHVsZQojCiMgICBpcF90
+Y3Btc3MJLSAJCQkKCgplY2hvICIuIERvbmUgbG9hZGluZyBtb2R1bGVzLiIKCiNDUklUSUNB
+TDoJRW5hYmxlIElQIGZvcndhcmRpbmcgc2luY2UgaXQgaXMgZGlzYWJsZWQgYnkgZGVmYXVs
+dCBzaW5jZQojCQkvZXRjL3N5c2NvbmZpZy9uZXR3b3JrIGZvcm06CiMKIwkgICBGT1JXQVJE
+X0lQVjQ9ZmFsc2UKIwkJdG8KIwkgICBGT1JXQVJEX0lQVjQ9dHJ1ZQojCmVjaG8gIiAgIGVu
+YWJsaW5nIGZvcndhcmRpbmcuLiIKZWNobyAiMSIgPiAvcHJvYy9zeXMvbmV0L2lwdjQvaXBf
+Zm9yd2FyZAoKIyBFbmFibGUgc2ltcGxlIElQIGZvcndhcmRpbmcgYW5kIE1hc3F1ZXJhZGlu
+ZwojCiMgIE5vdGU6ICAgIEluIElQVEFCTEVTIHNwZWFrLCBJUCBNYXN1ZXJhZGluZyBpcyBh
+IGZvcm0gb2YgU291cmNlTkFUIG9yIFNOQVQuCiMKIyAgTk9URSAjMjoJVGhlIGZvbGxvd2lu
+ZyBpcyBhbiBleGFtcGxlIGZvciBhbiBpbnRlcm5hbCBMQU4gYWRkcmVzIGluIHRoZQojCQkx
+OTIuMTY4LjAueCBuZXR3b3JrIHdpdGggYSAyNTUuMjU1LjI1NS4wIG9yIGEgIjI0IiBiaSBz
+dWJuZXQgbWFzawojCQljb25uZWN0aW5nIHRvIHRoZSBJbnRlcm5ldCBvbiBleHRlcm5hbCBp
+bnRlcmZhYyAiZXRoMCIuIFRoaXMgCiMJCWV4YW1wbGUgd2l0aCBNQVNRIGludGVybmFsIHRy
+YWZmaWNlIG91dCB0byB0aGUgSW50ZXJuZXQgYnV0IG5vdAojCQlhbGxvdyBub3QtaW5pdGlh
+dGVkIHRyYWZmaWMgaW50byB5b3VyIGludGVyYWwgbmV0d29yawojCiMKIwkqKiBQbGVhc2Ug
+Y2hhbmdlIHRoZSBhYm92ZSBuZXR3b3JrIG51bWJlcnMsIHN1Ym5ldCBtYWRzaywgYW5kIHlv
+dXIKIyAgICAgICAqKiogSW50ZXJuZXQgY29ubmVjdGlvbiBpbnRlcmZhY2UgbmFtZSB0byBt
+YXRjaCB5b3VyIHNldHVwCgoKI0NsZWFyaW5nIGFueSBwcmV2aW91cyBjb25maWd1cmF0aW9u
+CiMKIyAgVW5sZXNzIHNwZWNpZmllZCwgdGhlIGRlZmF1bHRzIGZvciBJTlBVVCBhbmQgT1VU
+UFVUIGlzIEFDQ0VQVAojCVRoZSBkZWZhdWx0IGZvciBGT1JXQVJEIGlzIFJFSkVDVAojCmVj
+aG8gIiAgIGNsZWFyaW5nIGFueSBleGlzdGluZyBydWxlcyBhbmQgc2V0dGluZyBkZWZhdWx0
+IHBvbGljeS4uIgojIENvbW1tZW50ZWQgb3V0IGZvciBhIHJld3JpdGUsIExldHMgdHJ5IHRv
+IGdldCB0aGlzIHRoaW5nIHJpdGdodC4KIyBMZXRzIGVuYWJsZSBwYWNrZXQtZmlsdGVyaW5n
+IE5vdwoKCiMgRmlyc3QgbGV0cyB1cyBjbGVhciB0aGUgdGFibGVzCgokSVBUQUJMRVMgLUYg
+SU5QVVQKJElQVEFCTEVTIC1GIE9VVFBVVAokSVBUQUJMRVMgLUYgRk9SV0FSRAokSVBUQUJM
+RVMgLXQgbmF0IC1GIAokSVBUQUJMRVMgLUYgYmxvY2sKJElQVEFCTEVTIC1YIGJsb2NrCiRJ
+UFRBQkxFUyAtRiBvcGVuUG9ydAokSVBUQUJMRVMgLVggb3BlblBvcnQKJElQVEFCTEVTIC1G
+IHJlcGx5CiRJUFRBQkxFUyAtWCByZXBseQoKJElQVEFCTEVTIC1OIG9wZW5Qb3J0CiRJUFRB
+QkxFUyAtQSBvcGVuUG9ydCAtcCB0Y3AgLS1kcG9ydCAyMiAtaiBBQ0NFUFQKJElQVEFCTEVT
+IC1BIG9wZW5Qb3J0IC1wIHVkcCAtLWRwb3J0IDIyIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEg
+b3BlblBvcnQgLXMgMTkyLjE2OC4xLjIvMjQgLWogQUNDRVBUCiRJUFRBQkxFUyAtQSBvcGVu
+UG9ydCAtbyBsbyAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIG9wZW5Qb3J0IC1qIEFDQ0VQVAoK
+JElQVEFCTEVTIC1OIHJlcGx5CiRJUFRBQkxFUyAtQSByZXBseSAtcCB0Y3AgLS1kcG9ydCAy
+MiAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIHJlcGx5IC1wIHVkcCAtLWRwb3J0IDIyIC1qIEFD
+Q0VQVAokSVBUQUJMRVMgLUEgcmVwbHkgLWQgMTkyLjE2OC4xLjIvMjQgLWogQUNDRVBUCiRJ
+UFRBQkxFUyAtQSByZXBseSAtaSBsbyAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIHJlcGx5IC1q
+IEFDQ0VQVAoKJElQVEFCTEVTIC1OIGJsb2NrCiRJUFRBQkxFUyAtQSBibG9jayAtaiBEUk9Q
+CgoKZWNobyAiICAgRldEOiBBbGxvdyBhbGwgY29ubmVjdGlvbiBPVVQgYW5kIG9ubHkgZXhp
+c3RpbmcgYW5kIHJlbGF0ZWQgY29ubmVjdGlvbnMgSU4iCiRJUFRBQkxFUyAtQSBJTlBVVCAt
+aiBvcGVuUG9ydAokSVBUQUJMRVMgLUEgT1VUUFVUIC1qIHJlcGx5CiRJUFRBQkxFUyAtQSBJ
+TlBVVCAtaiBibG9jayAKJElQVEFCTEVTIC1BIE9VVFBVVCAtaiBibG9jayAKCiNQb3J0Zm9y
+d2FyZCBGVFAgc2VydmljZXMgdG8gY2hhcmxlZQoKZWNobyAtZSAiXG5Gb3J3YXJkaW5nIEZU
+UCBzZXJ2aWNlcyB0byBjaGFybGVlIgokSVBUQUJMRVMgLXQgbmF0IC1BIFBSRVJPVVRJTkcg
+LWQgMTI4LngueC54IC1wIHRjcCAtLWRwb3J0IDIxIC1qIEROQVQgLS10byAxOTIuMTY4LjEu
+MgokSVBUQUJMRVMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWQgMTI4LngueC54ICAtcCB1ZHAg
+LS1kcG9ydCAyMCAtaiBETkFUIC0tdG8gMTkyLjE2OC4xLjIKCiNQb3J0Zm9yd2FyZCBIVFRQ
+IHNlcnZpY2VzIHRvIGNoYXJsZWUKZWNobyAtZSAiXG5Gb3J3YXJkaW5nIEhUVFAgc2Vydmlj
+ZXMgdG8gY2hhcmxlZSIKCiRJUFRBQkxFUyAtdCBuYXQgLUEgUFJFUk9VVElORyAtZCAxMjgu
+eC54LnggLXAgdGNwIC0tZHBvcnQgODAgLWogRE5BVCAtLXRvIDE5Mi4xNjguMS4yCiRJUFRB
+QkxFUyAtdCBuYXQgLUEgUFJFUk9VVElORyAtZCAxMjgueC54LnggLXAgdWRwIC0tZHBvcnQg
+ODAgLWogRE5BVCAtLXRvIDE5Mi4xNjguMS4yCgojUG9ydGZvcndhcmQgSGFsZi1saWZlIFNF
+cnZlciB0byBjaGFybGVlCmVjaG8gLWUgIlxuU2V0dGluZyB1cCBpcCBmb3J3YXJkaW5nIGZv
+ciBoYWxmLWxpZmUgIHRvIGNoYXJsZWUiCgokSVBUQUJMRVMgLXQgbmF0IC1BIFBSRVJPVVRJ
+TkcgLWQgMTI4LngueC54IC1wIHRjcCAtLWRwb3J0IDI3MDE1IC1qIEROQVQgLS10byAxOTIu
+MTY4LjEuMgokSVBUQUJMRVMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWQgMTI4LngueC54IC1w
+IHVkcCAtLWRwb3J0IDI3MDE1IC1qIEROQVQgLS10byAxOTIuMTY4LjEuMgoKI1RoaXMgZW5h
+YmxlcyB0aGUgbmF0IGZ1bmN0aW9uYWxpdHkgZm9yIGNvbXB1dGVycyBiZWhpbmQgdGhpcyBv
+bmUuCgplY2hvIC1lICJcbkVuYWJsaW5nIE5BVCBzZXJ2aWNlcy4iCiRJUFRBQkxFUyAtdCBu
+YXQgLUEgUFJFUk9VVElORyAtaSAkRVhUSUYgLXAgdWRwIC0tZHBvcnQgOjE5IC1qIEROQVQg
+LS10byAxOTIuMTY4LjEuMi0xOTIuMTY4LjEuMjU1CiNObyBuYXR0aW5nIHVkcCBwb3J0IDE5
+LTIyCiRJUFRBQkxFUyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSAkRVhUSUYgLXAgdWRwIC0t
+ZHBvcnQgMjM6NzkgLWogRE5BVCAtLXRvIDE5Mi4xNjguMS4yLTE5Mi4xNjguMS4yNTUKI1Bv
+cnQgODAgYWxyZWFkeSBuYXR0ZWQKJElQVEFCTEVTIC10IG5hdCAtQSBQUkVST1VUSU5HIC1p
+ICRFWFRJRiAtcCB1ZHAgLS1kcG9ydCA4MToyNzAxNCAtaiBETkFUIC0tdG8gMTkyLjE2OC4x
+LjItMTkyLjE2OC4xLjI1NQojUG9ydCAyNzAxNSBhbHJlYWR5IG5hdHRlZAokSVBUQUJMRVMg
+LXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkgJEVYVElGIC1wIHVkcCAtLWRwb3J0IDI3MDE2OiAt
+aiBETkFUIC0tdG8gMTkyLjE2OC4xLjItMTkyLjE2OC4xLjI1NQoKJElQVEFCTEVTIC10IG5h
+dCAtQSBQUkVST1VUSU5HIC1pICRFWFRJRiAtcCB0Y3AgLS1kcG9ydCA6MjAgLWogRE5BVCAt
+LXRvIDE5Mi4xNjguMS4yLTE5Mi4xNjguMS4yNTUKI1NraXAgMjEgJiAyMgokSVBUQUJMRVMg
+LXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkgJEVYVElGIC1wIHRjcCAtLWRwb3J0IDIzOjc5IC1q
+IEROQVQgLS10byAxOTIuMTY4LjEuMi0xOTIuMTY4LjEuMjU1CiNTa2lwIDgwIGFscmVhZHkg
+bmF0dGVkCiRJUFRBQkxFUyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSAkRVhUSUYgLXAgdGNw
+IC0tZHBvcnQgODE6MjcwMTQgLWogRE5BVCAtLXRvIDE5Mi4xNjguMS4yLTE5Mi4xNjguMS4y
+NTUKI1NraXB0IDI3MDE1IGFscmVhZHkgbmF0dGVkCiRJUFRBQkxFUyAtdCBuYXQgLUEgUFJF
+Uk9VVElORyAtaSAkRVhUSUYgLXAgdGNwIC0tZHBvcnQgMjcwMTY6IC1qIEROQVQgLS10byAx
+OTIuMTY4LjEuMi0xOTIuMTY4LjEuMjU1CgojT25seSBvbmUgbGluZSBuZWVkZWQgZm9yIG91
+dCBnb2luZyBwYWNrZXRzCiRJUFRBQkxFUyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLXMgMTky
+LjE2OC4xLjAvMjQgLWogU05BVCAtLXRvIDEyOC54LngueAoKCmVjaG8gLWUgIlxucmMuZmly
+ZXdhbGwtMi40IHYkRldWRVIgZG9uZS5cbiIKCQkK
 
-> machine B is on 10.0.0.0
-> I'm trying to ping from A to B.
-
-..try move your A net to, say, 10.22.0.0, and your A net boxes
-accordingly.
-
-> I can ping all the interfaces on the router but I can't ping B
-> 
-> I would expect to see the POSTROUTING chain counter increment for each
-> ping packet, but it doesn't. (It will increment if I ping from the
-> Linux box to B)
-> 
-> Any suggestions?
-> 
-> Thanks,
-> David Ruggles
-> 
-> CCNA MCSE (NT) CNA A+
-> Network Engineer, Safe Data, Inc
-> 910-285-7200    david@safedatausa.com
-> 010001110110111101100100011011000110111101110110011001010111001101111
-> 0010110 111101110101
-> 
-> 
-
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
-
+---------59255974c5d2bec59255974c5d2bec--
 
