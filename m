@@ -1,8 +1,8 @@
 From: Pascal Italiaander <pc-secure@home.nl>
 Subject: Re: Ip handling
-Date: Thu, 19 Jun 2003 10:00:20 +0200
+Date: Thu, 19 Jun 2003 10:18:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306191000.20197.pc-secure@home.nl>
+Message-ID: <200306191018.02665.pc-secure@home.nl>
 References: <7C9884991ADAE0479C14F10C858BCDF5122DDB@alderaan.smgtec.com> <200306190151.40336.pc-secure@home.nl> <20030619033146.GA5410@cannon.eng.us.uu.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -30,15 +30,11 @@ Op donderdag 19 juni 2003 05:31, schreef Ramin Dousti:
 >
 > Ramin
 
-No official application excists.
+Find it out yourself , it's not even apropriate to ask such a thing. 
 
-I will not explain you howto setup a spoofed connection , thats out of order.
-This mailing-list is ment to keep "hackers" out of the door, not howto gain 
-acces to others.
+Since this is a netfilter mailing-list no hackers-chat page.
 
-But if you want to know more about these issues look for the subject 
-"exploits".
+but nice try
 
 Pascal
-
 
