@@ -1,14 +1,13 @@
-From: David Williamson <nospam1@nullcutter.com>
-Subject: Re: newbie question - what is the iptables equivalent of a Linksys
-	"DMZ" ?
-Date: Sun, 14 Nov 2004 16:05:51 -0500
-Message-ID: <1100466351.5549.21.camel@localhost.localdomain>
+From: "Bo Jacobsen" <subs@systemhouse.dk>
+Subject: Re: Question; what is this netfilter logfile entry ?
+Date: Sun, 14 Nov 2004 22:41:32 +0100
+Message-ID: <001001c4ca92$b98566a0$de0aa8c0@comp>
 References: <1100392955.4894.25.camel@localhost.localdomain>
-	<41978B60.80802@817west.com>
+	<000c01c4c9f0$4807a0d0$de0aa8c0@comp>
+	<1100429463.5934.420.camel@grendel>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41978B60.80802@817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,86 +19,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Sun, 2004-11-14 at 11:44 -0500, Jason Opperisano wrote:
+> >
+> > Nov 14 02:24:48 WF1-HOME kernel: DENY-OUT:.IN=3D OUT=3Deth0 =
+SRC=3D192.168.1.2 DST=3D198.41.0.4 LEN=3D560 TOS=3D0x00 PREC=3D0xC0 =
+TTL=3D64 ID=3D3123 PROTO=3DICMP TYPE=3D3 CODE=3D3 [SRC=3D198.41.0.4 =
+DST=3D192.168.1.2 LEN=3D532 TOS=3D0x00 PREC=3D0x00 TTL=3D49 ID=3D41159 =
+PROTO=3DUDP SPT=3D53 DPT=3D51981 LEN=3D512 ]
+> >=20
+> > It looks like ICMP with an embedded DNS call  ?.
+>=20
+> It's an ICMP port unreachable. Looks like 198.41.0.4 tried to send a
+> reply to one of your DNS queries, took too long to respond, and by the
+> time they did the port was closed. What's kind of interesting is that =
+it
+> was a full size answer so I'm guessing the truncation bit was set. =
+This
+> means that if this packet had been returned in time your system would
+> have had to switch to TCP to get a full answer.
+>=20
+> The UDP info is embedded in the payload so the remote system knows =
+which
+> port was unreachable. This is in case multiple session were running at
+> the same time. Perfectly normal for an ICMP error packet.
+>=20
+> > What is it exactly, and how would a rule to allow this look like ?
+>=20
+> This would be permitted if you are letting "RELATED" traffic through.
+> This ensures that only legit ICMP errors are passed. While you could
+> define an accept rule for the ICMP type code, this would let all
+> matching traffic through opening up the possibilities of a covert
+> communication channel.=20
+>=20
+It has something to do with PSD. When it's "enabled" the problem arises=20
+trigered by  prior PSD denials to DNS traffic comming from unknown =
+external
+ip's. With no iptables PSD statements it never happens.
 
-> NOTE:  what you are about to read is a terrible, awful, ridiculous, 
-> horrendous idea and i condone absolutely no part of it.
-> 
-> what your linksys "DMZ" function performs is something along the lines of:
-> 
->    iptables -t nat -A PREROUTING -i $EXTERNAL_IF -d $EXTERNAL_IP \
->      -j DNAT --to-destination $DMZ_PC_PRIV_IP
-> 
->    iptables -A FORWARD -i $EXTERNAL_IF -d $DMZ_PC_PRIV_IP -j ACCEPT
+On our inside we have djbdns acting as an internal forwarding DNS =
+server.=20
+When PSD closes trafffic of like this, this type of "traffic" is taking =
+up all=20
+internet bandwith, and filling up the syslog message log. If djbdns is
+killed / restarted the traffic stops, and everything works again. If =
+just left=20
+alone, after a minute or two, everything goes back to normal.
+Maybe djbdns starts spewing out DNS requests, and is denied the reply
+because a trigered PSD will not allow any DNS response back in.
 
-Thanks very much, that's what I was looking for.  I barely understand
-NAT/DNAT/SNAT yet but from reading, I assumed it had to be doing
-something with DNAT so that it was just wide-open.  Obviously this isn't
-"safe" ;)  
+Strangely enough, we have only seen this problem when=20
+accessing the www.space.com
 
-The main advantage to this rule, for me, is giving me something to fall
-back on for testing purposes.  If something isn't working from that
-client box, and I can put it naked on the net with this rule and things
-suddenly DO work, then I know I have a routing/firewall problem, not
-some other problem.
+We currently run iptables 1.2.8 on a 2.4.21 kernel. We have not yet =
+tested it with=20
+a 2.6 kernel.
 
-> using the "DMZ" function of the linksys or doing the above with 
-> netfilter is the ultimate act of laziness that does nothing but 
-> contribute to the never-ending security problems on the Internet.  if 
-> you desire to "step up" to a real firewall system, i would plead with 
-> you to do a little bit of homework and try to figure out what ports 
-> actually need to opened for the application in question to work.
 
-I agree with you, I didn't make myself very clear.  If I were going to
-try to replace the Linksys box feature-for-feature, just for s&g's, I
-need to understand what it's doing, and the DMZ is a feature I used
-while gaming.  Since my original post, though, I've found that DNAT is
-the answer, and as soon as my gaming buddy across town gets back home
-I'll test it and see if it works.
+Bo
 
-> searching the web for "unreal tournament firewall ports" turns up tons 
-> of information on how to do this.  you'd get much better responses on 
-> this list to a question like, "i found this list of ports i need to open 
-> for unreal tournament, but i'm not really sure how to write the rules" 
-> than "how do i setup a firewall to do absolutely no firewalling?"
-
-That's not my intent, really... I just wanted to know what the so-called
-DMZ was and how to replicate it in iptables.  
-
-What I did was this (after much googling):
-
-iptables -t nat -I PREROUTING -p udp -d <my external IP> --dport 7777
--j DNAT --to-destination 192.168.0.101:7777
-iptables -t nat -I PREROUTING -p udp -d <my external IP> --dport 7778
--j DNAT --to-destination 192.168.0.101:7778
-iptables -t nat -I PREROUTING -p udp -d <my external IP> --dport 7787
--j DNAT --to-destination 192.168.0.101:7787
-iptables -t nat -I PREROUTING -p udp -d <my external IP> --dport 7788
--j DNAT --to-destination 192.168.0.101:7788
-iptables -t nat -I PREROUTING -p udp -d <my external IP> --dport 28900
--j DNAT --to-destination 192.168.0.101:28900
-iptables -t nat -I PREROUTING -p udp -d <my external IP> --dport 28902
--j DNAT --to-destination 192.168.0.101:28902
-
-> the answer to the question i wish you had asked (ports list taken from: 
->   http://www.portforward.com/cports.htm):
-
-<snip>
-
-First, thanks for the VERY handy link.  Second, looks like I got about
-half of it right - I had the PREROUTING steps but none of the FORWARD
-steps.
-
-I understand your frustration, thinking I was gonna have a wide-open box
-<g> and I'm embarrassed that I was taken as that sort of silly newbie;
-it's my fault for not posing the question better.
-
-Thanks for taking the time to answer, I appreciate it.  I'm only up to
-chapter four of Tony Mancill's Linux Routers book - maybe by the time
-I'm done I'll have a bigger clue.
-
-david williamson
 
 
