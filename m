@@ -1,12 +1,12 @@
 From: Bob Sully <rcs@malibyte.net>
 Subject: Re: Dynamic Deny rule
-Date: Sat, 4 Jan 2003 10:53:16 -0800 (PST)
+Date: Sat, 4 Jan 2003 14:15:51 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0301041051010.25229-100000@firefox.malibyte.net>
-References: <000101c2b405$a39f7dd0$0501a8c0@underworld>
+Message-ID: <Pine.LNX.4.44.0301041413150.25229-100000@firefox.malibyte.net>
+References: <20030104214607.GD16581@miggy.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000101c2b405$a39f7dd0$0501a8c0@underworld>
+In-Reply-To: <20030104214607.GD16581@miggy.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +18,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mark Ryan <markryan@cfl.rr.com>
-Cc: netfilter@lists.netfilter.org
+To: Athan <netfilter@miggy.org>
+Cc: Mark Ryan <markryan@cfl.rr.com>, netfilter@lists.netfilter.org
 
 
-Mark:
 
-Here's the excerpt from my script:
+This file is only read once, at firewall startup or restart.  I check my 
+logs pretty regularly, and any bad guys get put in the firewall.banned 
+file on a daily basis.  
 
-  # Refuse any connections to/from problem sites.
-  #
-  # /etc/firewall/firewall.banned contains a list of IPs
-  # to block all access, both inbound and outbound.
-  # The file should contain IP addresses with CIDR
-  # netmask, one per line:
-  #
-  # NOTE: No comments are allowed in the file.
-  #
-  # 111.222.333.444/32            - To block a single IP address
-  # 111.222.333.444/8             - To block a Class-A network
-  # 111.222.333.444/16            - To block a Class-B network
-  # 111.222.333.444/24            - To block a Class-C network
-  #
-  # The CIDR netmask number describes the number of bits
-  # in the network portion of the address, and may be on
-  # any boundary.
-  #
+I actually have had no problems with ftp, as I run ProFTPd with only one 
+incoming directory which has no read access and no write access anywhere 
+else.
 
-  if [ -f /etc/firewall/firewall.banned ]; then
-     while read BANNED; do
-         iptables -A INPUT -i $EXTERNAL_INTERFACE -s $BANNED -j DROP
-         iptables -A INPUT -i $EXTERNAL_INTERFACE -d $BANNED -j DROP
-         iptables -A OUTPUT -o $EXTERNAL_INTERFACE -s $BANNED -j DROP
-         iptables -A OUTPUT -o $EXTERNAL_INTERFACE -d $BANNED -j DROP
-     done < /etc/firewall/firewall.banned
-  fi
-
-HTH...Bob
+-- Bob --
 
 
-On Sat, 4 Jan 2003, Mark Ryan wrote:
+On Sat, 4 Jan 2003, Athan wrote:
 
-> I am trying to come up with a iptables rule that will deny ip certain ip
-> addresses that I can load/unload into a file.
->  
-> To clarify...i run a ftp server and sometimes people screw around and I
-> want to ban them from logging in.  I need a way to add these ip's into a
-> 'ban list'.  I don't want to add a new rule every time however with a
-> separate rule for each ip.
->  
-> Is there a way to make a file such as 'banned_ips' and have a rule look
-> into that file to decide if the ip can log in or not?
->  
-> Thanks,
-> Mark
-
+> On Sat, Jan 04, 2003 at 10:53:16AM -0800, Bob Sully wrote:
+> > Here's the excerpt from my script:
+> > 
+> >   # Refuse any connections to/from problem sites.
+> [snip]
+> > 
+> >   if [ -f /etc/firewall/firewall.banned ]; then
+> >      while read BANNED; do
+> >          iptables -A INPUT -i $EXTERNAL_INTERFACE -s $BANNED -j DROP
+> >          iptables -A INPUT -i $EXTERNAL_INTERFACE -d $BANNED -j DROP
+> >          iptables -A OUTPUT -o $EXTERNAL_INTERFACE -s $BANNED -j DROP
+> >          iptables -A OUTPUT -o $EXTERNAL_INTERFACE -d $BANNED -j DROP
+> >      done < /etc/firewall/firewall.banned
+> >   fi
+> 
+>   Given it reads the entire file each time, wouldn't you want to put
+> some sort of flush in there first?  Of course that's going to get rid of
+> all rules.  Just if you run this every time you're going to end up with
+> some entries in a lot of times.
+> 
+>   How about having the actual INPUT/OUTPUT chains jump to a userdefined
+> one at the end and you put these rules in that user-defined chain?  That
+> way you can flush *that* entire chain each time before adding the
+> current bans.
+> 
+>   Of course if you use a decent FTPd it's easy to ban by IP anyway, i.e.
+> proftpd:
+> 
+>         <Directory *>
+>                 <Limit ALL>
+>                         Deny from 62.80.132.
+>                         Deny from .CXXXII.adsl.multi.fi
+>                 </Limit>
+>         </Directory>
+> 
+> -Ath
+> 
 
 -- 
 ________________________________________
