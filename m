@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Consequences
-Date: Mon, 3 Feb 2003 13:26:03 -0500
+From: Jimmy <jimmy@v2k.ca>
+Subject: Multiple VPN clients
+Date: 03 Feb 2003 14:26:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302031326.03681.netfilter@newkirk.us>
-References: <1044278051.9027.50.camel@juna.cypherworld.org> <20030203130900.75c2bf9a.brblueser@uol.com.br> <1044287458.9025.82.camel@juna.cypherworld.org>
-Reply-To: netfilter@newkirk.us
+Message-ID: <1044300371.19032.56.camel@jimmy.vision-2000.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1044287458.9025.82.camel@juna.cypherworld.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,135 +16,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: saint <nagajuna@optushome.com.au>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 03 February 2003 10:50 am, saint wrote:
-> There have been a number of problems that I have but I believed
-> it had nothing to do with syntax errors or any missing rules on
-> my behalf.
-> I'll have to sit back and study these problems taking into
-> consideration you recommendations ( and Ken's).
-> How far reaching I not sure yet but I will say that I have conflicting
-> chains-> different userdefined chains, default policy of DROP
-> (INPUT/OUTPUT/FORWARD/POST-PRE ROUTING/ MANGLE ) drops everything
-> as expected and remains dropping everthing eventhough I have the
-> service exlicitly and carefully enabled are just some of these
-> problems.
+Hello,
 
-You should almost never have anything but ACCEPT policy on any mangle or=20
-nat table chains.  Only filter-INPUT, filter-OUTPUT and  filter-FORWARD=20
-chains should ever have policy settings other than ACCEPT.
+I have a situation that I have been strugling with for a few days now. 
+I don't want to write a 10 page e-mail, so I will try to summerize the
+important points and hope someone can clarify this for me.  :)
 
-The number one cause of problems such as the errors you reported is that=20
-during startup the paths are NOT those you use in a console.=20
-Specifically, you will usually need to explicitly use /sbin/ifconfig.
+In a nutshell:  I need to allow multiple IPSec VPN clients from behind
+my iptables firewall to connect to a single VPN server on the Internet.
+Firewall:  Redhat 7.3 kernel 2.4.18-18.7.x and iptables v1.2.5. 
+Clients: win98/2000 with the Nortel Connectivity VPN client V04_15.06
 
- If you use the SysV Init (/etc/init.d, /etc/rc5.d, etc) system to start=20
-your firewall, which is probably what you want, you have to make sure=20
-that your startups occur in a reasonable order, based on the Sxx=20
-prefixes. You have to ensure that the iptables startup and the=20
-activation of your external interface both take place before your=20
-script.  Put your script in init.d and a link to it in rc3.d and/or=20
-rc5.d named Sxx.firewall, where 'xx' is greater than 'xx' for iptables=20
-and the script that brings up your interface (probably network). For my=20
-system, I have iptables->network->ADSL->firewall. (I've always had=20
-problems getting the ADSL interface up in the regular network startup,=20
-so I added it's own startup script)  I have also modified the iptables=20
-startup script to set default DROP policies for INPUT/OUTPUT/FORWARD,=20
-where originally (RedHat) they were ACCEPT.
+#1 is this possible?  (According to the docs IP masq and VPN masq, I
+think it is, unless I am misreading something somewhere)
 
-When I tried your ip-extraction command I got "addr:141.150.238.220" (my=20
-dyn-ip for the last few days, since 10am Jan 29 actually) which would=20
-not be a valid string to use in a rule.  In my script (I have a=20
-semi-dynamic IP on a PPPoE connection) I successfully use:
-PPPIP=3D      \
-$(/sbin/ifconfig "$EXTIF" | grep inet | cut -d":" -f 2 | cut -d" " -f 1)
+From what I understand, all I need is to have the firewall setup to 
+masquerade and allow ESP, AH and UDP port 500 trafic.  (I included the
+relavant rules at the end of this e-mail)  This all works great with
+_one_ connection.  As soon as a second ipsec client is launched, it does
+not work.
 
-where I have $EXTIF already defined as "ppp0".  I also have a cron job=20
-running every hour to test if the result of that command matches the IP=20
-in use for SNAT, and replaces the SNAT rule if necessary.  (Yes, I could=20
-use MASQUERADE but don't want to, and I track IP changes for other=20
-purposes as well.)
+I keep reading I have to patch the kernel for this, but I cannot find an
+IPSec patch for the 2.4 kernel anywhere.  (Is this what I am missing?)
 
-j
+The docs I have run through are:
+Linux VPN Masquerade:
+http://www.impsec.org/linux/masquerade/ip_masq_vpn.html
 
-> I don't know what's causing them because, as I have indicated, syntax
-> & everthing else is fine.  Ofcourse because I don't know I'm looking
-> for a possible scapegoat and initialisation + ifconfig stuff is one
-> thing I haven't comes to terms with yet -> so hence my suspicion that
-> other things could've been affected by this.
->
-> Let you know though when I figure it out.  Personally I want to finish
-> it before my summer break -> then its back to uni.
->
-> Santos
->
-> On Tue, 2003-02-04 at 02:09, Andre Costa wrote:
-> > You're welcome, Santos, I am glad I could be of help =3D)
-> >
-> > I am curious: what kind of "far-reaching consequences"? Could you
-> > please ellaborate?
-> >
-> > Happy firewalling ;)
-> >
-> > Andre
-> >
-> > On 04 Feb 2003 01:58:35 +1100
-> >
-> > saint <nagajuna@optushome.com.au> wrote:
-> > > I think I get it and I think you've just solve a nagging
-> > > problem that I have.  I have wrote my own script, took me awhile
-> > > though.
-> > >
-> > > And I think it does have (have been) some far-reaching
-> > > consequences.
-> > >
-> > > Thanks again.
-> > >
-> > > On Tue, 2003-02-04 at 01:44, Andre Costa wrote:
-> > > > Hi Santos,
-> > > >
-> > > > there has been a discussion about this a while ago on this ML, I
-> > > > am forwarding you the msg which has a nice proposal to solve
-> > > > this. Basically it involves:
-> > > >
-> > > > * writing your own fw script (e.g. your rc.firewall)
-> > > >
-> > > > * put a symlink to it on /etc/init.d *BEFORE* the iptables link
-> > > > there, so that your script is called first (this means prepeding
-> > > > the symlink name with a 'S-number' lower than the one associated
-> > > > to iptables startup script)
-> > > >
-> > > > Please notice that you might have to remove the initialization
-> > > > part of/etc/sysconfig/iptables and put it at the beginning of
-> > > > your rc.firewall script, otherwise iptables-restore might choke
-> > > > or you might even undo what you have done on rc.firewall (these
-> > > > are wild guesses, make sure you test it properly). I am talking
-> > > > about all rules like
-> > > >
-> > > > *filter
-> > > >
-> > > > :FORWARD DROP [0:0]
-> > > > :INPUT DROP [0:0]
-> > > > :OUTPUT ACCEPT [0:0]
-> > > >
-> > > > at the top of /etc/sysconfig/iptables
-> > > >
-> > > > HTH
-> > > >
-> > > > Andre
-> > > >
-> > > > On 04 Feb 2003 01:16:37 +1100
-> > > >
-> > > > saint <nagajuna@optushome.com.au> wrote:
-> > > > > Thank Andre:  that's makes sense. So what on Earth do I do
-> > > > > when my firewall reboots and I can't be sure of the IP
-> > > > > address? Could I put the rc.firewall script in /etc/rc.d/ ?
-> > > > > and have run at boot time from /etc/init.d/ ?
-> > > > > I'm using SuSE 8.1 and I can actually put a line in
-> > > > > /etc/init.d/boot.local that will execute my rc.firewall.
-> > > > >
-> > > > > Santo.
-> > > > > Happy to learn.
+IP Masquerade HOWTO from
+http://ipmasq.webhop.net
+
+Linux VPN Masquerade HOWTO:
+http://www.impsec.org/linux/masquerade/VPN-howto/VPN-Masquerade.html
+
+And I have googled to my wits end... :)
+I don't know if there is a small point escaping me, or if this is a big
+deal and I just plain blind.
+
+If someone has an idea what I might be missing here, I would really
+appreciate any input.
+
+Here are the iptables rules I think relavant.  (I setup a bunch of
+logging options, and I know these rules are working because of the first
+connection.  Yes my real rules are more secure, this is just the parts I
+think relavent to my situation, then again I may be wrong)
+
+#! /bin/bash
+FILTER=/sbin/iptables
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+$FILTER -t nat -A POSTROUTING -o $EXTINT -j MASQUERADE
+
+$FILTER -A FORWARD -p esp -j ACCEPT
+$FILTER -A FORWARD -p ah -j ACCEPT
+$FILTER -A FORWARD -p udp --dport 500 -j ACCEPT
+
+I hope someone can enlighten me.  :)
+
+Thank you,
+Jimmy
+
+
+-- 
+Jimmy <jimmy@v2k.ca>
 
 
