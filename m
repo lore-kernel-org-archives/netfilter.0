@@ -1,12 +1,15 @@
-From: Emanoil Kotsev <emanuel@abc.at>
-Subject: Re: H323 in new kernel
-Date: Tue, 29 Apr 2003 22:37:09 +0200
+From: netfilter_user <netfilter_user@o2.pl>
+Subject: Re[2]: squid
+Date: Tue, 29 Apr 2003 23:31:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EAEE275.9E6DC6F@abc.at>
-References: <14C5057BC852D611BAC400E0299AA10F1278AE@MAILSERV>
+Message-ID: <6331666163.20030429233107@o2.pl>
+References: <ABEKJILKOKKGGDJKHKDFOENCCAAA.patrick@vikus.com>
+ <3EAEBA13.4030809@swissonline.ch>
+Reply-To: netfilter_user <netfilter_user@o2.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3EAEBA13.4030809@swissonline.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +20,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: MOUDARIR Mohamed <moudarir@Richbond.ma>
-Cc: netfilter@lists.netfilter.org
+To: Chris Straessle <sacrelege@swissonline.ch>
+Cc: Patrick Ahler <patrick@vikus.com>, netfilter EMAIL <netfilter@lists.netfilter.org>
 
-I also had to upgrade my kernel to 2.4.20 and have compiled it with the
-H.323 support without problem
+Hello Chris,
 
-As far as I know it is not included in any linux version I know.
+Tuesday, April 29, 2003, 7:44:51 PM, you wrote:
 
-MOUDARIR Mohamed wrote:
+CS> we stop using windows?!
 
-> Hello
-> I have redhat 7.2 with iptables 1.2.3
-> I don't success to install p-o-m to include H323 module ( support of
-> netmeeting session ) , koz compilation problems ...
-> So i want to know if H323 is builting ( pre-installed ) in new kernel
-> version ( like redhat 8.0 ) so i have not to install p-o-m.
-> Thanks
+
+CS> cu,
+CS> chris
+
+CS> PS: sorry, its just a joke... ;-)
+
+
+
+CS> Patrick Ahler wrote:
+>> I know this is a bit off topic, but at first I thought it was a netfilter
+>> problem, now I'm convinced it's squid. I redirect my internal traffic
+>> through a squid proxy... the problem I'm running into is that I can't seem
+>> to get any windows updates to work for my machines using the proxy. When it
+>> begins to detect upgrades needed, it will just sit on 0%. Anyone else had
+>> this problem? If so, how'd you fix it?
+>> 
+>> -=PaTriCK
+>> 
+>> 
+>> 
+>> 
+
+
+rotfl
+
+-- 
+Best regards,
+ netfilter_user                            mailto:netfilter_user@o2.pl
 
 
