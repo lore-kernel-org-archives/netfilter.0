@@ -1,14 +1,12 @@
-From: Sven Schuster <schuster.sven@gmx.de>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: 2 NICs on same subnet
-Date: Fri, 5 Nov 2004 14:21:42 +0100
-Message-ID: <20041105132142.GA12563@zion.homelinux.com>
-References: <424BCB4EA242A1429A8AF0548E8CFF0E123964@apexexchange.ApexSoftware.Com>
+Date: Fri, 05 Nov 2004 09:12:16 -0500
+Message-ID: <1099663936.3229.7.camel@hubcap.ljm.dom>
+References: <20041105123843.GB11016@zion.homelinux.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <424BCB4EA242A1429A8AF0548E8CFF0E123964@apexexchange.ApexSoftware.Com>
+In-Reply-To: <20041105123843.GB11016@zion.homelinux.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +17,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Scott Knake <sknake@Apexsoftware.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Fri, 2004-11-05 at 07:38, Sven Schuster wrote:
+> Hi everybody,
+> 
+> I have a problem which I'm quite sure can be resolved easily,
 
---bg08WKrSYDhXBjb5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+wrong.
 
+>  but
+> at the moment I'm lacking the "how" :-)
+> I have a machine (RH ES 3) with two Intel e1000 cards attached to
+> a gigabit switch, each interface is assigned an IP address on the
+> same subnet (say 1.2.3.4 on eth0 and 1.2.3.5 on eth1).
 
-Hi Scott,
+no. no. no. no.
 
-On Fri, Nov 05, 2004 at 08:00:11AM -0500, Scott Knake told us:
-> Well as far as outbound data that should be determined by your routing
-> table if I'm not mistaken. Maybe route -n will give you a clue but I
-> worked with someone on this same issue last night and never got to the
-> bottom of it. Be sure to post what you find :)
+> What's happening is that if a connection to either of these addresses
+> is made, it's always received via the same interface (eth1 most of the
+> time), and the replies go out via this interface, too. But what I'd
+> like is that packets to 1.2.3.4 come in via eth0 and packets to 1.2.3.5
+> come in via eth1 and that replies from 1.2.3.4 leave via eth0, from
+> 1.2.3.5 via eth1.
+> I've already tried to resolve this issue with arptables, doing
+> 
+> arptables -N eth0
+> arptables -A eth0 -d 1.2.3.4 -j ACCEPT
+> arptables -A eth0 -j DROP
+> arptables -N eth1
+> arptables -A eth1 -d 1.2.3.5 -j ACCEPT
+> arptables -A eth1 -j DROP
+> arptables -A IN -i eth0 -j eth0
+> arptables -A IN -i eth1 -j eth1
+> 
+> and additionally limiting traffic in the same way by iptables, but
+> that doesn't work unfortunately.
+> Has anybody done this?? Is a solution to this problem known??
 
-if I find a solution I will of course post it here :-))
+yeah--don't assign two interface on the same box IP's in the same
+subnet.
 
+that being said--i've seen this done successfully *once*.  the
+"solution" was that every host in the network had to run OSPF.  it was
+the only way to get packets to go in and out the same interface for each
+IP.
 
-Sven
+saying "it _has to be_ this way, not my decision" is a cop out.  it will
+result in answers like:
 
->
-> -Scott
->
+well, it can't be done, so too bad.
+-or-
+if it's not your decision, the it shouldn't be your problem.
 
---=20
-Linux zion 2.6.9-rc1-mm4 #1 Tue Sep 7 12:57:19 CEST 2004 i686 athlon i386 G=
-NU/Linux
- 14:20:54 up 1 day, 17:48,  1 user,  load average: 0.04, 0.01, 0.00
+-j 
 
---bg08WKrSYDhXBjb5
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+--
+"When I grow up, I'm going to Bovine University!"
+	--The Simpsons
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD4DBQFBi35mo4FAdB2PneQRAolkAJ0dRgG3ghVH5Z4v4aflbJR6WWE5oQCY5d1J
-eSK18at3e3Mnqc+3JK2eGQ==
-=FMMd
------END PGP SIGNATURE-----
-
---bg08WKrSYDhXBjb5--
 
