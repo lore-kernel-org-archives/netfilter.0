@@ -1,12 +1,13 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: Masquerading
-Date: Fri, 31 Oct 2003 11:19:05 +0800
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: my iptables rules is not work for DNAT redirect to internal IP
+Date: Thu, 30 Oct 2003 23:16:13 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8DC4@overlord.overturemedia.com>
+Message-ID: <3FA1E20D.8000805@Loudoun-Fairfax.com>
+References: <oprxxu5bepxfqk2w@10.20.1.181>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <oprxxu5bepxfqk2w@10.20.1.181>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/html; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-
-Greetings!
-
-I hope you can help me again with this.
-We have remote data centers.=20
-Only 2 remaining centers are not connected by WAN.
-
-This my current situation:
-workstation --- firewall dc#1 --- internet --- firewall dc#2 --- server
-
-
-Would this be possible with iptables through masquerading:
-workstation #1 --- firewall dc#1 --- internet --- firewall dc#2 --- =
-server #1
-workstation #2 --- firewall dc#1 --- internet --- firewall dc#2 --- =
-server #1
-
-It means only one ip address from data center #1 is allowed to access =
-the server in data center #2.
-
-I need to share workstations 1 & 2 to use the only ip address from data =
-center #1 allowed to access the server in data center #2.
-
-Thanks in advance.
-
-
-Cheers,
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+  <title></title>
+</head>
+<body text="#000000" bgcolor="#ffffff">
+Phiphat Watanasard [KLIM] wrote:<br>
+<blockquote type="cite" cite="midoprxxu5bepxfqk2w@10.20.1.181">Dear
+sir/madam
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;my this iptables rules is not work but this rules useto use on
+yesterday
+  <br>
+but this day my mechine is reboot (Power down) and boot again but
+cannot work
+  <br>
+i compile kernel to 2.4.22 and update iptables to 1.2.9.rc1 please help
+me
+  <br>
+</blockquote>
+<br>
+Did it stop working before you installed the new kernel? If this is
+true, you need to find out what was different after the reboot. Make
+sure IP forwarding is enabled and all of the modules have loaded
+correctly. When you run your script what error do you get?<br>
+<br>
+Jeff<br>
+</body>
+</html>
 
 
