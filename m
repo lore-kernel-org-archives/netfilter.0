@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT/NAPT
-Date: Tue, 23 Nov 2004 14:54:07 -0500
-Message-ID: <20041123195407.GA2891@bender.817west.com>
-References: <co03tv$7f0$1@sea.gmane.org>
+From: "Some Clown" <systemic@comcast.net>
+Subject: DNAT/Forward difficulties...
+Date: Tue, 23 Nov 2004 12:04:04 -0800
+Message-ID: <001d01c4d197$955c5660$4501a8c0@squigglesworth>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <co03tv$7f0$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +16,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Nov 23, 2004 at 02:43:56PM -0500, Ugo Bellavance wrote:
-> Hi,
-> 
->   I think that it is possible to achieve some kind of load-balancing 
-> between two servers using iptables NAPT (Network and port translation, 
-> which is usually called port forwarding).
-> 
-> I want to run 2 web servers and use my firewall to do some 
-> load-balancing between them, but I was wondering if it only forwarded 
-> the packets on some round-robin way, even if one host is down.  To 
-> summarize, I want to know if I can do some automatic failover with iptables.
-> 
-> If you need more info, let me know
+Greetings--
 
-why not do it for real?
+I've been banging my head against the proverbial firewall for days now, =
+and
+while I consider myself fairly versed in TCP/IP mechanics, I cannot seem =
+to
+figure this out--probably because I'm relatively new to =
+netfilter/IPTables.
+I have mashed together several pieces of scripts with some of my own
+creations and have come up with what I consider to be a fairly robust
+firewall script--at least for my own use.  I've tested, and as far as I =
+can
+tell it does everything I want except for one thing--I can't seem to get =
+any
+NEW inbound connections to get forwarded to any internal machines.  I =
+have a
+cable box from Comcast, coming into ETH0 on my Linux box, then ETH1 to a
+plain-jane Cisco switch, then to various other Windows, Linux, and VOIP
+boxes.  I want to be able to allow certain NEW connections inbound, =
+across
+the Linux (firewall) box, to certain internal machines.  For the life of =
+me,
+however, I can't get it to work.
 
-  http://www.linuxvirtualserver.org/
+I tried to post a message to the list with my rc.firewall file included, =
+but
+apparently it's too big.  Thus, I'll include a link to the file and hope
+that some friendly soul takes a look.  I would have posted only =
+"relevant"
+parts in the message, but the whole thing is relevant... if I knew where =
+the
+trouble was I'd fix it myself.
 
--j
+As an aside, if anyone sees any obvious pitfalls of this newbie's =
+script...
+feel free to point them out--though I'm not expecting a comprehensive
+analysis... :)
 
---
-"That's it! You people have stood in my way long enough. I'm going
- to clown college!"
-        --The Simpsons
+http://home.comcast.net/~systemic/rc.firewall
+
+Thanks in advance for any help!
+
+
+
 
