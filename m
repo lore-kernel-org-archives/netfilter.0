@@ -1,12 +1,18 @@
-From: Ron Peterson <rpeterso@mtholyoke.edu>
-Subject: Re: blocking dhcp on bridge
-Date: Mon, 14 Feb 2005 17:09:13 -0500
-Message-ID: <20050214220913.GA21981@mtholyoke.edu>
-References: <20050206210154.GA20344@mtholyoke.edu>
-	<20050207185711.GA23991@mtholyoke.edu>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Fwd: Linux as router (Gateway Server)
+Date: Mon, 14 Feb 2005 17:15:10 -0500
+Message-ID: <1108419310.4338.4.camel@hubcap.ljm.dom>
+References: <1dceb012050211233357e23dd4@mail.gmail.com>
+	<1dceb01205021123483860fb86@mail.gmail.com>
+	<1108216901.4462.27.camel@hubcap.ljm.dom>
+	<4f3930a705021214026db11902@mail.gmail.com>
+	<420EB7C3.7040303@hotpop.com>
+	<4f3930a70502121833627af1bd@mail.gmail.com>
+	<420F4010.7050609@hotpop.com>
+	<4f3930a705021313382ed454fe@mail.gmail.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20050207185711.GA23991@mtholyoke.edu>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <4f3930a705021313382ed454fe@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +24,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, Feb 07, 2005 at 01:57:11PM -0500, Ron Peterson wrote:
-> On Sun, Feb 06, 2005 at 04:01:54PM -0500, Ron Peterson wrote:
+On Sun, 2005-02-13 at 16:38, Josh Nerius wrote:
+> Navneet,
 > 
-> > I am running a dhcp server on a bridging firewall.  The dhcp server runs
-> > on br0.  I have eth0 connected to my 'private' network, and eth1
-> > connected to my 'public' network.
-> > 
-> > I only want this dhcp server to service dhcp requests from the private
-> > network.  Any dhcp requests entering via eth1, or any dhcp replies being
-> > sent via eth1 should be dropped.
+> I had the same issue you are experiencing while using SquidGuard some
+> time back. The resolution was playing with accepting traffic from and
+> to 127.0.0.1. I honestly don't remember the exact rules as it was some
+> time ago I dealt with this issue, but a minor amount of
+> experimentation should prove to solve the issue. I'm currently digging
+> through old configs etc and will let you know if/when I find the exact
+> rules I put in place to resolve the issue.
+> 
+> I hope everything works out for you.
 
-I stopped using iptables, and used ebtables instead.  Seems to work.
+didn't someone in this thread already point out that his rules don't
+include:
 
-Obviously, there is some overlapping functionality between these two
-toolsets.  I'm learning the hard way when to use which tool.
+  iptables -A INPUT -i lo -j ACCEPT
+  iptables -A OUTPUT -o lo -j ACCEPT
 
-$EBTABLES -A INPUT --in-interface $PUB --protocol IPv4 --ip-protocol udp --ip-source-port 68 -j DROP
-$EBTABLES -A INPUT --in-interface $PUB --protocol IPv4 --ip-protocol udp --ip-destination-port 67 -j DROP
-$EBTABLES -A FORWARD --in-interface $PRIV --protocol IPv4 --ip-protocol udp --ip-source-port 68 -j DROP
-$EBTABLES -A FORWARD --in-interface $PUB --protocol IPv4 --ip-protocol udp --ip-destination-port 67 -j DROP
+-j
 
--- 
-Ron Peterson
-Network & Systems Manager
-Mount Holyoke College
-http://www.mtholyoke.edu/~rpeterso
+--
+"Asleep at the switch?  I wasn't asleep, I was drunk!"
+	--The Simpsons
+
 
