@@ -1,13 +1,12 @@
-From: <root@scheuchenstuel.com>
-Subject: AW: AW: bandwidth problems [Linux 2.4.20] [iptables 1.2.7a]
-Date: Wed, 11 Feb 2004 11:31:40 +0100
+From: "zze-Proxy GRALL O ext FTRD/SVA/LAN" <ograll.ext@rd.francetelecom.com>
+Subject: RE : Apply rules to 1 UDP port but port used as a socket: possible?
+Date: Wed, 11 Feb 2004 11:42:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040211103119.IVZS2453.viefep20-int.chello.at@ctxroot>
-References: <1076442585.2018.46.camel@ca.gts.nexusmgmt.com>
+Message-ID: <D4EF10CCEB2CE742BEEA9838C590B0E80113FD3D@ftrdmel2.rd.francetelecom.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1076442585.2018.46.camel@ca.gts.nexusmgmt.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,161 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "'John A. Sullivan III'" <john.sullivan@nexusmgmt.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Alex Satrapa <alex@lintelsys.com.au>
 Cc: netfilter@lists.netfilter.org
 
-> > > > Hi!
-> > > >  
-> > > > My configuration:
-> > > > =================
-> > > > 
-> > > > O-------------o    O-----------------------o
-> > > > |    WinXP    |    |    eth0     |   eth1  |
-> > > > | 10.10.1.100 |----| 10.10.1.254 | D H C P |----INTERNET
-> > > > |             |    |             |         |
-> > > > O-------------o    O-----------------------o
-> > > >   My Computer           My NAT-Computer
-> > > > 
-> > > > NAT-Computer:
-> > > >   Linux 2.4.20-4GB
-> > > >   load average: 0.08, 0.05, 0.06
-> > > >   iptables v1.2.7a
-> > > > All the NICs I use are 3com 3C905-TX
-> > > > 
-> > > > When I do some bandwidth tests on the NAT-Computer
-> > > (provider's service
-> > > > page) my bandwidth is about 1MBit/second When I do the 
-> same on my 
-> > > > computer I only get about 100kbit/second
-> > > > 
-> > > > Now I wonder if there are any problems with my configuration...?
-> > > > Would be nice if you could help me...
-> > > > 
-> > > > Thanks in advance
-> > > > Florian St.
-> > > > 
-> > > > Root(AT)scheuchenstuel(DOT)com
-> > > > 
-> > > > 
-> > > > My iptables-configuration:
-> > > > ==========================
-> > > > 
-> > > > 
-> > > 
-> ####################################################################
-> > > ##
-> > > > ######
-> > > > ######
-> > > > 
-> > > > #!/bin/bash
-> > > > #
-> > > > 
-> > > > modprobe iptable_nat
-> > > > echo 1 > /proc/sys/net/ipv4/ip_forward
-> > > > 
-> > > > ########## CLEARING TABLES
-> > > > iptables -F
-> > > > iptables -t nat -F
-> > > > iptables -t mangle -F
-> > > > iptables -X
-> > > > 
-> > > > ########## SETTING POLICIES
-> > > > iptables -P INPUT DROP
-> > > > iptables -P OUTPUT ACCEPT
-> > > > iptables -P FORWARD DROP
-> > > > 
-> > > > ########## NAT
-> > > > iptables -A INPUT -i eth1 -m state --state 
-> ESTABLISHED,RELATED -j 
-> > > > ACCEPT iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-> > > > 
-> > > > ########## LOOPBACK SETTINGS
-> > > > iptables -A INPUT -i lo -j ACCEPT
-> > > > iptables -A INPUT -s 127.0.0.1/32 -j ACCEPT
-> > > > 
-> > > > ########## EXTERNAL OPEN PORTS
-> > > > iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
-> > > > 
-> > > > ########## INTERNAL OPEN PORTS
-> > > > iptables -A INPUT -s 10.10.1.100/32 -j ACCEPT
-> > > > 
-> > > > ######### NAT FORWARDING
-> > > > iptables -A FORWARD -s 10.10.1.100/32 -j ACCEPT iptables -A
-> > > FORWARD -d
-> > > > 10.10.1.100/32 -j ACCEPT
-> > > > 
-> > > > 
-> > > 
-> ####################################################################
-> > > ##
-> > > > ######
-> > > > ######
-> > > 
-> > > The rules look a little unusual; in fact, they look downright 
-> > > dangerous.  You may want to read a good iptables tutorial such as 
-> > > the one by Oskar Andreasson.  You can find a link to it on the 
-> > > netfilter.org web site.  You can also find some slide 
-> shows in the 
-> > > training section at http://iscs.sourceforge.net
-> > > 
-> > > However, I do not think your rules would create a 
-> throughput problem. 
-> > > How are you measuring your throughput?
-> > > --
-> > > John A. Sullivan III
-> > > Chief Technology Officer
-> > > Nexus Management
-> > > +1 207-985-7880
-> > > john.sullivan@nexusmgmt.com
-> > > ---
-> > 
-> > Now i tried to use a script suggested by Oskar Andreasson 
-> > 
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#RCFIREWA
-> > LLTXT
-> > 
-> > But the problem is still the same...
-> > I think there is another problem...
-> > 
-> > When i configure&start squid on the NAT-Computer i have 
-> full bandwidth...
-> > 
-> > I don't know what to do anymore...
-> > 
-> > Thanks in advance
-> > Florian St.
-> How are you measuring your throughput? What happens if you 
-> don't use squid but allow direct (iptables protected) web 
-> access from the client?
-> --
-> John A. Sullivan III
-> Chief Technology Officer
-> Nexus Management
-> +1 207-985-7880
-> john.sullivan@nexusmgmt.com
-> ---
+My "monitor" is trying to do this (receiving on the socket and then =
+trying apply rules...)
 
-I use the bandwidth test-page of my provider...
-http://performance.chello.at:81
+But rules are not applied and packets are all received by the socket.
 
-What do you mean with "direct" web access ?
-Web access via NAT ?
-I have entered the NAT-computer's IP as default gateway
-and the provider's DNS-servers as DNS-servers on my PC.
-I think this is what you mean with direct access...
+How to force rules to be applied for the special source address?
 
-With this direct access i only get about 100kbit, when i use
-squid or when i do the tests on the NAT-computer i have full
-Bandwidth (around 1MBit/sec)
+Thanks.=20
 
-I think there is a general problem with my configuration,
-because the bandwidth is no better with iptables-scripts
-which are known to work fine...
+-----Message d'origine-----
+De : Alex Satrapa [mailto:alex@lintelsys.com.au]=20
+Envoy=E9 : mercredi 11 f=E9vrier 2004 04:00
+=C0 : zze-Proxy GRALL O ext FTRD/SVA/LAN
+Cc : netfilter@lists.netfilter.org
+Objet : Re: Apply rules to 1 UDP port but port used as a socket: =
+possible?
 
-I really don't know what to do anymore...
 
-Thanks in advance
-Florian St.
+zze-Proxy GRALL O ext FTRD/SVA/LAN wrote:
+> I'm trying to use a socket (on port 1727) to decode some proprietary=20
+> UDP
+> packets. When I've decoded them I want to apply a DNAT rule (and then =
+a=20
+> SNAT  too) to this port using a filter on @IP:port source for all=20
+> following packets...
+
+So do you have Machine F which is the firewall, and machines A, B and C =
+which are the ultimate destinations, and you want to have UDP packets =
+from machine X (elsewhere) being sent to A, B or C  by F based on some =
+information in the first packet F receives from a new host X? You could =
+write your "monitor" to set up new rules based on the first packets that =
+arrive, with the remainder being "deflected" by the firewall rules.
+
 
 
