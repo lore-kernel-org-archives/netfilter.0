@@ -1,11 +1,11 @@
-From: "timbow" <timbow@cox.net>
-Subject: info please
-Date: Sat, 17 Feb 2001 20:16:15 -0500
+From: "Jaipal Reddy K" <jaipal@tataelxsi.co.in>
+Subject: Need information on MAC filtering using iptables
+Date: Thu, 20 Feb 2003 17:24:30 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c09948$63a078d0$a4ca6944@yourav9l904ire>
+Message-ID: <00c101c2d8d6$d4276df0$4628010a@Jaipal>
+Reply-To: <jaipal@tataelxsi.co.in>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C0991E.7A9D1F40"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,36 +16,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Dear all,
 
-------=_NextPart_000_0005_01C0991E.7A9D1F40
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I hope we can do MAC filtering using IP tables also.
+Can anyone tell me in detail about how MAC filtering is achieved using
+iptables.
 
-i was wondering if this firewall worked on a windows system..please =
-reply..thank you
-------=_NextPart_000_0005_01C0991E.7A9D1F40
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#000000>
-<DIV><STRONG><FONT face=3D"French Script MT" color=3D#ffffff size=3D5>i =
-was wondering=20
-if this firewall worked on a windows system..please reply..thank=20
-you</FONT></STRONG></DIV></BODY></HTML>
-
-------=_NextPart_000_0005_01C0991E.7A9D1F40--
-
+rgds,
+Jaipal
 
 
