@@ -1,13 +1,14 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Log Analyser
-Date: Wed, 2 Jul 2003 01:30:15 +0200
+From: Evan Davies <evand@voiceplus.com.au>
+Subject: Please Help Re: PPTP server + Firewall + PPTP VPN Masq through
+	firewall
+Date: 02 Jul 2003 13:21:01 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030702013015.421ad3ea.arnt@c2i.net>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15BEAF@wardrive.citadelcomputer.com.au>
+Message-ID: <1057116061.7125.1.camel@proto.voiceplus.com.au>
+References: <1057025403.4161.20.camel@proto.voiceplus.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=_fileserver.voiceplus.com.au-3499-1057116068-0001-2"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15BEAF@wardrive.citadelcomputer.com.au>
+In-Reply-To: <1057025403.4161.20.camel@proto.voiceplus.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +18,115 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2 Jul 2003 08:03:22 +1000, 
-"George Vieira" <georgev@citadelcomputer.com.au> wrote in message 
-<09B04A55822EFF4DA48D2E0BB2941D4A15BEAF@wardrive.citadelcomputer.com.au
->:
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-> I rule a special chain called `-N MRTG` and store all my counters in
-> there. Then I wrote my own PHP script to go through the list and
-> gather the counted packets for each rule and place them into MySQL
-> every 5 minutes. I then have a crontab every 5 minutes which runs MRTG
-> and has targets which run my script to gather the counters..
+--=_fileserver.voiceplus.com.au-3499-1057116068-0001-2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+On Tue, 2003-07-01 at 12:10, Evan Davies wrote:
+
+> Hi All,
 > 
-> The advantage is that reboots don't effect the counts, Monthly counts
-> can be archived and reset and all sort of little things...
+> I was wondering if the following was possible:
 > 
-> Oh also, I use RRDTool to graph the targets every 5 minutes too. It's
-> a fiddley setup and it's not a C++ binary program but esy to make
-> changes though...
+> Windows Client
+> PPTP VPN Client  ----\
+>                                   \
+> Linux Client ---------->------> FIREWALL + PPTP Server --- INTERNET
+> ----- FIREWALL + PPTP Server
+>                                    /                              |
+> Windows Client ------/                                |
+>                                                                    |
+>                                                             Home User
+> PPTP VPN
 > 
-> Does this help you with what you need?
+> 
+> I can have the Firewall/ VPN server work correctly in that the home
+> user can connect. But the internal PPTP client  cannont make a
+> connection out through the firewall.
+> 
+> I turn the VPN server off and adjust the iptables rules so incoming 47
+> connections are blocked and the internal PPTP client connects no
+> problems to another external pptp server.
+> 
+> Is i possible to have both connections running ?
+> 
+> I'm using RH 8.0 with iptables 1.2.7a + pptp_connection tracking
+> module is compiled into the kernel but not as a module.
+> 
+> Can anyone give me an example of an iptables script to do this
+> 
+> 
+> Any help would be greatly appreciated
+> 
+> 
+> -- 
+> Evan Davies <evand@voiceplus.com.au>
 
-..an url to your tools would be very nice.
+--=_fileserver.voiceplus.com.au-3499-1057116068-0001-2
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.5">
+</HEAD>
+<BODY>
+On Tue, 2003-07-01 at 12:10, Evan Davies wrote:
+<BLOCKQUOTE TYPE=CITE>
+    <FONT COLOR="#737373"><I>Hi All,<BR>
+    <BR>
+    I was wondering if the following was possible:<BR>
+    <BR>
+    Windows Client<BR>
+    PPTP VPN Client&nbsp; ----\<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \<BR>
+    Linux Client ----------&gt;------&gt; FIREWALL + PPTP Server --- INTERNET ----- FIREWALL + PPTP Server<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
+    Windows Client ------/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Home User PPTP VPN<BR>
+    <BR>
+    <BR>
+    I can have the Firewall/ VPN server work correctly in that the home user can connect. But the internal PPTP client&nbsp; cannont make a connection out through the firewall.<BR>
+    <BR>
+    I turn the VPN server off and adjust the iptables rules so incoming 47 connections are blocked and the internal PPTP client connects no problems to another external pptp server.<BR>
+    <BR>
+    Is i possible to have both connections running ?<BR>
+    <BR>
+    I'm using RH 8.0 with iptables 1.2.7a + pptp_connection tracking module is compiled into the kernel but not as a module.<BR>
+    <BR>
+    Can anyone give me an example of an iptables script to do this<BR>
+    <BR>
+    <BR>
+    Any help would be greatly appreciated<BR>
+    </I></FONT><BR>
+    <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+<BR>
+</TD>
+</TR>
+</TABLE>
+<BR>
+    <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Evan Davies &lt;<A HREF="mailto:evand@voiceplus.com.au"><U>evand@voiceplus.com.au</U></A>&gt;
+</TD>
+</TR>
+</TABLE>
 
+</BLOCKQUOTE>
+</BODY>
+</HTML>
 
+--=_fileserver.voiceplus.com.au-3499-1057116068-0001-2--
 
