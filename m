@@ -1,56 +1,72 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: PREROUTING with ULOG in what order: conn, mangle, imq, nat
-Date: Tue, 15 Jul 2003 11:40:00 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030715154000.GC24604@cannon.eng.us.uu.net>
-References: <1058281866.21853.66.camel@drs0.manchotnetworks.net>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: nopickup-patch
+Date: Tue, 15 Jul 2003 18:06:06 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030715160606.GN7198@naboo>
+References: <000001c34999$97f22a80$0200a8c0@basti79>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2EnvhqpWJq810sZn"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1058281866.21853.66.camel@drs0.manchotnetworks.net>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+In-Reply-To: <000001c34999$97f22a80$0200a8c0@basti79>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
-Cc: netfilter <netfilter@lists.netfilter.org>
-
-On Tue, Jul 15, 2003 at 05:11:05PM +0200, lartc@manchotnetworks.net wrote:
-
-[snip...]
-
-> where does de-natting occur?
-> 
-> i thought it was: 
-
-Your thought is correct. ULOG sees the packets after the conntrack.
-tcpdump sees the packets before the conntrack.
-And de-natting occurs at the conntrack:
-
-> WIRE -- > PREROUTING [ conntrack --> mangle --> imq --> nat ] ...
-  ^^^^                    ^^^^^^^      ^^^^^^
-tcpdump                  de-natting     ULOG
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Sebastian <netfilter@basti79.de>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
 
-Take a look at "Table 3-3. Forwarded packets" in Oscar's tutorial.
-The order of mangle/nat is reverse for incoming and outgoing...
+--2EnvhqpWJq810sZn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ramin
+On Mon, Jul 14, 2003 at 01:50:52AM +0200, Sebastian wrote:
+> Hi list...
+>=20
+> I just wondered, when u r talking about this nopickup-patch, then u mean
+> that one located in directory oldnat of POM? Or is there any newer
+> version available?
 
-> if i am capturing at mangle, should not the snat address be there?
-> 
-> Many Many Many Thanks!!
-> 
-> Charles
-> 
-> 
-> 
-> 
+I did a quick 'port' of the patch.  You can now switch pickup off by
+using 'echo 0 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_pickup'.
+
+The patch is untested, so it might not even compile (maybe a stupid
+typo somewhere). Please give it some testing...
+
+Find the patch in patch-o-matic/pending/57_*
+
+> Greets
+> Sebastian.
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--2EnvhqpWJq810sZn
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE/FCZtXaXGVTD0i/8RAvqeAJ9+amfFBBYXjpxmRU2ikWYWls65TgCghkxL
+XHmt7tKumFaPZj7ySGM7kuQ=
+=1xBq
+-----END PGP SIGNATURE-----
+
+--2EnvhqpWJq810sZn--
 
