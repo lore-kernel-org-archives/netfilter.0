@@ -1,12 +1,15 @@
-From: bikrant@wlink.com.np
-Subject: System Load
-Date: Fri, 14 Nov 2003 15:23:03 +0545
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Mirror for Argentina.
+Date: Thu, 13 Nov 2003 11:20:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311141523.03190.bikrant@wlink.com.np>
+Message-ID: <20031113102002.GD2301@obroa-skai.de.gnumonks.org>
+References: <005a01c3a93c$8e6a9f30$fe01000a@estacion2> <Pine.LNX.4.51.0311131012110.18835@dns.toxicfilms.tv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="48TaNjbzBVislYPb"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.51.0311131012110.18835@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,20 +19,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: lartc@mailman.ds9a.nl
+To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: Maira Vykus <maira@vykus.com.ar>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, webmaster@netfilter.org
 
-Hi,
-        Is it possible to know how much system resources (cpu/memory load) 
-that the 
-netfilter module(s) is using? We are using HTB to shape our client traffic 
-and there are 4 iptables rule for each client in the mangle table. I think it 
-will be helpful to gather such data and graph it using mrtg.
 
-I'm really sorry if someone has already asked about it.
-Thanks a lot.
+--48TaNjbzBVislYPb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-with regards,
-Rohit Nepali
+On Thu, Nov 13, 2003 at 10:20:05AM +0100, Maciej Soltysiak wrote:
+> Hi,
+>=20
+> > I want to create a mirror for Argentina. I want to know if that is poss=
+ible.
+> > Who do i have to email? And what do i have to do?
+> Sure it is possible :)
+> Just find a host or two (if you want to seperate ftp and www)
+> Create a directory for the mirror, and then use rsync to update.
+> Personally I use cron and this script:
+
+Please also see
+http://www.netfilter.org/documentation/HOWTO//netfilter-mirror-HOWTO.html
+
+> What is the current list of Netfilter Mirrors?
+
+Unfortunately I still didn't put the list online.  I'll try to do
+that now (http://netfilter.org/mirrors.html)
+
+> Regards,
+> Maciej
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--48TaNjbzBVislYPb
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/s1rSXaXGVTD0i/8RAncuAJ46HB9dkVXfB/y9K34dM8IT9e5B0gCggiOX
+mC1YwqANfue0KbKJHkr6mpg=
+=fQhA
+-----END PGP SIGNATURE-----
+
+--48TaNjbzBVislYPb--
 
