@@ -1,14 +1,11 @@
-From: Steve Turnbull <steve.turnbull@yhgfl.net>
-Subject: Re: No chain/target/match by that name
-Date: Sun, 05 Sep 2004 19:32:48 +0100
+From: "James B. Hiller" <jhiller@visi.net>
+Subject: linux-2.6.9-rc1 compilation and configuration issue
+Date: Sun, 5 Sep 2004 19:18:57 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <413B5BD0.8070905@yhgfl.net>
-References: <413B233C.3000601@yhgfl.net>
-	<200409051351.03018.Alistair@nerdnet.ca>
+Message-ID: <200409052318.i85NIvUX003634@bassett.home.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409051351.03018.Alistair@nerdnet.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,124 +15,87 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Alistair Tonner wrote:
-> On September 5, 2004 10:31 am, Steve Turnbull wrote:
-> 
->>Hi
->>
->>Our web server is configured;
->>Debian (Woody) (No X installed)
->>Kernel 2.4.23 - configured with iptables in mind
->>iptables v1.2.6a
->>
->>When we start the firewall script, we get this message;
->>'No chain/target/match by that name'
-> 
-> 
-> 	urmm ... try rebuilding iptables code against this kernel?
-> 
-> 	I'm not sure about Debian's packages, but is it possible that the iptables 
-> code is precompiled here?
+Hi list!
 
-	I have just rebuilt the Kernel - I daren't reboot into it until I am on 
-site tomorrow - we will see what happens, I have added various 
-components along side the existing ones.
+Hope someone in netfilter-land will take pity on the village idiot here,
+and explain what I'm seeing.  It's either bugs or a stupid-user stupid
+selections of kernel netfilter compilation options.
 
+I'll pose my questions first, then provide some (hopefully) useful background
+and observation info.
 
-> 
-> 
->>The firewall works however, but is constantly logging;
->>'Sep  5 16:00:52 www kernel: Input: IN=eth0 OUT=
->>MAC=00:e0:81:29:01:75:00:07:85:06:c2:e1:08:00 SRC=195.92.195.93
->>DST=195.92.38.54 LEN=302 TOS=0x00 PREC=0x00 TTL=61 ID=0 DF PROTO=UDP
->>SPT=53 DPT=32833 LEN=282'
-> 
-> 	
-> 	This looks like a reply to a DNS query.   It the state rule below didn't get 
-> accepted this looks correct.
-> 
-> 
->>Something is ammis here, and we can't ping out from the server with the
->>firewall running, also, we can't use Lynx to browse. Turn the firewall
->>off and all is well for both of these.
-> 
-> 	
-> 	You haven't included any rules here that regard ICMP -- no pings.
+Questions (all related to linux 2.6.9-rc1):
 
-	I was meaning I couldn't ping out FROM the server. The rule for 
-outgoing traffic is accept all - "iptables -P OUTPUT ACCEPT", this is 
-why I was confused about the inability to ping or browse with Lynx outbound.
+a.  Should it be the case that by simply selecting Networking Support,
+Networking Options, Network Packet Filtering, Netfilter Configuration
+(all just configurator choices), and finally Connection Tracking (i.e.
+choosing Y for it, but none of the subordinate protocol choices) - and
+NO other netfilter options - that a compilation error should result?
+I did, and it does.  Is this a bug, or is there known to be some other
+set of one or more options that I would have to select in order to not
+get a compilation error?
 
-> 
-> 
->>Has anybody got any ideas what is wrong? Our firewall rule is below.
->>
->>Regards
->>Steve
->>
->>
->>
->>#!/bin/sh
->>
->>
->>#
->># This is the firewall up script.
->>#
->>
->>#
->># Lets start by dropping all incoming traffic and allowing all
->># outbound traffic
->>#
->>
->>iptables -P INPUT DROP
->>iptables -P FORWARD DROP
->>iptables -P OUTPUT ACCEPT
->>
->>
->>
->># Flush any existing rules...
->>iptables -F
->>
->>
->># Allow any established connections to come on through...
->>iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->>
->>
->># This is a web server. We only require access to http ports
->># 80,21,53 and 443. New ports to allow will be added here...
->>iptables -A INPUT -p tcp --dport 80 -j ACCEPT
->>iptables -A INPUT -p tcp --dport 443 -j ACCEPT
->>
->>#ssh
->>iptables -A INPUT -p tcp --dport 22 -j ACCEPT
->>
->>#ftp
->>iptables -A INPUT -p tcp --dport 21 -j ACCEPT
->>
->>#DNS
->>iptables -A INPUT -p tcp --dport 53 -j ACCEPT
->>iptables -A INPUT -p udp --dport 53 -j ACCEPT
->>
->>
->># Allow the loopback connection...
->>iptables -A INPUT -i lo -j ACCEPT
->>
->>
->># Log stuff that doesn't match above rules...
->>iptables -A INPUT -j LOG --log-prefix="Input: "
-> 
-> 
+b.  Should it further be the case that the ONLY netfilter option that can be
+selected that allows for a clean compile given (a) is Full NAT?  I tried
+everything else, and this is all that allows an error-free compile given
+(a).  That is, iff (Full NAT = 'Y') && (Connection Tracking = 'Y'), I get a
+clean compile, regardless of what other netfilter/connection tracking or
+netfilter/Full NAT settings I have as 'Y'.
 
+c.  Finally, should it be the case that if I select ONLY these two options,
+or any other set of options (such as 3 of the connection tracking protocol
+options; a robust set of match support options, and one or two of the NAT
+options; and every subset of these that I tried, which is many), that I
+should expect my system to more or less stop responding to any keyboard
+input, and fail to cause most (but not all, right away) display updating
+to stop; and eventually (within a few minutes) expect everything on the
+system to stop?  I did, and it does, and I am sore confused.
 
--- 
-Steve Turnbull
-Digital Content Developer
-YHGfL Foundation
+I am confused for the following reasons (observations):
 
-t 01724 275030
-e steve.turnbull@yhgfl.net
+1.  I am using the exact same .config that I used for 2.6.8.1 and all the
+related -mmX releases, as modified by the 'make oldconfig' action at each
+version promotion and accepting only the default answer for the few new
+options introduced across those promotions.  ALL kernel versions previous
+to 2.6.9-rc1 worked with this more-or-less identical netfilter configuration,
+back through around 2.4.20 (all regular tree and -mmX tree) when I first
+started using netfilter a lot.
 
+2.  On this particular box, I make no attempt to invoke a firewall-like script,
+turn on any behaviors via echoing to /proc/sys/XXXX, or the like.  So as
+far as I know, I have been/should be enabling kernel support for these
+netfilter actions, but not actually invoking any.  Thus, I'm at a loss to
+understand why a kernel configuration that worked before stops working now,
+and when I roll back all useful options other than turning connection
+tracking on, it won't even compile right.
+
+I've got copies of each of my various .config files at each step, and can
+easily recreate them, and the situations described, for each kernel version.
+Just not attaching them now until some kind soul says they need to inspect
+them, so as to not clog the list.
+
+Please let me know, off-list if more appropriate, what's likely happening
+here - whether I'm seeing bugs that are worth reporting, or whether I'm
+simply ignorant of how to correctly select a proper set of options relative
+to 2.6.9-rc1.  Or maybe some bug in previous versions that let me operate
+in a stupid configuration was fixed with this release, and I'm now affected
+by my all-along stupid choices.
+
+One last piece of context:  The box on which I'm doing this is itself one
+node on a wireless LAN, the gateway/router/WAP for which is another linux box
+running 2.6.0 and the firewall script found in the IP-Masquerade-HOWTO (as
+published prior to the current Nov 03 release of the HOWTO), as well as NAT as
+found in 2.6.0.  I know one solution would be to simply not configure netfilter
+on this box that is an internal node.  However, I do have reasons that I prefer
+to keep it configured as closely as possible to the gateway node (the
+differences being those options that are more newly available in more recent
+kernel versions, which, up until the advent of 2.6.9-rc1, seemed to be not
+an issue).  More importantly, if what I am staring at is bugs, then I would
+like to properly report them for resolution.
+
+Thx!
+jbh
 
