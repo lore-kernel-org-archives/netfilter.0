@@ -1,13 +1,14 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: wireless security
-Date: Thu, 10 Jun 2004 09:16:44 -0500
+Date: Thu, 10 Jun 2004 15:10:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40C86D4C.20101@pbl.ca>
-References: <0b5b01c44ee2$f2e7cef0$49caa8c0@caris.priv>
+Message-ID: <200406101510.54483.Antony@Soft-Solutions.co.uk>
+References: <0b5b01c44ee2$f2e7cef0$49caa8c0@caris.priv> <200406101428.46072.Antony@Soft-Solutions.co.uk> <0bb501c44ef1$996deee0$49caa8c0@caris.priv>
+Reply-To: "netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0b5b01c44ee2$f2e7cef0$49caa8c0@caris.priv>
+In-Reply-To: <0bb501c44ef1$996deee0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +18,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Peter Marshall <peter.marshall@caris.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Peter Marshall wrote:
-> Hi guys,
-> 
-> I am sure someone has been faced with this problem, and I was just wondering
-> what the possible solutions are.  A city wide free wireless network has just
-> expanded to cover the area encompassing our building.  The provider of this
-> is also the provider of our Internet (via fiber).  It was decided that it
-> would be advantageous for some of our employees to be able to use this
-> wireless network when we bring in clients etc.  This of course opens a large
-> possibility of problems concerning crap getting onto our network (especially
-> if they are connected to wireless and plugged into the network).
-> 
-> We have made it a policy that a personal firewall be installed on all
-> firewalls, and that at no time is a wireless card to be plugged into a
-> laptop while connected to our LAN.  This of course does not do much for
-> internal cards ....
-> 
-> Is there anyway at all that I can firewall this ?  Or is there a way o
-> prevent the two networks from being active at the same time .. I am at a bit
-> of a loss here.
+On Thursday 10 June 2004 2:48 pm, Peter Marshall wrote:
 
-I guess that machines that will be plugged to both wired and wireless 
-networks are going to be Windows boxes?  I'm affraid you can't do much 
-more that you already did.  Turn off IP forwarding in each of those 
-Windows boxes (so they can't route traffic into your network), and turn 
-on firewall on wireless interface.  Depending on how are those Windows 
-boxes managed, you should be able to make policies that will prevent 
-users from changing those settings.  But still, computers with wireless 
-access will be the very weak spot on your network (for example, they 
-will bypass any anti-virus you might have installed centrally).  IMHO, 
-from security point of view, allowing such wireless access is very bad 
-idea.  I'd probably put all those clients on separate physical network 
-behind firewall, and would trust that network the same as I trust Internet.
+> Thank you very much for the help.
+>
+> Is IDS a packet sniffer ?
 
-If they must have wireless access, build your own wireless network that 
-you controll.  If they must use public wireless network, put a wireless 
-card in the firewall and remove wireless cards from the clients.  If 
-they need both, make a combination of this two.
+Most IDSs do operate by packet sniffing, yes (although you can run them on a 
+gateway router if that's what you want to monitor).
+
+IDS means Intrusion Detection System, and such things are used to look out for 
+known attack patterns or anomalous behaviour on your network.
+
+Many people monitor both the outside and inside of a firewall, so they know:
+a) what probes/attacks were attempted (from outside) and got blocked
+b) what probes/attacks got through
+c) what probes/attacks originated from the inside
+d) what strange traffic is happening on the network (eg from viruses / worms / 
+trojans)
+
+Regards,
+
+Antony.
 
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+These clients are often infected by viruses or other malware and need to be 
+fixed.  If not, the user at that client needs to be fixed...
+
+ - Henrik Nordstrom, on Squid users' mailing list
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
