@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Simple newbie's question
-Date: Tue, 17 Feb 2004 00:26:41 +0000
+Subject: Re: Routing through Debian
+Date: Tue, 17 Feb 2004 00:30:56 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402170026.41874.Antony@Soft-Solutions.co.uk>
-References: <001701c3f4b2$648798f0$a704a8c0@mpro4167>
+Message-ID: <200402170030.56021.Antony@Soft-Solutions.co.uk>
+References: <021A59AE3C21D649BCEA0B7802EC408A443142@quadnet_fs1.quadnet.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001701c3f4b2$648798f0$a704a8c0@mpro4167>
+In-Reply-To: <021A59AE3C21D649BCEA0B7802EC408A443142@quadnet_fs1.quadnet.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Monday 16 February 2004 5:29 pm, Oriol Magran=E9 wrote:
+On Monday 16 February 2004 2:40 pm, Carlos Robles wrote:
 
->     Hello!!
->     I have a linux box (with ip 192.168.4.172) connected to the Interne=
-t
-> through an ADSL router (with ip 192.168.4.10). Now I'd like to do some =
-port
-> forwarding on the box itself, so that outgoing connections to port 80 o=
-f
-> host 212.59.199.45 goes to port 110 of host 212.59.199.75.
->
->     So I do:
->
->         iptables -t nat -A PREROUTING -p tcp -d 212.59.199.45 --dport 8=
-0 -j
-> DNAT --to 212.59.199.75:110
->
->     Which it seems the logical thing to do.
->     But when I telnet 212.59.199.45 80 the kernel continues to send pac=
-kets
-> to port 80 of 212.59.199.45 ignoring my wishes and commands. What am I
-> doing wrong?
+> Hello my name is Carlos
+> This is the first time I'm emailing here
 
-1. Where are you testing the telnet from?   The machine with the netfilte=
-r=20
-rules on it (won't work) or a machine on your LAN which is routed through=
- the=20
-netfilter machine (should work)?
+Welcome.
 
-2. Do you have a suitable FORWARD rule to allow the packets to get to=20
-212.59.199.45 TCP port 110?
+> I'm trying to connect from my XP office computer to my Home (XP prof)
+> computer (192.168.0.4).
+
+How sad.   You have our sympathy.
+
+> In my home I have a small network made out of 5 computers, they all 
+> connect to internet through a Debian 2.4 box(private 192.168.0.5, public:
+> 80.1.122.39) that I've configured to work as a router-firewall.
+> I modified ip-tables so to let any connection coming to the router to port
+> 3389 to redirect it to 192.168.0.4:
+> iptables -t nat -I POSTROUTING -p tcp --sport 3389 -s 192.168.0.4 -j SNAT
+> --to 80.1.122.39:3389
+> iptables -t nat -I PREROUTING -p tcp --dport 3389 -d 80.1.122.39 -j DNAT
+> --to 192.168.0.4:3389
+> Commands go well, no problems.
+> But still I can't connect, is there something that I'm missing?
+
+You need the PREROUTING rule; you do not need the POSTROUTING rule.   You also 
+need a FORWARD rule to allow traffic to actually get to 192.168.0.4 port 3389 
+after the destination address has been changed:
+
+iptables -A FORWARD -d 192.168.0.4 -p tcp --dport 3389 -j ACCEPT
+
+Let us know how you get on with that.
 
 Regards,
 
 Antony.
 
---=20
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
+-- 
+"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
+Blaster].   However, these products are no longer supported.   Users of these
+products are strongly encouraged to upgrade to later versions."
 
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+(which *are* affected by MS Blaster...)
+
+http://www.microsoft.com/security/security_bulletins/ms03-026.asp
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
