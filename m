@@ -1,13 +1,14 @@
-From: <vmtesting@hot.ee>
-Subject: Re: NAT and test ip's for link
-Date: Tue, 18 Feb 2003 13:46:39 +0200
+From: Luis Miguel Cruz Miranda <luismi@b2bi.es>
+Subject: Re: can't patch with patch-o-matic
+Date: Tue, 18 Feb 2003 13:32:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005e01c2d743$68265b00$01000001@mfa.ee>
-References: <001001c2d68a$0fc736a0$01000001@mfa.ee>
+Message-ID: <5.2.0.9.2.20030218133202.01c1dc20@172.26.0.8>
+References: <5.2.0.9.2.20030217171848.01c2e5c0@172.26.0.8>
+ <5.2.0.9.2.20030217171848.01c2e5c0@172.26.0.8>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_005B_01C2D754.29DEB0C0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1045546373.18829.47.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,453 +18,94 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: raymondl@knowledgefactory.co.za, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+I have patch command installed, the problem is: why I  can't use=20
+tcp-window-tracking patch?
 
-------=_NextPart_000_005B_01C2D754.29DEB0C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+At 07:32 18/02/2003 +0200, Raymond Leach wrote:
+>You are probably missing the patch program.
+>
+>Do rpm -qa | grep patch
+>
+>Ray
+>
+>On Mon, 2003-02-17 at 18:27, Luis Miguel Cruz Miranda wrote:
+> > Hi all,
+> >
+> > I am using patch-o-matic to patch a 2.4.20 kernel but I am having som=
+e
+> > problems here:
+> >
+> > For example:
+> >
+> > Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
+> > Testing patch extra/tcp-window-tracking.patch...
+> >     Placed new Makefile line
+> > Failed to patch copy of /usr/src/linux
+> > TEST FAILED: patch NOT applied.
+> >
+> > I want to use that patch but I don't know why I can't.
+> > I have these patches applied:
+> >
+> > Already applied: submitted/01_2.4.19
+> >                   submitted/02_2.4.20
+> >                   submitted/ipt_multiport-invfix
+> >                   submitted/ipt_ULOG-mac_len-fix
+> >                   pending/01_ip_conntrack_proto_tcp-lockfix
+> >                   pending/02_newnat-udp-helper
+> >                   pending/03_REJECT-fwspotting-phrack60-fix
+> >                   pending/04_ftp-conntrack-msg-fix
+> >                   pending/05_ECN-tcpchecksum-littleendian-fix
+> >                   base/fuzzy
+> >                   base/iplimit
+> >                   base/ipt_unclean-ubit
+> >                   base/ipv4options
+> >                   base/IPV4OPTSSTRIP
+> >                   base/mport
+> >                   base/NETLINK
+> >                   base/NETMAP
+> >                   base/nth
+> >                   base/pool
+> >                   base/psd
+> >                   base/quota
+> >                   base/random
+> >                   base/realm
+> >                   base/SAME
+> >                   base/time
+> >                   base/TTL
+> >                   extra/condition
+> >                   extra/CONNMARK
+> >                   extra/h323-conntrack-nat
+> >                   extra/ip_tables-proc
+> >                   extra/ipt_TARPIT
+> >                   extra/mms-conntrack-nat
+> >                   extra/pptp-conntrack-nat
+> >                   extra/recent
+> >                   extra/ROUTE
+> >                   extra/rsh
+> >                   extra/string
+> >                   extra/talk-conntrack-nat
+> >                   extra/tftp-conntrack-nat
+> >
+> > What is wrong?
+> >
+> >
+> > Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+> > CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+> >                                          |       C/A - Parcela 86-C
+> > Tel: +34 902 506 605                    |       33.428 - CAYES - LLAN=
+ERA
+> > Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SP=
+AIN)
+>
 
-I figured it out.
- =20
-  $IPTABLES -t nat -A POSTROUTING -o $EXTIF -s $INTLAN  -j SNAT --to =
-$EXTIP
-=20
-postrouting chain should just look like this:
+Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+                                         |       C/A - Parcela 86-C
+Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
 
- =20
-  $IPTABLES -t nat -A POSTROUTING -o $LINKIF -s $INTLAN  -j SNAT --to =
-$EXTIP
-=20
-Outgoing interface must be changed.
-
-  ----- Original Message -----=20
-  From: vmtesting@hot.ee=20
-  To: netfilter@lists.netfilter.org=20
-  Sent: Monday, February 17, 2003 3:39 PM
-  Subject: NAT and test ip's for link
-
-
-  hi,
-
-  I have firewall box with  Redhat 8.0 (kernel 2.4.18-24.8.0) and =
-iptables v1.2.6a
-  installed and 8 public ip addresses ,let's say 195.12.1.0/29.
-
-  My firewall box has 3 NIC's.
-
-
-  eth1(195.12.1.1)----FW-----eth2 (192.168.1.2)-----Cisco ---INTERNET
-                                |
-                                |
-                      eth0(10.3.1.1)
-
-
-  Behind eth0 I have planned internal network of 10.3.1.0/24
-  Behind eth1 will be connected some public computers with no access to =
-internal LAN.
-  Eth2 has a link with Cisco C1601 having test class ip's for link
-  (192.168.1.0/24 , 192.168.1.2 at fw side and 192.168.1.1 at cisco's =
-side)
-
-  The reason why I have test ip's for link is that I haven't got enough =
-public ip's to
-  complete my plan.I have 2 servers in internal LAN. Both MUST have =
-separate ip's.
-
-  When I divide 195.12.1.0/29 into 2 different networks =
-195.12.1.0/30(eth2)
-  and 195.12.1.4/30 I have no ip's left for internal servers.
-  But in that case  I have no trouble translating internal LAN behind =
-eth0 to eth2.
-
-  My problem is that I don't know how to translate internal LAN to eth1 =
-when I have
-  test ip's for link at eth2.Being more specific I have no idea how =
-accomplish it with
-  Linux. For Cisco IOS following should work:
-
-  interface Ethernet1
-   ip address 195.12.1.1 255.255.255.248
-   no ip directed-broadcast
-   ip nat outside
-  !
-  interface Serial0
-   ip address 192.168.1.1 255.255.255.0
-   no ip directed-broadcast
-   ip nat outside
-  !
-  ip nat inside source list 1 interface Ethernet1 overload
-  ip classless
-  !
-  access-list 1 permit 10.3.1.0 0.0.0.255
-
-  Has anyone implemented similar solution and know's how to translate =
-LAN
-  to public ip at eth1 (195.12.1.1) while eth2 with test class ip's
-  is connected to Internet ?
-
-  Thanks,
-  vmtesting
-
-  FW box routing table:
-
-  Kernel IP routing table
-  Destination     Gateway         Genmask         Flags Metric Ref    =
-Use Iface
-  195.12.1.0      0.0.0.0         255.255.255.248 U     0      0        =
-0 eth1
-  192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        =
-0 eth2
-  10.3.0.0        0.0.0.0         255.255.255.0   U     0      0        =
-0 eth0
-  127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        =
-0 lo
-  0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        =
-0 eth2
-
-  IPtables truncated script for NAT:
-
-  #!/bin/sh
-
-  # This is the location of the iptables command
-  IPTABLES=3D"/sbin/iptables"
-
-
-  case "$1" in
-     stop)
-        echo "Shutting down firewall..."
-        $IPTABLES -F
-        $IPTABLES -F -t mangle
-        $IPTABLES -F -t nat
-        $IPTABLES -X
-        $IPTABLES -X -t mangle
-        $IPTABLES -X -t nat
-       =20
-        $IPTABLES -P INPUT ACCEPT
-        $IPTABLES -P OUTPUT ACCEPT
-        $IPTABLES -P FORWARD ACCEPT
-        echo "...done"
-        ;;
-     status)
-        echo $"Table: filter"
-        iptables --list
-        echo $"Table: nat"
-        iptables -t nat --list
-        echo $"Table: mangle"
-        iptables -t mangle --list
-        ;;
-     restart|reload)
-        $0 stop
-        $0 start
-        ;;
-     start)
-      echo "Starting Firewall..."
-      echo ""
-
-
-  ##--------------------------Begin =
-Firewall---------------------------------##
-
-
-  #----Default-Interfaces-----#
-
-
-  LINKIF=3D"eth2"
-
-
-  EXTIF=3D"eth1"
-
-
-  INTIF=3D"eth0"
-
-  INTLAN=3D"10.3.1.0/255.255.255.0"
-  INTIP=3D"10.3.1.1"
-  INTMASK=3D"255.255.255.0"
-  EXTIP=3D"195.12.1.1"
-
-  $IPTABLES -F
-  $IPTABLES -F -t nat
-  $IPTABLES -X
-  $IPTABLES -X -t mangle
-  $IPTABLES -X -t nat
-
-  $IPTABLES -P INPUT ACCEPT
-  $IPTABLES -P OUTPUT ACCEPT
-  $IPTABLES -P FORWARD ACCEPT
-
-  ###################
-  ##  POSTROUTING  ##
-  ###################
-
-    #Masquerade from Internal Net to External Net
-   =20
-    $IPTABLES -t nat -A POSTROUTING -o $EXTIF -s $INTLAN  -j SNAT --to =
-$EXTIP
-  =20
-   =20
-  #------End Ruleset------#
-
-  echo "...done"
-  echo ""
-
-
-  echo "{>o-< IPTABLES firewall activated :-))"
-
-
-  ##--------------------------------End =
-Firewall---------------------------------##
-
-
-
-     ;;
-     *)
-        echo "Usage: firewall (start|stop|restart|status) EXTIF INTIF"
-        exit 1
-  esac
-
-  exit 0
-
-
-------=_NextPart_000_005B_01C2D754.29DEB0C0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>I figured it out.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;<BR>&nbsp; $IPTABLES -t nat =
--A=20
-POSTROUTING -o $EXTIF -s $INTLAN&nbsp; -j SNAT --to=20
-$EXTIP<BR>&nbsp;</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>postrouting chain should just look like =
-
-this:</FONT></DIV>
-<DIV><BR>&nbsp;&nbsp;<BR>&nbsp; $IPTABLES -t nat -A POSTROUTING -o =
-$LINKIF -s=20
-$INTLAN&nbsp; -j SNAT --to $EXTIP<BR>&nbsp;<BR><FONT face=3DArial =
-size=3D2>Outgoing=20
-interface&nbsp;must be changed.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;</DIV></FONT>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
-BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A title=3Dvmtesting@hot.ee =
-href=3D"mailto:vmtesting@hot.ee">vmtesting@hot.ee</A>=20
-  </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
-  title=3Dnetfilter@lists.netfilter.org=20
-  =
-href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
-rg</A>=20
-  </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Monday, February 17, 2003 =
-3:39=20
-  PM</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> NAT and test ip's for =
-link</DIV>
-  <DIV><BR></DIV><FONT face=3DArial size=3D2>
-  <DIV>hi,</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>I have firewall box with&nbsp; Redhat 8.0 (kernel 2.4.18-24.8.0) =
-and=20
-  iptables v1.2.6a<BR>installed and 8 public ip addresses ,let's say=20
-  195.12.1.0/29.</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>My firewall box has 3 NIC's.</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>eth1(195.12.1.1)----FW-----eth2 (192.168.1.2)-----Cisco=20
-  ---INTERNET<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-
-  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-  &nbsp;&nbsp; |<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;=20
-  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;=20
-  &nbsp;&nbsp;&nbsp; |<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;=20
-  eth0(10.3.1.1)</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>Behind eth0 I have planned internal network of =
-10.3.1.0/24<BR>Behind=20
-  eth1 will be connected some public computers with no access to =
-internal=20
-  LAN.<BR>Eth2 has a link with Cisco C1601 having test class ip's for=20
-  link<BR>(192.168.1.0/24 , 192.168.1.2 at fw side and 192.168.1.1 at =
-cisco's=20
-  side)</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>The reason why I have test ip's for link is that I haven't got =
-enough=20
-  public ip's to<BR>complete my plan.I have 2 servers in internal LAN. =
-Both MUST=20
-  have separate ip's.</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>When I divide 195.12.1.0/29 into 2 different networks=20
-  195.12.1.0/30(eth2)<BR>and 195.12.1.4/30 I have no ip's left for =
-internal=20
-  servers.<BR>But in that case&nbsp; I have no trouble translating =
-internal LAN=20
-  behind eth0 to eth2.</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>My problem is that I don't know how to translate internal LAN to =
-eth1=20
-  when I have<BR>test ip's for link at eth2.Being more specific I have =
-no idea=20
-  how accomplish it with<BR>Linux. For Cisco IOS following should =
-work:</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>interface Ethernet1<BR>&nbsp;ip address 195.12.1.1=20
-  255.255.255.248<BR>&nbsp;no ip directed-broadcast<BR>&nbsp;ip nat=20
-  outside<BR>!<BR>interface Serial0<BR>&nbsp;ip address 192.168.1.1=20
-  255.255.255.0<BR>&nbsp;no ip directed-broadcast<BR>&nbsp;ip nat=20
-  outside<BR>!<BR>ip nat inside source list 1 interface Ethernet1 =
-overload<BR>ip=20
-  classless<BR>!<BR>access-list 1 permit 10.3.1.0 0.0.0.255</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>Has anyone implemented similar solution and know's how to =
-translate=20
-  LAN<BR>to public ip at eth1 (195.12.1.1) while eth2 with test class =
-ip's<BR>is=20
-  connected to Internet ?</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>Thanks,<BR>vmtesting</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>FW box routing table:</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>Kernel IP routing table<BR>Destination&nbsp;&nbsp;&nbsp;&nbsp;=20
-  Gateway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  Genmask&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Flags Metric=20
-  Ref&nbsp;&nbsp;&nbsp; Use =
-Iface<BR>195.12.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-255.255.255.248=20
-  U&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-  eth1<BR>192.168.1.0&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  255.255.255.0&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-  eth2<BR>10.3.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  255.255.255.0&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-  eth0<BR>127.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  255.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-U&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-  lo<BR>0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  192.168.1.1&nbsp;&nbsp;&nbsp;&nbsp;=20
-  0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-UG&nbsp;&nbsp;&nbsp;=20
-  0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=20
-  eth2</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>IPtables truncated script for NAT:</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>#!/bin/sh</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV># This is the location of the iptables=20
-  command<BR>IPTABLES=3D"/sbin/iptables"</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>case "$1" in<BR>&nbsp;&nbsp; =
-stop)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  echo "Shutting down firewall..."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-$IPTABLES=20
-  -F<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $IPTABLES -F -t=20
-  mangle<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $IPTABLES -F -t=20
-  nat<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $IPTABLES=20
-  -X<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $IPTABLES -X -t=20
-  mangle<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $IPTABLES -X -t=20
-  nat<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-  $IPTABLES -P INPUT ACCEPT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $IPTABLES =
--P=20
-  OUTPUT ACCEPT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $IPTABLES -P FORWARD=20
-  ACCEPT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo=20
-  "...done"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;;<BR>&nbsp;&nbsp;=20
-  status)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $"Table:=20
-  filter"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables=20
-  --list<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $"Table:=20
-  nat"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -t nat=20
-  --list<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $"Table:=20
-  mangle"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iptables -t mangle=20
-  --list<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;;<BR>&nbsp;&nbsp;=20
-  restart|reload)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $0=20
-  stop<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $0=20
-  start<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;;<BR>&nbsp;&nbsp;=20
-  start)<BR>&nbsp;&nbsp;&nbsp; echo "Starting =
-Firewall..."<BR>&nbsp;&nbsp;&nbsp;=20
-  echo ""</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>##--------------------------Begin=20
-  Firewall---------------------------------##</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>#----Default-Interfaces-----#</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>LINKIF=3D"eth2"</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>EXTIF=3D"eth1"</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>INTIF=3D"eth0"</DIV>
-  <DIV>&nbsp;</DIV>
-  =
-<DIV>INTLAN=3D"10.3.1.0/255.255.255.0"<BR>INTIP=3D"10.3.1.1"<BR>INTMASK=3D=
-"255.255.255.0"<BR>EXTIP=3D"195.12.1.1"</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>$IPTABLES -F<BR>$IPTABLES -F -t nat<BR>$IPTABLES -X<BR>$IPTABLES =
--X -t=20
-  mangle<BR>$IPTABLES -X -t nat</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>$IPTABLES -P INPUT ACCEPT<BR>$IPTABLES -P OUTPUT =
-ACCEPT<BR>$IPTABLES -P=20
-  FORWARD ACCEPT</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>###################<BR>##&nbsp; POSTROUTING&nbsp;=20
-  ##<BR>###################</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>&nbsp; #Masquerade from Internal Net to External Net<BR>&nbsp; =
-<BR>&nbsp;=20
-  $IPTABLES -t nat -A POSTROUTING -o $EXTIF -s $INTLAN&nbsp; -j SNAT =
---to=20
-  $EXTIP<BR>&nbsp;<BR>&nbsp; <BR>#------End Ruleset------#</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>echo "...done"<BR>echo ""</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>echo "{&gt;o-&lt; IPTABLES firewall activated :-))"</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV><BR>##--------------------------------End=20
-  Firewall---------------------------------##</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>&nbsp;&nbsp; ;;<BR>&nbsp;&nbsp; =
-*)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo=20
-  "Usage: firewall (start|stop|restart|status) EXTIF=20
-  INTIF"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit 1<BR>esac</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV>exit 0</DIV>
-  <DIV>&nbsp;</DIV>
-  <DIV></FONT>&nbsp;</DIV></BLOCKQUOTE></BODY></HTML>
-
-------=_NextPart_000_005B_01C2D754.29DEB0C0--
 
 
