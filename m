@@ -1,8 +1,8 @@
 From: mgeschermann@arcor.de
 Subject: http-rules and browsing ebay Problem
-Date: Wed, 11 Feb 2004 13:35:27 +0100 (CET)
+Date: Wed, 11 Feb 2004 13:35:38 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <10581301.1076502927332.JavaMail.ngmail@webmail02.arcor-online.net>
+Message-ID: <25706769.1076502938552.JavaMail.ngmail@webmail02.arcor-online.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
