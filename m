@@ -1,12 +1,15 @@
-From: "George" <george@xorgate.com>
-Subject: RFC: set RELATED?
-Date: Tue, 5 Aug 2003 18:44:30 -0600
+From: justin <justin@dslr.net>
+Subject: Re[2]: iplimit module refuses to work
+Date: Mon, 11 Aug 2003 17:47:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006501c35bb3$fbeeca30$3eac18ac@geosxp>
+Message-ID: <162365409015.20030811174720@dslr.net>
+References: <63349768828.20030811132640@dslr.net>
+ <20030811183136.GD11900@cannon.eng.us.uu.net>
+Reply-To: justin <justin@dslr.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_005C_01C35B81.9AE8E950"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030811183136.GD11900@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,95 +19,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+yes I do ..  and other modules work just fine, as does the firewall.
 
-------=_NextPart_000_005C_01C35B81.9AE8E950
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+The only problem is iplimit flunking out with this unknown error.
 
-I think that I sent this message on 25 July 03 but did not receive any =
-replies.  Please resubmit or explain what happened to the first posting.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Is there currently a way for iptables to force another packet stream =
-conntrack entry to a RELATED state without having to look inside of the =
-packet data?
+Its not even like its explaining what socket option is failing, nor are
+there any console messages from the kernel as it rejects the bogus
+socket option call.
 
-For example:  If a 10.0.0.2 client behind an iptables firewall were to =
-send an IMCP echo to 10.20.30.1, could a rule be set up so that after =
-the firewall see this packet, all udp packets sent to dport=3D45678 =
-would be DNATed to 10.0.0.2?
+Chain CloseY (1 references)
+target     prot opt source               destination
+DROP       tcp  --  0.0.0.0/0            0.0.0.0/0          tcp flags:0x16/0x02
+REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0          recent: UPDATE seconds: 1 hit_count: 10 name: Close side: source reject-with tcp-reset
+DROP       all  --  0.0.0.0/0            0.0.0.0/0
 
-The designated RELATED stream would in general then be just like any =
-other conntrack entry.  This way designated external streams could be =
-designated RELATED by matching a related module filter.
+Chain OverX (0 references)
+target     prot opt source               destination
+           all  --  0.0.0.0/0            0.0.0.0/0          recent: SET name: Last side: source
+DROP       tcp  --  0.0.0.0/0            0.0.0.0/0          tcp flags:0x16/0x02 #conn/32 > 125
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0          recent: CHECK seconds: 60 name: First side: source
+CloseY     all  --  0.0.0.0/0            0.0.0.0/0          recent: CHECK name: First side: source
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0          recent: CHECK name: First side: source
+           all  --  0.0.0.0/0            0.0.0.0/0          recent: SET name: First side: source
 
-Right now I am looking at ZSNES which after an inside computer sends UDP =
-packets to port 7845 it then needs to receive UDP packets sent to port =
-7845 from the same host.  Therefore an option to use the destination =
-and/or the source addresses in the RELATED designation would be useful.
+Chain TcpLimit (0 references)
+target     prot opt source               destination
+RETURN     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp flags:0x04/0x04
+RETURN     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp flags:0x01/0x01
 
-My guess is that this would require a generic related iptables module.
+Chain UnderX (0 references)
+target     prot opt source               destination
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0          recent: CHECK seconds: 60 name: Last side: source
+           all  --  0.0.0.0/0            0.0.0.0/0          recent: REMOVE name: Last side: source
+           all  --  0.0.0.0/0            0.0.0.0/0          recent: REMOVE name: First side: source
 
 
-------=_NextPart_000_005C_01C35B81.9AE8E950
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>I think that I sent this message on 25 =
-July 03 but=20
-did not receive any replies.&nbsp; Please resubmit or explain what =
-happened to=20
-the first posting.</FONT></DIV>
-<DIV>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D</DIV=
->
-<DIV><FONT face=3DArial size=3D2>Is there currently a way&nbsp;for =
-iptables to force=20
-another packet stream&nbsp;conntrack entry&nbsp;to a RELATED state =
-without=20
-having to look inside of the packet data?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>For example:&nbsp; If a 10.0.0.2 client =
-behind an=20
-iptables firewall were to send an IMCP echo to 10.20.30.1, could a rule =
-be set=20
-up so that after the firewall see this packet, all udp packets sent to=20
-dport=3D45678&nbsp;would =
-be&nbsp;DNATed&nbsp;to&nbsp;10.0.0.2?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>The designated RELATED stream would in =
-general then=20
-be&nbsp;just like any other conntrack entry.&nbsp; This way designated =
-external=20
-streams could be designated RELATED by matching a related module=20
-filter.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>Right now I am looking at ZSNES which after an inside computer=20
-sends&nbsp;UDP packets to port 7845 it then needs to receive UDP packets =
-sent to=20
-port 7845 from the same host.&nbsp; Therefore an option to use the =
-destination=20
-and/or the source addresses in the RELATED designation would be =
-useful.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>My guess is that this would require a =
-generic=20
-related iptables module.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV></FONT></DIV></BODY></HTML>
+>> 
+>> I can't get the iplimit module to work for me,
+>> this is an SMP AMD machine.
+>> 
+>> # iptables -A TcpLimit -m iplimit --iplimit-above 125 -j OverX
 
-------=_NextPart_000_005C_01C35B81.9AE8E950--
+RD> Do you have OverX and TcpLimit as chains?
+
+RD> Ramin
+
+>> 
+>> iptables: Invalid argument
+>> 
+>> strace -f ...
+>> 
 
 
