@@ -1,13 +1,12 @@
-From: "Mark Weaver" <mark@npsl.co.uk>
-Subject: RE: Firewalling non-IPsec connections
-Date: Tue, 16 Dec 2003 19:46:33 -0000
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: Bridging firewall setup
+Date: Tue, 16 Dec 2003 13:58:02 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GFEPJIHHFOJDOFDMNAJDIEAGEKAA.mark@npsl.co.uk>
-References: <200312161512.24688.Antony@Soft-Solutions.co.uk>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731012C6471@coxhpexg.coxhp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312161512.24688.Antony@Soft-Solutions.co.uk>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +17,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> I'm intrigued by this.   If the packets are encrypted with ESP as they go
-> through PREROUTING, but you need to MARK them in order to recognise which
-> ones they are by the time they hit the INPUT chain, at what point
-> does the
-> decryption occur?   Does it mysteriously happen somewhere between the
-> PREROUTING and INPUT chains?   (If it does, I can see an awful lot more
-> puzzled newbies asking questions here once 2.6 takes off....)
->
-I have to guess so.  I've no idea TBH where the packets actually go, but
-this definitely works for me.  I'm more of a cook than a chef when it comes
-to netfilter.  I've tried looking around the source, but I'm pretty
-clueless, and the native ipsec doesn't seem to be documented at all.  It's
-not even got a maintainer listed, and virtually nothing in
-linux/Documentation.  (If anyone could point me in the right direction that
-would be great!).
 
-It kind of makes sense, because without this we'd have no possibility of
-handling packets that came in via an IPSC tunnel separately.
+This should be emphasized, as there seems to be a good deal of confusion =
+about what's included in the kernel and what isn't.
 
-Mark
+1)  Bridging is included in the kernel
+2)  Using iptables (or ebtables for that matter) to filter bridge =
+traffic is not included and must be patched in.
+
+Check out http://bridge.sourceforge.net/docs.html or =
+http://ebtables.sourceforge.net/documentation.html for more details.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Richard Doyle
+Sent: Tuesday, December 16, 2003 11:35 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: Bridging firewall setup
+
+
+On Tue, 2003-12-16 at 08:55, Chris Brown wrote:
+> Hi all, new to the list. I'm trying to get a bridging firewall setup =
+on=20
+> a RH 9 box and I'm not having much luck. The bridge itself works fine=20
+> but when I try to add rules using netfilter they seem to be ignored =
+and=20
+> packets I'm trying to block go on through. I've been digging through =
+the=20
+> list archives, google, various forums and HOWTOs and I still haven't=20
+> found the answer so I'm hoping someone here can point out what I'm =
+doing=20
+> wrong :)
+Did you patch the kernel to support this? The bridging code in the stock
+2.4 kernels doesn't support firewalling,
+
 
 
