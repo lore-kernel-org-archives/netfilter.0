@@ -1,12 +1,13 @@
-From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: Patch-o-matic
-Date: Thu, 14 Nov 2002 17:54:44 +1100
+From: Dax Kelson <Dax.Kelson@gurulabs.com>
+Subject: Re: SNAT & Squence Numbers
+Date: 12 Nov 2002 01:22:42 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200FAA488DE0D41194F10010B597610D445FE2@JUPITER>
+Message-ID: <1037089362.16667.13.camel@thud>
+References: <3DCFE7AC.9867DF43@bomberjacketproductions.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C28BAA.B6F49A60"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DCFE7AC.9867DF43@bomberjacketproductions.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,158 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: mike bramm <mike.bramm@bomberjacketproductions.com>
+Cc: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Mon, 2002-11-11 at 10:23, mike bramm wrote:
+> Hi, 
+>     I'm a Router/PIX guy that is just getting into the Linux/IPTables
+> scene. I've read the man pages and searched the web for information on
+> IPTables. And I'm not able to find answers to some of my questions.
+> Maybe you can help? 
+>       * If SNAT is configured for many to one (PAT), then I would
+>         presume that the connections are tracked by sequence numbers.
+>         Are the sequence numbers picked randomly, like the PIX? And is
+>         there a range in with they are picked from? What mod does
+>         this?
 
-------_=_NextPart_001_01C28BAA.B6F49A60
-Content-Type: text/plain;
-	charset="iso-8859-1"
+AFAIK, the sequence numbers are left intact. I could be wrong though. A
+quick check with a packet sniffer should answer this.
 
-Man!!!!! ,
- 
-I am sick of patch-o-matic and it's patches.. no matter how many times I
-upgrade my kernel (even a fresh copy) and time get a latest copy of iptables
-with it's patch-o-matic version, I am never able to patch the newnat stuff
-including the H323 patches..
- 
-What is missing???
- 
-I'm on (soon to be running, patching atm) Linux 2.4.19 with iptables 1.2.7a
-and it's patch-o-matic version....
- 
-I get this every damn time....
- 
-Testing... z-newnat16.patch NOT APPLIED (106 rejects out of 110 hunks)
-The submitted/z-newnat16 patch:
-   Status: Submitted for 2.4.20-pre1
-   Implementation of the new nat API for kernel 2.4.19-pre4 and above.
-   - enables us to have multiple related expectations
-   (necessarry for H.323, real IRC and PPTP tracking, ...)
-   - allows expectations to have timeouts
-   - adds full SACK support to the NAT code (we no longer strip
-   SACKPERM option out of all SYN patckes for ftp/irc connections)
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
-Testing patch submitted/z-newnat16.patch...
-Failed to patch copy of /usr/src/linux
-TEST FAILED: patch NOT applied.
- 
-[Press enter to continue]
- 
- 
-H323 Patch gets this (obviously coz it needs newnat16)... Grrr!!!
- 
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
-Testing patch extra/h323-conntrack-nat.patch...
-   Placed new Config.in line
-   Placed new Config.in line
-   Placed new Configure.help entry
-   Placed new Makefile line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-Could not find place to slot in ip_conntrack.h line
-TEST FAILED: patch NOT applied.
- 
-[Press enter to continue]
- 
- 
-what the hell is going on!?
- 
-Thanks,
- 
-George VIeira
- 
+>       * A syntax question. I've looked at alot of syntax examples and
+>         I've noticed one character that I can't seem to match up with
+>         any of the tutorials or man
+>         pages.                                                                                                         $IPTABLES -A INPUT $WAN_IFACE \ -j DROP   What the heck is "\"? It looks like it would be used to separate the match and the target, but is not really necessary. Is this just a personal preference or is it needed?
 
-------_=_NextPart_001_01C28BAA.B6F49A60
-Content-Type: text/html;
-	charset="iso-8859-1"
+This isn't iptables syntax at all. 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+The "\" at the end of a line is known as the continuation character.
+This is bourne shell syntax. It means that the next line should be
+treated as a continuation of the current line. The "\" character NOT at
+the end of the line, is the escape character and removes any special
+treatment of the following character and causes it to be treated
+literally.
 
+Dax
 
-<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>Man!!!!! 
-,</FONT></SPAN></DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>I am sick of 
-patch-o-matic and it's patches.. no matter how many times I upgrade my kernel 
-(even a fresh copy) and time get a latest copy of iptables with it's 
-patch-o-matic version, I am never able to patch the newnat stuff including the 
-H323 patches..</FONT></SPAN></DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>What is 
-missing???</FONT></SPAN></DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>I'm on (soon to be 
-running, patching atm) Linux 2.4.19 </FONT></SPAN><SPAN 
-class=767424606-14112002><FONT face=Arial size=2>with iptables 1.2.7a and it's 
-patch-o-matic version....</FONT></SPAN></DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>I get this every 
-damn time....</FONT></SPAN></DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>Testing... 
-z-newnat16.patch NOT APPLIED (106 rejects out of 110 hunks)<BR>The 
-submitted/z-newnat16 patch:<BR>&nbsp;&nbsp; Status: Submitted for 
-2.4.20-pre1<BR>&nbsp;&nbsp; Implementation of the new nat API for kernel 
-2.4.19-pre4 and above.<BR>&nbsp;&nbsp; - enables us to have multiple related 
-expectations<BR>&nbsp;&nbsp; (necessarry for H.323, real IRC and PPTP tracking, 
-...)<BR>&nbsp;&nbsp; - allows expectations to have timeouts<BR>&nbsp;&nbsp; - 
-adds full SACK support to the NAT code (we no longer strip<BR>&nbsp;&nbsp; 
-SACKPERM option out of all SYN patckes for ftp/irc 
-connections)<BR>-----------------------------------------------------------------<BR>Do 
-you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y<BR>Testing patch 
-submitted/z-newnat16.patch...<BR>Failed to patch copy of /usr/src/linux<BR>TEST 
-FAILED: patch NOT applied.</FONT></SPAN></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>[Press enter to 
-continue]</FONT></SPAN></DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>H323 Patch gets this 
-(obviously coz it needs newnat16)... Grrr!!!</FONT></SPAN></DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2>-----------------------------------------------------------------<BR>Do 
-you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y<BR>Testing patch 
-extra/h323-conntrack-nat.patch...<BR>&nbsp;&nbsp; Placed new Config.in 
-line<BR>&nbsp;&nbsp; Placed new Config.in line<BR>&nbsp;&nbsp; Placed new 
-Configure.help entry<BR>&nbsp;&nbsp; Placed new Makefile line<BR>Could not find 
-place to slot in ip_conntrack.h line<BR>Could not find place to slot in 
-ip_conntrack.h line<BR>Could not find place to slot in ip_conntrack.h 
-line<BR>TEST FAILED: patch NOT applied.</FONT></SPAN></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>[Press enter to 
-continue]</FONT></SPAN></DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial 
-size=2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=767424606-14112002><FONT face=Arial size=2>what the hell is 
-going on!?</FONT></SPAN></DIV>
-<DIV><FONT face=Arial size=2><SPAN 
-class=674251008-03092002></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN 
-class=674251008-03092002>Thanks,</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN 
-class=674251008-03092002></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN class=674251008-03092002>George 
-VIeira</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------_=_NextPart_001_01C28BAA.B6F49A60--
 
