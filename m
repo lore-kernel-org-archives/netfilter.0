@@ -1,12 +1,12 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: IPTABLES NAT
-Date: Wed, 10 Sep 2003 09:04:08 -0700 (PDT)
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: Traffic going out wrong interface
+Date: Wed, 10 Sep 2003 17:51:57 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309100844030.977@simba.math.ucla.edu>
-References: <017601c37761$b1aeecb0$798014ac@matthew>
+Message-ID: <Pine.LNX.4.44.0309101747300.23381-100000@localhost>
+References: <3F4D5905.9030400@chrisbrenton.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <017601c37761$b1aeecb0$798014ac@matthew>
+In-Reply-To: <3F4D5905.9030400@chrisbrenton.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Matthew Mileham <matthew@postbag.co.za>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Chris Brenton <cbrenton@chrisbrenton.org>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, 10 Sep 2003, Matthew Mileham wrote:
-> I've got 2 Redhat 9 Linux Servers purely running iptables and only using
-> the NAT function
+Hi Chris,
 
-> I want to load balance over two boxes, I want to send traffic out the one
-> box and SNAT 57.24.224.242, and return traffic to return to the second
-> box and DNAT to 172.20.128.121
+> So it appears that something about having iptables kick back RST's 
+> rather than type 3's caused the bogus ARP packets as well as the RST 
+> being transmitted out the wrong interface as I described below. I'm not 
+> sure if I'm the only one having this problem, but then again I'm not 
+> sure how many people scrutinize layer 2 as deeply as I do. ;-)
 
-> If I send traffic over the one box and receive on the same box it works,
-> but when I split the traffic it doesn't work !
+If it is the same problem as the RSTs (which looks likely, given the
+symptoms), you could try applying the latest patch-o-matic, or at least
+submitted/66_netfilter-policy-routing.patch.
 
-Suppose an internal machine originates a connection.  Its initial packet
-goes out box 1 and a connection is recorded.  If the outside world's answer
-came back to box 1, then box 1 could undo the SNAT and send the packet to
-the originator.  But box 2 has no idea what's going on.  If the answer goes
-through box 2, it either drops the packet if you have
-    iptables -t filter -P FORWARD DROP
-    iptables -t filter -A FORWARD -m state --state NEW,RELATED,ESTABLISHED \
-	-j ACCEPT
-because this is for a connection it has no record of, or it might forward
-the packet to box 1 which maybe, possibly, could recognize and correctly
-forward it, if the filter rules had the right security holes.  The effect
-is similar if an outside machine originates the connection to your internal
-host.
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
-It's "accepted wisdom" that the load on the machine from forwarding packets
-is very low, assuming your netfilter rules aren't too baroque and assuming
-you avoid logging most packets (log only the ones you drop).  Your kind of
-load sharing would only be justified if you had extreme datarates like a
-fully saturated OC-12 link or something like that.  If that were really
-true, I would load-share by splitting the internal subnet and giving one
-gateway machine to each half.
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  90095-1555
-Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
