@@ -1,13 +1,10 @@
-From: david@dark.x.dtu.dk
-Subject: Re: Stopping greedy http clients!
-Date: Tue, 24 Sep 2002 13:58:18 +0200
+From: "Netfilter.UPU" <netfilter@upu.int>
+Subject: Checkpoint VPN through Iptables
+Date: Tue, 24 Sep 2002 14:37:19 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020924115818.GA23587@dark.x.dtu.dk>
-References: <F76qUlyunxtkVO4alvo00004b24@hotmail.com>
+Message-ID: <8F31D8DF00BBD411975C00508B6D6E65F89096@hermes.upu.int>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <F76qUlyunxtkVO4alvo00004b24@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,25 +16,65 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: J and T <j_and_t@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Mon, Sep 23, 2002 at 05:52:50PM -0700, J and T wrote:
-> Is there a way to set a "speed limit" on tcp port 80 requests? Here's my 
-> problem:
-> 
-> I have a very popular site with hundreds of pages updated dynamically every 
-> 4 hours. Since high-speed internet access has become more popular, I have 
-> found more and more visitors using robots to download all pages in one 
-> quick multi-threaded connection. When you have a 1,000 people downloading 
-> 100 pages all at once you end up with a problem. I can't just block them by 
-> their IP because their IPs are dynamic.
+Hi all,
 
-I would take a look at iplimit from patch-o-matic, which "allows you to
-restrict the number of parallel TCP connections to a server per client IP
-address (or address block)". It will not block the access to your site, but
-you can use it to limit the number of parallel downloads the clients can
-use.
+I'm hanged with the following problem.
+I want to access our enterprise network behind a Nokia checkpoint FW-UPU
+@a.b.c.d 
+from a Windows 2k Checkpoint NG client @192.168.0.2
+behind my Linux Redhat 7.2 iptables 1.2.6a FW-HOME with eth0 @DHCP and eth1
+@192.168.0.1
 
-- David
+I have the following script
+
+$IPTABLES -F
+$IPTABLES -t nat -F
+$IPTABLES -t mangle -F
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -P FORWARD ACCEPT
+$IPTABLES -t nat -A POSTROUTING -s 192.168.0/24 -o eth0 -j MASQUERADE
+
+My little understanding of firewall, linux and iptables, makes me believe
+that :
+a) I've a quite secureless FW-HOME and my internal LAN is nated
+b) no matter the protocol, the src/dst ports etc, everything should pass.
+c) The checkpoint client should be able to access my enterprise VPN
+Is that right?
+
+My problem is that the client cannot access my enterprise VPN.
+I added some loging rules and it seems that
+My client uses UDP, src port 500 dst port 500.
+The FW-HOME send that to FW-UPU (prot udp, src port 500 dst port 500)
+(masquerading the IP@)
+The FW-UPU replies to FW-UPU (prot udp, src port 500 dst port 500)
+The FW-HOME replies : icmp port udp 500 unreachable
+
+I made another test before incriminating the Client
+I plugged it directly to my CableModem and it worked immediately.
+I check that it was configured correctly (IKE + Force UDP encapsulation +
+IKE over TCP)
+according to PhoneBoy http://www.phoneboy.com/faq/0141.html 
+and http://www.phoneboy.com/faq/0372.html
+After this test I concluded that the Client is operational.
+
+Another info:
+It worked with a Redhat 7.0 + ipchains
+It didn't worked with ISA
+
+So for me the problem is located somewhere on FW-HOME.
+Anybody can help, explain, advice!?!?
+
+
+
+_________________________________________________________
+Birahim FALL
+Project Manager (Postal Technologie Centre)
+Universal Postal Union, PO Box, CH-3000 Bern 15 (Switzerland)
+Phone	+41 313.503.372
+Fax	+41 313.503.110
+Email	mailto:birahim.fall@upu.int
+
+
 
