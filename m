@@ -1,9 +1,10 @@
-From: Shaun Sharples <shaun@bflyblue.za.net>
-Subject: Many TC u32 filter rules
-Date: Tue, 1 Mar 2005 15:16:30 +0200
-Message-ID: <20050301151630.B30345@starlight.chat.za.net>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: AW: Rule syntax
+Date: Tue, 1 Mar 2005 14:37:34 +0100
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF8699E6@p001ex03.porta.local>
 Mime-Version: 1.0
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,80 +15,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Chris Edwards <chris@wfcs.co.uk>
+Cc: netfilter@lists.netfilter.org
+
+the rule should look like this.
+
+/sbin/iptables -t nat -A PREROUTING -p tcp --sport 15871 -j DNAT -d =
+xxx.xxx.xxx.193
+
+afaik you cannot use the -o switch in the nat prerouting chain.
+i assume you want to change the destination address. but which=20
+packet from which interface/ip address should be changed? the=20
+best way is you read the nat howto from the netfilter page.
+
+http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO.txt
+
+it is always better to know what are doing with your packets.
+
+greets
+
+matthias baake
+
+-----Urspr=FCngliche Nachricht-----
+Von: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]Im Auftrag von Chris
+Edwards
+Gesendet: Dienstag, 1. M=E4rz 2005 12:39
+An: netfilter@lists.netfilter.org
+Betreff: Rule syntax
+
 
 Hi,
 
-I'm using many u32 rules to match single IP addresses which then get
-shaped using HFSC. Rules continually get added and removed as our DSL
-clients authenticat or disconnect.
+Need a bit of help with a rule. I've got a redhat box running a=20
+squid/websense installation. It's dualled interfaced on different =
+network,=20
+and due to an update websense has done, is only contactable on the=20
+interface which can't see the default gateway. TO cut a long story short =
 
-The initial problem I had was a 'tc filter del' only deletes rules
-reliably by referring to the rule's handle. From the cls_u32.c code its
-apparent the lower part of the handle can range from 0x800 to 0xfff so I
-use hash buckets to allow more than 2048 rules (hashing on the last
-octet).
+it aint working unless i can convince the reply packets to leave out the =
 
-The next problem is that the code allocates the 'next highest' handle
-available:
+same interface. Putting a route in works for some but not all users, =
+what=20
+i really need is to be able to redirect all the request as they try to =
+go=20
+out eth1 to the gateway on eth0.
 
-static u32 gen_new_kid(struct tc_u_hnode *ht, u32 handle)
-{
-        struct tc_u_knode *n;
-        unsigned i = 0x7FF;
+I've been trying this command:-
 
-        for (n=ht->ht[TC_U32_HASH(handle)]; n; n = n->next)
-                if (i < TC_U32_NODE(n->handle))
-                        i = TC_U32_NODE(n->handle);
-        i++;
+/sbin/iptables -t nat -A PREROUTING -o eth1 -p tcp --sport 15871 -j=20
+REDIRECT -d xxx.xxx.xxx.193
+or
+/sbin/iptables -t nat -A OUTPUT -o eth1 -p tcp -s xxx.xxx.xxx.xxx -j=20
+REDIRECT -d xxx.xxx.xxx.193
 
-        return handle|(i>0xFFF ? 0xFFF : i);
-}
+I'm really new to iptables, only having done what the squid installation =
 
-Over time this reaches 0xfff, and multiple rules then exist with the
-same handle. I've hacked some (rather ugly) code together to allocate
-the lowest available handle instead:
+required, can anyone help with how to write a rule that does what i =
+need?
 
-static u32 gen_new_kid(struct tc_u_hnode *ht, u32 handle)
-{
-        struct tc_u_knode *n;
-        unsigned i;
-        int bit;
-        char avec[256];
+Chris
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+If the only tool you have is a hammer, every problem looks like a nail.
 
-        memset(avec, 0, sizeof(avec));
-
-        for (n=ht->ht[TC_U32_HASH(handle)]; n; n = n->next)
-        {
-                i = TC_U32_NODE(n->handle);
-                if (i >= 0x800 && i <= 0xFFF)
-                {
-                        bit = i - 0x800;
-                        avec[bit / 8] |= 1 << (bit % 8);
-                }
-        }
-
-        for (i = 0x800; i < 0xFFF; i++)
-        {
-                bit = i - 0x800;
-                if (!(avec[bit / 8] & (1 << (bit % 8))))
-                        break;
-        }
-
-        return handle|(i>0xFFF ? 0xFFF : i);
-}
-
-This seems to work using some basic testing, but when running over a
-long period of time I'm getting kernel crashes. It is possible for
-more than one 'filter add' or 'filter del' to be running in parallel
-(this is on an SMP server running 2.6.11-rc2-mm2).
-
-Can anyone suggest why this might be causing Oopes or a better way of
-allocating handles? Otherwise, is there an easier way of managing tc
-filter rules that I'm missing?
-
-Regards,
-Shaun Sharples
 
