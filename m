@@ -1,13 +1,12 @@
-From: Mohammad Shakir <shakirz1@yahoo.com>
-Subject: RE: How to Block Mac Address ?
-Date: Sun, 15 Jun 2003 22:50:45 -0700 (PDT)
+From: Deshwal Chand <CDD@kampsax.co.in>
+Subject: Using IPTABLES, cannot go to External Interface
+Date: Mon, 16 Jun 2003 13:21:49 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030616055045.89712.qmail@web40704.mail.yahoo.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6EAE@wardrive.citadelcomputer.com.au>
+Message-ID: <88116A11E9DFD411870900508BEC3831803B42@CPQ01>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1253065757-1055742645=:89710"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C333DC.246CAEF0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6EAE@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,110 +16,100 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
+To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
---0-1253065757-1055742645=:89710
-Content-Type: text/plain; charset=us-ascii
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I have done by adding two lines in my script and it is working
- 
- 
-iptables -A FORWARD -j MACtest
-iptables -A INPUT -j MACtest
+------_=_NextPart_001_01C333DC.246CAEF0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
+> Hi,
+> 
+I am running a script for IPTABLES.
 
+> I have assigned 3 more IP addresses to my external interface. 
+> 
+> eth0 - x.y.z.1
+> eth0:0 - x.y.z.2
+> eth0:1 - x.y.z.3
+> eth0:2 - x.y.z.4
+> 
+> I have SNATed my internal network to eth0. I can do all the things. But, I
+> cannot reach to any of IP addresses x.y.z.1 - 3. Though, I can go to any
+> host in the world, but cannot go directly to eth0.
+> 
+> I am running RedHat Linux 2.4.7 with Iptables 1.2.3
+>  
+> 
+> 
+> 
+> 
+>  
+> 
+> Regards,
+> 
+> Chand Deshwal (M.Tech CS&E, MCSE, CCNA) 	
+> 
 
+------_=_NextPart_001_01C333DC.246CAEF0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-George Vieira <georgev@citadelcomputer.com.au> wrote:I have learnt that mac address matching only worked in certain chains.. I think it was INPUT and FORWARD only but not sure.. and I don't know why this was the case..
- 
-try it on other chains and see the results.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>Using IPTABLES, cannot go to External Interface</TITLE>
+</HEAD>
+<BODY>
 
-Thanks,
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
+</P>
 
- 
-____________________________________________
-George Vieira
-Citadel Computer Systems Pty LtdSystems Managergeorgev AT citadelcomputer DOT com DOT auCitadel Computer Systems Pty Ltd
-Phone : +61 2 9955 2644HelpDesk: +61 2 9955 2698http://www.citadelcomputer.com.au
- 
- 
------Original Message-----
-From: Mohammad Shakir [mailto:shakirz1@yahoo.com]
-Sent: Sunday, June 15, 2003 4:56 PM
-To: netfilter@lists.samba.org
-Subject: How to Block Mac Address ?
+<P><FONT SIZE=3D2 FACE=3D"Arial">I am running a script for =
+IPTABLES.</FONT>
+</P>
 
+<P><FONT SIZE=3D2 FACE=3D"Arial">I have assigned 3 more IP addresses to =
+my external interface. </FONT>
+</P>
 
+<P><FONT SIZE=3D2 FACE=3D"Arial">eth0 - x.y.z.1</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">eth0:0 - x.y.z.2</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">eth0:1 - x.y.z.3</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">eth0:2 - x.y.z.4</FONT>
+</P>
 
-I want to block a mac address for this I complie this rule 
-but it is not working, any friend who can slove this problem.
+<P><FONT SIZE=3D2 FACE=3D"Arial">I have SNATed my internal network to =
+eth0. I can do all the things. But, I cannot reach to any of IP =
+addresses x.y.z.1 - 3. Though, I can go to any host in the world, but =
+cannot go directly to eth0.</FONT></P>
 
+<P><FONT SIZE=3D2 FACE=3D"Arial">I am running RedHat Linux 2.4.7 with =
+Iptables 1.2.3</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;</FONT>
+</P>
+<BR>
+<BR>
+<BR>
 
-#  Flush all Rules
-/sbin/iptables --flush
-/sbin/iptables --table nat --flush
-/sbin/iptables --delete-chain
-/sbin/iptables --table nat --delete-cha
-/sbin/iptables -N MACtest
+<P><FONT SIZE=3D2 FACE=3D"Arial"></FONT>&nbsp;
+</P>
 
-#  to block this MAC Address
-/sbin/iptables -t filter -A FORWARD -j MACtest
-/sbin/iptables -A MACtest -m mac --mac-source 00:02:55:EE:65:D8 -j DROP
+<P><FONT SIZE=3D2 FACE=3D"Arial">Regards,</FONT>
+</P>
 
-#  for MASQUREADE
-/sbin/iptables --table nat --append POSTROUTING -s 192.168.0.0/24 --out-interface ppp0 -j MASQUERADE
+<P><FONT SIZE=3D2 FACE=3D"Arial">Chand Deshwal (M.Tech CS&amp;E, MCSE, =
+CCNA)</FONT> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+</P>
 
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-
-
-
----------------------------------
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month! 
-
-
----------------------------------
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month!
---0-1253065757-1055742645=:89710
-Content-Type: text/html; charset=us-ascii
-
-<DIV>I have done by adding two lines in my script and it is working</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>iptables&nbsp;-A FORWARD -j MACtest<BR>iptables&nbsp;-A INPUT -j MACtest<BR><BR><BR><BR><BR><B><I>George Vieira &lt;georgev@citadelcomputer.com.au&gt;</I></B> wrote:
-<BLOCKQUOTE style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px"><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<META content="MSHTML 6.00.2800.1106" name=GENERATOR>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=589323000-16062003>I have learnt that mac address matching only worked in certain chains.. I think it was INPUT and FORWARD only but not sure.. and I don't know why this was the case..</SPAN></FONT></DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=589323000-16062003></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=589323000-16062003>try it on other chains and see the results.</SPAN></FONT></DIV>
-<DIV>
-<P><FONT face=Arial size=2><SPAN class=674251008-03092002>Thanks,</SPAN></FONT></P></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=674251008-03092002></SPAN></FONT>&nbsp;</DIV>
-<DIV style="HEIGHT: 232px; WIDTH: 305px">
-<MARQUEE behavior=slide direction=down id=Marquee1 loop=1 scrollAmount=1 scrollDelay=20 style="HEIGHT: 57px; WIDTH: 220px" trueSpeed border="2"><FONT size=1>____________________________________________</FONT></MARQUEE><BR><B><FONT color=#000066 size=2></FONT><FONT color=#000066 face=Verdana size=2>George Vieira<BR></FONT></B>
-<MARQUEE behavior=slide id=Marquee2 loop=1 scrollAmount=1 scrollDelay=3 style="HEIGHT: 17px; WIDTH: 240px" trueSpeed border="0"><FONT color=black face="Verdana, Verdana, Helvetica, sans-serif" size=1><B>Citadel Computer Systems Pty Ltd</B></FONT></MARQUEE>
-<MARQUEE behavior=slide id=Marquee2 loop=1 scrollAmount=1 scrollDelay=3 style="HEIGHT: 17px; WIDTH: 240px" trueSpeed border="0"><FONT color=black face="Verdana, Verdana, Helvetica, sans-serif" size=1><B>Systems Manager</B></FONT></MARQUEE><FONT face=Verdana>
-<MARQUEE behavior=slide direction=right height=16 id=Marquee3 loop=1 scrollAmount=2 scrollDelay=5 style="FONT-SIZE: 10pt; HEIGHT: 17px; WIDTH: 255px" trueSpeed width=300 border="0"><FONT color=#000099 face="Verdana, Verdana, Helvetica, sans-serif" size=1>georgev AT citadelcomputer DOT com DOT au</FONT></MARQUEE>
-<MARQUEE behavior=slide id=Marquee3 loop=1 scrollAmount=1 scrollDelay=3 style="FONT-SIZE: 10pt; HEIGHT: 17px; WIDTH: 220px" trueSpeed border="0"></MARQUEE></FONT>
-<DIV><FONT color=black face="Verdana, Verdana, Helvetica, sans-serif" size=1>Citadel Computer Systems Pty Ltd</FONT><FONT face=Verdana></DIV>
-<MARQUEE behavior=slide direction=right id=Marquee3 loop=1 scrollAmount=1 scrollDelay=3 style="FONT-SIZE: 10pt; HEIGHT: 17px; WIDTH: 220px" trueSpeed border="0"><FONT color=black size=1>Phone : +61 2 9955 2644</FONT></MARQUEE></FONT><FONT face=Verdana>
-<MARQUEE behavior=slide direction=right id=Marquee3 loop=1 scrollAmount=1 scrollDelay=3 style="FONT-SIZE: 10pt; HEIGHT: 17px; WIDTH: 220px" trueSpeed border="0"><FONT color=black size=1>HelpDesk: +61 2 9955 2698</FONT></MARQUEE></FONT>
-<MARQUEE behavior=slide direction=right id=Marquee3 loop=1 scrollAmount=4 scrollDelay=5 style="FONT-SIZE: 10pt; HEIGHT: 17px; WIDTH: 220px" trueSpeed border="0"><A href="http://www.citadelcomputer.com.au/"><FONT color=#000099 face="Verdana, Verdana, Helvetica, sans-serif" size=1><A href="http://www.citadelcomputer.com.au/">http://www.citadelcomputer.com.au</FONT></A></MARQUEE></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV align=left class=OutlookMessageHeader dir=ltr><FONT face=Tahoma size=2>-----Original Message-----<BR><B>From:</B> Mohammad Shakir [mailto:shakirz1@yahoo.com]<BR><B>Sent:</B> Sunday, June 15, 2003 4:56 PM<BR><B>To:</B> netfilter@lists.samba.org<BR><B>Subject:</B> How to Block Mac Address ?<BR><BR></FONT></DIV>
-<P>I want to block a mac address for this I complie this rule <BR>but it is not working, any friend who can slove this problem.</P>
-<P><BR>#&nbsp; Flush all Rules<BR>/sbin/iptables --flush<BR>/sbin/iptables --table nat --flush<BR>/sbin/iptables --delete-chain<BR>/sbin/iptables --table nat --delete-cha<BR>/sbin/iptables -N MACtest</P>
-<P>#&nbsp; to block this MAC Address<BR>/sbin/iptables -t filter -A FORWARD -j MACtest<BR>/sbin/iptables -A MACtest -m mac --mac-source 00:02:55:EE:65:D8 -j DROP</P>
-<P>#&nbsp; for MASQUREADE<BR>/sbin/iptables --table nat --append POSTROUTING -s 192.168.0.0/24 --out-interface ppp0 -j MASQUERADE</P>
-<P>echo "1" &gt; /proc/sys/net/ipv4/ip_forward<BR></P>
-<DIV></DIV>
-<P>
-<HR SIZE=1>
-Do you Yahoo!?<BR><A href="http://pa.yahoo.com/*http://rd.yahoo.com/evt=1207/*http://promo.yahoo.com/sbc/">SBC Yahoo! DSL</A> - Now only $29.95 per month! </BLOCKQUOTE></DIV><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://pa.yahoo.com/*http://rd.yahoo.com/evt=1207/*http://promo.yahoo.com/sbc/">SBC Yahoo! DSL</a> - Now only $29.95 per month!
---0-1253065757-1055742645=:89710--
+</BODY>
+</HTML>
+------_=_NextPart_001_01C333DC.246CAEF0--
 
