@@ -1,16 +1,12 @@
-From: Joel Newkirk <firewalldude@newkirk.us>
-Subject: Re: udp/tcp port range rules for forward/input chains
-Date: Thu, 16 Oct 2003 17:49:52 -0400
+From: "Ringer, Torleiv" <tringer@mpr.org>
+Subject: Isolate a legacy machine
+Date: Thu, 16 Oct 2003 17:02:05 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066340992.2300.249.camel@alpha.newkirk.us>
-References: <1066187418.14600.28.camel@tarkus>
-	 <1066199232.20310.4.camel@alpha.newkirk.us>
-	 <1066340042.6368.21.camel@tarkus>
-Reply-To: firewalldude@newkirk.us
+Message-ID: <B4B08E56FC7A304EB88DC4B97043921816EFBE@hqmail03.mpr.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1066340042.6368.21.camel@tarkus>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,22 +17,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: tedkaz@optonline.net
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 2003-10-16 at 17:34, Ted Kaczmarek wrote:
-> As it turned out their was a hidden character in one of my logging rules
-> which was totally messing with my head :-)
+Hi there,
 
-> > > If anyone has a link that or info that can steer me in the right
-> > > direction the beers are on me at the Javits Center Linux show.
-> > > 
-> > > Thanks,
-> > > Ted
+I am not exactly sure how this needs to be done...
 
-So no beer?  ;^)
+I have a legacy machine that I need to isolate from our LAN. Network =
+access to this machine will be limited to port forwarding of telnet, and =
+a limited FTP access that will only be initiated locally on a proxy =
+machine (which will also run the iptables).
 
-j
+Let's say that the legacy machine currently has address 10.2.1.100, and =
+I would like my proxy/firewall to have the same address. I will be =
+unplugging the legacy machine from the LAN, then assigning the =
+proxy/firewall the same IP.
 
+Can I isolate the 100 machine from the LAN, and keep the same IP? I need =
+to do this for failover, so that if the proxy box goes down, I can just =
+unplug the 100 machine from the proxy/firewall, and plug it back into =
+the LAN. I would also be unplugging the proxy/firewall from the LAN at =
+this point.
+
+Can I port forward telnet from the LAN (eth0) side to the legacy (eth1) =
+side where both the proxy machine and the legacy machine have the same =
+IP but are isolated from each other? Is this impossible?
+
+Torleiv Ringer
+IT Support
+Minnesota Public Radio
+http://www.mpr.org
 
 
