@@ -1,36 +1,24 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: [FAQ] Re: PPTP connection tracking and NAT helper in Linux 2.6
-Date: Mon, 18 Oct 2004 10:38:08 +1000
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Message-ID: <41731070.2060607@snapgear.com>
-References: <20766.1097853320@www26.gmx.net>
-	<20041016081354.GE29413@sunbeam.de.gnumonks.org>
+From: "Faisal" <faisal@clickonlinenetworks.com>
+Subject: having more then 1 external interfaces ?
+Date: Mon, 18 Oct 2004 06:07:45 +0500
+Sender: netfilter-bounces@lists.netfilter.org
+Message-ID: <000201c4b4ae$e065e5a0$0300000a@serverxxx>
+References: <20041007164628.GN13901@sunbeam.de.gnumonks.org><Pine.LNX.4.61.0410180124290.11959@filer.marasystems.com>
+	<20041017233937.GB21927@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <20041016081354.GE29413@sunbeam.de.gnumonks.org>
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Harald Welte <laforge@netfilter.org>
-Cc: Jochen Rueppel <j.rueppel@gmx.de>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: netfilter@lists.netfilter.org
 
-Harald Welte wrote:
-> As soon as somebody ports it and sends me a patch.  I receive about 3-5
-> mails per week asking for this feature... but apparently nobody is
-> willing to contribute some time back to the netfilter project.
-
-It appears Mandrake have ported the patch to 2.6.
-See http://lists.netfilter.org/pipermail/netfilter-devel/2004-August/016550.html
-It still needs at least some testing, but should be close.
-
--- 
-Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
+is it possible in iptables to have more then 1 external interfaces ?
 
