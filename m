@@ -1,14 +1,11 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
-Subject: Re: News-Server
-Date: 07 Jun 2002 17:55:07 +0200
+From: Florent AIDE <faide@alphacent.com>
+Subject: new ulogd interpreter plugin for localtime
+Date: Fri, 7 Jun 2002 18:04:33 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023465307.1731.14.camel@billy.demon.nl>
-References: <3D0092BF.3010901@globit.com>
+Message-ID: <200206071804.34315.faide@alphacent.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-xuFOERPd1ZuMKauybXkS"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3D0092BF.3010901@globit.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,73 +15,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: Uwe Eisner <Uwe.Eisner@globit.com>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter User List <netfilter@lists.samba.org>
+Cc: Christophe de Vienne <cdevienne@alphacent.com>, Ronan =?iso-8859-1?q?Penla=EB?= <rpenlae@alphacent.com>
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
---=-xuFOERPd1ZuMKauybXkS
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Here is the final and working version of ulogd_LOCALTIME.c
 
-fre, 2002-06-07 kl. 13:02 skrev Uwe Eisner:
+This plugin permits to log the localtime at the time we see the packet in=
+to=20
+the mysql database. It timestamps any packets which goes through ulogd.
 
-> I subscribed the mailinglist, 2 weeks ago, since my mailbox is=20
-> overflowing by netfilters-emails. The question is:
->  is there a newsserver, which I can subscribe and get the same messages?=20
-> If not, is there one in scheduling or is this topic already disccused at=20
-> the mailling-list?
+I wrote this because I needed to have an oob_time_sec equivalent for the=20
+outpout packets.
 
-> Write my your opinion about this idea! I think this would be more=20
-> confortable, wouldn't it?...
+you just need to add the line:
 
-1: Mailing lists are better than news groups. If you budget for a larger
-hard disk (minimum 20 GB), you can cope with a few of them;
+plugin /usr/local/lib/ulogd/ulogd_LOCALTIME.so
 
-2: Why are mailing lists better than news groups? Because you can use
-what you have on your hard disk - or in the Internet mail archives - as
-a reference for what has been going on for the last few months (if
-there's nothing of interest on your hard disk any more, you delete the
-old mails). Moreover, if you have modem access to the Internet and
-aren't a heir to a million, newsgroups cost as much as streaky pig meat
-(nyhendegruppar kostar flesk :). News group items (BIND, no.alt.katter,
-is.ymislegt), etc., disappear all too soon, with no archives;
+in your ulogd.conf
 
-3: Just be glad you're not subscribed to OpenOffice.org - the World's
-answer to Microsoft's MSOffice and very popular at the moment - for
-which your 20 GB hard disk would have to become a 40 GB hard disk.
+http://www.alphacent.com/opensource/
 
-Best, off tpic, sorry,
+on the page (in french) is a link for English Language:
+you will find the plugin, the new sql schema, the new Rules.make.in
 
-Tonni
+Any feedback is appreciated.
 
---=20
-
-Tony Earnshaw
-
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
-
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
-
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
-
-
-
---=-xuFOERPd1ZuMKauybXkS
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
-
+Florent AIDE
+- - --
+The magic of our first love is our ignorance that it can ever end.
+                -- Benjamin Disraeli
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-iD8DBQA9ANdW99dgUTvnuYERApShAKCRCoB/XNgY9Ve0Pn3EnLDQ6FoMVgCbBrDF
-78rAKMNpnj5FrVqQFE1Qggg=
-=baL1
+iD8DBQE9ANmSQe8gCED8yYERAlb1AJ9Sin+NcUd4xreUGLkuMNpCGAtmCwCeNSus
+QRxeE5MIwAoWet8drO/QJG0=3D
+=3DJgmF
 -----END PGP SIGNATURE-----
-
---=-xuFOERPd1ZuMKauybXkS--
 
 
