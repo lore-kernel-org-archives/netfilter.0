@@ -1,12 +1,13 @@
-From: "Wilfried BARNAVON RPi" <w.barnavon@cpro.fr>
-Subject: Hey ! A really bugged official release ?
-Date: Fri, 9 Jul 2004 10:20:31 +0200
+From: =?ISO-8859-1?Q?Nicole_H=E4hnel?= <nicole.haehnel@epost.de>
+Subject: Re: Dead loop on netdevice ipsec0, fix it urgently!
+Date: Fri, 09 Jul 2004 13:50:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003501c4658d$99d6c5c0$f301a8c0@groupecpro.local>
+Message-ID: <40EE8676.8010708@epost.de>
+References: <40EE7E15.70204@epost.de> <200407091227.46746.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0032_01C4659E.5D21A260"
+Content-Transfer-Encoding: Quoted-Printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200407091227.46746.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,76 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+I have no nat rules on interface ipsec0.
+There is only one rule on this interface.
+It's all allowed.
 
-------=_NextPart_000_0032_01C4659E.5D21A260
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have nat rules only for a little group of pcs and a proxy
+and they are only for surfing.
 
-Hi !
 
-I've downloaded iptables-1.2.11, kernel 2.6.7 and pom-ng-20040621
+Thanks!
 
-kernel and pom-ng seem OK however, even without any patch, iptables =
-won't compile !
-
-I'm on Fedora Core 2.
-
-It says that there is no rule to build the target =
-"extensions/libipt_!!!.c" needed by "extensions/libipt_!!!.d". Stopped !
-
-The return code of make is 2.
-
-any idea ?
+Nicole
 
 
 
+Antony Stone wrote:
 
-Wilfried 
-------=_NextPart_000_0032_01C4659E.5D21A260
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3D"Lucida Console">Hi !</FONT></DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console">I've downloaded iptables-1.2.11, =
-kernel 2.6.7=20
-and pom-ng-20040621</FONT></DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console">kernel and pom-ng seem OK however, =
-even without=20
-any patch, iptables won't compile !</FONT></DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console">I'm on Fedora Core 2.</FONT></DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console">It says that there is no rule to =
-build the=20
-target "extensions/libipt_!!!.c" needed by "extensions/libipt_!!!.d". =
-Stopped=20
-!</FONT></DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console">The return code of make is =
-2.</FONT></DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console">any idea ?</FONT></DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console"></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Lucida Console">Wilfried </FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0032_01C4659E.5D21A260--
+> On Friday 09 July 2004 12:14 pm, Nicole H=E4hnel wrote:
+>=20
+>=20
+>>Hi,
+>>
+>>I get this error on my firewall-vpn-server
+>>
+>>Dead loop on netdevice ipsec0, fix it urgently!
+>=20
+>=20
+> What is your ruleset (specifically, any nat rules, and any rules applyi=
+ng to=20
+> interface ipsec0)?
+>=20
+>=20
+>>Any ideas where this come from?
+>=20
+>=20
+> http://www2.frell.ambush.de/archives/freeswan-users/4677.html
+>=20
+> Regards,
+>=20
+> Antony.
+>=20
 
 
