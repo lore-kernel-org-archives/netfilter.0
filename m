@@ -1,12 +1,15 @@
-From: "zeinali" <zeinali@iomco.com>
-Subject: deny telnet&ftp except 2 station
-Date: Sat, 1 Feb 2003 09:17:12 +0330
+From: "Alexander W. Janssen" <alexander.janssen@gmx.de>
+Subject: Re: How to let people see my webcam using Windows Media Encoder
+Date: Sun, 2 Feb 2003 18:00:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c2c9b5$5e967f20$190da8c0@iomco.com>
+Message-ID: <20030202180012.E1937@ynfonatic.de>
+References: <000601c2caa5$0a3c1700$0601a8c0@jasper>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C2C9D2.B4C771C0"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CGDBiGfvSTbxKZlW"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <000601c2caa5$0a3c1700$0601a8c0@jasper>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,75 +19,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Jasper Lingers <jasperlingers@zonnet.nl>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C2C9D2.B4C771C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-dear sir
-recently i installed redhat 8.0 and i setuped squid but im going to deny
-any telnet and ftp to my linux box except 2 ip address like
-192.168.13.24 & 192.168.13.25  but i don't know how can i do it with
-IPTABLES 1.26a 
-if possible pls kindly help me
-
-Many Thanks & Best Regards
-
-         Behnam Zeinali
-
-      www.maadiran.com
-
- 
-
- 
-
-------=_NextPart_000_0001_01C2C9D2.B4C771C0
-Content-Type: text/html;
-	charset="iso-8859-1"
+--CGDBiGfvSTbxKZlW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<TITLE>Message</TITLE>
+Hi Jasper,
 
-<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV>
-<DIV><SPAN class=3D695404804-29012003><FONT face=3DArial size=3D2>dear=20
-sir</FONT></SPAN></DIV>
-<DIV><SPAN class=3D695404804-29012003><FONT face=3DArial =
-size=3D2>recently i installed=20
-redhat 8.0 and i setuped squid but im going to deny any telnet and ftp =
-to my=20
-linux box&nbsp;<SPAN class=3D956234305-01022003>except 2 ip address like =
+On Sun, Feb 02, 2003 at 11:22:45AM +0100, Jasper Lingers wrote:
+> Also when installed my IP is 192.168.1.6 but now is the thing how people
+> can see my webcam from outside. I have no idea where the IPtables config
+> file is also cause im using WebMin at the moment so if people could
+> explain it me in steps, I would appreciate that.
 
-192.168.13.24 &amp; 192.168.13.25 &nbsp;</SPAN>but i don't know how can =
-i do it=20
-with IPTABLES 1.26a </FONT></SPAN></DIV>
-<DIV><SPAN class=3D695404804-29012003><FONT face=3DArial size=3D2>if =
-possible pls=20
-kindly help me</FONT></SPAN></DIV></DIV>
-<DIV class=3DSection1>
-<P class=3DMsoNormal><B><I>Many Thanks &amp; Best Regards<?xml:namespace =
-prefix =3D=20
-o ns =3D "urn:schemas-microsoft-com:office:office" =
-/><o:p></o:p></I></B></P>
-<P class=3DMsoNormal><B><I><SPAN=20
-style=3D"mso-spacerun: =
-yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-</SPAN>Behnam Zeinali<o:p></o:p></I></B></P>
-<P class=3DMsoNormal><B><I><SPAN style=3D"COLOR: blue"><SPAN=20
-style=3D"mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-</SPAN>www.maadiran.com<o:p></o:p></SPAN></I></B></P>
-<P class=3DMsoNormal><o:p>&nbsp;</o:p></P></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
+first you have to know on which port your webcam-program listens.
+I would guess it's a small webserver listening on port 80?
 
-------=_NextPart_000_0001_01C2C9D2.B4C771C0--
+Then you just have to do:
 
+iptables -t nat -I PREROUTING -p tcp --dport 80 -j DNAT --to-destination 19=
+2.168.1.6:80
+
+This redirects all incoming traffic destined for port 80 on your firewall to
+port 80 on your internal windows-box. If you allready use port 80 on your
+firewall for some sort of webserver, you can assign another port. For examp=
+le,
+you might want to redirect port 8888 to port 80 on you internal machine. Th=
+en
+just do:
+
+iptables -t nat -I PREROUTING -p tcp --dport 8888 -j DNAT --to-destination =
+192.168.1.6:80
+
+If your webcam-server doesn't listen to port 80, adapt the 192.168.1.6:n pa=
+rt
+accordingly.
+
+> I a totally n00b with compiling kernels and stuff, but if it is possible
+> to run a program or edit IPtables or so, please help me out, I need it
+> get to work for my parents :S
+
+If you are using a recent distribution you don't have to compile any kernel
+any more as long as you don't want bleeding-edge features.
+
+> Power2All
+> Holland
+
+Umh? :-)=20
+
+Hope that helps, Alex.
+
+--=20
+"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
+l."
+Instructions for use of this post: Insert tounge in cheek. Read as normal.
+
+--CGDBiGfvSTbxKZlW
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: Weitere Infos: siehe http://www.gnupg.org
+
+iEYEARECAAYFAj49TpsACgkQEMMZKORQoYI39wCfS+h9XEdYzDucJ9t5Mc4TJhhj
+Pp4Ani3GUJv703CNWNwludMBad/gon2j
+=otPT
+-----END PGP SIGNATURE-----
+
+--CGDBiGfvSTbxKZlW--
 
