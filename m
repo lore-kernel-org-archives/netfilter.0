@@ -1,14 +1,13 @@
-From: David Cannings <lists@edeca.net>
-Subject: Re: martians and portforwarding to 127.0.0.1
-Date: Tue, 20 Apr 2004 17:43:13 +0100
+From: marc manthey <marc@electric-circus.de>
+Subject: hello german speaking?
+Date: Tue, 20 Apr 2004 18:42:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404201743.13848.lists@edeca.net>
+Message-ID: <BE7DD38E-92E9-11D8-8B5A-003065576D78@electric-circus.de>
 References: <20040420163326.32095.qmail@web40706.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Apple Message framework v613)
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20040420163326.32095.qmail@web40706.mail.yahoo.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 20 April 2004 17:33, udo wrote:
-> $path_iptables -t nat -A PREROUTING -p tcp -i $ext_if
-> -s 0/0 -d $ext_ip --dport 222 -j DNAT --to
-> 127.0.0.1:22
-> How can I make the sshd (attached to loopback) work
-> without `martian destination` messages for packets
-> destined for port 22?
+hallo
 
-Please see my lengthly post about this from last month.  Due to the way 
-the martian checking code in the kernel is written, I do not think this 
-is possible.
+kennst sich hier jemand  mit CUSEEME  aus oder hat schon mal einer=20
+einen REFLECTOR
+server aufgesetzt oder kennt  die  problematik  mit den ports?
 
-http://lists.netfilter.org/pipermail/netfilter/2004-March/051615.html
+w=E4re  sehr  dankbar
 
-Hopefully somebody can prove this wrong, I hope that post helps you.
+gruss
 
-David
+aus k=F6ln
+
+--
+
+          Marc Manthey (C.V.O.)
+          Hildeboldplatz 1a
+          D =96 50672 K=D6LN
+          web:http://www.let.de
+          mail:marc@electric-circus.de
+          Mobile:+49(0)177-3415481
+--
+
 
