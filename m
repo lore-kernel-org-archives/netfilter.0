@@ -1,11 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: idea for iptables
-Date: Tue, 9 Nov 2004 14:26:21 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411091421190.25655@blackhole.kfki.hu>
-References: <20041108213819.GE4384@taz.net.au>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Nat Rule ( Req help ASAP)
+Date: Tue, 9 Nov 2004 12:21:21 -0500
+Message-ID: <20041109172121.GA15503@bender.817west.com>
+References: <20041109070456.3723.qmail@web50506.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041108213819.GE4384@taz.net.au>
+Content-Disposition: inline
+In-Reply-To: <20041109070456.3723.qmail@web50506.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +17,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Craig Sanders <cas@taz.net.au>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 9 Nov 2004, Craig Sanders wrote:
+On Mon, Nov 08, 2004 at 11:04:56PM -0800, Nilesh wrote:
+> Hello All, 
+> 
+> I am using Squid proxy and IPtables Firewall 
+> through squid I am able to block Messenger and other
+> sites but If I put this in firewall I couldnt able to
+> block messenger 
+> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to
+> $EXTIP 
 
-> it would be useful when Appending or Inserting a rule into a chain, to be able
-> to specify an expiry time for that rule, so that it was automatically deleted
-> after N seconds, e.g. "--rule_expire 3600" for 1 hour, or "--rule_expire 86400"
-> for 1 day.
->
-> that would be very handy for writing log-watcher scripts (see below for
-> example) without having to worry about cleaning up old rules - just Insert the
-> rule with the desired expiry time and forget about it.
+that's a NAT rule that translates the source IP address of all your
+outbound traffic leaving $EXTIF to $EXTIP.
 
-ipset would be more appropriate for the given task:
+> In connection settings If I choose no proxies the
+> Yahoo messenger easily get connected.
+> 
+> also we use CISCO VPN client to connect Outside VPN
+> server If I want to connect VPN I need to put that
+> rules otherwise I wont connect.
+> 
+> Could any one please tell How to solve my problem
+> I want to block messengers also want to connect VPN
+> server though client 
 
-- single, static iptables rule:
+i'm going to assume that your FORWARD policy must be set to ACCEPT
+(note:  i wouldn't have to assume if you had included your rules via:
+ iptables -t mangle -vnxL; iptables -t nat -vnxL; iptables -vnxL).
 
-	/sbin/iptables -I INPUT -m set --set spammers src -j DROP
+if your FORWARD policy is set to ACCEPT, you can explicitly drop the
+ports used by yahoo messenger:
 
-- dynamically maintained 'spammers' set
+  # yahoo messenger
+  iptables -A FORWARD -p tcp --dport 5050 -j DROP
+  # yahoo messenger voice chat
+  iptables -A FORWARD -p tcp --dport 5000:5001 -j DROP
+  iptables -A FORWARD -p udp --dport 5000:5010 -j DROP
+  # yahoo messenger web cam
+  iptables -A FORWARD -p tcp --dport 5100 -j DROP
 
-Unfortunately the new ipset package is still not ready yet :-((
+if your FORWARD policy is set to DROP, and need to allow the VPN client,
+you should be able to allow it with:
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+  # IKE
+  iptables -A FORWARD -i $INT_IF -p udp --dport 500 -j ACCEPT
+  # IPSec
+  iptables -A FORWARD -i $INT_IF -p 50 -j ACCEPT
+  # UDP Encapsulation
+  iptables -A FORWARD -i $INT_IF -p udp --dport 4500 -j ACCEPT
+
+the specific encapsulation ports/protocols may vary depending on your
+client settings.
+
+-j
+
+--
+"I saw weird stuff in that place last night. Weird, strange, sick,
+ twisted, eerie, godless, evil stuff. And I want in."
+        --The Simpsons
 
