@@ -1,13 +1,13 @@
 From: "Jerry M. Howell II" <jmhowell@jmhowell.com>
-Subject: Re: Installing IPtables-1.2.8
-Date: Thu, 24 Jul 2003 20:38:35 -0600
+Subject: Re: Keeping Log
+Date: Thu, 24 Jul 2003 20:41:21 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030724203835.A18236@jmhowell.com>
-References: <WorldClient-F200307250340.AA40210000@iub.edu.bd>
+Message-ID: <20030724204121.B18236@jmhowell.com>
+References: <WorldClient-F200307250344.AA44260001@iub.edu.bd>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <WorldClient-F200307250340.AA40210000@iub.edu.bd>; from tymur@iub.edu.bd on Fri, Jul 25, 2003 at 03:40:21AM +0600
+In-Reply-To: <WorldClient-F200307250344.AA44260001@iub.edu.bd>; from tymur@iub.edu.bd on Fri, Jul 25, 2003 at 03:44:26AM +0600
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,16 +21,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Jul 25, 2003 at 03:40:21AM +0600, tymur wrote:
+On Fri, Jul 25, 2003 at 03:44:26AM +0600, tymur wrote:
 > Hi,
 > 
-> I'm trying to install iptables-1.2.8. What should the KERNEL_DIR?
+> I'm trying to keep a log of the snuffing that my linux gateway machine 
+> has to go through. 
 > 
-> Isn't it the "/usr/src/linux" ?
+> As I haven't done any log keeping with iptables I am open to any 
+> suggestions.
 > 
-> Please Advise.
+> Thanks.
 > 
-That depends on where you put your kernel sources.
+Google.com has plenty of references to iptable logging. Also the nat
+homepage has plenty of examples wich include firewall logging.
 -- 
 Jerry M. Howell II
 
