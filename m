@@ -1,15 +1,10 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: can't delete with iptables
-Date: Sun, 15 Feb 2004 16:59:55 +0100
+From: ip tables <iptables_help@yahoo.com>
+Subject: Nat and dmz
+Date: Sun, 15 Feb 2004 20:04:34 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040215155955.GQ15567@sunbeam.de.gnumonks.org>
-References: <200402070721.i177LxJ09969@mail.bg8.so-net.ne.jp>
+Message-ID: <20040216040434.24148.qmail@web20725.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X35wERi4JU/f1kly"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200402070721.i177LxJ09969@mail.bg8.so-net.ne.jp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,50 +14,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Hideaki Nemoto <eme@bg8.so-net.ne.jp>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: ip tables <netfilter@lists.netfilter.org>
+
+Hello group,
+
+I have done some rules to have a natted DMZ. I have
+written the portion for access from the company
+network to the dmz and back. 
+I could access a domino server (port 1352) which is in
+the dmz without any problems. But the Domino server in
+the DMZ cannot access the mail hub in the company
+network with my ruleset.
+If i turn off the script and just invoke :
+
+iptables -t nat -A POSTROUTING -o eth2 -j SNAT
+--to-source 10.2.240.19
+
+it works, i could connect to the company networks mail
+hub. At the time of this executing no other rules
+apply.
+
+eth0 - internet
+eth1 - dmz
+eth2 - lan
+
+I will be attching the script:
+
+/sbin/depmod -a
+#Required modules
+/sbin/modprobe ip_tables
+/sbin/modprobe ip_conntrack
+#/sbin/modprobe iptable_filter
+#/sbin/modprobe iptable_mangle
+#/sbin/modprobe iptable_nat
+#/sbin/modprobe ipt_LOG
+#/sbin/modprobe ipt_limit
+#/sbin/modprobe ipt_state
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+iptables -t nat --policy PREROUTING DROP
+iptables -t nat --policy OUTPUT DROP
+iptables -t nat --policy POSTROUTING DROP
+
+iptables -t nat -A PREROUTING -i eth2 -p tcp --sport
+1:65535 \
+--dport 80 -d 10.2.240.19 -j DNAT --to-destination
+192.168.128.5:80
+
+iptables -t nat -A PREROUTING -i eth2 -p tcp --sport
+1:65535 --dport 1352 \
+-d 10.2.240.19 -j DNAT --to-destination
+192.168.128.5:1352
+
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport
+1:65535 \
+--dport 80 -d 192.168.128.5 -m state --state NEW -j
+ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport
+1:65535 \
+--dport 1352 -d 192.168.128.5 -m state \
+--state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -i eth2 -o eth1 -p tcp -m state \
+--state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p udp -m state \
+--state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -t nat -A POSTROUTING -o eth2 -j SNAT
+--to-source 10.2.240.19
+
+iptables -A FORWARD -p tcp -o eth2 --dport 1352 -m
+state \
+--state NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p udp -o eth2 --dport 1352 -m
+state \
+--state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+Thanks for your time!!
 
 
---X35wERi4JU/f1kly
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 07, 2004 at 04:23:07PM +0900, Hideaki Nemoto wrote:
-> Hi,
->=20
-> I can't delete the rule by iptables, that I inserted
-> with my program using libiptc.
->=20
-> I've managed to insert, replace, and delete the rulesfrom my program.
-> But I can't delete that rule by iptables, or the ip6tables.
-
-Please note that libiptc is not meant as a public API for 3rd party
-applications.  We do not encourage people to do so, and it is not
-supported at all.
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---X35wERi4JU/f1kly
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAL5d7XaXGVTD0i/8RAg5/AKCag5Tpej6WJDIJkTVXLMy05HYlLgCdGpuR
-Bm6eaPo7SZLd0O7yr6mWCJA=
-=fqwQ
------END PGP SIGNATURE-----
-
---X35wERi4JU/f1kly--
+__________________________________
+Do you Yahoo!?
+Yahoo! Finance: Get your refund fast by filing online.
+http://taxes.yahoo.com/filing.html
 
