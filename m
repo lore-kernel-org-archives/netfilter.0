@@ -1,12 +1,13 @@
-From: "Luigi Cartuccia" <luigicart@tin.it>
-Subject: sk_buff_head
-Date: Tue, 15 Oct 2002 16:03:55 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Tightening up outgoing traffic
+Date: Tue, 15 Oct 2002 14:03:21 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005b01c27453$b46dd680$f1d7abd4@q8c7l5>
+Message-ID: <200210151303.g9FD3RL23621@vulcan.rissington.net>
+References: <1034686034.15446.38.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0058_01C27464.767DC220"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1034686034.15446.38.camel@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,47 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Tuesday 15 October 2002 1:47 pm, Neil Hodge wrote:
 
-------=_NextPart_000_0058_01C27464.767DC220
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> All:
+>
+> I am running directly off the firewall box.  I currently have the
+> following:
+>
+> iptables -P OUTPUT ACCEPT
+>
+> When I change to this:
+>
+> iptables -P OUTPUT DROP
+> iptables -A OUTPUT -p tcp --destination-port http -j ACCEPT
+>
+> I keep getting "domainname can not be found.  Please check the name and
+> try again" from my browser.  This only happens for new web sites (i.e.,
+> Yahoo works fine).  As this seems somewhat like a DNS issue, I tried
+> adding this:
+>
+> iptables -A OUTPUT -p tcp --destination-port nameserver -j ACCEPT
+>
+> but it didn't work.  Any ideas?  Thanks.
 
-Hi to all.
-I have understanded the structure sk_buff but I don't understand the =
-struct sk_buff_head.
-What is the sk_buff_head??
-Thank you
-Luigi
+Yes.   Change the tcp to udp in the last command above :-)
 
+By the way, I would recommend adding a LOGging rule to your OUTPUT chain, at 
+the end just before packets get default DROPped, so you can see what you're 
+blocking which you might not realise you want to allow....
 
+There are things like some ICMP packets which you might not realise you 
+should allow out of your machine in order to keep things running nicely.
 
-------=_NextPart_000_0058_01C27464.767DC220
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Antony.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi to all.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I have understanded the structure =
-sk_buff but I=20
-don't understand the struct sk_buff_head.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What is the sk_buff_head??</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Thank you</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Luigi</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
+-- 
 
-------=_NextPart_000_0058_01C27464.767DC220--
+There are two possible outcomes.
 
+If the result confirms the hypothesis, then you've made a measurement.
+If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
 
