@@ -1,13 +1,12 @@
-From: Sergi <hiroru@tiscali.es>
-Subject: routing without nat?
-Date: Wed, 12 Jan 2005 17:58:08 +0100
-Message-ID: <200501121758.10909.hiroru@tiscali.es>
-Reply-To: hiroru@tiscali.es
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: Ip packet reduction.
+Date: Wed, 12 Jan 2005 12:47:37 -0500 (EST)
+Message-ID: <51610.142.169.215.10.1105552057.squirrel@142.169.215.10>
+References: <200501101656.j0AGuw1D078849@jkcpub.iserver.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2428523.BGd7p9mMJS";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200501101656.j0AGuw1D078849@jkcpub.iserver.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Michael Tedesco <mtedesco@broadbandmaritime.com>
+Cc: netfilter@lists.netfilter.org
 
---nextPart2428523.BGd7p9mMJS
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Mon, January 10, 2005 11:56 am, Michael Tedesco said:
+> Hello Everyone
 
-Hola, me gustaria saber si alguien sabe si se puede hacer lo siguiente, ten=
-go=20
-5 interficies de red, con ellas, quiero que entre dos, pongamos la 0 i la 1=
-=20
-hagan routing sin nat, i entre la 1 i la 2,3 i 4 haga nat, se puede hacer=20
-esto? es que voy un poco perdido.
+Hello Mike!
 
-gracias=20
+>
+[...]
+> My goal is to reduce my log file. Also it seems that the 3
+> packet is the same as the 15 or 20 or 30.  Can anyone help me out.
+>
+
+Yes, there's 3 ways depending on what you really want.
+
+As of writing it, only ipt_recent allows you to count packet *but*
+on a per-ip basis. Am just scared it doesn't behave normally when
+you supply negation. So --hitcount 10 would start logging the 11th and
+so on. You can't ! --hitcount 8(
+*I am rewriting this module from scratch and called it ipt_iplist,
+ keep an eye on it*
+
+Rusty wrote ipt_limit which purpose is exactly to reduce flooded logs.
+
+-m limit --limit 1/s -j LOG will LOG as long as you don't receive more th=
+an
+1 packet per second.
+
+NOTE: Not on a per-ip basis.
+
+Harald rebuilt this idea adding a per-tuple concept.
+See ipt_hashlimit for further details.
+http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-hashlimit
+
+> Mike
 
 
-=2D-=20
+HTH,
 
- Sergi Barroso     =20
- Linux user #313577=20
- PGP ID: D318F5E8   =20
-     =20
-Outlook Users Disclaimer:  All rights reserved for my email address.
-You are not allowed to add it to your Outlook Address Book in any way.
+Samuel
 
-
---nextPart2428523.BGd7p9mMJS
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQBB5VcifeEYFdMY9egRAjLIAJ9nxLqshdHwmISjixbaHyPpjTUQzwCfXVcD
-PfVyN5kEDxYzlnRfYn5xhng=
-=M9lb
------END PGP SIGNATURE-----
-
---nextPart2428523.BGd7p9mMJS--
 
