@@ -1,13 +1,13 @@
-From: "HareRam" <hareram@sol.net.in>
-Subject: IPTABLES NewBie
-Date: Thu, 12 Sep 2002 17:01:20 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: reset /proc/net/dev
+Date: Thu, 12 Sep 2002 12:48:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <052701c25a4f$eb00a740$7cfcc5cb@humanpc>
-References: <5.1.0.14.2.20020912090056.012e6d48@linda> <200209121022.g8CAMTv09831@vulcan.rissington.net>
-Reply-To: "HareRam" <hareram@sol.net.in>
+Message-ID: <200209121148.g8CBmSv09962@vulcan.rissington.net>
+References: <02091217115600.02481@sanitarium>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <02091217115600.02481@sanitarium>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,69 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all
+On Thursday 12 September 2002 12:43 pm, Rohan Almeida wrote:
 
-iam using Redhat 7.2 with Iptable 1.2.4 upgraded
-and patched with p-o-m
-now my application is allow only register mac Address and rest all drop
-i am having home based network
-ever customer have give specific address, since they have regiter only one
-PC for Browsing
-he should get only for that PC,, they are using Winproxy and consuming lot
-of bandwidth
+> HI List,
+> How do i reset the values in /proc/net/dev ?
+> This file holds values for count of each (packet && byte),
+> (sent && received) through all interfaces.
+>
+> I'm using a monitor which reads values from this
+> file and prints out some nicely formatted output.
+>
+> But i need to reset the values. ie. set then to zero.
+> Restarting the network does not do what i want.
+> I guess a reboot should do it.
+>
+> Any other way?
 
-can i have small example how do i enable only register MAC to allow all
-Services
-rest all should deny directly
+Not that I know of.
 
-right now iam using like this script
-iam forwarding all the 80 port traffic to squid cache server
+Could you perhaps read the values and save them somewhere, then subtract that 
+stored value next time you read the interface, to get the difference ?
 
+Antony.
 
-m=modprobe
-$m ip_conntrack_ftp
-$m ip_conntrack_irc
-$m ip_conntrack
-$m ip_nat_ftp
-$m ip_nat_irc
-$m ip_queue
-$m iptable_filter
-$m iptable_mangle
-$m iptable_nat
-$m ip_tables
-$m ipt_limit
-$m ipt_LOG
-$m ipt_mac
-$m ipt_mark
-$m ipt_MARK
-$m ipt_MASQUERADE
-$m ipt_MIRROR
-$m ipt_multiport
-$m ipt_owner
-$m ipt_REDIRECT
-$m ipt_REJECT
-$m ipt_state
-$m ipt_tcpmss
-$m ipt_TCPMSS
-$m ipt_tos
-$m ipt_TOS
-$m ipt_unclean
-/sbin/iptables -F
-/sbin/iptables -F -t nat
-/sbin/iptables -t nat -A PREROUTING -s 192.168.20.0/24 -p tcp --dport 80 -j
-REDIRECT --to-port 3129
-/sbin/iptables -t nat -A PREROUTING -s 192.168.3.0/24 -p tcp --dport 80 -j
-REDIRECT --to-port 3129
-/sbin/iptables -t nat -A POSTROUTING -s 192.168.20.0/24 -o eth0 -j
-MASQUERADE
-/sbin/iptables -t nat -A POSTROUTING -s 192.168.3.0/24 -o eth0 -j MASQUERADE
+-- 
 
+In science, one tries to tell people
+in such a way as to be understood by everyone
+something that no-one ever knew before.
 
-suggest me how do i have sample to add, to deny un authorised MAC address
+In poetry, it is the exact opposite.
 
-thanks in advance
-hare
-
+ - Paul Dirac
 
