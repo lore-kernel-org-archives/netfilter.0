@@ -1,13 +1,14 @@
-From: Andre Correa <andre.correa@pobox.com>
-Subject: Re: IMQ Replacement
-Date: Mon, 19 Jan 2004 11:33:42 -0200
+From: Johan Ankarloo <johan.ankarloo@volvo.com>
+Subject: Re: DNAT/SNAT and logging
+Date: Mon, 19 Jan 2004 16:37:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <400BDCB6.2000208@pobox.com>
-References: <1068652569.27810.450.camel@cumulus>	 <Pine.LNX.4.58.0311131244400.13900@fhynpb.envafyvqr.arg> <1074352525.4761.1389.camel@peterlaptop>
+Message-ID: <1074526637.2457.30.camel@ankarloo.got.volvo.net>
+References: <1074524662.2456.23.camel@ankarloo.got.volvo.net>
+	 <400BF600.9060005@Loudoun-Fairfax.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1074352525.4761.1389.camel@peterlaptop>
+In-Reply-To: <400BF600.9060005@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,68 +18,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: peter@empoweringsolutions.com
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-
-I've being using IMQ with 2.4.23 here with no probs too. I've already 
-tried to discuss this topic here and in other lists but got no answer. 
-Writting to the last maintainner didn't helped much...
-
-Some time ago there was a posting, maybe in LARTC, about a guy that 
-started a parallell IMQ project, but I've never heard about hin anymore...
-
-I would like to contribute/coordinate in an effort to put IMQ back on 
-its track. It is an important feature that is being left behind.
-
-Peter, maybe we should join, put a new site up with documentation 
-updates, maintain 2.4.x patchs and later think what to do with 2.6. We 
-may find other people interrested in coding and helping...
-
-Anybody else care about it?
-
-let us know...
-
-cheers
-
-Andre
-
-
-
-Peter Frischknecht wrote:
-> I have been using IMQ with great success for the last few months.  The
-> particular network where this is used has 400+ nodes, and IMQ performs
-> flawlessly.
+On Mon, 2004-01-19 at 16:21, Jeffrey Laramie wrote:
+> Johan Ankarloo wrote:
 > 
-> As anyone who uses IMQ will tell you, the only alternatives are:
-> 1 - Install another router, just to perform NAT
-> 2 - Install 2 additional NICs in the Linux gateway with a Xover cable
-> between them
+> >Hi
+> >
+> >Does anyone know how to log a DNAT/SNAT connection? When logging a NAT
+> >connection you also want to know the origin source/destination/port of
+> >that packet. Is that possible?
+> >
+> >  
+> >
 > 
-> Is there another piece of software that performs the job of IMQ?
-> It is great being able to shape traffic AND masquerade packets in one
-> box.  How else can it be done?
+> Sure. The easiest way to do it is to add a matching log rule just before 
+> the nat rule:
 > 
-> We shape traffic individually for each client.  Generic traffic shapping
-> rules that regulate the entire pipe would not work for us.
+> iptables -t nat -A POSTROUTING -o $Net_Interface -j LOG --log-prefix 
+> "SNAT: "
+> iptables -t nat -A POSTROUTING -o $Net_Interface -j SNAT --to $Net_IP
 > 
-> The fact that IMQ is unmaintained is nerve wrecking.  It is difficult
-> enough to install the thing with the sources and documentation
-> available.  It will only become more difficult as the kernel evolves and
-> we move to 2.6.x.
-> 
-> I don't think I have the knowledge to mainatin the source code.  But I
-> believe in the concept so much that I might just take up the code
-> maintenance.  Hoepefully some other folks will join in.  Maybe we can
-> convince enough folks to incorporate it into 2.6.x.
-> 
-> Any help, comments or even flames will be appreciated.  It is time for a
-> solution to this problem.
-> 
-> Peter
-> 
-> 
-> 
+> Jeff
+
+The problem is when doing this is that you doesn't get the original 
+source/destination or the translating adress. If you look at the logs
+you can't see all the information that you need to be able to debug any
+problem or to be able to track that connection back to the user.
+
+What i was looking for was a way to have more information in the logs 
+from that specific connection. The information that needs to be there is:
+
+OriginSource OriginSPort OriginDestination OriginDPort
+TranslatedSource TranslatedSPORT TranslatedDest TranslatedDPort
+
+Regards
+
+Johan
 
 
