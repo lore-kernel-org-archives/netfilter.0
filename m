@@ -1,12 +1,15 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: Re: network setup help
-Date: Sun, 11 Apr 2004 00:33:03 +0100
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: vpn under linux
+Date: Sun, 11 Apr 2004 09:41:27 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00d001c41f54$2b238ac0$68892090@grouse>
-References: <008301c41f2d$4be932e0$68892090@grouse> <200404102350.24148.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040410234127.GD14988@samad.com.au>
+References: <4077B7EF.5070805@tin.it> <200404101018.38664.Antony@Soft-Solutions.co.uk> <4077C15E.9080701@tin.it> <200404101100.25648.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TybLhxa8M7aNoW+V"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200404101100.25648.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,104 +19,91 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hi Antony,
-
-Thanks for your reply. Please see inline:
-
-> On Saturday 10 April 2004 7:54 pm, Jee J.Z. wrote:
->
-> > Dear all,
-> >
-> > I am trying to setup three PCs and do some simple filter+nat jobs. The
-> > situation is specified below:
-> >
-> > 1.PC1 has one NIC with a global IP connected to a Switch;
-> > 2.PC2 has two NICs, eth0 with a global IP connected to the Switch and
-eth1
-> > with an internal IP (192.168.0.1/24) directly connected to PC3's eth1;
-> > 3.PC3 has two NICs, eth0 with a global IP connected to the Switch and
-eth1
-> > with an internal IP (192.168.0.2/24) directly connected to PC2's eth1.
->
-> !? Why !?
->
-> (Either, why are PC2 and PC3 connected, or, why are both PC2 and PC3
-connected
-> to the switch?)
->
-> > I am trying to send packets from PC1 to PC3, via PC1/eth0(global
-> > IP)-->PC2/eth0(global
-IP)-->PC2/eth1(192.168.0.1)-->PC3/eth1(192.168.0.2).
-> > Actually, PC3/eth0 is not in used in the case.
->
-> So, what's PC3/eth0 for?
-
-You are right. PC3/eth0 is a redundancy in this setup. That's why I tried
-disabling PC3/eth0. I am just curious that when more than one NIC are
-activated, which one will the PC choose to send packets? I guess one of them
-should be a default NIC, right? How do I know or set one as default?
+To: Netfilter <netfilter@lists.netfilter.org>
 
 
-> I think your problem is a routing table (almost certainly the one on PC3,
-but
-> possibly the one on PC2).
+--TybLhxa8M7aNoW+V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Right. I am quite new to setting up routing tables. That should be the
-reason... :(
+On Sat, Apr 10, 2004 at 11:00:25AM +0100, Antony Stone wrote:
+> On Saturday 10 April 2004 10:41 am, Gianni Pucciani wrote:
+>=20
+> > Hi,
+> > I forget one things, waht about the CIPE solution. I read that in the
+> > rh9 sec guide about VPN.
+>=20
+> Yes, I should have mentioned that.   It uses a different method for encry=
+pting=20
+> the data than IPsec does (Blowfish instead of 3DES) and is therefore supp=
+osed=20
+> to be faster.   However in my experience you need to have a *big* pipe to=
+ the=20
+> outside world in order to be encrypting so much data down your VPN that a=
+=20
+> basic CPU can't handle it.
+>=20
+> I've never used CIPE so can't comment on it in practice.
+>=20
+> I tend to use the standard which is supported by most other vendors for=
+=20
+> cross-compatibility, therefore I like IPsec.
+>=20
+> > And then, I see this  news:  the FreeS/WAN project is no longer in
+> > active development, it could be a problem?
+>=20
+> I don't regard it as a problem - I think people will continue to use the=
+=20
+> latest version for setting up IPsec with Linux 2.4 kernels, and they'll=
+=20
+> migrate to using the built-in IPsec for 2.6 kernels.
+>=20
+> The main reason that FreeS/WAN is no longer being developed is because=20
+> although it works well as a VPN, the team don't think they can achieve on=
+e of=20
+> their goals, which was Opportunistic Encryption (using DNS to hold public=
+=20
+> keys so that routers could create VPN tunnels on their own when they want=
+ed=20
+> to talk to each other, instead of being manually configured to set up=20
+> specific tunnels).
+>=20
+> In my opinion that doesn't stop it still being very useful as a way to=20
+> configure standard IPsec links.
 
-> Look at the routing table of each machine the packets are going through,
-and
-> then the replies trying to get back again, and see if (a) there is a path,
-> and (b) it makes sense.
+Development has moved to openswan=20
 
-Both PC2 and PC3's routing look like:
-Destination                Gateway                   Genmask
-Flags      Metric      Ref      Iface
-192.168.0.0               0.0.0.0                     255.255.255.0
-U            0           0        eth1
-144.32.xxx.0              0.0.0.0                     255.255.254.0
-U            0           0        eth0
-127.0.0.0                  0.0.0.0                     255.0.0.0
-U            0           0         lo
-0.0.0.0                     144.32.xxx.yyy           0.0.0.0
-UG           0           0        eth0
-
-I haven't added anything to the routing tables, and not quite sure what
-rules I should add. I have ever tried adding a default gateway, but it
-doesn't seem to work. I know I must be missing something obvious. Could you
-show me your thoughts?
-
-> I think once you've done this you will find the source of your problem,
-but I
-> really do recommend you think about your network setup, and the path you
-are
-> trying to get packets to take, and ask yourself "why do it like this?"
-
-Once getting rid of PC3/eth0, four NICs remained are involved:
-PC1/eth0-->PC2/eth0-->(filter,nat)-->PC2/eth1-->PC3/eth1. Then any problems?
-
-> For your benefit I have specifically selected the sig on this email :)
-
-Thank you!:)
-
+>=20
 > Regards,
->
+>=20
 > Antony.
->
-> -- 
-> 90% of networking problems are routing problems.
-> 9 of the remaining 10% are routing problems in the other direction.
-> The remaining 1% might be something else, but check the routing anyway.
->
->                                                      Please reply to the
+>=20
+> --=20
+> The difference between theory and practice is that in theory there is no=
+=20
+> difference, whereas in practice there is.
+>=20
+>                                                      Please reply to the =
 list;
->                                                            please don't CC
-me.
->
->
->
+>                                                            please don't C=
+C me.
+>=20
+>=20
+>=20
 
+--TybLhxa8M7aNoW+V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAeIYnkZz88chpJ2MRAp14AKCHljW9GIVAIOkJVRciDI2PMzfTRwCffiz8
+Oa+m1qYDLXpvbIdXyud2jXw=
+=/01t
+-----END PGP SIGNATURE-----
+
+--TybLhxa8M7aNoW+V--
 
