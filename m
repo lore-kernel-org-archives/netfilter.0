@@ -1,8 +1,8 @@
-From: "ding dang" <jiadeip@hotmail.com>
-Subject: Re: Could someone tell me the rules of port translation in SNAT ?
-Date: Wed, 07 Jan 2004 07:37:22 +0000
+From: nayan naya <nayan126@yahoo.com>
+Subject: Gateway preferance
+Date: Tue, 6 Jan 2004 23:55:13 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY10-F1037eQFo6iJk0001e3f5@hotmail.com>
+Message-ID: <20040107075513.19937.qmail@web13124.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,36 +14,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-PiA+IFdoZW4gdXNpbmcgU05BVCBvZiBOZXRmaWx0ZXIgYXMgYW4gTkFQVCwgaG93IHdpbGwgTmV0
-ZmlsdGVyIGFzc2lnbiB0aGUKPiA+IHB1YmxpYyBVRFAgcG9ydCBmb3IgYSBVRFAgcmVxdWVzdCBm
-cm9tIHRoZSBwcml2YXRlIG5ldHdvcmsgdG8gSW50ZXJuZXQ/Cj4KPldpdGggYm90aCBUQ1AgYW5k
-IFVEUCwgbmV0ZmlsdGVyIHdpbGwgdXNlIHRoZSBzb3VyY2UgcG9ydCBjb250YWluZWQgaW4gdGhl
-Cj5vcmlnaW5hbCBwYWNrZXQgaWYgaXQgY2FuIChpZTogaWYgdGhhdCBzb3VyY2UgcG9ydCBpcyBu
-b3QgYmVpbmcgdXNlZCBmb3IKPnNvbWV0aGluZyBlbHNlIGJ5IHRoZSBuZXRmaWx0ZXIgbWFjaGlu
-ZSkuICAgSWYgdGhpcyBpcyBub3QgcG9zc2libGUsIHRoZW4KPmFub3RoZXIgcG9ydCBpcyBjaG9z
-ZW4gYXQgcmFuZG9tIHVzaW5nIHRoZSBzdGFuZGFyZCBzb2NrZXQtYmluZGluZyAKbWVjaGFuaXNt
-Cj51c2VkIGZvciBhbnkgbmV0d29yayBjb25uZWN0aW9uLgo+Cj4gPiBDb3VsZCBzb21lb25lIGRl
-dGFpbCBpdCB0byBtZSB3aGVuIHRoZSBVRFAgcmVxdWVzdCBpcwo+ID4gTkVXL0VTVEFCTElTSEVE
-L1JFTEFURUQvUkVQTElFRC9VTlJFUExJRUQ/Cj4KPlRoaXMgbWFrZXMgbm8gZGlmZmVyZW5jZS4K
-ClRoYW5rcy4KCkJ1dCB3aGF0IGkgb2JzZXJ2ZWQgaXM6KFNOQVQgdXNpbmcgVURQIHBvcnQgMjAw
-MDAtMzAwMDApCgpwcml2YXRlIGFkZHIgICAgICAgICBuZXRmaWx0ZXIgcG9ydCAgICAgICAgIElu
-dGVybmV0IGFkZHIKMTAuMC4wLjg6MjAwMCAtLS0+ICAgICAgIDIwMDAwICAgICAgIC0tLS0+ICAg
-MTkzLjAuMC44OjMwMDAKMTAuMC4wLjg6MjAwMSAtLS0+ICAgICAgIDIwMDAwICAgICAgIC0tLS0+
-ICAgMTkzLjAuMC44OjMwMDEKMTAuMC4wLjg6MjAwMiAtLS0+ICAgICAgIDIwMDAwICAgICAgIC0t
-LS0+ICAgMTkzLjAuMC44OjMwMDIKdGhhdCBtZWFucyBESUZGRVJFTlQgVURQIHJlcXVlc3RzIGZy
-b20gcHJpdmF0ZSBuZXR3b3JrIGZvciBESUZGRVJFTlQgCkludGVybmV0IGRlc3RpbmF0aW9uIHJl
-c3VsdCBpbiBhIHNhbWUgTmV0ZmlsdGVyIHBvcnQgbm8gbWF0dGVyIHRoZSBJbnRlcm5ldCAKZGVz
-dGluYXRpb24gc2VuZHMgcmVwbHkgb3Igbm90IDsKCnByaXZhdGUgYWRkciAgICAgICAgIG5ldGZp
-bHRlciBwb3J0ICAgICAgICAgSW50ZXJuZXQgYWRkcgoxMC4wLjAuODoyMDAwIC0tLT4gICAgICAg
-MjAwMDAgICAgICAgLS0tLT4gICAxOTMuMC4wLjg6MzAwMAoxMC4wLjAuODoyMDAxIC0tLT4gICAg
-ICAgMjAwMDEgICAgICAgLS0tLT4gICAxOTMuMC4wLjg6MzAwMAoxMC4wLjAuODoyMDAyIC0tLT4g
-ICAgICAgMjAwMDIgICAgICAgLS0tLT4gICAxOTMuMC4wLjg6MzAwMApESUZGRVJFTlQgVURQIHJl
-cXVlc3RzIGZyb20gcHJpdmF0ZSBuZXR3b3JrIGZvciBhIFNBTUUgSW50ZXJuZXQgZGVzdGluYXRp
-b24gCnJlc3VsdCBpbiBESUZGRVJFTlQgTmV0ZmlsdGVyIHBvcnRzLCB3aHk/CgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwrT
-68Gqu/q1xMXz09G9+NDQvbvB96Osx+vKudPDIE1TTiBNZXNzZW5nZXI6ICBodHRwOi8vbWVzc2Vu
-Z2VyLm1zbi5jb20vY24gIAoKCg==
+Hi list,
+
+I have two internet connections. i want to use only
+one specific connection for some resions. Supose that
+connection is stop then automaticaly second internet
+connection will be start. this is possible with
+iptables or not and if possible how?
+
+Regard's
+
+Nayan
+
+
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
+
