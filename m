@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: O-Zone <liste@zerozone.it>
 Subject: Re: DMZ to DMT through ROUTER problem !
-Date: Thu, 20 May 2004 15:45:32 +0100
+Date: Thu, 20 May 2004 16:58:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405201545.32872.Antony@Soft-Solutions.co.uk>
-References: <200405201318.34706.liste@zerozone.it> <200405201422.00324.Antony@Soft-Solutions.co.uk> <200405201637.54395.liste@zerozone.it>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200405201658.59945.liste@zerozone.it>
+References: <200405201318.34706.liste@zerozone.it> <200405201637.54395.liste@zerozone.it> <200405201545.32872.Antony@Soft-Solutions.co.uk>
+Reply-To: liste@zerozone.it
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405201637.54395.liste@zerozone.it>
+In-Reply-To: <200405201545.32872.Antony@Soft-Solutions.co.uk>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +20,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 20 May 2004 3:37 pm, O-Zone wrote:
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> On Thursday 20 May 2004 15:22, Antony Stone wrote:
-> > You need to make sure that the reply packets go back through the
-> > firewall, as well as the forward packets.   The easiest way to do this is
-> > by adding a SNAT rule so that as far as the destination server is
-> > concerned, the packets came from the firewall, not the real client, and
-> > therefore the server sends the replies back to the firewall (which then
-> > reverse-NATs them and returns the replies to the original client
-> > machine).
-> >
-> > Therefore in your case something such as:
-> >
-> > iptables -A POSTROUTING -t nat -s 192.168.0.0/24 -d 192.168.0.0/24 -j
-> > SNAT --to 192.168.0.1
->
-> But, i think, i need to add other rules because the original connection
-> came from 192.168.0.x to 151.8.47.x, right ?
+On Thursday 20 May 2004 16:45, Antony Stone wrote:
+> Yes, but that destination address has already been changed by your
+> PREROUTING rule, and is now 192.168.0.0/24 - that's the whole point.   If
+> the destination address had not been changed (ie: if the client had
+> contacted the server's real IP address instead of a pretend one), you
+> wouldn't need to change the source address as well.
 
-Yes, but that destination address has already been changed by your PREROUTING 
-rule, and is now 192.168.0.0/24 - that's the whole point.   If the 
-destination address had not been changed (ie: if the client had contacted the 
-server's real IP address instead of a pretend one), you wouldn't need to 
-change the source address as well.
+As you say, the problem was when a server with 192.168.0.x, passing through=
+=20
+192.168.0.1 (that is the ROUTER), and try to connect to 151.8.47.x (the rea=
+l=20
+server's PUBLIC IP). This is the desidered flow:
 
-If you think you need other rules, please explain what they would be and why 
-they are needed - it's entirely possible I have missed something about your 
-setup.
+192.168.0.2-->151.8.47.A-->192.168.0.3
 
-Regards,
+So i think that i need additiona rules to MASQ/DNAT connection to 151.8.47.=
+x !
 
-Antony.
+Oz
 
--- 
-The truth is rarely pure, and never simple.
+=2D --=20
+There is a theory which states that if ever anyone discovers exactly what
+the Universe is for and why it is here, it will instantly disappear and be
+replaced by something even more bizarre and inexplicable.  There is another
+theory which states that this has already happened.
+		-- Douglas Adams, "The Hitchhiker's Guide to the Galaxy"
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
- - Oscar Wilde
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+iD8DBQFArMexYuBSFbgkEysRAgoOAKCxjUX/lXCX30GUUaCkQTSHaklXXQCdHS6A
+faOLbQvIfdm6e7coMhWm/9w=3D
+=3DddMI
+=2D----END PGP SIGNATURE-----
 
 
