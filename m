@@ -1,12 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: New not syn (again...)
-Date: Fri, 1 Aug 2003 08:57:15 -0700
+From: "Daniel Camacho" <dcamacho@saipan.com>
+Subject: Re: IPTables & Squid
+Date: Sat, 2 Aug 2003 07:25:44 +1000 (ChST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E16@alderaan.smgtec.com>
+Message-ID: <1102.202.128.1.252.1059773144.squirrel@mail.saipan.com>
+References: <5.1.0.14.2.20030801094250.02f127f0@mail.saipan.com>
+    <3F2A2093.8020200@snapgear.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <3F2A2093.8020200@snapgear.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +19,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Gavin Hamill <gdh@acentral.co.uk>, netfilter@lists.netfilter.org
+To: Philip Craig <philipc@snapgear.com>
+Cc: Daniel Camacho <dcamacho@saipan.com>, netfilter@lists.netfilter.org
 
-Basically the client or the server sends out a FIN or RST to signify
-that they are done with the connection. The Conntrack would drop the
-session. Afterwards the other side sends out an acknowledgement that the
-session was dropped. The packets are flagged as not established, since
-the connection from the other side was closed. I think it depends on an
-IPTables conntrack timeout value to determine how long to wait for the
-other side's response.=20
-
-I don't know what everyone else does about them, but I generally just
-drop them It may not be that clean, leaving other PC's IP stacks timeout
-the session close, but it happens so rarely to me, *meh*
-
-
->My question is regarding syn packets, and probably statefulness... I'm
->getting=20
->a lot of log messages like this:
-
+<BR>Hi Philip,<BR><BR>Thanks for the reply. I want to pass the connection
+through and not go through the Squid server. Basically, my intention is to
+filter certain customers from accessing the Squid server but still have
+full connectivity. Thanks.<BR><BR>Daniel<BR><BR><BR>-----<BR>Philip Craig
+said:<BR>&gt; Daniel Camacho wrote:<BR>&gt; &gt; I'm new to this list and
+to IPtables. I recently installed a<BR>&gt; transparent<BR>&gt; &gt; proxy
+using Squid and IPtables. On one computer, I installed IPtables<BR>&gt;
+and<BR>&gt; &gt; forward all port 80 requests to the Squid server, which
+is running on a<BR>&gt; &gt; separate server. On that same computer I want
+to be able to filter<BR>&gt; certain<BR>&gt; &gt; connections from using
+the Squid. I know I can do this with Squid, but<BR>&gt; I<BR>&gt; &gt;
+want to know how to do it with IPtables. Does anyone know how may I
+go<BR>&gt; &gt; about doing this? Thanks.<BR>&gt; <BR>&gt; Do you want to
+just pass these connections through directly instead of<BR>&gt; forwarding
+them to the Squid server, or do you want to drop them<BR>&gt;
+completely?<BR>&gt; <BR>&gt; If you just want to pass them through, you
+need to stop them reaching the<BR>&gt; DNAT rule. You have already done
+this for the squid server itself, but<BR>&gt; that method only allows you
+to pass through one IP address. A more<BR>&gt; general<BR>&gt; method is
+to add ACCEPT rules for each address (just repeat the first<BR>&gt; rule
+for each address to pass through):<BR>&gt; <BR>&gt; # start up filter
+rules for traffic redirection to Squid<BR>&gt; iptables -t nat -A
+PREROUTING -i eth0 -s 192.168.0.1 -p tcp --dport 80 -j<BR>&gt;
+ACCEPT<BR>&gt; iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
+DNAT --to<BR>&gt; 192.168.0.1:3128<BR>&gt; <BR>&gt; If you want to drop
+the connections, then you need to put DROP or REJECT<BR>&gt; rules in the
+FORWARD chain of the filter table. Make sure you put them<BR>&gt; before
+the rules ACCEPTing traffic from each subnet.<BR>&gt; <BR>&gt; --<BR>&gt;
+Philip Craig - philipc@snapgear.com - http://www.SnapGear.com<BR>&gt;
+SnapGear - Custom Embedded Solutions and Security Appliances<BR>&gt;
+<BR>&gt; <BR>&gt; <BR>
 
