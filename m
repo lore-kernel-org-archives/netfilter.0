@@ -1,17 +1,13 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: Forwarding while on same subnet...confusions (nfcan: addressed
-	to exclusive sender for this address)
-Date: Thu, 25 Nov 2004 10:07:11 -0500
-Message-ID: <20041125150711.GA27717@salty>
-References: <dc56727e041123110948cb3a14@mail.gmail.com>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: Tobias DiPasquale <codeslinger@gmail.com>
+Subject: Re: Remove established connections!
+Date: Thu, 25 Nov 2004 11:55:35 -0500
+Message-ID: <876ef97a0411250855352ef124@mail.gmail.com>
+References: <1101374811.1347.49.camel@oracle>
+Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <dc56727e041123110948cb3a14@mail.gmail.com> (from
-	+nfcan+jimlaur+77cd5e9588.mismith356#gmail.com@spamgourmet.com
-	on Tue, Nov 23, 2004 at 14:09:12 -0500)
+In-Reply-To: <1101374811.1347.49.camel@oracle>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,27 +18,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Marcus Andersson <iptables@wimlet.se>
+Cc: netfilter@lists.netfilter.org
 
-On 2004.11.23 14:09, Mike Smith - mismith356@gmail.com wrote:
-> Hello All,
->
-.......
-> and then, after some google'ing and reading:
-> 
-> iptables -t nat -A POSTROUTING -s 138.1.89.6 -p tcp --dport 80 -j SNAT
-> --to 138.1.88.246
->
+On Thu, 25 Nov 2004 10:26:50 +0100, Marcus Andersson
+<iptables@wimlet.se> wrote:
+> Is there any way I can remove these remembered connections so that when
+> the rule is rewritten it will actually send all traffic that comes in on
+> a specified port to the correct adress?
 
-One more observation.
-The postrouting is looking for packets with a *destination* port 80.
+The ctnetlink patch can be used to delete an arbitrary conntrack
+record. You can find that at netfilter.org in patch-o-matic.
 
-I think this rule is meant to deal with packets from the apache server
-returning to the client. I think apache will have a well known
-*source* port of 80 in this case, the destination port is random.
-
-You could look with a sniffer to check.
-Or look at the packet counters to see if it is matching.
-........
+-- 
+[ Tobias DiPasquale ]
+0x636f6465736c696e67657240676d61696c2e636f6d
 
