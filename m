@@ -1,15 +1,14 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: Routing problem...
-Date: Tue, 27 Jul 2004 16:21:32 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Questions about the workings of iptables
+Date: Tue, 27 Jul 2004 15:22:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040727142132.GA29202@zion.homelinux.com>
-References: <20040727072329.GV20473@freenet.de> <20040727074251.GA23024@zion.homelinux.com> <20040727080623.GZ20473@freenet.de>
+Message-ID: <200407271522.40503.Antony@Soft-Solutions.co.uk>
+References: <564DE4477544D411AD2C00508BDF0B6A21C4DABE@usahm018.exmi01.exch.eds.com> <opsbsb0q0j2fsc0m@192.168.1.10> <1090935679.25639.78.camel@localhost>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040727080623.GZ20473@freenet.de>
+In-Reply-To: <1090935679.25639.78.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,59 +18,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Tuesday 27 July 2004 2:41 pm, John A. Sullivan III wrote:
 
---opJtzjQTFsWo+cga
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi Michelle,
-
-On Tue, Jul 27, 2004 at 10:06:23AM +0200, Michelle Konzack told us:
-> >at which iptables invocation do you get this error exactly?? Try
-> >executing the script with "sh -x scriptname" and look where the
-> >error occurs.
-
-What kernel version are you using, what version of iptables? Is
-your kernel a vanilla kernel.org kernel, are the iptables
-matches/targets build into the kernel or are they built as
-modules??
-
-
-Sven
-
+> On Tue, 2004-07-27 at 03:20, Ashutosh wrote:
+> > > No.   AFAIK the connection tracking in netfilter checks only src+dst
+> > > IP+port,
+> > > nothing else.
+> >
+> > .. And the Protocol
 >
-> It is the line with the ESTABLISHED,RELATED
->
-> I have found the lines in the Firewall-HOWTO=20
-> and on <http://www.debianforum.de/>
->
-> >Sven
->
-> Greetings
-> Michelle
->
+> and I would assume there is a timer - John
 
+Oh yes, there are timers, but that's not part of the information from the 
+original packet which gets matched in future packets, which is what I was 
+discussing, and what I think the original question was about (!?).
 
---=20
-Linux zion 2.6.8-rc2 #1 Sun Jul 18 15:00:48 CEST 2004 i686 athlon i386 GNU/=
-Linux
- 16:19:26  up 8 days, 17:47,  1 user,  load average: 0.10, 0.07, 0.10
+Regards,
 
---opJtzjQTFsWo+cga
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Antony.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+-- 
+"Linux is going to be part of the future. It's going to be like Unix was."
 
-iD8DBQFBBmTso4FAdB2PneQRArLgAJsHusxnZPFge1V27ugigq/qMtUA4ACaAksr
-WeoanteylRIzNfS/YZtT/YE=
-=40vm
------END PGP SIGNATURE-----
+ - Peter Moore, Asia-Pacific general manager, Microsoft
 
---opJtzjQTFsWo+cga--
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
