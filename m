@@ -1,13 +1,13 @@
-From: Bjorn Ruberg <bjorn@ruberg.no>
-Subject: Re: plz convert that script in iptables format
-Date: 23 Jun 2003 17:32:41 +0200
+From: "David Busby" <busby@pnts.com>
+Subject: Re: Exposing Internal Host on Private network to Internet
+Date: Mon, 23 Jun 2003 10:26:34 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1056382361.19771.17.camel@mikke>
-References: <20030622034805.6854.qmail@web14403.mail.yahoo.com>
+Message-ID: <00b701c339ac$a05f63b0$1100000a@busbydev>
+References: <007901c33941$05434ce0$0a00000a@BOBHITT>
+Reply-To: "David Busby" <busby@pnts.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030622034805.6854.qmail@web14403.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Bobby Hitt <Bobby.Hitt@bscnet.com>, netfilter@lists.netfilter.org
 
-On Sun, 2003-06-22 at 05:48, cable linux wrote:
-> Q1. How can i implement below scanerio through
-> iptables?
+A: SNAT/DNAT
 
-[snip]
+Start here: http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-6.html
+and read through section 10 then search archives for examples
 
-By reading
-http://www.netfilter.org/documentation/HOWTO//packet-filtering-HOWTO.html
-and specifically
-http://www.netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-10.html
-
-> Q2. how can i implement below scanerio?
-
-This looks very much like a school assignment, shouldn't you find this
-out by yourself?
-
-Check out http://www.linuxguruz.com/iptables/, http://www.google.com/
-and read the list archives.
+/B
+----- Original Message ----- 
+From: "Bobby Hitt" <Bobby.Hitt@bscnet.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Sunday, June 22, 2003 21:36
+Subject: Exposing Internal Host on Private network to Internet
 
 
-Bjorn
+> Hello all,
+>
+> I have a network using Linux as a gateway/firewall running NAT. This works
+> perfectly to allow 5 internal hosts running Windows 2000/XP/Win98/Linux
+> access to the Internet. Also the Linux gateway is running openVPN which
+> allows me a secure connection to my Linux server in Connecticut for my
+> Windows machines.
+>
+> I have setup a Windows 2000 Server on my network here running VPN server
+> that I want to be exposed to the the outside to allow Windows clients
+> running the VPN client to access the inside network here via the Windows
+> 2000 server. I know I need to route ports 1723 47 for PPTP and 500 and
+50-51
+> for IPSec to the Windows 2000 Server, but have no idea how to do this with
+> iptables.
+>
+> I used to run a cable router that allowed one host to be exposed to the
+> Internet, which is how I want to setup the Linux router.
+>
+> Any help is appreciated,
+>
+> Bobby
+>
 
 
