@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: TTL target
-Date: Sat, 24 Jul 2004 12:39:52 +0100
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: the impossible "iptables -C" option
+Date: Sat, 24 Jul 2004 07:45:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407241239.52659.Antony@Soft-Solutions.co.uk>
-References: <D5C9032B2B09C64EA2409D6214E91AC90511EB@asimail2.alphanumeric.com> <1090613367.28446.3.camel@dchws.tqmcube.com> <41024706.8060603@polbox.com>
-Reply-To: NetFilter List <netfilter@lists.netfilter.org>
+Message-ID: <1090669545.2012.33.camel@grendel>
+References: <01be01c4710c$440a79e0$5100a8c0@egp>
+	 <200407240856.03201.Antony@Soft-Solutions.co.uk>
+	 <1090664200.2012.21.camel@grendel>
+	 <200407241127.25946.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <41024706.8060603@polbox.com>
+In-Reply-To: <200407241127.25946.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,37 +21,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter List <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Saturday 24 July 2004 12:24 pm, adderek wrote:
-
-> David Cary Hart wrote:
-> > I must ask a dumb question. Why would one want to mangle TTL or filter
-> > on TTL?
+On Sat, 2004-07-24 at 06:27, Antony Stone wrote:
 >
-> For example if you want to make little network with your frends where
-> everyone pay their part of internet-connection price and you don't want
-> anyone to connect more than one computer into it so they can't make
-> their own subnetworks to pay less than others.
+> > Not quite true as you would just use a sting match, same as you would in
+> > a filtering rule.
+> 
+> I'll assume you meant the "string" match :)   Although the idea of a sting 
+> match in a firewall rule is an interesting one....
 
-What stops them doing the same thing with the TTL value in their packets, 
-before they reach you?
+Dooh! Typing before my morning Pepsi. I think we already sort of have a
+"sting" option, its called "Tarpit" ;-)
 
-Or just using a proxy which creates its own packets anyway?
+> I agree that for textual content you could say "a packet from this IP address 
+> to TCP port 23 containing the string 'root'", however lots of protocols use 
+> binary data
 
-Or using an SSH tunnel to forward the other traffic?
+Agreed but that's kind of outside of the scope of the check option. ;-)
 
-Or using a different O/S which sets a different initial TTL value than you're 
-assuming, when it sends packets?
+We're getting more into "what does a better job of checking payload,
+stateful inspection or proxy". I agree proxies are better when it comes
+to payload content, but I find the string match useful mostly because of
+its simplicity. No proprietary, undocumented language to learn, just set
+a few command line switches and away you go. :)
 
-Antony.
+> However, as discussed by other people, there is more than one reason why 
+> "check" is hard to implement, payload is just one of them (and I agree that 
+> state is a more significant problem, and much harder to deal with).
 
--- 
-The words "e pluribus unum" on the Great Seal of the United States are from a 
-poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
-dressing.
+Ya why burn cycles on trying to code something you can easily check with
+nmap, hping & tcpdump. ;-)
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Cheers!
+Chris
+
 
 
