@@ -1,13 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Excluding IP ranges from masquerade rules
-Date: 13 Oct 2003 15:24:32 +0200
+From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
+Subject: Re: Port forwarding doesn't work.
+Date: Mon, 13 Oct 2003 15:32:02 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066051471.4193.63.camel@kermit>
-References: <1066038290.5801.35.camel@tarkus>
+Message-ID: <073301c39196$c4e2ddb0$eb00010a@andromeda>
+References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <200310121411.00898.Herman@AerospaceSoftware.com> <1065994862.3562.10.camel@Marvin> <200310121604.06545.Herman@AerospaceSoftware.com> <1066029196.4010.1.camel@Marvin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1066038290.5801.35.camel@tarkus>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +16,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: tedkaz@optonline.net
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Am Mon, 2003-10-13 um 11.44 schrieb Ted Kaczmarek:
-> I presently exclude 1 ip block in POSTROUTING using
-> "! X.X.X.X/24" . Is their a way to specify multiple ranges that are=20
-> excluded?
-Only if you can combine them in one network, like:
-10.0.0.0/8 and 11.0.0.0/8 can be written as 10.0.0.0/7
+Gerd Zemella wrote, Monday, October 13, 2003 8:13 AM
 
-> or
-> Is their a way to have POSTROUTING only have affect on a certain
-> interface?
-You can use -o eth0 to specify the interface in you rules.
+[Please *don't* post HTML to the list]
 
-Cheers,
+> Hi Herman,
+>
+> Am Mon, den 13.10.2003 schrieb Herman um 00:04:
+>
+> > Well, here goes:
+> > iptables -t nat -I PREROUTING  -d 192.168.10.100 -j DNAT --to
+192.168.10.245
+>
+> did you wrote this --to? you must write --to-destination!
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+Nope. In context, --to is equivalent to --to-destination. There's absolutely
+nothing wrong with using it in the manner above (in fact, every single DNAT
+rule in our firewall script does -j DNAT --to).
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+Adam
+
 
