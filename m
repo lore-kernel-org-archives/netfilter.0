@@ -1,8 +1,8 @@
-From: "Sridhar Murthy" <sridhar@vfmindia.biz>
-Subject: Help Required
-Date: Thu, 17 Jul 2003 18:17:20 +0530
+From: Marcel de Boer <marceldb@luon.net>
+Subject: FTP large file problem
+Date: Thu, 17 Jul 2003 19:52:46 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030717124033.M28975@vfmindia.biz>
+Message-ID: <Pine.LNX.4.44.0307171941591.549-100000@sun.shark.demon.nl>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,30 +14,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hello everybody,
 
-I require help in configuring firewall on Redhat 8.0 system my setup 
-  is as follows: 
- 
- We have a Cable Modem connection with sendmail and proxy service 
- running on Linux 8 system with 2 nic cards. 
- 
- One nic card is having local LAN ipaddress and the other is taking 
- an ipaddress from the ISP through dhcp protocol. 
+for my home network I have built a Linux-based firewall (based on the
+slackware-built 2.4.21 kernel). The firewall is working fine, except for
+large FTP downloads. After 13.68MB (sometimes a bit more, sometimes a bit
+less, but most of the time 13.68) the connection just hangs. The control
+channel is still active, because I can abort the download and start it
+again, but it never gets beyond 14MB.
 
- The problem i am facing is when i use the gui utility to configure the 
-firewall i am not able to see the second nic card(during installation i was 
-able to see both the nic cards) which uses the dhcp for an ipaddress
- 
- Can anybody help in configuring a firewall for the this setup. 
- 
+I have tried this with multiple servers (ftp.kpn.be and ftp.slackware.no),
+multiple local computers (two Slackware-based, one Debian-based) and
+multiple clients (ncftp and lftp), and the problem returns in all
+situations (even when downloading directly to my firewall machine).
 
+I strongly suspect the firewall, but I can't imagine what I have done
+wrong (especially because a very similar configuration based on the same
+framework at my work does not have this problem).
 
-Regards,
+TIA && Gtnx
+	Marcel de Boer
 
-Sridhar
+PS. Please also Cc a reply to me, because I am not on the list.
+
 
