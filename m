@@ -1,8 +1,7 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: extension modules in patch-o-matic
-Date: Sun, 30 Jan 2005 21:38:56 +0100
-Message-ID: <E1CvLrG-000219-00@deer.gmane.org>
-Reply-To: edvin.seferovic@kolp.at
+From: Vinod Chandran <vinod_chandran@multitech.co.in>
+Subject: FTP Bounce Attack.
+Date: Fri, 28 Jan 2005 20:54:58 +0530
+Message-ID: <41FA594A.1000103@multitech.co.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,36 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi,
 
- 
+I am currently using iptables 1.2.11 with the patch-o-matic patch applied.
+Its documented that netfilter is patched to  protect against FTP bounce 
+attacks, when an invalid IP is given in the FTP PORT command.
+I can detect the PORT command reaching the FTP server through the 
+router( containing netfilter), even when I give an ivalid IP.
+I would like to know whether the patch is not working or whether the 
+patch is meant to not allow the resulting bounce attack, even with 
+allowing the PORT command to pass through.
 
-I am kinda new to extension modules, but I could really use some of them (
-ip_limit, accounting etc ). The problem I have is following.. after I
-download patch-o-matic and try to implement it I cannot find e.g. ip_limit
-module :-( where did it go? Is it already in iptables? I cannot find it
-there neither... 
+Thanks and Regards,
+Vinod C
 
- 
-
-I use iptables 1.2.9 / kernel 2.6.5 ( Suse Lin 9.1 x86-64 )!
-
- 
-
-Any help is appreciated !
-
- 
-
-TIA
-
- 
-
-Edvin Seferovic
-
- 
-
- 
 
