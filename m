@@ -1,12 +1,12 @@
 From: Daniel David Benson <dan@spoontail.com>
 Subject: Re: Leaking ICMP and UDP packets
-Date: Mon, 19 Apr 2004 09:54:04 -0700 (PDT)
+Date: Mon, 19 Apr 2004 10:08:51 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0404190949530.2276-100000@dudester.spoontail.com>
-References: <20040419163159.GE10272@home.manuelm.org>
+Message-ID: <Pine.LNX.4.44.0404191001531.2276-100000@dudester.spoontail.com>
+References: <Pine.LNX.4.44.0404190949530.2276-100000@dudester.spoontail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040419163159.GE10272@home.manuelm.org>
+In-Reply-To: <Pine.LNX.4.44.0404190949530.2276-100000@dudester.spoontail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,48 +22,24 @@ To: Frank Gruellich <frank@home.manuelm.org>
 Cc: netfilter@lists.netfilter.org
 
 
-Here's the catchall rule:
+> > I am just curious: does it NAT, too?  (This has nothing to do with your
+> > problem, whatever it may be.)
 
-$EXT_IFACE = eth0
-$EXT_IP = Some Internet Routable Public IP.
+Overlooked this question.  No, the edge router does no natting -- just 
+routes.  We block private IPs going in/out the edge router -- that's how 
+we handle them, and how we found these packets.  By the way, here's some 
+needed version numbers:
 
-$IPTABLES -t nat -A POSTROUTING -o $EXT_IFACE -j SNAT --to-source $EXT_IP
+iptables: 1.2.8
+kernel: 2.4.20-28.8smp (yeah I know -- moving away from RH8 soon)
 
-Here's what I am doing with tcpdump (eth0 is the public interface):
+Outside of these packets, NAT is working fine -- in fact, UDP and ICMP are 
+being natted correctly outside of these packets.
 
-tcpdump -vvv -i eth0 net 10.0.0.0/8
-
-Unfortunately I can't send any of the packets captured via tcpdump....as 
-I get about 5-10 a day and I killed the screen that had last weeks packets 
--- I'm recording them better now :)
+Thanks!
 
 -Dan
 
 
-On Mon, 19 Apr 2004, Frank Gruellich wrote:
-
-> * Daniel David Benson <dan@spoontail.com> 19. Apr 04:
-> > I essentially have everything go out as a global nat,
-> 
-> What exactly is you rule?
-> 
-> > but every now and then a tcpdump on the frontside interface is showing
-> > some ICMP and UDP packets not getting natted.
-> 
-> What exactly do you tcpdump?  (Cmdline, please.)  What exactly is the
-> output of it?
-> 
-> > Anyone ever seen this before?
-> 
-> No.
-> 
-> > It's not a major deal as we are are having our front edge router
-> > handle these ugly packets, but I'd like to tighten it up.
-> 
-> I am just curious: does it NAT, too?  (This has nothing to do with your
-> problem, whatever it may be.)
-> 
->  Regards, Frank.
-> 
 
 
