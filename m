@@ -1,12 +1,12 @@
-From: "Andreas Grabner" <andi@vnc.at>
-Subject: RE: 2 ISPs again
-Date: Fri, 10 Dec 2004 20:17:28 +0100 (CET)
-Message-ID: <40920.83.64.132.50.1102706248.squirrel@webmail.vnc.at>
-References: <7C9884991ADAE0479C14F10C858BCDF591E3A3@alderaan.smgtec.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: is this 1969 ? Are we on the moon yet?
+Date: Fri, 10 Dec 2004 22:22:35 +0100
+Message-ID: <20041210212225.15F772F433@kshira.sterenborg.info>
+References: <41B9F53E.2060302@acm.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E3A3@alderaan.smgtec.com>
+In-Reply-To: <41B9F53E.2060302@acm.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +18,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: dchemko@smgtec.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Thanks a lot for your reply!!!
+netfilter-bounces@lists.netfilter.org wrote:
+> err, Why oh Why is all netfilter mail coming from 1969 ? Is
+> Doug Engelbart in charge of this project ?
 
-> If your own IP's on the firewall aren't bound to the network, you'll
-What does                                 ^^^^^^^^^^^^^^^^^^^^^ this mean?
-> have to disable rp_filtering. echo "0" >
-> /proc/sys/net/ipv4/eth_whatever/rp_filter
-no i will try
+Uh.. Not here it isn't.
 
 
-> You'll also want to make sure outgoing packets are getting natted
-> correctly (if you're natting).
-Yes i am natting
-
-
-Andreas grabner
-
+Gr,
+Rob
 
 
