@@ -1,12 +1,10 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: Limit module accept negation?
-Date: Wed, 12 Jan 2005 09:20:32 -0500 (EST)
-Message-ID: <30044.142.169.215.10.1105539632.squirrel@142.169.215.10>
-References: <41E2E0CB.18071.252B3E2C@localhost>
+From: Jorge Enrique <nunezj@ucbcba.edu.bo>
+Subject: Consulta de prerouting
+Date: Wed, 12 Jan 2005 10:35:45 -0400
+Message-ID: <1105540545.5149.4.camel@firewall.ucbcba.edu.bo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41E2E0CB.18071.252B3E2C@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +16,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: jagrelo@novadevices.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mon, January 10, 2005 8:08 pm, Jorge Agrelo said:
-> Can I replace this two rules
->
-> iptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 4 -j
-> ACCEPT
-> iptables -A INPUT -p tcp --syn -j DROP
->
-> For only this one? (Using negation)
->
-> iptables -A INPUT -p tcp --syn -m limit ! --limit 1/s --limit-burst 4 -=
-j
-> DROP
+Hola listeros, una consulta quiero hacer una direccionamiento es decir
+tengo una ip externa para una maquina, pero esta esta detaras de un
+firewall, la cual tiene una ip interna de mi lan, como puedo hacer para
+que desde afuera haga referencia a esta maquina, tengo entendido que con
+el PREROUTING lo haria, como seria esto??
 
-Unfortunately, you can't without a bit of hacking.
-If it happens you would, just grab ipt_limit.c and search for:
-
-/* We're underlimit */
-
-Change the return codes so it returns 0 when 'underlimit', otherwise, 1.
-Am sorry if this is straigh, I am at work.
-Note that this won't add '!' support but just doesn't match unless it
-bursts the limit.
-
-By the way, do you want to limit as soon as you receive more than 1/s pac=
-ket
-regardless of the source address?
-
->
-> Thanks in advanced
-
-HTH,
-
-Samuel
+Gracias...
 
 
