@@ -1,8 +1,8 @@
 From: "Andrew Magnus" <xanadian9@hotmail.com>
-Subject: Re: SSH dnat
-Date: Tue, 03 Dec 2002 20:48:53 +0000
+Subject: DirectX 8.1 and NAT
+Date: Tue, 03 Dec 2002 20:57:27 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F156pgTFur2iz2Mb1s700018666@hotmail.com>
+Message-ID: <F21OylhgnFZS4HIv6Ey00018838@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,56 +18,16 @@ Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2323 -j DNAT 
---to-destination internal_IP:2323
+I've heard from a friend who is supposedly *really* big on game design and 
+functionality.  He told me that everyone he's known and talked to said it is 
+impossible to play network games that use DirectX through a linux firewall.  
+Is this true?  Or is there a workaround that he (and therefor I) don't know 
+about?
 
-...also needs...
-
-iptables -t nat -A POSTROUTING -s internal_IP -p tcp --sport 2323 -j SNAT 
---to-source external_IP:2323
-
-Otherwise, you've only got traffic going one way:  into the ssh server.
-
-If you're dealing with a dynamic IP address on your external interface, you 
-should instead use:
-
-iptables -t nat -A POSTROUTING -s internal_IP -o eth0 -p tcp --sport 2323 -j 
-MASQUERADE
-
-Hope that helps.
-
-
-
-From: "Ambor" <ambor@alternity.net>
-To: <netfilter@lists.netfilter.org>
-Subject: SSH dnat
-Date: Sun, 1 Dec 2002 15:52:02 +0100
-
-Hello everyone,
-
-I'm trying to dnat SSH throught the firewall to an internal machine.
-  I use following Rule
-
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2323 -j DNAT 
---to-destination internal_IP:2323
-
-eth0 is connected to internet
-
-The problem is that the connection is allrght it just seems that I don't get 
-an answer from the ssh server.
-(I'm getting a connection timeout, ot a connection refused)
-
-To be sure I don't filter anything, so all trafic is accepted
-
-Can someone help me?
-
-thx
-
-Ronny
-
+If there is a workaround, I'd like to know how to do this.  Thank you.
 
 _________________________________________________________________
-STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
-http://join.msn.com/?page=features/junkmail
+Add photos to your e-mail with MSN 8. Get 2 months FREE*. 
+http://join.msn.com/?page=features/featuredemail
 
 
