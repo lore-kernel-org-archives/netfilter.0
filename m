@@ -1,11 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: RE: INPUT or FORWARD;;
-Date: Mon, 20 Dec 2004 16:19:09 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10412201617430.18976-100000@darkstar.sysinfo.com>
-References: <1103549777.3264.18.camel@hubcap.ljm.dom>
+From: Sasa Stupar <sasa@stupar.homelinux.net>
+Subject: Re: Redirection question
+Date: Mon, 20 Dec 2004 22:33:06 +0100
+Message-ID: <41C74512.6080604@stupar.homelinux.net>
+References: <41C705A1.2040107@stupar.homelinux.net>
+	<41C7066D.7050604@stupar.homelinux.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1103549777.3264.18.camel@hubcap.ljm.dom>
+In-Reply-To: <41C7066D.7050604@stupar.homelinux.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,74 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Mon, 20 Dec 2004, Jason Opperisano wrote:
+Sasa Stupar a =C3=A9crit :
 
-> On Mon, 2004-12-20 at 08:24, Rob Sterenborg wrote:
-> > I'm not sure I understand this :
-> > I agree it's a valid rule (syntax), but I don't think it will ever match
-> > a packet.
-> > 
-> > If -i and -d are specified, they both have to match to accept a packet,
-> > right ?
-> > Because <ip_eth0> is not assigned to ppp0, how can -i ppp0 -d <ip_eth0>
-> > ever match for the INPUT chain ?
-> 
->   eth0 IP:  1.2.3.4
->   eth1 IP:  10.1.1.1
-> 
->   iptables -A INPUT -i eth1 -p icmp -d 1.2.3.4 -j ACCEPT
-> 
-> an ICMP echo-request packet arrives on eth1 with dst IP 1.2.3.4.
-> 
-> the routing code needs to figure out what the destination of the packet
-> is--so we do a route lookup.  1.2.3.4 is a local IP--OK, destination is
-> local.  packets with a local destination passes through the INPUT chain
-> of netfilter, so let's hook in...does the packet match our rule?
-> 
->   -i eth1	YES
->   -p icmp	YES
->   -d 1.2.3.4	YES
-> 
-> so this rule matches--apply the target:
-> 
->   -j ACCEPT
-> 
-> the majority of people i encounter need to free themselves from the
-> notation that there is some magic binding between interfaces and their
-> IP addresses, because the kernel certainly does not see things that way.
-> 
-> if you mean "destined for IP a.b.c.d and arriving on ethX" then say that
-> in your rule:
-> 
->   iptables -A INPUT -i ethX -d a.b.c.d [...]
-> 
-> say what you mean and mean what you say.
+> Sasa Stupar a =C3=A9crit :
+>=20
+>> Hi!
+>>
+>> I have installed mail server on my lan. Now I would like to redirect=20
+>> all lan users to use that mail server as smtp (similar as transparent =
 
+>> proxy with squid). How do I do that smtp redirection?
+>> I was thinking something like:
+>> -------------
+>> iptables -t nat -A PREROUTING -i eth0 -s ! smtp-box -p tcp --dport 25 =
 
-If I'm reading all this correctly then if set as both INPUT and FORWARD
-rules the FORWARD rules would become redundant and never be hit as the
-INPTU rules would be caught first and deal with what becomes of the
-packets, yes?
+>> -j DNAT --to smtp-box:25
+>> iptables -t nat -A POSTROUTING -o eth0 -s local-network -d smtp-box -j=
+=20
+>> SNAT --to iptables-box
+>> iptables -A FORWARD -s local-network -d smtp-box -i eth0 -o eth0 -p=20
+>> tcp --dport 25 -j ACCEPT
+>> --------------
+>> Is this correct?
+>>
+>> Regards,
+>> Sasa
+>>
+>=20
+> I forgot some more infos:
+> running on FC3 with sendmail. This is also a router with 2 NIC
+> installed: one for internet and one for LAN.
+>=20
+> Sasa
 
-Thanks,
+Solved. It is working as I have mentioned above.
 
-Ron DuFresne
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
+Sasa
 
 
