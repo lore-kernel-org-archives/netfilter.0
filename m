@@ -1,13 +1,10 @@
-From: Shane Hickey <shane@howsyournetwork.com>
-Subject: Re: Need help with rate-limiting NTTP traffic
-Date: Thu, 1 Apr 2004 20:20:54 -0700
+From: "Philippe Anctil" <z77y16@hotmail.com>
+Subject: safe default chain policies
+Date: Thu, 01 Apr 2004 23:58:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040401202054.1fffa4b6@daneel.volumen.net>
-References: <20040331165409.0d498074@daneel.volumen.net>
+Message-ID: <BAY16-F59EdJ7BzKkc100034639@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040331165409.0d498074@daneel.volumen.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I found the solution to my exact problem (right down the NNTP client) at
-http://mail.gnu.org/archive/html/pan-users/2003-11/msg00009.html
+Hello list,
 
-For those who want the answer now with now clicking, you can do it all
-with this:
+I've had quite a bit of trouble setting up nat rules on my iptables home 
+network firewall. Machines behind my firewall box couldn't host games, use 
+bittorrent efficiently, that type of thing. Not that nothing works. I've 
+been surfing, playing games and ftp'ing happily for a while. My problems 
+were nat-specific.
 
-tc qdisc add dev $WANIFACE handle ffff: ingress
-tc filter add dev $WANIFACE parent ffff: protocol ip prio 50 u32 match
-ip sport 119 0xffff police rate 800kbit burst 15k drop flowid :1
+I have known for a while my problems were related to my default chain 
+policies. I never wanted to compromise security, so I set all of input and 
+nat chains to DROP. I left the mangle to accept (never took time to 
+understand this table). Is this excessive security? I find such a firewall 
+quite hard to maintain because you need to know exactly how chains are 
+traversed.
 
-Thanks.
+I am thinking to set all chains to ACCEPT except the INPUT chain. Is this 
+minimalist security? This is one chain I think I should not be open.
 
--- 
-Shane Hickey <shane@howsyournetwork.com>: Network/System Consultant
-GPG KeyID: 777CBF3F
-Key fingerprint: 254F B2AC 9939 C715 278C  DA95 4109 9F69 777C BF3F
-Listening to: Bill Frisell  - Vernon Reid - Small Hands
+Where to draw the line for a home network?
+
+Thanks for sharing your thoughts!
+
+_________________________________________________________________
+MSN Messenger : discutez en direct avec vos amis !  
+http://messenger.fr.msn.ca/
+
 
