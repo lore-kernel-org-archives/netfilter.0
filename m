@@ -1,12 +1,11 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: More neqbie questions
-Date: Mon, 2 Aug 2004 16:09:10 -0400
+From: Paulo Ricardo <pauloric@contato.com.br>
+Subject: question about conntrack
+Date: Mon, 02 Aug 2004 17:32:14 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051222@asimail2.alphanumeric.com>
+Message-ID: <1091478734.3163.75.camel@pauloric.intranet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +16,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Ellis <eellis@mail.co.gilchrist.fl.us>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> Now here's something interesting that I discovered when you mentioned
-> it...
->
-> <code>
-> root@firewall:/var/log# tail syslog -f|grep 10.1.1.100
->
-> Aug  2 13:41:38 firewall kernel: IN=3Deth1 OUT=3Deth0 SRC=3D10.1.1.100
-> DST=3D212.19.193.43 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D
-> 49518 DF PROTO=3DTCP SPT=3D3571 DPT=3D80 WINDOW=3D64240 RES=3D0x00 SYN =
-URGP=3D0
+Hi guys 
 
-your redirect rule is:
+Just a quick question. Is there a tutorial/how-to/example for conntrack
+module??
 
-	$IPT -t nat -A PREROUTING -i $INT -p tcp --dport 80 \
-	  -j REDIRECT --to-port 8080
+I've been using -m state ESTABLISHED, RELATED, NEW, and INVALID without
+doubts , but reading ponng I found conntrack module and I couldn
+undersant its usage..
 
-where $INT =3D eth0
 
-the inbound interface of the logged packet above is eth1; therefore, it =
-does not match your REDIRECT rule (or any FORWARD rule either).
-
-are your interface variables ($INT and $EXT) backwards?
-
--j
+thanks in advance
+-- 
+Paulo Ricardo Bruck - consultor
+tel 011 5031-4932  fone/fax 011 5034-1732  cel 011 9235-4327
 
 
