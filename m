@@ -1,71 +1,68 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: netfilter stops working
-Date: Thu, 22 Jan 2004 12:39:53 -0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <43498.0774451562$1074793349@news.gmane.org>
-References: <1074788089.27896.13.camel@webmail.aeropostal.com.ve>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: ip_conntrack_pptp
+Date: Thu, 22 Jan 2004 12:53:45 -0500
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20040122175345.GN1810@obroa-skai.de.gnumonks.org>
+References: <20031221122445.GC5058@obroa-skai.de.gnumonks.org> <003601c3e100$6e8a68c0$2d64a8c0@pcjka>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <1074788089.27896.13.camel@webmail.aeropostal.com.ve>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yLfVvEQOBD/VeTNx"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
 Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+In-Reply-To: <003601c3e100$6e8a68c0$2d64a8c0@pcjka>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Juan Hernandez <alucard@kanux.com>, Lista de netfilter <netfilter@lists.netfilter.org>
-
-On January 22, 2004 11:14 am, Juan Hernandez wrote:
-> Hi there...
->
->
->    I'm running a firewall-router machine in a Red Hat Linux 9 box. I
-> have uploaded Red hat's latest kernel 2.4.20-28 I guess. My problem is
-> this... This box has been working perfectly for the last 6 months and it
-> even had a 6 months uptime with no reboots. Suddendly, the box quit
-> working and I started getting this message when I log the packets...
->
-
-<< much snippage for brevity >>
-
-> it will work -but not always, sometimes both interfaces do not ping
-> anybody- but it will quit working after an hour or so not allowing any
-> other services -like internal ftp or mail fetching- and I'll start
-> having those logs again... I have checked all the box for any security
-> issues and I haven't found any- I have latest packages due to a red hat
-> network subscription-. What's weird is that it worked flawlessly for 6
-> months...
->
-
-	Jaun -- you imply here that you've upgraded your kernel code.
-	Did you change the NIC drivers from modules to builtin of vice-versa?
-	Did you ensure that you've recompiled the iptables code?? <-- Although sometimes 
-	it will work after a kernel change, by default if you upgrade the kernel you MUST recompile iptables
-	userspace code ...(I suspect that in RH you may have a different RPM package for the newer kernel)
-	
-	I found that after switching from 2.4.9 to 2.4.18 the network cards loaded in different sequences unless
-	I built them as modules and inserted them from a script .. .but thats my experience. (this chanages the 
-	interface order/sequence/labelling )
-
-	The packet you are seeing in the log is a DNS packet -- likely a reply to a DNS request, but between your
-	firewall script and what you've told us this sounds like it is a result of the interface labels having 
-	changed due to the load order of the NIC drivers changing somehow.  Now you are getting stuff coming
-	in on what you've defined as out and are sending the reply out that way... 
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Jan Kaastrup <jka@protego.dk>
+Cc: 'Netfilter Development Mailinglist' <netfilter-devel@lists.netfilter.org>, 'Netfilter Mailinglist' <netfilter@lists.netfilter.org>
 
 
-	Next point ...are these interfaces BOTH somehow connected to a switch/hub out there ???? 
-	(see loooong thread early this month that exhibited same symptome and was a result of 
-	a cable being where it shouldn't be)
+--yLfVvEQOBD/VeTNx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jan 22, 2004 at 04:57:26PM +0100, Jan Kaastrup wrote:
+> Hi Harald and all on this list.
+>=20
+> I have problems with ip_conntrack_pptp patch from POM-20031219
+> Does anyone know of this, or is it just me being stupid ?
 
+*sigh* *sigh* *sigh*. =20
 
+Does anybody actually ponder reading the 'README' file included in the
+patch-o-matic package?
 
-Alistair Tonner
+> Jan
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--yLfVvEQOBD/VeTNx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFAEA4pXaXGVTD0i/8RAkhRAJ0UN4OUlBQw0h44ao5dl6RFR0lUxgCggvTX
+psEdEwz1KkD4X0EwsQBYYxo=
+=EJv0
+-----END PGP SIGNATURE-----
+
+--yLfVvEQOBD/VeTNx--
 
