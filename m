@@ -1,9 +1,8 @@
-From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
-Subject: Re: A Proper Syntax For iptables?
-Date: Sun, 22 Sep 2002 18:46:03 +0200
+From: "Jim Fleming" <JimFleming@ameritech.net>
+Subject: Can everyone reach both of these sites ?...http://www.fo0bar.org/...http://ipv6.fo0bar.org/
+Date: Sun, 22 Sep 2002 11:41:39 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003901c26257$8a993b50$026410ac@honor>
-References: <OF999C1019.C1FE4849-ON88256C3C.004F0D1E-88256C3C.0051EED6@deepwoods.com> <0cc601c2624c$ad4b8780$c6b22543@repligate>
+Message-ID: <0cfe01c26256$eca040b0$c6b22543@repligate>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,28 +16,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jim Fleming <JimFleming@ameritech.net>, netfilter@lists.netfilter.org, caogdin@deepwoods.com
+To: netfilter@lists.netfilter.org
 
-From: "Jim Fleming" <JimFleming@ameritech.net>
+Can everyone reach both of these sites ?
 
-> ----- Original Message -----
-> From: caogdin@deepwoods.com
-> Like many other novices in this list, I've struggled with understanding
-iptables for several months.
-> ===
->
-> It might help if you separate NetFilter from iptables...
->
-> http://ipv8.dyn.ee/INFO/Papers/NetFilter/
+http://www.fo0bar.org/
+http://ipv6.fo0bar.org/
 
-i dont think that any strange ipv4++ (aka ipv5 or whatever nonsense came out
-of your mind) might help someone who is not even familiar with the basics of
-netfilter..
+Is IPv6 for everyone ?
 
-i would suggest the tutorials and howto's at http://www.netfilter.org
 
---
-mailto: sascha.reissner@toxicnet.de  -  http://www.fo0bar.org
-contaminating the internet since 2001
+Jim Fleming
+2002:[IPv4]:000X:03DB:...IPv8 is closer than you think...IPv16 is even closer...
+http://www.netfilter.org/
+http://www.analogx.com/contents/dnsdig.htm
+http://ipv8.dyndns.tv
+http://ipv8.yi.org
+http://ipv8.dyns.cx
+http://ipv8.no-ip.com
+http://ipv8.no-ip.org
+http://ipv8.no-ip.biz
+http://ipv8.no-ip.info
+http://ipv8.myip.us
+http://ipv8.dyn.ee
+http://ipv8.community.net.au
+http://ipv8.ods.org
 
 
