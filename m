@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ARP traffic on a large-ish network
-Date: Thu, 17 Mar 2005 10:24:38 -0500
-Message-ID: <1111073077.19251.12.camel@hubcap.ljm.dom>
-References: <42B3C34A03A8FC4BB0A80082CE8993F31C1C25@onstopnt.onestop.com>
-	<423939F6.3070108@riverviewtech.net>
+From: Bill Chappell <chappewr@critical.com>
+Subject: Re: Packets Counting
+Date: Wed, 16 Mar 2005 13:08:08 -0500
+Message-ID: <42387608.2000100@critical.com>
+References: <42389BFF@webmail.wichita.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <423939F6.3070108@riverviewtech.net>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <42389BFF@webmail.wichita.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,21 +16,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2005-03-17 at 03:04, Grant Taylor wrote:
-> You *might* try inserting a Linux router in the network between your Cisco and all your clients.  The main things this router would do is run the ARPDaemon which implements a LARGE ARP cache in user space.  Thus hopefully you could configure it to hold most if not all of your client's MAC addresses in it's internal tables thus reducing the need to ARP.  The Linux kernel's internal ARP cache maxs out at around 256 entries.  I don't know if this would work at all as all references to ARP Daemon I've seen are early 2.4 but support for it is still suppose to be in the kernel.  I just looked and it is included in 2.6.11 under "Networking Options".  Let me know if you try this and what you find out as I've got a network with about 2048 potential hosts on it that I'm considering using this on.
 
-VLAN it and route it before that "potential" becomes "reality."
+I do not have time this instant to share the code but the outline of
+a packet counter I use is to create chain MANGLE_ACTIVITY in -t mangle,
+add a rule that simply RETURNs to MANGLE_ACTIVITY, Insert a jump to the
+MANGLE_ACTIVITY chain in -t mangle PREROUTING (so it is the first chain
+hit by all incoming packets), use whatever matches, like --sport or
+--dport (remember to specify protocol with port matches) and/or an=20
+interface match.  Then, in a script (mine happens to be Perl), run
+"iptables -t mangle -nvL MANGLE_ACTIVITY" and pipe (|) it through grep
+to get the RETURN line with the packet count and pipe it through
+awk to pick off the packet count followed by
+"iptables -t mangle -Z MANGLE_ACTIVITY" to zero the counter,
+both in a loop with a sleep to get the interval (approximately).
 
-line-wrapping your messages would be a nice touch as well.
+Hope this helps.
 
--j
+Bill
 
---
-"If I had known there were loose women in Las Vegas, I would never
- have let you go."
-	--The Simpsons
+(Without deadlines, we'd live forever.)
+
+
+
+M. A. Imam wrote:
+> Can i record the the number of packets each 2 seconds with tcpdump. i can=
+ see=20
+> packets with tcpdump but how to count it every 2 seconds
+>=20
+>=20
+>>=3D=3D=3D=3D=3D Original Message From edvin.seferovic@kolp.at =3D=3D=3D=
+=3D=3D
+>>Maybe you should use tcpdump for testing purposes instead of using iptabl=
+es.
+>>
+>>Just my opinion.
+>>
+>>Regards,
+>>
+>>Edvin
+>>
+>>-----Original Message-----
+>>From: netfilter-bounces@lists.netfilter.org
+>>[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of M. A. Imam
+>>Sent: Mittwoch, 16. M=E4rz 2005 16:56
+>>To: netfilter@lists.netfilter.org
+>>Subject: Packets Counting
+>>
+>>Hi,
+>>
+>>How can i count the number of packets on an interface evry 2 or 5 seconds.
+>>and
+>>i want to count only specific packets like only arriving packets from port
+>>5001
+>>
+>>Any ideas...
+>>
+>>Muhammad
+>=20
+>=20
+>=20
+>=20
+
+--=20
+William Chappell, Software Engineer, Critical Technologies Inc.
+* Creativity * Diversity * Expertise * Flexibility * Integrity *
+Suite 400 Technology Center, 4th Floor 1001 Broad St, Utica NY 13501
+315-793-0248 x148 FAX -9710 <bill.chappell@critical.com> www.critical.com
 
 
