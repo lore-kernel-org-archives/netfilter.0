@@ -1,13 +1,15 @@
 From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: list delete bug: kernel crash
-Date: 31 Aug 2004 21:52:19 +0200
+Subject: Re: tracking usage by mac address
+Date: 31 Aug 2004 21:52:27 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093974717.10779.41.camel@nostromo.bgsecm.com>
-References: <000801c48f65$58d3c940$0a00a8c0@aziz>
+Message-ID: <1093975734.10779.57.camel@nostromo.bgsecm.com>
+References: <41329413.3080407@shaw.ca>
+	<1093887545.23659.47.camel@nostromo.bgsecm.com>
+	<3063e504083013374bd2a909@mail.gmail.com>  <4133C792.9050909@shaw.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000801c48f65$58d3c940$0a00a8c0@aziz>
+In-Reply-To: <4133C792.9050909@shaw.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +20,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: security <security@lea-linux.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>, Gavin Hamill <gdh@acentral.co.uk>
+To: Henry Baxter <henrybaxter@shaw.ca>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mar, 31 de 08 de 2004 a las 16:18, security escribió:
-> ----- Original Message ----- 
-> From: "security" <security@lea-linux.com>
-> To: "Gavin Hamill" <gdh@acentral.co.uk>; <netfilter@lists.netfilter.org>
-> Sent: Tuesday, August 31, 2004 3:34 PM
-> Subject: Re: list delete bug: kernel crash
+El mar, 31 de 08 de 2004 a las 02:34, Henry Baxter escribió:
+> Thank you Jose, I'm going to go with parsing the log with C code which I 
+> wouldn't mind writing - but if you could point me to your source, that 
+> would be very helpful. From the sounds of your setup George it should 
+> work great for us here (a tenth of your bandwidth usage!).
 > 
-> 
-> > >
-> >> This may be a long shot, but there may exist the possibility of the files 
-> >> on
-> >> disk being corrupted when they were installed, due to your faulty memory?
-> >>
-> >> Try to reinstall the kernel / modules and iptables userspace?
-> >>
-> >> Cheers,
-> >> Gavin.
-> >>
-> >>
-> > Ok. I go re-compil my kernel and re-install iptable package :)
-> 
-> Ok still have  crash after re-compil my kernel and re-install iptable 
-> userspace package.
-> Allways the same error:
-> 
-> Aug 31 16:01:39 gateway kernel: LIST_DELETE: 
-> net/ipv4/netfilter/ip_conntrack_core.c:300 
-> `&ct->tuplehash[IP_CT_DIR_REPLY]'(d3ac9224) not in
-> &ip_conntrack_hash[hr].
-> Aug 31 16:01:39 gateway kernel: LIST_DELETE: 
-> net/ipv4/netfilter/ip_conntrack_core.c:300 
-> `&ct->tuplehash[IP_CT_DIR_REPLY]'(d3ac9524) not in
-> &ip_conntrack_hash[hr].
-> Aug 31 16:03:26 gateway kernel: LIST_DELETE: 
-> net/ipv4/netfilter/ip_conntrack_core.c:300 
-> `&ct->tuplehash[IP_CT_DIR_REPLY]'(d6537224) not in
-> &ip_conntrack_hash[hr].
+> This mailing list rocks
 
-Have you tried to patch with patch-o-matic and recompile both
-the kernel and the userspace last sources (iptables). Both sides
-of the system must be synced or there will be problems.
+You can find the source code at our downloads web page:
+
+http://www.bgsec.com/downloads.html
+
+or at the sourceforge web site:
+
+http://bastionfirewall.sourceforge.net
+
+the module you could use it's named
+bastion-firewall-stats-1.0.src.tar.bz2
+
+But it's you can also look at google for the Querying
+Libiptc HOWTO, that was the document we used to write
+our code. Just have in mind that it has a big bug, because
+it allocates memory when it open the chain to read the
+counters but it doesn't free the memory. If you use the
+code in the examples you must do this after you read the
+counters:
+
+iptc_free(&h);
+
+If you don't do it your program starts to eat memory and
+grows and grows and grows until it uses all the memory in
+the system.
+
+We have sent an email to the author of the Howto, but we have
+not received any response yet. Hope he reads it's mail and
+the new version of the HOWTO adds this code.
+
 
 -- 
 Jose Maria Lopez Hernandez
