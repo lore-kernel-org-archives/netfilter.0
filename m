@@ -1,9 +1,11 @@
-From: Chip Upsal <cupsal@cyberwolf.com>
-Subject: netfilter hangups
-Date: Tue, 11 Mar 2003 15:00:20 -0700
+From: "..." <betolourenco@ig.com.br>
+Subject: Re: netfilter hangups
+Date: Tue, 11 Mar 2003 19:15:15 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3019863CF306D211BA4500A0CC30812DC6790D@exchange.cyberwolf.com>
+Message-ID: <000801c2e81b$b33e70d0$32050a0a@rlourenco>
+References: <3019863CF306D211BA4500A0CC30812DC6790D@exchange.cyberwolf.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,29 +17,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I am running nefilter 1.2.7a on a Redhat 7.3 box kernel v. 2.4.18-24.7.x.
+why are you doing it.
 
-I have experienced the following problems. Sometimes after making many
-changes and reloading the firewall after each change...the firewall will
-refuse to reload with the following output:
+try
+service iptables restart
 
-[root@iptables1 root]# /etc/sysconfig/iptables condrestart
-iptables: Chain already exists
-iptables: Chain already exists
-iptables: Chain already exists
-iptables: Chain already exists
-iptables: Chain already exists
-
-Or if i get no error the firewall will not recognize any of the changes i
-have made.
-
-In either case i am forced to reboot the firewall to get things going again.
+...
+----- Original Message -----
+From: "Chip Upsal" <cupsal@cyberwolf.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, March 11, 2003 7:00 PM
+Subject: netfilter hangups
 
 
+> I am running nefilter 1.2.7a on a Redhat 7.3 box kernel v. 2.4.18-24.7.x.
+>
+> I have experienced the following problems. Sometimes after making many
+> changes and reloading the firewall after each change...the firewall will
+> refuse to reload with the following output:
+>
+> [root@iptables1 root]# /etc/sysconfig/iptables condrestart
+> iptables: Chain already exists
+> iptables: Chain already exists
+> iptables: Chain already exists
+> iptables: Chain already exists
+> iptables: Chain already exists
+>
+> Or if i get no error the firewall will not recognize any of the changes i
+> have made.
+>
+> In either case i am forced to reboot the firewall to get things going
+again.
+>
+>
+>
+> Chip Upsal
+> SysAdmin
+>
+>
 
-Chip Upsal
-SysAdmin
 
