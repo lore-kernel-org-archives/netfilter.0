@@ -1,10 +1,13 @@
-From: "Hurley, Michael" <MHurley@law.uconn.edu>
-Subject: RE: logging to console
-Date: Wed, 17 Dec 2003 13:14:00 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: help...
+Date: Wed, 17 Dec 2003 18:22:21 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <AD8D39C727CBD411BB2C0090273A727408F9ED5B@mortimer.law.uconn.edu>
+Message-ID: <200312171822.21343.Antony@Soft-Solutions.co.uk>
+References: <000801c3c291$db2de390$6400a8c0@stillnickcomp1> <00df01c3c4c8$ed220980$7000a80a@melita.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00df01c3c4c8$ed220980$7000a80a@melita.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,44 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Actually, I got a response directly to me that solved the problem. This is
-effectively dumping all my iptables messages to their own log:
+On Wednesday 17 December 2003 6:09 pm, Ian Hunter wrote:
 
->I set my logging in my firewall script to
->iptables -A FORWARD -j LOG --log-level 7 --log-prefix "FORWARD: "
+> Start off by giving us your existing rules?
+> ----- Original Message -----
+> From: "Cristiano Soares" <stillnick@terra.com.br>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Sunday, December 14, 2003 5:30 PM
+> Subject: help...
 >
->Then in /etc/syslog.conf:
->
->kern.7	-/var/log/firewall
->
->On a side note in /etc/sysconfig/syslog I modified the -c parameter, this
->controls the console logging level.
->KLOGD_OPTIONS="-x -c 4" 
+> Hi, i would like to know if u guys could help me with a simple problem that
+> im having trying to set up a network server. I have DSL conection and im
+> sharing it with a network. I had set up the DHCPD server, all the DHCP
+> clients in my network can receive an IP from the server, but they cant
+> browse. I know that there as some lines that i have to set up to make de
+> server allow the clients to browser normaly. and i also know that it has
+> something to do with iptables, and maskarading. Please, i need help doing
+> this. I have MSN and ICQ if anyone would like to help me. I have SSH server
+> running also. please, please, i need help. Thanks a lot.
 
-I didn't bother tinkering with klogd, but I thought I'd reproduce the
-message I got in full for anyone else who might find this as useful as I
-did. 
+Sounds like this guy simply needs to know:
 
-- Michael Hurley
+iptables -A POSTROUTING -o $EXTIF -j MASQUERADE
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
 
+If that doesn't do the trick then yes, post your existing ruleset and tell us 
+what works and what doesn't (and how you're testing it).
 
------Original Message-----
-From: Laurence J. Lane [mailto:ljlane@nontoxic.org]
-Sent: Tuesday, December 16, 2003 6:34 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: logging to console
+Antony.
 
+-- 
+Abandon hope, all ye who enter here.
+You'll feel much better about things once you do.
 
-On Tue, Dec 16, 2003 at 05:19:31PM +0000, Antony Stone wrote:
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-[ re sending netfilter logs to a separate file ]
-
-> I thik several people would. It's come up a few times before on
-> this list. Short of delving into the netfilter source code, I
-> don't know of a way to do it.
-
-syslog-ng may interest you.
 
