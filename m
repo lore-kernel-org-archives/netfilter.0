@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Multiple subnets of the same IP space, different VLANs,
-	same box...
-Date: Tue, 15 Feb 2005 17:03:56 -0500
-Message-ID: <20050215220356.GA20635@bender.817west.com>
-References: <42122E91.2000707@joyner.ws>
+From: Eric Leblond <eric@inl.fr>
+Subject: NuFW 1.0-rc1 is available
+Date: Wed, 16 Feb 2005 00:13:08 +0100
+Message-ID: <1108509188.5026.20.camel@porky>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <42122E91.2000707@joyner.ws>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-wk8pIUwx7DrSNYEbR6i9"
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +16,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Feb 15, 2005 at 12:17:05PM -0500, Aaron S. Joyner wrote:
-> Okay, first let me admit that what I'm trying to do is a bit on the 
-> weird side,
 
-nah--this request comes up weekly...
+--=-wk8pIUwx7DrSNYEbR6i9
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> and stems from some historical requirements that I can not 
-> easily change.  Having said that, here's the scoop.
-> 
-> I have numerous subnets, which are all identical.  Each has devices in 
-> the 10.1.1.0/24 range that need to talk to a server at 10.1.1.1.  All 
-> subnets for the sake of argument will be Class C ranges.  (1)  They are 
-> all connected through Cisco switches, via 802.1q VLANs, back to a single 
-> Linux box.  Each subnet comes in on a virtual interface (courtesy of 
-> vconfig), such as eth1.10, eth1.11, etc.  I need to be able to respond 
-> to each of those interfaces as 10.1.1.1, with (so far) only ICMP and UDP 
-> traffic.
+Hi,
 
-i can't *believe* i'm actually going to link to this, but the last
-time someone asked something similar (k--so it was over a week ago),
-i posted this:
+The NuW core team proudly announces the availability of NuFW 1.0-rc1.
 
-  http://marc.theaimsgroup.com/?l=netfilter&m=110737820716813&w=2
+NuFW (http://www.nufw.org) is an authenticating firewall for GNU/Linux
+which extends the capabilities of Netfilter.
 
-it doesn't exactly match your situation, but the concept is the same--as
-long as the machine in question only has to respond to requests you can
-MARK the connection as it comes in, and route the reply based on the
-mark, which is restored using CONNMARK.
+It brings the notion of user to the level of packet filtering. Policy
+such as :
+- john can connect to serveur imap if he uses evolution on Linux.
+can now be securely achieved by a single Acls and this, even on
+multiuser systems.
 
-as the OP never responded as to whether this suggestion worked, or ate
-his dog, i still have no idea as to whether it works or not; as i never
-tried it myself...so YMMV.
+This release is the first of a new stable branch, which performs
+encryption of all flows : nufw-nuauth flows as well as client-nuauth
+ones. The cache system is now considered stable and tested, and greatly
+improves performances, compared to the older 0.8.
 
-as someone else already suggested, you can also do this using NETMAP to
-nat entire subnets to something unique.
+For an almost detailed list of new features see :
+	http://nufw.org/proto2_and_more.html
 
-IIRC--there was someone that asked about this, and i came up with:
+For a quick testing of this release please read the following page :
+	http://nufw.org/testing.html
 
-  http://marc.theaimsgroup.com/?l=netfilter&m=110027573811157&w=2
+BR,=20
+--=20
+Eric Leblond <eric@regit.org>
+NuFW, Now User Filtering Works : http://www.nufw.org
 
-again--no idea if this works or not...  but you should be able to get
-the general idea of what's involved in this sort of chicanery.
+--=-wk8pIUwx7DrSNYEbR6i9
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
--j
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
 
---
-"Me lose brain? Uh, oh! Ha ha ha! Why I laugh?"
-        --The Simpsons
+iD8DBQBCEoIDnxA7CdMWjzIRApkZAKCNEYF/vC2t1I35Cx7Rs3CdvWu9OACdHClZ
+IGA1fzm55hFImj6oe4nIv8w=
+=yOi4
+-----END PGP SIGNATURE-----
+
+--=-wk8pIUwx7DrSNYEbR6i9--
+
 
