@@ -1,11 +1,12 @@
-From: "Sarkis Gabriel" <sarky@raycon.net>
-Subject: iptables is giving me probs
-Date: Thu, 3 Oct 2002 19:03:30 +0100
+From: Bob Keyes <bob@sinister.com>
+Subject: Re: assymetrical routing, iptables problem.
+Date: Thu, 3 Oct 2002 13:36:08 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003801c26b07$2eb25f20$68287bd5@p4226>
+Message-ID: <Pine.BSO.4.33L0.0210031331220.12795-100000@sinister.com>
+References: <1033627561.652.9.camel@elendil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1033627561.652.9.camel@elendil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,31 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: netfilter@lists.netfilter.org
 
-Hi all
-Well i am new to this list, and i have been trying to fix this problem for a
-while but i dont know what is causing this problem in the first place.
-i installed RH 7.2 and when i wanted to use iptables it gave me this error :
-/lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o: init_module:
-Device or resource busy
-Hint: insmod errors can be caused by incorrect module parameters, including
-invalid IO or IRQ parameters
-/lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o: insmod
-/lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o failed
-/lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o: insmod
-ip_tables failed
-iptables v1.2.5: can't initialize iptables table `filter': iptables who? (do
-you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
 
-well it is driving me crazy i didnt do anything it is like that with a fresh
-install even on 7.3
-and i upgraded to that version to see if it will fix it but nope no luck..
 
-Please advice thanx
+On 3 Oct 2002, Cedric Blancher wrote:
 
-Sarky
+> You really should use a GRE tunnel between your two routers and route
+> your 1.1.1.1 IP directly through it. I use it quite often when migrating
+> hosts from one location to another (physically or logically) without
+> havin to change IP addresses.
+
+What I want here is a half-tunnel, of a sort. GRE Tunnels does not do
+this, as far as I can tell.
+
+>
+> Note that you can also use packet MARK packets to identify them using
+> mangle table which prevents you to alter layer 4 stuff. You can also use
+> this MARK to route packets using iproute (see LARTC).
+>
+> > The problem is, the latter half of this doesn't work. What I really want
+> > is SNAT in OUTPUT, as I believe that POSTROUTING won't touch packets that
+> > originate on the local machine.
+>
+> SNAT on POSTROUTING will also affect locally originated packets as they
+> get through this chain.
+
+OK, this is good to know, there is something else going wrong than I had
+thought.
+
 
 
