@@ -1,137 +1,78 @@
-From: Nox <pheusion@snet.net>
-Subject: Re: n00b question.....   How to get details on active connections
-Date: Tue, 23 Sep 2003 11:59:37 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1064332777.22271.56.camel@shaolin.gridlocksecurity.com>
-References: <20030923144031.93650.qmail@web60106.mail.yahoo.com>
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: A humble proposal
+Date: Tue, 23 Sep 2003 09:13:21 -0700
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E46@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030923144031.93650.qmail@web60106.mail.yahoo.com>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: Stack Buffer <black_merkury@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Good mourning Stack.
-1 - 4 of those modules, I dont have installed into my filter,
-but I am not doing te same as you, so Im not sure if youll need them or
-not.
-
-The best way would be to compile them as modules,
-the reason being that they are loaded during boot up, rather than
-directly into your kernel, making things boot faster.
-
-I dont have anything from under QOS either, so you may not need that
-
-Item 1 & 2, 
-
-1) IP:Multicasting.
-> 
-> 2) IP:Policy Routing.
-
-those you may need, but the others I think you can get rid of.
-the file that contains the modules is:
-/etc/modules & /etc/modules.conf
-
-I think adding all those are a little bit overkill,
-I dont think youll ever use most of the 
-
-Qos and/or
-Fair queueing
-
-stuff, so try it without that
-
-Ip Multicast is for,
-One host sending a packet to all nodes on a multicast network.
-(Ive never used it)
-The reason for this is, save bandwidth.
-Instead of sending one single packet to 10 machines, which results in 10
-packets on the network, you send one packet to 10 hosts,
-at once.
-
-Policy Routing
-Is exactly what it sounds like,
-instead of having routes in your routing table, you can create rules in
-your Iptables, for routing connections
-Much more control of where those routes go, logging on the routing
-of those connections, etc. I think you should leave this, as it comes in
-handy
+I have been researching some possible extensions to the Netfilter
+environment, and something has become very necessary for my current
+environment. The following proposal outlines what I wish to implement. I
+am wondering if anyone would find value in this. Plus, I look forward to
+feedback so that I may improve my ideas.
 
 
+Problem:
 
-Use netfilter as mark:(from manpage)
-The MARK target is used to set Netfilter mark values that are associated
-with specific packets. This target is only valid in the mangle table,
-and will not work outside there. The MARK values may be used in
-conjunction with the advanced routing capabilities in Linux to send
-different packets through different routes and to tell them to use
-different queue disciplines (qdisc), etc. For more information on
-advanced routing, check out the Linux Advanced Routing and Traffic
-Control HOW-TO. Note that the mark value is not set within the actual
-package, but is an value that is associated within the kernel with the
-packet. In other words, you can not set a MARK for a packet and then
-expect the MARK still to be there on another host. If this is what you
-want, you will be better off with the TOS target which will mangle the
-TOS value in the IP header. 
+When you need to have internet services open to the internet, some of
+them are inherently insecure, such as FTP, SMB, etc. Even if the
+protocols have built in encryption, there is still a chance that the
+protocol can be compromised.
 
-TCP_syncookies.
+Also, I have a VPN connection into my internal network. I want anyone
+connecting to be forced to authenticate to access mission-critical
+components of the system, keeping them safe unless the user themselves
+need to do emergency work on these servers.
 
-Send out syncookies when the syn backlog queue of a socket
-overflows. This is to prevent against the common 'syn flood attack'
-could come in handy   
-     
+Related:
 
-Good job with your first Kernel compile.
+While looking into PAM support for various Hardware Tokens, I can
+across, pam_iptables. This allows one to login to a SSH, Telnet, or
+whatever PAM supported daemon is installed with the module. Once
+authenticated, the user has full TCP/IP access to the machine. Once the
+SSH session has been closed, so does the iptables rule for access to the
+system.
 
-Let me know how the rest goes.
+Suggestion:
 
-Nox
-GenMicro Systems
+I would like to take pam_iptables and expand it beyond its simple
+structure. Features will include:
 
-On Tue, 2003-09-23 at 10:40, Stack Buffer wrote:
-> Hi Nox
-> 
-> Well I did manage to get the kernel compiled (Redhat
-> 9.0)
-> kernel 2.4.20-8,
-> and it booted the system fine, although I think it is
-> pretty large.
-> I was not sure of the following though and I hope u
-> can help clearify thing for me:
-> 
-> 1) IP:Multicasting.
-> 
-> 2) IP:Policy Routing.
-> 
-> 3) IP:Use netfilter mark value as router.
-> 
-> 4) IP:TCP syncookie support.
-> 
-> Plus also I compiled in everything under the netfilter
-> configuration and also everything under Qos and/or
-> Fair queueing. Is that over kill to compile all those
-> otions in?. What are the trade off of compiling
-> (netfilter stuff) things as modules,rather than
-> directly into the kernel, will I lose any
-> functionality.
-> I will be very thankful for any help.
-> Thanks
-> Cheers
-> 
-> 
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! SiteBuilder - Free, easy-to-use web site design software
-> http://sitebuilder.yahoo.com
-> 
+- Getting rid of the requirement to keep SSH open the whole time
+- Create a daemon that keeps track of the sessions, instead of worrying
+about the lifetime of the PAM session
+- Allow iptables or any command to be executed once successful
+authentication has occurred
+- Customize the executed commands based on user/groups to give more fine
+grained control over who has what protocol access
+- Ability to expire sessions based on:
+	- Upload/Download Quotas
+	- Time in the system
+	- Time idling on all services
+	- Line Hang-up (VPN disconnect)
+	- Other events that I can't think up on the spot
+
+Since PAM returns the originating IP address of the request, most of the
+rule functionality can be used to discriminate on a host level. I don't
+think many people would have a problem with this. The only side effect
+here is that a user behind a NAT'd network accessing the system opens
+the services to everyone behind that host. This is unavoidable.
+
+I have seen some of this functionality in Checkpoint, and I think that
+it would be immensely useful in the iptables community if it is adopted.
 
 
