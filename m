@@ -1,10 +1,13 @@
-From: Real Cucumber <monkcucumber@yahoo.com>
-Subject: Help with ICMP Ruls
-Date: Thu, 15 Jul 2004 10:03:23 -0700 (PDT)
+From: Marc Haber <mh+netfilter@zugschlus.de>
+Subject: Re: Netfiler on RBL
+Date: Thu, 15 Jul 2004 19:12:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040715170323.24191.qmail@web40707.mail.yahoo.com>
+Message-ID: <20040715171223.GD29242@torres.ka0.zugschlus.de>
+References: <1089911013.7343.1.camel@dchws.tqmcube.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1089911013.7343.1.camel@dchws.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,44 +19,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-I'm trying to determine the best practice for allowing
-the required ICMP messages to ensure stable
-networking, while at the same time not allowing pings
-or other unnecessary parts.
+On Thu, Jul 15, 2004 at 01:03:33PM -0400, David Cary Hart wrote:
+> Jul 15 10:56:03 mail postfix/smtpd[18286]: connect from
+> lakshmi.netfilter.org[62.128.28.23]
+> Jul 15 10:56:03 mail postfix/smtpd[18286]: NOQUEUE: reject: RCPT from
+> lakshmi.netfilter.org[62.128.28.23]: 554 Service unavailable; Client
+> host [62.128.28.23] blocked using bl.spamcop.net; Blocked - see
+> http://www.spamcop.net/bl.shtml?62.128.28.23;
 
-The server these rules are going to be added on is
-just a packet forwarding firewall using fedora2 and
-iptables, and it for now just forwards incoming SSH
-packets to an Internal server.  So far SSH connections
-are working fine though, but I've had much feedback
-suggestions I enable ICMP.
+http://www.spamcop.net/bl.shtml says "However, it should be noted that
+SpamCop is aggressive and often errs on the side of blocking mail".
+You don't want to use any list that bases its result on user reports
+for blocking.
 
-The internal SSH server is not blocking ICMP.
+Greetings
+Marc
 
-The fedora box in front of it is not allowing ICMP at
-all (for Input, Output, and Forward).
-
-What I'd like to know is what are the recommended
-allowed ICMP messages for me to set on the Fedora box?
-
-Shoudl I just allow all ICMP to be forwarded or just
-the four basic control/status messages (source quench,
-parameter problem, incoming destination unreachable,
-outgoing destination unreachable of subtype
-fragmentation).
-
-Also do I need to allow those in all 3 chains or just
-the forward since it does not allow direct connections
-to it anyhow?
-
-
-
-
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail - 50x more storage than other providers!
-http://promotions.yahoo.com/new_mail
+-- 
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Karlsruhe, Germany |  lose things."    Winona Ryder | Fon: *49 721 966 32 15
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 721 966 31 29
 
