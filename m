@@ -1,8 +1,8 @@
 From: "Gessler Gerhard" <Gessler@iabg.de>
 Subject: AW: how to build a routing/packet filtering experimental environment on single PC
-Date: Wed, 30 Jun 2004 14:21:52 +0200
+Date: Wed, 30 Jun 2004 14:31:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <69A5E767EC979846826F566C7932A3F21335E6@exchange03.iabg.de>
+Message-ID: <69A5E767EC979846826F566C7932A3F21335E7@exchange03.iabg.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,15 +19,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Li Xinyi <xinyeeli@hotmail.com>, netfilter@lists.netfilter.org
 
+I hate to reply to myself, but you might also want to look at =
+http://www.netkit.org/ (The poor man system for experimenting computer =
+networks).
+=20
+Cheers,
+=20
+    Gerhard
+
+________________________________
+
+Von: netfilter-admin@lists.netfilter.org im Auftrag von Gessler Gerhard
+Gesendet: Mi 30.06.2004 14:21
+An: Li Xinyi; netfilter@lists.netfilter.org
+Betreff: AW: how to build a routing/packet filtering experimental =
+environment on single PC
+
+
+
 You might want to take look at UML (User Mode Linux). I know that for =
 example the OpenSWAN team uses it to test their IPsec implementation on =
 a single PC. They setup 4 UML instances for 4 virtual PCs and connect =
-them via=20
+them via
 uml_netjig ( if I am not wrong). More details can be found at =
 http://wiki.openswan.org/index.php/UMLTesting.
-=20
+
 Hope this helps,
-=20
+
     Gerhard
 
 ________________________________
@@ -53,7 +71,10 @@ Best Regards,
 Christopher Li
 
 _________________________________________________________________
-??????????????- MSN Hotmail?  http://www.hotmail.com=20
+??????????????- MSN Hotmail?  http://www.hotmail.com
+
+
+
 
 
 
