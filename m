@@ -1,13 +1,15 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: SNAT for a firewall machine
-Date: Sun, 3 Aug 2003 10:28:06 +1000
+From: Tom Marshall <tommy@home.tig-grr.com>
+Subject: Re: New not syn (again...)
+Date: Sat, 2 Aug 2003 18:21:21 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDEMKKNJDLAJDPNDPCDDMEDHNFAA.georgev@citadelcomputer.com.au>
-References: <1059868386.29439.7.camel@nerv.unicauca.edu.co>
+Message-ID: <20030803012121.GA30501@home.tig-grr.com>
+References: <7C9884991ADAE0479C14F10C858BCDF5122E16@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1059868386.29439.7.camel@nerv.unicauca.edu.co>
+Content-Disposition: inline
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122E16@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,124 +19,82 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ulises Hernandez Pino <ulises@unicauca.edu.co>, netfilter@lists.netfilter.org
-
-Firstly why not get rid of the router (if possible, makes thing simpler).
-Can you not give your internal machines private IPs and MAQSUERADE that
-instead of live IPs. It's a waste to put live IPs only to SNAT them to the
-firewalls ext IP anyway.
-
-If you can't get rid of the router for some reason, you can do what I've
-done and given 2 of the external IPs to the router and firewall so they see
-each other as live IPs, then in the router router all hosts to the firewall
-(or add all external IPs to the external NIC of the firewall using
-iproute2).
-
-Then you can use a proper/standard network structure and do whatever you
-like with the firewall.
-
-ie.
-
-|
-|
-|
-203.xx.10.126
-ROUTER
-203.yy.11.253
-|
-|
-203.yy.11.254 (203.yy.11.253,203.yy.11.252,203.yy.11.251)
-FIREWALL
-192.168.150.254
-|
-|
-192.168.150.1-153 (workstations)
-
-this way you can keep your router and use the firewall for VPN which NAT
-breaks.
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Ulises
-Hernandez Pino
-Sent: Sunday, August 03, 2003 9:53 AM
 To: netfilter@lists.netfilter.org
-Subject: SNAT for a firewall machine
 
 
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi... I have a problem with the implementation of a firewall. The
-firewall machine isconnected to router by an interface and a LAN
-(computer with real IP) by anotherinterface.
+On Fri, Aug 01, 2003 at 08:57:15AM -0700, Daniel Chemko wrote:
+> Basically the client or the server sends out a FIN or RST to signify
+> that they are done with the connection. The Conntrack would drop the
+> session. Afterwards the other side sends out an acknowledgement that the
+> session was dropped. The packets are flagged as not established, since
+> the connection from the other side was closed. I think it depends on an
+> IPTables conntrack timeout value to determine how long to wait for the
+> other side's response.=20
+>=20
+> I don't know what everyone else does about them, but I generally just
+> drop them It may not be that clean, leaving other PC's IP stacks timeout
+> the session close, but it happens so rarely to me, *meh*
 
-The router had IP 192.168.150.1 and the firewall machine had IP
-192.168.150.2 with mask 255.255.255.252. The other interface of firewall
-(side of my LAN) had a real IP (200.13.51.71), this IP is the gateway
-for the machines with real IP in my LAN. I made this to make aprivate
-bridge (router + firewall machine) between Internet and my LAN, and not
-to use more real IP.
+I use the following in my firewall script.  Maybe someone will find it
+useful.  Note logdrop chain is exactly that: log, then drop the packet.
 
-I don't have problem with the forward connection in the machine
-firewall. My problem this when I'm wanted toconnect to Internet from the
-firewall machine, because theconnections are make with IP 192.168.150.2
-(interface withconnection to router) an not with the real IP.
+# Allow established connections to continue.  This is where the
+# great majority of traffic will be accepted, so it is first.
+iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-I had tried use SNAT (with the next script) but I follow without being
-able to me to connect.
+# Any TCP packet which is not a part of an established connection falls into
+# one of three categories: (1) connection handshake, (2) stray resend, or
+# (3) invalid.  Here we discard stray resends and log obvious hack attempts.
+# See table below:
+#
+# SYN RST ACK  What it means  Action
+# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D  =3D=3D=3D=3D=3D=3D=3D
+#  0   0   0   invalid        logdrop
+#  0   0   1   stray resend   DROP
+#  0   1   0   stray resend   DROP
+#  0   1   1   stray resend   DROP
+#  1   0   0   conn attempt   ok
+#  1   0   1   conn response  ok
+#  1   1   0   invalid        logdrop
+#  1   1   1   invalid        logdrop
 
+iptables -A INPUT   -p tcp --tcp-flags SYN,RST,ACK NONE    -j logdrop
+iptables -A INPUT   -p tcp --tcp-flags SYN,RST,ACK ACK     -j DROP
+iptables -A INPUT   -p tcp --tcp-flags SYN,RST     RST     -j DROP
+iptables -A INPUT   -p tcp --tcp-flags SYN,RST     SYN,RST -j logdrop
 
-#!/bin/bash
+iptables -A OUTPUT  -p tcp --tcp-flags SYN,RST,ACK NONE    -j logdrop
+iptables -A OUTPUT  -p tcp --tcp-flags SYN,RST,ACK ACK     -j DROP
+iptables -A OUTPUT  -p tcp --tcp-flags SYN,RST     RST     -j DROP
+iptables -A OUTPUT  -p tcp --tcp-flags SYN,RST     SYN,RST -j logdrop
 
-# Variables de la Interfaz de Red Externa
-EXT_IP="192.168.150.2"
-EXT_IFACE="eth1"
+=2E.. script continues ...
 
-# Variables de la Interfaz de Red Interna con Direccion Real
-INT_IP=" 200.13.51.71"
-INT_IFACE="eth0"
+--=20
+America may be unique in being a country which has leapt from barbarism
+to decadence without touching civilization.
+        -- John O'Hara
 
-# Variables de Iptables
-IPTABLES="/sbin/iptables"
+--5mCyUwZo2JvN/JJP
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-# Carga de Modulos requeridos por Iptables
-/sbin/depmod -a
-/sbin/modprobe ip_tables
-/sbin/modprobe ip_conntrack
-/sbin/modprobe ip_conntrack_ftp
-/sbin/modprobe ip_nat_ftp
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ipt_limit
-/sbin/modprobe ipt_state
-/sbin/modprobe iptable_filter
-/sbin/modprobe iptable_nat
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-# Elimina todas las reglas, acdemas y contadores en cero
-$IPTABLES -F
-$IPTABLES -t nat -F
-$IPTABLES -X
-$IPTABLES -t nat -X
-$IPTABLES -Z
-$IPTABLES -t nat -Z
+iEYEARECAAYFAj8sY5AACgkQFMm9uvwPXW7mogCeISZSO9vds9RA37iDbXhALbdZ
+L1MAnRhDoHxypWMxAhz+2ce0nBHpJEzy
+=VRni
+-----END PGP SIGNATURE-----
 
-# Establece las directivas por defecto para la tabla filter
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -P FORWARD ACCEPT
-$IPTABLES -t nat -A POSTROUTING -o $EXT_IFACE -s $EXT_IP -j SNAT
---to-source $INT_IP
-
-
-Please, what I must make to connect me to Internet from firewall
-machine?
-
-
-
-Ulises Hernandez
-Red de Datos - Universidad del Cauca
-
-
-
-
-
+--5mCyUwZo2JvN/JJP--
 
