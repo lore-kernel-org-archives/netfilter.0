@@ -1,58 +1,75 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: Second Request for help!!
-Date: Mon, 7 Feb 2005 10:32:57 -0500 (EST)
-Message-ID: <54116.142.169.215.10.1107790377.squirrel@142.169.215.10>
-References: <200502071457.j17EvuYX018439@commserver.noach.com>
+From: Sergio Basurto Juarez <sbasurtoj@yahoo.com>
+Subject: Re: A DNAT question.
+Date: Mon, 7 Feb 2005 07:58:58 -0800 (PST)
+Message-ID: <20050207155858.25262.qmail@web41628.mail.yahoo.com>
+References: <Pine.LNX.4.58.0502051918500.6532@linux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <200502071457.j17EvuYX018439@commserver.noach.com>
+In-Reply-To: <Pine.LNX.4.58.0502051918500.6532@linux>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: John Hill <jhill@noach.com>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
-
-*CC'ed on netfilter-devel@lists.netfilter.org*
-
-On Mon, February 7, 2005 9:57 am, John Hill said:
-> Kernel 2.4.29
-> Patch-0-Matic 2005 02 01 patched for fixes and pptp
-> iptables-1.3.0rc1
-
-uhm.. kernel 2.4.29...
-
->
-> 20+ errors in ipv4 and ipv6 about Declare_Mutex declared static but nev=
-er
-> defined defaults to int etc.
-> Some are ipv4/iptables.h:339 and ipv6/ip6_tables.h:109 all about
-> Declare_Mutex errors?
-
-Can you please post the complete gcc warnings/errors you get on:
-
-        netfilter-devel@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
->
-> I have had these errors on all iptables except 1.2.11 and pom2040621. I
-> have
-> not been able to update since 6-2004.
-> I searched the lists and found some mention but no clear answer.
->
-> Thanks
->
-> --john
->
+--- Ted Gervais <ve1drg@av.eastlink.ca> wrote:
 
-Regards,
-Samuel
+> 
+> I am new to this list and to iptables generally.
+> 
+> I have a line I am trying to translate into a
+> current iptables line that
+> will work in my firewall.
+> 
+> ' DNAT net loc:192.168.0.147 udp 5198,5199 '
+> 
+> If anyone could venture a thought as to how that
+> might be translated into
+> a current iptables statement I would really
+> appreicate it.
+> 
+> I have tried - iptables -t nat -A PREROUTING -i eth0
+> -d 192.168.0.1 -p tcp
+> --dport 5198:5199 -j DNAT --to 192.168.0.147
+> 
+> That doesn't appear to work so obviously I have not
+> interpreted that line
+> correctly..
+> 
+I experienced a similar problem with a rule like
+iptables -t nat -A PREROUTING -d 200.65.184.223 -j
+DNAT --to 192.168.0.10
 
+and it does not work until I put the rule at the
+begining changing the -A to -I
+
+I do not know exactly why this work but it works. I
+guess that the the rules of redirecting should comes
+before any other rule.
+
+
+Hope this help.
+
+=====
+-- 
+Sergio Basurto J.
+
+If I have seen further it is by standing on the 
+shoulders of giants. (Isaac Newton)
+--
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - Easier than ever with enhanced search. Learn more.
+http://info.mail.yahoo.com/mail_250
 
