@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: rules for Real's Helix Universal Media Server?
-Date: Wed, 5 Mar 2003 12:00:10 -0500
+From: "Patrick Ahler" <patrick@vikus.com>
+Subject: stub forwarding filtering
+Date: Wed, 5 Mar 2003 14:00:54 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303051200.10189.netfilter@newkirk.us>
-References: <3E62E020.2090004@mega-bucks.co.jp> <200303030254.50601.netfilter@newkirk.us> <3E65B58D.6020008@mega-bucks.co.jp>
-Reply-To: netfilter@newkirk.us
+Message-ID: <ABEKJILKOKKGGDJKHKDFMEAOCAAA.patrick@vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E65B58D.6020008@mega-bucks.co.jp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wednesday 05 March 2003 03:30 am, Jean-Christian Imbeault wrote:
-> Joel Newkirk wrote:
-> > http://service.real.com/help/library/guides/helixuniversalproxy/htmf
-> >iles/firewall.htm#198350
->
-> Sorry for my late reply to this message but I was busy setting up
-> other machines.
->
-> The link you give is for a Universal Proxy server. I am using a Helix
-> Universal Media Server. It's a streaming media server, not a proxy
-> server.
+I have a couple questions... I am using iptables as a firewall on a linux
+machine(router) with 2 nic's. Everything on the internal network has an
+internal ip. As it passes through the firewall(router) it is given a public
+ip (stub network using dnat and snat along with some static routes in the
+routing table). This is my first time building a firewall, so I am still
+learning alot of the basics. Here are my questions.
 
-Um, did you follow the link?  The Universal Proxy Server is the first=20
-part, but that whole section encompasses ports used by Universal Proxy,=20
-Media clients, and Universal Servers.  I actually noticed the subject of=20
-the request you posted, and when I decided to spend a few hours=20
-researching it and replying I actually dug around to find out what Helix=20
-is and how it works...
+1. I have 2 webservers behind the firewall. Is it possible on the firewall
+to setup a rule that will allow port 80 to only be open to those ip's? Or
+will that not allow other computers behind the firewall to browse the
+internet? If so what will the rule look like?
+iptables -A FORWARD ?????????? HELP =)
 
-If it'll make you more comfortable, here's a link that doesn't have the=20
-word 'proxy' embedded in it:
+2. Also, because I'm routing/forwarding packets through 2 NIC's(eth1 public,
+eth0 internal), is it possible to have iptables to tell where the packet is
+coming from? ie. if I wanted to disable all incoming traffic on the FORWARD
+chain (except for allowed rules), but allow all outgoing traffic on the
+FORWARD chain. How would I do this?
 
-http://service.real.com/help/library/guides/helixuniversalserver/htmfiles=
-/firewall.htm
-
-j
+Thanks for all the help,
+Patrick
 
 
