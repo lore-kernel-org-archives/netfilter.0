@@ -1,15 +1,10 @@
-From: christophe =?iso-8859-15?Q?barb=E9?= <christophe.barbe.ml@online.fr>
-Subject: Re: simple rules and unexpected traffic
-Date: Thu, 4 Jul 2002 18:45:23 -0400
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
+Subject: RE: RE: MSN Messanger through a iptables firewall.
+Date: Fri, 5 Jul 2002 08:47:26 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020704224523.GB909@localhost>
-References: <200FAA488DE0D41194F10010B597610D2BA22C@JUPITER>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA22D@JUPITER>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i0/AhcQY5QxfSsSZ"
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <200FAA488DE0D41194F10010B597610D2BA22C@JUPITER>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,183 +14,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.samba.org>
+
+Only IRC and FTP modules are available AFAIK.
+
+MSN works fine for me as I allow outgoing from my network and
+RELATED,ESTABLISHED back.. All of my games work and even those crappy
+DirectX network ones using DXport to specify define UDP ports for each
+machine..
+
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+Sent: Friday, 05 July 2002 12:25 AM
+To: netfilter
+Subject: Fwd: RE: MSN Messanger through a iptables firewall.
+
+
+Someone just posted this to me instead of the list.
+
+Antony.
+
+----------  Forwarded Message  ----------
+
+Subject: RE: MSM Mesanger through a iptables firewall.
+Date: Thu, 4 Jul 2002 15:27:56 +0100
+From: <aaa.coms.sec@btclick.com>
+To: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+
+might be me but what about the irc modules ? i.e.
+
+/sbin/depmod -a
+/sbin/modprobe ip_masq_ftp
+/sbin/modprobe ip_masq_raudio
+/sbin/modprobe ip_masq_autofw
+/sbin/modprobe ip_masq_cuseeme
+/sbin/modprobe ip_masq_mfw
+/sbin/modprobe ip_masq_portw
+/sbin/modprobe ip_masq_quake
+/sbin/modprobe ip_masq_user
+/sbin/modprobe ip_masq_vdolive
+/sbin/modprobe ip_masq_irc
+
+-----Original Message-----
+From: netfilter-admin@lists.samba.org
+[mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
+Sent: 04 July 2002 15:13
 To: netfilter@lists.samba.org
+Subject: Re: MSM Mesanger through a iptables firewall.
+
+On Thursday 04 July 2002 3:06 pm, Stephan Viljoen wrote:
+> Firewall 2:
+> eth0 : 193.220.24.8
+> eth1 : 193.220.24.193
+> eth2 : 192.168.1.1
+
+What are the netmasks on eth0 and eth1 ?
+
+What's the routing table on this machine ?
 
 
---i0/AhcQY5QxfSsSZ
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 05, 2002 at 08:35:53AM +1000, George Vieira wrote:
-> Yes I've found that some user space programs can see stuff before iptable=
-s..
-> tcpdump too I think...
-
-Yes it sounds logical for tcpdump or tools like that (which pass the
-interface in promiscuisious mode) to see everything. I was not expecting
-the same from a unprivileged app like gkrellm.
-It is stil unclear for me what is the data processing path.
-
-Has someone a clear picture of the packets path ?=20
-
-> 1 question: if it's not eth0 what other device is there (-i ! eth0 -m sta=
-te
-> --state NEW -j ACCEPT) ???
-> Are you running PPPoE or something because this will bring up a ppp0 devi=
-ce
-> which will accept ALL packets with that rule above...
-
-No no, I have only eth0 with a pure tcp/ip connection wwith a static ip.
-As I understand it packets are rejected because they are not for me and
-this reject is done before netfilter. At a time i believed it was the
-job of rp_filter (which checks if the packet is really for you) but
-reseting rp_filter change nothing.
-
-> Have I missed something here, or am I correct?
-
-I only have eth0 and I am convinced that all stranges packets are
-dropped before entering the netfilter stage.
-
-My current understanding is that someone in my neighborough plugged on
-the same router is doing some nasty flooding (perhaps a compromised
-computer) and my provider doesn't answer to my mails (I guess because
-today is May 4th).=20
-
-Christophe
-
-> thanks,
-> George Vieira
-> Systems Manager
-> Citadel Computer Systems P/L
-> http://www.citadelcomputer.com.au
->=20
->=20
->=20
-> -----Original Message-----
-> From: christophe barb=E9 [mailto:christophe.barbe.ml@online.fr]
-> Sent: Friday, 05 July 2002 7:02 AM
-> To: netfilter@lists.samba.org
-> Subject: Re: simple rules and unexpected traffic
->=20
->=20
-> I have found at http://www.cavebear.com/CaveBear/Ethernet/multicast.html
-> that ff:ff:ff:ff:0:30 could be a multicast ethernet address
-> (03-00-FF-FF-FF-FF) for 'All Stations Address'.
->=20
-> Is it something commonly used by script kiddies ?
->=20
-> If I undersatnd correctly, nothing has changed at the router, but
-> somebody connected at the same router is doing bad stuff. Is it right ?
->=20
-> What I still don't understand is why I can see this traffic with my
-> iptables rules. Is the traffic exposed (to user-space tools) before
-> entering the iptables processing ?
->=20
-> Christophe
->=20
-> On Thu, Jul 04, 2002 at 10:10:48AM -0400, christophe barb=E9 wrote:
-> > Hi,
-> >=20
-> > I use a simple set of iptables rules for my laptop to reject everything
-> > from outside using ip_conntrack (from the howto) :
-> >=20
-> > # Generated by iptables-save v1.2.6a on Thu Jul  4 09:54:11 2002
-> > *filter
-> > :INPUT ACCEPT [0:0]
-> > :FORWARD ACCEPT [0:0]
-> > :OUTPUT ACCEPT [43965:4118502]
-> > :block - [0:0]
-> > -A INPUT -j block=20
-> > -A FORWARD -j block=20
-> > -A block -m state --state RELATED,ESTABLISHED -j ACCEPT=20
-> > -A block -i ! eth0 -m state --state NEW -j ACCEPT=20
-> > -A block -i eth0 -m limit --limit 3/hour -j LOG --log-prefix "Bad packet
-> from eth0:"=20
-> > -A block -i ! eth0 -m limit --limit 3/hour -j LOG --log-prefix "Bad pac=
-ket
-> not from eth0:"=20
-> > -A block -j DROP=20
-> > COMMIT
-> > # Completed on Thu Jul  4 09:54:11 2002
-> >=20
-> > I have a ADSL connection and only a hub between my laptop and the
-> > ADSL-modem. Recently something changed, I guess on the router from my
-> > provider and now I see unexpected traffic.
-> >=20
-> > I see it with the eth0 monitor in gkrellm and with iftop but not with
-> > lsof -i.
-> > I was not expecting this traffic and the pattern seems strange : a
-> > constant 20kB incoming traffic during a few seconds. So I started
-> > looking closer. With ethereal I saw that it was a kind of flooding
-> > most of the time a lot of SYN packet but also netbios ....
-> > Each time both IPs are not one of my computer. For example I see during
-> > one of this flooding with 'tcpdump -c 2 -e'
-> >=20
-> > tcpdump: listening on eth0
-> > 10:00:39.946940 0:0:c:c3:a:88 ff:ff:ff:ff:0:30 ip 62:
-> 216-203-233-196.customer.algx.net.3574 >
-> adsl-216-158-52-76.cust.oldcity.dca.net.www: S 2011680397:2011680397(0) w=
-in
-> 16384 <mss 1460,nop,nop,sackOK> (DF)
-> > 10:00:39.949401 0:0:c:c3:a:88 ff:ff:ff:ff:0:30 ip 62:
-> 216-203-233-196.customer.algx.net.3574 >
-> adsl-216-158-52-76.cust.oldcity.dca.net.www: S 2011680397:2011680397(0) w=
-in
-> 16384 <mss 1460,nop,nop,sackOK> (DF)
-> > =20
-> > I am not sure how to interpret 'ff:ff:ff:ff:0:30' is it a kind of
-> > broadcasting at the ethernet level ?
-> >=20
-> > Why can I see these packets that are not for me ?
-> >=20
-> > Why this traffic is not dropped by netfilter ?=20
-> >=20
-> > It seems to be a miss-configuration of my ISP router, no ? I believe it=
-'s
-> > harmless (except for my bandwidth) but I don't understand why I see
-> > (with gkrellm) this traffic which seems to be rejected before netfilter.
-> > Is gkrellm using packets information before the iptable processing ?
-> >=20
-> > I have tried to set /proc/.../eth0/rp_filter to 0 without any
-> > difference.
-> >=20
-> > Thanks,
-> > Christophe
-> >=20
-> > --=20
-> > Christophe Barb=E9 <christophe.barbe@ufies.org>
-> > GnuPG FingerPrint: E0F6 FADF 2A5C F072 6AF8  F67A 8F45 2F1E D72C B41E
-> >=20
-> > Dogs come when they're called;
-> > cats take a message and get back to you later. --Mary Bly
->=20
->=20
->=20
-> --=20
-> Christophe Barb=E9 <christophe.barbe@ufies.org>
-> GnuPG FingerPrint: E0F6 FADF 2A5C F072 6AF8  F67A 8F45 2F1E D72C B41E
->=20
-> Dogs believe they are human. Cats believe they are God.
-
---=20
-Christophe Barb=E9 <christophe.barbe@ufies.org>
-GnuPG FingerPrint: E0F6 FADF 2A5C F072 6AF8  F67A 8F45 2F1E D72C B41E
-
-A qui sait comprendre, peu de mots suffisent.
-(Intelligenti pauca.)=20
-
---i0/AhcQY5QxfSsSZ
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE9JNADj0UvHtcstB4RAtsWAJwJXvr/AGOcU4ODYbCWHmfAdss/wgCdG2To
-Gr61IQ3uvqQOVvMjr8ojJIE=
-=rl6S
------END PGP SIGNATURE-----
-
---i0/AhcQY5QxfSsSZ--
+Antony.
 
