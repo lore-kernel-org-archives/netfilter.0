@@ -1,13 +1,12 @@
-From: Emilio Casbas <ecasbas@unav.es>
-Subject: Re: Transparant proxy
-Date: Wed, 09 Jun 2004 09:55:37 +0200
+From: Sagara Wijetunga <sagaralists@yahoo.com>
+Subject: Re: Is this firewall good enough?
+Date: Wed, 9 Jun 2004 01:14:53 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40C6C279.9060609@unav.es>
-References: <40BF3E60.2060206@efn.uncor.edu>	<1157.172.16.131.133.1086337464.squirrel@mail.suarapembaruan.co.id>	<40C02017.5030304@unav.es> <20040608205956.3e3c3e47@localhost>
+Message-ID: <20040609081453.75751.qmail@web14704.mail.yahoo.com>
+References: <001c01c44d3d$31567530$1201a8c0@admin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040608205956.3e3c3e47@localhost>
+In-Reply-To: <001c01c44d3d$31567530$1201a8c0@admin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Djalma Fadel Junior <fadel@ferasoft.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Djalma Fadel Junior wrote:
+--- Rob Sterenborg <rob@sterenborg.info> wrote:
+> > 7.  /sbin/iptables -A INPUT -p tcp --dport 53 
+> --syn
+> > -j ACCEPT #DNS
+> 
+> DNS uses udp for normal lookups. Only in special
+> cases tcp is used.
+> 
+I noted --syn can only be used with protocol tcp. How
+do I write a similar rule to accept connections to udp
+port 53?
 
->On Fri, 04 Jun 2004 09:09:11 +0200
->Emilio Casbas <ecasbas@unav.es> wrote:
->
->  
->
->>david@suarapembaruan.co.id wrote:
->>
->>    
->>
->>>Dear all,
->>>can anybody tell me how to set rules in iptables if i want to use
->>>transparant proxy.
->>>
->>>      
->>>
->>iptables -t nat -A prerouting -i eth0 -p tcp --dport 80 -j REDIRECT 
->>--to-port 3128
->>
->>    
->>
->
->but, if the user sets manually another proxy in his browser, he doesn't get in this rule and all ACLs in proxy are inutil.
->
->how could redirect that connections through my proxy?
->
->
->thanks in advance,
->
->D. Fadel Jr.
->
->  
->
+> You could check for tcp_flags. Certain combinations
+> can be logged and/or
+> dropped.
+> Packets with state INVALID could normally be safely
+> dropped.
+> 
+I don't see a good explanation of tcp-flags either on
+iptables man pages or Packet Filtering HOWTO. What are
+meaning of SYN,ACK,FIN,RST,URG,PSH? What combinations
+can be logged/dropped?
 
-Deny in the firewall all connections to internet
-that don't become from the transparent proxy.
-The transparent proxy is the unique intermediary
-between your users and internet.
+Appreciate your comment on this issue.
 
-Emilio C.
+Sagara
 
 
 
-
+	
+		
+__________________________________
+Do you Yahoo!?
+Friends.  Fun.  Try the all-new Yahoo! Messenger.
+http://messenger.yahoo.com/ 
 
