@@ -1,7 +1,8 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: dns question
-Date: Thu, 18 Nov 2004 08:32:11 -0400
-Message-ID: <000d01c4cd6a$a1b8b240$49caa8c0@caris.priv>
+From: "cox" <cox@ieee.org>
+Subject: Squid + iptables (different networks)
+Date: Wed, 17 Nov 2004 13:07:11 -0200
+Message-ID: <MCEJJKCAIMHFOKODABEICEDHMFAA.cox@ieee.org>
+Reply-To: cox@ieee.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,24 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I am sure this is a stupid question ...but I will ask anyway.  Should I be
-allowing my dns server (in my dmz) connect to root servers ?   At the moment
-it is being bloced, and the only thing it can connect to is my ISP's DNS
-server.  Basically, my dns server serves requests for servers in my dmz for
-my internal users.  If it can't find the hit, it passs the request on to my
-ISP's ... I am trying to clean up my firewall logs, and noticed that the DNS
-server is always trying to query root servers.  I was just not sure if this
-should be allowed.  If it is not, (and I suspect there is no need to) Is
-there a way to make my DNS server stop quering the root servers ?
+Hi,
 
-PS  DNS is a rh9 box running bind.
+I've got my internal network (192.168.7.0/24, gw=192.168.7.1) and my
+squid-cache server runs on my DMZ.
 
+On my gateway I have:
 
-Thanks,
-Peter
+iptables -t nat -A PREROUTING -s 192.168.7.0/24 -p tcp --dport 80  -j
+DNAT --to <real-ip>:3128
 
+And my squid-server was compiled with --linux-netfilter, etc.
+
+It's working, but the log file (access.log) shows me that all connections
+came from my gateway, and it's correct. I'd like to know if someone have a
+way to change that, and in the logfile, and squid acl management I can
+use/see my internal network ips. They are in different subnets.
+
+regards, cox
 
 
 
