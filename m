@@ -1,13 +1,13 @@
 From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: patch-o-matic for 2.4.27?
-Date: 28 Aug 2004 18:59:09 +0200
+Subject: Re: iptables + MRTG
+Date: 28 Aug 2004 18:59:11 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093705485.12157.20.camel@nostromo.bgsecm.com>
-References: <20040828122317.2104.qmail@web13910.mail.yahoo.com>
+Message-ID: <1093705929.29254.30.camel@nostromo.bgsecm.com>
+References: <a0f69e5040828042815b5e61e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040828122317.2104.qmail@web13910.mail.yahoo.com>
+In-Reply-To: <a0f69e5040828042815b5e61e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +18,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-El sáb, 28 de 08 de 2004 a las 14:23, Scott MacKay escribió:
-> Is there a patch-o-matic release for 2.4.27?  I am
-> using iptables 1.2.11 with that kernel.  nf_log seems
-> to patch OK, but the 'raw' table patch fails.  Is this
-> patch updated anywhere?
+El sáb, 28 de 08 de 2004 a las 13:28, Askar escribió:
+> hi,
 > 
-> -Scott
+> Anyone here using MRTG with iptables? for example to check iptables -L
+> -nvx things graphical using mrtg... or any other statistics
+> any possibility ?
+> 
+> looking forward.
+> regards
+> AskaR
 
-The last patch-o-matic ng should be the one you need, but
-it always have some not very stable code that doesn't work,
-it has happened to me with every version of the kernel. You
-can wait for a new patch-o-matic version that solves your
-problem or maybe mail the developers list and ask for support.
+The module bastion-firewall-stats from our GPL firewall named
+bastion-firewall does something similar to what you want, it
+has a daemon that collects the data from the counters in the
+chains you mark in the config files and then puts the data in
+a rrdtool database and a bash script generates graphical stats
+each hour.
+
+You probably can't do what you want with MRTG but you can do it
+with something like Cacti, that it's more flexible. You can create
+a script that collects the data (I advice you it's really slow if
+you want to collect data from a lot of chains, that's why we use
+a C program that uses libiptc to do this) and then use it in
+Cacti to generate the graphics like MRTG does.
+
+Or you can simply create the script and use another script to enter
+the data in the rrdtool database and then graph the data with another
+one using also rrdtool.
+
+If you want code to extract the counters from the chains using C
+code you should have in mind that the Querying libiptc HOWTO has
+an error in it, it allocates memory but it does not free it, so
+the memory used grows and grows and grows. We sent an email to the
+author of the HOWTO but we have received no response yet. You can
+look at the code in the bastion-firewall-stats daemon to see where
+the memory have to be freed. You can download it at:
+http://www.bgsec.com
+
+Hope it helps.
 
 -- 
 Jose Maria Lopez Hernandez
