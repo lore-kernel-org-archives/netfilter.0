@@ -1,13 +1,12 @@
-From: "Sylvain BERTRAND" <jowy@2001-space-odyssey.net>
-Subject: tools to modify the conntrack
-Date: Mon, 20 Oct 2003 21:51:07 +0200
+From: "Lewis Shobbrook" <lshobbrook@fasttrack.net.au>
+Subject: RE: Loosing bytes in package
+Date: Tue, 21 Oct 2003 09:00:37 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <016c01c39743$80acd800$6500a8c0@SYFLO>
-Reply-To: "Sylvain BERTRAND" <jowy@2001-space-odyssey.net>
+Message-ID: <0C8098CA7F09CE419F0C2B68EB8358765F31@exchange.fasttrack.net.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0169_01C39754.4429C120"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: kenr@redergaard-it.no
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi Ken,
 
-------=_NextPart_000_0169_01C39754.4429C120
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Have you tried to clamp to pmtu?
 
-Hi,
+iptables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN -j TCPMSS =
+--clamp-mss-to-pmtu
 
-I've got conntrack support in my 2.4.21 kernel. I'd like to flush it
-sometime, or at least delete a few lines.
-I'm not very excited about editing /proc/net/ip_conntrack by hand... So =
-I'm
-wondering if there's anything the root can do to modify the conntrack =
-(are
-there parameters somewhere?).
-
-Thanks
-
-Sylvain
-------=_NextPart_000_0169_01C39754.4429C120
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,<BR><BR>I've got conntrack support in my 2.4.21 kernel. I'd like =
-to=20
-flush it<BR>sometime, or at least delete a few lines.<BR>I'm not very =
-excited=20
-about editing /proc/net/ip_conntrack by hand... So I'm<BR>wondering if =
-there's=20
-anything the root can do to modify the conntrack (are<BR>there =
-parameters=20
-somewhere?).<BR><BR>Thanks<BR><BR>Sylvain</DIV></BODY></HTML>
-
-------=_NextPart_000_0169_01C39754.4429C120--
+I believce this can help with encrypted protocols.
 
 
+> Hi,
+>=20
+> I'm having problems with packages that are larger than 80 some bytes.
+>=20
+> The packages come from a IPSec tunnel on the ipsec0 interface=20
+> and are routed to a host in the DMZ. The problem is that the=20
+> package is "truncated" at the end. When using ulogd and=20
+> adding a rule in the FORWARD chain to send the package to=20
+> netlink I can see the complete pacakge, nothing missing. But=20
+> when running tcpdump at both the host in the DMZ and
+> eth1(DMZ) on the "router" the package is 40 bytes short.
+>=20
+> Any suggestions on what might be happening?
+>=20
+> With regards,
+> Ken A. Rederg=E5rd
+>=20
+Cheers,
+
+Lewis Shobbrook
 
