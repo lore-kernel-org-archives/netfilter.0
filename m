@@ -1,17 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: netfiltering and ethernet bridging doesn't appear to work as
-	advertised, help!
-Date: Wed, 21 Jan 2004 14:51:12 +0100
+From: "Caracal - G. Hostettler" <100112_2660@bluewin.ch>
+Subject: Re: Problem with connection-tracking and FTP
+Date: Wed, 21 Jan 2004 15:43:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1074693071.740.10.camel@elendil.intranet.cartel-securite.net>
-References: <747032.1074683300483.JavaMail.root@newdil25>
-	 <x7zncha3z2.fsf@speech.braille.uwo.ca>
-	 <1074691222.745.4.camel@elendil.intranet.cartel-securite.net>
-	 <x7vfn5a0fb.fsf@speech.braille.uwo.ca>
+Message-ID: <002001c3e02c$e8458980$017ca8c0@lucens.caracal.ch>
+References: <200401210532.i0L5WclB022675@server5.bandwidthco.com> <001801c3e015$d6a86100$0600a8c0@blackbox>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <x7vfn5a0fb.fsf@speech.braille.uwo.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,19 +16,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Kirk Reiser <kirk@braille.uwo.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Christian Gmeiner <christian@visual-page.de>
+Cc: netfilter list <netfilter@lists.netfilter.org>
 
-Le mer 21/01/2004 =E0 14:36, Kirk Reiser a =E9crit :
-> Okay, but are all interfaces available for filtering?
+> I can connect to the FTP-Server and login... but then wehen the directory
+listening should come it hangs. I have no idea, why this is so.
+> Should i post the output of 'iptables -L -n -v --line-numbers'?
+>
+> Thanks, Christian Gmeiner
 
-Yes.
-Just use -i and -o switches for input and output interfaces.
+Mmmmh.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!=20
+Just to make you feel less alone:
+I have a similar problem. What is happening is that the ftp server (in my
+case proftpd) denies access as it thinks that the PORT command comes from a
+spoofed address.
+I have something like this in the log:
+
+Refused PORT xxx,xxx,xxx,xxx,9,115. The first part of IP address is OK. It
+is the good originating one, aka the internal leg of the firewall.
+But who in the hell adds those two numbers at the end ???
+
+Of course there is a fast and VERY UNSECURE solution: Just add the statement
+"AllowForeignAddress on" to your proftpd.conf cfg file, or any similar
+statement to your FTP of choice cfg, if possible. Do it just to test if the
+PORT command works, then REMOVE IT! Once again, this is a severe security
+risk on spoofed ftp control connection IP addresses.
+
+If anybody has a single idea of who/why/what are these two added bytes at
+the end of the IP seen by the PORT command, I will be pretty happy to know
+and possibly understand ;-)
+
+GH
+
+----- Original Message ----- 
+From: Christian Gmeiner
+To: markee@bandwidthco.com ; netfilter@lists.netfilter.org
+Sent: Wednesday, January 21, 2004 12:58 PM
+Subject: Re: Problem with connection-tracking and FTP
+
+
+Thanks... I have now used your rule set:
+
+    # CONTROL PORT (Active & Passive Mode)
+    iptables -A INPUT -i ${EXT_INT} -p tcp --source-port
+${UNPRIVPORTS} --destination-port 21 -m state --state NEW -j
+LOG --log-prefix "FTP ACCESS -> "
+    iptables -A INPUT -i ${EXT_INT} -p tcp --source-port
+${UNPRIVPORTS} --destination-port 21 -m state --state NEW -j ACCEPT
+
+    # DATA PORT (Active Mode)
+    iptables -A OUTPUT -o ${EXT_INT} -p tcp --source-port
+20 --destination-port ${UNPRIVPORTS} -m state --state NEW -j
+OG  --log-prefix "FTP A-DATA -> "
+    iptables -A OUTPUT -o ${EXT_INT} -p tcp --source-port
+20 --destination-port ${UNPRIVPORTS} -m state --state NEW -j ACCEPT
+
+    # DATA PORT (Passive Mode)
+    iptables -A INPUT -i ${EXT_INT} -p tcp --source-port
+${UNPRIVPORTS} --destination-port ${UNPRIVPORTS} -m state --state NEW -j
+LOG --log-prefix "FTP P-DATA -> "
+    iptables -A INPUT -i ${EXT_INT} -p tcp --source-port
+${UNPRIVPORTS} --destination-port ${UNPRIVPORTS} -m state --state NEW -j
+ACCEPT
+
+I can connect to the FTP-Server and login... but then wehen the directory
+listening should come it hangs. I have no idea, why this is so.
+Should i post the output of 'iptables -L -n -v --line-numbers'?
+
+Thanks, Christian Gmeiner
+
+< snipped history>
+
 
