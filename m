@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: I thought ssh is port #22 ?!!
-Date: Thu, 1 Apr 2004 16:28:56 +0100
+From: Shane Hickey <shane@howsyournetwork.com>
+Subject: Re: Need help with rate-limiting NTTP traffic
+Date: Thu, 1 Apr 2004 09:24:14 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404011628.56320.Antony@Soft-Solutions.co.uk>
-References: <9908FCB837A50642B74E2BEC198843095CC76C@csrees-exchsrvb.csrees.usda.gov>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <20040401092414.6b7b43f7@daneel.volumen.net>
+References: <20040331165409.0d498074@daneel.volumen.net>
+	<200404010916.58286.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <9908FCB837A50642B74E2BEC198843095CC76C@csrees-exchsrvb.csrees.usda.gov>
+In-Reply-To: <200404010916.58286.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,33 +21,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 01 April 2004 4:14 pm, Martinez, Michael wrote:
+Antony Stone <Antony@Soft-Solutions.co.uk> [2004-04-01 09:16]:
+> What are you using as your NNTP server?   If it's INN, I'm pretty sure
+> that has its own rate-limiting mechanism as a configuration parameter,
+> and you'd be better off doing rate limiting in the application itself
+> if it's at all possible.
 
-> Port 32873 is the return port on the ssh client.
->
-> Here's how it works. The server listens on port 22. The client opens a
-> connection to the server, and tells the server which return port to use. If
-> you do "netstat -an" you will see the server talking on port 22, and the
-> client talking on some high numbered port like 32873. The high number port
-> used is random. It will change from one session to the next.
->
-> This is true not just for ssh - it is true for most tcp applications.
+	I'm not serving NNTP, I'm just constantly connected to an NNTP server
+using Pan.  I should have made that more clear in my e-mail.  There
+aren't any bandwidth controls in Pan, that I could see, and it
+will happily stomp over all my other traffic.  It was extremely easy to
+limit only my nntp traffic (that is, traffic coming into my network with
+a source port of 119) in Dummynet.  Can anyone offer ideas with tc and
+netfilter?
 
-I'd say it's true for all TCP applications, and most UDP applications.
-
-There are some TCP applications (FTP being the most common example) where a 
-*second* connection gets opened up on different ports, but that one works in 
-exactly the same way as the first - and they each obey the above description.
-
-Regards,
-
-Antony.
+Shane
 
 -- 
-The difference between theory and practice is that in theory there is no 
-difference, whereas in practice there is.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Shane Hickey <shane@howsyournetwork.com>: Network/System Consultant
+GPG KeyID: 777CBF3F
+Key fingerprint: 254F B2AC 9939 C715 278C  DA95 4109 9F69 777C BF3F
+Listening to: Cypress Hill - Hole In The Head
 
