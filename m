@@ -1,11 +1,12 @@
-From: jr@troncale.com
-Subject: help with LAN to DMZ Forward rules
-Date: Wed, 7 Jan 2004 21:30:58 -0500
+From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
+Subject: RE: MRTG and IPTABLES
+Date: Thu, 8 Jan 2004 10:47:19 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401080230.i082Uwg03789@marisa>
+Message-ID: <83055D4B014C9E478D2F04624B9E82CFAE9660@noveldc.novelgmt.mu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="bound1073528998"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,40 +16,99 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Dear sir,
 
---bound1073528998
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Have tried your commands below but when I run my iptables script,=20
 
-I'd like to request help with an iptables ruleset. There are 3 adapters on my Redhat 7.3, running iptables 1.2.8. EXTIF faces the Internet, and DMZ_IF and LAN_IF use reserved addresses in distinct subnets.
+I get "command not found" and it points to the line=20
 
-So far I've had success configuring it so the firewall allows access to the DMZ from the Internet, while only ESTABLISHED or RELATED packets are forwarded back into the LAN. That's the only FORWARDing happening on the firewall at this point.
+$SNMP_POLLER_IP=3D"xxx.xxx.xxx.xxx"
 
-What's got me stumped is how to FORWARD packets from the LAN to the DMZ.
-
-There are a number of tutorials on the Internet that suggest the following code is the best way to achieve this:
+Thanks
+gy
 
 
-# This one allows traffic from the DMZ to the LAN if it originated in the LAN:
+-----Original Message-----
+From: Daniel F. Chief Security Engineer -
+[mailto:danielf@supportteam.net]=20
+Sent: Wednesday, January 07, 2004 6:18 PM
+To: Gilles Yue; netfilter@lists.netfilter.org
+Subject: Re: MRTG and IPTABLES
 
-$IPTABLES -A FORWARD -i $DMZ_IF -o $LAN_IF -m state --state ESTABLISHED,RELATED -j ACCEPT
+try
 
+$IPTABLES -A INPUT -p udp --dport 161 -j ACCEPT=20
 
-# And this one is supposed to allow hosts within the LAN to initiate an HTTP session with the webserver in the DMZ:
+assuming that yuo are tryinh to accept port 161 on the local machine. if
+you=20
+doing stateful it should look similar to this.=20
 
-$IPTABLES -A FORWARD -i $LAN_IF -o $DMZ_IF -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+# IP of machine running MRTG
+$SNMP_POLLER_IP=3D"xxx.xxx.xxx.xxx"
 
+$IPTABLES -A INPUT -p udp -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 161 -m state --state NEW -s
+$SNMP_POLLER_IP=20
+-j ACCEPT
 
-The webserver in the DMZ is definitely working, and can be reached from the Internet. The tutorials point out that INPUT and OUTPUT rules would not affect what I'm trying to do here. My browser times out when I try to access the DMZ webserver from the LAN. There is an entry in the LAN computer's 'hosts' file for the webserver; typing the ip address of the DMZ webserver into the address bar of the browser also results in a times out.
+$IPTABLES -A OUTPUT -p udp -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+$IPTABLES -A OUTPUT -p udp --sport 161 -m state --state NEW -s
+$SNMP_POLLER_IP=20
+-j ACCEPT
 
-Thank you very much for your help.
+This is assuming you have set the ploicies to drop
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT DROP
 
-Jamie
+On Wednesday 07 January 2004 06:46, Gilles Yue wrote:
+> Hi,
+>
+> Is this the way it should be in iptables?
+>
+> #Open SNMP Ports
+> $IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
+>
+> Have tried it, not working
+>
+> Thanks.
+> Gy
+>
+> -----Original Message-----
+> From: Daniel F. Chief Security Engineer -
+> [mailto:danielf@supportteam.net]
+> Sent: Wednesday, January 07, 2004 4:45 PM
+> To: Gilles Yue; netfilter@lists.netfilter.org
+> Subject: Re: MRTG and IPTABLES
+>
+> SNMP UDP Ports 161 and 162 MRTG typically only uses 161.
+>
+>
+> Thanks
+>
+> On Wednesday 07 January 2004 00:54, Gilles Yue wrote:
+> > MRTG cannot work properly due to iptables running.
+> >
+> >
+> >
+> > Anybody knows which port number to open to enable MRTG to work
+>
+> properly.
+>
+> > Thanks.
+> >
+> >
+> >
+> > Rgds
+> >
+> > gy
 
-
-
---bound1073528998--
+--=20
+Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
+The distance between nothing and infinity is always the same no matter
+how=20
+close you get to nothing.
 
