@@ -1,13 +1,13 @@
 From: Askar Ali Khan <askarali@gmail.com>
-Subject: Re: How to upgrade iptables
-Date: Wed, 30 Jun 2004 10:41:58 +0500
+Subject: Re: how to build a routing/packet filtering experimental environment on single PC
+Date: Wed, 30 Jun 2004 10:55:47 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <a0f69e504062922425fbe9f12@mail.gmail.com>
-References: <40E18057.5060807@sto-procent.art.pl> <200406291602.37397.Antony@Soft-Solutions.co.uk>
+Message-ID: <a0f69e504062922552aeb448e@mail.gmail.com>
+References: <BAY8-F96k6GW1lnU0290007fff2@hotmail.com> <200406291658.30241.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406291602.37397.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200406291658.30241.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,52 +20,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-yes use the same method if for remving iptable (binary package) you
-used to installed it for example if it is RH or FC then use rpm -e
-iptables or removepkg iptables (for slack)
-and other method for other distros.
-:)
+well do suggest to look around the corner if someone wana get rid of
+his p1 or p11 old system , after getting the box use it as your
+router/firewall machine :)
+linux is great coz of it doesn't need heavy system to run on, 
+mininum 16 MB of RAM and p1 or p11 would be enough 
 
 
-On Tue, 29 Jun 2004 16:02:37 +0100, Antony Stone
+On Tue, 29 Jun 2004 16:58:30 +0100, Antony Stone
 <antony@soft-solutions.co.uk> wrote:
 > 
-> On Tuesday 29 June 2004 3:44 pm, boka wrote:
+> On Tuesday 29 June 2004 4:43 pm, Li Xinyi wrote:
 > 
-> > Hi !
+> > Hi, there
 > >
-> > After sucessfully build of new version of iptables, i have checked if
-> > the rules are ok to new version. My previous version was 1.2.10.
+> > I started to learn iptables a few weeks ago. I am stuck at moment because I
+> > dont have many machines to play with. I am wondering is there any tools,
+> > which can be used to build a virtual envionment to play with routing and
+> > packet filtering on sinple machine. Tools like VMware would not be my
+> > choice because I only have 1GHz PIII with 256M memory.
 > 
-> Did you previously build 1.2.10 on your system in the same way?
+> It's very hard to route any packets when you only have one machine (real or
+> virtual).
 > 
-> If not (eg: if you installed one from a package manager, and you build the
-> other from source), then you may have two different binaries (plus various
-> bits of libraries) in more than one place on your system.
+> I really think a minimum of two machines is necessary to do much experimenting
+> with netfilter - one machine as a client you can control, one as the router /
+> firewall you want to test things on, and then a connection to the Internet
+> where you can find all the servers...
 > 
-> As a quick check, what does "whereis iptables" suggest?
-> 
-> For a longer list of files involved, see whether "locate iptables" seems to
-> show duplicates etc.
-> 
-> If you do have more than one version installed, I suggest removing the older
-> one (using the same method as was used to install it), and then reinstalling
-> the new one.
-> 
-> If you built them both from source, make sure the install paths are the same
-> on both occasions.
-> 
-> I've commonly seen iptables in either /sbin or /usr/sbin, and sometimes even
-> /usr/local/sbin
-> 
-> Hope this helps,
+> VMware would indeed be an effective way to do this, however 256Mb RAM isn't
+> going to go very far :)
 > 
 > Regards,
 > 
 > Antony.
 > 
 > --
-> Most people have more than the average number of legs.
+> "Linux is going to be part of the future. It's going to be like Unix was."
+> 
+>  - Peter Moore, Asia-Pacific general manager, Microsoft
 > 
 >                                                      Please reply to the list;
 >                                                            please don't CC me.
