@@ -1,11 +1,10 @@
-From: Nguyen Dinh Nam <64vn@cardvn.net>
-Subject: Re: using bandwidth from multiple adsl supply connections
-Date: Thu, 24 Feb 2005 23:29:51 +0700
-Message-ID: <421E00FF.8030209@cardvn.net>
-References: <20050224151549.2219.qmail@web60408.mail.yahoo.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Stateless NAT
+Date: Thu, 24 Feb 2005 17:43:12 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0502241738490.5273@blackhole.kfki.hu>
+References: <1109243487.9286.4.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050224151549.2219.qmail@web60408.mail.yahoo.com>
+In-Reply-To: <1109243487.9286.4.camel@jasiiitosh.nexusmgmt.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,53 +15,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: ads nat <adsnat@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Cc: Netfilter users list <netfilter@lists.netfilter.org>
 
-usually, this problem is discussed on lartc mailing list, I've written a 
-tutorial on it, it may be useful to you
-http://selab.edu.ms/twiki/bin/view/Networking/MultihomedLinuxNetworking
+On Thu, 24 Feb 2005, John A. Sullivan III wrote:
 
-ads nat wrote:
+> Thanks to some help from Philip Craig of SnapGear, I'm still alive on
+> this issue of UDP broadcast helping using iptables.  The next problem is
+> creating the stateless NAT that I need.  My first choice would be to do
+> this with iproute2 but it appears to be broken in the 2.6 kernel.
+>
+> I next tried doing this by using the raw table and NOTRACK target for
+> udp broadcasts on the needed port and then DNAT on the same packets to
+> the unicast address.  However, apparently NOTRACK disables NAT so that
+> didn't work.  When using conntrack for most packets, how does one
+> disable conntrack for certain NAT packets only? In other words, how does
+> one do selective, stateless NAT in iptables? Thanks - John
 
->Hi,
->I am using Redhat 9 linux server.
->I have 3 ethernet cards cards having
->
->eth0 Static Ip address.
->eth1 192.168.0.1 gateway for subnet 192.168.0.0.
->eth2 10.0.0.1 gateway for subnet 10.0.0.0.
->
->I have setup two adsl connections for ethernet card
->for eth0 (ppp0) and for eth1 (ppp1).
->
->I am getting dialup supply from two different ISPs for
->eth0 (ppp0) and eth1(ppp1).
->
->I want to pass supply from eth0 (ppp0) to subnet
->192.168.0.0 and supply from eth1 (ppp1) to subnet
->10.0.0.0.
->But it seems supply from eth0(ppp0) goes to both
->subnets. Supply from eth1 (ppp1) is not going to
->subnet 10.0.0.0. 
->
->Any idea how to achieve this OR any tutorial OR Howto
->for this.
->Help appreciated.
->Thanks for supports.
->
->
->
->	
->		
->__________________________________ 
->Do you Yahoo!? 
->Yahoo! Mail - You care about security. So do we. 
->http://promotions.yahoo.com/new_mail
->
->
->  
->
+You cannot do NAT without conntrack, because NAT in netfilter is built on
+the top of conntrack. By the NOTRACK target you disable conntrack for
+the selected packets thus disable NAT as well.
 
+Currently there is no way to define stateless NAT in netfilter. That is
+the bad news. The good one is that however one could write a stateless NAT
+target module, nothing prevents that.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
