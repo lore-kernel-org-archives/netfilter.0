@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Matching IPSEC encapsulated traffic with connection tracking
-Date: Thu, 6 Jan 2005 11:29:58 -0500
-Message-ID: <20050106162958.GA28501@bender.817west.com>
-References: <41DA5373.5080404@gmx.net>
+Subject: Re: Server machines behind Firewall
+Date: Thu, 6 Jan 2005 11:35:55 -0500
+Message-ID: <20050106163555.GA28547@bender.817west.com>
+References: <41DC1258.78D37B1D@ita.org.mo>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <41DA5373.5080404@gmx.net>
+In-Reply-To: <41DC1258.78D37B1D@ita.org.mo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +19,29 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Tue, Jan 04, 2005 at 09:27:31AM +0100, Robert Dahlem wrote:
-> Hi,
+On Thu, Jan 06, 2005 at 12:14:16AM +0800, edwardspl@ita.org.mo wrote:
+> Dear All,
 > 
-> sorry, this is a bit lengthy ...
+> Is there a sample ( nat scripts ) for the title ?
 
-<snip>
+EXT_IF="eth0"
+INT_IF="eth1"
+SRV1="10.1.1.10"
 
-are you running a 2.6 kernel (i can assume that you are, but you know
-what that makes us)?
+iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 80 \
+  -j DNAT --to-destination $SRV1
 
-if so, MARK your ESP packets in MANGLE PREROUTING, and use the mark to
-identify decrypted packets in your filter rules.
+iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d $SRV1 \
+  --dport 80 -j ACCEPT
 
-hundreds of examples of this can be found through the list archives or
-google.
+rinse, repeat.
 
 -j
 
 --
-"Lisa, if you don't like your job you don't strike. You just go in
- there every day and do it really half-assed. That's  the American way."
+"Ooh, they used nylon rope this time. It feels smooth against my skin,
+ almost sensuous."
         --The Simpsons
 
