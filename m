@@ -1,12 +1,13 @@
-From: DALive Editor <dalive@flashmail.com>
-Subject: Having probs installing iptables-1.2.9
-Date: Sun, 28 Mar 2004 08:36:30 -0400
+From: Tony Earnshaw <tonye@billy.demon.nl>
+Subject: Re: 1.2.9 connlimit POM patch
+Date: Sun, 28 Mar 2004 18:44:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4066C6CE.5020008@flashmail.com>
-Reply-To: dalive@flashmail.com
+Message-ID: <1080492247.1595.16.camel@localhost>
+References: <1080313891.6013.50.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1080313891.6013.50.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+fre, 26.03.2004 kl. 16.11 skrev Tony Earnshaw:
 
-The make process for iptables-1.2.9 just stalls, and goes nowhere until
-i terminate it. When I run make with a (-d) tag, it get the following:
+> The above (wrongly described and detailed as "iplimit" in the latest
+> HOWTO) still "does not work for me", whilst I actually find it very
+> important for easy traffic shaping; in my case, client Internet MTAs.
+> 
+> Is anyone on the list familiar with this patch, or have I to contact
+> Gerd Knorr directly? (Me, I get poisoned by having list people contact
+> me directly, so I'd rather keep it to the list).
 
-Reading makefiles...
-Reading makefile `Makefile'...
-Got a SIGCHLD; 1 unreaped children.
-Got a SIGCHLD; 1 unreaped children.
-Got a SIGCHLD; 1 unreaped children.
-Got a SIGCHLD; 1 unreaped children.
-Reading makefile `extensions/Makefile' (search path) (no ~ expansion)
+This was utter crap, sorry Gerd :) It works perfectly - I found out by
+myself without me ever having written lies about it not working to you -
+I'd forgotten how to write iptables rules: "order matters".
 
-Please advise
+--Tonni
 
-Thank you
+-- 
 
-
+mail: billy - at - billy.demon.nl
+http://www.billy.demon.nl
 
 
