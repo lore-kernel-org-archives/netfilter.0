@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ip_tables_names not showing any results.. please help
-Date: Sun, 2 May 2004 22:53:14 +0100
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: Re: icmp echo reply && FORWARD chain
+Date: Sun, 2 May 2004 23:43:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405022253.14529.Antony@Soft-Solutions.co.uk>
-References: <1402.216.22.86.180.1083517083.squirrel@www.123plaza.com> <200405021823.58366.Antony@Soft-Solutions.co.uk> <2846.216.22.86.180.1083527377.squirrel@www.123plaza.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <009801c43096$e999e0a0$68892090@grouse>
+References: <006701c43051$39130ad0$68892090@grouse> <200405021546.51594.Antony@Soft-Solutions.co.uk> <007b01c4305a$34258300$68892090@grouse> <200405021642.01619.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2846.216.22.86.180.1083527377.squirrel@www.123plaza.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,51 +19,84 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 02 May 2004 8:49 pm, ignaciob@123plaza.com wrote:
+Hi Antony,
 
-> > On Sunday 02 May 2004 5:58 pm, 123plaza Malls wrote:
-> >> Hi All,
-> >>
-> >> Please forgive my ignorance, but being an inexperienced linux user I
-> >> managed to break something with my iptables
+Oh, dear! I am making a lot ot mistakes. The rules are as follows:
+
+iptables -F
+iptables -F -t nat
+iptables -I FORWARD -j QUEUE
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to global_ip
+iptables -t nat -A PREROUTING -i eth0 -j DNAT --to 192.168.0.2
+
+The problem is that it seems icmp request destined to PC2 can be caught by
+the FORWARD chain, however, the icmp reply destined to PC2 is ignored by the
+FORWARD chain.
+
+Sorry again,
+Jee
+
+PS, however, you remind me a kind of setup to make traffic bouncing back to
+the same subnet.:p
+
+
+> On Sunday 02 May 2004 4:29 pm, Jee J.Z. wrote:
+>
+> > Hi Antony,
 > >
-> > What were you doing when it broke?   Recompiling your kernel?
-> > Recompiling
-> > iptables?   Fiddling with the startup scripts?  Un/Installing netfilter
-> > RPMs?
+> > Sorry for the confusion.
+> >
+> > > > My rules on a gateway linux box (PC2) are set as follows:
+> > > >
+> > > > Internet (PC1 and so on)
+> > > >   |
+> > > >   |
+> > > > (eth0:global_ip)
+> > > > PC2
+> > > > (eth1:192.168.0.1)
+> > > >   |
+> > > >   |
+> > > > Internal networks (PC3 (192.168.0.2) and so on...)
+> > > >
+> > > > iptables -F
+> > > > iptables -F -t nat
+> > > > iptables -I FORWARD -j QUEUE
+> > > > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to global_ip
+> > > > iptables -t nat -A PREROUTING -i eth1 -j DNAT --to 192.168.0.2
+> > >
+> > > That is a weird-looking rule.   Where does IP 192.168.0.2 exist on the
+> > > above diagram?
+> >
+> > It's the internal IP of PC3. I modified the diagram a little bit. Thank
+you.
 >
-> The last thing I remember doing was 2 things:
+> I modified it a bit too, so we don't have problems with line-wrap.
 >
-> 1) Modify a script I use via cron.hourly used to clear iptables blocking
-> entries set by portsentry, AND made a mistake when calling a command to
-> clear history files.
+> So, what you're saying is that any packet coming in on eth1, addressed to
+> anywhere at all, gets DNATted, and sent straight back out eth1 again, now
+> addressed to PC3.   Hm.
 >
-> 2) Other than this recently upgraded the kernel to latest (rpm) version
-> from redhat
-
-I would say that item number 2 has caused your problem.
-
-1. Reboot using the previous kernel version and check whether the problem goes 
-away.
-
-2. Check whether the new kernel includes netfilter support.
-
-3. Check (if you are using modules) whether you have the correct version of 
-netfilter modules for the new kernel.
-
-4. If none of the above solves the problem, ask on a Red Hat support mailing 
-list.
-
-Regards,
-
-Antony.
-
--- 
-There's no such thing as bad weather - only the wrong clothes.
-
- - Billy Connolly
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> Why?
+>
+> Antony.
+>
+> PS: I'm not sure if the sig below (which gets selected at random by my
+mail
+> client) is appropriate here, however I can't see it doing any harm to
+remind
+> people :)
+>
+> -- 
+> 90% of networking problems are routing problems.
+> 9 of the remaining 10% are routing problems in the other direction.
+> The remaining 1% might be something else, but check the routing anyway.
+>
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
+>
 
 
