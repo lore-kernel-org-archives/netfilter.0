@@ -1,14 +1,15 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: (OT) Tunnel
-Date: Mon, 25 Aug 2003 17:00:04 +0100
+From: Tom Marshall <tommy@home.tig-grr.com>
+Subject: Re: question about Real Audio
+Date: Mon, 25 Aug 2003 09:01:59 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200308251700.04267.gdh@acentral.co.uk>
-References: <000601c36b20$038c7cd0$0200a8c0@basti79>
+Message-ID: <20030825160159.GB27329@home.tig-grr.com>
+References: <00d301c368e5$ea5d7a20$4900a8c0@cympak.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000601c36b20$038c7cd0$0200a8c0@basti79>
 Content-Disposition: inline
+In-Reply-To: <00d301c368e5$ea5d7a20$4900a8c0@cympak.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +19,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: Slawomir Orlowski <orlowscy@hotpop.com>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 25 August 2003 16:46, Sebastian wrote:
 
-> So, what i'm lookting for is a tunnel which
-> - works with Windows Clients
-> - provides full TCP/IP connectivity (unlike simple SSH tunnels)
-> - dosen't use GRE (unlike PPTP and afaik IPsec)
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-IPsec doesn't use GRE, but AH/ESP... although if your router is blocking GRE, 
-it'll likely block these two, too :(
+Please see this message, it should answer most or all of your questions:
 
-Have a search for 'CIPE' on google - this has native NDIS drivers for 
-NT/2000/XP and a Linux module/userspace control kit to enable you to create 
-secure tunnels using normal UDP traffic.
+  https://lists.netfilter.org/pipermail/netfilter/2003-August/046032.html
 
-Cheers,
-Gavin
+On Fri, Aug 22, 2003 at 03:45:18PM -0400, Slawomir Orlowski wrote:
+> Hello there,
+> I have been using ipchains with 2.2 kernel and after reading about Netfil=
+ter
+> and outstanding manual iptables tutorial by Oskar Andreasson I desire to
+> move to 2.4 kernel with iptables.
+>=20
+> I have some question though. In ipchains I have been using ip_masq_radio,
+> ip_masq_irc, ip_masq_ftp modules (to make real Audio, IRC and ftp services
+> to work).
+>=20
+> I understand that in new iptables I will be using ip_conntrack_ftp,
+> ip_nat_ftp and ip_conntrack_irc, ip_nat_irc modules respectively.
+>=20
+> What about real audio? Do modules ip_conntrack_raudio, ip_nat_radio exist=
+s ?
+>=20
+> If not, will not I be able to use real audio ?
+>=20
+> I have Real Server on my network and would like to be able to conect from
+> LAN Windows clients to conect to another Real Servers on the Internet.
+>=20
+> I would really appreciate if somebody would shed some light on this topic.
+> Where I can find more information about it ?
+>=20
+> Best regards.
+> Slawomir Orlowski
+>=20
 
+--=20
+Psychiatry is the care of the id by the odd.
+        -- Anonymous
+
+--f2QGlHpHGjS2mn6Y
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAj9KMvcACgkQFMm9uvwPXW7QEACgkHh8HvDO0gvQDzsLe5kRsVsH
+qoAAnRsii2Jv6OD16BYw/CZV0kTSQOFP
+=VS5B
+-----END PGP SIGNATURE-----
+
+--f2QGlHpHGjS2mn6Y--
 
