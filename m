@@ -1,9 +1,13 @@
-From: "Ian! D. Allen" <idallen@idallen.ca>
-Subject: CONNMARK, OUTPUT, sid-owner and marking closed connections
-Date: Thu, 17 Feb 2005 22:44:29 -0500
-Message-ID: <20050218034429.GA14099@elm.home.idallen.ca>
+From: Askar <askarali@gmail.com>
+Subject: Re: slow ftp
+Date: Fri, 18 Feb 2005 09:51:32 +0500
+Message-ID: <a0f69e505021720512ec9468a@mail.gmail.com>
+References: <a0f69e505021708481c4be836@mail.gmail.com>
+	<Pine.LNX.4.05.10502171248010.4403-100000@darkstar.sysinfo.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.LNX.4.05.10502171248010.4403-100000@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,47 +19,90 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "R. DuFresne" <dufresne@sysinfo.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-If I mark local packets based on a session ID:
+hello Dufresne,
 
-  iptables -t mangle -A OUTPUT -m owner --sid-owner $PID \
-         -j MARK --set-mark $MARK
+Problem solved after I added ...
+     UseReverseDNS                   off
+     IdentLookups                    off
 
-the marking works correctly until the connection closes.  Then, the
-final FIN packets no longer seem to originate with that session, they
-don't get marked, and (being unmarked) they go out the wrong interface
-(and the connection doesn't close properly).  Here is part of what the
-log shows when that happens:
+to proftpd.conf as Michael Gale suggested
 
-Feb 17 14:01:41 elm kernel: IDAMK IN= OUT=eth1 SRC=192.168.9.250
-   DST=129.143.116.10 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=20288 DF
-   PROTO=TCP SPT=56428 DPT=80 WINDOW=10416 RES=0x00 ACK URGP=0
+Thanks and regards
 
-Feb 17 14:01:41 elm kernel: IDANO IN= OUT=eth0 SRC=192.168.9.250
-   DST=129.143.116.10 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=20290 DF
-   PROTO=TCP SPT=56428 DPT=80 WINDOW=10416 RES=0x00 ACK FIN URGP=0
+Askar 
+On Thu, 17 Feb 2005 12:51:56 -0500 (EST), R. DuFresne
+<dufresne@sysinfo.com> wrote:
+> 
+> What kind of latencies are you observing?  any time one puts a firewall
+> into the miix, or encryption there is agont to be an increase in latency.
+> Add state tracking and increase the latency level, add large rules sets,
+> and increase the latency level, ftp via ssh'ed connections, add latency,
+> hope from one system to another hitting firewall boundries and adding
+> ssh'ed connections up the latency level.  Try and connect to a server that
+> is running with a sysload on the high end, add latency as the remote
+> server needs to deal with interupts.
+> 
+> The question though is, are the latencies you are observing out of norm?
+> <see question 1 above>
+> 
+> Thanks,
+> 
+> Ron DuFresne
+> 
+> On Thu, 17 Feb 2005, Askar wrote:
+> 
+> > hi list
+> >
+> > we are running ftp "proftpd" server it takes times when a user
+> > connects to ftp server however when I flush the iptables rules
+> > connection doesn't takes time, iptables firewall on the same machine,
+> > default policies are DROP,
+> > firewall script is very straight forward
+> >
+> > rules
+> > .
+> > .
+> > # Using Connection State to By-pass Rule Checking
+> > iptables -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > .
+> > .
+> > .iptables -A INPUT -p tcp --dport 20:21 -m state --state NEW -j ACCEPT
+> > .
+> > .
+> >
+> > # Load the FTP connection state helper module.
+> > modprobe ip_conntrack_ftp
+> > # Load the FTP NAT module.
+> > modprobe ip_nat_ftp
+> >
+> > any idea?
+> >
+> > regards
+> >
+> >
+> 
+> --
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>         admin & senior security consultant:  sysinfo.com
+>                         http://sysinfo.com
+> 
+> ...Love is the ultimate outlaw.  It just won't adhere to rules.
+> The most any of us can do is sign on as it's accomplice.  Instead
+> of vowing to honor and obey, maybe we should swear to aid and abet.
+> That would mean that security is out of the question.  The words
+> "make" and "stay" become inappropriate.  My love for you has no
+> strings attached.  I love you for free...
+>                         -Tom Robins <Still Life With Woodpecker>
+> 
+> 
 
-The first log entry is the last of the correctly marked packets going
-out eth1.  The second log entry shows what happens when the connection
-is closed (it was a "wget" of an http page), and the "ACK FIN" packets
-are not being marked, so they go out the default interface (eth0).  Bad.
 
-I would have hoped that the session ID marking would last even while
-the connection was being closed and "FIN" was being sent.  It doesn't.
-
-How do I arrange that *all* the packets get marked, even the "FIN" ones?
-
-I've read a year of back-list messages dealing with CONNMARK but was
-unable to make it work in my OUTPUT tables.
-
-Linux elm 2.6.10-1mdk #2 Sat Jan 29 13:10:11 EST 2005 i686 AMD Athlon(tm)
-XP 3200+ unknown GNU/Linux
-
---
--IAN!  Ian! D. Allen   Ottawa, Ontario, Canada EMail: idallen@idallen.ca
-       WWW: http://www.idallen.com/ College professor (Linux) via:
-       http://teaching.idallen.com/ Support free and open public digital
-       rights:  http://eff.org/
+-- 
+I love deadlines. I like the whooshing sound they make as they fly by.
+Douglas Adams
 
