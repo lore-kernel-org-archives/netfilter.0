@@ -1,12 +1,11 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Altering a packet's port
-Date: Tue, 22 Mar 2005 06:29:56 -0500
-Message-ID: <1111490995.4267.18.camel@hubcap.ljm.dom>
-References: <00c501c52e56$acbe6070$bf07a8c0@civicXp>
-	<opsn0cqeu476nf2y@xonix>  <002201c52e7e$4fe76950$6500a8c0@DEFIANT>
+Subject: Re: limiting outgoing connections
+Date: Tue, 22 Mar 2005 06:39:13 -0500
+Message-ID: <1111491553.4267.28.camel@hubcap.ljm.dom>
+References: <20050322061913.21052.qmail@web30801.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <002201c52e7e$4fe76950$6500a8c0@DEFIANT>
+In-Reply-To: <20050322061913.21052.qmail@web30801.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,18 +19,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2005-03-21 at 20:27, Nicolas Ross wrote:
-> I saw that in the man page, but I need to do this for ALL hosts to specific 
-> subnets, and many hosts. So I'll have to define one rule for EACH host I 
-> need a redirect (something like 50 to 75) ?
+On Tue, 2005-03-22 at 01:19, Linux Query wrote:
+> Hi All!
+> 
+> I want to limit each clients outgoing connections.
+> Will the following be ok ?
+> 
+> iptables -A FORWARD -i $internal_interface -s $ip -m
+> limit --limit 10/s -j ACCEPT
+> iptables -A FORWARD  -i $internal_interface -s $ip -j
+> DROP
+> 
+> What is a good limit figure ?
 
-for loop?
+it would be saner to use the connlimit match from PoM, or the newer
+hashlimit match for this.
 
 -j
 
 --
-"How much is your penny candy?
- Surprisingly expensive."
+"Please do not offer my god a peanut"
 	--The Simpsons
 
 
