@@ -1,10 +1,11 @@
-From: CJ East <bec365195104@geckomail.org>
-Subject: RE:  Multiple routes by uid-owner
-Date: 14 Jul 2003 15:11:20 +1000
+From: "Ilo Lorusso" <ilo@gmsg.co.za>
+Subject: Portfowarding not working while SNATing,
+Date: Tue, 15 Jul 2003 08:30:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058159480.621.5.camel@broken>
+Message-ID: <004e01c34a9a$8f2b3b60$4c00000a@sneak>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_004B_01C34AAB.51C0D1C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,138 +16,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
-> -----Original Message-----
-> From: " George Vieira " (via GeckoMail)
-> [mailto:return-bec365195104-georgev-.-citadelcomputer.com.au@g
-> eckomail.o
-> rg]
-> Sent: Monday, 14 July 2003 7:54 AM
-> Subject: RE: Multiple routes by uid-owner
-> 
-> 
-> --------------------------------------------------------------
-> ------------
-> This mail was received via GeckoMail.org alias 
-> bec365195104@geckomail.org
-> --------------------------------------------------------------
-> ------------
-> 
-> Can you LOG all dropped packets, are you setting DROP as the 
-> default for INPUT?
+------=_NextPart_000_004B_01C34AAB.51C0D1C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-INPUT's policy is ACCEPT. 
-Adding a LOG target to this chain does not shed any light- incoming
-packets visible to tcpdump on the ppp interface *do not* enter the INPUT
-chain. 
+If have the following set for some port forwarding that I need done, =
+which works well...
 
-But it was a good thing to check, so thanks :D 
+/sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 -d 196.11.11.11 =
+--dport 80 -j DNAT --to 10.0.0.2:80
+/sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 -d 196.11.11.11 =
+--dport 389 -j DNAT --to 10.0.0.2:389
 
-Yeah, owner id info is only available on the machine itself; but that's
-all i need (I'm not forwarding packets or anything) 
+then once I set the following for SNAT so my local machines can get =
+internet access my port forwarding=20
+stops working.
 
-The problem still stands-- why are correctly addressed incoming packets
-visible to tcpdump but not to netfilter?  
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 196.11.11.11
 
 
+Is there something im not doing right? can someone point me in the right =
+direction.
 
+tx.
 
-> 
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
-> 
-> Citadel Computer Systems Pty Ltd
-> http://www.citadelcomputer.com.au
-> 
-> Phone   : +61 2 9955 2644
-> HelpDesk: +61 2 9955 2698
->  
-> 
-> -----Original Message-----
-> From: CJ East [mailto:bec365195104@geckomail.org]
-> Sent: Thursday, July 10, 2003 5:45 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Multiple routes by uid-owner
-> 
-> 
-> Hi, 
-> 
-> I'm currently trying to test several independent internet links. 
-> 
-> To do this, I instantiate two or more interfaces, which I aim to allow
-> to route packets as though two separate machines were each 
-> independently
-> connected to the internet, and independently downloading some 
-> file using
-> http. 
-> 
-> - I run wget http://www.google.com with uid=500
-> - I run wget http://www.google.com with uid=501 
-> 
-> - I set up using iptables; 
-> chain OUTPUT
->  MARK all -- anywhere    anywhere  OWNER UID match 500 MARK set 0x1
->  MARK all -- anywhere    anywhere  OWNER UID match 501 MARK set 0x2
-> 
-> 
-> - I set up using ip; 
-> 
-> ip rule add fwmark 1 table link1
-> ip rule add fwmark 2 table link2 
-> ip route add default dev ppp0 table link1
-> ip route add default dev ppp1 table link2
-> 
-> - This all works more-or-less correctly.  
-> Now, running wget and tcpdump reveals a DNS lookup going out on the
-> correct interface, depending of course which userid is running. 
-> 
-> Notably, the SOURCE address isn't that of the PPP interface, it's of
-> another (ethernet) interface in the machine.  Now, for profiling the
-> connection, this is clearly unacceptable (Packets need to come back on
-> the interface they were sent!)  Now, IIUC, an application can bind to
-> any given source address-- but this is a bad idea in my case, since it
-> requires each application be aware of its environment-- fine 
-> if my test
-> is ALWAYS wget (since I have the source), but bad generally. 
-> 
-> So, I've turned to SNAT, which I'm abusing to switch the source IP
-> address to that of the ppp interface on the way out.  
-> 
-> A la, 
-> 
-> iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source x.x.x.x 
-> 
-> This certainly fixes the issue of errant source address, but now, a
-> totally different problem..... Packets coming IN off the ppp interface
-> (now bearing the correct address) don't appear to make it to the
-> application! :( 
-> 
-> I had no idea what was going on, but suffice to say started messing
-> around with the PREROUTING table enough to notice that these returning
-> packets don't seem to traverse that hook either; they must be dropped
-> somewhere in the kernel, however I'm not sure where or why.  
-> I had been
-> thinking that a corresponding DNAT rule (as crude as it must sound)
-> would be a quick-and-dirty solution, but since the packets don't enter
-> that chain.. Well, it's a non-starter :( 
-> 
-> Why are the packets dropped?   The requests are sent out over the same
-> interface on which they are received (Which is a noted caveat for
-> netfilter).  
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
+------=_NextPart_000_004B_01C34AAB.51C0D1C0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>If have the following set for some port =
+forwarding=20
+that I need done, which works well...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><EM>/sbin/iptables -t nat -A PREROUTING =
+-p tcp -i=20
+eth0 -d 196.11.11.11 --dport 80 -j DNAT --to =
+10.0.0.2:80<BR>/sbin/iptables -t=20
+nat -A PREROUTING -p tcp -i eth0 -d 196.11.11.11 --dport 389 -j DNAT =
+--to=20
+10.0.0.2:389</EM><BR></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>then once I set the following for SNAT =
+so my local=20
+machines can get internet access my port forwarding </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>stops working.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2><EM>/sbin/iptables -t nat -A =
+POSTROUTING -o eth0 -j=20
+SNAT --to 196.11.11.11</EM></FONT></DIV>
+<DIV><EM></EM>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Is there something im not doing right? can someone point me in the =
+right=20
+direction.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>tx.</DIV></DIV></FONT></BODY></HTML>
+
+------=_NextPart_000_004B_01C34AAB.51C0D1C0--
 
 
