@@ -1,16 +1,11 @@
-From: George Ross <gdmr@inf.ed.ac.uk>
-Subject: Re: Port Redirection with iptables (Log information)
-Date: Wed, 17 Dec 2003 16:09:49 +0000
+From: Eddahbi Karim <non.tu.ne.me.connais.pas.spavrai@ifrance.com>
+Subject: Documentation about /proc/net/ip_conntrack states...
+Date: Wed, 17 Dec 2003 14:01:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312171609.hBHG9nC06511@eden.inf.ed.ac.uk>
-References: <20031217154514.19655.qmail@web41105.mail.yahoo.com>
+Message-ID: <1071666113.3953.23.camel@gamux>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_668181693P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: Your message of "Wed, 17 Dec 2003 07:45:14 PST."
-             <20031217154514.19655.qmail@web41105.mail.yahoo.com> 
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,38 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
---==_Exmh_668181693P
-Content-Type: text/plain; charset=us-ascii
+Hi,
 
-> I'm getting a lot of lines that look like:
-> Dec 17 09:37:27 redpen kernel: NET: 61 messages
-> suppressed.
-> Dec 17 09:37:27 redpen kernel: Neighbour table
-> overflow.
+I'm pretty new to Iptables and I try to create documentation while
+reading others like this
+http://iptables-tutorial.frozentux.net/chunkyhtml/theconntrackentries.html .
 
-You may want to review the values of 
-/proc/sys/net/ipv4/neigh/default/gc_thresh2 and .../gc_thresh3.
--- 
-Dr George D M Ross, School of Informatics, University of Edinburgh
-    Kings Buildings, Mayfield Road, Edinburgh, Scotland, EH9 3JZ
-Mail: gdmr@dcs.ed.ac.uk   Voice: +44 131 650 5147   Fax: +44 131 667 7209
- PGP: 1024/B74A4F7D  14 E8 B3 00 20 04 68 F8  95 40 CB 36 A4 D4 FA 90
+On the URL below there's a brief explanation about conntrack and the
+/proc entry.
 
+I want to know if there's documentation explaining every type of state
+that a connection can have for the /proc entry.
 
+For example I don't really understand when a connection will have the
+state FIN_WAIT or TIME_WAIT.
 
---==_Exmh_668181693P
-Content-Type: application/pgp-signature
+That's maybe my lack of knowledge of the RFC ...
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-Comment: Exmh version 2.6.3 2003/04/04
+--=20
+--
+Eddahbi Karim
 
-iD8DBQE/4H/NtnZcK611jMURAtnHAJ9ySt03TzNP9lQN7BaLazWUX9JaNgCgs35U
-I2ucObEGE3E3ZxdZ9qoK+Rs=
-=/beV
------END PGP SIGNATURE-----
+Phone :
+(33) (0)6 61 30 57 77
 
---==_Exmh_668181693P--
+France
+
+_____________________________________________________________________
+Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN Messenger
+http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de France
+
 
