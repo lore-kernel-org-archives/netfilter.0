@@ -1,10 +1,10 @@
 From: cc <cc@belfordhk.com>
-Subject: port 80 redirection
-Date: Thu, 14 Aug 2003 09:45:53 +0800
+Subject: udp port 135
+Date: Thu, 14 Aug 2003 12:24:25 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F3AE9D1.1010600@belfordhk.com>
+Message-ID: <3F3B0EF9.5040002@belfordhk.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_1060825753-32021-547"
+Content-Type: multipart/mixed; boundary="----------=_1060835265-32021-571"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,26 +19,47 @@ To: Netfilter Group <netfilter@lists.netfilter.org>
 
 This is a multi-part message in MIME format...
 
-------------=_1060825753-32021-547
+------------=_1060835265-32021-571
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 Hi,
 
-(This isn't a repost of my original post a few days ago.  I just
-wanted to mention that I lost the two response from those who
-sent me email regarding my issue.  I had used my other
-email address (which conveniently was also subscribed to this
-ML for the reason being that I'm at two different places during
-certain parts of the month so I didn't want to miss anything.)
+Can someone comment on the following script as to whether or not
+it should work?  (It's related of course to the influx of 135
+scans..)
 
-Anyway, someone emailed me regarding that I could always
-redirect all outgoing POrt 80 traffic to the Squid-based
-machine.
+iptables -A INPUT -i $EXT_DEV -p tcp -d $EXT_DEV --dport 135 -j DROP
+iptables -A INPUT -i $EXT_DEV -p udp -d $EXT_DEV --dport 135 -j DROP
 
-Can that person please repost?  Sorry for the inconvenience.
-I should've forwarded my email to myself.
+iptables -A OUTPUT -o $EXT_DEV -p tcp -d $EXT_DEV --dport 135 -j DROP
+iptables -A OUTPUT -o $EXT_DEV -p udp -d $EXT_DEV --dport 135 -j DROP
+
+Perhaps my understand of UDP packets isn't very deep, so I
+might have missed some tidbit regarding the states of udp ports.
+
+But with the above script portion, when I execute:
+
+nmap -sT -p 135 <ext ip>
+
+from a remote machine, I get a host down message. With
+
+nmap -sT -P0 -p 135 <ext ip>,
+
+I get a (135/tcp filtered).  (Good news?)
+
+But with :
+
+nmap -sU -P0 -p 135 <ext ip>,
+
+I get a (135/udp open).
+
+Can someone explain to me what I'm doing wrong or what
+information I have forgotten?    Does it even matter
+if the udp 135 port is open?  I'm currently in
+the process of closing all unneccessary ports
+(be it tcp or udp).
 
 Thanks.
 
@@ -54,5 +75,5 @@ Thanks.
 ** only.                                                   **
 
 
-------------=_1060825753-32021-547--
+------------=_1060835265-32021-571--
 
