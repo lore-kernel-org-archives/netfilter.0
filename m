@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How to redirect browsers with static proxy settings in iptables?
-Date: Sun, 25 Jul 2004 14:24:07 +0100
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: Compile error
+Date: Sun, 25 Jul 2004 08:27:08 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407251424.07223.Antony@Soft-Solutions.co.uk>
-References: <BAY2-F18gRXrJrozCsV00007623@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <SERVER7xpAOAkK5LqN3000000ad@server7.bandwidthco.com>
+References: <41024E26.19563.4B6804@localhost>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY2-F18gRXrJrozCsV00007623@hotmail.com>
+In-Reply-To: <41024E26.19563.4B6804@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,46 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Don Hughes' <support@sannotes.org>, netfilter@lists.netfilter.org
+
+ 
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Don Hughes
+Sent: Saturday, July 24, 2004 8:55 AM
 To: netfilter@lists.netfilter.org
+Subject: Compile error
 
-On Sunday 25 July 2004 2:00 pm, Todd Landfried wrote:
+I am trying to recompile iptables under SuSE 9.1 to add the time module and
+get the following when issuing a make:
 
-> How does one know if a given packet is destined for a proxy server or not?
+Recompiling the kernel and iptables is not always the easiest task. You must
+get EVERYTHING right for things to be successful. You have not provided
+enough information yet to diagnose the problem. This information is needed:
 
-One doesn't.   That's why transparent proxying can work - proxies accept 
-normal HTTP requests in exactly the same format as those sent direct to 
-servers.
+1. The exact commands you have used for the configuration and building
+process for any changes made to either iptables or the netfilter elements
+within the kernel.
 
-> Is there something in the packet that I can look for that tells me this?
+2. What is your kernel version? I believe SUSE 9.1 stock uses 2.6.?, but
+confirm this.
 
-No.   You can sometimes (but not always) tell from the reply that it came 
-through a proxy, but you can't tell from the request.
+3. Did you apply POM, or in this case POM-NG?
 
-> I know there's the port, but HTTP traffic also uses port 80.
-
-Proxies commonly use port 8080 or 3128.
-
-> The reason I ask is because the proxy address sometimes changes.
-
-I don't understand (I think).   Are you trying to intercept HTTP requests from 
-browsers (in which case you just intercept *all* TCP port 80/8080/3128 
-traffic, no matter where it's addressed to), or are you saying that you can't 
-keep track of where to redirect it to, because the proxy address moves around 
-(in which case you're as stuck as someone running a browser would be, trying 
-to direct requests to a moving proxy).
-
-What exactly is the problem?
-
-Regards,
-
-Antony.
-
--- 
-"I estimate there's a world market for about five computers."
-
- - Thomas J Watson, Chairman of IBM
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
