@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Outgoing SMTP Mystery
-Date: Wed, 5 Jun 2002 00:46:53 +0100
+From: Christian Hubinger <a9806056@unet.univie.ac.at>
+Subject: order of packets passing chains/tables
+Date: Wed, 5 Jun 2002 01:55:49 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206042346.g54NksA14771@Networker.rockstone.co.uk>
-References: <013601c20c15$cba57520$52cfd3cf@michael>
+Message-ID: <200206050155.49800.a9806056@unet.univie.ac.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <013601c20c15$cba57520$52cfd3cf@michael>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,48 +18,28 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Tuesday 04 June 2002 11:18 pm, Michael Hudin wrote:
+Hi!
 
->  I've always assumed that the numbers in the brackets were port allowances
+I'm currently developing an iptables GUI interface (kmyfirewall) and i'm a 
+litttle bit confused about the different tables used by the iptables.
+There is p.e. a Chain called OUTPUT in the "filter", "mangle" and in the "nat" 
+table. 
+I know that these chains are independent but i couldn't find out the order in 
+which the packets pass the chains/tables.
 
-No, they're not (although I can't say what they are - I don't use 
-iptables-save).   If you look at the numbers, many of them are larger than 
-65535, so they're certainly not port numbers :-)
+I would be very thankful if anyone could show me a diagramm (or where to find 
+one) of the netfilter achitectuer with all it's tables and chains and of 
+course the order in which the packetes are passing the chains/tables.
 
-> Here are my tables:
->
-> *nat
->
-> :PREROUTING ACCEPT [241:88600]
-> :POSTROUTING ACCEPT [0:9862]
-> :OUTPUT ACCEPT [68:4275]
->
-> *mangle
->
-> :PREROUTING ACCEPT [18365:3221456]
-> :INPUT ACCEPT [10886:760348]
-> :FORWARD ACCEPT [7269:2438049]
-> :OUTPUT ACCEPT [8009:752540]
-> :POSTROUTING ACCEPT [15177:3182145]
->
-> *filter
->
-> :INPUT ACCEPT [0:229546]
-> :FORWARD ACCEPT [363:1553786]
-> :OUTPUT ACCEPT [2:619341]
+thanks a lot
 
-I find this interesting - you have a default ACCEPT policy on all your chains 
-- specifically on FORWARD, and I cannot see any rules you have included which 
-DROP or REJECT packets..... so is there really any filtering going on in your 
-firewall, or is it in fact just an open router doing some network address 
-translation !?
-
-I know this doesn't exactly solve your problem, but I wonder if it means the 
-problem isn't on your firewall ?
-
-Perhaps you could check the routing table on your SMTP server - what does it 
-have for a default gateway address ?
+greetings,
+		chris 
 
 
-Antony.
+-- 
+Windows is a 32 bit shell for a 16 bit extension to an 8 bit
+Operating System designed for a 4 bit microchip by a 2 bit
+company which can't stand one bit of cometition.
+
 
