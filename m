@@ -1,13 +1,11 @@
-From: Victor Julien <victor@nk.nl>
-Subject: Re: newbie question : ip_conntrack_ftp
-Date: Wed, 24 Mar 2004 17:44:11 +0100
+From: "j.travis" <skynet@psinode.com>
+Subject: -m tcp
+Date: Wed, 24 Mar 2004 10:28:05 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4061BADB.7040206@nk.nl>
-References: <Pine.GSO.4.50.0403231623050.17504-100000@jagor.srce.hr> <406070EC.3010601@nk.nl> <406137CE.4000203@public.srce.hr>
+Message-ID: <017e01c411cd$c358a170$0300a8c0@max2>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <406137CE.4000203@public.srce.hr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +15,13 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi Mihael,
+Is  there any (functional) difference between these two statements?
 
-In debian stable there is a package 'kernel-image-2.4.18-1-686' (note: 
-there is no 'i' with 686, my mistake ;).
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT 
 
-This is in stable, so you probably want it instead of the 'testing' variant.
-
-Regards,
-Victor
-
-Mihael Kukec wrote:
-> Victor Julien wrote:
-> 
->> You're probably running the 'bf24' kernel (which kame with the 
->> bootdisk). If you use 'kernel-image-2.4.18-1-i686' you do have the 
->> modules. So you can use 'apt-get install kernel-image-2.4.18-1-i686' 
->> (if you have an i686). Beware though, you need to modify your 
->> lilo.conf because of initrd (instructions will be on the screen when 
->> you install).
-> 
-> 
-> Kernel that came originally was 2.2.20. I upgraded to 2.4.18-686. There
-> is no such image (kernel-image-2.4.18-1-i686) in latest stable or
-> testing packages, but there is kernel-image-2.4.25-1-686 in testing. I
-> will try with that...
-> 
-> 
-> Mihael
-> 
-> 
-> 
+-A INPUT -p tcp --dport 80 -j ACCEPT 
 
 
