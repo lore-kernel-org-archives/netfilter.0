@@ -1,11 +1,14 @@
-From: Jorge Davila <isaac@nicaraguarealestate.com>
-Subject: Problem with nat table in iptables
-Date: Thu, 27 May 2004 12:23:42 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Problem with nat table in iptables
+Date: Thu, 27 May 2004 20:55:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40B6322E.6050205@nicaraguarealestate.com>
+Message-ID: <200405272055.28159.Antony@Soft-Solutions.co.uk>
+References: <40B6322E.6050205@nicaraguarealestate.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40B6322E.6050205@nicaraguarealestate.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,18 +18,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi!
+On Thursday 27 May 2004 7:23 pm, Jorge Davila wrote:
 
-When I insert a new rule in the chain INPUT and save/restart iptables my=20
-firewall lost the nat table.
+> Hi!
+>
+> When I insert a new rule in the chain INPUT and save/restart iptables my
+> firewall lost the nat table.
+>
+> Someone have an idea about how recover the nat table?
 
-Someone have an idea about how recover the nat table?
+Do you mean you lost the nat table itself, and now you can't put any rules 
+into it, or do you mean you've lost the rules in the nat table and want to 
+get them back again?
 
-Thanks,
+If it's the first, try insmod iptable_nat.
 
-Jorge D=E1vila.
+If it's the second, how are you saving / restarting iptables?   There must be 
+something strange about soem script if it keeps the filter rules but not the 
+nat rules.
+
+If it's neither of the above, please give us more details of exactly what 
+you're doing (eg: cut & paste from a console to show us the problem in 
+action), and we'll see if we can help.
+
+Regards,
+
+Antony.
+
+-- 
+Success is a lousy teacher.  It seduces smart people into thinking they can't 
+lose.
+
+ - William H Gates III
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
