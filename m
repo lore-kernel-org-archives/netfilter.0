@@ -1,8 +1,8 @@
-From: "Paulo Bernardo Lindoso" <plindoso@northwoodinformatica.com.br>
-Subject: Problems with static NAT -- HELP!
-Date: Thu, 23 Jan 2003 16:51:25 -0200
+From: Ian McBeth <imcbeth@telus.net>
+Subject: Re: port forwarding problem
+Date: 28 Jan 2003 17:56:07 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAhnFEp44C0UGuvQhhnk4A7MKAAAAQAAAAM3uWJW4zm0SG+Dh6a277PwEAAAAA@northwoodinformatica.com.br>
+Message-ID: <1043801767.3685.47.camel@blackice.telco.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,75 +18,62 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hello.....
 
-I am running a linux box as a firewall using Iptables;
+I think you must have the SNAT in there as well
 
-Roughly, my config is as follows:
 
-             +-------------+
-INTERNET ----| eth0    eth1|----- INTERNAL NETWORK
-     (Public)|      eth2   | (10.x.y.z/8)
-             +-------------+
-                     |(172.16.a.b/16)
-                     |
-                  ADMIN NETWORK
+-A PREROUTING -p tcp -m tcp -d (external IP) -i eth1 --dport 25 -j DNAT
+--to-destination 192.168.0.2:25
+-A POSTROUTING -p tcp -m tcp -s 192.168.0.2 -o eth1 -j SNAT --to-source
+62.194.25.2:25
 
-The catch is that my box needs to be configured to NAT a number of
-internal network's addresses to the internet.  An example follows:
 
-200.a.b.c  --NAT--> 10.x.y.z (and vice-versa)
+-A FORWARD -p tcp -m tcp -d 192.168.0.2 -i eth1 -o eth0 --dport 25
 
-I configured a virtual interface for each IP that needs to be NAT'ed,
-but it doesn't seem to be working.   For example:
+let me know if this helps
 
-eth0:0    Link encap:Ethernet  HWaddr 00:80:48:D6:66:1A
-          inet addr:200.a.b.c  Bcast:200.a1.b1.c1  Mask:255.255.255.240
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          Interrupt:11 Base address:0x3e80
+Ian
 
-NAT Tables
-(PREROUTING)
-70509 5590K DNAT       all  --  eth0   *       0.0.0.0/0
-200.a.b.c      to:10.10.50.2
-(POSTROUTING)
-17699 1321K SNAT       all  --  *      eth0    10.10.50.2
-0.0.0.0/0          to:200.a.b.c
-
-The FORWARD chain was also configured accordingly.
-
-Everything was running smoothly until yesterday, when the whole thing
-stopped.  I managed to create an alternate route to bring the system
-back online again, but I have no idea of what's going on since nothing
-was changed in the box.
-
-TCPDUMP output demonstrates the problem clearly:
-
-Eth0 output (filtered):
-[root@fwlnx /etc]# tcpdump -i eth0 src host my.host.com and port 3200
-tcpdump: listening on eth0
-15:43:22.922086 my.host.com.2423 > 200.a.b.c.3200: S
-2260930976:2260930976(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-15:43:25.896422 my.host.com.2423 > 200.a.b.c.3200: S
-2260930976:2260930976(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-15:43:31.919085 my.host.com.2423 > 200.a.b.c.3200: S
-2260930976:2260930976(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-
-Eth1 output (filtered):
-[root@fwlnx /root]# tcpdump -i eth1 src host my.host.com and port 3200
-tcpdump: listening on eth1
-15:43:22.922191 my.host.com.2423 > 200.a.b.c.3200: S
-2260930976:2260930976(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-15:43:25.896527 my.host.com.2423 > 200.a.b.c.3200: S
-2260930976:2260930976(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-15:43:31.919190 my.host.com.2423 > 200.a.b.c.3200: S
-2260930976:2260930976(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-
-Packets on the eth1 side should have been NAT'ed to 10.x.y.z...
-
-Any ideas??
-
-TIA
-Paulo.
+On Tue, 2003-01-28 at 01:14, oarojo@intermediacorp.com wrote:
+> hello guys!!! Can someone help me on my problem regarding iptables???
+> 
+> This has been my problem a month now.. I'm running a redhat 7.3
+firewall
+> server with two NICs; eth0 facing the internal network (192.168.0.x)
+and
+> eth1 facing the internet (external network). Now I wish to forward all
+> traffic on eth1, port 25 to another to my mail server (say,
+192.168.0.2). I
+> did something like:
+> 
+> iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
+> iptables -A FORWARD -p tcp --dport 25 -d 192.168.0.2 -j ACCEPT
+> iptables -A PREROUTING -t nat -p tcp --dport 25 -d x.x.x.x -j DNAT
+>  --to 192.168.0.2
+> 
+> Now when i used to test SMTP connection thru telnetting from another
+> server... say:
+> 
+> #telnet xxx.xxx.xxx.xxx 25
+> 
+> It just stucked in there doesn't continue...
+> 
+> using nmap on my firewall:
+> 
+> #nmap xxx.xxx.xxx.xxx -p 25
+> 
+> it says that port 25 is filtered...
+> 
+> 
+> Is there anything wrong with my iptable rules? I would really
+appreciate if
+> you can send me your help... thanks!
+> 
+> 
+> Oliver
+> 
+> 
+> 
 
 
