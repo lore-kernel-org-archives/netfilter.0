@@ -1,14 +1,13 @@
-From: Henry Ritzlmayr <h.ritzlmayr@gmx.at>
-Subject: Re: Masquerading on local ports
-Date: 21 Mar 2003 18:17:43 +0100
+From: "Luis Fernando C. Talora" <talora-listas@talora.com.br>
+Subject: Redirect for transparent proxy does not work with https
+Date: Fri, 21 Mar 2003 14:57:49 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048267063.1493.162.camel@localhost.localdomain>
-References: <1048169013.1491.107.camel@localhost.localdomain>
-	 <200303210222.47189.netfilter@newkirk.us>
+Message-ID: <20030321175750.6512.qmail@hm36.locaweb.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200303210222.47189.netfilter@newkirk.us>
+References: 
+In-Reply-To: 
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@newkirk.us, Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Am Fre, 2003-03-21 um 08.22 schrieb Joel Newkirk:
-> On Thursday 20 March 2003 09:03 am, Henry Ritzlmayr wrote:
-> > Hi everyone - this is my first post to this list - so if anything is
-> > wrong with my way of posting please tell.
-> >
-> > And here is the question. How is it possible to nat a lokal port?
-> >
-> > IPTABLES -t nat -A PREROUTING -p tcp -d 127.0.0.1 --destination-port
-> > 81 -j DNAT --to-destination 127.0.0.1:80
-> >
-> > telnet localhost 80  <<< works
-> > telnet localhost 81  <<< Connection refused
-> >
-> > Henry
-> 
-> Packets originating on the local box never go through the PREROUTING 
-> chains.  This is why there is an OUTPUT chain in the nat table.  (and 
-> the mangle table)
-> 
-> iptables -t nat -A OUTPUT -o lo -p tcp --dport 81 -j DNAT --to 
-> 127.0.0.1:80
-> 
-> should do it.  I'm not sure if the REDIRECT target would work properly 
-> for this use (localhost->localhost), but you can try easily enough.
-> 
-> j
+Fellows,
 
-That was it. I overlooked that local packets do not go trough the
-PREROUTING.
+I've tried to use RedHat Linux 8.0 to build a transparent proxy with squid =
+(squid-2.4.STABLE7-4) and netfilter=20
+(iptables-1.2.6a-2). Squid is listening on port 8080. When a http packet ar=
+rives, the requisition appears on squid=20
+log and the page is viewed nicely. When a https requisition is made, squid =
+seem not to recieve the redirection=20
+from netfilter, though. The nat rule used for redirection follows:
 
-thanks for the help
-Henry
+      iptables -t nat A PREROUTING -i $EXTERNAL_INTERFACE -p tcp -d ! $INTE=
+RNAL_NETWORK -m multiport --
+dports 80,443 -j REDIRECT --to-port 8080
+
+Can anybody please help me?
+
+Thanks a lot!
+
+Regards,
+
+Lu=EDs Fernando C. Talora
 
 
