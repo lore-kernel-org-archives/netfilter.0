@@ -1,13 +1,11 @@
-From: narendra prabhu <naren@deeproot.co.in>
-Subject: Re: block mirc, messenger
-Date: Thu, 19 Jun 2003 15:09:55 +0530
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: ntop not saving ...
+Date: 19 Jun 2003 12:40:45 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EF184EB.4030101@deeproot.co.in>
-References: <062e01c33643$69dee570$0300a8c0@medannic>
+Message-ID: <1056019245.1490.33.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-4RjArP7abNR9IAPlGvxq"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <062e01c33643$69dee570$0300a8c0@medannic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-HTB wrote:
 
-> Hello ,
->  
-> I already install RH. 8, with 2 interface (eth0 10.10.10.8), (eth1 
-> 192.168.1.1), i want blocking mirc, messeger. I type this command
->  
-> /sbin/iptables -I INPUT -i eth0 -p tcp -s 10.10.10.8/32 --dport 6667 
-> -j DROP
+--=-4RjArP7abNR9IAPlGvxq
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Few things that you may interested to know
+Hi
 
-    Not all IRC server use listen at port number 6667
-    Are you using a proxy?
+Has anyone used ntop to monitor network load?
 
-My suggestion to you that is that instead going in this way, identifing 
-the services you dont want to allow, identifing the services that you 
-want to allow and disallow the rest of them.
+My ntopd keeps dying with no evidence as to why. No messages on console
+or in /var/log/messages.
 
-Hope this helps.
+Any clues as to what is happening?
 
-//Narendra.
+
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
+
+--=-4RjArP7abNR9IAPlGvxq
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+8ZMth1fuR/Bv+ygRAjY+AKCbjpx1fsyUO+Eeosorzajb8BiDEwCeMNK2
+ka21M+kYCpgqw2yDsXgqdoE=
+=f5ZY
+-----END PGP SIGNATURE-----
+
+--=-4RjArP7abNR9IAPlGvxq--
 
 
