@@ -1,11 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: NAT question
-Date: Fri, 11 Mar 2005 07:50:33 -0500
-Message-ID: <1110545432.4767.16.camel@hubcap.ljm.dom>
-References: <200503111243.j2BCheOj003886@mail1.firstbhph.com>
+From: "Dan Jones" <Dan@AngelFireResort.com>
+Subject: Errors with forwarding rules
+Date: Thu, 10 Mar 2005 15:27:57 -0700
+Message-ID: <DFAC9E7BBDE9424DB1B1D0754F644BC70921C0@HERMES.Inside.angelfireresort.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503111243.j2BCheOj003886@mail1.firstbhph.com>
+Content-Transfer-Encoding: quoted-printable
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +18,28 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2005-03-11 at 07:43, Dimitri Yioulos wrote:
-> Hello, all.
->  
-> I've recently set up iptables-1.2.8-12.3 on a CentOS 3.4 (RHEL AS 3) box.
-> Among other things, I've created a DMZ where my Web and mail servers live.
-> My problem is that my Web and mail servers identify themselves with the NAT
-> ip address that I've assigned   Here's my NAT rule: 
-> 
->  IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP 
-> 
-> How can I get these two servers to identify themselves by their own ip
-> addresses and still provide NAT for my users?
+I am trying to add a rule to forward traffic.
+i.e.  -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-specify the source address so that only packets from the inside network
-match the SNAT rule:
+I get this error message when trying to load the rule
 
-  iptables -t nat -A POSTROUTING -o $INET_IFACE -s $INSIDE_NET \
-    -j SNAT --to-source $INET_IP
+ERROR: Command "/sbin/iptables -A FORWARD -m state --state
+ESTABLISHED,RELATED -j ACCEPT" Failed
 
--j
+I also cant use webmin to configure firewall rules for forwarding
+related and established connections.
+I can block traffic fine but when it comes to adding any forwarding
+rules all I cant add the related and established rule.
+The machine is a new install of debian 3.0, iptables 1.3.1. I have a
+redhat 8 machine that these rules work great on.
+Any help would be great.
 
---
-"The kneebone's connected to the... something. The something's
- connected to the... red thing. The red thing's connected to my wrist
- watch... Uh oh."
-	--The Simpsons
 
+
+Dan Jones
+
+Angel Fire Resort
+Angel Fire, NM 87710
+505-377-4340
+Dan@angelfireresort.com
 
