@@ -1,13 +1,13 @@
-From: "Joe Patterson" <jpatterson@asgardgroup.com>
-Subject: RE: detection of the third tcp packet in a tcp connection setup
-Date: Thu, 27 Jun 2002 15:10:39 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: detection of the third tcp packet in a tcp connection setup
+Date: Thu, 27 Jun 2002 20:30:41 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com>
-References: <20020627182753.GS31466@cannon.eng.us.uu.net>
+Message-ID: <20020627193043.UMUP19225.mta07-svc.ntlworld.com@there>
+References: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020627182753.GS31466@cannon.eng.us.uu.net>
+In-Reply-To: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,40 +20,22 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-catching the third packet is easy.  The hard part is to both catch the third
-packet and *not* catch all of the rest of the ack packets.
+On Thursday 27 June 2002 8:10 pm, Joe Patterson wrote:
 
-There are some distinguishing characteristics... it is the first packet sent
-by the client that is in state ESTABLISHED.  it should have ACK set and no
-other flags.  the tcp data length should be zero.
+> catching the third packet is easy.  The hard part is to both catch the
+> third packet and *not* catch all of the rest of the ack packets.
+>
+> There are some distinguishing characteristics... it is the first packet
+> sent by the client that is in state ESTABLISHED.  it should have ACK set
+> and no other flags.  the tcp data length should be zero.
 
-Probably Patrick's idea of the CONNMARK patch is best.  Mark the connection
-when you see a syn-ack in state established.  Then when you see an ack
-packet that is marked, you unmark the connection and do with it what you
-wish.  Actually, unmark is probably the wrong term.  As I understand it, all
-packets have a mark, it's just 0x0 unless it's been specifically set.  So,
-mark it as some arbitrary value when you see the syn-ack established, and
-then mark it as 0 when you see established with the arbitrary mark value.
-That should work.  Probably the best solution you're likely to get.
+Isn't that in itself a bit of a giveaway ?   I can't think of a reason why a 
+zero-length packet should ever occur in the remainder of the data stream... ?
 
--Joe
+There's a -m length --length <min>:<max> match somewhere, but I'm not sure if 
+it's in the standard build or p-o-m
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Ramin Alidousti
-> Sent: Thursday, June 27, 2002 2:28 PM
-> To: netfilter@lists.samba.org
-> Subject: detection of the third tcp packet in a tcp connection setup
->
->
-> Hi,
->
-> Does anyone have a good solution to catch the third (ACK) packet
-> in a tcp connection setup?
->
-> Ramin
->
->
->
+ 
 
+Antony.
 
