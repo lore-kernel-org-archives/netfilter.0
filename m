@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re:  Firewall Script Help
-Date: Mon, 8 Mar 2004 22:06:26 +0000
+From: "Marc Fargas" <telenieko@telenieko.com>
+Subject: PPTP conntrack for kernels 2.6?
+Date: Tue, 9 Mar 2004 00:43:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403082206.26777.Antony@Soft-Solutions.co.uk>
-References: <W7941417650321211078780481@webmail3>
+Message-ID: <E1B0UPf-0000P1-76@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <W7941417650321211078780481@webmail3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,39 +18,14 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 08 March 2004 9:14 pm, cldavis@speakeasy.net wrote:
+Hi, I'm tring to apply pptpconntrack patch on kernel 2.6 sources but it
+seems the patch is not for that version. Is there any patch avaible for
+pptp_conntrack on 2.6 kernels?
 
-> Antony:
-> > >
-> > > As I understand it, this means "check the flags FIN and ACK, only match
-> > > if FIN is set and ACK isn't".  This would match packets that only have
-> > > the FIN flag set, which I am fairly sure are valid.  I may need
-> > > correcting on this issue, however.
-> >
-> > You are correct.
->
-> Packets that only have the FIN flag set are valid -- but I believe would be
-> taken care of by the ESTABLISHED,RELATED rule.
+If not so, is there any plan for it, when?
 
-Yes, that's a fair point.
+Thanks a lot!
 
-> The FIN FLAG rule I entered
-> just in case someone decided to bombard my systems with FIN flag packets
-> only... Is that an unneeded rule to protect against a DoS attack?
 
-I'm not aware of a DoS attack using FIN flags (since no resources get used by 
-a system when it receives a FIN packet), however people certainly do carry 
-out port scans using FIN packets, and therefore I agree with you, it's 
-probably a sensible thing to block.
-
-Antony.
-
--- 
-Software development can be quick, high quality, or low cost.
-
-The customer gets to pick any two out of three.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
