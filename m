@@ -1,13 +1,11 @@
-From: michael@floog.net
-Subject: Re: How to drop/reject packets amongst LAN clients?
-Date: Mon, 10 May 2004 11:26:17 -0700
+From: alucard@kanux.com
+Subject: forwarding on the same NIC
+Date: Mon, 10 May 2004 15:36:13 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084213577.409fc949e1db4@webmail.floog.net>
-References: <1084206191.409fac6f1176a@webmail.floog.net> <409FB903.1090005@pbl.ca>
+Message-ID: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <409FB903.1090005@pbl.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +16,79 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Aleksandar,
+Hi there...
 
-Thanks for your guidance.
-It looks like I've got a fair amount of new reading to do after
-receiving Antony, Cedric, and your suggestion.  I think I'll want to
-install the 3rd NIC, and do some more NAT'ing and/or Bridge'ing.
+   I have been using netfilter for a while and now, I have to integrate
+some other servers and somehow I can't get it to forward packets. Let
+me explain mi scenario.
 
-First stop, www.tldp.org for review of documentation there.
-Second stop, man route and/or routed.
-
-I appreciate your help.
-
-Mike
-
+- Linux box, Address 10.73.219.156 nat'ed' from a real IP address from a
+external router
+- The linux box has only one NIC -and having a second one is not a
+problem- It functions as a web/mail server, and that means that I'm using
+80 and 25 already. What i'd like to do is, access another internal
+webserver from the outside getting in using another port in the nat'ed'
+linux box.
 
 
-Quoting Aleksandar Milivojevic <amilivojevic@pbl.ca>:
+-------      -----------------      ----------------
+router |<--->|Linux box      |<---->|2nd WebServer |
+-------      |using web/mail |      |10.73.219.77  |
+             |10.73.219.156  |      ----------------
+             -----------------
 
-> Second solution would be to put new server onto separate LAN. 
-> 192.168.1.9 will become 192.168.2.9 (or whatever).  Than clients on
-> your 
-> first LAN (192.168.1.0/24) will have to talk to your firewall/router
-> to 
-> get to the server on your second LAN (192.168.2.0/24).
-> 
-> You will need one more ethernet card for second solution.  If
-> additional 
-> server is going to be the only host in second LAN, you can connect it
-> 
-> directly with cross over cable.  If you are going to add more servers
-> to 
-> second LAN, you will also need additional hub or switch (do not
-> connect 
-> two LANs into same hub).
-> 
-> -- 
-> Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote
+And I think that, using something like this would make it happen but it
+doesn't
 
+-------------
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 8080 -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT
+--to-destination 10.73.219.77:80
+--------------
 
+I'm trying to use port 8080 to enter into the server and then forward it
+to the other's server port 80 and it's not working. Here's my whole
+script, which include some other services that I use perfectly.
 
+--------------
+iptables -F
+iptables -X
+
+echo "Habilitando politicas de negacion total de paquetes"
+
+iptables -P FORWARD DROP
+iptables -P INPUT DROP
+
+echo "Reglas para paquetes de entrada y salida"
+
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+##internas
+iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+
+#para el forward a la maquina compaq
+
+echo 0 > /proc/sys/net/ipv4/ip_forward
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 8080 -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT \
+--to-destination 10.73.219.77:80
+echo 1 > /proc/sys/net/ipv4/ip_forward
+--------------
+
+Any suggestions would be really apreciated
+
+Thanx a lot as usual...
+Juan
 
