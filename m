@@ -1,8 +1,9 @@
-From: Andrzej <andrzej@pazim.pl>
-Subject: iptables
-Date: Mon, 31 Jan 2005 12:16:41 +0100
-Message-ID: <5.2.0.9.0.20050131121204.02828db0@pazim.home.pl>
+From: iv <iv@fnet.pl>
+Subject: problem with connlimit
+Date: Mon, 31 Jan 2005 15:21:39 +0100
+Message-ID: <41FE3EF3.7020909@fnet.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,19 +16,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dear All,
-I have linux router with 3 NIC cards.
-One is an internet interface. Second is my LAN network and third is public 
-addresses network.
-I am using iptables. My LAN network works perfectly filtering packets. I 
-have problems with my public addresses network- I would like this network 
-to work without any filtering and just can't do it.
-Could give me advice how to pass by iptables or how to set up iptables to 
-route traffic to public addresses without any filtering?
-Best regards
-Andy
+I have the problem with compilling the 2.6.10 with applied connlimit 
+from patch-o-matic-ng-20040302.
+it looks like this:
 
+  CC      net/ipv4/netfilter/ipt_connlimit.o
+net/ipv4/netfilter/ipt_connlimit.c: In function `count_them':
+net/ipv4/netfilter/ipt_connlimit.c:100: structure has no member named 
+`infos'
+net/ipv4/netfilter/ipt_connlimit.c:107: structure has no member named 
+`infos'
+make[3]: *** [net/ipv4/netfilter/ipt_connlimit.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
+
+ all i have done was follow: just run .*/runme base*, then *make 
+menuconfig* and "yes" for *Connections/IP limit match support* in 
+*Netfilter Configuration*, then *make* for kernel sources.
+
+so my question is: did i do anything wrong, or maybe i forgot to do 
+anything, or it is a bug?
+thanks in advance,
+ iv
 
