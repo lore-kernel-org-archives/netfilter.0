@@ -1,9 +1,10 @@
-From: "Owen C. Creger" <owencreger@rocketmail.com>
-Subject: POP3 Attachments
-Date: Wed, 8 Sep 2004 17:00:19 -0700 (PDT)
+From: Tom Fischer <tom.fischer@ebuz.de>
+Subject: DNAT-Problem
+Date: Thu, 9 Sep 2004 04:10:47 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040909000019.5047.qmail@web52506.mail.yahoo.com>
+Message-ID: <20040909041047.7f8457cf@nixe>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,74 +16,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Firewall:
-Fedora Core 1
-iptables 1.2.9-1.0
+Hi,
 
-I am having trouble with email clients on the LAN being able to recieve
-emails with attachments.  Attachment size doesn't matter.  The email
-clients will just time out trying to recieve an email that has an
-attachmentThe firewall is able to get emails with attachements using
-Fetchmail from the same server, so I don't think it is a POP3 server
-issue, and everything else works fine, browsing, ftp etc...
+i have a problem with DNAT. We have to move some services for a few days
+on another machine. So we want do DNAT on incoming Packets. I set
 
-I'm using fwbuilder 2.0 to configure iptables.
+iptables -A PREROUTING -t nat -s 0/0 -d xxx.xxx.xxx.xxx -p tcp --dport
+9000-j DNAT --to xxx.xxx.xxx.xxx
 
-I'm sure it's something simple...
-iptables -L output:
+Should be enough on this box in my opinion. So i can see the Packet
+incoming on the old machine, and i can see the Packet with my Source IP
+and the new destination IP, but i think the packet never leaves the old
+machine. tcpdump looks like this
 
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere            state
-RELATED,ESTABLISHED
-ACCEPT     all  --  anywhere             anywhere
-DROP       all  --  10.2.0.1             anywhere
-DROP       all  --  cablemodem.creger.net 
-c-24-56-227-130.chrlmi.cablespeed.com
-ACCEPT     all  --  10.1.1.0/24          anywhere            state NEW
-RULE_4     tcp  --  anywhere            
-c-24-56-227-130.chrlmi.cablespeed.com tcp dpt:ssh state NEW
-RULE_5     all  --  anywhere             anywhere
- 
-Chain FORWARD (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere            state
-RELATED,ESTABLISHED
-DROP       all  --  10.2.0.1             anywhere
-ACCEPT     all  --  10.1.1.0/24          anywhere            state NEW
-RULE_5     all  --  anywhere             anywhere
- 
-Chain OUTPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere            state
-RELATED,ESTABLISHED
-ACCEPT     all  --  anywhere             anywhere
-ACCEPT     all  --  c-24-56-227-130.chrlmi.cablespeed.com  anywhere    
-       state NEW
-ACCEPT     all  --  server.creger.net    anywhere            state NEW
-ACCEPT     all  --  10.1.1.0/24          anywhere            state NEW
-RULE_4     tcp  --  anywhere            
-c-24-56-227-130.chrlmi.cablespeed.com tcp dpt:ssh state NEW
-RULE_5     all  --  anywhere             anywhere
- 
-Chain RULE_4 (2 references)
-target     prot opt source               destination
-LOG        all  --  anywhere             anywhere            LOG level
-info prefix `RULE 4 -- ACCEPT '
-ACCEPT     all  --  anywhere             anywhere
- 
-Chain RULE_5 (3 references)
-target     prot opt source               destination
-LOG        all  --  anywhere             anywhere            LOG level
-info prefix `RULE 5 -- DENY '
-DROP       all  --  anywhere             anywhere
+[root@server4 mysql]# tcpdump -n port 9000
+tcpdump: listening on eth0
+04:02:04.746105 217.232.189.4.65423 > oldmachine.9000: S
+740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66069311
+0,nop,wscale 7> (DF) [tos 0x70] 
+04:02:04.746151 217.232.189.4.65423 > newmachine.70.9000: S
+740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66069311
+0,nop,wscale 7> (DF) [tos 0x70] 
+04:02:07.744772 217.232.189.4.65423 > oldmachine.9000: S
+740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66072311
+0,nop,wscale 7> (DF) [tos 0x70] 
+04:02:07.744806 217.232.189.4.65423 > newmachine.9000: S
+740515023:740515023(0) win 5840 <mss 1452,sackOK,timestamp 66072311
+0,nop,wscale 7> (DF) [tos 0x70] 
 
+The packet never arivves on the new machine. What am I missing?
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Kernel is 2.4.27, the box seems to be Fedora Core 2 and iptables is
+Version 1.2.7a.
+
+Anybody can help me out?
+
+Tom 
 
