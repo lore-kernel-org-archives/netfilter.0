@@ -1,13 +1,13 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: IPSec - IPTables issues
-Date: Wed, 05 May 2004 14:07:03 -0500
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: NAT -  HELP
+Date: Thu, 06 May 2004 08:34:38 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40993B57.6070309@pbl.ca>
-References: <20040502155538.GD515@schottelius.org> <200405051622.26944.Antony@Soft-Solutions.co.uk> <40991270.5030803@pbl.ca> <200405051829.14783.Antony@Soft-Solutions.co.uk>
+Message-ID: <1083846878.2101.17.camel@localhost>
+References: <1177332812.20040505164432@hotbox.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405051829.14783.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <1177332812.20040505164432@hotbox.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Slava (hotbox)" <chvv@hotbox.ru>
+Cc: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
-> On Wednesday 05 May 2004 5:12 pm, Aleksandar Milivojevic wrote:
->>Actually, I like better Linux 2.6 implementation that doesn't use virtual
->>devices.
+On Wed, 2004-05-05 at 08:44, Slava (hotbox) wrote:
 > 
-> Yes, it seems like a better design; now if only we could work out how to 
-> filter the unencrypted traffic before it all just disappears down the tunnel, 
-> it might turn out to be a good idea.
+> NETFILTER --> NAT --> HOWTO
+> 
+> 
+> I very badly speak English!
+> 
+> 
+> We use VPN-connections (PPTP) through firewall. It uses two connections: 1723/tcp and 47/ip(GRE). 
+> 
+> When I  give a range of IP addresses to SNAT, two PPTP connections (1723/tcp & GRE) leave
+> from Firewall (SNAT) with different IP-addresses.
+> And VPN-connection does not work!
+> 
+> 
+> Help, if can, please.
+> 
+> Viacheslav.
+> 
+>  
+I do not use PPTP so I am having trouble understanding your problem.  Is
+the problem that you do not want 1723.tcp and 47/ip to SNAT at all or
+that they are doing SNAT to the wrong address?
 
-You let IPSec kernel module take care that anything unencrypted comming 
-from the wire or into the wire is dropped.  This should be easily 
-acomplished by setting IPSec policy for the connection to required.  So 
-you do not need Netfilter to filter out unencrypted traffic from the 
-wire.  IPSec is going to do that for you.
+If you do not want the PPTP connection to SNAT at all, place an ACCEPT
+rule in front of the SNAT rule, e.g., 
 
-Than in Netfilter, you accept packets if they are:
+iptables -t nat -I POSTROUTING 1 -o eth0 -s x.x.x.x -p 6 --sport 1723 -j
+ACCEPT
+iptables -t nat -I POSTROUTING 1 -o eth0 -s x.x.x.x -p 47 -j ACCEPT
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source y.y.y.y
 
-1. IPSec packets (AH, ESP, UDP/500)
-2. unencrypted packets for the services (HTTP, FTP, telnet, etc) you are 
-allowing
-
-This way, Netfilter will take care of packets before they are encrypted, 
-and after they are decrypted.  Therefore protecting the local services 
-and allowing you to filter "before it all just dissapears down the 
-tunnel".  IPSec will take care that there is no unecrypted traffic going 
-onto the wire (or accepted from the wire).
-
-So you don't need virtual interface to differentiate first and second 
-pass through Netfilter's chains.
-
+If it is NATting the wrong public address, make sure the PPTP rules are processed first.
+Hope this helps - John
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+
 
