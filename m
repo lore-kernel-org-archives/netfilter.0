@@ -1,12 +1,13 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: RE: shorewall
-Date: Mon, 8 Sep 2003 19:15:49 +0800
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: Hostname Routing
+Date: 08 Sep 2003 13:14:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8CB4@overlord.overturemedia.com>
+Message-ID: <1063019689.1615.34.camel@kermit>
+References: <200309071541.02247.hchs@ns.sympatico.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <200309071541.02247.hchs@ns.sympatico.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,72 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cody Harris <hchs@ns.sympatico.ca>
+Cc: Netfilter <netfilter@lists.netfilter.org>, netfilter-request@lists.netfilter.org
 
+Am Son, 2003-09-07 um 20.41 schrieb Cody Harris:
+> Oops, forgot to add my message.
+>=20
+> This DOES not work (adding the line to /etc/hosts)
+Ok.=20
+Where do your requests come from? From the outside?
+Then you need to update your DNS, so everybody else uses the correct IP
+addresses. If you can't do that, you need a name-aware proxy for every
+service you want.
 
-Thanks Arnt!!! I appreciate it!
+Cheers,
 
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-
-
-> -----Original Message-----
-> From: Arnt Karlsen [mailto:arnt@c2i.net]
-> Sent: Monday, September 08, 2003 7:09 PM
+Ralf
+>=20
+> ----------  Forwarded Message  ----------
+>=20
+> Subject: Re: Hostname Routing
+> Date: Sunday 07 September 2003 3:39 pm
+> From: Cody Harris <hchs@ns.sympatico.ca>
 > To: netfilter@lists.netfilter.org
-> Subject: Re: shorewall
 >=20
+> On Sunday 07 September 2003 6:11 am, Ralf Spenneberg wrote:
+> > Am Son, 2003-09-07 um 01.53 schrieb Cody Harris:
+> > > Hello. I have researched your database on this subject (hostname
+> > > routing), but found nothing much. What i want is to take domain.com:*=
+ and
+> > > deliver that to the local machine (127.0.0.1), but i want
+> > > alt.domain.com:* to go to 192.0.0.2. How is this done?
+> >
+> > Am I missing something?
+> > What about the following in /etc/hosts:
+> > 127.0.0.1 localhost localhost.localdomain domain.com
+> > 192.0.0.2 alt.domain.com
+> >
+> > Or do it on you DNS server.
+> >
+> > Cheers,
+> >
+> > Ralf
 >=20
-> On Mon, 8 Sep 2003 17:26:10 +0800,=20
-> "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com> wrote=20
-> in message=20
-> <F22386C3FEB012449238672E38ED61E70A8CB0@overlord.overturemedia.com>:
-> >=20
-> > Has anybody used shorewall?=20
->=20
-> ..yup.
->=20
-> > If I try shorewall to fix my nat problem (make it easier) and still
-> > does not work, will I be able to disable shorewall and implement a
-> > manual setup of iptables again?
->=20
-> ..yup.
->=20
-> ..check out http://webmin.com/ ,   has a neat shorewall module.
->=20
-> ..also check out ipcop-1.3.0 at http://ipcop.org/ is a firewall=20
-> distro with proxy server, 5 minute setup time, a good tutor=20
-> towards shorewall.
->=20
-> --=20
-> ..med vennlig hilsen =3D with Kind Regards from Arnt... ;-)
-> ...with a number of polar bear hunters in his ancestry...
->   Scenarios always come in sets of three:=20
->   best case, worst case, and just in case.
->=20
->=20
->=20
+> -------------------------------------------------------
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
-
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
