@@ -1,13 +1,14 @@
-From: Sudheer Divakaran <sudheer@svw.com>
-Subject: Re: 'recent' module HOWTO
-Date: Thu, 12 Aug 2004 09:17:18 +0530
+From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
+Subject: RE: wher to find and how to install ip_conntrck_pptp and ip_nat_pptpmodules
+Date: Thu, 12 Aug 2004 14:03:45 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <411AE846.2060708@svw.com>
-References: <4119B0DA.6030903@svw.com> <2197.216.239.93.106.1092241302.squirrel@216.239.93.106>
+Message-ID: <E1Bv8kW-0004nJ-Mr@vishnu.netfilter.org>
+References: <D5C9032B2B09C64EA2409D6214E91AC905126A@asimail2.alphanumeric.com>
+Reply-To: <bassam@palettemm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2197.216.239.93.106.1092241302.squirrel@216.239.93.106>
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC905126A@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,81 +18,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-admin@lists.netfilter.org, netfilter@lists.netfilter.org
+
+Thanks for responding, I downloaded the "patch-o-matic-20031219.tar.bz2" and
+unzip and untar the file and then I went through the README file, I found
+there that this patch support only "kernel 2.4.18" while my redhat kernel is
+"2.4.20" and my fedora core 2 kernel is "2.6.5". In this case do you think
+that it will be installed without errors, and do you think that it will work
+properly??
+
+Your advice please
+
+Regards
+Bassam
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Jason Opperisano
+Sent: Wednesday, August 11, 2004 9:08 PM
 To: netfilter@lists.netfilter.org
+Subject: RE: wherr to find and how to install ip_conntrck_pptp and
+ip_nat_pptpmodules
 
-Hi,
-    The problem has been solved.  When I set the rules like this, it 
-worked as expected (i.e., it accepted an icmp echo request, then 
-rejected icmp echo requests for 10 seconds, ...). Earlier it were 
-rejecting ALL icmp-echo requests. My question is  this the correct usage 
-of this module?
+> I am trying to enable a multiple VPN tunnels to pass through my Linux
+> machine so that VPN clients on the LAN can access the VPN server on the
+WAN.
+> Through my google search I found there are two modules required to enable
+> this functionality on my Linux box, these modules should be loaded in the
+> kernel. So any body can help and direct me where to find these two modules
+> and how can I install them?
 
-iptables -A INPUT -m recent -p icmp --icmp-type echo-request --update
+the pptp-conntrack-nat is part of POM in the "extra" suite.  if you're
+running RH9, you won't have much luck with pom-ng, but you should be able to
+patch/compile from the older pom located at:
 
-iptables -A INPUT -m recent -p icmp --icmp-type echo-request --rcheck 
---seconds 10 -j REJECT
+	http://netfilter.org/files/patch-o-matic-20031219.tar.bz2
 
-iptables -A INPUT -m recent -p icmp --icmp-type echo-request --set
+read the README, and have at it.
 
-Thanks everybody,
-Sudheer.
+> I am expecting you urgent help regarding this matter
 
+i hope this was fast enough...  jeez--gettin' a little pushy on this list
+these days.  might have to invite some folks from openbsd-misc to "work the
+door."  ;-)
 
+-j
 
-Samuel Jean wrote:
+---
+Incoming mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.729 / Virus Database: 484 - Release Date: 7/27/2004
+ 
 
->On Wed, August 11, 2004 1:38 am, Sudheer Divakaran said:
->
->>Hi,
->>    Where can I find detailed documentation of 'recent' module?.
->>
->>
->
->http://snowman.net/projects/ipt_recent/
->
->
->>To test the recent module, I've given the following commands and pinged
->>to my machine from another one.  But I got the reply 'Destination port
->>Unreachable'.  What is wrong in it?
->>
->
->There's nothing wrong with that.  You did specify to REJECT packets, which
->means that you can send back an ICMP error of your choice.
->
->I guess 'Destination port Unreachable' is the default one.
->
->
->>iptables -F
->>
->>iptables -P INPUT ACCEPT
->>
->>iptables -P OUTPUT ACCEPT
->>
->>iptables -A INPUT -m recent -p icmp --icmp-type echo-request --update
->>--seconds 10 -j REJECT
->>
->>iptables -A INPUT -m recent -p icmp --icmp-type echo-request --set -j
->>ACCEPT
->>
->>
->
->However, you should be able to get a single ping reply before being
->rejected. Is that what happen ?
->
->
->
->>Kind Regards,
->>Sudheer
->>
->>
->
->Hope this helps.
->
->Samuel Jean
->CookingLinux.org
->
->
->
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.729 / Virus Database: 484 - Release Date: 7/27/2004
+ 
 
 
