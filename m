@@ -1,9 +1,14 @@
-From: "__ Radien__" <radien@zworg.com>
-Subject: PPTP FWD and/or NAT?
-Date: Fri, 21 May 2004 21:12:27 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: NAT behavior of IPFilter
+Date: Sat, 22 May 2004 09:50:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <29649.1085199147@zworg.com>
+Message-ID: <200405220950.40523.Antony@Soft-Solutions.co.uk>
+References: <BAY9-F4nMsyUXhtJiRq0005a437@hotmail.com>
+Reply-To: netfilter@lists.netfilter.org
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <BAY9-F4nMsyUXhtJiRq0005a437@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -13,49 +18,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: Kishore Prakash <kishore_p@hotmail.com>
 
-Dear All
+On Friday 21 May 2004 7:43 pm, Kishore Prakash wrote:
 
-  I just see the pptp_conntrack_nat helper module. I think it should
-track the connection that get NATed for PPTP client access to outside
+> One quick question. What kind of NAT behavior does the ipfilter exhibit?
 
-#
+We don't know much about IPfilter here - this is a Linux netfilter mailing 
+list, not BSD.
 
-               pptp_call
-           ---------------->     do NAT   ---------------->
-(a client)------------------->[linux-box]------------------->(a vpn
-server)
+> Is it Full Cone / IP Restricted / IP and Port Restricted or Symmetric ?
 
-# Figure-1
+I'm not sure I understand the question, however you should find the answers 
+you need at http://coombs.anu.edu.au/~avalon/ipfilfaq.html or 
+http://www.obfuscation.org/ipf
 
+Of course, if you meant to ask about netfilter, then the answers to your 
+questions will be at http://www.netfilter.org/documentation, probably in
+http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO.html
 
-  So I can just use one client to use vpn access to a server at a time.
-  A question here: How about, e.g., using two client to access two
-seperated vpn servers on the outside?
+> PS: I am on the list. So please cc me in the reply.
 
-The second scenario:
-#
+Strange request...  ho hum.
 
-               pptp_call
-           ---------------->         route         --------------->
-(a client)------------------->[routing-linux-box]------------------->(a
-vpn server)
+Regards,
 
-# Figure-2
+Antony.
 
+-- 
+Software development can be quick, high quality, or low cost.
 
-  Let's assume another scenario, If we have some clients with valid_ip
-that don't want to get NATed(I just filter in FWD). So what should I
-accept in FWD if I want to grant their access to outside using PPTP
-protocol, that they will never face any problem? Are there specific
-ports to get open? or we should wait for another conntrack helper
-module to pass pptp traffic?
+The customer gets to pick any two out of three.
 
-at last
- PPTP FWD and/or NAT, which would be better?
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
