@@ -1,11 +1,11 @@
-From: Claudio Lavecchia <Claudio.Lavecchia@eurecom.fr>
-Subject: Blocking forwarding of packets in WLAN
-Date: Thu, 14 Oct 2004 15:38:03 +0200
+From: Chris Verges <squirrel@headnut.org>
+Subject: firewall rules for subinterfaces
+Date: Thu, 14 Oct 2004 23:55:35 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <416E813B.8090704@eurecom.fr>
+Message-ID: <20041015035535.GA19170@clifford.headnut.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,34 +15,33 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello you ppl,
- 
-I am a real newbie to iptables/ipchains/netfilter issues, so please if 
-any of you can help me, please consider my illetteracy.
-I have a really simple question for which I did not find an answer 
-browsing the website.
- 
-If I understood correctly there are no C APIs to iptables and this leads 
-me to troubles: I am writing a linux daemon that monitors network 
-traffic and does something when some conditions occur. I work with 
-mobile ad-hoc networks where each node acts as a relay for other nodes 
-traffic, so the background are WLANs.
-I need to write a C function that blocks forwarding of packets that come 
-from a given node of the network, identified by its MAC address.
- 
-Prototype for my function is then:
- 
-void block_forwarding(char * MAC_address);
- 
-Is this feasible someway using iptables? Can anyone give me a precise 
-hint on how to do that? I would be truly grateful if someone could help me.
- 
-Thanks
- 
-Claudio
- 
+Hey,
 
+Is there a way to add firewall rules for subinterfaces?  I'm
+trying to do the equivalent of:
+
+  eth0   Intel Pro 10/100
+    eth0:0   192.168.1.1
+    eth0:1   192.168.2.1
+
+  iptables -A INPUT -p icmp -i eth0:0 -j DENY
+  iptables -A INPUT -p icmp -i eth0:1 -j ACCEPT
+
+When I try to do this at the command line, iptables spits back
+an error about how colons (:) are not allowed in the interface
+name.  That brings up the interesting question of how to do this
+whole thing ...
+
+Any advice or insight is greatly appreciated!
+
+Thanks,
+
+chris
+-- 
+http://headnut.org
+squirrel@headnut.org
 
