@@ -1,9 +1,9 @@
 From: "Mario Antonio" <dino@webjogger.net>
-Subject: Re: alias interfaces
-Date: Sat, 19 Oct 2002 15:08:39 -0400
+Subject: Re: Newbie Question - starting iptables as a service
+Date: Sat, 19 Oct 2002 19:53:13 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <052201c277a2$eeaa7130$13c01dd0@shadowfax>
-References: <044c01c276ff$c3d06df0$13c01dd0@shadowfax> <20021019080539.UUYW28004.mta07-svc.ntlworld.com@there>
+Message-ID: <056501c277ca$af8d3000$13c01dd0@shadowfax>
+References: <000401c27622$cb705ee0$3864a8c0@discmail.com> <20021017212717.VXCL292.mta03-svc.ntlworld.com@there> <02b501c2762d$567c5570$13c01dd0@shadowfax> <001701c277c7$8a675420$4101a8c0@ramasamy>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,60 +19,60 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Antony,
+Sundaram,
 
-Thanks for your feedback and patience.
-Things are working nicely now.
-
-Regards  ( By the way, I enjoy your sayings in your emails)
+Thank you very much.
 
 Mario
 
-
 ----- Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Saturday, October 19, 2002 4:05 AM
-Subject: Re: alias interfaces
+From: "Sundaram" <sun@percipia.com>
+To: "Mario Antonio" <dino@webjogger.net>
+Sent: Saturday, October 19, 2002 7:30 PM
+Subject: Re: Newbie Question - starting iptables as a service
 
 
-> On Saturday 19 October 2002 12:40 am, Mario Antonio wrote:
+> put your firewall script into /etc/init.d/ directory. Your script should
+> accept start, stop  parameters.
 >
-> > Antony,
+> Use chkconfig command to add the firewall script as a service.
+>
+> look some file in the /etc/init.d directory.
+> Cheers
+> SR.
+>
+>
+>
+>
+>
+>
+> ----- Original Message -----
+> From: "Mario Antonio" <dino@webjogger.net>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Thursday, October 17, 2002 6:34 PM
+> Subject: Re: Newbie Question - starting iptables as a service
+>
+>
+> > Hi,
 > >
-> > Thanks again for your kindness.
+> > I install iptables v1.2.7a, and I uninstall the old version through
+rpm -e
+> > iptables.
+> > It seems that it trashed my init.d/iptables script
 > >
-> > I was also doubting about routing problems, but why when I accept all
-the
-> > traffic in the INPUT chain, everything works fine?
->
-> I can't say, but your netmask / routing table is the problem.
->
-> > Linux 7.3 and iptables v1.2.7a
-> > eth0=10.10.10.239
-> > eth0:0=10.10.13.227
-> >  workstation accessing the server: 10.10.10.19 netmask 255.255.255.0
->
-> This is a Class C netmask.   All machines on the local network must have
-> 10.10.10 as the first three bytes of the address.   You are trying to
-contact
-> address 10.10.13.227, which is on a different network.
->
-> Change the aliased address so that it is on the 10.10.10.0 network, or
-change
-> your netmask so you have at least a Class B subnet.
->
-> Antony
->
-> --
->
-> KDE 3.0.3 contains an important fix for handling SSL certificates.  Users
-of
-> Internet Explorer, which suffers from the same problem but which
-> does not yet have a fix available, are also encouraged to switch to KDE
-3.0.3.
->
-> http://www.kde.org/announcements/announce-3.0.3.html
+> >
+> > How can I start iptables as a service (linux 7.3)?
+> >
+> > How can I make iptables to reload the rules?
+> >
+> >
+> > Regards
+> >
+> > ---
+> > [This e-mail was scanned for viruses by Webjogger's AntiVirus Protection
+> System]
+> >
+> >
 >
 > ---
 > [This e-mail was scanned for viruses by Webjogger's AntiVirus Protection
