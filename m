@@ -1,9 +1,10 @@
-From: "Random Person" <randomperson83@hotmail.com>
-Subject: Forwarding in a NAT..
-Date: Sun, 22 Sep 2002 09:53:19 -0400
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: U?LOG filters?
+Date: Mon, 23 Sep 2002 15:36:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F41jLlmNI5aIptmMWNC00006c22@hotmail.com>
+Message-ID: <200209231536.21751.roy@karlsbakk.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,37 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
+hi all
 
-Yeah.. my question didn't make any sense.. Let me try again. Probably one o=
-f=20
-the situations that you said apply here, but just to make sure:
-
-External addr (eth0): xxx.xxx.78.48
-Internal addr (eth1): 192.168.0.1
-Addresses on LAN: 192.168.0.2-192.168.0.30
-Protocols used: tcp,udp
-
-Lets assume a packet destined for xxx.xxx.3.3:123 arrives at eth0. Is there=
+I've been using iptables for a while now, logging connection attempts to=20
+illegal/closed ports. but. The logs fill up with old/broken http/whatever=
 =20
-a way for it to pass untouched into the LAN? (i.e. has the same dest. addr =
+connections (SPT 80 DPT lots).
 
-and source addr.). I know its seems impractical (at least for TCP), but it =
+Today I have the rules
+ACCEPT
+ACCEPT
+ACCEPT
+etc.
+DROP (don't log this)
+LOG        all  --  anywhere             anywhere           LOG level \
+=09warning  prefix `Attack: '
 
-can be in some instances.
+can I set a --state here to only log the 'true' attacks?
 
+roy
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
 
-
-Visit my useless website at http://randomperson.cjb.net
-
--Your perception is reality until you control it...
-
-
-_________________________________________________________________
-Join the world=92s largest e-mail service with MSN Hotmail.=20
-http://www.hotmail.com
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
