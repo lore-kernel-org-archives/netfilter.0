@@ -1,11 +1,12 @@
-From: "dave beach" <drbeach@rogers.com>
-Subject: RE: Logging question
-Date: Wed, 9 Feb 2005 12:02:39 -0500
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4wwL6DwAQAAAA/2juzkSA1EqqQG7cqX3fCwEAAAAA@rogers.com>
-References: <15388.142.169.215.10.1107968902.squirrel@142.169.215.10>
+From: Ulysses Almeida <ulysses.almeida@gmail.com>
+Subject: Re: how to use NF_QUEUE
+Date: Wed, 9 Feb 2005 14:37:57 -0300
+Message-ID: <d64535605020909372c5de863@mail.gmail.com>
+References: <20050209111625.40750.qmail@web50409.mail.yahoo.com>
+Reply-To: Ulysses Almeida <ulysses.almeida@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <15388.142.169.215.10.1107968902.squirrel@142.169.215.10>
+In-Reply-To: <20050209111625.40750.qmail@web50409.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,67 +18,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Samuel Jean' <sj-netfilter@cookinglinux.org>
+To: vinay mathew <vinaymathew80@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-That actually occurred to me - but it raised the question, and I apologize
-if it's a silly one, of why the SNATted packets would jump out of the chain.
-It didn't strike me as the same sort of a situation as a target match, where
-rule position can be critical.
+Hi,
 
-Of course, any minute now I'll actually TRY a few things and stop writing
-messages about questions. 
+  Some time ago I wrote this tutorial
+(http://munky.maluco.com.br/libipq.html) It uses libipq with NF_QUEUE
+hook, to show some packet infos on the screen, it's very simple
+example. Main problem, it's on pt_BR, but you can take a look on
+"LibIPQ by example" section, it's kind of self-explanatory.
+  Any doubt about translation or libipq, you can write me (pvt)
 
------Original Message-----
-From: Samuel Jean [mailto:sj-netfilter@cookinglinux.org] 
-Sent: February 9, 2005 12:08 PM
-To: dave beach
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Logging question
+  Regards.
 
-On Wed, February 9, 2005 11:32 am, dave beach said:
-> Here are the actual rules in the nat/POSTROUTING chain from my 
-> rc.firewall script ($EXT_INT is eth0, $INT_INT is eth1, $EXT_IP is the 
-> ip address bound to eth0):
->
-> #
-> ###############################
-> # STEP 5.11 - nat/POSTROUTING #
-> ###############################
-> #
-> #   SNAT all packets to the firewall's external interface addr
-> #
->       $IPTABLES -t nat -A POSTROUTING -o $EXT_INT -j SNAT --to-source 
-> $EXT_IP #
-> #   Log the outbound data
-> #
->        $IPTABLES -t nat -A POSTROUTING -o $EXT_INT -j ULOG 
-> --ulog-nlgroup
-> 4
-> --ulog-prefix "RAW OUT: " --ulog-qthreshold 1
->        $IPTABLES -t nat -A POSTROUTING -o $INT_INT -j ULOG 
-> --ulog-nlgroup
-> 5
-> --ulog-prefix "RAW OUT: " --ulog-qthreshold 1 #
->
+On Wed, 9 Feb 2005 03:16:24 -0800 (PST), vinay mathew
+<vinaymathew80@yahoo.com> wrote:
+> Hi,
+> I am a newbie regarding Netfilter.I need to use the
+> Netfilter hooks for a project. I have tried out the
+> hook functions using NF_ACCEPT, NF_DROP.I need to use
+> NF_QUEUE to queue certain packets to the user space
+> where i need to process them further and then send
+> these packets back into the network stack.
+> I have not done this before so does anyone have some
+> simple sample code using this option so that i can get
+> a start on how its done.
+> Thanx in advance ,
+> regards
+> vinay
+> 
+> 
+> __________________________________
+> Do you Yahoo!?
+> The all-new My Yahoo! - Get yours free!
+> http://my.yahoo.com
+> 
+> 
 
-As a side note, it becomes obvious now why you don't get any log for eth0:
 
-The packet going out on eth0 get SNAT'ed and suddently stop iterating
-through that chain, its next step : the wire road.
-
-The reason on why you got all the log for eth1 is that such outgoing packets
-_don't_ match the requierement for being SNAT'ed. They, obviously, continue
-iterating: they don't match the eth0 logging rule, but they next match the
-eth1 rule.
-
-All of this would work if eth0 logging rule was on top. Also, eth1 logging
-rule position doesn't matter in this case.
-
-Sorry if you already got it.
-
-Have a nice day,
-
-Samuel
-
+-- 
+ - Ulysses Almeida
 
