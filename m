@@ -1,10 +1,9 @@
-From: Marcin Sura <slacklist@op.pl>
+From: Dave Barnum <dave@leaplab.com>
 Subject: Re: traffic graphing?
-Date: Sat, 21 Aug 2004 00:49:54 +0200
+Date: Fri, 20 Aug 2004 15:54:40 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <823120906.20040821004954@op.pl>
+Message-ID: <41268130.9000703@leaplab.com>
 References: <41267935.2040008@leaplab.com>
-Reply-To: Marcin Sura <slacklist@op.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,26 +17,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.netfilter.org
 
-Witam
+Also, to do this I assume you needs logs to parse through in the first 
+place.. Where might these be.. do i have to turn this on somewhere?
 
-Saturday, August 21, 2004, 12:20:37 AM, you wrote:
+Dave Barnum wrote:
 
 > What would you guys suggest for a good traffic monitoring/graphing 
 > sollution for a iptables (shorewall) firewall?
-
-I'm using Lstat - http://lstat.sourceforge.net/
-This is a nice interface for rrdtool, but only in Polish :(
-Besides standard charts it allow you to capture stats form your
-iptables rules.
-
-And, of course you can simple try rrdtool, but playing with it takes
-some time :)
-
--- 
-Pozdrawiam
- Marcin                            mailto:slacklist@op.pl
+>
+>
 
 
