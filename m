@@ -1,16 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: ..abusive quoting, was: netfilter digest, Vol 1 #514 - 7 msgs (was
- Re: portforwarding-HOWTO)
-Date: Sat, 11 Jan 2003 00:27:36 +0100
+From: "Andrew Smith" <nfml@k1k2.com>
+Subject: RE: problem with FORWARD chain
+Date: Sat, 11 Jan 2003 14:56:53 +1100 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030111002736.31f57c85.arnt@c2i.net>
-References: <20030108052635.5370.76979.Mailman@kashyyyk>
-	<14780.192.168.0.1.1042018341.squirrel@mail.intermediacorp.com>
-	<200301101507.12420.netfilter@newkirk.us>
+Message-ID: <1693.192.168.7.41.1042257413.squirrel@iw.k1k2.com>
+References: <211E94403B74D211878A0008C71C74DC60DCD6@ip216-50-5-162.z5-50-216.customer.algx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200301101507.12420.netfilter@newkirk.us>
+In-Reply-To: <211E94403B74D211878A0008C71C74DC60DCD6@ip216-50-5-162.z5-50-216.customer.algx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,27 +20,52 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 10 Jan 2003 15:07:12 -0500, 
-Joel Newkirk <netfilter@newkirk.us> wrote in message 
-<200301101507.12420.netfilter@newkirk.us>:
+> (Forgot this info in last post!)
+> 
+> I'm running the 2.4.19 kernel on a debian box with the
+> bridging/firewall patch from bridging.sourceforge.net (version 0.0.7)
+> and the latest version of iptables.
+> 
+> A sample output from iptables -L -vx would be:
+> 
+> Chain INPUT (policy ACCEPT 20403 packets, 27177359 bytes)
+>    pkts      bytes target     prot opt in     out     source
+> destination
+> 
+> Chain FORWARD (policy DROP 0 packets, 0 bytes)
+>    pkts      bytes target     prot opt in     out     source
+> destination
+> 
+> Chain OUTPUT (policy ACCEPT 12188 packets, 786022 bytes)
+>    pkts      bytes target     prot opt in     out     source
+> destination
+> 
+> The few other people (who also don't get the FORWARD chain to properly
+> show the counters) are still able to activate and implement rules,
+> although as you can see, my policy should drop everything, and yet I'm
+> still able to use the bridge.
+> 
+> eol,
+> 
+> Reed
 
-> Please snip unrelated material out of a digest message when replying -
-> the other six messages had nothing to do with this...  A single-line 
-> response with over 450 quoted lines is a big waste, especially since
-> you didn't sign the response making it appear that there might be
-> more you had added further on in the quoted part.
+Guess suggestions:
 
-..one way is have the list reject these long appended digest quotes 
-with such give-aways as "netfilter digest, Vol 1 #514 - 7 msgs" in 
-the subject line.  The appropriate response IMNTHO is return these 
-abuses back to the abuser, asking him to remove his abusive waste 
-before reposting.  Procmail can automate this.
+1) the chain header only shows counts of packets that run off the
+end of the chain - if for some reason there are rules in your tables
+that you are not showing then that could account for it
+2) you don't have forwarding enabled
+3) something else in the kernel is getting the packets before iptables
+(e.g. the bridging/firewall patch) and iptables doesn't get passed the
+packets afterwards
+
+OK - just guesses, but just a few suggestions anyway since noone has
+said anything yet :-)
 
 -- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+-Cheers
+-Andrew
 
+MS ... if only he hadn't been hang gliding!
 
 
