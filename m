@@ -1,12 +1,11 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Filtering PPP traffic
-Date: Fri, 18 Apr 2003 12:30:58 -0700 (PDT)
+From: "Kevin Smith" <starwatcher22@earthlink.net>
+Subject: Cuseeme-nat patch
+Date: Fri, 18 Apr 2003 22:09:31 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030418193058.17530.qmail@web40202.mail.yahoo.com>
-References: <3EA018CF.2010702@numlog.fr>
+Message-ID: <002a01c30618$b77fe5a0$0200000a@workgroup.kev>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EA018CF.2010702@numlog.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,87 +16,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Francis GASCHET <fg@numlog.fr>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Fellow Listers,
 
-Have you tried filtering on the nas0 device?
+ Looking into it further, I found that in the
+/usr/src/linux-2.4.20/net/ipv4/netfilter directory the only related file is
+ip_nat_cuseeme.c..So it didnt compile. I looked at the file and saw it
+refrenced a directory called linux/netfilter_ipv4 which doesnt exist on my
+system.
+So I tried to remove and put it back It didntlet me remove it, and now that
+I got it out, it fails on applying.
+Im sure im overlooking something easy...Oh and POM say there is a file
+missing, when I have 5 out of 5.
+Ty for any suggestions.
+Kev
 
---- Francis GASCHET <fg@numlog.fr> wrote:
-> 
-> Hello,
-> 
-> The bridge we use is the kernel patch provided by 
-> http://bridge.sourceforge.net
-> On the card side, we use Ethernet over ATM bridging (RFC 1483/2684 
-> kernel module). It emulates an "Ethernet like" device : nas0.
-> The pppOE daemon sits in the VM where it reads and writes ppp frames on 
-> a virtual eth device created with TAP (http://Vtun.sourceforge.net).
-> The official address is carried by this virtual eth device.
-> The bridge forwards pppOE packets between the nas0 and the tap0 devices.
-> The goal is to use a bridged firewall. That means : a FireWall which is 
-> not visible from the external network.
-> 
-> The problem is to be able to filter the pppOE packets that flow across 
-> the bridge.
-> 
-> -- 
-> Francis GASCHET / NUMLOG
-> http://www.numlog.fr
-> Tel.: +33 (0) 130 791 616
-> Fax.: +33 (0) 130 819 286
-> 
-> 
-> 
-> 
-> Thanks for any help.
-> 
-> SBlaze wrote:
-> 
-> >You should be able to filter at the "eth0" level of your diagram...
-> >
-> >I kinda need more information on your "BRIDGE" before I could suggest
-> something
-> >else.. If by bridge you mean it bridges the DSL modem and the LAN...then
-> your
-> >eth0 is in the same machine you are calling a bridge?
-> >
-> >In that case you should theoretically filter the eth0 device
-> >
-> >
-> >--- Francis GASCHET <fg@numlog.fr> wrote:
-> >  
-> >
-> >>Hi list,
-> >>
-> >>Is there somebody who knows a possibility to apply netfilter rules to 
-> >>ppp packets ?
-> >>
-> >>Configuration :
-> >>
-> >>DSL - PCI modem card - BRIDGE - eth0 (in a virtual machine)
-> >>
-> >>I would like to filter the traffic which flows across the bridge, but at 
-> >>this level, the IP traffic is encapsulated...
-> >>
-> >>Any clue ?
-> >>
-> >>Ciao.
-> >>
-> >>    
-> >>
-> 
-> 
-> 
-> 
-
-
-=====
-"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
-
-__________________________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo
-http://search.yahoo.com
 
