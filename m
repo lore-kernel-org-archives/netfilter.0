@@ -1,13 +1,11 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: How to get "real time" kernel updates from iptables
-Date: Tue, 15 Mar 2005 10:45:39 +0200
-Message-ID: <1403218a0503150045124f7280@mail.gmail.com>
-References: <4235AECA.80305@bigpond.net.au>
-	<1110839560.7535.4.camel@localhost.localdomain>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+Subject: Re: limit connections to ssh
+Date: Tue, 15 Mar 2005 10:00:29 +0100
+Message-ID: <1110877229.6883.1.camel@nostromo.bgsecm.com>
+References: <20050315000111.GA34990@micron.lacnic.net.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1110839560.7535.4.camel@localhost.localdomain>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20050315000111.GA34990@micron.lacnic.net.uy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +16,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-As posted by Eric,
-Or, let your authentication script make the delay before it comes back
-to the user.
+El lun, 14-03-2005 a las 21:01 -0300, Pablo Allietti escribi=C3=B3:
+> iptables can limit connections to a a port? for exmaple=20
+>=20
+> i need to permit only 3 connections to a ssh in a period of 5 minutes
+>=20
+> iptables can do this?
+
+Of course, do a:
+iptables -m limit --help
+
+The rule would be something like:
+
+iptables -A INPUT -m state --state NEW -i <extif> -m limit --limit 5/sec
+-j ACCEPT
+
+with the ESTABLISHED and RELATED rules, before, obviusly.
+
+Regards.
+
+--=20
+
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
 
-On Mon, 14 Mar 2005 23:32:40 +0100, Eric Leblond <eric@inl.fr> wrote:
-> Hi,
-> 
-> For an Netfilter based authenticating firewall, you may have a look to
-> NuFW : http://www.nufw.org/
-> 
-> It is authenticating connections (Netfilter meaning) individually and it
-> is not doing an IP==address association. Thus it even work on multiusers
-> systems.
-> 
-> BR,
-> --
-> Eric Leblond <eric@inl.fr>
-> 
-> 
-
-
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
 
