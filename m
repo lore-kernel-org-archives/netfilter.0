@@ -1,11 +1,13 @@
-From: Svein.Fossaen@hydro.com
-Subject: mark all packages from a spesific host
-Date: Wed, 30 Oct 2002 09:26:47 +0100
+From: "R. Sterenborg" <rsterenborg@xs4all.nl>
+Subject: RE: masquerading and access
+Date: Wed, 30 Oct 2002 10:36:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF88152DB3.ECF3E686-ON41256C62.002DF7E2@hda.hydro.com>
+Message-ID: <003a01c27ff7$d57fb000$0401000a@robbysan.org>
+References: <20021030070200.GA1367@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021030070200.GA1367@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +17,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-I've just started to look into traffic shaping and have the following
-environment.
+> 	I want to implement a masquerading proxy ( I hope I am clear
+> here ) on a network of 50 machines. Out of this only 25 machines say
+> 192.168.0.1-192.168.0.25 need to connect to net. Squid will be the
+> caching proxy.
+> I just want to know whether I have to put a rule as,
+
+Since there's no /xx for your 25 IP's, I'd just REDIRECT everything
+sent to port 80 (and 443 and maybe others you might need) to 3128, and
+then use squid's acls to restrict access by IP address range which is
+quite easy. That is, if you have the whole /24 netblock for yourself.
+
+# iptables -t nat -A PREROUTING -s 192.168.0.0/24 -p tcp --dport 80 -j
+REDIRECT --to-ports 3128
 
 
-ISP--------eth1-LINUX-eth0----------intranet
-
-I want to mark all traffic coming from host 192.168.0.19 so that i can =
-pick
-up these packages and filter them before sending out on eth1/ppp0
-
-I've tried things like:
-
-/usr/sbin/iptables -A POSTROUTING -t mangle -s 192.168.0.19 -p tcp \
--o eth0 -j MARK --set-mark 12
-
-/usr/sbin/tc filter add dev eth1 protocol ip parent 1:1 prio 100 \
-handle 12 fw classid 1:3
-
-but this dosn't seem to work.....what's am I doing wrong or don't
-understand?
-
--Svein Foss=E5en-
------------------------------------------------------------------------=
-------------------------
-
-This is Unix land.
-In quiet nights you can hear ms-windows machines reboot.=
-
+Rob
 
 
