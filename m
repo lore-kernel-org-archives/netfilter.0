@@ -1,11 +1,15 @@
-From: =?iso-8859-1?Q?Bruno_Negr=E3o?= <bnegrao@engepel.com.br>
-Subject: Is IPTables::IPv4 Perl module trustable?
-Date: Fri, 23 Jul 2004 20:32:59 -0300
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Universal Address Translation
+Date: Sat, 24 Jul 2004 18:51:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01c401c4710d$64351350$5100a8c0@egp>
+Message-ID: <1090687880.2228.83.camel@anduril.intranet.cartel-securite.net>
+References: <200407242032.35573.rio@martin.mu>
+	 <1090676859.2228.62.camel@anduril.intranet.cartel-securite.net>
+	 <200407242055.51714.rio@martin.mu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200407242055.51714.rio@martin.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +20,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
-Cc: iptperl-general@lists.sourceforge.net
+To: "Rio Martin." <rio@martin.mu>
+Cc: netfilter@lists.netfilter.org
 
-Hi guys,
+Le sam 24/07/2004 =E0 15:55, Rio Martin. a =E9crit :
+> [isp-wireless] RE: How do Hotels, Starbucks, Hot Spots do this? ...
+> ... Better yet most of the vendors below support Universal Address=20
+> Translation, which allows a user to connect no matter what the ip or
+> static vs. dhcp. ...
 
-My question is exactly the one in the e-mail subject: Is IPTables::IPv4
-Perl module trustable?
+That's what I though it was :)
 
-This module is a perl interface to the 'libiptc' library, written by,
-Derrik Pates. I'd like to use it in an application.
-But I read in netfilter's FAQ the following:
+There's not exactly a NAT issue. There's nat, but the issue is to grab
+traffic to the gateway in order to have it route it the right place and
+NAT it correctly. In fact, what you have to do is to set sort of
+universal proxy ARP that is able to answer any ARP request with gateway
+MAC address.
 
-"4.5 Is there an C/C++ API for adding/removing rules?
-The answer unfortunately is: No.
-Now you might think 'but what about libiptc?'. As has been pointed out
-numerous times on the mailinglist(s), libiptc was _NEVER_ meant to be used
-as a public interface. We don't guarantee a stable interface, and it is
-planned to remove it in the next incarnation of linux packet filtering.
-libiptc is way too low-layer to be used reasonably anyway.
-We are well aware that there is a fundamental lack for such an API, and we
-are working on improving that situation. Until then, it is recommended to
-either use system() or open a pipe into stdin of iptables-restore. The
-latter will give you a way better performance."
+I've quite successfully achieve this using arpd daemon used with honeyd.
+This daemon answers any ARP request with a given MAC address (its MAC
+address). So any traffic within the LAN is directed to arpd host.
 
-Does someone else already tested it before? Does someone else there knows
-its internals?
 
-Thanks,
-bruno negr=E3o
+Now we must handle DNS requests, for which we just have to DNAT UDP and
+TCP destined to port 53 to our proper DNS server :
 
+iptables -t nat -A PREROUTING -p udp --dport 53 -j DNAT --to $DNS
+iptables -t nat -A PREROUTING -p tcp --dport 53 -j DNAT --to $DNS
+
+For normal traffic, I use default route to send packets away and SNAT
+the usual way :
+
+iptables -t nat -A POSTROUTING -o $EXTIF -j SNAT --to-source $EXTIP
+
+To handle returning packets properly regarding routing, because we don't
+want them to hit default route. As far as I can remember, I used packet
+marking and nfmark based routing :
+
+iptables -t mangle -A PREROUTING -i $EXTIF -j MARK --mark 0x01
+
+So I knew a packet marked is a returning packet that has to get routed
+directly to internal interface (see LARTC[1] for fwmark routing
+configuration).
+
+I didn't do much testing on this, but things seemed to go quite well. I
+guess this is what I set up. You can try and give feedback.
+
+
+[1] http://lartc.org/
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
