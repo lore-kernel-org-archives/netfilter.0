@@ -1,15 +1,12 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: forwarding on the same NIC
-Date: Mon, 10 May 2004 18:26:32 -0400
+From: "pengjie" <bill.peng@ocamar.com>
+Subject: h323 & nat
+Date: Tue, 11 May 2004 09:39:25 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084227992.14224.5.camel@localhost>
-References: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105>
-	 <200405102115.14089.Antony@Soft-Solutions.co.uk>
-	 <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>
+Message-ID: <003101c436f8$cb052d80$0f6ea8c0@acamarpeng>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_002E_01C4373B.D91C3880"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,115 +16,104 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: alucard@kanux.com
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-Alas, I discarded your original e-mail with the set up info when I saw
-you received a credible reply.  However, have you set up either a packet
-trace to see if the packets are getting lost on the wire or logging
-rules at the various points within iptables to see if where the
-unexpected behavior is happening in iptables?
+This is a multi-part message in MIME format.
 
-On Mon, 2004-05-10 at 18:09, alucard@kanux.com wrote:
-> Hi again...
-> 
->    I did it, and nothing happens, the 2nd webserver is fully operational
-> and I cant get to it from my server/router. Here's my nmap test:
-> 
-> PORT     STATE SERVICE
-> 21/tcp   open  ftp
-> 22/tcp   open  ssh
-> 25/tcp   open  smtp
-> 80/tcp   open  http
-> 143/tcp  open  imap
-> 3306/tcp open  mysql
-> 
-> and there's no 8080 port that could be getting packets
-> 
-> And here's my script again... maybe I'm missing something else...
-> 
-> -------------
-> echo "Borrando posibles reglas anteriores..."
-> iptables -F
-> iptables -X
-> 
-> echo "Habilitando politicas de negacion total de paquetes"
-> 
-> iptables -P FORWARD DROP
-> iptables -P INPUT DROP
-> 
-> echo "Reglas para paquetes de entrada y salida"
-> 
-> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> 
-> iptables -A INPUT -p tcp --dport 21 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 25 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-> 
-> ##internas
-> iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
-> iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
-> 
-> #para el forward a la maquina compaq
-> 
-> echo 0 > /proc/sys/net/ipv4/ip_forward
-> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT
-> --to-destination 10.73.219.77:80
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> -------------
-> 
-> Any sugestions pals?
-> Thanx again for your great help
-> Juan
-> 
-> 
-> 
-> > On Monday 10 May 2004 8:36 pm, alucard@kanux.com wrote:
-> >
-> >> Hi there...
-> >>
-> >>    I have been using netfilter for a while and now, I have to integrate
-> >> some other servers and somehow I can't get it to forward packets.
-> >
-> > Change:
-> >
-> >> iptables -A FORWARD -i eth0 -p tcp --dport 8080 -j ACCEPT
-> >
-> > Into:
-> >
-> > iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
-> >
-> > Remember that PREROUTING (where you are changing the port number) happens
-> > before FORWARD.
-> >
-> > Regards,
-> >
-> > Antony.
-> >
-> > --
-> > I don't know, maybe if we all waited then cosmic rays would write all our
-> > software for us. Of course it might take a while.
-> >
-> >  - Ron Minnich, Los Alamos National Laboratory
-> >
-> >                                                      Please reply to the
-> > list;
-> >                                                            please don't CC
-> > me.
-> >
-> >
-> >
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+------=_NextPart_000_002E_01C4373B.D91C3880
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+
+aSBoYWQgcmVhZCBtYW55IGRvY3VtZW50cyBidXQgaSBkaWRuJ3QgZmluZCBhbnN3ZXIuDQoNCmkg
+aGF2ZSBhIG5ldHdvcmsgYXMgZm9sbG93aW5nOg0KDQogICAgICAgIEEtLS0tLS0tLS0tLS0tLS0t
+LS1CPT09PT09PT09PT09PT09PT09PT1DDQoxOTIuMTY4LjExMC54ICAxOTIuMTY4LjExMC55ICAy
+MDIuMTAxLmsubSAgICAgMjAyLjEwMS5rLm4NCg0KdGhlIEIgaXMgYSBnYXRld2F5IGRvaW5nIE5B
+VC4gaXQncyBldGgwIGlzIDE5Mi4xNjguMTEwLnkgYW5kIGV0aDEgaXMgMjAyLjEwMS5rLm0uIHRo
+ZXJlIGlzIFJIOSBydW5uaW5nIG9uIGl0LGl0J3Mga2VybmVsIGlzIDIuNC4yMS4gaSBoYXZlIHBh
+dGhjaGVkIHRoZSBoMzIzLGFuZCBydW5uZWQgdXAgdGhlIG1vZHVsZXMgaXBfY29ubnRyYWNrX2gz
+MjMgYW5kIGlwX25hdF9oMzIzLg0KDQp0aGUgQSBhbmQgdGhlIEMgYXJlIG5ldG1lZXRpbmcgY2xp
+ZW50cy4NCg0KaSB0ZXN0IGl0IHdpdGggMiBtZXRob2RzOg0KDQoxKWJvdGggQSBhbmQgQyBsb2dv
+biB0byBhIElMUy4NCg0KUkVTVUxUUzoNCkEgY2FsbHMgQyBpcyBvaywgYW5kIHRoZXkgY2FuIGNo
+YXQgdG8gZWFjaCBvdGhlci4NCg0KQyBjYWxscyBBIGlzIGZhaWx1cmUsIGkgc2VlIHRoZSBhZGRy
+ZXNzIGNhbGxlZCBpcyB0aGUgcHJpdmF0ZSBhZGRyZXNzIG9mIEEuIHNvIHNldHRpbmcgdXAgaXMg
+ZmFpbHVyZS4NCg0KDQpRVUVTVElPTjogZG9lc24ndCB0aGUgcGF0Y2ggZG8gc29tZXRoaW5nIHdo
+ZW4gY2xpZW50IGxvZ29uIHRvIGEgSUxTPw0KDQoyKWNhbGwgZWFjaCBvdGhlciB3aXRob3V0IHRo
+ZSBJTFMuDQoNCmkgYWRkIGEgcnVsZTogaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkg
+ZXRoMSAtcCB0Y3AgLW0gbXVsdGlwb3J0IC0tZHBvcnRzIDE1MDMsMTcyMCAtaiBETkFUIC0tdG8t
+ZGVzdGluYXRpb24gMTkyLjE2OC4xMTAueA0KDQp0aGV5IGNhbGwgZWFjaCBvdGhlciB3aXRoIElQ
+IGFkZHJlc3MuIEEgY2FsbHMgQyB3aXRoIEMncyBJUCBhcyB0aGUgZGVzdGluYXRpb24sIGFuZCBD
+IGNhbGxzIEEgd2l0aCBnYXRld2F5J3MgdmFsaWQgSVAgYXMgdGhlIGRlc3RpbmF0aW9uLg0KDQpS
+RVNVTFRTOg0KQSBjYWxscyBDIGlzIG9rLCBhbmQgdGhleSBjYW4gY2hhdCB0byBlYWNoIG90aGVy
+Lg0KQyBjYWxscyBBIGlzIG9rLCBidXQgdGhleSBjYW4ndCBjaGF0IHRvIGVhY2ggb3RoZXIuDQoN
+ClFVRVNUSU9OOiBpcyB0aGUgcnVsZSByaWdodD8gaC4zMjMgc3RyZWFtaW5nIHBvcnQgaXMgZHlu
+YW1pYywgZG9lcyBpdCByZXN1bHQgdGhpcyBzeW1wdG9tPw0KICAgICAgICAgIGV2ZW4gdGhvdWdo
+IGkgYWRkIHRoZSBydWxlIHJpZ2h0LGkgdGhpbmsgaXQncyBubyB1c2UuaXQganVzdCBlbmFibGUg
+b25lIGNsaWVudCB0byBnbyB0aHJvdWdoIHRoZSBnYXRld2F5LmlzIGl0Pw0KDQphbnkgaGVscCBp
+cyBhcHByZWNpYXRlZC4=
+
+------=_NextPart_000_002E_01C4373B.D91C3880
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
+MC4yODAwLjE0MDAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
+Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj4NCjxESVY+PEZPTlQgc2l6
+ZT0yPmkgaGFkIHJlYWQgbWFueSBkb2N1bWVudHMgYnV0IGkgZGlkbid0IGZpbmQgDQphbnN3ZXIu
+PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJ
+Vj48Rk9OVCBzaXplPTI+aSBoYXZlIGEgbmV0d29yayBhcyBmb2xsb3dpbmc6PC9GT05UPjwvRElW
+Pg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXpl
+PTI+Jm5ic3A7Jm5ic3A7Jm5ic3A7ICZuYnNwOyZuYnNwOyZuYnNwOyANCkEtLS0tLS0tLS0tLS0t
+LS0tLS1CPT09PT09PT09PT09PT09PT09PT1DPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXpl
+PTI+MTkyLjE2OC4xMTAueCZuYnNwOyZuYnNwOzE5Mi4xNjguMTEwLnkmbmJzcDsgDQoyMDIuMTAx
+LmsubSZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAyMDIuMTAxLmsubjwvRk9OVD48L0RJVj4NCjxE
+SVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPnRo
+ZSBCIGlzIGEgZ2F0ZXdheSBkb2luZyBOQVQuIGl0J3MgZXRoMCBpcyAxOTIuMTY4LjExMC55IGFu
+ZCANCmV0aDEgaXMgMjAyLjEwMS5rLm0uIHRoZXJlIGlzIFJIOSBydW5uaW5nIG9uIGl0LGl0J3Mg
+a2VybmVsIGlzIDIuNC4yMS4gaSBoYXZlIA0KcGF0aGNoZWQgdGhlIGgzMjMsYW5kIHJ1bm5lZCB1
+cCB0aGUgbW9kdWxlcyBpcF9jb25udHJhY2tfaDMyMyBhbmQgDQppcF9uYXRfaDMyMy48L0ZPTlQ+
+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05U
+IHNpemU9Mj50aGUgQSBhbmQgdGhlIEMgYXJlIG5ldG1lZXRpbmcgY2xpZW50cy48L0ZPTlQ+PC9E
+SVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNp
+emU9Mj5pIHRlc3QgaXQgd2l0aCAyIG1ldGhvZHM6PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBz
+aXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+MSlib3RoIEEgYW5k
+IEMgbG9nb24gdG8gYSBJTFMuPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05U
+PiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+UkVTVUxUUzo8L0ZPTlQ+PC9ESVY+DQo8
+RElWPjxGT05UIHNpemU9Mj5BIGNhbGxzIEMgaXMgb2ssIGFuZCB0aGV5IGNhbiBjaGF0IHRvIGVh
+Y2ggb3RoZXIuPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwv
+RElWPg0KPERJVj48Rk9OVCBzaXplPTI+QyBjYWxscyBBIGlzIGZhaWx1cmUsIGkgc2VlIHRoZSBh
+ZGRyZXNzIGNhbGxlZCBpcyB0aGUgcHJpdmF0ZSANCmFkZHJlc3Mgb2YgQS4gc28gc2V0dGluZyB1
+cCBpcyBmYWlsdXJlLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJz
+cDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZP
+TlQgc2l6ZT0yPlFVRVNUSU9OOiBkb2Vzbid0Jm5ic3A7dGhlIHBhdGNoIGRvIHNvbWV0aGluZyB3
+aGVuIGNsaWVudCANCmxvZ29uIHRvIGEgSUxTPzwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6
+ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjIpY2FsbCBlYWNoIG90
+aGVyIHdpdGhvdXQgdGhlIElMUy48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZP
+TlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5pIGFkZCBhIHJ1bGU6IGlwdGFibGVz
+IC10IG5hdCAtQSBQUkVST1VUSU5HIC1pIGV0aDEgLXAgdGNwIC1tIA0KbXVsdGlwb3J0IC0tZHBv
+cnRzIDE1MDMsMTcyMCAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC4xMTAueDwvRk9O
+VD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZP
+TlQgc2l6ZT0yPnRoZXkgY2FsbCBlYWNoIG90aGVyIHdpdGggSVAgYWRkcmVzcy4gQSBjYWxscyBD
+IHdpdGggQydzIElQIGFzIA0KdGhlIGRlc3RpbmF0aW9uLCBhbmQgQyBjYWxscyBBIHdpdGggZ2F0
+ZXdheSdzIHZhbGlkIElQIGFzIHRoZSANCmRlc3RpbmF0aW9uLjwvRk9OVD48L0RJVj4NCjxESVY+
+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPlJFU1VM
+VFM6PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+QSBjYWxscyBDIGlzIG9rLCBhbmQg
+dGhleSBjYW4gY2hhdCB0byBlYWNoIG90aGVyLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6
+ZT0yPkMgY2FsbHMgQSBpcyBvaywgYnV0IHRoZXkgY2FuJ3QgY2hhdCB0byBlYWNoIA0Kb3RoZXIu
+PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJ
+Vj48Rk9OVCBzaXplPTI+UVVFU1RJT046IGlzIHRoZSBydWxlIHJpZ2h0PyBoLjMyMyBzdHJlYW1p
+bmcgcG9ydCBpcyANCmR5bmFtaWMsJm5ic3A7ZG9lcyBpdCByZXN1bHQgdGhpcyBzeW1wdG9tPzwv
+Rk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBldmVuIA0KdGhvdWdoJm5ic3A7aSBhZGQgdGhl
+IHJ1bGUgcmlnaHQsaSB0aGluayBpdCdzIG5vIHVzZS5pdCBqdXN0IGVuYWJsZSBvbmUgY2xpZW50
+IA0KdG8gZ28gdGhyb3VnaCB0aGUgZ2F0ZXdheS5pcyBpdD88L0ZPTlQ+PC9ESVY+DQo8RElWPjxG
+T05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5hbnkgaGVs
+cCBpcyANCmFwcHJlY2lhdGVkLjwvRk9OVD48L0RJVj48L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRN
+TD4NCg==
+
+------=_NextPart_000_002E_01C4373B.D91C3880--
 
 
