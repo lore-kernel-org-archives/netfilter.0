@@ -1,12 +1,10 @@
-From: "Kevin P. Fleming" <kpfleming@starnetworks.us>
-Subject: Re: [VLAN] 	Multiple subnets of the same IP space, different VLANs, 
- same box...
-Date: Tue, 15 Feb 2005 11:13:30 -0700
-Message-ID: <42123BCA.1080306@starnetworks.us>
-References: <42122E91.2000707@joyner.ws>
+From: "Dr. Lars Hanke" <lars@lhanke.de>
+Subject: dhcrelay
+Date: Tue, 15 Feb 2005 21:58:27 +0100
+Message-ID: <200502152158.27275.lars@lhanke.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42122E91.2000707@joyner.ws>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +15,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Linux 802.1Q VLAN" <vlan@candelatech.com>
-Cc: netfilter@lists.netfilter.org, vlan@lanforge.com
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Aaron S. Joyner wrote:
+Hi,
 
-> Any input anyone can offer about possible solutions, or even providing 
-> further insight into the problem, would be most appreciated.  :)
+google told me that dhcrelay has been discussed quite a couple of times on 
+this list. However,I could not find a solution to my problem.
 
-I don't see how you can make this work without SNAT'ing all the incoming 
-traffic on each VLAN interface into a unique IP address range. In 
-addition, as you already mentioned, you'll have to mess with the routing 
-tables as well; you can apply a "mark" to the connections in the 
-connection table for each VLAN interface, then use that to select an 
-outbound routing table.
+I want to set up a router, which distributes the DHCP configuration service to 
+all subnets attached (well currently only one subnet at eth0, 172.16.2.1). 
+Reading the dhcrelay man page
+#> dhcrelay -i eth0 adept.mgr
 
-It's pretty complex; realistically, you might actually be better off 
-creating virtual machines to NAT the traffic onto the "internal" network 
-in the box, then hide it all from the services on that box.
+should do exactly that. In practice - almost:
 
-Alternatively, you could buy a whole boatload of cheap NAT routers, and 
-attach each one of them to a non-tagged VLAN port on your switch (one 
-for each VLAN), then connect the "upstream" side of them to a 
-non-VLAN-enabled switch with your Linux box on it.
+dhcrelay gets the request, asks the dhcp server, gets a reply, but never sends 
+it to the requesting device:
 
-Third alternative would be to do the VLAN switching with a device that 
-is actually a Layer 3 router as well, that can do the NAT for you.
+#> tcpdump -i any port bootpc or port bootps
+09:42:09.996479 172.16.1.12.bootpc > 255.255.255.255.bootps: xid:0x960f0000 
+flags:0x8000 [|bootp] 
+09:42:09.997009 surtur.mgr.bootps > adept.mgr.bootps: (request) xid:0x960f0000 
+flags:0x8000 G:172.16.2.1 ether 0:9:5b:68:19:fb [|bootp] (DF) 
+09:42:09.997603 adept.mgr.bootps > 172.16.2.1.bootps: (reply) xid:0x960f0000 
+flags:0x8000 Y:ymir.mgr S:adept.mgr G:172.16.2.1 ether 0:9:5b:68:19:fb [|
+bootp] (DF) 
 
-All of these solutions, though, involve NAT, which will bring along 
-other problems if you are running applications/protocols that are not 
-NAT friendly.
+... but something like the following never appears (line taken from DHCP 
+exchange from server installed on router, alternatively):
+
+09:59:38.780364 172.16.2.1.bootps > 255.255.255.255.bootpc: xid:0x960f0000 
+flags:0x8000 Y:ymir.mgr S:172.16.2.1 [|bootp] [tos 0x10] 
+
+Therefore, ymir never gets his IP! 
+
+netfilter policies were set to ACCEPT and all tables were flushed (including 
+nat and mangle). I can ping all NIC from anywhere, ymir of course only if it 
+is configured!
+
+The system is Debian Woody with 2.4.26-grsec Kernel from backports. grsec 
+stuff is not activated by gradm.
+
+Any help appreciated,
+ - lars.
 
