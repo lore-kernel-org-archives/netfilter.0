@@ -1,13 +1,11 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: How to elegantly handle two ISPs on a single box?
-Date: Wed, 6 Apr 2005 21:29:22 +0200
-Message-ID: <20050406192922.GC12284@torres.l21.ma.zugschlus.de>
-References: <20050406171730.GA12284@torres.l21.ma.zugschlus.de>
-	<561dc3260504061149310337e0@mail.gmail.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: IP Nat or forward
+Date: Wed, 6 Apr 2005 14:38:45 -0500
+Message-ID: <002701c53ae0$3f633a00$f5001eac@riverview.office>
+References: <4254272C.3060706@provident-solutions.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <561dc3260504061149310337e0@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,35 +17,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "Vernon A. Fort" <vfort@provident-solutions.com>, netfilter@lists.netfilter.org
 
-On Wed, Apr 06, 2005 at 02:49:49PM -0400, Jiann-Ming Su wrote:
-> On Apr 6, 2005 1:17 PM, Marc Haber <mh+netfilter@zugschlus.de> wrote:
-> > Is there a more elegant way to do it? Did I miss any docs?
-> 
-> You should take a look at dynamic routing.  Zebra provides such service.
-> 
->   http://www.zebra.org/
-> 
-> There's a debian package for zebra.
+Vernon, there are a few issues that pop in to my head right a way.  First of
+all are you wanting to NAT your IPSec connection?  If so you will need to
+make sure that the IPSec implementation(s) that you use has a NAT Traversal
+capability.  I believe that OpenS/WAN and FreeS/WAN both have this
+capability either directly in source or via a patch.  Second What is the
+(internal / private) IP (sub)net that the vendor will be comming from?  I'm
+presuming that they will be comming from a 192.168.1.1 based on the fact
+that you say they already have that address in use?  The reason I ask is I
+like to control which packets traverse my IPTables rulese as much as
+possible thus I match against soruce IP addresses too.  For now I'll go
+along the assumption that you will have an IPSec tunnel to your router /
+firewall and not passing the tunnel traffic through to the internal system
+(terminating on the router vs the internal system).  I'll also assume that
+the source IP address will be something along the lines of 192.168.1.234 for
+the sake of the discussion.  For the sake of the discussion I'm going to use
+eth0 as your external interface and eth1 as your internal interface.
 
-Having been part of zebra packaging for Debian for a very short time,
-and having been in charge for the BGP and OSPF setup for a small ISP
-for two years, how do you suppose that dynamic routing will solve this
-problem?
+# Inbound traffic
+iptables -t nat -A PREROUTING -i eth0 -s 192.168.1.234 -d 192.168.90.1 -j
+DNAT --to-destination 192.168.1.1
+iptables -t nat -A POSTROUTING -o eth1 -s 192.168.1.234 -d 192.168.1.1 -j
+SNAT --to-source 192.168.90.234
+# Outbound traffic
+iptables -t nat -A PREROUTING -i eth1 -s 192.168.1.1 -d 192.168.90.234 -j
+DNAT --to-destination 192.168.1.234
+iptables -t mangle -A POSTROUTING -s 192.168.1.1 -d 192.168.1.234 -j
+ROUTE --oif eth1
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.1.1 -d 192.168.1.234 -j
+SNAT --to-source 192.168.90.1
 
-Which protocol do you suggest to use? Where should the announcements
-come from?
+I know that this will handle the inbound traffic correctly and I think it
+will handle the outbound traffic correctly.  The trick here is that the
+outbound traffic will want to route back to the internal interface for the
+internal LAN subnet but hopefully via the ROUTE target that can be
+overridden.  If that will not work you will need to do a similar inbound
+NATing on the other end of the tunnel.
 
-This is a migration setup, not a redundancy issue.
+Netfilter IPTables ROUTE target
+http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-ROUTE
 
-Greetings
-Marc
 
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
+
+Grant. . . .
+----- Original Message ----- 
+From: "Vernon A. Fort" <vfort@provident-solutions.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, April 06, 2005 1:15 PM
+Subject: IP Nat or forward
+
+
+> I need to NAT a VLAN or aliased interface to an internal address:
+>
+>     192.168.90.1   ->   192.168.1.1
+>
+> Basically a virtual network/address mapping.  The main reason is I need
+> a IPSEC tunnel (openswan) connecting from a vender to an internal server
+> but the ip address of our internal server is already used on their end.
+> So, when they connect to 192.168.90.1, its redirected/forwarded/nat'd to
+> the real internal address.
+>
+> Can someone get me started.
+>
+> Vernon
+>
+>
+
 
