@@ -1,11 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Fwd: Re: DNATing packets sent to the NATing box
-Date: Sun, 14 Dec 2003 14:03:21 +0000
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: DNATing packets sent to the NATing box
+Date: Sun, 14 Dec 2003 09:28:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312141403.21256.Antony@Soft-Solutions.co.uk>
+Message-ID: <200312140928.37145.JALaramie@Loudoun-Fairfax.com>
+References: <20031214135211.GA11695@tinuviel.compendium.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031214135211.GA11695@tinuviel.compendium.com.ar>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,53 +21,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Not sure if this got to the list first time....
-
-----------  Forwarded Message  ----------
-
-Subject: Re: DNATing packets sent to the NATing box
-Date: Sun, 14 Dec 2003 08:42:08 +0000
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-To: netfilter@lists.netfilter.org
-
-On Sunday 14 December 2003 12:52 am, horape@tinuviel.compendium.com.ar wrote:
-> I've a system that at its core has an UDP proxy that's the performance
-> bottleneck. I wanted to use the DNAT kernel facilities to replace my
-> code with the very tuned one on netfilter.
+On Sunday 14 December 2003 08:52, horape@tinuviel.compendium.com.ar wrote:
+> > > Yes, and I've added a rule like this:
+> > > /sbin/iptables -t nat -A PREROUTING -j LOG and don't see the packets.
+> >
+> > 	Ummmm
+> >     if you ADD the rule above after the rule that is re-routing the
+> > packet, no ... you wont see the packets.  Try
+> > 	iptables -t nat -I PREROUTING (line number)
+> > 	where (line number) is less than the line on which your DNAT line
+> > occurrs. (see iptables -t nat --line-numbers -v )
 >
-> I'm adding a rule that says something like this:
+> I'm really replacing the DNAT rule with the LOG one (only rule in the chain
+> is the LOG one)
 >
-> /sbin/iptables -t nat -A PREROUTING -d myip -p udp -m udp --dport 5000 -j
-> DNAT --to-destination otherip:18918
->
-> but the rule never see the packets (they never got to the chain)
->
-> I assume that it's because I've a socket listening on udp:5000, and it
-> seems reasonable what's happening... I'd like to add a PREPREROUTING chain
-> that is processed before deciding if the packet is for a local socket, can
-> somebody give me a hint on where to look for it?
+If there are no other rules in the nat PREROUTING chain and assuming that you 
+don't have and mangle PREROUTING rules (you don't, do you?) then that log 
+rule will see every single packet that comes in off the wire. Try this:
 
-PREROUTING works exactly as the name suggests - it is applied to packets
-before the routing decision is made about whether they are local, or being
-routed through the box.   Therefore you *can* use the PREROUTING chain to
-divert packets which would otherwise be accepted locally, so that they go to
-another machine, or else divert packets which would have gone somewhere else,
-so that they are accepted locally.
+iptables -A PREROUTING -p all -j LOG --log-prefix "PREROUTING: "
 
-You say the rule never sees the packets...  how do you know this?   Are you
-looking at the packet / byte counters, and they stay at zero all the time?
+You should see tons output in /var/log/messages including the packets you're 
+looking for. If the packets aren't there, then they aren't making it to the 
+box.
 
-You also say you have a local process listening on port 5000 - is that
- getting any packets and responding to them, even with above rule in place?
+Jeff
 
-Antony.
-
---
-The first fifty percent of an engineering project takes ninety percent of the
-time, and the remaining fifty percent takes another ninety percent of the
-time.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
