@@ -1,13 +1,12 @@
-From: Florian Boelstler <euphoria@web.de>
-Subject: Re: traceroute
-Date: Thu, 01 Jul 2004 01:06:29 +0200
+From: "Steve Wakelin" <steve@wcsl.net>
+Subject: MARK and routing issue
+Date: Thu, 1 Jul 2004 00:58:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E34775.5010802@web.de>
-References: <00df01c45ea2$f5dc1290$49caa8c0@caris.priv> <200406302252.10870.Antony@Soft-Solutions.co.uk> <40E34062.90505@web.de> <200406302339.02075.Antony@Soft-Solutions.co.uk>
+Message-ID: <267354A234DF4D46AA6AE56E1240BEF0A48E@tv.wcslnet.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406302339.02075.Antony@Soft-Solutions.co.uk>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +17,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
 
-Antony Stone wrote:
->>By looking at other posts in this thread I've learned that traceroutes
->>are done with echo-requests. Is this true for Linux 2.6.6 ?
->
->
-> No, that's true for Windows systems.   Unix machines (Linux included)
-uses
-> high-port numbered UDP packets.
->
-> Therefore you need to allow UDP packets to leave your machine for you
-to be
-> able to run traceroute from it.
+Perhaps someone could point me in the right direction.
 
-Hmm, this could end up in an unfeasible task, when I do not allow
-unrestricted output.
+I am simply ;-( trying to MARK packets and then route them according to
+the mark.
 
-I just found out that traceroute offers a -I switch, that uses ICMP echo
-requests instead.
-On the other hand one could use -p for a specific base port to get a
-certain determinism.
+[root@localhost sysconfig]# ip rule
+0:      from all lookup local
+32760:  from all fwmark 0x6 lookup T4
+32761:  from all fwmark 0x5 lookup T3
+32762:  from 192.168.252.1 lookup T2
+32763:  from 192.168.253.1 lookup T1
+32764:  from 192.168.252.1 lookup T2
+32765:  from 192.168.253.1 lookup T1
+32766:  from all lookup main
+32767:  from all lookup default
 
-   Florian
+[root@localhost sysconfig]# ip route list table T3
+10.3.0.1 via 10.3.0.2 dev tun1
+default via 10.3.0.2 dev tun1
 
+[root@localhost sysconfig]# ip route list table T4
+10.3.0.1 via 10.3.0.3 dev tun2
+default via 10.3.0.3 dev tun2
 
+[root@localhost sysconfig]# iptables -t mangle -L
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+MARK       all  --  10.15.1.0/24         10.3.0.0/24         MARK set
+0x5
+MARK       all  --  10.15.1.0/24         10.3.0.0/24         MARK set
+0x6
 
-...............................
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
 
-Someone on the net said:
-I am Clinton of Borg. Prepare to see me make a fool of myself.
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
 
-iD8DBQFA40d1wT2gPfZm6tURAn4AAJ9OfnD/kMw7Ua1ss/7lRfQzIbo5SgCfezgN
-Ch0ifus6ReGzusVIarwR+z8=
-=bIgk
------END PGP SIGNATURE-----
+[root@localhost sysconfig]# ping -I 10.15.1.1 10.3.0.1
+PING 10.3.0.1 (10.3.0.1) from 10.15.1.1 : 56(84) bytes of data.
+ping: sendmsg: Network is unreachable
+ping: sendmsg: Network is unreachable
+ping: sendmsg: Network is unreachable
+
+Will someone please enlighten me as to what I have missed?
+
+Thanks in advance.
+
+Regards
+
+/Steve
+
 
