@@ -1,12 +1,12 @@
-From: =?iso-8859-1?Q?S=F8ren_Kent_Jensen?= <soren@familie-jensen.dk>
-Subject: Re: CISCO VPN clients behind firewall
-Date: Wed, 5 May 2004 09:14:45 +0200
+From: Carles Xavier Munyoz =?iso-8859-15?q?Bald=F3?= <carles@unlimitedmail.org>
+Subject: Internet satellite link.
+Date: Wed, 5 May 2004 11:29:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008201c43270$a53b0110$0223a8c0@soren>
-References: <00f101c43236$e54f0380$0300a8c0@indoakses2> <4098774D.6070604@isoar.ca>
+Message-ID: <200405051129.16104.carles@unlimitedmail.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +17,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: users@lists.freeswan.org
+Cc: netfilter@lists.netfilter.org
 
-Use IPSec UDP incapsulation on any port you like or  NAT-T
-It has been developed for exactly that reason.
+Hi,
+I have two lilnux boxes with FreeS/WAN and NAT-Traversal compiled in.
+One of them is behind a NAT router that connects to the Internet using a=20
+satellite link, and the other has its own public IP behind a DSL router.
 
-Regards
+I have tried the connection of the NATed linux box using a DSL router and a=
+ll=20
+goes fine, but when I use the satellite link router, I get the errors:
+[...]
+May  4 13:54:21 FW1 pluto[16116]: packet from 81.47.250.201:1623: received
+Vendor ID payload [draft-ietf-ipsec-nat-t-ike-03]
 
-S=F8ren Kent Jensen
+May  4 13:54:21 FW1 pluto[16116]: packet from 81.47.250.201:1623: ignoring
+Vendor ID payload [draft-ietf-ipsec-nat-t-ike-02]
 
+May  4 13:54:21 FW1 pluto[16116]: packet from 81.47.250.201:1623: ignori
+ng Vendor ID payload [draft-ietf-ipsec-nat-t-ike-00]
 
------ Original Message -----=20
-From: "Andrew E. Mileski" <andrewm@isoar.ca>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, May 05, 2004 7:10 AM
-Subject: Re: CISCO VPN clients behind firewall
+May  4 13:54:21 FW1 [16116]: "vpn1"[9] 81.47.250.201:1623 #40: responding t=
+o=20
+Main Mode from unknown peer 81.47.250.201:1623
 
+May  4 13:54:22 FW1 pluto[16116]: "vpn1"[9] 81.47.250.201:1623 #40:=20
+NAT-Traversal: Result using draft-ietf-ipsec-nat-t-ike-02/03: peer is NATed
 
-> bino_oetomo wrote:
-> > Hi All
-> >
-> > Is there any clue/docs on hoe to let multiple clients behind firewall=
- =3D
-> > connecting to CISCO vpn concentrator ?
-> >
-> > Sincerely
-> > -bino-
->
-> [This might be a dupe, as my addressbook had the wrong address]
->
-> I just finished Intel Centrino Certification testing on the
-> PPTP patch (2004-04-16 cvs snapshot) and Fedora's 2.4.22-1.nptl
-> last week.  Passed with XP/2000 using Intel, Microsoft, Cisco,
-> and Checkpoint VPN clients.
->
-> You can browse the PPTP patch in CVS:
->
-http://cvs.netfilter.org/cgi-bin/viewcvs.cgi/netfilter/patch-o-matic/extr=
-a/
-> and check it out from a similar path.
->
-> --=20
-> Andrew E. Mileski
->
->
->
+May  4 13:55:32 FW1 pluto[16116]: "vpn1"[9] 81.47.250.201:1623 #40: max num=
+ber=20
+of retransmissions (2) reached STATE_MAIN_R2
 
+May  4 13:55:32 FW1 pluto[16116]: "vpn1"[9] 81.47.250.201:1623: deleting=20
+connection "vpn1" instance with peer 81.47.250.201 {isakmp=3D3D#0/ipsec=3D3=
+D#0}
+[...]
+
+I believe that there is no difference between the DSL NAT router and the=20
+satellite link NAT router, isn't it ?
+Which may be the problem ?
+
+Greetings.
+=2D--
+Carles Xavier Munyoz Bald=F3
+carles@unlimitedmail.org
+http://www.unlimitedmail.net/
+=2D--
 
 
