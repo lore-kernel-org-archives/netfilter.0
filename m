@@ -1,14 +1,10 @@
-From: Stephen Satchell <list@fluent2.pyramid.net>
-Subject: RE: urgent - netfilter rejecting 60% of DNS requests!
-Date: Thu, 02 Oct 2003 05:44:57 -0700
+From: "Lasse B. Jensen" <gymer@odense.kollegienet.dk>
+Subject: Change iptables log format
+Date: Thu, 2 Oct 2003 16:40:05 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.1.1.0.20031002054252.01123ec8@fluent2.pyramid.net>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15C406@wardrive.citadelcom
- puter.com.au>
+Message-ID: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15C406@wardrive.citadelcom
- puter.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +14,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: George Vieira <georgev@citadelcomputer.com.au>, mferrari@decidir.net, "Netfilter list (E-mail)" <netfilter@lists.samba.org>
+To: netfilter@lists.netfilter.org
 
-At 09:31 AM 10/2/2003 +1000, George Vieira wrote:
->Are you sure this isn't a BIND problem and not iptables? If it's iptables 
->then you should log all droped/rejected packets and find out which ones 
->are dropping and why.
->
->Do you have some funky rules like dropping fragmented packets or anything 
->else?
->
->Some BIND servers use TCP instead of UDP to transfer zone info but this 
->may(not) be your problem.. LOG, LOG, LOG and if it doesn't catch it then 
->it's probably a BIND issue..
+Is it possible to change the log format of iptables?
 
-Another possibility is that the DNS request-response cycle is taking longer 
-than conntrack allows.  I have not found a way to tune this.  If you 
-suspect this is a problem, consider dropping stateful inspection for DNS 
-packets and use pure packet filtering rules to see if that fixes the problem.
+ala: 
 
-Some of the DNS lookups from dig are taking upwards of 30 seconds with some 
-DNS servers.
+from
 
-Satch
+Oct  2 16:39:44 charlie kernel: LOGPREFIX IN=eth0 OUT=eth1 
+SRC=172.17.5.184 DST=80.60.235.54 LEN=48 TOS=0x00 PREC=0x00 TTL=123 
+ID=52255 DF PROTO=TCP SPT=3240 DPT=1214 WINDOW=44032 RES=0x00 SYN URGP=0
+
+to
+
+Oct  2 16:39:44 charlie kernel: NEW:bred-kirstine:IN=eth0 OUT=eth1 
+SRC=172.17.5.184 DST=80.60.235.54 PROTO=TCP SPT=3240 DPT=1214
 
 
-
--- 
-"The beautiful part of writing is that you don't have to get it right the 
-first time, unlike, say, a brain surgeon." --Robert Cormier  
-
+--
+Lasse B. Jensen
 
