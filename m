@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: bandwidth usage
-Date: Mon, 8 Jul 2002 12:10:12 +0100
+From: "Tsachi Sharfman" <Tsachi_Sharfman@etagon.com>
+Subject: Deleting Connection Tracking information
+Date: Mon, 8 Jul 2002 14:31:26 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207081110.g68BAI806457@vulcan.rissington.net>
-References: <02070816263800.01547@sanitarium>
+Message-ID: <agbtac$rh2$2@main.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2267B.609B96BC"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <02070816263800.01547@sanitarium>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,39 +17,148 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.samba.org, netfilter-devel@lists.samba.org
 
-On Monday 08 July 2002 11:56 am, Rohan Almeida wrote:
+This is a multi-part message in MIME format.
 
-> Hi List,
-> How do i get the bandwidth usage of a particular IP address, on a m/c which
-> is performing NAT?
-> Can i use netstat? or maybe iptables?
-> Is there any tool available.
-> I tried iptraf, but its too much informative for me.   I just need to show
-> current bandwdith usage for 1 or more ips
+------_=_NextPart_001_01C2267B.609B96BC
+Content-Type: text/plain;
+	charset="WINDOWS-1255"
+Content-Transfer-Encoding: quoted-printable
 
-Netfilter will help you track the number of packets & bytes sent to/from a 
-specific IP address, but you'll have to check the numbers at regular 
-intervals (eg a cron job once a minute ?) in order to convert this to 
-bandwidth.
+Hi,
 
-Just create some rules such as:
+=20
 
-iptables -A FORWARD -s a.b.c.d
-iptables -A FORWARD -d a.b.c.d
+I would like to add a NAT rule on a gateway while connections are =
+passing through it, and have the rule apply to existing connections. I =
+understand this is not the behavior when the rule is simply added to the =
+NAT table, since netfilter consults the NAT table only for the first =
+packet of the connection. I assume that if I can delete connection =
+tracking information on the gateway, once a packet belonging to an =
+existing connection passes through the gateway netfilter will regard it =
+as a new connection (since there is no connection tracking information =
+for it), and apply the new NAT rules that existing connection. My =
+questions are:
 
-(Yes, that's correct, you don't have to have a target to jump to if you don't 
-want one...)
+=20
 
-where a.b.c.d is the IP address you're interested in, and then use
+1.	Is my assumption correct?
+2.	Is the answer to the first question is yes, how can I delete =
+connection tracking information?
 
-iptables -L FORWARD -n -v -x
+=20
 
-to see the packet & byte counters.
+Thanks,
 
- 
+Tsachi Sharfman.
 
-Antony.
+
+------_=_NextPart_001_01C2267B.609B96BC
+Content-Type: text/html;
+	charset="WINDOWS-1255"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dwindows-1255">
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi,</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I would like to add a NAT rule on a gateway while
+connections are passing through it, and have the rule apply to existing
+connections. I understand this is not the behavior when the rule is =
+simply
+added to the NAT table, since netfilter consults the NAT table only for =
+the
+first packet of the connection. I assume that if I can delete connection
+tracking information on the gateway, once a packet belonging to an =
+existing
+connection passes through the gateway netfilter will regard it as a new
+connection (since there is no connection tracking information for it), =
+and apply
+the new NAT rules that existing connection. My questions =
+are:</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<ol start=3D1 type=3D1>
+ <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+     font-family:Arial'>Is my assumption correct?</span></font></li>
+ <li class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+     font-family:Arial'>Is the answer to the first question is yes, how =
+can I
+     delete connection tracking information?</span></font></li>
+</ol>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks,</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Tsachi Sharfman.</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+=00
+------_=_NextPart_001_01C2267B.609B96BC--
 
