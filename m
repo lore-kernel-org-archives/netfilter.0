@@ -1,13 +1,11 @@
-From: Jordi Bruguera <jordi@grn.es>
-Subject: Re: QoS using HTB and SFQ ...
-Date: Thu, 12 Dec 2002 11:46:43 +0100 (CET)
+From: Sam Johnston <samj@aos.net.au>
+Subject: Changing MAC Addresses
+Date: Sat, 07 Dec 2002 14:37:01 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0212121144490.27512-100000@chemical.grn.es>
-References: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za>
+Message-ID: <3DF16CDD.5000400@aos.net.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,61 +15,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Raymond Leach <raymondl@knowledgefactory.co.za>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On 12 Dec 2002, Raymond Leach wrote:
+Afternoon all,
 
-Hi.
+I'm not sure if this is the best forum for this question as it is not 
+necessarily directly related to Netfilter, but I can't think of anywhere 
+else I might find anyone capable of answering it, so here goes.
 
-=09To use HTB you have to apply the patches from <devik>
-downloadable from:
+I have a bunch of xboxes running linux which all have the same MAC 
+address: 00:00:00:00:00:00. This causes obvious problems when more than 
+1 machine is on any one segment. I'm led to believe I can work around 
+the problem by putting something like:
 
-=09http://luxik.cdi.cz/~devik/qos/htb/
+/sbin/ifconfig eth0 hw ether 00:50:f2:ab:cd:ef up
 
-I've made several tests with them with successful results.
+fairly early in the boot process (specifically, I've chosen the pre-up 
+directive in /etc/network/interfaces as they're running Debian).
 
-=09regards,
+When I do this I'm able to see the MAC<->IP mapping in the ARP table of 
+another machine, but it doesn't respond. I figure that something 
+somewhere is remembering the old MAC address and dropping anything that 
+doesn't match, although I don't know enough about low level networking 
+in linux to be sure.
 
-> Hi
->
-> Does anyone have any experience (good or bad) with using htb and sfq to
-> do QoS using 2.4.20 kernels?
->
-> I compiled the kernel, installed the image, but tc tells me that htb is
-> an unknown qdisc. I checked that I did select htb in the QoS section.
->
-> Any ideas?
->
-> Ray
-> --
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> (  Raymond Leach                       )
->  ) Knowledge Factory                  (
-> (                                      )
->  ) Tel: +27 11 445 8100               (
-> (  Fax: +27 11 445 8101                )
->  )                                    (
-> (  http://www.knowledgefactory.co.za/  )
->  ) http://www.saptg.co.za/            (
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    o                                o
->     o                              o
->         .--.                  .--.
->        | o_o|                |o_o |
->        | \_:|                |:_/ |
->       / /   \\              //   \ \
->      ( |     |)            (|     | )
->      /`\_   _/'\          /'\_   _/`\
->      \___)=3D(___/          \___)=3D(___/
->
+Any suggestions would be appreciated.
 
-+------------------------------------------------+
-! Jordi Bruguera i Cortada         jordi@grn.es  !
-! Cap T=E8cnic                                     !
-! GRN Serveis Telem=E0tics, SL Tel. +34 972 230000 !
-+------------------------------------------------+
-
+Sam
 
 
