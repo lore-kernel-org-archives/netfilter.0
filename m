@@ -1,44 +1,51 @@
-From: "Tony Thompson" <tony.thompson@stone-ware.com>
-Subject: Do I need to write a module?
-Date: Mon, 23 Jun 2003 13:43:35 -0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sef70417.087@mail.stone-ware.com>
+From: "Gary Cote" <gcote@transat-tech.com>
+Subject: Will netfilter patches be submitted to kernel base?
+Date: Mon, 23 Jun 2003 14:48:44 -0500
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <OKEKIACJCGNKMLKPKIIKEENFCOAA.gcote@transat-tech.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-I am investigating an option to use netfilter to allow/deny traffic from
-the local subnet based on rules/accounting information that is in
-another (Java based) system.  I am new to netfilter so, I can someone
-offer some suggestions:
 
-1. Is netfilter the right place to hook or should I look at a firewall
-that may provide some higher level hooks for authentication and
-accounting?
+Can anyone brief me on whether there's any sort of master
+plan to submit the netfilter patches into the kernel base?
+And further, whether there's any thought to back porting 
+them to 2.4.x? If effort is the limiting factor, then my
+company may be sufficiently motivated to cough up some
+free time.
 
-2. If I should hook into netfilter, is it a good idea to call into a
-JVM from a netfilter module?
+Or ... let me ask you this:
 
-3. I am not sure what kind of control I have when using the userspace
-driver but, should I use that in this situation?  Can I use that
-directly from Java so I wouldn't have the hassel of calling into a JVM
-from a native process?
+I'm specifically interested in the pptp-conntrack-nat patch.
+I noticed that the patch modifies ip_conntrack_core.c and
+ip_nat_core.c. Aside from what appear to be debug statements,
+it looks like a net change of *two* lines of code. The rest of
+the patch consists of new files.
 
-If anyone can offer any other suggestions or examples, that would be
-appreciated.
+Would it be possible to get only those small changes into the 
+kernel base? Then, we'd be able to build the GRE/PPTP helpers 
+as loadable modules and not have to patch the kernel.
 
-Thanks.
-Tony
+We're something of a value-added reseller. We bundle our system
+software within a linux workstation. We've so far managed to run 
+our product on off-the-shelf distros and would prefer not to get
+into the business of building, shipping, and maintaining custom
+kernels.
+
+Thoughts would be appreciated.
+
+
+
 
