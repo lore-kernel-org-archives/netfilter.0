@@ -1,12 +1,12 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: securing windows farm  using iptables
-Date: Fri, 24 Oct 2003 14:45:58 +0800
+From: "Jin Gu, Kim" <lilia21@postech.ac.kr>
+Subject: execute iptables via web browsers?
+Date: Fri, 24 Oct 2003 16:25:55 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E706C257@overlord.overturemedia.com>
+Message-ID: <200310240725.h9O7PuE23633@smtp.postech.ac.kr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0000_01C39A4B.80D95FA0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +16,98 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
-As our network is part of a large network, we cannot rely on our mother =
-company to protect us sub companies.
+------=_NextPart_000_0000_01C39A4B.80D95FA0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-I have been helped by a lot of our list members about subnets and proper =
-iptables usage.=20
-I thank you for the assistance you have given me.=20
-This time, I have a bigger problem.
+Hi all.
+ 
+I made this file to view "nat" rules, but nothing was there. How can I see
+the results via web?
+ 
+(SSI setting was done in httpd.conf. Other environmental variables were
+shown)
+ 
+----------------------------------------------------------------------------
+-------------------------------------
+<html>
+<head><title> cgi test</title></head>
+ 
+<body>
+ 
+<h1> Server Side Includes TEST </h1>
+ 
+<hr>
+<p>
+iptables' rule ("nat" table)<p>
+<!--#exec cmd="/sbin/iptables -t nat -L"-->
+ 
 
-How can I protect a windows exchange server and domain controller?
-windows farm --- linux iptables -- internet
+</body>
+ 
+</html>
+ 
 
-Again, I cannot change the windows exchange to linux postfix.=20
-Although it is within my authority to move to linux, hundreds of people =
-using the windows farm won't be glad for a drastic change. I am slowly =
-moving some people to linux though. :D
+ 
 
-For the exchange server, what ports do I need to open? Do I need some =
-port forwarding? I want to create some sort of routing through iptables =
-so I can secure the windows server as well.
+------=_NextPart_000_0000_01C39A4B.80D95FA0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-For the domain controller, people said I need to make sure dns is open. =
-What else do I need to open up? Again, can I just do some routing for =
-the dns?
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D914281907-24102003><FONT size=3D2>Hi =
+all.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT =
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT size=3D2>I made this file to =
+view "nat"=20
+rules, but nothing was there. How can I see the results via=20
+web?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT =
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT size=3D2>(SSI setting was =
+done in=20
+httpd.conf. Other environmental variables were =
+shown)</FONT></SPAN></DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT =
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT=20
+size=3D2>----------------------------------------------------------------=
+-------------------------------------------------</FONT></SPAN></DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT face=3D&#44404;&#47548;=20
+size=3D2>&lt;html&gt;<BR>&lt;head&gt;&lt;title&gt; cgi=20
+test&lt;/title&gt;&lt;/head&gt;</FONT></SPAN></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT face=3D&#44404;&#47548;=20
+size=3D2>&lt;body&gt;</FONT></SPAN></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT face=3D&#44404;&#47548; =
+size=3D2>&lt;h1&gt; Server Side=20
+Includes TEST &lt;/h1&gt;</FONT></SPAN></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><SPAN class=3D914281907-24102003><FONT face=3D&#44404;&#47548;=20
+size=3D2>&lt;hr&gt;<BR>&lt;p&gt;<BR>iptables' rule ("nat"=20
+table)&lt;p&gt;<BR>&lt;!--#exec cmd=3D"/sbin/iptables -t nat=20
+-L"--&gt;</FONT></SPAN></DIV>
+<DIV>&nbsp;</DIV><SPAN class=3D914281907-24102003><FONT =
+face=3D&#44404;&#47548; size=3D2>
+<DIV><BR>&lt;/body&gt;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&lt;/html&gt;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><BR></FONT></SPAN>&nbsp;</DIV></BODY></HTML>
 
-Thank you so much for the help!
-
-
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
+------=_NextPart_000_0000_01C39A4B.80D95FA0--
 
 
