@@ -1,14 +1,12 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: Packet dumping or mirroring
-Date: Wed, 18 Feb 2004 17:34:12 -0700
+From: "Peter Marshall" <pmarshal@caris.com>
+Subject: Re: Mail Through Firewall
+Date: Wed, 18 Feb 2004 11:07:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040218173412.525f2012@mgalepc.utilitran.com>
-References: <20040218135436.309837c7@mgalepc.utilitran.com>
-	<200402182153.40283.Antony@Soft-Solutions.co.uk>
+Message-ID: <018c01c3f630$decdacb0$49caa8c0@caris.priv>
+References: <012201c3f627$18eabbe0$49caa8c0@caris.priv> <200402181405.01680.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200402182153.40283.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,65 +19,69 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+How do I tell outlook to look up using DNS instead of NetBIOS ... ?
 
-	My mistake ... according to the documentation it is libcap that can not keep
-up. 
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, February 18, 2004 10:05 AM
+Subject: Re: Mail Through Firewall
 
-Michael.
 
-
-On Wed, 18 Feb 2004 21:53:40 +0000
-Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-
-> On Wednesday 18 February 2004 8:54 pm, Michael Gale wrote:
-> 
-> > with traffic that is faster then 100MB HD.
+> On Wednesday 18 February 2004 1:57 pm, Peter Marshall wrote:
+>
+> > Hey, I am sure this question is going to seem trivial to everyone here
+..
+> > but I will ask anyway.
+> > I want to get outlook to work on my inside box .... I have it all set up
+> > correctly, but it can't find the pop / smtp servers ...
 > >
-> > So anything 10MB FD and slower is ok, but anything over that limit ntop can
-> 
-> > Solution 1:
-> > First you create a "tmpfs" .. for example in your NTOP home directory call
-> > it tmp (/home/ntop/tmp). Now make this directory a RAM drive that gets
-> > mount everytime we boot up, about 50MB (maybe).
-> 
-> If your problem is not being able to keep up with >10Mbps FD or 100Mbps HD, 
-> then 50Mbytes is going to fill up pretty quickly...
-> 
-> 1. If you capture full packets, assume network is running at 50Mbps on 
-> average; that's 6.25Mbytes per second - your ramdisk fills up in 8 seconds.
-> 
-> 2. If you just capture headers, assume network is again running at 50Mbps, 
-> with 1500 byte packets one way and empty packets (headers only) the other, 
-> also assume headers are 48 bytes.   50Mbps / (1548 x 8) = 4038 packets / sec. 
->  
-> 4038 x 48 = 190kbytes / sec.   Your ramdisk now lasts for 258 seconds (or a 
-> bit more than 4 minutes).
-> 
-> Of course, if your network traffic is not running at 50Mbps then your ramdisk 
-> will last longer, but then ntop would have been able to keep up on its own 
-> anyway....
-> 
+> > I ran ethereal to see what the problem was ...
+> > When I try to connect I get 3 requests
+> > source 10.0.0.2
+> > dest 10.0.0.255
+>
+> That's a broadcast address...
+>
+> > Protocol NBNS
+>
+> Ugh.   M$ Outlook trying to use NetBios Name Resolution instead of DNS :(
+>
+> > source and dest ports: 137
+>
+> NetBios....
+>
+> > and I get no reply's ... ( well, I get an arp request after the 3rd try
+> > ...) Any ideas how to get this working ?
+>
+> Tell the client machine (or Outlook, if this is one of those things which
+> Outlook tries to look after by itself, never mind how the rest of the
+machine
+> has been configured), to resolve names by DNS, not by using NetBios.
+>
+> Then it might sensibly look up the IP address of your POP3 server and send
+a
+> TCP packet to port 110 on it....
+>
 > Regards,
-> 
+>
 > Antony.
-> 
+>
 > -- 
-> If builders made buildings the way programmers write programs, then the first 
-> woodpecker to come along would destroy civilisation.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
-> 
-> 
-> 
-> 
+> "Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
+> Blaster].   However, these products are no longer supported.   Users of
+these
+> products are strongly encouraged to upgrade to later versions."
+>
+> (which *are* affected by MS Blaster...)
+>
+> http://www.microsoft.com/security/security_bulletins/ms03-026.asp
+>
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
 
-
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
 
