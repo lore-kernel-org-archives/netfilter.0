@@ -1,10 +1,10 @@
-From: Sabrina Lautier <slautier@lavache.com>
-Subject: trouble compiling iptables v1.2.7a
-Date: Thu, 06 Mar 2003 16:36:08 +0100
+From: "Patrick Ahler" <patrick@vikus.com>
+Subject: Forwarding Problems
+Date: Thu, 6 Mar 2003 11:56:18 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1046964968.3e676ae844a48@lavache.alinto.com>
+Message-ID: <ABEKJILKOKKGGDJKHKDFOEBGCAAA.patrick@vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,47 +16,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-Hi all !
+I have iptables FORWARD chain working except for one minor detail... after I
+set all the ACCEPT rules, I want to set a drop rule/policy to the FORWARD
+CHAIN as well, thus dropping all the packets I haven't accepted. The problem
+is, if I use
 
-I'm following the "Linux IP Masqueade HowTo" to set up a linux
-router-firewall.
-I'm having trouble compiling iptables and I don't know how to solve my
-problem...
+iptables -A FORWARD -j DROP
+or
+iptables -P FORWARD DROP
 
-I'm running linux redhat 7.3 with a 2.4.18-3 kernel but I've
-downloaded the latest kernel version (2.4.20) in order to compile it
-with iptables-1.2.7a and patch-o-matic kernel patches.
+they will drop all packets including the ones I already ACCEPTed.
 
-When I try to compile here is the error I get:
-**********************************************************************
-$ make KERNEL_DIR=/usr/src/kernel/linux
-Extentions found:
-cc -02 ...
-In file included from /usr/src/kernel/linux/include/linux/config.h:4,
-from /usr/src/kernel/linux/include/linux/netfilter_ipv4.h:8,
-from /usr/src/kernel/linux/include/linux/netfilter_ipv4/iptables.h:25,
-from include/libiptc.h:6,
-from include/iptables.h:5,
-from extentions/libipt_ah.c:8,
-/usr/include/linux/autoconf.h:1:2: #error Invalid kernel header
-inluded in user space
-make: ** [extentions/libipt_ah_sh.o] Error 1
-**********************************************************************
+example (want to allow all incoming and outgoing www traffic):
+iptables -A FORWARD -p tcp -d 192.168.1.0/24 --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp -d 192.168.1.0/24 --sport 80 -j ACCEPT
+iptables -A FORWARD -p tcp -s 192.168.1.0/24 --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp -s 192.168.1.0/24 --sport 80 -j ACCEPT
+iptables -A FORWARD -j DROP
 
-For information, I'm using gcc-2.96-110. I've tried to upgrade to
-gcc-3.2-7 but cannot find glibc-devel-2.2.90-12 required for this
-version of gcc (does anybody know of where to find it ?).
+Any help is greatly appreciated
 
-Any idea of how to solve my issue ?
-Any help would be greatly appreciated.
-
-Regards,
-Sabrina
-
-
----------------------------------------------
-Powered by Alinto (http://www.alinto.net)
-        for lavache.com (http://www.lavacheautomatique.com)
 
