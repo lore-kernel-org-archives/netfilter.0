@@ -1,13 +1,13 @@
 From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: finding out the culprit ip
-Date: 05 Sep 2003 17:17:55 +0530
+Subject: Re: iptables installation problem
+Date: 05 Sep 2003 17:21:04 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062762620.1164.2.camel@india.nsecure.net>
-References: <20030905183420.GA1850@linux.local>
+Message-ID: <1062762722.1174.5.camel@india.nsecure.net>
+References: <20030905111754.9251.qmail@web20701.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-Of8o3yTUr+IHRuGuJAzZ"
+Content-Type: multipart/alternative; boundary="=-6c11rOlbb6GpJB/8h7Ed"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030905183420.GA1850@linux.local>
+In-Reply-To: <20030905111754.9251.qmail@web20701.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Payal Rathod <payal-iptables@staticky.com>
+To: ads nat <adsnat@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
 
---=-Of8o3yTUr+IHRuGuJAzZ
+--=-6c11rOlbb6GpJB/8h7Ed
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Hi payal,
+Hi,
 
-Just see too which domain the mails are getting sent by your machine.
-Then try to get the mx entry for that domain. If you resolve the ip of
-the mx entry, which is you wanted.
-
-Regards
-Dharmendra T.
-
-On Sat, 2003-09-06 at 00:04, Payal Rathod wrote:
+On Fri, 2003-09-05 at 16:47, ads nat wrote:
 
     Hi,
-    A particular machine in my LAN is affected by SoBig virus and is sending
-    mails to remote sites. I need to find that IP. The only lead I have is
-    that it is that IP which is generating maximum SMTP traffic. How do I
-    find it out and block it (or maybe clean it)?
+    I am trying to install iptables-1.2.8.tar.bz2 on Linux 8.0 server.
+    I have downloaded iptables-1.2.8.tar.bz2 file from netfilter
+    downloads to /root/iptables-1.2.8 directory. 
+    by using command 
+    "tar -xf iptables-1.2.8.tar"
+    it has created iptables-1.2.8 directory in which all files are
+    extracted.
+
+After this you have to compile the iptables. 
+
+     
+    I don't know how to go further.
+    I tried make and make install.
+     
+    Then when i gave command "/etc/rc.d/rc.local"
+    it gives following error.
+
+
+Tell me what this file contais. Is this a script which has iptables
+rules?
+
+    "[root@xyz iptables-1.2.8]# /etc/rc.d/rc.local
+    SIOCDELRT: No such process
+    RTNETLINK answers: File exists
+    SIOCADDRT: File exists
+    SIOCADDRT: File exists
+    iptables v1.2.6a: can't initialize iptables table `-nat': Table does
+    not exist (do you need to insmod?)
+    Perhaps iptables or your kernel needs to be upgraded.
+     
+    How to go ahead now?
+     
+    Thanks
     
-    Any ideas on this?
-    With warm regards,
-    -Payal
     
-    -- 
-    "Visit GNU/Linux Success Stories"
-    http://payal.staticky.com
-    Guest-Book Section Updated.
     
+    
+    ____________________________________________________________________
+    Do you Yahoo!?
+    Yahoo! SiteBuilder - Free, easy-to-use web site design software
 
 -- 
 Regards
@@ -63,7 +82,7 @@ message in error,please notify the sender and destroy the message
 immediately.Unauthorised use or reproduction of this message is strictly
 prohibited.
 
---=-Of8o3yTUr+IHRuGuJAzZ
+--=-6c11rOlbb6GpJB/8h7Ed
 Content-Type: text/html; charset=utf-8
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
@@ -73,37 +92,75 @@ Content-Type: text/html; charset=utf-8
   <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
 </HEAD>
 <BODY>
-Hi payal,
+Hi,
 <BR>
 
 <BR>
-Just see too which domain the mails are getting sent by your machine. Then try to get the mx entry for that domain. If you resolve the ip of the mx entry, which is you wanted.
-<BR>
-
-<BR>
-Regards
-<BR>
-Dharmendra T.
-<BR>
-
-<BR>
-On Sat, 2003-09-06 at 00:04, Payal Rathod wrote:
+On Fri, 2003-09-05 at 16:47, ads nat wrote:
     <BLOCKQUOTE>
-<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Hi,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>A particular machine in my LAN is affected by SoBig virus and is sending</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>mails to remote sites. I need to find that IP. The only lead I have is</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>that it is that IP which is generating maximum SMTP traffic. How do I</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>find it out and block it (or maybe clean it)?</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Any ideas on this?</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>With warm regards,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>-Payal</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>-- </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&quot;Visit GNU/Linux Success Stories&quot;</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>http://payal.staticky.com</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Guest-Book Section Updated.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>Hi,</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I am trying to install iptables-1.2.8.tar.bz2 on Linux 8.0 server.</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I have downloaded iptables-1.2.8.tar.bz2 file from netfilter downloads to /root/iptables-1.2.8 directory. </FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>by using command </FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&quot;tar -xf iptables-1.2.8.tar&quot;</FONT></FONT></I>
+    <BR>
+    <FONT SIZE="3">i</FONT><FONT COLOR="#73273a"><FONT SIZE="3"><I>t has created iptables-1.2.8 directory in which all files are extracted.</FONT></FONT></I>
+    </BLOCKQUOTE>
+<FONT SIZE="3">After this you have to compile the iptables. </FONT>
+    <BLOCKQUOTE>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I don't know how to go further.</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I tried make and make install.</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>Then when i gave command &quot;/etc/rc.d/rc.local&quot;</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>it gives following error.</FONT></FONT></I>
+    </BLOCKQUOTE>
+<FONT SIZE="3"></FONT>
+<BR>
+<FONT SIZE="3">Tell me what this file contais. Is this a script which has iptables rules?</FONT>
+    <BLOCKQUOTE>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&quot;[root@xyz iptables-1.2.8]# /etc/rc.d/rc.local</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>SIOCDELRT: No such process</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>RTNETLINK answers: File exists</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>SIOCADDRT: File exists</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>SIOCADDRT: File exists</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>iptables v1.2.6a: can't initialize iptables table `-nat': Table does not exist (do you need to insmod?)</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>Perhaps iptables or your kernel needs to be upgraded.</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>How to go ahead now?</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I>Thanks</FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+    <BR>
+    <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
+    <BR>
+    
+<HR SIZE="1">
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Do you Yahoo!?</FONT></FONT></I>
+    <BR>
+    <A HREF="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com"><FONT SIZE="3"><I>Yahoo! SiteBuilder</FONT></I></A><FONT COLOR="#73273a"><FONT SIZE="3"><I> - Free, easy-to-use web site design software</FONT></FONT></I>
     </BLOCKQUOTE>
 <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
 <TR>
@@ -121,6 +178,6 @@ This message is intended for the addressee only. It may contain privileged or Co
 </BODY>
 </HTML>
 
---=-Of8o3yTUr+IHRuGuJAzZ--
+--=-6c11rOlbb6GpJB/8h7Ed--
 
 
