@@ -1,12 +1,12 @@
-From: Philip Ho <cbho@ie.cuhk.edu.hk>
-Subject: Re: how can i set iptables for forwarding
-Date: Thu, 12 Jun 2003 12:25:22 +0800
+From: Greg Stark <gsstark@mit.edu>
+Subject: Re: NAT PPPOE & MTU problems
+Date: 12 Jun 2003 00:49:53 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EE800B2.5496B7AB@ie.cuhk.edu.hk>
-References: <OFE825FCD3.3D9D1EE5-ON88256D3F.00051D26-88256D3F.00057A38@deepwoods.com>
+Message-ID: <877k7roq6m.fsf@stark.dyndns.tv>
+References: <000801c325de$f89fde60$1800a8c0@ckznak.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000801c325de$f89fde60$1800a8c0@ckznak.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +17,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: dawn lin <alantisjun@hotmail.com>
-Cc: Carol Anne Ogdin <caogdin@deepwoods.com>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: s <xperience@interia.pl>
+Cc: netfilter@lists.netfilter.org
 
-Dawn
+"s" <xperience@interia.pl> writes:
 
-You need to make sure routing table works and ip_forward set to 1.
+> I've got a problem with NAT connections on PPPOE.
+> My box is connected to internet via DSL, and I have some computers behind NAT. 
+> I changed MTU on internal interfaces to 1492 and configured iptables with:
+> 
+> iptables -A FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+> 
+> also I have squid cache installed for local workstations. When I surfing net
+> without squid everything works fine, no timeouts or something. Is good. But
+> when I use squid as a cache sometimes when squid uses POST method with huge
+> amount of parameters, connection hangs. On tcpdump I see that one packet is
+> repeated few times (5) and I got timeout message. What's wrong ? Repeated
+> packet has 1492 bytes lenght. But there's no answer from www server.
 
-iptables control what packets to forward and what packets not to forward.
+You might try smaller MTUs. 1492 should work with PPPOE in theory, but some
+PPPOE based DSL providers seem to have internal networks that impose
+additional constraints. I find my own packets don't seem to get out if they're
+over 1480 or so (it seems to vary).
 
-Regards,
-philip
+Also, does your provider have a transparent proxy? One transparent proxy I've
+seen misbehaved in precisely the manner you're describing. There was no way
+around the bug, and people complained incessantly on the support newsgroups.
+I eventually just switched providers.
 
-
-Carol Anne Ogdin wrote:
-
-> >i wonder iptables can help me set my Computer B to forward packets to
-> >computer A.
-> >is that possible?
-> That's not iptable's job.  You need a router.  Read the documenation for
-> the "ip" command on your Linux system.  All you need is a simple route on
-> computer B that forwards to C...and, of course, routes for traffic from C
-> back to A, etc., and to set the appropriate "ip_forward" value to 1.
->
-> --Carol Anne
->
->  Carol Anne Ogdin            http://www.net-working.com                530/295-3657
->
->  Deep Woods Technology, Inc.  http://www.deepwoods.com        CAOgdin@deepwoods.com
->
->   Leveraging technology to
->    restore the soul of the
->         organization
->
+-- 
+greg
 
 
