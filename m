@@ -1,18 +1,12 @@
-From: Damjan <gdamjan@mail.net.mk>
-Subject: Re: What is the diference between ipfw of *bsd and netfilter of
-	linux?
-Date: Fri, 22 Oct 2004 04:16:25 +0200
+From: =?ISO-8859-1?Q?Ren=E9_Gallati?= <draxinusom@gmail.com>
+Subject: Security vulnerability in netfilter?
+Date: Fri, 22 Oct 2004 09:52:36 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041022021625.GD17225@legolas.on.net.mk>
-References: <1096920404.658.4.camel@pretorian>
-	<1096979251.668.2.camel@nostromo.bgsecm.com>
-	<20041005172315.GA22610@legolas.on.net.mk>
-	<1097000655.4415.4.camel@wolfpack.ljm.dom>
+Message-ID: <50f03b970410220052683669a7@mail.gmail.com>
+Reply-To: =?ISO-8859-1?Q?Ren=E9_Gallati?= <draxinusom@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1097000655.4415.4.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,24 +16,35 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-> > However I agree with you that netfilter is easier to use and has more
-> > capabilities, I still can't beleive that netfilter (iptables actually=
-)
-> > doesn't have a way to identify rules uniquely (via an ID). So simple
-> > feaure, so powerfull, and still iptables doesn't have this.
-> >=20
-> > And no, linenumbers don't identify rules uniquely, they can change at
-> > any moment.
->=20
-> check out the comment patch from POM.
+Hello list,
 
-Ohh, and its in kernel-2.6.9 by default... I'm happy again.
+is there any official information about this
+http://www.securityfocus.com/archive/1/379010/2004-10-19/2004-10-25/0
 
+?
 
+Couldn't find anything on netfilter.org
+
+quoting from the article:
+"
+   An integer underflow problem in the iptables firewall logging rules
+   can allow a remote attacker to crash the machine by using a handcrafted
+   IP packet. This attack is only possible with firewalling enabled.
+
+   We would like to thank Richard Hart for reporting the problem.
+
+   This problem has already been fixed in the 2.6.8 upstream Linux kernel,
+   this update contains a backport of the fix.
+
+   Products running a 2.4 kernel are not affected.
+
+   Mitre has assigned the CVE ID CAN-2004-0816 for this problem.
+"
 --=20
-damjan | =D0=B4=D0=B0=D0=BC=D1=98=D0=B0=D0=BD
-This is my jabber ID --> damjan@bagra.net.mk <-- not my mail address!!!
+C U
+
+     - -- ---- ----- -----/\/  Ren=E9 Gallati  \/\---- ----- --- -- -
 
