@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ip_conntrack_max
-Date: Thu, 8 Jul 2004 18:42:18 +0100
+From: James Sneeringer <james+netfilter@vincentsystems.com>
+Subject: Re: Firewall structure and more (Newbie)
+Date: Thu, 8 Jul 2004 12:47:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407081842.18007.Antony@Soft-Solutions.co.uk>
-References: <40ED161F.5070804@cisbic.com> <200407081429.24492.Antony@Soft-Solutions.co.uk> <40ED8294.4060103@cisbic.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040708174716.GC28733@valjean.si.ocslink.com>
+References: <20040708171016.GA16115@itstud.chalmers.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40ED8294.4060103@cisbic.com>
+Content-Disposition: inline
+In-Reply-To: <20040708171016.GA16115@itstud.chalmers.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,60 +18,65 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 08 July 2004 6:21 pm, Fallucchi Antonio wrote:
+On Thu, Jul 08, 2004 at 07:10:16PM +0200, Erik Wikstr?m wrote:
+> My idea is to create 3 chains for each scenario, one for tcp, one for
+> udp and one for icmp. And maybe some more like one for port forwarding
+> or so. But that's an awful lot of rules and some of them might contain
+> only one or two rules
 
-> > Why do you want to limit connections per machine? What are you
-> > trying to achieve?
->
-> The problem are the P2P software that create any connection on the
-> conntrack..
-> Because filter all p2p port is very difficult, I thought that to limit
-> the number of simultaneous connection is a good idea..
+How you structure your rules and chains is entirely up to you, and depends
+on your specific needs.  However, in general you should set up your rules
+and chains so the kernel has to do as little work as possible.  Sometimes
+this isn't possible, but in practice, you can usually break up large chains
+into smaller ones.  For example, this isn't a long chain, but it illustrates
+the point.
 
-I think the right solution for this problem is to connect your internal users 
-through proxy machines, so they can't do direct P2P connections at all.
+    iptables -A FORWARD -p tcp -s 10.0.0.2 --dport 80 -j ACCEPT
+    iptables -A FORWARD -p tcp -s 10.0.0.2 --dport 25 -j ACCEPT
+    iptables -A FORWARD -p tcp -s 10.0.0.2 --dport 110 -j ACCEPT
 
-What network connections do your users need?   Email is SMTP / POP3 / IMAP to 
-a local server (or a single specified server at your ISP).   HTTP / HTTPS / 
-FTP you can proxy very simply through Squid.   DNS should be to a local 
-caching server only (on the same machine as Squid for good Squid 
-performance).   If you need to allow SSH, then only allow it from one 
-specific machine on your network, which people have to connect through (and 
-disable port forwarding).
+    iptables -A FORWARD -p tcp -s 10.0.0.3 --dport 80 -j ACCEPT
+    iptables -A FORWARD -p tcp -s 10.0.0.3 --dport 25 -j ACCEPT
+    iptables -A FORWARD -p tcp -s 10.0.0.3 --dport 110 -j ACCEPT
 
-I can't think of any other protocols you're likely to need, and this should 
-stop all P2P activity as well as enhance the performance of your network by 
-using a caching proxy server for the website which can be cached.
+Instead, you might do something like this:
 
-> ps: it's ok the signature now?
+    iptables -N CHECK_PORTS
 
----------------------------------------------------------------
-| |||||||    ||    |  Fallucchi Antonio Giuseppe  mat. 2282     |
-| ||        ||||    |      --> Live free() of die() <--         |
-| ||||     ||  ||    |        OpenSource philosophy             |
-| ||      ||||||||    |  Universita' di Bologna sede di Cesena  |
-| ||     ||      ||    |    Cdl di Scienze dell'Informazione    |
----------------------------------------------------------------
+    iptables -A FORWARD -s 10.0.0.2 -j CHECK_PORTS
+    iptables -A FORWARD -s 10.0.0.3 -j CHECK_PORTS
 
-No, I don't quite think so - I think your want "or" instead of "of" in "Live 
-free() or die()"?
+    iptables -A CHECK_PORTS -p tcp --dport 80 -j ACCEPT
+    iptables -A CHECK_PORTS -p tcp --dport 25 -j ACCEPT
+    iptables -A CHECK_PORTS -p tcp --dport 110 -j ACCEPT
+    iptables -A CHECK_PORTS -j RETURN
 
-Regards,
+For a case where 10.0.0.3 wants to go to port 25, the first set of rules
+requires the kernel to evaluate 5 rules.  The second example only requires
+evaluation of 3 rules.  It's also a bit more modular and makes it simpler
+to grant the same access to another IP in the future.
 
-Antony.
+> Which leads to my questions: What do you think of this structure? What
+> would you do?
+> 
+> How many rules should there be in a chain to compensate for the chain?
+> (Cause there are some overhead for each chain right?)
 
--- 
-"When you talk about Linux versus Windows, you're talking about which 
-operating system is the best value for money and fit for purpose. That's a 
-very basic decision customers can make if they have the information available 
-to them. Quite frankly if we lose to Linux because our customers say it's 
-better value for money, tough luck for us."
+Unless you're doing this on a 386 with 4 MB RAM, the overhead of each
+individual chain isn't worth worrying about.
 
- - Steve Vamos, MD of Microsoft Australia
+> I'm also open to suggestions for things to block, and maybe suggestions
+> on rules to do so, like ping of death and other known problems.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Personally, I use the state module, and I block all inbound traffic by
+default.  The only permitted inbound traffic is stuff that matches state
+ESTABLISHED,RELATED, and thinks like tcp/25 to my mail server.  For what
+ut's worth, I have no custom chains on my firewall (486dx2/66, 32 MB RAM).
+My FORWARD chain has about 60 rules in it, and performance is just fine.
+
+-James
 
 
