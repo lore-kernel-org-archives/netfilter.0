@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT/SNAT efficiency?
-Date: Wed, 01 Sep 2004 13:53:43 -0400
+Subject: Re: locally access server behind firewall
+Date: Wed, 01 Sep 2004 14:08:02 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094061223.1824.37.camel@wolfpack.ljm.dom>
-References: <3A6E2F2950688040B9D3127FFC06345C064F62@ndm01-mxc01.needham.verso.com>
+Message-ID: <1094062082.1824.49.camel@wolfpack.ljm.dom>
+References: <41360CA0.6090109@tomdp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3A6E2F2950688040B9D3127FFC06345C064F62@ndm01-mxc01.needham.verso.com>
+In-Reply-To: <41360CA0.6090109@tomdp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,60 +20,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-09-01 at 10:42, Nolan, Timothy wrote:
-> I'd like to use iptables to map addressA/portB to addressC/portD. I need to support up to 8000 address/port pairs (can be coming from any address, so I don't think the NETMAP target will suffice). I was planning to use the NAT table and add a DNAT 
-> target for each address to change the destination address and a SNAT target to change the source (total of 16000 rules).
-> 
-> It's my understanding that iptables uses a linear search and that hipac doesn't support NAT. Does anyone have any opinions on whether iptables will scale to support what I have described?
-> 
-> Thanks,
-> Tim
+On Wed, 2004-09-01 at 13:53, Tom wrote:
+> This works really well when I try to connect from the outside to my 
+> webserver. But, if I try to connect to http://myserver.com:8888 from the 
+> internal network (or from my server itself), I always get 'connection 
+> refused'. I'm pretty sure I need some other rules, but can someone 
+> please help me in the good direction here? Thanks a lot!!
 
-sorry--i'm not qualified to answer the linear search/hipac part of your
-question.
+because your server doesn't listen on port 8888--it listens on port 80. 
+that's why you had to create the DNAT rule.
 
-in the event that your only choice is to have 8000 DNAT and 8000 SNAT
-rules, you can make a small optimization by doing the following (this
-assumes that portB is the same for all addresses, i'm going to use 80 in
-ths example):
+as far as trying to connect "from the internal network"--these packets
+will go directly from LAN client to WWW server and never traverse your
+firewall, so no DNAT can take place.  if you must be able to do
+this--configure your WWW server to listen on port 8888 ("Listen 8888" in
+apache).
 
-        iptables -t nat -N dport80
+NAT-ing of locally-generated packets on your firewall would require a
+rule in the OUTPUT chain of the nat table:
+
+        iptables -t nat -A OUTPUT -p tcp -d $EXTIP --dport 8888 \
+          -j DNAT --to-destination $SERVER:8888
         
-        iptables -t nat -A PREROUTING -i $outsideIF -p tcp --syn \
-          --dport 80 -j dport80
-        
-        iptables -t nat -A dport80 -p tcp -d $addressA \
-          -j DNAT --to-destination $addressC:$portD
-
-this way--the *only* packets that have to traverse the 8000 DNAT rules
-will be TCP SYN packets coming in on the outside interface with a
-destination port of 80.  once a match is made in there--let connection
-tracking take over for you.  the fact that there are 8000 rules in
-"dport80" won't affect any other traffic going through this gateway.
-
-as far as traversing the "dport80" chain with 8000 entries...i dunno. 
-i've done something very similar to this, but the production environment
-only have ~250 entries, and the test environment used ~500 entries.  in
-that case, i didn't measure any significant latency--but you're a whole
-order of magnitude above this...
-
-as i'm typing this--i just realized you *could* use NETMAP from POM in
-the above situation, if portB == portD; and again, portB is the same for
-all addresses:
-
-        iptables -t nat -N dport80
-        
-        iptables -t nat -A PREROUTING -i $outsideIF -p tcp --syn \
-          --dport 80 -j dport80
-        
-        iptables -t nat -A dport80 -d $ousideNet \
-          -j NETMAP --to $insideNet
-
-you may need multiple NETMAP statements if the 8000 addresses don't fall
-neatly into subnet boundaries, but you should be able to summarize down
-to something significantly less than 8000.
-
-sorry for rambling--hope this is some use.
+note:  i don't even know if that will work, as it requires the output
+interface to change from external to internal and i vaguely recall that
+this doesn't work cleanly without a patch.
 
 -j
 
