@@ -1,11 +1,13 @@
-From: cc <cc@kdtc.net>
-Subject: port 80 redirection
-Date: Mon, 11 Aug 2003 18:59:50 +0800
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: howto bind Mac to ip address
+Date: Mon, 11 Aug 2003 09:05:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F377726.7060502@kdtc.net>
+Message-ID: <20030811130508.GA11493@cannon.eng.us.uu.net>
+References: <007601c35fe1$01eb3d20$142a45ca@shahid>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <007601c35fe1$01eb3d20$142a45ca@shahid>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,57 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Tariq Anwer <alien@aol.com.pk>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Mon, Aug 11, 2003 at 01:17:28PM +0500, Tariq Anwer wrote:
 
-I'm not sure if this is OT here, but can
-someone comment on the following?  It is
-certainly confusing if not convoluted. There's
-always a simple solution, but I'm just
-curious as to whether or not such a set
-up would work.
+> Hi!
 
-I have a LAN beheind a NAT'd firewall
-with iptables 1.2.8.  Currently,
-none of the users are proxied.  How
-do I transparently proxy the users,
-but with their workstations not
-needing any proxy changes?
+Hello,
 
-I had an idea, but don't know if
-it's do-able (or even should I even
-bother)?
+You know that the MAC address is only visible on the same ethernet link.
+Having said this, How are the IP addresses being assigned? If it's by
+DHCP, then you can assign each MAC, a well-known IP and filter based on
+that IP... If not, then you must be on the same ethernet link and just
+use the the mac module (see "man iptables" and look for mac).
 
-ie.
+Ramin
 
-LAN (port 80) ->
-       IN                              OUT
-->(80 eth1  ) Firewall          (eth1 8180)
-->(8180 eth0) Proxy Machine     (eth0 8181)
-->(8181 eth1) Firewall          (80  eth0) -> 'Net
-
-So when a packet comes back, it goes :
-
-'Net (port 80) ->
-       IN                             Out
-->(80 eth0 in)    Firewall          (eth1 8181)
-->(8181 eth0 in)  LAN Proxy         (eth0 8180)
-->(8180 eth1 in)  Firewall          (eth1 80) -> LAN
-
-This way, I can transparently proxy the users
-and I wouldn't need to fiddle around with their
-workstation settings.
-
-Any pointers appreciated.
-
-Edmund
-
-
-
-
-
-
-
+> 
+> I'm a new to Linux, I want to setup Linux NAT box for a small LAN with selective services to allow like only browsing for staff and other services for management like ftp msn chatting etc.
+> 
+>  
+> 
+> 1.>  I want to bind each MAC address to his or her assigned IP address so nobody should mess around to change his or her IP's.
+> 
+>  
+> 
+> 2.> I want to allow selective MAC addresses each time, so they are not allowed to use it all the time or I can block them whenever I want to.
+> 
+>  
+> 
+> I will highly appreciate if anybody could help me or direct me to any web site or article to build this Box successfully.
+> 
+>  
+> 
+> Best regards,
+> 
+>  
+> 
+> Alien
 
