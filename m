@@ -1,15 +1,12 @@
-From: Michael <freeware@adsl-209-204-165-151.sonic.net>
-Subject: Re: netfilter resets TCP conversation that was DNATed from the local
- machine to another
-Date: Wed, 02 Jul 2003 14:39:37 -0700
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: OUTPUT chain DNAT problem
+Date: Thu, 3 Jul 2003 08:14:50 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F035119.8000907@adsl-209-204-165-151.sonic.net>
-References: <3EFD10A2.6020807@adsl-209-204-165-151.sonic.net> <200307010200.00067.Alistair@nerdnet.ca> <3F01B5BD.5090401@adsl-209-204-165-151.sonic.net> <200307020206.13952.Alistair@nerdnet.ca>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BEC7@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------040201070200040100010109"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307020206.13952.Alistair@nerdnet.ca>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,117 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Alistair@nerdnet.ca
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: admin@flshlnk.com, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------040201070200040100010109
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+There was a problem in the old days where NAT for OUTPUT was broken. Not =
+sure if this is the same case still or not, if so then you'll need to =
+use the -p-o-m patch to fix the problem and it'll work.
 
-Alistair Tonner wrote:
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
->On July 1, 2003 12:24 pm, Michael wrote:
->  
->
->>Alistair Tonner wrote:
->>    
->>
->>>	Why are you DNATting in OUTPUT?
->>>      
->>>
->>Because the packets are originating on the firewall, from Squid. Squid
->>thinks xxx.org is at 1.2.3.5, so DNAT is needed to change that to
->>192.168.0.8.
->>
->>I also have identical rules in the PREROUTING chain of the nat table, if
->>you were wondering. Those rules work for requests from the Internet.
->>    
->>
->	Okay .. .after reading up some on 1.2.8 ... that *should* 
->	work.  BUT .. to me it seems evil ... I'm forever bound by 
->	the concept that mangling the destination (or source for that matter)
->	should be done before or after the basic network routing has been done.
->
-Routing is done to locally-generated packets after OUTPUT. See 
-http://www.netfilter.org/documentation/HOWTO//netfilter-hacking-HOWTO-3.html
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 
->	it seems unessesary to me for this reason:
->
->	squid calls to the resolved ip (your outside ip) ...which should route
->	out of the firewall, and back to its outside IP .. then the PREROUTING 
->	rules should catch these packets and reroute them correctly,
->	then the RETURN path would make sense.  It seems to me that 
->	DNATTING directly in output to force the packets out to the 
->	inside IP shortcuts things, and then breaks the return path.
->
-If I remove the nat table's OUTPUT chain rules, I get a "connection 
-refused", because there is no Web server running on 1.2.3.5 port 80. 
-Locally-generated packets do not go through PREROUTING. They don't go 
-"out of the firewall" unless they get routed there, and if that happens, 
-they aren't coming back unless another machine returns them.
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
 
-I'll post to LARTC.
+-----Original Message-----
+From: Fox [mailto:admin@flshlnk.com]
+Sent: Wednesday, July 02, 2003 8:57 PM
+To: netfilter@lists.netfilter.org
+Subject: OUTPUT chain DNAT problem
 
 
---------------040201070200040100010109
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Hi.
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body>
-Alistair Tonner wrote:<br>
-<blockquote type="cite" cite="mid200307020206.13952.Alistair@nerdnet.ca">
-  <pre wrap="">On July 1, 2003 12:24 pm, Michael wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">Alistair Tonner wrote:
-    </pre>
-    <blockquote type="cite">
-      <pre wrap="">	Why are you DNATting in OUTPUT?
-      </pre>
-    </blockquote>
-    <pre wrap="">Because the packets are originating on the firewall, from Squid. Squid
-thinks xxx.org is at 1.2.3.5, so DNAT is needed to change that to
-192.168.0.8.
+I'm having problems with rewriting outgoing packets.
+I've specified the following rule:
+iptables -t nat -A OUTPUT -d 10.0.0.2 -j DNAT --to-destination
+192.168.0.2
 
-I also have identical rules in the PREROUTING chain of the nat table, if
-you were wondering. Those rules work for requests from the Internet.
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->	Okay .. .after reading up some on 1.2.8 ... that *should* 
-	work.  BUT .. to me it seems evil ... I'm forever bound by 
-	the concept that mangling the destination (or source for that matter)
-	should be done before or after the basic network routing has been done.</pre>
-</blockquote>
-Routing is done to locally-generated packets after OUTPUT. See
-<a class="moz-txt-link-freetext" href="http://www.netfilter.org/documentation/HOWTO//netfilter-hacking-HOWTO-3.html">http://www.netfilter.org/documentation/HOWTO//netfilter-hacking-HOWTO-3.html</a><br>
-<blockquote type="cite" cite="mid200307020206.13952.Alistair@nerdnet.ca">
-  <pre wrap="">	it seems unessesary to me for this reason:
+When I ping 10.0.0.2 i get them rewritten (i check it with tcpdump and
+get stats with `iptables -t nat -L -v -n`). But when an application
+sends a packet to 10.0.0.2 it's not rewritten. I can't understand why.
 
-	squid calls to the resolved ip (your outside ip) ...which should route
-	out of the firewall, and back to its outside IP .. then the PREROUTING 
-	rules should catch these packets and reroute them correctly,
-	then the RETURN path would make sense.  It seems to me that 
-	DNATTING directly in output to force the packets out to the 
-	inside IP shortcuts things, and then breaks the return path.</pre>
-</blockquote>
-If I remove the nat table's OUTPUT chain rules, I get a "connection
-refused", because there is no Web server running on 1.2.3.5 port 80. 
-Locally-generated packets do not go through PREROUTING. They don't go
-"out of the firewall" unless they get routed there, and if that
-happens, they aren't coming back unless another machine returns them.<br>
-<br>
-I'll post to LARTC.<br>
-<br>
-</body>
-</html>
+I need to to the following thing:
 
---------------040201070200040100010109--
+A              B                C
+10.0.0.2  ---> 192.168.0.1 ---> 192.168.0.2
+
+A send requests to B and B replies to A. But i want those replies go
+to C and only C.
+
+Your help is appreciated.
+thanks.
+fox
+
 
 
