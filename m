@@ -1,56 +1,73 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Caching of rules in PRE(POST)ROUTING chains?
-Date: Mon, 17 Nov 2003 09:24:42 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311170924.hAH9Oij21915@agate.rockstone.co.uk>
-References: <1072098477.20031115110735@msmu.eu.org>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Documentation for the u32 module
+Date: Mon, 17 Nov 2003 09:56:01 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20031117085601.GD22919@sunbeam.de.gnumonks.org>
+References: <20031113090530.GB2301@obroa-skai.de.gnumonks.org> <Pine.LNX.4.44.0311151659500.22726-100000@sparrow>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1072098477.20031115110735@msmu.eu.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SO98HVl1bnMOfKZd"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0311151659500.22726-100000@sparrow>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: William Stearns <wstearns@pobox.com>
+Cc: Fabrice Marie <fabrice@netfilter.org>, ML-netfilter <netfilter@lists.netfilter.org>, ML-netfilter-devel <netfilter-devel@lists.netfilter.org>, webmaster@netfilter.org, Don Cohen <don-nfil@isis.cs3-inc.com>
 
-On Saturday 15 November 2003 8:07 am, Pavel V. Yanchenko wrote:
 
-> Hello.
->
-> As far as I understand, rules in PRE- and POSTROUTING chains are
-> cached? Because when I delete a rule with SNAT target for ip
-> 192.168.10.10 this address's packets are still SNATed for several
-> minutes. The same thing happens for rules in PREROUTING chains.
-> Is it possible to disable this feature? Maybe there is some file in
-> /proc where cached rules are listed?
+--SO98HVl1bnMOfKZd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No, there is no caching of rules in netfilter; however, packets which are 
-part of an ESTABLISHED connection will continue to be processed without 
-reference to the rules in PRE/POSTROUTING because of the connection tracking 
-table entry - onlt the first packets of connections ever go through the 
-explicit rules in these tables - all following packets are automagically 
-processed behind the scenes.
+On Sat, Nov 15, 2003 at 05:06:38PM -0500, William Stearns wrote:
+> > Would you be willing to merge your u32 documentation with that?
+>=20
+> 	Harald, I'd be honored to!
 
-This is the effect you are seeing, I'm sure.
+;) don't exaggerate.
 
-Antony.
+> 	With the help of http://www.stearns.org/html2sgml :-), I've got=20
+> that article in sgml form, ready to go.  Fabrice, I've patched against=20
+> your 1.30 Netfilter-extensions-HOWTO.  Here are the files of interest:
+>=20
+> http://www.stearns.org/patches/netfilter-extensions-HOWTO.1.31.sgml
 
--- 
+ok, i've merged your patch to our CVS repository.  Will do a homepage
+update soon, so it becomes visible to the public.
 
-Christianity tells you to work hard today for little or no reward, and 
-tomorrow you will die and awake in paradise.
+> 	Cheers,
+> 	- Bill
 
-Marxism says work hard today for little or no reward; tomorrow you will die 
-and your children will awake in paradise.
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
- - Len Deighton, Billion Dollar Brain
-                                                     Please reply to the list;
-                                                           please don't CC me.
+--SO98HVl1bnMOfKZd
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/uI0hXaXGVTD0i/8RAi/4AJsENdkPLtyUSlkzbNR77q9knqNTaACcDF8m
+cvZ4Rxn9E06CLEOvvd2odV0=
+=FGKJ
+-----END PGP SIGNATURE-----
+
+--SO98HVl1bnMOfKZd--
 
