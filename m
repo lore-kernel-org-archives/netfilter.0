@@ -1,12 +1,10 @@
-From: "Steve Jones" <sjones@ftdata.com>
-Subject: POM trouble w/ TARPIT compile?
-Date: Tue, 16 Mar 2004 12:06:08 -0500
+From: cs02m004 <bharath@peacock.iitm.ernet.in>
+Subject: [SUSPECTED SPAM] ipq_read error: Received message truncated
+Date: Tue, 16 Mar 2004 22:46:23 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <79C037414A4B604CA73F5222570C6DFC7FFE@e2k3.ftdata.com>
+Message-ID: <Pine.LNX.4.10.10403162234530.8634-100000@peacock.iitm.ernet.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,27 +14,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi all,
+I am trying to read packets using ipq_read after trapping them.
+ipq_read() is returning -1. 
+errno == EINTR
+ipq_errstr() says Received message truncated.
 
-Hi,
+I tried reexecuting the call to ipq_read (to restart the system call which
+failed). I also tried increasing the size argument to ipq_read() i.e.
+bigger buffer. Both methods failed.
 
-I have a stock RH9 machine, installed with "Install Everything" checked.
-It's running kernel 2.4.20.  I am trying to get TARPIT to work.  The POM
-apparently went fine, but then I run make xconfig and although I SEE the
-Tarpit option until the netfilter options, it is grayed out so I'm
-unable to select it.  I have tried to add everything I can find, in
-hopes of stumbling on something that is a prerequisite that I'm missing,
-but so far I'm having no luck. =20
+What is the reason. Any workarounds ?
 
-Anyone seen this?  Any ideas?
-
-Alternatively, has anyone gotten Tarpit to work w/ kernel 2.6.x?  I see
-that the POM is for 2.4 only; or at least that's what I read...
-
-Thanks in advance!
-
--Steve
+Thanks in advance
+Bharath
 
 
