@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: A practical problem regarding  IP Accounting ...?
-Date: Tue, 9 Mar 2004 09:04:01 +0000
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: FORWARD RULE -- please help
+Date: Tue, 9 Mar 2004 20:10:51 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403090904.01979.Antony@Soft-Solutions.co.uk>
-References: <7C9884991ADAE0479C14F10C858BCDF5122F0B@alderaan.smgtec.com>
+Message-ID: <20040309091051.GH24806@samad.com.au>
+References: <20040309075404.92394.qmail@web13206.mail.yahoo.com> <200403090846.46608.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0NB0lE7sNnW8+0qW"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122F0B@alderaan.smgtec.com>
+Content-Disposition: inline
+In-Reply-To: <200403090846.46608.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +19,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 09 March 2004 1:02 am, Daniel Chemko wrote:
 
-> # Outbound to PC
-> iptables -t mangle -A PREROUTING -i eth1 --source <ip_address>
-> # Inbound to PC
-> iptables -t mangle -A POSTROUTING -o eth1 --destination <ip_address>
->
-> Then use your own accounting tool to rip the byte count from "iptables -t
-> mangle -nvxL". Remember though, the byte count can reset or overflow to 0,
-> so make sure your accounting package can handle this.
+--0NB0lE7sNnW8+0qW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think this is an excellent answer, but there are some subtleties about it 
-which Daniel did not empphasise, and I think they're worth explaining so 
-people understand a little more about netfilter:
+On Tue, Mar 09, 2004 at 08:46:46AM +0000, Antony Stone wrote:
+> On Tuesday 09 March 2004 7:54 am, Nilesh wrote:
+>=20
+> > 203.129.224.149 is my firewall machine running
+> > IPTABLES and 192.168.0.22 is my local machine on 2090
+> > port service is running
+> >
+> > 202.129.227.3 is his firewall IP and 192.168.1.25 is
+> > his local machine where on 2090 port services is
+> > running
+> >
+> > I want to communicate this both internal
+> > machines(192.168.0.22 and 192.168.1.25) through
+> > firewall
+>=20
+> If you want his 192.168.1.0/24 network to be able to communicate with you=
+r=20
+> 192.168.0.0/24 network then you should investigate IP in IP tunnelling /=
+=20
+> encapsulation (see the Linux Advanced Routing Guide at http://lartc.org f=
+or a=20
+> simple guide to how to do this), or else set up a VPN (eg : FreeS/WAN, or=
+ the=20
+> IPsec implementation built into the 2.6 kernel).
 
-1. The rules have no targets!   ie: there is no "-j ACCEPT" etc at the end.   
-This is perfectly correct and acceptable (in any chain, not just mangle), and 
-means the netfilter will count the packets which match, but not do anything 
-special with them.   Such a rule is useful only for counting packets & bytes, 
-but it means you can count them without immediately deciding what happens to 
-them - you can sgtill follow the accounting rules with your normal filtering 
-/ natting / mangling rules.
+Or he could use MASQ on both sides with 2 dnat rules
 
-2. The rules are in the mangle tables because this is the closest that 
-netfilter can get to the interfaces themselves, and it makes sure that the 
-rules really do count all the packets going in and out of the machine, 
-without some quietly slipping past behind the scenes as they could do if you 
-counted packets in the nat table (the rules would not see reply packets being 
-automatically de-natted), or the filter table (where it would be difficult to 
-combine sensible accounting with the stanadard stateful ESTABLISHED, RELATED 
-rule).
+on 203.129.224.149
 
-I hope this helps a few people understand a bit more about why this is a very 
-good solution to packet accounting, as well as perhaps a bit more about the 
-way packets go through mangle, nat and filter.
+iptables -t nat -I postrouting -o IF_INTERNET -s 192.168.0.22 -p tcp
+--dport 2090 -j MASQUERADE
 
-Regards,
+iptables -t nat -I prerouting -i IF_INTERNET -d 203.129.224.149 -s
+202.129.227.3 -p tcp --dport 2090 -j DNAT 192.168.0.22=20
 
-Antony.
+iptabes -t filter -I INPUT -i IF_INTERNET -d 203.129.224.149 -p tcp
+--dport 2090
 
--- 
-Wanted: telepath.   You know where to apply.
+and then the reverse on the other side.  Presumed tcp and could use SNAT
+instead of MASQ
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+>=20
+> Regards,
+>=20
+> Antony.
+>=20
+> --=20
+> If at first you don't succeed, destroy all the evidence that you tried.
+>=20
+>                                                      Please reply to the =
+list;
+>                                                            please don't C=
+C me.
+>=20
+>=20
+>=20
+
+--0NB0lE7sNnW8+0qW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFATYobkZz88chpJ2MRAi8VAKC78Pr7FR6X03I8EFaEkxCy8Zyi7ACgo7Qo
+H3I/nPaBiZkM1slfG92KHN4=
+=eHP6
+-----END PGP SIGNATURE-----
+
+--0NB0lE7sNnW8+0qW--
 
