@@ -1,17 +1,10 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: physdev match
-Date: Wed, 22 Sep 2004 14:44:42 +0300
+From: Dominic Iadicicco <sctylib2004@yahoo.com>
+Subject: Can anyone tell me how to do this?
+Date: Wed, 22 Sep 2004 07:09:22 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1403218a04092204446c0f798d@mail.gmail.com>
-References: <1403218a04092203537a1bbd0c@mail.gmail.com>
-	<200409221158.19795.gdh@acentral.co.uk>
-	<1403218a0409220401158fd1ed@mail.gmail.com>
-	<200409221217.11787.gdh@acentral.co.uk>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Message-ID: <20040922140922.36826.qmail@web51301.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409221217.11787.gdh@acentral.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,46 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.netfilter.org>
 
-Well, the patch had some failures.
-I saw it has the physdev in the patch !!
+Hello all,
 
+Can anyone tell me how to do this so that I may ask
+some questions afterword's in hopes to learn a little
+more about iptables.
 
-patching file include/linux/netfilter_ipv4/ipt_physdev.h
+This is what I would like to try. I think this would
+get me to the next level.
 
-Will this patch add the physdev match ??
-I am thinking about going with a stock kernel !!
-
-
-On Wed, 22 Sep 2004 12:17:11 +0100, Gavin Hamill <gdh@acentral.co.uk> wrote:
-> On Wednesday 22 September 2004 12:01, Mohamed Eldesoky wrote:
-> > ummm
-> > I was looking at the possibilities.
-> > Also, what if I don't want to use ebtables !!
-> 
-> 'ebtables' is just a round-all term for what became of the 'bridge
-> firewalling' code. You don't need to use the 'ebtables' binary at all if all
-> you want to do is apply firewall rules on a bridged system.
-> 
-> However, it remains to be seen whether the ebtables code would even patch
-> successfully on an RHEL kernel source, plus if using a 'Real' Red Hat kernel
-> is important to you, then you'll obviously not want to recompile at all.
-> 
-> Unless RHEL already contains the support (look for 'Bridge firewalling
-> registered' in the 'dmesg' output from boot time) then you're a bit stuck.
-> 
-> Of course, all this talk of ebtables is now off topic =)
-> 
-> Cheers,
-> Gavin.
-> 
-> 
+My devil-Box is at 172.16.12.130 and I want all ssh
+request to this .130 address, to go to address
+172.16.12.212.   How do I do this?  All machines are
+on the 172.16.12.x subnet for right now.
 
 
 
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+Thanks in advance
+
+
+Dominic
+
+
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail is new and improved - Check it out!
+http://promotions.yahoo.com/new_mail
 
