@@ -1,13 +1,13 @@
 From: Pascal Italiaander <pc-secure@home.nl>
-Subject: Re: bootpc
-Date: Thu, 5 Jun 2003 21:35:55 +0200
+Subject: Re: Firewall troubles
+Date: Thu, 5 Jun 2003 21:46:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306052135.55070.pc-secure@home.nl>
-References: <3EDF2F41.8080505@ncl.ac.uk>
+Message-ID: <200306052146.49757.pc-secure@home.nl>
+References: <000001c32b68$6bc631d0$0500a8c0@m28721.findquick.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EDF2F41.8080505@ncl.ac.uk>
+In-Reply-To: <000001c32b68$6bc631d0$0500a8c0@m28721.findquick.com>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,48 +19,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Op donderdag 5 juni 2003 13:53, schreef Matthew Pocock:
-> Hi,
+Op donderdag 5 juni 2003 15:43, schreef Willem-Jan Meijer:
+> Hello all,
 >
-> I've set up my bridge+firewall, and everything is hunkeydory. I am doing
-> statefull filtering. I let all traffic out, and all related/established
-> traffic in. Then, I only allow new icmp & tcp:ssh connections in.
+> I'm running debian 3.0r1 stable with all security and usual updates. I was
+> running a
+> firewall wich is send with this e-mail as attachment.
 >
-> To get windows 95 & 98 PCs on the inside to boot & join the network, I
-> had to open up udp ports bootps & bootpc for new connections
-> orriginating from the outside. I don't know the finer details about how
-> these protocols work, but presumably they are connecting to the booting
-> PC in response to some DHCP request it has made. Is there some module I
-> should have loaded that would flag these connections as RELATED to some
-> outgoing connection? Have I done something silly? Is this even possible?
+> It was running fine, but recently my hdd died and recovery was to expensive
+> and not
+> necessary because I had a backup. I installed debian again, did all updates
+> and I wanted
+> to load the firewall, but when I load this one, my remote login hangs, I
+> can't ping
+> my server anymore and my network isn't working anymore, but the script has
+> runned fine
+> before. What is the problem? At this moment ipmasq is also installed to
+> keep my network
+> running, this is conflicting, I know but I don't know anything else.
 >
-> Thanks,
+> Can someone point me in the right direction? I'm using linux/debian from
+> november 2002,
+> so my knowledge is very small.
 >
-> Matthew
+> HTH,
+>
+> Willem-Jan Meijer
+> Netherlands
+>
+> Windows: Where do you want to go today?
+> MacOS:   Where do you want to be tomorrow?
+> Linux:   Are you coming or what?
 
-I'ts possible ,but a connection orriginating from the outside to boot internal 
-your PC , no way. ??  Request for a DHCP should be orriginating from the 
-inside. (your win95 +98). and reply should come from the outside.
+Heb je bij je backup ook erop gelet ,dat je de rechten ervan moet behouden ? 
+Als die nu niet meer goed staan , loopt ook alles in de soep !
 
-No, you don't have to load a module.
-
-but your very warm, there should be a rule to track these connections.
-example:
-
-DHCP_SERVER"211.124.45.2"
-
-${IPTABLES} -A OUTPUT  -p udp -s 0/0 -d ${DHCP_SERVER} --sport 68 --dport 67 \ 
--m state --state NEW -j ACCEPT
-
-${IPTABLES} -A INPUT  -p udp -s 0/0 -s ${DHCP_SERVER} --sport 67 --dport 68  \ 
--m state --state ESTABLISHED,RELATED -j ACCEPT
-
-hmm.. silly NO , silly are the people who don't ask , but just do.
+Did you preserve the user-rights with taken your backup ?
+When they not match the old install , your in trouble !
 
 Pascal
-
-
+ 
 
 
