@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: UDP packet forwarding woes
-Date: Sun, 10 Nov 2002 19:07:50 +0000
+From: "Andrew Magnus" <xanadian9@hotmail.com>
+Subject: Link redundance question
+Date: Mon, 11 Nov 2002 01:18:02 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021110190751.HOVX18329.mta06-svc.ntlworld.com@there>
-References: <Pine.SOL.4.44.0211101348250.13079-100000@azure.engin.umich.edu>
+Message-ID: <F91A4h4dMDbl71Ri4wX0000614a@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.SOL.4.44.0211101348250.13079-100000@azure.engin.umich.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sunday 10 November 2002 6:49 pm, Cynthia Wong wrote:
+Hello.
 
-> I'm trying to do the following with iptables:
->
-> Recieve a UDP packet;
->
-> forward it to multiple hosts in forwarding table (minus a TTL or so)
-> AND
-> pass it to user level to process
+I have a question about link redundancy (if it's possible).  I have a 
+network set up like in the diagram below:
 
-Nope.   Not with netfilter.
+                            Hi-speed WAN
+                                 |
+                                 |
+        Dialup (backup)---- Masquerading
+                              "router"
+                                 |
+                                 |
+                            Internal net
 
-Netfilter can select one target per packet, but once that's done, the packet 
-is gone.
+What I'm trying to do is this:  if the high speed connection goes down 
+(which it seems to do frequently :-P ) I want iptables to default to the 
+dialup connection.  And vice versa (I have iptables set up to use a 
+particular link for a particular service).  Is this possible?  And if it is 
+possible, how do I do it/where do I look to learn/etc.  Thanks.
 
-The only way you'll do this is to pass the packet to a userspace process, 
-which then reinjects separate packets addressed to the multiple hosts.
 
-Antony.
+_________________________________________________________________
+Add photos to your messages with MSN 8. Get 2 months FREE*. 
+http://join.msn.com/?page=features/featuredemail
 
--- 
-
-The first ninety percent of an engineering project takes ninety percent
-of the time, and the last ten percent takes the remaining ninety percent.
 
