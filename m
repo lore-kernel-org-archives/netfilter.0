@@ -1,10 +1,13 @@
-From: Erik Enge <eenge@prium.net>
-Subject: If eth0 goes down after a reboot, rules for it will be applied to eth1.
-Date: 11 Sep 2002 09:42:15 -0400
+From: Martijn Klingens <mklingens@ism.nl>
+Subject: Re: failover with iptables?
+Date: Wed, 11 Sep 2002 15:11:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <87sn0g4p8o.fsf@prium.net>
+Message-ID: <200209111511.55096.mklingens@ism.nl>
+References: <200209111410.14005.roy@karlsbakk.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209111410.14005.roy@karlsbakk.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,45 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-Hi all.
+On Wednesday 11 September 2002 14:10, Roy Sigurd Karlsbakk wrote:
+> hi
+>
+> I currently have two identical servers I want to use in parallel with an
+> iptables gate in front of them, so if one chrashes, iptables just sorts out
+> and redirects to the other.
+>
+> but
+>
+> is it possible to make the below (as stolen from various cisco sketches)
+> with iptables?
+>
+> If iptab_1 fails, iptab_2 should take over ip and (perhaps) mac address of
+> iptab_1.
+>
+> ps: I don't think I need connection tracking.
 
-I have a question about how ethernet cards work.  I send it here because
-I'm thinking that this community probably has dealt with it before, as
-it seems to me to be an obvious problem (with no apparent solution to
-me; hence this email).
+With this last line included the answer is "yes". Otherwise it's clearly a 
+"no", or at least nothing more than a "partial".
 
-Let's assume I have a firewall with three NICs.  As we know, the
-ethernet cards under Unix (I'm running Linux 2.4) are assigned eth0/1/2
-and so on based on the bus number the BIOS gives them.  My setup is as
-follows:
+You can failover any linux machine with Heartbeat (www.linuxvirtualserver.org) 
+and create your own custom resource script to failover (the firewall). 
+Failover is by no means stateful though using this technique, so any 
+currently tracked connection will not reach the failover node properly.
 
-  NIC 1, eth0, DMZ interface [somewhat laid-back firewall rules]
-  NIC 2, eth1, LAN interface [very strict firewall rules]
-  NIC 3, eth2, router interface [basically FORWARDs everything]
-  NIC 4, eth3, external interface [basically FORWARDs everything]
+Harald Welte hopes to start working on stateful failover early next year, but 
+that's a long way from now, especially since it likely also needs to mature a 
+bit before going into production...
 
-Now, say we take down the firewall for some reason, and upon it coming
-back up eth0 dies.  The bus assigning will then be a bit different, and
-so will eth0/1/2 and so on (which is what the firewall rules are set
-against).
+Martijn
 
-This means that I could end up in a situation where my laid-back DMZ
-rules were applied to my LAN interface and my external interface would
-still work, because it would take the eth2 which is pretty laid-back.
-The only thing that wouldn't work (which would trigger me that something
-was wrong) is that I can't access the DMZ and my router interface.
-However, if I'm unlucky, some cracker might have enough time to intrude
-into my, now completely open, LAN interface and its associated network.
-
-So, my question then, is how do you guys deal with this?  Is there a way
-to ensure that the card in slot such-and-such is assigned eth1 every
-single time, even if the card assigned to eth0 dies?  Or is there
-another and perhaps better solution to all this?
-
-Thanks for any replies,
-
-Erik Enge.
 
