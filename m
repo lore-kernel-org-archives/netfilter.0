@@ -1,13 +1,13 @@
-From: Kim Jensen <kimj@dawn.dk>
-Subject: Re: Unusual routing problem
-Date: Mon, 24 Mar 2003 20:28:09 +0100
+From: Chris Garringer <chris.garringer@tic.toshiba.com>
+Subject: RE: FTP server
+Date: 24 Mar 2003 12:15:38 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303242028.09150.kimj@dawn.dk>
-References: <04d501c2f232$c0dbebc0$93a22ad1@blueone.net>
+Message-ID: <1048529739.1189.23.camel@bordercollie>
+References: <000d01c2f22f$4848f200$0401000a@sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <04d501c2f232$c0dbebc0$93a22ad1@blueone.net>
+In-Reply-To: <000d01c2f22f$4848f200$0401000a@sterenborg.info>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,80 +18,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Benjamin Tompkins <netfilter@dahanga.org>
-Cc: netfilter@lists.netfilter.org
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: 'Netfilter List' <netfilter@lists.netfilter.org>
 
-Hi Benjamin,
+I loaded ip_conntrack_ftp, the nat_ftp received a lot of errors.  
+However I am not nat'ing on the box, the NAT is done by the firewall
+ahead of it.   With ip_conntrack_ftp loaded the passive connections are
+no longer making the log file, so it appears to be working.   Does this
+have to be loaded manually or should it be loading automatically?
 
-I have recently been playing with the same thing, and have a still unansw=
-ered=20
-question regarding the possibility to combine MASQUERADING with NAT!
-
-Anyway, if you keep things down to a simple level, then all you have to d=
-o is=20
-create a second routing table (copy), and then add a fwmark rule to to te=
-ll=20
-the routing system, that the second table should be used when the mark is=
-=20
-matched.
-
-In your iptables, you mark all packets which are bound for your secondary=
-=20
-route. While the default set up will ensure that you have all packets run=
-ning=20
-through normally.
-
-Ip routing rule:
-$ ip rule add fwmark xxx table yyy
-
-in iptables:
-$ iptables -t mangle -A PREROUTING [conditions] -j MARK --set-mark xxx
-
-Hopes this helps. However, if you manage to set up your system with worki=
-ng=20
-masquerading & natting, please give me a hint - I'm completely stuck and =
-are=20
-currently resolving to using aliasing!
-
-/Kim
-
-On Monday 24 March 2003 19:25, Benjamin Tompkins wrote:
-> I am attempting to route myself an ip block from my office to my home v=
-ia a
-> tunnel. Simple enough. The catch is, I only want the tunnel to be used =
-for
-> lan destined traffic and incoming connections to my IP block. The lan
-> destined traffic is easy, the trick apparently is getting the block to =
-be
-> accessible via the internet, without forcing all traffic to use the tun=
-nel.
-> A diagram.
->
-> eth0  (DHCP) cable modem            eth1  (x.x.x.1/28) LAN
->                                               \   /
->                                       Linux Machine
->
->                                  ppp0 (x.x.x.2/30)
->
-> Ok, so what I have so far is as follows.
->
-> This takes care of access to the office network.
-> route add -net x.x.x.1 netmask 255.255.255.240 dev eth1
-> route add -net x.x.x.0 netmask 255.255.254.0 dev ppp0
-> route add -host x.x.x.1 dev eth0
->
-> Now to use the cable for everything else.
-> iptables -A POSTROUTING -s x.x.x.1/28 -o eth0 -j MASQUERADE
->
-> So now I can access my office lan and vice versa, and everything else g=
-ets
-> masqed out the cable. But I'm having a heck of a time letting the box t=
-o
-> know that stuff requested via ppp0, needs to go out ppp0. I have looked=
- at
-> using the mangle table making rules for input and forward, but am just
-> missing something along the way. Any help anyone can offer would be gre=
-atly
-> appreciated. Thanks.
+On Mon, 2003-03-24 at 12:00, Rob Sterenborg wrote:
+> > No. lsmod shows ip_conntrack, ipt_state,iptable_filter, ip_tables,
+> > ipt_LOG .  This server is running RedHat 7.3 with a RH kernel, I have
+> > not re-compiled the kernel.  I tried loading ip_conntrack_ftp once
+> > (insmod) and lsmod showed it in, but unused.
+> 
+> Unused doesn't mean it doesn't work. It means that *no other* module is
+> using *that* module.
+> Here you can see what I mean.
+> 
+> [rob@firewall rob]$ lsmod
+> <...>
+> ip_conntrack_ftp        5056   1 (autoclean)
+> ip_nat_ftp              3936   0 (unused)
+> iptable_nat            20820   3 (autoclean) [ipt_MASQUERADE ip_nat_ftp]
+> ip_conntrack           26508   5 (autoclean) [ipt_MASQUERADE ipt_state
+> ip_conntrack_ftp ip_nat_ftp iptable_nat]
+> <...>
+> 
+> iptable_nat is being used by ipt_MASQUERADE and ip_nat_ftp.
+> ip_conntrack is being used by ipt_MASQUERADE, ipt_state,
+> ip_conntrack_ftp and ip_nat_ftp.
+> 
+> A look in my original modules (RH73 kernel 2.4.18-3) and I'm seeing :
+> ip_conntrack_ftp.o
+> ip_nat_ftp.o
+> Which means you should have these too.
+> 
+> You need it for passive ftp.
+> So, if you load the modules ; does it work then ?
+> 
+> 
+> Gr,
+> Rob
+> 
+-- 
+Chris D. Garringer
+Toshiba International
+LAN/WAN Supervisor
+713-466-0277 x3756
+Certified Solaris Administrator
+Microsoft Certified Engineer (NT)
+RedHat Certified Engineer
 
 
