@@ -1,54 +1,38 @@
-From: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>
-Subject: Re: Fwd: Re: Interesting request. block x.x.0.0
-Date: Fri, 24 Jan 2003 08:53:13 -0600
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <200301240853.13635.danielf@supportteam.net>
-References: <20030123232639.14408.11687.Mailman@kashyyyk> <15920.37125.743591.125495@isis.cs3-inc.com>
+From: meb <mberardi@midmaine.com>
+Subject: dnat and loopback failover
+Date: 24 Jan 2003 07:15:47 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1043410547.8827.31.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <15920.37125.743591.125495@isis.cs3-inc.com>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Don Cohen <don-netf@isis.cs3-inc.com>, netfilter <netfilter@lists.netfilter.org>, netfilter-devel@lists.netfilter.org
-
-Patrick Schaaf kindly pointed out that I could do this. 
-
-iptables -I INPUT -s 0.0.0.0/0.0.255.255 -j DROP
-
-That will drop any IP that ends in 0.0
-
-Thanks for every ones help. 
-
-I will also look into the u32 patch thanks again. 
+To: netfilter@lists.netfilter.org
 
 
 
-On Thursday 23 January 2003 19:04, you wrote:
->  > I do not want to block every IP on say 45.208.0.0/16 just the ips ending
->  > in 0.0 as the last two octets.
->  >
->  > I can write a tcpdump filter to find the traffic Im just not sure if we
->  > have a way to craft a netfilter rule to do so. Or maybe the "recent"
->  > patch could be of use. Although the dDoS included 65000 source IP
->  > addresses. all ending in 0.0 for the ip address.
->  >
->  > the tcdump filter looks like this.
->  >
->  > tcpdump -nn -i eth0 'ip[18:2] == 00'
->
-> The u32 match I recently posted can do this.
+I would like to run my real services on a pair of lo interfaces
+and use DNAT to route to them. (load balancing would be choice but is
+not necessary)
 
--- 
-Daniel Fairchild - Chief Security Engineer | danielf@supportteam.net
-The distance between nothing and infinity is always the same no matter how 
-close you get to nothing.
+the idea is, if eth0 gets DNATed to 127.0.1.2
+and their is a problem with the service, I would like to be able to
+issue an iptables command that directs only NEW connection to 127.0.1.3
+but lets the old connections continue their connection to 1.2
+
+is this possible with production quality code?
+if so could someone please direct me to the appropriate docs?
+
+thanks in advance
+matt
+
 
