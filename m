@@ -1,13 +1,11 @@
-From: Achim Dreyer <adreyer@math.uni-paderborn.de>
-Subject: Re: iptables scripts
-Date: Fri, 31 Oct 2003 14:56:24 +0100 (MET)
+From: "David C. Hart" <DCH@TQMcube.com>
+Subject: IPT Still Driving Me Nuts
+Date: Sun, 02 Nov 2003 13:00:31 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310311452490.24507-100000@kepler.uni-paderborn.de>
-References: <Pine.LNX.4.44.0310310819220.6460-100000@localhost.localdomain>
-Reply-To: adreyer@math.uni-paderborn.de
+Message-ID: <1067796031.18240.5.camel@main.tqmcube.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-kdO8nXwAD7F/EDYZmj85"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0310310819220.6460-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,94 +15,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
-
-On Fri, 31 Oct 2003, Robert P. J. Day wrote:
-
-[..]
-> ah, grasshopper, i didn't show you the other two scripts i'm going
-> to demo.  first, there's the lockdown script, to be run if you realize
-> you've been hacked:
-> ---------------------------------------------------------
-> #!/bin/sh
-> 
-> # PANIC!  Lock the machine down.
-> 
-> IPT="/sbin/iptables"
-> 
-> # Flush all chains.
-> 
-> $IPT -F			# by default filter
-> $IPT -t nat -F
-> $IPT -t mangle -F
-> 
-> # Delete all user-defined chains.
-> 
-> for table in filter nat mangle ; do
-> 	$IPT -t $table -X
-> done
-> 
-> # Reset all policies to DROP.
-> 
-> for chain in INPUT OUTPUT FORWARD ; do
-> 	$IPT -P $chain DROP
-> done
-> 
-> echo "System totally locked down."
-> -----------------------------------------------------------
+To: iptables mailing list <netfilter@lists.netfilter.org>
 
 
-I shurely would set the default lockdown policy _before_ flushing the 
-tables as there is no matching rule forcing a drop of packets between
-the flush and the policy set ->  packets could slip through!
+--=-kdO8nXwAD7F/EDYZmj85
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
+"Nov  2 12:36:45 mail2 kernel:  -FW-  IN=3Deth1 OUT=3D
+MAC=3D00:09:5b:22:29:d1:00:06:25:e4:ed:a3:08:00 SRC=3D61.172.3.25
+DST=3D192.168.0.31 LEN=3D530 TOS=3D0x00 PREC=3D0x00 TTL=3D239 ID=3D21777=20
+PROTO=3DUDP SPT=3D32937 DPT=3D1026 LEN=3D510"
 
+I have eliminated the virtual internal IP. The message above is still a
+mismatch. That IP is on IF eth0 while it shows on eth1.
 
->   and then there's the "clear all" script, which you would run
-> if you made a total mess of your rules and just want to clear
-> them out:
-> 
-> ----------------------------------------------------------
-> #!/bin/sh
-> 
-> # PANIC!  We've screwed up our tables.
-> 
-> IPT="/sbin/iptables"
-> 
-> # Flush all chains.
-> 
-> $IPT -F
-> $IPT -t nat -F
-> $IPT -t mangle -F
-> 
-> # Delete all user-defined chains.
-> 
-> for table in filter nat mangle ; do
-> 	$IPT -t $table -X
-> done
-> 
-> # Reset all policies to ACCEPT.
-> 
-> for chain in INPUT OUTPUT FORWARD ; do
-> 	$IPT -P $chain ACCEPT
-> done
-> 
-> echo "System totally open, you are now fair game."
-> -------------------------------------------------
+--=-kdO8nXwAD7F/EDYZmj85
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-in this case it doesn't matter as the end result will open all gates ;-)
+iD8DBQA/pUY/ol4OE0cpGaIRAijsAJwJVRiJbN9mOnut/80RuDb5RudfmwCgqGlQ
+4YSwACEb5qaJmFdJzY2HwEM=
+=snn8
+-----END PGP SIGNATURE-----
 
-
-
-
-
-Regards,
-Achim Dreyer
---
-A. Dreyer, Senior SysAdmin (UNIX&Network) / Internet Security Consultant
+--=-kdO8nXwAD7F/EDYZmj85--
 
 
