@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: using iptables for poor-man's load balancing?
-Date: Wed, 19 Feb 2003 19:30:05 -0500
+From: Scott van Looy <scott@ethosuk.org.uk>
+Subject: what have I done wrong to make 1.2.7a not compile?
+Date: 20 Feb 2003 00:48:27 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302191930.05271.netfilter@newkirk.us>
-References: <HMEBKOCKLOOEJGIOMFAPAEJNFJAA.ian@icreditvision.com> <200302191912.06748.netfilter@newkirk.us>
-Reply-To: netfilter@newkirk.us
+Message-ID: <1045702107.1406.22.camel@pixel.ethosuk.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-0mXaNa5VVx6wZUFO+FAD"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200302191912.06748.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +15,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ian Douglas <ian@icreditvision.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wednesday 19 February 2003 07:12 pm, Joel Newkirk wrote:
 
-> AFAIK, you can only DNAT to a contiguous range of IPs from a single
-> rule, and the rule construction you have here will ignore 'excess'
-> destinations. =20
+--=-0mXaNa5VVx6wZUFO+FAD
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Well, I was wrong again.  :^)  Digging a bit further after posting this I=
-=20
-find that multiple "-to" entries ARE valid, and should do what you want. =
-=20
-The only reason I can think of (now) that all your traffic went to the=20
-first on the list is that there simply wasn't any load to speak of.  How=20
-were you testing?  Multiple simultaneous connections?  Otherwise (from=20
-my latest reading :^) it will simply keep sending traffic to the first=20
-on the list, only using the next one if there is more traffic=20
-'currently' (presumably based on the connection-tracking data) on the=20
-first destination than on the second.
+extensions/libipt_ROUTE.c: In function `print':
+extensions/libipt_ROUTE.c:119: structure has no member named `if_name'
+extensions/libipt_ROUTE.c:120: structure has no member named `if_name'
+extensions/libipt_ROUTE.c:122: structure has no member named `if_index'
+make: *** [extensions/libipt_ROUTE_sh.o] Error 1
 
-> j
+What's wrong then? :)
+--=20
+Scott van Looy - email:me@ethosuk.org.uk | web:www.ethosuk.org.uk
+PGP Fingerprint: 7180 5543 C6C4 747B 7E74  802C 7CF9 E526 44D9 D4A7
+      -------------------------------------------
+      |/// /// /// /// WIDE LOAD /// /// /// ///|
+      -------------------------------------------
 
-j
+Your ignorance cramps my conversation.
 
+--=-0mXaNa5VVx6wZUFO+FAD
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+VCXbfPnlJkTZ1KcRAogPAJ9ezI+IaPCnqJorN1MfCdIyLrMLOwCeJPTb
+QjbC/OFAJSo+dgttQECwx/E=
+=fgXO
+-----END PGP SIGNATURE-----
+
+--=-0mXaNa5VVx6wZUFO+FAD--
 
