@@ -1,13 +1,13 @@
-From: "Joe Patterson" <jpatterson@asgardgroup.com>
-Subject: RE: detection of the third tcp packet in a tcp connection setup
-Date: Thu, 27 Jun 2002 15:50:49 -0400
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: detection of the third tcp packet in a tcp connection setup
+Date: Thu, 27 Jun 2002 15:57:42 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NJEFLNJDIFFNMHDEBKMJEEJBDOAA.jpatterson@asgardgroup.com>
-References: <20020627193043.UMUP19225.mta07-svc.ntlworld.com@there>
+Message-ID: <20020627195742.GA31466@cannon.eng.us.uu.net>
+References: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com> <20020627193043.UMUP19225.mta07-svc.ntlworld.com@there> <20020627214407.F2890@oknodo.bof.de> <20020627194405.GLHF295.mta03-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020627193043.UMUP19225.mta07-svc.ntlworld.com@there>
+Content-Disposition: inline
+In-Reply-To: <20020627194405.GLHF295.mta03-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,68 +18,45 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-Nope.  If you've got data flowing in one direction, then you should have a
-steady stream of packets with tcp data and (I believe) PSH,ACK set flowing
-one way, and a steady stream of packets with ACK set and zero tcp data
-length flowing the other way.  But I could be wrong....  Actually, no, just
-checked it with a sniffer, and I couldn't be wrong.  :)  Other than order I
-don't see any way to distinguish the first ack from the 100th.
+On Thu, Jun 27, 2002 at 08:44:03PM +0100, Antony Stone wrote:
 
-Now, you could say that if the tcp data length is greater than zero, then
-the packet is either *not* valid, or is *not* the third packet (although
-there was at one point a proposed tcp-like protocol that had data in the
-third packet, to keep down latency on short duration sessions, but I believe
-it's still considered evil in tcp-land).
-
-But even then, the length match wouldn't necessarily help.  I believe
-(although not sure) that the length match matches the length of the entire
-ip packet, and I further believe that it would be entirely valid to pad the
-end of the third packet in a tcp handshake with a bunch of NOOP options,
-thereby making the ip packet larger than you would expect for a tcp packet
-with no data.  It's still somewhat usefull, but not reliable.
-
-That kind of touches on an idea I had a while back, to log packets going to,
-for example, port 25 with a length greater than a tcp packet with no options
-and no data, but less than a tcp packet with no options and a few (2?  3?)
-bytes of data.  You *might* be able to use this to notice people who are
-telnetting to an smtp port and typing in commands by hand.  Certainly not
-reliable, but possibly interesting nonetheless.
-
--Joe
-
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
-> Sent: Thursday, June 27, 2002 3:31 PM
-> To: netfilter@lists.samba.org
-> Subject: Re: detection of the third tcp packet in a tcp connection setup
->
->
-> On Thursday 27 June 2002 8:10 pm, Joe Patterson wrote:
->
-> > catching the third packet is easy.  The hard part is to both catch the
-> > third packet and *not* catch all of the rest of the ack packets.
+> On Thursday 27 June 2002 8:44 pm, Patrick Schaaf wrote:
+> 
+> > > > There are some distinguishing characteristics... it is the first packet
+> > > > sent by the client that is in state ESTABLISHED.  it should have ACK
+> > > > set and no other flags.  the tcp data length should be zero.
+> > >
+> > > Isn't that in itself a bit of a giveaway ?   I can't think of a reason
+> > > why a zero-length packet should ever occur in the remainder of the data
+> > > stream... ?
 > >
-> > There are some distinguishing characteristics... it is the first packet
-> > sent by the client that is in state ESTABLISHED.  it should have ACK set
-> > and no other flags.  the tcp data length should be zero.
->
-> Isn't that in itself a bit of a giveaway ?   I can't think of a
-> reason why a
-> zero-length packet should ever occur in the remainder of the data
-> stream... ?
->
-> There's a -m length --length <min>:<max> match somewhere, but I'm
-> not sure if
-> it's in the standard build or p-o-m
->
->
->
-> Antony.
->
->
->
+> > How to TCP keepalive packets look like?
+> 
+> Hmmm.   Don't know.   Hadn't thought about those...
+> 
+> > Also, isn't it possible that the third packet already carries data, in the
+> > general (read TCP protocol as it is written) case?
+> 
+> Well, I'd always thought that this was allowed, yes, but I've also been told 
+> by several different people (who play with real-world networks all the time) 
+> that it never happens in practice - you get:
+> 
 
+If I'm not wrong you can always send data even in SYN and SYN/ACK.
+Like Patrick said the default options in the socket interface might
+not do it but I thought I saw some tweaking in one of Richard Steven's
+(god bless his soul) books to push traffic in SYN packets.
+
+Ramin
+
+> SYN (no data)
+> SYN/ACK (no data)
+> ACK (no data)
+> ACK (data)
+> ACK (data)
+> etc.....
 
