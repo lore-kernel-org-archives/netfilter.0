@@ -1,13 +1,13 @@
 From: Jason <baker@cyborgworkshop.com>
 Subject: Re: chance to impress the suits
-Date: Thu, 27 Feb 2003 08:11:28 -0600 (CST)
+Date: Thu, 27 Feb 2003 08:17:33 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.50.0302270809520.19694-100000@alfred.home.cyborgworkshop.com>
+Message-ID: <Pine.LNX.4.50.0302270811550.19694-100000@alfred.home.cyborgworkshop.com>
 References: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
- <200302270201.04762.netfilter@newkirk.us>
+ <200302270201.04762.netfilter@newkirk.us> <20030227134810.7728c8d5.arnt@c2i.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200302270201.04762.netfilter@newkirk.us>
+In-Reply-To: <20030227134810.7728c8d5.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,63 +19,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Joel Newkirk <netfilter@newkirk.us>
-Cc: Netfilter List <netfilter@lists.netfilter.org>
+To: Arnt Karlsen <arnt@c2i.net>
+Cc: netfilter@lists.netfilter.org
 
-The firewall I am using allows me to rename connections to lan or internet
-or dmz using ifname to make things a little easier to understand, so yes
-lan is eth0.  What has happened thus far is that connections that the rule
-never seems to be triggered.  I didnt think about another rule being hit
-before this one,  I will tear this guy down and see what I have going on.
-Thank you.
+What we have is a server that makes as many connections to an application
+as it can.   Its supposed to be a realtime app, so this is desired
+behaviour.  Unfortunatly, the app is owned by a different group that can't
+seem to get a grip on how much hardware they need. So we max them out, and
+their solution when they hit too many connections is to allow the port to
+be opened by the client (us)  but never send any data or a RST or
+anything! So my server ends up with tens of thousands of connections in
+wait and I end up running out of threads pretty quickly. So my thought
+was by putting an iptables box in the stream with iplimit and either
+redirecting connections that go over a max count to a "sorry we're busy
+page" or denying the connection all together, I can save my machine until
+they get the hardware they need. Is their perhaps a better method?  Right
+now I have to babysit my servers from 8pm to 3am and kill the route to
+their application when things get ugly.  Pretty nasty solution.
 
 -- 
 Jason Baker
 baker@cyborgworkshop.com
 www.cyborgworkshop.com
 
-On Thu, 27 Feb 2003, Joel Newkirk wrote:
+On Thu, 27 Feb 2003, Arnt Karlsen wrote:
 
-> On Wednesday 26 February 2003 06:57 pm, Jason wrote:
-> > Hello,  I have been given a task that I think netfilter is ideal for,
-> > but need a little help.  I need to be able to limit the number of
-> > connections going through a router running netfilter to a max of 500.
-> > When I hit 500, I want to reject any new connections. I know that the
-> > iplimit match does this, but I don't seem to be having any luck
-> > getting it to work.  Here is the scenario..
+> On Thu, 27 Feb 2003 02:01:04 -0500,
+> Joel Newkirk <netfilter@newkirk.us> wrote in message
+> <200302270201.04762.netfilter@newkirk.us>:
+>
+> > On Wednesday 26 February 2003 06:57 pm, Jason wrote:
+> > >
+> > > iptables -A FORWARD -p tcp -i lan -m state --state NEW -m iplimit
+> > > --iplimit-above 1 -j REJECT
+>
+> ..<snip>
+>
+> > Definitely the FORWARD chain, OUTPUT is for connections from the
+> > firewalling box itself.  Make sure this appears before any ACCEPT
+> > rules in your FORWARD chain, too.  Have you tried:
 > >
-> > ----                ----                ----
-> > =A =  -> Port 80 -> +NF+  -> Port 80 -> =C =
-> > ----                ----                ----
+> > iptables -A FORWARD -i eth0 -p tcp --syn --dport 80 -m iplimit
+> > --iplimit-above 500 -j REJECT
 > >
-> > Simple enough.  NF is my netfilter router, A is source, C is
-> > destination. C is an application that when it gets overworked, pretty
-> > much tarpits connecting clients and never lets go.  I have tried many
-> > permutations of
+> > This is almost precisely the format of the example rule for iplimit...
+> > I noticed you used "-i lan" above - is that a typo?  You have to
+> > specify a valid interface name, which my version presumes is eth0 for
+> > traffic from the LAN.
 > >
-> > iptables -A FORWARD -p tcp -i lan -m state --state NEW -m iplimit
-> > --iplimit-above 1 -j REJECT
-> >
-> > with out much luck.  Does anyone have any idea on how to make iplimit
-> > in a router situation work?  Should I apply this to the output chain?
 >
-> Definitely the FORWARD chain, OUTPUT is for connections from the
-> firewalling box itself.  Make sure this appears before any ACCEPT rules
-> in your FORWARD chain, too.  Have you tried:
+> .." -i $lan "?  AFAICT, above rule is valid if "lan" is a substitute
+> for an ip address etc, for a variable, you will want to declare it,
+> some people like CAPS, for, say, " -i $LAN ", YMMV.
 >
-> iptables -A FORWARD -i eth0 -p tcp --syn --dport 80 -m iplimit
-> --iplimit-above 500 -j REJECT
+> ..you don't mention _why_ your suits want this.  Using un-throttled
+> 802.11 links with some _cheap_ routers that rebooted! every time
+> they got 256 simultaneous connections for a client, I started with
+> throttling, then capping connections, and ended up wrapping all his
+> isp clients in vpn/poptop tunnels.  Poptop, because some people
+> still runs Wintendo 95, and my client like this business too.
 >
-> This is almost precisely the format of the example rule for iplimit...  I
-> noticed you used "-i lan" above - is that a typo?  You have to specify a
-> valid interface name, which my version presumes is eth0 for traffic from
-> the LAN.
->
-> When you say "without much luck" what do you mean?  Everything still gets
-> through, nothing gets through at all, or what?  Does "iptables -L -v -n"
-> show any matches to this rule?
->
-> j
+> ..yup, my first client is an isp.  ;-)
 >
 >
 
