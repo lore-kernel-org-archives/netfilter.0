@@ -1,8 +1,8 @@
 From: "anantharaman.iyer" <ananth@mail.mynetsec.com>
 Subject: Re: a small quick and dirty solution
-Date: Tue, 12 Aug 2003 16:28:40 +0530
+Date: Tue, 12 Aug 2003 16:29:14 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030812105840.M24599@mail.mynetsec.com>
+Message-ID: <20030812105914.M60420@mail.mynetsec.com>
 References: <20030812075752.GA16407@staticky.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
