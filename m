@@ -1,13 +1,12 @@
-From: "R. Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: How to check user-defined chains
-Date: Mon, 28 Oct 2002 17:43:27 +0100
+From: rwc@lanl.gov
+Subject: Modification to iptables (block IP addresses)
+Date: Mon, 28 Oct 2002 09:31:41 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c27ea1$242b09f0$0401000a@robbysan.org>
-References: <200210281605.SAA33419@mover.WUCB.Lviv.net>
+Message-ID: <3DBD666D.B80282F6@lanl.gov>
+References: <Pine.LNX.4.21.1010221832550.715-100000@hybel173.grm.hia.no>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210281605.SAA33419@mover.WUCB.Lviv.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +17,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Cc: netfilter@lists.samba.org
 
-> Are there any ways to know all user-defined chains for iptables
-(like
-> /proc/net/ip_tables_names for tables)?
-> I try to builded my ipfw script using many own chains, but
-> it's hard to
-> delete all of them -- I must remember all of previous
+Is anyone working on the following modification to iptables?  Dynamically
+watch for connections coming from any source IP addresses that exceeds a
+predefined number of connections per unit time.  When seen, block all
+subsequent connections from that source for a predefined period of time or
+indefinitely.  Currently, one can do this for specific predefined source IP
+addresses, but it would be good to have the ability to do this without
+having prior knowledge of the the offending IP source.
 
-iptables -X
-iptables -t nat -X
-iptables -t mangle -X
-
-man iptables, specifically the last line :
-
--X, --delete-chain
-Delete  the  specified  user-defined chain.  There must be no
-references to the chain.  If there are,              you must delete
-or replace the referring rules before the chain can be deleted.  If
-no  argument  is given, it will attempt to delete every non-builtin
-chain in the table.
-
-
-Rob
+Roger
 
 
