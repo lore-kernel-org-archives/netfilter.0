@@ -1,11 +1,11 @@
-From: "=?UTF-8?B?ZGF2b3Iga3JhYsWhZQ==?=" <davork@email.si>
-Subject: Ipsec-l2tp-Iptables trouble
-Date: Sun,  7 Nov 2004 02:21:17 +0100
-Message-ID: <200411070121.iA71LHaW023909@www2.email.si>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: FTP server behind a load balancer
+Date: Sun, 7 Nov 2004 10:12:55 +0200
+Message-ID: <1403218a041107001226656b10@mail.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
+Dear all,
+I have two FTP servers behind a load balancer.
+Furthermore, those FTP servers, listen on both ports 21, 45 (for some reasons)
+I am not using NAT, they have public IPs.
+When the client connects from the outside world, to port 21, passive
+FTP works fine.
+When the client connects to port 45, it doesn't work !!
+I did modprobe ipt_conntrack_ftp ports=21,45
+But during debugging I noticed something, when working with port 21,
+the response of the passive FTP, it returns with the loadbalancer IP
+(The IP the client has talked to in the first place), but when talking
+to port 45, it returns with the server IP address (The real IP of the
+server, not the load balancer), and this causes IPTables to think it
+is a new connection, to a random IP.
 
-Hi,
-
-I have read some posts on that list about my problem, but I do not now how =
-to=20
-solve it. I have the following configuration:
-
-    winXp L2TP Client(Internet) ---> Linux FW --> WIn2K Server[RAS](Lan)
-
-If I disable ipsec on xp, on Linux FW and on RAS Server, I can succesfuly=
-=20
-connect from xp to RAS server over L2TP using only this:
-
- iptables -t nat -A PREROUTING -i eth1 -p udp --dport 1701 -j DNAT --to=20
-192.168.0.111:1701
-
-where eth1 is Internet nic in Linux FW.=20
-If I enable ipsec on xp and on Linux (openswan, kernel 2.4.27), while RAS s=
-till=20
-accepts only unencrypted packets, xp and Linux FW connects over ipsec with =
-no=20
-problem. The problem is, unencrypted packets don't destinate to RAS server.=
-=20
-AFAIK, I get unencrypted packets on ipsec0 device, so I just transform the=
-=20
-previous rule into:
-
-iptables -t nat -A PREROUTING -i ipsec0 -p udp --dport 1701 -j DNAT --to=20
-192.168.0.111:1701.
-
-But it does not work. Ipsec session is between xp and Linux is established,=
- but=20
-RAS server timeouts. I suspect that my prerouting rule is causing me troubl=
-es...
-
-
-Can anyone help?
-
-
-Regards, Davor
-
-
-
-____________________
-http://www.email.si/
+Should ipt_conntrack_ftp track only the ports, or also the ports and
+IPs returned in the response of the FTP server ??
+Any clue ?
+-- 
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
