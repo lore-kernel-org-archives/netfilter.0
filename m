@@ -1,13 +1,11 @@
 From: "Patrick Ahler" <patrick@vikus.com>
-Subject: RE: Thanks
-Date: Fri, 7 Mar 2003 10:25:04 -0500
+Subject: FTP
+Date: Fri, 7 Mar 2003 11:35:14 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ABEKJILKOKKGGDJKHKDFMEBLCAAA.patrick@vikus.com>
-References: <F67DPskiCFPwA0VHH6600027fbd@hotmail.com>
+Message-ID: <ABEKJILKOKKGGDJKHKDFCEBMCAAA.patrick@vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F67DPskiCFPwA0VHH6600027fbd@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,30 +18,9 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-
-whoops =)
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Andrej Ricnik
-Sent: Thursday, March 06, 2003 10:23 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: Thanks
-
-
-
->Would have taken me forever to learn how to build this firewall with you,
->thanks alot.
-<chuckle> ... I hope you mean *without*? ;)
-
-
->Patrick
-Cheers,
-Tink
-
-_________________________________________________________________
-Add photos to your messages with MSN 8. Get 2 months FREE*. 
-http://join.msn.com/?page=features/featuredemail
-
-
+Can't get my BulletProof FTP server to work through the firewall. I opened
+ports 20,21 and 5100-5200 (configured for passive ftp), still doesn't work.
+I can log onto the server but it won't display the directory unless I take
+the firewall down. Any suggestions?
 
 
