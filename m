@@ -1,13 +1,13 @@
-From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
-Subject: Re: Please, see this firewall and say (have pity...:)
-Date: Thu, 10 Jun 2004 09:55:03 +0200
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Subject: Re: Updating multple iptables on servers
+Date: Thu, 10 Jun 2004 05:43:24 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040610095503.521ce916.leslie.polzer@gmx.net>
-References: <BAY1-DAV32gyeG6Hbit000332cc@hotmail.com>
+Message-ID: <1086860603.2005.4.camel@localhost>
+References: <E1BXbKC-0007Rf-9w@vishnu.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY1-DAV32gyeG6Hbit000332cc@hotmail.com>
+In-Reply-To: <E1BXbKC-0007Rf-9w@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Thomas Kristensen <Hyper@TaberNar.dk>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, 10 Jun 2004 01:36:28 -0300
-"Ricardo C" <racham@hotmail.com> wrote:
+On Tue, 2004-06-08 at 03:46, Thomas Kristensen wrote:
+> Is it possible to update iptables from a central server. I got 25 servers
+> using the same firewall and i need something to update them all from a
+> central server. 
+>  
+> Any ideas?
+>  
+> Hilsen Thomas Kristensen
+Strange . . . I thought I saw this identical post a few days ago!
 
-> You could give me your opinions????
-I don't have enough time to comment on all of this, but using loops increases
-readability, so
+Although it is still a few months away from release, ISCS
+(http://iscs.sourceforge.net) will help you do this.  It will also
+manage any VPN and router configurations and, eventually, even the layer
+two configuration.  It will do this just as easily if every firewall is
+different - the work is the same - describe the environment and ISCS
+automatically creates and distributes the list of rules to create that
+environment.  I wish I could tell you it's here and ready for use but
+it's still in very active development.  We're working on the last of the
+iptables modules as I write.
 
-$IPTABLES -t nat -A PREROUTING -p tcp -d $INET_IP --dport 4661 -j DNAT --to-destination 192.168.111.2:4661
-$IPTABLES -t nat -A PREROUTING -p tcp -d $INET_IP --dport 4662 -j DNAT --to-destination 192.168.111.2:4662
-$IPTABLES -t nat -A PREROUTING -p tcp -d $INET_IP --dport 4711 -j DNAT --to-destination 192.168.111.2:4711
-$IPTABLES -t nat -A PREROUTING -p UDP -d $INET_IP --dport 4000 -j DNAT --to-destination 192.168.111.2:4000
-$IPTABLES -t nat -A PREROUTING -p UDP -d $INET_IP --dport 4665 -j DNAT --to-destination 192.168.111.2:4665
-$IPTABLES -t nat -A PREROUTING -p UDP -d $INET_IP --dport 4672 -j DNAT --to-destination 192.168.111.2:4672
+fwbuilder (http://www.fwbuilder.org) is quite a good product more along
+the lines of traditional firewall GUI's and is available now.
+ - John
+-- 
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevelopmentcorp.com
 
-should become
-
-for port in 4661 4662 4711 4000 4665 4672; do
-    $IPTABLES -t nat -A PREROUTING -p tcp -d $INET_IP --dport $port -j DNAT
-        --to-destination 192.168.111.2
-done
-
-Apply this to other apt locations in your firewall script as well.
-
-
-Kind regards,
-
-Leslie
 
