@@ -1,13 +1,14 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: dhcrelay
-Date: Fri, 28 Nov 2003 21:34:51 -0500
+Date: Fri, 28 Nov 2003 20:39:44 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031129023451.GA9393@cannon.eng.us.uu.net>
-References: <1070051416.3fc7b058800c7@paris-hme1>
+Message-ID: <200311282039.44527.JALaramie@Loudoun-Fairfax.com>
+References: <1070067379.3fc7eeb32a181@paris-hme1>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1070067379.3fc7eeb32a181@paris-hme1>
 Content-Disposition: inline
-In-Reply-To: <1070051416.3fc7b058800c7@paris-hme1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: zynkx <skydive@megamail.pt>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, Nov 28, 2003 at 08:30:16PM +0000, zynkx wrote:
+On Friday 28 November 2003 19:56, zynkx wrote:
+> hi jeff and tanx for answering :)
+>
+> i'm sure i have ip forward enabled, since gateway 2 is
+> working fine and routing packets ok through the lan
+> and to gateway 1. if it happened not to have ip
+> forward enabled in gateway 2 i could never do
+> masquerading from gateway 2 to gateway 1 :)
+>
+> isn't that so? :)
+>
 
-> i have this lan i am supposed to use dhcrelay on
-> gateway 2 so the 192.168.100.0/24 machines can get an
-> ip address. 192.168.0.1 is the dhcp serveer.i have the 
-> input and output chain of the
-> gateway 2 to drop.
-> 
-> my question is:
-> 
-> do those request require input and output to accept? i
-> don't really think so because those packer are not for
-> gateway 2 but are to be routed to 192.168.100.0/24
-> machines...
-> 
-> what do you guys think of this??
+Yes. If you're not sure then: "echo 1 >/proc/sys/net/ipv4/ip_forward" will 
+turn it on.
 
-Do you run the dhcrelay on gateway-2? Then the input should be open for that.
-Then the relay is supposed to send out the relayed traffic out, then the output
-should be open. However, dhcp broadcasts are being captured by netlink
-raw packets (I suppose) so this might be a bit tricky. Give it a go and let
-us know.
+> i think this might be a matter of finding out some
+> bind tricks to get this over with... i just wanted to
+> be sure input and output to drop would not have
+> anything to do with dhcrelay :))
+>
+> i'm gonna test it with no firewalling at all to see
+> what happens ;))
+>
 
-Ramin
+I'm afraid I don't have any experience with a configuration like your's but I 
+don't think iptables will have any effect on dhcp requests. Good luck.
 
-> 
-> sorry for the very bad drawing... 
-> 
-> tanx ;))))
-> unix is user friendly. it's just selective when
-> choosing
-> friends.
-> 
-> -------------------------------------------------
-> Email Enviado utilizando o servi?o MegaMail
-> 
-> ----- Final da mensagem re-enviada -----
-> 
-> 
-> 
-> unix is user friendly. it's just selective when 
-> choosing 
-> friends.
-> 
-> -------------------------------------------------
-> Email Enviado utilizando o servi?o MegaMail
-> 
-> 
+Jeff
 
