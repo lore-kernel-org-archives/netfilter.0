@@ -1,15 +1,13 @@
-From: "Alexander W. Janssen" <yalla@ynfonatic.de>
-Subject: Re: Counter Strike FOWARDING?
-Date: Sat, 8 Mar 2003 23:31:39 +0100
+From: "Franco Antonio Catena" <facatena@surson.com.br>
+Subject: IPTABLES so estrange
+Date: Sat, 8 Mar 2003 19:37:01 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030308223139.GA9646@ynfonatic.de>
-References: <20030308203434.17890.qmail@web40209.mail.yahoo.com>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAA39YtK9808U22uRmIJg/plAEAAAAA@surson.com.br>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAAf4ZC/qaxCUWa8XKwAM+cHAEAAAAA@surson.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030308203434.17890.qmail@web40209.mail.yahoo.com>
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAAf4ZC/qaxCUWa8XKwAM+cHAEAAAAA@surson.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +17,153 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Franco Antonio Catena' <facatena@surson.com.br>, 'Netfilter' <netfilter@lists.netfilter.org>
+
+Hi,
+
+I have a linux box with 2 netcardas eth0 External and eth1 intternal. I
+want that apache runs in port 81 instead of 80 becouse I have a nat
+forwarding to IIS. The problem is that the script dont work. Im not able
+to telnet from internal address to port 81. The Apache was started but I
+dont know why I cant telnet 192.168.1.1 81?
+ 
+
+for i in `ls /lib/modules/2.4.18-2cl/kernel/net/ipv4/netfilter/ip*|cut
+-f \
+3 -d "."|cut -f 6 -d "/"|grep -v ipchains`;do  modprobe $i;done
+
+#modprobe ip_tables
+#insmod ip_conntrack
+#insmod ip_conntrack_ftp
+#modprobe ipt_LOG
+#modprobe ipt_multi[Bport
+#modprobe ipt_REJECT
+#modprobe ipt_MASQUERADE
 
 
---KsGdsel6WgEHnImy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+iptables -F
 
-On Sat, Mar 08, 2003 at 12:34:34PM -0800, SBlaze wrote:
-> iptables -t nat -A PREROUTING -p TCP --dport 27015 -j DNAT --to-destinati=
-on
-> 192.168.1.25:27015
-
-That rule is ok, but you should include a rule in the FORWARD chain which
-actually allows the rule. Portforwarding is ok, as long as you don't forbid=
- it
-later:
-
-iptables -A FORWARD -p tcp --dport 27015 -d 192.168.1.25 -j ACCEPT
-
-Don't know if the Counterstrike-port is correct though... But i guess you k=
-now
-what you're doing.
-
-Alex.
+# Politicas default
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
 
 
 
---=20
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
-l."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
+iptables -P FORWARD ACCEPT
 
---KsGdsel6WgEHnImy
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Weitere Infos: siehe http://www.gnupg.org
+iptables -A INPUT -i eth0 --fragment -p icmp -j LOG --log-prefix
+"Fragmented ICMP: "
+iptables -A INPUT -i eth0 --fragment -p icmp -j DROP 
 
-iEYEARECAAYFAj5qb0oACgkQEMMZKORQoYIn5QCdGoTiCwD4uLoZge137q6Gqt6M
-B/IAn312xzdYM7CACRZAZhvyHmvJwCEZ
-=AJS8
------END PGP SIGNATURE-----
 
---KsGdsel6WgEHnImy--
+iptables -A INPUT -i eth0 -p tcp --dport 3128 -j LOG --log-prefix "USO
+DO  SQUID "
+
+iptables -A INPUT -s 192.168.1.0/255.255.255.0 -p tcp --dport 81 -j LOG
+--log-prefix "WEB INTERNA "
+iptables -A INPUT -i eth0 -m multiport -p tcp --dport
+21,22,25,53,80,81,110,500,3128 -j ACCEPT
+iptables -A INPUT -s 192.168.1.0/255.255.255.0  -m multiport -p tcp -d
+192.168.1.1 --dport 21,22,25,53,80,81,110,500,3128 -j ACCEPT
+iptables -A INPUT -i eth0 -m multiport -p udp --dport
+21,25,53,80,110,500 -j ACCEPT
+
+
+iptables -A INPUT -s 192.168.1.0/255.255.255.0 -p  tcp --dport 22 -j
+ACCEPT
+iptables -A INPUT -s 192.168.1.0/255.255.255.0 -p  tcp --dport 81 -j
+ACCEPT
+
+iptables -A INPUT -j ACCEPT -m state --state RELATED,ESTABLISHED
+
+
+
+
+iptables -A INPUT -i eth0 -p tcp --dport 3128 -j DROP
+
+iptables -A INPUT -i eth0 -j LOG --log-prefix "FIREWALL : INPUT "
+
+iptables -A INPUT -i eth0 -j DROP
+
+# Regras de Saida
+
+iptables -A OUTPUT -o eth0 -p tcp -m state --state NEW --dport 443
+--sport 1024:65535 -j ACCEPT
+
+#Bloqueando saida NETbios
+iptables -A OUTPUT -o eth0 -m multiport -p tcp --dport 135,137,138,139
+-j DROP
+iptables -A OUTPUT -o eth0 -m multiport -p udp --dport 135,137,138,139
+-j DROP
+
+
+iptables -A OUTPUT -o eth0 -j ACCEPT
+
+# NAT
+#iptables -t nat -A PREROUTING -j NAT --to-dest 192.168.1.1 -d
+apache.surson.com.br -p tvp 
+iptables -t nat -A PREROUTING -j DNAT --to-dest 192.168.1.2 -i eth0 -p
+tcp -m multiport --dport 21,25,80,110,3389,137,50,51,1723
+#iptables -t nat -A PREROUTING --dst apache.surson.com.br -p TCP --dport
+80  -j DNAT --to-destination 192.168.1.1
+
+# Masquerade
+#iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/255.255.0.0 -d
+192.168.0.0/255.255.0.0 -j LOG --log-prefix "Firewall VPN " 
+
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/255.255.0.0 -d \!
+192.168.0.0/255.255.0.0 -j MASQUERADE
+
+
+# Bloqueio de saida de pacotes do tipo Windows Networking
+iptables -A FORWARD -i eth0 -m multiport -p tcp --dport 135,137,138,139
+-j LOG --log-prefix " Fire BLOQ TCP NETBIOS " 
+iptables -A FORWARD -i eth0 -m multiport -p udp --dport 135,137,138,139
+-j LOG --log-prefix " Fire BLOQ UDP NETBIOS "
+iptables -A FORWARD -i eth0 -m multiport -p tcp --dport 135,137,138,139
+-j DROP
+iptables -A FORWARD -i eth0 -m multiport -p udp --dport 135,137,138,139
+-j DROP
+
+# Forwarding para saida
+iptables -A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+
+
+
+iptables -A FORWARD -s 192.168.1.1/24 -d ! 192.168.1.1 -p tcp  --dport
+3128  -j DROP
+iptables -A FORWARD -s 192.168.1.1/24 -d ! 192.168.1.1 -p tcp --dport
+8080 -j DROP
+iptables -A FORWARD -i eth1 -j ACCEPT
+
+
+# Kernel Level
+echo "32768" > /proc/sys/net/ipv4/ip_conntrack_max
+echo "1"     > /proc/sys/net/ipv4/tcp_abort_on_overflow
+echo "1"     > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+echo "1"     > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
+echo "1"     > /proc/sys/net/ipv4/ip_forward
+
+for i in /proc/sys/net/ipv4/conf/*/rp_filter 
+do
+  echo 0 > $i 
+done
+
+for i in /proc/sys/net/ipv4/conf/*/log_martians
+ do
+  echo 1 > $i 
+ done
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.459 / Virus Database: 258 - Release Date: 25/2/2003
+ 
+
 
