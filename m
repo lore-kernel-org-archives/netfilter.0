@@ -1,11 +1,11 @@
-From: Roberto Nibali <ratz@tac.ch>
-Subject: Re: iptables logging exhibites lines on current virtual console
-Date: Mon, 09 Dec 2002 12:25:05 +0100
+From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
+Subject: RE: PPTP+NAT+MASQ anyone?
+Date: Mon, 9 Dec 2002 12:57:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DF47D91.1030209@tac.ch>
-References: <1039380153.1095.13.camel@osbourn.intranet>
+Message-ID: <FD8F124A387AD6119F7900A0D218B32154A614@hslex01.hslbz.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C29F7A.1A3B0FE0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,50 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Luis Fernando C. Talora" <talora-listas@talora.com.br>
-Cc: netfilter@lists.netfilter.org
+To: 'Roy Sigurd Karlsbakk' <roy@karlsbakk.net>, 'Netfilter mailinglist' <netfilter@lists.netfilter.org>
 
-Hello,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-> Here's the problem: I've realized that many of the log lines generated
-> are exhibited on current console: tty1, tty2, etc. Do anybody know the
-> reason of that behavior?
+------_=_NextPart_001_01C29F7A.1A3B0FE0
+Content-Type: text/plain
 
-Yes, the problem is that your system seems to be configured with a high 
-threshold value for printk in the proc-fs. Check it with:
+> I've kept trying now. many times, to do NAT+MASQ+PPTP, but as 
+> soon as I 
+> compile 2.4.18 (the only one I've managed to patch-o-matic) 
+> and boot it, it 
+> refuses to -j MASQUERADE. (invalid argument). Are anyone running this?
 
-cat /proc/sys/kernel/printk
+Yup, on my test-box : 2.4.20-rc1 (still, but it's doing nothing at the
+moment).
+I had no problems patching it however.
 
-The definitions can be found by reading ..linux/kernel/printk.c:
 
-int console_printk[4] = {
-         DEFAULT_CONSOLE_LOGLEVEL,       /* console_loglevel */
-         DEFAULT_MESSAGE_LOGLEVEL,       /* default_message_loglevel */
-         MINIMUM_CONSOLE_LOGLEVEL,       /* minimum_console_loglevel */
-         DEFAULT_CONSOLE_LOGLEVEL,       /* default_console_loglevel */
-};
+Rob
 
-An excerpt written by the excellent kernel hacker A. Rubini:
----
-The four numbers in /proc/sys/kernel/printk control the ``verbosity'' level of 
-the printk kernel function. The first number in the array is console_loglevel: 
-kernel messages with priority less than or equal to the specified value will be 
-printed to the system console (i.e., the active virtual console, unless you've 
-changed it). This parameter doesn't affect the operation of klogd, which 
-receives all the messages in any case.
----
+------_=_NextPart_001_01C29F7A.1A3B0FE0
+Content-Type: text/html
 
- > Is there a way to change that?
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
+<TITLE>RE: PPTP+NAT+MASQ anyone?</TITLE>
+</HEAD>
+<BODY>
 
-echo "1" /proc/sys/kernel/printk
+<P><FONT SIZE=2>&gt; I've kept trying now. many times, to do NAT+MASQ+PPTP, but as </FONT>
+<BR><FONT SIZE=2>&gt; soon as I </FONT>
+<BR><FONT SIZE=2>&gt; compile 2.4.18 (the only one I've managed to patch-o-matic) </FONT>
+<BR><FONT SIZE=2>&gt; and boot it, it </FONT>
+<BR><FONT SIZE=2>&gt; refuses to -j MASQUERADE. (invalid argument). Are anyone running this?</FONT>
+</P>
 
-Another problem could arise (depending on the brokeness level of the 
-distribution you're using) when starting klogd with a wrong '-c #' value.
+<P><FONT SIZE=2>Yup, on my test-box : 2.4.20-rc1 (still, but it's doing nothing at the moment).</FONT>
+<BR><FONT SIZE=2>I had no problems patching it however.</FONT>
+</P>
+<BR>
 
-Best regards,
-Roberto Nibali, ratz
--- 
-echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' | dc
+<P><FONT SIZE=2>Rob</FONT>
+</P>
 
+</BODY>
+</HTML>
+------_=_NextPart_001_01C29F7A.1A3B0FE0--
 
