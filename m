@@ -1,11 +1,12 @@
-From: "Brian French" <bfrench@imageworksstudio.com>
-Subject: using iptables to share itunes 4.7 from home to work
-Date: Mon, 22 Nov 2004 17:58:32 -0500
-Message-ID: <005901c4d0e6$ceadd210$fa00a8c0@developer>
+From: primero <primero@fastwebnet.it>
+Subject: Re: DNATed packet not hitting FORWARD chain
+Date: Tue, 23 Nov 2004 10:29:21 +0100
+Message-ID: <41A302F1.5020102@hdr-roma.it>
+References: <9FB9C39FACF4034BB4AC7F89F2AEB0AB0159373A@win2k.aries.dpmg.com>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-	boundary="----=_NextPart_000_005A_01C4D0BC.E5D7CA10"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <9FB9C39FACF4034BB4AC7F89F2AEB0AB0159373A@win2k.aries.dpmg.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,54 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: James <newsjn@dpmg.com>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+James wrote:
 
-------=_NextPart_000_005A_01C4D0BC.E5D7CA10
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+>Hi,
+>
+>I'm having some trouble getting DNAT to work properly.  I have a gateway
+>machine that has two different connections to the Internet, on eth1 and
+>eth2.  I'm trying to allow inbound port 1723 to be forwarded to an internal
+>PPTP server through both interfaces.  It works on eth2, but not eth1.
+>Here's what I've got:
+>
+>  
+>
+Hi
+I would try to check if packets arrives on .165 by tcpdump on this host.
+just to see if DNATTING and FORWARDING is done correctly, and it should
+be based on rules u showed us.
 
-I have Itunes 4.7 running with all of my music at home.
+Then i would ask how do you deal with routing packets on your gw. I
+mean, if u receive the connection on eth2 and you DNAT and forward to
+.167 , the returning packets from .167 should be routed to the eth2 and
+exit the gw from that interface. The same for eth1 and .165
 
-I would like to be able to listen to that music on my itunes 4.7 here at
-my office.
+What about you routing settings on the gw? maybe u use eth2 as default
+route interface and also the packets that come back from .165 exits and
+are routed by eth2. this way you'll never get the SNAT rule associated
+to the previous DNAT rule matched and applied .
 
-I know that itunes 4.7 no longer allowes you to share over the internet.
+BTW this is just an idea ;)
 
- 
-
-My home and office network basically have a static ip address. 
-
-Both are natted with private subnets behind the routers 
-
- 
-
-As far as I understand it, when itunes is running, it scans your local
-subnet for any other itunes that have sharing enabled.
-
-It there any way, using iptables, to trick my office computer to think
-that my office router is actually my home computer on the port that
-itunes uses (3689) and do the same for my home? If so, what are the
-iptables commands to do so?
-
- 
-
-Thank for your help!
-
- 
-
- <http://www.imageworksstudio.com/> 
-
-    Brian French
-
-         Technical Director
-
- 
-
-
-------=_NextPart_000_005A_01C4D0BC.E5D7CA10--
-
+bye
+primero
 
 
