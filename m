@@ -1,10 +1,14 @@
-From: Federico Lucifredi <flucifredi@acm.org>
-Subject: RE: is this 1969 ? Are we on the moon yet?
-Date: Fri, 10 Dec 2004 17:13:55 -0500
-Message-ID: <41BA1FA3.7000709@acm.org>
+From: Michelle Konzack <linux4michelle@freenet.de>
+Subject: Re: is this 1969 ? Are we on the moon yet?
+Date: Fri, 10 Dec 2004 22:59:26 +0100
+Message-ID: <20041210215926.GZ639@freenet.de>
+References: <41BA1FA3.7000709@acm.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AOcQtsuew1iUDr5s"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <41BA1FA3.7000709@acm.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,44 +19,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello List,
 
->Message: 10
->Date: Fri, 10 Dec 2004 22:22:35 +0100
->From: "Rob Sterenborg" <rob@sterenborg.info>
->Subject: RE: is this 1969 ? Are we on the moon yet?
->To: <netfilter@lists.netfilter.org>
->Message-ID: <20041210212225.15F772F433@kshira.sterenborg.info>
->Content-Type: text/plain;	charset="US-ASCII"
->
->netfilter-bounces@lists.netfilter.org wrote:
->  
->
->>> err, Why oh Why is all netfilter mail coming from 1969 ? Is
->>> Doug Engelbart in charge of this project ?
->>    
->>
->
->Uh.. Not here it isn't.
->
->
->Gr,
->Rob
->  
->
-Well.... here the clock is set to Dec 10th, 2004. Why are all my digests 
-coming from 1969? don't tell me its the timezone =)
+--AOcQtsuew1iUDr5s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--Federico
+Am 2004-12-10 17:13:55, schrieb Federico Lucifredi:
+> Hello List,
 
- 
-_________________________________________
--- "'Problem' is a bleak word for challenge" - Richard Fish
+> Well.... here the clock is set to Dec 10th, 2004. Why are all my digests=
+=20
+> coming from 1969? don't tell me its the timezone =3D)
 
-Muad'Dib of Caladan (Federico L. Lucifredi)- Harvard University & BU
-http://metcs.bu.edu/~lucifred
+Maybe the mailgateway has used the SG1  :-)
 
+> -Federico
+
+
+Greetings
+Michelle
+
+--=20
+Linux-User #280138 with the Linux Counter, http://counter.li.org/=20
+Michelle Konzack   Apt. 917                  ICQ #328449886
+                   50, rue de Soultz         MSM LinuxMichi
+0033/3/88452356    67100 Strasbourg/France   IRC #Debian (irc.icq.com)
+
+--AOcQtsuew1iUDr5s
+Content-Type: application/pgp-signature; name="signature.pgp"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFBuhw+C0FPBMSS+BIRAuzvAJ4y+sfJqXipcCEoHpVXcuveq4v8zwCgmuJn
+AyDjEpuySp2nAypiC2zVOBs=
+=5BcL
+-----END PGP SIGNATURE-----
+
+--AOcQtsuew1iUDr5s--
 
