@@ -1,8 +1,8 @@
 From: "__ Radien__" <radien@zworg.com>
 Subject: ip_alwas_defrag kernel parameter
-Date: Tue, 27 Apr 2004 01:14:28 -0700
+Date: Tue, 27 Apr 2004 01:17:21 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <30525.1083053668@zworg.com>
+Message-ID: <31683.1083053841@zworg.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
