@@ -1,13 +1,14 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: [LARTC] layer7-filter with iptables problem
-Date: Mon, 2 Feb 2004 13:34:05 +0530
+From: Stephen Satchell <list@satchell.net>
+Subject: --reject-with icmp-admin-prohibited
+Date: Mon, 02 Feb 2004 02:35:56 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <04fd01c3e963$20fea7e0$c2bf09ca__44225.9713345722$1075709746@huecal>
+Message-ID: <1075718155.22226.41.camel@ssatchell1.pyramid.net>
 References: <04e501c3e95a$e0674aa0$c2bf09ca@huecal>
-Reply-To: "hare ram" <hareram@sol.net.in>
+	 <04fd01c3e963$20fea7e0$c2bf09ca@huecal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <04fd01c3e963$20fea7e0$c2bf09ca@huecal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,156 +19,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: lartc@mailman.ds9a.nl
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-Hello
+Hi.
 
-sorry continuation to the last mail
+This is a stupid question.  I know it is.  I'm looking for the syntax to
+use with -j REJECT in which I can return a ICMP Type 3 Code 13, which is
+defined in _TCP/IP Illustrated Vol 1_ as "communications
+administratively prohibited by filtering."  The man page is no help. 
+The /sbin/iptables -p icmp --help lists only the codes used for matching
+packets, not generating them.  I've tried every variation of 3/13 I
+could think of.
 
-when make menuconfig
-iam not able to see this options tooo
+I finally looked in the source and found "icmp-admin-prohibited" but
+when I tried it with 1.2.7 it didn't work.
 
-"Layer 7 match support" and "Child Level match support".
+What's the secret code to get -j REJECT --reject-with
+icmp-admin-prohibited to work with 1.2.7?
 
-but i followed the proceedures mentioned in the docs
+(signed) puzzled
 
-but i could not find this option
-where did i went wrong.. iam not sure
-some one guide me
-
-hare
------ Original Message ----- 
-From: "hare ram" <hareram@sol.net.in>
-To: <lartc@mailman.ds9a.nl>
-Cc: <netfilter@lists.samba.org>
-Sent: Monday, February 02, 2004 12:35 PM
-Subject: [LARTC] layer7-filter with iptables problem
-
-
-> Hi
->
-> iam running FEDORA,
->
-> i have installed Source of iptable 1.2.9 with the patch  layer7-iptables
-> patch done with out any errors
->
-> and i applied patch in kernel to the layer 7 patch
->
-> and i have select the required option by doing
->
->  make menyconfig
-> done
->
-> make dep
-> make bzImage
-> make modules
-> make modules_install
-> make install
->
-> and rebooted with customer kernel
->
-> when i type
->
-> iptables -t mangle -A POSTROUTING -m layer7 --l7proto http -j
-> MARK --set-mark 1
-> iptables v1.2.9: Couldn't load match
-> `layer7':/usr/local/lib/iptables/libipt_layer7.so: cannot open shared
-object
-> file: No such file or directory
->
->
-> when i try to do manual compile, iam getting this error
->
->
-cc -O2 -Wall -Wunused -I/usr/src/linux-2.4.22-1.2115.nptl/include -Iinclude/
->  -DIPTABLES_VERSION=\"1.2.9\"  -fPIC -o extensions/libipt_layer7_sh.o -c
-> extensions/libipt_layer7.c
->
->
-> extensions/libipt_layer7.c:21:45: linux/netfilter_ipv4/ipt_layer7.h: No
-such
-> file or directory
-> extensions/libipt_layer7.c:52: warning: `struct ipt_layer7_info' declared
-> inside parameter list
-> extensions/libipt_layer7.c:52: warning: its scope is only this definition
-or
-> declaration, which is probably not what you want
-> extensions/libipt_layer7.c: In function `parse_protocol_file':
-> extensions/libipt_layer7.c:84: error: `MAX_PROTOCOL_LEN' undeclared (first
-> use in this function)
-> extensions/libipt_layer7.c:84: error: (Each undeclared identifier is
-> reported only once
-> extensions/libipt_layer7.c:84: error: for each function it appears in.)
-> extensions/libipt_layer7.c:87: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:87: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:87: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:93: error: `MAX_PATTERN_LEN' undeclared (first
-> use in this function)
-> extensions/libipt_layer7.c:95: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:95: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:95: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c: At top level:
-> extensions/libipt_layer7.c:219: warning: `struct ipt_layer7_info' declared
-> inside parameter list
-> extensions/libipt_layer7.c: In function `parse_layer7_protocol':
-> extensions/libipt_layer7.c:246: warning: passing arg 3 of
-> `parse_protocol_file' from incompatible pointer type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:264: error: `MAX_PATTERN_LEN' undeclared (first
-> use in this function)
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:264: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c: In function `parse':
-> extensions/libipt_layer7.c:278: warning: passing arg 2 of
-> `parse_layer7_protocol' from incompatible pointer type
-> extensions/libipt_layer7.c:280: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c: In function `print':
-> extensions/libipt_layer7.c:325: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:326: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c: In function `save':
-> extensions/libipt_layer7.c:334: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c:334: error: dereferencing pointer to incomplete
-> type
-> extensions/libipt_layer7.c: At top level:
-> extensions/libipt_layer7.c:340: error: invalid application of `sizeof' to
-an
-> incomplete type
-> extensions/libipt_layer7.c:341: error: invalid application of `sizeof' to
-an
-> incomplete type
->
->
-> any help will be apprciate
->
-> hare
->
-> _______________________________________________
-> LARTC mailing list / LARTC@mailman.ds9a.nl
-> http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
->
 
 
