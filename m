@@ -1,11 +1,11 @@
-From: Jason Liao <maillist@Gallantry.com>
-Subject: How to change a packet's arriving interface
-Date: Wed, 04 Dec 2002 10:48:51 -0800
+From: Phillip.Watts@nlynx.com
+Subject: Think I want to use libipq
+Date: Tue, 3 Dec 2002 10:06:57 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DEE4E13.D72148E@Gallantry.com>
+Message-ID: <86256C84.0058877E.00@nlynx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,24 +16,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-I have a firewall running iptables with 3 interfaces: LAN, WAN and DMZ. 
-The LAN IP address is 10.0.0.1/24, WAN 66.134.34.157/28, and DMZ
-66.134.34.249/28.  The WAN interface connects to the Internet and the
-DMZ interface connects to a stub network.
 
-When someone sends a packet to the IP address of the DMZ interface from
-the Internet, the packet x.x.x.x->66.134.34.249 arrives at the WAN
-interface.  I want to know if there is a way using iptables (maybe with
-other tools such as iproute2) to make this packet to appear as if it
-arrives at the DMZ interface.  The packet itself should not be
-modified.  I looked at the mangle table but could not figure out if it
-is the right direction.
+I want to write a filter in userspace.
+Comparing dns lookups to a blacklist and possibly
+other things.
 
-Thanks in advance.
+Questions:
 
-Jason Liao
+My strong impression is to use libipq and
+target QUEUE.   Correct?
+
+Netlink sockets is deprecated? or is libipq like a wrapper?
+
+It seems that I need a current iptables to do this, but my 2.4.18 kernel
+is fine, this is a little confusing.
+
+My 2.4.18 kernel  .config doesn't seem to have CONFIG_IP_NF_QUEUE
+and I can't seem to brute force it in.  Can't get ip_queue.o to build.  ??
+
+Any one heard of a Python libipq module?  I've seen the Perl version
+but I have Python on my very tiny router and don't want to add Perl.
+If not I'll code in C.
+
+Thanks
+
+
 
