@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ethernet headers and iptables counters
-Date: Mon, 10 Nov 2003 09:40:40 +0000
+From: "Roberto Rossi" <echo@smc.it>
+Subject: mail server problem
+Date: Mon, 10 Nov 2003 10:48:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311100940.hAA9eij16696@agate.rockstone.co.uk>
-References: <1068455679.10203.4.camel@hohum.marcsnet.com>
+Message-ID: <008a01c3a76f$d084fa10$0101010a@tv.smc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0087_01C3A778.322DC3C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1068455679.10203.4.camel@hohum.marcsnet.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +16,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 10 November 2003 9:14 am, Marc Lucke wrote:
+This is a multi-part message in MIME format.
 
-> Hi,
->
-> Do the iptables counters include layer 2 ethernet packet headers?  If
-> so, how much traffic is this - is it a set amount?
+------=_NextPart_000_0087_01C3A778.322DC3C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-No, because you may not be using ethernet.
+Hello all,
 
-Netfilter can be used for packets across ethernet, 802.11, PPP modems - all 
-sorts of network transports.
+I've a range of 30 public internet addresses to manage starting, say, =
+from 213.25.24.0 to 213.25.24.31 netmask of course 255.255.255.224.
 
-Packet and byte counters in netfilter are IP (OSI layer 3) and upwards.
+My firewall (Red Hat 9.0, latest kernel) public IP is 213.25.24.30 the =
+router address is 213.25.24.1 and the LAN network is 10.1.0.0/16.
 
-You can check this easily by creating a rule matching something specific (eg 
-ping packets), send a known amount of traffic through the box (or measure it 
-with a packet sniffer / protocol analyser such as ethereal, which will give 
-you a detailed view of the contents of the packets), and then check what the 
-counters say.
+I've an internal mail server, say, 10.1.1.2 which I would like to see =
+from the outside as 213.25.24.3, one IP of my range.
 
-Antony
+Except DNS registration, what are the correct steps to make this =
+possible?
 
--- 
+I just set this rule on my firewall:
+iptables -t nat -A PREROUTING -p tcp -i eth0 -d 213.25.24.3 --dport 25 =
+-j DNAT --to 10.1.1.2:25
 
-Anything that improbable is effectively impossible.
+but I guess it's not enough because it's not working.
 
- - Murray Gell-Mann, Nobel Prizewinner in Physics
-                                                     Please reply to the list;
-                                                           please don't CC me.
+A help is really appreciated, thanks in advance.
+
+Roberto - Italy    
+------=_NextPart_000_0087_01C3A778.322DC3C0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DVerdana size=3D2>Hello all,</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>I've a range of 30 public internet =
+addresses to=20
+manage starting, say, from 213.25.24.0 to 213.25.24.31 netmask of course =
+
+255.255.255.224.</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>My firewall (Red Hat 9.0, latest=20
+kernel)&nbsp;public IP is 213.25.24.30 the router address=20
+is&nbsp;213.25.24.1&nbsp;and the LAN network is =
+10.1.0.0/16.</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>I've an internal mail server, say, =
+10.1.1.2 which=20
+I would like to see from the outside&nbsp;as 213.25.24.3, one IP of my=20
+range.</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>Except DNS registration, what are the =
+correct=20
+steps to make this possible?</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>I just set this rule on my =
+firewall:</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2>iptables -t nat -A PREROUTING -p tcp =
+-i eth0 -d=20
+213.25.24.3 --dport 25 -j DNAT --to 10.1.1.2:25<BR></FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2>but I guess it's not enough because =
+it's not=20
+working.</DIV></FONT>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>A help is really appreciated, thanks =
+in=20
+advance.</FONT></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DVerdana size=3D2>Roberto - Italy&nbsp;&nbsp;&nbsp;=20
+</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0087_01C3A778.322DC3C0--
+
 
