@@ -1,8 +1,9 @@
-From: "Patrick Ahler" <patrick@vikus.com>
-Subject: top level rules
-Date: Mon, 12 May 2003 08:25:07 -0400
+From: "Leonardo Borda" <borda@netwall.com.br>
+Subject: tools for netfilter
+Date: Mon, 12 May 2003 09:36:47 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ABEKJILKOKKGGDJKHKDFEEAICBAA.patrick@vikus.com>
+Message-ID: <IHEHKFMEMKMGFDMIAHCIGEIFDMAA.borda@netwall.com.br>
+Reply-To: <borda@netwall.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,21 +17,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter EMAIL <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Is there any way to insert a new rule at the top of a table...
+Hello,
 
-For instance, I have rules...
+	I wish to install a netfilter firewall in my organization and I decided to
+use the following applications for:
 
-RULE 1
-RULE 2
-RULE 3
-RULE 4
+	Firewall
+		- Iptables
+	Management
+		- Webmin + shorewall
 
-in order... but what if I want to place a rule before rule 1? Is that
-possible?
-Thanks,
--Patrick
+	Does anybody know a tool for logging connections on the fly and generate a
+log report?
+	I need to see what connections is going from and to my firewall and its
+users? Does it have a tool for the web?
 
+regards
+
+Leonardo Borda.
+
+
+
+
+
+
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.478 / Virus Database: 275 - Release Date: 6/5/2003
 
 
