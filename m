@@ -1,12 +1,11 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Total traffic
-Date: Mon, 6 Oct 2003 10:30:46 -0700
+From: Nathan Whittacre <nathan@stimulustech.com>
+Subject: Connection Tracking
+Date: Mon, 06 Oct 2003 10:46:10 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E5C@alderaan.smgtec.com>
+Message-ID: <3F81AA62.7050404@stimulustech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,85 +15,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Anderson, Ray" <rsa@prideindustries.com>, Mario Ohnewald <mario.Ohnewald@gmx.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+I have the following situation:
+
+A server for what is called directed host sits behind a NAT'd firewall
+with a local IP.  I have port 1066 forwarded to that server(10.2.0.1).
+The way this protocol works is that the remote computer connects to it
+on port 1066, exchanges some data over the existing connection and then
+the server initiates a connection back to the client on the client's
+port 1066.  This is fine as long as the client has a static, un-NAT'd
+internet IP, but the connection is dropped by the server if it does not
+get a reply from port 1066.  I have a few client machines on a NAT'd
+network that need to connect to this remote server, but with only one
+gateway internet IP.  They do not necessarily need to connect at the
+same time.  Is there any way to write a connection tracking script that
+senses the outbound connection to port 1066 on the remote side and then
+DNATs the inbound 1066 to the local IP once the connection is established?
+
+I have a tcpdump of the connection avaiable if that would be of any help.
+
+Thank you,
+Nathan Whittacre
 
 
-This would be better done if you could feed a rule text into a program =
-and have it spit out the byte count, but until I get libiptc to build =
-properly, this is what I do:
-
-iptables:
-$IPTABLES -t mangle -A PREROUTING -i ${ifname}
-$IPTABLES -t mangle -A POSTROUTING -o ${ifname}
-
-Counter into RRDTOOL:
-TRAFFIC=3D`/sbin/iptables -nxvL -t mangle | grep  "\*      ${ifname} " | =
-awk '{ print $2 }'`
-OUTBOUND=3D${TRAFFIC}
-
-TRAFFIC=3D`/sbin/iptables -nxvL -t mangle | grep  "${ifname}[\ ]*\*" | =
-awk '{ print $2 }'`
-INBOUND=3D${TRAFFIC}
-
-This is based on a per-interface byte counter, which I believe is what =
-you are looking for. If you try to make the counters much finer grained, =
-you will eventually run into the problem of parsing the lines without =
-redundancies. My only easy solution to this would be one of two things:
-
-1. Write a program designed to extract the byte counts of any rule where =
-its rule text is fed back into the program.
-2. Write a simple extension that all it does is print something like =
-'ATOM eth0_inbound' or 'ATOM inet_http_in' or whatever. Then from user =
-land, you can always filter to a single line by knowing the special =
-atomic string.
-
------Original Message-----
-From: Anderson, Ray [mailto:rsa@prideindustries.com]=20
-Sent: Monday, October 06, 2003 8:56 AM
-To: Daniel Chemko; Mario Ohnewald
-Cc: netfilter@lists.netfilter.org
-Subject: RE: Total traffic
-
-Could you give us "noobs" an example ruleset?=20
-Thanks!=20
--=3DRay=20
----------------------------------------=20
-
-> -----Original Message-----=20
-> From: Daniel Chemko [mailto:dchemko@smgtec.com]=20
-> Sent: Monday, October 06, 2003 1:37 AM=20
-> To: Mario Ohnewald=20
-> Cc: netfilter@lists.netfilter.org=20
-> Subject: Re: Total traffic=20
->=20
->=20
-> I just insert blank rules to mangle,pre & post.=20
->=20
-> Mario Ohnewald wrote:=20
->=20
-> >Hello!=20
-> >I am running the SuSI Firewall2, and i want to find out my=20
-> total traffic,=20
-> >which i need for my traffic script.=20
-> >I have 2 questions about it:=20
-> >Will: iptables=A0 -L -vnx | grep "state NEW,RELATED,ESTABLISHED" | =
-grep=20
-> >"ACCEPT=A0=A0=A0=A0 all"=20
-> >=20
-> >Give me the toal traffic? If yes, why does iptraf log about=20
-> twice as much=20
-> >traffic than my iptables??=20
-> >=20
-> >Should it not be the same, or am i looking at the wrong=20
-> iptables line?=20
-> >=20
-> >=20
-> >Cheers, Mario=20
-> >=20
-> >=A0=20
-> >=20
->=20
->=20
 
