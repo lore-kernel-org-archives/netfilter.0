@@ -1,15 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: REDIRECT to localhost
-Date: Wed, 18 Aug 2004 03:21:32 +0200
+From: "Joel n.solanki" <zealous@bonbon.net>
+Subject: kenel panic tc+netfilter+kernel
+Date: 18 Aug 2004 11:22:39 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1092792092.4025.4.camel@anduril.intranet.cartel-securite.net>
-References: <20040816082400.5165.qmail@flock1.newmail.ru>
-	 <1092654950.27598.13.camel@tarkus>
-	 <200408171302.30699.igor@garant.koenig.ru>
+Message-ID: <1092808358.2552.46.camel@joel.d2visp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408171302.30699.igor@garant.koenig.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,37 +15,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Igor Popov <igor@garant.koenig.ru>
-Cc: tedkaz@optonline.net, netfilter@lists.netfilter.org
-
-Le mar 17/08/2004 =E0 13:02, Igor Popov a =E9crit :
-> As I know, REDIRECT target redirects to the same iface, but on another =
-port.
-
-Nope.
-REDIRECT target redirects to lo interface, on the port you want.
-
-> I can run squid on ppp iface, because it is created dynamically and I d=
-on't=20
-> want it to listen on all addresses.
-
-Just have it run on 127.0.0.1, port 3128, and configure it as a
-transparent proxy (see Squid doc).
-
-> I have tried to use REDIRECT and DNAT, but without any success.
-
-And finally try this :
-
-	iptables -t nat -A PREROUTING -p tcp --dport 80 \
-		-j REDIRECT --to-ports 3128
-
-Should work.
+Content-Type: text/plain; charset="us-ascii"
+To: lartc <lartc@mailman.ds9a.nl>, netfilter <netfilter@lists.netfilter.org>
 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Dear all,
+
+My os: Redhat 9 with 2.4.20 shipped kernel with redhat.
+I have even changed my hardware and tried but same error.
+I have changed the kernel to 2.4.21 then also i m getting this error.
+
+when i am starting my bandwidth script i m getting below errors. then my
+machine gets unusable.
+This is surely something related with tc /iptables and kernel but i cant
+sort out what is the problem.
+Can any body over have experience such problem.
+????????????????
+
+
+Starting Bandwidth Management: ip_conntrack (4031 buckets, 32248 max)
+Kernel BUG at slab.c:1130
+invalid operand: 0000
+CPU: 0
+EIP: 0010:[<c012e188>]	Not tainted
+EFLAGS: 00010202
+eax: 000001f0	ebx: 00000000 ecx: c15732d0	edx: c02194bc
+esi: c15732c0	edi: 000001f0 ebp: c15732c0	esp: dc1c3ae0
+ds: 0018 es: 0018 ss: 0018
+Process tc (pid: 1164, stackpage=dc1c3000)
+Stack: 000001f0	00000000 c1573480 000001f0 c15732c0 c012e20a c15732c0
+c15732c0
+00000246 000001f0 c15732c0 c012e4fd c15732c0 000001f0 000001d2 c1573480
+00000246 000001f0 dc137000 c02209c0 dc137184 df496c00 c01af3f3 00000064
+
+Call Trace: [<c012e20a>] [<c012e4fd>] [<c01af3f3>] [<e017f102>]
+[<c01b0e4b>]
+
+"	"	"
+
+Code: 0f 0b 6a 04 bb b6 1f c0 89 7c 24 04 b8 03 00 00 00 81 64 24
+ <0>Kernel panice: Aiee, killing interrupt handler!
+In interrupt handler - not sycning
+
+
+
+Any ideas,
+-- 
+Joel N.Solanki
+Network Administrator
+Phone No: 0265-550001/2/3/4/5 Ext: 211/212
+Digtial 2 Virtual Internet Service Provider.
+http://www.packetraptor.com/
+http://www.d2visp.com/
+Gujarat (India)
+
+
+
 
