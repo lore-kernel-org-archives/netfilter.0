@@ -1,15 +1,14 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: ip alias
-Date: 28 Sep 2004 16:27:48 +0200
+Subject: Re: ip_conntrack_max vs ip_conntrack
+Date: 28 Sep 2004 16:27:53 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096376687.25284.35.camel@nostromo.bgsecm.com>
-References: <002a01c4a509$74f94b40$936ffea9@alpha>
-	<Pine.NEB.4.60.0409280439060.15502@sdf.lonestar.org>
-	<006901c4a515$d617d980$936ffea9@alpha>
+Message-ID: <1096376802.28905.38.camel@nostromo.bgsecm.com>
+References: <4154A112.20308@suse.cz>
+	<1403218a0409280059123fa77f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <006901c4a515$d617d980$936ffea9@alpha>
+In-Reply-To: <1403218a0409280059123fa77f@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,21 +19,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-El mar, 28 de 09 de 2004 a las 06:44, John Black escribi=C3=B3:
-> > > ifconfig eth0:0 192.168.1.23 netmask 255.255.255.0
-> >=20
-> > not this:
-> >=20
-> > > iptables -t nat -A PREROUTING -d 192.168.1.23 -i eth0 \
-> > >                -j DNAT --to-destination 161.31.31.23
->=20
-> but i want eth0:0 to be asigned that particular address to the internet=
-. =20
+El mar, 28 de 09 de 2004 a las 09:59, Mohamed Eldesoky escribi=C3=B3:
+> But still,
+> The /proc/net/ip_conntrack should contain all connections tracked by
+> that firewall (ie, passing through the firewall), am I right ??
 
-Then I think your rule it's Ok. It will redirect all the traffic
-with destination 192.168.1.23 to 161.31.31.23.
+Yes, and it will remember the connections made for a time. It's
+a list of all the connections the conntrack system have seen, and
+it's used to check the established and related connections.
 
 --=20
 Jose Maria Lopez Hernandez
