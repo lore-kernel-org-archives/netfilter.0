@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Various questions
-Date: Mon, 28 Jul 2003 08:36:39 -0700
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: ssl forward / proxy question
+Date: Mon, 28 Jul 2003 11:45:26 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E0D@alderaan.smgtec.com>
+Message-ID: <20030728154526.GB16640@cannon.eng.us.uu.net>
+References: <34C4E1392F32A549B9F2573F48F1A76E04BD2C3B@amphion.rabobank.corp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <34C4E1392F32A549B9F2573F48F1A76E04BD2C3B@amphion.rabobank.corp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +18,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: =?iso-8859-1?Q?Ant=F3nio_Godinho?= <to@mail.isec.pt>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "Hulsman, MJ (Mike)" <M.J.Hulsman01@rf.rabobank.nl>
+Cc: Ramin Dousti <ramin@cannon.eng.us.uu.net>, Garcia Ruiz <gar_ruiz@teleline.es>, jen@saturn5.com, netfilter@lists.netfilter.org
 
-=09
->	Is it possible to DROP all those IP's in one rule? ( I don't
->need to log them since they are invalid anyway )
+On Mon, Jul 28, 2003 at 05:05:56PM +0200, Hulsman, MJ (Mike) wrote:
 
+> If you have three ip addresses on the squid proxy, you can have three ssl certs.
 
-Ideally this is done for you with /proc/sys/net/ipv4/conf/*/rp_filter =
-=3D=3D 1 or 2. Basically it says that if a packet enters the interface =
-with an ip address that is not on the subnet associated with it, then =
-just drop the packet. That said, I don't see how these rules would =
-seriously determent performance that much.
+Yes. But if he'd had three IP's then the whole issue was non-existent.
 
->	RETURN isn't a user defined chain, and I don't see any info
->about this on the how-to's, can someone explain me what that does?
+Ramin
 
-RETURN means return to the chain that called it, so
-
-iptables -A INPUT -j MYCHAIN=20
-iptables -A MYCHAIN -j RETURN (Returns back to the INPUT chain)
-
-
->	3. This is defining priority ports? Like shaping the traffic?
-
-yes
-
->	3. Since all my traffic from intranet to gateway loc2fw chain
->it's from trusted ip's ( it's from me or any member of my famely ),
->that's one of the things I can remove, anyone has any other advice or
->improvent to the listo f rules I've bellow?
-
-If you are memory bound, these will not help you much. If your memory is =
-really the contention, then try lowering the timeouts for things like =
-established or unreplied connections, etc.. these things are what takes =
-up the memory.
+> 
+> Mike Hulsman.
 
