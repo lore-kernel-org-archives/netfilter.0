@@ -1,8 +1,8 @@
-From: "Andrej Ricnik" <lemmetink@hotmail.com>
-Subject: Re: Thanks
-Date: Fri, 07 Mar 2003 03:22:52 +0000
+From: Scott Huang <SHuang@Narus.com>
+Subject: iptables matches
+Date: Thu, 6 Mar 2003 21:09:12 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F67DPskiCFPwA0VHH6600027fbd@hotmail.com>
+Message-ID: <580E532D9F7A9B4BAE8A130848E0DDA70283A21E@franklin.narus.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,22 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
 
->Would have taken me forever to learn how to build this firewall with you,
->thanks alot.
-<chuckle> ... I hope you mean *without*? ;)
+Hi ,
 
+Is it poosible to specify all elements in the 5-tuple, srcIP, srcPort,
+protocol, dstIP, dstPort ,to iptables for filtering?
 
->Patrick
-Cheers,
-Tink
+for example, 
 
-_________________________________________________________________
-Add photos to your messages with MSN 8. Get 2 months FREE*. 
-http://join.msn.com/?page=features/featuredemail
+iptable ... 192.168.1.1, 12345, 6, 64.58.79.230, 80 ...
+
+Any of the elements may be a wild card or a subnet, i.e 
+192.168.1.1/16 ,12345 - 12400,  6, 64.58.79.230, 80
+
+thanks
+
 
 
