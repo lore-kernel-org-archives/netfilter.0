@@ -1,13 +1,11 @@
-From: Kim Jensen <kimj@dawn.dk>
-Subject: Re: Multiple Internet Providers
-Date: Mon, 24 Mar 2003 23:39:22 +0100
+From: "=?gb2312?B?0e67qg==?=" <auld@21cn.com>
+Subject: iplimit unresolved symbols
+Date: Sun, 23 Mar 2003 21:32:21 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303242339.22500.kimj@dawn.dk>
-References: <200303232036.52953.kimj@dawn.dk> <1048541543.3e7f796777cee@www.spsul.com.br>
+Message-ID: <002501c2f140$a2b29a10$c500a8c0@yh2kas>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1048541543.3e7f796777cee@www.spsul.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +16,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: alexb@atix.com.br
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Monday 24 March 2003 22:32, alexb@atix.com.br wrote:
-> I have similar problem. Did you got it working ?
->
-So far, I have been unsuccessful - mostly because I haven't been able to =
-get=20
-any help on my conntrack problem. So my intermediate solution is to use=20
-aliasing!
-
-However, I will try with the connmark & route patches tomorrow - I just=20
-dislike using these patches in a production environment, as I can't then =
-use=20
-default packets.
-
-Regards
-Kim
+SSBoYXZlIHRoZSBzYW1lIHByb2JsZW0gYXMgZGVzY2lyYmVkIGluIGh0dHA6Ly9saXN0cy5uZXRm
+aWx0ZXIub3JnL3BpcGVybWFpbC9uZXRmaWx0ZXIvMjAwMi1PY3RvYmVyLzAzOTQwNS5odG1sDQpQ
+cm9ibGVtIHdpdGggaXB0YWJsZXMgUC1PLU0NCg0KV2hlbiBJIGJ1aWxkIG15IGxpbnV4IGtlcm5l
+bCBhbmQgaW4gIm1ha2UgbW9kdWxlc19pbnN0YWxsIiANCml0IHNheXM6IA0KLS0tLS0tLS0tLS0t
+LS0tLQ0KbWtkaXIgLXAgcGNtY2lhOyBcDQpmaW5kIGtlcm5lbCAtcGF0aCAnKi9wY21jaWEvKicg
+LW5hbWUgJyoubycgfCB4YXJncyAtaSAtciBsbiAtc2YgLi4ve30gcGNtY2lhDQppZiBbIC1yIFN5
+c3RlbS5tYXAgXTsgdGhlbiAvc2Jpbi9kZXBtb2QgLWFlIC1GIFN5c3RlbS5tYXAgIDIuNC4xOC0x
+NHlvdW5naDsgZmkNCmRlcG1vZDogKioqIFVucmVzb2x2ZWQgc3ltYm9scyBpbiAvbGliL21vZHVs
+ZXMvMi40LjE4LTE0eW91bmdoL2tlcm5lbC9uZXQvaXB2NC9uZXRmaWx0ZXIvaXB0X2lwbGltaXQu
+bw0KZGVwbW9kOiAgICAgICAgIGlwX2Nvbm50cmFja19maW5kX2dldA0KLS0tLS0tLS0tLS0tLQ0K
+DQoNCkJ1dCBJIGNhbiBub3QgZmluZCB0aGUgYW5zd2VyIC4NCiANCkFuZCBmcm9tIHRoZSBmb3J1
+bSBJIGtub3cgaGFyZC13YXJlIGhhdmUgaGVscGVkIGhhcmUgcmFtIHRvIHJlc29sdmUgdGhpcyBw
+cm9ibGVtIC4gYnV0IEkgY2FuIG5vdCBmaW5kIHRoZSBhcnRpY2xlLg0KQW5kIEkgc2VhcmNoIHdl
+YiB1c2VpbmcgZ29vZ2xlLCBJIGZvdW5kIHNvbWUgc2FtZSBxdWVzdGlvbiAsYnV0IGdldCBubyBh
+bnN3ZXIgLg0KQ2FuIHlvdSB0ZWxsIG1lIGhvdyB0byBoYW5kbGUgdGhpcyBxdWVzdGlvbiA/DQoN
+Cm15IGVudmlyb21lbnQgaXMgUmVkaGF0IDggLCBHQ0MgMy4yIC4gUE9NIDIwMDMuMS43DQpteSBz
+dGVwcyB0byBjb21waWxlIDoNCiAgICBtYWtlIGRlcCAgICAgICAgICAgICAoSSBhbHNvIHRyeSBp
+Z25vcmUgdGhpcyBzdGVwKQ0KICAgIEtFUk5FTF9ESVI9L3Vzci9zcmMvbGludXgtMi40LjgtMTQg
+Li9ydW5tZSBiYXNlIChpbnN0YWxsIGlwbGltaXQgKQ0KICAgIG1ha2UgbXJwcm9wZXINCiAgICBt
+YWtlIG1lbnVjb25maWcgDQogICAgbWFrZSBkZXANCiAgICBtYWtlIGNsZWFuICAgIChJIGFsc28g
+dHJ5IGlnbm9yZSB0aGlzIHN0ZXApDQogICAgbWFrZSBiekltYWdlDQogICAgbWFrZSBtb2R1bGVz
+IA0KICAgIG1ha2UgbW9kdWxlc19pbnN0YWxsICh0aGlzIHN0ZXAgSSBnZXQgdGhlIGVycm9yICku
+DQogICAgDQoNCnRoYW5rcyAuDQpSaWNoYXJkIFlvdW5nLg0KDQoNCg==
 
 
