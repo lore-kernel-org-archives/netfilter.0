@@ -1,11 +1,13 @@
-From: "Hlynur Thor Olason" <thorolason@web.de>
-Subject: is it possible with iptables
-Date: Mon, 15 Dec 2003 07:14:13 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: is it possible with iptables
+Date: Mon, 15 Dec 2003 08:45:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001f01c3c2d2$a9c72ff0$b84526c0@thor>
+Message-ID: <1071474338.789.7.camel@elendil.intranet.cartel-securite.net>
+References: <001f01c3c2d2$a9c72ff0$b84526c0@thor>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001f01c3c2d2$a9c72ff0$b84526c0@thor>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,43 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Hlynur Thor Olason <thorolason@web.de>
+Cc: netfilter@lists.netfilter.org
 
-Im trying to get local traffic from a linux box destined for the same box
-routed through a test network.
+Le lun 15/12/2003 =E0 07:14, Hlynur Thor Olason a =E9crit :
+> Im trying to get local traffic from a linux box destined for the same b=
+ox
+> routed through a test network.
 
+You should have a look to iproute package, trying to play with advanced
+routing stuff. Having a look at local routing table should be a good
+start :
 
+root@elendil:~# ip route list table local
+[...]
+local 192.168.1.2 dev eth0  proto kernel  scope host  src 192.168.1.2
+[...]
 
-further explanation:
+Maybe deleting this kind of entries will achieve what you want.
 
-
-
-I have 2 Ethernet cards in the linux box.
-
-
-Call them eth0 with IP address 192.168.0.1    and
-
-eth1 with IP = 192.168..0.2
-
-
-
-eth1= 192.168.0.2 is connected to another computer a gateway which has the
-IP address 192.168.0.3. This computer is then connected to an external
-network which is again connected to eth0=192.168.0.1 in the first box.
-
-
-
-Now the problem is I want to get locally generated packages in the box
-destined for 192.168.0.2 (eth1 in the box) to leave the box and be routed
-trough the network to the box again.
-
-
-
-I have been trying to use iptables but not found a solution.
-
-
-
-Any suggestion would be welcome?  / Thor
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!=20
 
