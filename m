@@ -1,13 +1,10 @@
-From: Andreas Pettersson <andreas@knoxville.se>
-Subject: Re: After 14 hours of brainpain...
-Date: Mon, 3 Jan 2005 09:34:26 +0100
-Message-ID: <46D3EF59-5D62-11D9-B917-000A95B981B6@knoxville.se>
-References: <E6A0AAEA-5D1F-11D9-83E1-000A95B981B6@knoxville.se>
-	<1104716217.6477.7.camel@hubcap.ljm.dom>
-Mime-Version: 1.0 (Apple Message framework v619)
-Content-Transfer-Encoding: 7bit
+From: <abcabc@home.nl>
+Subject: iptables match owner not 'matching' anything?
+Date: Mon, 3 Jan 2005 10:55:07 +0100
+Message-ID: <00ec01c4f17a$4ef8f860$0a01a8c0@cc8273a>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1104716217.6477.7.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,70 +15,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jason Opperisano <opie@817west.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-So it should look like something like this instead.. ?
-What does the -I do? and why is the order so important (just curious 
-and wants to learn).
+I am running iptables v1.2.11 with kernel 2.4.28 on a RH 7.3. server and =
+I can't get the match owner option to actually 'match' anything.
 
--- CUT HERE --
+For example, I add the following rule to iptables.
+iptables -A OUTPUT -p tcp --match owner --uid-owner 503 --dport 80 -j =
+DROP=20
+=20
+It is added to iptables without an error:
+root@host [/]# iptables -L | grep dynax
+DROP       tcp  --  anywhere             anywhere            OWNER UID =
+match dynax tcp dpt:http
 
-iptables -t nat -A POSTROUTING -o eth1 -d ! $INET_IP -j SNAT --to 
-$INET_IP
+But I can still wget http://www.domain.com with this user , nothing is =
+being blocked.
+I did also try it as the only rule (after flushing iptables), still =
+nothing.=20
 
-iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
---clamp-mss-to-pmtu
+I tried it with user nobody (--uid-owner 99) and have a php script =
+retrieve http://www.domain.com. This wasn't blocked either.
+So somehow match owner doesn't match anything it seems.
 
-## WWW Forwarding ...
-iptables -A FORWARD -i eth1 -o eth0 -p tcp -d 192.168.1.30 --dport 80 
--j ACCEPT
-iptables -t nat -A PREROUTING -i eth1 -p tcp -d $INET_IP --dport 80 -j 
-DNAT --to 192.168.1.30:80
+root@host [/]# iptables -V
+iptables v1.2.11
 
--- CUT HERE --
-2005-01-03 kl. 02.36 skrev Jason Opperisano:
+root@host [/]# uname -r
+2.4.28
 
-> On Sun, 2005-01-02 at 19:39, Andreas Pettersson wrote:
->> ## WWW Forwarding ...
->> iptables -t nat -A PREROUTING -d $INET_IP -p tcp --dport 80 -j DNAT
->> --to-destination 192.168.1.30
->> iptables -A FORWARD -d $INET_IP -p tcp --syn --dport 80 -m state
->> --state NEW -j ACCEPT
->
-> the DNAT happens PREROUTING; which is before FORWARD--therefore, the
-> destination IP at this point is 192.168.1.30; not $INET_IP.
->
->> iptables -t nat -A POSTROUTING -s 192.168.1.30 -p tcp --sport 80 -j
->> SNAT --to-source $INET_IP
->
-> this is unnecessary; as the reply packets part of the DNAT-ed 
-> connection
-> will automatically be SNAT-ed, as nat is stateful.
->
-> however--you do not have a rule that allows replies from the web
-> server--might i simply suggest:
->
->   iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> -j
->
-> --
-> "Well, I'm not calling you a liar, but... I can't think of a way to
->  finish that sentence."
-> 	--The Simpsons
->
->
->
---------------------------
-ICQ: 1667613
-MSN: neopocketsurf@hotmail.com
-AIM: knxandyneo
-Mail: andreas@knoxville.se
-Skype: front.242
-Mobil: 0702 45 78 03
-Tfn: 019 764 80 18
+root@host [/]# lsmod
+Module                  Size  Used by    Not tainted
+ipt_owner               2040   1  (autoclean)
+ipt_mark                1016   0  (autoclean)
+ipt_MARK                1368   0  (autoclean)
+ipt_TOS                 1720   7  (autoclean)
+iptable_mangle          2840   1
+ip_conntrack_ftp        5008   0  (unused)
+ip_conntrack_irc        3760   0  (unused)
+ipt_unclean             7448   0
+ipt_REJECT              4184   5
+ipt_LOG                 4216  12
+ipt_limit               1592  10
+iptable_filter          2444   1
+ipt_multiport           1304   4
+ipt_state               1080  19
+ip_conntrack           27080   2  [ip_conntrack_ftp ip_conntrack_irc =
+ipt_state]
+ip_tables              15232  12  [ipt_owner ipt_mark ipt_MARK ipt_TOS =
+iptable_mangle ipt_unclean ipt_REJECT ipt_LOG ipt_limit iptable_filter =
+ipt_multiport ipt_state]
+ehci-hcd               21516   0  (unused)
+usb-uhci               26032   0  (unused)
+usbcore                77164   1  [ehci-hcd usb-uhci]
+raid1                  14608   6
 
+Does anyone know what I'm doing wrong?
 
