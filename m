@@ -1,11 +1,12 @@
-From: Trevor Cordes <netfilter@tecnopolis.ca>
-Subject: Re: netfilter Digest, Vol 6, Issue 22
-Date: Wed, 12 Jan 2005 08:47:06 -0600 (CST)
-Message-ID: <200501121447.j0CEl6p1027271@pog.tecnopolis.ca>
-References: <200501110024.j0B0Os0S018657@pog.tecnopolis.ca>
+From: Roland Kaeser <roli8200@yahoo.de>
+Subject: Re: ipt_string and Kernel 2.6 !!URGENT!!
+Date: Wed, 12 Jan 2005 16:11:42 +0100 (CET)
+Message-ID: <20050112151142.79460.qmail@web26102.mail.ukl.yahoo.com>
+References: <1105537635.3751.22.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200501110024.j0B0Os0S018657@pog.tecnopolis.ca>
+In-Reply-To: <1105537635.3751.22.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-Cc: sschmidt@compass.net.nz
+Content-Type: text/plain; charset="us-ascii"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-> From: "Curby ." <kirbysdl@hotmail.com>
+Hi
+
+I got a look at the proposals You made. I tried it to compile but all I got was
+frustration, frustration and more. On the bottom-line snort-inline is a crap because
+it depends on very old software (libnet, which has itself a lot of bugs) and trying
+to compile it on a halfway actual system brings to to the mental hospital.  This
+makes it more frustrating becaus of the string match isn't our primary security part
+it should only prevent the servers from most common attacks to bring the load down.
+All traffic goes through reverse (or "normal") proxies which enables the application
+level firewall. I JUST WANT TO RUN THE IPT_STRING ON A KERNEL 2.6.
+
+Roland
+
+
+ --- Jason Opperisano <opie@817west.com> schrieb: 
+> On Wed, 2005-01-12 at 03:30, Roland Kaeser wrote:
+> > Hi all
+> > 
+> > I know this was subject of many conversations, but I need this feature very
+> > urgently!
 > 
-> In what order should i have /etc/init.d/network and my iptables setup script 
-> (henceforth called "iptables") start?
+> 1) the string match is a toy for firewall kiddies to play with.  it
+> offers nothing of any value to real packet data inspection situations. 
+> the lack of effort to port it to 2.6 is a reflection of this fact.
+> 
+> 2) if this a mission-critical need (definition:  without the string
+> match on a 2.6 kernel, people will die), you are certainly free to port
+> it or rewrite yourself--the code is there.  if you don't have the skill
+> to code it yourself--pay someone who does; after all, people's lives are
+> at stake here.
+> 
+> since i don't want to be partly responsible for the spilling of innocent
+> blood--have you looked at snort-inline [1]?  snort offers the things
+> that real packet data inspection requires:  fragment reassembly,
+> matching across packets, matching at a specific locations in a packet,
+> matching multiple strings within a packet, understanding of connection
+> flow, context-specific matching, layer 7 protocol decoding and
+> normalization, pcre matching...and those are the ones i can think of off
+> the top of my head.
+> 
+> the string match is rice [2].
+> 
+> -j
+> 
+> [1] http://snort-inline.sourceforge.net/index.html
+> [2] http://funroll-loops.org/
+> 
+> --
+> "Ah, beer, my one weakness. My achilles heel, if you will."
+> 	--The Simpsons
+> 
+> 
+>  
 
-I've though about this also.  In RH/FC it defaults to iptables then
-network.  This seems the only safe and sensible solution.
 
-> If iptables starts before network, then network could override settings in 
-> /proc/sys/net when it calls upon /etc/sysctl.conf.   Additionally, it would 
+	
 
-I haven't given that issue much thought.  I have not yet run into any
-conflicts or difficulties.
-
-> be harder to identify dynamic IPs, additional IPs set with "ip addr add," 
-> etc.  simply because the network isn't up yet.
-
-I too need to identify dynamic IP's and so I do exactly what you
-suggested by running iptables before network and my iptables script
-detects that the net is down and queues itself to run again every 30
-seconds until successful (ie: can resolve domain names).
-
-This has been very successful for me.
-
+	
+		
+___________________________________________________________ 
+Gesendet von Yahoo! Mail - Jetzt mit 250MB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
 
