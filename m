@@ -1,13 +1,10 @@
-From: Katriel Traum <katriel@traum.org.il>
-Subject: DNAT/MASQ Precedence
-Date: Thu, 30 Jan 2003 19:31:38 +0000
+From: Horst Meissner <horst@inline.de>
+Subject: iptables   counters  with ethernet frame with tcp header ???
+Date: Thu, 30 Jan 2003 19:11:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301301931.41645.katriel@traum.org.il>
+Message-ID: <5.1.0.14.0.20030130191126.02795ec0@authsmtp.inline.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Description: clearsigned data
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
+what exactly does the counters count
+shaper:~# iptables -xvL OUT
+Chain OUT (1 references)
+     pkts      bytes target     prot opt 
+in     out     source               destination
+  1047519 
+565962605            all  --  any    any     anywhere             anywhere
+....
 
-Hello list,
-I'm starting to set up a DMZ/LAN setup, and came across a problem/question.
-The setup I want to do is a multi-homed firewall, with one intf. to a priva=
-te=20
-LAN and another to a DMZ.
-The FW will MASQ the LAN, and DNAT into the DMZ.
+The first number is the number of the packets, and the second one the 
+number of bytes.
+But witch size with ethernet frame (14 bytes + 4 bytes CRC) with IP header 
+20 bytes....
+or without ?
 
-I want to redirect _all_ traffic into the DMZ (is that even possible?) and =
-in=20
-the same time MASQ the LAN. The question is will they collide? If I use a=20
-ruleset such as:
-iptables -A PREROUTING -i $INET_IF -j DNAT --to-destination $DMZ_IP=20
-iptables -A POSTROUTING -o $INET_IF -j MASQUERADE
-(yes, there's only one computer in the DMZ)
-
-Will I get return traffic into my lan? won't it be DNATed into the DMZ?
-
-Thanks,
-
-+katriel
-pgp key: traum.org.il/gpg.asc
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+OX2dDWy+Hv/461sRAqmWAJwJ5/vSBMlj/2dHS/seXuPrcTv81QCg/tan
-C1xvdNg6gFpdAZRx84tsaR8=3D
-=3D9ku+
-=2D----END PGP SIGNATURE-----
+What ist the correct one:
+bytes target = 14 Bytes Ethernet  +  20 Bytes IP  + 20 Bytes TCP + XX Bytes 
+Data + 4 Bytes  CRC
+bytes target = 14 Bytes Ethernet  +  20 Bytes IP  + 20 Bytes TCP + XX Bytes 
+Data
+bytes target = 20 Bytes IP  + 20 Bytes TCP + XX Bytes Data
+bytes target = 20 Bytes TCP + XX Bytes Data
+bytes target = XX Bytes Data
 
 
