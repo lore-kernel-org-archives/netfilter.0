@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Communication Redirect (Revised)
-Date: 01 May 2003 00:47:36 +0200
+From: =?iso-8859-1?q?Intercomax?= <intercomax@yahoo.com.br>
+Subject: Problems removing rules
+Date: Wed, 30 Apr 2003 21:07:17 -0300 (ART)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051742856.2545.3.camel@elendil.intranet.cartel-securite.net>
-References: <3EB0371D.8080300@qwest.net>
+Message-ID: <20030501000717.46647.qmail@web14308.mail.yahoo.com>
+Reply-To: intercomax@yahoo.com.br
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EB0371D.8080300@qwest.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +17,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Sapient2003 <sapient@qwest.net>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.samba.org
 
-Le mer 30/04/2003 =E0 22:50, Sapient2003 a =E9crit :
-> OpenBSD uses the packet filter pf to redirect communications to a=20
-> program. Is ther anything like this for Linux? I tried IPTABLES for thi=
-s=20
-> task, like so: iptables -t filter -A INPUT -p udp -s 0/0 -d 66.47.159.1=
-1=20
-> --destination-port 53 -j REDIRECT dns ... As it turns out, REDIRECT=20
-> isn't for forwarding packets to another program...
+I'm having a huge problem:
 
-Netfilter has no such feature. What you can do is have your program
-listen to a local port and then redirect traffic to this local UDP port
-53. If you have a DNS server listening on this port, you're done.
+I have those rules:
 
-This is a basic stup for transparent proxying.
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       tcp  --  anywhere             anywhere    =20
+     tcp dpt:www
+to:192.168.0.1:80
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+MASQUERADE  all  --  anywhere             anywhere
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+I inserted iptables -t nat -I PREROUTING -s
+xxx.xxx.xxx.xxx -j RETURN
+
+OK. The rules works fine.
+
+Then I removed the RETURN iptables -t nat -D
+PREROUTING -s=20
+xxx.xxx.xxx.xxx -j
+RETURN and... The IP still access some pages that
+accessed before!
+
+Why?
+
+I need to redirect all internal requests to a specific
+page and then,=20
+after a
+login, masquerade them to the Internet...
+
+That's it.
+
+Thanks in advance.
+
+Maur=EDcio S. Mudrik
+
+_______________________________________________________________________
+Yahoo! Mail
+O melhor e-mail gratuito da internet: 6MB de espa=E7o, antiv=EDrus, acesso =
+POP3, filtro contra spam.=20
+http://br.mail.yahoo.com/
 
