@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: bytes counting
-Date: Fri, 23 Apr 2004 18:54:23 +0100
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: unresolved symbols in ip_conntrack_rpc_udp.o
+Date: Fri, 23 Apr 2004 13:54:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404231854.23706.Antony@Soft-Solutions.co.uk>
-References: <086C43C9A9A1A541BFDFABCFDA05F58901448BAB@mailnew.tecnun.es> <008501c42957$8b4895a0$6300a8c0@netsolutionsfort.com.br>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <40896678.5030106@pbl.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <008501c42957$8b4895a0$6300a8c0@netsolutionsfort.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,70 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Friday 23 April 2004 6:22 pm, Joao TERRA wrote:
+Hi,
 
-> You can put the rule on:
-> #iptables -t mangle -I POSTROUTING -o INTERFACE_OF_192.168.0.50_SUBNET -d
-> 192.168.0.50
-> then you can account in both directions separately
+I've donwloaded rpc.patch and applied it against Red Hat's 
+kernel-source-2.4.20-24.7 package on my development machine.  I've used 
+configs/kernel-2.4.20-i386.config as basic configuration file, and added 
+RPC match support under Netfilter Configuration.  I've used i386 config 
+file, since I wanted to build modules that I could copy to other Linux 
+boxes I have, and not to have to worry about exact architecture.
 
-Unfortunately this would count bytes going to 192.168.0.50 from anywhere 
-(including the other private LAN), not just from the Internet, which is what 
-was required, I believe.
+When I copy three RPC modules (ip_conntrack_rpc_tcp.o, 
+ip_conntrack_rpc_udp.o and ipt_rpc.o) to 
+/lib/modules/kernel-version/kernel/net/ipv4/netfilter, and do depmode -a 
+everything is fine.  All works if I copy those files to another test box 
+I have which is also i686 (same as devel box).  However if I copy them 
+to i586 box, depmode complains about unresolved symbols, and if I try 
+modprobe, it says that irq_stat_R9c2e871c can't be resolved.  The only 
+difference between two test boxes is that one is i686, and the other is 
+i586.  This is kind of strange, why would code built for i386 work on 
+i686, and not on i586?
 
-Regards,
-
-Antony.
-
-> ----- Original Message -----
-> From: "Arrizabalaga, Saioa" <sarrizabalaga@ceit.es>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Friday, April 23, 2004 10:42 AM
-> Subject: bytes counting
->
->
-> Hello everyone,
->
-> I have been reading some mails in this listing and it is said the best
-> place to count bytes/packets is the mangle table, but I have a problem.
->
-> I have three network cards in my linux box: eth0 (private LAN), eth1
-> (private LAN) and eth2 (internet).
->
-> I would like to count the bytes/packets from/to 192.168.0.50 (it is in
-> eth0) that goes/comes to/from internet (eth2).
->
-> These are the rules I have:
->
-> iptables -A POSTROUTING -t mangle -o eth2 -s 192.168.0.50
->
-> With this rule I catch all the packets going from 192.168.0.50 to eth2,
-> but I know where to put the rule to catch the packets going from eth2 to
-> 192.168.0.50, because as far as I can see it, when I put the rule:
-> iptables -A PREROUTING -t mangle -i eth2 -d 192.168.0.50 nothing is
-> caught because the packet has not been SNAT-ed yet. Am I wrong?
->
-> Any help would be appreciated.
->
-> Saioa Arrizabalaga
+Is there a way to compile those modules so that I can use them on all my 
+boxes, regardless of exact architecture?  Additionally, it would be nice 
+if there is a way to build them so that I can use them with different 
+2.4 revisions without recompiling.
 
 -- 
-This email is intended for the use of the individual addressee(s) named above 
-and may contain information that is confidential, privileged or unsuitable 
-for overly sensitive persons with low self-esteem, no sense of humour, or 
-irrational religious beliefs.
-
-If you have received this email in error, you are required to shred it 
-immediately, add some nutmeg, three egg whites and a dessertspoonful of 
-caster sugar.   Whisk until soft peaks form, then place in a warm oven for 40 
-minutes.   Remove promptly and let stand for 2 hours before adding some 
-decorative kiwi fruit and cream.   Then notify me immediately by return email 
-and eat the original message.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
