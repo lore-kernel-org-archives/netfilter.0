@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Need example of ip rate limiting
-Date: Mon, 28 Jul 2003 10:36:41 -0700
+From: "Rob Verduijn" <rverduij@dds.nl>
+Subject: RE: rp-l2tpd iptables and rh9 but no google
+Date: Mon, 28 Jul 2003 22:18:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E0F@alderaan.smgtec.com>
+Message-ID: <HBELLDKFGOFPEHBLCFCLGECBCCAA.rverduij@dds.nl>
+References: <1058557759.16546.2.camel@porky>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <1058557759.16546.2.camel@porky>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Robert La Ferla <robertlaferla@comcast.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-How about
-iptables -A INPUT --destination <blah> -p tcp --dport 80 -m state NEW -m
-limit --limit 3/s -j ACCEPT
-iptables -A INPUT --destination <blah> -p tcp --dport 80 -m state NEW -j
-DROP
+Hi again,
 
-Adjust the 3/s number higher or lower depending on how much traffic your
-site gets per second on average and then put it a little bit higher.
+I've set my MTU on eth0 eth1 and ppp0 to 1472
+Ive been playing around with tcpdump
+I gave the following command
+tcpdump -i ppp0 -w dumptcp
+When I surf to www.redhat.com everything goes wel and I get all kinda out=
+put
+in my file
+But when I surf to google I get nothing, no output whatsoever.
+Did I give in the wrong syntax?
+
+Regards
+Rob
+
+
 
 -----Original Message-----
-From: Robert La Ferla [mailto:robertlaferla@comcast.net]=20
-Sent: Monday, July 28, 2003 10:29 AM
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Eric Leblond
+Sent: vrijdag 18 juli 2003 21:49
 To: netfilter@lists.netfilter.org
-Subject: Re: Need example of ip rate limiting
-
-Anyone have examples of iplimit to limit http DoS attacks?
+Subject: Re: rp-l2tpd iptables and rh9 but no google
 
 
+Le ven 18/07/2003 =E0 21:01, Rob Verduijn a =E9crit :
+> Hi there,
+>
+> I've got this curious problem with netfilter.
 
+> I did
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+
+>
+> I can ping google so icmp seems to work but I can't surf the web for
+google.
+> Neither windows nor linux will work.
+
+You may have look to the MTU, with encapsulation in L2TP you loose some
+bytes.
+To test try increase your ping size with the -s option.
+
+If it is working with -s 1500 then try to look at tcpmss.
+
+BR,
+--
+Eric Leblond <eric@regit.org>
 
 
 
