@@ -1,12 +1,14 @@
-From: Silkk <crystaldrinker@yahoo.com>
+From: Joel Newkirk <netfilter@newkirk.us>
 Subject: Re: iptables does not support chkconfig!
-Date: Sun, 22 Dec 2002 22:26:06 -0800 (PST)
+Date: Mon, 23 Dec 2002 01:53:50 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021223062606.14516.qmail@web40609.mail.yahoo.com>
-References: <20021223043901.12123.94060.Mailman@kashyyyk>
+Message-ID: <200212230153.50801.netfilter@newkirk.us>
+References: <20021223062606.14516.qmail@web40609.mail.yahoo.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021223043901.12123.94060.Mailman@kashyyyk>
+In-Reply-To: <20021223062606.14516.qmail@web40609.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,16 +19,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Silkk <crystaldrinker@yahoo.com>, netfilter@lists.netfilter.org
 
-Here is the error message im getting i found it in /var/log/boot.log
-firewall: /etc/rc3.d/s80 firewall: iptables: command not found
-last message repeated 71 times
+On Monday 23 December 2002 01:26 am, Silkk wrote:
+> Here is the error message im getting i found it in /var/log/boot.log
+> firewall: /etc/rc3.d/s80 firewall: iptables: command not found
+> last message repeated 71 times
 
+Try changing "iptables" to "/sbin/iptables" or whatever path it actually=20
+lives on.  (that's the one for an RPM install under RedHat, I believe) =20
+You can't count on a script having valid paths set up during the system=20
+startup, play it safe and be explicit.
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+j
+
+> __________________________________________________
+> Do you Yahoo!?
+
+No, I don't... :^)
 
