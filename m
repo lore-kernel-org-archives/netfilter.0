@@ -1,13 +1,11 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: GRE/PPTP
-Date: Fri, 12 Sep 2003 12:04:25 +1000
+From: Wendy Moore <wenmoore@yahoo.com>
+Subject: masquerading
+Date: Thu, 11 Sep 2003 19:09:57 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F6129A9.6050106@snapgear.com>
-References: <8EC0756327A4994298EFD721CFC7355B01B14C@jfm2.jacobson.co.uk>
+Message-ID: <20030912020957.81068.qmail@web41109.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-2122243790-1063332597=:80892"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <8EC0756327A4994298EFD721CFC7355B01B14C@jfm2.jacobson.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +15,130 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jamie Vuyk <jvuyk@jacobson.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Jamie Vuyk wrote:
-> 1)       Does the standard kernel (RH 2.4.18) need to be patched in any
-> way in order to PASS THROUGH proto 47 (GRE) to an internal server?  Im
-> running a simply iptables firewall which I want to pass an external VPN
-> connection through to an internal server.  As I understand if I want
-> Linux to terminate the PPTP VPN I need a patch, if I want it to pass
-> through I don't.  However I am having a lot of trouble getting this to
-> work and I would like to know if Im on the right track.  Also note that
-> the firewall is masquerading all connections.
+--0-2122243790-1063332597=:80892
+Content-Type: text/plain; charset=us-ascii
 
-If you only ever have one PPTP connection per client/server pair (after
-masquerading), then you can get by without any patches.  You will need to
-forward both port 1723 and protocol 47 to the PPTP server.
+Hi All,
+ 
+I want to setup a internet gateway/firewall for my local network by using iptables:
 
-If you may have more than one PPTP connection, then you need to apply
-the PPTP conntrack patch from patch-o-matic.  You will need to forward
-port 1723 to the PPTP server, and accept RELATED protocol 47 packets.
-The PPTP conntrack will automatically NAT the protocol 47 packets to
-go to the server.
+iptables --table nat --append POSTROUTING --out-interface ppp0 -j MASQUERADE
+
+ip forwarding is enabled,....
+
+ 
+
+I can browse on a local workstation to eg. www.openldap.org
+
+(Everything works fine on this site) However other websites do not work eg. www.shoutcast.com. These sites are online (tested them by browsing on the FW computer). 
+
+The browser says it is finding the website, but is waiting for a reply?
+
+Anyone any idea?
+
+FILTER table
+
+Chain INPUT (policy ACCEPT)
+
+target prot opt source destination 
+
+Chain FORWARD (policy ACCEPT)
+
+target prot opt source destination 
+
+Chain OUTPUT (policy ACCEPT)
+
+target prot opt source destination 
+
+ 
+
+NAT table:
+
+Chain PREROUTING (policy ACCEPT)
+
+target prot opt source destination 
+
+Chain POSTROUTING (policy ACCEPT)
+
+target prot opt source destination 
+
+MASQUERADE all -- anywhere anywhere 
+
+Chain OUTPUT (policy ACCEPT)
+
+target prot opt source destination 
+
+ 
+
+Chain PREROUTING (policy ACCEPT)
+
+target prot opt source destination 
+
+Chain INPUT (policy ACCEPT)
+
+target prot opt source destination 
+
+Chain FORWARD (policy ACCEPT)
+
+target prot opt source destination 
+
+Chain OUTPUT (policy ACCEPT)
+
+target prot opt source destination 
+
+Chain POSTROUTING (policy ACCEPT)
+
+target prot opt source destination 
 
 
-> 2)       I have setup my firewall to allow and forward the 1723 to my
-> internal server.  This appears to work but the external Win2k box gets
-> stuck on "verifying username and password".  This eventually times out
-> with "disconnected".  A simple test was to Telnet to port 1723.
-> Although there is no response as such from the server (expected) it does
-> connect both internally and externally.  At what point does the 1723
-> data exchange end and the "payload" as such start on the GRE protocol?
-> Is GRE involved in the 'verifying username and password' stage or is
-> that still TCP on 1723?
 
-This is definitely due to the protocol 47 packets not getting through.
-The 'verifying username and password' stage is part of the PPP
-negotiation, which runs over the GRE tunnel.
+---------------------------------
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+--0-2122243790-1063332597=:80892
+Content-Type: text/html; charset=us-ascii
 
--- 
-Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
-SnapGear - Custom Embedded Solutions and Security Appliances
-
+<DIV>Hi All,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I want to setup a internet gateway/firewall for my local network by using iptables:</DIV>
+<DIV><FONT size=2>
+<P>iptables --table nat --append POSTROUTING --out-interface ppp0 -j MASQUERADE</P>
+<P>ip forwarding is enabled,....</P>
+<P>&nbsp;</P>
+<P>I can browse&nbsp;on a local workstation to eg. <A href="http://www.openldap.org">www.openldap.org</A></P>
+<P>(Everything works fine on this site) However other websites do not work eg. <A href="http://www.shoutcast.com">www.shoutcast.com</A>. These sites are online (tested them by browsing on the FW computer). </P>
+<P>The browser says it is finding the website, but is waiting for a reply?</P>
+<P>Anyone any idea?</P>
+<P>FILTER table</P><FONT size=2>
+<P>Chain INPUT (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>Chain FORWARD (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>Chain OUTPUT (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>&nbsp;</P>
+<P>NAT table:</P><FONT size=2>
+<P>Chain PREROUTING (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>Chain POSTROUTING (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>MASQUERADE all -- anywhere anywhere </P>
+<P>Chain OUTPUT (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>&nbsp;</P><FONT size=2>
+<P>Chain PREROUTING (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>Chain INPUT (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>Chain FORWARD (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>Chain OUTPUT (policy ACCEPT)</P>
+<P>target prot opt source destination </P>
+<P>Chain POSTROUTING (policy ACCEPT)</P>
+<P>target prot opt source destination </P></FONT></FONT></FONT></FONT></DIV><p><hr SIZE=1>
+Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
+--0-2122243790-1063332597=:80892--
 
