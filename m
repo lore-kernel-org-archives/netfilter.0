@@ -1,13 +1,13 @@
-From: Andrew <andrew@arda.homeunix.net>
-Subject: Re: forwarding traffic from one port to another on the same box
-Date: Wed, 28 Jan 2004 07:50:43 -0500
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: Trouble rejecting connections
+Date: Wed, 28 Jan 2004 08:21:07 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <bv8b75$udn$1@sea.gmane.org>
-References: <bv779t$mo0$1@sea.gmane.org> <200401280549.i0S5nqmK030255@server5.bandwidthco.com>
+Message-ID: <4017B743.2030906@Loudoun-Fairfax.com>
+References: <E1Allqr-0002Mv-LJ@aphex.cyberpixels.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200401280549.i0S5nqmK030255@server5.bandwidthco.com>
+In-Reply-To: <E1Allqr-0002Mv-LJ@aphex.cyberpixels.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,69 +20,105 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Ben wrote:
 
+>Hello all,
+>
+>I'm having trouble rejecting connections using iptables.  I am using cPanel
+>/ WHM on a RedHat 7.3 a machine and iptables installed from
+>iptables-1.2.8-8.72.3.i386.rpm .  I am using a script for my policy, it
+>looks like this.
+>
+>
+>//Start script
+>IPTABLES="/sbin/iptables"
+>
+>#Flush everything, start from scratch
+>$IPTABLES -F
+>
+>#Set default policies to DROP
+>$IPTABLES -P INPUT DROP
+>$IPTABLES -P FORWARD DROP
+>
+>#Allow all lo traffic
+>$IPTABLES -A INPUT -i lo -s 0.0.0.0/0 -d 0.0.0.0/0 -j ACCEPT
+>
+>#Allow all related and established connections
+>$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+>
+>#Set default OUTPUT policy to ACCEPT
+>$IPTABLES -P OUTPUT ACCEPT
+>
+># Open ports for server/services
+>$IPTABLES -A INPUT -p tcp --dport 20 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 21 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 22 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 25 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 37 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 43 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
+>$IPTABLES -A INPUT -p udp --dport 53 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 80 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 110 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 113 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 143 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 443 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 465 -j ACCEPT
+>$IPTABLES -A INPUT -p udp --dport 465 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 873 -j ACCEPT
+>$IPTABLES -A INPUT -p udp --dport 873 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 993 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 995 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 2082 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 2083 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 2086 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 2087 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 2089 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 2095 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 3306 -j ACCEPT
+>$IPTABLES -A INPUT -p tcp --dport 6666 -j ACCEPT
+>
+>#Enable Blogger support (non-standards compliant piece of dogshit that it
+>is)
+>$IPTABLES -A INPUT -s 66.102.15.83 -j ACCEPT
+>$IPTABLES -A INPUT -s 216.34.7.186 -j ACCEPT
+>
+>#Add passive-mode people here
+>#$IPTABLES -A INPUT -s xxx.xxx.xxx.xxx -j ACCEPT
+>
+>#Add DENY people here
+>#$IPTABLES -A INPUT -s 000.000.000.000 -j DROP
+>$IPTABLES -A INPUT -s blocked.ip.address.here -j DROP
+>  
+>
 
-Mark E. Donaldson wrote:
+You need to move these DROP and LOG rules up so they come before the 
+ACCEPT rules. Otherwise the packets may have already been accepted.
 
->  Andrew - your DNAT rule looks fine to me and it should work.  I really
-> think your problem is the first rule, even though the error is apparently
-> charged to the second rule.  I think what you need to do is change the first
-> rule to -A to the INPUT chain and not the forward chain and it should work.
-> The packet is not being forwarded, but is rather destined to the same NIC -
-> so it should be the INPUT chain.  Try that and see if it does the trick.  If
-> not, holler again cause there are many with greater expertise on this list
-> than me. 
+Jeff
 
-Thanks for the advice but it's a no-go. I get the same error, 'Invalid 
-argument', from the PREROUTING command if I use INPUT instead of FORWARD 
-in the first command.
-
-I also tried replacing the DNAT target in the second command with 
-REDIRECT. It didn't help.
-
-Andrew
-
-> 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Andrew
-> Sent: Tuesday, January 27, 2004 6:38 PM
-> To: netfilter@lists.netfilter.org
-> Subject: forwarding traffic from one port to another on the same box
-> 
-> I would like to forward all tcp traffic arriving on a particular port to
-> another port on the same machine. This has worked for me in the past but I
-> can't get it working on my current machine.
-> 
-> Here are the two commands I'm using to try to create the forward.
-> 
-> iptables -I FORWARD -p tcp -d 192.168.10.34 --dport 26 -j ACCEPT
-> 
-> iptables -t nat -A PREROUTING -p tcp -i eth0 -s 0/0 -d 192.168.10.34 --dport
-> 26 -j DNAT --to 192.168.10.34:25
-> 
-> The first command is accepted but the second command results in an 'Invalid
-> argument' error.
-> 
-> The computer has only one interface, eth0. Here are its particulars:
-> Mandrake Linux 9.2
-> Iptables 1.2.8
-> kernel 2.4.24 patched with super-freeswan 1.99.8
-> 
-> The value of /proc/sys/net/ipv4/conf/eth0/forwarding is 0. Changing it to 1
-> has no impact.
-> The value of /proc/sys/net/ipv4/conf/eth0/rp_filter is 0.
-> 
-> I hope someone out there has some ideas about what's going on because I'm
-> all out.
-> 
-> Andrew
-> 
-> 
-> 
-> 
-> 
-> 
+>#Logging
+>$IPTABLES -A INPUT -j LOG --log-prefix "INPUTDEFAULT: "
+>
+>#Save rules
+>iptables-save > /etc/sysconfig/iptables
+>
+>#Restart for rules to take effect
+>service iptables restart
+>//End script
+>
+>The problem is that I can still connect from blocked.ip.address.here.  What
+>did I miss?
+>
+>Ben Prince
+>Cyber Pixels
+>Systems Administrator
+>ben@cyberpixels.com 
+>
+>
+>
+>  
+>
 
 
 
