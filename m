@@ -1,14 +1,13 @@
-From: =?gb2312?B?Qm9yYSDeYWhpbg==?= <borasahin@netone.com.tr>
-Subject: Re[2]: Could someone tell me the rules of port translation in SNAT ?
-Date: Sun, 11 Jan 2004 15:38:25 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Strange logs...
+Date: Sun, 11 Jan 2004 13:40:27 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <306391720.20040111153825@netone.com.tr>
-References: <BAY10-F966xG0eYfJcy0003d929@hotmail.com>
-Reply-To: =?gb2312?B?Qm9yYSDeYWhpbg==?= <borasahin@netone.com.tr>
+Message-ID: <200401111340.27973.Antony@Soft-Solutions.co.uk>
+References: <002201c3d837$a6c70e90$1530a8c0@HUSH> <200401111251.15250.Antony@Soft-Solutions.co.uk> <004001c3d846$e4e85e90$1530a8c0@HUSH>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY10-F966xG0eYfJcy0003d929@hotmail.com>
+In-Reply-To: <004001c3d846$e4e85e90$1530a8c0@HUSH>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +18,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi ding,
+On Sunday 11 January 2004 1:29 pm, Carlos Fernandez Sanz wrote:
 
-Thursday, January 8, 2004, 3:55:56 AM, you wrote:
+> I have to say that if I unplug any of the two cables (the one between the
+> linux and the switch or the one between the linux and the router) strange
+> things happen. So I'm really starting to believe that the packet does come
+> from the wire physically.... no matter how impossible that seems.
+>
+> As I finished writing that I tried to ping from the windows box to the
+> linux box and both cables must be connected for ping responses to arrive.
 
-dd> I'm reading some source code for more details, bu i stopped at
+By "both cables", you mean the one connecting the Linux box to the switch (and 
+thence to the Windows box) and also the one joining the Linux machine to the 
+outside world!?!?
 
-dd>       return NF_HOOK(PF_INET, NF_IP_POST_ROUTING, skb, NULL, 
-dd> dev,ip_finish_output2);
+That is just plain wrong.   You should not need a connection to your external 
+router in order to ping between two internal machines (assuming you are 
+pinging the real IP addresses, and not relying on a DNS lookup or something).
 
-dd> in    ip_output.c::ip_finish_output()
+> This happens even with all the iptables tables flushed (ie firewall down;
+> no rules, and ACCEPT as policies for both input and policies).
 
-dd> cause i don't know what part of code does POST_ROUTING work and SNAT 
-dd> implementation.
+Show us the routing tables on both machines.
 
-I think you are wrong place both in the point of list and code. NF_HOOK is macro which is defined in
-include/linux/netfilter.h like this:
+> But this is starting to look more like
+> a hardware issue to me. Definitely not related to the wiring, but maybe
+> there's some kind of conflict between my NICs I haven't spotted yet.... so
+> in case it helps:
 
-#define NF_HOOK(pf, hook, skb, indev, outdev, okfn)                     \
-(list_empty(&nf_hooks[(pf)][(hook)])                                    \
- ? (okfn)(skb)                                                          \
- : nf_hook_slow((pf), (hook), (skb), (indev), (outdev), (okfn)))
+Your IRQ/address etc setup looks fine to me, however there is clearly 
+something weird about the network hardware arrangement for you to get the 
+above-described ping behaviour.
 
-Simply, It calls all registered functions in NF_IP_POST_ROUTING per protocol, in this case IPv4, and
-then gives control to ip_finish_output2(). So If you are interested in SNAT, you should take a look
-at net/ipv4/netfilter/ip_nat_standalone.c:
+Antony.
 
-/* After packet filtering, change source */
-static struct nf_hook_ops ip_nat_out_ops
-= { { NULL, NULL }, ip_nat_out, PF_INET, NF_IP_POST_ROUTING, NF_IP_PRI_NAT_SRC};
-...
-nf_register_hook(&ip_nat_out_ops);
-...
-
-then above in the same file:
-static unsigned int ip_nat_out()
-{
-    ...
-    return ip_nat_fn(hooknum, pskb, in, out, okfn);
-}
-
-That is, you should track down this path...
 -- 
-Bora Sahin
-borasahin.port5.com
+"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
+Blaster].   However, these products are no longer supported.   Users of these
+products are strongly encouraged to upgrade to later versions."
+
+(which *are* affected by MS Blaster...)
+
+http://www.microsoft.com/security/security_bulletins/ms03-026.asp
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
