@@ -1,14 +1,11 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: SUN RPC portmap
-Date: Sat, 26 Jun 2004 11:51:04 -0700
+From: ken scott <kscott9@triad.rr.com>
+Subject: Transparent proxy single machine question
+Date: Sat, 26 Jun 2004 17:24:44 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <SERVER7VjCRGryWtIIZ00000003@server7.bandwidthco.com>
-References: <200406251600.i5PG0vD4005549@ylpvm29.prodigy.net>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <40DDE99C.7060001@triad.rr.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406251600.i5PG0vD4005549@ylpvm29.prodigy.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +15,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Spiro Azkoul' <spiro@snacorp.net>, netfilter@lists.netfilter.org
-
- 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Spiro Azkoul
-Sent: Friday, June 25, 2004 9:01 AM
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Subject: SUN RPC portmap
 
-Can anyone think of a reason to simple block SUN RPC via iptables rather
-than simply stopping the service if it is a mail/pop/imap/web server?
-Thanks
+I am trying to build a single machine that  performs web filtering
+(using DansGuardian)  for several users.
+The box (Morphix/Debian system) will be behind a cable router and has
+five users (kids).
+I have running Dansguardian and Squid correctly in normal proxy mode.
+The next step is to make the proxy transparent
+so that users cannot bypass the Danguardian/squid path simply by telling
+their browser to connect directly.
+I have looked around and see instructions on this at several places
+(mostly for non-single machine implementations)
+and know I need a line something like like:
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8181
+
+       where 8181 is where Dansguardian is listening.
+
+I also need to configure squid with (I think) :
+
+http_port 3128     # where squid is listening
+httpd_accel_host virtual
+httpd_accel_port 80
+httpd_accel_with_proxy  on
+httpd_accel_uses_host_header on
+httpd_accel_single_host off
+
+The question is, on a single machine, will this work?
+The part I can't figure out pertains to when squid finally wants to send 
+out the actual
+request to the internet, isn't that a port 80 request that the above 
+iptables rule will
+redirect back to Dansguardian??
+Please reply all as I am not quite sure than I have joined the list 
+correctly.
+Thanks in advance
+Ken S.
 
 
-It's normally referred to as "Defense-in-Depth". It is not recommended to
-rely on a single method of security for anything. If the attacker gets
-through the front line, it's always nice to know there is a second or third
-or fourth, etc, etc, layer of defense to stop them.
+
 
 
 
