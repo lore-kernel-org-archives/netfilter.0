@@ -1,13 +1,11 @@
-From: Hauser Marcel <marcel_hauser@gmx.ch>
-Subject: Re: firewall failover / cluster
-Date: Thu, 26 Dec 2002 00:41:54 +0100
+From: 0ndrej <0@amu.cz>
+Subject: rule to match next-hop
+Date: Tue, 24 Dec 2002 10:50:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E0A4242.1050300@gmx.ch>
-References: <Pine.LNX.4.44.0212192006170.6773-100000@laptop1.agatha> 	<3E028951.8090800@gmx.ch> <1040356150.2255.81.camel@doctor>
+Message-ID: <3E082DF3.9050007@amu.cz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1040356150.2255.81.camel@doctor>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,27 +17,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: clarke@craftedpackets.net
 
-Clarke wrote:
->>hi all
->>
->>What are you guys using in order to provide a fault toleranced iptables 
->>firewall (master / slave ?)
->>
->>Cheers Marcel
->>
-> VRRP
+Dear NetFilter Wizards,
 
-Which implementation/daemon of the Protocol ?
+We are building a volunteer network in Prague based on wireless 
+broadband technology (WiFi and our cheep FSO deviced - see 
+http://ronja.jikos.cz) - http://www.czfree.net and we would like to 
+limit bandwith between our routers, as the 'broadband' is not that broad 
+concerning WiFi....
 
-How about the "outside" of the firewall ? (Public IP's and NAT for 
-instance?)
+Is there a way to match/clasify packets going via our meshed network to 
+a certain nex-hop router?
 
-Is everyone else on this list using VRRP too ? ;) or what else are you 
-guys using to make an iptables firewall redundant ?
+example
 
-Cheers Marcel
+      wlan0      wlan0  wlan1     wlan0  wlan1
+<box a> --------- <box b> -------- <box c> --- ...
+                           \------- <box d> --- ...
+                            \------ <box e> --- ...
+
+At <box b> we would like to mark packets going through interface wlan1 
+via boxes c,d,e with different marks, such that we could make fair 
+sharing of the available bandwith (QoS / HTB)
+This means classifying packets based on their next-hop, but I couldnt 
+find any way how to do it. I hope I'm just stupid and it is possible, so 
+if anyone knows, please tell me :)
+
+thanks, enjoy Xmass
+0.
 
 
 
