@@ -1,13 +1,14 @@
-From: Oscar Arranz <oarranz@riafinancial.com>
-Subject: Re: Iptables don't block traffic
-Date: Thu, 22 Apr 2004 19:03:05 +0200
+From: Frank Gruellich <frank@home.manuelm.org>
+Subject: Re: Dinamic (www list) IP BAN ...
+Date: Thu, 22 Apr 2004 19:00:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4087FAC9.7000300@riafinancial.com>
-References: <4087CE5F.5030503@riafinancial.com> <200404221546.14351.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040422170025.GE6219@home.manuelm.org>
+References: <1331752368.20040422174719@lpgc.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404221546.14351.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
+In-Reply-To: <1331752368.20040422174719@lpgc.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +18,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/html; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body text="#000000" bgcolor="#ffffff">
-OK, I saw the problem. The default for FORWARD chain is another chain
-called block and its rules don't block this traffic.<br>
-<br>
-Thanks for your interest.<br>
-<br>
-Oscar<br>
-<br>
-Antony Stone wrote:<br>
-<blockquote type="cite"
- cite="mid200404221546.14351.Antony@Soft-Solutions.co.uk">
-  <pre wrap="">On Thursday 22 April 2004 2:53 pm, Oscar Arranz wrote:
+Hello,
 
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">    I have a Red Hat box running as a firewall in my network. It's
-working fine, but now I'm doing tests in order to block certain Internet
-traffic. I've added the following rules which should drop packets from
-my PC to a known public IP (a web server):
+* Roque <roque@lpgc.net> 22. Apr 04:
+> I need to ban a number of IP=B4s that are posted in a plain text file on
+> a web site; the file changes every 30Min. The file is as simple as
+>=20
+> banned-ip1    #Reason1
+> banned-ip2    #Reason
+> ...
+>=20
+> The url can be reached in this way: http://www.url.com/ip/banned.txt
 
-iptables -A FORWARD -s 192.138.35.110 -d 193.110.128.200 -j DROP
+WARNING: this is very, very bad!  Don't insert rules automatic from an
+untrusted source (anything outside of your net _is_ untrusted).  Said
+this...
 
-    But the packets are not droped because I still can connect to the
-web server.
+> I have read the iptables man pages and haven=B4t seen nothing similar.
+> Is it really posible to do so?
 
-    The default rule for FORWARD chain is DROP
+ # iptables -N banned_ips 2>/dev/null
+ # iptables -F banned_ips
+ # wget --output-document=3D- http://www.url.com/ip/banned.txt |
+ > while read ip reason
+ > iptables -A banned_ips -d $ip -j REJECT
+ > done
 
-   Any ideas?
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-You say you have added the above rule.
+Repeat this every 30min by cron.  Insert the chain banned_ips whereever
+you need it (likely in your FORWARD).
 
-But, what have you added it *to*?
-
-In other words, what other rules do you also have running on the machine?
-
-That information would help us greatly in answering your question.
-
-Regards,
-
-Antony
-
-  </pre>
-</blockquote>
-</body>
-</html>
-
-
+HTH,
+ regards, Frank.
+--=20
+Sigmentation fault
 
