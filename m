@@ -1,121 +1,83 @@
-From: "Pedro C. Arias" <parias@sede.unr.edu.ar>
-Subject: Re: iptables
-Date: Mon, 26 May 2003 12:27:42 -0300
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00a501c3239b$59657430$f000010a@pc207pca>
-References: <001001c3238e$ab428f20$7a1c6ac8@microsoft>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Experimental RTSP modules
+Date: Sun, 25 May 2003 14:12:35 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030525121235.GA4273@naboo>
+References: <20030406033532.GA23082@home.tig-grr.com> <20030523195843.GQ3077@sunbeam.de.gnumonks.org> <20030524143023.GA31579@home.tig-grr.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00A2_01C32382.33FB3E50"
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20030524143023.GA31579@home.tig-grr.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Wan System S.R.L." <wansys@terra.com.pe>, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_00A2_01C32382.33FB3E50
-Content-Type: text/plain;
-	charset="iso-8859-1"
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Add ip_conntrack_ftp, ip_nat_ftp modules.
+On Sat, May 24, 2003 at 07:30:23AM -0700, Tom Marshall wrote:
 
-Saludos
-Pedro=20
-Rosario - Argentina.
+> Thank you.
+>=20
+> I am interested in getting the module into the mainline kernel.  I believe
+> this is where the majority of users are.  I have not and will not use p-o=
+-m.=20
+> I will convert the patch to use kernel coding standards if someone would
+> sponsor the change to the 2.4 kernel, but any changes necessary to use p-=
+o-m
+> will need to be done by someone else because I have zero interest.
 
+It is not a change of the actual code, it's just a different formatting
+for the patch.  And as you want to get it into the mainline kernel, you
+will have to submit it to the netfilter maintainer(s), which is the
+netfilter coreteam (us).
 
-  ----- Original Message -----=20
-  From: Wan System S.R.L.=20
-  To: netfilter@lists.netfilter.org=20
-  Sent: Monday, May 26, 2003 10:34 AM
-  Subject: iptables=20
+And we prefer patch-o-matic format, since this is the opportunity to
+have the code being tested for some time, until we conclude that it is
+safe to submit it to the mainline kernel.
 
+Of course you are free to submit in any form, it would just make our
+work easier if it was p-o-m.  I think we already receive 95% of the
+contributions in this format.
 
-  I have installed a Red Hat 8.0 iptables 1.27a to make NAT. I have 2 =
-net cards   =20
-  The computers of the internal net have MS Windows XP.  the www doesn't =
-have any problem. When they try to make ftp it leaves the following =
-error:   =20
-  200 ASCII tastes bad, dude.
-  500 Illegal PORT command.
-  500 Unknow command.
+> Well, no feedback so far at all so I have left the code alone for the
+> moment.  I'm sure you are familiar with the phenomenon.  ;-)
 
-  Please some tip=20
+yes, indeed :)
 
-  thank
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-  wansys 
-------=_NextPart_000_00A2_01C32382.33FB3E50
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Add ip_conntrack_ftp, ip_nat_ftp=20
-modules.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Saludos</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Pedro </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Rosario - Argentina.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
-BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A title=3Dwansys@terra.com.pe href=3D"mailto:wansys@terra.com.pe">Wan =
-System=20
-  S.R.L.</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
-  title=3Dnetfilter@lists.netfilter.org=20
-  =
-href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
-rg</A>=20
-  </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Monday, May 26, 2003 =
-10:34 AM</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> iptables </DIV>
-  <DIV><BR></DIV>
-  <DIV><FONT face=3DArial size=3D2>I have installed a Red Hat 8.0 =
-iptables 1.27a to=20
-  make NAT. I have 2 net cards&nbsp;&nbsp;&nbsp; <BR>The computers of =
-the=20
-  internal net have MS Windows XP.&nbsp; the www doesn't have any =
-problem. When=20
-  they try to make ftp it leaves the following error:&nbsp;&nbsp;&nbsp; =
-<BR>200=20
-  ASCII tastes bad, dude.</FONT></DIV>
-  <DIV><FONT face=3DArial size=3D2>500 Illegal PORT =
-command.</FONT></DIV>
-  <DIV><FONT face=3DArial size=3D2>500 Unknow command.</FONT></DIV>
-  <DIV><FONT face=3DArial size=3D2>&nbsp;</DIV></FONT>
-  <DIV><FONT face=3DArial size=3D2>Please&nbsp;some tip </FONT></DIV>
-  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-  <DIV><FONT face=3DArial size=3D2>thank</FONT></DIV>
-  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-  <DIV><FONT face=3DArial=20
-size=3D2>wansys</FONT>&nbsp;</DIV></BLOCKQUOTE></BODY></HTML>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-------=_NextPart_000_00A2_01C32382.33FB3E50--
+iD8DBQE+0LMyXaXGVTD0i/8RAu7kAKCNVXnBTdkspWnhWgDO6JU0mxGZ9ACdGKmY
+N6pg+ZRSUQ2Y6BIfDZLYEbc=
+=fEXy
+-----END PGP SIGNATURE-----
 
-
+--UugvWAfsgieZRqgk--
 
