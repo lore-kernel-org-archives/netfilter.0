@@ -1,13 +1,14 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Can iptables manager source mac address?
-Date: 16 Apr 2003 16:39:26 +0530
+From: "Matti Luoma" <matti.luoma@bitboys.com>
+Subject: RE: Small problem -> Prerouting
+Date: Wed, 16 Apr 2003 15:47:35 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1050491396.2953.11.camel@india>
-References: <1050747660.10928.6.camel@ntc9.local>
+Message-ID: <NIENICGJBBAFMLFBMABHGELFCDAA.matti.luoma@bitboys.com>
+References: <1050496812.1001.2.camel@india>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-c9uQsdNGpyvF/AeV5Gp8"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0026_01C3042F.7FF3E450"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1050747660.10928.6.camel@ntc9.local>
+In-reply-to: <1050496812.1001.2.camel@india>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,79 +18,143 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: NetSnake <netsnake@963.net>
+To: "Dharmendra.T" <dharmu@nsecure.net>
 Cc: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---=-c9uQsdNGpyvF/AeV5Gp8
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+------=_NextPart_000_0026_01C3042F.7FF3E450
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2003-04-19 at 15:51, NetSnake wrote:
+                    Seems to be in use, so i cant remove it, so it has =
+to be something else...
 
-      I use iptables to nat to internet, but I found some user use a proxy
-    on intranet, like, 192.168.0.5 can access to internet, 192.168.0.10 can
-    not access to internet, now 10 access a proxy on 192.168.0.5, then he
-    can access now, I thought in package from 192.168.0.5 must contant some
-    information about proxy, like source mac address, this can help me to
-    identified users, can iptables do this?
-    
-      Thanks.
-    
+                    What module does PREROUTING need anyways?
 
-You can block based on the mac address. But you should check whether
-192.168.0.10 contains the same mac addres or it is getting modified in
-proxy server.
--- 
+
+
+  On Wed, 2003-04-16 at 17:41, Matti Luoma wrote:=20
+Hiya!
+
+Well i upgraded my kernel to 2.4.20 from 2.4.3, and also compiled newest =
+
+iptables 1.2.8
+
+now i got this weird problem with
+
+example this line:
+
+iptables -A PREROUTING -t nat -p UDP -d IP -dport port -j DNAT --to =
+IP:Port
+
+It should works, and it works, but not anymore, SSH forwarding like this =
+
+works thou
+
+also im gettin some stuff in syslog:
+
+kernel: NAT: 0 dropping untracked packet c66ab6c0
+
+i think these things are related, and probably some module is causing =
+this,=20
+any ideas?
+
+Cheers,
+Matti
+
+I guess this is because of conntrack module. Just check do you need this =
+if not remove it. --=20
 Regards
 Dharmendra.T
 
 
-This message is intended for the addressee only. It may contain
-privileged or Confidential information. If you have received this
-message in error,please notify the sender and destroy the message
-immediately.Unauthorised use or reproduction of this message is strictly
-prohibited.
+This message is intended for the addressee only. It may contain =
+privileged or Confidential information. If you have received this =
+message in error,please notify the sender and destroy the message =
+immediately.Unauthorised use or reproduction of this message is strictly =
+prohibited.=20
 
---=-c9uQsdNGpyvF/AeV5Gp8
-Content-Type: text/html; charset=utf-8
+------=_NextPart_000_0026_01C3042F.7FF3E450
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
-</HEAD>
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; CHARSET=3DUTF-8">
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR></HEAD>
 <BODY>
-On Sat, 2003-04-19 at 15:51, NetSnake wrote:
-    <BLOCKQUOTE>
-<PRE><FONT COLOR="#737373"><FONT SIZE="3"><I>  I use iptables to nat to internet, but I found some user use a proxy</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>on intranet, like, 192.168.0.5 can access to internet, 192.168.0.10 can</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>not access to internet, now 10 access a proxy on 192.168.0.5, then he</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>can access now, I thought in package from 192.168.0.5 must contant some</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>information about proxy, like source mac address, this can help me to</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>identified users, can iptables do this?</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I>  Thanks.</FONT></FONT></I>
-<FONT COLOR="#737373"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
-    </BLOCKQUOTE>
-<FONT SIZE="3">You can block based on the mac address. But you should check whether 192.168.0.10 contains the same mac addres or it is getting modified in proxy server.</FONT>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D478394312-16042003>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+Seems to be in use, so i cant remove it, so it has to be something=20
+else...</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D478394312-16042003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D478394312-16042003>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;What=20
+module does PREROUTING need anyways?</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D478394312-16042003></SPAN></FONT>&nbsp;</DIV>
+<BLOCKQUOTE>
+  <DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
+face=3DTahoma><FONT=20
+  size=3D2><BR></FONT></FONT>&nbsp;</DIV>On Wed, 2003-04-16 at 17:41, =
+Matti Luoma=20
+  wrote:=20
+  <BLOCKQUOTE><PRE><FONT color=3D#737373><FONT =
+size=3D3><I>Hiya!</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>Well i upgraded my kernel to =
+2.4.20 from 2.4.3, and also compiled newest </FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>iptables 1.2.8</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>now i got this weird problem =
+with</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>example this =
+line:</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>iptables -A PREROUTING -t nat -p =
+UDP -d IP -dport port -j DNAT --to IP:Port</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>It should works, and it works, =
+but not anymore, SSH forwarding like this </FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>works thou</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>also im gettin some stuff in =
+syslog:</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>kernel: NAT: 0 dropping =
+untracked packet c66ab6c0</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>i think these things are =
+related, and probably some module is causing this, </FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>any ideas?</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>Cheers,</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I>Matti</FONT></FONT></I>
+<FONT color=3D#737373><FONT size=3D3><I></FONT></FONT></I>
+<FONT size=3D3>I guess this is because of conntrack module. Just check =
+do you need this if not remove it. </FONT></PRE></BLOCKQUOTE>
+  <TABLE cellSpacing=3D0 cellPadding=3D0 width=3D"100%">
+    <TBODY>
+    <TR>
+      <TD><PRE>--=20
 Regards
 Dharmendra.T
 
 
-This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
-</TD>
-</TR>
-</TABLE>
+This message is intended for the addressee only. It may contain =
+privileged or Confidential information. If you have received this =
+message in error,please notify the sender and destroy the message =
+immediately.Unauthorised use or reproduction of this message is strictly =
+prohibited.</PRE></TD></TR></TBODY></TABLE></BLOCKQUOTE></BODY></HTML>
 
-</BODY>
-</HTML>
-
---=-c9uQsdNGpyvF/AeV5Gp8--
+------=_NextPart_000_0026_01C3042F.7FF3E450--
 
 
