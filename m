@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SNAT matching question
-Date: Sun, 29 Sep 2002 14:53:21 +0100
+From: Mohan Khurana <mkhurana@andrew.cmu.edu>
+Subject: SNAT matching question
+Date: Sun, 29 Sep 2002 09:30:16 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020929135323.MYFB13996.mta05-svc.ntlworld.com@there>
-References: <Pine.GSO.4.44L-027.0209290930010.1180-100000@unix4.andrew.cmu.edu>
+Message-ID: <Pine.GSO.4.44L-027.0209290930010.1180-100000@unix4.andrew.cmu.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.44L-027.0209290930010.1180-100000@unix4.andrew.cmu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +14,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sunday 29 September 2002 2:30 pm, Mohan Khurana wrote:
+Hi everyone,
 
-> Hi everyone,
->
-> I'm trying to make a dual-homed router right now.
->
-> I'm wondering, if I add two SNAT entries to the POSTROUTING chain of the
-> nat table, that are completely identical except the the fact that they
-> have different values for their specification of --to-source, will both of
-> them get the opportunity to match?  What decides which one matches them?
+I'm trying to make a dual-homed router right now.
 
-Well, yes, they will both get the *opportunity* to match (ie every packet 
-will get tested against both rules), however depending on how you qualify the 
-rules (specifically, whether you check the source address), the second one 
-may not match because the first one has already changed the address.
+I'm wondering, if I add two SNAT entries to the POSTROUTING chain of the
+nat table, that are completely identical except the the fact that they
+have different values for their specification of --to-source, will both of
+them get the opportunity to match?  What decides which one matches them?
 
-> I am wondering, if packets come in, and I route them, and ensure that
-> their next-hop is one of the --to-sources, will the rule check both the
-> source range, and the value of the --to-source?
+I am wondering, if packets come in, and I route them, and ensure that
+their next-hop is one of the --to-sources, will the rule check both the
+source range, and the value of the --to-source?
 
-I don't understand.   Why would you set the *source* address of a packet to 
-be the address of the next-hop router you're just about to send it on to ?   
-Where are you expecting a reply to come back to ?
+Example:
 
-> Example:
->
-> iptables -t nat -A POSTROUTING -s 192.168.2.10 -d \! 192.168.2.0/24 -j
-> SNAT --to-source 1.2.3.4
+iptables -t nat -A POSTROUTING -s 192.168.2.10 -d \! 192.168.2.0/24 -j
+SNAT --to-source 1.2.3.4
+iptables -t nat -A POSTROUTING -s 192.168.2.10 -d \! 192.168.2.0/24 -j
+SNAT --to-source 5.6.7.8
 
-This rule will match all packets with a source address = 192.168.2.10 which 
-are not going to the network 192.168.2.0/24 (if they were, why would they be 
-going through this firewall anyway ?   They'd just get sent straight across 
-the local network...) and will change the source address to 1.2.3.4
+If in my iproute2 configuration, if I ensure that the packet is going out
+with source 5.6.7.8 when flowing around, it should match to the second
+rule, and skip the first altogether, right?  If I set it to hop to source
+1.2.3.4, it should choose the first nat rule, and then skip the second one
+altogether, right?
 
-> iptables -t nat -A POSTROUTING -s 192.168.2.10 -d \! 192.168.2.0/24 -j
-> SNAT --to-source 5.6.7.8
+thanks much,
 
-This rule will try to match all packets with a source address = 192.168.2.10 
-which are not going to the network 192.168.2.0/24 but there will never be 
-any, because they've all just been changed to have a source address = 1.2.3.4
+mohan
 
-> If in my iproute2 configuration, if I ensure that the packet is going out
-> with source 5.6.7.8 when flowing around, it should match to the second
-> rule, and skip the first altogether, right?  If I set it to hop to source
-> 1.2.3.4, it should choose the first nat rule, and then skip the second one
-> altogether, right?
 
-I don't understand what you're saying here, and I'm not sure I understand 
-what you're trying to do.
 
-Perhaps you could explain your network setup a bit more, and explain what 
-you're trying to achieve, and we can comment on whether this seems like a 
-reasonable way to achieve it.....
 
-Antony.
-
--- 
-
-I vote "no" to this proposal to form a committee to investigate whether we 
-should or should not hold a ballot on whether to vote yet.
 
