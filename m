@@ -1,11 +1,13 @@
-From: Carsten Maass <cm@blinkenlichten.de>
-Subject: Iptables / KAME IPSec problem: source port information lost
-Date: Tue, 09 Mar 2004 13:27:18 +0100
+From: "Stanislav Puffler DiS." <stanislav.puffler@seznam.cz>
+Subject: RE: ping to internet hosta through NameServer of provider
+Date: Tue, 9 Mar 2004 14:00:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <404DB826.3000709@blinkenlichten.de>
+Message-ID: <E1B0gpe-0004V7-9P@vishnu.netfilter.org>
+References: <200403091040.28256.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200403091040.28256.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,101 +17,134 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Dear List,
+It seems like anything you=B4ve described. Here is the ruleset :
 
-my network layout looks like this:
-----------------------------------
+iptables -L -nv
 
-(Localnet A)---(Gateway A)==IPSec==(Gateway B)---(Localnet B)
+Chain INPUT (policy ACCEPT 66 packets, 2754 bytes)
+ pkts bytes target     prot opt in     out     source
+destination        =20
+ 1332  179K RH-Lokkit-0-50-INPUT  all  --  *      *       0.0.0.0/0
+0.0.0.0/0         =20
 
-where "==IPSec==" is a IPSec connection using the backport of the 2.6 
-KAME IPSec stack on a static 2.4.24 kernel in tunnel-mode. Both gateways 
-are running Debian stable with racoon and the ipsec-tools coming from 
-testing:
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination        =20
 
-kernel-source-2.4.24          2.4.24-3
-iptables                      1.2.6a-5
-ipsec-tools                   0.2.2-8
-racoon                        0.2.2-8
+Chain OUTPUT (policy ACCEPT 85 packets, 5151 bytes)
+ pkts bytes target     prot opt in     out     source
+destination        =20
 
+Chain RH-Lokkit-0-50-INPUT (1 references)
+ pkts bytes target     prot opt in     out     source
+destination        =20
+    0     0 ACCEPT     udp  --  *      *       80.95.96.7
+0.0.0.0/0          udp spt:53 dpts:1025:65535=20
+   10   700 ACCEPT     all  --  lo     *       0.0.0.0/0
+0.0.0.0/0         =20
+    0     0 ACCEPT     udp  --  *      *       192.168.0.11
+0.0.0.0/0          udp spt:53=20
+    0     0 REJECT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          tcp flags:0x16/0x02 reject-with icmp-port-unreachable =
 
-My problem is:
---------------
+ 1256  175K REJECT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          udp reject-with icmp-port-unreachable
 
-At some point in the filtering process, the information about the source 
-ports of the incoming and decrypted packet gets lost, so that the 
-clients on the localnet don't accept it as one of the established 
-connection.
+iptables -L -t nat -nv
 
-Here is some example:
----------------------
+Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination        =20
 
-The tcpdump was taken on Gateway A, listening on all interfaces.
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination        =20
 
-Client 192.168.3.4 on Localnet A tries to establish a http-connection to 
-client 192.168.0.1 on Localnet B.
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
 
-12:05:48.370984 192.168.3.4.35114 > 192.168.0.1.80: S 
-3186461765:3186461765(0) win 5840 <mss 1460,sackOK,timestamp 220395665 
-0,nop,wscale 0> (DF)
-
-The initial packet...
-
-12:05:48.372462 218.10.35.139 > 146.254.136.108: 
-ESP(spi=0x0a6825be,seq=0xaf) (DF)
-
-...gets correctly encrypted and sent out to Gateway B (146.254.136.108).
-
-12:05:48.447361 146.254.136.108 > 218.10.35.139: 
-ESP(spi=0x03e34241,seq=0xa5) (DF)
-
-The encrypted response arrives at Gateway A (218.10.35.139).
-
-12:05:48.447361 192.168.0.1.80 > 192.168.3.4.35114: S 
-969293027:969293027(0) ack 3186461766 win 5792 <mss 
-1460,sackOK,timestamp 2220996862 220395665,nop,wscale 0> (DF)
-
-The packet gets decrypted, the source port is correct.
-
-12:05:48.448584 192.168.0.1.1 > 192.168.3.4.35114: S 
-969293027:969293027(0) ack 3186461766 win 5792 <mss 
-1460,sackOK,timestamp 2220996862 220395665,nop,wscale 0> (DF)
-
-And here the strange thing apperars: The packet is sent out with a 
-source port of 1!
-
-12:05:48.448816 192.168.3.4.35114 > 192.168.0.1.1: R 
-3186461766:3186461766(0) win 0 (DF)
-
-As it comes from source port 1, the client does not recognize it as a 
-packet which belongs to the established connection and rejects it.
-
-12:05:48.449038 218.10.35.139 > 192.168.0.1: 
-ESP(spi=0x0a6825be,seq=0xb0) (DF)
-
-The reject gets encrypted, sent out over the tunnel and the game starts 
-over again.
-
-Portless connections like ping don't show this behavior and gets 
-established correctly.
-
-So my questions are:
---------------------
-
-I this an iptables problem or IPSec related?
-Can you think of any iptables rules, which causes this behavior?
-Do you know how to explore this problem further?
-Do you have any other hints?
+As for tutorials - I have read some czech one, I=B4ll read those from
+netfilter.org too of course... Thanks in advance,
+Stanley.
 
 
-I hope i was able to make the problem clear. Please tell me if you need 
-more information. As i have no clue how to go on with this problem, any 
-help would be highly appreciated.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+Sent: Tuesday, March 09, 2004 11:40 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: ping to internet hosts through NameServer of provider
 
-Thanks for your time and patience,
-Carsten.
+On Tuesday 09 March 2004 9:29 am, Stanislav Puffler DiS. wrote:
+
+> Hi all,
+> i=B4m newbie to fw, have just installed iptables and configured. Have =
+3
+> interfaces, eth0 - internet, eth1 - DMZ (squid, postfix), eth2 - LAN. =
+My
+> provider has connected my firewall to the Internet via 1 public IP (on
+> eth0). Internet hosts are resolved via provider=B4s Name Server (this =
+IP
+> is in /etc/resolv.conf). If I tried ping to (for example) www.rb.cz
+> before installing iptables, there was no problem. Now, after =
+installing
+> iptables, I can=B4t ping to internet hosts correctly (only on IP - it =
+is
+> without need of contacting providers NS) - it is working like this :
+>
+> [user@machine]$ ping www.rb.cz
+> IN=3Deth0 OUT=3D MAC=3D.............. =
+SRC=3D"my_providers_nameserver_ip"
+> DST=3D"ip_on_my_eth0" LEN=3D127 TOS=3D0x00 PREC=3D0x00 TTL=3D61 =
+ID=3D3268 DF
+> PROTO=3DUDP SPT=3D53 DPT=3D32792 LEN=3D107
+
+So you have a LOGging rule (presumably some time before a DROP rule - =
+not
+many=20
+people LOG ACCEPTed packets), which shows that you are blocking DNS =
+replies=20
+from your ISP.   Hence you cannot resolve IP addresses.
+
+> Ping to resolved IP of www.rb.cz is no problem (ping 193.86.103.40 -
+> returns a normal replay). Could anyone help me please how to set up
+> carefully and secure rule to maintain this problem - to permit my
+> provider=B4s NS to resolv internet hosts ?
+
+Please tell us your ruleset (either the iptables commands you use to set =
+up=20
+the rules, or the output of "iptables -L -nv; iptables -L -t nat -nv") =
+and
+we=20
+can suggest what might be wrong.
+
+If you are new to networking as well as netfilter, please read one of =
+the=20
+excellent tutorials accessible from http://www.netfilter.org and this =
+will=20
+help you get a basic setup working.   I can recommend Oskar Andreasson's =
+
+tutorial at http://iptables-tutorial.frozentux.net
+
+Regards,
+
+Antony.
+
+--=20
+Most people are aware that the Universe is big.
+
+ - Paul Davies, Professor of Theoretical Physics
+
+                                                     Please reply to the
+list;
+                                                           please don't =
+CC
+me.
+
+
 
 
