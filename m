@@ -1,11 +1,13 @@
-From: Eoin Verling <eoin.verling@transas.com>
-Subject: iptables and IPCOMP
-Date: Wed, 3 Mar 2004 16:28:13 +0000
+From: "Paul Harlow" <pharlow@skld.com>
+Subject: Allowing FTP and internal but nothing else
+Date: Wed, 3 Mar 2004 09:55:04 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <C47F458E-6D2F-11D8-9B9B-000A95DAC91E@transas.com>
-Mime-Version: 1.0 (Apple Message framework v612)
-Content-Transfer-Encoding: 7bit
+Message-ID: <4A8849EC2E153F41B6CECD20C81BC63BD11E66@wolfcreek.skld.net>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C40140.468BF33D"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,39 +17,86 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+This is a multi-part message in MIME format.
 
-I'm relatively new to the iptables world, so apologies in advance ...
+------_=_NextPart_001_01C40140.468BF33D
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I'm running iptables on 2 linux boxes (v1.2.8), in 2 different 
-locations (offices). They are firewalls for both offices. I have ipsec 
-tunnels between both offices, terminating on these linux boxes.
+I am new to IPTables and moderately experienced in Linux in general so
+please forgive me if this is a noob question.
+=20
+I have an FTP server that I would like to filter out all external
+traffic except ftp and ftp-data. This same server has an internal
+interface that I would like to allow everything on the inside to have
+access to. Given what I've read I have come up with this general idea of
+what to put into a filter table for now. Please let me know what your
+gurus of netfilter think. Thanks!
+=20
+iptables -I INPUT -i eth0 -j ACCEPT
+iptables -I INPUT -i eth1 -d port 21 -j ACCEPT
+iptables -I INPUT -i eth1 -d port 20 -j ACCEPT
+iptables -I INPUT -i eth1 -j deny
+=20
+I am assuming this is similar to Cisco access lists in that it will read
+along the filter list until a hit is made then take action. Please
+correct me if I am wrong.
+=20
+TIA
 
-I am currently trying to install 2 bandwidth expanders (Xpand 4800) on 
-both sites. I have the devices _inside_ both firewalls, setup with 
-local IP addresses (ie both devices have false IP's, but can see (ping) 
-each other through the ipsec tunnel)
+------_=_NextPart_001_01C40140.468BF33D
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I'm told that these devices use IPCOMP to communicate, but currently 
-they are not connected. So, I'm trying to find out where the blockage 
-is happening! So, my question is, how do I find out where/why the 2 
-devices are not connecting. For example, to find out if iptables is the 
-problem, I run the:-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
 
-# iptables -t <table_name> -L -n
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial size=3D2>I am =
+new to IPTables=20
+and moderately experienced in Linux in general so please forgive me if =
+this is a=20
+noob question.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial size=3D2>I have =
+an FTP server=20
+that I would like to filter out all external traffic except ftp and =
+ftp-data.=20
+This same server has an internal interface that I would like to allow =
+everything=20
+on the inside to have access to. Given what I've read I have come up =
+with this=20
+general idea of what to put into a filter table for now. Please let me =
+know what=20
+your gurus of netfilter think. Thanks!</FONT></SPAN></DIV>
+<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial =
+size=3D2></FONT></SPAN><FONT=20
+face=3DArial size=3D2>iptables -I INPUT -i eth0 -j ACCEPT<BR>iptables -I =
+INPUT -i=20
+eth1 -d port 21 -j ACCEPT<BR>iptables -I INPUT -i eth1 -d port 20 -j=20
+ACCEPT<BR>iptables -I INPUT -i eth1 -j deny</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial size=3D2>I am =
+assuming this=20
+is similar to Cisco access lists in that it will read along the filter =
+list=20
+until a hit is made then take action. Please correct me if I am=20
+wrong.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D365334516-03032004><FONT face=3DArial=20
+size=3D2>TIA</FONT></SPAN></DIV></BODY></HTML>
 
-where <table_name> is one of /proc/net/ip_table_names
-
-If nothing there, then can that be ruled out as the blockage of IPCOMP 
-getting through?
-How do I explicitly allow IPCOMP get through with iptables?
-
-any help would be greatly appreciated
-
-cheers
-E
-
+------_=_NextPart_001_01C40140.468BF33D--
 
