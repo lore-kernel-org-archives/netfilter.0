@@ -1,11 +1,11 @@
-From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: udp/tcp port range rules for forward/input chains
-Date: Tue, 14 Oct 2003 23:10:18 -0400
+From: "Edmund Turner" <eturner@monash.edu.my>
+Subject: ICMP floods
+Date: Wed, 15 Oct 2003 11:54:32 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066187418.14600.28.camel@tarkus>
-Reply-To: tedkaz@optonline.net
+Message-ID: <01d501c392d0$0a9efbb0$de0018ac@admin.monash.edu.my>
+Reply-To: <eturner@monash.edu.my>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,19 +19,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Digging around the only thing I found was a patch-o-matic that allowed
-for doing a range of 15 ports.
+Hey everyone!
+Im tyring to create a proper ICMP chain that will blocked ICMP flooding
+by Viruses and DOS attacks. Would the ruleset below be sufficient?
+I cant simulate the exact ICMP flooding, so im only assuming that
+limiting the ICMP burst to 10 /sec and limiting it to 5/sec.
 
-I see many references with dnat and snat, but nothing besides the patch
-for input or forward chains.
+Any input is appreciated!!
 
-If anyone has a link that or info that can steer me in the right
-direction the beers are on me at the Javits Center Linux show.
+#####################
+#####ICMP CHAINS#####
+#####################
+/sbin/iptables -N ICMP
+/sbin/iptables -F ICMP
+/sbin/iptables -A ICMP -m limit -p ICMP -i eth2 --limit 1 --limit-burst
+10
+/sbin/iptables -A ICMP -m limit -p ICMP -i eth1 --limit 1 --limit-burst
+10
+/sbin/iptables -A ICMP -m limit -p ICMP -i eth0 --limit 1 --limit-burst
+10
+/sbin/iptables -A ICMP -p icmp --icmp-type echo-reply -j ACCEPT
+/sbin/iptables -A ICMP -p icmp --icmp-type destination-unreachable -j
+ACCEPT
+/sbin/iptables -A ICMP -p icmp --icmp-type source-quench -j ACCEPT
+/sbin/iptables -A ICMP -p icmp --icmp-type time-exceeded -j ACCEPT
+#/sbin/iptables -A ICMP -p icmp --icmp-type echo-request  -j ACCEPT
+/sbin/iptables -A ICMP -p icmp --icmp-type echo-request -m limit --limit
+5/second  -j ACCEPT
+/sbin/iptables -A ICMP -p icmp -j LOG --log-level 5 --log-prefix "ICMP
+DROP: "
+/sbin/iptables -A ICMP -p icmp -j DROP
 
-Thanks,
-Ted
 
-PS: this is by far the best maintained mailing list I am on, kudo's to
-all the contributors/participants.
+regards
+edmund
 
 
