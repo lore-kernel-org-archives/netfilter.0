@@ -1,13 +1,12 @@
-From: Frederic de Villamil <neuro@seclab.jp>
-Subject: Re: patch-o-matic and modules
-Date: Tue, 16 Mar 2004 10:46:32 +0100
+From: "Domenico Gargano" <d.gargano@planetek.it>
+Subject: Win2k/XP Client DNS hang up
+Date: Tue, 16 Mar 2004 11:03:52 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040316094632.GA25680@jesus.seclab.jp>
-References: <Pine.GSU.4.58.0403142225080.22714@adore.lightlink.com> <20040315041348.GT26800@samad.com.au> <200403150733.07149.Antony@Soft-Solutions.co.uk> <Pine.GSU.4.58.0403160119090.6899@adore.lightlink.com> <00a701c40b38$eb8591d0$0100a8c0@newlife>
+Message-ID: <4056DF18.21276.6952B7@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <00a701c40b38$eb8591d0$0100a8c0@newlife>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +17,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ming-Ching Tiew <mingching.tiew@redtone.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Ming-Ching!
+I submit you all this very strange problem:
+My firewall occasionally stop accepting input and forward packets 
+from my Win PCs. After then I have 2 choises:
+1: wait some minutes
+2: stop/start "client DNS" service twice to immediately obtain again 
+full access to the net.
 
-On Tue, 16 Mar 2004, Ming-Ching Tiew wrote:
+Can someone give me a hint?
 
->
-> I have a question about kernel and patch-o-matic.
->
-> Assuming that I have a kernel 'vmlinuz' before applying
-> patch-o-matic.
->
-> Then I go ahead to apply patch-o-matic patches, a few I
-> have applied, say TTL and CONNMARK. Then I go ahead to
-> recompile a new kernel but those new netfilter features I specify
-> them as modules. Then I compile the new modules. In this
-> example, I would get ipt_TTL.o and ipt_CONNMARK.o as result.
->
-> My question is what is the impact of using this ipt_CONNMARK.o
-> or ipt_TTL.o with the kernel 'vmlinuz' prior to applying patch-o-matic ?
-> I tried loading it, it does not seem to have any problem. I got loaded.
-> There is also no error in the iptables commands.
->
-> It is safe to using the new modules with the old kernel ? Or must I only
-> use it with the new kernel ?
->
+- sorry for my poor english
 
-Hello,
-as long as your  old kernel is the same version as  the new modules, I
-don't see  why you should  encounter any trouble.  One of the  aims in
-using modules with kernel is the possibility to compile new modules if
-you add some new hardware, or  if you patch the modules source without
-having to recompile the whole stuff.
+Bye all
 
-regards
-Frederic.
---
-Frederic de Villamil
-http://www.seclab.jp
+-- 
+~~~~  Domenico Gargano  [Network Administrator]  ~~~~
+Planetek Italia s.r.l.                        :tel:+39 080 5343750
+Via Massaua, 12 - I-70123 BARI     :fax:+39 080 5340280
+~~~ email: gargano@planetek.it ~~~ www.planetek.it ~~~
+
 
