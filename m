@@ -1,13 +1,13 @@
-From: Saad Faruque <faruque@gmail.com>
-Subject: Re: IT WORKS!!
-Date: Fri, 2 Jul 2004 15:41:55 +0600
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: iptables pom installation, help!
+Date: Fri, 2 Jul 2004 11:58:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1d7da3f40407020241774b51d9@mail.gmail.com>
-References: <AE4D8F0E-CB8C-11D8-B251-000A95AD0230@mac.com>
+Message-ID: <TBEXEDU01ALjdO3J1L200000097@smtp.maurickcollege.nl>
+References: <6.0.3.0.1.20040702173337.5a864b90@mail.axisglobal.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <AE4D8F0E-CB8C-11D8-B251-000A95AD0230@mac.com>
+In-Reply-To: <6.0.3.0.1.20040702173337.5a864b90@mail.axisglobal.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,25 +20,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-if ur in redhat,
-chakconfig --level 345 iptables on
-service iptables stop
-run ur firewall scripts
-service iptables on 
-that should solve ur problem
+> 	i just want to ask the proper way to install the 
+> patch-o-matic for iptables. because i need the 
+> libipt_ipv4options.so for my firewall rules. 
+> i'm using iptables-1.2.7a. what are the things do i need for 
+> me to install it properly?
 
-On Thu, 1 Jul 2004 13:30:08 -0500, Sam Loy <sampaw@mac.com> wrote:
-> 
-> I got it working! Thanks again.....many thanks.
-> 
-> One question. What is the best way to ensure the rules are applied
-> automatically on reboot.
-> 
-> The last time I did /sbin/service iptables save, it broke everything.
-> 
-> Thanks,
-> 
-> Sam
-> 
->
+First, Obtain the (new ?) kernel, POM-NG and iptables source and extract
+the files from the tarballs.
+
+Next, patch with pom the kernel and iptables source with "KERNEL_DIR=...
+IPTABLES_DIR=... ./runme <pending|base|extra>"
+
+Then compile the kernel modules and copy/install them into the correct
+lib directory.
+(If it's an option, maybe you can use a new kernel source and
+compile/install a complete brand new kernel.)
+
+After that compile a new iptables and install it and you should be done.
+
+
+Gr,
+Rob
+
 
