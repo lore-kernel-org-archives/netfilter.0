@@ -1,13 +1,12 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Modem to Ethernet Bridge
-Date: Thu, 5 Sep 2002 13:24:09 -0400
+From: Tony Zafiropoulos <tonyz@ctitek.com>
+Subject: Re: VPN Clients
+Date: Thu, 5 Sep 2002 13:02:40 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020905172409.GI7289@cannon.eng.us.uu.net>
-References: <F37GuSKqGABtvNLepTy000017d8@hotmail.com> <200209051442.g85EgNv00719@vulcan.rissington.net> <20020905153012.GH7289@cannon.eng.us.uu.net> <200209051541.g85Ff5v00844@vulcan.rissington.net>
+Message-ID: <Pine.LNX.4.21.0209051300140.32428-100000@jagd.ctitek.com>
+References: <200209051044.48905.marks@crvinc.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200209051541.g85Ff5v00844@vulcan.rissington.net>
+In-Reply-To: <200209051044.48905.marks@crvinc.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: Mark Seamans <marks@crvinc.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Thu, Sep 05, 2002 at 04:40:59PM +0100, Antony Stone wrote:
 
-> On Thursday 05 September 2002 4:30 pm, Ramin Alidousti wrote:
+Not free for commercial use (using IPSEC not PansyPointTunnelProtocol)
+
+Windoze client
+SSH.com Sentinel -
+Safenet-inc.com  SoftRemoteLT
+
+Freeswan on Firewall/Linux
+
+
+On Thu, 5 Sep 2002, Mark Seamans wrote:
+
+> I see below that someone asked which VPN client to use....
+> I have the same question, but I will be a bit more specific.
 > 
-> > I don't see why a natted solution is required here.
+> How about a Windows Client???  The last time I looked there was not Freeswan 
+> for Windows.  Also, has anyone used the Cisco VPN Client?
+> Free would be nice....
 > 
-> I agree that a NATted solution is not *required*, however I think it should 
-> work and is therefore an effective solution to the problem.   Depending on 
-> the routing issues on other machines, it might well be the simplest solution, 
-> involving changes on only one machine.
+> Thanks!
+> 
+> Mark
+> 
 
-So you mean, when he _can_ ping and _cannot_, eg, ftp; then an effective
-solution to the problem is to nat????  Explain why.  
+-- 
+Tony Zafiropoulos
+FixMyVirus.com
+Cel: 314-504-3974
+tonyz@fixmyvirus.com
+Best way to reduce your virus exposure?
+Run Linux - Replace Windows one system at a time.
 
-Ramin
 
