@@ -1,8 +1,9 @@
-From: "Michael B. Allen" <miallen@eskimo.com>
-Subject: Simulate Poor Network Conditions?
-Date: Thu, 26 Dec 2002 15:17:56 -0500
+From: "Diego Sarasua" <debian@sarasuasys.com.ar>
+Subject: Re: [REPOST] PPTP+NAT+MASQ anyone?
+Date: Thu, 26 Dec 2002 20:09:01 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021226151756.17aa51d1.miallen@eskimo.com>
+Message-ID: <009601c2ad33$c9af4740$6400a8c0@diego>
+References: <200212091226.23888.roy@karlsbakk.net> <1039624902.20562.91.camel@tux> <200212111754.46937.roy@karlsbakk.net> <200212231415.09766.roy@karlsbakk.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,19 +17,104 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Roy Sigurd Karlsbakk <roy@karlsbakk.net>, netfilter@lists.netfilter.org
 
-I'm writing network software and would like to test it under adverse
-network conditions. Is there a netfilter module that can simulate slow,
-sticky, and downright errant network conditions over loopback with RH
-Linux 2.4.9-13?
+i have used Newnat Kernel patch it Works Awesome
+http://www.kfki.hu/~kadlec/sw/netfilter/newnat6.html
+apply , make menuconfig , select pptp masquerade and DONE !!!
 
-Mike
+im currently using this patch with 7 clients over the gateway without any
+trouble.
+Please Forgive my english
+Diego
+----- Original Message -----
+From: "Roy Sigurd Karlsbakk" <roy@karlsbakk.net>
+To: "Netfilter mailinglist" <netfilter@lists.netfilter.org>
+Sent: Monday, December 23, 2002 10:15 AM
+Subject: [REPOST] PPTP+NAT+MASQ anyone?
 
--- 
-A  program should be written to model the concepts of the task it
-performs rather than the physical world or a process because this
-maximizes  the  potential  for it to be applied to tasks that are
-conceptually  similar and, more important, to tasks that have not
-yet been conceived. 
+
+> hi all
+>
+> still trying to patch up my kernel to allow for PPTP NATing, but
+patch-o-matic
+> simply fails. This is with kernel 2.4.20 (from kernel.org) and latest
+> patch-o-matic from cvs.
+>
+> Can someone _please_ help me here? I'm doing exactly as the doc says!
+>
+> # pwd
+> /usr/src
+> # mkdir Pom
+> # tar xjf packed/linux-2.4.20.tar.bz2 -C Pom
+> ./runme pending
+> Testing... ip_conntrack_protocol_destroy.patch NOT APPLIED (6 rejects out
+of 6
+> hunks)
+> Testing... remove_no_version.patch NOT APPLIED (4 rejects out of 4 hunks)
+> Testing... newnat-udp-helper.patch NOT APPLIED (8 rejects out of 8 hunks)
+>
+> # KERNEL_DIR=/usr/src/Pom/linux-2.4.20 ./runme base
+> ...
+> Testing... IPV4OPTSSTRIP.patch NOT APPLIED ( 1 missing files)
+> Testing... NETLINK.patch NOT APPLIED ( 2 missing files)
+> Testing... NETMAP.patch NOT APPLIED ( 1 missing files)
+> Testing... REJECT.patch.ipv6 NOT APPLIED ( 1 missing files)
+> Testing... SAME.patch NOT APPLIED ( 2 missing files)
+> Testing... TTL.patch NOT APPLIED ( 2 missing files)
+> Testing... ahesp6.patch.ipv6 NOT APPLIED ( 4 missing files)
+> Testing... frag6.patch.ipv6 NOT APPLIED ( 2 missing files)
+> Testing... fuzzy.patch NOT APPLIED ( 2 missing files)
+> Testing... iplimit.patch NOT APPLIED ( 2 missing files)
+> Testing... ipt_unclean-ubit.patch NOT APPLIED (1 rejects out of 1 hunks)
+> Testing... ipv4options.patch NOT APPLIED ( 2 missing files)
+> Testing... ipv6header.patch.ipv6 NOT APPLIED ( 2 missing files)
+> Testing... mport.patch NOT APPLIED ( 2 missing files)
+> Testing... nth.patch NOT APPLIED ( 2 missing files)
+> Testing... opts6.patch.ipv6 NOT APPLIED ( 3 missing files)
+> Testing... pool.patch NOT APPLIED ( 5 missing files)
+> Testing... psd.patch NOT APPLIED ( 2 missing files)
+> Testing... quota.patch NOT APPLIED ( 2 missing files)
+> Testing... random.patch NOT APPLIED ( 2 missing files)
+> Testing... realm.patch NOT APPLIED ( 2 missing files)
+> Testing... route6.patch.ipv6 NOT APPLIED ( 2 missing files)
+> Testing... time.patch NOT APPLIED ( 2 missing files)
+>
+> # KERNEL_DIR=/usr/src/Pom/linux-2.4.20 ./runme extra
+> ...
+> Testing... CONNMARK.patch NOT APPLIED ( 4 missing files)
+> Testing... ROUTE.patch NOT APPLIED ( 2 missing files)
+> Testing... amanda-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+> Testing... condition.patch NOT APPLIED ( 2 missing files)
+> Testing... eggdrop-conntrack.patch NOT APPLIED ( 1 missing files)
+> Testing... h323-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+> Testing... ip_conntrack-timeouts.patch NOT APPLIED ( 1 missing files)
+> Testing... ip_tables-proc.patch NOT APPLIED (5 rejects out of 5 hunks)
+> Testing... ipt_TARPIT.patch NOT APPLIED ( 1 missing files)
+> Testing... mms-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+> Testing... nfnetlink-ctnetlink-0.11.patch NOT APPLIED ( 4 missing files)
+> Testing... pptp-conntrack-nat.patch NOT APPLIED ( 8 missing files)
+> Testing... quake3-conntrack.patch NOT APPLIED ( 3 missing files)
+> Testing... recent.patch NOT APPLIED ( 2 missing files)
+> Testing... rsh.patch NOT APPLIED ( 2 missing files)
+> Testing... string.patch NOT APPLIED ( 2 missing files)
+> Testing... talk-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+> Testing... tcp-window-tracking.patch NOT APPLIED (29 rejects out of 32
+hunks)
+> Testing... tftp-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+>
+>
+>
+> --
+> Roy Sigurd Karlsbakk, Datavaktmester
+> ProntoTV AS - http://www.pronto.tv/
+> Tel: +47 9801 3356
+>
+> Computers are like air conditioners.
+> They stop working when you open Windows.
+>
+>
+>
+
+
 
