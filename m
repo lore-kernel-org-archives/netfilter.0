@@ -1,12 +1,13 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
 Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
-Date: Thu, 30 Oct 2003 10:24:55 -0500 (EST)
+Date: Thu, 30 Oct 2003 16:56:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0310301023510.18336-100000@localhost.localdomain>
-References: <FDB52A0429DFD31196FB0008C7D972D50EA57909@OST_EXCH_USR5>
+Message-ID: <20031030184542.698CB1B9B8@smtp.ttp.nl>
+References: <Pine.LNX.4.44.0310300823360.18175-100000@localhost.localdomain>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FDB52A0429DFD31196FB0008C7D972D50EA57909@OST_EXCH_USR5>
+In-Reply-To: <Pine.LNX.4.44.0310300823360.18175-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,35 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Knight, Steve" <Steve.Knight@bskyb.com>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "'Robert P. J. Day'" <rpjday@mindspring.com>
+Cc: 'iptables mailing list' <netfilter@lists.netfilter.org>
 
-On Thu, 30 Oct 2003, Knight, Steve wrote:
+> there are definitely two schools of thought: 1) those who set 
 
-> Thanks to both the Robs [and the other contributors I hope I've thanked
-> already!] :D
-> 
-> At the moment, it's a single host - but it will eventually be acting as the
-> single gateway for a 192.168.x.x LAN + DMZ, and I will be implementing a
-> fairly strict ruleset on the FORWARD chain [there are some monkeys who'd be
-> Kazaaing and IRCing in a moment if I didn't] - which is why I'm trying all
-> sorts of mojo on the INPUT/OUTPUT chains right now so I can get comfortable
-> with the syntax.
-> 
-> Ive relented for the moment [for testing purposes] to OUTPUT ACCEPT policy
-> and of course it's working as expected, but I'm intrigued as to why the
-> rules didn't work.
+I know ;o)
 
-so add a logging rule like:
+> if you want to be really restrictive on your OUTPUT chain, 
+> that's fine.  but for testing purposes, you might want to 
+> open it up, make sure everything works, *then* lock it down 
+> and see what breaks.  at least you'll be closer to isolating 
+> the problem.
 
-  iptables -A INPUT -p tcp --dport 53 -j LOG
+I was referring to the last statement, not your question (which makes
+this OT btw, but I wanted to answer Steve) :
+> > Just my 0.02, if it's worth that much considering I cant even get 
+> > DNS lookups from my fw working.....
 
-or something to that effect to see what happens to that traffic
-when it comes in, then tail the file /var/log/messages.  at least
-you'll see the traffic.
+In your case I'd not set policy to DROP for OUPUT.
+IMHO it would be overkill for an introduction of approx. 30 minutes.
 
-rday
+
+Gr,
+Rob
 
 
