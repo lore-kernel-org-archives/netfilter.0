@@ -1,10 +1,11 @@
-From: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
-Subject: information + real examples ?
-Date: Tue, 1 Apr 2003 16:06:44 +0200
+From: dhiraj.2.bhuyan@bt.com
+Subject: RE: iptable / packet flow
+Date: Tue, 1 Apr 2003 15:56:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B5747F3DB39FD411884B00B0D07808CCB6C9C2@server10>
+Message-ID: <7497DCA1C240C042B28F6657ADFD8E09268766@i2km11-ukbr.domain1.systemhost.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,23 +17,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: scottmackay@yahoo.com, netfilter@lists.netfilter.org
 
-Hi all,
+There is one in the following tutorial -
 
-I am pretty new to iptables and soon i will install one in an operatiol
-environment.
-Now, the system is iptables on a debian linux with kernel 2.4.20 and 2
-netcards.
-One netcard one -say- range 10.10.0.0 and one range on 192.168.0.0
-There is a program the clients on 10.10.0.0 range will have to reach on the
-other range so i will have to use NAT and i also need standard security.
-But is it possible that someone could send me some scripts or examples so
-that i can have a clear view how this is all set up ?
-I just so that i have some different points of views.
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-best regards,
+dhiraj
 
-Philippe Dhont 
+-----Original Message-----
+From: Scott MacKay [mailto:scottmackay@yahoo.com]
+Sent: 01 April 2003 12:30
+To: netfilter@lists.netfilter.org
+Subject: iptable / packet flow
+
+
+I think someone pointed to a good graphical site
+depicting the flow of a packet and where iptable rules
+are applied.  Would anyone know where that is?
+
+-Scott
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - File online, calculators, forms, and more
+http://platinum.yahoo.com
 
 
