@@ -1,13 +1,12 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Interaction of Ethereal and iptables?
-Date: Mon, 12 Apr 2004 07:55:58 -0400
+From: Scott MacKay <scottmackay@yahoo.com>
+Subject: Re: vpn under linux
+Date: Mon, 12 Apr 2004 05:25:13 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081770958.16832.3.camel@localhost>
-References: <065601c41f87$34f209e0$9701a8c0@office>
+Message-ID: <20040412122513.2441.qmail@web13908.mail.yahoo.com>
+References: <20040410234127.GD14988@samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <065601c41f87$34f209e0$9701a8c0@office>
+In-Reply-To: <20040410234127.GD14988@samad.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +17,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jay Levitt <lists-netfilter@shopwatch.org>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Sun, 2004-04-11 at 01:38, Jay Levitt wrote:
-> I'm occasionally seeing lines like the following, always to the same
-> machine which is on my internal network:
->  
-> Apr 11 01:11:52 linux kernel: Rejected output by default:IN= OUT=eth0
-> SRC=192.168.1.150 DST=192.168.1.151 LEN=40 TOS=0x00 PREC=0x00 TTL=64
-> ID=30662 DF PROTO=TCP SPT=993 DPT=3736 WINDOW=6432 RES=0x00 ACK FIN
-> URGP=0 
->  
-> This corresponds to a LOG and then a DROP rule.  So I set up Ethereal
-> to capture the packet trace.  I didn't see the packet there, so I
-> changed the DROP to an ACCEPT, assuming that iptables is probably
-> dropping the outbound packet before Ethereal (ok, libpcap) can see
-> it.  
->  
-> The weird thing is - even with just a LOG/ACCEPT rule, the packet is
-> STILL missing from Ethereal's trace!  All other packets from that time
-> frame are there, but this particular one isn't.  Could iptables be
-> imagining it somehow?  I'm using libpcap 0.7.2, which was current till
-> a few days ago...  I've done an iptables --list OUTPUT and verified
-> that the last item on the OUTPUT chain is an ACCEPT of all packets,
-> although the default policy is still technically DROP.
-<snip>
-Is there any chance it is being dropped by some other rule before it
-hits the accept rule? If you add a log rule just in front of the ACCEPT
-rule, is the packet still logged?
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+I had a couple questions about the different methods
+talked about here, probably focusing on CIPE,
+FreeSWAN/OpenSWAN, and the OpenVPN (along with any
+others users may chime in with)
+1.  Where in the netfilter path do these solutions
+package up data?  Important to know if we see
+tunnel/VPN packets or the contents which are going
+into them, both incoming and outgoing
+2.  Which of these guys support broadcast or
+multicast?
+3.  Do any of these support non-encrypted
+transmission?  The reason for this would be if a
+higher level/later service provided the encryption
+over the risky sections of a transmission
+4.  What kind of overhead do these cost?  I was
+curious from the perspective of initialization/updates
+and also any additional packet headers (rough guess). 
 
+
+Thanks ahead of time!!
+
+-Scott
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - File online by April 15th
+http://taxes.yahoo.com/filing.html
 
