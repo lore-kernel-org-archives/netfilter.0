@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ip address routing setup
-Date: Wed, 5 Jun 2002 00:37:44 +0100
+Subject: Re: Outgoing SMTP Mystery
+Date: Wed, 5 Jun 2002 00:46:53 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206042337.g54NbjA14262@Networker.rockstone.co.uk>
-References: <002101c20c20$0cfbcab0$1e00a8c0@neox>
+Message-ID: <200206042346.g54NksA14771@Networker.rockstone.co.uk>
+References: <013601c20c15$cba57520$52cfd3cf@michael>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <002101c20c20$0cfbcab0$1e00a8c0@neox>
+In-Reply-To: <013601c20c15$cba57520$52cfd3cf@michael>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,28 +20,47 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Wednesday 05 June 2002 12:32 am, Jack Baker wrote:
+On Tuesday 04 June 2002 11:18 pm, Michael Hudin wrote:
 
-> Hi there, I currently have a set of global ip addresses from my isp (/29
-> block) lets say 192.168.0.5/29 for example.
+>  I've always assumed that the numbers in the brackets were port allowances
+
+No, they're not (although I can't say what they are - I don't use 
+iptables-save).   If you look at the numbers, many of them are larger than 
+65535, so they're certainly not port numbers :-)
+
+> Here are my tables:
 >
-> My gateway set currently on my set of ip addresses is 192.168.0.5
+> *nat
 >
-> I recently got another block (/29) ip addresses say on 192.168.1.64/29.
+> :PREROUTING ACCEPT [241:88600]
+> :POSTROUTING ACCEPT [0:9862]
+> :OUTPUT ACCEPT [68:4275]
 >
-> One of my original ip addresses the isp has set for routing the new
-> block. Lets say 192.168.0.7. Network ip would be 192.168.1.64, and
-> broadcast ip at 192.168.1.71.
+> *mangle
+>
+> :PREROUTING ACCEPT [18365:3221456]
+> :INPUT ACCEPT [10886:760348]
+> :FORWARD ACCEPT [7269:2438049]
+> :OUTPUT ACCEPT [8009:752540]
+> :POSTROUTING ACCEPT [15177:3182145]
+>
+> *filter
+>
+> :INPUT ACCEPT [0:229546]
+> :FORWARD ACCEPT [363:1553786]
+> :OUTPUT ACCEPT [2:619341]
 
-I don't quite understand what you mean by this - can you explain in more 
-detail please ?
+I find this interesting - you have a default ACCEPT policy on all your chains 
+- specifically on FORWARD, and I cannot see any rules you have included which 
+DROP or REJECT packets..... so is there really any filtering going on in your 
+firewall, or is it in fact just an open router doing some network address 
+translation !?
 
-> Now since they have different subnets, anyone know how I get one to
-> route to another. Do I need a get a hardware router or is there a way to
-> do it on redhat 7.2/7.3?
+I know this doesn't exactly solve your problem, but I wonder if it means the 
+problem isn't on your firewall ?
 
-If you have a Linux box with two network cards, then you already have a 
-hardware router :-)
+Perhaps you could check the routing table on your SMTP server - what does it 
+have for a default gateway address ?
 
 
 Antony.
