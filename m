@@ -1,13 +1,11 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: iptables rpm for suse
-Date: Tue, 23 Mar 2004 07:12:48 +0200
+From: Leopold Aichinger <leai@utanet.at>
+Subject: cat /proc/ip_conntrack produces kernel panic
+Date: Tue, 23 Mar 2004 09:57:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080018767.2387.5.camel@raylinux.internal>
-References: <000601c41094$e6cceb50$0464a8c0@stu>
+Message-ID: <405FFBF3.9060005@utanet.at>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-mAecMt60zPFXkpHny2bF"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000601c41094$e6cceb50$0464a8c0@stu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +15,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+Hallo to all netfilter-users
+
+on my Redhat8 box I use the 2.4.25 pristine Kernel with freeswan-2.05
+patch included (but the freeswan feature I don't use - this is only for
+future plans)
+The kernel is monolithic with all netfilter-features included which come
+with this kernel version.
+
+If I login as root with ssh and do a
+cat /proc/net/ip_conntrack
+the machine freeze and I get a kernel panic.
+(What's real strange: I cannot reproduce this error - sometime the
+kernel panic and sometime not).
+What I definitly can say: You must be logged in remotly with ssh and
+do a cat ip_conntrack. If I logged in on the machine directly
+doing cat /proc/net/ip_conntrack I had never a problem.
+
+When I used kernel 2.4.22-pre10 I had the same problem but I could
+always reproduce the panic only by login per ssh and doing the cat
+This was the reason why I upgraded to a newer kernel.
+
+What I am interested in:
+Is there anybody who had the same problem ?
+Which kernel did/does he/she use? (version, modular, monolithic, ...)
+
+Perhaps some useful informations:
+
+ip_conntrack_max = 16384
+(but typically I don't have more than 1200-1400 entries, and I think
+that the machine never reached more than 2000 entries)
+
+uname -a
+Linux fw 2.4.25.#1 SMP Thu Feb 19 15:30:36 CET 2004 i686 i686 i386 GNU/Linux
+
+mem: 1550948 total
+
+there is squid running on the machine.
+(its the only mem and cpu comsuming application running beside my
+firewall-rules)
+
+iptables -nL | wc -l
+412
+
+uptime
+9:44am up 2:08, 1 user, load average: 0.10, 0.15, 0.10
+
+thx for every reply
+
+leopold aichinger
 
 
---=-mAecMt60zPFXkpHny2bF
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2004-03-23 at 07:08, Stuart Lamble wrote:
-> Hello netfilter group
-> =20
-> Does anyone know if there is a suse rpm download for the latest
-> iptables somewhere on the net?
-Have you tried the suse ftp server : ftp://ftp.suse.com/
 
-> =20
-> =20
-> Thanks
-> Stuart
-> =20
-> =20
->=20
->=20
-> ---
-> Outgoing mail is certified Virus Free.
-> Checked by AVG anti-virus system (http://www.grisoft.com).
-> Version: 6.0.638 / Virus Database: 409 - Release Date: 3/21/2004
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
 
---=-mAecMt60zPFXkpHny2bF
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQBAX8dPh1fuR/Bv+ygRAn+iAJ9ydAMdBM08aCt9pVdGI0+93Te8VgCcDyaz
-bKN0TZaANvgHHZSkJGdVomM=
-=Lny5
------END PGP SIGNATURE-----
 
---=-mAecMt60zPFXkpHny2bF--
+
 
 
