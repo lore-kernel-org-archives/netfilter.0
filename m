@@ -1,12 +1,12 @@
-From: "Leonardo Santagostini" <lsantagostini@celletech.com.ar>
-Subject: A question and a little ascii art
-Date: Thu, 16 Oct 2003 13:26:44 -0300
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: A question and a little ascii art
+Date: Thu, 16 Oct 2003 18:47:23 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000e01c39402$49e648e0$1900a8c0@celletech.com.ar>
+Message-ID: <Pine.LNX.4.51.0310161843410.2162@dns.toxicfilms.tv>
+References: <000e01c39402$49e648e0$1900a8c0@celletech.com.ar>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000F_01C393E9.249910E0"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000e01c39402$49e648e0$1900a8c0@celletech.com.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,130 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_000F_01C393E9.249910E0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Leonardo Santagostini <lsantagostini@celletech.com.ar>
+Cc: netfilter@lists.netfilter.org
 
+> But on the LAN side (162.168.0.0) i cant see the app pointing to
+> 200.68.69.xxx:15000
+Not :15000, follow this:
 
+Some host A(a.b.c.d) asks 200.68.69.1 asks for a connection, we see this:
 
-Here is my litle ascii art :-|
+1. Start connection:
+	a.b.c.d:1025 -> 200.68.69.1:15000
 
-        internet
-           |  ____________200.68.69.xxx
-           | /
-       firewall
-           | \________192.168.0.254
-       ---------------------------
-       |                         |
-192.168.0.1      192.168.0.25
+2. Do NAT:
+	200.68.69.1:15000 -> 192.168.0.1:80
 
+3. 192.168.0.1 sends the reply, you should see:
+	192.168.0.1:80 -> a.b.c.d:1025
 
-In the 192.168.0.1 i'm publishing some app made in home at port 80
-But on the public ip of mi FW im publishing my web page too
-The question is:
-I can view my app on 192.168.0.1 trough the following rule
-    iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 15000 -j DNAT
---to 192.168.0.1:80 
-But on the LAN side (162.168.0.0) i cant see the app pointing to
-200.68.69.xxx:15000
+So you won't see packets destined for the firewall with port 15000,
+but you'd rather see packets that are destined for a.b.c.d:1025
 
-Any idea, suggestion ???
+By 1025 I mean a random high port that will be the clientside port
+for that particular connection.
 
-Thanks in avance,
-Yours,
-Leonardo
-
-------=_NextPart_000_000F_01C393E9.249910E0
-Content-Type: text/html;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.4630.0">
-<TITLE>A question and a little ascii art</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
-<BR>
-<BR>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Here is my litle ascii art :-|</FONT>
-</P>
-
-<P><FONT SIZE=3D2 =
-FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-internet</FONT>
-
-<BR><FONT SIZE=3D2 =
-FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p; |&nbsp; ____________200.68.69.xxx</FONT>
-
-<BR><FONT SIZE=3D2 =
-FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p; | /</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-firewall</FONT>
-
-<BR><FONT SIZE=3D2 =
-FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p; | \________192.168.0.254</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
----------------------------</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-|</FONT>
-
-<BR><FONT SIZE=3D2 =
-FACE=3D"Arial">192.168.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-192.168.0.25</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">In the 192.168.0.1 i'm publishing some =
-app made in home at port 80</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">But on the public ip of mi FW im =
-publishing my web page too</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">The question is:</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">I can view my app on 192.168.0.1 =
-trough the following rule</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;&nbsp;&nbsp; iptables -t nat -A =
-PREROUTING -p tcp -i eth0 --dport 15000 -j DNAT --to 192.168.0.1:80 =
-</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">But on the LAN side (162.168.0.0) i =
-cant see the app pointing to 200.68.69.xxx:15000</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Any idea, suggestion ???</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Thanks in avance,</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Yours,</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Leonardo</FONT>
-</P>
-
-</BODY>
-</HTML>
-------=_NextPart_000_000F_01C393E9.249910E0--
+Regards,
+Maciej
 
 
