@@ -1,11 +1,13 @@
-From: =?iso-8859-1?q?Luis=20GUSTAVO?= <lgpcf@yahoo.com.br>
-Subject: MSN audio
-Date: Mon, 7 Jun 2004 18:29:42 -0300 (ART)
+From: Filip Sneppe <filip.sneppe@uptime.be>
+Subject: Re: Knowing thy enemy - #1 - MS ISA Server - SSL-to-SSL bridging
+Date: Tue, 08 Jun 2004 00:30:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040607212942.9641.qmail@web50206.mail.yahoo.com>
+Message-ID: <1086647456.1396.3.camel@exile>
+References: <7C9884991ADAE0479C14F10C858BCDF591E330@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E330@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,39 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Daniel Chemko <dchemko@smgtec.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi people,
+Hi Daniel,
 
+On Mon, 2004-06-07 at 23:04, Daniel Chemko wrote:
+> I thought it'd be a nice idea to keep up to date on what other firewall
+> platforms can do in order to compare them to current OSS solutions.
+> 
+> Overview
+> Today, I present Microsoft ISA server 2000's feature called SSL-to-SSL
+> bridging. It is a Layer 7 feature which handles server side transparent
+> SSL filtering/tunneling, but with a price. 
+> 
+Apache2 with mod_ssl, mod_rewrite and mod_proxy has been able to do
+that - and more - for a very long time, without the price tag of MS ISA
+server.
 
-I want use msn 6.2 audio, and i don=B4t know.
-I share my conection with iptables and i don=B4t block
-any ports.
-
-
-what happened?
-
-
-thank you
-
-=3D=3D=3D=3D=3D
-
-Luis GUSTAVO         lgpcf@yahoo.com.br
-+55 (21) 9891-3560   =20
----------------------------------------------------------------------------=
-------
-=20
+Regards,
+Filip
 
 
-
-
-
-
-
-
-______________________________________________________________________
-
-Yahoo! Messenger - Fale com seus amigos online. Instale agora!=20
-http://br.download.yahoo.com/messenger/
 
