@@ -1,12 +1,13 @@
-From: "Troy L. Mayes" <troy@mayesnet.net>
-Subject: Outgoing IP's
-Date: Fri, 5 Sep 2003 12:27:24 -0400
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: Article on Firewalls
+Date: Fri, 05 Sep 2003 12:40:09 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <421F17AAEED10C4ABD00F2875BD87B5429CA@kingkong.mayesnet.net>
+Message-ID: <3F58BC69.7020704@Loudoun-Fairfax.com>
+References: <3F58B846.4050701@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <3F58B846.4050701@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-OK, the Executive summary.... In a nutshell, I am trying to channel a
-single (or multiple) internal host request through a Squid server, and
-then have the Squid Svr send it's packets out 10 IP's (virtual
-interfaces eth0:1 - eth0:10), round-robin fashion.  We are a legitimate
-business specializing in security investigations.
+I goofed, try this one:
 
-Our company is trying to rotate all traffic outbound from the Squid Svr
-using multiple IP's (about 12).  Both iptables and Squid are on the same
-computer. Tried using the Squid tcp_outgoing_address, with no luck.
-This is not a normal situation, thus the requirement for using multiple
-outbound IP addresses.
+http://ct.com.com/click?q=15-mYP_IGcgljpbJwCtkAToEF59qGdR
 
-In the past we used sites such as multiproxy, and others.  Most of these
-sites no longer allow our type of activity.  Also, we needed anonymity
-of our HTTP traffic, thus the use of a our own proxy.  The users of the
-proxy are at a different physical location (corp) than the physical
-proxy.  The users tunnel in, and the proxy handles the request from
-there.  The proxy is sitting behind a PIX.  The proxy has been assigned
-10 IP's from the 172.16.x.x block, with 1 IP being used for the incoming
-request.  These IP's are statically mapped by the PIX to 10 routable
-IP's. =20
+Jeffrey Laramie wrote:
 
-For anybody that reads this, and responds, thanks in advance for your
-help and advice.
+> Hi all,
+>
+> This is an interesting article that discusses the challenges we face 
+> as users and developers of iptables. The premise of the article is 
+> that when you combine all the ports a modern PC user needs open with 
+> software that "hijacks" standard ports for other uses, you end up with 
+> a perimeter firewall that has little value. Ouch!
+>
+> <http://ct.com.com/click?q=15-mYP_IGcgljpbJwCtkAToEF59qGdR>http://ct.com.com/click?q=15-mYP_IGcgljpbJwCtkAToEF59qGdR 
+>
+>
+> Jeff
+>
+>
 
 
