@@ -1,8 +1,8 @@
 From: "Federico Cruciani" <f.cruciani@oxys.it>
-Subject: Iptables Nat Problem
-Date: Sat, 1 Feb 2003 18:12:09 +0100
+Subject: 1:1 NAT
+Date: Sat, 1 Feb 2003 19:20:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c2ca15$12d750e0$0a00a8c0@oxys.lan>
+Message-ID: <000101c2ca1e$8c3b6e90$0a00a8c0@oxys.lan>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,100 +17,70 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: pablo@lacnic.net
 
-> Hi,=20
->
->
-> Have a 200.40.226.64 /28 net *public NET
-> have a 192.168.1.0 /24 net *private NET
->
-> have a 200.40.226.66 server running iptables * Is the gateway
->
-> have a VoIp box THIS is the PROBLEM.
-> i need to put behind the firewall and have the address 192.168.1.33 =
-but
-> i need to go outside with 200.40.226.69 and received external =
-requirements
-> with this ip but iptables not function for me. i Put this lines but =
-dont
-> work i need Route? or something else???
->
->
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->.
->.
->.
->
-> iptables -t nat -A POSTROUTING -s 192.168.1.33/255.255.255.255 -o eth0
-> -j SNAT --to 200.40.226.70
->
-> iptables -t nat -A PREROUTING  -s 200.40.226.70/255.255.255.255 -i =
-eth0
-> -j DNAT --to 192.168.1.33
->
-> ## When i put this lines the conecction for .33 down. if possible to
-> need some instructions, for route this to my gateway??? #.
-> .
->.
->.
-> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> iptables -A FORWARD -j ACCEPT -i eth0 -o eth0 -d 0/0
->
->
-> Any help me???? please?
->--=20
->
->Pablo Allietti
->
->LACNIC=20
->
+> What I am trying to do is like how its done on cisco PIX i.e
+> "static (inside,outside) 208.15.232.12 192.168.1.167 netmask
+255.255.255.255
+> 0 0"	=09
 
-I suppose you have a problem with "proxy-arp".
-Your iptables box does not have any interface, physical nor virtual, =
-with
-the address 200.40.226.70 assigned. As I can understand from your =
-message
-the only address assigned on the external side of your iptables box is
-200.40.226.69.
-In this scenario, you need a router in front of your iptables box with a
-static route which directs packet for 200.40.226.70 on your external
-address.
-It could be necessary, or it could be a valid alternative solution, to
-announce via arp the address 200.40.226.70 associated with the mac =
-address
-of your external gateway. To get a working proxy-arp on Linux you have =
-to
-complete two steps:
+Cisco PIX does proxy-arp automatically if the external IP address in the =
+nat
+statement is not assigned on its outside interface. So, to build =
+something
+similar, what you need is to activate proxy-arp on your Iptables box and
+publish on the external network the public IP address you want to nat =
+which
+are not physically assigned on the iptables box.
 
-- first, publish via arp the address on your external interface. =
-Supposing
-that eth0 is your external interface and eth1 your internal interface, =
+Following your example, suppose that your iptables Linux box have an
+<fw_outside_address> on the external interface, eth0, different from the =
+one
+you want to nat, <public_address> (which is 208.15.232.12 in your =
+example),
+to an host in your internal network which has <internal_address>. Eth1 =
+is
+the firewall internal  interface with address <fw_internal_address>.
+
+First you need two iptables rules, one for inbound packets and one for
+translating outbound packets:
+
+ iptables -t nat -A PREROUTING -i eth0 -d <public_address> -j DNAT
+--to-destination <internal_address>
+
+ iptables -t nat -A POSTROUTING -o eth0 -s <internal_address> -j SNAT
+--to-source <public_address>
+
+This is not sufficient for Linux and iptables to make the =
+<internal_address>
+host work on the internet as expected. We have to add commands to =
+activate
+proxy arp and to tell your firewall where the packets for =
+<public_address>
+have to be sent.
+
+
+So, in the second step we have to pubilsh the <public_address> on the
+external interface with the arp command:
+
+ arp -Ds <public_address> eth0 pub
+
+(If you like, I have a patched version of the Red Hat =
+/etc/init.d/network
+script which read and set static ARPs from a file, =
+/etc/init.d/static-arp)
+
+
+Finally the most important step consists in adding a static route on the
+iptables box for the <public_address> toward the inside interface where =
 the
-command is:
- arp -Ds 200.40.226.70 eth0 pub
+internal host live:
 
-- second, put a static route for the address to proxy toward the =
-internal
-network in which the natted host is. So, for you:
- route add -host 200.40.226.70 dev eth1
+ route add -host <public_address> dev eth1
 
-(The second step could be necessary even if you have a router in front =
-of
-your box with the correct routes).
 
-I have a patched version of the /etc/init.d/network script for Red Hat =
-Linux
-which read the ARP's to publish from a file (/etc/sysconfig/static-arp)
-whenever the network or the PC is started or restarted. It's a "working"
-patch, so if you are using RH and think my patch could be useful for =
-you,
-write me and I'll send it to you.
-On RH you can put the static route in /etc/sysconfig/static-routes to =
-have
-it applied every time you start your PC or the network.=20
-
-Let me know if this could help you.
+This is the solution I have found working and that I'm using in a lot of
+different network scenarios.
+Hope this could help you.
 
 Iok
 
