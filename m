@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: tc and iptables
-Date: 16 Dec 2002 11:15:09 +0100
+From: Roberto Nibali <ratz@tac.ch>
+Subject: Re: Iptables Log - session Log
+Date: Mon, 16 Dec 2002 12:04:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040033709.11898.11.camel@elendil.intranet.cartel-securite.net>
-References: <3DF6C4D3.6040109@deeeproot.co.in>
+Message-ID: <3DFDB331.4040101@tac.ch>
+References: <10887.1039682956@www54.gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DF6C4D3.6040109@deeeproot.co.in>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: nimit <nimit@deeeproot.co.in>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: =?ISO-8859-1?Q?Jens_K=FChlberg?= <jn_k@gmx.de>
 Cc: netfilter@lists.netfilter.org
 
-Le mer 11/12/2002 =E0 05:53, nimit a =E9crit :
-> 	i am new to netfilter, just learning to use iptables and tc, but i am=20
-> not clear which one is more suitable for bytelimiting purpose.
+> I looking for a tool, witch can analyse iptales logs and show me only
+> connections-session in realtime and not the complete IP-traffic.
 
-Well... See LARTC at http://lartc.org/...
+Define 'realtime' in the context of logging filtered traffic flows. I hear it 
+everywhere but people mostly seem to have a strange view about that, especially 
+when it comes to IDS.
 
-Netfilter is a packet filter, which is suitable for filtering network
-flows.
-tc is a traffic control utility, which is suitable for controling
-traffic behaviour, so bytelimiting purposes.
+I presume that you'd like to log:
 
-Netfilter's limit match is _not_ suitable for traffic shaping, as said
-in Filtergin HOWTO.
+o session start packet (entering conntrack table with its own timer)
+o session end packet (lifetime defined through TSM of the conntrack core)
+o session time (endlife packet time - packet entering time)
+o session stats
+   - total amount of bytes per session
+   - total amount of packets per session
+   - whatever conntrack has to give us and is interesting ;)
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+If so, in the beginning of next year (probably February) I will release a new 
+target for netfilter called SLOG, which stands for session log. It was done 
+exactly for this purpose and because logging anything else then sessions in most 
+of the cases doesn't make too much sense (we have IDS doing that for example).
+
+I need to rework and fix some issues of the initial work that has been done by 
+Roman Hoog Antink as a contract work for our company in conjunction with his 
+semester thesis at uni. An outstanding thing for example is the usage of 
+ctnetlink, which still seems to have quite a few rough edges.
+
+Best regards,
+Roberto Nibali, ratz
+-- 
+echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' | dc
+
 
