@@ -1,13 +1,13 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Performance Monitoring
-Date: Fri, 9 Jan 2004 19:04:19 -0500
+From: Peter Schobel <pschobel@porchlight.ca>
+Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
+Date: Fri, 9 Jan 2004 21:08:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040110000419.GA25191@cannon.eng.us.uu.net>
-References: <004401c3d17c$4baa7cc0$0a01000a@xcom1> <3FF9E4B7.8010109@lintelsys.com.au> <011001c3d3f8$6a6a7e20$7700000a@lawrencewin2k> <3FFA33C7.9010806@lintelsys.com.au> <20040106033802.30955.qmail@paus.pesat.net.id> <20040105230233.27d84a49.michael@bluesuperman.com>
-Mime-Version: 1.0
+Message-ID: <F41C404D-4311-11D8-AFEE-000393677A36@porchlight.ca>
+References: <200401082133.38574.Alistair Tonner <>
+Mime-Version: 1.0 (Apple Message framework v553)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040105230233.27d84a49.michael@bluesuperman.com>
+In-Reply-To: <200401082133.38574.Alistair Tonner <>>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,27 +17,120 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Michael Gale <michael@bluesuperman.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Mon, Jan 05, 2004 at 11:02:33PM -0700, Michael Gale wrote:
+ok, I removed the error line and the cat autoconf line from the 
+config.h and got iptables 1.2.9 to compile against my kernel source and 
+headers and reinstalled
 
-> 
-> Hello,
-> 
-> 	Even if you have a script that creates the chains for each IP .. if you
-> use all the IP's from .1 to .250. Then a packet will have to be compared
-> to 249 chains before if matches a chain if it is from or to IP .250.
+if i turn on ip_forward and try to access external sites, i get 
+forwarded through to the external page without problem
 
-One can come up with a btree which should reduce the worst case lookup to a max
-of 8 lookups for a /24.
+if i enable the iptables rule
 
-Ramin
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
+--to-port 3128
 
-> 
-> This is not good.
-> 
-> Michael.
+my pages just time out when i try to access external sites
+
+but if i try to access the proxyhost directly using http, it redirects 
+me to the proxy site without problem
+
+i get exactly the same results using this rule
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT 
+--to-destination $LOCALHOST:3128
+
+does anyone have any idea why traffic destined for external sites will 
+not transparently redirect to squid for me?
+
+does anyone have any idea as to what further steps I can take to 
+troubleshoot this problem?
+
+Thx in advance,
+
+Peter Schobel
+
+On Thursday, January 8, 2004, at 09:33  PM, Alistair Tonner wrote:
+
+> On January 8, 2004 03:05 pm, Peter Schobel wrote:
+>> ok, I downloaded the source ball for iptables 1.2.9, and compiled 
+>> using
+>>
+>> make KERNEL_DIR=/usr/src/linux-2.6.0-1.107
+>>
+>> i got an error from config.h telling me to use the glibc version so i
+>> symlinked /usr/src/linux-2.6.0-1.107 to /usr/include/linux/config.h
+>>
+>> then i compiled successfully and installed using
+>>
+>> make install KERNEL_DIR=/usr/src/linux-2.6.0-1.107
+>>
+>> without incident
+>>
+>> i checked the timestamp on the iptables binary to make sure that it 
+>> had
+>> been overwritten
+>>
+>> I rmmod'd all the iptables modules and then reloaded my iptables rule
+>>
+>> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
+>> --to-port 3128
+>>
+>
+> 	Ummm ... I don't understand where the error came from.... I'm using a 
+> slackware based box with many upgrades
+> 	(gcc glibc binutils and modutils....) my switch from 2.4.23 to 2.6.0 
+> required a binutils and modutils
+> 	upgrade FIRST -- I would hope that RPM dependencies are in place to 
+> enforce this as it will likely
+> 	apply to your situation ... when I rebuilt iptables source it went 
+> painlessly --- no error from config.h.
+>
+> 	I *DONT* like the relink .. I've a feeling this will break some 
+> inportant defines....
+> 	
+> 	what do you get for modprobe --version and ld -v ?
+> 	I suspect your modutils is incorrect for 2.6.0
+>
+>> lsmod gives me
+>>
+>> Module                  Size  Used by
+>> ipt_REDIRECT            2048  1
+>> iptable_nat            20140  2 ipt_REDIRECT
+>> ip_tables              15104  2 ipt_REDIRECT,iptable_nat
+>> ip_conntrack           28464  2 ipt_REDIRECT,iptable_nat
+>>
+>> iptables -t nat -L gives me
+>>
+>> Chain PREROUTING (policy ACCEPT)
+>> target     prot opt source               destination
+>> REDIRECT   tcp  --  anywhere             anywhere            tcp
+>> dpt:http redir ports 3128
+>>
+>> Chain POSTROUTING (policy ACCEPT)
+>> target     prot opt source               destination
+>>
+>> Chain OUTPUT (policy ACCEPT)
+>> target     prot opt source               destination
+>>
+>> testing it reveals that it is still not working - did i do anything
+>> wrong in the above steps? what further steps would you recommend to
+>> troubleshoot this problem?
+>>
+>> Peter Schobel
+>> ~
+>
+>
+*****************************
+Peter Schobel
+Network Administrator
+Porchlight.ca
+Unlimited Internet
+*****************************
+In a world without walls or fences
+We will have no need for gates or windows
+*****************************
+
 
