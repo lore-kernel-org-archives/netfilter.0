@@ -1,8 +1,8 @@
 From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
 Subject: RE: shorewall
-Date: Mon, 8 Sep 2003 19:08:38 +0800
+Date: Mon, 8 Sep 2003 19:15:49 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8CB3@overlord.overturemedia.com>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8CB4@overlord.overturemedia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,13 +17,10 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Gavin Hamill <gdh@acentral.co.uk>, netfilter@lists.netfilter.org
+To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
 
 
-Thanks Gavin!
-My iptables script works for securing our network.=20
-It just doesn't work when I want to open up a small routing to an =
-internal web server. :D Too much restriction as some said.
+Thanks Arnt!!! I appreciate it!
 
 
 fritz <www.mesedilla.com>
@@ -33,31 +30,39 @@ fritz <www.mesedilla.com>
 
 
 > -----Original Message-----
-> From: Gavin Hamill [mailto:gdh@acentral.co.uk]
-> Sent: Monday, September 08, 2003 5:52 PM
+> From: Arnt Karlsen [mailto:arnt@c2i.net]
+> Sent: Monday, September 08, 2003 7:09 PM
 > To: netfilter@lists.netfilter.org
 > Subject: Re: shorewall
 >=20
 >=20
-> On Monday 08 September 2003 10:26, Fritz Mesedilla wrote:
-> > Has anybody used shorewall? If I try shorewall to fix my=20
-> nat problem (make
-> > it easier) and still does not work, will I be able to=20
-> disable shorewall and
-> > implement a manual setup of iptables again?
+> On Mon, 8 Sep 2003 17:26:10 +0800,=20
+> "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com> wrote=20
+> in message=20
+> <F22386C3FEB012449238672E38ED61E70A8CB0@overlord.overturemedia.com>:
+> >=20
+> > Has anybody used shorewall?=20
 >=20
-> Shorewall is just a set of scripts to try and make managing=20
-> netfilter a little=20
-> easier. All it does it generate lots of 'iptables'=20
-> commandlines based on=20
-> values you plug into /etc/shorewall/*
+> ..yup.
 >=20
-> If you decide you don't like it, simply delete the script=20
-> files, and do=20
-> iptables -F ; iptables -X to clean everything out...
+> > If I try shorewall to fix my nat problem (make it easier) and still
+> > does not work, will I be able to disable shorewall and implement a
+> > manual setup of iptables again?
 >=20
-> Cheers,
-> Gavin.
+> ..yup.
+>=20
+> ..check out http://webmin.com/ ,   has a neat shorewall module.
+>=20
+> ..also check out ipcop-1.3.0 at http://ipcop.org/ is a firewall=20
+> distro with proxy server, 5 minute setup time, a good tutor=20
+> towards shorewall.
+>=20
+> --=20
+> ..med vennlig hilsen =3D with Kind Regards from Arnt... ;-)
+> ...with a number of polar bear hunters in his ancestry...
+>   Scenarios always come in sets of three:=20
+>   best case, worst case, and just in case.
+>=20
 >=20
 >=20
 
