@@ -1,9 +1,12 @@
-From: Gudmundur Arnljotsson <gudmundur@insl.co.nz>
-Subject: pptp pom patch rules
-Date: Fri, 18 Mar 2005 13:34:34 +1300
-Message-ID: <423A221A.5020907@insl.co.nz>
+From: Moritz Gartenmeister <moritz.gartenmeister@access.unizh.ch>
+Subject: Re: dummy target?
+Date: Fri, 18 Mar 2005 15:52:25 +0100
+Message-ID: <423AEB29.1070209@access.unizh.ch>
+References: <423ADBAC.4020406@uplink-verein.ch>
+	<20050318144126.GA2604@zion.homelinux.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050318144126.GA2604@zion.homelinux.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,65 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-Hi list
+Hi all
 
-I have successfully recompiled my kernel 2.4.21 with newest pptp pom 
-patch and complied and installed newest iptables so I can masquerade 
-multiple outgoing pptp connection. My old kernel only supported 1 
-connection at the time
-
-My system is SuSE Standard server 8 with 2 nic
-
-For allowing incoming pptp I have this rules in my SuSEfirewall2-custom file
-
-iptables -A INPUT -i ppp+ -j ACCEPT
-iptables -A FORWARD -i ppp+ -j ACCEPT
-iptables -A FORWARD -o ppp+ -j ACCEPT
-
-So the question is what rules do I need for the new functionality and 
-where should I put them (you know SuSE has it own ways of doing things 
-making it very hard to use and apply general Linux documentations)
-
-If it is to any help, here are my firewall settings
-FW_DEV_EXT="eth1 ppp+"
-FW_DEV_INT="eth0"
-FW_DEV_DMZ=""
-
-FW_ROUTE="yes"
-FW_MASQUERADE="yes"
-FW_MASQ_DEV="$FW_DEV_EXT"
-
-FW_MASQ_NETS="192.168.50.0/24,xxx.xxx.xxx.xxx/24"
-FW_PROTECT_FROM_INTERNAL="no"
-FW_AUTOPROTECT_SERVICES="yes"
-FW_SERVICES_EXT_TCP="1723 imaps smtp"
-FW_SERVICES_EXT_UDP=""
-FW_SERVICES_EXT_IP="gre"
-FW_SERVICES_INT_TCP="1723"
-FW_SERVICES_INT_UDP=""
-FW_SERVICES_INT_IP="gre"
-FW_TRUSTED_NETS=""
-FW_ALLOW_INCOMING_HIGHPORTS_TCP="yes"
-FW_ALLOW_INCOMING_HIGHPORTS_UDP="yes"
-FW_SERVICE_AUTODETECT="no"
-FW_SERVICE_DNS="yes"
-FW_SERVICE_DHCLIENT="auto"
-FW_SERVICE_DHCPD="yes"
-FW_SERVICE_SQUID="yes"
-FW_SERVICE_SAMBA="yes"
-FW_FORWARD=""
-FW_FORWARD_MASQ=""
-FW_REDIRECT="192.168.50.0/255.255.255.0,0/0,tcp,80,8080 \ 
-192.168.50.0/255.255.255.0,0/0,tcp,21,2121"
-
-
--- 
+Thanks for your (Sven and Steven) help!
 
 regards
+moritz
 
-Gudmundur Arnljotsson
-
-
+Sven Schuster wrote:
+> Hi Moritz,
+> 
+> On Fri, Mar 18, 2005 at 02:46:20PM +0100, Moritz Gartenmeister told us:
+> 
+>>hi all
+>>
+>>i want to use the counters for statistic stuff. i already have a working 
+>>example. but i want to get numbers for pakets, which i acutally have no 
+>>rule for (e.g. all incoming traffic).
+>>is there a dummy target? like:
+>>$IPTABLES -t mangle -A PREROUTING -m physdev --physdev-in $INET_IF -j DUMMY
+>>
+>>dummy target: do nothing, do not terminate, do just increment counters.
+> 
+> 
+> just don't provide the '-j TARGET' on the commandline, then you'll
+> have a rule (with its counters) which "does" nothing...
+> 
+> 
+> HTH
+> 
+> Sven
+> 
+> 
+>>cheers
+>>moritz
+>>
+>>
+> 
+> 
 
