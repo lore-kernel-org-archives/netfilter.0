@@ -1,12 +1,11 @@
-From: =?iso-8859-1?Q?Rosenda_Elisa_Zald=EDvar_Pupo?= <elisa@virtus.co.cu>
-Subject: Internet access
-Date: Wed, 5 Mar 2003 13:31:41 -0500
+From: =?iso-8859-1?q?honey=20grp?= <honeypict@yahoo.co.in>
+Subject: Problem Regarding Forwarding
+Date: Sun, 2 Mar 2003 21:05:29 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000e01c2e345$7747fbd0$0702a8c0@virtus.co.cu>
-Reply-To: =?iso-8859-1?Q?Rosenda_Elisa_Zald=EDvar_Pupo?= <elisa@virtus.co.cu>
+Message-ID: <20030302210529.74972.qmail@web8206.mail.in.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000B_01C2E31B.8E643830"
+Content-Type: multipart/alternative; boundary="0-1902419674-1046639129=:73668"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,47 +16,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+--0-1902419674-1046639129=:73668
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-------=_NextPart_000_000B_01C2E31B.8E643830
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-Hy:
+Hi,
 
-I need to granted internet access (ex: any IP) using java classes, does =
-anyone help me?
+I have my network setup as
 
-Greetings,
+                                            eth1-----------COMP B
 
-Elisa.
+Comp A ------eth0----Gateway---|
 
-------=_NextPart_000_000B_01C2E31B.8E643830
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+                                             eth2------------COMP C
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hy:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I need to granted internet access =
-(ex:&nbsp;any IP)=20
-using java classes, does anyone help me?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Greetings,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Elisa.</FONT></DIV></BODY></HTML>
+I want to  forward the traffic from CompA to both CompB as well as CompC. The problem is I want to keep same IP address for Both Comp B and Comp C. (I know there will be conflict but I am keeping CompB OFF when CompC is ON and vice versa).
 
-------=_NextPart_000_000B_01C2E31B.8E643830--
+Now, how should I write iptable rules so that traffic will be forwarded to both eth1 as well as eth2 so that the host that is ON will respond
 
+Thanking you,
+
+Regards,
+
+Honeypict group
+
+ 
+
+Catch all the cricket action. Download Yahoo! Score tracker
+--0-1902419674-1046639129=:73668
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+<P><FONT face=Verdana>Hi,</FONT></P>
+<P><FONT face=Verdana>I have my network setup as</FONT></P>
+<P><FONT face=Verdana>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eth1-----------COMP B</FONT></P>
+<P><FONT face=Verdana>Comp A ------eth0----Gateway---|</FONT></P>
+<P><FONT face=Verdana>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eth2------------COMP C</FONT></P>
+<P><FONT face=Verdana>I want to&nbsp; forward the&nbsp;traffic&nbsp;from CompA to both CompB as well as CompC. The problem is I want to keep same IP address for Both Comp B and Comp C. (I know there will be conflict but I am keeping CompB&nbsp;OFF when CompC is ON and vice versa).</FONT></P>
+<P><FONT face=Verdana>Now, how should I write iptable rules so that traffic will be forwarded to both eth1 as well as eth2 so that the host that is ON will respond</FONT></P>
+<P><FONT face=Verdana>Thanking you,</FONT></P>
+<P><FONT face=Verdana>Regards,</FONT></P>
+<P><FONT face=Verdana>Honeypict group</FONT></P>
+<P><FONT face=Verdana size=1></FONT>&nbsp;</P><p><img src="http://sg.yimg.com/i/aa/icons/28/cricket.gif" height=28 width=28>
+Catch all the cricket action. Download <a href="http://in.sports.yahoo.com/cricket/tracker.html" target="_blank">
+Yahoo! Score tracker</a>
+--0-1902419674-1046639129=:73668--
 
