@@ -1,11 +1,11 @@
-From: Jun Sun <jsun@junsun.net>
-Subject: figure out IP/port mapping in NAT
-Date: Wed, 25 Dec 2002 21:36:41 -0800
+From: "Paul" <andnicky@myrealbox.com>
+Subject: Re: RE: RE: Can iptables create alias IP for another box?
+Date: Mon, 23 Dec 2002 18:50:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021225213641.B2104@gateway.junsun.net>
+Message-ID: <1040687432.7b13a880andnicky@myrealbox.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,34 +16,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: rsterenborg@xs4all.nl
+Cc: netfilter@lists.netfilter.org, netfilter@newkirk.us
 
-I am using both DNAT and SNAT (ip masquerading) on a gateway machine connecting
-a private network and internet.  The DNAT is used to route all http traffic
-to a specific our own web server on the internet.
+No joy yet.
 
-Now I am facing an tough problem.  Once receving the http request, our
-own web server needs to know which machine in our private network 
-sends this request.
+Have new box B w/fully updated RH 7.3.  Uninstalled ipchains so iptables co=
+uld run.  Added rules shown below with 8080 changed to 80.  Rules are vis=
+ible in iptables -L -v. =20
 
-Since the web server knows which port on gateway machine is sending the
-request, if we know which private IP is mapped to that port, web server
-could query the gateway machine and obtain the private IP address of
-the requesting machine.
+But when I sniff the client attempting to browse http://10.5.6.7 from same =
+subnet, it's issuing SYNs with no reply. Same whether httpd is up/down on=
+ 10.5.6.7.  Client can ping both B and A no problem.
 
-Does anybody know how to figure out this private IP to gateway out-going
-port mapping?
+Should netstat -an show listening on 80?  Am I missing a fundamental settin=
+g that determines whether linux will forward packets at all?  This box ha=
+s an eth1 that's down...would it help to remove it?  Or connect it?!  Dis=
+abling wccp redirection on the router to the webcache doesn't help...clie=
+nt and B are in same subnet anyway.
 
-Assuming this solution works, it does require extra round of traffic
-between the server and gateway machine.  I wonder if there are any
-better solutions.  For example, if we can somehow "tag" the http
-packets when the gateway re-routes them to our web server and somehow
-our server can "read" the tag, things will be solved in a much more
-elegant way.
+Is nothing simple :-0 ?
 
-Thanks for any pointers.  Please cc your reply to my email address
-as I am not on the mailing list yet.
+Paul
 
-Jun
+-----Original Message-----
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+To: <netfilter@lists.netfilter.org>
+Date: Mon, 23 Dec 2002 08:46:31 +0100=20
+Subject: RE: RE: Can iptables create alias IP for another box?
+
+> > Port 80 : webserver ?
+> > Port 8080 : web-proxy ?
+> 
+> Don't need 8080 if iptables on B can do:
+> 
+>   client(tcp/80)--> boxB--> boxA--> boxB--> client
+
+Sure.
+
+> I'd try :
+> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> iptables -A FORWARD -d 1.2.3.4 -p tcp --dport 80 -j ACCEPT
+> iptables -t nat -A PREROUTING -d 10.5.6.7 -p tcp --dport 
+> 8080 -j DNAT --to-destination 1.2.3.4:80
+
+Change 8080 into 80.
+
+> A & B have one interface each, on different subnets routed to each other.
+
+Well, if A can see B (and vice-versa) there hould be no problem I think.
+
+
+Rob
+
+
+
+
+
 
