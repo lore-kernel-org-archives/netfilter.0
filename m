@@ -1,13 +1,12 @@
-From: Andrew Beekhof <beekhof@gmail.com>
-Subject: Re: Masquerade difficulties
-Date: Sat, 8 Jan 2005 11:03:22 +0100
-Message-ID: <26ef5e7050108020312386f9c@mail.gmail.com>
-References: <20050107221238.GA10943@pog.tecnopolis.ca>
-Reply-To: Andrew Beekhof <beekhof@gmail.com>
+From: "mdpeters" <michael.peters@lazarusalliance.com>
+Subject: Re: transparent bridge troubles?
+Date: Sat, 8 Jan 2005 07:12:21 -0500
+Message-ID: <00ac01c4f57b$4e0ddb50$3e0010ac@esonet18>
+References: <7C9884991ADAE0479C14F10C858BCDF591E3AC@alderaan.smgtec.com><005101c4f504$7be50f20$3e0010ac@esonet18><20050107221822.GA1569@bender.817west.com><006901c4f51a$b259a230$3e0010ac@esonet18><1105149657.3501.2.camel@hubcap.ljm.dom><00a701c4f535$a9415740$3e0010ac@esonet18>
+	<1105157748.3501.7.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050107221238.GA10943@pog.tecnopolis.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,81 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Trevor Cordes <trevor@tecnopolis.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
 
-On Fri, 7 Jan 2005 16:12:38 -0600, Trevor Cordes <trevor@tecnopolis.ca> wrote:
-> > I'm having some difficulties getting masquerading to work and hoping
-> > for some pointers...
+You have been a tremendous help. Thank you for helping me eliminate part of 
+the mystery.
+
+----- Original Message ----- 
+From: "Jason Opperisano" <opie@817west.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, January 07, 2005 11:15 PM
+Subject: Re: transparent bridge troubles?
+
+
+> On Fri, 2005-01-07 at 22:53, mdpeters wrote:
+>> Yes it did. Packets are flowing through with ACCEPT. So it is a problem 
+>> with
+>> QUEUE or something wrong with Snort-inline right?
+>>
+>> Snort-inline runs, and logs packets coming into the box but obviously the
+>> packets are not making it through.
+>
+> since snort-inline is seeing the packets--i would say that the QUEUE
+> part is working.  the fact the the packets don't make it out of the box
+> would point the finger towards a snort-inline problem.
+>
+> unfortunately--i don't know a thing about snort-inline; so i'm not of
+> much use anymore.
+>
+> -j
+>
+> --
+> "Call this an unfair generalization if you must, but old people are
+> no good at everything."
+> --The Simpsons
+>
+>
 > 
-> I can try to help.  But you'll need to better describe your network
-> layout.  Can you draw a little diagram showing where A, B & C are?
 
-Sure, A & B are connected directly to a netgear DSL modem/hub.  C is
-part of my company's network which I'm accessing over the internet
-with ipsec.  I've also tried replacing C with google.com (after
-specifying an appropriate routing rule) with no success.
-
-Does that clear things up?
-
-> 
-> Are you sure that BoxC doesn't have some firewall on (XP SP2) that is
-> eating the ping packets?
-
-XP? God no!  All the machines are linux boxes running either SLES9 or
-Gentoo :)  No firewall on B or C.
-
-From what I can tell, the packets from BoxB are getting lost on BoxA. 
-I just tried using telnet and tcpdump and although I get logs like
-this:
-
-Jan  8 08:35:55 BoxA IN=eth0 OUT=eth0 SRC=192.168.9.22 DST=10.10.2.86
-LEN=60 TOS=0x10 PREC=0x00 TTL=63 ID=48952 DF PROTO=TCP SPT=34452
-DPT=69 WINDOW=3840 RES=0x00 SYN URGP=0
-
-... the packets never actually arrive at BoxC (10.10.2.86).  I dont
-think they ever leave BoxA but I'm not sure I understand the tcpdump
-output enough to say for sure.
-
-A dump of my iptables in case it helps...
-
-mayo linux # iptables -L -t nat
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination         
-LOG        all  --  anywhere             anywhere            LOG level warning 
-MASQUERADE  all  --  anywhere             anywhere            
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-mayo linux # iptables -L -t filter
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-mayo linux # iptables -L -t mangle
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination         
-LOG        all  --  anywhere             anywhere            LOG level debug 
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
 
