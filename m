@@ -1,12 +1,13 @@
-From: Daniel Letkiewicz <dletkiew@pleple.ict.pwr.wroc.pl>
-Subject: High Availability question
-Date: Tue, 2 Jul 2002 16:25:59 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: High Availability question
+Date: Tue, 2 Jul 2002 15:36:23 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020702162559.B13687@pleple.ict.pwr.wroc.pl>
-Reply-To: dletkiew@pleple.ict.pwr.wroc.pl
+Message-ID: <200207021436.g62EaUU26719@vulcan.rissington.net>
+References: <20020702162559.B13687@pleple.ict.pwr.wroc.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
+In-Reply-To: <20020702162559.B13687@pleple.ict.pwr.wroc.pl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,21 +18,26 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Hi,
+On Tuesday 02 July 2002 3:25 pm, Daniel Letkiewicz wrote:
 
-I'm wonnder if there are same ideas to exchange stateful information between
-to (or more) hosts (like in CheckPoint) to build HA enviroment. 
+> Hi,
+>
+> I'm wonnder if there are same ideas to exchange stateful information
+> between to (or more) hosts (like in CheckPoint) to build HA enviroment.
 
-Best regards,
+Try section 12 under:
 
--- 
- _____                                                
-(_   _`\_       Daniel Letkiewicz
- _| |_) )|      irc:aule icq:20985227 tel:(071)320-2499
-(______/ |___   e-mail: dletkiew@pleple.ict.pwr.wroc.pl 
-       (_____)
-                                                     
+http://netfilter.samba.org/documentation/events/netfilter-ws-2001-summary.txt
+
+If you do a Google search on "netfilter failover" you should get some useful 
+pointers to previous discussions & projects on this topic.
+
+Hope this helps (I hope someone else can say something even more helpful, 
+though - it's a topic I'm very interested in too !)
+
+ 
+
+Antony.
 
