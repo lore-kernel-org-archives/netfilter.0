@@ -1,10 +1,11 @@
-From: John Desmond <jmdroot-leaf@yahoo.com>
-Subject: Odd date field in netfilter logs
-Date: Wed, 28 Jul 2004 09:21:56 -0700 (PDT)
+From: Frans Luteijn <f.a.g.luteijn@knoware.nl>
+Subject: Re: bidirectional forwarding
+Date: Thu, 29 Jul 2004 07:04:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040728162156.59559.qmail@web14204.mail.yahoo.com>
-Reply-To: jmdroot-leaf@yahoo.com
+Message-ID: <4108855B.D7624DB2@knoware.nl>
+References: <D5C9032B2B09C64EA2409D6214E91AC90511FF@asimail2.alphanumeric.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,41 +17,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm using the LEAF firewall (Bering) and I see entries
-in my logs where the date field has been zeroed out,
-probably defaulting to 1/1/70 00:00:00 UTC, which then
-translates to 12/31/69 19:00:00 in my time zone.
+Jason Opperisano schreef:
 
-Here's a sample:
+> > PC1               R1           R2           R3           R4            PC2
+> > |---------------|   |-------|    |--------|   |--------|   |-----------|
+> > 192.168.10.2   .1  12.1    12.2 13.1     13.2 16.1    16.2 11.1       11.2
+> > e0             e0   e1     e0   e1        e0  e1       e0  e1          e0
+>
+> assuming:
+>
+>   default gw of pc1 is 10.1
+>   default gw of r1 is 12.2
+>
+>   default gw of pc2 is 11.1
+>   default gw of r4 is 16.1
+>
+> both r2 & r3 will need static routes telling them how to get to networks 10 and 11:
+>
+> on r2:
+>
+>   192.168.10.0/24 via 192.168.12.1
+>   192.168.11.0/24 via 192.168.13.2
 
-Jul 27 11:50:56 firewall Shorewall:net2all:DROP:
-IN=ppp0 OUT= MAC= SRC=219.150.118.21 DST=138.88.147.32
-LEN=1147 TOS=00 PREC=0x00 TTL=107 ID=60031 CE
-PROTO=UDP SPT=15008 DPT=1026 LEN=1127
-Dec 31 19:00:00 firewall Shorewall:all2all:REJECT: IN=
-OUT=eth1 MAC= SRC=192.168.1.254 DST=192.168.1.185
-LEN=331 TOS=00 PREC=0x00 TTL=64 ID=46672 CE DF
-PROTO=UDP SPT=67 DPT=68 LEN=311
-Dec 31 19:00:00 firewall Shorewall:all2all:REJECT: IN=
-OUT=eth1 MAC= SRC=192.168.1.254 DST=192.168.1.185
-LEN=331 TOS=00 PREC=0x00 TTL=64 ID=34851 CE DF
-PROTO=UDP SPT=67 DPT=68 LEN=311
-Jul 27 12:01:16 firewall Shorewall:net2all:DROP:
-IN=ppp0 OUT= MAC= SRC=218.78.209.68 DST=138.88.147.32
-LEN=1108 TOS=00 PREC=0x00 TTL=108 ID=48679 CE
-PROTO=UDP SPT=18585 DPT=1026 LEN=1088
+How cat r2 reach your 16-network? you will need to add a routing for
+that network to.
 
-It seems to happen only in REJECTs. Could this
-possibly be caused by a misconficuration? a bad
-iptable statement?
+>
+>
+> on r3:
+>
+>   192.168.10.0/24 via 192.168.13.1
+>   192.168.11.0/24 via 192.168.16.2
 
-I'm not the only one experiencing this. A google for
-these date strings shows that they are in a lot of
-logs.
+Same for r3, but now for your 12-network.
 
--John
+>
+>
+> the output of:
+>
+>   ip route get 192.168.10.2
+>   ip route get 192.168.11.2
+>
+> on r2 and r3 should clue you in to where the packets are going.
+>
+> HTH...
+>
+> -j
+
+Routingprotocols are designed for this kind of problem, to get this
+resolved
+automaticly. In this case you might look at zebra.
+
+Regards,
+--
+Frans Luteijn
+PGP PblKey fprnt=C4 87 CE AF BC B6 98 C1  EF 42 A1 9A E2 C0 42 5B
+GPG PblKey fprnt=ED20 0F25 C233 DC59 3FFA  170E D0BF 15F5 0BA6 1355
 
 
