@@ -1,14 +1,12 @@
-From: Alexey Talikov <alexey_talikov@texlab.com.uz>
-Subject: Re: PLs HELP !
-Date: Fri, 31 May 2002 09:13:55 +0500
+From: "shadha" <shadhanker@gmx.net>
+Subject: Re: netmeeting from msn messenger
+Date: Fri, 31 May 2002 10:39:52 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <XVQFCQNHBPO09ZUFD43212WRP2VYVJH.3cf6f883@ALEXEY>
-References: <3CF6F8A7.3010501@inbox.lv>
-Reply-To: alexey_talikov@texlab.com.uz
+Message-ID: <007901c20861$690f5e60$3b0110ac@kovaiteam>
+References: <001b01c206e1$52ccffd0$3b0110ac@kovaiteam> <1022703963.303.13.camel@cali>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CF6F8A7.3010501@inbox.lv>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,60 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org, Arindam Haldar <arindamhaldar@inbox.lv>
+Content-Type: text/plain; charset="us-ascii"
+To: Scott Waye <scott@boldtower.com>, netfilter@lists.samba.org
 
-This messages appear with traffic or not ??
+Hello Scott,
 
-31.05.2002 9:14:31, Arindam Haldar <arindamhaldar@inbox.lv> wrote:
+thanks for your reply, but How can i get the correct person if there is more
+than ip address behind
+NATing in remote.
 
->hi to u all again !
->i posted the below message yestreday... this log message keeps on commng 
->in the messages file EVERY 1min & hence is filing up the disc space 
->given for /var/log
->pls .. i need some direction in knowing what could be the possible 
->problem !..
->Thanking u all in advance...
->this is the message posted earlier.....
->
->hi all,
->i am getting these messages in my /var/log/messages..
->can someone tell me whats hapenning here..
->iptables v1.2.7-2--2-423 with  kernel 2.4.18 & patched htb3.3-020512 & 
->imq-2.4.18...
->May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840 
->&ip_conntrack_lock not readlocked
->May 30 05:10:04 cab1 kernel: ASSERT ip_nat_core.c:739 
->&ip_conntrack_lock_R71150de5 readlocked
->May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:91 
->&ip_conntrack_lock_R71150de5 readlocked
->May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:743 
->&ip_conntrack_lock not readlocked
->May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:973 
->&ip_conntrack_lock not readlocked
->May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:840 
->&ip_conntrack_lock not readlocked
->May 30 05:10:04 cab1 kernel: ASSERT ip_nat_core.c:739 
->&ip_conntrack_lock_R71150de5 readlocked
->May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:91 
->&ip_conntrack_lock_R71150de5 readlocked
->May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:743 
->&ip_conntrack_lock not readlocked
->May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:840 
->&ip_conntrack_lock not readlocked
->[root@cab1 root]#
->
->awaiting reply
->a.h
->
->
+Thanks and Regards,
+-sadha
 
------------------------------------
-mailto:alexey_talikov@texlab.com.uz
-BR
-Alexey Talikov
-FORTEK
------------------------------------
+> On Wed, 2002-05-29 at 08:20, shadha wrote:
+> > Hello all,
+> >
+> >        Did anybody tried Netmeeting open from msn messneger with H323
+> > module.
+> I believe that when you use messenger it normally gets your internal ip
+> address, so when someone tries to contact you through the messenger
+> window, it tries to connect to that internal address (e.g. 192.168.1.1)
+> which of course will not arrive at your machines.
+>
+> The way I use NetMeeting from an internal machine, is to start
+> NetMeeting directly, then place a call to the ip address of the remote
+> user, using their external ip address if they are also behind a NATting
+> firewal.
+>
+> >
+> > thanks,
+> > -sadha
+> >
 
 
 
