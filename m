@@ -1,13 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: Snuffing out hackers
-Date: Wed, 16 Jul 2003 11:58:28 -0700
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: Snuffing out hackers
+Date: Wed, 16 Jul 2003 15:32:17 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DF6@alderaan.smgtec.com>
+Message-ID: <200307161934.h6GJYajk032145@discmail.com>
+References: <7C9884991ADAE0479C14F10C858BCDF5122DF6@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C34BCC.3E1AF0FC"
+	boundary="----=_NextPart_000_0003_01C34BAF.703705C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122DF6@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,16 +18,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: 'Daniel Chemko' <dchemko@smgtec.com>, netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C34BCC.3E1AF0FC
+------=_NextPart_000_0003_01C34BAF.703705C0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
 
-I am getting some disturbing packet traffic hitting my firewall. Here
+Both IP addresses are assigned to cable ISPs.
+
+=20
+
+Name:    h24-87-243-251.vc.shawcable.net
+
+Address:  24.87.243.251
+
+=20
+
+Name:    d57-108-11.home.cgocable.net
+
+Address:  24.57.108.11
+
+=20
+
+Not sure if either of them are your ISP?  But I would contact both ISPs =
+with
+your log data if you really cared.  Are you running squid?  A webserver?
+
+=20
+
+  _____ =20
+
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Daniel Chemko
+Sent: Wednesday, July 16, 2003 2:58 PM
+To: netfilter@lists.netfilter.org
+
+=20
+
+I am getting some disturbing packet traffic hitting my firewall. Here =
 goes:
 
 =20
@@ -44,10 +76,11 @@ SPT=3D
 
 =20
 
-None of the addresses listed in the packets are from my networks, but
-what is more disturbing is that eth4 is my internal network interface.
-Can anyone see (baring an internal intrusion has occurred) how this can
-happen?
+None of the addresses listed in the packets are from my networks, but =
+what
+is more disturbing is that eth4 is my internal network interface. Can =
+anyone
+see (baring an internal intrusion has occurred) how this can happen?
 
 =20
 
@@ -58,9 +91,9 @@ It definitely appears to be an exploit on my configuration or something.
 =20
 
 
-------_=_NextPart_001_01C34BCC.3E1AF0FC
+------=_NextPart_000_0003_01C34BAF.703705C0
 Content-Type: text/html;
-	charset="us-ascii"
+	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
 
 <html>
@@ -68,32 +101,40 @@ Content-Transfer-Encoding: quoted-printable
 <head>
 <meta http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered)">
 
 <style>
 <!--
  /* Font Definitions */
  @font-face
-	{font-family:PMingLiU;
-	panose-1:2 2 3 0 0 0 0 0 0 0;}
-@font-face
-	{font-family:"\@PMingLiU";
-	panose-1:2 2 3 0 0 0 0 0 0 0;}
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
  /* Style Definitions */
  p.MsoNormal, li.MsoNormal, div.MsoNormal
 	{margin:0in;
 	margin-bottom:.0001pt;
 	font-size:12.0pt;
 	font-family:"Times New Roman";}
+h1
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:Arial;}
 a:link, span.MsoHyperlink
 	{color:blue;
 	text-decoration:underline;}
 a:visited, span.MsoHyperlinkFollowed
 	{color:purple;
 	text-decoration:underline;}
-span.EmailStyle17
+span.emailstyle17
 	{font-family:Arial;
 	color:windowtext;}
+span.EmailStyle19
+	{font-family:Arial;
+	color:navy;}
 @page Section1
 	{size:8.5in 11.0in;
 	margin:1.0in 1.25in 1.0in 1.25in;}
@@ -107,6 +148,85 @@ div.Section1
 <body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
 <div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Both IP addresses are assigned to =
+cable
+ISPs&#8230;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Name:&nbsp;&nbsp;&nbsp;
+h24-87-243-251.vc.shawcable.net</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Address:&nbsp; =
+24.87.243.251</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Name:&nbsp;&nbsp;&nbsp;
+d57-108-11.home.cgocable.net</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Address:&nbsp; =
+24.57.108.11</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Not sure if either of them are your
+ISP?&nbsp; But I would contact both ISPs with your log data if you =
+really
+cared.&nbsp; Are you running squid?&nbsp; A webserver?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<div>
+
+<div class=3DMsoNormal align=3Dcenter style=3D'text-align:center'><font =
+size=3D3
+face=3D"Times New Roman"><span style=3D'font-size:12.0pt'>
+
+<hr size=3D2 width=3D"100%" align=3Dcenter tabindex=3D-1>
+
+</span></font></div>
+
+<p class=3DMsoNormal><b><font size=3D2 face=3DTahoma><span =
+style=3D'font-size:10.0pt;
+font-family:Tahoma;font-weight:bold'>From:</span></font></b><font =
+size=3D2
+face=3DTahoma><span style=3D'font-size:10.0pt;font-family:Tahoma'>
+netfilter-admin@lists.netfilter.org =
+[mailto:netfilter-admin@lists.netfilter.org]
+<b><span style=3D'font-weight:bold'>On Behalf Of </span></b>Daniel =
+Chemko<br>
+<b><span style=3D'font-weight:bold'>Sent:</span></b> Wednesday, July 16, =
+2003 2:58 PM<br>
+<b><span style=3D'font-weight:bold'>To:</span></b> =
+netfilter@lists.netfilter.org</span></font></p>
+
+</div>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
@@ -127,9 +247,9 @@ TOS=3D0x00 PREC=3D0xC0 TTL=3D25</span></font></p>
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
 font-family:Arial'>4 ID=3D17431 PROTO=3DICMP TYPE=3D3 CODE=3D3 =
-[SRC=3D24.57.108.11
-DST=3D24.87.243.251 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D117 ID=3D15860 =
-DF PROTO=3DTCP SPT=3D</span></font></p>
+[SRC=3D24.57.108.11 DST=3D24.87.243.251
+LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D117 ID=3D15860 DF PROTO=3DTCP =
+SPT=3D</span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
@@ -173,6 +293,7 @@ font-family:Arial'>&nbsp;</span></font></p>
 </body>
 
 </html>
-=00
-------_=_NextPart_001_01C34BCC.3E1AF0FC--
+
+------=_NextPart_000_0003_01C34BAF.703705C0--
+
 
