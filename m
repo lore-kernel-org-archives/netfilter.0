@@ -1,13 +1,13 @@
-From: Nate Perry-Thistle <nperry-thistle@tristream.com>
-Subject: Re: Defining Variables
-Date: Mon, 8 Jul 2002 16:17:02 -0700
+From: "Jesse W. Asher" <jasher1@tampabay.rr.com>
+Subject: Re: Natted IRC "inherently insecure"?
+Date: Mon, 08 Jul 2002 19:26:00 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708161702.B19980@tristream.com>
-References: <956DDDA708487D498B43C36EA4DEA4050B5C4F@SFEXCH01>
+Message-ID: <3D2A1F88.9040102@tampabay.rr.com>
+References: <3D243492.6090408@tampabay.rr.com> <20020708001941.GC653@ns>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="------------040300060309030401000402"
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <956DDDA708487D498B43C36EA4DEA4050B5C4F@SFEXCH01>; from mhammonds@knowledgeinenergy.com on Mon, Jul 08, 2002 at 04:45:17PM -0400
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,86 +17,136 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
+
+
+--------------040300060309030401000402
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-To: "Iptables-User-list (E-mail)" <netfilter@lists.samba.org>
-Cc: "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
 
-Hello Mike,
 
-I don't think you actually want to edit /etc/sysconfig/iptables by hand.
-This file is created by using /etc/rc.d/init.d/iptables save.  I have a
-stand alone bash script (for example):
+So, if the firewall is set up securely so that ports above 1024 are not 
+unfiltered and a "helper application" is in place to help with DCC, then 
+IRC is not "inherently insecure"?
 
-### -------------------------------------------------------------------
-#!/bin/bash
+Stephen Frost wrote:
 
-### Set Variables
-IPTABLES='/sbin/iptables'
-TOTALLY_TRUSTED=('1.2.3.4' '4.3.2.1')
-
-### Set basic policy.
-$IPTABLES --verbose --policy INPUT DROP
-$IPTABLES --verbose --policy OUTPUT DROP
-$IPTABLES --verbose --policy FORWARD DROP
-
-### Allow all communication from TOTALLY_TRUSTED servers.
-for IP in "${TOTALLY_TRUSTED[@]}"; do
-	$IPTABLES --verbose --append INPUT --source $IP --jump ACCEPT
-	$IPTABLES --verbose --append OUTPUT --destination $IP --jump ACCEPT
-done
-### -------------------------------------------------------------------
-
-and when I am happy with it's performance I do:
-
-/etc/rc.d/init.d/iptables save
-
-so that my rules will be in place for restarts, etc.
-
-n.
-
-On Mon, Jul 08, 2002 at 04:45:17PM -0400, Mike G. Hammonds wrote:
-> How do you define variables in the /etc/sysconfig/iptables file?
-> Here is what I'm trying to do:
-> ## Variables ##
-> IPTABLES="/usr/local/sbin/iptables"	## Default IPTables >= v. 1.2.0
-> #IPTABLES="/usr/local/bin/iptables"	## Default IPTables <= v. 1.1.2
-> 
-> LOOPBACK="lo"			## Loopback Interface
-> EXTERNAL="eth0"			## External Interface
-> INTERNAL="eth1"			## Internal Interface
-> DMZ_IF="eth2"			## DMZ Interface
-> 
-> INTERNAL_NET="10.97.160.0/24"	## Network address for the internal network
-> DMZ_NET="192.168.11.0/24"	## Network address for the DMZ
-> 
-> ## INT_IP="10.97.160.1"	## IP Address of Internal Interface
->    INT_IP=`ifconfig eth1 | grep inet | cut -d : -f 2 | cut -d \  -f 1`
-> 
-> ## DMZ_IP="192.168.11.1"	## IP Address of DMZ Interface
->    DMZ_IP=`ifconfig $DMZ_IF | grep inet | cut -d : -f 2 | cut -d \  -f 1`
-> 
->    EXT_IP="10.97.170.4"	        ## IP Address of External Interface
-> 	   	
-> ## EXT_IP=`ifconfig $EXTERNAL | grep inet | cut -d : -f 2 | cut -d \  -f 1`
-> 
-> LOG_LEVEL="notice"		## Default log level: kern.notice 
-> 
-> Mike Hammonds
-> Fellon-McCord & Associates, Inc.
-> Information Services Manager
-> Voice (502) 214-6324 Fax (502)426-8800
-> mhammonds@knowledgeinenergy.com <mailto:mhammonds@knowledgeinenergy.com >
+>* Jesse W. Asher (jasher1@tampabay.rr.com) wrote:
 >  
+>
+>>Someone recently indicated to me that they believed that natting IRC 
+>>through a firewall was "inherently insecure" and I wanted to get 
+>>opinions on that statement.  I guess, in my mind, it isn't any more or 
+>>less secure than any other service natted through the firewall - it all 
+>>depends on how comfortable you feel with the inherent security of the 
+>>client/tool that you're using.
+>>
+>>Comments?
+>>    
+>>
+>
+>The client/tool is one thing but I think what they were probably getting
+>at is the issue of DCC.  The problem with DCC is that it expects to be
+>able to reach any >1024 port on the remote system.  The two clients work
+>out, over the IRC network, the ports to use.  If your firewall doesn't
+>allow connections to high ports outbound or inbound, and you don't use
+>some kind of IRC helper in your firewall, then DCC won't work.  This may
+>be acceptable to you but some people feel they need DCC.  Using an IRC
+>helper in your firewall can mitigate these problems some.  They can't
+>fix everything though because of the way in which the DCC protocol
+>works.  A user using DCC can potentially allow a scan of the high ports
+>on at least the machine they're IRC'ing from.
+>
+>Unfortunately I'm not very familiar with the internals of the netfilter
+>IRC-helper module or what checks it does but there are some things it
+>has no way to know due simply to where it has to be and what it gets to
+>see.  I havn't heard of many people getting attacked in such a way
+>though so the chances of you being exploited in that way are probably
+>pretty slim.  Unless you have someone going for you specifically using
+>an IRC helper will probably be enough.  Most attackers are going for
+>'easy' targets, things they can sweep large network blocks for; such as
+>the recent OpenSSH holes, various Windows-based services, etc.
+>
+>	Stephen
+>  
+>
 
 -- 
+Jesse W. Asher
 
-Nate Perry-Thistle
-Systems Administrator
-tristream
+"They that can give up essential liberty to purchase a little temporary
+safety, deserve neither liberty or safety."  - Benjamin Franklin
 
-530.477.5777 tel
-530.477.5774 fax
 
-s p e e d / s t r a t e g y / s t y l e
+
+--------------040300060309030401000402
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+  <title></title>
+</head>
+<body>
+<br>
+So, if the firewall is set up securely so that ports above 1024 are not unfiltered
+and a "helper application" is in place to help with DCC, then IRC is not
+"inherently insecure"?<br>
+<br>
+Stephen Frost wrote:<br>
+<blockquote type="cite" cite="mid20020708001941.GC653@ns">
+  <pre wrap="">* Jesse W. Asher (<a class="moz-txt-link-abbreviated" href="mailto:jasher1@tampabay.rr.com">jasher1@tampabay.rr.com</a>) wrote:
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">Someone recently indicated to me that they believed that natting IRC 
+through a firewall was "inherently insecure" and I wanted to get 
+opinions on that statement.  I guess, in my mind, it isn't any more or 
+less secure than any other service natted through the firewall - it all 
+depends on how comfortable you feel with the inherent security of the 
+client/tool that you're using.
+
+Comments?
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+The client/tool is one thing but I think what they were probably getting
+at is the issue of DCC.  The problem with DCC is that it expects to be
+able to reach any &gt;1024 port on the remote system.  The two clients work
+out, over the IRC network, the ports to use.  If your firewall doesn't
+allow connections to high ports outbound or inbound, and you don't use
+some kind of IRC helper in your firewall, then DCC won't work.  This may
+be acceptable to you but some people feel they need DCC.  Using an IRC
+helper in your firewall can mitigate these problems some.  They can't
+fix everything though because of the way in which the DCC protocol
+works.  A user using DCC can potentially allow a scan of the high ports
+on at least the machine they're IRC'ing from.
+
+Unfortunately I'm not very familiar with the internals of the netfilter
+IRC-helper module or what checks it does but there are some things it
+has no way to know due simply to where it has to be and what it gets to
+see.  I havn't heard of many people getting attacked in such a way
+though so the chances of you being exploited in that way are probably
+pretty slim.  Unless you have someone going for you specifically using
+an IRC helper will probably be enough.  Most attackers are going for
+'easy' targets, things they can sweep large network blocks for; such as
+the recent OpenSSH holes, various Windows-based services, etc.
+
+	Stephen
+  </pre>
+</blockquote>
+<br>
+<pre class="moz-signature" cols="$mailwrapcol">-- 
+Jesse W. Asher
+
+"They that can give up essential liberty to purchase a little temporary
+safety, deserve neither liberty or safety."  - Benjamin Franklin
+</pre>
+<br>
+</body>
+</html>
+
+--------------040300060309030401000402--
+
 
