@@ -1,15 +1,15 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: can't patch with patch-o-matic
-Date: Tue, 18 Feb 2003 21:01:13 +0100
+From: "Alexander W. Janssen" <yalla@ynfonatic.de>
+Subject: Re: How to block all ports except port 21,22,80,8080 ???
+Date: Tue, 18 Feb 2003 20:40:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030218210113.21d55422.arnt@c2i.net>
-References: <E131E9F1848D0148813EAF06A846608FD7783B@w2ks-e2k.iconos.be>
-	<20030218153758.6e6d806a.arnt@c2i.net>
-	<1045583134.18515.159.camel@tux.rsn.bth.se>
+Message-ID: <20030218194014.GB23914@ynfonatic.de>
+References: <1045555939.94722.jacob_chan@so-net.net.tw> <1045558628.1967.29.camel@kermit.spenneberg.de> <1045560648.1913.39.camel@kermit.spenneberg.de> <3E5207B9.7C2BEDFA@patrick.at> <20030218160348.GA23914@ynfonatic.de> <20030218121919.GA11554@omega.lacnic.net.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1045583134.18515.159.camel@tux.rsn.bth.se>
+Content-Disposition: inline
+In-Reply-To: <20030218121919.GA11554@omega.lacnic.net.uy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,92 +19,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Pablo Allietti <pablo@lacnic.net>
+Cc: netfilter@lists.netfilter.org
 
-On 18 Feb 2003 16:45:35 +0100, Martin Josefsson 
-<gandalf@wlug.westbo.se> posted, and _mailed_too_, in 
-message: <1045583134.18515.159.camel@tux.rsn.bth.se>:
 
-> On Tue, 2003-02-18 at 15:37, Arnt Karlsen wrote:
-> 
-> > > Patch-o-matic is cool in that it handles a lot of this
-> > > stuff without problems, but if you are applying too many patches
-> > > on top of each other, you should resolve any conflicts yourself...
-> > 
-> > ..this attitude is not good enough.  As a minimum, all the base
-> > patches should make it into "my" patched kernel, starting from a
-> > _clean_ Linus tree.  The extras etc, should stop and warn that
-> > "this" patch does not"allow" etc "that" patch, "so, you need to
-> > choose which you want".  
-> 
-> This attitude is perfectly fine, if you don't like it, start running
-> an OS you can't modify. You find this attitude _everywhere_ in the
+--TakKZr9L6Hm6aLOc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-..we disagree.  Now, note I said "my" etc.  This attitude has the
-wee problem it makes patch testing a little harder for the newbies,
-because the newbies never learns how they can report back new 
-failures, which the attitude guys hasn't been been smart enough to
-prevent.  This again has ramifications on development.  Your call.
+On Tue, Feb 18, 2003 at 03:19:19PM +0300, Pablo Allietti wrote:
+>  iptables -A INPUT -i lo -j ACCEPT
+>=20
+> Another Question when i put this line in iptables -L say
+>=20
+> Chain INPUT (policy DROP)
+> target     prot opt source               destination
+> ACCEPT     all  --  anywhere             anywhere
+>=20
+> whit this i do open all ports for any connection of outside?????
 
-> Linux community. If you want to be able to do more advanced stuff you
-> will have to actually learn how to do parts of it yourself.
+No it won't. Try "iptables -vnL" instead, it will show you that the rule is
+limited to traffic coming from the lo-interface.
+=20
+Alex.
 
-..noted.  ;-)
+--=20
+"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
+l."
+Instructions for use of this post: Insert tounge in cheek. Read as normal.
 
-> I can tell you that patch-o-matic already does a lot of things to help
-> you apply all these patches. With regular patch files you would have
-> to fix a lot by hand.
+--TakKZr9L6Hm6aLOc
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-..this far, I have learned "regular patching" may be slower, but less
-trouble.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: Weitere Infos: siehe http://www.gnupg.org
 
-> Base patches go in without any problems here, it's some of the extra
-> stuff that's the problem.
+iEYEARECAAYFAj5SjB4ACgkQEMMZKORQoYJPSgCfaefZ2cf9tmtShMXDRFhymazc
+X5cAn2e5c7FMePot6J9dhLU0ugeom+6i
+=FPOj
+-----END PGP SIGNATURE-----
 
-..agreed, I've also seen a few base patches fail on Red Hat trees.
- 
-> If you want that kind of dependency system you will have to fix it
-> yourself, I don't think any of the developers are interested in
-> building it.
-
-..I'll consider it next time I have a good slack in my schedule.
- 
-> > ..preferably, patch-o-matic should also work as good with Red Hat
-> > kernels, up to and including "base", as Red Hat and its derivatives 
-> > are the entry level distros.  From "extra and up", work from the 
-> > vanilla kernel trees.  
-> 
-> This you would definately have to fix yourself. Do you have any idea
-> what vendor kernels include? They include several hundred patches.
-
-..possibly, chk any kernel source srpm. 
-
-> > ..and, I'd like to have Patch-o-matic log what it does, to a file, 
-> > either as the default, or as a suggestion on how to do it from the 
-> > cli, in a readme, as you see, people come here to learn.
-> 
-> We live in a do it yourself world, you can't rely on other people
-> building the stuff you want. If you want to see it built you will
-> probably have to build it yourself.
-
-..agreed.  Meanwhile, the Patch-o-matic readme might be made more 
-useful for newbies after including a pointer to these wee '2>&1 >' 
-tricks in, say, the abs-guide, unless it hurts someone attitude 
-toe or something.  Newbies who use patch-o-matic are smart enough 
-to read and be made useful testing stuff for development.
-
-> If you modify patch-o-matic to do this stuff we will review the
-> changes and either accept (possibly after some modifications) or
-> reject them.
-> 
-
-..ok.
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+--TakKZr9L6Hm6aLOc--
 
