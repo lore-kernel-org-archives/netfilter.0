@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: curious about /etc/init.d/iptables script in RH 8.0
-Date: Thu, 24 Oct 2002 22:35:25 +0100
+From: Nick Drage <nickd@funkyjesus.org>
+Subject: Re: what filtering to do on the OUTPUT chain?
+Date: Thu, 24 Oct 2002 22:31:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021024213528.YCRT17202.mta01-svc.ntlworld.com@there>
-References: <Pine.LNX.4.44.0210241501210.2123-100000@localhost.localdomain>
+Message-ID: <20021024223148.A19115@funkyjesus.org>
+References: <Pine.LNX.4.44.0210221605170.15445-100000@localhost.localdomain> <1035328874.10494.38.camel@elendil> <200210230943.g9N9hiL02304@vulcan.rissington.net>
+Reply-To: Nick Drage <nickd@funkyjesus.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210241501210.2123-100000@localhost.localdomain>
+Content-Disposition: inline
+In-Reply-To: <200210230943.g9N9hiL02304@vulcan.rissington.net>; from Antony@Soft-Solutions.co.uk on Wed, Oct 23, 2002 at 10:43:37AM +0100
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,55 +19,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On Thursday 24 October 2002 8:15 pm, Robert P. J. Day wrote:
+On Wed, Oct 23, 2002 at 10:43:37AM +0100, Antony Stone wrote:
+> On Wednesday 23 October 2002 12:21 am, Cedric Blancher wrote:
 
->   first, the script grabs the list of currently-used tables from
-> the file /proc/net/ip_tables_names, which is why i asked about this
-> file earlier -- the implication is that, given the possible tables
-> filter, nat and mangle, only those that are listed in that file
-> can possibly be in use at the moment.  fair enough.  but it
-> would make more sense to assign this list to a variable like
-> "tables", not "chains", wouldn't you think? :-)  just being
-> pedantic.
+<snip>
 
-Yes.
+> > This means, that with proper output filtering, we couldn't have achieve
+> > this this easy, and must have find something else to gain our remote
+> > shell. That would have make the intrusion far more difficult.
+> 
+> The OUTPUT rules are always going to allow traffic to or from expected
+> ports.  53 is a good one to guess is going to be made accessible, so you
+> simply set up netcat to contact your external system on port 53, and you
+> can still do what you've outlined above even with pretty good OUTPUT
+> filters in place.
+> 
+> The trouble is, netfilter only knows about IP addresses and TCP/UDP port
+> numbers - it doesn't understand anything about the content of packets
+> being sent on those ports, so it can't check that port 53 is being used
+> only for DNS queries, port 80 is being used only for HTTP transfers etc.
 
->     iptables -F
->
-> by default, this will flush the filter table, but isn't that
-> already empty from the previous statement?  not a mistake, just
-> redundant, no?
+Yes, but then, as someone else has already pointed out, you could
+encapsulate malicious traffic within legitimate looking requests - so a
+netfilter with an understanding of DNS traffic wouldn't help.  So even those
+filters don't prevent any malicious outbound traffic, but think of the
+effort and knowledge involved compared to just allowing anything outbound.
 
-Correct.
+> My point is that if you can break into a machine, you can break out of it 
+> again,
 
->   the same redundancy seems to exist in the next loop that deletes
-> the user-defined chains:  the loop really gets rid of all user-defined
-> chains in each table one at a time, and follows that up with
->
->     iptables -X
->
-> apparently just to give the "filter" table one last good kick
-> while it's down or something.  is there something more to this
-> than meets the eye?
+Eventually, possibly, it's all about making the time and effort involved so
+great that it's not worth trying.
 
-No.
+> so OUTPUT filters are generally either not much use, or they get in the
+> way of your normal applications.
 
-No-one said it was a perfect script :-)
+Depends if you write them, er, right.
 
-The reason for using /proc/net/ip_tables_names is just to make sure the 
-script doesn't generate errors no matter what sort of netfilter system it 
-gets used on.
+> Re the comment "--cmd-owner is your friend", I agree that this is worth
+> adding to any OUTPUT rules you do choose to specify, but bear in mind that
+> a compromised application or trojan is still going to be running under an
+> expected user on the target machine, therefore --cmd-owner isn't
+> necessarily going to see anything strange...
 
-The other things you've pointed out may be redundant, or less than 
-pedantically perfect, but they won't generate errors, so newbies won't get 
-worried.
+Oh yeah, tis but another tool in the box.
 
-Antony.
+> If you're concerned about this level of security (which you should be)
+> then you need to deal with Operating System security and things like Host
+> Intrustion Detection - netfilter is not going to do the job effectively
+> for you.
+
+"Host Intrusion Detection"?  For example..... ?
 
 -- 
+FunkyJesus System Administration Team
 
-I vote "no" to this proposal to form a committee to investigate whether we 
-should or should not hold a ballot on whether to vote yet.
 
