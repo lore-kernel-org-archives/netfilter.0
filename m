@@ -1,13 +1,13 @@
 From: Rowan Reid <rreid@studio3arc.com>
 Subject: RE: Internal ip exiting network on firewall external nic despight rule
-Date: Fri, 20 Sep 2002 16:10:40 -0700
+Date: Fri, 20 Sep 2002 15:26:31 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000301c260fa$f0b68860$0801a8c0@s3ac>
-References: <20020920224321.VUFI295.mta06-svc.ntlworld.com@there>
+Message-ID: <000101c260f4$c5861260$0801a8c0@s3ac>
+References: <20020920215417.UBMV295.mta06-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20020920224321.VUFI295.mta06-svc.ntlworld.com@there>
+In-reply-to: <20020920215417.UBMV295.mta06-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,79 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
 
+> I think the problem is your physical network setup - you=20
+> should not have a=20
+> direct link between the internal and external interfaces of=20
+> your firewall.
 
 
-> > Just when I thought I understood. So returning masqaraded 
-> traffic hits 
-> > the input rule set no ?
-> 
-> No :-)
-
-Dooope !!
-
-> 
-> > Then gets routed through POSTROUTING
-> 
-> No :-)
-
-Doooope !!!
-> 
-> > is it then routed to the forward ruleset, or is it just sent out.
-> 
-> Okay - this is how it works:
-> 
-> The *original* packet (the first one) in what is going to be a natted 
-> connection gets to the firewall, enters the PREROUTING chain, and the 
-> destination address gets changed.   The packet then goes on 
-> to the FORWARD
-
-So it gets nated at the PREROUTING chain oooooooohhhhhhhh ...
-> 1. The INPUT chain is *only* for packets which terminate on 
-> this machine.
-> 
-> 2. The FORWARD chain is *only* for packets which are going 
-> through this 
-> machine.
-> 
-> 3. The OUTPUT chain is *only* for packets which originate on 
-> this machine.
+True, but shouldn't I be able to separate the networks using subnets
+check out my setup below
 
 
-Ooooooooooooohhhhhhhhhhhhhhhhhhhhhhhhh !!
+Internal Net
 
-> 
-> > Then figure out why exactly my local net machines are accessing my 
-> > external IP to exit the net. This confuses me because all these 
-> > machines are setup with the gateway being the internal ip
-> > (192.168.1.1/255.255.255.0) as the gateway so these 
-> machines shouldn't 
-> > even know my external ip/interface exists.
-> 
-> You have physically plugged the internal and external 
-> interfaces of your 
-> firewall into the same switch / hub, therefore the machines 
-> on your internal 
-> network are plugged into your external interface, and 
-> unfortunately Linux 
-> responds to ARP requests in ways you might not expect....  (I 
-> think Tom 
-> Eastep mentioned this in an earlier posting).
-> 
-> Connect your external interface to your Internet link, using 
-> a switch / hub 
-> which also has any other machines with true (non-nat) public IPs.
+DHCP assignes settings below also internet DNS
 
-Oohh ok .. Well
+Network 192.168.1.0
+Subnet  255.255.255.0
+Gateway 192.168.1.1
 
-Thank you thank you thank you thank you thank you, for your time I
-appreciate that .. Domo arigato genious san.
 
-<action> 
-Goes back to my mlafunctioned misconfigured linux box 
-</action>
+
+Firewall=20
+
+Internal Interface 192.168.1.1
+Subnet             255.255.255.0
+External Interface  **.**.76.66
+Subnet             255.255.255.248 (ISP Assigned)
+Internet Gateway    **.**.76.65
+
+
+Since I'm cheap I don=92t want to purchase another hub, I have my T1,
+connected to a hub with my Firewall extif, my VPN extif and the hub is
+connected to my switch this allows my to access the net directly and
+through the firewall from my station, this is for diagnostic purposes so
+I don=92t have to play cable switcher.=20
 
 
