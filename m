@@ -1,11 +1,13 @@
-From: "Bill Karwisch" <william.karwisch@hlbcpa.com>
-Subject: connection tracking problem with IPSec.
-Date: Thu, 18 Mar 2004 14:49:18 -0500
+From: Jim Cliver <jclive@mtaonline.net>
+Subject: Re: bridge logging
+Date: Thu, 18 Mar 2004 11:00:05 -0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FC0A6700187F66409E3FFD1815E5D5CB35EA@hlbserv5.hlbcpa.com>
+Message-ID: <4059FFC5.5040008@mtaonline.net>
+References: <AD8D39C727CBD411BB2C0090273A727408F9F09C@mortimer.law.uconn.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <AD8D39C727CBD411BB2C0090273A727408F9F09C@mortimer.law.uconn.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,65 +17,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Hurley, Michael" <MHurley@law.uconn.edu>
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I'm new here, so please forgive me if this has already been answered. I
-looked at the FAQs and searched on Google with no luck. I tried to =
-reduce
-this problem to its simplest form. I hope I succeeded.
+Hurley, Michael wrote:
 
-SETUP:
+> I've run into an odd snag. 
+> Set up a bridge to protect a box that can't protect itself. Kernel 2.6.0,
+> iptables 1.2.9. I'm trying to log some client-server interaction, so I
+> created this rule:
+> 
+> iptables -A FORWARD -s $client -LOG --log-level 7 --log-prefix "IPT CLIENT:
+> "
+> iptables -A FORWARD -d $client -LOG --log-level 7 --log-prefix "IPT CLIENT:
+> "
+> 
+> FORWARD policy is ACCEPT. There are *no* other rules or chains.
+> 
+> I redirect kern.7 messages into its own log. But no info is getting captured
+> in there at all. tcpdump sees packets w/ client ip. 
+> 
+> What am I doing wrong and how can I log info going over the bridge to/from a
+> particular ip?
+> 
+Hello Michael,
 
-Simple test environment: A hub and two computers, "A" and "B", both of =
-which
-run kernel 2.6.4 with native IPSec.
+If you are attempting to perform this logging on a layer two (bridging) 
+device then your logging rules will need to be based upon layer two 
+addresses and not layer three (IP).  A bridge ordinarily does not see 
+layer three addresses.
 
-"B" has iptables 1.2.9 using shorewall in a very simple configuration =
-with
-two interfaces. No NAT/MASQ yet. The second interface is not relevant to =
-the
-problem.
+Regards,
+jim
 
-THE FOLLOWING WORKS OK:
 
-ssh from "A" to "B"
-
-iptables stopped - ssh from "A" to "B" over manually keyed IPSec.
-
-THE FOLLOWING FAILS:
-
-iptables started - ssh from "A" to "B" over manually keyed IPSec.
-
-OBSERVATIONS:
-Initial handshake packet is sent using IP protocol 51.
-
-/var/proc/ip_conntrack shows an "unreplied" connection using protocol =
-51.
-
-iptables has a rule that, without IPSec, allows the SYN/ACK response =
-(state
-RELATED,ESTABLISHED). This rule does not match when using IPSec. The =
-next
-rule matches (state NEW tcp flags: !SYN, RST, ACK/SYN) and after a =
-couple of
-other steps the packet is dropped.
-
-/var/log/syslog shows the dropped packet is tcp port 22 with SYN/ACK --
-presumably the second packet in the handshake.
-
-It appears that the RELATED,ESTABLISHED rule does not match because it =
-is
-expecting a protocol 51 packet instead of the tcp packet.
-
-Did I miss something about how this should work or miss something in the
-configuration? Obviously I can hack the ruleset to force a workaround, =
-but
-it appears on the surface that there is a problem with connection =
-tracking
-in this setup.
-
-Bill Karwisch
+> 
+> 
+> /***************************************     .-"""-.
+> Michael Hurley                              '       \ 
+> Webmaster/SysAdmin                         |,.  ,-.  |
+> University of Connecticut School of Law    |()L( ()| |
+> mhurley@law.uconn.edu                      |,'  `".| |
+> (860) 570-5233                             |.___.',| `
+> ***************************************/  .j `--"' `  `.
+>                                          / '        '   \
+>                                         / /          `   `.
+>                                        / /            `    .
+>                                       / /              l   |
+>                                      . ,               |   |
+>                                      ,"`.             .|   |
+>                                   _.'   ``.          | `..-'l
+>                                  |       `.`,        |      `.
+>                                  |         `.    __.j         )
+>                                  |__        |--""___|      ,-'
+>                                     `"--...,+""""   `._,.-' mh
+> 
+> 
 
 
 
