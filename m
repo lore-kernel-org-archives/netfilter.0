@@ -1,10 +1,9 @@
-From: nasrajan mp <nasrajanmp@yahoo.com>
-Subject: doubts(plz help)
-Date: Mon, 12 May 2003 23:57:56 -0700 (PDT)
+From: "Sharad Mittal" <sharad_mittal12@hotmail.com>
+Subject: download problem
+Date: Mon, 19 May 2003 06:53:59 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030513065756.79253.qmail@web14702.mail.yahoo.com>
+Message-ID: <Law12-F106n04x29xDb000017bf@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1654719555-1052809076=:77598"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,42 +14,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
---0-1654719555-1052809076=:77598
-Content-Type: text/plain; charset=us-ascii
+Hi all,
+        We are using iptables at our company's firewall to NAT internet 
+traffic. But lot of our downloads get stuck and just don't move forward. I 
+have seen lot of conntrack patches for the recent kernels. But even the 
+2.4.21-rc2 patch gives the same problems.
 
+Is there a problem in current version of netfilter code in kernel or there 
+might be some other problem?
 
+Thanks in anticipation of a enlightening reply,
+Sharad
 
-we are developing a firewall using C.
+PS: please copy the reply to sharad_mittal12@hotmail.com .
 
-we capture packets using packet sockets(at datalink layer).
+_________________________________________________________________
+MSN 8 with e-mail virus protection service: 2 months FREE*  
+http://join.msn.com/?page=features/virus
 
-is netfilter compatible with this packet sockets?
-
-can anybody give us a starting?
-
- 
-
- 
-
-
-
----------------------------------
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
---0-1654719555-1052809076=:77598
-Content-Type: text/html; charset=us-ascii
-
-<DIV>
-<DIV></DIV>
-<P>we are developing a firewall using C.</P>
-<P>we capture packets using packet sockets(at datalink layer).</P>
-<P>is netfilter compatible with this packet sockets?</P>
-<P>can anybody give us a starting?</P>
-<P>&nbsp;</P>
-<P>&nbsp;</P></DIV><p><hr SIZE=1>
-Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/search/mailsig/*http://search.yahoo.com">The New Yahoo! Search</a> - Faster. Easier. Bingo.
---0-1654719555-1052809076=:77598--
 
