@@ -1,12 +1,15 @@
-From: udo <udovdh@yahoo.com>
-Subject: Re: more about martians
-Date: Wed, 21 Apr 2004 20:32:42 -0700 (PDT)
+From: Alexander Samad <alex@samad.com.au>
+Subject: Re: Redirection to local lan, isn't DNAT method unsafe.
+Date: Thu, 22 Apr 2004 13:49:21 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040422033242.86850.qmail@web40706.mail.yahoo.com>
-References: <Pine.LNX.4.44.0404220240150.27078-100000@filer.marasystems.com>
+Message-ID: <20040422034921.GS3095@samad.com.au>
+References: <40696C1A.5080400@personalsoft.com.br> <002a01c417c2$d94db7e0$de0aa8c0@comp>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ixDgnS8AC6zwmyK0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0404220240150.27078-100000@filer.marasystems.com>
+Content-Disposition: inline
+In-Reply-To: <002a01c417c2$d94db7e0$de0aa8c0@comp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,49 +19,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
+
+
+--ixDgnS8AC6zwmyK0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Hello,
-
---- Henrik Nordstrom <hno@marasystems.com> wrote:
-> On Tue, 20 Apr 2004, udo wrote:
+On Thu, Apr 01, 2004 at 10:25:06AM +0200, Bo Jacobsen wrote:
+> I use DNAT to redirect traffic from the external lan eth0 (192.168.1.1) t=
+o a
+> specific host (192.168.10.10) on the internal lan (eth1) like this:
 >=20
-> > As a follow up on my post about portforwarding to
-> > 127.0.0.1 and the 'martian destination 127.0.0.1'
-> > message I can tell I found the probable cause in
-> > /usr/src/linux/net/ipv4/route.c.
+> iptables -t nat -A PREROUTING  -p tcp --dport 80  -d 192.168.1.1 -j DNAT=
+=20
+>     --to 192.168.10.10 -i eth0
 >=20
-> Why do you want to forward to 127.0.0.1? Why not a
-> global IP?
+> and then I allow the redirected traffic:
+> iptables -a FORWARD -p tcp --dport 80  -d 192.168.10.10 ........
+>=20
+> It works as expected but with this aproach, it's actually possible from t=
+he outside
+> to find out what internal ip, the http server is located at !.
+> All one has to do is sending to 192.168.10.1, 192.168.10.2, 192.168.10.3 =
+etc.  (to=20
+> eth0 on the outside) until one hits the server. The rules allows it.
 
-I only want to offer ssh to the outside world (lan and
-wan) on port 22 while still being able to run sshd at
-non-root privs.
-Say port 2222 for non-root reasons but port 2222 must
-not interfere and best not be visible to the outside
-world.
+The 192.168.0.0/24 is a non internet routeable address, meaning all ISP
+drop this address range.
 
-> The loopback addresses (127.X/8) are handled very
-> special.
+Pretty sure you might be able to capture this in prerouting (mangle) and
+drop it there, although your not meant to drop/filter table
 
-I found out.
-Why?
-It's just another interface.
-I would like to use the lo interface because it is
-hidden for the outside world, so a sshd at 2222
-listening there is no problem.
-
-Kind regards,
-Udo
+also if you have rp_filter on (for the internet interface) it would probabl=
+y capture it first before
+it hits netfilter=20
 
 
-=09
-	=09
-__________________________________
-Do you Yahoo!?
-Yahoo! Photos: High-quality 4x6 digital prints for 25=A2
-http://photos.yahoo.com/ph/print_splash
+>=20
+> I have not been able to figure out how to solve this problem.
+>=20
+>=20
+> Any suggestions.
+>=20
+> Thanks in advance
+> Bo Jacobsen
+>=20
+>=20
+>=20
+>=20
+
+--ixDgnS8AC6zwmyK0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD0DBQFAh0DBkZz88chpJ2MRAvakAJCimj/xfnudHDJ17Brt/qGjH5QAoLMPZADd
++3e/HCPzPplJpe98GxZN
+=4aAy
+-----END PGP SIGNATURE-----
+
+--ixDgnS8AC6zwmyK0--
 
