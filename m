@@ -1,12 +1,15 @@
-From: Frans Luteijn <f.a.g.luteijn@knoware.nl>
-Subject: Re: nat problem
-Date: Mon, 19 Jul 2004 03:26:16 +0200
+From: Joshua N Pritikin <jpritikin@pobox.com>
+Subject: Re: FAQ 3.13, but on the same box
+Date: Mon, 19 Jul 2004 07:30:59 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40FB2338.4A084B9D@knoware.nl>
-References: <40F448B2.AF1E21@knoware.nl> <200407140953.50466.Antony@Soft-Solutions.co.uk> <40F5C218.E57FEC60@knoware.nl> <200407150921.27116.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040719020059.GC679@always.joy.eth.net>
+References: <20040718173200.GC718@always.joy.eth.net> <200407181844.22744.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7DO5AaGCk89r4vaK"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200407181844.22744.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,71 +19,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Antony Stone schreef:
 
-> On Thursday 15 July 2004 12:30 am, Frans Luteijn wrote:
->
-> > Antony Stone schreef:
-> > >
-> > > What happens if you try the same test as above, but with the port numbers
-> > > you are interested in?   Do the connection tracking table and the log
-> > > file suggest that packets are being forwarded?   If you can get it to
-> > > "work" on port 138, I don't see why it shouldn't "work" on port 2071.
-> >
-> > Nothing happens, no logging or anything else
-> >
-> > So what is wrong here? I think, it is a bug, because it doesn't work as
-> > expected.
->
-> Well, I don't think it can be called a bug in netfilter (I may be wrong),
-> because there's nothing about netfilter which should make NAT for one port
-> any different from NAT for another port.
->
-> I'm surprised you got the port 138 packets to be forwarded; I don't know why
-> the two are behaving differently.
+--7DO5AaGCk89r4vaK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Maybe because in the 138-case the sport and the dport are the same and
-in the
-other case they are different? Or the sport and dport are above 1024? I
-don't know
-either. Who should I ask, any suggestion?
+On Sun, Jul 18, 2004 at 06:44:22PM +0100, Antony Stone wrote:
+> On Sunday 18 July 2004 6:32 pm, Joshua N Pritikin wrote:
+> > I understand how to set up a transparent proxy.  However, it is
+> > possible to run a transparent proxy and web browser on the same box?
+>=20
+> Yes.
+>=20
+> > What if I put the proxy on a loopback interface and REDIRECT port 80
+> > to port 3128 the loopback?  Would that work?
+>=20
+> Sounds good to me.
+>=20
+> http://www.squid-cache.org/Doc/FAQ/FAQ-17.html#ss17.4
 
->
+This FAQ doesn't address my question.  I also looked at "Transparent
+Proxy with Linux and Squid mini-HOWTO" by Daniel Kiracofe.
 
-(snip)
+So far, all docs assume that the squid-box and the browser box are
+different machines.
 
->
->
->
-> I hope someone else here can suggest whether (and if so, how) it's possible to
-> do what you want - I didn't think it was, but you've obviously got more to
-> work than I had expected possible.
+Hrm, I think I need to add an OUTPUT rule that matches on the owner.
+If --uid-owner=3Dproxy then the packet should not REDIRECT back to port
+3128.  Something like that?
 
-What is a broadcastpacket different from any other packet, except that
-every
-computer on the network can respond to it? So it can be treated as any
-other
-packet.
+--=20
+A new cognitive theory of emotion, http://openheartlogic.org
 
->
->
-> Regards,
->
-> Antony.
->
+--7DO5AaGCk89r4vaK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-P.S.
-Sorry for the late response, for some strange reason I didn't receive
-any mail from this list any more for two days. I had to look up the
-answer in the archieves.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-Regards,
---
-Frans Luteijn
-PGP PblKey fprnt=C4 87 CE AF BC B6 98 C1  EF 42 A1 9A E2 C0 42 5B
-GPG PblKey fprnt=ED20 0F25 C233 DC59 3FFA  170E D0BF 15F5 0BA6 1355
+iD8DBQFA+ytbqcqnlKSmC70RAs70AKDFu/IkNyeSNxhkSQgzb71M+PuKUwCeJbIr
++eQO0AI31v08SCKf9gcO9ww=
+=9KYS
+-----END PGP SIGNATURE-----
 
+--7DO5AaGCk89r4vaK--
 
