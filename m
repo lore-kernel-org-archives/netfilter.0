@@ -1,11 +1,10 @@
-From: Roberto Nibali <ratz@tac.ch>
-Subject: Re: About loadable kernel modules
-Date: Mon, 07 Oct 2002 18:17:21 +0200
+From: PayalR <payal@hotpop.com>
+Subject: measure traffic
+Date: Tue, 8 Oct 2002 00:28:33 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DA1B391.9090103@tac.ch>
-References: <001001c26a3e$1900bab0$c5327d9e@alex>
+Message-ID: <42696.2722478949$1034017346@news.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,36 +15,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alexandros Fragkiadakis <A.Fragiadakis@lboro.ac.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
-
->  I also have a user process thas loads and unloads this loadable kernel 
-> module using the commands:
-> system("insmod kernel_module.o")
-> system("rmmod kernel_module") respectively.
-
-Ok.
-
->  I'd like to pass parameters to the loadable module, hence having a more 
-> flexible user process.
->   So, instead of using the command /system("insmod kernel_module.o"),/
-> i'd like to use: /system("insmod kernel_module.o <param1> 
-> <param2>...<param n>")/
-> , hence passing command line parameters to my loadable module.
->  
-> Do you know if it is possible?
-
-You definitely want the know about the MODULE_PARM() macro. Get more information 
-by reading an existing module like for example:
-
-grep ^MODULE_ /usr/src/linux/drivers/net/3c59x.c
-
-Best regards,
-Roberto Nibali, ratz
--- 
-echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' | dc
-
+Hi,
+I have a small urgent problem. As I told you all before, I have my single=
+=20
+Linux box at a server farm where I have to pay per Mb of data transmitted=
+=2E
+I have a doubt that those guys there are cheating me. They are taking mor=
+e=20
+money than actual data transmitted. Can I use iptables to log all incomin=
+g=20
+and outgoing data and see total incoming/outgoing data in a day/week/mont=
+h?
+What do i have to do? Is there any specific package available for it?
+Thanks a lot and bye.
+-Payal
 
