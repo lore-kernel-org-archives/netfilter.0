@@ -1,12 +1,14 @@
-From: guilez <e.tolentino@comcast.net>
-Subject: Problems Natting PPTP with iptables
-Date: Sat, 8 Nov 2003 13:12:55 -0600
+From: Joel Newkirk <newkirk@newkirk.us>
+Subject: Re: iptables rules to allow ipv6 tunnel?
+Date: Sat, 08 Nov 2003 14:51:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2F5DA3A79AA0CD4B8FB8E721EBE702300102CD@guinevere.ELITES-REALM.com>
+Message-ID: <1068321079.2219.2134.camel@alpha.newkirk.us>
+References: <1068220779.12484.5.camel@jccn-crux-linux.djc.state.id.us>
+Reply-To: newkirk@newkirk.us
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3A62C.50B1FE80"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1068220779.12484.5.camel@jccn-crux-linux.djc.state.id.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,434 +18,114 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jeremy Jones <jeremy@samnjack.com>
+Cc: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Fri, 2003-11-07 at 10:59, Jeremy Jones wrote:
+> Hi folks,
+>=20
+> Wondering if anyone around here could shed some light on what my
+> firewall's problem might be.  Here's the deal:  I have a dsl connection
+> coming into my box on eth3, with eth0 connected to my dmz.  I have a /2=
+9
+> block of addresses to use, so I bridge interfaces eth0 and eth3.=20
+> Interface eth1 is connected to my home LAN.  If you were wondering wher=
+e
+> eth2 went, it's just snorting.  Aside from this, I have an ipv6 sit
+> tunnel, using the local ipv4 address of br0 (the bridge interface), and
+> a remote of 200.1.1.1.  But for the life of me, I can't get any ipv6
+> traffic through.  Well, at least I can't get icmpv6 through, and I'm a
+> little baffled by that.  I've put rules at the beginning of my iptables
+> ruleset that should let through any of the necessary stuff to and from
+> the tunnel broker, but my ping6 never gets an answer, although the
+> firewall logs tell me that traffic IS going in and out to and from the
+> tunnel endpoint.
+>=20
+> So here's my rules, my network startup script, and my firewall logs
+> while ping6ing the ipv6 address of the tunnel endpoint.
+>=20
+> Thanks everyone,
+>=20
+> Jeremy Jones
 
-------_=_NextPart_001_01C3A62C.50B1FE80
-Content-Type: text/plain
+If your IPv6 tunnel endpoint is the firewall box itself, then the only
+traffic iptables will see is proto 41 (although Viag=E9nie Tunnel Setup
+Protocol would need TCP port 3653 or 4343 for tunnel setup)- the ipv6
+traffic itself would be ip6tables.
 
-Hi,
- 
-      I'm having problems trying to Nat PPTP using iptables. I've been
-researching/testing this for a week already and still cannot get this thing
-to work. I've tried patching my 2.4.20-20.7 kernel using pptp nat patch and
-it wouldn't load the nat module and it displays "parameter not valid" for
-REROUTING. Also a PPTP client sometimes connects to a PPTP server out on the
-Internet from the Internal network.  I'm using Redhat 7.1 with
-iptables-1.2.8-8.72.3. Is there a distru or RPM that has this already
-enabled and working. Been reading forums where people are having the same
-problem.
- 
- 
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-iptables -A FORWARD -i eth0 -j ACCEPT
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
- 
-iptables -t nat -A PREROUTING -p tcp -d <WAN ip address> --dport 1723  \
-         -j DNAT --to <internal ip address>
-iptables -t nat -A PREROUTING -p tcp -s <WAN ip address> --sport 1723 \
-         -j DNAT --to <internal ip address>
-iptables -t nat -A PREROUTING -p udp -d <WAN ip address> --dport 500  \
-         -j DNAT --to <internal ip address>
-iptables -t nat -A PREROUTING -p 47 -d <WAN ip address> \
-         -j DNAT --to <internal ip address>
-iptables -t nat -A PREROUTING -p 47 -d <WAN ip address>  \
-         -j DNAT --to <internal ip address>
- 
-iptables -A FORWARD -p tcp -s 0/0 --dport 1723  -j ACCEPT
-iptables -A FORWARD -p tcp -s 0/0 --sport 1723  -j ACCEPT
-iptables -A FORWARD -p 47 -s 0/0 -d 0/0  -j ACCEPT
-iptables -A FORWARD -p 50 -s 0/0 -j ACCEPT
-iptables -A FORWARD -p udp --sport 500 --dport 500 -j ACCEPT
- 
- 
-Thanks,
- 
-E.T.
+You might find a linux ipv6 mailinglist more helpful.
 
-------_=_NextPart_001_01C3A62C.50B1FE80
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+> # lets get the tunnel fixed right here...
+> #
+> iptables -N ipv6_tunnel
+> iptables -A ipv6_tunnel -j LOG --log-prefix "IPv6 Tunnel Traffic?  "
+> iptables -A ipv6_tunnel -j ACCEPT
+> iptables -A INPUT -s $SIT_TUN_ENDPOINT -j ipv6_tunnel
+> iptables -A OUTPUT -d $SIT_TUN_ENDPOINT -j ipv6_tunnel
+> iptables -A FORWARD -d $SIT_TUN_ENDPOINT -j LOG --log-prefix "Why
+> forward?  "
+> iptables -A FORWARD -d $SIT_TUN_ENDPOINT -j ACCEPT
+> iptables -A FORWARD -s $SIT_TUN_ENDPOINT -j LOG --log-prefix "Why
+> forward?  "
 
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
+Why, indeed?  You shouldn't get any traffic between the ipv4 remote
+endpoint of the ipv6 tunnel and any ipv4 address except your local
+endpoint.
 
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
+If the tunnel endpoint is the firewalling box, then you should have
+proto41 and tunnel setup traffic in INPUT and OUTPUT for iptables,
+everything else would be ipv6 traffic /through/ the tunnel, seen only
+with ip6tables.
 
 
-<meta name=3DProgId content=3DWord.Document>
-<meta name=3DGenerator content=3D"Microsoft Word 10">
-<meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C3A5FA.06027FE0">
-<!--[if gte mso 9]><xml>
- <o:OfficeDocumentSettings>
-  <o:DoNotRelyOnCSS/>
- </o:OfficeDocumentSettings>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:SpellingState>Clean</w:SpellingState>
-  <w:GrammarState>Clean</w:GrammarState>
-  <w:DocumentKind>DocumentEmail</w:DocumentKind>
-  <w:EnvelopeVis/>
-  <w:Compatibility>
-   <w:BreakWrappedTables/>
-   <w:SnapToGridInCell/>
-   <w:WrapTextWithPunct/>
-   <w:UseAsianBreakRules/>
-  </w:Compatibility>
-  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
- </w:WordDocument>
-</xml><![endif]-->
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;
-	text-underline:single;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;
-	text-underline:single;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	mso-style-noshow:yes;
-	mso-ansi-font-size:10.0pt;
-	mso-bidi-font-size:10.0pt;
-	font-family:Arial;
-	mso-ascii-font-family:Arial;
-	mso-hansi-font-family:Arial;
-	mso-bidi-font-family:Arial;
-	color:windowtext;
-	font-weight:normal;
-	font-style:normal;
-	text-decoration:none;
-	text-underline:none;
-	text-decoration:none;
-	text-line-through:none;}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;
-	mso-header-margin:.5in;
-	mso-footer-margin:.5in;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 10]>
-<style>
- /* Style Definitions */=20
- table.MsoNormalTable
-	{mso-style-name:"Table Normal";
-	mso-tstyle-rowband-size:0;
-	mso-tstyle-colband-size:0;
-	mso-style-noshow:yes;
-	mso-style-parent:"";
-	mso-padding-alt:0in 5.4pt 0in 5.4pt;
-	mso-para-margin:0in;
-	mso-para-margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-</style>
-<![endif]-->
-</head>
 
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
-style=3D'tab-interval:.5in'>
+>         ip link set eth0 up
+>         ip link set eth3 up
+>         brctl addbr br0
+>         brctl addif br0 eth0
+>         brctl addif br0 eth3
+>         ip link set br0 up
+>         ip addr add 100.1.1.1/29 dev br0
+>         ip route add 0/0 via 100.1.1.2 dev br0
+>         ip tunnel add six0 mode sit remote 200.1.1.1 local 100.1.1.1 tt=
+l
+> 255
+>         ip link set six0 up
+>         ip addr add 2001:0123:4567:89ab::123f/127 dev six0
+>         ip route add ::/0 dev six0
+>         ip addr add 2001:fedc:ba09:8765:1::1/96 dev eth0
+>         ip link set eth1 up
+>         ip addr add 10.10.10.1/24 dev eth1
+>         ip addr add 2001:fedc:ba09:8765:2::1/96 dev eth1
 
-<div class=3DSection1>
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hi,<o:p></o:p></span></font></p>
+> Nov  7 09:30:00 gw kernel: IPv6 Tunnel Traffic?  IN=3D OUT=3Dbr0
+> PHYSOUT=3Deth0 SRC=3D100.1.1.1 DST=3D200.1.1.1 LEN=3D124 TOS=3D0x00 PRE=
+C=3D0x00
+> TTL=3D255 ID=3D0 DF PROTO=3D41
+> Nov  7 09:30:00 gw kernel: IPv6 Tunnel Traffic?  IN=3Dbr0 OUT=3D PHYSIN=
+=3Deth0
+> MAC=3D00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd SRC=3D200.1.1.1
+> DST=3D100.1.1.1 LEN=3D124 TOS=3D0x00 PREC=3D0x00 TTL=3D242 ID=3D803 PRO=
+TO=3D41
+> Nov  7 09:30:00 gw kernel: Why forward?  IN=3Dbr0 OUT=3Dbr0 PHYSIN=3Det=
+h0
+> PHYSOUT=3Deth0 SRC=3D100.1.1.1 DST=3D200.1.1.1 LEN=3D124 TOS=3D0x00 PRE=
+C=3D0x00
+> TTL=3D255 ID=3D0 DF PROTO=3D41
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+I suspect this is because you have br0 as an endpoint of your tunnel,
+but I'm not sure, never having done this on a bridge before.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><span
-style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>I'm =
-having
-problems trying to Nat PPTP using <span class=3DSpellE>iptables</span>. =
-I've
-been researching/testing this for a week already and still cannot get =
-this
-thing to work. I've tried patching my 2.4.20-20.7 kernel using <span
-class=3DSpellE>pptp</span> <span class=3DSpellE>nat</span> patch and it =
-wouldn't
-load the <span class=3DSpellE>nat</span> module and it displays =
-"parameter
-not valid" for REROUTING. Also a PPTP client sometimes connects to a =
-PPTP
-server out on the Internet from the <span class=3DGramE>Internal</span> =
-network. <span
-style=3D'mso-spacerun:yes'>&nbsp;</span>I'm using <span =
-class=3DSpellE>Redhat</span>
-7.1 with iptables-1.2.8-8.72.3. Is there a <span =
-class=3DSpellE>distru</span> or
-RPM that has this already enabled and <span =
-class=3DGramE>working.</span> Been
-reading forums where people are having the same =
-problem.<o:p></o:p></span></font></p>
+> Nov  7 09:30:00 gw kernel: Something not right  IN=3Dbr0 OUT=3Dbr0
+> PHYSIN=3Deth0 PHYSOUT=3Deth3 SRC=3D200.1.2.3 DST=3D224.0.0.10 LEN=3D60 =
+TOS=3D0x00
+> PREC=3D0xC0 TTL=3D2 ID=3D0 PROTO=3D88
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+Cisco EIGRP, looks like.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+j
 
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -t <span
-class=3DSpellE>nat</span> -A POSTROUTING -o eth1 -j =
-MASQUERADE<o:p></o:p></span></font></p>
 
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -A FORWARD
--<span class=3DSpellE>i</span> eth0 -j =
-ACCEPT<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -A FORWARD
--m state --state RELATED,ESTABLISHED -j =
-ACCEPT<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -t <span
-class=3DSpellE>nat</span> -A PREROUTING -p <span =
-class=3DSpellE>tcp</span> -d &lt;WAN
-<span class=3DSpellE>ip</span> address&gt; --<span =
-class=3DSpellE>dport</span>
-1723<span style=3D'mso-spacerun:yes'>&nbsp; =
-</span>\<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><span
-style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;
-</span>-<span class=3DGramE>j</span> DNAT --to &lt;internal <span =
-class=3DSpellE>ip</span>
-address&gt;<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -t <span
-class=3DSpellE>nat</span> -A PREROUTING -p <span =
-class=3DSpellE>tcp</span> -s &lt;WAN
-<span class=3DSpellE>ip</span> address&gt; --sport 1723 =
-\<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><span
-style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;
-</span>-<span class=3DGramE>j</span> DNAT --to &lt;internal <span =
-class=3DSpellE>ip</span>
-address&gt;<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -t <span
-class=3DSpellE>nat</span> -A PREROUTING -p <span =
-class=3DSpellE>udp</span> -d &lt;WAN
-<span class=3DSpellE>ip</span> address&gt; --<span =
-class=3DSpellE>dport</span>
-500<span style=3D'mso-spacerun:yes'>&nbsp; =
-</span>\<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><span
-style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;
-</span>-<span class=3DGramE>j</span> DNAT --to &lt;internal <span =
-class=3DSpellE>ip</span>
-address&gt;<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial'>iptables=
-</span></font></span></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -t <span
-class=3DSpellE>nat</span> -A PREROUTING -p 47 -d &lt;WAN <span =
-class=3DSpellE>ip</span>
-address&gt; \<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><span
-style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;
-</span>-<span class=3DGramE>j</span> DNAT --to &lt;internal <span =
-class=3DSpellE>ip</span>
-address&gt;<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -t <span
-class=3DSpellE>nat</span> -A PREROUTING -p 47 -d &lt;WAN <span =
-class=3DSpellE>ip</span>
-address&gt; <span =
-style=3D'mso-spacerun:yes'>&nbsp;</span>\<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><span
-style=3D'mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;
-</span>-<span class=3DGramE>j</span> DNAT --to &lt;internal <span =
-class=3DSpellE>ip</span>
-address&gt;<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -A FORWARD
--p <span class=3DSpellE>tcp</span> -s 0/0 --<span =
-class=3DSpellE>dport</span>
-1723<span style=3D'mso-spacerun:yes'>&nbsp; </span>-j =
-ACCEPT<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -A FORWARD
--p <span class=3DSpellE>tcp</span> -s 0/0 --sport 1723<span
-style=3D'mso-spacerun:yes'>&nbsp; </span>-j =
-ACCEPT<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -A FORWARD
--p 47 -s 0/0 -d 0/0<span style=3D'mso-spacerun:yes'>&nbsp; </span>-j =
-ACCEPT<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -A FORWARD
--p 50 -s 0/0 -j ACCEPT<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></spa=
-n></span><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'> -A FORWARD
--p <span class=3DSpellE>udp</span> --sport 500 --<span =
-class=3DSpellE>dport</span>
-500 -j ACCEPT<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DGramE><font size=3D2 =
-face=3DArial><span
-style=3D'font-size:10.0pt;font-family:Arial'>E.T.</span></font></span><f=
-ont
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></=
-p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C3A62C.50B1FE80--
 
