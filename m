@@ -1,10 +1,9 @@
-From: "Patrick Ahler" <patrick@vikus.com>
-Subject: Forwarding Problems
-Date: Thu, 6 Mar 2003 11:56:18 -0500
+From: Khanh Tran <khanh@slc.edu>
+Subject: RE: Forwarding Problems
+Date: Thu, 6 Mar 2003 13:10:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ABEKJILKOKKGGDJKHKDFOEBGCAAA.patrick@vikus.com>
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC64EC56@EXCHANGE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,7 +15,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter EMAIL <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: 'Patrick Ahler' <patrick@vikus.com>, netfilter EMAIL <netfilter@lists.netfilter.org>
+
+You need to make sure you set your default (-P) policies first, THEN append
+your FORWARD chain ACCEPTs.  Iptables rules are built sequentially, so you
+have to do the more generic stuff first, then do more specific 
+exceptions afterwards.
+
+Khanh Tran
+Network Operations
+Sarah Lawrence College
+1 Mead Way
+Bronxville, NY 10708
+
+
+
+-----Original Message-----
+From: Patrick Ahler [mailto:patrick@vikus.com]
+Sent: Thursday, March 06, 2003 11:56 AM
+To: netfilter EMAIL
+Subject: Forwarding Problems
+
 
 I have iptables FORWARD chain working except for one minor detail... after I
 set all the ACCEPT rules, I want to set a drop rule/policy to the FORWARD
@@ -37,5 +57,7 @@ iptables -A FORWARD -p tcp -s 192.168.1.0/24 --sport 80 -j ACCEPT
 iptables -A FORWARD -j DROP
 
 Any help is greatly appreciated
+
+
 
 
