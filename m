@@ -1,1017 +1,215 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: How to run iptables insert command  on linux  box as non root user?
-Date: Sun, 1 Jun 2003 11:48:12 +1000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D70@wardrive.citadelcomputer.com.au>
+From: "Preston A. Elder" <prez@srealm.net.au>
+Subject: Re: [netfilter-core] iptables/conntrack in enterprise environment.
+Date: Fri, 30 May 2003 20:55:25 -0400
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <200305302055.40839.prez@srealm.net.au>
+References: <200305290113.58552.prez@srealm.net.au> <200305300133.44822.prez@srealm.net.au> <20030530194240.GI29312@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <20030530194240.GI29312@sunbeam.de.gnumonks.org>
+Content-Description: clearsigned data
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Israel Zavalza Bahena <izavalza@hotmail.com>, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: Text/Plain; charset="us-ascii"
+To: Harald Welte <laforge@netfilter.org>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
 
-The best I could come up with is either use a new port instead of port =
-80 (like www.webmin.com) or write to a MySQL database of what commands =
-are required and then allow a script to make the changes for you.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-/etc/crontab
-* * * * * root    php /scripts/updateiptables.php
-
-once webserver page authenticates a user, it allows changes to be made =
-and writes them to a secured MySQL database. Every minute, the root user =
-script reads them and executes them as required... it's not an immediate =
-but works. You could always make the PHP script always active monitoring =
-changes I guess...
-
-
------Original Message-----
-From: Israel Zavalza Bahena [mailto:izavalza@hotmail.com]
-Sent: Saturday, May 31, 2003 7:19 AM
-To: netfilter@lists.netfilter.org
-Subject: How to run iptables insert command on linux box as non root
-user?
-
-
+On Friday 30 May 2003 03:42 pm, Harald Welte wrote:
+> > If I then telnet to 10.0.0.1 on port 5050, the connection is immediate,
+> > and my application receives a new connection on port 5050.  If, however,
+> > I telnet to 10.0.0.1 on port 5150, there is a small (but noticable) del=
+ay
+> > between when the telnet session shows the connection as established, and
+> > when the application receives the connection (on a random port between
+> > 5000 and 5100 inclusive).
+>
+> This is _definitely_ not a netfilter issue then.  We are not doing
+> transparent proxying but nat.  netfilter/iptables _never_ accept
+> connections on their own.  So you open a connection:
+Maybe not, but thats the behavior I'm seeing.  But this doesnt bother me so=
+=20
+much as it takes a LOT longer for a connection to be established when=20
+connecing to a port outside the range, than to one inside the range.
 
 
-Hello
+> 1. telnet 10.0.0.1 5150
+> 2. syn packet is sent by telnet
+> 3. syn packet is DNAT'ed by netfilter
+> 4. syn packet arrives at server application
+> 5. syn/ack packet is sent by server application
+> 6. syn/ack packet is SNAT'ed by netfilter
+> 7. syn/ack packet is received by telnet
+>  [further handshake goes on]
+> x. telnet application prints 'Connection established' (connect(2) call
+>    returns)
+>
+> This is a fundamental tcp/ip operation, and it can certainly by no way
+> be anything that netfilter does, that would introduce a behaviour like
+>
+> 1. telnet 10.0.01 5150
+> 2. telnet shows 'connection established'
+> 3. connection 'arrives' at server
+>
+> [which is what you have been describing, If I understood you correctly].
+I realise this is supposed to happen, however again, its not what I'm=20
+observing, though its only noticable under high loads, so maybe its taking =
+a=20
+long time to get the initial SYN and ACK to the server from telnet (which=20
+would account for both the delay before connection is established by telnet=
+=20
+(delay for SYN/ACK to get back from server), and the delay between this and=
+=20
+the server showing the connection established (which only happens after it=
+=20
+gets the ACK).
 
+OK, so with this information, its taking a LONG time to get the SYN and ACK=
+ to=20
+the server when I'm connecting to a port outside the range I'm listening on=
+=20
+with the application, causing the appearance of the port being connected by=
+=20
+telnet a long time before the server shows it being established.  In any=20
+case, this doesnt change the problem.  This delay does *NOT* exist when=20
+connecting to a port that is in the listening range (remember that all=20
+connections being discussed here are going to systems BEHIND the router box=
+).
 
-I need to run IPTABLES on a linux box from a CGI on apache web server, =
-but i=20
-need to run as apache user, not as root user, to avoid a secure=20
-vulnerability over the apache web server.
+I did some kernel diving, I've iscolated the place where the behavior=20
+differentiates between a connection 'in' and 'out' of the port range, at th=
+is=20
+if statement in get_unique_tuple (ip_nat_core.c):
+               if ((!(rptr->flags & IP_NAT_RANGE_PROTO_SPECIFIED)
+                     || proto->in_range(tuple, HOOK2MANIP(hooknum),
+                                        &rptr->min, &rptr->max))
+                    && !ip_nat_used_tuple(tuple, conntrack)) {
 
-Do i need to recompile iptables or the kernel ?
+Obviously, anything connecting to a port outside this range will fail the=20
+above if.  If this fails, it will lead us to do this (one way or another):
+                       if (proto->unique_tuple(tuple, rptr,
+                                                HOOK2MANIP(hooknum),
+                                                conntrack)) {
 
-Someone has done it before ?
+The unique_tuple function is where the delay is.  In this case, its a TCP=20
+connection, which translates to tcp_unique_tuple (ip_nat_proto_tcp.c), whic=
+h=20
+after determining the port range, does the following:
+        for (i =3D 0; i < range_size; i++, port++) {
+                *portptr =3D htons(min + port % range_size);
+                if (!ip_nat_used_tuple(tuple, conntrack)) {
+                        return 1;
+                }
+        }
 
-Thanks for your comments.
+Now I'm assuming it will use this:
+                min =3D ntohs(range->min.tcp.port);
+                range_size =3D ntohs(range->max.tcp.port) - min + 1;
+rather than this:
+                        min =3D 1024;
+                        range_size =3D 65535 - 1024 + 1;
+for my port range, since I specified a local port range, however either way=
+,=20
+the range is about 100 ports.  Which means the above nat used lookup happen=
+s=20
+100 times (as opposed to once for when the port is inside the range).  And=
+=20
+since ip_nat_used_tuple (ip_nat_core.c) calls ip_conntrack_tuple_taken=20
+(ip_conntrack_core.c), which subsequently locks/unlocks the entire conntrac=
+k=20
+table, and calls __ip_conntrack_find (which is a list lookup!), the above f=
+or=20
+loop is a very intensive process.
 
+Now, after all that.  A few questions arise:
+1) Is there a way the above for loop could lock the conntrack table=20
+beforehand, do the searches (not locked) and unlock afterwards.  This is=20
+probably the biggest thing consuming all the speed, constant=20
+locking/unlocking, especially when there are many new socket connections=20
+coming in every second.
 
-Ing. Israel Zavalza Bahena
-Technology Strategic Manager of
-INTERTIENDAS Network Center
+2) Is there a way the above for loop could use a random 'start' place, sear=
+ch=20
+through to the end, and then start at the beginning, until it ends up back =
+at=20
+the same place it started from, which would avoid it constantly treading th=
+e=20
+same ground (if the last entry used 1, its pretty assured 1 is still going =
+to=20
+be in use when you get the next entry, so you could either skip directly to=
+=20
+2, or randomly choose a new position to start at). (ie. something like:
+	int port, start_port =3D (rand() % range) + min_port);
+	for (port=3Dstart_port; port<min_port + range; port++)
+		{ if (!used) { return 1; } }
+	if (port =3D=3D min_port + range)
+		for (port =3D min_port; port < start_port; port++)
+			{ if (!used) { return 1; } }
+	return 0;
+).  Obviously, the kernel's rand would need to be used, etc.
 
+3) Why does it need to do the unique check in the first place (for DNAT and=
+=20
+REDIRECT), since this code should only be triggered on a new connection, an=
+d=20
+if I have 2 new connections from the same source, to the same destination a=
+nd=20
+the same destination (nat'd) port, who cares?  The destination port has to =
+be=20
+listening for it anyway, and theres nothing stopping it accepting 2=20
+connections from the same source to the same local port (the source port wi=
+ll=20
+always be different).  I'm assuming the 'resend' checks are done before thi=
+s=20
+point anyway (using the ORIGINAL destination ip/port, not the nat'd one) in=
+=20
+the system's TCP stack.
 
+Anyway, if I'm way off base here, let me know, but I'm just trying to figur=
+e=20
+out why there is a difference between connecting to a port inside, and a po=
+rt=20
+outside the range I'm listening to on the router.  Its not a small differen=
+ce=20
+(time wise) either.
 
+And re: your other email:
+1) I know SNATs is not a TCP state, the data was copied from a file I gener=
+ate=20
+every 5 minutes gathering this data, and that was the line above what I men=
+t=20
+to copy.
+2) When I said 'without state', I mean UDP connections, since they don't ha=
+ve=20
+TCP state information.
 
+=2D --=20
+PreZ
+Systems Administrator
+Shadow Realm
 
+PGP FingerPrint: B3 0C F3 32 DE 5A 7D 90  26 F6 FA 38 CC 0A 2D D8
+=46inger prez@srealm.net.au for full PGP public key.
 
+Shadow Realm, a hobbyist ISP supplying real internet services.
+http://www.srealm.net.au
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-
->From: netfilter-request@lists.netfilter.org
->Reply-To: netfilter@lists.netfilter.org
->To: netfilter@lists.netfilter.org
->Subject: netfilter digest, Vol 1 #872 - 10 msgs
->Date: Fri, 30 May 2003 22:40:16 +0200
->
->Send netfilter mailing list submissions to
->	netfilter@lists.netfilter.org
->
->To subscribe or unsubscribe via the World Wide Web, visit
->	https://lists.netfilter.org/mailman/listinfo/netfilter
->or, via email, send a message with subject or body 'help' to
->	netfilter-request@lists.netfilter.org
->
->You can reach the person managing the list at
->	netfilter-admin@lists.netfilter.org
->
->When replying, please edit your Subject line so it is more specific
->than "Re: Contents of netfilter digest..."
->
->
->Today's Topics:
->
->    1. Need some clarity (Michael Carroll)
->    2. Skipping connection tracking for certain traffic types? (Ville=20
->Mattila)
->    3. Usage of netfilter (Aditya Bhasin)
->    4. A problem - connections dies (Peter Pohlmann)
->    5. vpn between networks with private ip network segment conflicts=20
->(dtrott@mailshell.com)
->    6. RE: upgrade to iptabels from ipchains (John Friel III)
->    7. Re: SOLVED : Re: where is libipt_match.so? (David T-G)
->    8. RE: upgrade to iptables from ipchains (John Friel III)
->    9. iptables/conntrack in enterprise environment. (Preston A. Elder)
->   10. Re: [netfilter-core] iptables/conntrack in enterprise =
-environment.=20
->(Preston A. Elder)
->
->--__--__--
->
->Message: 1
->Date: Tue, 27 May 2003 14:45:54 -0400
->From: Michael Carroll <ingenious@jfvp.net>
->To:  netfilter@lists.netfilter.org
->Subject: Need some clarity
->
->Hello netfilter development crew,
->
->I have a couple, probably straight foreward questions, but I don't know
->the answers to and would like to just to clear things up a little bit.
->
-># Generated by iptables-save v1.2.7a on Tue Apr 15 14:25:35 2003
->*nat
->:PREROUTING ACCEPT [7595:344053]
->:POSTROUTING ACCEPT [80:4556]
->:OUTPUT ACCEPT [63:3755]
->COMMIT
->
->That is what is generated when I first do an 'iptables-save > /dir' now
->I was wondering what all the numbers inside those brackets stood for,
->because when I start to add rules to them those numbers start to =
-change.
->They also add the user defined rules just before the COMMIT.  Does it
->matter in how you type out you iptables rules, like you should DROP
->everything first, then start to 'open' ports up correct?  Also one =
-other
->thing what does the COMMIT mean?
->
->Thank you in advance.
->
->Michael Carroll
->
->
->
->
->--__--__--
->
->Message: 2
->Date: Tue, 27 May 2003 22:49:56 +0300 (EET DST)
->From: Ville Mattila <vm@iki.fi>
->To: netfilter@lists.netfilter.org
->cc: Ville Mattila <vm@iki.fi>
->Subject: Skipping connection tracking for certain traffic types?
->
->-----BEGIN PGP SIGNED MESSAGE-----
->Hash: SHA1
->
->Hello all,
->
->
->Correct me on this if I'm wrong: It is a feature of
->Netfilter that whenever conntrack is registered in
->kernel, then for example any UDP packet passing through
->the firewall causes the state table to be consulted
->resulting in either update of an old state entry if
->found or creation of a new state.
->
->Now if the description above holds we have a slight problem.
->
->At our site, connection tracking would be the nice way to
->handle the classic case of allowing responses to UDP
->requests initating from our internal network. The problem
->is that in the internal network there are several standalone
->(a.k.a. non-forwarding) caching nameservers sending about 100
->dns queries per second through the firewall in the worst case.
->For us the default ip_conntrack_proto_udp.c timeout setting
->of 30 seconds for unreplied UDP requests and 180 seconds
->for assured streams could mean from 3 000 up to 18 000 state
->entries for these dns requests alone.
->
->This problem would be solved if it was possible with
->Netfilter/iptables to skip connection tracking for some
->rules (servers sending dns queries and replies to them in
->our case), or better yet, not to track every connection by
->default but only when requested per rule. Is this kind
->of selective connection tracking possible already or will
->it possibly become supported in future conntrack versions?
->
->
->Best regards,
->Ville
->
->- --
->Mr. Ville Mattila, vm@iki.fi, http://iki.fi/vm/
->
->-----BEGIN PGP SIGNATURE-----
->
->iD8DBQE+08FytUJlHUfTfMERAoqUAJ9IVa+SDTSH0RBpw62MQennyu2LfACgtbG0
->xlVPrOV87drR5C4KidXjOgI=3D
->=3DMe43
->-----END PGP SIGNATURE-----
->
->
->--__--__--
->
->Message: 3
->From: "Aditya Bhasin" <aditya.bhasin@openwave.com>
->To: <netfilter@lists.netfilter.org>
->Subject: Usage of netfilter
->Date: Tue, 27 May 2003 15:17:15 -0700
->
->This is a multi-part message in MIME format.
->
->------=3D_NextPart_000_00D2_01C32463.0E9C9190
->Content-Type: text/plain;
->	charset=3D"US-ASCII"
->Content-Transfer-Encoding: 7bit
->
->Hi,
->
->is it possbile using netfilter and libipq to extract a packet from the
->IPV4 stream, buffer it in the user space and then put the packet back =
-on
->the outgoing stream at a later point in time.
->
->All the docs and examples I have looked at seem to read in a packet do
->an operation on it and then announce a verdit on the packet.
->
->Are there APIs to insert packets into the queue which have not been =
-read
->from it. If that was allowed I could copy and reject initially and then
->insert again at a later point in time.
->
->
->thanks,
->
->aditya
->
->
->------=3D_NextPart_000_00D2_01C32463.0E9C9190
->Content-Type: text/html;
->	charset=3D"US-ASCII"
->Content-Transfer-Encoding: quoted-printable
->
-><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-><HTML><HEAD>
-><META HTTP-EQUIV=3D3D"Content-Type" CONTENT=3D3D"text/html; =3D
->charset=3D3Dus-ascii">
-><TITLE>Message</TITLE>
->
-><META content=3D3D"MSHTML 6.00.2726.2500" name=3D3DGENERATOR></HEAD>
-><BODY>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003>Hi,</SPAN></FONT></DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003></SPAN></FONT>&nbsp;</DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN =
-class=3D3D628311322-27052003>is it =3D
->possbile using=3D20
->netfilter and libipq to extract a packet from the IPV4 stream, buffer =
-it =3D
->in the=3D20
->user space and then put the packet back on the outgoing stream at a =3D
->later point=3D20
->in time.</SPAN></FONT></DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003></SPAN></FONT>&nbsp;</DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN =
-class=3D3D628311322-27052003>All =3D
->the docs and=3D20
->examples I have looked at seem to read in a packet do an operation on =
-it =3D
->and=3D20
->then announce&nbsp;a verdit on the packet. </SPAN></FONT></DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003></SPAN></FONT>&nbsp;</DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN =
-class=3D3D628311322-27052003>Are =3D
->there APIs to=3D20
->insert packets into the queue which have not been read from it. If that =
-=3D
->was=3D20
->allowed I could copy and reject initially and then insert again at a =
-=3D
->later point=3D20
->in time.</SPAN></FONT></DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003></SPAN></FONT>&nbsp;</DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003></SPAN></FONT>&nbsp;</DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003>thanks,</SPAN></FONT></DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003></SPAN></FONT>&nbsp;</DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN =
-class=3D3D628311322-27052003>aditya =3D
->
-></SPAN></FONT></DIV>
-><DIV><FONT face=3D3DArial size=3D3D2><SPAN=3D20
->class=3D3D628311322-27052003></SPAN></FONT>&nbsp;</DIV></BODY></HTML>
->
->------=3D_NextPart_000_00D2_01C32463.0E9C9190--
->
->
->
->--__--__--
->
->Message: 4
->From: "Peter Pohlmann" <peter@e-partner.com>
->To: <netfilter@lists.netfilter.org>
->Subject: A problem - connections dies
->Date: Tue, 27 May 2003 16:37:33 -0400
->
->This is a multi-part message in MIME format.
->
->------=3D_NextPart_000_0058_01C3246E.45EBF540
->Content-Type: text/plain;
->	charset=3D"Windows-1252"
->Content-Transfer-Encoding: quoted-printable
->
->Hello list,
->
->I have a problem with my masquerading.=3D20
->Can someone supply me a basic configuration. I want to have the private =
-=3D
->network
->open for everything.=3D20
->
->The current rules are below. Works for pop ,http etc. But ftp is not =
-=3D
->proper and connecting to an outside=3D20
->smtp server is a problem too. I can send very small emails but if some =
-=3D
->larger email or attachment it stops after transferring some kbs.  What =
-=3D
->am I missing here ?  The server is redhat 9 pppoe to the dsl modem.
->
->#!/bin/sh
->
->modprobe ip_conntrack_ftp
->modprobe iptable_nat
->iptables -P INPUT ACCEPT
->iptables -P OUTPUT ACCEPT
->iptables -P FORWARD ACCEPT
->
->echo 1 >/proc/sys/net/ipv4/ip_forward
->echo 1 >/proc/sys/net/ipv4/ip_dynaddr
->
->iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
->iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS =3D
->--clamp-mss-to-pmtu
->
->Thank you in advance,
->Peter
->
->
->
->
->------=3D_NextPart_000_0058_01C3246E.45EBF540
->Content-Type: text/html;
->	charset=3D"Windows-1252"
->Content-Transfer-Encoding: quoted-printable
->
-><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-><HTML><HEAD>
-><META http-equiv=3D3DContent-Type content=3D3D"text/html; =3D
->charset=3D3Dwindows-1252">
-><META content=3D3D"MSHTML 6.00.2719.2200" name=3D3DGENERATOR>
-><STYLE></STYLE>
-></HEAD>
-><BODY bgColor=3D3D#ffffff>
-><DIV><FONT size=3D3D2>Hello list,</FONT></DIV>
-><DIV><FONT size=3D3D2></FONT>&nbsp;</DIV>
-><DIV><FONT size=3D3D2>I have a problem with my masquerading. =
-</FONT></DIV>
-><DIV><FONT size=3D3D2>Can someone supply me a basic configuration. I =
-want =3D
->to have=3D20
->the private network</FONT></DIV>
-><DIV><FONT size=3D3D2>open for everything. </FONT></DIV>
-><DIV><FONT size=3D3D2></FONT>&nbsp;</DIV>
-><DIV><FONT size=3D3D2>The current rules are below. Works for pop ,http =
-=3D
->etc. But ftp=3D20
->is not proper and connecting to an outside </FONT></DIV>
-><DIV><FONT size=3D3D2>smtp server is a problem too. I can send very =
-small =3D
->emails but=3D20
->if some larger email or attachment it stops after transferring some =3D
->kbs.&nbsp;=3D20
->What am I missing here ?&nbsp; The server is redhat 9 pppoe to the =
-dsl=3D20
->modem.</FONT></DIV>
-><DIV><FONT size=3D3D2></FONT>&nbsp;</DIV>
-><DIV><FONT size=3D3D2>#!/bin/sh</FONT></DIV>
-><DIV>&nbsp;</DIV>
-><DIV><FONT size=3D3D2>modprobe ip_conntrack_ftp<BR>modprobe =3D
->iptable_nat</FONT></DIV>
-><DIV><FONT size=3D3D2>iptables -P INPUT ACCEPT<BR>iptables -P =
-OUTPUT=3D20
->ACCEPT<BR>iptables -P FORWARD ACCEPT</FONT></DIV><FONT size=3D3D2>
-><DIV><BR>echo 1 &gt;/proc/sys/net/ipv4/ip_forward<BR>echo 1=3D20
->&gt;/proc/sys/net/ipv4/ip_dynaddr</DIV>
-><DIV>&nbsp;</DIV>
-><DIV>iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE<BR>iptables =
--A =3D
->FORWARD=3D20
->-p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu</DIV>
-><DIV>&nbsp;</DIV>
-><DIV>Thank you in advance,</DIV>
-><DIV>Peter</DIV>
-><DIV>&nbsp;</DIV>
-><DIV><BR>&nbsp;</DIV></FONT></BODY></HTML>
->
->------=3D_NextPart_000_0058_01C3246E.45EBF540--
->
->
->
->--__--__--
->
->Message: 5
->Date: Wed, 28 May 2003 01:32:20 -0700
->From: <dtrott@mailshell.com>
->To: drew.einhorn@starband.net
->Cc: netfilter@lists.netfilter.org
->Subject: vpn between networks with private ip network segment conflicts
->
->If:
->- You Don't need to access the whole remote network
->   (just a limited number of servers)
->- Those servers don't clash with anything on your local network
->   or its not too painful to move one or two hosts
->   so they don't clash.
->
->You may be able to kludge it with some proxy arping.
->
->You will need to have:
->- Both routers on non clashing addresses.
->- Both routers proxy arp for the other one.
->- Your local router will have to proxy arp for all the
->   servers you wish to access.
->- You will need to SNAT all outgoing VPN traffic to your
->   local routers IP (to avoid conflicts on the remote lan).
->
->Reverse local and remote for access in the oposite direction.
->
->Note: I have not tested all this together, the closest I
->have tried is:
->
->My home network uses:
->
->10.1.100.0/24
->
->My work network uses:
->
->10.1.0.0/16
->
->I proxy arp the subnet on the router at work, but my home router =
-doesn't
->need to proxy arp or SNAT because the netmask is smaller and there are =
-no
->conflicts on the work LAN.
->
->
->This will save you having to mess with the DNS, but to be honest I =
-think
->the least painful route (in the long run) is just to re-number one of
->the networks.
->
->This is especially true if you are planing to do anthing with
->MS networking, because MS networking really doesn't like NAT.
->
->
->David
->
->
->PS If bi-directional access is not required you may be able to
->SNAT to a virtual IP (per some of the other posts), this will save
->the remote router from needing to proxy arp.
->
->
->Drew Einhorn Wrote:
-> > My LAN uses network segments 192.168.0.0/24, 192.168.1.0/24, etc.
-> > So does the remote network I need to vpn to (probably using some =
-flavor
-> > of pptp).
-> >
-> > Is there an odd nat variant that will solve this problem.
-> > Probably need to do some kind of dns transformation on each side.
->
-> > Is there any easy solution.  Perhaps it would be easier (but not =
-easy)
-> > to get the network segments renumbered on one end or the other.
-> >
-> > --
-> > Drew Einhorn <drew.einhorn@starband.net>
->
->
->
->--__--__--
->
->Message: 6
->From: John Friel III <john@frieltek.com>
->To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
->Cc: =3D?iso-8859-1?Q?=3D27Leonardo_Rodrigues_Magalh=3DE3es=3D27?=3D=20
-><leolistas@solucoesip.net>
->Subject: RE: upgrade to iptabels from ipchains
->Date: Wed, 28 May 2003 13:31:43 -0500
->
-> >     would became this in iptables
-> >
-> > iptables -N soporte
-> > iptables -A soporte -s 10.0.1.1 -j ACCEPT
-> > iptables -A soporte -j DROP
-> > iptables -A FORWARD -s 10.0.0.0/25 -j soporte
-> > iptables -t nat -A POSTROUTING -s 10.0.1.1 -j MASQUERADE
->
->And it should be noted that with these rules in place, all packets that =
-get
->forwarded to the soporte chain will get DROPPED because the forward =
-rule
->only forwards IP's in the range of 10.0.0.0-10.0.0.127 and the accept =
-range
->is restricted to -only- IP 10.0.1.1.
->
->The 4th rule should be:
->
->iptables -A FORWARD -s 10.0.0.0/16 -j soporte
->
->
->
->
->Cheers!
->John Friel III
->Frieltek Consulting, Inc.
->
->
->--__--__--
->
->Message: 7
->Date: Thu, 29 May 2003 01:08:22 -0400
->From: David T-G <davidtg@justpickone.org>
->To: NetFilter Users' List <netfilter@lists.netfilter.org>
->Cc: George Vieira <georgev@citadelcomputer.com.au>
->Subject: Re: SOLVED : Re: where is libipt_match.so?
->
->
->--RD6GsZsdEJvsf78O
->Content-Type: text/plain; charset=3Dus-ascii
->Content-Disposition: inline
->Content-Transfer-Encoding: quoted-printable
->
->George --
->
->=3D2E..and then George Vieira said...
->%=3D20
->% no no no.. you've forgotten also the --state before mentioning the
->% states your checking..
->
->Ahhh...
->
->
->%=3D20
->%=3D20
->% *george searches his scripts*
->%=3D20
->% See.... as below..
->% $IPTABLES -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
->
->Well, this seems to work and not cause any errors, so it's good enough
->for me :-)
->
->
->%=3D20
->% Thanks,
->
->
->Thank *you*!
->
->:-D
->--=3D20
->David T-G                      * There is too much animal courage =
-in=3D20
->(play) davidtg@justpickone.org * society and not sufficient moral =
-courage.
->(work) davidtgwork@justpickone.org  -- Mary Baker Eddy, "Science and=20
->Health"
->http://justpickone.org/davidtg/      Shpx gur Pbzzhavpngvbaf Qrprapl =
-Npg!
->
->
->--RD6GsZsdEJvsf78O
->Content-Type: application/pgp-signature
->Content-Disposition: inline
->
->-----BEGIN PGP SIGNATURE-----
->Version: GnuPG v1.0.7 (FreeBSD)
->
->iD8DBQE+1ZXGGb7uCXufRwARAts7AJ48YyvICTtRce1iBuZDQAlGJ5gpxACeKKAn
->yIZfP04BuE1EdMkZZOn/EP0=3D
->=3DFHFS
->-----END PGP SIGNATURE-----
->
->--RD6GsZsdEJvsf78O--
->
->
->--__--__--
->
->Message: 8
->From: John Friel III <john@frieltek.com>
->To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
->Cc: =3D?iso-8859-1?Q?=3D27Leonardo_Rodrigues_Magalh=3DE3es=3D27?=3D=20
-><leolistas@solucoesip.net>
->Subject: RE: upgrade to iptables from ipchains
->Date: Wed, 28 May 2003 13:37:33 -0500
->
-> >     would became this in iptables
-> >
-> > iptables -N soporte
-> > iptables -A soporte -s 10.0.1.1 -j ACCEPT
-> > iptables -A soporte -j DROP
-> > iptables -A FORWARD -s 10.0.0.0/25 -j soporte
-> > iptables -t nat -A POSTROUTING -s 10.0.1.1 -j MASQUERADE
->
->And it should be noted that with these rules in place, all packets that =
-get
->forwarded to the soporte chain will get DROPPED because the forward =
-rule
->only forwards IP's in the range of 10.0.0.0-10.0.0.127 and the accept =
-range
->is restricted to -only- IP 10.0.1.1.
->
->The 4th rule should be:
->
->iptables -A FORWARD -s 10.0.0.0/16 -j soporte
->
->
->
->
->Cheers!
->John Friel III
->Frieltek Consulting, Inc.
->
->
->--__--__--
->
->Message: 9
->From: "Preston A. Elder" <prez@srealm.net.au>
->Organization: Shadow Realm
->To: netfilter@lists.netfilter.org,
->	netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
->Subject: iptables/conntrack in enterprise environment.
->Date: Thu, 29 May 2003 01:13:47 -0400
->
->=3D2D----BEGIN PGP SIGNED MESSAGE-----
->Hash: SHA1
->
->Hi,
->
->I am in an enterprise environment and I'm having some problems with=20
->conntra=3D
->ck=3D20
->specifically.
->
->We have a system that acts as a router, however any new inbound =
-connection=20
->=3D
->for=3D20
->any machine behind this router is re-directed to a specific port on the =
-
->loc=3D
->al=3D20
->machine, where an application responds as if it were the system behind =
-the=3D
->=3D20
->router.  These systems experience some very high volumes of =
-traffic=3D20
->(sustaining over 30mbit of traffic).  Heres a breakdown of TCP =
-socket=3D20
->connections by status at one particular point in time:
->ESTABLISHED : 1363
->LAST_ACK    : 27
->TIME_WAIT   : 616
->=3D46IN_WAIT2   : 8
->=3D46IN_WAIT1   : 140
->SYN_RECV    : 6188
->CLOSE_WAIT  : 365
->LISTEN      : 3
->CLOSING     : 5
->
->We have multiple systems performing this task (essentially for load=20
->balanci=3D
->ng=3D20
->and to remove a single point of faulure).  The systems are dual 1ghz=20
->pentiu=3D
->m=3D20
->3's, with 1-2gb of ram, so they're not shy systems.  They're running=20
->2.4.20=3D
->=3D20
->kernels (mostly vanilla) with iptables 1.2.7a.
->
->Here are some system limits I am tweaking (ie. the commands to do =
-the=3D20
->tweaking):
->echo 1 >/proc/sys/net/ip_forward
->echo 524280 >/proc/sys/fs/file-max
->echo 524280 >/proc/sys/net/ipv4/ip_conntrack_max
->echo 65535 >/proc/sys/net/ipv4/ip_queue_maxlen
->echo 65535 >/proc/sys/net/ipv4/tcp_max_syn_backlog
->#     NONE    EST     SYN_S   SYN_R   FIN_W   TIME_W  CLOSE   CLOSE_W=20
->LAST_=3D
->A =3D20
->LISTEN
->echo "1800    21600   120     60      30      30      10      30      =
-30  =20
->=3D
->   =3D20
->120     " > /proc/sys/net/ipv4/ip_conntrack_tcp_timeouts
->ulimit -H -n 524280
->ulimit -S -n 524280
->iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS=3D20
->=3D2D --clamp-mss-to-pmt
->
->
->Because every new connection to one of the systems 'behind' these =
-systems=20
->n=3D
->eed=3D20
->to be re-directed to a local port, which is achieved with the command:
->/sbin/iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp -d =
-<ip-range>=3D20
->=3D2D --destination-port 1024:65535 --to-destination =
-<local_ip>:<local_port>
->
->Every inbound connection incurs an entry in the connection tracking =
-table.=20
->=3D
->  It=3D20
->seems, however, that we may be overloading the conntrack system.  I =
-can=3D20
->telnet to a different port listening on a secondary (internal) =
-interface=20
->(b=3D
->ut=3D20
->the same application), that bypasses the above rule, and get an=20
->immediate=3D20
->connection, however establishing a connection 'to' a server behind =
-this=3D20
->router can take a number of seconds, and sometimes may never establish. =
-=3D20
->Whats more connecting directly to the port everything else is =
-being=3D20
->re-directed to via. the 'public' interface itself can take some time=20
->(thoug=3D
->h=3D20
->not as long as connecting 'to' a system behind this box).
->
->The conntrack table itself very quickly grows - but it does not clean=20
->itsel=3D
->f=3D20
->up when the connection itself dissapears, instead it waits for =
-some=3D20
->pre-determined timeout value, which means even though, as shown above, =
-the=3D
->=3D20
->number of connections in-progress (one way or another) is about =
-8000=3D20
->connections, the conntrack table is absolutely huge (hundreds of =
-thousands=20
->=3D
->of=3D20
->entries), and as time goes on, the larger it gets.  To try to combat =
-this,=3D
->=3D20
->I've reduced the biggest timer (how long an established connection =
-stays=20
->in=3D
->=3D20
->conntrack) from 5 days to 6 hours (all the connections we have are, =
-and=3D20
->should be, short lived, so that is plenty of time).  This helps a =
-bit,=3D20
->however I'm still at a loss to try to understand why conntrack does not =
-
->cle=3D
->an=3D20
->itself up when the connection gets closed.
->
->Of course, seeing how big the conntrack table is, itself, impacts the=20
->syste=3D
->m=3D20
->dramatically.  The 'wc -l /proc/net/ip_conntrack' command takes a long=20
->time=3D
->=3D20
->to run, and brings the 'active' processing to its knees while doing=20
->this.=3D20
->=3D2D From all appearances, it appears conntrack is hamstringing us.  =
-It=20
->appe=3D
->ars it=3D20
->is not able to properly handle large-traffic systems, especially =
-where=3D20
->essentially every connection going through the system is nat'd.
->
->I'd appreciate ANY help or thoughts on how to remedy this issue, as I =
-have=3D
->=3D20
->said, this is in use in an enterprise environment (which of course, =
-means=20
->I=3D
->=3D20
->cannot divulge the purpose of the application I mentioned earlier =
-(however=3D
->=3D20
->all you really need to know is the application does not really know (or =
-
->car=3D
->e)=3D20
->weather the connection to it is nat'd, and just uses it as a standard=20
->socke=3D
->t=3D20
->connection), however I can give details on the =
-system/kernel/netfilter=3D20
->configuration as necessary, just let me know what further information=20
->you=3D20
->require).
->
->I thank you in advance, and apologise for mailing all 3 lists, however =
-I=3D20
->figured someone on ONE of these lists would have an idea or a =
-suggestion.
->
->=3D2D --=3D20
->PreZ
->Systems Administrator
->Shadow Realm
->
->PGP FingerPrint: B3 0C F3 32 DE 5A 7D 90  26 F6 FA 38 CC 0A 2D D8
->=3D46inger prez@srealm.net.au for full PGP public key.
->
->Shadow Realm, a hobbyist ISP supplying real internet services.
->http://www.srealm.net.au
->=3D2D----BEGIN PGP SIGNATURE-----
->Version: GnuPG v1.2.2 (GNU/Linux)
->
->iD8DBQE+1ZcVKFp14D8AGEQRAh4jAJ9mhilrpVsDvakS03re/HsT1jcXcwCcDqFT
->nHqa0y2UPb9s5JgRsGIhP8o=3D3D
->=3D3DbmA5
->=3D2D----END PGP SIGNATURE-----
->
->
->
->--__--__--
->
->Message: 10
->From: "Preston A. Elder" <prez@srealm.net.au>
->Organization: Shadow Realm
->To: Harald Welte <laforge@netfilter.org>
->Subject: Re: [netfilter-core] iptables/conntrack in enterprise =
-environment.
->Date: Thu, 29 May 2003 08:09:52 -0400
->Cc: netfilter@lists.netfilter.org,
->	netfilter-devel@lists.netfilter.org, coreteam@netfilter.org
->
->=3D2D----BEGIN PGP SIGNED MESSAGE-----
->Hash: SHA1
->
->On Thursday 29 May 2003 04:39 am, Harald Welte wrote:
-> > On Thu, May 29, 2003 at 01:13:47AM -0400, Preston A. Elder wrote:
-> > > Hi,
-> > >
-> > > I am in an enterprise environment and I'm having some problems =
-with
-> > > conntrack specifically.
-> > >
-> > > They're running 2.4.20 kernels (mostly vanilla) with iptables =
-1.2.7a.
-> >
-> > Do not use 2.4.20 if you want to use connection tracking.  2.4.20
-> > connection tracking is totally broken due to a change introduced in =
-the
-> > core kernel.
-> >
-> > Please do always use patch-o-matic from CVS.  The patch you want to
-> > apply for fixing this bug is 10_confirm_fix.patch
->This patch was applied already.  Infact, I'm using Gentoo (but using =
-the=3D20
->'vanilla' kernel from gentoo, so its not got every patch under the =
-sun),=20
->an=3D
->d=3D20
->I specifically picked out and applied the followint patches:
->018_gcc31-compile-optimizations
->021_ecc-20020904
->701_iptables-20_iptables-proc
->702_iptables-24_conntrack-nosysctl
->722_iptables-tcplimit
->724_iptables-u32
->741_iptables-ip_conntrack_find
->742_iptables-ip_ct_refresh_optimization
->744_iptables-03_ip_conntrack_proto_tcp-lockfix
->747_iptables-06_ftp-conntrack-msg-fix
->748_iptables-07_ECN-tcpchecksum-littleendian-fix
->752_iptables-10_confirm_fix
->753_iptables-10_local-nat-expectfn
->759_iptables-24_conntrack-modify-after-free-fix
->760_iptables-25_ip_tables-comment-fix
->766_iptables-33_ipqueue_memoryleak
->764_iptables-31_nat_parse_fix
->770_iptables-ip_conntrack-timeouts
->900_quick-fixes
->902_minor_fixes
->
->Please let me know if you think one is missing I should try.
->
-> > Also, considering
-> >
-> > > echo 524280 >/proc/sys/net/ipv4/ip_conntrack_max
-> >
-> > without using a larger hash size (modprobe ip_conntrack =
-hashsize=3D3Dfoo,
-> > wherer foo should be a prime number and in the range of 524280/2)
->I'll try this and report back.
->
-> > > to be re-directed to a local port, which is achieved with the =
-command:
-> > > /sbin/iptables -t nat -A PREROUTING -j DNAT -i eth0 -p tcp -d=20
-><ip-range>
-> > > - --destination-port 1024:65535 --to-destination=20
-><local_ip>:<local_port>
-> > >
-> > > Every inbound connection incurs an entry in the connection =
-tracking
-> > > table.  It seems, however, that we may be overloading the =
-conntrack
-> > > system.
-> >
-> > I've seen systems with way more conntrack entries and higher =
-bandwith.
-> > Using NAT however, might have a big performance impact.
->Well, this system itself isn't doing 'nat', however, by implication, =
-the=20
->ab=3D
->ove=3D20
->rule makes every connection nat'd.
->
-> > > The conntrack table itself very quickly grows - but it does not =
-clean
-> > > itself up when the connection itself dissapears, instead it waits =
-for
-> > > some pre-determined timeout value,
-> >
-> > With a non-broken kernel it is 2 minutes, that is TIME_WAIT of a TCP
-> > socket.
->That was not my point.  My point was, for up to 5 days later, the =
-system=20
->st=3D
->ill=3D20
->has entries in the conntrack table (listed as 'ESTABLISHED'), which =
-have=20
->be=3D
->en=3D20
->dead and gone for a long time, conntrack does not realise that =
-connection=20
->i=3D
->s=3D20
->utterly closed, and it should drop its conntrack entry.  I'm not as=20
->worried=3D
->=3D20
->about the lower-value timeouts, but as I said, I saw ALOT of =
-established=3D20
->connections hanging around in the conntrack table (making the conntrack =
-
->tab=3D
->le=3D20
->about 200,000 entries long, give or take), most of which were entries=20
->for=3D20
->connections already closed.
->
->=3D2D --=3D20
->PreZ
->Systems Administrator
->Shadow Realm
->
->PGP FingerPrint: B3 0C F3 32 DE 5A 7D 90  26 F6 FA 38 CC 0A 2D D8
->=3D46inger prez@srealm.net.au for full PGP public key.
->
->Shadow Realm, a hobbyist ISP supplying real internet services.
->http://www.srealm.net.au
->=3D2D----BEGIN PGP SIGNATURE-----
->Version: GnuPG v1.2.2 (GNU/Linux)
->
->iD8DBQE+1finKFp14D8AGEQRAmT5AJ48csFfxVIMJQykL5mhG7VQzx/79wCgjmQ1
->drFKsTbUeJ8F0EEicWgBosQ=3D3D
->=3D3DQWoJ
->=3D2D----END PGP SIGNATURE-----
->
->
->
->
->--__--__--
->
->_______________________________________________
->netfilter mailing list
->netfilter@lists.netfilter.org
->https://lists.netfilter.org/mailman/listinfo/netfilter
->
->
->End of netfilter Digest
-
-_________________________________________________________________
-MSN Fotos: la forma m=E1s f=E1cil de compartir e imprimir fotos. =20
-http://photos.msn.es/support/worldwide.aspx
-
+iD8DBQE+1/2LKFp14D8AGEQRAhvtAKCGLi7R2DhiAGbluUhSxRBcuViR9wCfdU4J
++ycatke7LILAa+xRYDPOb7c=3D
+=3DNgon
+=2D----END PGP SIGNATURE-----
 
 
