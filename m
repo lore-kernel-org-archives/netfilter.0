@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Gavin Hamill <gdh@acentral.co.uk>
 Subject: Re: NAT Helper or UPnP?
-Date: Mon, 5 Jul 2004 08:29:19 +0100
+Date: Mon, 5 Jul 2004 08:48:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407050829.20128.Antony@Soft-Solutions.co.uk>
-References: <289009493.05497@eyou.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200407050848.23707.gdh@acentral.co.uk>
+References: <289009493.05497@eyou.com> <200407050829.20128.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <289009493.05497@eyou.com>
+In-Reply-To: <200407050829.20128.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,55 +18,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 05 July 2004 7:38 am, =C1=B7=CA=E9=B3=C9 wrote:
+On Monday 05 July 2004 08:29, Antony Stone wrote:
 
-> HI,
->
->     I really wonder the future of nat helper mechnism because of the UP=
-nP.
->
->     UPnP can do all the things that nat helper can do.
+> I know this is by no means a detailed reply, but I would say it comes down
+> to one word - "security".
 
-Securely?
+I'll second that.
 
-> Using UPnP, If we want to provide nat traversing in gateway we won't ne=
-ed to
-> survey any application protocol and just need to support the upnp.
+Microsoft released a long article extolling the virtues of UPnP where it 
+pitches the system as a replacement for X.10 home automation, (e.g. 
+everything including your alarm clock is UPnP enabled, and gets 
+synchronised / alarms set by a central server), with only a small mention of 
+the hideous firewall 'features'
 
-How about you only want to support one protocol, and not the others?
+UPnP moves policy and security decisions from the firewall ruleset where they 
+properly belong to a userspace app running on Windows - forgive me, but the 
+designer of this system seems like a candidate for the Darwin Awards of the 
+most dangerous and stupid network idea ever - just think the next version of 
+Sasser / Fizzer would open ports on your $50 UPnP-enabled firewall and make 
+you be an even bigger zombie host.
 
->     Then anyone can tell me a more detailed comparision between nat hel=
-per
-> and UPnP and give the advantage of nat helper mechnism comparision the
-> UPnP.
+And all in the name of 'ease of use' - bah. Let's hope a huge lawsuit against 
+Netgear / Belkin / other low-end router manufr. puts an end to this disease.
 
-I know this is by no means a detailed reply, but I would say it comes dow=
-n to=20
-one word - "security".
-
-Everything I have read / heard about uPnP suggests that it is not a secur=
-e=20
-mechanism, and therefore is not supported through firewalls in the same w=
-ay=20
-that RPC isn't, for example.
-
-Regards,
-
-Antony.
-
---=20
-Microsoft may sell more software than any other company, but McDonald's s=
-ell=20
-more burgers than any other company, and I think the other similarities a=
-re=20
-obvious...
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
-
+gdh
 
