@@ -1,12 +1,12 @@
-From: "Carl Farrington" <carl@compsup.net>
-Subject: RE: Anybody heard about UP&P ?
-Date: Sun, 22 Feb 2004 22:55:58 -0000
+From: netfilter@serverguy.net
+Subject: Problem with SNAT and same port number
+Date: Mon, 23 Feb 2004 13:30:59 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <739652C2AFA4834AAB5986A215F68CEC0165AF@svr1.home.compsup.net>
+Message-ID: <200402231330.59035.netfilter@serverguy.net>
+Reply-To: netfilter@serverguy.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> From: Alex Satrapa [mailto:alex@lintelsys.com.au]
-> Sent: 22 February 2004 22:46
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Anybody heard about UP&P ?
->=20
-> Marc Recht=E9 wrote:
-> > To enable remote assistance from Internet of a WinXP PC on a LAN =
-using
-> > NAT one must have a UP&P NAT compatible router.
->=20
-> UPnP(tm) is basically SNMP done with SOAP instead of ASN.1, with some =
-bits
-> of ZeroConf thrown in for good measure.
->=20
-> It involves resource discovery, service discovery and property
-> manipulation.
->=20
-> If you're interested, the specification for an "Internet Gateway =
-Device"
-> is available from the UPnP website. Basically, the IGD allows =
-(authorised)
-> machines to request the gateway to do things such as:
->  - Connect to the internet
->  - report statistics
->  - create a forwarded port
->=20
-> The "create a forwarded port" part is used by Remote Assistance as =
-well as
-> MSN Messenger.
->=20
-> These are not things that can be emulated in netfilter - you'll need a
-> SOAP service, and a whole bunch of other software to implement the IGD
-> specification.
->=20
-> Last time I looked, some people had in fact implemented UPnP services =
-for
-> Linux, but I'm not sure whether IGD was implemented.
->=20
+Hi,
 
-http://linux-igd.sourceforge.net/  looks to be the thing. Not yet =
-working with Microsoft products though.
+I am wanting to change the source address of outgoing packets that have a=
+ src=20
+port of 53.
+
+I have tried=20
+/sbin/iptables -A POSTROUTING -p tcp -t nat -o bond0 --sport 53 -j SNAT=20
+--to-source 192.168.0.1:53
+
+This doesnt work, it seems to be that you cant SNAT to a port the same as=
+ the=20
+original src port because
+
+/sbin/iptables -A POSTROUTING -p tcp -t nat -o bond0 --sport 53 -j SNAT=20
+--to-source 192.168.0.1
+
+/sbin/iptables -A POSTROUTING -p tcp -t nat -o bond0 --sport 53 -j SNAT=20
+--to-source 192.168.0.1:52
+
+both works, but obviously not the same results as I wanted because the sr=
+c=20
+port is also changed.
+
+Is there any other way to do what I am wanting??
+
+TIA
 
