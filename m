@@ -1,13 +1,10 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: RE: Windows VPN server behind iptables
-Date: Fri, 17 Jan 2003 08:45:45 -0800
+From: asclark <asclark@lanl.gov>
+Subject: Total data limiting
+Date: Fri, 17 Jan 2003 09:59:20 -0700 (MST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000e01c2be47$e1eb60d0$6601a8c0@s3ac>
-References: <000e01c2bdd0$2314d410$0200a8c0@loaner>
+Message-ID: <Pine.LNX.4.40.0301170955110.5759-100000@wolfman.lanl.gov>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <000e01c2bdd0$2314d410$0200a8c0@loaner>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'John York' <john@logihost.com>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Hi.
 
-> 
-> I set up my first IPtables box, doing NAT and port 
-> forwarding. I've managed to Google most of the kinks out, but 
-> this one perplexes me. There is a Win2K VPN server behind the 
-> firewall, using PPTP. It will accept connections, but chokes 
-> before accepting the username/password. The most I've been 
-> able to figure out is that it has something to do with protocol 47.
-> 
-> All other forwards (HTTP, HTTPS, POP, SMTP, Telnet) work 
-> fine. Any ideas?
+I was wondering if anyone had ideas about this.
+I am interested in doing the following:
 
-I tried to do exactly what yoru doing, I'll explain where I am.  In
-order to support pptp traffic you have to support protocol 47, and allow
-traffic forwarding on tcp port 1723. seems simple enough ..... Err no
-trick is netfilter doesn't nativly support pptp traffic. The two options
-you have are to get the latest POM and apply the pptp Nat patches. There
-is also another patch available below. Let me know if yo uget it to
-work. I gave up and went with an IPSEC implimentation which is just as
-much a pain in the ass
+Node A connects to Node B through an iptables/netfilter box on port 80.
 
-http://www.impsec.org/linux/masquerade/ip_masq_vpn.html
+The netfilter is providing NAT services to Node B and portforwarding.
+
+Node A then downloads X amount of data from node B.
+
+When X amount of data reaches a certain limit, say 50mb then the
+netfilter box drops all further connections from Node A for a specified
+period of time, say 12 hours.
+
+Is this possible with netfilter? would this be something better suited to
+Squid or even perhapse some of the ip and traffic shaping stuff?
+
+Any advice or pointers would be greatly appreciated.
+
+A.
+
+??????????????????????????????????
+?      Anthony S. Clark          ?
+?      asclark@lanl.gov          ?
+? Los Alamos National Laboratory ?
+? 0 1 1 3 5 8 13 21 34 55 89 144 ?
+??????????????????????????????????
 
 
