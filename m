@@ -1,12 +1,14 @@
-From: "Gaby Schilders" <G.Schilders@ibfd.org>
-Subject: RE: [PATCH-2.4-POM] NF_REPEAT was ignored !
-Date: Wed, 22 Oct 2003 14:00:00 +0200
+From: Julian Gomez <kluivert@tm.net.my>
+Subject: Re: iptables and ipsec
+Date: Wed, 22 Oct 2003 21:18:17 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E101199093@ibfdmail.ibfd.oin>
+Message-ID: <20031022131817.GC2578@propaganda.localdomain>
+References: <Law10-F118TFur2iz2M00009655@hotmail.com>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <Law10-F118TFur2iz2M00009655@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +19,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter list <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-What I meant to say is that tcp-window-tracking has been patched two =
-weeks ago,
-more recent than p-o-m 2003-09-24 that your patch is against.
+On Wed, Oct 22, 2003 at 11:12:56AM +0000, dimitri borjac spoke thusly:
 
-I didn't look at the addressing of your post, my bad.
+>do you know where i can find any interesting documentation about the 
+>interoperability/compatibility of ipsec with iptables ...?
 
-Gaby
+Check the FreeSWAN docs out. Last time I checked (which was in the v1.9x
+series); there were complementary information in regards to it.
 
------Original Message-----
-From: Willy Tarreau [mailto:willy@w.ods.org]
-Sent: woensdag 22 oktober 2003 13:55
-To: Gaby Schilders
-Cc: netfilter list
-Subject: Re: [PATCH-2.4-POM] NF_REPEAT was ignored !
+It also depends on what IPsec scenario are you envisioning ?
 
+>what's more regarding the eventual UDP encapsulation and the pass-through 
+>technology ?
 
-> There are quite recent changes to the tcp-window-tracking patches.
+I think only Checkpoint (?) and Cisco do UDP encapsulation for NAT
+traversal. Have no experience with pass-through.
 
-At least not since the last one I sent, it seems :-)
-
-> Also, I was wondering if this might not be better suited for the =
-developer
-> list?
-
-indeed, I replied to a previous mail, hence this cross-posting. The =
-nfdev
-list was also cc'd.
-
-Cheers,
-Willy
-
+In general, IPsec + Netfilter will play nice together. If you are
+experiencing otherwise however, give us more information.
 
