@@ -1,8 +1,9 @@
-From: "Heiko" <electropunk@web.de>
-Subject: Problem reading an URL with Java through IPTables/Squid proxy
-Date: Mon, 4 Aug 2003 18:53:38 +0200
+From: "Jeffrey D. Brower" <jeff@pointhere.net>
+Subject: real-time monitor question
+Date: Mon, 4 Aug 2003 13:31:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000301c35aa8$f77129a0$0200a8c0@hf.home.de>
+Message-ID: <030101c35aae$37e83500$0b02a8c0@pointhere.net>
+Reply-To: "Jeffrey D. Brower" <jeff@pointhere.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,61 +19,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Greetings All,
 
-I've been using an IPTables (1.2.6a-5) / Squid (2.4.6-2) combo on my gateway
-box (Debian Woody, Kernel 2.4.20, latest updates) for quite some time
-without any problems.
-Lately I've been starting to develop Java applications and now encounter the
-problem that any attempt to read the contents of an Internet URL through
+I need to get something that I think is probably quite simple from the
+firewall - but I don't have a clue how to exactly accomplish this.  If you
+can help, please do!
 
-java.net.URLConnection.getInputStream()   - or -
-java.net.URL.openStream()
+I have a circuit board (hooked up to a box running netfilter/iptables) which
+counts and displays the data sent to it via the parallel port.  The object
+is to display, in real-time, the packets on each interface that are accepted
+and denied on a packet by packet basis.
 
-methods from a client situated in my local intranet results in a 'The
-requested URL could not be retrieved' reply from Squid.
-Checking Squid's access.log, I've found that any URL requested by my Java
-code seems to be truncated when (or before?) being received by Squid, eg a
-request for the URL
+I trust netfilter and I don't want to interfere with its operation in any
+way and try to duplicate it's logic anywhere and it looks like the userspace
+options might force me to do this to get what I need, but I don't really
+know if it will or even if this is an option.  I am not eager to actually
+queue packets myself - since I am sure to not be nearly as efficient.
 
-http://www.google.de/intl/de/about.html
+I found a gnumonks.org project called ulogd that seems like it _could_ be a
+solution for me but I know nothing about it, including if I can get ACCEPT
+and DENY, by interface, by packet, buffered from it.
 
-results in a log message similar to
+It seemed to me that I can jump to tables for ACCEPT1 - ACCEPTn and the same
+for DENY1 - DENYn for each of the interfaces and use the log function in
+some way - but using the log for each packet seems nightmarish to me.
 
-w.x.y.z - - [04/Aug/2003:18:17:32 +0200] "GET /intl/de/about.html HTTP/0.0"
-400 1244 NONE:NONE
+It occurs to me that there might be something I can do with the /proc files.
 
-Obviously, any such request will fail.
+It also seems to me that any program I write that gets the info from the
+firewall might have to do a sleep to await the logic in the board to process
+and so I might have to buffer the information from the firewall to avoid
+slowing it down or do some kind of round-robin sort of stack as long as the
+stack is larger than the potential input flood.  It may be that I do not
+need to actually keep track of every single solitary ACCEPT but I surely
+need every DENY.
 
-The problem can't be in my code because it works ok if I switch to Win2k
-(got a dual boot configuration on my gateway box).
+I learn best by example, and I can not find any examples of this anywhere -
+but I know people do monitoring.  I have been in the Docs and I have looked
+in the archives of this list (but they are not searchable).  If you can help
+me understand what I need to do - please help!
 
-Squid is not set up as a transparent proxy, and the IPTables rules
-concerning Squid look like this:
 
-$IPTABLES -A PREROUTING -t nat -i $inner_nic -p tcp -d ! $inner_nw --dport
-80 -s $inner_nw -j REDIRECT --to-port 3128
-
-$IPTABLES -A INPUT -i $inner_nic -p tcp -s $inner_nw -d $inner_ip --dport
-3128 -j ACCEPT
-$IPTABLES -A OUTPUT -o $inner_nic -p tcp -d $inner_nw -s $inner_ip --sport
-3128 -j ACCEPT
-$IPTABLES -A INPUT -i $inner_nic -p tcp -d $inner_nw -s $inner_ip --sport
-3128 -j ACCEPT
-$IPTABLES -A OUTPUT -o $inner_nic -p tcp -s $inner_nw -d $inner_ip --dport
-3128 -j ACCEPT
-
-where
-
-inner_nic = eth0
-inner_nw = intranet (192.168.0.0/24)
-inner_ip = IP bound to eth0 (gateway's IP, 192.168.0.x)
-
-Again, this setup works 100% when accessing HTTP/FTP URLs through any means
-but the aforementioned Java code.
-
-Can anyone shed some light on this?
-
-TIA!
+     Jeff
 
 
