@@ -1,40 +1,48 @@
-From: Petr Silhavy <silhavy@mef.cz>
-Subject: [Openswan Users] 
-	Re: Dead loop on netdevice ipsec0, fix it urgently!
-Date: Fri, 09 Jul 2004 16:21:49 +0200
-Sender: users-bounces@lists.openswan.org
-Message-ID: <658x2rcy.fsf@chaos.mef.cz>
-References: <40EE7E15.70204@epost.de>
-Reply-To: Discussion list for Openswan users <users@lists.openswan.org>
+From: Sheldon Hearn <sheldonh@starjuice.net>
+Subject: Re: CONNMARK restore-mark creates conntrack entry?
+Date: Fri, 09 Jul 2004 16:28:49 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1089383329.2844.34.camel@axl.seasidesoftware.co.za>
+References: <1085752508.16078.44.camel@axl.seasidesoftware.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <users-bounces@lists.openswan.org>
-In-Reply-To: <40EE7E15.70204@epost.de> (
- =?iso-8859-1?q?Nicole_H=E4hnel's_message_of?= "Fri, 09 Jul 2004 13:14:29
- +0200")
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1085752508.16078.44.camel@axl.seasidesoftware.co.za>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://lists.openswan.org/mailman/listinfo/users>,
-	<mailto:users-request@lists.openswan.org?subject=unsubscribe>
-List-Archive: <http://lists.openswan.org/pipermail/users>
-List-Post: <mailto:users@lists.openswan.org>
-List-Help: <mailto:users-request@lists.openswan.org?subject=help>
-List-Subscribe: <http://lists.openswan.org/mailman/listinfo/users>,
-	<mailto:users-request@lists.openswan.org?subject=subscribe>
-Errors-To: users-bounces@lists.openswan.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?q?Nicole_H=E4hnel?= <nicole.haehnel@epost.de>
-Cc: users@lists.openswan.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Nicole H=E4hnel <nicole.haehnel@epost.de> writes:
 
-> Hi,
->
-> I get this error on my firewall-vpn-server
->
-> Dead loop on netdevice ipsec0, fix it urgently!
->
->
-> Any ideas where this come from?
-I got this cryptic message when I modified ESP packet in mangle table.
-Rule like "iptables -t mangle -A OUTPUT -p 50 -j TOS --set-tos 0x10"
-is able to make klips (1.99.x) mad.
+I'm answering my own post for the archives.
+
+On Fri, 2004-05-28 at 15:55, Sheldon Hearn wrote:
+
+> It seems that, in linux-2.6.5 w/ CONNMARK from patch-o-matic 20040302,
+> the CONNMARK --restore-mark modifier causes a conntrack entry to be
+> created if it doesn't already exist.
+> 
+> I'm using CONNMARK to remember customer-initiated connections and route
+> them differently from "wild world"-initiated connections.  I don't want
+> to mark "wild world"-initiated connections, because a SYN flood then
+> becomes a trivial way to DOS the conntrack table, and thus the firewall.
+> 
+> Any idea how to stop this happening?
+
+You can prevent certain packets from creating a conntrack table entry
+with the "raw" patch, which adds a raw table, a NOTRACK target and an
+UNTRACKED state match.
+
+Available in pom-ng, as of at least 20040631.
+
+Ciao,
+Sheldon.
+
+
