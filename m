@@ -1,13 +1,11 @@
-From: Adam Rice <adamrice@ntlworld.com>
-Subject: Re: per-connection byte counts
-Date: Tue, 20 Jan 2004 22:12:59 +0000
+From: Michelle Konzack <linux4michelle@freenet.de>
+Subject: ULOG
+Date: Wed, 21 Jan 2004 01:40:46 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040120221259.GA4354@glympton.airtime.co.uk>
-References: <20040118140903.GA3351@glympton.airtime.co.uk> <1074522469.27665.7.camel@xeon.office.eurotux.com>
+Message-ID: <20040121004046.GG8389@freenet.de>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1074522469.27665.7.camel@xeon.office.eurotux.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,16 +19,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Quoting Nuno Miguel Pais Fernandes (npf@eurotux.com):
-> Try http://luxik.cdi.cz/~devik/connbytes/
-> 
-> It works very well....
+Hello, 
 
-Thanks, that's exactly what I wanted! Pity it seems to be unmaintained. Still,
-it's simple enough that that shouldn't matter for the time being.
+I am using Debian GNU/Linux 3.0r2 WOODY and have installed the 'ulogd' 
+Packge. 
 
-Adam
+I like to log the traffic in my ADSL-Interface ppp0 
+But I do not know, HOW !
+
+All tries are faild.
+
+Can anone tell me the rule ?
+
+Oh yes, is it possibel to log the traffic from ppp0 to a 
+specified IP-Adress inside my Network in a seperated file ?
+
+I like to have for each IP/Server (26 complet) in my private 
+network a logfile.
+
+Thanks
+Michelle
 
 -- 
-Adam Rice -- adamrice@ntlworld.com -- Blackburn, Lancashire, England
+Registered Linux-User #280138 with the Linux Counter, http://counter.li.org/ 
 
