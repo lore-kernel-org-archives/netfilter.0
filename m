@@ -1,13 +1,12 @@
-From: "Matt Hellman" <netfilter@taxandfinance.com>
-Subject: RE: netfilter/iptables problems on solaris
-Date: Fri, 14 Mar 2003 20:56:03 -0600
+From: Camilo Echeverry <phantom@colombianet.net>
+Subject: Restrictions + Transparent Proxy
+Date: Sat, 15 Mar 2003 09:45:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c2ea9e$6b5e4df0$fd0aa8c0@winxp>
-References: <8C1856C372A7574291A56C3B7000A7AEF58254@eestqnt104>
+Message-ID: <03031509455901.03553@hosting.colombianet.net>
+Reply-To: phantom@colombianet.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <8C1856C372A7574291A56C3B7000A7AEF58254@eestqnt104>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +17,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "'Joaquin Henriquez Alzola (REE)'" <Joaquin.Henriquez-Alzola@ree.ericsson.se>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Use SunScreen Lite.  It has a nice (ok, acceptable) GUI and is free.
 
-http://wwws.sun.com/software/securenet/lite/download.html
+Hi.
+I have an Invalid network which access internet through a linux server with 
+iptables,
+I've tried many times to do this but isnt working:
 
->>-----Original Message-----
->>From: netfilter-admin@lists.netfilter.org 
->>[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
->>Joaquin Henriquez Alzola (REE)
->>Sent: Wednesday, March 12, 2003 1:06 PM
->>To: 'netfilter@lists.netfilter.org'
->>Subject: netfilter/iptables problems on solaris
->>
->>
->>Hi, 
->>
->>I have problems on the compilation of netfilter/iptables on Solaris 8.
->>When I do a make it appears me the error in line 12 that is
->>KERNEL_DIR=/usr/src/linux
->>
->>I just wanted to compile it for Solaris but I am not able to fiond the
->>kernel source in the Solaris. Can you tell me wher eis it.
->>
->>I have search in google but I can't find it.
->>
->>BR,
->>
->>Joaquin
->>
+Grant complete  access to Internet (-d 0.0.0.0/0.0.0.0) only to some ips in 
+the internal network
 
+and restrict access to the rest only to an external subnet  
+(-d XX.YY.ZZ.0/255.255.255.0)
+
+And I want all the users in the internal network to pass through a 
+transparent proxy in the same box doing this:
+
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
+--to-port 8080 
+
+But when I activate the transparent Proxy, all the people inside the internal 
+network can access internet (via web)
+
+What order of ideas must I use ?
+I'm using the correct iptables rules ..?
+
+something like:
+
+
+#Grant complete acces to this IP
+/sbin/iptables -A FORWARD --in-interface eth0 -s \
+192.168.3.252/255.255.255.255 -d 0.0.0.0/0.0.0.0 --out-interface eth0 -j \
+ACCEPT
+
+#permit access to all the internal network to only one subnet
+sbin/iptables -A FORWARD --in-interface eth0 -s \192.168.3.0/255.255.255.0 \ 
+-d XX.YY.ZZ.0/255.255.255.0 --out-interface eth0 -j ACCEPT
+
+#Block the rest
+/sbin/iptables -A FORWARD --in-interface eth0 -s 192.168.3.0/255.255.255.0  \ 
+ -d 0.0.0.0/0.0.0.0 -j REJECT
+
+#Then Activate Transparent Proxy
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT \
+--to-port 8080
+
+#Now masquerade packets
+/sbin/iptables --table nat --append POSTROUTING --out-interface eth0 -j \
+MASQUERADE
+
+
+Thanks.
+Camilo
+-- 
+
+
+_____________________________________________________________________________
+Cuando un Arquero dispara gratuitamente .. 
+Tiene consigo toda su habilidad ...
+
+                          Proverbio Oriental
+_____________________________________________________________________________
 
