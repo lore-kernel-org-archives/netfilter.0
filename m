@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: TTL target
-Date: Fri, 23 Jul 2004 21:59:33 +0100
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: TTL target
+Date: Fri, 23 Jul 2004 14:03:49 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407232159.33353.Antony@Soft-Solutions.co.uk>
-References: <7EACCDBB65D37443912D80713CC1245D02382A6B@fsnsab20.losangeles.af.mil>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <7EACCDBB65D37443912D80713CC1245D02382A6E@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7EACCDBB65D37443912D80713CC1245D02382A6B@fsnsab20.losangeles.af.mil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,7 +15,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+
+no...is that short enough
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+Sent: Friday, July 23, 2004 2:00 PM
 To: netfilter@lists.netfilter.org
+Subject: Re: TTL target
+
 
 On Friday 23 July 2004 9:35 pm, Hudson Delbert J Contr 61 CS/SCBN wrote:
 
@@ -43,19 +51,24 @@ Thanks,
 Antony.
 
 -- 
-This email is intended for the use of the individual addressee(s) named above 
+This email is intended for the use of the individual addressee(s) named
+above 
 and may contain information that is confidential, privileged or unsuitable 
 for overly sensitive persons with low self-esteem, no sense of humour, or 
 irrational religious beliefs.
 
 If you have received this email in error, you are required to shred it 
 immediately, add some nutmeg, three egg whites and a dessertspoonful of 
-caster sugar.   Whisk until soft peaks form, then place in a warm oven for 40 
+caster sugar.   Whisk until soft peaks form, then place in a warm oven for
+40 
 minutes.   Remove promptly and let stand for 2 hours before adding some 
-decorative kiwi fruit and cream.   Then notify me immediately by return email 
+decorative kiwi fruit and cream.   Then notify me immediately by return
+email 
 and eat the original message.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
 
 
