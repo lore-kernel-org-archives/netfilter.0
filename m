@@ -1,10 +1,12 @@
-From: Ankur Gupta <ankur@cs.utexas.edu>
-Subject: Standalone iptables
-Date: Sun, 10 Nov 2002 14:47:33 -0600 (CST)
+From: "Paul Albert" <palbert@rovingplanet.com>
+Subject: Some null MAC addresses
+Date: Mon, 11 Nov 2002 11:21:29 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0211101446350.25829-100000@peterson.cs.utexas.edu>
+Message-ID: <661F9268BBA8CB4EB92CC12B8C42F06901F5CD@pluto.rovingplanet.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,30 +16,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi -
 
-Hi:
+I'm using kernel 2.4.18 with netfilter 1.2.7a, and I'm having a problem.
+I'm writing some code to map MAC addresses to IP addresses using the
+QUEUE target and ipq_get_packet(), since our bridge code doesn't put the
+entries into the arp table.  I'm seeing the MAC addresses correctly of
+most of the nodes on our network, however, several machines are
+reporting an IP address of 00:00:00:00:00:00.  Ethereal, when running on
+a different machine, shows the correct address.
 
+Any thoughts?
 
-Does there exist a standalone iptables implementation that does the packet
-filtering and that does not rely on the iptables sitting in Linux kernel.
-If I am not wrong then the iptables-standalone.c that is available at
-netfilter.org only provides the interface to specify filtering policies. I
-am looking for complete user-level implementation  with minimal help from
-kernel.
-
-Ankur
-
--- 
-
------------------------------------------------------
-Ankur Gupta			 2220 Leon, Apt # 202
-Graduate Student		 Austin, TX 78705
-Computer Science Department	 Ph:(H)+1-512-494-0236
-The University of Texas at Austin   (O)+1-512-232-7492
-
-
+TIA,
+Paul
 
