@@ -1,11 +1,14 @@
-From: "Josh Larocque" <joshlarocque@technologist.com>
-Subject: Re: Customizing LOG output
-Date: Tue, 25 Jan 2005 19:53:50 -0600
-Message-ID: <20050126015350.47754CD9F8@ws1-2a.us4.outblaze.com>
+From: seberino@spawar.navy.mil
+Subject: Re: valid INPUT/OUTPUT rule piece?--> '-p tcp --tcp-flags ACK,
+	FIN FIN -j DROP', etc.
+Date: Tue, 25 Jan 2005 21:26:58 -0800
+Message-ID: <20050126052658.GA17112@spawar.navy.mil>
+References: <20050126001855.GC15359@spawar.navy.mil>
+	<41F6E665.6010000@lopsch.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <41F6E665.6010000@lopsch.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +20,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Samuel Jean <sj-netfilter@cookinglinux.org>
+Content-Transfer-Encoding: 7bit
+To: Lopsch <lopsch@lopsch.com>
 Cc: netfilter@lists.netfilter.org
 
-Thanks Samuel, I'll give it a shot!
+Lopsch
 
------ Original Message -----
+Thanks for your email.  I know a little about TCP flags.
+IIRC, ACK means 'Acknowlegement'
+and FIN means 'Finish Connection'.
 
->=20
-> Josh Larocque wrote:
-> > Is there a way to change the data the the LOG module outputs?  As=20
-> > it stands right now it's printing IN, OUT, MAC, SRC, DST, LEN,=20
-> > TOS, PREC, TTL, ID, PROTO, SPT, DPT WINDOW, RES and UGRP... all=20
-> > taking up about 2 and a half lines on the screen for each entry.=20
-> > I'd like to get it down to a one-liner if possible.
-> >
->=20
-> Yes, hack at net/ipv4/netfilter/ipt_LOG.c by editing those printk's.
->=20
-> Don't forget to recompile this module and also rmmod ipt_LOG.
->=20
-> > Thanks,
-> >
-> > Josh
-> >
->=20
-> HTH,
->=20
-> Samuel
+Why would TCP want everyone to turn on ACK when they
+want to finish a connection with FIN?
 
+I assume that TCP was written to do 2 errands in one
+TCP datagram?...1. acknowledge last datagram received
+                2. terminate connection
+
+It seems odd you can't terminate a connection (FIN)
+without also acknowledging something to me.
+
+Chris
+
+On Wed, Jan 26, 2005 at 01:37:57AM +0100, Lopsch wrote:
+> seberino@spawar.navy.mil schrieb:
+> >Please explain these:
+> >
+> >$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,FIN FIN   -j DROP
+> >$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,PSH PSH   -j DROP
+> >$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ACK,URG URG   -j DROP
+> >$IPTABLES -t filter -A INPUT -p tcp --tcp-flags ALL     NONE  -j DROP
+> >
+> >Do first 3 imply you must send ACK when you send a FIN, PSH or URG?
+> >
+> >And does last mean you must set *some* TCP flag always?
+> >
+> >CS
+> >
+> >
+> Exactly. The first 3 rules are used for dropping packets which have set
+> FIN, PSH and URG but without a set ACK-flag. The last one prevents empty
+> packets (none flag set) to enter your network.
+> As often such packets are used by portscans it is useful to drop them.
+> Jason posted a link some time ago with a list of rules to perform tcp
+> checks http://www.stearns.org/modwall/sample/tcpchk-sample
+>
+> --
+>
+> PGP-ID 0xF8EAF138
+
+
+
+--
+_______________________________________
+
+Christian Seberino, Ph.D.
+SPAWAR Systems Center San Diego
+Code 2872
+49258 Mills Street, Room 158
+San Diego, CA 92152-5385
+U.S.A.
+
+Phone: (619) 553-9973
+Fax  : (619) 553-6521
+Email: seberino@spawar.navy.mil
+_______________________________________
 
