@@ -1,11 +1,12 @@
-From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
-Subject: [RE: marking in output mangle with route lookup]
-Date: 14 Jul 2003 10:59:01 +0200
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: Need help diagnosing iptables MASQ rule issues...
+Date: Mon, 14 Jul 2003 11:23:11 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058173141.2871.3.camel@drs0.manchotnetworks.net>
+Message-ID: <Pine.LNX.4.44.0307141119220.10510-100000@localhost>
+References: <3F0B49EF.7030306@sslnz.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F0B49EF.7030306@sslnz.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,103 +16,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jason Grindlay <jasong@sslnz.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi Gerorge,
+Hi Jason,
 
-Tried ( and failed ) with ip assigning. bummer. :-(
+> FileMaker then thinks is connected/gets data back from the server (which 
+> as far as I understand is actually a PC on a LAN (10.0.0.202) behind the 
+>   router whose remote IP we connect to (port 5003 is forwarded by that 
+> router to the FileMaker server)  I think this is the point where 
+> comunication breaks down - I think FileMaker stops trying to connect to 
+> the Internet IP of the server and tries to connect to it's private LAN 
+> IP which since it is on a totally different network doesn't work and the 
+> client sits there trying and trying to reach the server untill it hits a 
+> timeout.
+> 
+> Am I reading the data right do you think? (I'd just like to confirm I'm 
+> not jumping to conclusions)
 
-Thanks for your sugesstions -- my actual iptables enrty will read:
+That appears to be correct to me.
 
-iptables --append OUTPUT --table mangle --match owner \ 
-  --uid-owner 500 --jump MARK --set-mark 0x2
+> What really puzzles me is why FileMaker suddenlly seems to jump to 
+> trying to connect to 10.0.0.202 - as far as I understand NAT the fact 
+> that the server is behind a firewall/nat gateway on the other end should 
+> be transparent to the client - it should never know it's not talking to 
+> the router itself. 
 
-(I reduced the entry for the post because I couldn't get the fwmark to 
-do a routing table lookup)
+Not quite. Many protocols have IP addresses embedded in the application
+data. Unless there is a specific NAT helper for the protocol, then such
+addresses will not be translated. If FileMaker Pro uses such a protocol,
+then I'm not sure how your other routers manage to get around this
+problem, unless they have a NAT helper for FileMaker.
 
-In general terms, I am generating traffic on this local box on behalf of
-a network behind it -- the network behind gets billed for their traffic.
-The match owner directive seemed a decent way to assign an ip that will
-be correctly accounted for.
+> p.s.  If the client is trying to connect to the private IP of a remote 
+> server would it be possible to tell Linux to get those packets and 
+> forward them (stripped to look like they are addressed correctlly) to 
+> the remote router ip?  I was thinking giving the lan interface a second 
+> IP of 10.0.0.202 and then forwarding port 5003 to the NET ip of the 
+> filemaker router, would that work?
 
-Do you know of another technique yielding the same result?
+It might work, but a simpler solution might be to DNAT packets addressed 
+to 10.0.0.202, redirecting them to the remote server's public IP address, 
+which should then DNAT them to the FileMaker server.
 
-Ciao
-
-Charles
-
-
-
-
-
-On Sun, 2003-07-13 at 23:59, George Vieira wrote:
-> Try using iproute2 ip assigning and not ip aliasing as I find aliasing=evil for some things.
-> 
-> ip addr add 192.168.1.101/24 dev eth1
-> 
-> Also, have you tried using SNAT instead of iproute for a simple snat of the source address?
-> 
-> iptables -I POSTROUTING -o eth1 -t nat -s 192.168.1.1 -d 192.168.1.250 -j SNAT --to 192.168.1.101
-> 
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> 
-> Citadel Computer Systems Pty Ltd
-> http://www.citadelcomputer.com.au
-> 
-> -----Original Message-----
-> From: lartc@manchotnetworks.net [mailto:lartc@manchotnetworks.net]
-> Sent: Sunday, July 13, 2003 5:40 PM
-> To: netfilter
-> Subject: marking in output mangle with route lookup
-> 
-> 
-> hello all,
-> 
-> i posted this to the lartc forum, and received no response, so i am hopeful
-> that someone here can advise.
-> 
-> i have come accross a curious issue:
-> 
-> +----------------------+            +---------------+
-> | eth1   192.168.1.1   |------------| 192.168.1.250 |
-> | eth1:1 192.168.1.101 |            |               |
-> +----------------------+            +---------------+
-> 
-> 
-> iptables --append OUTPUT --table mangle --jump MARK --set-mark 0x2
-> ip rule add fwmark 0x2 table 2
-> ip route add 192.168.1.0/24 dev eth1 src 192.168.1.101 table 2
-> ip route flush cache
-> 
-> 
-> telnet 192.168.1.250 ; and tcpdump gives src ip address as 192.168.1.1
-> 
-> 
-> ip rule add to 192.168.1.250 table 2
-> ip route flush cache
-> 
-> 
-> telnet 192.168.1.250 ; and tcpdump gives src ip address as 192.168.1.101
-> 
-> 
-> 
-> are there issues concerning the marking of OUTPUT packets generated on
-> the local box that i should be aware of?
-> 
-> 
-> many, many thanks
-> 
-> charles
-> 
-> 
-> 
-> 
-
-
-
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
 
