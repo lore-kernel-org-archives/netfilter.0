@@ -1,8 +1,8 @@
-From: Carsten Maass <cm@blinkenlichten.de>
-Subject: Redirect DHCP requests to DMZ?
-Date: Wed, 23 Apr 2003 12:08:52 +0200
+From: Optimus Prime <optimusprime@o2.pl>
+Subject: patch-o-matic & compiling it
+Date: Wed, 23 Apr 2003 12:20:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EA66634.2020508@blinkenlichten.de>
+Message-ID: <3EA668ED.9000405@o2.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,43 +18,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello List!
+Hi
 
-My network layout looks like this:
+I have a lame problem here I can't win with.
+I wanted to use one of the features provided by the new path-o-matic, 
+but I have problems compiling them into modules/kernel.
 
+this is what I did:
+make clean ( in kernel)
+./runme --batch extra (provided the correct kernel dir it said I can 
+compile the kernel)
+make config(there was no new options from POM)
+make modules
+make modules_install
 
-Local LAN (192.168.20.*)
-     |
-     |
-   Switch
-     |
-     |
-Router/Firewall ---- DMZ (192.168.21.*)
-     |
-     |
-     |
-  Internet
-
-
-Everything runs smoothly, except for one thing: I am unable to redirect 
-DHCP request from the clients on the local LAN to the DHCP server inside 
-the DMZ.
-
-So my question is: How can I accomplish this task? Is it at all possible 
-to redirect broadcasts from one subnet to another with the help of iptables?
-
-I tried the following rules, but they didn't work out:
-
-$IPTABLES -A FORWARD -p UDP -i $LAN_IFACE --dport 67 --sport 68 -j ACCEPT
-$IPTABLES -t nat -A PREROUTING -p UDP -i $LAN_IFACE -d 255.255.255.255 
---dport 67 -j DNAT --to-destination $DMZ_DHCP_IP
-
-I am running iptables v1.2.6a with kernel 2.4.20 on Debian GNU/Linux 3.0.
-
-Any hint would be highly appreciated.
-
-Thanks in advance,
-Carsten.
-
+Krystian
 
 
