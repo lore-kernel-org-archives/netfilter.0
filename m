@@ -1,12 +1,11 @@
-From: "Ian Pollock" <ianp@highsun.com.au>
-Subject: RE: Block MSN Messenger & Yahoo Messenger
-Date: Fri, 12 Dec 2003 10:02:35 +1000
+From: "Ian Hunter" <ihunter@hunterweb.net>
+Subject: Weird TCP flags?
+Date: Thu, 11 Dec 2003 23:11:04 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F5267F735EEF4446A3FC6FD2821A1970016C5C@server.skinners.highsun.com.au>
+Message-ID: <003101c3c065$f61ad790$13fea8c0@melita.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,52 +18,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-by using the below rules in your squid.conf will stop msm, not sure =
-about yahoo but if you check your log and look for the yahoo lookup =
-entries you could modify these rules to suit yahoo blocking mabye..
+OK, I have a router (lucy) with a webserver (192.168.254.242) in a DMZ (off
+eth1), and everything works fine -- when you hit my ip, you get the site,
+all is well.  However, I get STORMS of this nonsense in my logs:
 
-<snip> -- squid.conf --
+Dec 11 22:58:52 lucy kernel: Fwd DMZ->Internet DROP: IN=eth1 OUT=ppp0
+SRC=192.168.254.242 DST=204.157.6.223 LEN=60 TOS=0x00 PREC=0x00 TTL=63
+ID=56169 DF PROTO=TCP SPT=80 DPT=56319 WINDOW=32476 RES=0x00 ACK SYN URGP=0
 
-acl msnmessenger url_regex -i gateway.dll
+(That's responding to these rules at the end of the FORWARD chain of filter
+table:)
 
-http_access deny msnmessenger=20
-
-ian
-
-
-
------Original Message-----
-From: Michael Gale [mailto:mgale@utilitran.com]
-Sent: Friday, 12 December 2003 9:46 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: Block MSN Messenger & Yahoo Messenger
+iptables -A FORWARD -i eth1 -o ppp0 -j LOG --log-prefix "Fwd DMZ->Internet
+DROP: "
+iptables -A FORWARD -i eth1 -o ppp0 -j DROP
 
 
-Hello,
+Now if web traffic is working, my "-m state --state ESTABLISHED,RELATED -j
+ACCEPT" must be working on forwards from eth1 -> ppp0, so why am I seeing
+these messages?  Are these broken TCP connections that netfilter doesn't
+consider established?
 
-	Would running squid in transparent mode with no cache :) be able to =
-block MSN and yahoo messenger :)
+Where do I look now?
 
-Michael.
+Thanks,
 
-
-On Thu, 11 Dec 2003 10:43:28 +1000
-"Lawrence Tang" <ingsiong@daltron.com.pg> wrote:
-
-> Hi,
->     I have an RH9 with NAT access for the client. I would like to =
-block MSN & Yahoo messenger from the client to access.
->     Can any body advice me ? Thanks in advance.
->=20
-> Best Regards,
-> =20
-> Lawrence Tang=20
->=20
-
-
---=20
-Michael Gale
-Network Administrator
-Utilitran Corporation
+Ian
 
 
