@@ -1,8 +1,8 @@
 From: Khanh Tran <khanh@slc.edu>
 Subject: RE: netfilter/iptables LOG not logging MAC addresses
-Date: Tue, 18 Feb 2003 18:55:07 -0500
+Date: Tue, 18 Feb 2003 19:03:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB603@EXCHANGE>
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB604@EXCHANGE>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,6 +18,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: hare ram <hareram@sol.net.in>
 Cc: netfilter@lists.netfilter.org
+
+http://gege.org/iptables/
+
+Khanh Tran
+Network Operations
+Sarah Lawrence College
+
+
+
+-----Original Message-----
+From: Khanh Tran [mailto:khanh@slc.edu]
+Sent: Tuesday, February 18, 2003 6:55 PM
+To: hare ram
+Cc: netfilter@lists.netfilter.org
+Subject: RE: netfilter/iptables LOG not logging MAC addresses
+
 
 
 
@@ -124,6 +140,8 @@ need
 >
 >
 >
+
+
 
 
 
