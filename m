@@ -1,13 +1,10 @@
-From: "Jesper Lund" <jesper@ballbreaker.dk>
-Subject: Re: How to block NetBios Traffic
-Date: Sat, 21 Jun 2003 20:05:19 +0200 (CEST)
+From: Elver Loho <kernelpenguin@hot.ee>
+Subject: Possible dangerous flaw in the NAT howto
+Date: Sun, 22 Jun 2003 05:44:49 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2047.212.242.51.102.1056218719.squirrel@www.ramstedt.dk>
-References: <BAY2-F589cPvs0Z60e200002d47@hotmail.com> 
-     <20030621164835.GA12820@cannon.eng.us.uu.net>
-Mime-Version: 1.0
+Message-ID: <20030622024450.19E60105939@hot.ee>
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030621164835.GA12820@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,110 +14,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-
-> netbios-dgm     138/tcp                         # NETBIOS Datagram Service
-> netbios-dgm     138/udp
->
-> Just drop these in prerouting on the incoming interface. BTW, the reason
-> that
-> you see these does not mean that your firewall does respond to them. They
-> are
-> all being broadcast. That's why you see them with tcpdump.
->
-> Ramin
->
-> On Fri, Jun 20, 2003 at 05:43:00PM +0000, John Moore wrote:
->
->> Dear Sir,
->>
->>            I have setup a proxy server for internet access in my
->> organization which has 2 ethernet interfaces ; one on internal network
->> (private ip address) while other at external network (public ip
->> address).
->>            I am getting a lot of netbios traffic on my internal ethernet
->> interface. Below is some log from "tcpdump".
->>
->> 23:07:23.882767 10.8.99.94.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:25.099189 10.8.99.246.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:25.530105 10.8.99.151.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:25.588964 10.8.99.53.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:30.029731 10.8.99.32.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:31.967519 10.8.99.117.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:35.444045 10.8.99.93.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:40.557846 10.8.99.153.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:41.990228 10.8.99.72.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:43.427439 10.8.99.111.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:49.453507 10.8.99.252.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:49.989453 10.8.99.86.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:07:56.425559 10.8.99.95.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:08:00.874673 10.8.99.83.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:08:06.093484 10.8.99.152.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:08:11.742309 10.8.99.115.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->> 23:09:12.733224 10.8.99.248.netbios-dgm > 10.8.99.255.netbios-dgm: NBT
->> UDP
->> PACKET(138)
->>
->>
->>         Sir, I want to block this traffic using IPTABLEs. IPTABLES is
->> installed on my proxy server.
->> Please help me by telling me how to block this traffic.
->>         I hope a positive reply from your side.
->> Thank you.
->>
->> --------------------------------------------------------------------------------
->> You maust do the thing you can not do. And remember , the finest steel
->> gets
->> sent through the hottest furnace...
->>
->> Champion is not one who never fails , but one who NEVER QUITS...
->>
->>
->> -----------------------------------------------------------------
->>
->> _________________________________________________________________
->> MSN 8 with e-mail virus protection service: 2 months FREE*
->> http://join.msn.com/?page=features/virus
->>
->
->
+I was on #netfilter (irc.freenode.net) earlier and asked about a possible f=
+law in the NAT howto, but got no reply (people sleeping?) so I'm just going=
+ to paste what I said here and go to sleep. (nearing 6am currently)
 
 
--- 
-www.ballbreaker.dk/antispam/
+<elver> I have a question about masquerading. The NAT howto gives an exampl=
+e like this: "iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE", but si=
+nce it masks the packets that are outgoing on ppp0 (by the destination IP, =
+interface IP and netmask) then could that rule also be exploited by outside=
+ hosts tunneling?
+<elver> For example, we have host A on subnet where the gateway to the inte=
+rnet is B (running that same rule) and then there are external hosts on the=
+ internet C and D. A's packets to C and D are masq'ed by B, but can't C and=
+ D also use B as a IP-level proxy to communicate to eachother?
+<elver> Over LAN the routing is done on the ethernet level usually, but ove=
+r the internet this could possibly done by IP encapsulation (RFC 2003 and R=
+FC 1853)
+<elver> Coming back to the example, C tunneling through B to D would look s=
+omething like [ IP layer: from C to B [ IP layer: from C to D [ TCP layer [=
+ Data ] ] ] ]
+<elver> RFC 2003 does however define that if the source IP is the same as a=
+ny interface on itself, then it should drop it. So therefore, C can't fake =
+the address part to be B. However, with masquerading, it would NAT the conn=
+ection and thus to D it would appear as if the data was coming from B.
+<elver> Since Netfilter does NAT in the POSTROUTING table, then it only car=
+es about the outgoing interface, which would be ppp0 or whatever your inter=
+net link might be.
+<elver> The problem would be delivering the packet to B so that B would thi=
+nk that it is outgoing on it's internet link.
+<elver> Since routing is done at a higher layer (Ethernet layer above the I=
+P layer for example) then IP encapsulation could possibly used to deliver i=
+t to host B.
+<elver> The quick and dirty masquerading part of the NAT howto at netfilter=
+.org (http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-4.html#ss4.1)=
+ does not build any safeguards against this.
+<elver> Sensible way would be denying all forwarding requests coming in ove=
+r the internet link.
+<elver> Potentially this could mean that there are hundreds of Linux gatewa=
+ys out there that could be used as anonymous proxies.
+<elver> Funny. The Masquerading Simple Howto (http://www.linuxdocs.org/HOWT=
+Os/Masquerading-Simple-HOWTO/summary.html) DOES address that specific secur=
+ity hole by adding "iptables -A FORWARD -i eth0 -o eth0 -j REJECT".
+<elver> So I would say that anyone using just netfilter.org howto could be =
+vulnerable. (http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-4.html=
+#ss4.1)
+
+
+This inconsistency between howtos was pointed out by Peter Johansson (x-g@g=
+amleby.net) when he was looking for docs while setting up his Linux gateway=
+. I did the additional research into the subject.
+
+
+Elver Loho
+kernelpenguin@hot.ee
+
+-----------------------------------------
+Hot Mobiil - helinad, logod ja pilts=F5numid!
+http://portal.hot.ee
+
 
