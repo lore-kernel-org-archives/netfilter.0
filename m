@@ -1,15 +1,12 @@
-From: Frederic de Villamil <neuro@seclab.jp>
-Subject: Re: Error message change request (=?iso-8859-1?q?Sig=FE=F3r_Jar=F0arson?=)
-Date: Fri, 19 Sep 2003 06:44:30 +0000
+From: "Vijay Angelo" <vijay.angelo@indscape.com>
+Subject: please help  me.......
+Date: Fri, 19 Sep 2003 14:25:03 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030919064429.GB1015@catherine.seclab.jp>
-References: <20030919042818.24451.68672.Mailman@netfilter-sponsored-by.noris.net>
+Message-ID: <000101c37e8b$b7342e30$1d01a8c0@pdcindscape.com>
+Reply-To: <vijay.angelo@indscape.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="R3G7APHDIzY6R/pk"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030919042818.24451.68672.Mailman@netfilter-sponsored-by.noris.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,73 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+hi
+ I m one among the member of this list ,i have a problem with
+libiptc...please look after if u can do it.
+ I want to insert one rule using the iptc_insert_entry function in
+libiptc....
+ As i m new to netfilter ,libiptc ..i m struggling  a lot..i hope u can help
+me .
 
---R3G7APHDIzY6R/pk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ Just give me an information about how to fill the target information in the
+ip_entry structure ...and the  i  target_offset field ...
 
-Hi netfilter-request!
+    I want insert a rule like..
+  -t nat -A PREROUTING   -s 192.45.23..1 -p icmp -j DROP
 
-On Fri, 19 Sep 2003, netfilter-request@lists.netfilter.org wrote:
+  please help me on how to fill the structure and invoke the function.
+  I m eagerly expecting your reply...
 
-> Message: 2
-> From: =3D?iso-8859-1?q?Sig=3DFE=3DF3r_Jar=3DF0arson?=3D <cshobe@somerando=
-mdomain.com>
-> To: netfilter@lists.netfilter.org
-> Subject: Error message change request
-> Date: Thu, 18 Sep 2003 20:56:03 -0400
->=20
-> Hey all,
->=20
-> I have a quick request - a change to an error message.
->=20
-> A friend I sold a server to called me insistant that iptables was broken =
-on=3D
-> =3D20
-> the firewall I sold him.
->=20
-> He was trying the following, and got the following message:
->=20
-> superuser root@hydrogen:/home/root
-> # /bin/iptables -A INPUT -s 0.0.0.0/0 -d 0.0.0.0/0 --dport 22 -j ACCEPT
-> iptables v1.2.7a: Unknown arg `--dport'
-> Try `iptables -h' or 'iptables --help' for more information.
->=20
-> I figured out that he missed -p tcp, but the error is misleading.
->=20
-> I think it should instead say something like "iptables v1.2.7a: Argument=
-=3D20
-> `--dport' cannot be used in this context" or something.
->=20
-> =3D2D-=3D20
-> Sig=3DFE=3DF3r Jar=3DF0arson
-> cshobe@somerandomdomain.com
+  thanking you
+  vijay
 
-Hi,
-the answer is: .... 42.Just kidding
 
-# /bin/iptables -A INPUT -p tcp --dport 22 -s 0/0 -d 0/0 -j ACCEPT
-Best regards
-Frederic
-
---=20
-B.O.F.H excuse of the day: Domain controller not responding
-http://www.seclab.jp
-
---R3G7APHDIzY6R/pk
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (NetBSD)
-
-iD8DBQE/aqXNYBnsNILdO64RAk5LAKCCRa0ROBJjowCTJw3uHEw/ACYKLgCfRVSR
-qULqctKoFzjPAebJhbgCpqY=
-=aOH/
------END PGP SIGNATURE-----
-
---R3G7APHDIzY6R/pk--
 
