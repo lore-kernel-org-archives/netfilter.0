@@ -1,11 +1,10 @@
-From: Jason Price <jprice@cyberbuzz.gatech.edu>
-Subject: Netfilter and Vonage.
-Date: Wed, 19 May 2004 23:37:40 -0400
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: Re: ftp
+Date: Thu, 20 May 2004 04:41:25 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040519233740.A27043@redfish.gatech.edu>
+Message-ID: <BAY15-F35DitpPZCg1M0008d241@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,56 +14,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Running Gentoo, kernel version 2.4.24 on a Sparc Ultra 10
+>From: Antony Stone <Antony@Soft-Solutions.co.uk>
+>Reply-To: netfilter@lists.netfilter.org
+>To: netfilter@lists.netfilter.org
+>Subject: Re: ftp
+>Date: Wed, 19 May 2004 22:17:02 +0100
+>
+>On Wednesday 19 May 2004 10:05 pm, azeem ahmad wrote:
+>
+> > hi all
+> > i m unable to browse ftp. it says
+> > an error occured opening that folder on the ftp server. make sure you 
+>have
+> > permissions to access that folder
+> > details
+> > 200 type set to A
+> > 500 Illegal port command
+> > 500 LPRT not understood
+>
+>Do you get the same error when accessing the server from a machine not via 
+>the
+>netfilter firewall (eg localhost, or some other client on the same subnet)?
+>
+>Regards,
+>
+>Antony.
+>
+>--
+>RTFM may be the appropriate reply, but please specify exactly which FM to 
+>R.
+>
+>                                                      Please reply to the 
+>list;
+>                                                            please don't CC 
+>me.
+>
+only one box is accessing ftp that is firewall box itself. no other box 
+behind the firewall can access the ftp outside.
 
-I have recently purchased Vonage Voice over IP.  In their 'how to make this
-work with a linksys device', they say (basically):
+Regards
+Azeem
 
-Forward udp ports 53, 69, 5060, 5061, and 10000-20000 to the device.
+_________________________________________________________________
+Tired of spam? Get advanced junk mail protection with MSN 8. 
+http://join.msn.com/?page=features/junkmail
 
-I interpret this to mean:
-
-iptables -t nat -A PREROUTING -i eth0 -p udp -d $EXTERNAL_IP \
-		--dport 53 -j DNAT --to 192.168.0.5:53
-
-etc for each port.
-
-Unfortunatly, I don't seem to be able to specify a range of ports in the
-iptables syntax.  So, when I get to that large, 10,000 wide range of ports,
-it dies.  After much tinkering, I find that I can do:
-
-for port in {10000..10597}; do
-   iptables -t nat -A PREROUTING -i eth0 -p udp -d $EXTERNAL_IP \
-		--dport $port -j DNAT --to 192.168.0.5:${port}
-done
-
-and it will work.  If I do just 1 port more, iptables fails, and all the
-tables get magically flushed (which isn't a good idea by the by, but we'll
-get there later).
-
-Idealy, I'd like to:
-
-iptables -t nat -A PREROUTING -i eth0 -p udp -d $EXTERNAL_IP \
-		--dport 10000-20000 -j DNAT --to 192.168.0.5:10000-20000
-
-and call it a day.
-
-Their table that describes this (text version of the linksys web
-configuration tool.  '_' are unchecked boxes, 'X' are checked boxes):
-
-Ext.Port		Protocol	Protocol	IP		Enable
-			TCP		UDP
-53 to 53		_		X		192.168.0.5	X
-69 to 69		_		X		192.168.0.5	X
-5060 to 5061		_		X		192.168.0.5	X
-10000 to 20000		_		X		192.168.0.5	X
-
-Any help would be greatly appreciated.
-
-Thanks;
---Jason
 
