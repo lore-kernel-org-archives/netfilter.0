@@ -1,8 +1,8 @@
-From: <mafioso1823@contourmediagroup.com>
-Subject: Newbie Question
-Date: Tue, 8 Jun 2004 00:16:08 -0400
+From: <hyper@ubn.dk>
+Subject: Updating multple iptables on servers
+Date: Tue, 8 Jun 2004 10:09:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <MOEOICEDMOAKAHOICANFCEOGEBAA.mafioso1823@contourmediagroup.com>
+Message-ID: <E1BXbgJ-00083y-0x@vishnu.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,40 +18,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am trying to use this piece of code that i found in my rc.firewall script
-but it doesn't seem to want to take it can anyone tell me why or how i can
-get this to work?
+Is it possible to update iptables from a central server. I got 25 servers
+using the same firewall and i need something to update them all from a
+central server. 
+ 
+Any ideas?
+ 
+Hilsen Thomas Kristensen
 
-#The Mangle portion of the ruleset. Here is where unwanted packet types get
-dropped.
-#This helps in making port scans against your server a bit more time
-consuming and difficult, but not impossible.
-*mangle
-:PREROUTING ACCEPT [444:43563]
-:INPUT ACCEPT [444:43563]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [402:144198]
-:POSTROUTING ACCEPT [402:144198]
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-COMMIT
 
 
