@@ -1,9 +1,9 @@
-From: "ITM CS Ruslan O. Nesterov" <ruslan@complexsystem.ru>
-Subject: What is wrong with this chain
-Date: Mon, 6 Jan 2003 15:54:45 +0300
+From: "Toshihiro Sonoda" <toshihiro@jp.fujitsu.com>
+Subject: Re: Doing Bridge with firewalling
+Date: Mon, 6 Jan 2003 23:16:56 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <748017849.20030106155445@complexsystem.ru>
-Reply-To: "ITM CS Ruslan O. Nesterov" <ruslan@complexsystem.ru>
+Message-ID: <01db01c2b58e$45d585c0$4f1ae2da@monday>
+References: <20021231205417.GQ677@ns> <001001c2b113$e2181800$0100a8c0@zultys.com> <20030101150801.GR677@ns>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,25 +19,41 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello List,
-   I want to drop portscans and DOS attacks. I've found two chains on
-   the internet. But after executing them my connection drops and no
-   data passes firewall. Anyone can tell me where i'm wrong?
-   
-# Log and drop portscans:
-echo -n "SCAN "
-$IPTABLES -A SCAN -m limit --limit 30/m -j LOG --log-prefix "PORTSCAN " --log-ip-options --log-tcp-options --log-level 1
-$IPTABLES -A SCAN -j DROP
+hi,
 
-# Log and drop DOS attacks:
-echo -n "DOS "
-$IPTABLES -A DOS -p tcp --syn -m limit -j LOG --log-prefix "SYN Flood "
-$IPTABLES -A DOS -p icmp -m limit -j LOG --log-prefix "PING Flood "
-$IPTABLES -A DOS -j DROP
+What is eptables?
+Where can I get the information about it.
 
--- 
-Best regards,
- ITM                          mailto:ruslan@complexsystem.ru
+toshihiro
 
+----- Original Message ----- 
+From: "Stephen Frost" <sfrost@snowman.net>
+To: "Ranjeet Shetye" <ranjeet.shetye@zultys.com>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Thursday, January 02, 2003 12:08 AM
+Subject: Re: Doing Bridge with firewalling
 
+* Ranjeet Shetye (ranjeet.shetye@zultys.com) wrote:
+> I think I got it right :D.
+
+Unfortunately not quite.
+
+> Hence when you downsize your (layer 3) router into a (layer 2) bridge,
+> your neo-bridge becomes a layer 2 entity and disappears from the layer 3
+> i.e. it is no longer visible at layer 3. Therefore no firewalling, no
+> NAT.
+
+See, this isn't entirely correct.  A bridge passes around ethernet
+frames, yes, *but* that does *NOT* mean that it can't modify those
+frames.  It can, in fact, modify those frames for NATing purposes.
+It can also do full state-based firewalling by watching the frames go by
+and doing exactly what netfilter does today.
+
+There's also an eptables or some such out there for filtering based on
+raw ethernet frames but basically everything in iptables will work too
+with the right patches.  The only thing that won't is MASQ because your
+ethernet interfaces don't have an IP address for MASQ to use, *however*,
+you *CAN* to SNAT/DNAT/etc.
+
+ Stephen
 
