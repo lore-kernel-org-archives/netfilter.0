@@ -1,13 +1,13 @@
-From: "Rowan Reid" <rreid@studio3arc.com>
-Subject: RE: Question
-Date: Fri, 21 Jun 2002 12:41:38 -0700
+From: "Nathan Cassano" <nathan@cjhunter.com>
+Subject: RE: Additional user for iptables
+Date: Fri, 21 Jun 2002 13:50:09 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000001c2195b$a91773c0$6b01a8c0@s3ac>
-References: <20020621195952.C2957@funkyjesus.org>
+Message-ID: <007001c21965$3b4cdec0$2901a8c0@amos>
+References: <MBBBJHGKAGOKDNNIMPJHMEPKJGAA.davemiller@comcast.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020621195952.C2957@funkyjesus.org>
+In-Reply-To: <MBBBJHGKAGOKDNNIMPJHMEPKJGAA.davemiller@comcast.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,14 +18,30 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: 'Dave Miller' <davemiller@comcast.net>, netfilter@lists.samba.org
 
 
 
->>At the least it's free to try... :)
+Dave Miller wrote:
+>
+>Hello - 
+>
+> Is there a way to allow an additional (non root) user to access the
+iptables tool without using sudo or similar?
 
-Does anyone know where to find documentation for Firewall-1 I decided to
-try it once but couldn't find any documentation to save my life.
+Hi Dave,
+	What are you trying to accomplish? What specific parts of
+iptables do you want your users to access?
+
+In any case if you are bent on letting your users access iptables I
+would develop a suid c program that only accepts specific iptables
+manipulations (i.e. only blocking an ip address) and runs the iptables
+program. Heavily check the program's arguments so that nothing gets
+through but allowed data. Make sure that only designated users will have
+the permissions to executer this suid program.
+
+
+Nathan
 
 
 
