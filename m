@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: passive ftp and file sharing
-Date: Wed, 11 Jun 2003 08:06:16 +1000
+Subject: RE: help
+Date: Wed, 11 Jun 2003 08:15:14 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6E1A@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6E1B@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,14 +17,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: leo.lombardo@tiscalinet.it
-Cc: netfilter@lists.samba.org
+To: dawn lin <alantisjun@hotmail.com>, netfilter@lists.netfilter.org
 
-Use ip_conntrack_ftp which is for FTP and use -m state --state RELATED =
-for FTP related connections.
+You have not mentioned anything about IPs so I assume they are on the =
+same subnet. In that case, use a bridge which proxies the ARP requests =
+and MAC addresses on each side of the firewall. Otherwise this won't =
+work without routing.
 
-other than that, you have to learn more about the ports used by those =
-applications and possibly block their port/protocol.
+A and C will see each other via B when B is setup as a bridge. You may =
+need some patching on the kernel for iptables to work on a bridge.. not =
+sure, brain dead this morning.. ;)
 
 Thanks,
 ____________________________________________
@@ -34,41 +36,45 @@ georgev@citadelcomputer.com.au
 
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
 =20
 
 -----Original Message-----
-From: Leonardo Lombardo [mailto:leo.lombardo@tiscali.it]
-Sent: Monday, June 09, 2003 7:43 PM
+From: dawn lin [mailto:alantisjun@hotmail.com]
+Sent: Thursday, June 05, 2003 7:19 PM
 To: netfilter@lists.netfilter.org
-Subject: passive ftp and file sharing
+Subject: help
 
 
-Hi all,
+hi,
 
-a question for you: how can I set my iptables firewall so that natted =
-lan
-users can use ftp in passive mode and have winmx, dc, audiogalaxy, ....
-blocked ? I've tried out all that scripts/lists of ip/... i've found on
-the net but nothing... the only way I found to block file sharing is to
-close all ports 800:65535 but this way passive ftp is blocked too.... =
-:((
-I'm a very beginner with iptables so please be patient...
+i have 3 computers A, B and C.
+i need A to talk to C through B(not a router)
 
-p.s.: now I use firewall-jay script to manage iptables.
+I was hoping iptables will help me do mac filtering.
 
-Thanks to all in advance :)
-##############################################
+is it possible?
 
-Leonardo Lombardo - leo.lombardo@tiscalinet.it
+What i need is A is able to talk B only and B is to resend A's message =
+to B.
+Which is in a way where A wants to talk to C but it can only go through =
+B to=20
+talk to C.
+Can anyone advice me how i can use iptables for that?
 
-##############################################
+one senerio:
+A send packets to C-> packet info shows MAC source=3DA, MAC dest=3DB,IP=20
+source=3DA,IP dest=3DC
+When packet reaches B-> packet info shows MAC source=3DB,MAC dest=3DC,IP =
 
-__________________________________________________________________
-Tiscali ADSL Light Sempre a 1 euro al giorno! E in piu' telefoni gratis.
-Abbonati entro il 31 maggio, l'attivazione e 'gratuita.   =20
-http://point.tiscali.it/adsl/index.shtml
+source=3DA,IP dest=3DC
 
+is that possible?
 
+_________________________________________________________________
+Download Norah Jones, Eminem and more! http://www.msn.com.sg/ringtones/
 
 
 
