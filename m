@@ -1,12 +1,12 @@
-From: "Luke Hinds" <luke.hinds@neuvoice.com>
-Subject: The correct use of scripts
-Date: Thu, 4 Sep 2003 12:01:07 +0100
+From: Tomasz Wrona <twr@wp.pl>
+Subject: ipt_limit overflow with HZ=1000
+Date: Thu, 4 Sep 2003 14:28:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <50D72569B3D8DD468A233F2AFCDE3BEC2341BC@london.plymouth.neuvoice.com>
+Message-ID: <15615709178.20030904142817@wp.pl>
+Reply-To: Tomasz Wrona <twr@wp.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +19,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi All,
+Hello,
 
-I am fairly new to netfilter. Hopefully you do not mind me asking a =
-couple of questions.
+I patched 2.4.21 with "Variable HZ" patch from
+http://members.optusnet.com.au/ckolivas/kernel/
+and set up config to HZ=1000
 
-I can't quite get the full picture around the different locations of =
-iptables scripts.
+When launched previous working iptables setup strange behaviour
+appeared...
 
-On my machine for instance i have.
+ie. following rule:
+iptables -t nat -A info -s $i -p tcp --dport 80 -m limit --limit-burst 2 --limit 1/day -j CONNMARK --set-mark 80
 
-/etc/sysconfig/iptables
+give me: "invalid argument"
 
-/etc/init.d/iptables
+when changed --limit-burst to 1 it worked
+iptables -t nat -A info -s $i -p tcp --dport 80 -m limit --limit-burst 1 --limit 1/day -j CONNMARK --set-mark 80
 
-/etc/rc.d/init.d/iptables
+I also tried change --limit-burst and --limit values to have
+ocasionaly succes or fail.
 
-Now i know that the /sysconfig file is configured by the service command =
-i.e service iptables save
+Messages from syslog when tried --limit-burst params:
+[2,4,5,7,8 didnt work, 3,6 worked !]
 
-But how about the other two? And if i wanted to add a script that =
-complimented the /sysconfig rules i have already saved where would i put =
-it?
+Sep  4 13:48:03 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/2
+Sep  4 13:51:59 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/4
+Sep  4 13:52:05 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/5
+Sep  4 13:52:32 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/2
+Sep  4 13:52:55 kojot kernel: Call rusty: overflow in ipt_limit: 864000000/7
+Sep  4 13:53:17 kojot kernel: Call rusty: overflow in ipt_limit: 216000000/8
 
-Thanks for your time and patience.
 
-Luke
+Regards
+tw
+--
+
 
