@@ -1,79 +1,57 @@
-From: David Ford <david+challenge-response@blue-labs.org>
-Subject: Re: Iptables-1.2.9/10 compile failure with linux 2.6.7 headers
-Date: Fri, 18 Jun 2004 12:39:54 -0400
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <40D31ADA.3080204@blue-labs.org>
-References: <200406181611.37890.andrew@walrond.org> <40D313DC.7000202@blue-labs.org> <200406181721.47968.andrew@walrond.org>
+From: Sagara Wijetunga <sagaralists@yahoo.com>
+Subject: RE: Allow active and passive FTP connections
+Date: Fri, 18 Jun 2004 10:14:24 -0700 (PDT)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040618171424.37671.qmail@web14728.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080805040507060109060808"
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S265351AbUFRQjq@vger.kernel.org>
-In-Reply-To: <200406181721.47968.andrew@walrond.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-To: Andrew Walrond <andrew@walrond.org>
-Cc: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------080805040507060109060808
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi all
 
-The current linux libc headers package is much more frequently updated 
-and closely matches released kernels.  LLH is a sanitized linux headers 
-package and is currently based on 2.6.6 headers.
+Today I upgraded the Linux kernel to 2.6.7.=20
 
-Yes you can build iptables on 2.6.6 for a 2.6.7 kernel.  I have built 
-iptables once or twice a year and built kernels once or twice a week.  
-Iptables continues to work fine.
+Applied following patches of the
+patch-o-matic-ng-20040302:
+init_conntrack-optimize NETMAP SAME TTL connlimit
+fuzzy iprange ipv4options mport raw CLASSIFY addrtype
+childlevel owner-socketlookup
 
-David
+Compiled in all netfiter options to the kernel.
 
-Andrew Walrond wrote:
+After the server is booted with the new kernel, I
+recompiled and reinstalled the iptables.
 
->Hi David,
->
->On Friday 18 Jun 2004 17:10, David Ford wrote:
->  
->
->>Iptables should be using linux-libc-headers headers instead of kernel
->>headers.
->>    
->>
->
->Is this acquired knowledge, or new Netfilter policy?
->How dependant are the iptables tools on the specifc kernel running?
->
->Ie
->Can I build iptables for use on 2.6.7 kernel with 2.6.6 linux-libc-headers? 
->(probably)
->
->But could I build iptables for 2.6.7 kernel with 2.4.20 linux-libc-headers? 
->(probably not?)
->
->The INSTALL file states specifically to use 
->KERNEL_DIR=<<where-you-built-your-kernel>>
->
->Andrew
->  
->
+But my problem is still the same. The =93-m state
+--state ESTABLISHED=94 works well, but the =93-m state
+--state RELATED=94 does not work at all for FTP data
+connections. What have I missed?
 
---------------080805040507060109060808
-Content-Type: text/x-vcard; charset=utf-8;
- name="david+challenge-response.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="david+challenge-response.vcf"
+Is there an alternative method to know that a
+particular --syn connection a part of an existing FTP
+connection without using RELATED?
 
-begin:vcard
-fn:David Ford
-n:Ford;David
-email;internet:david@blue-labs.org
-title:Industrial Geek
-tel;home:Ask please
-tel;cell:(203) 650-3611
-x-mozilla-html:TRUE
-version:2.1
-end:vcard
+Any ideas please?
+
+Sagara
 
 
---------------080805040507060109060808--
+
+
+	=09
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail is new and improved - Check it out!
+http://promotions.yahoo.com/new_mail
+
