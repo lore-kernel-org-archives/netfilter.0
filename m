@@ -1,12 +1,13 @@
-From: Xinwen Fu <xinwenfu@cs.tamu.edu>
-Subject: Very impressive, and no virus :-) Re: IPTables Flow Chart
-Date: Wed, 10 Mar 2004 12:44:53 -0600 (CST)
+From: Jim Cliver <jclive@mtaonline.net>
+Subject: Re: iptables 1.2.9. Help me!
+Date: Wed, 10 Mar 2004 09:44:32 -0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSO.4.58.0403101241120.3753@unix.cs.tamu.edu>
-References: <404E7C72.3040500@ynsgroup.net>
+Message-ID: <404F6210.9000502@mtaonline.net>
+References: <20040310044739.62422.qmail@web41304.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <404E7C72.3040500@ynsgroup.net>
+In-Reply-To: <20040310044739.62422.qmail@web41304.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +17,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jim Cliver <jclive@ynsgroup.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Tuan nguyen hoang anh <nguyen_hoang_anh_tuan@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-Thank you!
+Tuan nguyen hoang anh wrote:
+> i'm using RedHat 9 and iptables 1.2.7a, but i want to upgrade to 
+> iptables 1.2.9
+> When i compile it then errors occur:
+>  
+> 
+> *[root@localhost iptables-1.2.9]# make KERNEL_DIR=/usr/sr/linux-2.4*
+> 
 
-Xinwen Fu
+Hello Tuan,
 
-On Tue, 9 Mar 2004, Jim Cliver wrote:
+Could it be the 'c' missing from the source 'src' directory in your 
+KERNEL_DIR=/usr/sr/linux-2.4* statement.
 
-> Hello All,
->
-> Attached is a drawing that I thought might be useful to the list, it is
-> intended to help visualize the traffic flows on a routing host
-> configured with Netfilter.
->
-> I have checked it carefully for errors, but can't warrant their
-> non-existance.  I welcome comments and suggestions for improving or
-> correcting the drawing.
->
-> Regards,
-> jim
->
+jim
+
 
