@@ -1,9 +1,9 @@
-From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
-Subject: Re: IP address to MAC address
-Date: Tue, 11 Jun 2002 22:32:23 +0100
+From: "Hard__warE" <hard__ware@hotmail.com>
+Subject: Multi Port Tested & Example
+Date: Wed, 12 Jun 2002 07:45:38 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <081501c2118f$79efcf30$3200a8c0@jungle.funkybadger.org>
-References: <001601c2113a$aa85b560$0500a8c0@escritoriomundial.com.br> <200206112040.g5BKetA21075@Networker.rockstone.co.uk> <20020611205543.GC21405@cannon.eng.us.uu.net> <200206112109.g5BL9xA22717@Networker.rockstone.co.uk>
+Message-ID: <000d01c21191$53304e40$7b0010ac@dynamicaccess.lan>
+Reply-To: "Hard__warE" <hard__ware@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -19,51 +19,162 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Antony Stone wrote:
+i remember a while back people were screeming for help on multi port
 
-> On Tuesday 11 June 2002 9:55 pm, Ramin Alidousti wrote:
->
-> > On Tue, Jun 11, 2002 at 09:40:53PM +0100, Antony Stone wrote:
-> > > On Tuesday 11 June 2002 9:38 pm, Tony Earnshaw wrote:
-[chomp]
-> > > > Did you say 'arp -a'?
-> > >
-> > > I would have done, if I knew I was root, but the commands I
-suggested
-> > > work for an unprivileged user too :-)
-> >
-> > If that information can be read by anybody then the wrapper
-program like
-> > arp can be run by anybody as well ;-)
->
-> Well, on my system at least (Slackware 8.0), /proc/net/arp has
-permissions
-> -r--r--r-- so anyone can read it.   The arp program is in /sbin, so
-it can
-> only be run by root.
+well here what ya .. need
 
-Non sequiter. /sbin contains, by convention, binaries connected with
-system administration. That is *not* the same as "binaries that may
-only be executed by root".
+the example is For all SAMBA Ports to be added and DROPED
 
-/sbin is not on non-root users' paths, by default, but that doesn't
-necessarily mean they can't execute stuff that lives there. Certainly,
-on my Debian Woody and Sid boxes here, the contents of /sbin
-are -rwxr-xr-x ;- the main thing stopping non-root users using some of
-them is a lack of privileges, not a lack of execute rights to the
-files.
+---------------Start Below This Line---------------------
 
-Specifically, arp lives in /usr/sbin on my boxen, and whilst that's
-not on my normal user's path, and the files are owned by root.root, I
-can quite happily:
+## Load the Multi Port  Modue ##
 
-  /usr/sbin/arp -a
+echo -e "ipt_multiport, "
+if [ -z "` $LSMOD | $GREP ipt_multiport | $AWK {'print $1'} `" ]; then
+   /sbin/insmod ipt_multiport
+fi
 
-as any user. Similarly, a non-privileged user has no problems running
-/sbin/route.
+##########Creat Samba Chain #############
+$IPTABLES -N SMB
+$IPTABLES -A SMB -m multiport -p tcp --dport 135,136,137,138,139,445 -j DROP
+$IPTABLES -A SMB -m multiport -p tcp --dport 135,136,137,138,139,445 -j DROP
+$IPTABLES -A SMB -m multiport -p udp --sport 135,136,137,138,139,445 -j DROP
+$IPTABLES -A SMB -m multiport -p udp --sport 135,136,137,138,139,445 -j DROP
 
-hth
+$IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j SMB
+$IPTABLES -A OUTPUT -s $UNIVERSE -d $UNIVERSE -j SMB
+$IPTABLES -A FORWARD -j SMB
 
-Adam
+To prove it works here is my Chains  /sbin/iptbales -L -n -v
+
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+    2   202 ACCEPT     all  --  lo     *       0.0.0.0/0
+0.0.0.0/0
+  470 49894 ACCEPT     all  --  eth0   *       172.16.0.0/16
+0.0.0.0/0
+    0     0 drop-and-log-it  all  --  eth1   *       172.16.0.0/16
+0.0.0.0/0
+    0     0 drop-and-log-it  all  --  eth1   *       0.0.0.0/0
+172.16.0.0/16
+    0     0 SPOOFED    icmp --  eth1   *       0.0.0.0/0
+0.0.0.0/0
+    0     0 ACCEPT     icmp --  eth1   *       0.0.0.0/0
+192.168.0.253
+   16  1395 ACCEPT     all  --  eth1   *       0.0.0.0/0
+192.168.0.253
+    0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+192.168.0.212
+    0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+192.168.0.212      state RELATED,ESTABLISHED
+    0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+192.168.0.213
+    0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+192.168.0.213      state RELATED,ESTABLISHED
+    0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+192.168.0.253      state RELATED,ESTABLISHED
+   17  1702 SMB        all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+    0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+   67  5190 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
+172.16.0.111       tcp dpt:80
+    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
+172.16.0.111       tcp dpt:443
+    0     0 ACCEPT     udp  --  eth1   *       0.0.0.0/0
+172.16.0.111       udp dpt:443
+    0     0 ACCEPT     tcp  --  eth1   *       192.168.0.212
+172.16.0.52        tcp
+    0     0 ACCEPT     udp  --  eth1   *       192.168.0.212
+172.16.0.52        udp
+    0     0 ACCEPT     tcp  --  eth1   *       192.168.0.213
+172.16.0.53        tcp
+    0     0 ACCEPT     udp  --  eth1   *       192.168.0.213
+172.16.0.53        udp
+  334 92708 SMB        all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
+0.0.0.0/0          tcp flags:0x16/0x02 limit: avg 1/sec burst 5
+    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
+0.0.0.0/0          tcp flags:0x17/0x04 limit: avg 1/sec burst 5
+    0     0 ACCEPT     icmp --  eth1   *       0.0.0.0/0
+0.0.0.0/0          icmp type 8 limit: avg 1/sec burst 5
+    0     0 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
+172.16.0.52        state RELATED,ESTABLISHED
+    0     0 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
+172.16.0.53        state RELATED,ESTABLISHED
+  127 32555 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
+0.0.0.0/0          state RELATED,ESTABLISHED
+  207 60153 ACCEPT     all  --  eth0   eth1    172.16.0.0/16
+0.0.0.0/0
+    0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+
+Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+    2   202 ACCEPT     all  --  *      lo      0.0.0.0/0
+0.0.0.0/0
+  392  151K ACCEPT     all  --  *      eth0    172.16.0.253
+172.16.0.0/16
+    0     0 ACCEPT     all  --  *      eth0    192.168.0.253
+172.16.0.0/16
+    0     0 drop-and-log-it  all  --  *      eth1    0.0.0.0/0
+172.16.0.0/16
+    0     0 ACCEPT     all  --  *      eth0    192.168.0.212
+172.16.0.0/16
+    0     0 ACCEPT     all  --  *      eth1    192.168.0.212
+0.0.0.0/0
+    0     0 ACCEPT     all  --  *      eth0    192.168.0.213
+172.16.0.0/16
+    0     0 ACCEPT     all  --  *      eth1    192.168.0.213
+0.0.0.0/0
+   16  1059 ACCEPT     all  --  *      eth1    192.168.0.253
+0.0.0.0/0
+    0     0 SMB        all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+    0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+
+Chain SMB (3 references)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          multiport dports 135,136,137,138,139,445
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0          multiport dports 135,136,137,138,139,445
+   17  1702 DROP       udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          multiport sports 135,136,137,138,139,445
+    0     0 DROP       udp  --  *      *       0.0.0.0/0
+0.0.0.0/0          multiport sports 135,136,137,138,139,445
+
+Chain SPOOFED (1 references)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 drop-and-log-it  all  --  *      *       10.0.0.0/8
+0.0.0.0/0
+    0     0 drop-and-log-it  all  --  *      *       172.16.0.0/16
+0.0.0.0/0
+    0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+10.0.0.0/8
+    0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+172.16.0.0/16
+
+Chain drop-and-log-it (10 references)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 LOG        all  --  *      *       0.0.0.0/0
+0.0.0.0/0          LOG flags 0 level 6
+    0     0 DROP       all  --  *      *       0.0.0.0/0
+0.0.0.0/0
+
+
+
+
 
 
