@@ -1,11 +1,11 @@
-From: Pablo Neira <pablo@eurodev.net>
-Subject: Re: CLUSTERIP error "iptables: Invalid argument"
-Date: Thu, 03 Mar 2005 10:19:33 +0100
-Message-ID: <4226D6A5.9090307@eurodev.net>
-References: <7203.1109797991@www46.gmx.net>
+From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+Subject: Re: REDIRECT to more than one port does not work
+Date: Thu, 03 Mar 2005 10:35:17 +0100
+Message-ID: <1109842517.11913.3.camel@nostromo.bgsecm.com>
+References: <02eb01c51fcc$b8cb7c60$1416a8c0@lannion.citypassenger.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <7203.1109797991@www46.gmx.net>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <02eb01c51fcc$b8cb7c60$1416a8c0@lannion.citypassenger.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,31 +16,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: alex_oz@gmx.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-alex_oz@gmx.net wrote:
-> I tried the new Netfilter target CLUSTERIP using kernel-2.6.10. I discovered
-> that there is still no userspace support in iptables-1.3.0. So I added
-> "CLUSTERIP" in iptables-1.3.0/extenstions/Makefile and rebuilt
-> iptables-1.3.0 with CLUSTERIP-support.
+El jue, 03-03-2005 a las 09:40 +0100, olivier escribi=C3=B3:
+> thx for your help.
+>=20
+> without changing the rule I've tried with different IPs, odd and even, =
+ but I've got the same behavior. I've also change the rule as you 've sug=
+gested, giving this :
+>=20
+> iptables -t nat -A  PREROUTING -p tcp --dport 8000 -j REDIRECT --to-por=
+ts 8080-8081
+>=20
+> I've made the same test (different IPs odd and even) but nothing has ch=
+anged...
+>=20
+> do you known how REDIRECT target select the destination when more than =
+one are given ?
+>=20
+> olivier.
 
-legba:/home/pablo/iptables-1.3.0/extensions# ls -la libipt_CLUSTERIP.so
--rwxr-xr-x  1 pablo pablo 6385 2005-03-03 09:44 libipt_CLUSTERIP.so
+I've checked the Iptables Tutorial at:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-Really? It seems to compile just fine here
+and your rule it's completely correct, but it's doesn't say
+anything about how the ports are selected, if in a round-robin
+fashion or how. So no clue about what's happening. Sorry.
 
-> Nevertheless it seems that shared library and kernel-object doesn't fit
-> thogehter. When I try to input a CLUSTERIP rule like:
-> 
-> iptables -A INPUT -j CLUSTERIP --new --hashmode sourceip --clustermac
-> 01:ab:cd:ef:ab:cd --total-nodes 2 --local-node 1
+Regards.
 
-you forgot to add the interface and the IP, eg: -i eth0 -d 1.1.1.1
+--=20
 
-CLUSTERIP is still marked as experimental, so maybe you could find any bugs.
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
---
-Pablo
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
+
 
