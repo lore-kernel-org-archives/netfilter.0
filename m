@@ -1,11 +1,11 @@
 From: "Patrick Ahler" <pmahler@vikus.com>
 Subject: routing
-Date: Thu, 22 Jan 2004 11:10:49 -0500
+Date: Thu, 22 Jan 2004 11:17:04 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <810BC538117E9F4E9BB152E0C100DF1F0A4F3B@farmer.vikus.net>
+Message-ID: <810BC538117E9F4E9BB152E0C100DF1F0A4F3E@farmer.vikus.net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3E102.4D86EF46"
+	boundary="----_=_NextPart_001_01C3E103.2CEC9D5B"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -21,7 +21,7 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C3E102.4D86EF46
+------_=_NextPart_001_01C3E103.2CEC9D5B
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -51,7 +51,7 @@ A.B.C.x
 Thanks,
 Patrick A.
 
-------_=_NextPart_001_01C3E102.4D86EF46
+------_=_NextPart_001_01C3E103.2CEC9D5B
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -69,24 +69,9 @@ charset=3Dus-ascii">
 <!-- Converted from text/rtf format -->
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">I =
-h</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT =
-SIZE=3D2 FACE=3D"Arial">ave a router setup to forward =
-192.168.1.x</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> =
-(private/internal)</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> addresses to =
-A.B.C.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">x</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> (public) addresses</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> and public to</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">private.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">The x variable remains the same.</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
+have a router setup to forward 192.168.1.x (private/internal) addresses =
+to A.B.C.x (public) addresses and public to private. The x variable =
+remains the same.</FONT></SPAN></P>
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
 FACE=3D"Arial">192.168.1.x</FONT></SPAN><SPAN =
@@ -95,69 +80,30 @@ SIZE=3D2>&#223;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
 LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
 LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT FACE=3D"Wingdings" =
 SIZE=3D2>&#224;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">eth</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">0</FONT></SPAN><SPAN =
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> eth0 (router/iptables) =
+eth1</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> =
+<FONT FACE=3D"Wingdings" SIZE=3D2>&#223;</FONT></SPAN><SPAN =
 LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> (router</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">/iptables</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">)</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">eth1</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT FACE=3D"Wingdings" =
-SIZE=3D2>&#223;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT FACE=3D"Wingdings" =
+FACE=3D"Arial"></FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
+LANG=3D"en-us"> <FONT FACE=3D"Wingdings" =
 SIZE=3D2>&#224;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">A.B.C.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">x</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">&nbsp;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> </SPAN></P>
+LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> A.B.C.x&nbsp; =
+</FONT></SPAN></P>
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">Using =
 the following configuration I have had no luck getting anything to =
-forward.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> (yes I</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">ve enabled ip_forward and =
-correctly compiled the kernel)</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">. If I run a traceroute from a machine outside our =
-network it will find the router, but if I</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">traceroute a machine behind the firewall =
-(A.B.C.x)</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">, the trace will hang just =
-before it gets to my router</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> and then won</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">t find my =
-router</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">.</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
+forward. (yes I&#8217;ve enabled ip_forward and correctly compiled the =
+kernel). If I run a traceroute from a machine outside our network it =
+will find the router, but if I traceroute a machine behind the firewall =
+(A.B.C.x), the trace will hang just before it gets to my router and then =
+won&#8217;t find my router.</FONT></SPAN></P>
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
 FACE=3D"Arial">Route:</FONT></SPAN></P>
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">Route =
-add</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT =
-SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">net A.B.C.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">x</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> netmask 255.255.255.255 dev eth</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">1</FONT></SPAN></P>
+add &#8211;net A.B.C.x netmask 255.255.255.255 dev =
+eth1</FONT></SPAN></P>
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">(also =
 add default gateway and loopback interface)</FONT></SPAN></P>
@@ -166,58 +112,14 @@ add default gateway and loopback interface)</FONT></SPAN></P>
 FACE=3D"Arial">iptables:</FONT></SPAN></P>
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">iptables</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">t nat</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">A PREROUTING</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">d A.B.C.</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">x</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"></FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">&#8211;I</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> eth0</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">j DNAT</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">to 1</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">9</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">2.168.1.x</FONT></SPAN></P>
+FACE=3D"Arial">iptables &#8211;t nat &#8211;A PREROUTING &#8211;d =
+A.B.C.x &#8211;I eth0 &#8211;j DNAT &#8211;to =
+192.168.1.x</FONT></SPAN></P>
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">iptables</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">t nat</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">A</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">POSTROUTING</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">s =
-192.168.1.x</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">&#8211;I</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> eth0</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">j SNAT</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">&#8211;</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">to =
-A.B.C.</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">x</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
+FACE=3D"Arial">iptables &#8211;t nat &#8211;A POSTROUTING &#8211;s =
+192.168.1.x &#8211;I eth0 &#8211;j SNAT &#8211;to =
+A.B.C.x</FONT></SPAN></P>
 
 <P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
 FACE=3D"Arial">Thanks,</FONT></SPAN></P>
@@ -228,5 +130,5 @@ LANG=3D"en-us"></SPAN></P>
 
 </BODY>
 </HTML>
-------_=_NextPart_001_01C3E102.4D86EF46--
+------_=_NextPart_001_01C3E103.2CEC9D5B--
 
