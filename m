@@ -1,11 +1,13 @@
-From: Gladson George <georgc@FARMINGDALE.EDU>
-Subject: RE: Blocking Windows
-Date: Mon, 02 Jun 2003 08:44:11 -0400
+From: "Michael K" <micke@klintan.se>
+Subject: RE: problems filtering ms file shares
+Date: Mon, 2 Jun 2003 16:33:32 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2CE951F1A7DC0644A33B9F763D2029C0012A2891@mail.it.farmingdale.edu>
+Message-ID: <001201c32913$f1d8f1b0$0200a8c0@klintan.local>
+References: <3EDB4DEE.4000001@ncl.ac.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3EDB4DEE.4000001@ncl.ac.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,27 +18,166 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-How would you go about blocking static ip. =0D=0A=0D=0A-----Original =
-Message-----=0D=0AFrom: Arnt Karlsen [mailto:arnt@c2i.net] =0D=0ASent=
-: Thursday, May 29, 2003 2:19 PM=0D=0ATo: netfilter@lists.netfilter.o=
-rg=0D=0ASubject: Re: Blocking Windows=0D=0A=0D=0AOn Thu, 29 May 2003 =
-11:27:11 -0400, =0D=0ADominic Irrcher <dirrcher@colosseum.com> wrote =
-in message =0D=0A<C037E4BA8D79D71196AF00805F777E98028A0C@colosrva.col=
-osseum.com>:=0D=0A=0D=0A> what about giving each os a different ip ?=
-=0D=0A> =0D=0A> then when users boot up into windows, block those ips=
- you gave the=0D=0A> windows hosts.=0D=0A> =0D=0A> ie. 192.168 on lin=
-ux, and 10.10 on windows, block all 10.10 on the =0D=0A> LAN!=0D=0A> =
-=0D=0A> something along those lines=0D=0A=0D=0A..can also be automate=
-d to first block _everything_, then hear dhcp ip=0D=0Arequest broadca=
-sts from clients, then first check os with nmap or=0D=0Anessus before=
- award an ip from dhcp.  Static ip tricksters can be=0D=0Ablocked too=
-.=0D=0A=0D=0A..yet another option is run a ipv6 gateway, I don't beli=
-eve =0D=0Awintendo can do ipv6, concequently they will be kept nicely=
- =0D=0Aoff Internet, can some wintendoite confirm or refute me here?=
-=0D=0A=0D=0A-- =0D=0A..med vennlig hilsen =3D with Kind Regards from =
-Arnt... ;-)=0D=0A...with a number of polar bear hunters in his ancest=
-ry...=0D=0A  Scenarios always come in sets of three: =0D=0A  best cas=
-e, worst case, and just in case.=0D=0A=0D=0A=0D=0A=0D=0A=
+
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org 
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
+> Matthew Pocock
+> Sent: Monday, June 02, 2003 3:15 PM
+> To: netfilter@lists.netfilter.org
+> Subject: problems filtering ms file shares
+> 
+> 
+> Hi,
+> 
+> I'm having trouble setting fire wall rules on a bridge. I'm 
+> running rh9, 
+> and
+> have patched the kernel with 
+> bridge-nf-0.0.10-against-2.4.20.diff and 
+> ebtables-v2.0.003_vs_2.4.20.diff as well as installing the utilities 
+> brctl and
+> ebtables.
+> 
+> Using iptables (editing my uni2lan & lan2uni chains), I seem 
+> to be able to control what goes through the firewall well 
+> enough to convince ping, http, nmap and traceroute (with and 
+> without the -I option) that protocols & ports are reachable or not.
+> 
+> However, windows file sharing seems go go right through. If I 
+> pull either cable out of the bridge, then windows file 
+> sharing across the bridge 
+> stops (no
+> supprise there), but if the cable is in, file sharing is 
+> always functional, even if I set all chains to deny 
+> everything (by uncommenting the debugging rules below).
+> 
+
+What I can see is that filesharing can go into the firewall (-P INPUT
+ACCEPT, -P OUTPUT ACCEPT)
+And Lan can acces filesharing to universe (-A FORWARD -i eth1 -o eth0 -j
+lan2uni, -A lan2uni -j ACCEPT)
+Is this what you expect? Where should filesharing not go thrue? Firewall
+itself or to other computers?
+
+
+
+> Down at the bottom of the netfilter/iptables docs, it says I 
+> should be 
+> using
+> the physdev module to match bridge ports, but it seems that 
+> this module 
+> is not
+> present on my system. Other docs say that it is only needed 
+> for kernels 
+> 2.5.44
+> and greater...
+> 
+> iptables-restore v1.2.7a: Couldn't load match
+> `physdev':/lib/iptables/libipt_physdev.so: cannot open shared object 
+> file: No
+> such file or directory
+> 
+> tcpdump (run seperately on eth0 and eth1) seems to be showing exactly 
+> what you
+> would expect given the firewall rules & doesn't show the packets 
+> transmitting
+> information between the two PCs, but the two PCs still are doing file 
+> sharing.
+> 
+> I'm feeling bewildered.
+> 
+> I use this script to set up the bridge:
+> 
+> /usr/sbin/brctl addbr br0
+> /usr/sbin/brctl stp br0 off
+> /usr/sbin/brctl addif br0 eth0
+> /usr/sbin/brctl addif br0 eth1
+> /sbin/ifconfig eth0 down
+> /sbin/ifconfig eth1 down
+> /sbin/ifconfig eth0 0.0.0.0 up
+> /sbin/ifconfig eth1 0.0.0.0 up
+> /sbin/ifconfig br0 128.240.227.17
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+> /sbin/route add default gw 128.240.227.251
+> 
+> My iptables config looks like this:
+> 
+> ##############################################################
+> ################
+> #
+> # iptables config file written by Matthew Pocock 
+> (matthew.pocock@ncl.ac.uk) #
+> 
+> ## main chains
+> *filter
+> :INPUT ACCEPT [0:0]
+> :FORWARD DROP [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :lan2uni - [0:0]
+> :uni2lan - [0:0]
+> 
+> ##############################################################
+> ################
+> #
+> ## debugging rules
+> #-A FORWARD -j DROP
+> #-A INPUT -j DROP
+> #-A OUTPUT -j DROP
+> 
+> ##############################################################
+> ################
+> #
+> ## drop all invalid packets, iregardless
+> -A FORWARD -m state --state INVALID -j DROP
+> 
+> ## split traffic depending upon direction
+> -A FORWARD -i eth0 -o eth1 -j uni2lan
+> -A FORWARD -i eth1 -o eth0 -j lan2uni
+> 
+> ##############################################################
+> ################
+> #
+> ## let everything out - is this a good plan?
+> ## we should realy be a bit more careful here, but hey-ho
+> -A lan2uni -j ACCEPT
+> 
+> ##############################################################
+> ################
+> #
+> ## let only specific things in
+> 
+> ## stuff we've seen before should get through
+> -A uni2lan -m state --state RELATED,ESTABLISHED -j ACCEPT
+> 
+> ## accept some new connections for 'nice' protocols
+> ## we know they are new, as we've dropped all invalid things earlier, 
+> and just
+> ## now we let related & established through.
+> 
+> ## ping, ssh
+> -A uni2lan -p icmp -j ACCEPT
+> -A uni2lan -p tcp --dport 22 -j ACCEPT
+> 
+> ## drop everything else comming in
+> -A uni2lan -j REJECT
+> 
+> 
+> 
+> COMMIT
+> 
+> 
+> Thanks,
+> 
+> Matthew
+> 
+> 
+
+
+/Klintan
+
+
 
