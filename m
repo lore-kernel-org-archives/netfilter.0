@@ -1,8 +1,8 @@
 From: patrick conlin <patrick@wechsler.com>
 Subject: general policy question
-Date: Thu, 06 Jun 2002 17:44:21 -0400
+Date: Fri, 07 Jun 2002 10:35:25 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <B9254FF5.1C46%patrick@wechsler.com>
+Message-ID: <B9263CED.1C96%patrick@wechsler.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
