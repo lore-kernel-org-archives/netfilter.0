@@ -1,10 +1,13 @@
-From: Carol Anne Ogdin <caogdin@deepwoods.com>
-Subject: Re(2): Need for GLIBC 2.3?
-Date: Fri, 18 Apr 2003 07:37:47 -0700
+From: Francis GASCHET <fg@numlog.fr>
+Subject: Re: Filtering PPP traffic
+Date: Fri, 18 Apr 2003 17:25:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFFF8865C2.2434357B-ON88256D0C.004E3CB8-88256D0C.00505D66@deepwoods.com>
+Message-ID: <3EA018CF.2010702@numlog.fr>
+References: <20030417195557.52702.qmail@web40208.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030417195557.52702.qmail@web40208.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,49 +17,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
 
-On Apr 18, Arnt Karlsen) wrote:
-From arnt@c2i.net  Fri Apr 18 03:53:40 2003
->From: arnt@c2i.net (Arnt Karlsen)
->Date: Fri, 18 Apr 2003 04:53:40 +0200
->Subject: Need for GLIBC 2.3?
->On Thu, 17 Apr 2003 17:41:04 -0700,
->Carol Anne Ogdin <caogdin@deepwoods.com> wrote in message
-><OFCE07B0DA.63D2DEA4-ON88256D0C.0002759A-88256D0C.0003C28A@deepwoods.co
->m>:
+Hello,
+
+The bridge we use is the kernel patch provided by 
+http://bridge.sourceforge.net
+On the card side, we use Ethernet over ATM bridging (RFC 1483/2684 
+kernel module). It emulates an "Ethernet like" device : nas0.
+The pppOE daemon sits in the VM where it reads and writes ppp frames on 
+a virtual eth device created with TAP (http://Vtun.sourceforge.net).
+The official address is carried by this virtual eth device.
+The bridge forwards pppOE packets between the nas0 and the tap0 devices.
+The goal is to use a bridged firewall. That means : a FireWall which is 
+not visible from the external network.
+
+The problem is to be able to filter the pppOE packets that flow across 
+the bridge.
+
+-- 
+Francis GASCHET / NUMLOG
+http://www.numlog.fr
+Tel.: +33 (0) 130 791 616
+Fax.: +33 (0) 130 819 286
+
+
+
+
+Thanks for any help.
+
+SBlaze wrote:
+
+>You should be able to filter at the "eth0" level of your diagram...
 >
->> Red Hat 7.3 (v2.4.18) supplies iptables v1.2.5, which relies on glibc
->> v2.2.5.  I'd like to apply the rpm for v1.2.7a, but the RH distro
->> demands glibc v2.3.
-<snip>
+>I kinda need more information on your "BRIDGE" before I could suggest something
+>else.. If by bridge you mean it bridges the DSL modem and the LAN...then your
+>eth0 is in the same machine you are calling a bridge?
+>
+>In that case you should theoretically filter the eth0 device
+>
+>
+>--- Francis GASCHET <fg@numlog.fr> wrote:
+>  
+>
+>>Hi list,
 >>
->> What would you do?
->
->..'rpmbuild -ta iptables-1.2.8.tar.bz2' or somesuch,
->should use what you have in your box.
->You _may_ have to chuck in a few *-devel.rpm's etc,
->rpm should whine which to 'rpm -ivh'.
->
-<snip>
-
-Thanks, Arnt, but that doesn't seem to get me where I need to go.
-when I run the command you recommend, I get
-      error: Name field must be present in package: (main package)
-      error: Version field must be present in package: (main package)
-      error: Release field must be present in package: (main package)
-      error: Summary field must be present in package: (main package)
-      error: Group field must be present in package: (main package)
-      error: License field must be present in package: (main package)
-rpmbuild's -vv option produces nothing more detailed that this.
-
-Not having any experience as a developer in Linux, I'm feeling overwhelmed
-by what I don't know.
-
---Carol Anne
+>>Is there somebody who knows a possibility to apply netfilter rules to 
+>>ppp packets ?
+>>
+>>Configuration :
+>>
+>>DSL - PCI modem card - BRIDGE - eth0 (in a virtual machine)
+>>
+>>I would like to filter the traffic which flows across the bridge, but at 
+>>this level, the IP traffic is encapsulated...
+>>
+>>Any clue ?
+>>
+>>Ciao.
+>>
+>>    
+>>
 
 
 
