@@ -1,12 +1,13 @@
-From: WA Support <support@wildapache.net>
-Subject: Re: Using an device alias?
-Date: Tue, 07 Jan 2003 10:23:17 -0700
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: Re: pptp+masq fsckup! PLEASE help...
+Date: Tue, 7 Jan 2003 19:33:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E1B0D05.34338FF5@wildapache.net>
-References: <b74ecb8788.b8788b74ec@cvip.net>
+Message-ID: <200301071933.16959.roy@karlsbakk.net>
+References: <200301061926.49827.roy@karlsbakk.net> <010901c2b665$1d078760$6400a8c0@diego>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <010901c2b665$1d078760$6400a8c0@diego>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,83 +17,191 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Diego Sarasua <debian@sarasuasys.com.ar>, Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-Steve,
+hi
 
-The virtual interface is dealt with in the kernel, iptables doesn't care
-about it, iptables just knows about the IP.
+it now works fine AFAICS with iptables-1.2.7a.
+however - I have some intermittent errors with the 802.1q VLAN configurat=
+ion.=20
+suddenly the machine is unreachable, and suddenly it's back there again.=20
+Dunno why, but it might be that #=A4(/#!!$@=A3 D-Link switch
 
-I have many virtual interfaces in rc.local, each associated with a
-specific IP address.  All iptables cares about is the IP address.
+On Tuesday 07 January 2003 16:54, Diego Sarasua wrote:
+> Roy ! - i was trying to compile the kernel 2.4.20 and i have the same
+> problem that U have ..... really i don=B4t know why.
+> But , becuase i really need the solution quicly as U need too.I was try=
+ing
+> with another kernels , and i was surprised because the same thing that
+> happends on 2.4.20 dont happend on  2.4.17 , and now im using that kern=
+el
+> and it works awesome.-
+> i know thath is not an correctly solution ok ?
+> but IT works Correctly .- Why ? really dont know , if U can givme an ft=
+p or
+> something  i have a 2.4.17 already patched i can upload it to You.-
+>
+>
+> p/d : I know thats is not a right way , but i U need a solution now , t=
+hat
+> help i can give U , as I say U before , i have a 2.4.20 kernel working =
+,
+> but when i try to make the same compilation in another machine , i don'=
+t
+> know waths go wrong... and invalid arguments apears.....
+>
+> Thats all
+> Please forgive my very bad english
+> Diego  : )
+> San Juan
+> Sol y buen Vino (Sun , and very good Wines)
+>
+> ----- Original Message -----
+> From: "Roy Sigurd Karlsbakk" <roy@karlsbakk.net>
+> To: "Netfilter mailinglist" <netfilter@lists.netfilter.org>
+> Sent: Monday, January 06, 2003 3:26 PM
+> Subject: pptp+masq fsckup! PLEASE help...
+>
+> > hi all
+> >
+> > still I can't make it
+> >
+> > compiled in the patch at http://roeder.goe.net/~koepi/newnat.html, as
+>
+> Diego
+>
+> > Sarasua pointed to, but getting the same ole crap as the only time I'=
+ve
+>
+> ever
+>
+> > managed to patch-o-maticize the kernel. As I try to add the following
+>
+> rule, I
+>
+> > just get an 'invalid argument' message. The following shows an strace=
+ of
+> > iptables.
+> >
+> > thanks
+> >
+> > roy
+> >
+> > nyfw:~# strace iptables -t nat -A POSTROUTING -s
+>
+> 192.168.0.0/255.255.0.0 -d !
+>
+> > 192.168.0.0/255.255.0.0 -j MASQUERADE
+> > execve("/sbin/iptables", ["iptables", "-t", "nat", "-A", "POSTROUTING=
+",
+>
+> "-s",
+>
+> > "192.168.0.0/255.255.0.0", "-d", "!", "192.168.0.0/255.255.0.0", "-j"=
+,
+> > "MASQUERADE"], [/* 13 vars */]) =3D 0
+> > uname({sys=3D"Linux", node=3D"nyfw", ...})  =3D 0
+> > brk(0)                                  =3D 0x8056a5c
+> > open("/etc/ld.so.preload", O_RDONLY)    =3D -1 ENOENT (No such file o=
+r
+> > directory)
+> > open("/etc/ld.so.cache", O_RDONLY)      =3D 3
+> > fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D11871, ...}) =3D 0
+> > old_mmap(NULL, 11871, PROT_READ, MAP_PRIVATE, 3, 0) =3D 0x40014000
+> > close(3)                                =3D 0
+> > open("/lib/libdl.so.2", O_RDONLY)       =3D 3
+> > read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0T\27\0\000"..=
+=2E,
+>
+> 1024)
+>
+> > =3D 1024
+> > fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D8008, ...}) =3D 0
+> > old_mmap(NULL, 11004, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D
+> > 0x40017000 mprotect(0x40019000, 2812, PROT_NONE)   =3D 0
+> > old_mmap(0x40019000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXE=
+D,
+> > 3, 0x1000) =3D 0x40019000
+> > close(3)                                =3D 0
+> > open("/lib/libc.so.6", O_RDONLY)        =3D 3
+> > read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\30\222"...,
+> > 1024)
+>
+> =3D
+>
+> > 1024
+> > fstat64(3, {st_mode=3DS_IFREG|0755, st_size=3D1153784, ...}) =3D 0
+> > old_mmap(NULL, 1166560, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D
+>
+> 0x4001a000
+>
+> > mprotect(0x4012d000, 40160, PROT_NONE)  =3D 0
+> > old_mmap(0x4012d000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIX=
+ED,
+>
+> 3,
+>
+> > 0x113000) =3D 0x4012d000
+> > old_mmap(0x40133000, 15584, PROT_READ|PROT_WRITE,
+> > MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) =3D 0x40133000
+> > close(3)                                =3D 0
+> > old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,=
+ -1,
+>
+> 0) =3D
+>
+> > 0x40137000
+> > munmap(0x40014000, 11871)               =3D 0
+> > brk(0)                                  =3D 0x8056a5c
+> > brk(0x8056a94)                          =3D 0x8056a94
+> > brk(0x8057000)                          =3D 0x8057000
+> > open("/lib/iptables/libipt_MASQUERADE.so", O_RDONLY) =3D 3
+> > read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\220\4\0"...,
+>
+> 1024) =3D
+>
+> > 1024
+> > fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D3276, ...}) =3D 0
+> > old_mmap(NULL, 6720, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D 0x40=
+014000
+> > mprotect(0x40015000, 2624, PROT_NONE)   =3D 0
+> > old_mmap(0x40015000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXE=
+D,
+> > 3,
+>
+> 0)
+>
+> > =3D 0x40015000
+> > close(3)                                =3D 0
+> > socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  =3D 3
+> > getsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], [84]) =3D 0
+> > brk(0x8058000)                          =3D 0x8058000
+> > getsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], [656]) =3D 0
+> > setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], 876) =3D -1 EINVA=
+L
+>
+> (Invalid
+>
+> > argument)
+> > write(2, "iptables: Invalid argument\n", 27iptables: Invalid argument
+> > ) =3D 27
+> > _exit(1)                                =3D ?
+> >
+> > --
+> > Roy Sigurd Karlsbakk, Datavaktmester
+> > ProntoTV AS - http://www.pronto.tv/
+> > Tel: +47 9801 3356
+> >
+> > Computers are like air conditioners.
+> > They stop working when you open Windows.
 
-What I have is this (I use a sript as opposed to
-/etc/sysconfig/ipchains).
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
 
-(snip)
+Computers are like air conditioners.
+They stop working when you open Windows.
 
-LAN_IP="192.168.1.5"
-LAN_IP_RANGE="192.168.1.0/24"
-LAN_BCAST_ADRESS="192.168.1.255"
-LAN_IFACE="eth0"
-
-...
-
-#########################################################################################
-#
-# Rules for INPUT chain for virtual interfaces
-#
-
-$IPTABLES -A INPUT -p ALL -i $INET_IFACE -s $LAN_IP_RANGE -d
-$LAN_IP_RANGE -j ACCEPT
-$IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LAN_IP_RANGE -d $LAN_IP_RANGE
--j ACCEPT
-
-
-#
-# Rules for OUTPUT chain for virtual interfaces
-#
-
-$IPTABLES -A OUTPUT -p ALL -s $LAN_IP_RANGE -j ACCEPT
-
-#
-#########################################################################################
-
-# 
-# Rules for special networks not part of the Internet
-#
-...
-
-$IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
-
-...
-
-(snip)
-
-Hope this is what you were after, it works fine for me!
-
-Murrah Boswell
-
-
-Steve M Bibayoff wrote:
-> 
-> Sorry if everyone gets this twice, this one is a
-> second posting when I realized this was a closed list.
-> 
-> Original question:
-> Is it possible to use iptables with a device alias
-> (ex.. eth0:1)? I tries to add a filter rule and got
-> an error:
-> % iptables -t filter -I INPUT -i eth0:1 -j ACCEPT
-> Warning: wierd character in interface `eth0:1' (No
-> aliases, :, ! or *).
-> 
-> If i list the rules, it's listed, but it doesn't
-> appear to be working. I was wondering if someone had
-> a definite answer.
-> 
-> TIA
-> 
-> Steve
 
