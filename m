@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: VPN issue
-Date: Mon, 29 Mar 2004 14:52:18 +0100
+From: "Erik Ahlner" <whyz@home.se>
+Subject: Iptables and kernel 2.6.4 on slackware 9.1
+Date: Mon, 29 Mar 2004 15:53:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403291452.18713.Antony@Soft-Solutions.co.uk>
-References: <JFEPKPDIGFAKJOGHOICDAECBCAAA.mani@manikandan.org>
-Reply-To: "Netfilter" <netfilter@lists.netfilter.org>
+Message-ID: <000c01c41595$34b4a1a0$0200a8c0@whyzpc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <JFEPKPDIGFAKJOGHOICDAECBCAAA.mani@manikandan.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,44 +16,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 29 March 2004 2:39 pm, Manikandan wrote:
+hello!
 
-> Dear all,
->
-> A Linux server is acting as gateway/firewall to route traffic from my LAN
-> to Internet using one public IP.
-> The issue is, I am able to make only one connection to the VPN server
+I've recently reentered this mailinglist and thus i don't know if this
+question has been asked before.. i hope i'm not alone with this problem!
 
-What sort of VPN server?   What VPN protocol are you using?   IPsec?   PPTP?   
-Something else?
+Last week I bought a new harddrive for my box, and installed slackware 9.1
+(had 8.0 earlier) and compiled kernel 2.6.4 (had 2.4.22 earlier). At first,
+everything seems to be fine, iptables runs.
+But after half an hour or so, iptables just stops working. It's only
+iptables that does this (i suppose), the server/router still has connection
+to the internet and the computers behind it.
+(I.e i have a ventrilo server running on the router, and i can still talk to
+users connecting to it from the internet, while i'm connected to it from
+inside the lan).
 
-> through my firewall. The second connection fails with an error 721.
+After about 5 minutes of downtime iptables suddenly starts working again,
+and the computers on the NAT has internet access again.
 
-What does this error message mean (it doesn't come from netfilter)?
+These are my rules:
 
-> I mapped another unused public IP to one of my local LAN system. I am able
-> to make one more connection to the server as the public IP is different. So
-> NATing seems to be the problem.
+IPTABLES=/usr/sbin/iptables
+EXTIF="eth0"
+INTIF="eth1"
 
-Sounds like you're probably using PPTP then (but please confirm anyway).   Do 
-you have the PPTP-nat/conntrack helpers loaded?
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
 
-Regards,
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
 
-Antony.
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
 
--- 
-In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-the mechanics are German, the lovers are French, the entertainment is 
-American, and everything is organised by the Swiss.
 
-In Hell, the police are German, the chefs are British, the beer is American, 
-the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-and everything is organised by the Italians.
+Nothing here has changes since i was running kernel 2.4.22.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+What could be the problem?
+Anyone else who has experienced this?
+
+
+I'm using iptables v1.2.9
+
+
+Regards
+    Erik Ahlner
+
 
 
