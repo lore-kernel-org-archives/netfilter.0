@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: forwarding (continued)
-Date: Mon, 8 Jul 2002 16:28:00 +0100
+From: "Vosburgh, Brian P, CTR, WHS-BB" <bvosburgh@whs.mil>
+Subject: ip_conntrack question
+Date: Mon, 8 Jul 2002 11:31:41 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207081528.g68FS6807279@vulcan.rissington.net>
-References: <004b01c2263b$9812cc90$1606d6d1@nebuchadnezza> <20020708075428.SHXU2755.mta05-svc.ntlworld.com@there> <000601c226ab$d5394ac0$8f01d6d1@nebuchadnezza>
+Message-ID: <86E43FEDC7E2D411B9610002A50900EB8819AF@ddsmttayz076.ref.whs.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <000601c226ab$d5394ac0$8f01d6d1@nebuchadnezza>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,37 +15,30 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables-list <netfilter@lists.samba.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-On Monday 08 July 2002 5:23 pm, Tim wrote:
+What are the session timeout controls with ip_conntrack?  I'm load balancing
+two netfilter (2.4.18 kernel, 1.2.5  ipt) boxes infront of a web server farm
+and I'm seeing an avg of 362 connections (GET's) per second, slabinfo
+reports 26k on one and 34k on the other.  What is ip_conntrack's definition
+and criteria for a "connection"?  How do they expire?  How can I expire
+them? etc.
 
-> > I don't quite understand why you have the line
-> > 172.16.0.0      *               255.255.255.0   eth1
-> > in the table ?
->
->  I have no idea how this got here to begin with, I certainly did no
-> such configuration. (??)
+I have the same sorta issue with my BigIP's, the connection table is full of
+dead crap and there is no way (@ least F5 can't tell me) how to kill dead
+connections.  It's not as big of a deal with these netfilter boxes, however
+I'm trying to get an accurate count of how many customers are hitting the
+servers.
 
-Ah.   In that case you can blame the entire failure of this firewall to do 
-what it's supposed to on the dreaded Firewall Reconfiguration Fairy, who 
-comes along when you're not looking and messes with your routing table :-)
+tia/
 
-> Here is what Im going to do, Im going to remove all routes (except local)
-> and re-establish a table that makes  more sense.
+Brian Vosburgh
+WHS Network Engineering
+Work: 703-614-4888
+Cell: 703-867-2317
 
-Sounds good to me.
+"Life isn't about success.  It's about significance."
+- Michael Slaughter
 
-> > By the way, can you ping from the firewall to either/both of the
-> > machines ?
-
-> Only if I have INPUT and OUTPUT rules in place.
-
-Sounds like that would be a good thing to do (temporarily) just to make sure 
-that A can talk to B, and B can reply to A, that B can talk to C, and C can 
-reply to B, before taking the daring step of seeing whether A can talk to C 
-through B and getting the reply back again as well :-)
-
- 
-
-Antony.
 
