@@ -1,11 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Eric Leblond <eric@regit.org>
 Subject: Re: Filter out broadcast messages
-Date: Wed, 7 Jan 2004 21:58:32 +0000
+Date: Wed, 07 Jan 2004 23:02:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401072158.32985.Antony@Soft-Solutions.co.uk>
+Message-ID: <1073512943.17533.1.camel@porky>
 References: <BAY10-F77TIFprhMOgR0003cd8a@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-fE/jf5Oi2K1yxggCYvfz"
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <BAY10-F77TIFprhMOgR0003cd8a@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,46 +17,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Gabby James <lizard0000092@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 07 January 2004 9:44 pm, Gabby James wrote:
 
-> Hi,
->
-> I would like to filter out all broadcast messages.  The packets could come
-> from 255.255.255.255 or multiple other addresses of the form 10.*.*.255.
-> What kind of syntax do I use to DROP these packets?  The line below will
-> filter out packets from 255.255.255.255 but I'm not sure what syntax to use
-> to DROP the other adresses.
+--=-fE/jf5Oi2K1yxggCYvfz
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Should be quite simple really - all you need to know is how many ethernet 
-interfaces are on your firewall, and the broadcast address for each (unless 
-you've got more than one subnet bound to a single ethernet port, ugh).
+Le mer 07/01/2004 =C3=A0 22:44, Gabby James a =C3=A9crit :
 
-Remember that broadcast packets do not get routed, therefore you only ned to 
-be concerned with subnets which are local to your firewall.
+> iptables -A INPUT -d 255.255.255.255 -p udp -j DROP
 
-Unless you have an unusual setup, I'll bet that's no more than three.
+You can use the addrtype module to filter it :
+	http://www.netfilter.org/documentation/pomlist/pom-extra.html#addrtype
 
-It wouldn't be at all hard to script automatically, either.   Start with 
-something like:
+BR,
+--=20
+Eric Leblond
+Nufw, Now User Filtering Works (http://www.nufw.org)
 
-for a in `/sbin/ifconfig | grep Bcast | tr -s ':' ' ' | cut -d' ' -f6`
-do
-  iptables -A INPUT -d $a -j DROP
-done
+--=-fE/jf5Oi2K1yxggCYvfz
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
 
-Regards,
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-Antony.
+iD8DBQA//IHunxA7CdMWjzIRAsnMAKCQvs6hyQlqeXpJ6VkAX1ZM8PDR0ACeJ1+3
++eQ45AXqlUCJoNSCp5bY2mQ=
+=uA/9
+-----END PGP SIGNATURE-----
 
--- 
-Anyone that's normal doesn't really achieve much.
-
- - Mark Blair, Australian rocket engineer
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--=-fE/jf5Oi2K1yxggCYvfz--
 
