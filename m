@@ -1,13 +1,11 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Help Needed
-Date: Thu, 13 Nov 2003 10:35:10 -0500
+From: "Philipp Stader" <me@ph1l.de>
+Subject: MS PPTP Server behind Debian Internet Gateway
+Date: Thu, 13 Nov 2003 18:11:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB3A4AE.3080608@Loudoun-Fairfax.com>
-References: <001201c3a9f7$ab954a90$36b4fea9@station1>
+Message-ID: <200311131711.hADHBhEd031172@mini001.webpack.hosteurope.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001201c3a9f7$ab954a90$36b4fea9@station1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +15,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Harish Sabnani wrote:
+Hello List,
 
-> Hi All,
->  
-> I am using Iptables with IPmasquerade on my LAN network to share the 
-> Internet connection, I have used rc.firewall script that I downloaded 
-> from the netfilter site.The whole setup is rocking but I get mssgs at 
-> /var/log/messages every sec, is there a way I can stop this? 
-> Sometimes, this clogs my network ?
->  
-> Any pointers in this reagard will be appreciated.
->  
-> Regards
->  
-> Harish
+i've spent the last days trying to get connections from the Internet to =
+a MS Windows 2003 Server on the local LAN via PPTP working. The LAN is =
+connected to the Internet via a Debian box (vanilla 2.4.22 Kernel)which =
+does the pppoe handling and masquerading:
 
-You need to take a look at those messages and find out why you are 
-getting them and what they tell you. The LOG rules in that script have a 
-prefix to the message that identifies which chain it came from. If 
-you're getting enough messages to clog your network you either have a 
-serious configuration problem or a DOS attack.
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
 
-Jeff
+This works.
+
+While trying to make the Windows 2003 Server available for pptp =
+connections from the outside [internet] i read a lot on the web and this =
+mailinglists archive and came to the conclusion that i will have to =
+patch the kernel with the pptp-conntrack-nat patch from Harald Welte [ =
+http://www.netfilter.org/documentation/pomlist/pom-extra.html#pptp-conntr=
+ack-nat ] and compile the userland tools to make things work.
+
+But browsing a Forum i found the following fragments which actually do =
+what i was trying:
+
+iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 1723 -j DNAT =
+--to-destination 192.168.200.99
+iptables -A FORWARD -i ppp0 -m state --state NEW -p tcp -d =
+192.168.200.99 --dport 1723 -j ACCEPT=20
+
+iptables -A FORWARD -i ppp0 -m state --state NEW -p 47 -d 192.168.200.99 =
+-j ACCEPT=20
+iptables -t nat -A PREROUTING -i ppp0 -p 47 -j DNAT --to-destination =
+192.168.200.99
+
+192.168.200.99 is the Windows 2003 Server.
+
+Is the above code sufficient? Will i run into trouble with it sooner or =
+later? Users from the LAN don't and won't use PPTP Connections to other =
+sites via internet. For which scenario do i have to patch the Kernel =
+with the pptp-conntrack-nat patch?
+
+Thanks for reading.
+
+Kind regards
+
+Phil
 
 
