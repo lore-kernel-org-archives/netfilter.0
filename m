@@ -1,12 +1,13 @@
-From: "bino_oetomo" <bino@indoakses-online.com>
-Subject: Re: iptables for backup connection
-Date: Mon, 14 Jun 2004 16:05:27 +0700
+From: "Spiro Azkoul" <spiro@snacorp.net>
+Subject: Strange behavior
+Date: Mon, 14 Jun 2004 02:54:57 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006d01c451ee$c47736f0$0300a8c0@indoaksesbno>
-References: <1171.172.16.128.100.1087207004.squirrel@mail.suarapembaruan.co.id> <200406140905.53992.Antony@Soft-Solutions.co.uk>
+Message-ID: <200406140954.i5E9sbbJ002976@ylpvm15.prodigy.net>
+References: <516423986E18D511B0A700508BB85789027F2A83@edi002ex.idzedi.admin.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <516423986E18D511B0A700508BB85789027F2A83@edi002ex.idzedi.admin.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,35 +20,19 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+OK I've been toying with this all weekend, its 3 A.M and it is still funky,
+thank God some of you are awake. 
+Her is the deal, I have over 200 rules in the INPUT chain, which I entered
+using: iptables -I INPUT -s ........ -j DROP. 
+I never used the -I [rulenumber] option. So after entering all the rules, I
+entered iptables -A INPUT  for http, smtp, pop, and other services. 
+Now, when I turned it on, nothing was going through. 
+I tried to iptables -I 100 INPUT -s 0/0 -p tcp ---dport 80 -j ACCEPT and it
+did not work
+I tried it but with [1] and it worked. 
+I am perplexed!!!
+Any feedback please?
 
------ Original Message -----
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, June 14, 2004 3:05 PM
-Subject: Re: iptables for backup connection
 
-
-> On Monday 14 June 2004 10:56 am, david@suarapembaruan.co.id wrote:
->
-> > Dear all,
-> > In my office i using 2 connection (Wireless connection direct to ISP "A"
-> > and backup connection to ISP "B" with ADSL Modem), how to configure
-Linux
-> > iptables (gateway) so when connection to ISP "A" down client can still
-> > work with ISP "B" without reconfiguration at client computer.
->
-> This is not a firewalling question; this is a routing question.
->
-> The tool you need to set this up is iproute2.   See http://lartc.org for
-> details.
->
-
-Yup ...
-iproute2 , for routing path definition
-iptables , for NAT change
-and BASH for connection testing and "puting it all together"
-
-Sincerely
--bino-
 
 
