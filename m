@@ -1,13 +1,11 @@
-From: "Bob Hockney" <zeus@ix.netcom.com>
-Subject: Re: "CE" - Where's the  snot?
-Date: Sat, 24 Jul 2004 19:15:53 -0700
+From: "Don Hughes" <support@sannotes.org>
+Subject: Compile error
+Date: Sat, 24 Jul 2004 11:55:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4102B569.2401.38C45282@localhost>
-References: <200407241644.01366.Antony@Soft-Solutions.co.uk>
+Message-ID: <41024E26.19563.4B6804@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <1090700564.10960.2.camel@dchws.tqmcube.com>
 Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,22 +17,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: David Cary Hart <DCH@TQMcube.com>, NetFilter List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-David Cary Hart wrote:
+I am trying to recompile iptables under SuSE 9.1 
+to add the time module and get the following when 
+issuing a make:
 
-> On Sat, 2004-07-24 at 11:44, Antony Stone wrote:
-> Jul 24 16:21:01 mail kernel: - Firewall:  IN=eth0 OUT=
-> MAC=00:4f:4e:12:f9:93:00:09:5b:c9:37:54:08:00  SRC=68.236.163.19 D
-> ST=192.168.0.31 LEN=41 TOS=00 PREC=0x00 TTL=126 ID=59477 CE DF PROTO=TCP
-> SPT=4694 DPT=135 SEQ=4252944646 ACK=3536024229 WIND
-> OW=64320 ACK URGP=0
-> 
-> Note the "CE" just in front of "DF" = Congestion Experienced
+In file included from 
+/usr/src/linux/include/linux/netfilter_ipv4.h:11,
+                 from 
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tab
+les.h:25,
+                 from include/libiptc/libiptc.h:6,
+                 from include/iptables.h:5,
+                 from extensions/libipt_ah.c:8:
+/usr/src/linux/include/net/protocol.h:39: warning: 
+`struct sk_buff' declared inside parameter list
+/usr/src/linux/include/net/protocol.h:39: warning: 
+its scope is only this definition or declaration, 
+which is probably not what you want
+/usr/src/linux/include/net/protocol.h:40: error: 
+parse error before "u32"
+/usr/src/linux/include/net/protocol.h:40: warning: 
+`struct sk_buff' declared inside parameter list
+/usr/src/linux/include/net/protocol.h:48: warning: 
+`struct sk_buff' declared inside parameter list
+/usr/src/linux/include/net/protocol.h:53: warning: 
+`struct inet6_skb_parm' declared inside parameter 
+list
+/usr/src/linux/include/net/protocol.h:53: warning: 
+`struct sk_buff' declared inside parameter list
+/usr/src/linux/include/net/protocol.h:63: error: 
+field `list' has incomplete type
+make: *** [extensions/libipt_ah_sh.o] Error 1
 
-Just curious, what kernel version are you using?
 
--Bob
+I have spent 3 weeks trying to resolve this with 
+no luck.  Any help would be appreciated.
+
+
+
+..don
+
+support@microtechniques.com
+White Plains, NY
 
 
 
