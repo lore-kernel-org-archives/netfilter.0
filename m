@@ -1,12 +1,13 @@
-From: "Zealous" <zealous@bonbon.net>
-Subject: Segmentation fault
-Date: Mon, 24 Feb 2003 15:25:41 +0530
+From: =?iso-8859-1?Q?Rasmus_B=F8g_Hansen?= <moffelist@amagerkollegiet.dk>
+Subject: Re: Forwarding problem, :( port redirection!
+Date: Mon, 24 Feb 2003 09:57:21 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005c01c2dbea$e7163e20$5692a3cb@joel>
+Message-ID: <Pine.LNX.4.44.0302240952280.1142-100000@grignard.amagerkollegiet.dk>
+References: <04a401c2dbdf$61d69d00$0b00000a@nocpc3>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0059_01C2DC18.FDB3CCA0"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <04a401c2dbdf$61d69d00$0b00000a@nocpc3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +17,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfileter net filter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: louie miranda <lmiranda@chikka.com>
+Cc: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+On Mon, 24 Feb 2003, louie miranda wrote:
 
-------=_NextPart_000_0059_01C2DC18.FDB3CCA0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> panic:/# iptables -t nat -A PREROUTING -i eth0 -p tcp -d
+> 203.190.72.108 --dport 21 -j DNAT --to 10.0.0.11:21
+> panic:/# iptables -A FORWARD -i eth0 -o eth1 -p tcp -d
+> 203.190.72.108 --dport 21 -j ACCEPT
+> panic:/# telnet 203.190.72.108 21
+> Trying 203.190.72.108...
+> telnet: Unable to connect to remote host: Connection refused
+> panic:/# telnet 10.0.0.11 21
+> Trying 10.0.0.11...
+> Connected to 10.0.0.11.
+> Escape character is '^]'.
+> 220 Dynu FTP Server (Version 1.13)
+> ^]
+> telnet> q
+> Connection closed.
+> panic:/# telnet 203.190.72.108 21
+> Trying 203.190.72.108...
+> telnet: Unable to connect to remote host: Connection refused
+> panic:/#
 
-Hello Friends,
+Why do you want to use the WAN IP from your LAN when you could contact
+the LAN IP directly?
 
-I have setup the proxy server with the help of iptables.=20
-It was working perfectly from last 5 months.
-But suddenly today I am giving iptables -nvL then its giving me the =
-error Segmentation fault
+What you have to do is:
 
-What could be the reason of this error.???
+1) Forward traffic from internal hosts.
+2) NAT local->local traffic (This is explained somewhere in the
+   netfilter docs)
 
-Can some one help in this issue.
+The above rules only forwards traffic from the internet.
 
-Thanks in advance..
+/Rasmus
 
-Joel
-
-------=_NextPart_000_0059_01C2DC18.FDB3CCA0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>Hello Friends,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have setup the proxy server with the =
-help of=20
-iptables. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It was working perfectly from last 5=20
-months.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But suddenly today I am giving iptables =
--nvL then=20
-its giving me the error <STRONG>Segmentation fault</STRONG></FONT></DIV>
-<DIV><STRONG><FONT face=3DArial size=3D2></FONT></STRONG>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>What could be the reason of this=20
-error.???</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Can some one help in this =
-issue.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks in advance..</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>Joel</FONT></DIV></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0059_01C2DC18.FDB3CCA0--
+--=20
+-- [ Rasmus "M=F8ffe" B=F8g Hansen ] --------------------------------------=
+-
+Programming is a race between programmers, who try and make more and
+more idiot-proof software, and universe, which produces more and more
+remarkable idiots.
+Until now, universe leads the race.
+                                                           - R. Cooka
+----------------------------------[ moffe at amagerkollegiet dot dk ] --
 
 
 
