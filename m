@@ -1,11 +1,14 @@
-From: "yang"<amyyah@21cn.com>
-Subject: nfnetlink for kernel
-Date: Tue, 22 Oct 2002 14:16:42 +0800 (CST)
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: iptables v1.2.1a - packets not reaching tun(0) from eth0 interfac e
+Date: Tue, 22 Oct 2002 03:21:29 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Ka978977858357.12244@webmail4.inner-21cn.com>
+Message-ID: <200210220321.29749.netfilter@newkirk.us>
+References: <B370C63B487FD51196760002557CEABA3CD962@courier.vmd.viasat.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <B370C63B487FD51196760002557CEABA3CD962@courier.vmd.viasat.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,61 +18,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Raghavan, Srihari" <srihari.raghavan@viasat.com>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-SGksYWxsLgogCiAgICBJIHVzZSBrZXJuZWwgMi40LjE4LHBhdGNoLW8tbWF0aWMtMjAwMjA4MjUu
-SSBwYXRjaCB0aGUga2VybmVsIHdpdGggbmV0bGluayBhbmQgbmZuZXRsaWstY3RuZXRsaW5rLTAu
-MTEgc3VjY2Vzc2Z1bC4gVGhlbiBJIGluc3RhbGwgdGhlIGlwdGFiZWwtMS4yLjdhIHN1Y2Nlc3Nm
-dWwuIFdoZW4gSSBtYWtlIGEgbmV3IGtlcm5lbCBpbWFnZTogbWFrZSBiekltYWdlLCB0aGUgZXJy
-b3IgaXMgb2NjdXJlZC4gSXQgc2FpZDoKIApJbiBmaWxlIGluY2x1ZGVkIGZyb20gbmZuZXRsaW5r
-X2Nvbm50cmFjay5jOjQ0OgovdXNyL2xvY2FsL2xpbnV4LXRlc3QvaW5jbHVkZS9saW51eC9uZm5l
-dGxpbmtfY29ubnRyYWNrLmg6NjE6IGZpZWxkIGBwcm90bycgaGFzIGluY29tcGxldGUgdHlwZQov
-dXNyL2xvY2FsL2xpbnV4LXRlc3QvaW5jbHVkZS9saW51eC9uZm5ldGxpbmtfY29ubnRyYWNrLmg6
-Njg6IGZpZWxkIGBoZWxwJyBoYXMgaW5jb21wbGV0ZSB0eXBlCm5mbmV0bGlua19jb25udHJhY2su
-YzogSW4gZnVuY3Rpb24gYGN0bmV0bGlua19maWxsX2luZm8nOgpuZm5ldGxpbmtfY29ubnRyYWNr
-LmM6MTA2OiBkZXJlZmVyZW5jaW5nIHBvaW50ZXIgdG8gaW5jb21wbGV0ZSB0eXBlCm5mbmV0bGlu
-a19jb25udHJhY2suYzoxMDY6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0byBpbmNvbXBsZXRlIHR5
-cGUKbmZuZXRsaW5rX2Nvbm50cmFjay5jOjEwODogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvIGlu
-Y29tcGxldGUgdHlwZQpuZm5ldGxpbmtfY29ubnRyYWNrLmM6MTA4OiBkZXJlZmVyZW5jaW5nIHBv
-aW50ZXIgdG8gaW5jb21wbGV0ZSB0eXBlCm5mbmV0bGlua19jb25udHJhY2suYzoxMTA6IGRlcmVm
-ZXJlbmNpbmcgcG9pbnRlciB0byBpbmNvbXBsZXRlIHR5cGUKbmZuZXRsaW5rX2Nvbm50cmFjay5j
-OiBJbiBmdW5jdGlvbiBgY3RuZXRsaW5rX2dldF9jb25udHJhY2snOgpuZm5ldGxpbmtfY29ubnRy
-YWNrLmM6MzY5OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiBgaXBf
-Y29ubnRyYWNrX3B1dCcKbmZuZXRsaW5rX2Nvbm50cmFjay5jOiBJbiBmdW5jdGlvbiBgY3RuZXRs
-aW5rX2V4cF9maWxsX2luZm8nOgpuZm5ldGxpbmtfY29ubnRyYWNrLmM6NDE2OiBzdHJ1Y3R1cmUg
-aGFzIG5vIG1lbWJlciBuYW1lZCBgc2VxJwpuZm5ldGxpbmtfY29ubnRyYWNrLmM6NDE3OiBzaXpl
-b2YgYXBwbGllZCB0byBhbiBpbmNvbXBsZXRlIHR5cGUKbmZuZXRsaW5rX2Nvbm50cmFjay5jOjQx
-Nzogc2l6ZW9mIGFwcGxpZWQgdG8gYW4gaW5jb21wbGV0ZSB0eXBlCm5mbmV0bGlua19jb25udHJh
-Y2suYzo0MTc6IHN0cnVjdHVyZSBoYXMgbm8gbWVtYmVyIG5hbWVkIGBoZWxwJwpuZm5ldGxpbmtf
-Y29ubnRyYWNrLmM6IEluIGZ1bmN0aW9uIGBjdG5ldGxpbmtfZGVsX2V4cGVjdCc6Cm5mbmV0bGlu
-a19jb25udHJhY2suYzo1MDQ6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0
-aW9uIGBpcF9jb25udHJhY2tfZXhwZWN0X2ZpbmRfZ2V0JwpuZm5ldGxpbmtfY29ubnRyYWNrLmM6
-NTA0OiB3YXJuaW5nOiBhc3NpZ25tZW50IG1ha2VzIHBvaW50ZXIgZnJvbSBpbnRlZ2VyIHdpdGhv
-dXQgYSBjYXN0Cm5mbmV0bGlua19jb25udHJhY2suYzo1MDk6IHdhcm5pbmc6IGltcGxpY2l0IGRl
-Y2xhcmF0aW9uIG9mIGZ1bmN0aW9uIGBpcF9jb25udHJhY2tfdW5leHBlY3RfcmVsYXRlZCcKbmZu
-ZXRsaW5rX2Nvbm50cmFjay5jOjUxMTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2Yg
-ZnVuY3Rpb24gYGlwX2Nvbm50cmFja19leHBlY3RfcHV0JwpuZm5ldGxpbmtfY29ubnRyYWNrLmM6
-IEluIGZ1bmN0aW9uIGBjdG5ldGxpbmtfZXhwX2R1bXBfdGFibGUnOgpuZm5ldGxpbmtfY29ubnRy
-YWNrLmM6NTQxOiBgaXBfY29ubnRyYWNrX2V4cGVjdF9saXN0JyB1bmRlY2xhcmVkIChmaXJzdCB1
-c2UgaW4gdGhpcyBmdW5jdGlvbikKbmZuZXRsaW5rX2Nvbm50cmFjay5jOjU0MTogKEVhY2ggdW5k
-ZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZSAKbmZuZXRsaW5rX2Nvbm50
-cmFjay5jOjU0MTogZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbi4pCm5mbmV0bGlua19j
-b25udHJhY2suYzogSW4gZnVuY3Rpb24gYGN0bmV0bGlua19nZXRfZXhwZWN0JzoKbmZuZXRsaW5r
-X2Nvbm50cmFjay5jOjU5Nzogd2FybmluZzogYXNzaWdubWVudCBtYWtlcyBwb2ludGVyIGZyb20g
-aW50ZWdlciB3aXRob3V0IGEgY2FzdApuZm5ldGxpbmtfY29ubnRyYWNrLmM6IEluIGZ1bmN0aW9u
-IGBjdG5ldGxpbmtfaW5pdCc6Cm5mbmV0bGlua19jb25udHJhY2suYzo3MDk6IHdhcm5pbmc6IGxh
-YmVsIGBlcnJfdW5yZWdfc3Vic3lzJyBkZWZpbmVkIGJ1dCBub3QgdXNlZApuZm5ldGxpbmtfY29u
-bnRyYWNrLmM6IEF0IHRvcCBsZXZlbDoKbmZuZXRsaW5rX2Nvbm50cmFjay5jOjE2Nzogd2Fybmlu
-ZzogYGN0bmV0bGlua19jcmVhdGUnIGRlZmluZWQgYnV0IG5vdCB1c2VkCm5mbmV0bGlua19jb25u
-dHJhY2suYzo0NTc6IHdhcm5pbmc6IGBjdG5ldGxpbmtfZXhwX2NyZWF0ZScgZGVmaW5lZCBidXQg
-bm90IHVzZWQKLi4uLgogCndoYXQncyB3cm9uZz8gIERpZCBJIG1pc3Mgc29tZXRoaW5nPyBXb3Vs
-ZCB5b3UgcGxlYXNlIGhlbHAgbWUgdG8gYW5hbHlzZSB0aGUgZXJyb3I/IFRoYW5rcyBpbiBhZHZh
-bmNlLgogClJlZ2FyZHMsCkFteQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQq3osvNdHdpbnO1vTIxMDAyMiy08M7KzOLTrsihNTDVxXR3aW5zuOjD1Lvhw8XG
-sSAKaHR0cDovL3Ntcy4yMWNuLmNvbS93ZWVrZW5kL3R3aW5zL2luZGV4Mi5odG1sIArP69KquOax
-8LzFxK+jrL3hyvi1pcnto6y+zdKqss6808TjtcTIvMfp1Ly74SAKaHR0cDovL3Ntcy4yMWNuLmNv
-bS93ZWVrZW5kLyAKw+K30dPKz+TJ/by2o6yxo8H01K3Tw7unw/ujrL27t9G3vbHjvPK1pSAKaHR0
-cDovL21hbGwuMjFjbi5jb20vZWNvbm9taWNhbC8yLmFzcCAKuN/L2c7Itqi439CnMzDV17Tz08rP
-5DPV2zMw1KovxOqjqNCj1LC826OpISAKaHR0cDovL21haWwuMjFjbi5jb20vaHVvZG9uZy85eXVl
-LyAKCgoK
+On Monday 21 October 2002 06:37 pm, Raghavan, Srihari wrote:
+> Hi all,
+>
+> I have a linux machine that needs to catch TCP packets (not meant for
+> itself) that come on its eth0 interface and pass it on to tun0 interfac=
+e
+> (through the TUN/TAP driver). I am using Linux 2.4.12 kernel.
+>
+> 1. I use the following iptables/ip rules commands after opening the tun
+> device:
+>
+> system("ip addr add 172.17.27.18 peer 10.99.99.99 dev tun0");
+> system("ip link set dev tun0 up");
+> system("iptables -t mangle -A PREROUTING -d 172.17.27.0/24 -j ACCEPT");
+> system("iptables -t mangle -A OUTPUT -d 172.17.27.0/24 -j ACCEPT");
+> system("iptables --verbose -t mangle -A PREROUTING -i eth0 -p tcp \
+>         -d 0.0.0.0/0 -j MARK --set-mark 1");
+> system("iptables -t mangle -A OUTPUT -p tcp -d 0.0.0.0/0 -j MARK \
+>         --set-mark 1");
+> system("ip rule add fwmark 1 table 200");
+> system("ip route add default dev tun0 table 200");
+
+{snip extra details}
+
+You're ACCEPTing in mangle prerouting?  Great, so the packet passes that=20
+chain.  You've done nothing to it though, except give it ticket out of=20
+PREROUTING, so that it never hits your MARK rule.  The OUTPUT ones would=20
+never get hit by this at all, since that's for output from the local mach=
+ine,=20
+but you do the same there.
+
+> Any clues?
+>
+> Thank you for your time
+> Srihari
+
+j
+
