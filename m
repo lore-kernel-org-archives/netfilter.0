@@ -1,12 +1,12 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: physdev only needs, con track location
-Date: Tue, 8 Apr 2003 04:35:38 -0700 (PDT)
+From: Craig Packard <cpackard@zoominternet.net>
+Subject: Re: UDP DNAT help
+Date: Tue, 11 Mar 2003 06:44:22 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030408113538.25082.qmail@web13903.mail.yahoo.com>
-References: <200304080400.46995.netfilter@newkirk.us>
+Message-ID: <Pine.LNX.4.44.0303110642100.29619-100000@linux1>
+References: <200304080040.31730.netfilter@newkirk.us>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304080400.46995.netfilter@newkirk.us>
+In-Reply-To: <200304080040.31730.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +16,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Joel Newkirk <netfilter@newkirk.us>
+Cc: netfilter@lists.netfilter.org
 
-Hello all!  2 quick questions, if I could.
-It looks like the bridge + firewall solution of choice
-for the 2.4 kernel is ebtables
-(http://ebtables.sourceforce.net).  The only thing I
-want to do with the bridge + firewalls is get my
-physical device; I don't need to play with rules based
-on ethernet header.  Does anyone know if I need both
-the ebtables and bridge-nf patches or can I just use
-the bridge-nf?
+> 
+> Sounds like a SNAT rule that isn't tied down to just the external 
+> interface.  Including packet traces and sniffs is potentially useful, 
+> but more useful would be any SNAT and DNAT rules themselves.
+> 
 
-Since it is all integrated in the 2.5 kernel, does
-anyone know how stable that is (yeah, beta) or
-thoughts when it may leave the beta state?
+I've already posted my PREROUTING chain to the list.  And in the same 
+message you replied to was several packet captures further down the 
+message.  There is no SNATing anywhere--on any interface.  I would be 
+thankful for any help or info on more places to look to troubleshoot.
 
-Also, in the whole iptables chain order of things,
-when is conn tracking performed?  
+	- Craig
 
-Thanks in advance for any help with the myrid of
-questions!!!
--Scott
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Tax Center - File online, calculators, forms, and more
-http://tax.yahoo.com
 
