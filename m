@@ -1,14 +1,14 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: Redirect to same LAN and preserve source IP
-Date: Tue, 13 Jul 2004 09:50:44 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: raw ICMP ports
+Date: Tue, 13 Jul 2004 09:56:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407130950.44683.gdh@acentral.co.uk>
-References: <200407121419.40110.gdh@acentral.co.uk> <200407121612.27437.gdh@acentral.co.uk> <200407121631.56183.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407130956.15183.Antony@Soft-Solutions.co.uk>
+References: <200407130831.i6D8Vg1m012187@ylpvm01.prodigy.net>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407121631.56183.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <200407130831.i6D8Vg1m012187@ylpvm01.prodigy.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,18 +21,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 12 July 2004 16:31, Antony Stone wrote:
+On Tuesday 13 July 2004 9:31 am, Spiro Azkoul wrote:
 
-> How about *configuring* the clients so they use the proxy "properly"
-> instead of doing transparent redirection?   Then you can keep the Squid box
-> on the same subnet as the clients, and still block people trying to do TCP
-> port 80 straight through the firewall (only one source IP is allowed - the
-> Squid box).   
+> I shutdown a bunch of startup services and only have specific ports open,
+> and IPTABLES on top.
+>
+> Out of no where, the following lines appeared on my netstat as of 3 days
+> ago
+>
+> raw   125024      0 *:icmp                  *:*                     7
+> raw   126688      0 *:icmp                  *:*                     7
+> raw   126688      0 *:icmp                  *:*                     7
+>
+> I can't exactly figure out what this is.
 
-The reason has been the desire to not have to ferry around dozens of machines 
-configuring proxy settings, really. I'll certainly give the seperate-subnet 
-idea some thought :)
+It suggests to me that you have decided to block (all?) ICMP packets.
 
-Cheers,
-Gavin.
+The numbers 125024 etc indicate the number of packets received on the socket 
+but not processed by any application.
+
+From the netstat man page:
+
+-----
+OUTPUT
+   Active Internet connections (TCP, UDP, raw)
+   Proto
+       The protocol (tcp, udp, raw) used by the socket.
+
+   Recv-Q
+       The count of bytes not copied by the user program connected to this 
+socket.
+
+   Send-Q
+       The count of bytes not acknowledged by the remote host.
+-----
+
+Check your rules to see what ICMP you are allowing - my suspicion is that it 
+isn't enough...
+
+Regards,
+
+Antony.
+
+-- 
+If builders made buildings the way programmers write programs, then the first 
+woodpecker to come along would destroy civilisation.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
