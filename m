@@ -1,10 +1,11 @@
-From: "Bryan Schmidt" <absolut_bryan@hotmail.com>
-Subject: (no subject)
-Date: Thu, 27 Mar 2003 18:31:28 -0700
+From: seberino@spawar.navy.mil
+Subject: How filter IP address if it *changes* often?? (think dhcp)
+Date: Thu, 27 Mar 2003 20:00:56 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY1-F203e7sjbmDoP60000558c@hotmail.com>
+Message-ID: <20030327200056.A18916@spawar.navy.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,32 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I am getting the following message when trying to use iptable (iptable -L)
-"iptables v1.2.6a: can't initialize iptables table `filter': iptables who? 
-(do yo
-u need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded."
+My iptables script filters incoming packets.
 
-It seems that I can't access any of the tables (filter,nat, or mangle).  
-Does the kernel need to be modified?  How do I go about this? I am running 
-Debain 3.0r1 on an UtraII.
+One filter is whether the destination address is
+MY machine.
+
+How do this if IP address changes uncontrollably
+like with DHCP??
 
 Thanks,
 
-Bryan Schmidt, MCSE, MCP + Internet
-Area101, Inc.
-MIS Director
+Chris
 
+-- 
+_______________________________________
 
+Dr. Christian Seberino
+SPAWAR Systems Center San Diego
+Code 2872
+49258 Mills Street, Room 158
+San Diego, CA 92152-5385
+U.S.A.
 
-
-
-_________________________________________________________________
-Add photos to your messages with MSN 8. Get 2 months FREE*.  
-http://join.msn.com/?page=features/featuredemail
-
+Phone: (619) 553-9973
+Fax:   (619) 553-6521
+Email: seberino@spawar.navy.mil
+_______________________________________
 
