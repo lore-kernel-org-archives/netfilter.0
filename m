@@ -1,95 +1,71 @@
-From: Christian Riechmann <riechmann@fgan.de>
-Subject: Need some clarification or help
-Date: Tue, 20 Apr 2004 20:22:05 +0200
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20040420182205.GA2948@rie.rie.priv>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IP Alias with iptables
+Date: Tue, 20 Apr 2004 19:27:14 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200404201927.14766.Antony@Soft-Solutions.co.uk>
+References: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx> <200404192231.42723.Antony@Soft-Solutions.co.uk> <16517.26251.561739.758706@saint.heaven.net>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <16517.26251.561739.758706@saint.heaven.net>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
-Cc: mail@criechmann.de
+To: netfilter@lists.netfilter.org
 
-Hello,
+On Tuesday 20 April 2004 7:06 pm, Dick St.Peters wrote:
 
-is it possible to read - via ipq_read/ipq_get_packet - a UDP packetr
-and after some changes to accept - via ipq_set_verdict with NF_ACCEPT and
-shorter length - it as a TCP packet?
+(Quoted from Alistair Tonner):
 
-Here is what I wish to do:
-For the transmission of IP packets (UDP, ICMP, TCP) between two hosts
-I want to send these packets through a UDP tunnel.
-On the sender I am using iptables to get all the original packets into user
-space for their encapsulation and UDP sending.
-In the same way on the receiver I use iptables to get those UDP packets
-from the sender enclosing the original packets into user space, where
-I decapsulate the original packets and wish to inject these by using
-ipq_set_verdict with action set to NF_ACCEPT.
-This method works for original packets of type ICMP and UDP, but NOT
-for TCP packets.
-What I can see from my tcpdump logging on the receiver is:
-1.That all three types of original packets are ACCEPTED, but tcpdump
-  shows some additional bytes (packet length is still the same as given by
-  m->data_len upon the ipq_get_packet call, although the ipq_set_verdict
-  call get an updated length).
-2.Those original packets of type UDP and ICMP can be read by the intended
-  receiver programs but those of type TCP are not presented to the
-  intended receiver application.
+> > > 	Aliased (stacked) interfaces ARE NOT SECURE.  Period.
 
-Below I attach those iptables rules I am using.
+(Quoted from me):
 
-# Parameter setting:
-#  $1:	Iptable operation "A"
-#  $2:  Interface name
-#  $3:  IP address of this host
-#
-# Next rule:
-#    Send out all BROADCAST packets
-#
-#iptables -$1 OUTPUT -o $2 -d 128.7.27.255 --destination-port 140 -j ACCEPT
-iptables -$1 OUTPUT -o $2 -d 128.7.27.255 -j ACCEPT
+> > Indeed.   I would like to see this emphasised more in the netfilter
+> > howtos & tutorials.   Multiple addresses on one interface are all very
+> > well, so long as they exist within the same subnet; however anyone trying
+> > to use multiple *network* addresses on one physical interface is
+> > defeating their security by ignoring what the different OSI network
+> > layers mean.
+>
+> I want to add some qualification to these statements.  Aliased
+> interfaces do not inherently introduce any insecurity in cases
+> where you don't care about subnet separation.
 
-#
-# Next rule:
-#    Show me all locally generated multicast packets before routing
-#
-iptables -$1 OUTPUT -o $2 -d 224.0.0.0/4 -j QUEUE
+I agree.   However, Alistair and I were not claiming that aliased interfaces 
+introduce an insecurity where you don't require any security - we were simply 
+saying that you cannot (should not) use them where you require to have secure 
+separation of your subnets.
 
-#
-# Next rule:
-#    Show me all locally generated packets before routing
-#
-iptables -$1 OUTPUT -o $2 -j QUEUE
+If you want to overlap two logical networks on one physical infrastructure, 
+and you do not require any security between them, then aliased interfaces are 
+ideal for the job.
 
-#
-# Next rule:
-#    Show me all UDP packets for port 140 arriving from foreign hosts
-#
-iptables -$1 INPUT -i $2 -p udp --destination-port 140 -j QUEUE
+However, if you are trying to keep two logical networks securely separate from 
+each other (as the original poster wanted to do), then aliased interfaces 
+will defeat your attempts at this.
 
-#
-# Next rule:
-#    DROP all multicast packet sent by any host except the local one
-#
-iptables -$1 INPUT -i $2 -s ! $3 -d 224.0.0.0/4 -j DROP
+Regards,
 
+Antony.
 
-Thanks for any help or clarification.
-
-Christian
 -- 
-Christian Riechmann    E-Mail: riechmann@fgan.de
-c/o FGAN/FKIE          Tel: (+49) 228/9435 345,378
-Neuenahrer Strasse 20  Fax: (+49) 228/9435 685
-D-53343 Wachtberg, Germany
+There are two possible outcomes:
+
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
