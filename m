@@ -1,11 +1,14 @@
-From: Marian Stepka <marians@itdimensions.com>
-Subject: Slow FTP through NAT box...
-Date: Fri, 13 Sep 2002 22:07:08 -0400
+From: Stewart Thompson <stewart.thompson@shaw.ca>
+Subject: RE: Slow FTP through NAT box...
+Date: Fri, 13 Sep 2002 23:52:42 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8299CC.1CFC740A@itdimensions.com>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPKEJNCOAA.stewart.thompson@shaw.ca>
+References: <3D8299CC.1CFC740A@itdimensions.com>
+Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <3D8299CC.1CFC740A@itdimensions.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,7 +19,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Marian Stepka <marians@itdimensions.com>, netfilter@lists.netfilter.org
+
+Hi Marian:
+
+	Are you loading ip_conntrack_ftp and ip_nat_ftp?
+What to you get if you do an lsmod, are they there?
+
+Stu..........
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Marian Stepka
+Sent: September 13, 2002 7:07 PM
 To: netfilter@lists.netfilter.org
+Subject: Slow FTP through NAT box...
 
 Hi List;
 
@@ -38,4 +56,5 @@ Marian
 --
 *IN ROOT WE TRUST*
 Marian Stepka <mailto:stepka@tris.sk>
+
 
