@@ -1,14 +1,12 @@
-From: Lopsch <lopsch@lopsch.com>
-Subject: Re: Does anybody work on supporting SPD matching Netfilter MARKS?
-Date: Wed, 19 Jan 2005 20:12:55 +0100
-Message-ID: <41EEB137.1030901@lopsch.com>
-References: <41EE01DF.5040707@protactive.nl>
+From: Robin Lynn Frank <rlfrank@paradigm-omega.com>
+Subject: ip6tables examples ???
+Date: Wed, 19 Jan 2005 12:00:05 -0800
+Message-ID: <41EEBC45.4080904@paradigm-omega.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
+Content-Type: multipart/signed; micalg=pgp-ripemd160;
 	protocol="application/pgp-signature";
-	boundary="------------enigBBEE0FF227DFE0CFD733F59C"
+	boundary="------------enigB0EBA7DD9B8F8817C6B3B555"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41EE01DF.5040707@protactive.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,76 +20,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigBBEE0FF227DFE0CFD733F59C
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--------------enigB0EBA7DD9B8F8817C6B3B555
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Ludo Stellingwerff schrieb:
-> Hi All,
->
-> I was wondering if someone has been working on and/or has a patch
-> which implement's the use of Netfilter Marks for ipsec spd matching
-> under the linux kernel 2.6. This would be similar to the NetBSD
-> "tagged" option of 'setkey':
->
-> spdadd tagged "ssh" -P out esp/transport//require
->
-> But then something like:
->
-> ~     spdadd tagged 1 -P out esp/transport//require
-> or  spdadd mark 1 -P out esp/transport//require
->
-> Thank in advance,
-> greetings,
->
-> Ludo Stellingwerff.
->
-> --
-> Ludo Stellingwerff
->
-> V&S B.V. The Netherlands
-> ProTactive firewall solution.
-> Tel: +31 172 416116
-> Fax: +31 172 416124
->
-> site: www.protactive.nl
-> demo: http://www.protactive.nl:81/netview.html
+Can anyone point me to some useful ip6tables example?  You know, like
+more than the all-inclusive, 613 byte ip6tables.sample.  Just need to
+put some basic IPv6 stuff together, but either google does'nt like me or
+it isn't a terribly popular subject. :-(
 
-Taken from the policy match from p-o-m: "This patch adds the policy
-match to netfilter.
-
-The policy match is used to match the IPsec policy
-used for handling a packet."
-
-Perhaps what you are looking for.
-
-
+TIA
 --
+Robin Lynn Frank - Director of Operations - Paradigm-Omega, LLC
+Website:   http://www.paradigm-omega.com/
+RSS:       http://paradigm-omega.blogspot.com/atom.xml
+Spamtraps: http://paradigm-omega.net/cgi-bin/custmail.cgi
+=====================================================================
+The information in this message is probably
+worth what you paid for it.
 
-PGP-ID 0xF8EAF138
-
---------------enigBBEE0FF227DFE0CFD733F59C
+--------------enigB0EBA7DD9B8F8817C6B3B555
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1-nr1 (Windows XP)
+Version: GnuPG v1.4.0 (GNU/Linux)
+Comment: Sed quis custodiet ipsos custodes?
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
-iQIVAwUBQe6xOiXe0Lt4Z4FpAQIeTRAA0PwW/LvYeUbZZi8KUL+QesxKCWxFR2FC
-B62V8e3QRcHtrcYO2N7gzfEjgAZ7a71e7jTAI7uFZ2ciKqQ6Q3gykkQ217mxTeYt
-vsEHblBBpZYSPrVv8EamfPbfDFGleWMk5TMHvTcrGyc7z5OjL3kWAOrrGPc3+Y7o
-ef6tdNVHIFbG/E1pCZGzXKwTzkkrmhNNeMOYIFRK6IoDeTs1A3X3hxDfM9xMIC8G
-Oe3CROb6wf125xk9QaX/sDzi0CzAMyRAono9/LbxB/NsKcOKBw37X5+4m3hmE/xF
-PXjj9Rc/9SCawkcn80OwiXp3LMMqezzMGLsNDoCF+fiG4Wq3E44KZKwGGq2UOpza
-2IG+jTKuGnfeaWdc/XRv/8yjQqIMRlhRJZ0p+FFg4IiBpmGmwgMzMQS0kwpLoIul
-/FF6rxEq/N4fPOkv9CDB2yXdfrWGEX/kIfYPxPwqS2rfnWrkt9KYdideNya9svfp
-bd33M1w3OK0S4EwrZrrgPG+6GeZaLPUp50TdZHNKvKz2SiTZO+vKDrr9FjV+hm4p
-CXTRay5XNc/ZPMnQ0ADtRrhwdKtQ+jchMq4SF7bH2e1faYNo/FlGYuIPDDr7y1hS
-KdhIkAqmHE5xladOuqsEwIkvIghUzpcdHFetgJsXCNBVwe9M2ALA8pRDWN8VHz2e
-trEklpQ7FHs=
-=bQEs
+iD8DBQFB7rx0o0pgX8xyW4YRA9AIAKC6z/qlklcpjsi/IdaDgngGQDCx6gCdGN42
+nVyjQC986mO3/Qqrx968bQQ=
+=lo86
 -----END PGP SIGNATURE-----
 
---------------enigBBEE0FF227DFE0CFD733F59C--
+--------------enigB0EBA7DD9B8F8817C6B3B555--
 
