@@ -1,9 +1,8 @@
-From: "Krishna" <Krishna_shekhar@gmx.net>
-Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `': Table does not exist (do you need to insmod?) <<Help>>
-Date: Wed, 25 Sep 2002 12:02:15 +0530
+From: "Moshe Ashkenazi" <moshea@checkpoint.com>
+Subject: Send packets from iptables to user space
+Date: Wed, 25 Sep 2002 11:57:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001301c2645d$4d9a7720$2900a8c0@spectranet.com>
-References: <00fb01c263b7$a8fe5380$2900a8c0@spectranet.com> <002b01c263be$95b3f490$2b00a8c0@dharmu> <000901c263bd$da3d1480$2900a8c0@spectranet.com> <001701c263c1$887ebb40$2b00a8c0@dharmu> <004e01c263c1$15ed33e0$2900a8c0@spectranet.com> <002801c263ca$f480f1b0$2b00a8c0@dharmu>
+Message-ID: <005901c26479$fbc8daa0$97025a3e@SHAGWELL>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,165 +18,19 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-    I got it working. The problem was in the firewall rules. This time I
-first made rules and then saved it and it
-started.
+Hi, List -
 
-regards
-Krishna
+I'm new in this list so forgive me if someone already asks this
+question.
 
-Krishna Shekhar
-Network Administrator
-Wiplash Wireless
------ Original Message -----
-From: Dharmendra.T <dharmu@nsecure.net>
-To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
-Sent: Tuesday, September 24, 2002 6:34 PM
-Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
-Table does not exist (do you need to insmod?) <<Help>>
+I saw on iptables man page that there is a target QUEUE, which passes
+the filtered packets from iptable kernel to some userspace process.
+
+I will appreciate if you can address me to seam examples or document
+which show how to do that.
 
 
-> I can see only two rules in your mail. These two rules should not give any
-> problem like this. I guess that you have more rules which is giving this
-> error. Have you cheked whether the input chain is dropped completely. If
-the
-> input chain is getting dropped completely you may have to recompile the
-> kernel with all the modules(netfilter) and check again
-> Regards
-> Dharmu
-> ----- Original Message -----
-> From: "Krishna" <Krishna_shekhar@gmx.net>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Tuesday, September 24, 2002 5:24 PM
-> Subject: Re: iptables-restore v1.2.5: can't initialize iptables table `':
-> Table does not exist (do you need to insmod?) <<Help>>
->
->
-> > Hi,
-> > This is all what I get!
-> > I have made rules in /etc/sysconfig/iptables and the
-> > /etc/rc.d/init.d/iptables points to this file and starts it.
-> >
-> > regards
-> > Krishna
-> >
-> > Krishna Shekhar
-> > Network Administrator
-> > Wiplash Wireless
-> > ----- Original Message -----
-> > From: Dharmendra.T <dharmu@nsecure.net>
-> > To: Krishna <Krishna_shekhar@gmx.net>; <netfilter@lists.netfilter.org>
-> > Sent: Tuesday, September 24, 2002 5:27 PM
-> > Subject: Re: iptables-restore v1.2.5: can't initialize iptables table
-`':
-> > Table does not exist (do you need to insmod?) <<Help>>
-> >
-> >
-> > > You should send us the complete error message, which table the
-iptables
-> > > could not recognize
-> > > DHarmu
-> > > ----- Original Message -----
-> > > From: "Krishna" <Krishna_shekhar@gmx.net>
-> > > To: <netfilter@lists.netfilter.org>
-> > > Sent: Tuesday, September 24, 2002 5:00 PM
-> > > Subject: Re: iptables-restore v1.2.5: can't initialize iptables table
-> `':
-> > > Table does not exist (do you need to insmod?) <<Help>>
-> > >
-> > >
-> > > > Hi,
-> > > >     It gives the same error
-> > > >
-> > > >  iptables-restore v1.2.5: can't initialize iptables table `': Table
-> does
-> > > not
-> > > > exist (do you need to insmod?)
-> > > > Perhaps iptables or your kernel needs to be upgraded
-> > > >
-> > > > regards
-> > > > Krishna
-> > > >
-> > > > Krishna Shekhar
-> > > > Network Administrator
-> > > > Wiplash Wireless
-> > > > ----- Original Message -----
-> > > > From: Dharmendra.T <dharmu@nsecure.net>
-> > > > To: Krishna <Krishna_shekhar@gmx.net>;
-<netfilter@lists.netfilter.org>
-> > > > Sent: Tuesday, September 24, 2002 5:05 PM
-> > > > Subject: Re: iptables-restore v1.2.5: can't initialize iptables
-table
-> > `':
-> > > > Table does not exist (do you need to insmod?) <<Help>>
-> > > >
-> > > >
-> > > > > Hi Krishna,
-> > > > >  Have you tried it manually?
-> > > > > #iptables-restore < /etc/sysconfig/iptables
-> > > > >
-> > > > >  I think the iptables could not reach to the file
-> > > /etc/sysconfig/iptables
-> > > > > Regards
-> > > > > Dharmu
-> > > > > ----- Original Message -----
-> > > > > From: "Krishna" <Krishna_shekhar@gmx.net>
-> > > > > To: <netfilter@lists.netfilter.org>
-> > > > > Sent: Tuesday, September 24, 2002 4:16 PM
-> > > > > Subject: iptables-restore v1.2.5: can't initialize iptables table
-> `':
-> > > > Table
-> > > > > does not exist (do you need to insmod?) <<Help>>
-> > > > >
-> > > > >
-> > > > > > Hi,
-> > > > > >
-> > > > > > I switched from ipchains to iptables. But whenever I start
-> iptables
-> > it
-> > > > > gives
-> > > > > > me this error.
-> > > > > >
-> > > > > > iptables-restore v1.2.5: can't initialize iptables table `':
-Table
-> > > does
-> > > > > not
-> > > > > > exist (do you need to insmod?)
-> > > > > > Perhaps iptables or your kernel needs to be upgraded.
-> > > > > >
-> > > > > > lsmod shows that
-> > > > > > iptable_mangle,iptable_nat,ip_conntrack,iptable_filter and
-> iptables
-> > > are
-> > > > > > loaded.
-> > > > > > That means the modules for iptables has loaded also I can see
-that
-> > > > modules
-> > > > > > for ipchains are not loaded and that is right.
-> > > > > >
-> > > > > > The iptables file is in /etc/sysconfig/iptables
-> > > > > > The table goes like this
-> > > > > > -P INPUT DROP
-> > > > > > -A FORWARD -s 192.168.0.0/24 -j MASQUERADE
-> > > > > > .......
-> > > > > > ...........
-> > > > > > ........................
-> > > > > > I am using RedHAt 7.1 and kernel 2.4.2-2
-> > > > > > What could be the problem?
-> > > > > >
-> > > > > > regards
-> > > > > > Krishna
-> > > > > >
-> > > > > > Krishna Shekhar
-> > > > > > Network Administrator
-> > > > > > Wiplash Wireless
-> > > > > >
-> > > > > >
-> > > >
-> > > >
-> >
-> >
->
+Thanks, 
+
 
 
