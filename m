@@ -1,8 +1,8 @@
 From: zynkx <skydive@megamail.pt>
 Subject: Re: (no subject)
-Date: Wed, 26 Nov 2003 20:31:40 +0000
+Date: Wed, 26 Nov 2003 20:31:45 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069878700.3fc50dac4e6f3@paris-hme1>
+Message-ID: <1069878705.3fc50db153552@paris-hme1>
 References: <1069853846.3fc4ac966be15@paris-hme1>
  <3FC4B435.5010805@Loudoun-Fairfax.com>
 Mime-Version: 1.0
