@@ -1,11 +1,13 @@
-From: "Bruno Borges" <brunob@fortalnet.com.br>
-Subject: Managing P2P Traffic and performance
-Date: Thu, 28 Aug 2003 23:57:44 -0800
+From: k.tragant@firemail.de
+Subject: Re: disabling connection tracking
+Date: Fri, 29 Aug 2003 08:10:12 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <012f01c36e03$3b190ac0$090211ac@winxp>
+Message-ID: <200308290810.12734.k.tragant@firemail.de>
+References: <1061809936028593@lycos-europe.com> <3F4E9F10.5030403@snapgear.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F4E9F10.5030403@snapgear.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,115 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, philipc@snapgear.com
 
-Salutations Netfilter List,
+Hi Philip!
 
-I have a firewall doing filtering and bandwidth management with CBQ, its
-mangle table follows:
+> You probably have an ip_conntrack module that it is loading still.
+> Do a lsmod to see.  You'll need to delete it (or you might be able
+> to add something to /etc/modules.conf).  Look under
+> /lib/modules/$(KERNELRELEASE)/kernel/net/ipv4/netfilter/
 
--- MANGLE --
+Thank you for an answer. Unfortunately, this is not correct, because I've=
+=20
+build a monolithic kernel without module support. These are the netfilter=
+=20
+compononet, I switched on in the kernel:
 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-CONNMARK   all  --  anywhere             anywhere           CONNMARK restore
-ACCEPT     all  --  anywhere             anywhere           MARK match !0x0
-LIBERADO   all  --  192.168.2.50         anywhere
-LIBERADO   all  --  192.168.2.78         anywhere
-LIBERADO   all  --  192.168.2.110        anywhere
-LIBERADO   all  --  192.168.1.6          anywhere
-DROP       udp  --  anywhere             anywhere           udp dpt:1214
-P2P        all  --  anywhere             anywhere           STRING match
-X-Kazaa
-P2P        tcp  --  anywhere             anywhere           tcp dpt:2234
-CONNMARK   all  --  anywhere             anywhere           CONNMARK save
+# CONFIG_MODULES is not set
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
+#   IP: Netfilter Configuration
+CONFIG_IP_NF_IPTABLES=3Dy
+CONFIG_IP_NF_MATCH_MULTIPORT=3Dy
+CONFIG_IP_NF_FILTER=3Dy
+CONFIG_IP_NF_TARGET_REJECT=3Dy
+CONFIG_IP_NF_TARGET_LOG=3Dy
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+Maybe there are other ideas?
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-LIBERADO   all  --  anywhere             192.168.2.50
-LIBERADO   all  --  anywhere             192.168.2.78
-LIBERADO   all  --  anywhere             192.168.2.110
-LIBERADO   all  --  anywhere             192.168.1.6
-
-Chain LIBERADO (8 references)
-target     prot opt source               destination
-MARK       all  --  anywhere             anywhere           MARK set 0x0
-ACCEPT     all  --  anywhere             anywhere
-
-Chain P2P (2 references)
-target     prot opt source               destination
-MARK       all  --  anywhere             anywhere            TIME from 20:0
-to 23:59 on Mon,Tue,Wed,Thu,Fri MARK set 0x2
-MARK       all  --  anywhere             anywhere            TIME from 7:0
-to 20:0 on Mon,Tue,Wed,Thu,Fri MARK set 0x1
-MARK       all  --  anywhere             anywhere            TIME from 7:0
-to 14:0 on Sat MARK set 0x1
-
--- --
-
-That's working pretty well. Let me try do explain this:
-
-DROP       udp  --  anywhere             anywhere           udp dpt:1214
-** DROP KAZAA UDP PROBES **
-
-P2P        all  --  anywhere             anywhere           STRING match
-X-Kazaa
-
-** MATCH KAZAA TRAFFIC -- This is necessary because KaZaa uses port 80
-sometimes (what makes it look like http traffic), and the string module can
-match all the KaZaa packets, looking for a KaZaa header inside the packet **
-
-P2P        tcp  --  anywhere             anywhere           tcp dpt:2234
-** SOULSEEK TOO **
-
-ACCEPT     all  --  anywhere             anywhere           MARK match !0x0
-** This line is to not proccess already marked packets
-
-Observations:
-
-1-) The Chain P2P is used to set the mark 1 or 2 (depending on day and hour
-of day). The mark 1 is sent to a 64Kbit class on CBQ and mark 2 to 256Kbit.
-These time rules doesn't match all time of week causing the P2P traffic to
-flow freely in the time that it is desirable.
-
-2-) I have another Chain called 'LIBERADO' it's for ips that I allow to use
-P2P without bandwidth limiting,every time.
-
-3-) CONNMARK (Connection Mark) is used to ensure that not only the first
-packet of a KaZaa connection will be matched, but the entire connection /
-file transfer.
-
-
-So, I'm seeking for optimizations for these rules, suggestions of how it can
-be done efficiently, has anyone tried to do it in some another way ? Any
-comments ? Improvements ? Something about other P2P programs ?
-
-What about connection track limits ?
-
-How can I see if the use of string module is sucking my CPU power ? 'top'
-shows it ?
-
-The traffic and the number of machines passing by this firewall are
-increasing and I'm seeing no sign that the firewall is in someway
-overloaded.
-
-The Internet connection will be upgraded again in the next few days, and I
-will reconfigure the bandwidth for the CBQ classes (maybe 128kbit /
-512kbit).
-
-
-Thanks a lot, (and sorry for my english skills)
-
-
-Bruno Borges.
+Regards
+Kurt Tragant
 
 
