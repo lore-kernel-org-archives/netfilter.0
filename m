@@ -1,12 +1,12 @@
-From: <dan-lists.netfilter.org@unpossible.com>
-Subject: RE: Best performance: 2 cards, one on each PCI-X bus,
-	2 cards on one PCI-X bus, or a single card with two interfaces?
-Date: Mon, 13 Dec 2004 20:10:38 -0600
-Message-ID: <E1Ce29A-00043r-00@deer.gmane.org>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: duplicating packets to other interface
+Date: Mon, 13 Dec 2004 21:49:50 -0500
+Message-ID: <1102992590.3390.26.camel@hubcap.ljm.dom>
+References: <1102900009.41bceb29f2fac@www.banda.lv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: 
+In-Reply-To: <1102900009.41bceb29f2fac@www.banda.lv>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,34 +20,46 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Anyone have input here?  Harald or one of the other performance tuners?
+On Sun, 2004-12-12 at 20:06, zhuupa@banda.lv wrote:
+> hello,
+> 
+> maybe my question sounds stupid to you but i've tried googling around
+> and couldn't find any valuable results. so, situation is here:
+> 
+> internet == [:eth0 router eth1:] == ids sensor (192.168.0.0/16)
+>             [             eth2:] == clients (10.0.0.0/8) 
+> 
+> so far it's a router which routes (nat) packets between external network
+> and clients. i added ids sensor to eth1 interface and would like incoming
+> packets on eth0 interface to be duplicated to eth1 so that ids sees them.
+> 
+> the question is - how can i do that? i haven't messed with iptables much,
+> and our network administraitor says it's not possible with iptables.
+> i don't believe him, however ;>
+> 
+> on openbsd packet filter it would look like this:
+> pass in on $ext_if dup-to $ids_if all
 
------Original Message-----
-From: Dan Grigsby [mailto:dan@unpossible.com] On Behalf Of
-dan-lists.netfilter.org@unpossible.com
-Sent: Saturday, December 11, 2004 5:08 PM
-To: 'netfilter@lists.netfilter.org'
-Subject: Best performance: 2 cards, one on each PCI-X bus, 2 cards on one
-PCI-X bus, or a single card with two interfaces?
+ah--the beautiful simplicity of OpenBSD's pf...alas--this is a different
+list...
 
-Hello,
+> i believe it's as simple on iptables.
 
-I have been sifting the archives to come up with hardware to give me the
-best performance.  I read Harald's threads surrounding the performance of
-dual Opteron system and am building a box based on those specs (fast memory,
-NAPI, 32bit kernel, etc.).  
+heh--you'd think that.
 
-Here's my question:  
+one possible packet-filter-independent solution would be to plug eth0 of
+iptables machine, the upstream router and the IDS into a switch and span
+the port from the iptables machine to the port of the IDS' promiscuous
+sniffing interface.  this could also be done with a dumb hub and no
+spanning...
 
-My motherboard has two 133Mhz PCI-X busses.  For best performance should I
-(1) put one card on each bus, (2) put two cards on one bus, or (3) use a
-single card with two interfaces?
+i know this isn't actually an answer to your question, but it sorta
+accomplishes the task at hand.
 
-I appreciate the advice.
+-j
 
-Best regards,
-
-Dan
-
+--
+"To alcohol: the cause of, and solution to, all of life's problems."
+	--The Simpsons
 
 
