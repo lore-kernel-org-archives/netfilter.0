@@ -1,15 +1,17 @@
-From: Florian Boelstler <euphoria@arcor.de>
-Subject: Re: how to log dropped packet
-Date: Wed, 29 Sep 2004 11:19:03 +0200
+From: <hamals@infinito.it>
+Subject: Re: web server in DMZ
+Date: Wed, 29 Sep 2004 11:35:04 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <415A7E07.3070107@arcor.de>
-References: <web-6413785@infinito.it>
-	<41595002.70706@arcor.de>	<41598522.2060207@arcor.de>
-	<200409281130.51732.Alistair@nerdnet.ca>
+Message-ID: <web-6704233@infinito.it>
+References: <web-6416739@infinito.it>
+	<1096381048.2330.47.camel@wolfpack.ljm.dom>
+	<web-6491079@infinito.it>
+	<1096383819.2330.50.camel@wolfpack.ljm.dom>
+	<41597FEE.9010401@cisco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409281130.51732.Alistair@nerdnet.ca>
+In-Reply-To: <41597FEE.9010401@cisco.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,20 +21,28 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Marek Dohojda <mdohojda@cisco.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Tue, 28 Sep 2004 08:14:54 -0700
+  Marek Dohojda <mdohojda@cisco.com> wrote:
+> Just create SNAT to that webserver so that whenever they 
+>try to go to the external address it get mangled and 
+>visible via its internal IP.  Or you could play with 
+>advance routing wihch is a pain in this case.
 
-Alistair Tonner wrote:
-> 	Indeed an important component -- the point being that user created tables 
-> cannot have a POLICY set and when a packet reaches the end of a user created 
-> table, unless otherwise set, the packet RETURNS to the calling table and 
-> continues to traverse it again at that point.
 
-Thanks for pointing this out :)
+I've just create a snat for my internal hosts so they go 
+to outside with a public ip, but this solutions is not 
+working.
 
-Regards,
+_______________________________________
+Connessione ed e-mail gratuita da 10 mb
+consultabile tramite web e tramite pop.
+www.infinito.it vieni a scoprire tutti 
+i nostri servizi!
 
-   Florian
+http://www.infinito.it/xmail
+
 
