@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Logging
-Date: Mon, 21 Oct 2002 22:39:34 +0100
+From: Tasha Smith <natasha3641@yahoo.com>
+Subject: Re: Logging Portscans
+Date: Mon, 21 Oct 2002 16:33:12 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021021213938.CKCL28004.mta07-svc.ntlworld.com@there>
-References: <20021021210421.79305.qmail@web40702.mail.yahoo.com>
+Message-ID: <20021021233312.512.qmail@web40701.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021021210421.79305.qmail@web40702.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +15,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Monday 21 October 2002 10:04 pm, Tasha Smith wrote:
-
-> I was wandering if you can help me with my logging rules. Ill give you my
-> rules exactly what they look like now (without typos) :)  And i scanned it
-> with nmap from a machine NOT ROUTED by the firewall machine! And i get no
-> LOG file.
-
-No typos, heh :-) ?
-
-Anyway, can you explain those last two comments - where are you scanning from 
-(I don't understand your routing comment) - and "you get no log file" - do 
 you mean you never get any logs at all, or you get log entries on the screen 
 but not in a file, or you get logs sometimes, but not when you're doing a 
 particular type of scan ?
+
+--->I am scanning my firewall machine from a machine on a "different network".
+
+--->And when the scan is finished i  check the log file of my firewall machine
+and there are no reports of a scan to any port. My log file being
+"/var/log/messages"
+
+--->Here is what the nmap scan i used   "namp -sS -sT -P0 -v 152.22.xx.xx"
+    
 
 > I even added this to my syslog.conf file......
 >
@@ -44,6 +40,15 @@ right at the start of your INPUT chain:
 iptables -I INPUT -j LOG --log-prefix "fwlog: "
 
 Does anything go into /var/log/fwlog ?
+---> Yes, somehting does go into the "/var/log/fwlog" file. (All kernel messages
+goes into this file like:
+OCT 21 01:4443 HOSTNAME   kernel : Linux version 2.4.19
+(root@hostname.bc.hisa.telus.net) gcc version 2.96)
+OCT 21 01:4443 HOSTNAME   kernel Mount-cache has tables entyries: 1024 (order:
+1, 8192 bytes
+OCT 21 01:4443 HOSTNAME   kernel : Buffer-cache hash tables entries:4096
+(order:2, 16384
+And and someother kernel messages 
 
 (I would expect you to have to add the option "--log-level=warn" to match the 
 entry in your syslog.conf file.)
@@ -52,6 +57,8 @@ entry in your syslog.conf file.)
 
 Explain what you mean by a Stealth port scan ?   If yu;re using nmap, what 
 options are you using ?
+
+---> Here what options im using "namp -sS -sT -P0 -v 152.22.xx.xx"
 
 > iptables           --flush
 > iptables -t -nat   --flush
@@ -63,12 +70,21 @@ options are you using ?
 > iptables --policy INPUT DROP
 > iptables --policy FORWARD DROP
 > iptables --policy OUTPUT ACCEPT
->
-> iptables -A INPUT      -p tcp --tcp-flags ALL NONE -j DROP
-> iptables -A FORWARD    -p tcp --tcp-flags ALL NONE -j DROP
+--->#when this line is added to my script:
+  iptables -I INPUT -j LOG --log-prefix "fwlog: "
+># When this line is added to my script and i run the nmap scan from a computer
+with an ip address of 152.22.xx.xxx  the only things that get log in the fwlog
+file are:
+OCT 21 01:4453 HOSTNAME   kernel : fwlog: IN eth1 OUT= MAC=
+ff:ff:ff:ff:00:43:xx:xx:xx src=192.168.0.11 DST=192.168.0.255 LEN=78 TOS=0x00
+PREC=0x00 TTL=128 ID 63894 PROTO=UDP SPT=137 DPT=137 LEN=58
+---> But nothing from the computers ip addressd that i did the port scan with
+only tarffic that is getting logged is my machine behind the firewall and the
+firewall machines eth1.
 
-Do you get the same result from your port scan (and your logs) if you remove 
-these two rules ?
+ 
+  iptables -A INPUT      -p tcp --tcp-flags ALL NONE -j DROP
+> iptables -A FORWARD    -p tcp --tcp-flags ALL NONE -j DROP
 
 > iptables -A INPUT    -m state --state ESTABLISHED,RELATED -j ACCEPT
 > iptables -A OUTPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
@@ -92,18 +108,23 @@ Okay, so this LOGging rule is last in your INPUT chain, just before the
 default DROP policy.
 
 I assume you are scanning the Firewall address itself ?
+--->Yes...im scanning the firewall computers ip addrsss,  152.22.xx.xx and im
+not scanning  from a machine behind the firewall.Its a machine on a different
+network!
 
 By the way, what result do you get from the scan ?   Does it suggest you have 
 closed ports, open ones, nothing accessible, what ?
+---> The relsut i get is: All 1601 scanned ports on "firewall machine" are
+filtered."
 
 What happens if you simply ssh to the Firewall, or telnet to port 25 ?   Do 
 you see a log entry then ?
+--->No, i dont!
+--->The script is exactly what it look like now when i did the scan!
 
-Antony.
 
--- 
-
-Having been asked to provide a reference for this man,
-I can confidently state that you will be very lucky indeed
-if you can get him to work for you.
+__________________________________________________
+Do you Yahoo!?
+Y! Web Hosting - Let the expert host your web site
+http://webhosting.yahoo.com/
 
