@@ -1,11 +1,13 @@
-From: "Robert Allmeroth" <Robert.Allmeroth@epygi.de>
-Subject: Endian problem in h323
-Date: Tue, 24 Jun 2003 15:59:03 +0200
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Bug in FORWARD chain in iptables-1.2.7a with Linux kernel 2.4.20?
+Date: Tue, 24 Jun 2003 11:42:15 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <PIEIIGGHCLEGAPAHFMDOEEFJCOAA.Robert.Allmeroth@epygi.de>
+Message-ID: <20030624154215.GE32226@cannon.eng.us.uu.net>
+References: <000701c33989$aa826180$64a5a8c0@europe.cellnetwork.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <000701c33989$aa826180$64a5a8c0@europe.cellnetwork.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,63 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="macroman"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Christian Ericsson <christian.ericsson@bigfoot.com>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-hello :)
+On Mon, Jun 23, 2003 at 03:16:31PM +0200, Christian Ericsson wrote:
 
-It seems that we found another endian problem in the h323
+> Hi,
+> 
+> I have the following configuration:
+> 
+> INTERNET
+> |
+> Firewall (Linux box with IPTables)
+> |
+> Router (Linux box with IPTables)
+> 
 
-Found in:  patch-o-matic-20030615
-File: extra/h323-conntrack-nat.patch
+[snip]
 
-affects:  linux/net/ipv4/netfilter/ip_conntrack_h323.c
+> 
+> What could be wrong? Do I have to upgrade to the latest version of iptables
+> and the Linux kernel?
 
-Error description:
-	Loading ip_nat_h323 with modprobe fails, because
-	ip_conntrack_h323 cannot be found in internal list
-	due to wrong tuple initialization.
+If your rule set is not too big, send it to the list, for both the firewall and
+the router. What you're stating here doesn't make sense...
 
---------------- snip ----------------
-
-static struct ip_conntrack_helper h225 =3D
-   { { NULL, NULL },
-     "H.225",                  /* name */
-     IP_CT_HELPER_F_REUSE_EXPECT,          /* flags */
-     THIS_MODULE,                  /* module */
-     2,                        /* max_expected */
-     240,                      /* timeout */
-     { { 0, { __constant_htons(H225_PORT) } }, /* tuple */
-       { 0, { 0 }, IPPROTO_TCP } },
-     { { 0, { 0xFFFF } },              /* mask */
-       { 0, { 0 }, 0xFFFF } },
-     h225_help                 /* helper */
-   };
-
-
-should be:
-
-static struct ip_conntrack_helper h225 =3D
-	{ { NULL, NULL },
-	  "H.225",					/* name */
-	  IP_CT_HELPER_F_REUSE_EXPECT,			/* flags */
-	  THIS_MODULE,					/* module */
-	  2,						/* max_expected */
-	  240,						/* timeout */
-	  { { 0, { .tcp =3D { __constant_htons(H225_PORT) } } },	/* tuple */
-	    { 0, { 0 }, IPPROTO_TCP } },
-	  { { 0, { .tcp =3D { 0xFFFF } } },				/* mask */
-	    { 0, { 0 }, 0xFFFF } },
-	  h225_help					/* helper */
-	};
-
-
-best regards
-  Robert & Markus
-
-------------------
-Epygi Labs DE           |  Herrenstra=DFe 23
-Robert Allmeroth        |  76133 Karlsruhe
-Tel: +49 721 20596 43   |  Fax: +49 721 20596 59
-
+Ramin
 
