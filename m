@@ -1,13 +1,10 @@
-From: James Sneeringer <james+netfilter@vincentsystems.com>
-Subject: tcp/udp ports (was: Re: HTTP Port forwarding issues)
-Date: Tue, 9 Jul 2002 09:15:22 -0500
+From: "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
+Subject: Redhat 7.2 Kernel
+Date: Tue, 9 Jul 2002 10:17:12 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020709141522.GA798@valjean.si.ocslink.com>
-References: <40fb01c226c7$5014e810$2901a8c0@amos> <02070911523900.05759@Lms>
+Message-ID: <956DDDA708487D498B43C36EA4DEA4050B5C53@SFEXCH01>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <02070911523900.05759@Lms>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,21 +16,15 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: "Iptables-User-list (E-mail)" <netfilter@lists.samba.org>
 
-On Tue, Jul 09, 2002 at 11:52:39AM +0200, Jan Humme wrote:
-| Of course, HTTP runs over TCP, but who can explain why in /etc/services:
-| http		80/tcp		www www-http	# WorldWideWeb HTTP
-| http		80/udp		www www-http	# HyperText Transfer Protocol
+Does the default install kernel of RH7.2 have iptable support already
+compiled in it?
 
-The IANA frequently allocates the same port for both protocols.  Take a
-look at RFC 1700.  You'll see that most services have both TCP and UDP
-ports reserved, even though most probably use only one of them.
-
-| Ports and port numbers are different for TCP and UDP, right?
-
-Correct.  Look at ports 512, 513, and 514 in /etc/services.
-
--James
-
+Mike Hammonds
+Fellon-McCord & Associates, Inc.
+Information Services Manager
+Voice (502) 214-6324 Fax (502)426-8800
+mhammonds@knowledgeinenergy.com <mailto:mhammonds@knowledgeinenergy.com >
+ 
 
