@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: vpn problem
-Date: Tue, 16 Nov 2004 14:03:51 -0500
-Message-ID: <1100631831.3695.10.camel@hubcap.ljm.dom>
-References: <047701c4cc0a$431ab6e0$49caa8c0@caris.priv>
+From: Lindsay Snider <lindsay@pa.net>
+Subject: Resource temporarily unavailable
+Date: Tue, 16 Nov 2004 16:29:00 -0500
+Message-ID: <200411161629.00497.lindsay@pa.net>
+Reply-To: lindsay@pa.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <047701c4cc0a$431ab6e0$49caa8c0@caris.priv>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,42 +20,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 2004-11-16 at 13:29, Peter Marshall wrote:
-> Hello everyone.
-> 
-> I am getting the following in my logs (scrolls faster than I can read) when
-> ever anyone trys to do windows file transfers over my vpn.  The vpn is ipsec
-> and it is a constant connection between our office and our sister office.
-> My vpn server is in our dmz between 2 firewalls.  The remote vpnserver is
-> installed on their internal firewall.  When a client on the remote side goes
-> to copy a file using windows networking to a server on my side, it works,
-> however I get the messages below ... Please help.  I am not sure why I am
-> getting this.  It looks like the reply is getting blocked, however, as my
-> rules show below, I allow established and related connections.
-> 
-> Nov 16 13:59:16 radium kernel: FORWARD REJECT IN=eth1 OUT=eth0 SRC=x.x.x.33
-> DST=192.168.200.3 LEN=576 TOS=0x00 PREC=0xC0 TTL=63 ID=12528 PROTO=ICMP
-> TYPE=3 CODE=4 [SRC=192.168.200.3 DST=192.168.127.15 LEN=1500 TOS=0x00
-> PREC=0x00 TTL=126 ID=19304 DF PROTO=TCP SPT=445 DPT=1915 WINDOW=64968
-> RES=0x00 ACK URGP=0 ] MTU=1443
+When quickly adding/removing rules to iptables, I randomly get the 'Resource 
+temporarily unavailable' and 'Invalid argument' message.  In the past, I put 
+a random .3 - 1 sec sleep in between iptables calls to get the rules in. 
+Recently we've updated two boxes to the 2.6 kernel and things have gotten 
+worse.  We normally float around 10K rules but when the 2.6 kernel boxes get 
+into the 7K number of rules range, the add/removal time is to slow for the 
+boxes to keep up with the changes.  On the 2.6 kernel boxes, the system time 
+maxes out one processor at 100% system cpu.  The 2.4 kernel boxes are keeping 
+up, running for mail load and the system cpu is averaging 41%.
 
-From:  http://www.iana.org/assignments/icmp-parameters
+A quick note on the boxes.  There are 9 dell 1550's (dual PIII, 1G ram).  7 
+boxes are running 2.4.22-1.2199.nptlsmp (fedora rpm), 1 running 
+2.6.9-1.667smp (fc3 rpm), and 1 running 2.6.9 (stock kernel.org).  The 
+hardware w/i the boxes are the same.
 
-ICMP Type 3 Code 4 == Fragmentation Needed and Don't Fragment was Set
+Does anyone have a suggestion on what this might be?
 
-On the remote VPN server either lower the MTU or MSS of packets destined
-for your local VPN, or clear the DF bit.  a netfilter example:
+Addition info:
+iptables add/remove rate is averaging 64.5 / minute
 
-  iptables -A FORWARD -p tcp --syn -s 192.168.127.0/24 \
-    -d 192.168.200.0/21 -j TCPMSS --set-mss 1400
 
-i picked 1400, as MSS = MTU - 40, and the MTU listed in your log entry
-is 1443.
-
--j
-
---
-"Lisa, Vampires are make-believe, like elves, gremlins, and Eskimos."
-	--The Simpsons
-
+Lindsay
 
