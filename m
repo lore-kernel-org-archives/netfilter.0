@@ -1,11 +1,13 @@
-From: Florin Andrei <florin@andrei.myip.org>
-Subject: protocol helpers deemed "safe"
-Date: Mon, 28 Mar 2005 12:35:49 -0800
-Message-ID: <1112042149.19132.15.camel@stantz.corp.sgi.com>
-Reply-To: netfilter@lists.netfilter.org
+From: Visham Ramsurrun <vishamr2000@gmail.com>
+Subject: Re: netfilter Digest, Vol 8, Issue 50
+Date: Tue, 29 Mar 2005 09:34:05 +0400
+Message-ID: <9927912d050328213425051db9@mail.gmail.com>
+References: <4246eaa4.1642866a.28b0.5dafSMTPIN_ADDED@mx.gmail.com>
+Reply-To: Visham Ramsurrun <vishamr2000@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4246eaa4.1642866a.28b0.5dafSMTPIN_ADDED@mx.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +21,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-So far, i've been only using the FTP and IRC protocol helpers
-(ip_nat_irc, ip_nat_ftp) with iptables. The results were very good.
+Hi to all,
 
-Now i want to build a more complex firewall and perhaps use other
-protocol helpers. I know that commercial firewalls offer protocol
-helpers for things like H.323, SIP, various SQL flavors, PPTP, IPSec,
-RPC, RSH, etc.
+I wanted to ask if it is possible to have packets enter a firewall
+host on eth0 and get sent back on the same interface, i.e sth like
+...-i eth0 -o eth0...
 
-Of the current set of protocol helpers available on a recent 2.6 kernel,
-which ones are deemed "safe" for using in production, on a system that
-must run unattended for long periods of time?
-"Safe" meaning not only "does not crash the system" but also "works as
-expected".
+Is this possible using the iptables commands. If not, is there a way
+to do it (I mean by modifying IPTables code)?
 
-Thanks,
+Thx in advance..
 
--- 
-Florin Andrei
-
-http://florin.myip.org/
-
+Regards,
+Visham
 
