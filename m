@@ -1,15 +1,11 @@
-From: Fabrice MARIE <fabrice@netfilter.org>
-Subject: Re: RE : netfilter/iptables problems on solaris
-Date: Thu, 13 Mar 2003 16:56:11 +0800
+From: "Steffen Trenkler" <trenkler@syn-con.de>
+Subject: iptables problems with SuSE 8.0
+Date: Thu, 13 Mar 2003 10:41:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303131656.11643.fabrice@netfilter.org>
-References: <8C1856C372A7574291A56C3B7000A7AEF58255@eestqnt104>
-Reply-To: fabrice@netfilter.org
+Message-ID: <FFEKLFAFFPMEICKNCBGACEFKCDAA.trenkler@syn-con.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <8C1856C372A7574291A56C3B7000A7AEF58255@eestqnt104>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,24 +16,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Joaquin Henriquez Alzola (REE)" <Joaquin.Henriquez-Alzola@ree.ericsson.se>, 'Franck ZOCCOLO ' <franck@zoccolo.com>, "'netfilter@lists.netfilter.org '" <netfilter@lists.netfilter.org>
+To: "(iptables) English Mailing-List Netfilter" <netfilter@lists.netfilter.org>
+
+Hi,
+
+I'm new here in this list.
+
+My English is not so very well, but I try to explain my problem with
+iptables:
+
+I got a system with SuSE 8.0. It works as a router with an iptables script
+between 2 static LANs. The Script does it very well, but sometimes it
+happens that all connections from one LAN to the other are blocked suddenly.
+
+/var/log/messages and /var/log/firewall shows the following:
+
+fw  kernel: eth0: Transmit timed out, status 00, resetting...
+fw kernel:      Rx ring c071a000: 00000000 00000000 00000000 00000000 ...
+fw kernel:      Tx ring c071b000: 80008001 80008005 80008009 8000800d
+80008011 ...
+
+and then:
+
+fw kernel: PACKET DROPPED: .....
+fw kernel: PACKET DROPPED: .....
+fw kernel: PACKET DROPPED: .....
+...
+
+The error-message repeats periodically for a few seconds.
+
+There are 2 same NICs in that system: D-Link DFE-550TX.
+
+After rebooting the system, the firewall works fine again, 'cause the script
+is loaded at booting the system.
+
+Thx 4 help
+
+Steffen Trenkler
+
+Note: Is there any german-language iptables list?
 
 
-Hello,
-
-On Thursday 13 March 2003 03:43, Joaquin Henriquez Alzola (REE) wrote:
-> Then I am not going to be able to use the turtle firewall. Any other
-> firewalls for Solaris that you would recommend. This is a sit back.
-
-Sun would recommend that you use Sunscreen, but I don't know if it's free
-or if you must pay addon for that.
-
-Have a nice day,
-
-Fabrice.
---
-Fabrice MARIE
-
-"Silly hacker, root is for administrators"
-       -Unknown
 
