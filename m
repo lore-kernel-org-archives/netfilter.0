@@ -1,12 +1,12 @@
-From: "Mardaga Stephan" <smardaga@brutele.be>
-Subject: Re: Masquerade don't masquerade
-Date: Wed, 25 Aug 2004 21:40:12 +0200
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Iptables problem
+Date: Wed, 25 Aug 2004 16:04:17 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <004d01c48adb$5b9d4180$c6ea44d4@famille>
-References: <D5C9032B2B09C64EA2409D6214E91AC90512E3@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512E4@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,52 +19,36 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-
-
->  iptables release 1.2.6a
->  Linux  2.4.18-bf2.4 #1 Son Apr 14 09:53:28 CEST 2002 i686 unknown
+> I use slackware 9.0. I have made the upgrade to the lastest iptables, =
+and nowi want to compile the 2.4.27 kernel and enable nat of pptp. I =
+applied the path-o-matic and actvated the option for it. After compile =
+the kernel, almost everything is funcional, but the targets MASQUERADE =
+and SNAT had a problem.. Show an error: Invalid argument. They are =
+Modules and are loaded at the kernel. A frind had the same problem doing =
+the same thing I wanted to do!
 >
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
+> Anyone knows what can i do ?
 >
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> LOG        all  --  anywhere             anywhere           LOG level
-> warning
-> MASQUERADE  all  --  192.168.1.0/24       anywhere
-> LOG        all  --  anywhere             anywhere           LOG level
-> warning
 >
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
->
-> Any help and/or suggestions will be accepted gratefully.
+> Marcelo
 
-blind gues would be that you have the wrong interface specified in your
-MASQUERADE rule.  can you post the output of "iptables -t nat -vnL" instead
-of just "-nL" so we can see the in/out interfaces.
+i can tell you "what" you need to do, but i learned this morning that i =
+can't necessarily tell you "how" to do it.
 
-here are :
+what:  you need to rebuild your userspace "iptables" utility.  the error =
+you're seeing is what happens when you apply patches to the kernel that =
+change the internal structures of netfilter.  in order to interact with =
+the new kernel, you need to compile a new iptables command against that =
+patched kernel source.
 
-Chain PREROUTING (policy ACCEPT 643 packets, 82862 bytes)
- pkts bytes target     prot opt in     out     source
-destination
+this is normally as simple as:
 
-Chain POSTROUTING (policy ACCEPT 61 packets, 18460 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-   55 16492 LOG        all  --  *      *       0.0.0.0/0
-0.0.0.0/0          LOG flags 0 level 4
-    0     0 MASQUERADE  all  --  *      eth0    192.168.1.0/24
-0.0.0.0/0
-   55 16492 LOG        all  --  *      *       0.0.0.0/0
-0.0.0.0/0          LOG flags 0 level 4
+cd /usr/local/src/iptables-x.x.x
+make KERNEL_DIR=3D<<where-you-built-your-kernel>>
+make install KERNEL_DIR=3D<<where-you-built-your-kernel>>
 
-Chain OUTPUT (policy ACCEPT 61 packets, 18460 bytes)
- pkts bytes target     prot opt in     out     source
-destination
+i can only assume that your friend is Paulo Andre, and this is =
+apparently more complicated than i realize.
 
-Stef
-
+-j
 
