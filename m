@@ -1,8 +1,8 @@
-From: Marco Colombo <marco@esi.it>
-Subject: Matching on next hop router
-Date: Wed, 23 Jun 2004 15:32:27 +0200 (CEST)
+From: "Manestro Oliveira" <manestro123@hotmail.com>
+Subject: bypassing a prerouting rule
+Date: Wed, 23 Jun 2004 13:24:30 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0406231510050.15672-100000@Megathlon.ESI>
+Message-ID: <BAY22-F8GvaIyuw4n4a0009ebc4@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,34 +14,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have 2 (potentially N) upstream links, and one single netfilter box
-that handles all the routing from/to them. All routers are connected
-on the same network segment. This implies that all packets leave the
-netfilter box via the same interface (eth1).
+Hi,
+      I am a begginer to Linux and I have a PREROUTING rule that makes port 
+redirection on incoming packages. But there is a server that don`t accept 
+that, and works only without that rule. How can I bypass the rule for that 
+server specifically?
 
-The main routing table holds about 139100 entries at the moment, with
-about 71500 routes via one router (let it be router A) and 67600 routes
-via the other one (router B).
+     If iptables works by matching rules and leaving the other ones without 
+checking them, then I should insert a rule before that and the problem is 
+solved. Is this correct?
 
-Is there a way to match packets, in the filter table, based on which
-router they will be routed to? I've googled a bit but wasn't able
-to find a way. Intuitively, matching should be done in the 
-POSTROUTING chain, after the routing decision has been taken.
-I need to match, say, all packets that will be routed via router A.
-(A way to match incoming packets would be nice, too. But I think
-I can match by --mac-source for that).
+     Sorry if the question might be stupid, but I am taking the chance for 
+being stupid now (and maybe not forever). >)
 
-TIA,
-.TM.
--- 
-      ____/  ____/   /
-     /      /       /			Marco Colombo
-    ___/  ___  /   /		      Technical Manager
-   /          /   /			 ESI s.r.l.
- _____/ _____/  _/		       Colombo@ESI.it
+     Thanks.
+
+_________________________________________________________________
+MSN Hotmail, o maior webmail do Brasil.  http://www.hotmail.com
 
 
