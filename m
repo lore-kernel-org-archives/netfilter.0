@@ -1,44 +1,63 @@
-From: Doug Yeager <doug@aircomwireless.net>
-Subject: spoofing client IP configuration
-Date: Thu, 13 Mar 2003 06:58:24 -0500
-Sender: hostap-admin@shmoo.com
-Message-ID: <5.2.0.9.0.20030313064430.0323ecb0@yeagerautomation.com>
+From: alexb@atix.com.br
+Subject: Re: QoS on dynamic port allocation protocols
+Date: Thu, 13 Mar 2003 10:40:53 -0300 (BRT)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1047562853.3e708a65c21a5@www.spsul.com.br>
+References: <OFA83BF598.09B2B5B9-ON83256CE8.000228A8@LocalDomain> <1047533324.11445.64.camel@raylinux.internal>
 Mime-Version: 1.0
-Return-path: <hostap-admin@shmoo.com>
-Errors-To: hostap-admin@shmoo.com
-List-Unsubscribe: <http://lists.shmoo.com/mailman/listinfo/hostap>,
-	<mailto:hostap-request@shmoo.com?subject=unsubscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1047533324.11445.64.camel@raylinux.internal>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Post: <mailto:hostap@shmoo.com>
-List-Help: <mailto:hostap-request@shmoo.com?subject=help>
-List-Subscribe: <http://lists.shmoo.com/mailman/listinfo/hostap>,
-	<mailto:hostap-request@shmoo.com?subject=subscribe>
-List-Archive: <http://lists.shmoo.com/pipermail/hostap/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: nocat@lists.nocat.net, , nocatnet@lists.nocat.net, , hostap@shmoo.com, , netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: raymondl@knowledgefactory.co.za
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-o.k.,
-managing a public WLAN, people have all sorts of IP configurations preset 
-on their clients (not all are dhcp clients enabled).
-i am currently running a DHCP server and it works *MOST* of the time.  the 
-ultimate solution would be to somehow ignore the client ip configuration 
-and map to the clients on the server side based on their mac address, or 
-something like that.  i know this is possible because there are hotels that 
-do this kind of thing.....some terms like "nomadic server" have popped up.
+But how do I distinguish RELATED connection from ftp and H323 ?
+If I only whant to limit bandwidht for ftp and not for H323, how could I te=
+ll
+iptable to mark only the RELATED packets from ftp connections ?
 
-i want the server to route based on local addresses, so this service 
-hopefully would run at the mac level.
-the public wlan currently runs:
-nocat gateway
-HostAP
-Iptables firewall
-DHCPD  (server in question by this email)
+Thanks,
 
-any alternatives to DHCP that do this would be great....i just want people 
-configured to their work ip configs to be able to get on.  would moving to 
-802.11 auth help?  i don't think so because after authentication you still 
-need an IP to do anything...unless i'm thinking about this wrong.
+Alex
 
-thx,
-doug
+C=F3pia Raymond Leach <raymondl@knowledgefactory.co.za>:
+
+> On Thu, 2003-03-13 at 03:09, Antonio Paulo Salgado Forster wrote:
+> > Hello all,
+> >=20
+> >       I'm trying to apply QoS rules on protocols that use dynamic
+> port
+> > allocation on secondary connections such as ftp or H323 that have a
+> > specific iptables helper to handle them, and the problem begins when
+> the
+> > secondary connections startup.  Would the connmark module mark also
+> the
+> > seconday connections if you tells it to mark the main flow?  Or, is
+> there
+> > any way to to match a packet using, at the same time, the -m state
+> --state
+> > RELATED match and check if the related connection belongs to a ftp
+> session?
+> >=20
+> > Any ideas are appreciated. Thanks in advance.
+> >=20
+> > Forster
+>=20
+> Depending on your QoS setup, you could use the -m state --state
+> RELATED
+> and the fwmark patch to mark the packets. Then your QoS filters could
+> be
+> triggered by the fwmark values.
+>=20
+>=20
+
