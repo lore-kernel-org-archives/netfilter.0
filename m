@@ -1,13 +1,11 @@
-From: Andrea Rossato <mailing_list@istitutocolli.org>
-Subject: Re: ECN mangling
-Date: Fri, 27 Dec 2002 12:14:34 +0100
+From: Julio Cesar Ody <julioody@bol.com.br>
+Subject: VPN software behind iptables
+Date: Fri, 27 Dec 2002 10:07:07 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E0C361A.6040603@istitutocolli.org>
-References: <20021227073624.GA1878@miggy.org> <20021227091659.GB1878@miggy.org>
+Message-ID: <3E0C426B.3010306@bol.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021227091659.GB1878@miggy.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +18,16 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-there's a bug in that code: in the netfilter-devel mailing list a patch 
-was posted:
+Hello. I have a software in my store who uses a VPN connection to 
+exchange data with a server outside my network. The software is able to 
+make the connection, however, once it's done, nothing else happens, and 
+I'm not able to do nothing. I'm pretty sure it's not a bug in the 
+software, because I tried to connect directly to outside using the WiFi 
+card located in my server (slackware 8.1, kernel 2.4.19, iptables 1.26) 
+and it worked just fine.
+Is there anhy issue regarding VPN routing with iptables ? Thanks.
 
- >      90                 diffs[0] = diffs[0] ^ 0xFFFF;
- >      91                 diffs[1] = *tcpflags;
 
-that does the job.
-andrea
-
-Athan wrote:
->   Looking at latest CVS there doesn't seem to be any changes to the code
-> in net/ipv4/netfilter/ipt_ECN.c.  Not being uptospeed with how the code
-> all works it looks like it should be working:
-> 
->      89         if (diffs[0] != *tcpflags) {
->      90                 diffs[0] = htons(diffs[0]) ^ 0xFFFF;
->      91                 diffs[1] = htons(*tcpflags);
->      92                 tcph->check = csum_fold(csum_partial((char *)diffs,
->      93                                                     sizeof(diffs),
->      94                                                     tcph->check^0xFFFF));
->      95                 (*pskb)->nfcache |= NFC_ALTERED;
->      96 
->      97                 return 1;
->      98         }
-> 
-> But it obviously isn't.
-> 
-> -Ath
+Julio Cesar Ody
 
 
