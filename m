@@ -1,13 +1,13 @@
-From: Ray Anderson <rsa@prideindustries.com>
-Subject: RE: Windows Update through Mandrake firewall
-Date: Wed, 11 Feb 2004 11:56:13 -0800
+From: "Chris Baker" <cbaker@bbbscentralohio.org>
+Subject: SOLVED: Windows Update through Mandrake firewall
+Date: Wed, 11 Feb 2004 16:30:22 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000601c3f0d9$1a7c7780$2405010a@rsa>
-References: <402A35FA.11068.EBAD7F@localhost>
+Message-ID: <0A9604FAD805DD4CB404FFA1B950747717F34D@msbbbs1.bbbs.bbbscentralohio.org>
+References: <000601c3f0d9$1a7c7780$2405010a@rsa>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <402A35FA.11068.EBAD7F@localhost>
+In-Reply-To: <000601c3f0d9$1a7c7780$2405010a@rsa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,7 +18,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: cbaker@bbbscentralohio.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+It was a Squid problem. Squid had disabled several applications. Once I
+enabled those web apps, Windows Update worked fine. Thanks for the
+suggestion, even though this wasn't an IP tables issue.
+
+Register your team online today!
+BOWL FOR KIDS'SAKE 2004
+Saturday, March 6, 2004
+www.bfkscentralohio.org
+You'll be "bowled over" when our brochure "strikes" your mailbox at the =
+end
+of January.sorry.we couldn't help ourselves! If you do not receive one,
+please contact me!
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Chris Baker -- technical specialist
+614-839-2447x108 -- cbaker@bbbscentralohio.org
+www.bbbscentralohio.org -- Big Brothers Big Sisters of Central Ohio
+Opinions expressed in this e-mail are solely my own.
+
+The document(s) accompanying or within this email transmission may =
+contain
+confidential information belonging to Big Brothers Big Sisters of =
+Central
+Ohio, which is legally privileged for the entity named above.  If you =
+are
+not the intended recipient, you are hereby cautioned that any =
+disclosure,
+copying, distribution, or the taking of any action in reliance on the
+contents of this email information is strictly prohibited.  If you =
+receive
+this email in error, please notify us immediately by fax (614-839-5437) =
+or
+phone (614-839-2447) to advise of the error.
+
+-----Original Message-----
+From: Ray Anderson [mailto:rsa@prideindustries.com]=20
+Sent: Wednesday, February 11, 2004 2:56 PM
+To: Chris Baker; netfilter@lists.netfilter.org
+Subject: RE: Windows Update through Mandrake firewall
 
 I have no problems updating several Windows machines behind a Mandrake
 machine with iptables.  I do NOT have squid running, and only run the
@@ -83,5 +125,6 @@ Baron Manfred von Richthofen
 > Opinions expressed in this e-mail are solely my own.
 >=20
 >=20
+
 
 
