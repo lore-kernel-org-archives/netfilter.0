@@ -1,13 +1,13 @@
-From: "Ken Kilgore" <kkilgore@wt.net>
-Subject: RE: iptables grep problems
-Date: Mon, 3 Feb 2003 08:51:42 -0600
+From: Sander Sneekes <sander@dmdsecure.com>
+Subject: Re: load balancing
+Date: 03 Feb 2003 15:35:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GNECIOACDBCPDCMNJLJJEEMHCBAA.kkilgore@wt.net>
-References: <1044279746.9027.55.camel@juna.cypherworld.org>
+Message-ID: <1044282910.16954.25.camel@sander>
+References: <1044280193.16953.15.camel@sander>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=-Jtb28g/wA+/byfEXHdBo"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1044279746.9027.55.camel@juna.cypherworld.org>
+In-Reply-To: <1044280193.16953.15.camel@sander>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,82 +17,87 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
-
-This is what I am doing.  I have dhcp for my external ip address assignment.
-
-EXTIP=`/sbin/ifconfig "$EXTIF" | grep inet | cut -d":" -f 2 | cut -d" " -f
-1`
-INTIP=`/sbin/ifconfig "$INTIF" | grep inet | cut -d":" -f 2 | cut -d" " -f
-1`
-
-Ken Kilgore
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of saint
-Sent: Monday, February 03, 2003 7:42 AM
-To: Netfilter Mailing List
-Subject: RE: iptables grep problems
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Hi Khanh,
+--=-Jtb28g/wA+/byfEXHdBo
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-I already have #!/bin/bash.  My firewall script works. When
-I first learnt how to build one everyone was saying use eth0.
-But I have now learnt to dynamically configure eth0.
-I know how to print out the info from the command line but
-when I include the same command in my script all hell breaks lose.
-And the { print $2 } bit -> you should see what it does.
+currently i'm using this line
 
-Santos
+iptable -t nat -A PREROUTING -d X.X.X.X -p tcp --dport http -j DNAT
+--to-dest 192.168.0.100-192.168.0.111
 
-On Tue, 2003-02-04 at 00:34, Khanh Tran wrote:
-> Are you trying to assign your external interface's IP to a variable for
-> something?  What does $2 look like?  Chances are you are trying to do
-> something with $2 as an IP, but really the value is probably set for
-> "addr:1.2.3.4".  You may also want to add a #!/bin/bash, or whatever your
-> shell is to the top of the script if you are getting the right variable
-> assignment.
->
-> Khanh Tran
-> Network Operations
-> Sarah Lawrence College
->
-> -----Original Message-----
-> From: saint [mailto:nagajuna@optushome.com.au]
-> Sent: Monday, February 03, 2003 8:14 AM
-> To: Netfilter Mailing List
-> Subject: iptables grep problems
->
->
+this this the job but the if i use the same client it always uses 100
+for ex. 
+
+but we need to do some preformance test with 3 client's so everytime a
+client
+does a reqeust to the http server i want to get it for a different
+server.
+
+anybody ?
+
+thanks
+Sander
+
+
+On Mon, 2003-02-03 at 14:49, Sander Sneekes wrote:
+
 > Hi all,
->
-> It seems I'm in a bit of a bother.  Here's my problem:
-> I have a semi-permanent IP address provided by my ISP
-> and I can't do one of two things:
-> 1. use eth0, and
-> 2. use a combination of grep, awk, & ifconfig.
->
-> Normally, if I issue this from the bash shell:
->
-> $ifconfig eth0 | grep 'inet addr' | awk '{print $2}'
->
-> I get the intended result i.e the external interface's IP address.
-> So why can't I get anything when I put this in the firewall script?
-> Actually, I do get something: ERRORS!
->
-> If someone would kindly help me with this problem
-> and relieve my suffering it'll be very much appreciated.
->
-> Thanks.
->
-> Santos.
-> Still learning.
->
->
->
+> 
+> I need to load balance between 2 webserver 
+> what is the most fastest way of doing this?
+> With iptables? if yes wich line's do i need to use
+> i have a RH 7.2 with iptables running already doing
+> al network traffic
+> 
+> cheers
+> Sander
 
+--=-Jtb28g/wA+/byfEXHdBo
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/1.1.5">
+</HEAD>
+<BODY>
+currently i'm using this line<BR>
+<BR>
+iptable -t nat -A PREROUTING -d X.X.X.X -p tcp --dport http -j DNAT --to-dest 192.168.0.100-192.168.0.111<BR>
+<BR>
+this this the job but the if i use the same client it always uses 100 for ex. <BR>
+<BR>
+but we need to do some preformance test with 3 client's so everytime a client<BR>
+does a reqeust to the http server i want to get it for a different server.<BR>
+<BR>
+anybody ?<BR>
+<BR>
+thanks<BR>
+Sander<BR>
+<BR>
+<BR>
+On Mon, 2003-02-03 at 14:49, Sander Sneekes wrote:
+<BLOCKQUOTE TYPE=CITE>
+    <FONT COLOR="#737373" SIZE="3"><I>Hi all,<BR>
+    <BR>
+    I need to load balance between 2 webserver <BR>
+    what is the most fastest way of doing this?<BR>
+    With iptables? if yes wich line's do i need to use<BR>
+    i have a RH 7.2 with iptables running already doing<BR>
+    al network traffic<BR>
+    <BR>
+    cheers<BR>
+    Sander</I></FONT>
+</BLOCKQUOTE>
+</BODY>
+</HTML>
+
+--=-Jtb28g/wA+/byfEXHdBo--
 
 
