@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: bytes counting
-Date: Fri, 23 Apr 2004 16:04:32 +0100
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: frox ftp proxy and port range.
+Date: Fri, 23 Apr 2004 10:57:35 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404231604.32275.Antony@Soft-Solutions.co.uk>
-References: <086C43C9A9A1A541BFDFABCFDA05F58901448BAB@mailnew.tecnun.es>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <20040423105735.560edace@mgalepc.utilitran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <086C43C9A9A1A541BFDFABCFDA05F58901448BAB@mailnew.tecnun.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,36 +18,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 23 April 2004 2:42 pm, Arrizabalaga, Saioa wrote:
+Hello,
 
-> Hello everyone,
->
-> I have been reading some mails in this listing and it is said the best
-> place to count bytes/packets is the mangle table, but I have a problem.
->
-> iptables -A POSTROUTING -t mangle -o eth2 -s 192.168.0.50
->
-> With this rule I catch all the packets going from 192.168.0.50 to eth2,
-> but I don't know where to put the rule to catch the packets going from eth2
-> to 192.168.0.50, because as far as I can see it, when I put the rule:
-> iptables -A PREROUTING -t mangle -i eth2 -d 192.168.0.50 nothing is
-> caught because the packet has not been SNAT-ed yet. Am I wrong?
+	I am trying to use frox which is a transparent ftp proxy, I have tested it in
+transparent and non-transparent mode.
 
-You are not wrong, no, so put the rule in the FORWARD mangle table - then you 
-will see all the packets with their real addresses.
+In non-trans mode the client specifies a proxy of internal gw and port 2121 and
+I allow a port range for the box that frox is running on.
 
-PS: If you don't have a FORWARD mangle table, then upgrade your version of 
-netfilter :)
+But it seems the port range section is not working, here is my iptables rule,
+which I believe is correct, I want the box it accept traffic between 41000 and
+419999 from all internal clients.
 
-Regards,
+from iptables -vnL
 
-Antony.
+   24  1440            tcp  --  eth1   *       192.168.7.0/24       gwIP 
+      tcp dpts:41000:41999
+
+So does the about rule look correct ?
+
 
 -- 
-Christmas was just an opportunity to upgrade to kernel 2.6 while no-one was 
-around to notice the downtime.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
