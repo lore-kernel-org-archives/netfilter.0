@@ -1,14 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: RELATED ICMP packets of type 3
-Date: Fri, 11 Feb 2005 10:49:55 -0500
-Message-ID: <20050211154955.GA2644@bender.817west.com>
+Date: Fri, 11 Feb 2005 16:58:31 +0100
+Message-ID: <1108137511.5565.68.camel@anduril.intranet.cartel-securite.net>
 References: <200502111757.16352.e-boogie@yandex.ru>
-	<20050211150635.GA2371@bender.817west.com>
-	<200502111641.19968.victor@nk.nl>
+	<1108135654.5565.62.camel@anduril.intranet.cartel-securite.net>
+	<200502111844.16095.e-boogie@yandex.ru>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200502111641.19968.victor@nk.nl>
+In-Reply-To: <200502111844.16095.e-boogie@yandex.ru>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +19,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mikhail Zotov <e-boogie@yandex.ru>
+Cc: netfilter@lists.netfilter.org
 
-On Fri, Feb 11, 2005 at 04:41:19PM +0100, Victor Julien wrote:
-> > yes.  personally (for whatever that is worth), i allow ICMP Types 3, 11,
-> > and 12 [*].
-> 
-> Will these all be accepted by the accepting all RELATED packets? Or do i need 
-> extra rules to allow them?
+Le vendredi 11 f=E9vrier 2005 =E0 18:44 +0300, Mikhail Zotov a =E9crit :
+> Thus, do I understand it correctly that I should and can safely=20
+> accept _all_ RELATED ICMP messages, both incoming and outgoing?
 
-in theory--they are RELATED.  in practice, i allow them explicitly.
-looking at one of my firewalls, it appears as though there are ICMP Type
-3 packets that get past the RELATED rule and hit the explicit allow rule,
-but the counters for the explicit allow for types 11 and 12 are at 0.
+As far as you consider Netfilter conntrack safe, yes.
 
--j
 
---
-"Me lose brain? Uh, oh! Ha ha ha! Why I laugh?"
-        --The Simpsons
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
