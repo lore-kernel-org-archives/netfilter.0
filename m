@@ -1,13 +1,13 @@
 From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: RE: Help on IPTABLES
-Date: 13 Oct 2003 15:23:04 +0200
+Subject: Re: Excluding IP ranges from masquerade rules
+Date: 13 Oct 2003 15:24:32 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066051384.4193.61.camel@kermit>
-References: <83055D4B014C9E478D2F04624B9E82CFD475@noveldc.novelgmt.mu>
+Message-ID: <1066051471.4193.63.camel@kermit>
+References: <1066038290.5801.35.camel@tarkus>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <83055D4B014C9E478D2F04624B9E82CFD475@noveldc.novelgmt.mu>
+In-Reply-To: <1066038290.5801.35.camel@tarkus>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +18,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Gilles Yue <gyue@novelgmt.intnet.mu>
+To: tedkaz@optonline.net
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Am Mon, 2003-10-13 um 14.09 schrieb Gilles Yue:
-> Chain INPUT (policy DROP)
->=20
-> target     prot opt source               destination
->=20
-> RH-Lokkit-0-50-INPUT  all  --  0.0.0.0/0            0.0.0.0/0
->=20
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:80
-When establishing a connection with a webserver the packets in the INPUT
-chain are coming from the webserver port 80, therefore spt:80 not dpt:80
-Same to the rest with the exception of DNS. Here you did it correct:
-> ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          tcp spt:53
+Am Mon, 2003-10-13 um 11.44 schrieb Ted Kaczmarek:
+> I presently exclude 1 ip block in POSTROUTING using
+> "! X.X.X.X/24" . Is their a way to specify multiple ranges that are=20
+> excluded?
+Only if you can combine them in one network, like:
+10.0.0.0/8 and 11.0.0.0/8 can be written as 10.0.0.0/7
 
-By the way, you get more info on the rules using=20
-iptables -vnL
+> or
+> Is their a way to have POSTROUTING only have affect on a certain
+> interface?
+You can use -o eth0 to specify the interface in you rules.
 
 Cheers,
 
