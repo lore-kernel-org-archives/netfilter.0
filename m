@@ -1,13 +1,13 @@
-From: adderek <adderek@polbox.com>
-Subject: Re: Problem: ISA card & iptables (2.4.26) - disappearing packets
-Date: Sat, 17 Jul 2004 12:18:19 +0200
+From: John <futurasci@gmail.com>
+Subject: Re: Strange ip_conntrack values
+Date: Sun, 18 Jul 2004 13:28:32 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40F8FCEB.90300@polbox.com>
-References: <40F8D503.3040608@polbox.com> <200407180939.37668.Antony@Soft-Solutions.co.uk> <40F8E16B.2020808@polbox.com> <200407181140.35100.Antony@Soft-Solutions.co.uk>
+Message-ID: <ef83df6b0407180428f43532d@mail.gmail.com>
+References: <ef83df6b040718033163810a15@mail.gmail.com> <200407181146.30331.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407181140.35100.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200407181146.30331.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-(...)
+> I agree this is strange, because the default TIME_WAIT timeout value is 2
+> minutes (you haven't increased this, have you?), therefore this would sug=
+gest
+> that nearly 24000 connections through your firewall were completed during=
+ the
+> past two minutes...   This seems unlikely, especially in light of the num=
+ber
+> (883) you have in progress right now.
 
-> Are you sure it is actually being fully configured?   Are you doing the PnP 
-> setup in the Bios, or under Linux?
+yes it's still =E0 2 min
 
-I'm just executing 'modprobe ne' under linux. It requires module '8390'.
-And that's all. In bios I have configured some IRQ's to 'Legacy ISA PnP'
+> If you "grep TIME_WAIT /proc/net/ip_conntrack | more", do you see nearly =
+all
+> entries with the same source and/or destination address?   If so, investi=
+gate
+> that machine.....
 
+unfortunately not ...
 
-> If you take netfilter and the other two PCI cards completely out of the 
-> equation (ie: unplug the other cards, and set netfilter to default ACCEPT on 
-> all chains with no ruleset), can you communicate with the system at all 
-> through this card?
+> If not, I suggest a network sniffer (eg: ethereal) or some netfilter LOGg=
+ing
+> rules to see if you can identify what all this traffic is.
 
-I'll check this in a moment.
-But if I can remember I can communicate with this router - it's
-answering to my ping requests.
-	ping 10.0.0.1
-made from 10.0.0.2 machine sometime works and sometime do not.
-I'm recompilling my kernel at the moment so I'll check it in a while...
+how can I do that ? could u help me achieving this ? I've installed
+tcpdump and logged all connections between 4AM and 6AM but it's not
+easy to find something ...
 
+could it come from the firewall ?
 
-Regards
----
-Adderek
-
-
+thanks for your help
 
