@@ -1,14 +1,11 @@
-From: netfilter@serverguy.net
-Subject: Re: Subject: Problem with SNAT and same port number
-Date: Mon, 23 Feb 2004 16:21:22 +1000
+From: "Contreras Verdugo, Leonardo" <lcontreras@manquehue.cl>
+Subject: redirijir paquetes a otra ip
+Date: Mon, 23 Feb 2004 09:50:43 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402231621.22177.netfilter@serverguy.net>
-References: <20040223052721.8508.52386.Mailman@netfilter-sponsored-by.noris.net> <40399938.AE4CE1DD@multitech.co.in>
-Reply-To: netfilter@serverguy.net
+Message-ID: <5B029228151AFA499070FBEE148FCD3A4AF4E1@espino.manquehue.cl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40399938.AE4CE1DD@multitech.co.in>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +15,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: prabha <prabha@multitech.co.in>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
-Hi,
-
-Yes, I do include udp as well.  A tcpdump shows traffic two and from unti=
-l I=20
-insert that rule, then there is no return traffic sent, its as though its=
-=20
-being silently dropped, because nothing is in the logs either.  If I chan=
-ge=20
-the port to 52, the return traffic apears, but of course, on the wrong po=
-rt.
-
-> Hi
->
-> >I am wanting to change the source address of outgoing packets that hav=
-e a
-> > src port of 53.
-> > I have tried /sbin/iptables -A POSTROUTING -p tcp -t nat -o bond0 --s=
-port
-> > 53 -j SNAT --to-source 192.168.0.1:53
->
-> If my understanding is correct, you want to do SNAT but without changin=
-g
-> the source port number. The above command should work.
-> Can you check out if your DNS requests are on TCP or UDP? If they are o=
-n
-> UDP, you may need to extend the above rule for UDP also.
->
-> Regards
-> Prabha
-
+> hola a todos:
+>=20
+> quisiera saber como puedo hacer para que un paquete que llega a mi
+> maquina, redireccionarlo a otra maquina?. por lo que lei, me bastaria =
+con
+> iptables, agregando a la tabla de NAT, en la cadena PREROUTING una =
+regla
+> con target a DNAT --to <ip:port>. eso fu=E9 lo que hice pero no me =
+funcion=F3.
+> Lo que necesito es que cuando me conecto al servidor web en una red (
+> http://mimaquima/ ) las paginas las vaya a buscar a otra (
+> http://otramaquina/ ). lo que hice fu=E9:
+>=20
+>   iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to
+> <ip-otramaquina>:80
+>=20
+> esto lo prob=E9 en una sola maquina con windows2000 y vmware donde =
+tengo un
+> redhat 9 virtual ( el que deberia redirigir los paquetes).=20
+>=20
+> cualquier ayuda se las agredecer=E9
+>=20
+>                                                                     =
+Atte.
+> Leonardo Contreras
+>=20
+>=20
+>=20
 
