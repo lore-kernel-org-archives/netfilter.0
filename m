@@ -1,51 +1,40 @@
-From: Thomas Spatzier <tspat@de.ibm.com>
-Subject: Re: ip_conntrack memory leak?
-Date: Tue, 1 Jun 2004 09:35:39 +0200
-Sender: linux-net-owner@vger.kernel.org
-Message-ID: <200406010935.40119.tspat@de.ibm.com>
-References: <9e3aacf404052815384498ae20@mail.gmail.com>
-Reply-To: tspat@gmx.de
+From: "Michael D. Baldwin" <p@pcmike.net>
+Subject: FXP Support Broken?
+Date: Tue, 1 Jun 2004 08:35:01 -0400
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <001401c447d4$e110ccf0$13100e0a@jupiter>
+Reply-To: "Michael D. Baldwin" <p@pcmike.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-net-owner@vger.kernel.org>
-In-Reply-To: <9e3aacf404052815384498ae20@mail.gmail.com>
-Content-Disposition: inline
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: linux-net <linux-net@vger.kernel.org>, netfilter <netfilter@lists.netfilter.org>, nf-devel <netfilter-devel@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> Hi all,
-> 
-> I am noticing what appears to be a memory leak in conntrack on one of
-> my boxes. The machine is a single 2.4GHz P4 1U rackmount with software
-> RAID 1 on 2 40GB IDE HDDs and an onboard e1000 (eth0) and e100 (eth1).
-> The kernel is 2.4.26 from kernel.org with ip_conntrack compiled
-> statically into the kernel.
-> 
-> The conntrack slab (/proc/slabinfo) grows without bound and the
-> machine needs to be rebooted every few days in order to prevent it
-> from running out of memory. This machine is the most heavily loaded
-> box I have; it is a stateful firewall and pseudo-bridge for a
-> high-traffic subnet. The important thing to note here is that the
-> number of active objects reported by /proc/slabinfo is far below the
-> number that is reported by a cat /proc/net/ip_conntrack. There are
-> ~70K entries in /proc/net/ip_conntrack, whereas /proc/slabinfo reports
-> several times that many active objects in the slab. As well, the
-> number of active objects keeps going up over time while the number of
-> objects reported by /proc/net/ip_conntrack stays relatively the same.
-> 
-> Has anyone experienced a similar memory leak in this area?
-> 
+I'm currently running 1.2.9 and all of a sudden (well, not all of a sudden,
+I actually cannot pinpoint exactly when this issue arose) I can no longer
+FXP from/into my server. I've tried searching all sorts of lists and using
+google to find any help on this issue as netfilter relates to the 2.4.26
+kernel and I've come up empty-handed. I've also tried looking at the old
+ftp-fxp.patch in an old release of patch-o-matic, but that as well does NOT
+seem to work.
 
-A few weeks ago I posted to these list reporting a similar problem, however
-on Linux 2.6. The problem I had (and still have) is that when I have
-ip_conntrack enabled on a router I lose memory over time. An extreme
-example: a flood ping with packets of size 64K over this router results in
-a memory leak of about 10MB per second. The problem did only occur if
-packets larger than MTU size were sent, which looks like there is a
-problem in ip_conntrack reassembly (possibly refcounting for slab objects ?).
-The behaviour of the slab cache is exactly the same as you described it.
+Has anyone else noticed FXP not working on netfilter-1.2.9 and linux-2.4.26?
+Can anyone on the devel team report on FXP support directly in the netfilter
+code? Sorry for what may of been a dumb post, but I'd really like to have
+the ability to FXP yet again. Thank you.
 
--- 
-Regards,
-Thomas.
+--
+/p at pcmike dot net
+http://pcmike.net/
+
+
+
