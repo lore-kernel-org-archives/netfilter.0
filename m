@@ -1,10 +1,13 @@
-From: "Hudson Delbert J Contr 61 CS/SCBN" <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: IDS better than hardcore iptables rules?
-Date: Fri, 4 Feb 2005 08:13:51 -0800
-Message-ID: <186AC876521E0F46BDE77079A6567FD0F0DD9E@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
+From: Ramoni <ramoni@databras.com.br>
+Subject: Re: Question about -m string module
+Date: Fri, 4 Feb 2005 14:27:56 -0200
+Message-ID: <200502041427.56273.ramoni@databras.com.br>
+References: <18ba01c50acd$8d4af340$b000a8c0@cybergeneration.com>
+	<60578.142.169.215.10.1107532709.squirrel@142.169.215.10>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Content-class: urn:content-classes:message
+In-Reply-To: <60578.142.169.215.10.1107532709.squirrel@142.169.215.10>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,78 +18,102 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "R. DuFresne" <dufresne@sysinfo.com>, seberino@spawar.navy.mil
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-ron,
+If you want to DROP some mail using string on iptables, you will DoS you=20
+server.
 
-i can now die happy as i've finally heard someone echo my sentiments
-as regards to 'shortcuts' to eliminate learning the basics of network
-environments. its the same malady that many programmers suffer from
-as evidenced by the shoddy un checked code that makes its to mkt today.
+Why ?
+Ok that smtp is a plain protocol, and you may drop a smtp connection if you=
+=20
+find a string in it.
 
-~go to school
+But you are dropping the emal, you are dropping a connection.
+Pay attention that the string you are searching in the drop rule, wont be i=
+n=20
+the first packet of the connection, so the connection to your mail server=20
+will start. After that, you will drop the rest of the packets if you find t=
+he=20
+string, and then, your mail server will be in a close wait state until the=
+=20
+timeout.
 
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of R. DuFresne
-Sent: Thursday, February 03, 2005 4:32 PM
-To: seberino@spawar.navy.mil
-Cc: netfilter@lists.netfilter.org
-Subject: Re: IDS better than hardcore iptables rules?
-
-
-On Thu, 3 Feb 2005 seberino@spawar.navy.mil wrote:
-
-> Many people on this list including Jason O. are masters
-> at creating very detailed careful iptables rules that
-> DROP packets that have anything peculiar about them.
->=20
-> (e.g. FIN without ACK, etc.)
->=20
-> My iptables script just filters based on port
-> number and protocol.  I was wondering if instead
-> of diving into TCP education to duplicate the
-> fine work Jason and others have done,
-> if an IDS (Intrusion Detection System)
-> like Snort would serve the same purpose???
->=20
-> I assume Snort **ALSO** knows what TCP flag combos
-> typically signify a port scan and other nasties?
->=20
-
-And there are many that have delved into combining the two applications =
-to
-work together, but, IDS is a beat unto itself, takes perhaps a bit more
-thought and work just to tune the IDS *behind* the firewall to get the
-proper set of true alarms working such that it's not just another =
-whining
-app that gets ignored pretty much as much as most system logs tend to =
-be.
-
-And TCP education is require as much for IDS setup and design as proper
-firewalling.  There are no shortcuts, one needs to gain the basic
-knowledge levels to tackle more then the basics of network design as in
-any other venture one wishes to put their efforts into.  Afterall, there
-were no real cheap shortcuts to your phd, correct?
-
-Thanks,
-
-Ron DuFresne
---=20
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
+It will reach the point that all smtp processes are used and your server wo=
+nt=20
+accept any new connections.
 
 
+Sorry about the english, but I'm sure that what I say will happen.
+(I've done it... lol)
+
+
+On Friday 04 February 2005 13:58, Samuel Jean wrote:
+> On Fri, February 4, 2005 10:23 am, Maxime Ducharme said:
+> > Hello guys
+>
+> Hiya Maxime!
+>
+> > I have a question about -m string module and
+> > I think you iptables geeks can answer me :)
+>
+> I am no geek nor guru ;)
+>
+> > Suppose I want to drop TCP connections with
+> > specific requests.
+> >
+> > Example : a mail which contains the word "sperm",
+>
+> I don't think iptables is the proper tool for such.
+> Consider using a mail proxy able to scan message for virus
+> and such instead.
+>
+> > I'd add a rule like
+> >
+> > $IPTABLES -t filter -A FORWARD -p tcp --dport 25 -d OURMAILSERVER \
+> >     -m string --string "sperm" -j DROP
+> >
+> > What is the reaction in the TCP connection ?
+>
+> That packet always gets lost in the black hole.
+> The sender will keep sending that packet over and over again.
+> However, I *think* TCP has a timeout mechanism.
+>
+> > The further packets of the same connection get dropped too ?
+>
+> No
+>
+> > This would mean the email cannot be sent, and stay in the foreign
+> > mail server queue for X days ?
+>
+> My guess is the TCP algorithm would keep trying to send that particular
+> packet as it didn't get any ACK for that sequence number.
+>
+> > Would it be the same if I use a REJECT rule ?
+>
+> No. I think a tcp-reset would do the trick.
+>
+> > Also, can fragmented TCP packets get through this ?
+>
+> Yes, but that `sperm' word is quite small. Most of the time,
+> this whole word will stand in a framgented packet.
+>
+> > Thanks in advance
+> >
+> > Maxime Ducharme
+> > Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
+>
+> Bonne journ=E9e,
+>
+> Samuel
+>
+> NOTE: This email reflects author _thoughts_, not the reality.
+>       I may be totally wrong, so just don't trust me :-)
+
+=2D-=20
+Andr=E9 "Ramoni" (Cabelo)
+Redes / Linux
+Databras Informatica      =20
+Tel: (21) 2518-2363
+=46ax: (21) 2263-6830             =20
 
