@@ -1,80 +1,182 @@
-From: mortar <slacklist@op.pl>
-Subject: Re[2]: make error with iptables 1.2.11
-Date: Wed, 30 Jun 2004 03:08:26 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <145030924.20040630030826@op.pl>
-References: <200406291645.13172.pgunarat@csee.usf.edu>
- <200406292200.23738.Antony@Soft-Solutions.co.uk>
- <6.0.3.0.0.20040629172540.020522a8@babbage.csee.usf.edu>
- <200406292309.38461.Antony@Soft-Solutions.co.uk>
-Reply-To: mortar <slacklist@op.pl>
+From: "Mayank Kumar" <mayank_kumar@intersolutions.stpn.soft.net>
+Subject: FW: injecting new packets into the netfilter
+Date: Wed, 30 Jun 2004 10:16:59 +0530
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <BNELKLECKCDLOPNOBHFHOEBNJEAA.mayank_kumar@intersolutions.stpn.soft.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406292309.38461.Antony@Soft-Solutions.co.uk>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: aksingh@hss.hns.com
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Witam
+Hi Amit
+i think u missed out my mail so i resending it to you
+regds
+Mayank
 
-Wednesday, June 30, 2004, 12:09:38 AM, you wrote:
+-----Original Message-----
+From: Mayank Kumar [mailto:mayank_kumar@intersolutions.stpn.soft.net]
+Sent: Tuesday, June 29, 2004 11:49 AM
+To: aksingh@hss.hns.com
+Cc: netfilter@lists.netfilter.org
+Subject: RE: injecting new packets into the netfilter
 
-AS> Okay - that narrows it down.   Anyone else here have experience with kernel
-AS> 2.4.26 and iptables 1.2.11?   I can't offer any advice on this one...
 
-I have 2.4.26 and iptables 1.2.11. I patched kernel and iptables
-sources with latest pom-ng and then succesfully  builded both. I'm using
-Slackware Linux with gcc 3.3.4. Here is step by step how I make this
-things works ;)
+Hi Amit
+thanks for ur prompt replies.
+firstly from ur replies it seems
+that
+1: Whatever packets that i will construct using libnet or
+   for that matter using ordinary bsd sockets would pass the
+   relevant hooks in the netfilter based on the dest ip address
+   i set. Is this true?? In this case i am constructing the packet
+   completely on my own.
 
-1. Get kernel 2.4.26 sources, and decompress it to
-/usr/src/linux-2.4.26
+Now what i want to do is steal(NF_STOLEN) packets at specific hooks
+(generally pre routing)
+within the netfilter and queue them to a user mode process.
+The User mode process does some processing and either sends
+the same packet or completely new and umpteen in number packets
+at the post routing hook in netfilter(from ur answer using libnet).
+From ur answer it seems quite possible very easily. Correct
+me if i am wrong here. Also is there any advantage of using
+libnet over bsd sockets in terms of performance. Is there any
+other performance optmized way of sending and receiving packets from
+user to kernel mode?? Does netlink sockets way offer a more
+optimized way of doing it?? (Sorry for a flurry of questions!!)
 
-2. Make a symbolic link
-#ln -s /usr/src/linux-2.4.26 linux
 
-3. Get iptables sources
-#wget http://www.iptables.org/files/iptables-1.2.11.tar.bz2
-and decompress it to /usr/src/iptables-1.2.11
+Now the second part is what if i want to move it all to kernel mode for
+performance reasons.
+This means steal packet at pre_routing and then queue them all to
+a kernel thread which was created using a kernel module. The kernel
+thread then does some processing on the packets and then sends either
+the captured packet or completely new packets out through the post routing
+hook.
+How can this be achieved??
 
-4. Make a symbolic link
-#ln -s /usr/src/iptables-1.2.11 iptables
+regds
+Mayank
 
-5. Get lates p-o-m-ng
-#wget http://www.netfilter.org/files/patch-o-matic-ng-20040621.tar.bz2
-and decompress it to /usr/src/patch-o-matic-ng-20040621
 
-6. cd /usr/src/patch-o-matic-ng-20040621
 
-7. Now patch your sources with any extensions you want (i suggest you
-to choose only what your realy need). For example:
-#KERNEL_DIR=/usr/src/linux ./runme string
-#KERNEL_DIR=/usr/src/linux ./runme CONNMARK
-...
 
-8. And now the most important step ;)
-#cd /usr/src/iptables
-#make BINDIR=/sbin LIBDIR=/usr/lib
-#make BINDIR=/sbin LIBDIR=/usr/lib install
+-----Original Message-----
+From: aksingh@hss.hns.com [mailto:aksingh@hss.hns.com]
+Sent: Tuesday, June 29, 2004 11:21 AM
+To: Mayank Kumar
+Cc: netfilter@lists.netfilter.org
+Subject: RE: injecting new packets into the netfilter
 
-9. If everything is fine, you can build your kernel.
-10. If not ... maybe try older (or newer) version of gcc.
 
-I hope this will help you.
 
-(Sorry for my poooooore english :)
 
--- 
-Pozdrawiam
- Marcin                            mailto:slacklist@op.pl
+
+
+Hi,
+
+ You want to insert packets within the kernel module thta has netfilter
+hooks ?, I dont thinkthat is a very good idea, as the packets u send using
+a libnet application wld be caught at the netfilter hooks, if the
+application resides on the same pc on which yr kernel module that has hook
+funcstions resides, then those packets will traverse, local_out, post
+routing, pre_routing, local_in etc based on their dest ip addresses, any
+packet coming from ethernet wld traverse pre_routing, then local_in or
+ip_forward and post_routing .....
+
+Amit
+
+
+
+
+"Mayank Kumar"
+<mayank_kumar@intersolutions.stpn.soft.net>@lists.netfilter.org on
+06/29/2004 11:15:52 AM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    Amit Kumar Singh/HSS@HSS
+cc:    <netfilter@lists.netfilter.org>
+
+Subject:    RE: injecting new packets into the netfilter
+
+
+Hi Akash
+i know of this library.
+But i want to inject packets at precise hooks
+in the netfilter. for e.g. i want to inject packets whenever
+the need arises ,at the fwding hook or the post routing hook. Will the
+raw packets i send using the libnet get caught at hooks inserted using
+netfilter at various points.
+
+regds
+Mayank
+
+-----Original Message-----
+From: aksingh@hss.hns.com [mailto:aksingh@hss.hns.com]
+Sent: Tuesday, June 29, 2004 10:49 AM
+To: Mayank Kumar
+Cc: netfilter@lists.netfilter.org
+Subject: Re: injecting new packets into the netfilter
+
+
+
+
+
+
+Hi,
+
+  Try libnet for injecting new packets, you can use raw packets(u inject
+from userland), libnet provides you with a better interface, but you wld
+need root permission to use raw sockets. you can get libnet library from
+packetfactory.net
+
+HTH
+Amit
+
+
+
+
+"Mayank Kumar"
+<mayank_kumar@intersolutions.stpn.soft.net>@lists.netfilter.org on
+06/29/2004 10:17:16 AM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    <netfilter@lists.netfilter.org>
+cc:
+
+Subject:    injecting new packets into the netfilter
+
+
+Hi all,
+I want to know how can we inject absolutely new packets at
+various hook points in netfilter. I have already seen
+some questions posted on this earlier too but no replies
+as such. I am very eager to know about this because using
+this we can construct some really cool stuff. Currently we
+are undergoing a project on this and it would be of greate
+help if somebody can find a solution to this.
+
+Thanks in advance for any help on this.
+regds
+Mayank
+
+
+
+
+
 
 
