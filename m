@@ -1,11 +1,11 @@
-From: "Trevor Paskett" <tpaskett@cymphonix.com>
-Subject: Transparent Proxy using bridging 2.6.9 and REDIRECT on different
-	subnet
-Date: Fri, 18 Mar 2005 11:41:20 -0700
-Message-ID: <2F413D5F33545D4A8465BBEE900238CC3FA5F1@cymmail.cymphonix.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Question regarding the interaction of iptables and IPsec
+Date: Fri, 18 Mar 2005 15:03:26 -0500
+Message-ID: <1111176206.4598.30.camel@hubcap.ljm.dom>
+References: <200503162127.BCY40584@mira-sjc5-b.cisco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-content-class: urn:content-classes:message
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <200503162127.BCY40584@mira-sjc5-b.cisco.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,58 +19,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have the following setup
+On Wed, 2005-03-16 at 16:27, Mark Hendrickson wrote:
+> All,
+>  
+> This is my first time posting to this list, so if the question has already
+> been answered. Please point me to the information.
+>  
+> Question:  After an ESP packet has been unencrypted and restored to its
+> original form by IPsec, racoon for our installation, is the restored packet
+> ran back through iptable again for filtering??
 
-Test Machine ---> Linux 2.6.9 ---> Internet Router (Doing NAT)
-192.168.255.152   192.168.255.165   192.168.255.1/24
-				            192.168.12.1/24
+if you're asking about 2.6 built-in IPSec, yes.
 
-I have blacked out all my iptables and ebtables all default ACCEPT
-policy.
+funny enough--someone else did just ask the same question:
 
-The Linux 2.6.9 is bridging. I use the following rule to redirect port
-80 traffic to Squid on the Linux 2.6.9 box:
+  http://marc.theaimsgroup.com/?l=netfilter&m=111076493609536&w=2
 
-iptables -t nat -A PREROUTING -i br0 -p tcp --dport 80 -j REDIRECT
---to-port 3128
+-j
 
-This works just like it should. No problem. The problems comes in this
-setup:
-
-Test Machine ---> Linux 2.6.9 ---> Internet Router (Doing NAT)
-192.168.255.152   192.168.12.165    192.168.255.1
-				            192.168.12.1
-
-When the Linux box is on a different subnet that the test machine the
-request will get to Squid, the rules get a packet count I see squid get
-the request. Then squid try to send the request back to the client and
-it hangs up. The browser just spins. The test machine and the Linux
-2.6.9 can both ping each other so I know connectivity is ok.
-
-Now if I bring up an alias br0:0 192.168.255.165 in the above setup,
-then everything works again. So does the br0 have to have an ip on the
-same subnet for REDIRECT to work? I have also tried adding ebtables
-rules like:
-
-ebtables -t broute -A BROUTING -p IPv4 --ip-protocol 6 \
-        --ip-destination-port 80 -j redirect --redirect-target ACCEPT
-
-Makes no difference. I have also tried some more complex variations
-like:
-
-iptables -t nat -A PREROUTING -p tcp -m physdev --physdev-in eth1
---dport 80 -j REDIRECT --to-port 3128
-iptables -t nat -A PREROUTING -p tcp -i br0 --dport -j DNAT --to
-i92.168.12.165:3128
-
-All see to work the same. Broken :) I have messed around with settings
-on /proc/sys/net to no avail.
-
-I'm using iptables v1.2.9 and Linux 2.6.9. Debian Woody. Thanks!!
-
-Trevor Paskett
-Cymphonix Programmer - CCNA, CWNA
-P: 801-938-1500 F: 801-938-1501
-=20
+--
+"Be careful when we capture him! We cannot claim the reward unless
+ we have 51% of the carcass"
+	--The Simpsons
 
 
