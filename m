@@ -1,10 +1,13 @@
-From: "PAUL FABRICIO VILLACRESES LEON" <paulvillacreses@hotmail.com>
-Subject: Ok more REDIRECT,DNAT,SNAT in C
-Date: Thu, 30 Jan 2003 21:03:24 +0000
+From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
+Subject: Re: NAT & Homepage Statistics
+Date: 30 Jan 2003 13:08:23 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F1154CfngVdwnPUF4eN00008a5b@hotmail.com>
+Message-ID: <1043928504.590.4.camel@ranjeet-linux-1>
+References: <se391cd4.045@mail.bmb-bbm.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <se391cd4.045@mail.bmb-bbm.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,40 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ranjeet.shetye2@zultys.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Thu, 2003-01-30 at 12:38, Mischa Gossen wrote:
+> Hello,
+> 
+> Recently I've installed a webserver behind my firewall. On my website I
+> keep statistics where my visitors come from. This is based on the
+> IPadrress they have. 
+> Ever since I run my webserver behind my firewall (which NAT's to the
+> inside), all the users come from the IPaddress of my firewall. This way
+> I don't have any statistics anymore :(
+> Is there any possibility that I can keep my NAT on the inside of my
+> firewall and my webserver can retreive the right IP from the visitors.
+> And if it isn't possible, is there a elegant workaround for it?
+> 
+> 
+> Thanks in advance,
+> 
+> Mischa
+> 
+> 
 
-Hi
-Developers
+Hi,
 
-Thanks for the answers
+If your webserver is behind the firewall and people are connecting to it
+from the Internet, it means that you are running Destination NAT (DNAT).
+So, your source IP for incoming packets should not be affected since you
+are doing DNAT only. On the other hand, if you are also doing SNAT for
+traffic coming in then you might run into the problem you are running
+into. Check your rules. Maybe you need tighter rules. i.e. bind your
+DNAT / SNAT rules to specific interfaces ?
 
-Ok I give details i use libiptc and bridging firewall for put rules in chain 
-FORWARD for develop a transparent firewall contents(block pornographic page 
-and block tcp ports like 80HTTP,53DNS,22SSH,21TELNET). Iptables enable or 
-disable the use of some ports tcp and may do it NAT with pages.
+Can't help more without details.
 
-i probe all rules in SNAT, DNAT and REDIRECT and all work well with the 
-scrips . but my program need use the extended target modules for put rules 
-en table nat .
+HTH
 
-How can i include extended target modules in my proyect and used it?
+-- 
+Ranjeet Shetye
+Senior Software Engineer
+Zultys Technologies
+Ranjeet dot Shetye2 at Zultys dot com
+http://www.zultys.com/
 
-Thank for the answers
-
-regards,
-
-Paul Villacreses
-
-
-
-
-
-_________________________________________________________________
-MSN 8 with e-mail virus protection service: 2 months FREE* 
-http://join.msn.com/?page=features/virus
+The views, opinions, and judgements expressed in this message are solely
+those of
+the author. The message contents have not been reviewed or approved by
+Zultys.
 
 
