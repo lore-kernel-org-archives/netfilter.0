@@ -1,13 +1,11 @@
-From: =?ISO-8859-15?Q?J=F6rg_Sch=FCtter?= <netfilter@schuetter.org>
-Subject: Re: how to negate a limit match?
-Date: Wed, 29 Oct 2003 20:18:14 +0100
+From: "David C. Hart" <DCH@TQMcube.com>
+Subject: Newbie
+Date: Wed, 29 Oct 2003 14:19:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031029201814.7970a2d7.netfilter@schuetter.org>
-References: <Pine.LNX.4.44.0310291330000.27971-100000@localhost.localdomain>
+Message-ID: <1067455194.4723.139.camel@main.tqmcube.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-w4OL1cKFmQkVmrE7SrwZ"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0310291330000.27971-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +15,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hallo Robert,
 
-On Wed, 29 Oct 2003 13:31:10 -0500 (EST)
-"Robert P. J. Day" <rpjday@mindspring.com> wrote:
+--=-w4OL1cKFmQkVmrE7SrwZ
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
->=20
->   it's not clear from the man page how to reverse the meaning
-> of a limit match.  if i want to accept everything *over* a given
-> limit, i'm supposed to use the "!".  but where?  is it like
-> this?
->=20
->   -m ! limit -- limit ... etc etc ...
--m limit ! --limit ...
->=20
-Take a look at http://iptables-tutorial.frozentux.net/ . There will you
-find a good tutorial for iptables.
+I'm a bit of a nitwit and could use some pointers from more experienced
+hands.
 
+We changed routers recently and with it the processes. The objectives
+remain the same:
+1. To protect the server (running Apache, Postfix and Vftp).
+2. To provide DShield reporting.
+3. To get reliable data so that, from time to time, we can contact ISPs
+when things get out of hand.
 
-Gru=DF
-  J=F6rg
+The setup is simple and does not use the router's NAT.=20
 
---=20
-J=F6rg Sch=FCtter           http://www.lug-untermain.de/
-joerg@schuetter.org     http://www.schuetter.org/joerg/
-ICQ: 298982789          http://mypenguin.bei.t-online.de/
+I am using only the NAT IPtable. HTTP, SMTP, FTP and Pop3 get port
+forwarded. Anything that doesn't get port forwarded is presumed to be
+intrusive and gets logged and dropped. So far so good.
 
+Questions:
 
+1. Does this approach make sense?=20
 
---=20
-Gru=DF
-  J=F6rg
+2. I'm getting the LAN address in the logs rather than the intended
+destination IP. Is there some way to preserve the original data?
 
---=20
-J=F6rg Sch=FCtter           http://www.lug-untermain.de/
-joerg@schuetter.org     http://www.schuetter.org/joerg/
-ICQ: 298982789          http://mypenguin.bei.t-online.de/
+3. Is anyone aware of a decent log analyzer that will also provide host
+resolution?
+
+4. I would rather use the FILTER table for the refused connections to
+reject rather than drop. I'm sure that it's simple but I just don't get
+it. This would depend upon the filter table rules following the NAT
+table rules. Where is this order established?
+
+Thanks.
+
+--=-w4OL1cKFmQkVmrE7SrwZ
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQA/oBLaol4OE0cpGaIRAs7nAKCvuhbEv5nFcvmGFQLj34SQJHfUJACfT49G
+0hKSZJQYw0TGP7KxRzgHAjc=
+=gfTn
+-----END PGP SIGNATURE-----
+
+--=-w4OL1cKFmQkVmrE7SrwZ--
 
 
