@@ -1,12 +1,11 @@
-From: israel Gold <rhglaw1@barak.net.il>
-Subject: RE: Logging the whole packet
-Date: Wed, 24 Nov 2004 13:03:33 +0200
-Message-ID: <000001c4d215$3d4cb540$939a5a3e@il.sangate.com>
-References: <20041123221206.GA3476@bender.817west.com>
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: transfer speed through firewall (Fixed)
+Date: Wed, 24 Nov 2004 07:13:23 -0400
+Message-ID: <0f8001c4d216$9cf7de60$49caa8c0@caris.priv>
+References: <0ee701c4d171$c8a5b870$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <20041123221206.GA3476@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,70 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
 
-Jason Opperisano wrote:
+There were lads of carrier errors on the card .. Did not notice it the first
+time I looked at it.  Anyway, I swapped out the card, and boom, lightening
+fast :-)  ... (ok, so it is not lightening, but it is much faster than
+before).  Thanks for the help and suggestions.
 
->>AFAIK, the normal LOG target cannot actually do this.  instead, use
-the ULOG target which will copy the entire packet to the
->>userspace ulogd daemon where you can use the ulogd_PCAP.so plugin to
-create a tcpdump file of the packets you are 
->>interested in.
-
-I also would like to log the packet data. In fact, I would like to
-monitor NFS Write calls.
-However, using ULOG and copying all packets to user space is time
-consuming. 
-I have no interest in Read calls which is most of the traffic.
-Does iptables provide a tool to filtering packets by looking at the data
-?
-
-Thanks,
-Israel   
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jason
-Opperisano
-Sent: Wednesday, November 24, 2004 12:12 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: Logging the whole packet
+Peter
 
 
-On Tue, Nov 23, 2004 at 04:50:28PM -0500, Brad Tilley wrote:
-> Is it possible to log the packet body and not just the header?
-> 
-> Currently I have this line in my iptables start-up file:
-> 
-> /sbin/iptables -I INPUT -p tcp -s ! 128.173.120.79 -d 128.173.120.79  
-> -j
-> LOG --log-prefix="Packet_Filter:"
-> 
-> And it generates log entries such as this:
-> 
-> Nov 23 16:44:28 athop1 kernel: Packet_Filter:IN=eth0 OUT=
-> MAC=00:30:6e:5e:a2:0c:00:d0:01:ab:44:00:08:00 SRC=64.81.214.131 
-> DST=128.173.120.79 LEN=48 TOS=0x00 PREC=0x00 TTL=110 ID=29621 DF 
-> PROTO=TCP SPT=60366 DPT=445 WINDOW=16384 RES=0x00 SYN URGP=0
-> 
-> I'd like to capture the packet body as well. I'm new to packet logging
-> so forgive me if I'm over looking the obvious.
+----- Original Message ----- 
+From: "Peter Marshall" <peter.marshall@caris.com>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Tuesday, November 23, 2004 11:33 AM
+Subject: transfer speed through firewall
 
-AFAIK, the normal LOG target cannot actually do this.  instead, use the
-ULOG target which will copy the entire packet to the userspace ulogd
-daemon where you can use the ulogd_PCAP.so plugin to create a tcpdump
-file of the packets you are interested in.  check out:
 
-  http://gnumonks.org/gnumonks/projects/project_details?p_id=1
+I posted about this yesterday and J gave some very helpful suggestions to
+try ...(thank you by the way).  But I have still not getten any better
+results.  Since then, I have changed some switches, put in brand new
+Ethernet cables, and still no difference.  I can transfer data between boxes
+in my DMZ extremely fast.  (3 seconds for a 40 MB file using ftp).  However,
+when I try to transfer that same file from a box on my interior network to a
+box in my DMZ (so it goes to a switch, then to the firewall, then to another
+switch, and then to the box) it takes approx. 40 seconds.  I am 99%
+confident that it is not the switches or network cables.  All cards and
+switches along the way are 100 MB.
 
-for more details about ulogd.
+Does anyone know of problems with netfilter with slowing down transfers ?
+The box is an 850 with 512 MB of ram.  It has 3 nic cards, and 5 interfaces
+(2 virtual) + the loopback.  Data from my internal network to the DMZ always
+goes in one interface and then out a different.  I did a netstat -ni as
+suggested, but found no errors.
 
-HTH...
+Again, thank you for any information that can be provided.
 
--j
+Peter
 
---
-"Television! Teacher, mother, secret lover."
-        --The Simpsons
 
 
