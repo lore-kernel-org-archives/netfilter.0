@@ -1,9 +1,9 @@
 From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: iptables, portforward, DNAT, SNAT
-Date: Thu, 31 Oct 2002 22:54:41 +0100
+Subject: Re: multiple external interfaces
+Date: Thu, 31 Oct 2002 23:09:26 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DC1A6A1.6060900@fugmann.dhs.org>
-References: <542FEF78.196CA339.03240133@netscape.net>
+Message-ID: <3DC1AA16.1050904@fugmann.dhs.org>
+References: <001501be3d85$bf2b8e40$0200000a@workstation>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,50 +17,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Thomas Meindl <methodaut@netscape.net>
+To: James Stickland <jamesstickland@sympatico.ca>
 Cc: netfilter@lists.netfilter.org
 
-Thomas Meindl wrote:
-> Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-> 
-> no, i didn't write it that way in the actual script.
-> just to save some tipping here..
-> 
-> * stands for the three below
-> 
-> sorry for that confusing
-> I simply should have copied and pasted it like
-> 
-> echo 1 > /proc/sys/net/ipv4/ip_dynaddr
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> echo 1 > /proc/sys/net/ipv4/tcp_syncookie
-> 
->>># enable masquerading
->>>iptables -t NAT -A POSTROUTING -o $EXTIF -j MASQUERADE
->>
->>"NAT" in this rule should read "nat" - it matters !
->>
-> 
-> 
-> spelling mistake sorry! nat
-> 
-Something that completely eludes me. You have hand typed the script you 
-  post for debugging? Then how do you know that the error is in the script?
+James Stickland wrote:
 
-Try to narrow the problem down to a very small set of rules, and test 
-the script. If it still does not work then post the script as is - copy 
-and paste. I imagine that over 50% of all script questions posted to 
-this list would answer itself, it the scripts posted had actually been 
-tested.
+> however, i would like to run my client/workstation's internet connection 
+> from the same router, but using different external interface and 
+> internal ethernet.
+> for example, i would like the pots dialup line interface masqueraded to 
+> eth2, so that all computers connected to eth2 use the ip address of the 
+> ppp device connected to dialup.
+>  
+> here is how i vision it:
+>  
+> internet--dial_up-->ppp1(/dev/ttyS3)-->router-->eth2-->crossover_cable-->client
+>  
+> could anyone help me in doing so?  is it just a matter of some 
+> additional iptables entries, or does this run deeper? please help, and 
+> cc reply directly to jamesstickland@sympatico.ca 
+> <mailto:jamesstickland@sympatico.ca>
+>  
+Netfilter cannot change how packages are routed. For this you need the 
+iproute2 package. See "Linux Advanced Routing & Traffic Control"[1] for 
+more information. You may need to use netfilter to mark packages but 
+this is all explained on [1].
 
-I'm not flaming you, and apologize if you take it that way.
-I'm trying to provide you with the tools to solve the problem. I guess 
-that if you work systematically, then one of two will happen: you
-solve the problem yourself, or you will be able to ask very 
-accurate/specific questions to the list, which has a much higher chance 
-of being answered correctly.
+[1] http://lartc.org
 
 Regards
 Anders Fugmann
+
+--
+Author of FIAIF
+FIAIF is an intelligent firewall.
+http://fiaif.fugmann.dhs.org
+
 
 
