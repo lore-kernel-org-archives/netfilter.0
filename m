@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Bypass transparent proxy(Squid)
-Date: Wed, 31 Mar 2004 20:22:42 +0100
+From: "azeem ahmad" <azeem484@hotmail.com>
+Subject: multiple source
+Date: Wed, 31 Mar 2004 21:05:25 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403312022.42527.Antony@Soft-Solutions.co.uk>
-References: <040EAEDD7A465C4AA0350CB69A326D550C392D@backup2.GODO-2000>
+Message-ID: <BAY15-F45vJd9o0PRxd0002ad8a@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <040EAEDD7A465C4AA0350CB69A326D550C392D@backup2.GODO-2000>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +14,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-failover@lists.netfilter.org
 
-On Wednesday 31 March 2004 7:29 pm, Jerry Robles de Medina wrote:
+hi all
+i want to make such a setup that the two ip 192.168.0.2 and 192.168.0.102 
+from my lan should be MASQUERADEd and all the other addresses should be 
+redirected to the proxy working on the same machine on port 8080, so i made 
+the following rules but these are not working. if i dont add rules in 
+PREROUTING and only add rules in POSTROUTING then both ips (.0.2 and .0.102) 
+MASQUERADEs very well but i also want the other sources to be REDIRECTed to 
+the proxy so if i start redirection then it redirects all the sources 
+including the two (.0.2 and .0.102) which i dont want. wot should i do
+plz help me out
 
-> Dear all,
-> I have read somewhere along the posts that it is possible to let 2 pc's
-> (ip's) bypass a transparent proxy server(squid cache). I have tried it in
-> the rc.firewall.up file but I cannot get it working. Can someone please
-> shed some light into my problem?I know it has to do with iptables but dunno
-> where and how.
+###################################################################################
+#!/bin/bash
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-The trick is to create a user-defined chain, match the addresses you want as 
-exceptions, then do the NAT at the end of the chain (after the exceptions 
-have been returned to the main chain).
+iptables -F
+iptables -t nat -F
 
-Something like:
+MASQs="192.168.0.2 192.168.0.102"
+PROTs="tcp udp"
 
-iptables -N mychain
-iptables -A PREROUTING -t nat -p tcp --dport 80 -j mychain
-iptables -A mychain -t nat -s a.b.c.d -j RETURN
-iptables -A mychain -t nat -s w.x.y.z -j RETURN
-iptables -A mychain -t nat -j DNAT --to my.squid.proxy.server:3128
+for MASQ in $MASQs;
+do
+	iptables -t nat -A POSTROUTING -s $MASQ -o ppp0 -j MASQUERADE
+done
 
-The way this works is:
-1. Only packets addressed to port 80 get processed by the user defined chain
-2. The first exception source address a.b.c.d immediately returns (unchanged) 
-the to main PREROUTING chain.
-3. The second exception address w.x.y.z returns to the main PREROUTING chain.
-4. Any other addresses get redirected.
 
-I'm sure you can adjust this to your own requirements now you see the trick 
-involved.   The important point is to recognise that the negation operator ! 
-cannot deal with more than one exception address, so there's no point trying 
-to force it to work.
+for MASQ in $MASQs;
+do
+	for PROT in $PROTs;
+	do
+		iptables -t nat -A PREROUTING -s ! $MASQ -p tcp --dport 80 -j REDIRECT 
+--to-port 8080
+	done
+done
 
-Regards,
+###################################################################################
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+REDIRECT   tcp  -- !192.168.0.2          anywhere           tcp dpt:http 
+redir ports 8080
+REDIRECT   tcp  -- !192.168.0.2          anywhere           tcp dpt:http 
+redir ports 8080
+REDIRECT   tcp  -- !192.168.0.102        anywhere           tcp dpt:http 
+redir ports 8080
+REDIRECT   tcp  -- !192.168.0.102        anywhere           tcp dpt:http 
+redir ports 8080
 
-Antony.
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+MASQUERADE  all  --  192.168.0.2          anywhere
+MASQUERADE  all  --  192.168.0.102        anywhere
 
--- 
-The words "e pluribus unum" on the Great Seal of the United States are from a 
-poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
-dressing.
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+#####################################################################################
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Regards
+Azeem
+
+_________________________________________________________________
+Protect your PC - get McAfee.com VirusScan Online 
+http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
 
 
