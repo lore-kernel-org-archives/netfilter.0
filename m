@@ -1,13 +1,12 @@
-From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
-Subject: RE: BUG(?) - SNAT causes networking to stop.
-Date: Thu, 31 Oct 2002 16:37:58 -0600
+From: Tasha Smith <natasha3641@yahoo.com>
+Subject: Re: SSL and TLS not working on FIrewall machine?
+Date: Thu, 31 Oct 2002 17:16:26 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IMEDICLPAGAOCBLCCKLPMEINEEAA.netfilter@darrelldieringer.com>
-References: <Pine.LNX.4.44.0210311202110.21650-100000@robotron.office.tiedyenetworks.com>
+Message-ID: <20021101011626.66805.qmail@web40702.mail.yahoo.com>
+References: <000a01c28096$d5d4ad90$020aa8c0@winxp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210311202110.21650-100000@robotron.office.tiedyenetworks.com>
+In-Reply-To: <000a01c28096$d5d4ad90$020aa8c0@winxp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +17,160 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: mike-netfilter@tiedyenetworks.com, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+
+Hmmm, that didnt work...i even tryed to see the default INPUT rule from DROP to
+ACCEPT just for testing and still it wont let me connect? the site im tyring to
+connect to is
+www.tdcanadatrust.com   
+and then for the SSL you have to click the orange "NOW" button on the top right
+hand corner? Something else i can try?? 
 
 
-I had a goofy problem quite awhile ago that sounds a lot like yours -
-I couldn't ping the router box from the LAN unless the router box was
-already pinging the particular LAN box from which I was trying to ping
-the router.
+--- Matthew Hellman <mhellman@raccoon.com> wrote:
+> just my opinion, but your script is complicated and not for the right
+> reasons.  I'm a big proponent of keeping it simple
+> 
+> > 1.>Umm i was wandering how come SSL or TSL doesnt connect to my banks
+> website
+> > from the firewall machine.
+> 
+> iptables knows nothing about SSL and TLS. You want to know why you can't
+> connect on port 443;-)
+> 
+> > # Enable broadcast echo protection
+> > echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+> >
+> <snip of sysctl parameters>
+> 
+> You might consider creating a separate file for these kernel parameters and
+> then sourcing the file from the script. Anymore, I just edit
+> /etc/sysctl.conf.  That might be a Redhat thing though, not sure. Another
+> suggestion is to keep all your INPUT, OUTPUT, and FORWARD rules together.
+> Makes the script much more readable. In some cases, I've even created a very
+> short 1 page main script that calls separate files for INPUT,OUTPUT, and
+> FORWARD.  When you want to change your INPUT rules, for instance, you don't
+> have any irrelevant clutter confusing things.
+> 
+> > # All of the bits are cleared
+> > iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+> > iptables -A FORWARD -p tcp --tcp-flags ALL NONE -j DROP
+> > # SYN and FIN are both set
+> > iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+> > iptables -A FORWARD -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+> > # SYN and RST are both set.
+> > iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> > iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> > # FIN and RST are both set
+> <snip>
+> 
+> bleh.  I would axe the above section entirely myself....has little value.
+> Aren't these are all taken care of with a default DROP policy and by only
+> allowing NEW,EST, REL?
+> 
+> > # Log Policy for first 25 ports UDP/TCP.
+> > iptables -I INPUT -i eth0 -p tcp \
+> >          --dport 0:25 -j LOG --log-prefix "PortScans to 0-25TCP: "
+> >
+> > iptables -I INPUT -i eth0 -p udp \
+> >          --dport 0:25 -j LOG --log-prefix "PortScan-to 0-25UDP: "
+> 
+> This is probably not doing what you think it is.  This will log any input on
+> eth0 with a destination port of 0 thru 25.  Not very useful.
+> 
+> > # Drop Invalid connection
+> > iptables -A INPUT -m state --state INVALID -j LOG \
+> >          --log-prefix "Invalid input: "
+> > iptables -A INPUT -m state --state INVALID -j DROP
+> <snip>
+> 
+> A lot of these INVALID packets were dropped already in earlier INPUT/FORWARD
+> rules.  So this isn't logging everything. Do keep the OUTPUT rules however.
+> 
+> > # Allow Access for DNS UDP for my ISP DNS server.
+> > if [ "$CONNECTION_TRACKING" = "1" ]; then
+> >    iptables -A OUTPUT -o eth0 -p udp \
+> >             -s $IP_INET --sport 1024:65535 \
+> >             -d 239.73.4.130 --dport 53 \
+> >             -m state --state NEW -j ACCEPT
+> > fi
+> >
+> > iptables -A OUTPUT -o eth0 -p udp \
+> >          -s $IP_INET     --sport 1024:65535 \
+> >          -d 239.73.4.130 --dport 53 -j ACCEPT
+> >
+> >
+> > if [ "$CONNECTION_TRACKING" = "1" ]; then
+> >     iptables -A OUTPUT -o eth0 -p udp \
+> >              -s $IP_INET --sport 1024:65535 \
+> >              -d 239.73.4.150 --dport 53 \
+> >              -m state --state NEW -j ACCEPT
+> > fi
+> >
+> > iptables -A OUTPUT -o eth0 -p udp \
+> >          -s $IP_INET --sport 1024:65535 \
+> >          -d 239.73.4.150 --dport 53 -j ACCEPT
+> 
+> I don't get these rules. More unecessary complication IMHO. Either take
+> advantage of connection tracking or don't. Is there some scenario where you
+> might want to quickly change from using it to not using it (testing, etc)? I
+> don't see where you've set this variable (so presumably your not using
+> connection tracking).
+> 
+> > # Allow access to remote webservers PORT 80.
+> > if [ "$CONNECTION_TRACKING" = "1" ]; then
+> >     iptables -A OUTPUT -o eth0 -p tcp \
+> >              -s $IP_INET --sport 1024:65535 \
+> >              --dport 80 -m state --state NEW -j ACCEPT
+> > fi
+> >
+> > iptables -A OUTPUT -o eth0 -p tcp \
+> >          -s $IP_INET --sport 1024:65535 \
+> >          --dport 80 -j ACCEPT
+> >
+> > iptables -A INPUT -i eth0 -p tcp ! --syn \
+> >          --sport 80 \
+> >          -d $IP_INET --dport 1024:65535 -j ACCEPT
+> >
+> > # Allow access for SSL and TLS on Port 443.
+> > if [ "$CONNECTION_TRACKING" = "1" ]; then
+> >     iptables -A OUTPUT -o eth0 -p tcp \ #<------------------
+> >              -s $IP_INET --sport 1024:65535 \
+> >              --dport 443 -m state --state NEW -j ACCEPT
+> > fi
+> >
+> > iptables -A OUTPUT -o eth0 -p tcp \
+> >          -s $IP_INET --sport 1024:65535 \   #<----------------
+> >          --dport 443 -j ACCEPT
+> >
+> > iptables -A INPUT -i eth0 -p tcp ! --syn \
+> >          --sport 443 \
+> >          -d $IP_INET --dport 1024:65535 -j ACCEPT #<-----------------
+> >
+> > iptables -A OUTPUT -o eth0 \
+> >         -p tcp -m multiport --dport 80,443 \
+> >         ! --syn -s $IP_INET --sport 1024:65535 -j ACCEPT  #<--------------
+> >
+> > iptables -A INPUT -i eth0 -p tcp -m multiport \
+> >         --sport 80,443 \
+> >        ! --syn -s $IP_INET --dport 1024:65535 -j ACCEPT  #<------------
+> 
+> umm....okay.  maybe it's a display issue , but where exactly are you putting
+> those pound signs?  In any event, for a connection-tracking based rule:
+> iptables -A OUTPUT -o $EXTIF -m state --state NEW -p tcp -m
+> multiport --dports 80,443 -j ACCEPT
+> 
+> If you don't want to use connection tracking:
+> iptables -A OUTPUT -o $EXTIF -p tcp -m multiport --dports 80,443 -j ACCEPT
+> 
+> Anything else is probably more complicated that its worth.
+> 
+> 
 
-I didn't use strace, but tcpdump showed me that the packets were
-indeed _not_ on the wire.
 
-After banging my head for awhile, I tried a different (identical)
-network card in the router for the LAN.  The unusual ping problem was
-gone immediately without a single change to the firewall rules.
-
-It's worth a shot.
-
-Darrell Dieringer - Madison, WI
-
-
-> -----Original Message-----
->
-> Howdy folks,
->
-> 	I've got a router I am experamenting with SNAT on.
-> I've hit a
-> situation where local ping processes are forced to stop
-> transmitting (get
-> caught in a loop on sendmsg() ) until the box receives
-> packets from some
-> external source (ping it from another machine on the
-> network for example),
-> and then it wakes right up without missing a beat.
-> Experamentally, I've
-> had ping waiting for several minutes this way. Typically
-> it's able to fire
-> off say 10 packets (and get replies) before it starts
-> hanging. Using
-> larger packets - say, 3000 bytes, results in only being
-> able to fire off 3
-> before stopping. I'm running tcpdump to verify that it's
-> not emitting
-> packets and strace to verify it's stuck looping on
-> sendmsg(). Very weird.
->
-
+__________________________________________________
+Do you Yahoo!?
+HotJobs - Search new jobs daily now
+http://hotjobs.yahoo.com/
 
