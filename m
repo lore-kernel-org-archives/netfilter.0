@@ -1,10 +1,12 @@
-From: "Kleiner, Peter" <kleinerp@smbmicro.com>
-Subject: RE: Help with port forwarding
-Date: Mon, 27 Oct 2003 07:48:41 -0500
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re[2]: how to negate a limit match?
+Date: Sun, 2 Nov 2003 06:32:00 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDAFEC98D318F74CA26B5A26F2B4965227C54E@exchange.jfctechnologies.com>
+Message-ID: <Pine.LNX.4.44.0311020630160.10439-100000@localhost.localdomain>
+References: <109595440117.20031102124948@lf.lv>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <109595440117.20031102124948@lf.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,22 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: Peteris Krumins <newsgroups@lf.lv>
+Cc: iptables mailing list <netfilter@lists.netfilter.org>
 
-Herman wrote:
-> Hmm, run lsmod and see whether iptable_mangle is loaded.  
-> Contrary to popular 
-> belief, that module is absolutely needed to make port 
-> forwarding work.  I 
-> fought that issue two weeks ago.  See my web site for my howto.
- 
-Actually, it is not, at least in my case.  I say that because it 
-is not loaded on the PC that is working.  But I already tried loading it and
-still the non-working PC fails to work properly.
+On Sun, 2 Nov 2003, Peteris Krumins wrote:
 
-Thanks for the suggestion.
+> Wednesday, October 29, 2003, 9:12:01 PM, you wrote:
+> 
+> jso> Hallo Robert,
+> 
+> jso> On Wed, 29 Oct 2003 13:31:10 -0500 (EST)
+> jso> "Robert P. J. Day" <rpjday@mindspring.com> wrote:
+> 
+> >> 
+> >>   it's not clear from the man page how to reverse the meaning
+> >> of a limit match.  if i want to accept everything *over* a given
+> >> limit, i'm supposed to use the "!".  but where?  is it like
+> >> this?
+> >> 
+> >>   -m ! limit -- limit ... etc etc ...
+> jso> -m limit ! --limit ...
+> >> 
+> jso> Take a look at http://iptables-tutorial.frozentux.net/ . There will you
+> jso> find a good tutorial for iptables.
+> 
+> 
+> Limit cannot be negated...
 
-Pete
+from the iptables man page:
+
+limit 
+
+  This module matches at a limited rate using a token bucket filter.  A
+rule using this extension will match until this limit is reached (unless
+the ! flag is used).  It can be used in combination with the LOG target to
+give limited logging, for example.
+
+
+  so the man page clearly suggests that the limit match can be negated.
+i'm just not sure how one would do it.  what's the syntax?
+
+rday
+
 
