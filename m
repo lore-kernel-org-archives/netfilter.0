@@ -1,8 +1,8 @@
-From: tr-huso <tr-huso@online.no>
-Subject: How to set up
-Date: Fri, 23 May 2003 15:37:40 +0200
+From: =?iso-8859-2?Q?Leszek_=AFur?= <lzur@record.com.pl>
+Subject: iptables -t nat -A OUTPUT - j DNAT
+Date: Fri, 23 May 2003 16:41:18 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3ECE5AE3@epostleser.online.no>
+Message-ID: <MCBBLLHIIODBDKIGDHGAMEJHCCAA.lzur@record.com.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,30 +16,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi group.
+Hello all.
 
-I'm new to this group, so here is my setup:
-A linux box (Red Hat 7.3) that is connected to the www and also works as a 
-router for the rest of the network. It also runs an Apache webserver, and will 
-also run a proftpd ftp-server soon. 
-A Windows XP machine that is used for anything else, connectes to the internet 
-through the linux. Thanks to Samba the windows machine has some network 
-directories on the linux box.
+Slackware 9.0
+kernel 2.4.20
+iptables 1.2.7a
 
-Now I want to secure this thing, and I also want to log what's happening on 
-the linux-box.
+iptables -t nat -A OUTPUT -d 1.1.1.1 -j DNAT --to-destination 2.2.2.2
+iptables: Invalid argument
 
-I've read a few articles on iptables, and read a few newsgroup-posts related 
-to the topic.
+From iptables manual:
+   DNAT
+       This  target  is  only valid in the nat table, in the PREROUTING and
+OUTPUT chains,
+       and user-defined chains which are only called from those chains.  It
+specifies that
+       the destination address of the packet should be modified (and all
+future packets in
+       this connection will also be mangled), and rules should cease being
+examined.   It
+       takes one type of option:
 
-I've also seen a few scripts that I might use, if someone can point out which 
-one to use, I'm more than happy...
+       --to-destination ipaddr[-ipaddr][:port-port]
+              which can specify a single new destination IP address, an
+inclusive range of
+              IP addresses, and optionally, a port range (which is only
+valid if the  rule
+              also  specifies  -p tcp or -p udp).  If no port range is
+specified, then the
+              destination port will never be modified.
 
-yours,
 
-Trond
 
+anybody can help me ??
 
 
