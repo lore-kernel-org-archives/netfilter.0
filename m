@@ -1,10 +1,13 @@
-From: Vishal Jose <vishaljosem@yahoo.com>
-Subject: urgent help on libiptc
-Date: Tue, 11 Mar 2003 05:33:52 -0800 (PST)
+From: Kelly Setzer <Kelly.Setzer@placemark.com>
+Subject: Re: Unassigned Networks List
+Date: Sat, 8 Mar 2003 08:07:03 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030311133352.4826.qmail@web13007.mail.yahoo.com>
+Message-ID: <20030308140703.GB2652@placemark.com>
+References: <NGBBIFPIJNDPMFBPKBPGOEJIDKAA.NetFilter-Users@Compucenter.org> <000701c2e53d$72cc42b0$026410ac@honor> <1047106127.2050.56.camel@runabout.noc.starken.com> <20030308130350.01e2c6ed.arnt@c2i.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20030308130350.01e2c6ed.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,40 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi
+On Sat, Mar 08, 2003 at 01:03:50PM +0100, Arnt Karlsen wrote:
+> On 08 Mar 2003 00:48:47 -0600, 
+> Daniel Wittenberg <daniel-wittenberg@starken.com> wrote in message 
+> <1047106127.2050.56.camel@runabout.noc.starken.com>:
+> 
+> > firewall, so we couldn't ping the provider.  I subsequently got in an
+> > "discussion" with their CTO about RFC 1918 on how it's probably not
+> > good to be using private IP's to route public traffic, at least IMHO.
+> 
+> ..such discussions are better taken in public, so the hotshot can
+> show off his alledged competence...  ;-)
 
-           I am working on a project to create a
-firewall using iptables. I am using libiptc library.
-I'm little confused with=20
-iptc_commit,iptc_insert_entry functions.
+When @home was just getting off the ground, they used to expose 10/8
+addresses.  I was talking to a first or second level network engineer,
+and he *INSISTED* that 10/8 has been assigned to @home.
 
-There is no tutorial connecting those two topics. From
-net I got a document =93querying libiptc=94 but in that
-file that do not tell how to implement the rules for a
-firewall with an example. So if u IPTABLES MASTERS can
-help me in this topic regarding the implementation of
-rules then that will be very grateful.
+ha
 
-I am also confused with how to specify target to the
-rule that I get from the user.
+Kelly
 
-Please can u help me in specifying target to the rule
-and what are the uses of ipt_match and ipt_target
-structures?
-
-Please contact me soon because it is an urgent task.
-
-Awaiting u'r reply
-
-Vis=20
-
-
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Web Hosting - establish your business online
-http://webhosting.yahoo.com
 
