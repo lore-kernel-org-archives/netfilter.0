@@ -1,13 +1,13 @@
-From: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
-Subject: Re: Newbie: why is this packet being dropped/logged?
-Date: Mon, 04 Aug 2003 14:32:48 +0900
+From: <dummy1@gazeta.pl>
+Subject: Re: Masquerade stopped working?!?!
+Date: Mon, 04 Aug 2003 09:11:32 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F2DF000.8010606@mega-bucks.co.jp>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15C030@wardrive.citadelcomputer.com.au>
+Message-ID: <1059981113947.ew5.dummy1@gazeta.pl>
+References: <Pine.LNX.4.44.0308031716270.8771-100000@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15C030@wardrive.citadelcomputer.com.au>
+In-Reply-To: <Pine.LNX.4.44.0308031716270.8771-100000@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,25 +20,63 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-George Vieira wrote:
->
-> it's being dropped because you have allowed TCP port 80 on
-219.118.175.0/24 ONLY.. looking at your logs it shows the IP as
-DST=203.179.86.66 which isn't to that network..
+> It is possible that the ISP can recognise packets coming from 
+machines in
+> your network, by looking at the TTL. As a router, your box should
+> decrement the TTL of packets which it forwards, and as a result 
+the
+> packets which it forwards for the inside machines will have a 
+different
+> TTL (one less) than if those boxes were directly connected.
+> 
+> Since Windows and Linux machines have well known "standard" TTLs, 
+it's
+> possible to use this to block access from machines behind a 
+router,
+> without blocking access for the router itself.
+> 
+> You can try using the TTL target of iptables to re-increment the 
+TTL, so
+> that it appears as though those boxes were directly connected, 
+with such
+> a rule:
+> 
+>   iptables -t mangle -A POSTROUTING -o <external-interface> \
+>  -j TTL --ttl-inc 1
+> 
+> But if you have Windows boxes on your network, they will still 
+have a
+> different TTL to packets from your Linux box (I think), and once 
+again the
+> ISP can be aware that more than one machine is in use. So it might 
+be
+> better to use the TTL target to lock the TTL to some fixed value:
+> 
+>   iptables -t mangle -A POSTROUTING -o <external-interface> \
+>  -j TTL --ttl-set 64
+> 
+> where 64 appears to be the default for Linux boxes (at least with 
+a 2.4
+> kernel, as mine has).
 
-Maybe you misread the iptables' out output since the formatting is off,
-but the rule for 219.118.175.0/24 is for SSH. The port 80 rule is:
+That's the case. Command
+iptables -t mangle -A POSTROUTING -o eth0 -j TTL --ttl-set 64
+solved the problem.
 
-ACCEPT tcp  --  eth0   *  0.0.0.0/0 203.179.86.66  state
-NEW,RELATED,ESTABLISHED tcp dpt:80
+After all I have done some tests and it seems that ISP is searching
+for TCP/UDP packets for which TTL field differ from 64 or 128.
+I have tested that my linux box TTL is 64 and on local machines
+running Windows XP TTL is 128.
 
-> HOW BIG is your network???
+My ISP is a small company so they are not worth to mention who they 
+are. I tried to find what OS is running on the ISP machine using 
+nmap, but I found nothing. I want to know what kind of software they 
+are running (if not just iptables). I will try to get some 
+informations.
 
-Only 16 IP addresses. I hate to show my ignorance but the the SSH rule
-which uses the 219.118.175.0/24 is to allow SSH access from another
-network with 8 IP address. The range is 219.118.175.240-248 but I didn't
-know how to write that as a / netmask so I used 0/24 :(
+Thanks to everybody
 
-Jc
+
+
 
 
