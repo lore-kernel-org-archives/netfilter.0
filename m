@@ -1,8 +1,8 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: mms and rtsp patches = make modules fail
-Date: Wed, 28 Jan 2004 13:39:36 +0000
+From: "Philipp Stader" <me@ph1l.de>
+Subject: Masquerading HBCI Connections?
+Date: Wed, 28 Jan 2004 16:30:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4017BB98.7090203@dsl.pipex.com>
+Message-ID: <E1Alree-0003sL-1d@vishnu.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,26 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I don't really need them but I pressed Y :-) looks like some headers are 
-missing from POM cvs of a couple of days old. mms and rtsp, unless my 
-gcc 2.95.3 is being over pedantic. Vanilla 2.4.24 apart from 2IMQ IMQ 
-nat and ESFQ patches.
+Hi,
 
-In file included from ip_conntrack_standalone.c:28:
-/home/andy/Sources/kernels/2.4.24/linux-2.4.24/include/linux/netfilter_ipv4/ip_conntrack.h:74: 
-field `ct_rtsp_info' has incomplete type
-/home/andy/Sources/kernels/2.4.24/linux-2.4.24/include/linux/netfilter_ipv4/ip_conntrack.h:89: 
-field `ct_mms_info' has incomplete type
-make[2]: *** [ip_conntrack_standalone.o] Error 1
-make[2]: Leaving directory 
-`/home/andy/Sources/kernels/2.4.24/linux-2.4.24/net/ipv4/netfilter'
-make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
-make[1]: Leaving directory 
-`/home/andy/Sources/kernels/2.4.24/linux-2.4.24/net
+does anyone have experience with masquerading/nat'ing HBCI connections? We
+enable Internet Access for Computers in our Lan via a Linux Router and the
+following statement:
 
-Andy.
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+
+We have a Workstation with Chipcard Reader and tried to get our current
+balance via HBCI without sucess. We actually tried too Chipcards from
+different Banks.
+Anyone has this Setup Working? Or is masquerading HBCI traffic currently
+unsupported? We had no firewall running during our tests.
+
+I'd be happy to hear from you guys.
+
+Kind regards
+
+Phil 
 
 
