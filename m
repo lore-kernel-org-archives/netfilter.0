@@ -1,10 +1,11 @@
-From: "Peter.Chen" <chenlf@cibn.com>
-Subject: my system is under syn-flood attack
-Date: Mon, 23 Sep 2002 11:06:30 +0800
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: Chain traversal with multiple internal IP subnets.
+Date: Mon, 23 Sep 2002 08:23:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002201c262ae$36db04b0$9801010a@redhat73>
+Message-ID: <3D8EB34B.7080401@fugmann.dhs.org>
+References: <1032724445.1352.22.camel@neo.matrix.ca.>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,53 +16,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jared Brick <jbrick@videotron.ca>
+Cc: netfilter@lists.netfilter.org
 
-bXkgYm94IGlzIHJlZGhhdCA3LjMgYXBhY2hlIDEuMy4yNg0KDQpmcm9tIGxhc3Qgd2VlayAuIHNv
-bWUgZ3V5cyB1c2Ugc3luLWZsb29kIGFuZCBwaW5nIGRlYXRoIHRvIGF0dGFjayBteSBzeXN0ZW0N
-Cg0KaSB1c2UgZmxvd2luZyBzY3JpcHQ6DQojIS9iaW4vc2gNCg0KSVBUQUJMRVM9Ii9zYmluL2lw
-dGFibGVzIg0KDQplY2hvICJGbHVzaGluZyBydWxlcy4uLiINCiRJUFRBQkxFUyAtRg0KJElQVEFC
-TEVTIC1YDQoNCiNTZXQgZGVmYXVsdCBwb2xpY2llcyB0byBEUk9QDQokSVBUQUJMRVMgLUYgSU5Q
-VVQNCiRJUFRBQkxFUyAtRiBPVVRQVVQNCiRJUFRBQkxFUyAtRiBGT1JXQVJEDQokSVBUQUJMRVMg
-LVAgSU5QVVQgQUNDRVBUDQokSVBUQUJMRVMgLVAgT1VUUFVUIEFDQ0VQVA0KDQoNCkxPT1BfSUY9
-ImxvIg0KDQoNCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIw0KIy0tLS1TZXQgbmV0d29yayBzeXNjdGwgb3B0
-aW9ucy0tLS0tIw0KZWNobyAiLS1TZXR0aW5nIHN5c2N0bCBvcHRpb25zLS0iDQoNCmVjaG8gIkRp
-c2FibGluZyBJUCBTcG9vZmluZyBhdHRhY2tzIg0KZWNobyAyID4gL3Byb2Mvc3lzL25ldC9pcHY0
-L2NvbmYvYWxsL3JwX2ZpbHRlcg0KDQplY2hvICJEaXNhYmxpbmcgcmVzcG9uZCB0byBicm9hZGNh
-c3QgcGluZ3MiDQplY2hvIDEgPiAvcHJvYy9zeXMvbmV0L2lwdjQvaWNtcF9lY2hvX2lnbm9yZV9i
-cm9hZGNhc3RzDQoNCmVjaG8gIkJsb2NraW5nIHNvdXJjZSByb3V0aW5nIg0KZWNobyAwID4gL3By
-b2Mvc3lzL25ldC9pcHY0L2NvbmYvYWxsL2FjY2VwdF9zb3VyY2Vfcm91dGUNCg0KZWNobyAiS2ls
-bCB0aW1lc3RhbXBzIg0KZWNobyAwID4gL3Byb2Mvc3lzL25ldC9pcHY0L3RjcF90aW1lc3RhbXBz
-DQoNCmVjaG8gIkVuYWJsZSBTWU4gQ29va2llcyINCmVjaG8gMSA+IC9wcm9jL3N5cy9uZXQvaXB2
-NC90Y3Bfc3luY29va2llcw0KDQplY2hvICJLaWxsIHJlZGlyZWN0cyINCmVjaG8gMCA+IC9wcm9j
-L3N5cy9uZXQvaXB2NC9jb25mL2FsbC9hY2NlcHRfcmVkaXJlY3RzDQoNCmVjaG8gIkVuYWJsaW5n
-IGJhZCBlcnJvciBtZXNzYWdlIHByb3RlY3Rpb24iDQplY2hvIDEgPiAvcHJvYy9zeXMvbmV0L2lw
-djQvaWNtcF9pZ25vcmVfYm9ndXNfZXJyb3JfcmVzcG9uc2VzDQoNCmVjaG8gIkxvZ2dpbmcgbWFy
-dGlhbnMgKHBhY2tldHMgd2l0aCBpbXBvc3NpYmxlIGFkZHJlc3NlcykiDQplY2hvIDEgPiAvcHJv
-Yy9zeXMvbmV0L2lwdjQvY29uZi9hbGwvbG9nX21hcnRpYW5zDQoNCmVjaG8gIlJlZHVjaW5nIERv
-UydpbmcgYWJpbGl0eSBieSByZWR1Y2luZyB0aW1lb3V0cyINCmVjaG8gNjAgPiAvcHJvYy9zeXMv
-bmV0L2lwdjQvdGNwX2Zpbl90aW1lb3V0DQplY2hvIDI0MDAgPiAvcHJvYy9zeXMvbmV0L2lwdjQv
-dGNwX2tlZXBhbGl2ZV90aW1lDQplY2hvIDAgPiAvcHJvYy9zeXMvbmV0L2lwdjQvdGNwX3dpbmRv
-d19zY2FsaW5nDQplY2hvIDAgPiAvcHJvYy9zeXMvbmV0L2lwdjQvdGNwX3NhY2sNCmVjaG8gIkRv
-bmUuLi4iDQoNCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMNCmVjaG8gIi0tU2V0dGluZyB1cCBzdGFuZGFyZCBy
-dWxlcy0tIg0KDQplY2hvICJBbGxvdyB1bmxpbWl0ZWQgdHJhZmZpYyBvbiB0aGUgbG9vcGJhY2sg
-aW50ZXJmYWNlIg0KJElQVEFCTEVTIC1BIElOUFVUIC1pIGxvIC1qIEFDQ0VQVA0KJElQVEFCTEVT
-IC1BIE9VVFBVVCAtbyBsbyAtaiBBQ0NFUFQNCg0KZWNobyAiRW5hYmxpbmcgU1lOLUZMT09ESU5H
-IFBST1RFQ1RJT04iDQokSVBUQUJMRVMgLU4gc3luLWZsb29kDQokSVBUQUJMRVMgLUEgSU5QVVQg
-LXAgdGNwIC0tc3luIC1qIHN5bi1mbG9vZA0KJElQVEFCTEVTIC1BIHN5bi1mbG9vZCAtbSBsaW1p
-dCAtLWxpbWl0IDEvcyAtLWxpbWl0LWJ1cnN0IDQgLWogUkVUVVJODQokSVBUQUJMRVMgLUEgc3lu
-LWZsb29kIC1qIERST1ANCg0KZWNobyAiTWFraW5nIHN1cmUgTkVXIHRjcCBjb25uZWN0aW9ucyBh
-cmUgU1lOIHBhY2tldHMiDQokSVBUQUJMRVMgLUEgSU5QVVQgLXAgdGNwICEgLS1zeW4gLW0gc3Rh
-dGUgLS1zdGF0ZSBORVcgLWogRFJPUA0KDQplY2hvICJMb2dnaW5nIGZyYWdtZW50cyBjYXVnaHQi
-DQokSVBUQUJMRVMgLU4gZnJhZ21lbnRzDQokSVBUQUJMRVMgLUEgSU5QVVQgLWYgLWogZnJhZ21l
-bnRzDQokSVBUQUJMRVMgLUEgZnJhZ21lbnRzIC1qIExPRyAtLWxvZy1wcmVmaXggIklQVEFCTEVT
-IEZSQUdNRU5UUzoiDQokSVBUQUJMRVMgLUEgZnJhZ21lbnRzIC1qIERST1ANCg0KZWNobyAiUmVm
-dXNpbmcgc3Bvb2ZlZCBwYWNrZXRzIHByZXRlbmRpbmcgdG8gYmUgZnJvbSB5b3VyIElQIGFkZHJl
-c3MiDQojJElQVEFCTEVTIC1BIElOUFVUIC1zICRORVRfSVBBRERSIC1qIERST1ANCmVjaG8gIkRv
-bmUuLi4iDQoNCmJ1dCBpdCdzIG5vIHVzZSBob3cgY2FuIGkgcHJvdGVjdCBteSBzeXN0ZW0gZnJv
-bSBzeW4gZmxvb2Q/PyBpIGhhdmUgbm8gaGFyZHdhcmUgZmlyZXdhbGwgYQ0K
+Jared Brick wrote:
+> Hello everybody,
+> 
+> However the other gateway is a Linux box with two IP addresses (it only
+> acts as a gateway for two of the subnets)  using Iptables. 
+I'm not sure of your setup. Do you have one network interface per ip, or 
+two ip's for the same interface?
+
+> The gateway
+> itself has static routes so that it can route between the different
+> subnets, including the subnet for which it has no IP address. My
+> question in which chain will a packet traverse when it is traveling
+> between two different internal subnets. I think it is the FORWARD chain
+> but my colleague feels it would be the OUTPUT chain. I ask because I am
+> having trouble routing between the internal networks.
+If you hare only using one network interface, then you will have 
+troubles routing between the two subnets. Please see the recent thread 
+in which this was discussed:
+"Internal ip exiting network on firewall external nic despight rule" 
+(http://lists.netfilter.org/pipermail/netfilter/2002-September/038510.html)
+
+> If anyone has any experience with a similar set up, any help would be
+> much appreciated.
+It seems to me that you do not need netfilter at all, as netfilter does 
+not route packets. I recommend that you setup your linux router and make 
+it work without netfilter. Then, if you want to restrict communication 
+between the subnets, use netfilter.
+
+Hope it helps.
+Anders Fugmann
 
 
