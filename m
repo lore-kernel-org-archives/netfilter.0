@@ -1,14 +1,14 @@
-From: "Junel Solis" <junels@maxwellsda.com>
-Subject: Proxy/Web Server
-Date: Sun, 11 Jul 2004 02:25:09 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Proxy/Web Server
+Date: Sun, 11 Jul 2004 08:54:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000e01c466d5$27a3cd10$0e07a8c0@maxwellsda.com>
+Message-ID: <200407110854.59786.Antony@Soft-Solutions.co.uk>
+References: <000e01c466d5$27a3cd10$0e07a8c0@maxwellsda.com>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-	protocol="application/x-pkcs7-signature";
-	micalg=SHA1;
-	boundary="----=_NextPart_000_0006_01C466EE.4803E180"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000e01c466d5$27a3cd10$0e07a8c0@maxwellsda.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,115 +18,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Sunday 11 July 2004 12:25 am, Junel Solis wrote:
 
-------=_NextPart_000_0006_01C466EE.4803E180
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0007_01C466EE.4803E180"
+> Is it possible to configure iptables so that packets destined for squid
+> running on the same server are delivered as well as packets running on a
+> separate web server within the local network?
 
+I can't quite work out what you're asking...
 
-------=_NextPart_001_0007_01C466EE.4803E180
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+If you're asking for packets to be split and delivered to two destinations, 
+then no, you can't.
 
-Is it possible to configure iptables so that packets destined for squid
-running on the same server are delivered as well as packets running on a
-separate web server within the local network?
+If you're asking for some packets to be redirected to Squid, and others to be 
+sent to the local server, then yes, you can do this provided the packet types 
+can be distinguished by IP address (and not, for example, by domain).
 
-------=_NextPart_001_0007_01C466EE.4803E180
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Please explain more clearly (some examples might help?) quite what you want to 
+do so we can suggest some possible solutions.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
+Regards,
 
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D115392323-10072004><FONT face=3DArial size=3D2>Is it =
-possible to=20
-configure iptables so that packets destined for squid running on the =
-same server=20
-are delivered as well as packets running on a separate web server within =
-the=20
-local network?</FONT></SPAN></DIV></BODY></HTML>
+Antony.
 
-------=_NextPart_001_0007_01C466EE.4803E180--
+-- 
+Microsoft may sell more software than any other company, but McDonald's sell 
+more burgers than any other company, and I think the other similarities are 
+obvious...
 
-------=_NextPart_000_0006_01C466EE.4803E180
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIKbjCCBGMw
-ggNLoAMCAQICEDI33Zc7mKKnRdwE0k+9g+wwDQYJKoZIhvcNAQEFBQAwPzETMBEGCgmSJomT8ixk
-ARkWA2NvbTEaMBgGCgmSJomT8ixkARkWCm1heHdlbGxzZGExDDAKBgNVBAMTA2RjMTAeFw0wNDA1
-MTcxMjUwMjFaFw0xMDA1MTcxMjU5MjlaMD8xEzARBgoJkiaJk/IsZAEZFgNjb20xGjAYBgoJkiaJ
-k/IsZAEZFgptYXh3ZWxsc2RhMQwwCgYDVQQDEwNkYzEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
-ggEKAoIBAQC+rabrazn5aTPX0QMRIfXbDGLDQzXQJEpfRm7H9vIit/jpq9vx88XctIXcs+etTO9b
-qj6UWuJxGvGaDeSPIaH3JJ4KjCpanxt188uuNz8zU/iFSUSpJFLouTVLT34DZtxQ6hXUKJcA6Zo1
-AQpOnXP+2oFChxN6qNkomj4AKDi7YnSMWL5YKPB5XDwJ1C/fUrzw8wI+KJTrDD4e9YvgqSJ17qWI
-ICgc50KU/ISJKX1dbeQI7hxad+oenjqNzIYCFflrkq6CjpZ8cDb4AQ+trZaEo3D27/W17/ZONlVo
-PV9gtuDE4AuztrDF3g64yGXv/biypCBVSrrpYpIaVIueJcg9AgMBAAGjggFZMIIBVTATBgkrBgEE
-AYI3FAIEBh4EAEMAQTALBgNVHQ8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU2m3Q
-3jJlirnNV0X22hwgo9ebZuYwge4GA1UdHwSB5jCB4zCB4KCB3aCB2oaBqWxkYXA6Ly8vQ049ZGMx
-LENOPWRjMSxDTj1DRFAsQ049UHVibGljJTIwS2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049
-Q29uZmlndXJhdGlvbixEQz1tYXh3ZWxsc2RhLERDPWNvbT9jZXJ0aWZpY2F0ZVJldm9jYXRpb25M
-aXN0P2Jhc2U/b2JqZWN0Q2xhc3M9Y1JMRGlzdHJpYnV0aW9uUG9pbnSGLGh0dHA6Ly9kYzEubWF4
-d2VsbHNkYS5jb20vQ2VydEVucm9sbC9kYzEuY3JsMBAGCSsGAQQBgjcVAQQDAgEAMA0GCSqGSIb3
-DQEBBQUAA4IBAQCgCajEZLupZ4vIV7UMD+avXNMmNgrqmkBQZaN7zFVWkQVkT2G65AYyzA2Uudzb
-33b+ZE4ZXJyTPY0BKZSgEyNO5oojaeJMrUakwN/OlnTeZ97Ota/zLTRqh4WDUM8OZxT1eOVfI1CV
-MAAi2QtuhNo3RltIzy+tFQGKNzrhaNb8hS1FC9iE/+p9pGkBJ4C+jO+EkfoYNYL4kcNRs1/0RIjo
-MfuvtoMSBfC7F4A1Vr4NjsXNEbwLxDAHqStMC4JhijFc27Bc6EC7ouhgNwcU5yhhp2s6QK+pVYe5
-rlEF1hHW6mkKM7JTqAfr4i9tQ/R1+DvQrX68iQ+954izqzlwCWLUMIIGAzCCBOugAwIBAgIKYfFu
-BwAAAAAAAzANBgkqhkiG9w0BAQUFADA/MRMwEQYKCZImiZPyLGQBGRYDY29tMRowGAYKCZImiZPy
-LGQBGRYKbWF4d2VsbHNkYTEMMAoGA1UEAxMDZGMxMB4XDTA0MDUxNzEzMDA1N1oXDTA1MDUxNzEz
-MDA1N1owgYUxEzARBgoJkiaJk/IsZAEZFgNjb20xGjAYBgoJkiaJk/IsZAEZFgptYXh3ZWxsc2Rh
-MRYwFAYDVQQLEw1JVCBEZXBhcnRtZW50MRQwEgYDVQQDEwtKdW5lbCBTb2xpczEkMCIGCSqGSIb3
-DQEJARYVanVuZWxzQG1heHdlbGxzZGEuY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7
-o6P85mX9omPvLJHOA75kbVggPFU5WR5iEMqq+vg51oSPdHceJPc9IUbYgaSbaxodDgHEjrTrN6SV
-yTxNnOqWjbHpsvJhqb4JbysRc8Mz6HpuBy3RxKXDKvQg/eS+cm1CWH/NagCGygWb5g+/HiGnUJik
-khyN4Srg9upK+thmcwIDAQABo4IDPDCCAzgwCwYDVR0PBAQDAgWgMEQGCSqGSIb3DQEJDwQ3MDUw
-DgYIKoZIhvcNAwICAgCAMA4GCCqGSIb3DQMEAgIAgDAHBgUrDgMCBzAKBggqhkiG9w0DBzAdBgNV
-HQ4EFgQUYFzE3CMCZDs4RswSJQSieh62IsswKQYJKwYBBAGCNxQCBBweGgBBAGQAbQBpAG4AaQBz
-AHQAcgBhAHQAbwByMB8GA1UdIwQYMBaAFNpt0N4yZYq5zVdF9tocIKPXm2bmMIHuBgNVHR8EgeYw
-geMwgeCggd2ggdqGgalsZGFwOi8vL0NOPWRjMSxDTj1kYzEsQ049Q0RQLENOPVB1YmxpYyUyMEtl
-eSUyMFNlcnZpY2VzLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9bWF4d2VsbHNkYSxE
-Qz1jb20/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdD9iYXNlP29iamVjdENsYXNzPWNSTERpc3Ry
-aWJ1dGlvblBvaW50hixodHRwOi8vZGMxLm1heHdlbGxzZGEuY29tL0NlcnRFbnJvbGwvZGMxLmNy
-bDCCAQUGCCsGAQUFBwEBBIH4MIH1MIGlBggrBgEFBQcwAoaBmGxkYXA6Ly8vQ049ZGMxLENOPUFJ
-QSxDTj1QdWJsaWMlMjBLZXklMjBTZXJ2aWNlcyxDTj1TZXJ2aWNlcyxDTj1Db25maWd1cmF0aW9u
-LERDPW1heHdlbGxzZGEsREM9Y29tP2NBQ2VydGlmaWNhdGU/YmFzZT9vYmplY3RDbGFzcz1jZXJ0
-aWZpY2F0aW9uQXV0aG9yaXR5MEsGCCsGAQUFBzAChj9odHRwOi8vZGMxLm1heHdlbGxzZGEuY29t
-L0NlcnRFbnJvbGwvZGMxLm1heHdlbGxzZGEuY29tX2RjMS5jcnQwNQYDVR0lBC4wLAYKKwYBBAGC
-NwoDAQYKKwYBBAGCNwoDBAYIKwYBBQUHAwQGCCsGAQUFBwMCMEcGA1UdEQRAMD6gJQYKKwYBBAGC
-NxQCA6AXDBVqdW5lbHNAbWF4d2VsbHNkYS5jb22BFWp1bmVsc0BtYXh3ZWxsc2RhLmNvbTANBgkq
-hkiG9w0BAQUFAAOCAQEAs9UquUlD6f6fIIJcruNTXszwviv+729FsWO5aEeO+wCeU0rSiIObczEM
-oeV10LxP8juNyAy70b74au8Vnywt7VK5h5GLk36lLId3EL7TcjD+lJwaK3cQLfBmziwkFoATM4Er
-iWhbN4Lj5IVGqSPYrr1JYc7av3fzhtAAVbpOAy2I12u2h8cCtki2mv53xdXp1tPwqK28xlBmvVi5
-kuJVvZRkLXtwhMMG5ruSPf5Tef7kqtkGKaANwEaLqGFJXVTwObeYEmB5EFbd0wkoram2QyqwUBe8
-camXdvgpc8uJ3NvS/B1f5pV0FWu99IhHzJHuPk/6mh4smbF8905/A6RioTGCAnswggJ3AgEBME0w
-PzETMBEGCgmSJomT8ixkARkWA2NvbTEaMBgGCgmSJomT8ixkARkWCm1heHdlbGxzZGExDDAKBgNV
-BAMTA2RjMQIKYfFuBwAAAAAAAzAJBgUrDgMCGgUAoIIBhDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcN
-AQcBMBwGCSqGSIb3DQEJBTEPFw0wNDA3MTAyMzI1MDZaMCMGCSqGSIb3DQEJBDEWBBSMIFSHWiWo
-9b0SYM0QIZcxARa2KTBcBgkrBgEEAYI3EAQxTzBNMD8xEzARBgoJkiaJk/IsZAEZFgNjb20xGjAY
-BgoJkiaJk/IsZAEZFgptYXh3ZWxsc2RhMQwwCgYDVQQDEwNkYzECCmHxbgcAAAAAAAMwXgYLKoZI
-hvcNAQkQAgsxT6BNMD8xEzARBgoJkiaJk/IsZAEZFgNjb20xGjAYBgoJkiaJk/IsZAEZFgptYXh3
-ZWxsc2RhMQwwCgYDVQQDEwNkYzECCmHxbgcAAAAAAAMwZwYJKoZIhvcNAQkPMVowWDAKBggqhkiG
-9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwIC
-ASgwBwYFKw4DAhowCgYIKoZIhvcNAgUwDQYJKoZIhvcNAQEBBQAEgYBsdlkL4+vIpe6fDTSDL2L8
-P3g0BMsLWMWTrfZa8q/wLGkOXW69XcRoJcOSpK2w1QD6yqscH77BLN7udyUKqrZhj3VMMWEkABTU
-TT+o2t+OW9vg3fJNfC+ovn3Lo1kXua+BWtPVfa5n8u/gPbmGFhVGj4qT1zZrkwzArsmsLtaF1QAA
-AAAAAA==
-
-------=_NextPart_000_0006_01C466EE.4803E180--
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
