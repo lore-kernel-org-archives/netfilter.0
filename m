@@ -1,10 +1,12 @@
-From: "kaushalender shekhawet" <kaushalenders@hotmail.com>
-Subject: voicechat(yahoo messenger)
-Date: Tue, 27 May 2003 05:34:39 +0000
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: voicechat(yahoo messenger)
+Date: Tue, 27 May 2003 16:25:25 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law10-F21XJd0nRCiiO00053546@hotmail.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D02@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,32 +16,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+To: kaushalender shekhawet <kaushalenders@hotmail.com>, netfilter@lists.netfilter.org
+
+Voice chat using what program.. I have a million chatting utilites....
+Have you researched www.google.com for anything?
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+-----Original Message-----
+From: kaushalender shekhawet [mailto:kaushalenders@hotmail.com]
+Sent: Tuesday, May 27, 2003 3:35 PM
 To: netfilter@lists.netfilter.org
+Subject: voicechat(yahoo messenger)
+
 
 Hi group,
 
 
-we have redhat 8 on which we are running iptables.We have problem that all 
-user behind this are not able to voice chat.Plz help me on that These r the 
+we have redhat 8 on which we are running iptables.We have problem that =
+all=20
+user behind this are not able to voice chat.Plz help me on that These r =
+the=20
 rules i am using
 
 
 #!/bin/sh
-export PATH="/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin"
-IPTABLES="/sbin/iptables"
-IFCONFIG="/sbin/ifconfig"
-# Delete and flush. Default table is "filter". Others like "nat" must be 
+export =
+PATH=3D"/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin"
+IPTABLES=3D"/sbin/iptables"
+IFCONFIG=3D"/sbin/ifconfig"
+# Delete and flush. Default table is "filter". Others like "nat" must be =
+
 explicitly stated.
 /sbin/iptables --table nat --flush
 /sbin/iptables --delete-chain
 /sbin/iptables --table nat --delete-chain
 /sbin/iptables -F
-# Add SysV style initialization support (ignore everything except 'stop' and 
+# Add SysV style initialization support (ignore everything except 'stop' =
+and=20
 'clear').
 
-if [ "$1" == "stop" ] || [ "$1" == "clear" ]; then
+if [ "$1" =3D=3D "stop" ] || [ "$1" =3D=3D "clear" ]; then
   iptables -t filter -F > /dev/null 2>&1
   iptables -t filter -X > /dev/null 2>&1
   iptables -t nat -F > /dev/null 2>&1
@@ -68,17 +92,19 @@ iptables -t nat -P OUTPUT ACCEPT
 #iptables -t mangle -X
 #iptables -t mangle -P POSTROUTING ACCEPT
 #iptables -t mangle -P OUTPUT ACCEPT
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j =
+REDIRECT=20
 --to-port 3128
-/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT 
+/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j =
+REDIRECT=20
 --to-port 3128
 /sbin/iptables -A INPUT -p icmp --icmp-type 0 -j ACCEPT
 /sbin/iptables -A INPUT -p icmp --icmp-type 3 -j ACCEPT
 # Set up IP FORWARDing and Masquerading
-/sbin/iptables --table nat --append POSTROUTING --out-interface eth0 -j 
+/sbin/iptables --table nat --append POSTROUTING --out-interface eth0 -j=20
 MASQUERADE
 /sbin/iptables --append FORWARD --in-interface eth0 -j ACCEPT
-/sbin/iptables --table nat --append POSTROUTING --out-interface eth1 -j 
+/sbin/iptables --table nat --append POSTROUTING --out-interface eth1 -j=20
 MASQUERADE
 /sbin/iptables --append FORWARD --in-interface eth1 -j ACCEPT
 
@@ -128,13 +154,14 @@ fi
 /sbin/iptables -A INPUT -p udp -s 0/0 -d 0/0 --dport 1434 -j DROP
 /sbin/iptables -A INPUT -p tcp -s 0/0 -d 0/0 --dport 1434 -j DROP
 
-#Turning on Linux kernel support for spoof and DOS (Denial Of Service) 
+#Turning on Linux kernel support for spoof and DOS (Denial Of Service)=20
 protection:
 echo 1 >/proc/sys/net/ipv4/tcp_syncookies
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
 _________________________________________________________________
-Himalayan holiday! Waiting to be won. 
+Himalayan holiday! Waiting to be won.=20
 http://server1.msn.co.in/sp03/summerfun/index.asp Find out more.
+
 
 
