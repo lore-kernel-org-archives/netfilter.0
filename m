@@ -1,14 +1,12 @@
-From: David Cannings <lists@edeca.net>
-Subject: Re: IPTables and Squid
-Date: Fri, 23 Apr 2004 13:52:24 +0100
+From: "Arrizabalaga, Saioa" <sarrizabalaga@ceit.es>
+Subject: bytes counting
+Date: Fri, 23 Apr 2004 15:42:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404231352.24340.lists@edeca.net>
-References: <20040423122545.1601.qmail@web8305.mail.in.yahoo.com>
+Message-ID: <086C43C9A9A1A541BFDFABCFDA05F58901448BAB@mailnew.tecnun.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040423122545.1601.qmail@web8305.mail.in.yahoo.com>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,32 +19,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 23 April 2004 13:25, Sameer Gurung wrote:
->     I'm new to iptables and i'm trying to share an
-> internet connection in my organization.....i would
-> like to run squid too ( for logon and such )....Any
-> pointers... Any help would be great
+Hello everyone,
 
-I'm not quite sure what sort of logon you envision with Squid as it is a 
-web proxy, perhaps you mean authentication for browsing the WWW.  
-However, that is a Squid issue.  This page gives quite a good tutorial 
-for using Squid as a transparent proxy, which is what you would want if 
-you were to force all HTTP requests through Squid:
+I have been reading some mails in this listing and it is said the best
+place to count bytes/packets is the mangle table, but I have a problem.
 
-http://en.tldp.org/HOWTO/TransparentProxy.html#toc4
+I have three network cards in my linux box: eth0 (private LAN), eth1
+(private LAN) and eth2 (internet).
 
+I would like to count the bytes/packets from/to 192.168.0.50 (it is in
+eth0) that goes/comes to/from internet (eth2).
 
-The "Packet Filtering" and "NAT Howto" can both be found at this page in a 
-number of languages:
+These are the rules I have:
 
-http://netfilter.org/documentation/index.html#documentation-howto
+iptables -A POSTROUTING -t mangle -o eth2 -s 192.168.0.50
 
+With this rule I catch all the packets going from 192.168.0.50 to eth2,
+but I know where to put the rule to catch the packets going from eth2 to
+192.168.0.50, because as far as I can see it, when I put the rule:
+iptables -A PREROUTING -t mangle -i eth2 -d 192.168.0.50 nothing is
+caught because the packet has not been SNAT-ed yet. Am I wrong?
 
-And an excellent tutorial by Oskar is available at:
+Any help would be appreciated.
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+Saioa Arrizabalaga
 
-I hope those links help,
-
-David
 
