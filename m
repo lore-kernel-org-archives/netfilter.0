@@ -1,12 +1,13 @@
-From: "Martinez, Michael" <MMARTINEZ@CSREES.USDA.GOV>
-Subject: RE: port 8080 and zope woes....
-Date: Thu, 11 Sep 2003 08:06:19 -0400
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: How to drop arps when protocol addrs of sender = target
+Date: Thu, 11 Sep 2003 14:14:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <83EED274D3127740995A6B621B88F2E1DF7D03@csrees-exchange.csrees.usda.gov>
+Message-ID: <1063282486.990.4.camel@elendil.intranet.cartel-securite.net>
+References: <3F5F598A.3080609@nist.gov>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <3F5F598A.3080609@nist.gov>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,44 +17,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: akshaysalkar <akshaysalkar@indiatimes.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Chris Schanzle <nospam@nist.gov>
+Cc: netfilter@lists.netfilter.org, schanzle@nist.gov
 
-Turn on logging in iptables and see if any connections are happening
+Le mer 10/09/2003 =E0 19:04, Chris Schanzle a =E9crit :
+> I have a need to not respond to arps where the protocol address of the=20
+> sender is the same as the target, which is the case when Windows client=
+s=20
+> try to ARP for the manually-configured address it is about to use.
 
-Michael Martinez
-Linux System Administrator
-ISTM/CSREES
-United States Department of Agriculture
+It is not easy to achieve as you would need a specific match extensions
+for that compares protocole source and destination addresses for
+arptables or ebtables (iptables does not filter ARP). I wanted to write
+something like this to spot wierd ARP stuff, but I do not have the time
+for now. However, enhancing ebtables arp match is quite an easy thing. I
+did not look at arptables, but it must be easy too.
 
------Original Message-----
-From: akshaysalkar [mailto:akshaysalkar@indiatimes.com]=20
-Sent: Thursday, September 11, 2003 1:44 AM
-To: netfilter@lists.netfilter.org
-Subject: port 8080 and zope woes....
-
-I have zope server running on port 8080
-and have enabled its access in IPTables=20
-however it fails to open up.
-any reason why??
-
- -A INPUT -d <dest-ip> -p tcp -m tcp --dport 8080 -j ACCEPT
-
--A OUTPUT -s <dest-ip> -p tcp -m tcp --sport 8080 -j ACCEPT
-
-
-regards..
-
-
-
-
-Get Your Private, Free E-mail from Indiatimes at
-http://email.indiatimes.com
-
- Buy The Best In BOOKS at http://www.bestsellers.indiatimes.com
-
-Bid for for Air Tickets on Air Sahara Flights at Prices Lower Than
-Before. Just log on to http://airsahara.indiatimes.com and Bid Now!
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
