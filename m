@@ -1,12 +1,12 @@
-From: Harry <hari76@omantel.net.om>
-Subject: Suggestion Needed
-Date: Tue, 17 Aug 2004 13:09:58 +0400
+From: swissguy@canada.com
+Subject: dhcp
+Date: Tue, 17 Aug 2004 02:30:02 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000e01c48439$f9ba8790$0100a8c0@SABNANIS>
+Message-ID: <20040817023002.1197.h008.c009.wm@mail.canada.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="Boundary_(ID_4JKZlYOTW2tAvd6BgoyWSg)"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,73 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+hello
 
---Boundary_(ID_4JKZlYOTW2tAvd6BgoyWSg)
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+i have a strange problem, not sure whats going on. i
+have  a dhcp3-server on a machine. the server is serves
+to eth1 and eth2 addresses. now i would like to block
+the server (so that a client cant send a request
+anymore).
 
-Hey All
+but so far i dont even manage to block the dhcprequest
+with the default policy drop.
 
-I  am running Iptables with Squid procy server on my LAN, Just wanted to take suggestion that is it worth trying to block all the Trojan Ports, I came across a list which has about 350 Odds ports, my windows 2k machines are too vulnerable to these trojans?I have norton Corporate Edition, which catches most of the virus but still there are times when the network gets very slow?Will this be a good solution?
+i have all 3 tables all chains drop
+i dont have any rule
 
-Also what are spoofed packets?I use ethereal to monitor traffic and I see a lot of dropped packets from the kernel?Is there a way to stop this?
+but when i do tcpdump i can see the following
 
-Any help will be appreciated.
+192.168.5.30 bootpc > 192.168.5.1 bootps ......
+192.168.5.1 bootps > 192.168.5.30.bootpc ....
 
-Thanks and Regards
+what is going on? does dhcp-request goes somehow over
+layer2?
 
-Harish 
+or am i missing the big picture?
 
-
-
-"In all this world, there is only you
-When all else ceases, there is only you"  
--- to my MASTER!
-    Harish
-harish@sabnanis.com 
-harishsabnani@cyberhutoman.com 
-
---Boundary_(ID_4JKZlYOTW2tAvd6BgoyWSg)
-Content-type: text/html; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
-<META content="MSHTML 6.00.2900.2096" name=GENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=#ffffff>
-<DIV><FONT face=Verdana size=2>Hey All</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>I &nbsp;am running Iptables with Squid procy 
-server on my LAN, Just wanted to take suggestion that is it worth trying to 
-block all the Trojan Ports, I came across a list which has about 350 Odds ports, 
-my windows 2k machines are too vulnerable to these trojans?I have norton 
-Corporate Edition, which catches most of the virus but still there are times 
-when the network gets very slow?Will this be a good solution?</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>Also what are spoofed packets?I use ethereal to 
-monitor traffic and I see a lot of dropped packets from the&nbsp;kernel?Is there 
-a way to stop this?</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>Any help will be appreciated.</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>Thanks and Regards</FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>Harish </FONT></DIV>
-<DIV><FONT face=Verdana size=2></FONT><FONT face=Verdana 
-size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Verdana size=2>"In all this world, there is only you<BR>When all 
-else ceases, there is only you"&nbsp; <BR>-- to my MASTER!<BR>&nbsp;&nbsp;&nbsp; 
-Harish<BR><A href="mailto:harish@sabnanis.com">harish@sabnanis.com</A> <BR><A 
-href="mailto:harishsabnani@cyberhutoman.com">harishsabnani@cyberhutoman.com</A> 
-</FONT></DIV></BODY></HTML>
-
---Boundary_(ID_4JKZlYOTW2tAvd6BgoyWSg)--
+thanks
+francis
 
