@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: again problem with alias / virtual interface
-Date: Mon, 19 Jul 2004 20:14:33 +0100
+From: David Cary Hart <DCH@TQMcube.com>
+Subject: Scary Hole in the Firewall?
+Date: Mon, 19 Jul 2004 15:29:04 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407192014.33758.Antony@Soft-Solutions.co.uk>
-References: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1090265344.11052.7.camel@dchws.tqmcube.com>
+Reply-To: NetFilter List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,56 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Monday 19 July 2004 7:55 pm, Batstru wrote:
+Platform = Fedora 2
+IPTables firewall. Snort running inside the firewall.
 
-> Hi all!
-> I wrote days ago: I have a problem with virutal interface and iptables:
-> my pc has 2 network interface, one with a private network address and the
-> other one with
-> public network addresses:
-> eth0 --> 192.168.1.254 / 255.255.255.0
-> eth1 --> 82.186.92.90 / 255.255.255.248
-> eth1:1 --> 82.186.92.91 / 255.255.255.248
-> eth1:2 --> 82.186.92.92 / 255.255.255.248
-> eth1:3 --> 82.186.92.93 / 255.255.255.248
-> eth1:4 --> 82.186.92.93 / 255.255.255.248
+Here's the log entry. This is the default log entry prior to DROP. In
+other words, what gets logged, gets dropped.
 
-Same address twice??
+Jul 19 14:32:39 mail kernel: DEFAULT - Firewall: IN=eth0 OUT=
+MAC=00:4f:4e:12:f9:93:00:09:5b:c9:37:54:08:00 SRC=203.202.150.156
+DST=192.168.0.31 LEN=404 TOS=0x00 PREC=0x00 TTL=111 ID=4719 PROTO=UDP
+SPT=1042 DPT=1434 LEN=384 
 
-> -A INPUT -p tcp -m tcp -m state -i eth1:1 -d 82.186.92.91 --dport 25
-> --state NEW -j ACCEPT
+Here's the Snort log:
 
-You can't use ":" in netfilter interface names.   Simply use "eth1" like all 
-your other rules.
+[**] MS-SQL Worm propagation attempt [**]
+07/19-14:32:39.314347 203.202.150.156:1042 -> 192.168.0.31:1434
+UDP TTL:111 TOS:0x0 ID:4719 IpLen:20 DgmLen:404
+Len: 376
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 
-I suggest you test these additional addresses with something like this:
+[**] MS-SQL version overflow attempt [**]
+07/19-14:32:39.314347 203.202.150.156:1042 -> 192.168.0.31:1434
+UDP TTL:111 TOS:0x0 ID:4719 IpLen:20 DgmLen:404
+Len: 376
 
-iptables -A INPUT -p icmp -i eth1 -d 82.186.92.90 -j ACCEPT
-iptables -A INPUT -p icmp -i eth1 -d 82.186.92.93 -j ACCEPT
-iptables -A INPUT -p icmp -i eth1 -j ACCEPT
-
-Then ping 82.186.92.90 from a machine connected to eth1; then ping 
-82.186.92.93 from a machine connected to eth1; then use "iptables -L INPUT 
--nvx" to check the packet / byte counts for the above three rules.
-
-You should get non-zero packet counts for the first two rules; hopefully zero 
-packets for the third rule.
-
-Also check from a machine directly connected on eth1 that you get the same MAC 
-address for both the above addresses in response to an "arp -an".
-
-Regards,
-
-Antony.
+Now what?
 
 -- 
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
+                            David Cary Hart
+                                                         Hart's PGP key:
+            http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x58A60BB1
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
