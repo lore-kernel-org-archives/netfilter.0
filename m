@@ -1,11 +1,13 @@
-From: <john@spectrum.in>
-Subject: Problem with IP tables
-Date: Sun, 23 Feb 2003 12:00:08 +0530 (IST)
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: how to add packet or byte couters to connection tracking module
+Date: Fri, 21 Feb 2003 01:49:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1367.203.197.151.77.1045981808.squirrel@smtp.spectrum.in>
+Message-ID: <3E5577AE.9000309@trash.net>
+References: <Pine.LNX.4.44.0302200959310.13403-100000@ski.isi.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0302200959310.13403-100000@ski.isi.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,33 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Xuan Chen <xuanc@isi.edu>
+Cc: netfilter@lists.netfilter.org
 
-Hi Group,
+Xuan Chen wrote:
 
-I have one Redhat 7.1 server with kernal version 2.4.
-The IP table version is iptables-1.2.5-3
+>Hi,
+>
+>I want to add a packet or byte counter to the connection tracking module 
+>in netfilter. That is, I want to track how many packets and bytes having 
+>been sent through one connection. Where should I start? Any examples will 
+>be very helpful!
+>
+>btw, is there a search engine on netfilter's web page? I think that's 
+>really helpful if people want to search for previous work and discussions.
+>
+>Thanks,
+>-chen
+>
+>  
+>
 
-But is  not working, when ever I tied to execute the iptables command,
-following is the error message that I am getting...
+http://www.google.com/search?hl=en&lr=&ie=ISO-8859-1&q=conntrack+match+bytes+per+connection&btnG=Google+Search
+Doesn't apply clean to 2.4.20 iirc, but very easy to fix.
 
-/lib/modules/2.4.18-4smp/kernel/net/ipv4/netfilter/ip_tables.o:
-init_module: Device or resource busy
-Hint: insmod errors can be caused by incorrect module parameters, including
-invalid IO or IRQ parameters
-/lib/modules/2.4.18-4smp/kernel/net/ipv4/netfilter/ip_tables.o:
-insmod /lib/modules/2.4.18-4smp/kernel/net/ipv4/netfilter/ip_tables.o failed
-/lib/modules/2.4.18-4smp/kernel/net/ipv4/netfilter/ip_tables.o: insmod
-ip_tables failed
-iptables v1.2.5: can't initialize iptables table `filter': iptables who?
-(do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
-
-How can I solve this problem...
-
-regds,
-
-
+Patrick
 
 
