@@ -1,15 +1,10 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: Spoofed ip's
-Date: Tue, 11 Feb 2003 17:09:36 +0000
+From: Cedric de Launois <delaunois@info.ucl.ac.be>
+Subject: Re: Routing packets with IPTABLES?
+Date: 11 Feb 2003 18:17:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030211170936.GC6194@miggy.org>
-References: <1044948351.23287.11.camel@filth.sadomain.co.za>
+Message-ID: <1044983863.26066.133.camel@descartes.info.ucl.ac.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1044948351.23287.11.camel@filth.sadomain.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,72 +14,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: deff <deff@sadomain.co.za>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Reginald NALLARATNAM <regi@toolsnottoys.com>
 Cc: netfilter@lists.netfilter.org
 
+> Question:
+> Is there a way to route incomming packets from the gateway to eth0 on
+> firewall #1 based on source IP and destination Port to the web server 
+> @ 192.168.20.100?
+> The only way this will work if Firewall # 1 routes or forwards the 
+> packets to web server without connection tracking, since the return
+> answer from web server will go through firewall # 2.
 
---98e8jtXdkpgskNou
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I didn't well understood what you are doing but I think the ROUTE
+target can help you. This target is available from the CVS. An older
+version is in iptables-1.2.7a with patch-o-matic-20020825 (NOT the
+latest pom). It is an /extra patch.
 
-On Tue, Feb 11, 2003 at 09:25:50AM +0200, deff wrote:
-> Could anyone please check the rules below and tell me if the the source=
-=20
-> ip'ss are valid. I'm seeing an incredible amount of these ip's
-> attempting to get through .=20
+A description of the target in CVS is :
 
-  Check them using whois:
+  This option adds a `ROUTE' target, which enables you to setup unusual
+  routes not supported by the standard kernel routing table.
+  For example, the ROUTE lets you directly route a received packet through 
+  an interface or towards a host, even if the regular destination of the 
+  packet is the router itself. The ROUTE target is also able to change the 
+  incoming interface of a packet.
 
-15:34:49 0$ whois 1.0.0.0
+  This target does never modify the packet and is a final target.
+  It has to be used inside the mangle table.
 
-OrgName:    Internet Assigned Numbers Authority=20
-OrgID:      IANA
-Address:    4676 Admiralty Way, Suite 330
-City:       Marina del Rey
-StateProv:  CA
-PostalCode: 90292-6695
-Country:    US
+  ROUTE target options:
+    --oif   ifname    Send the packet out using `ifname' network interface.
+    --iif   ifname    Change the packet's incoming interface to `ifname'.
+    --gw    ip        Route the packet via this gateway.
 
-NetRange:   1.0.0.0 - 1.255.255.255=20
-CIDR:       1.0.0.0/8=20
-NetName:    RESERVED-9
-NetHandle:  NET-1-0-0-0-1
-Parent:    =20
-NetType:    IANA Reserved
-Comment:   =20
-RegDate:   =20
-Updated:    2002-09-12
+  Examples :
 
-OrgTechHandle: IANA-ARIN
-OrgTechName:   Internet Corporation for Assigned Names and Number=20
-OrgTechPhone:  +1-310-823-9358
-OrgTechEmail:  res-ip@iana.org
+  To redirect all outgoing icmp packet to the eth1 interface :
+  # iptables -A POSTROUTING -t mangle -p icmp -j ROUTE --oif eth1
 
-# ARIN WHOIS database, last updated 2003-02-10 20:00
-# Enter ? for additional hints on searching ARIN's WHOIS database.
+  To tunnel all incoming http packets :
+  # iptables -A PREROUTING -t mangle -p tcp --dport 80 -j ROUTE --oif tunl1
 
-So, yes, that one shouldn't be getting used at all.
+  To force the next-hop used for ssh packets :
+  # iptables -A PREROUTING -t mangle -p tcp --dport 22 -j ROUTE --gw w.x.y.z
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+  To change the incoming network interface from eth0 to eth1 for icmp packets :
+  # iptables -A PREROUTING -t mangle -p icmp -i eth0 -j ROUTE --iif eth1
 
---98e8jtXdkpgskNou
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
 
-iEYEARECAAYFAj5JLlAACgkQzbc+I5XfxKfUgACfYH6D7ypkfnpU5MVc4YztuMQp
-JT0An1aAu/QyZoSt45ZaX7sHiVY4Ajca
-=2ujY
------END PGP SIGNATURE-----
-
---98e8jtXdkpgskNou--
 
