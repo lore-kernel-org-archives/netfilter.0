@@ -1,11 +1,13 @@
-From: "Denis Serebro" <ds@sendmail.ru>
-Subject: Firewall for Local Machine
-Date: Tue, 15 Jul 2003 17:50:41 +0400
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Iptables as auth ?
+Date: Tue, 15 Jul 2003 09:58:21 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c34ad8$153b3920$6e20a8c0@ds>
+Message-ID: <20030715135821.GA24604@cannon.eng.us.uu.net>
+References: <200307151738.53777.rio@martin.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200307151738.53777.rio@martin.mu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "Rio Martin." <rio@martin.mu>
+Cc: netfilter@lists.netfilter.org
 
+On Tue, Jul 15, 2003 at 05:38:53PM +0700, Rio Martin. wrote:
 
-  Hello,
+> Folks,
 
-  I'm writing application that catch connections from local host. 
-  I try to use iptables for this. 
-  
-  I set up IP address of Gateway the same as IP address of local
-machine.
-  I also set up rule for NAT:
+Hello,
 
-  /sbin/iptables \
-           -t nat \
-           -A PREROUTING \
-           -p tcp \
-           -i eth0 \
-           -m multiport \
-           -j REDIRECT \
-           --destination ! 192.168.32.0/24 \
-           --destination-ports 25,80,3128,110,119,143 \
-           --to-ports 9001
+> Is there any way to configure iptables to perform nat only if the 
+> authentication from radius server is correct ?
 
-  It is not work. Connection from local host to external host do not
-forward.
-  If I set up this host as gateway for remote machine it works fine.
+What is the exact packet flow (for both the initial flow and the RADIUS
+packet exchange) that you were expacting? How does an application which is
+only smart enough for its own protocol integrate the RADIUS auth? Or how
+can you trigger a RADIUS auth from the firewall to the actual user/client
+that is generating the traffic?
 
-  How could I forward connection from local host to predifined port on
-local host ?
+What you want is only to accomplish by installing client software on all
+the client machines... which is not a part of netfilter framework.
 
-  Thanks in advance,
-  Denis Serebro
+Ramin
 
+> I am looking for the documentation on google, but found nothing, need help ..
+> 
+> Regards,
+> Rio Martin.
+> 
+> -- 
+> Atlanta makes it against the law to tie a giraffe to a telephone pole
+> or street lamp.
+> 
 
