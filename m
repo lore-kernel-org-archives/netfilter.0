@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Packet sniffing... sort of
-Date: Sun, 11 Apr 2004 02:47:07 +0100
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: Re: network setup help
+Date: Sun, 11 Apr 2004 03:00:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404110247.07317.Antony@Soft-Solutions.co.uk>
-References: <200404110154.39209.Antony@Soft-Solutions.co.uk> <1081647247.2602.1.camel@xbox>
-Reply-To: Netfilter <netfilter@lists.netfilter.org>
+Message-ID: <001a01c41f68$d1725f50$cb0210ac@jz105>
+References: <008301c41f2d$4be932e0$68892090@grouse> <200404102350.24148.Antony@Soft-Solutions.co.uk> <00d001c41f54$2b238ac0$68892090@grouse> <200404110059.05382.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1081647247.2602.1.camel@xbox>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,32 +17,88 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Sunday 11 April 2004 2:34 am, Filip Sneppe wrote:
-
-> On Sun, 2004-04-11 at 02:54, Antony Stone wrote:
-> > Can anyone think how I can see the content of packets from a browser
-> > running on my machine, which is posting a form back to a remote server
-> > somewhere, using HTTPS?
->
-> Hi Antony,
->
-> Take a look at ssldump - it does exactly what you want. But you'll need
-> access to the server as ssldump will need the server's private key.
-
-Not possible, unfortunately - I am at the client end only :(
-
-Thanks for the suggestion though.
-
-Antony.
-
--- 
-The truth is rarely pure, and never simple.
-
- - Oscar Wilde
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+DQo+IE9uIFN1bmRheSAxMSBBcHJpbCAyMDA0IDEyOjMzIGFtLCBKZWUgSi5aLiB3cm90ZToNCj4g
+DQo+ID4gSGkgQW50b255LA0KPiANCj4gVGhhbmtzIGZvciBnZXR0aW5nIHRoZSBzcGVsbGluZyBy
+aWdodCAtIGxvdHMgb2YgcGVvcGxlIHJvdW5kIGhlcmUgZG9uJ3QgOikNCg0KQmVjYXVzZSBJIHRy
+eSBub3QgdG8gYW5ub3kgeW91IGluIHRoZSB2ZXJ5IGJlZ2lubmluZy4gOikNCiANCj4gPiA+IExv
+b2sgYXQgdGhlIHJvdXRpbmcgdGFibGUgb2YgZWFjaCBtYWNoaW5lIHRoZSBwYWNrZXRzIGFyZSBn
+b2luZyB0aHJvdWdoLA0KPiA+ID4gYW5kIHRoZW4gdGhlIHJlcGxpZXMgdHJ5aW5nIHRvIGdldCBi
+YWNrIGFnYWluLCBhbmQgc2VlIGlmIChhKSB0aGVyZSBpcyBhDQo+ID4gPiBwYXRoLCBhbmQgKGIp
+IGl0IG1ha2VzIHNlbnNlLg0KPiA+DQo+ID4gQm90aCBQQzIgYW5kIFBDMydzIHJvdXRpbmcgbG9v
+ayBsaWtlOg0KPiA+IERlc3RpbmF0aW9uICAgICAgICAgICAgICAgIEdhdGV3YXkgICAgICAgICAg
+ICAgICAgICAgR2VubWFzaw0KPiA+IEZsYWdzICAgICAgTWV0cmljICAgICAgUmVmICAgICAgSWZh
+Y2UNCj4gPiAxOTIuMTY4LjAuMCAgICAgICAgICAgICAgIDAuMC4wLjAgICAgICAgICAgICAgICAg
+ICAgICAyNTUuMjU1LjI1NS4wDQo+ID4gVSAgICAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAg
+IGV0aDENCj4gPiAxNDQuMzIueHh4LjAgICAgICAgICAgICAgIDAuMC4wLjAgICAgICAgICAgICAg
+ICAgICAgICAyNTUuMjU1LjI1NC4wDQo+ID4gVSAgICAgICAgICAgIDAgICAgICAgICAgIDAgICAg
+ICAgIGV0aDANCj4gPiAxMjcuMC4wLjAgICAgICAgICAgICAgICAgICAwLjAuMC4wICAgICAgICAg
+ICAgICAgICAgICAgMjU1LjAuMC4wDQo+ID4gVSAgICAgICAgICAgIDAgICAgICAgICAgIDAgICAg
+ICAgICBsbw0KPiA+IDAuMC4wLjAgICAgICAgICAgICAgICAgICAgICAxNDQuMzIueHh4Lnl5eSAg
+ICAgICAgICAgMC4wLjAuMA0KPiA+IFVHICAgICAgICAgICAwICAgICAgICAgICAwICAgICAgICBl
+dGgwDQo+IA0KPiBPa2F5LCBJJ20gYXNzdW1pbmcgdGhhdCAxNDQuMzIueHh4Lnl5eSBpcyBub3Qg
+dGhlIGFkZHJlc3Mgb2YgUEMxIC0gaXQncyANCj4gc29tZXRoaW5nIGVsc2Ugd2hpY2ggaXMgY29u
+bmVjdGVkIHRvIHlvdXIgc3dpdGNoIC0gaG93ZXZlciB0aGF0J3Mgbm90IHRvbyANCj4gaW1wb3J0
+YW50IGhlcmUuDQoNClJpZ2h0LiAxNDQuMzIueHh4Lnl5eSBzaG91bGQgYmUgYSByb3V0ZXIgb24g
+dGhlIDE0NC4zMi54eHguMC8yNCBuZXR3b3JrLg0KIA0KPiBIZXJlJ3Mgd2hhdCBJIHRoaW5rIGlz
+IGdvaW5nIG9uOg0KPiANCj4gUEMxIGhhcyBhIHNpbXBsZSByb3V0aW5nIHRhYmxlIHNheWluZyAi
+bmV0d29yayAxNDQuMzIueHh4LjAvMjMgaXMgb24gZXRoMCwgYW5kIA0KPiB0aGUgZGVhZnVsdCBn
+YXRld2F5IGlzIDE0NC4zMi54eHgueXl5Ii4gICBUaGF0IG1lYW5zIGlmIHlvdSBwaW5nIDE5Mi4x
+NjguMC4yIA0KPiBmcm9tIFBDMSBpdCB3aWxsIHNlbmQgdGhlIHBhY2tldHMgdG8gdGhlIGRlZmF1
+bHQgZ2F0ZXdheSA6KA0KDQpPaCwgc29ycnkgdG8gZ2V0IHlvdSBjb25mdXNlZC4gSSBhbSBub3Qg
+dHJ5aW5nIHRvIHBpbmcgZnJvbSBQQzEgdG8gUEMzLiBJIGFtIHRyeWluZyB0byBwaW5nIGZyb20g
+UEMyIHRvIFBDMyBvciBmcm9tIFBDMyB0byBQQzIgdG8gdGVzdCB0aGVpciBjb25uZWN0aXZpdHkg
+KGJldHdlZW4gUEMyIGFuZCBQQzMpLiBCZXNpZGVzIHRoZSByb3V0aW5nIHRhYmxlLCBJIGFtIGFs
+c28gY29uc2lkZXJpbmcgd2hldGhlciBteSBjb25maWd1cmF0aW9ucyBmb3Igc2V0dGluZyB1cCB0
+d28gTklDcyBvbiBvbmUgYm94IGFyZSBwcm9ibGVtYXRpYyBvciBub3QgYXQgdGhpcyBtb21lbnQu
+DQogDQo+IFNldCBhIG5ldHdvcmsgcm91dGUgb24gUEMxIHRvIHRlbGwgaXQgaG93IHRvIGZpbmQg
+dGhlIDE5Mi4xNjguMC4wLzI0IG5ldHdvcmssIA0KPiB2aWEgUEMyIGFzIGEgcm91dGVyOg0KPiAN
+Cj4gcm91dGUgYWRkIC1uZXQgMTkyLjE2OC4wLjAgbmV0bWFzayAyNTUuMjU1LjI1NS4wIGd3IDE0
+NC4zMi54eHguYg0KPiANCj4gd2hlcmUgMTQ0LjMyLnh4eC5iIGlzIHRoZSBJUCBhZGRyZXNzIG9u
+IFBDMi9ldGgwDQo+IA0KPiBPbmNlIHlvdSBoYXZlIGRvbmUgdGhhdCBJIHRoaW5rIHRoZSBwaW5n
+cyB3aWxsIHdvcmssIGhvd2V2ZXIgdGhleSB3aWxsIG5vdCANCj4gd29yayB0aGUgd2F5IHlvdSB3
+b3VsZCBsaWtlIHRoZW0gdG8gOikNCj4gDQo+IEFuIGVjaG8gcmVxdWVzdCBwYWNrZXQgd2lsbCBj
+b21lIGZyb20gMTQ0LjMyLnh4eC5hIChQQzEvZXRoMCkgdG8gMTkyLjE2OC4wLjIgDQo+IGFuZCBn
+ZXQgcm91dGVkIChieSB5b3VyIG5ldyByb3V0aW5nIHRhYmxlIGVudHJ5IG9uIFBDMSkgdmlhIDE0
+NC4zMi54eHguYiwgDQo+IHdoZXJlIFBDMiB3aWxsIGRlY2lkZSAiMTkyLjE2OC4wLjI/IE9oLCB0
+aGF0J3Mgb24gbXkgZXRoMSIsIGFuZCB3aWxsIHNlbmQgaXQgDQo+IHRvIFBDMi4NCj4gDQo+IEhv
+d2V2ZXIsIGlmIFBDMi9ldGgwIGlzIHN0aWxsIG9wZXJhdGlvbmFsIGFuZCBwbHVnZ2VkIGluLCBp
+dCB3aWxsIHRoaW5rICJJIA0KPiBoYXZlIHRvIHNlbmQgYW4gZWNobyByZXNwb25zZSBwYWNrZXQg
+dG8gMTQ0LjMyLnh4eC5hLCBhbmQgdGhhdCdzIG9uIHRoaXMgDQo+IHN1Ym5ldCBjb25uZWN0ZWQg
+dG8gbXkgZXRoMCIsIHNvIGl0IHdpbGwgc2VuZCB0aGUgcmVwbHkgcGFja2V0IG91dCB0aHJvdWdo
+IA0KPiBldGgwLg0KPiANCj4gVGhpcyB3aWxsIGFjdHVhbGx5IHdvcmsgZm9yIHBpbmdzLCBidXQg
+aXQncyBub3QgdGhlIHdheSB5b3Ugd2FudCBUQ1AgcGFja2V0cyANCj4gdG8gZmxvdyAocmVtZW1i
+ZXIgdGhhdCBwaW5ncyBhcmUgSUNNUCBwYWNrZXRzKSwgYW5kIGl0IGNlcnRhaW5seSB3b24ndCB3
+b3JrIA0KPiBvbmNlIHlvdSBzdGFydCBkb2luZyBuYXQgb24gUEMyICh3aGljaCBJIGFzc3VtZSwg
+Zm9yIHNvbWUgcmVhc29uLCB0aGF0IHlvdSBkbyANCj4gd2FudCB0byBkbz8pLg0KDQpZb3VyIGRl
+c2NyaXB0aW9ucyBhYm92ZSBtYWtlIHNlbnNlLiBBbmQgcmlnaHQsIEkgd2lsbCBkbyBmaWx0ZXJp
+bmcgYW5kIG5hdCBvbiBQQzIgYWZ0ZXIgSSBzb3J0IHRoZSBjdXJyZW50IHByb2JsZW0gb3V0LiBP
+bmNlIEkgc2V0IHVwIGZpbHRlciBhbmQgbmF0IG9uIFBDMiwgUEMxIGRvZXMgbm90IG5lZWQgInJv
+dXRlIGFkZCAtbmV0IDE5Mi4xNjguMC4wIG5ldG1hc2sgMjU1LjI1NS4yNTUuMCBndyAxNDQuMzIu
+eHh4LmINCiIgYW55IG1vcmUsIGFuZCBQQzEgc2hvdWxkIG5vdCBrbm93IHRoZXJlIGlzIGEgMTky
+LjE2OC4wLjAgbmV0d29yayBiZWhpbmQgUEMyLCByaWdodD8NCiANCj4gSG93ZXZlciwgSSBzdGls
+bCByZW1haW4gcHV6emxlZCBhYm91dCB3aHkgeW91IGhhdmUgdGhpcyBjcmF6eSBzZXR1cCBpbiB0
+aGUgDQo+IGZpcnN0IHBsYWNlLCBhbmQgd2hhdCB5b3UncmUgdHJ5aW5nIHRvIGFjaGlldmUgYnkg
+c2VuZGluZyBwaW5ncyBmcm9tIFBDMSB0byANCj4gUEMzIHZpYSBQQzIsIHNvIGFkZCB0aGUgcm91
+dGluZyB0YWJsZSBlbnRyeSB0byBQQzEsIGNoZWNrIHdoZXRoZXIgYSBwaW5nIA0KPiB3b3JrcyAo
+d2l0aCBhbGwgdGhlIGNhYmxlcyBwbHVnZ2VkIGluLCBzbyBhbGwgdGhlIHBhdGhzIHNob3duIG9u
+IHlvdXIgDQo+IG9yaWdpbmFsIGRpYWdyYW0gYXJlIGF2YWlsYWJsZSksIGFuZCB0aGVuIHRyeSB0
+byBleHBsYWluIHRvIHVzIHdoeSB5b3UgYXJlIA0KPiBkb2luZyB0aGluZ3MgdGhpcyB3YXkgYW5k
+IHdoYXQgeW91IHdhbnQgdG8gYWNoaWV2ZS4NCg0KT0ssIEkgYW0gdHJ5aW5nIHRvIHNldCB1cCBh
+IHNpbXBsZSBmaXJld2FsbCAoanVzdCBkbyBmaWx0ZXJpbmcgYW5kIG5hdCkgYmV0d2VlbiBQQzMg
+YW5kIHRoZSBvdXRzaWRlIHdvcmxkLiBQQzIgaXMgd2hlcmUgdGhlIGZpcmV3YWxsIGxvY2F0ZXMu
+IEFuZCBQQzEgaXMganVzdCBhIHRyYWZmaWMgc2VuZGVyIGZvciB0ZXN0aW5nIGFmdGVyIHRoZSBm
+aXJld2FsbCBpcyBidWlsdCB1cC4gQXQgdGhpcyBtb21lbnQsIHRoZSBmaXJzdCB0aGluZyBJIG5l
+ZWQgdG8gZmlndXJlIG91dCBpcyB3aHkgdGhlIGNvbm5lY3Rpdml0eSBiZXR3ZWVuIFBDMi9ldGgx
+IGFuZCBQQzMvZXRoMSBzZWVtcyBub3Qgd29ya2luZy4gSSB0aGluayB0aGUgcmVhc29ucyBsaWUg
+aW4gZWl0aGVyIHJvdXRpbmcgdGFibGUgc2V0dXAgKG9uIFBDMiBhbmQgUEMzKSBvciBkdWFsIE5J
+QyBjb25maWd1cmF0aW9ucy4gQW55IHN1Z2dlc3Rpb25zPw0KDQpNYW55IHRoYW5rcywNCkplZQ0K
+DQo+IFJlZ2FyZHMsDQo+IA0KPiBBbnRvbnkuDQo+IA0KPiAtLSANCj4gSWYgYXQgZmlyc3QgeW91
+IGRvbid0IHN1Y2NlZWQsIGRlc3Ryb3kgYWxsIHRoZSBldmlkZW5jZSB0aGF0IHlvdSB0cmllZC4N
+Cj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgUGxlYXNlIHJlcGx5IHRvIHRoZSBsaXN0Ow0KPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBsZWFzZSBkb24ndCBDQyBtZS4NCj4g
+DQo+IA0KPiA=
 
 
