@@ -1,14 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: firewall problem continued
-Date: Mon, 9 Aug 2004 12:31:33 +0100
+From: Damian Gatabria <damian_g@speedy.com.ar>
+Subject: Re: iptables dnat to loopback
+Date: Mon, 09 Aug 2004 11:40:32 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408091231.33128.Antony@Soft-Solutions.co.uk>
-References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408091155.10375.Antony@Soft-Solutions.co.uk> <20040809111959.GA16482@tranquility.scriptkitchen.com>
-Reply-To: Netfilter ML <netfilter@lists.netfilter.org>
+Message-ID: <1092062432.7056.3.camel@localhost>
+References: <D5C9032B2B09C64EA2409D6214E91AC905124D@asimail2.alphanumeric.com>
+ <1091945878.12669.0.camel@localhost> <200408080941.38256.lists@edeca.net>
+ <200408081350.12149.Alistair@nerdnet.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040809111959.GA16482@tranquility.scriptkitchen.com>
+In-reply-to: <200408081350.12149.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +19,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter ML <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Lista Netfilter <netfilter@lists.netfilter.org>
 
-On Monday 09 August 2004 12:19 pm, Payal Rathod wrote:
+El dom, 08-08-2004 a las 13:50 -0400, Alistair Tonner escribi=C3=B3:
+> On August 8, 2004 04:41 am, David Cannings wrote:
+> > On Sunday 08 August 2004 07:17, Damian atabria wrote:
+> > > :o( no luck.
+> > >
+> > > I even tried -F ing INPUT, FORWARD, OUTPUT, PREROUTING and POST=
+ROUTING
+> > > before adding the rule, (all policies set to ACCEPT) and still =
+no luck!
+> > > Forwarding is enabled,
+> > > net.ipv4.conf.all.forwarding =3D 1
+> > > net.ipv4.ip_forward =3D 1
+> > > and still the packets are going nowhere... however giving
+> > > the loopback an alias with an ip address of, say, 200.136.136.1=
+36
+> > > works... so why can't I route to 127.0.0.x? Is there anything
+> > > else I should check/add?
+> >
+> > You can't send packets from non 127/8 addresses to 127/8.  The ke=
+rnel
+> > filters them out and drops them as it considers them "martians".
+> >
+> > David
+>=20
+> =09Okay ---=20
+> =09   If I'm following this thread correctly then,=20
+> =09
+> =09we need two rules to manage this ... both Destination and Source=
+ Natting=20
+> these packets ...=20
+> =09My question is .....=20
+> =09As I understand things DNAT is done in PREROUTING and SNAT is do=
+ne in=20
+> POSTROUTING ..=20
+>=20
+> =09I can setup=20
+> =09
+> =09iptables -I PREROUTING -t nat -p TCP -s 192.168.0.2 -d 10.1.105.=
+45 --dport \=20
+> 3306 -j DNAT --to 127.0.0.1
+> and (since nat postrouting FOLLOWS nat prerouting)=20
+> =09iptables -I POSTROUTING -t nat -p TCP -s 192.168.0.2 -d 127.0.0.=
+1 --dport \=20
+> 3306 -j SNAT --to 127.0.0.1
+>=20
+> =09But I don't belive that this will solve the above problem of the=
+ /drop=20
+> martians/ behaviour.
+>=20
+> =09Any comments folks?
+>=20
+> =09Alistair Tonner
 
-> On Mon, Aug 09, 2004 at 11:55:10AM +0100, Antony Stone wrote:
->
-> > DNAT in PREROUTING only works for packets being routed through the
-> > machine. Squid is a local process sending packets out through OUTPUT,
-> > therefore you need to DNAT in the OUTPUT nat table to let Squid connect
-> > to this address.
->
-> Ok. I never knew that. Can you please give an small example on how to
-> DNAT my scene in OUTPUT nat table ?
+I'll try this when i get home, on my frankenstein box. I'll post
+back later today.
 
-Exactly the same as your extisting PREROUTING rule, but you put it in the 
-OUTPUT chain instead (still in the nat table):
+Thank you all who replied.
 
-iptables -A OUTPUT -t nat -d 1.2.3.4 -p tcp --dport 25 -j DNAT --to 10.10.10.2 
 
-Regards,
 
-Antony.
+--=20
+Damian Gatabria <damian_g@speedy.com.ar>
 
--- 
-You can spend the whole of your life trying to be popular,
-but at the end of the day the size of the crowd at your funeral
-will be largely dictated by the weather.
-
- - Frank Skinner
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
