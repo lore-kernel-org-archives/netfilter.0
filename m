@@ -1,12 +1,13 @@
-From: "hard__ware" <hard__ware@hotmail.com>
-Subject: Nat OUTPUT chain
-Date: Sun, 16 Jun 2002 09:57:35 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Nat OUTPUT chain
+Date: Sun, 16 Jun 2002 00:59:56 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <OE35qimrMh0R1hY55Zo00015235@hotmail.com>
-Reply-To: "hard__ware" <hard__ware@hotmail.com>
+Message-ID: <200206152359.g5FNxwA32623@Networker.rockstone.co.uk>
+References: <OE35qimrMh0R1hY55Zo00015235@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <OE35qimrMh0R1hY55Zo00015235@hotmail.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,25 +20,17 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-this question is a bit old
+On Sunday 16 June 2002 12:57 am, hard__ware wrote:
 
-but ive seen it asked many other places .. :D
+> the  -t nat OUTPUT  table seems to work fine for me
+>
+> i have set up DNAT aswell as ACCEPT Rules
+>
+> (as i have a Default Policy of DROP,  IPTABLES -P -t  nat OUTPUT DROP  )
 
+Why do you DROP in the nat table instead of the filter table ?
 
-the  -t nat OUTPUT  table seems to work fine for me
+ 
 
-i have set up DNAT aswell as ACCEPT Rules
-
-(as i have a Default Policy of DROP,  IPTABLES -P -t  nat OUTPUT DROP  )
-
-and the packets Traverse Through the chain correctly .. :-)
-
-i use two differnet versions of IPTables (i have 2 Firewall Boxes .. :-)
-
-IPTables 1.2.5mdk-1
-&
-IPTables 1.2.6a
-
-if your having problems with this chain try an upgrade if your not already
-at these versions .. :-)
+Antony.
 
