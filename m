@@ -1,14 +1,13 @@
-From: Patrick Petermair <captain.nuke@gmx.at>
-Subject: Re: Strange log entries (again)
-Date: Tue, 9 Jul 2002 21:44:09 +0200
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: Patch-O-matic
+Date: Tue, 9 Jul 2002 15:40:42 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207092144.09877.captain.nuke@gmx.at>
-References: <200207082243.35434.captain.nuke@gmx.at> <20020708205822.EMAP4119.mta06-svc.ntlworld.com@there>
-Reply-To: captain.nuke@gmx.at
+Message-ID: <004101c22780$82f1d860$3864a8c0@discmail.com>
+References: <001401c22717$c1fd76e0$f948e1c2@redhat>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020708205822.EMAP4119.mta06-svc.ntlworld.com@there>
+In-Reply-To: <001401c22717$c1fd76e0$f948e1c2@redhat>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,36 +18,31 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: 'Redhat Enigma' <redhat@zagros.ipm.ac.ir>, netfilter@lists.samba.org
 
-Am Montag, 8. Juli 2002 22:58 schrieb Antony Stone:
-> On Monday 08 July 2002 9:43 pm, Patrick Petermair wrote:
-> > Jul  8 22:25:11 wormhole kernel: IN=3Dppp0 OUT=3D MAC=3D SRC=3D207.17=
-1.169.16
-> > DST=3D213.225.41.145 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D49 ID=3D21=
-031 DF PROTO=3DTCP
-> > SPT=3D80 DPT=3D42111 WINDOW=3D8760 RES=3D0x00 ACK RST URGP=3D0
->
-> This is an ACK RST packet, so it's quite likely that the connection
-> tracking has already deleted the connection from the conntrack table (w=
-hen
-> it got the previous RST packet), therefore when this packet turns up, i=
-t no
-> longer belongs to an ESTABLISHED connection.
->
-> Don't worry about it.
+I have kernel 2.4.16 and iptables 1.2.5...
 
-Mhmm, am I the only one getting these entries in my logs?
-I'm thinking of putting a rule just before the logging rule to drop those=
-=20
-packets because they are useless information for the logs.
+I tested your 2 pathces (limit and time) and they patched without any
+errors on my system.  I am not sure if there is an issue with your
+kernel version or your iptables version...anybody?
 
-Is this due to a misconfiguration of the destination=20
-webserver/router/firewall?
 
-Thnx so far...
-Patrick
 
---=20
-http://www.petermair.com
+> -----Original Message-----
+> From: Redhat Enigma [mailto:redhat@zagros.ipm.ac.ir] 
+> Sent: Tuesday, July 09, 2002 3:10 AM
+> To: Aldo S. Lagana; netfilter@lists.samba.org
+> Subject: Re: Patch-O-matic
+> 
+> 
+> Dear Sir,
+> Thanx for your help ,I just want to use iplimit and time 
+> matching, but I can't apply them to my kernel. Anyway I just 
+> want to apply pending-patches and most-of-pom that the 
+> documents tell they don't have any confilict with each other. 
+> So I don't know what kind of process i should follow.
+> 
+> Regards
+> Alireza
+
 
