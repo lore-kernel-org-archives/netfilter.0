@@ -1,11 +1,17 @@
-From: c0g <c0g@wp.pl>
-Subject: raw patch = kernel panic :(
-Date: Sun, 05 Oct 2003 18:23:40 +0200
+From: Thierry ITTY <thierry.itty@besancon.org>
+Subject: Re: MSN throught Linux
+Date: Mon, 06 Oct 2003 08:40:06
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F80458C.9030203@wp.pl>
+Message-ID: <3.0.1.16.20031006084006.1a5fcc36@s-net-04.besancon.org>
+References: <14C5057BC852D611BAC400E0299AA10F02042D@MAILSERV>
+ <14C5057BC852D611BAC400E0299AA10F02042D@MAILSERV> <20031003104359.GB5758@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031003104359.GB5758@sunbeam.de.gnumonks.org>
+References: <14C5057BC852D611BAC400E0299AA10F02042D@MAILSERV>
+ <14C5057BC852D611BAC400E0299AA10F02042D@MAILSERV>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,66 +21,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-Cc: kadlec@blackhole.kfki.hu, laforge@netfilter.org
+To: Harald Welte <laforge@netfilter.org>, MOUDARIR Mohamed <moudarir@Richbond.ma>
+Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Use linux internet gateway device (aka linux-igd) from sourceforge
+It relies on netfilter
 
-Hi!
-I applied raw-patch from CVS patch-o-matic (20031003), and it appears
-that loading rule in PREROUTING chain of table raw causes kernel panic.
-Specifing policy for this table doesn't.
+I already posted some answers on this list about msn, have a look at the
+archives
 
-So I was forced to use older POM, which fills my logs with "Frag of
-proto" messages :(
+I intend to write a micro (don't dare say mini) howto on msn/netfilter very
+soon
 
-Jozsef, could you look at it?
+hth
 
-I have vanilla 2.4.22 kernel with following POM patches applied:
-submitted/01_2.4.19
-submitted/02_2.4.20
-submitted/03_2.4.21
-submitted/04_2.4.22
-submitted/44_backport_ah_esp_fixes
-submitted/54_ip_nat-macro-args
-submitted/58-ip_conntrack-macro-args
-submitted/60_nat_tftp-remove-warning
-submitted/72_recent_procfs_fix
-submitted/73_ipt_MASQUERADE-oif
-submitted/74_nat-range-fix
-submitted/75_REJECT_localpmtu-fix
-submitted/76_snmp-checksum_h-fix
-submitted/77_destroy-conntrack
-submitted/78_nathelper-udp-csum
-submitted/79_mangle_udp-sizecheck
-submitted/80_ip_conntrack-proc
-submitted/81_ipt_unclean-tcp-flag-table
-submitted/82_irc-conntrack-mirc-serverlookup
-submitted/83_nolocalout
-submitted/84_local-nullbinding
-submitted/85_ipv6header
-submitted/86_getorigdst-tuple-zero
-pending/40_nf-log
-pending/59_ip_nat_h-unused-var
-pending/61-remove-memsets
-pending/64_masquerade-sameip-noflush
-base/mport
-extra/addrtype
-extra/tcp-window-tracking
-userspace/ipt_REJECT-fake-source
-userspace/raw
 
-- --
-c0g@wp.pl
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQE/gEWMPqmVt5WhbA8RAr7RAJ9VQQ113DigkI3z3RQmC1O0jLLABACdG+8J
-1aWGhgAe91Ftgyvq+5g5cv0=
-=+2Gf
------END PGP SIGNATURE-----
-
+A 12:43 03/10/2003 +0200, Harald Welte a =E9crit :
+>On Fri, Sep 26, 2003 at 06:48:34PM -0000, MOUDARIR Mohamed wrote:
+>> Hi
+>> Can we use MSN voice conversation behind a Linux firwall ( redhat )=20
+>
+>No.  I think they are using SIP (no idea, I haven't used windofs for 8
+>years) for which you would need a conntrack+nat helper on the linux
+>firewall.  Since nobody has written such a helper yet, it doesn't work.
+>
+>--=20
+>- Harald Welte <laforge@netfilter.org>            =
+ http://www.netfilter.org/
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>  "Fragmentation is like classful addressing -- an interesting early
+>   architectural error that shows how much experimentation was going
+>   on while IP was being designed."                    -- Paul Vixie
+>
+>Attachment Converted: "d:\app\net\eudora\attach\ReMSNthr"
+>
 
