@@ -1,13 +1,12 @@
-From: Marek Dohojda <mdohojda@cisco.com>
-Subject: Re: CISCO VPN clients behind firewall
-Date: Tue, 04 May 2004 20:38:22 -0700
+From: "Slava (hotbox)" <chvv@hotbox.ru>
+Subject: NAT -  HELP
+Date: Wed, 5 May 2004 16:44:32 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <409861AE.6060202@cisco.com>
-References: <00f101c43236$e54f0380$0300a8c0@indoakses2> <200405050153.18201.Antony@Soft-Solutions.co.uk> <011901c43241$13d1dc00$0300a8c0@indoakses2>
+Message-ID: <1177332812.20040505164432@hotbox.ru>
+Reply-To: "Slava (hotbox)" <chvv@hotbox.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <011901c43241$13d1dc00$0300a8c0@indoakses2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: bino_oetomo <bino@indoakses-online.com>
-Cc: netfilter@lists.netfilter.org
-
-Nope that is not a problem.  Got it working without much of a problem.
-
-Ok that wasn't helpful I know.  One thing you have to do is ensure that 
-you are using proper setting on your concentrator.  Ensure that it is 
-set to be able to accept NAT.  In addition choose UDP (or TCP) on 
-specific port.
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
-bino_oetomo wrote:
 
-> Dear Antony
-> ----- Original Message ----- 
-> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Wednesday, May 05, 2004 7:53 AM
-> Subject: Re: CISCO VPN clients behind firewall
-> 
-> 
-> 
->>As far as I know, Cisco VPNs use IPsec - no problem there for netfilter 
->>(although maybe problems if you're using transport mode and doing nat).
->>
-> 
-> 
-> Yes, actualy it's "behind nat" rather then just "behind firewall"
-> 
-> 
-> Sincerely
-> -bino-
-> 
-> 
-> 
-> 
+
+NETFILTER --> NAT --> HOWTO
+
+
+I very badly speak English!
+
+
+We use VPN-connections (PPTP) through firewall. It uses two connections: 1723/tcp and 47/ip(GRE). 
+
+When I  give a range of IP addresses to SNAT, two PPTP connections (1723/tcp & GRE) leave
+from Firewall (SNAT) with different IP-addresses.
+And VPN-connection does not work!
+
+
+Help, if can, please.
+
+Viacheslav.
+
+ 
+
+
 
