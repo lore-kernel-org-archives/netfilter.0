@@ -1,8 +1,8 @@
 From: "Hard__warE" <hard__ware@hotmail.com>
-Subject: Flag SYN not necessarily state NEW?
-Date: Sat, 15 Jun 2002 12:35:35 +1000
+Subject: Complex multi-homed/NAT setup
+Date: Sat, 15 Jun 2002 12:44:10 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000501c21415$544d0e40$7b0010ac@dynamicaccess.lan>
+Message-ID: <000b01c21416$8706c8c0$7b0010ac@dynamicaccess.lan>
 Reply-To: "Hard__warE" <hard__ware@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,68 +19,27 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
+infact i belive thats the only way your going to get it done with iptables
 
+and also by using some Tricky Established,Related rules in for the SNAT back
+out to the internet and maybee
 
->>On Wed, 8 May 2002, Ing. Christian Ogris wrote:
->> I connect from Box A via SSH to Box B, where the firewall runs, and i
->>get the state "NEW" on the first packet.
->> Then - the first connection is still established - i connect AGAIN from
->>Box A to Box B and do NOT get the state "NEW" anymore. (So obviously
->> it's already accepted by the ESTABLISHED,RELATED -j ACCEPT rule).
->> Is this behavior correct?
+also set the TIME_WAIT limit and the LAST_ACK to a minimal amount .. :D
 
->No. But so far nobody has reported such an ill-behaviour. I assume
->something is wrong in your setup/logging.
+>My solution was to bind the public ips for the internal machine on the=20
+>respective interfaces on the firewall. Therefore the firewall will = reply
+to =20
+>arp requests from routers. eg.
+>ifconfig eth1:0 62.2.159.14 netmask 255.255.255.192 <-- replace the =
+>netmask=20
+>with your own.
+>ifconfig eht2:0 194.38.85.209 netmask 255.255.255.0
 >
->Regards,
->Jozsef
+>Hope this helps
+>
+>Ray
 
 
-
-I have tested this as im running SSH ans as you can see hear in the print
-out of my packets that
-i dont even need a Established Related Rule for SSH from the Internet or
-Internaly , this is handled
-by IP_conntrack moddule and so on .. :-) .
-
-
-(Notice My SSH Box has its own IP on the Firewall (yet i have still
-restricted access to the box as only SSH)
-
-Chain OUTPUT (policy DROP 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-
-51 38424 ACCEPT     all  --  *      eth0    172.16.0.22
-172.16.0.0/16
-
-/> netstat -C
-
-Active Internet connections (w/o servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State
-tcp        0      0 yes-dave.dynamicacc:ssh 172.16.0.123:2867
-ESTABLISHED
-Active UNIX domain sockets (w/o servers)
-
-&
-Proto Recv-Q Send-Q Local Address           Foreign Address         State
-tcp        0      0 yes-dave.dynamicacc:ssh 172.16.0.123:2872
-ESTABLISHED
-tcp        0      0 yes-dave.dynamicacc:ssh 172.16.0.123:2871
-ESTABLISHED
-tcp        0      0 yes-dave.dynamicacc:ssh 172.16.0.123:2867
-ESTABLISHED
-Active UNIX domain sockets (w/o servers)
-Proto RefCnt Flags       Type       State         I-Node Path
-
-
-
-when i connect the first time (have not logged on yet) my SSH server says
-the connecttion is already
-ESTABLISHED and not NEW , and thats the same for evey connection after this
-. The reason behind this is
-SSH needs to establish a ESTABLISHED connection to the server before any
-data is correctly Encrypted .. :D
-
+That was some good advice Ray .. :-D
 
 
