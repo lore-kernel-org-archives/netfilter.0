@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Routing between two firewalls
-Date: Wed, 23 Jun 2004 10:34:54 +0100
+Subject: Re: Bridge/VPN question.
+Date: Wed, 23 Jun 2004 10:40:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406231034.54767.Antony@Soft-Solutions.co.uk>
-References: <40D94B3D.8050308@openscroll.org>
+Message-ID: <200406231040.40257.Antony@Soft-Solutions.co.uk>
+References: <041201c45865$cb810cf0$c10da8c0@arvmobile> <200406231008.40635.Antony@Soft-Solutions.co.uk> <1087983028.7624.55.camel@dharmu.nsecure.net>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40D94B3D.8050308@openscroll.org>
+In-Reply-To: <1087983028.7624.55.camel@dharmu.nsecure.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,54 +21,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 23 June 2004 10:19 am, Sudhakar Chandra wrote:
+On Wednesday 23 June 2004 10:30 am, Dharmendra T. wrote:
 
-> I have a setup that I assume should be pretty common.  I have a LAN
-> (192.168.100.0/24) which has two gateways / firewalls on it.  Both the
-> gateways are dual-homed.
+> On Wed, 2004-06-23 at 14:38, Antony Stone wrote:
 >
-> LAN ---> (192.168.100.1) Gateway 1 (isp1.global.ip) --->
-> LAN ---> (192.168.100.2) Gateway 2 (isp2.global.ip) --->
+> > 1. You have a default DROP policy on FORWARD (good idea), and a rule
+> > allowing packets to TCP port 25 on a specific server, but no rule
+> > allowing replies back again.   Therefore no traffic gets *through* the
+> > machine.
+> >
+> > 2. You have a default DROP policy on INPUT, and no rules in the INPUT
+> > chain allowing anything at all, therefore no packets can get in (which
+> > makes the rule in the OUTPUT chain allowing some packets out somewhat
+> > pointless).
 >
-> Gateway 1 routes through ISP1 and Gateway 2 through ISP2.  Some machines
-> in my LAN have .1 set as the gateway and some have .2 as the gateway.
->
-> I have my mail server connected to one of the global IPs that ISP2 has
-> given me.  Or in other words, mail server is on the same subnet as the
-> external interface of Gateway 2.
->
-> As things are today, packets originating on machines having Gateway 1 as
-> their default gateway traverse out through ISP1, the global internet,
-> back through ISP2 into my global ISP2 subnet.  This is a waste of
-> bandwidth as well as slow.
->
-> I want to set up a rule on Gateway 1 such that all packets destined to
-> my mail server (actually, my entire ISP2 subnet) should be sent to
-> Gateway 2 for routing.
->
-> I tried adding a static route on Gateway 1 to route all packets destined
-> to the mail server to Gateway 2 like so:
->
-> route add -host mail.server.ip gw 192.168.100.2
->
-> After I set this up, I am able to traceroute to mail server (packets
-> flow through Gateway 2).  But when I try connecting to port 25, nothing
-> happens.
+> Yes I agree. But these rules were given assuming that the user has given
+> Required rulsets (Assuming means that the user can connect to the
+> approved mail server. Please check the last mail to which I replied).
 
-Do you have FORWARDing rules on both gateways allowing TCP port 25 packets 
-from your internal network to the mail server?
+You said "Are there any other rules you have defined? If no, this may work:"
+
+To me, that means that if the user does not have any other rules, then he 
+should try these (the ones you posted).
+
+I just wanted to avoid the original poster trying out a ruleset which could 
+not possibly work (and if they were connected to the machine by SSH, would 
+cut them off permanently, too).
 
 Regards,
 
 Antony.
 
 -- 
-There are two possible outcomes:
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
 
- If the result confirms the hypothesis, then you've made a measurement.
- If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
+ - Frank Skinner
 
                                                      Please reply to the list;
                                                            please don't CC me.
