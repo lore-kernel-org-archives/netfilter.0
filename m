@@ -1,13 +1,10 @@
-From: Roger <roger@efn.org>
-Subject: Re: Portscan logging?
-Date: Sun, 13 Oct 2002 18:16:20 -0700
+From: "SB CH" <chulmin2@hotmail.com>
+Subject: about bridge firewall
+Date: Mon, 14 Oct 2002 01:16:16 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021014011620.GA1572@efn.org>
-References: <3DAA09B7.9040305@gmx.de>
+Message-ID: <F189nwO1VwJhnD0Ez860000b8a7@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3DAA09B7.9040305@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +14,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sven Schuster <schuster.sven@gmx.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="euc-kr"; format="flowed"
+Content-Transfer-Encoding: base64
+To: netfilter@lists.netfilter.org
 
-
-
-Around Mon,Oct 14 2002, at 02:03,  Sven Schuster, wrote:
-> Hello everybody,
-> are down and the default policy is ACCEPT. But when I put in all my 
-> rules, the scanlogd doesn't log any portscans from the internet. I think 
-> that is because the packets are already dropped in the kernel by the 
-> iptables module, am I right??
-> 
-> And know my question is if there's a chance to log portscans (maybe also 
-> the different kinds??) via some iptables-rules, an extra iptables-module 
-> or any other tool?? I hope that somebody knows something about it, 
-> because I think it's very nice to see how much people try to find holes 
-> in any system...it's already quite interesting to review the Apache-Logs 
-> everyday, with peoples thinking there's an IIS running on my system :-)))
-use the logging feature.
-
-iptables -I INPUT -t tcp  -j LOG --log-prefix "IPTABLES-IN "
-
-would log *any* inbound tcp connection to syslog.  Including traffic 
-you have created (the return of an HTTP or FTP session)
-
-You could pick a couple of ports and set logging on those ports:
-
-iptables -I INPUT -t tcp --dport 80  -j --log-prefix "IPTABLES-IN "  
-
-would log any ports that attempt a scan of your port 80.  Your outbound 
-HTTP would not be picked up by this.
-I use IN as part of my INPUT log prefix, and OUT as part of my OUTPUT log 
-prefix, it makes it easier to track.
-
-Roger
-
--- 
-roger@efn.org
-
+CkhlbGxvLCBhbGwuCgpBcyB5b3Uga25vdywgSSBoZWFyZCB0aGF0IGJyaWRnZSBpcyBtb3JlIHNw
+ZWVkeSB0aGFuIE5BVCBtZXRob2QsIHJpZ2h0PwpzbyBJIHdvdWxkIGxpa2UgdG8gc2V0dXAgYnJp
+ZGVnIGZpcmV3YWxsIHVzaW5nIGlwdGFibGVzLgp0aGVuLCBEbyB5b3Uga25vdyB0aGF0IGFueSBn
+b29kIHJlZmVyZW5jZSBvciBkb2N1bWVudHMgYWJvdXQgYnJpZGdlIApmaXJld2FsbCB1c2luZyBp
+cHRhYmxlcz8oQXMgSSBrbm93LCB0aGUgYnJpZGdlIGZpcmV3YWxsIGlzIGF2YWlsYWJlIG9ubHkg
+CmlwY2hhaW5zLikKCkFsd2F5cyBzbyB0aGFua3MgaW4gYWR2YW5jZS4gOykKCgoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CsD8ILy8sOggvu618Lyts6oguPC15yBQQ7+hvK0gs7sgUEPDs7ezILvnv+vH0iC89iDA1rTCIL/C
+tvPAzrvzwMcgx8+15SwgTVNOIArApcfPteW4piDFrLivx8+8vL/kLiBodHRwOi8vbXNuLndlYmhh
+cmQuY28ua3IKCgo=
