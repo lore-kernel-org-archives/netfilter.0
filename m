@@ -1,11 +1,13 @@
 From: =?ISO-8859-15?Q?J=F6rg_Sch=FCtter?= <netfilter@schuetter.org>
-Subject: "-m state -state NEW" or "--tcp-flags ALL SYN" for tcp?
-Date: Wed, 29 Oct 2003 20:39:22 +0100
+Subject: Re: Newbie
+Date: Wed, 29 Oct 2003 20:43:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031029203922.3d8f47cf.netfilter@schuetter.org>
+Message-ID: <20031029204307.54bd150c.netfilter@schuetter.org>
+References: <1067455194.4723.139.camel@main.tqmcube.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1067455194.4723.139.camel@main.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,18 +20,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello
+Hallo David,
 
-Is it better to use "-m state -state NEW" or to use "--tcp-flags ALL
-SYN" for tcp packets. There are also the lines
-iptables -A INPUT/FORWARD -m state --state INVALID -j DROP
-iptables -A INPUT/FORWARD/OUTPUT -m state --state ESTABLISHED,RELATED -j AC=
-CEPT
-in the firewall script.
+On Wed, 29 Oct 2003 14:19:55 -0500
+"David C. Hart" <DCH@TQMcube.com> wrote:
 
-A tcp packet without a SYN flag can never be in state NEW (according to
-my tests). Instead iptables discovers this packet as garbage and flags
-it with INVALID.
+[...]
+> 4. I would rather use the FILTER table for the refused connections to
+> reject rather than drop. I'm sure that it's simple but I just don't get
+> it. This would depend upon the filter table rules following the NAT
+> table rules. Where is this order established?
+
+Take a look at
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TRAVERSINGOFT=
+ABLES
+
+
+--=20
+Gru=DF
+  J=F6rg
 
 --=20
 J=F6rg Sch=FCtter           http://www.lug-untermain.de/
