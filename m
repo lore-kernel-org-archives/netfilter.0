@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Stateful FW Questions
-Date: Thu, 4 Jul 2002 21:05:35 +0100
+From: "John Jones" <jjones@merlintechnologies.com>
+Subject: NetBIOS browsing across subnets
+Date: Thu, 4 Jul 2002 13:44:57 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020704200537.IHCI295.mta03-svc.ntlworld.com@there>
-References: <5.1.0.14.0.20020704160414.022d3d40@mailhost.csca.ryerson.ca>
+Message-ID: <007201c2239b$a885a8b0$6301a8c0@JJONES1>
+Reply-To: <jjones@merlintechnologies.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <5.1.0.14.0.20020704160414.022d3d40@mailhost.csca.ryerson.ca>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,40 +19,30 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Thursday 04 July 2002 9:04 pm, Paul Dunphy wrote:
+I have a need to allow NetBIOS/Network Neighborhood browsing across a
+firewall between one internal LAN segment (192.168.0.0/23) to another
+(192.168.10.0/24).  The two networks are on interfaces eth2 and eth3,
+respectively, off of the corporate firewall.
 
-> Hi Everyone,
->
-> I'm new to stateful firewalls (can you tell?!), and I have a couple of
-> iptables-related questions:
->
-> Question 1:
->
-> Is there any reason to itemize the established connections
-> one by one, or can I simply allow all ESTABLISHED connections through from
-> the outside, and rely on the internal-external chain to limit the type of
-> connections that can be initiated from inside? Is one way more secure than
-> the other?
+The two segments of the LAN were seperated due to broadcast flooding
+during video streaming development work by a dev team.
 
-Just use a single rule.   No more or les secure than multiple rules, but a 
-LOT easier to read.
+I have the majority of the instructions down, I *think*:
 
-> Question 2:
->
-> Another related question: If I want to use "-m state --state ESTABLISHED"
-> as I'm doing above in the external-internal chain, do I also have to
-> specify "-m state" or "-m state NEW" in the internal-external chain so that
-> the state of the connection will be tracked, or will it simply work the way
-> it is written above? (Are all connections tracked?)
+   iptables -t nat -I PREROUTING 1 -i eth2 -p tcp -d 192.168.0.1 --dport
+139 -j DNAT --to 192.168.10.1:139
+   iptables -I FORWARD 6 -i eth2 -o eth3 -p tcp -d 192.168.10.1 --dport
+139 -j ACCEPT
 
-It'll work as you wrote it, and again it's easier to read than specifying the 
-state.
+   iptables -t nat -I PREROUTING 1 -i eth3 -p tcp -d 192.168.10.1
+--dport 139 -j DNAT --to 192.168.0.1:139
+   iptables -I FORWARD 6 -i eth2 -o eth2 -p tcp -d 192.168.0.1 --dport
+139 -j ACCEPT
 
-By the way, don't forget to allow RELATED connections as well - these include 
-important things like ICMP messages, without which your network may have 
-problems.
+Not sure if this should be Destination NAT or Source NAT.  I would like
+advice and/or corrections from anyone out there that has a better
+knowledge of this, first.
 
- 
+Thanks in advance.
 
-Antony.
 
