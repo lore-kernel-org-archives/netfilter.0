@@ -1,11 +1,14 @@
-From: "Ricardo C" <racham@hotmail.com>
-Subject: Stealth on emule....
-Date: Mon, 7 Jun 2004 12:39:49 -0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Log question
+Date: Mon, 7 Jun 2004 16:06:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY1-DAV37L3915RXUX0002aaa7@hotmail.com>
+Message-ID: <200406071606.37187.Antony@Soft-Solutions.co.uk>
+References: <40C48126.9030003@whitehallcanada.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40C48126.9030003@whitehallcanada.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,131 +21,113 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-------Message Previous of Antony.
->I see no rule in your ruleset allowing those packets through the >FORWARD chain
->on your machine, therefore it won't pass them on to the client?
+On Monday 07 June 2004 3:52 pm, Michael Sams wrote:
+
+> Hi there... I am sorry if this questions has already been asked. I am
+> try to understand some iptables logs. The one I have attached I don't
+> really understand. Could someone point me in the right direction?
 >
->Maybe I'm missing something because of the layout of the rules - if >you think
->the appropriate FORWARDing rules are there, please post the >output of
->"iptables -L -nvx; iptables -L -t nat -nvx; iptables -L -t mangle ->nvx"
->because I find this an easier format to understand for such a long >ruleset.
+> Any help is greatly appreciated!
+>
+> 1.2.3.4 = My server
+>
+> Jun 7 02:23:48
 
-OK, Thanks you Antony...
+Date & time - pretty obvious :)
 
-Linux:~# iptables -L -nvx
-Chain INPUT (policy DROP 29421 packets, 1718646 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
-  101717  5292111 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0
-    6560   808679 ACCEPT     all  --  eth1   *       192.0.0.0/8          0.0.0.0/0
-       2      244 ACCEPT     all  --  lo     *       127.0.0.1            0.0.0.0/0
-       0        0 ACCEPT     all  --  lo     *       192.168.111.1        0.0.0.0/0
-       0        0 ACCEPT     all  --  lo     *       200.xxx.xxx.xxx         0.0.0.0/0
-    3142   642016 ACCEPT     all  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       state
-RELATED,ESTABLISHED
-   24164  1124548 tcp_packets  tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0
-    4464  1114537 udp_packets  udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0
-     927    46338 icmp_packets  icmp --  eth0   *       0.0.0.0/0            0.0.0.0/0
-   13005   809968 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0          limit: avg 3/min
-burst 3 LOG flags 0 level 7 prefix `IPT INPUT packet died: '
+> myserver
 
-Chain FORWARD (policy DROP 11272 packets, 552279 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
-14218836 7001833881 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0
- 7966884 4793464646 ACCEPT     all  --  eth1   *       0.0.0.0/0            0.0.0.0/0
- 6585552 2237493007 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0          state
-RELATED,ESTABLISHED
-    8688   425676 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0          limit: avg 3/min
-burst 3 LOG flags 0 level 7 prefix `IPT FORWARD packet died: '
+Your server's hostname.
 
-Chain OUTPUT (policy DROP 2 packets, 128 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
-    5192   230734 bad_tcp_packets  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0
-       2      244 ACCEPT     all  --  *      *       127.0.0.1            0.0.0.0/0
-    2127   454165 ACCEPT     all  --  *      *       192.168.111.1        0.0.0.0/0
-    8965   590752 ACCEPT     all  --  *      *       200.xxx.xxx.xxx         0.0.0.0/0
-       0        0 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0          limit: avg 3/min
-burst 3 LOG flags 0 level 7 prefix `IPT OUTPUT packet died: '
+> kernel:
 
-Chain allowed (3 references)
-    pkts      bytes target     prot opt in     out     source               destination
-       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp
-flags:0x16/0x02
-       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          state
-RELATED,ESTABLISHED
-       0        0 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0
+Kernel log message
 
-Chain bad_tcp_packets (3 references)
-    pkts      bytes target     prot opt in     out     source               destination
-    4819   230860 REJECT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp
-flags:0x12/0x12 state NEW reject-with tcp-reset
-   75974  5381480 LOG        tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp
-flags:!0x16/0x02 state NEW LOG flags 0 level 4 prefix `New not syn:'
-   75974  5381480 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp
-flags:!0x16/0x02 state NEW
+> INVALID STATE:
 
-Chain icmp_packets (1 references)
-    pkts      bytes target     prot opt in     out     source               destination
-     251     7920 DROP       icmp --  *      *       0.0.0.0/0            0.0.0.0/0          icmp type 8
-      54     3372 DROP       icmp --  *      *       0.0.0.0/0            0.0.0.0/0          icmp type 11
+The string you specified for "log-prefix"
 
-Chain tcp_packets (1 references)
-    pkts      bytes target     prot opt in     out     source               destination
-       0        0 allowed    tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:4661
-       0        0 allowed    tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:4662
-       0        0 allowed    tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:4711
+> IN=lo
 
-Chain udp_packets (1 references)
-    pkts      bytes target     prot opt in     out     source               destination
-       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:2074
-       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:4000
-       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:4665
-       0        0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:4672
-    1774   609945 DROP       udp  --  eth0   *       0.0.0.0/0            255.255.255.255    udp dpts:67:68
-Linux:~#
----------------
-----------------
+Packet came in on loopback interface
 
-Linux:~# iptables -L -t nat -nvx
-Chain PREROUTING (policy ACCEPT 459191 packets, 27464157 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
-      63     2809 DNAT       tcp  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       tcp dpt:4661
-to:192.168.111.2:4661
-   11346   555376 DNAT       tcp  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       tcp dpt:4662
-to:192.168.111.2:4662
-       0        0 DNAT       udp  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       udp dpt:4665
-to:192.168.111.2:4665
-       0        0 DNAT       udp  --  *      *       0.0.0.0/0            200.xxx.xxx.xxx       udp dpt:4672
-to:192.168.111.2:4672
+> OUT=
 
-Chain POSTROUTING (policy ACCEPT 1 packets, 208 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
-  350137 19348610 SNAT       all  --  *      eth0    0.0.0.0/0            0.0.0.0/0          to:200.xxx.xxx.xxx
+Packet is not going to go out on any interface
 
-Chain OUTPUT (policy ACCEPT 1354 packets, 176307 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
-Linux:~#
-------------------
+> MAC=00:00:00:00:00:00
 
-Linux:~# iptables -L -t mangle -nvx
-Chain PREROUTING (policy ACCEPT 14720036 packets, 7058043928 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
+Destination MAC address is blank (loopback doesn't use it).
 
-Chain INPUT (policy ACCEPT 119262 packets, 7994213 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
+> :00:00:00:00:00:00:
 
-Chain FORWARD (policy ACCEPT 14600748 packets, 7050048259 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
+Source MAC address is blank (loopback doesn't use it)
 
-Chain OUTPUT (policy ACCEPT 11528 packets, 1085092 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
+>08:00
 
-Chain POSTROUTING (policy ACCEPT 14597456 packets, 7049102787 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
-Linux:~#
------------------------
----------------------
-And please, Antony, I don't have great iptables knowledge... you could tell me what rule should add and what
-rule should remove or to modify (and how... ) so that it works????
-I thank you cordially your help
-Richard
+Protocol is IP over ethernet
+
+> SRC=1.2.3.4
+
+Source IP address
+
+> DST=1.2.3.4
+
+Destination IP address
+
+> LEN=68
+
+Packet length including headers.
+
+> TOS=0x00
+
+Type Of Service flags not set (= 0000 0000)
+
+> PREC=0xC0
+
+Precedence bits = 1100 0000
+
+> TTL=64
+
+Time to live = 64: another 64 hops to go before the packet expires
+
+> ID=13447
+
+ICMP ID number = 13447
+
+> PROTO=ICMP
+
+This is an ICMP packet
+
+> TYPE=3
+
+ICMP type = 3 (Destination Unreachable)
+
+> CODE=1
+
+ICMP code = 1 (Host Unreachable)
+
+> [SRC=1.2.3.4 DST=219.141.107.<snip> LEN=40 TOS=0x00 PREC=0x00 TTL=255
+> ID=0 DF PROTO=TCP SPT=5554 DPT=4715 WINDOW=0 RES=0x00 ACK RST URGP=0 ]
+
+Snippet of the original packet which this ICMP error is referring to (a TCP 
+packet from 1.2.3.4 to 219.141.107.<snip>, from source port 5554 to 
+destination port 4715, with the reset flag set, therefore something was 
+obviously trying to terminate an already-established connection).
+
+See http://logi.cc/linux/netfilter-log-format.php3 for more details on 
+netfilter's logging format.
+
+Regards,
+
+Antony.
+
+-- 
+There are only 10 types of people in the world:
+those who understand binary notation,
+and those who don't.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
