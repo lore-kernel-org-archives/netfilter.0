@@ -1,9 +1,11 @@
-From: dean gaudet <dean@arctic.org>
-Subject: per-socket nfmark settings? (fwd)
-Date: Mon, 7 Oct 2002 09:38:06 -0700 (PDT)
+From: vlad f kropachew <vlad@ccs.ru>
+Subject: ip_conntrack_ftp
+Date: Mon, 7 Oct 2002 12:09:53 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210070937240.4278-100000@twinlark.arctic.org>
+Message-ID: <E17yWou-0002dp-00@kashyyyk.netfilter.org>
+Reply-To: vlad@ccs.ru
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,39 +16,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-it was suggested that i forward this question here instead of linux-net:
+hello. please ask the following question.  can i use the subject module for 
+accepting passive ftp trafic on non-standart ports? i have the ftp on port 
+20350, and after make configure with pass ESTABLISHED and RELATED connection 
+with different records, i see that ftp-data don't hit in RELATED rule, and 
+log contain next record after data transfer:
 
-i'd like to modify apache so that it sets some sort of hint on TCP sockets
-associated with particular domains/directories, and have the hint used to
-do traffic shaping in the kernel.  IPTOS doesn't provide enough resolution
-for my needs.
+-------------
+DEFAULT-DROP IN=eth0 OUT= MAC=00:60:08:5e:b1:ff:00:60:08:10:4b:d3:08:00 
+SRC=217.76.32.10 DST=217.76.32.9 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=36164 DF 
+PROTO=TCP SPT=1295 DPT=54245 WINDOW=32120 RES=0x00 SYN URGP=0
+-------------
 
-i've been digging around the 2.4 source, and it seems like the struct
-sk_buff nfmark field might be something i could use to do this.  but it
-doesn't appear that a userland app can control this field on a per-socket
-basis.
+may be this module track only standart ftp-control port? 
 
-i was thinking of doing this:
-
-- add default_nfmark field to struct sock
-- add SO_NFMARK and setsockopt() support in net/core/sock.c
-- add support to tcp_output.c et al to copy the default_nfmark into
-  the skbs (probably use default_nfmark == 0 to indiciate no change)
-
-i recognize this isn't exactly a perfect solution... and i'd welcome some
-input.
-
-thanks
--dean
-
-p.s. i'm not on netfilter, so please cc me.
-
-
-
-
+vlad/
 
 
