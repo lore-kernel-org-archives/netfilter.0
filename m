@@ -1,11 +1,10 @@
-From: "umar" <vramnarayan@triniti.com>
-Subject: nat problem.
-Date: Mon, 17 Jun 2002 16:28:57 +0530
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: what does this message mean ?
+Date: Mon, 17 Jun 2002 17:58:09 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <01f701c215ed$fca7c100$9300a8c0@edapter.com>
-References: <3D0BBC45.5000807@palaver.net> <200206152233.g5FMXPA27757@Networker.rockstone.co.uk> <20020616001745.N2090@funkyjesus.org> <030001c215b7$dc4d7f20$870110ac@samsi>
+Message-ID: <3D0DD5D9.4070505@inbox.lv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,28 +15,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.samba.org
 
-SGksIA0KIA0KVHJ5aW5nIG91dCAgYSB2ZXJ5IHNpbXBsZSBjb25maWd1cmF0aW9uIG9mIGEgZmly
-ZXdhbGwgaGVyZSwgYnV0IGhhdmluZyBzb21lIHByb2JsZW1zLg0KVGhlIGZpcmV3YWxsICBoYXMg
-dHdvIE5JQydzIGFuZCBoYXZlIGVuYWJsZWQgaXAgZm9yd2FyZGluZy4gDQoNCkkgd2FudCB0aGUg
-aW50ZXJuYWwgbWFjaGluZXMgdG8gY29ubmVjdCB0byB0aGUgaW50ZXJuZXQsICBTbyBoYXZlIGVu
-YWJsZWQgTkFUIDogDQpSdW5pbmcgc3F1aWQgLSB0cmFuc3BhcmVudCBwcm94eSBvbiBwb3J0IDMy
-MzIuIENsaWVudHMgaGF2ZSBiZWVuIG9uZmlndXJlZCB0byBjb25uZWN0IHRvIGludGVybmV0IGRp
-cmVjdGx5LiANCmV0aDAgaXMgbXkgZXh0ZXJuYWwgaW50ZXJmYWNlLg0KIA0KRm9sbG93aW5nIGFy
-ZSB0aGUgbmF0IHJ1bGVzIGNvbmlndXJlZCBvbiB0aGUgZmlyZXdhbGwNCiANCmlwdGFibGVzIC10
-IG5hdCAtQSBQUkVST1VUSU5HIC1pIGV0aDAgIC1wIHRjcCAtLWRwb3J0IDgwIC1qIFJFRElSRUNU
-IC0tdG8tcG9ydCAzMjMyDQogDQppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRo
-MCAtaiBTTkFUIC0tdG8tc291cmNlIHgueC54LnggKCBwdWJsaWMgSVAgb2YgdGhlIG90aGVyIG5l
-dHdyb2sgY2FyZCApDQoNCkkgY2FuIHBpbmcgdG8gdGhlIGdhdGV3YXkgKCBwcml2YXRlIElQICkg
-YW5kIHRoZSBvdGhlciBuZXR3b3JrIGNhcmQgaGF2bmcgdGhlIHB1YmxpYyBJUCAsIGJ1dCBub3Ro
-aW5nIGJleW9uZCB0aGF0LCBXaHkgPz8gDQpBbmQgbXkgY2xpZW50cyBhcmUgYWxzbyBub3QgYWJs
-ZSB0byBjb25uZWN0IHRvIHRoZSBpbnRlcm5ldCA/PyANCkkgaGF2ZSB0cmllZCByZW1vdmluZyB0
-aGUgZmlyc3QgcnVsZSBhbmQgZGlzYWJsaW5nIHNxdWlkLCBzbyB0aGF0IGNsaWVudHMgY291bGQg
-Y29ubmVjdCB0byB0aGUgaW50ZW5ldCBkaXJlY3RseS4gDQpUaGF0IGFsc28gZmFpbGVkLCBhbmQg
-dGhlIHJlc3VsdCBpcyB0aGUgc2FtZS4gQWxsIHRoZSBkZWZhdWx0IHBvaWxpY2llcyBvZiBhbGwg
-cnVsZXMgYXJlIHNldCB0byBBQ0NFUFQuDQoNClJ1bmluZyByaCA3LjIgd2l0aCAyLjQuNy0xMCBr
-ZXJuZWwuDQoNClBsZWFzZSBoZWxwLiANCg0KV2FybSBSZWdhcmRzLCANCkt1bWFyLiANCg==
+hi all,
+
+while checking /var/log/messages i found the following line.
+what dooes this mean ?
+Jun 17 12:18:09 cab1 kernel: conntrack_ftp: partial PORT 2281329+11
+all the iptablesoprions r compiled in( i usually use modules but this 
+time i didnt).
+
+i also want to tell the list that using iptables-1.2.6a solved one of 
+the mesages i was getting in messages file, which looked like this & was 
+using iptables ==> iptables v1.2.7-2--2-423
+May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840 
+&ip_conntrack_lock not readlocked
+(this message was posted on fri31,2002).but i really dont know why it 
+happened !
+
+thanking in advance
+A.H
 
 
