@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: [Fwd: Server machines behind Firewall]
-Date: Fri, 7 Jan 2005 10:27:55 -0500
-Message-ID: <20050107152755.GA49@bender.817west.com>
-References: <41DEA59E.F63D5C97@ita.org.mo>
+From: Mario Ohnewald <mario.ohnewald@gmx.de>
+Subject: Re: NAT FROM public ip TO public ip
+Date: Fri, 07 Jan 2005 13:57:22 +0100
+Message-ID: <1105102641.5112.0.camel@linux.site>
+References: <10459.1105072608@www72.gmx.net>  <41DCE77F.4020503@go-wlan.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <41DEA59E.F63D5C97@ita.org.mo>
+In-Reply-To: <41DCE77F.4020503@go-wlan.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,52 +18,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Jan 07, 2005 at 11:07:10PM +0800, edwardspl@ita.org.mo wrote:
-> > EXT_IF="eth0"
-> > INT_IF="eth1"
-> > SRV1="10.1.1.10"
+On Thu, 2005-01-06 at 08:23, Igor Tsinman wrote:
+> Mario Ohnewald wrote:
+
+> >This is a real easy question, but i will explain it in detail so that you
+> >know what i am on about ;)
 > >
-> > iptables -t nat -A PREROUTING -i $EXT_IF -p tcp --dport 80 \
-> > ? -j DNAT --to-destination $SRV1
+> >I have two internet boxes, both have only one nic.
+> >Box A is my root box.
+> >Box B is a ftp server (where i am not admin, but i have an ftp account).
+> >
+> >Both, Box A and B have a public ip address.
+> >You can NOT access the ftp server from the outside.
+> >ONLY Box A can connect to that ftp server (Box B).
+> >
+> >So i though i could simply nat a connection through my Box A, to Box B.
+> >If i connect from the real bad world, to my Box A, port 2121. Box A could
+> >forward/NAT that to the internal ftp box.
+> >
+> >I have tried it with this rule:
+> >$IPT -t nat -A PREROUTING -i eth0 -p tcp -d 123.123.123.123 -m helper
+> >--helper ftp-2121 -j DNAT --to-destination 123.123.123.111
+> >
+> >and
+> >
+> >modprobe ip_conntrack_ftp ports=21,2121
+> >
+> >
+> >But it looks like its not working.
+> >I did a tcpdump -i eth0 -n host 123.123.123.111
+> >
+> >
+> >And no packages where transfered to the ftp box (123.123.123.111).
+> >Any idea why? Am i going the right way at all?
+> >
+> >Thanks, Mario
+> >
+> >  
+> >
+> You have to add an additional rule:
+> $IPT -A FORWARD -p tcp -i eth1 -d 23.123.123.123 --dport 2121 -j ACCEPT
 > 
-> I want to know why needn't to define the original IP ( Public IP ) ?
-> eg :
-> 
-> iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -s 202.175.xxx.xxx --dport
-> 80 \
-> ? -j DNAT --to-destination 192.168.xxx.xxx
+> For this example, eth0 is external and eth1 is internal.
 
-you can; if the original, public IP is different from the firewall's
-external IP.  if you want specify the original DESTINATION of the
-packet, you would use "-d" not "-s" like so:
+I only have one network card.
 
-  iptables -t nat -A PREROUTING -i $EXT_IF -p tcp -d $PUB_IP \
-    --dport 80 -j DNAT --to-destination $SRV1
 
-> Sorry, what useful about the following function ( command line ) ?
-> 
-> > iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d $SRV1 \
-> > ? --dport 80 -j ACCEPT
 
-um--it allows the packet through the FORWARD chain of the filter table.
-remember--you're trying to build a firewall here.
+Cheers, Mario
 
-> In additional, if I want to setup a NAT ( 192.168.101.0/24 ) with a Server
-> machines ( 192.168.100.1 ) behind Firewall...
-> So, is there more than one sample ( nat scripts ) for reference ?
-
-go read everything linked from the netfilter home page in the docs
-section:
-
-  http://netfilter.org/documentation/index.html
-
--j
-
---
-"Dear Mr. President, there are too many states nowadays, please
- eliminate three. I am not a crackpot."
-        --The Simpsons
 
