@@ -1,11 +1,12 @@
-From: Simone Sestini <simone.sestini@plugit.net>
-Subject: Fwd: Re: nat logging
-Date: Mon, 11 Aug 2003 11:04:57 +0200
+From: "Paul Cousins" <paul@pimper.fsnet.co.uk>
+Subject: Re: [iptables] howto bind Mac to ip address
+Date: Mon, 11 Aug 2003 11:33:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.0.20030811110133.026d50e8@imap4.plugit.net>
+Message-ID: <001101c35ff4$025cc900$0300a8c0@frodo>
+References: <007601c35fe1$01eb3d20$142a45ca@shahid>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="=====================_331242942==.ALT"
+	boundary="----=_NextPart_000_000E_01C35FFC.63E73540"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,154 +19,223 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
---=====================_331242942==.ALT
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_000E_01C35FFC.63E73540
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hey ppls..
+.>  I want to bind each MAC address to his or her assigned IP address so =
+nobody should mess around to change his or her IP's.
 
-anyone is good with ULOG....
+look into dhcpd from the internet consortium www.isc.org/products/DHCP/ =
+99.9% of all linux release's come with so its a case of RTM and go from =
+there but its very easy to configure espically with something like =
+webmin.
 
-This command don't log anything on my nat.log..
-iptables -t nat -A POSTROUTING -s 10.50.72.0/23 -o eth0 -j=20
-ULOG  --ulog-cprange 512 --ulog-prefix "ULOG: "
+2.> I want to allow selective MAC addresses each time, so they are not =
+allowed to use it all the time or I can block them whenever I want to.
 
 
-Is necessary to change the syslog daemon with the ulogd daemon ?!?!
 
-I need to log the client ip address, remote ip address, url requested.
+iptables can filter by mac address and ip adress so deny all users but =
+those you wish to allow. A script with an allow variable in it would be =
+you best bet as you coud add and remove users very quickly form the =
+script then simply run and you new rules will be implemented =
+immediately.
 
-I can't use squid because for my configuration i need to nat some specific=
-=20
-subnet to a specific ip address and so on..
 
-Thanks to anyone for valid idea..
 
->X-Authentication-Warning: spoutnik.cartel-securite.net: Host=20
->styx.intrusion.cartel-securite.net [194.29.206.118] (may be forged)=20
->claimed to be elendil.intranet.cartel-securite.net
->Subject: Re: nat logging
->From: Cedric Blancher <blancher@cartel-securite.fr>
->To: Simone Sestini <simone.sestini@plugit.net>
->Organization: Cartel S=C3=A9curit=C3=A9
->X-Mailer: Ximian Evolution 1.4.3
->Date: 11 Aug 2003 10:46:28 +0200
->X-MIME-Autoconverted: from quoted-printable to 8bit by=20
->elendil.intranet.cartel-securite.net id h7B8kSoi001320
->X-Spam-Status: No, hits=3D-109.5 required=3D5
->X-Scanned-By: MIMEDefang 2.30 (www . roaringpenguin . com / mimedefang)
->
->Le lun 11/08/2003 =E0 10:25, Simone Sestini a =E9crit :
-> > so the new command should be something like ..
-> > iptables -t nat -A POSTROUTING -s 10.50.72.0/23 -o eth0 -j ULOG
-> > --ulog-cprange 512 --ulog-prefix "ULOG: "
+simple cron scripts with drop or deny rules set to run at times you wish =
+to deny access will restrict the users. there may be an easy way not =
+sure?.=20
 
->Yes something like this.
->But do not forget about "first packet restriction" in nat table.
->
-> > the documentation explain something about netlink group.. but i have
-> > no idea if i need to use that too..
->
->I am not familiar with ULOG, so you should ask the list for its
->configuration.
->
->Greetings.
->
->--
->http://www.netexit.com/~sid/
->PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Simone Sestini [ SS971-RIPE ]
 
-Plug IT s.p.a. - Technical Office
-Via Ernesto Rossi
-52100 Arezzo
 
-Fax             +39-199-440088
-E-mail  simone.sestini@plugit.net
-Web             http://www.plugit.it
+hope this points you in the rigth direction.
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+------------------------------------------------
+Paul Cousins
+Canterbury Computer Services
+paul@canterburycomputerservices.co.uk
 
---=====================_331242942==.ALT
-Content-Type: text/html; charset="iso-8859-1"
+
+  ----- Original Message -----=20
+  From: Tariq Anwer=20
+  To: netfilter@lists.netfilter.org=20
+  Sent: Monday, August 11, 2003 9:17 AM
+  Subject: [iptables] howto bind Mac to ip address
+
+
+  Hi!
+
+  I'm a new to Linux, I want to setup Linux NAT box for a small LAN with =
+selective services to allow like only browsing for staff and other =
+services for management like ftp msn chatting etc.
+
+  =20
+
+  1.>  I want to bind each MAC address to his or her assigned IP address =
+so nobody should mess around to change his or her IP's.
+
+  =20
+
+  2.> I want to allow selective MAC addresses each time, so they are not =
+allowed to use it all the time or I can block them whenever I want to.
+
+  =20
+
+  I will highly appreciate if anybody could help me or direct me to any =
+web site or article to build this Box successfully.
+
+  =20
+
+  Best regards,
+
+  =20
+
+  Alien
+
+------=_NextPart_000_000E_01C35FFC.63E73540
+Content-Type: text/html;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<html>
-<body>
-Hey ppls..<br><br>
-anyone is good with ULOG....<br><br>
-This command don't log anything on my nat.log..<br>
-iptables -t nat -A POSTROUTING -s 10.50.72.0/23 -o eth0 -j ULOG&nbsp;
---ulog-cprange 512 --ulog-prefix &quot;ULOG: &quot;<br><br>
-<br>
-Is necessary to change the syslog daemon with the ulogd daemon
-?!?!<br><br>
-I need to log the client ip address, remote ip address, url
-requested.<br><br>
-I can't use squid because for my configuration i need to nat some
-specific subnet to a specific ip address and so on..<br><br>
-Thanks to anyone for valid idea.. <br><br>
-<blockquote type=3Dcite class=3Dcite cite>X-Authentication-Warning:
-spoutnik.cartel-securite.net: Host styx.intrusion.cartel-securite.net
-[194.29.206.118] (may be forged) claimed to be
-elendil.intranet.cartel-securite.net<br>
-Subject: Re: nat logging<br>
-From: Cedric Blancher &lt;blancher@cartel-securite.fr&gt;<br>
-To: Simone Sestini &lt;simone.sestini@plugit.net&gt;<br>
-Organization: Cartel S=C3=A9curit=C3=A9<br>
-X-Mailer: Ximian Evolution 1.4.3 <br>
-Date: 11 Aug 2003 10:46:28 +0200<br>
-X-MIME-Autoconverted: from quoted-printable to 8bit by
-elendil.intranet.cartel-securite.net id h7B8kSoi001320<br>
-X-Spam-Status: No, hits=3D-109.5 required=3D5<br>
-X-Scanned-By: MIMEDefang 2.30 (www . roaringpenguin . com /
-mimedefang)<br><br>
-Le lun 11/08/2003 =E0 10:25, Simone Sestini a =E9crit :<br>
-&gt; so the new command should be something like ..<br>
-&gt; iptables -t nat -A POSTROUTING -s 10.50.72.0/23 -o eth0 -j=20
-ULOG<br>
-&gt; --ulog-cprange 512 --ulog-prefix &quot;ULOG: &quot;<br>
-</blockquote><br>
-<blockquote type=3Dcite class=3Dcite cite>Yes something like this.<br>
-But do not forget about &quot;first packet restriction&quot; in nat
-table.<br><br>
-&gt; the documentation explain something about netlink group.. but i
-have<br>
-&gt; no idea if i need to use that too..<br><br>
-I am not familiar with ULOG, so you should ask the list for its<br>
-configuration.<br><br>
-Greetings.<br><br>
--- <br>
-<a href=3D"http://www.netexit.com/~sid/"=
- eudora=3D"autourl">http://www.netexit.com/~sid/</a><br>
-PGP KeyID: 157E98EE FingerPrint:
-FA62226DA9E72FA8AECAA240008B480E157E98EE</blockquote>
-<x-sigsep><p></x-sigsep>
-<font=
- face=3D"Verdana">::::::::::::::::::::::::::::::::::::::::::::::::::::::::::=
-::::::::::::<br><br>
-</font><font face=3D"Verdana" color=3D"#FF0000"><b>Simone Sestini
-</font><font face=3D"Verdana" size=3D2 color=3D"#FF0000">[ SS971-RIPE
-]<br><br>
-</b></font>Plug IT s.p.a. - Technical Office<br>
-Via Ernesto Rossi<br>
-52100 Arezzo<br><br>
-<tt><font face=3D"Courier New, Courier"=
- color=3D"#0000FF">Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>+39-199-440088<br>
-E-mail<x-tab>&nbsp;&nbsp;</x-tab>simone.sestini@plugit.net<br>
-Web<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><a href=3D"http://www.plugit.it/"=
- eudora=3D"autourl">http://www.plugit.it</a><br><br>
-</font></tt><font face=3D"Verdana"><u>::::::::::::::::::::::::::::::::::::::=
-::::::::::::::::::::::::::::::::
-<br>
-</font></u></body>
-</html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML xmlns:o =3D "urn:schemas-microsoft-com:office:office"><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>.&gt; <SPAN style=3D"mso-spacerun: yes">&nbsp;</SPAN>I want to bind =
+each MAC=20
+address to his or her assigned IP address so nobody should mess around =
+to change=20
+his or her IP=92s.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2><FONT face=3DTahoma><FONT color=3D#0000ff>look into =
+dhcpd from the=20
+internet consortium </FONT><A=20
+href=3D"http://www.isc.org/products/DHCP/">www.isc.org/products/DHCP/</A>=
+<FONT=20
+color=3D#0000ff> 99.9% of all linux release's come with so its a case of =
+RTM and=20
+go from there but its very easy to configure espically with something =
+like=20
+webmin.</FONT></FONT></FONT></DIV>
+<DIV><FONT face=3DTahoma color=3D#008000 size=3D2></FONT>&nbsp;</DIV>
+<DIV>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">2.&gt; I want to =
+allow selective=20
+MAC addresses each time, so they are not allowed to use it all the time =
+or I can=20
+block them whenever I want to.</P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3DTahoma =
+color=3D#0000ff=20
+size=3D2></FONT>&nbsp;</P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3DTahoma =
+color=3D#0000ff=20
+size=3D2>iptables can filter by mac address and ip adress so deny all =
+users but=20
+those you wish to allow. A script with an allow variable in it would be =
+you best=20
+bet as you coud add and remove users very quickly form the script then=20
+simply&nbsp;run and you new rules will be implemented =
+immediately.</FONT></P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3DTahoma =
+color=3D#0000ff=20
+size=3D2></FONT>&nbsp;</P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3DTahoma =
+color=3D#0000ff=20
+size=3D2>simple cron scripts with drop or deny rules set to run at times =
+you wish=20
+to deny access will restrict the users. there may be an easy way not =
+sure?.=20
+</FONT></P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3DTahoma =
+color=3D#0000ff=20
+size=3D2></FONT>&nbsp;</P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3DTahoma =
+color=3D#0000ff=20
+size=3D2></FONT>&nbsp;</P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><FONT face=3DTahoma =
+color=3D#0000ff=20
+size=3D2>hope this points you in the rigth direction.</FONT></P></DIV>
+<DIV>------------------------------------------------<BR>Paul=20
+Cousins<BR>Canterbury Computer Services<BR><A=20
+href=3D"mailto:paul@canterburycomputerservices.co.uk">paul@canterburycomp=
+uterservices.co.uk</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<BLOCKQUOTE dir=3Dltr=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #0000ff 2px solid; MARGIN-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3Dalien@aol.com.pk href=3D"mailto:alien@aol.com.pk">Tariq =
+Anwer</A>=20
+</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
+  title=3Dnetfilter@lists.netfilter.org=20
+  =
+href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
+rg</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Monday, August 11, 2003 =
+9:17=20
+  AM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> [iptables] howto bind =
+Mac to ip=20
+  address</DIV>
+  <DIV><BR></DIV>
+  <DIV><FONT face=3DArial size=3D2>Hi!</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">I=92m a new to =
+Linux, I want to=20
+  setup Linux NAT box for a small LAN with selective services to allow =
+like only=20
+  browsing for staff and other services for management like ftp msn =
+chatting=20
+  etc.</P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in =
+0pt">&nbsp;<o:p></o:p></P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">1.&gt; <SPAN=20
+  style=3D"mso-spacerun: yes">&nbsp;</SPAN>I want to bind each MAC =
+address to his=20
+  or her assigned IP address so nobody should mess around to change his =
+or her=20
+  IP=92s.</P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in =
+0pt">&nbsp;<o:p></o:p></P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">2.&gt; I want to =
+allow=20
+  selective MAC addresses each time, so they are not allowed to use it =
+all the=20
+  time or I can block them whenever I want to.</P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in =
+0pt">&nbsp;<o:p></o:p></P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">I will highly =
+appreciate if=20
+  anybody could help me or direct me to any web site or article to build =
+this=20
+  Box successfully.</P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in =
+0pt">&nbsp;<o:p></o:p></P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">Best regards,</P>
+  <P class=3DMsoNormal style=3D"MARGIN: 0in 0in =
+0pt">&nbsp;<o:p></o:p></P>
+  <P class=3DMsoNormal=20
+style=3D"MARGIN: 0in 0in 0pt">Alien</P></DIV></BLOCKQUOTE></BODY></HTML>
 
---=====================_331242942==.ALT--
+------=_NextPart_000_000E_01C35FFC.63E73540--
+
 
 
