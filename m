@@ -1,11 +1,12 @@
-From: "Lombardo Federico" <egopfe@hotmail.com>
-Subject: Re: Re: how to drop out of state packets
-Date: Thu, 17 Jul 2003 17:24:16 +0200
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Microsoft clients logon
+Date: Thu, 17 Jul 2003 09:17:56 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law14-OE39TcS51LfJv00009797@hotmail.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E35AA@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,32 +16,14 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: monz@danbbs.dk, Netfilter <netfilter@lists.netfilter.org>
 
-but, If I put these rule for first for example:
+I can't say for sure what the problem is, but the best advice I can give
+is to LOG all traffic to that server that is not on those ports. You may
+see a very blatant pattern about what you aren't sending through.
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -m state --state NEW -p tcp ! --syn -j DROP
+PS: you also need udp/tcp 53 DNS, or active directory gets fcked up.
+Maybe even WINS (tcp 42) is good if you have some legacy stuff.
 
-these mean for connection tracking that if I receive a packet, with all flag
-not equal to SYN, that not belongs to any ESTABLISHED or RELATED connection,
-netfilter will DROP the packet.
-
-so, I think that this mean that it will drop any out of state packets, also
-ACK out of state, isnt'it ?
-
-
-
->Le lun 07/07/2003 =E0 17:38, Lombardo Federico a =E9crit :
->> INVALID state also matches ACK out of state packets ?
->
->Unless you've patched your kernel with tcp-no-pickup patch, no.
->
->--=20
->C=E9dric Blancher  <blancher@xxxxxxxxxxxxxxxxxx>
->Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux - Cartel S=E9curit=
-=E9
->T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
->PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
