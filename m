@@ -1,37 +1,45 @@
-From: Daniele Gallarato <kaihansen@email.it>
-Subject: Problem with http authentication
-Date: Thu, 23 Oct 2003 18:24:07 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F9800A7.9070300@email.it>
-Reply-To: kaihansen@email.it
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: Bug/Problem with DNAT on OUTPUT chain (-t nat -A OUTPUT) that
+ breaks routing? (fwd)
+Date: Thu, 23 Oct 2003 19:09:17 +0200 (CEST)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0310231903050.3281-100000@filer.marasystems.com>
+References: <Pine.LNX.4.44.0310221957110.29188-100000@kinison.puremagic.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.44.0310221957110.29188-100000@kinison.puremagic.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Evan Harris <eharris@puremagic.com>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Hi all!
+On Wed, 22 Oct 2003, Evan Harris wrote:
 
-I've a singular problem with netfilter... All work well, but in some 
-Internet Sites there's a problem of authentication...
+> According to the documentation for iptables, it appears that the OUTPUT
+> chain on the nat table should happen before the routing decision is made,
+> but that appears to not be the case.  Is this a bug, or are the docs wrong?
+> And if the docs are wrong, what is the correct way to accomplish this?
+> 
+> I am using a stock linux kernel 2.4.20, with iptables 1.2.8.
 
-I write in the two fields username and password and, if they are 
-correct, browser reload the page; if password is wrong, else, it write 
-an error message...
+Is your kernel patched with p-o-m from iptables 1.2.8, or is it really a 
+stock 2.4.20 kernel without any patches?
 
-Anyone ave an idea?
+You might want to try upgrading with at least the current p-o-m patches..  
+there has been numerous fixes to NAT of local traffic not too long ago.
+Also make sure you have the kernel option for NAT of local traffic
+enabled.
 
-Thanks, d
-
-
+Regards
+Henrik
 
 
