@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Question to the list/maintainers....
-Date: Fri, 3 Oct 2003 12:19:55 +0200
+Subject: Re: iptables-1.2.8-20030929 does not compile connmark match lib module
+Date: Fri, 3 Oct 2003 12:30:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031003101955.GU5758@sunbeam.de.gnumonks.org>
-References: <200310011918.40436.Alistair@nerdnet.ca>
+Message-ID: <20031003103031.GY5758@sunbeam.de.gnumonks.org>
+References: <3F79D80E.2010903@uga.com.br>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LMyZIZ/7CYeQWiVH"
+	protocol="application/pgp-signature"; boundary="6+nW2YxI2ktSxLND"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200310011918.40436.Alistair@nerdnet.ca>
+In-Reply-To: <3F79D80E.2010903@uga.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +19,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Alistair Tonner <Alistair@nerdnet.ca>
-Cc: netfilter@lists.netfilter.org
+To: Carlo Pires <carlo@uga.com.br>
+Cc: netfilter@lists.samba.org
 
 
---LMyZIZ/7CYeQWiVH
+--6+nW2YxI2ktSxLND
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 01, 2003 at 07:18:40PM -0400, Alistair Tonner wrote:
-> 	Are the updates in 2.4.22 likely to fix the occasional DCC send/recieve=
+On Tue, Sep 30, 2003 at 04:22:54PM -0300, Carlo Pires wrote:
+> Well, after compile k2.4.22 with patch-o-matic-20030929 from snapshot I=
 =20
-> errors that my natted users have been experiencing ( DCC connection reque=
-sts
-> 	come through, but cannot be seen by the client, only by the server and
-> 	the NATTING host) -- this is an intermittent problem that I was
-> 	laying at the foot of the client until I noted that the actual
-> 	client to client connection was never built in the conntrack
-> 	table?
+> had some problems to compile iptables-1.2.8-20030929. The match lib=20
+> module libipt_connmark didn't compile.
+>=20
+> iptables-1.2.8-20030929 seens to lack some .xxx-test file in extensions=
+=20
+> after I check this I found missing the following files:
+>=20
+> .NETLINK.test
 
-please look at the irc related patch in the new patch-o-matic release,
-that fixes a particular 'bug' in case mIRC is configured erroneously on
-the client side.
+This file is perfectly included in my  CVS tree.
+
+> .connmark-test
+
+this is no longer needed, since ipt_connmark.h is included in the
+iptables/include/linux/netfilter_ipv4 directory.
+
+If you have any compile errors, please give me a complete output of your
+'make' process, including the exact make commandline you used.
+
+> Then I just put these files from iptables-1.2.8.tar.bz2 package to=20
+> extensions dir of iptables-1.2.8-20030929 package and everything=20
+> compiled well.
+
+this might be a workaround, but it is _not_ the solution.
+
+> []s
+> Carlo
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -53,17 +69,17 @@ the client side.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---LMyZIZ/7CYeQWiVH
+--6+nW2YxI2ktSxLND
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/fU1LXaXGVTD0i/8RAlX5AKCjrwI7g9q49rK3qKlEngb7xftEgwCfSLZn
-nD9K4bEHbaTaqeRTmN/jtZA=
-=Ox1n
+iD8DBQE/fU/HXaXGVTD0i/8RAo4LAKCLuNCCTPPZgsq+qYaoVUg/u+JL1wCfeBdY
+bxsVHCiE1ufOFrzgOcxsmmc=
+=8mni
 -----END PGP SIGNATURE-----
 
---LMyZIZ/7CYeQWiVH--
+--6+nW2YxI2ktSxLND--
 
