@@ -1,8 +1,8 @@
 From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: How to ACCEPT or DENY or DROP and also LOG in the same rule ?
-Date: Thu, 4 Jul 2002 14:56:07 +1000
+Subject: RE: eDonkey - DNAT not working
+Date: Thu, 4 Jul 2002 14:57:37 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA21E@JUPITER>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA21F@JUPITER>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
@@ -16,9 +16,11 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'Orca J.'" <orca_cs@hotmail.com>, netfilter@lists.samba.org
+To: 'Christian Hubinger' <a9806056@unet.univie.ac.at>, netfilter@lists.samba.org
 
-write the rules twice and the first one is for -j LOG... pretty simple..
+tcpdump your packets coming in
+also are you logging all dropped packets and if not, you better otherwise
+it's probably something something else as well....
 
 thanks,
 George Vieira
@@ -29,21 +31,45 @@ http://www.citadelcomputer.com.au
 
 
 -----Original Message-----
-From: Orca J. [mailto:orca_cs@hotmail.com]
-Sent: Thursday, 04 July 2002 2:31 PM
+From: Christian Hubinger [mailto:a9806056@unet.univie.ac.at]
+Sent: Thursday, 04 July 2002 11:46 AM
 To: netfilter@lists.samba.org
-Subject: How to ACCEPT or DENY or DROP and also LOG in the same rule ?
+Subject: eDonkey - DNAT not working
 
 
-Hi
-  I want to both DENY and LOG in the same rule ? or ACCEPT and LOG , or DENY
+Hi!
 
-and LOG
-Thanks
+I try to get my eDonkey Client running so I need to nat the address of my 
+gateway to the local machine where the donkey client is running.
+
+Here are my eDonkey IPTables lines:
+
+$IPT -t nat -A PREROUTING -p tcp -m state --state NEW,RELATED,ESTABLISHED 
+--dport 4661 -j DNAT --to-destination 192.168.0.2:4661
+
+$IPT -t nat -A PREROUTING -p tcp -m state --state NEW,RELATED,ESTABLISHED 
+--dport 4662 -j DNAT --to-destination 192.168.0.2:4662
+
+$IPT -t nat -A PREROUTING -p udp -m state --state NEW,RELATED,ESTABLISHED 
+--dport 4665 -j DNAT --to-destination 192.168.0.2:4665
+
+when trying the test on this link
+http://www.preinheimer.com/edonkey/serverlist/connectiontest.cgi
+
+I allways get this error: 
+error on ip 62.178.198.103!
 
 
-_________________________________________________________________
-MSN Photos is the easiest way to share and print your photos: 
-http://photos.msn.com/support/worldwide.aspx
+I can't understand why this is not working as it sould exactly do what's 
+written on the eDonkey website.
+
+I'll be very thankfull for any help i can get.
+
+greetings,
+			chris
+-- 
+Windows is a 32 bit shell for a 16 bit extension to an 8 bit
+Operating System designed for a 4 bit microchip by a 2 bit
+company which can't stand one bit of cometition.
 
 
