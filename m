@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: understanding ip_conntrack entry
-Date: Thu, 3 Oct 2002 23:40:02 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: cbq.init and iptables NAT routing
+Date: 04 Oct 2002 02:30:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021003224005.VUHG7631.mta03-svc.ntlworld.com@there>
-References: <000f01c26b18$2d114990$3201a8c0@leonardo>
+Message-ID: <1033691456.3545.22.camel@elendil>
+References: <Pine.LNX.4.33.0210031314220.27868-100000@ts1.alberni.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000f01c26b18$2d114990$3201a8c0@leonardo>
+In-Reply-To: <Pine.LNX.4.33.0210031314220.27868-100000@ts1.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +17,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Aaron Clausen <maureen-taocow@alberni.net>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 03 October 2002 9:05 pm, Leonardo Rodrigues ( listas ) wrote:
+I checked the code, and discovered I was wrong. Shaping is done _after_
+Netfilter, i.e. after POSTROUTING chain.
 
->     Hello Guys,
->
->     I'd like your help to understand this entry from
-> /proc/net/ip_conntrack:
->
-> tcp      6 325849 ESTABLISHED src=192.168.10.1 dst=192.168.229.25
-> sport=53699 dport=80 [UNREPLIED] \
->     src=192.168.229.25 dst=192.168.10.1 sport=80 dport=53699 use=1
->
->     Well ...... 192.168.10.1 is my iptables box and 192.168.229.25 is one
-> of my remote machines. My question is .... if this connection is marked as
-> ESTABLISHED, shouldnt it appear on 'netstat -an' entries ??? I think it
-> should, but it's not appearing there .....
+I just tried this :
 
-You might think so, but no, in this case your connection won't show up in 
-netstat because it hasn't completed a TCP handshake.   The description 
-'ESTABLISHED' in connection tracking is not the same as 'established' in 
-TCP-speak :-(
+RULE=3D192.168.10.1/32
 
-The clue here is in the note above: [UNREPLIED].
+I ping 192.168.10.1 and stats are growing, so it matches.
+Then, I'll DNAT in OUTPUT 192.168.10.1 to 192.168.10.12
 
-As you can see there was a packet in each direction (the one with 
-src=192.168.10.1 and the one with src=192.168.229.25) and this is what causes 
-netfilter to consider the state of the connection to be ESTABLISHED - at 
-least one packet has been seen each way on the link.   However if you haven't 
-successfully completed the TCP 3-way handshake: SYN; SYN-ACK; ACK then it 
-won't be regarded as an established connection by netstat (and indeed it 
-isn't as far as the TCP/IP stack is concerned).
+iptables -t nat -A OUTPUT -d 192.168.10.1 -j DNAT --to 192.168.10.12
 
-It's impossible to tell from the conntrack entry quite what packets went each 
-way; to learn this you'd have to add some LOGging rules to your firewall or 
-run a packet sniffer on one of the connections to see exactly what packets 
-with what flags set actually go in each direction.
+It does not match anymore =3D> DNAT is done _before_ shaping.
 
-Antony.
+No I flush
 
--- 
+iptables -t nat -F
 
-This is not a rehearsal.
-This is Real Life.
+then set
+
+RULE=3D192.168.10.11/32,
+
+I ping 192.168.10.1, and counters are growing. It matches. Then I set
+SNAT :
+
+iptables -t nat -A POSTROUTING -d 192.168.10.1 -j SNAT --to 192.168.10.2
+ip addr add 192.168.10.2 dev eth0
+
+So I use 192.168.10.2 to emit py pings. And my class is no more reached
+=3D> SNAT is done _before_ shaping also...
+
+If I set :
+
+RULE=3D192.168.10.2/32,
+
+Class is reached again. So I was wrong... Sorry.
+
+To answer your message :
+
+Le jeu 03/10/2002 =E0 22:15, Aaron Clausen a =E9crit :
+> iptables -t nat -A PREROUTING -i eth0 -d 64.251.69.2 -j DNAT --to 10.10=
+2.106.2
+
+eth0 : RULE=3D64.251.69.2,
+eth1 : RULE=3D10.102.106.2
+
+> iptables -t nat -A POSTROUTING -o eth0 -s 10.102.106.2 -j SNAT --to 64.=
+251.69.2
+
+eth0 : RULE=3D64.251.69.2,
+eth1 : RULE=3D10.102.106.2
+
+[...]
+
+> iptables -t nat -A POSTROUTING -o eth0 -s 10.101.104.0/21 -j MASQUERADE
+
+eth0 : RULE=3D<eth0_IP>,
+eth1 : RULE=3D10.101.104.0/21
+
+Hope this will help you at last, and sorry again for the mistake. Going
+to bed now, seems to be high time ;)
+
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
+t=E9
+T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
