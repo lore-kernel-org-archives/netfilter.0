@@ -1,9 +1,10 @@
-From: Khanh Tran <khanh@slc.edu>
-Subject: RE: problem with DNAT ..
-Date: Mon, 17 Feb 2003 11:17:59 -0500
+From: Luis Miguel Cruz Miranda <luismi@b2bi.es>
+Subject: can't patch with patch-o-matic
+Date: Mon, 17 Feb 2003 17:27:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5F2@EXCHANGE>
+Message-ID: <5.2.0.9.2.20030217171848.01c2e5c0@172.26.0.8>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,72 +15,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Henti Smith <bain@tcsn.co.za>, netfilter@lists.netfilter.org
-
-Try:
-
-$IPTABLES -A FORWARD -i $ETH -d $MAIL_SERVER --protocol tcp --dport 80 -j
-ACCEPT
-$IPTABLES -A PREROUTING -t nat -p tcp -d $WEBMAIL_IP --dport 80 -j DNAT --to
-$MAIL_SERVER:80
-
-Khanh Tran
-Network Operations
-Sarah Lawrence College
-
-
------Original Message-----
-From: Henti Smith [mailto:bain@tcsn.co.za]
-Sent: Monday, February 17, 2003 11:06 AM
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
-Subject: problem with DNAT ..
+
+Hi all,
+
+I am using patch-o-matic to patch a 2.4.20 kernel but I am having some=20
+problems here:
+
+For example:
+
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
+Testing patch extra/tcp-window-tracking.patch...
+    Placed new Makefile line
+Failed to patch copy of /usr/src/linux
+TEST FAILED: patch NOT applied.
+
+I want to use that patch but I don't know why I can't.
+I have these patches applied:
+
+Already applied: submitted/01_2.4.19
+                  submitted/02_2.4.20
+                  submitted/ipt_multiport-invfix
+                  submitted/ipt_ULOG-mac_len-fix
+                  pending/01_ip_conntrack_proto_tcp-lockfix
+                  pending/02_newnat-udp-helper
+                  pending/03_REJECT-fwspotting-phrack60-fix
+                  pending/04_ftp-conntrack-msg-fix
+                  pending/05_ECN-tcpchecksum-littleendian-fix
+                  base/fuzzy
+                  base/iplimit
+                  base/ipt_unclean-ubit
+                  base/ipv4options
+                  base/IPV4OPTSSTRIP
+                  base/mport
+                  base/NETLINK
+                  base/NETMAP
+                  base/nth
+                  base/pool
+                  base/psd
+                  base/quota
+                  base/random
+                  base/realm
+                  base/SAME
+                  base/time
+                  base/TTL
+                  extra/condition
+                  extra/CONNMARK
+                  extra/h323-conntrack-nat
+                  extra/ip_tables-proc
+                  extra/ipt_TARPIT
+                  extra/mms-conntrack-nat
+                  extra/pptp-conntrack-nat
+                  extra/recent
+                  extra/ROUTE
+                  extra/rsh
+                  extra/string
+                  extra/talk-conntrack-nat
+                  extra/tftp-conntrack-nat
+
+What is wrong?
 
 
-hi all 
-
-I have some DNAT rules which seems not to be working and I don't understand
-why not here is the rules : 
-
-I have aliased the IP's on the firewall in front of the servers to control
-access and such (this cannot be changed)
-
-$IPTABLES -t nat -I PREROUTING -d $WEBMAIL_IP 		-p tcp --dport 80
--j DNAT --to-dest $MAIL_SERVER:80
-$IPTABLES -t nat -I PREROUTING -d $WEBMAIL_IP 		-p tcp --dport 443
--j DNAT --to-dest $MAIL_SERVER:443
-$IPTABLES -t nat -I PREROUTING -d $LIVE_IP  		-p tcp --dport 110
--j DNAT --to-dest $MAIL_SERVER:110
-$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP1 	-p tcp --dport
-0:65535 	-j DNAT --to-dest $IMSI_INT_IP1
-$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP2 	-p tcp --dport
-0:65535 	-j DNAT --to-dest $IMSI_INT_IP2
-$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP1 	-p udp --dport
-0:65535 	-j DNAT --to-dest $IMSI_INT_IP1
-$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP2 	-p udp --dport
-0:65535 	-j DNAT --to-dest $IMSI_INT_IP2
-
-in the output of iptables -t nat -L I get all the rules as they should be : 
-
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       udp  --  anywhere             external      udp to:internal
-DNAT       udp  --  anywhere             external      udp to:internal
-DNAT       tcp  --  anywhere             external      tcp to:internal
-DNAT       tcp  --  anywhere             external      tcp to:internal
-DNAT       tcp  --  anywhere             external      tcp dpt:pop-3
-to:internal:110
-DNAT       tcp  --  anywhere             external      tcp dpt:https
-to:internal:443
-DNAT       tcp  --  anywhere             external      tcp dpt:www
-to:internal:80
-
-But when I telnet to port 110 on external I don't get to the internal port
-110 nor with any of the other stuff.
-Can anybody suggest places to look at why not ? 
-
-Henti 
+Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+                                         |       C/A - Parcela 86-C
+Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
 
 
 
