@@ -1,12 +1,12 @@
-From: James Garrison <jhg@athensgroup.com>
-Subject: Re: DHCP and conntrack?
-Date: Fri, 07 Jun 2002 12:43:38 -0500
+From: "Stuart W. Card" <stu@critical.com>
+Subject: RE: Lowest spec processor that netfilter will run on
+Date: Fri, 07 Jun 2002 13:38:52 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D00F0CA.5030501@athensgroup.com>
-References: <3D00E6A3.30006@athensgroup.com> <20020607173835.GA599@escape.ca>
+Message-ID: <5.1.0.14.0.20020607133448.00ae3b60@pop3.norton.antivirus>
+References: <001201c20dd0$314a3260$020aa8c0@matttm9svd8lrh>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPKEIECFAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,22 +17,32 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-So what you're saying is that there's no "ip_conntrack_dhcp" function
-builtin, analogous to ip_conntrack_ftp, that would maintain the
-relationship in spite of the different port numbers, right?
 
-sshore@escape.ca wrote:
-> Since dhcp requests go out on port 68, and responses come back on port 67, 
-> connection tracking will not relate them. you'll need to explicitly open 
-> up a hole for the returning response.
+>----- Original Message -----
+>From: "John Crowhurst" <fyremoon@fyremoon.net>
+>To: <netfilter@lists.samba.org>
+>Sent: Thursday, June 06, 2002 6:47 PM
+>Subject: Lowest spec processor that netfilter will run on
+>
+> > This is a question that has been bugging me, what is the lowest spec
+> > processor that netfilter can reliably run on?
+> > I'm meaning non-x86 type processor.
 
--- 
-James Garrison                                Athens Group, Inc.
-mailto:jhg@athensgroup.com                    5608 Parkcrest Dr
-http://www.athensgroup.com                    Austin, TX 78731
-PGP: RSA=0x92E90A3B DH/DSS=0x498D331C         (512) 345-0600 x150
+We've done 16 mbps routing, with a bunch of special hardware related
+processing, on 486SX-25s, so you can drop down pretty low on x86 CPUs,
+RAM is more of an issue (and that depends upon how much you pare down
+the kernel and daemons).
 
+I think the question may really be, can you run on, for instance, a StrongARM,
+with minimal RAM, and a little flash instead of a big hard drive? I'd sure 
+like to
+know, there are cool network devices that can be made affordable if so...
+
+Stuart W. Card, Chief Scientist & Vice-President, Critical Technologies Inc.
+Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica NY 13501
+315-793-0248 x141  FAX -9710  <stu@critical.com>  http://www.critical.com
 
 
