@@ -1,9 +1,8 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: A Proper Syntax For iptables?
-Date: Sun, 22 Sep 2002 23:16:50 +0200
+From: Jared Brick <jbrick@videotron.ca>
+Subject: Chain traversal with multiple internal IP subnets.
+Date: 22 Sep 2002 15:54:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8E3342.9070008@fugmann.dhs.org>
-References: <OF999C1019.C1FE4849-ON88256C3C.004F0D1E-88256C3C.0051EED6@deepwoods.com> <0cc601c2624c$ad4b8780$c6b22543@repligate> <3D8E05CF.8040504@fugmann.dhs.org>
+Message-ID: <18421.089629601$1032730803@news.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,19 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Anders Fugmann <afu@fugmann.dhs.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Anders Fugmann wrote:
-> 
-> Not everyone brags about how dum they are, but you just got off the scale.
-Please do ignore this mail.
-I apoligize for the content and for sending it. I read the previous 
-posting too quick, and thought this was Jim who wrote it.
-I have wirtten to Carol Anne Ogdin directly, and explained the error.
+Hello everybody,
 
-Sorry for the inconvinience.
-Anders Fugmann
+I have (for various reasons) a LAN with two gateways that internally use
+three different IP subnets (don't ask). Most nodes within the LAN have a
+single IP address and use one of the two gateways.
+
+One gateway is a router with an IP address in each subnet that does no
+filtering. Most hosts use this as there default gateway, and it of
+course has no problem routing between the three subnets.
+
+However the other gateway is a Linux box with two IP addresses (it only
+acts as a gateway for two of the subnets)  using Iptables. The gateway
+itself has static routes so that it can route between the different
+subnets, including the subnet for which it has no IP address. My
+question in which chain will a packet traverse when it is traveling
+between two different internal subnets. I think it is the FORWARD chain
+but my colleague feels it would be the OUTPUT chain. I ask because I am
+having trouble routing between the internal networks.
+
+Also note that I am well aware that connection tracking is useless in
+this environment (because of the different default gateways) and all the
+chains are set up before any connection tracking is going on.
+
+If anyone has any experience with a similar set up, any help would be
+much appreciated.
+
+Thanks,
+
+Jared
+
 
 
