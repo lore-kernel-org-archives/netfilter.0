@@ -1,10 +1,13 @@
-From: "Mojgan Masroor" <masroor@cc.iut.ac.ir>
-Subject: Howto Make Gateway with iptables?
-Date: Wed, 10 Mar 2004 11:05:17 +0330
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Did MASQUERADE not work ?
+Date: Wed, 10 Mar 2004 08:52:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040310073428.M64644@cc.iut.ac.ir>
+Message-ID: <20040310075251.C9D5EF45@sterenborg.info>
+References: <00c001c40644$19931970$6cfaa8c0@Defiant>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00c001c40644$19931970$6cfaa8c0@Defiant>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,23 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: 'Kevork' <rxlm@comintec.com.ar>, netfilter@lists.netfilter.org
+
+> Iptables script is the same as when it worked.
+> MASQ line is:
+> iptables -t nat -A POSTROUTING -s 192.168.250.0/24 -d 
+> $internet -j MASQUERADE
+
+What is "-d $internet" ?
+If $internet is 0.0.0.0 (as it should be) then you don't need to specify it
+as this is assumed.
+
+Did you try SNAT :
+iptables -t nat -A POSTROUTING -o <if_inet> \
+  -s 192.168.250.0/24 -j SNAT --to-source <ip_inet>
+
+Do you have a FORWARD rule in place that allows MASQ/SNAT, or do you have
+FORWARD policy set to ACCEPT (which you should not do) ?
+
+Do you have "echo 1 > /proc/sys/net/ipv4/ip_forward" ?
 
 
-Hi, 
- I have a linux redhat9.0 - I want to create an gateway between our 
-sections  and central site. 
-It have 4 ethernet cards. 2 cards for internal LANs with 2 invalid sunbet 
-192.168.101.x and 192.168.102.x range. 3th card for intranet use such connect 
-to our web-server or email-server, 4th card for internet connection and when 
-they want go to internet.i want also close all extra ports and close udp + 
-icmp protocols. 
-How i could do this with IPTABLES Rules? Anybody have such this schema? 
-Any help would be appriciated 
-
-thanks a lot, 
-mojgan 
-
+Gr,
+Rob
 
 
