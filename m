@@ -1,7 +1,7 @@
 From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Dynamic DNS
-Date: Wed, 9 Mar 2005 09:53:07 +0100
-Message-ID: <C530C43619DA8F459D7A1A4DADE00EB1DD16@knowledge.wizdom.nu>
+Subject: RE: Fedora 3 + netfilter 1.2.11 + FXP
+Date: Wed, 9 Mar 2005 09:56:10 +0100
+Message-ID: <C530C43619DA8F459D7A1A4DADE00EB1DD17@knowledge.wizdom.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-class: urn:content-classes:message
@@ -18,76 +18,71 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Why don't you just reserve an IP address for this client in your DHCP
+server? That would be my choice, to ensure the client would have a
+static IP.
+Iptable  always adds IP's to chains, never hostnames. It actually does a
+reversed look-up when you do an iptables -N.
+You could ofcourse also write some spiffy script, to update your chains
+with the clients new IP address, when it changes, but that would be
+overkill I think.
+BTW, ssh when used with pub/priv key authentication is perfectly safe.
 
-You are indeed right. Though I have definitely enabled FXP in my ftp
-server, I see iptables dropping the active connections the server makes
-to the remote server.=20
+Hope this helps.
 
-The FXP client displays:
-PORT command ok
-Time-out opening connection.
+PS. Disregard last one I sent on this one, belongs to other topic.
 
-When I do some tcpdumping, I can see the PORT command being sent. The
-ftp server tries to open a connection, but packets get dropped because
-they're UNRELATED to the ftp connection (probably due to PORT command
-containing different IP then client).
-Now I have only a couple of people on the ftp server in my DMZ. So I
-could very easily configure the server to use a range of say 100 ports
-for active ftp connections and open them up to the outside world. It
-would however be much neater to have iptables connection tracking allow
-the fxp connections.
-That's why I just need a yes / no answer on the question. Any
-developpers here, that can tell, or should I rather contact RedHat, to
-ask how they compiled iptables?
-
-Thanks for the answer so far.
+Why does list e-mail adress appear in CC, not in TO. This is very
+unhandy replying to the list. I now replied twice to people personally.
+Appologies for the spam.
 
 -----Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Kenneth
-Kalmer
-Sent: Wednesday, March 09, 2005 9:04 AM
-To: Brent Clark
+From: Kenneth Kalmer [mailto:kenneth.kalmer@gmail.com]=20
+Sent: Wednesday, March 09, 2005 9:11 AM
+To: Sietse van Zanen
 Cc: netfilter@lists.netfilter.org
-Subject: Re: Dynamic DNS
+Subject: Re: Fedora 3 + netfilter 1.2.11 + FXP
 
-On Wed, 09 Mar 2005 08:29:23 +0200, Brent Clark
-<bclark@eccotours.dyndns.org> wrote:
-> Sebastian Docktor wrote:
-> > Hi,
-> >
-> > I want to allow a Dynamic DNS Client to Access the SSH-Server
-> > on my Firewall. But I don't want to open SSH for all IPs,
-> > Is it possible that iptables always looks up the ip address from the
-> > hostname, so that only the ip has access which is registrated under
-> > the dyndns?
-> >
-> >
->=20
-> Hi
->=20
-> This may be a ridiculous suggestion.
->=20
-> How about basing it on MAC address.
->=20
-> Stupid I know.
->=20
-> Buts all I could think off.
->=20
-> Brent Clark
->=20
->=20
+I'm not too sure, but isn't FXP enabled or disabled in the FTP server?
+As I understand it, when you do an FXP transfer you're asking FTP
+server A to upload on your behalf to FTP server B. It's a normal FTP
+'transaction' in every sense except that the files don't originate
+from your box.
 
-I'm not too sure either, but I do know that iptables resolve the names
-the moment the rule is added, not again. Unless you run the rule every
-minute to make sure it's updated constantly.
+I could be wrong, but I hope this helps.
 
-Can't you setup SSHD to only allow connections from certain hosts?
-Then again sshd might use the reverse lookup of the ip, which isn't
-always the dyndns name...
 
-Will you let us know how you achieve this?
+On Mon, 7 Mar 2005 13:03:23 +0100, Sietse van Zanen <sietse@wizdom.nu>
+wrote:
+> Hello,
+>=20
+> I am running a standard installation of Fedora Core 3
+(2.6.10-1.770.FC3)
+> & netfilter 1.2.11
+>=20
+> Is there anybody here that can give me an answer to the following
+> question:
+>=20
+> Is it possible to enable FXP in this configuration? (above config, no
+> new kernel compiling, patching etc)
+>=20
+> If possible, how can I enable it?
+>=20
+> I tried putting add options ip_conntrack_ftp fxp=3D1 in
+/etc/modules.conf,
+> but this doesn't help
+>=20
+> Spent all morning wading through the web and all the years old
+> documentation available, but I haven't found what I was looking for.
+> Found some stuff about this ftp-fxp patch, but that too seems legacy
+for
+> very old version.
+>=20
+> Greets,
+>=20
+> Sietse
+>=20
+>=20
 
 
 --=20
@@ -95,5 +90,4 @@ Will you let us know how you achieve this?
 Kenneth Kalmer
 kenneth.kalmer@gmail.com
 http://opensourcery.blogspot.com
-
 
