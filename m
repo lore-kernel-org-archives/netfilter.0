@@ -1,12 +1,12 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
+From: "Patrick Ahler" <patrick@vikus.com>
 Subject: RE: Redundant netfilter gateway
-Date: Thu, 17 Jun 2004 15:37:46 -0700
+Date: Thu, 17 Jun 2004 19:50:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E336@alderaan.smgtec.com>
+Message-ID: <810BC538117E9F4E9BB152E0C100DF1F0F46CC@farmer.vikus.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +17,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: =?iso-8859-1?Q?G=FCnter_Zimmermann?= <guenter@guenter-zimmermann.com>, "B. McAninch" <bmcaninch@penson.com>
-Cc: Patrick Ahler <patrick@vikus.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> I think this is the only realy full redundant opensource firewall
-> available.=20
+=20
+I will definitely check out the linux virtual server. I'm surprised
+there hasn't been more demand for a netfilter failover module though, I
+know I would sleep better at night if there was. =3D)
 
-I've used linux-ha's heartbeatd in the past. I've had mixed results, so =
-I can't recommend it before you try it. It does perform  automatic MAC =
-failover with gratuitous arp's. I used it on a 5 net homed setup and I =
-found issues with the takeover. Maybe a 2 network link would behave =
-better.
 
-SARU I believe was never actually implemented, or at least not yet. The =
-Linux Virtual Server seems to have 'something' but I can't say that I =
-know what it does. The netfilter module listed in their download page =
-seems to indicate that its an active state failover.
+Patrick Ahler
+Systems Administrator
+Vikus Corporation=20
 
-Harald Welte is also developing a netfilter failover module, but I =
-haven't heard much of that in the past 6 months.
+M 423.314.8910
+W 423.954.3378
+F 423.954.3375
 
