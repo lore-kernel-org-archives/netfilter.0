@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Problem with counting
-Date: Wed, 9 Oct 2002 22:22:41 +0100
+Subject: Re: curious about address specification and port specification
+Date: Wed, 9 Oct 2002 22:13:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021009212244.KUSR459.mta02-svc.ntlworld.com@there>
-References: <Pine.LNX.4.44.0210070023330.17224-100000@balthasar.nuitari.net>
+Message-ID: <20021009211337.KJPF459.mta02-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210090709200.13728-100000@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210070023330.17224-100000@balthasar.nuitari.net>
+In-Reply-To: <Pine.LNX.4.44.0210090709200.13728-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On Tuesday 08 October 2002 5:44 am, Nuitari wrote:
+On Wednesday 09 October 2002 12:14 pm, Robert P. J. Day wrote:
 
-> On Sun, 6 Oct 2002, Antony Stone wrote:
-
-> > > iptables -P FORWARD ACCEPT
-> >
-> > Ugh :-(   Horrible.
-> >
-> > > for HOST in $INTERNAL_HOSTS; do
-> > >
-> > >         $IPTABLES -A FORWARD -o $EXTERNAL_INTERFACE -d $HOST -j ACCEPT
-> > >         $IPTABLES -A OUTPUT -o $EXTERNAL_INTERFACE -d $HOST -j ACCEPT
-> >
-> > Why would a packet ever leave your external interface, with a destination
-> > address of one of your internal machines ?
-> >
-> > >         $IPTABLES -A FORWARD -i $EXTERNAL_INTERFACE -s $HOST -j ACCEPT
-> > >         $IPTABLES -A INPUT -i $EXTERNAL_INTERFACE -s $HOST -j ACCEPT
-> >
-> > Why would a packet ever come in through your external interface with a
-> > source address of one of your internal machines ?
-> >
-> > What are these rules supposed to do ?
+>   more annoying questions, before i head out for the day:
 >
-> They are some rules I wrote after the exemple provided with bw_acct (see
-> below) didn't work well.
+> 1) is there anything meaningful about some sample address filter
+>    clauses i've seen that read "-s 0/0" or "-d 0/0"?
 
-I suggest you sort these out and make sure your firewall is doing what it is 
-supposed to (ie that the rules you have a processing packets in the way you 
-expect) before trying to extend the system further to do traffic counting as 
-well.
+No, this is not meaningful, and in my opinion should be removed from rules 
+because it only clutters them up and serves to confuse peope about what it 
+might mean.
 
-Antony
+>    doesn't
+>    this just mean no filtering on either source or destination?
+>    is there any value to these matches other than making it
+>    explicitly clear that no address filtering is being done?
+
+No.   -s 0/0 means "any source", and -d 0/0 means "any destination".
+
+> 2) in all of the docs i've read, the claim is that port matching is
+>    an implicit match within either UDP or TCP matching and that you
+>    *must* specify a protocol before you're allowed to specify ports.
+
+This is correct.   The --dport or --sport options are invalid without also 
+specifying -p tcp or -p udp
+
+>    however, i've certainly seen and used rules that refer to a port
+>    or ports without first specifying a protocol.  is the documentation
+>    just misleading here?
+
+Can you give an example of a rule which works, and which specified a port but 
+not a protocol ?
+
+Antony.
 
 -- 
 
-Documentation is like sex:
-when it's good, it's very very good;
-when it's bad, it's still better than nothing.
+Which part of 'apt-get dist-upgrade' do you not understand ???
 
