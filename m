@@ -1,11 +1,10 @@
-From: "jqb@markor.net" <jqb@markor.net>
-Subject: howto stop this packet
-Date: Fri, 14 Jan 2005 13:22:9 +0800
-Message-ID: <E1CpJuL-0003XK-00@deer.gmane.org>
-Reply-To: jqb@markor.net
+From: seberino@spawar.navy.mil
+Subject: not sure if 'iptables -Z' needed/useful/superfluous here..
+Date: Thu, 13 Jan 2005 22:03:27 -0800
+Message-ID: <20050114060327.GA8917@spawar.navy.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +15,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-netfilter=A3=A1
-    howto stop this packet on iptables firewall;
-tcpdump capture packet example:
-10:35:31.881722 IP 218.6.45.6.51755 > 228.71.74.201.7777: S=
- 1432831257:1432831257(0) win 16384 <mss 1460,nop,nop,sackOK>
+When I want to start from scratch in my firewall
+script I usually do this:
 
-10:35:36.214120 IP 219.147.192.18.1272 > 228.71.74.201.7777: S=
- 490321:490321(0) win 6400 <mss 1460,nop,nop,sackOK>
+$IPTABLES -t filter -F
+$IPTABLES -t mangle -F
+$IPTABLES -t nat    -F
 
-=A1=A1=A1=A1
+$IPTABLES -t filter -X
+$IPTABLES -t mangle -X
+$IPTABLES -t nat    -X
 
-Regards,=09
+I'm not sure if -Z switch does anything useful after this violent
+scrubbing of my iptables...
 
+$IPTABLES -Z
 
-xjjjk
-jqb@markor.net
-2005-01-14
+By the way... is this correct/better/wrong??
 
+$IPTABLES -t filter -Z
+$IPTABLES -t mangle -Z
+$IPTABLES -t nat    -Z
 
+I read man page on iptables but it still was not clear if I need
+-Z to 'reset the byte count' and other stuff like it says it will do.
+
+Thanks!
+
+Chris
 
