@@ -1,52 +1,51 @@
-From: "azeem ahmad" <azeem484@hotmail.com>
-Subject: nmblookup
-Date: Mon, 31 May 2004 19:26:49 +0000
-Sender: samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org
-Message-ID: <BAY15-F35VFu2mlWRFQ0002f375@hotmail.com>
+From: Frank Gruellich <frank@home.manuelm.org>
+Subject: Re: FW: Filtering multiple networks
+Date: Mon, 31 May 2004 21:23:51 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040531192351.GB26731@home.manuelm.org>
+References: <E1BUk4b-0006Wv-Cf@vishnu.netfilter.org> <20040531104524.GA26731@home.manuelm.org> <200405311319.33568.lists@edeca.net>
 Mime-Version: 1.0
-Return-path: <samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200405311319.33568.lists@edeca.net>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://lists.samba.org/mailman/listinfo/samba>,
-	<mailto:samba-request@lists.samba.org?subject=unsubscribe>
-List-Archive: <http://lists.samba.org/archive/samba>
-List-Post: <mailto:samba@lists.samba.org>
-List-Help: <mailto:samba-request@lists.samba.org?subject=help>
-List-Subscribe: <http://lists.samba.org/mailman/listinfo/samba>,
-	<mailto:samba-request@lists.samba.org?subject=subscribe>
-Errors-To: samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, samba@lists.samba.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-hi all
-when i start my firewall script it stops doing nmblookup. when this script 
-isnt running and i do
-#nmblookup host
-it resolves the name but whenever i start the script it doesnt. what the 
-problem can be
-i m using the script below
--------------------------------------------------------------------------------------------------------------------------------------
-iptables -F
-iptables -t nat -F
-iptables -P INPUT DROP
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
+* David Cannings <lists@edeca.net> 31. May 04:
+> On Monday 31 May 2004 10:45, Frank Gruellich wrote:
+> > * Markus Zeilinger <mz@sea.uni-linz.ac.at> 31. May 04:
+> > > - Thy is DROP bad here? As I see REJECT would send an error message
+> > > back to the source, but this would not make any sense on packets
+> > > coming on the WAN interface with private IP addresses, or am I wrong?
+> > [misconfigured box]
+> Can you please explain how a TCP RST or ICMP message is supposed to get 
+> back to a spoofed RFC 1918 (or otherwise reserved) address?
 
--------------------------------------------------------------------------------------------------------------------------------------
+What makes you think the address is spoofed?  I assumed somebody just
+configured its external interface wrong.  Some antique idea, that not
+all people are bad guys.
 
-Regards
-Azeem
+> Sending replies of any sort out of a WAN interface onto the Internet
+> to a reserved or private address is very bad practice.
 
-_________________________________________________________________
-Protect your PC - get McAfee.com VirusScan Online 
-http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
+Yes, okay, you are right.  Sorry, a reflex, when I see -j DROP.
 
+> Some would even argue that sending to unallocated space is bad.
+
+What do you mean with unallocated space?
+
+Thank you,
+ regards, Frank.
 -- 
-To unsubscribe from this list go to the following URL and read the
-instructions:  http://lists.samba.org/mailman/listinfo/samba
+Sigmentation fault
+
