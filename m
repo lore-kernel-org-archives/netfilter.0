@@ -1,10 +1,12 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: broadcasts through firewall
-Date: Thu, 6 Jan 2005 12:13:02 -0400
-Message-ID: <JKENKBGIPCFNFMNFENJPAEHICJAA.peter.marshall@caris.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Matching IPSEC encapsulated traffic with connection tracking
+Date: Thu, 6 Jan 2005 11:29:58 -0500
+Message-ID: <20050106162958.GA28501@bender.817west.com>
+References: <41DA5373.5080404@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <41DA5373.5080404@gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,25 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-I know this is not advisable .... and I am not intending to do it on my
-network ... (but I need to test it for a client).  Basically, we have a hasp
-key on a server in the DMZ.  This key is a server license key for one of our
-products.  They way it works is every 10 minutes a broadcast is sent from
-the application to find the HASP key, if it does not then the app stops.
-The problem is that broadcasts don't go through firewalls.  Is there a way
-to let a udp broadcast destined for a particular port go through the
-firewall and DNAT it to a particular address .... ?  I tried using a DNAT
-rule, but it did not seem to do anything.
+On Tue, Jan 04, 2005 at 09:27:31AM +0100, Robert Dahlem wrote:
+> Hi,
+> 
+> sorry, this is a bit lengthy ...
 
-$IPT -A PREROUTING -s 192.168.201.8 -p udp --dport 3047 -j
-DNAT --to-destination x.x.x.32
-$IPT -A FORWARD -d x.x.x.32 -p udp --dport 3047 -j ACCEPT
+<snip>
 
+are you running a 2.6 kernel (i can assume that you are, but you know
+what that makes us)?
 
-Any ideas ?
+if so, MARK your ESP packets in MANGLE PREROUTING, and use the mark to
+identify decrypted packets in your filter rules.
 
-Thanks
+hundreds of examples of this can be found through the list archives or
+google.
 
+-j
+
+--
+"Lisa, if you don't like your job you don't strike. You just go in
+ there every day and do it really half-assed. That's  the American way."
+        --The Simpsons
 
