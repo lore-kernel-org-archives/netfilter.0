@@ -1,13 +1,13 @@
-From: Romain Moyne <aero_climb@yahoo.fr>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: port translation
-Date: Sun, 11 Jan 2004 13:53:36 +0100
+Date: Sun, 11 Jan 2004 13:03:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40014750.5000300@yahoo.fr>
-References: <4001239D.7010904@yahoo.fr> <1073825033.761.1.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <200401111303.51859.Antony@Soft-Solutions.co.uk>
+References: <4001239D.7010904@yahoo.fr> <1073825033.761.1.camel@elendil.intranet.cartel-securite.net> <40014750.5000300@yahoo.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1073825033.761.1.camel@elendil.intranet.cartel-securite.net>
+In-Reply-To: <40014750.5000300@yahoo.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Cedric Blancher a =E9crit :
+On Sunday 11 January 2004 12:53 pm, Romain Moyne wrote:
 
->Le dim 11/01/2004 =E0 11:21, Romain Moyne a =E9crit :
-> =20
+> Ok. I begin to understand... Now I have corrected my rules :
+> iptables -t nat -A POSTROUTING -j SNAT -o ppp0 --to-source
+> My_ip_on_internet
+
+That looks better.
+
+> But now I have a new problem : My router, my http server and my
+> workstation are connected with a hub.
 >
->>I have a http server (debian 3.0) behind a router (debian 3.0). I have a =
-
->>problem when I want to log the visitor's IP of my website with PHP or=20
->>Perl or all language. I have always the IP of my router ! Somebody tell=20
->>me that I must do port translation but I have searched and I haven't=20
->>fand anything.
->>Can you help me ?
->>This is the rules of my router :
->>iptables -t nat -A PREROUTING -d MyIP -p tcp --dport 80 -j DNAT=20
->>--to-destination 192.168.0.3:80
->>   =20
->>
+>                       ppp0
+>               eth0
+> INTERNET--------------------192.168.0.1(router)
+> ---------------------------192.168.0.3 (http server)
+>   192.168.0.2 (workstation)
 >
->You have a problem here. This single rule does not prevent your
->webserver from seeing client IP as source, as you only modify
->destination IP.
->
->You may have a SNAT rule in POSTROUTING chain that is not restricting
->enough and also SNAT incoming traffic to your router's IP when it should
->not.
->
-> =20
->
-Ok. I begin to understand... Now I have corrected my rules :
-iptables -t nat -A POSTROUTING -j SNAT -o ppp0 --to-source My_ip_on_internet
+> I can't access to my webserver with my workstation and it very painful....
 
-But now I have a new problem : My router, my http server and my=20
-workstation are connected with a hub.
+Are you trying to access the webserver by IP address or by hostname?
 
-                      ppp0                                            =20
-              eth0
-INTERNET--------------------192.168.0.1(router)=20
----------------------------192.168.0.3 (http server)
-                                                                     =20
-                     |
-                                                                     =20
-                     |
-                                                                     =20
-                     |
-                                                                       =20
-  192.168.0.2 (workstation)
+If by IP address, make sure it is the private (real) address.
 
-I can't access to my webserver with my workstation and it very painful....
-Can you still help me ? :-D
+If by hostname, make sure your DNS correctly resolves internal queries to the 
+internal address and external queries to the external address.
 
-Romain
+The correct solution to this problem, of course, is that you should have your 
+web server on a separate ("DMZ") interface, because it is accessible from 
+both the internal and external networks, and should be kept separate from 
+both, for both security and routing reasons.
 
+Regards,
 
+Antony.
 
+-- 
+Most people are aware that the Universe is big.
 
+ - Paul Davies, Professor of Theoretical Physics
 
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
