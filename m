@@ -1,12 +1,12 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: Nat with a dynamic IP
-Date: Fri, 5 Sep 2003 11:36:09 -0300
+From: "Fried Melgar, Gustavo" <GFried@ute.com.uy>
+Subject: Installing iptables 1.2.8 in a SUSE 8.1
+Date: Fri, 5 Sep 2003 11:52:50 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <035101c373bb$0c2b9fd0$49caa8c0@caris.priv>
-References: <032001c373b2$5daabf70$49caa8c0@caris.priv> <200309051605.36015.tscherf@web.de>
+Message-ID: <89DFDF0DBB95BF47AB7A83A5A72FC402416559@ntmail5.corp.ute.com.uy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +17,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Thorsten Scherf <tscherf@web.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-That is a pretty good solution for the SNAT.  I never thought about MASQ.
-However .... I am not sure if the DNAT is the best solution ....  WHat if
-you had multiple ip numbers on the external card ....
-
-More importantly, what about trying to connect directly to the firewall from
-an external address.
-
------ Original Message -----
-From: "Thorsten Scherf" <tscherf@web.de>
-To: "Peter Marshall" <peter.marshall@caris.com>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Friday, September 05, 2003 11:05 AM
-Subject: Re: Nat with a dynamic IP
-
-
-> >Hi.  I was wondering if someone could tell me what a good way is to set
-up
-> >DNAT and SNAT on a firewall if the external IP is not static ....
->
-> Do not use SNAT, use Maquerading. You don't have to know your external IP
-> here:
->
-> iptables -t nat -A POSTROUTING -s $INT_NET -o $EXT_DEV -j MASQ
->
-> DNAT is also very simple, don't specify your external IP in DNAT Rule,
-just
-> the Destination Port:
->
-> iptables -t nat -A PREROUTING -p tcp --dport 25 -i $EXT_DEV -j DNAT
-> --to-destination $SMTP_SERVER
->
->
-> Greetings,
->
-> Thorsten Scherf,
-> RHCE, RHCX
->
->
->
->
-
+SGkgYWxsLA0KIA0KSSB3YW50IHRvIHVwZ3JhZGUgbXkgU1VTRSA4LjEgKHdpdGggMi40LjE5IGtl
+cm5lbCkgZnJvbSBpcHRhYmxlcyAxLjIuNyB0byBpcHRhYmxlYXMgMS4yLjguIEJ1dCBhbHNvIEkg
+d2FudCB0byBpbnN0YWxsIHNvbWUgcGF0Y2hlcyB0byB0aGUga2VybmVsIChrZXJuZWwtc291cmNl
+LTIuNC4xOS5TdVNFLTM0MC5pNTg2LnBhdGNoLnJwbSApDQogDQpJIGRvbid0IGtub3cgaW4gd2hp
+Y2ggb3JkZXIgSSBoYXZlIHRvIGRvIHRoYXQuDQpEbyBJIGhhdmUgdG8gaW5zdGFsbCB0aGUgU1VT
+RSdzIHBhdGNoIGZpcnN0LCB0aGVuIGlwdGFibGVzIDEuMi44IGFuZCBhdCBsYXN0IHBhdGNoLW8t
+bWF0aWM/IElzIHRoaXMgdGhlIHJpZ2h0IG9yZGVyIHRvIGluc3RhbGwgdGhpcyBwYXRjaGVzPw0K
+RG8gSSBuZWVkIHRvIGluc3RhbGwgcGF0Y2gtby1tYXRpYy0yMDAzMDEwNyAoSSBkb24ndCBuZWVk
+IGV4dHJhIG9wdGlvbnMpDQoNCkRvIEkgaGF2ZSB0byByZWNvbXBpbGUgdGhlIGtlcm5lbCBlYWNo
+IHRpbWUgSSBtb2RpZnkgdGhlIGtlcm5lbCBzb3VyY2Ugb3IgY2FuIEkgcmVjb21waWxlIGl0IGF0
+IHRoZSBlbmQ/DQpEbyB5b3UgaGF2ZSBhbnkgb3RoZXIgc3VnZ2VzdGlvbnMgZm9yIHRoaXMgdGFz
+az8NCiANCkJlc3QgcmVnYXJkcyBhbmQgdGhhbmsgeW91IGluIGFkdmFuY2UsDQpHdXN0YXZvDQo=
 
