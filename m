@@ -1,12 +1,10 @@
-From: "David Busby" <busby@pnts.com>
-Subject: Re: DNAT & Host Headers
-Date: Mon, 30 Jun 2003 18:40:15 -0700
+From: Evan Davies <evand@voiceplus.com.au>
+Subject: PPTP server + Firewall + PPTP VPN Masq through firewall
+Date: 01 Jul 2003 12:10:03 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <04cf01c33f71$c0910650$1100000a@busbydev>
-References: <002201c33f70$d1e33000$0101a8c0@techinitiatives.com>
-Reply-To: "David Busby" <busby@pnts.com>
+Message-ID: <1057025403.4161.20.camel@proto.voiceplus.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=_fileserver.voiceplus.com.au-21007-1057025406-0001-2"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,52 +15,110 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Tim <twrodriguez@earthlink.net>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Netfilter <netfilter@lists.netfilter.org>
 
-When using apache the server will look at the HTTP host header which in your
-case would be "Host: www.mydomain.com\r\n"
-The HTTP headers are contained inside the TCP packet and are not modified by
-iptables (in your rules)
-So as long as the server can communicate in and out the host name will only
-affect the web server
-Of course the web server must be configured to look for that host header
-name (and alternatives such as mydomain.com) and to listen on the ipaddress
-$NEMESIS
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-HTH
+--=_fileserver.voiceplus.com.au-21007-1057025406-0001-2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 
-/B
+Hi All,
 
------ Original Message ----- 
-From: "Tim" <twrodriguez@earthlink.net>
-To: "Netfilter Mailing List" <netfilter@lists.netfilter.org>
-Sent: Monday, June 30, 2003 18:33
-Subject: DNAT & Host Headers
+I was wondering if the following was possible:
 
-
-First here is the rules within their respective chains:
-
-iptables -t nat -A PREROUTING -p tcp --dport 80 -d $INTERNET -j DNAT
---to $NEMESIS
-
-iptables -A FORWARD -p tcp --dport 80 -d $NEMESIS -j ACCEPT
-
-I'm running this particular web-site with a host header, when I type in
-the www.mydomain.com address on the browser and the packets hit the
-prerouting chain then the forward chain how will the communication still
-know that it is meant for www.mydomain.com
-
-Will this work or do I need to modify the rules in order for my web
-server to recognize that the information is intended for
-www.mydomain.com. As it is there are several web-sites within my
-web-server utilizing the same ip address, including the default
-web-site.
-
-Any insight will be gratefully appreciated.
-
-Thanks in advance
-Tim--Mia/Fla.
+Windows Client
+PPTP VPN Client  ----\
+                                  \
+Linux Client ---------->------> FIREWALL + PPTP Server --- INTERNET
+----- FIREWALL + PPTP Server
+                                   /                              |
+Windows Client ------/                                |
+                                                                   |
+                                                            Home User
+PPTP VPN
 
 
+I can have the Firewall/ VPN server work correctly in that the home user
+can connect. But the internal PPTP client  cannont make a connection out
+through the firewall.
+
+I turn the VPN server off and adjust the iptables rules so incoming 47
+connections are blocked and the internal PPTP client connects no
+problems to another external pptp server.
+
+Is i possible to have both connections running ?
+
+I'm using RH 8.0 with iptables 1.2.7a + pptp_connection tracking module
+is compiled into the kernel but not as a module.
+
+Can anyone give me an example of an iptables script to do this
+
+
+Any help would be greatly appreciated
+
+
+-- 
+Evan Davies <evand@voiceplus.com.au>
+
+--=_fileserver.voiceplus.com.au-21007-1057025406-0001-2
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.5">
+</HEAD>
+<BODY>
+Hi All,<BR>
+<BR>
+I was wondering if the following was possible:<BR>
+<BR>
+Windows Client<BR>
+PPTP VPN Client&nbsp; ----\<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \<BR>
+Linux Client ----------&gt;------&gt; FIREWALL + PPTP Server --- INTERNET ----- FIREWALL + PPTP Server<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
+Windows Client ------/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Home User PPTP VPN<BR>
+<BR>
+<BR>
+I can have the Firewall/ VPN server work correctly in that the home user can connect. But the internal PPTP client&nbsp; cannont make a connection out through the firewall.<BR>
+<BR>
+I turn the VPN server off and adjust the iptables rules so incoming 47 connections are blocked and the internal PPTP client connects no problems to another external pptp server.<BR>
+<BR>
+Is i possible to have both connections running ?<BR>
+<BR>
+I'm using RH 8.0 with iptables 1.2.7a + pptp_connection tracking module is compiled into the kernel but not as a module.<BR>
+<BR>
+Can anyone give me an example of an iptables script to do this<BR>
+<BR>
+<BR>
+Any help would be greatly appreciated<BR>
+<BR>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+<BR>
+</TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Evan Davies &lt;<A HREF="mailto:evand@voiceplus.com.au"><U>evand@voiceplus.com.au</U></A>&gt;
+</TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>
+
+--=_fileserver.voiceplus.com.au-21007-1057025406-0001-2--
 
