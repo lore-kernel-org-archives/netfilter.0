@@ -1,12 +1,12 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Packet chain traversals
-Date: Sun, 27 Oct 2002 13:03:57 -0500
+From: Oskar Andreasson <blueflux@koffein.net>
+Subject: Re: Packet chain traversals
+Date: Sun, 27 Oct 2002 19:50:05 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210271303.57379.netfilter@newkirk.us>
-Reply-To: netfilter@newkirk.us
+Message-ID: <Pine.LNX.4.44.0210271942340.12007-100000@laptop1.agatha>
+References: <200210271303.57379.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200210271303.57379.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +16,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Joel Newkirk <netfilter@newkirk.us>
+Cc: netfilter@lists.netfilter.org
 
-I've been working on a chain traversal diagram (primarily for my own reas=
-ons,=20
-but if anybody likes it they are welcome to use it non-commercially) and =
-have=20
-a few questions.
+Hi Joel,
 
-First, the current form of the diagram is (temporarily) at=20
-http://newkirk.no-ip.org:83/Traversal-sm.png
-and the basic rule is that a packet cannot cross a black line.  The choic=
-es of=20
-colors are meaningless, except to differentiate chains.
+On Sun, 27 Oct 2002, Joel Newkirk wrote:
 
-I know that the 'latest' form of netfilter has mangle AND filter chains f=
-or=20
-forward and input, and mangle, nat, and filter chains for output.  (Yeah,=
- the=20
-diagram would be even more confusingly complicated with that detailed :^)
+> I've been working on a chain traversal diagram (primarily for my own reasons, 
+> but if anybody likes it they are welcome to use it non-commercially) and have 
+> a few questions.
+> 
+> First, the current form of the diagram is (temporarily) at 
+> http://newkirk.no-ip.org:83/Traversal-sm.png
 
-Can someone offer some examples of uses for mangle-forward, mangle-input,=
-=20
-mangle-output, and nat-output?  I can't see much use for them, but my use=
- of=20
-iptables has been fairly simple so far, and most of my comprehension is b=
-ased=20
-on the previous version of the tutorial. (and absorbing the gobs of=20
-information embedded in messages here :^)
+Mmmmm, reminds me of that trip on LSD I took the other day.... =) just 
+kidding. It does look good really, except you made it rather confusing in 
+one aspect... I don't know if it's just me, but why do you have two "out" 
+and two "in"?
 
-Also, I wanted to ask for clarification on a point in the latest=20
-iptables-tutorial "Traversing of tables and chains" section:  At one poin=
-t it=20
-seems that packets pass through mangle-forward THEN filter-forward, (diag=
-ram)=20
-yet elsewhere it seems to be the reverse. (table 1)  Which is correct?
+> and the basic rule is that a packet cannot cross a black line.  The choices of 
+> colors are meaningless, except to differentiate chains.
+> 
+> I know that the 'latest' form of netfilter has mangle AND filter chains for 
+> forward and input, and mangle, nat, and filter chains for output.  (Yeah, the 
+> diagram would be even more confusingly complicated with that detailed :^)
+> 
+> Can someone offer some examples of uses for mangle-forward, mangle-input, 
+> mangle-output, and nat-output?  I can't see much use for them, but my use of 
+> iptables has been fairly simple so far, and most of my comprehension is based 
+> on the previous version of the tutorial. (and absorbing the gobs of 
+> information embedded in messages here :^)
+> 
+> Also, I wanted to ask for clarification on a point in the latest 
+> iptables-tutorial "Traversing of tables and chains" section:  At one point it 
+> seems that packets pass through mangle-forward THEN filter-forward, (diagram) 
+> yet elsewhere it seems to be the reverse. (table 1)  Which is correct?
 
-Thanks for any input, examples, diagram criticism (artistic or logical) e=
-tc. =20
-If your response seems to you to be useless to the list in general then=20
-please just send it to me directly.
+I just fixed this today actually. If you want to make absolutely certain, 
+run the script attached to the tutorial (I added an updated version to 
+this mail since the one in the released tutorial doesn't contain the 
+mangle5hooks.patch fixes), tail -f the proper logfile 
+and then send ping's from different locations and directions (e.g., ping 
+across the firewall, ping to the firewall and ping from the firewall). 
+That way you will be able to make sure how it works.
 
-j
+> 
+> Thanks for any input, examples, diagram criticism (artistic or logical) etc.  
+> If your response seems to you to be useless to the list in general then 
+> please just send it to me directly.
 
---=20
-"The problem with the French is that they don't have a word for entrepren=
-eur."=20
---George W. Bush
+no problem. Don't take me too seriously though, I am a lousy "artist" 
+so... :)
+
+> 
+> j
+> 
+> 
+
+-- 
+----
+Oskar Andreasson
+http://www.frozentux.net
+http://iptables-tutorial.frozentux.net
+http://ipsysctl-tutorial.frozentux.net
+mailto:blueflux@koffein.net
+
 
