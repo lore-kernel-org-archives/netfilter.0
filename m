@@ -1,13 +1,13 @@
 From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Iptables
-Date: Tue, 28 Sep 2004 06:36:08 -0400
+Subject: Re: web server in DMZ
+Date: Tue, 28 Sep 2004 06:40:32 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096367768.2054.9.camel@localhost>
-References: <MAILwhABuLWBgAHM6H900000023@mail.netscan.ca>
+Message-ID: <1096368031.2050.13.camel@localhost>
+References: <web-6416739@infinito.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <MAILwhABuLWBgAHM6H900000023@mail.netscan.ca>
+In-Reply-To: <web-6416739@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Contact <contact@netscan.ca>
+To: hamals@infinito.it
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 2004-09-28 at 01:07, Contact wrote:
-> Hi,
+On Tue, 2004-09-28 at 06:21, hamals@infinito.it wrote:
+> I have a big problem
 > 
-> I'm new to iptables and having a problem grasping the concept as well as the
-> syntax. I have read a lot of sites on this but just not getting it. First -
-> running rules. From what I can gather I need to have an rc.firewall file
-> with the various rules and such in it - and have this started at boot. Am I
-> close?  Second - the syntax. I want to be able to allow my local LAN full
-> access to the Linux box (Slackware 10). I also have a website which I want
-> to allow everyone - except for a few domains and IP's, SSH which I want to
-> allow only certain IP's or domains, and Samba which I want to allow only my
-> local LAN. This is where I'm really confused putting this all together. If
-> someone could explain this in plain english - or put me on to a really easy
-> iptables for dummies type site, it would be appreciated.
+> I have a web server in my DMZ, I reach it with his 
+> internal IP 192.168.1.10 from my internal LAN, but I can't 
+> reach them with his public IP.
 > 
-> This box is behind attached to a Linksys router and does not act as a NAT.
-> It is just a simple little setup on a p166.
+> I did a DNAT and from internet everythings is ok, my web 
+> server is working in right by DNAT.
 > 
-> Thanks
-> 
-I found Oskar Andreasson's tutorial most helpful
-(http://iptables-tutorial.frozentux.net/iptables-tutorial.html).  You
-can also find some slightly dated slide show training sessions at
-http://iscs.sourceforge.net Good luck - John
+> Where is the problem?
+<snip>
+There could be several causes.  Did you remember to bind the public
+address to the public firewall NIC so that it responds to ARP requests?
+
+For example, if the firewall is at 1.1.1.2 and you want the web server
+to be at 1.1.1.3 then do
+
+ip add address 1.1.1.3/24(or whatever the mask bit count is) dev eth0(or
+whatever the device name is) brd +
+
+You can find a short slide show on using the ip command at
+http://iscs.sourceforge.net 
+
+Good luck - John
 -- 
 John A. Sullivan III
 Chief Technology Officer
 Nexus Management
 +1 207-985-7880
 john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
