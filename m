@@ -1,16 +1,17 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: ACK,RST getting dropped in the firewall.
-Date: Thu, 24 Jun 2004 14:29:09 -0400
+From: Brett Simpson <simpsonb@hillsboroughcounty.org>
+Subject: Re: Send local traffic to a different server.
+Date: Thu, 24 Jun 2004 14:27:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088101748.2028.39.camel@grendel>
-References: <GHEILNONPACCGBGKBEKKKEAMCHAA.manikandan@manikandan.org>
-	 <200406241454.28088.Antony@Soft-Solutions.co.uk>
-	 <1088092124.2029.28.camel@grendel>
-	 <200406241709.50795.Antony@Soft-Solutions.co.uk>
+Message-ID: <1088101654.12633.20.camel@simpsonb.hillsboroughcounty.org>
+References: <s0d956ae.099@GroupWise>
+	 <200406231500.05742.Antony@Soft-Solutions.co.uk>
+	 <1088003535.4009.78.camel@simpsonb.hillsboroughcounty.org>
+	 <200406231524.14579.Antony@Soft-Solutions.co.uk>
+Reply-To: simpsonb@hillsboroughcounty.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406241709.50795.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200406231524.14579.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,37 +24,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 2004-06-24 at 12:09, Antony Stone wrote:
->
-> In my experience (with things like SMTP, HTTP) it appears to be the server 
-> which generally issues the (first) FIN/ACK, telling the client that there's 
-> no more data 
+On Wed, 2004-06-23 at 10:24, Antony Stone wrote:
 
-Weird, my experience with HTTP has been the other way around. The client
-request typically requires just a single back. Its the data returned
-from the server that can take multiple packets (thus the client finishes
-first). This is why when most people run into this time-out issue its
-always the server still trying to transmit _from_ TCP/80, rather than
-the client trying to send _to_ TCP/80. A good example are the log
-entries that started this thread.
+> How are packets from the machine we are talking about routed to and from the 
+> Internet?   Where is NAT taking place?
 
-> I wonder how other stateful firewalls (eg: CP FW-1?) handle this sort of thing 
-> - do they listen for *both* FIN/ACKs (and thereby leave themselves prey to 
-> half-open connections littering their connection table for systems which 
-> don't bother to send the responding FIN/ACK)?
+I got it working! Actually I was testing on Redhat Enterprise Linux ES 3
+(RHEL) with no success so I went to Gentoo and was able to get it to
+work with the following...
 
-With FW-1 and PIX, they use a higher state table time out. Again, proper
-way to fix this would be to reset the timer if the session stays active.
-Fixes both your worries and mine. :)
+iptables -t nat -A OUTPUT -p tcp --dport 6000 -d 127.0.0.1 -j DNAT --to
+207.156.7.115:80
+iptables -t nat -A POSTROUTING -p tcp -d 207.156.7.115 -o eth0 --dport
+80 -j SNAT --to-source 172.27.228.220
 
-As for OS's that don't return a FIN/ACK, I can't say I've seen this in
-the wild (which is why I asked which OS so I could test this). I know
-there used to be a few OS's (older Mac OS and SGI come to mind) that
-used to "cheat" by sending a RST/ACK instead of a FIN/ACK, but that was
-cleaned up years ago.
+I suspect that RHEL doesn't have 'NAT of local connections' compiled
+into the kernel.
 
-HTH,
-Chris
-
+Thanks for everyone help, 
+Brett
 
 
