@@ -1,13 +1,12 @@
-From: Frederic de Villamil <neuro@seclab.jp>
-Subject: Re: Network Diagraming Tool
-Date: Wed, 31 Mar 2004 00:49:51 +0200
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Network Diagraming Tool
+Date: Tue, 30 Mar 2004 14:54:00 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040330224951.GA18590@jesus.seclab.jp>
-References: <20040330182010.55db9dce@darna.vectec.net>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF567927D@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040330182010.55db9dce@darna.vectec.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,18 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Cody Harris <hchs@ns.sympatico.ca>
-Cc: netfilter@lists.netfilter.org
+To: Cody Harris <hchs@ns.sympatico.ca>, netfilter@lists.netfilter.org
 
-On Tue, 30 Mar 2004, Cody Harris wrote:
+Visio?
 
-> You know all those nice little pictures of networks people make? You know, with the clouds and stuff. What program can i get to do that?
+-----Original Message-----
+From: Cody Harris [mailto:hchs@ns.sympatico.ca]=20
+Sent: Tuesday, March 30, 2004 2:20 PM
+To: netfilter@lists.netfilter.org
+Subject: Network Diagraming Tool
 
-What about... dia :)
 
+You know all those nice little pictures of networks people make? You
+know, with the clouds and stuff. What program can i get to do that?
 
---
-< Ylli> lol je rigole neuro jte prend pa pr un pervers ms un president et pere de famille respectable :s
-http://www.seclab.jp
+--=20
++------------------+-----------------------------+
+| Cody Harris      | --------------------------- |
+| ---------------- | --------------------------- |
++------------------+-------+---------------------+---+
+| *Sigh*. No key.                                    |
++----------------------------------------------------+
+
 
