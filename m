@@ -1,12 +1,14 @@
-From: Oleg Savostyanov <savostyanov@internetplustravel.ru>
-Subject: iptables: Invalid argument with PPTP conntrack enabled
-Date: Mon, 8 Dec 2003 17:44:06 +0300
+From: Stephen Liu <satimis@icare.com.hk>
+Subject: Re: Question on document to setup Iptables
+Date: Mon, 08 Dec 2003 23:22:39 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <57370162285.20031208174406@internetplustravel.ru>
-Reply-To: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Message-ID: <1070896958.3400.20.camel@localhost.localdomain>
+References: <1070815729.3438.2.camel@localhost.localdomain>
+	 <1070884003.1932.10.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1070884003.1932.10.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +19,65 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Hi John,
 
-Iam trying to build the system, capable of making NAT for pptp
-connections
-Debian 3, Kernel 2.4.22(with debian patches) patch-o-matic 20030912
+Thanks for your advice and link.
 
-I found that if I apply PPTP patch to my kernel and compile it with
-GRE protocol support and
-PPTP protocol support
-the simple command
-iptables -t nat -A POSTROUTING -o eih0 -j SNAT --to-source $myIP
-failed to execute
-with the following:  iptables: Invalid argument
+I won't mind going through all those documents if I have time. 
+Therefore advices from folks on the list save me lot of time
 
-May be it's a bug in a patch-o-matic PPTP patch?
-Is there anybody, who succeeded building the system capable of
-masquariding more than one PPTP connection to one server
-outside your lan?
+B.R.
+Stephen
 
-
-On Wed, Nov 19, 2003 at 01:48:07AM +0300, Oleg Savostyanov wrote:
-> Hello , Harald
-> I tryed to install extra package, written by you -
-> pptp-conntrack-nat
-> but failed to do this.
-please report such problems to netfilter@lists.gnumonks.org, or
-netfilter-devel@lists.gnumonks.org (like documented on
-http://www.netfilter.org/contact.html).
-also, which version of patch-o-matic were you using?
-> Do you have any ideas what to do?
-Martin Josefsson is the patch-o-matic maintainer, maybe he can help you.
-
-
-
-Oleg                          mailto:savostyanov@internetplustravel.ru
+On Mon, 2003-12-08 at 19:46, John A. Sullivan III wrote:
+> On Sun, 2003-12-07 at 11:48, Stephen Liu wrote:
+> > Hi all folks,
+> > 
+> > Just join this list.
+> > 
+> > 
+> > RH 9.0
+> > ========
+> > 
+> > I am prepared to config/setup iptables which has already been installed
+> > and running.  
+> > 
+> > From
+> > 
+> > [url]http://www.netfilter.org/documentation/[/url]
+> > 
+> > I found following tutorials;
+> > 
+> > iptables tutorial by Oskar Andreasson.
+> > Taming the wild Netfilter by linuxjournal.
+> > Comparison of iptables automation tools by Anton Chuvakin.
+> > Set up an gateway for home or office by YoLinux.
+> > Iptables basics by Prince Kenshi(linuxnewbies).
+> > Filtering packets with iptables by Joe Brockmeier.
+> > Using iptables by Joe Brockmeier
+> > Iptables connection tracking by James C. Stephens.
+> > Iptables - what is it by James C. Stephens.
+> > Netfilter Log Format by Unknown.
+> > How to use iptables by KrnlPanic
+> > Securing Linux Tutorial by weazyB.
+> > Netfilter tutorial by crhalpin.
+> > Mastering iptables by David Coulson.
+> > Part 1 of an introductory iptables tutorial by David Coulson.
+> > Part 2 of an introductory iptables tutorial by David Coulson.
+> > 
+> > Kindly advise which of them is most relevant and simple in setup
+> > iptables including masq
+> > 
+> > Thanks in advance.
+> > 
+> > B.R.
+> > satimis
+> 
+> I've only look at a few of the others but I found Oskar Andreasson's
+> very helpful.  There is also a someone less expert slide show in the
+> training section on http://iscs.sourceforge.net
 
 
