@@ -1,10 +1,14 @@
-From: John Mathey <jmathey@comcast.net>
-Subject: Re: Linux Security
-Date: Wed, 04 Aug 2004 10:46:09 -0500
+From: Alejandro Flores <alejandro.flores@triforsec.com.br>
+Subject: Re: How can I configure my firewall to access voice chat with MSN 
+	messenger 6.2?
+Date: Wed, 04 Aug 2004 12:51:04 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6.1.1.1.2.20040804104558.03050a50@mail.comcast.net>
+Message-ID: <1091634664.14988.6.camel@aflores>
+References: <006c01c47a35$02e03540$0201a8c0@MagicwindLaptop>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <006c01c47a35$02e03540$0201a8c0@MagicwindLaptop>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,31 +18,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: MagicWind <magicwind@citiz.net>
+Cc: netfilter@lists.netfilter.org
 
-There are a couple that I've used:
+	Hello there,
 
-Redhat Firewalls - excellent for describing iptables and different 
-architectures of firewalls
-Redhat Security and Optimization - more of a concentration on architecture, 
-but still very good
-Linux Security Cookbook - this isn't as directed at Redhat as the first 
-two, but does have some very good scripts if you're just starting out.
+	Voice/video on MSN doesn't work behind firewall/nat. The negotiation of
+the void/video connection is done in the payload of the packet.
+	Take a look at linux-igd:
+	http://linux-igd.sourceforge.net/
+	It's working for me.
 
-Hope this helps..
+Regards,
+Alejandro Flores
 
-Regards
-John
-
-
-At 09:08 AM 8/4/2004, Peter Marshall wrote:
->I know this is a bit off topic ... but ... Does anyone know a good Linux
->security book ?  ( possibly related Redhat / fedora).
->
->Thanks
->
->Peter
-
+> I have a linux server which is configured as a router connecting my
+> internal network and the internet.  using the following iptables
+> rules:
+>  
+> iptables -A FORWARD -i eth0 -o eth1 -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+> iptables -A FORWARD -j LOG
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>  
+> where eth0 is the netword adapter linking to the internet and the eth1
+> is the adapter linking to the internal network.
+> It seems the network works quite well, except for the voice connection
+> of MSN messenger 6.2.  I can't either initial a voice chat or accept a
+> voice chat.
+>  
+> I've got absolutely no idea how to make it work.  Any ideas?
+>  
 
