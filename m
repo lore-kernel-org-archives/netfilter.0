@@ -1,13 +1,12 @@
-From: Kelly Setzer <Kelly.Setzer@placemark.com>
-Subject: Re: sub interface filtering
-Date: Wed, 2 Apr 2003 14:50:54 -0600
+From: "ihira" <ihira@rain.amath.nchu.edu.tw>
+Subject: Some questions about netfilter programing !!!!
+Date: Mon, 31 Mar 2003 21:16:54 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030402205054.GF21304@placemark.com>
-References: <7C9884991ADAE0479C14F10C858BCDF50C6FEE@alderaan.smgtec.com> <000b01c2f957$388bc430$8b01a8c0@win2k.com>
+Message-ID: <001601c2f787$d2494ce0$7d08788c@ihira>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0011_01C2F7CA.DA89E5C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <000b01c2f957$388bc430$8b01a8c0@win2k.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mike <mikeeo@msn.com>
-Cc: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
+To: kadlec@netfilter.org, marc+nf@mbsi.ca, netfilter@lists.samba.org
 
-On Wed, Apr 02, 2003 at 03:34:11PM -0500, Mike wrote:
-> I hate to ask but do you have and example of using iproute2 for IP address
-> aliases?
+This is a multi-part message in MIME format.
 
-Then don't ask, check out the fine manual:
+------=_NextPart_000_0011_01C2F7CA.DA89E5C0
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-http://www.linuxguruz.org/iptables/howto/2.4routing.html
+Dears :
 
-Specifically:
-http://www.linuxguruz.org/iptables/howto/2.4routing-10.html
-http://www.linuxguruz.org/iptables/howto/2.4routing-15.html
+I am a graduate sutdent major in network security.
+In the recent, I write programs to control iptables.
+After i read  Quetying libiptc HOWTO, I have some question!
 
+I can get many useful examples about libiptc functions which written in =
+CHAP11.
+But there is no any examples about libiptc functions which written in =
+CHAP12.
 
+Can you give me some examples about libiptc functions which written in =
+CHAP12?
 
-http://www.google.com/search?q=iproute+howto&sourceid=mozilla-search&start=0&start=0
-Results 1 - 10 of about 7,550. Search took 0.16 seconds.
+I am sorry about my poor English and thank for you spending time and =
+pations to read my letter!
 
+Good luck for you and your family 
+------=_NextPart_000_0011_01C2F7CA.DA89E5C0
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-Kelly
---
-Kelly Setzer, System Administrator/Architect - Placemark Investments
-14180 Dallas Pkwy, Suite 200, Dallas, TX 75240
-kelly.setzer@placemark.com  http://www.placemark.com
-(972)404-8100x41 (work)       (214) 287-3464 (cell)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>
+<DIV><FONT size=3D2>Dears :</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV>I am a graduate sutdent major in network security.</DIV>
+<DIV><FONT size=3D2>In the recent, I write programs to control=20
+iptables.</FONT></DIV>
+<DIV><FONT size=3D2>After i read &nbsp;Quetying libiptc HOWTO, I have =
+some=20
+question!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D2>I can get many useful examples about libiptc =
+functions which=20
+written in CHAP11.</FONT></DIV>
+<DIV><FONT size=3D2>But there is no any examples about libiptc functions =
+which=20
+written in CHAP12.</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>Can you give me some examples about libiptc =
+functions which=20
+written in CHAP12?</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>I am sorry about my poor English and thank for you =
+spending=20
+time and pations to read my letter!</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>Good&nbsp;luck for you and your=20
+family</FONT>&nbsp;</DIV></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0011_01C2F7CA.DA89E5C0--
+
 
