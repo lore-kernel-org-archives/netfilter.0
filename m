@@ -1,13 +1,10 @@
-From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
-Subject: Re: some web sites need more than port 80?....
-Date: Mon, 7 Mar 2005 13:56:23 +0200
-Message-ID: <1403218a0503070356fa8b6a9@mail.gmail.com>
-References: <20050306164509.GA15342@spawar.navy.mil>
-	<422B3ED5.9040207@lopsch.com>
-Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: Fedora 3 + netfilter 1.2.11 + FXP
+Date: Mon, 7 Mar 2005 13:03:23 +0100
+Message-ID: <C530C43619DA8F459D7A1A4DADE00EB1DD13@knowledge.wizdom.nu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <422B3ED5.9040207@lopsch.com>
+Content-Transfer-Encoding: quoted-printable
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,43 +16,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Lopes <lopsch@lopsch.com>, netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-What are you blocking here ???
-You talk to the webservers on port 80, but your local ports are not 80
-for sure !!!
-Actually, you should only blocking incoming packets to you, which are
-new connections !!
+Hello,
 
+=20
 
-On Sun, 06 Mar 2005 18:33:09 +0100, Daniel Lopes <lopsch@lopsch.com> wrote:
-> seberino@spawar.navy.mil schrieb:
-> > I locked down my laptop with a firewall script to only
-> > allow port 80.
-> >
-> > I noticed that only the text gets downloaded from ucsd.edu.
-> >
-> > It seems that the graphics from ucsd.edu could not get
-> >
-> > through my firewall.
-> >
-> >
-> > Do webs sites now send JPEGs in parallel with the text
-> > on a different port or something?
-> >
-> >
-> > chris
-> >
-> >
-> 
-> Take a look at the source code of the page. Perhaps it references the
-> images from another webserver running on another port.
-> 
-> 
+I am running a standard installation of Fedora Core 3 (2.6.10-1.770.FC3)
+& netfilter 1.2.11
 
+=20
 
--- 
-Mohamed Eldesoky
-www.eldesoky.net
-RHCE
+Is there anybody here that can give me an answer to the following
+question:
+
+Is it possible to enable FXP in this configuration? (above config, no
+new kernel compiling, patching etc)
+
+=20
+
+If possible, how can I enable it?
+
+=20
+
+I tried putting add options ip_conntrack_ftp fxp=3D1 in =
+/etc/modules.conf,
+but this doesn't help
+
+=20
+
+Spent all morning wading through the web and all the years old
+documentation available, but I haven't found what I was looking for.
+Found some stuff about this ftp-fxp patch, but that too seems legacy for
+very old version.
+
+=20
+
+Greets,
+
+Sietse
+
+=20
 
