@@ -1,12 +1,15 @@
 From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: ICMP: What should be blocked?
-Date: Wed, 5 Mar 2003 11:20:12 +0100 (CET)
+Subject: Re: Rejecting udp
+Date: Wed, 5 Mar 2003 11:03:29 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0303051106580.15761@dns.toxicfilms.tv>
-References: <3E65A2C5.3030007@mega-bucks.co.jp>
+Message-ID: <Pine.LNX.4.51.0303051055450.26578@dns.toxicfilms.tv>
+References: <000801c2e1aa$3fc8f660$0200a8c0@klintan.local>
+ <003f01c2e1e2$2d9bd100$0301a8c0@hotpop3> <33803.192.222.90.38.1046775610.squirrel@pelorus.org>
+ <1046777181.3924.1.camel@raylinux.internal> <39942.192.222.90.38.1046784694.squirrel@pelorus.org>
+ <20030305005105.3ed844e1.arnt@c2i.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E65A2C5.3030007@mega-bucks.co.jp>
+In-Reply-To: <20030305005105.3ed844e1.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +21,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
+To: Arnt Karlsen <arnt@c2i.net>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
+> > I agree that it is important to block certain UDP ports/traffic.  What
+> > the issue is, is what is the purpose of REJECTing a UDP packet versus
+> > DROPping the UDP packet?  My point is, sending back a REJECT message
+> > doesn't make sense with UDP.
+Why not? RFCs say that a closed UDP port should elicit
+icmp dest.unreach./port unreach.
+So it does make sens to be in conformance with the standards.
 
-in my opinion icmp is the easiest to set up for.
-
-1) Allow all ICMP that is related to connections issued by the protected net
-2) Allow echo requests if you wish.
-3) Block all other by default.
-
--p icmp -m state --state RELATED -j ACCEPT
-
-> One question I have not been able to find an answer to though, should I
-> block ICMP messages of type 11 (TTL exceeded)?
-Only if they are really responses to packets sent by the router or your
-protected hosts. Otherwise they may be inverse mapping attempts and should
-be blocked. Of course it is only possible to filter with the -m state.
-
-
-> Also if anyone knows of a good resource that explains what ICMP messages
-> I should block (why and how :) could they let me know?
-www.sys-security.com/archive/papers/ICMP_Scanning_v3.0.pdf
-And other articles by Ofir Arkin about ICMP.
-
-> I understand that it of course depends on my level of paranoia
-> and how friendly I want to be to the rest of the net, but I get the
-> feeling from my readings that the are some ICMP messages that just
-> should not be let through a firewall ....
-Paranoia? No, just be statefull. Allow what is required by the undergoing
-connections, disallow what is not.
-
-That is the easiest way to protect yourself from inverse mapping, stealing
-routes with icmp redirects, OS fingerprinting. This way you do not need
-explicit rules for eg. timestamp requests, etc. (which are recommended to
-be blocked), they will just not pass through the stateful mechanism of
-iptables.
-
-The statefulness of iptables is _very_ often not used by users, especially
-by ipchains users. It makes everything go smoother, make rulesets simpler,
-and chain parsing faster.
+That is how portscanners see if a port is closed or not. If you drop the
+packets, it may mean that the port is either open or is filtered.
 
 Regards,
-Maciej Soltysiak
-
+Maciej
 
