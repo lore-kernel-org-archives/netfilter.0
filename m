@@ -1,11 +1,13 @@
-From: Pierre Ossman <drzeus@drzeus.cx>
-Subject: Conntrack full, but not really
-Date: Wed, 24 Mar 2004 22:13:37 +0100
+From: Stephen Smoogen <smoogen@lanl.gov>
+Subject: Re: Conntrack full, but not really
+Date: Wed, 24 Mar 2004 15:57:10 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4061FA01.4050604@drzeus.cx>
+Message-ID: <1080169030.8520.122.camel@smoogen2.lanl.gov>
+References: <4061FA01.4050604@drzeus.cx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <4061FA01.4050604@drzeus.cx>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,44 +17,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Pierre Ossman <drzeus@drzeus.cx>
+Cc: netfilter@lists.netfilter.org
 
-Hi!
+On Wed, 2004-03-24 at 14:13, Pierre Ossman wrote:
+> Hi!
+> 
+> I'm having the standard problem of the connection tracker running out of 
+> space, but this time with a twist. If I check how many connections it is 
+> currently tracking it is nowhere near the upper limit. I've searched 
+> through the archives and haven't found anything like this.
+> 
+> The machine is a P-2 333 MHz with 96 MB of RAM doing nothing but 
+> routing. It's running Red Hat 9 with kernel 2.4.20-28.9 (although the 
+> problem exists with other Red Hat kernels). The problem appears after 
+> about a month of uptime. After that the machine needs to be rebooted to 
+> recover (flushing out the connection tracker might work aswell but that 
+> doesn't really make the problem less severe).
+> 
 
-I'm having the standard problem of the connection tracker running out of 
-space, but this time with a twist. If I check how many connections it is 
-currently tracking it is nowhere near the upper limit. I've searched 
-through the archives and haven't found anything like this.
+The problem is with a conntrack patch that Red Hat is including from an
+old Alan Cox tree. It seems to leak memory somewhere so that if you look
+in /proc/net/ip_conntrack it is 'empty' but if you look at
+/proc/slabinfo it is full. 
 
-The machine is a P-2 333 MHz with 96 MB of RAM doing nothing but 
-routing. It's running Red Hat 9 with kernel 2.4.20-28.9 (although the 
-problem exists with other Red Hat kernels). The problem appears after 
-about a month of uptime. After that the machine needs to be rebooted to 
-recover (flushing out the connection tracker might work aswell but that 
-doesn't really make the problem less severe).
+The problem can show up pretty quickly if the ip_conntrack_ftp is loaded
+on a heavy server. My fix has been to get a 2.4.25 kernel and compile it
+as an RPM and use it. 
 
-What happens is that it starts complaining that the connection tracking 
-table is full:
-"ip_conntrack: table full, dropping packet."
-But when I check /proc/net/ip_conntrack there are only about 120 tracked 
-connections (out of about 6000). Something really weird is going on.
-To make things worse it's not really out of memory. Large portions of 
-the memory is occupied by the cache so it could kick stuff out if it 
-wants to. If I kill of some processes to get some free memory *and* 
-write a new number to ip_max_track (any number whatsoever will suffice) 
-the system works again. At least for a while.
+Beyond that, maybe RH will offer a fixed kernel for RHL-9, but I am
+doubting it.
 
-I have no idea how to diagnose this thing. I thought the connection 
-tracker allocated the memory it needed when it was loaded, not dynamically.
-
-The machine was recently rebooted so there's probably not much I can 
-check that can help right now. But please give me some tips on what I 
-should check the next time it starts acting up.
-
-Rgds
-Pierre Ossman
-
-PS. Please cc me, I'm not a subsriber.
+-- 
+Stephen John Smoogen		smoogen@lanl.gov
+Los Alamos National Lab  CCN-5 Sched 5/40  PH: 4-0645
+Ta-03 SM-1498 MailStop B255 DP 10S  Los Alamos, NM 87545
+-- So shines a good deed in a weary world. = Willy Wonka --
 
 
