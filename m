@@ -1,14 +1,11 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: IRC commtrack module ques
-Date: Sat, 25 Dec 2004 23:06:14 +0100
-Message-ID: <20041225220614.GA28168@sunbeam.de.gnumonks.org>
-References: <200412252026.iBPKQ8Kp004941@freddie.dsiaz.com>
+From: "Don Hughes" <dhughes@microtechniques.com>
+Subject: Re: Newby
+Date: Mon, 27 Dec 2004 15:32:36 -0500
+Message-ID: <41D02B14.6647.F61F81@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200412252026.iBPKQ8Kp004941@freddie.dsiaz.com>
+Content-Description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,54 +16,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "Keven R. Pittsinger" <jamstar7@dsiaz.com>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+On Monday 27 December 2004 09:03, calvin@dslextreme.com wrote:
+Thanks to Jason, Kassad and Askar for responding to my email. 
+I've only played with RedHat before, and mostly forced myself to 
+use command line than the GUI interface. Maybe its time to try 
+other Linux flavor. Now, this FW I want to setup for my home 
+network, I would like the least software loaded on this as this 
+is a 32MB, PII 266, 2.5GB computer. I am thinking IPTABLES, 
+Tripwire, SNORT, or will that be too much for this machine ? 
+Related to this, where can I find information of those required
+to load during OS installation for these 3 apps to work.
+
+I know that SuSE has a minimal installation option that will 
+easily fit on your drive. Without the gui 266 should be more than 
+fast enough since your internet connection will be the slowest 
+link. RAM could be tight though. SuSE offers a text based 
+installation for PCs with RAM/Video limits. You can select the 
+minimal installation option then hand pick any other files you 
+wish to add/delete. It uses RPM packages so it will check for 
+dependencies 
+before it loads files. Worth a look...
 
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I used to run the SuSE text based system on a similar system 
+without any problem.  I used the SuSE YAST2 installer, deleted 
+everything, added back IPTABLES, Tripwire, SNORT, rsync, and my 
+favorite editor and had it solve dependencies.  With all the 
+libraries/utilities/etc it installed about 170 RPM packages.  
+Excluding swap and temp space, it took about 600Meg of disk 
+space.
 
-On Sat, Dec 25, 2004 at 01:26:08PM -0700, Keven R. Pittsinger wrote:
->=20
-> OK, I got a stoopid question for ya.  I've read the sourcecode in the ker=
-nel=20
-> sources for this module.  I know you can load it via your rc.local
-> script.  My question is, what alias do I use to get it to list right
-> in modules.conf?
 
-there is no way to auto-load this module.  Howe would there be one?
-What kind of event would trigger auto-loading?  The decision to use it
-or not is only based on the policy of the system administrator.
 
-If you want to use it permanently, either 'modprobe' it from a script,
-or link it statically into your kernel.
+-- 
+..don
 
-> Thanxx
-> Keven
-
---=20
-- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-Programming is like sex: One mistake and you have to support it your lifeti=
-me
-
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFBzeRWXaXGVTD0i/8RAqDRAJ9tIMWasfHacExA3QkVrRkIgMHrsACeKV5o
-Nfd/O41l79Dvwq2xmxf5f9o=
-=wB4J
------END PGP SIGNATURE-----
-
---AhhlLboLdkugWU4S--
+dhughes@microtechniques.com
+White Plains, NY
 
