@@ -1,14 +1,12 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
-Subject: Re: Controlling bandwith rate on port 80
-Date: 11 Jun 2002 22:10:03 +0200
+From: "Hard__warE" <hard__ware@hotmail.com>
+Subject: Controlling bandwith rate on port 80
+Date: Wed, 12 Jun 2002 06:22:54 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023826204.4183.71.camel@billy.demon.nl>
-References: <001501c1b33a$7b9238e0$0200a8c0@terr1>
+Message-ID: <000501c21185$c4732c00$7b0010ac@dynamicaccess.lan>
+Reply-To: "Hard__warE" <hard__ware@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-Z8Mih/ys6k4WFmUbrb2f"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001501c1b33a$7b9238e0$0200a8c0@terr1>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,56 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: iptables <iptables@linuxgeek.dk>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
+yes it can be done with IPTables just not alone ..
 
---=-Z8Mih/ys6k4WFmUbrb2f
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+you will need to complie your kernel with the IPTABLES MARK / TOS / U32
+classifiers / CBQ  ect  set to M..
 
-man, 2002-02-11 kl. 21:27 skrev iptables:
-> Im using debian unstable, kernel 2.4.18, iptables 1.2.6a.
->  My max upload bandwith is 30kb, i want to limit the traffic
-> on port 80 to around 25kb. Is this possible and how? any HOWTO's on
-> this subject?`
+now that we have the support we can use
 
-Definitely. But not with iptables.
+a Token Bucket Filter or CBQ  to limit the packet rate Per interface both in
+up or down
 
-http://www.tldp.org/HOWTO/Adv-Routing-HOWTO.html
+to do this correcty you will need to set a ToS MARK value on all PORT 80
+traffic
 
-You might wish to bookmark this site. It's where many HOWTOs are at.
+leaving the BOX (or however you need it) with IPTABLES the
 
-Tony
+in your Pcaket Shaping CBQ script you can search for those marked packets
+and stick them in a Low Priorty Que
 
---=20
+or a QUE that has a set amount of bandwidth allocation ect ...
 
-Tony Earnshaw
+If you know nothing of these go Search for Advanced Routing & TOS / MARK as
+well as CBQ & TBF
 
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
+have Fun cause it can be a pain in the ass ...
 
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
+If you need more help just send me an Email . .. :D
 
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
-
-
-
---=-Z8Mih/ys6k4WFmUbrb2f
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA9Blkb99dgUTvnuYERAk5CAJ42qhaGSq5VcKwCu2MHxacF1L0qMACfafkZ
-zmtO5/mJsF3zkAkvxPMDU4E=
-=GfOn
------END PGP SIGNATURE-----
-
---=-Z8Mih/ys6k4WFmUbrb2f--
+See yas .. :D
 
 
