@@ -1,11 +1,13 @@
-From: "Iskender GUNUSEN" <iskendergunusen@hotmail.com>
-Subject: need help for IPTABLES configuration...
-Date: Sat, 01 Jun 2002 22:53:58 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: need help for IPTABLES configuration...
+Date: Sat, 1 Jun 2002 21:14:26 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <F81nxXUCj9VKfl8ClFV00009afe@hotmail.com>
-Reply-To: iskender.gunusen@datapro.com.tr
+Message-ID: <200206012014.g51KERA18458@Networker.rockstone.co.uk>
+References: <F81nxXUCj9VKfl8ClFV00009afe@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <F81nxXUCj9VKfl8ClFV00009afe@hotmail.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,34 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-I am using redhat 7.2 with IPTABLES ,
+On Saturday 01 June 2002 8:53 pm, Iskender GUNUSEN wrote:
 
-my network consists of 1 LAN and 2 LEASED LINES.
+> my network consists of 1 LAN and 2 LEASED LINES.
+>
+> what I want to do is ,
+>
+> - in other words for some traffic use WAN1 and use WAN2 for some
+>
+> all the examples include 1 LAN and 1 WAN, what if I have 2 ?
 
-LOCAL NETWORK is 10.1.0.0
-WAN1 is x.x.x.64 , SM is 255.255.255.192
-(begins from x.x.x.65 to x.x.x.127)
-WAN2 is y.y.y.176 , SM is 255.255.255.248
-(begins from y.y.y.177 to y.y.y.183)
+This is not a netfilter questions.
 
-what I want to do is ,
+You need to learn about iproute2.
 
-- match 10.1.1.11 with x.x.x.125 SMTP/POP3 server SNAT and DNAT
-- match user access with y.y.y.180 (http,..etc.)
-- in other words for some traffic use WAN1 and use WAN2 for some
+You could try http://defiant.coinet.com/iproute2 for links to useful 
+documents.
 
-all the examples include 1 LAN and 1 WAN, what if I have 2 ?
 
-thanks from now
-
-iskender
-
-_________________________________________________________________
-Join the world=92s largest e-mail service with MSN Hotmail.=20
-http://www.hotmail.com
-
+Antony.
 
