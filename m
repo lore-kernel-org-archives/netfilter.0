@@ -1,11 +1,13 @@
-From: Mark Moseley <moseleymark@gmail.com>
-Subject: ipset issue
-Date: Mon, 6 Dec 2004 13:27:34 -0800
-Message-ID: <294d5daa0412061327651c1648@mail.gmail.com>
-Reply-To: Mark Moseley <moseleymark@gmail.com>
+From: Paul Annesley <paul.annesley@gmail.com>
+Subject: Re: lots of tcp port 445 traffic
+Date: Tue, 7 Dec 2004 09:56:20 +1100
+Message-ID: <99fb058804120614564f38abef@mail.gmail.com>
+References: <41B48EB0.3030307@phreaker.net>
+Reply-To: Paul Annesley <paul.annesley@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <41B48EB0.3030307@phreaker.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +19,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I decided to play with ipset (2.0), but I seem to be running into an
-issue with creating rules. I wonder if I'm missing something silly or
-not.
+On Tue, 07 Dec 2004 00:54:08 +0800, ro0ot <ro0ot@phreaker.net> wrote:
+> Hi,
+> 
+> I get lots of tcp port 445 traffic when I do a tcpdump -n port 445,
+> could it be an attack?
 
-When I issue the command:
+Many viruses hammer TCP port 445 attempting to exploit MS Windows
+vulnerabilities.  They attempt to establish TCP sessions on dport 445
+to a massive amount of P addresses.. this can fill up
+/proc/net/ip_conntrack in no time, amongst other things.
 
-ipset -N foo iphash --resize 0   (straight from the Tips page)
+> 
+> I check on the syslog files at /var/log/syslog, it shows this as below: -
+> 
+> Dec  7 00:36:40 fw01 kernel: Neighbour table overflow.
+> Dec  7 00:36:46 fw01 kernel: NET: 32 messages suppressed.
+> Dec  7 00:36:46 fw01 kernel: Neighbour table overflow.
+> Dec  7 00:36:51 fw01 kernel: NET: 27 messages suppressed.
+> Dec  7 00:36:51 fw01 kernel: Neighbour table overflow.
+> Dec  7 00:38:14 fw01 kernel: NET: 6 messages suppressed.
+> Dec  7 00:38:14 fw01 kernel: Neighbour table overflow.
+> 
+> When I try to ping my router IP address, I get this message below: -
+> 
+> connect: No buffer space available
+> 
+> I did tried running the below command and it seems not helping much: -
+> 
+> iptables -I cus2jarwan -p tcp --dport 445 -j REJECT --reject-with tcp-reset
+> 
+> or
+> 
+> iptables -I cus2jarwan -p tcp --dport 445 -j DROP
+> 
 
-I get the error:
+You definately don't want to use -J REJECT - this will do more harm
+than good, as it will be generating an ICMP unreachable message for
+each port 445 packet.
 
-ipset v2.0: Error from kernel: Protocol not available
+> How can I stop this tcp port 445 traffic?  Or how can I prevent it?
 
-I get this on a box running a 2.6.10-rc3 kernel and the kernel has
-most definitely been patched with the POM with the set stuff in it, as
-well as the iptables 1.3.0 (POM and iptables source were downloaded
-from the ipset page,
-http://people.netfilter.org/kadlec/ipset/install.html). The kernel was
-compiled with gcc 3.2.2 (RH9 rpm).
+Use the drop rule you mentioned.  Apply it to INPUT and also FORWARD.
 
-Here's a snippet from the end of strace. Let me know if more
-strace'ing would be helpful. This is the last chunk, running strace
-with -f and -s:
+If possible;
+- remove the viruses
+- disable the infected computer(s) switch port(s) until cleaned
+- unplug the infected computer(s) from the network until cleaned
 
-socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
-setsockopt(3, SOL_IP, 0x53 /* IP_??? */,
-"\1\0\0\0\2\0\0\0foo\0T\277\4@Xn\4@8\344\3@\350u\1@\4\0\0\0\264x\1@\224\207\4\10iphash\0\10\270i\1@\264m\1@\0\0\0\0\200\364\377\277\\~\0@<\364\377\277\0\4\0\0\10\0\0\0\377\377\377\377",
-84) = -1 ENOPROTOOPT (Protocol not available)
-write(2, "ipset v2.0: ", 12ipset v2.0: )            = 12
-write(2, "Error from kernel: Protocol not available", 41Error from
-kernel: Protocol not available) = 41
-write(2, "\n", 1)                       = 1
-exit_group(1)   
+Regards,
+Paul
 
-
-I imagine I'm missing something when I configure the kernel but I'm
-not sure what. Anybody know what botched? Thanks!
+> 
+> Regards,
+> ro0ot
+> 
+>
 
