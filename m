@@ -1,13 +1,12 @@
-From: Gabriel Paues <gabriel@sics.se>
-Subject: Re: alternate tables and ipv6
-Date: Thu, 06 Jun 2002 10:20:01 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: RE: What ICMP packets does state RELATED allow?
+Date: Thu, 6 Jun 2002 13:50:53 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CFF1B30.88B9A6E@sics.se>
-References: <20020604122434.A667@rainbow>  <3CFCC1CB.DF79783F@sics.se> <1023312983.28008.25.camel@hoi>
-Reply-To: gabriel@sics.se
+Message-ID: <Pine.LNX.4.33.0206061348270.2335-100000@blackhole.kfki.hu>
+References: <NJEFLNJDIFFNMHDEBKMJIEFODOAA.jpatterson@asgardgroup.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <NJEFLNJDIFFNMHDEBKMJIEFODOAA.jpatterson@asgardgroup.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,62 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Andras Kis-Szabo <kisza@securityaudit.hu>
-Cc: Netfilter <netfilter@lists.samba.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Joe Patterson <jpatterson@asgardgroup.com>
+Cc: Nick Drage <nickd@funkyjesus.org>, netfilter@lists.samba.org
 
-I guess I have to implement it myself, then...
+On Wed, 5 Jun 2002, Joe Patterson wrote:
 
-Be back when I have, with a patch!
+> although, in the case of the question that Nathan asked, my answer didn't
+> address those particular packet types.  My suspicion is that source quench
+> is treated as related, because it should be.  Redirects are somewhat more
+> tricky.  They *should* never be routed, because routing them makes no sense.
+> I think that they often are anyway, since pure routers don't want to spend
+> the effort to care.  I would posit that in general, a firewall, which by its
+> nature *can* spend the effort to care, should never forward them.  If I'm
+> reading the rfc's correctly, a gateway should not send an icmp redirect to a
+> source address that is not on a directly attached network.  Furthermore, a
+> host that recieves a redirect from *either* 1) a gateway that is not the
+> gateway that it would route the packet that caused the redirect to in the
+> first place or 2) a gateway that is not on a directly connected network,
+> then that host should ignore the redirect entirely.
 
-Sincerily,
-Gabriel
+According to the source code, the following ICMP messages are treated as
+RELATED (if the payload matches one of the already existing connection):
 
-Andras Kis-Szabo wrote:
+destination-ureachable
+source-quench
+time-exceeded
+paremeterproblem
+redirect
 
-> Hi,
->
-> > iptables -A PREROUTING -i eth0 -t mangle -m tos --tos 0 -j MARK --set-mark 1
-> > ip rule add fwmark 1 table host2.out
-> > ip route add default via 192.168.2.3 dev eth2 table host2.out
-> >
-> > All is working fine in the IPv6 case except the last statement (slightly altered
-> > for IPv6):
-> > #ip -6 route add default via fec0::192.168.2.3 dev eth2 table host2.out
-> > RTNETLINK answers: File exists
-> >
-> > Is this approach incompatible with IPv6 in any way? Is there any problems with
-> > using IPv6-addresses and the "table" object?
-> I think this is not a Netfilter-related question, but I try to answer.
->
-> The basic rtnetlink functions are supported in IPv6 too, but not all.
-> Configuration options for IPv4:
-> - TCP/IP networking
-> -   IP: multicasting
-> -     IP: advanced router
-> -       IP: policy routing
-> -         IP: use netfilter MARK value as routing key
-> With this You set the CONFIG_IP_ROUTE_FWMARK flag in the configuration.
-> This flag is interperted in the IPv4 code, but its whole function is
-> missing from the IPv6 code.
->
-> The related files and structures:
-> /usr/src/linux/net/ipv4/devinet.c
-> static struct rtnetlink_link inet_rtnetlink_table[RTM_MAX-RTM_BASE+1]
-> /usr/src/linux/net/ipv6/addrconf.c
-> static struct rtnetlink_link inet6_rtnetlink_table[RTM_MAX-RTM_BASE+1]
-> And severeal other functions and structures in the routing code.
->
-> When you try to add a rule with a 'table' object, the 'ip' command -
-> maybe - simply discards the 'table' tag.
->
-> Regards,
->
->         kisza
->
-> --
->     Andras Kis-Szabo       Security Development, Design and Audit
-> -------------------------/        Zorp, NetFilter and IPv6
->  kisza@SecurityAudit.hu /-----Member of the BUTE-MIS-SEARCHlab------>
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+WWW-Home: http://www.kfki.hu/~kadlec
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
