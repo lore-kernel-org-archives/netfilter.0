@@ -1,13 +1,12 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: POP3 Forwarding ok or not.
-Date: 19 Jan 2005 15:25:33 +0100
-Message-ID: <1106131612.6185.3.camel@nostromo.bgsecm.com>
-References: <20050118195858.GD27505@omega.lacnic.net.uy>
-	<20050118192344.GA8624@bender.817west.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: firewall on dns server
+Date: Wed, 19 Jan 2005 09:28:27 -0500
+Message-ID: <1106144907.4934.20.camel@hubcap.ljm.dom>
+References: <a0f69e50501182152e8fce13@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050118192344.GA8624@bender.817west.com>
+In-Reply-To: <a0f69e50501182152e8fce13@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,75 +17,130 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El mar, 18 de 01 de 2005 a las 20:23, Jason Opperisano escribi=C3=B3:
-> On Tue, Jan 18, 2005 at 04:58:58PM -0300, Pablo Allietti wrote:
-> > hi people.=20
-> >=20
-> >=20
-> > i have a question..
-> >=20
-> > my net is=20
-> >=20
-> >=20
-> > 		|200.40.228.64/28
-> > 		|
-> > 		Firewall FC2 (200.40.229.67)
-> > 		|	dns midomain.com
-> > 		|
-> > 		|192.168.1.0/24
-> > -------------------------------
-> >     |
-> >     |
-> >     |
-> > FC2 (pop3) 192.168.1.6
-> >=20
-> >=20
-> > i need to check mail in midomain.com but the pop3 server and mail ser=
-ver
-> > is in 192.168.1.8
-> >=20
-> > is that correct to check and send mail?
-> >=20
-> > iptables -A FORWARD -i eth1 -o eth0 -p tcp -s 0/0 -d 192.168.1.6 --dp=
-ort
-> > 110 -j ACCEPT
-> > iptables -A FORWARD -i eth1 -o eth0 -p tcp -s 0/0 -d 192.168.1.6 --dp=
-ort =20
-> > 25 -j ACCEPT
->=20
-> those are correct for your filter rules.  do you already have the NAT
-> setup for this as well?
->=20
->   iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 110 \
->     -j DNAT --to-destination 192.168.1.6
->=20
->   iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 \
->     -j DNAT --to-destination 192.168.1.6
->=20
-> -j
->=20
-> --
-> "This has purple stuff inside - purple is a fruit."
->         --The Simpsons
+On Wed, 2005-01-19 at 00:52, Askar wrote:
+> Greetings, I'm pasting my firewall script which is running on our
+> company cache only dns server (serving more then 700+ users), this
+> server uses one of our company primary dns server as "Forwarder".
+> what I want gurus in this list give a look to it and let me know if im
+> missing something or doing any mistake.
+> OS: slackware kernel 2.6.10, netfilter compiled in kernel.
+> ###script 
+> # Remove any existing rules from all chains
+> # traceroute usually uses -S 32769:65535 -D 33434:33523
+> TRACEROUTE_SRC_PORTS="32769:65535"
+> TRACEROUTE_DEST_PORTS="33434:33523"
+> 
+> #Clear \ Flush all the rules from the different chains and tables
+> 
+> iptables --flush
+> iptables --flush INPUT            #Flush the INPUT chain
+> iptables --flush OUTPUT           #Flush the OUTPUT chain
+> iptables --flush FORWARD          #Flush the FORWARD chain
+> iptables -t nat --flush           #Flush the nat table
+> iptables -t mangle --flush        #Flush the mangle table
+> iptables --delete-chain           #Delete any pre-existing chains
+> iptables -t nat --delete-chain    #Delete any pre-existing chains from nat table
+> iptables -t mangle --delete-chain #Delete any pre-existing chains from
+> the mangle table
 
-And of course also the RELATED and ESTABLISHED rules, or the rules
-for the traffic going out of the machines.
+you can slim the above down to:
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+  for table in mangle nat filter; do
+    iptables -t $table -F
+    iptables -t $table -X
+  done
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+> #Setting the default Policies for the chains
+> iptables --policy INPUT DROP      #Setting the default policy for INPUT chain
+> iptables --policy FORWARD DROP    #Setting the default plicy for FORWARD chain
+> iptables --policy OUTPUT DROP     #Setting the default policy for the
+> OUTPUT chain
+> 
+> # Unlimited traffic on the loopback interface
+> # Do immediately in case of firewall script errors!
+> iptables -A INPUT  -i lo -j ACCEPT
+> iptables -A OUTPUT -o lo -j ACCEPT
+> 
+> # furtive port scan
+> iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit
+> --limit 1/s -j ACCEPT
+
+why rate-limit and accept packets with just the RST flag set?  valid RST
+packets should have the ACK bit set as well.  it also seems strange that
+you would choose to single out a RST scan, and not bother with something
+like a SYN-FIN scan...i dunno, i'm sure you have your reasons.
+
+> ###############################################################
+> # Using Connection State to By-pass Rule Checking
+> 
+> iptables -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> ###############################################################
+> # Source Address Spoofing and Other Bad Addresses
+> # Refuse packets claiming to be from the loopback interface (martian)
+> iptables -A INPUT    -s 127.0.0.1 -j DROP
+> iptables -A FORWARD  -s 127.0.0.1 -j DROP
+
+as your parentheses indicate--the linux kernel routing code will drop
+these packets as martians before the packets ever gets to the netfilter
+hooks--so these rules are basically unnecessary.
+
+> ###############################################################
+> iptables -A INPUT -m state --state INVALID -j LOG --log-prefix "INVALID input: "
+> iptables -A INPUT -m state --state INVALID -j DROP
+> iptables -A OUTPUT -m state --state INVALID -j LOG --log-prefix
+> "INVALID output: "
+> iptables -A OUTPUT -m state --state INVALID -j DROP
+> 
+> ##################################################################################
+> ## allow ssh from trusted IPs
+> iptables -A INPUT -i eth0 -s xxx.xxx.xxx.x -p tcp -m tcp --dport 22 -j ACCEPT
+> iptables -A INPUT -i eth0 -s xxx.xxx.xxx.x -p tcp -m tcp --dport 22 -j ACCEPT
+> iptables -A INPUT -i eth0 -s xxx.xxx.xxx.x -p tcp -m tcp --dport 22 -j ACCEPT
+> iptables -A INPUT -i eth0 -s xxx.xxx.xxx.x -p tcp -m tcp --dport 22 -j ACCEPT
+> iptables -A INPUT -i eth0 -s xxx.xxx.xxx.x -p tcp -m tcp --dport 22 -j ACCEPT
+> #################################################################
+> iptables -A INPUT -p udp --dport 53 -j ACCEPT
+> iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+> ################################################################
+> iptables -A OUTPUT -s 0/0 -d 0/0 -p tcp --dport 53 -j ACCEPT
+> iptables -A OUTPUT -s 0/0 -d 0/0 -p udp --dport 53 -j ACCEPT
+
+stylistic note:  why did you use the "-s 0/0 -d 0/0" in the OUTPUT rules
+but not the INPUT rules.  personally--i think the INPUT rules are much
+easier to read, as the "-s 0/0 -d 0/0" is unnecessary.
+
+> ########### Allow Traceroute
+> iptables -A OUTPUT -o eth0 -p udp --sport $TRACEROUTE_SRC_PORTS
+> --dport $TRACEROUTE_DEST_PORTS -m state --stat
+> e NEW -j ACCEPT
+> ########### Allow WHOIS
+> iptables -A OUTPUT -o eth0 -p tcp --dport 43 -m state --state NEW -j ACCEPT
+> 
+> ### End script
+
+seems odd to me that you would allow traceroute and whois outbound, but
+not pings.  for that matter--in addition to allowing pings outbound--i
+would also allow pings inbound from the company networks--for
+troubleshooting purposes.
+
+i'm not familiar with how slackware deals with updates and patches, but
+on my machines--i normally need rules to allow HTTP or FTP outbound to
+my local update mirror.
+
+also--i always run some type of ntpd on my servers to keep their time in
+sync--which would require an outbound rule for UDP port 123 to the time
+server.
+
+-j
+
+--
+"Boy, if you want anything in this life, you have to work for it. Now
+ be quiet while I listen for these lottery numbers."
+	--The Simpsons
 
 
