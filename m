@@ -1,11 +1,9 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: Netmeeting Desktop sharing in not working.
-Date: Wed, 25 Sep 2002 11:01:13 -0400
+From: Joshua Cragun <jcragun@apothecaryproducts.com>
+Subject: Can't get DNS forwarded
+Date: Wed, 25 Sep 2002 13:32:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001001c264a4$64a64e70$8c01a8c0@sundaram>
+Message-ID: <76135A08B685D411A40F00A0C9D7C941CFF165@FS02>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000D_01C26482.DD3920F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,115 +14,96 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+	I am new to iptables (an relatively new to Linux), so please be
+patient with me. I am sure this is something relatively simple. Anyways, I
+am attempting to configure an iptables firwall using the script listed
+below, and I can HTTP requests and echo packets through, but I can't seem to
+get any names to resolve from inside hosts.  It is a dual-homed box running
+RedHat 7.3. eth0 is connected to my private network, and eth1 is internet. 
 
-------=_NextPart_000_000D_01C26482.DD3920F0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	I'm frankly lost at this point, and any help would be most
+appreciated.
 
-Hi,
-
-I am using following firewall rules for Netmeeting, Voice is working =
-fine but Desktop sharing, Netmeeting chat is not working. I am getting =
-not in a call error message.
-
-Do I need to change anything on my IPtables rules? Is any one running =
-firewall with this feature.
-
-Thanks
-Sundaram
+Josh Cragun
+Developer
+Apothecary Products, Inc.
 
 
+The script (after enabling IP forwarding):
 
-EXT=3D"eth0"
-INT=3D"eth1"
-INT2=3D"eth2"
-LO=3D"lo"
+# Flush all rules
+echo -n "Flushing rules...."
+iptables -F
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+iptables -t nat -F
+echo " DONE"
 
-ANY=3D"Any/0"
+# Delete any user-defined chains
+echo -n "Deleting any user-defined chains..."
+iptables -X
+echo " DONE"
 
-GW_IP=3D"192.168.1.1"
-GW_EXT_IP=3D"XX.140.18.XX"
-SUB_NET=3D"192.168.1.0/24"
+# Set default policies
+echo -n "Setting default policies..."
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+iptables -t nat -P POSTROUTING DROP
+echo " DONE"
 
-PRIVP=3D"0:1023"
-UNPRI=3D"1024:65535"
+# Set up Network Address Translation:
+echo -n "Setting up NAT..."
+# a) Masquerade
+iptables  -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+# b) forward WWW to FS02
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 208.250.60.72 -j DNAT
+--to-destination 192.168.100.2:80
+# c) forward SMTP to FS02
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 208.250.60.72 --dport 25 -j
+DNAT --to-destination 192.168.100.2:25
+echo " DONE"
 
-IPT=3D"/sbin/iptables"
+# Add access for loopback device
 
+# Deny traffic from WAN containing internal source IPs
 
+# Deny traffic from LAN containing non-internal source IPs
 
-: For NetMeeting
-$IPT -A OUTPUT -o $EXT -p udp --sport 1024:65535 --dport 53 -j ACCEPT
-$IPT -A INPUT  -i $EXT -p udp --sport 53 --dport 1024:65535 -j ACCEPT
-$IPT -A OUTPUT -o $EXT -p tcp --sport $UNPRI --dport 53 -j ACCEPT
-$IPT -A INPUT  -i $EXT -p tcp --sport 53 --dport $UNPRI -j ACCEPT
+# Allow ICMP echo (ping)
+echo -n "Allowing ICMP echo (ping)..."
+iptables -A FORWARD -i eth0 -s 192.168.100.0/24 -p icmp --icmp-type 8 -j
+ACCEPT
+iptables -A FORWARD -i eth1 -d 192.168.100.0/24 -p icmp --icmp-type 0 -j
+ACCEPT
+echo " DONE"
 
-$IPT -A FORWARD -i $EXT -p tcp --dport 113 --syn -j REJECT
+# Allow DNS requests from LAN
+echo -n "Allowing DNS requests..."
+#iptables -A FORWARD -i eth0 -s 192.100.0/24 -p tcp --sport 1023:65535
+--dport 53 -j ACCEPT
+#iptables -A FORWARD -i eth1 -d 192.100.0/24 -p tcp --sport 53 --dport
+1023:65535 -j ACCEPT
+#iptables -A FORWARD -i eth0 -s 192.100.0/24 -p udp --sport 1023:65535
+--dport 53 -j ACCEPT
+#iptables -A FORWARD -i eth1 -d 192.100.0/24 -p udp --sport 53 --dport
+1023:65535 -j ACCEPT
+iptables -A FORWARD -p udp --sport 53 -j ACCEPT
+iptables -A FORWARD -p udp --dport 1023:65535 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 53 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1023:65535 -j ACCEPT
+echo " DONE"
 
-------=_NextPart_000_000D_01C26482.DD3920F0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4807.2300" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am using following firewall rules for =
-Netmeeting,=20
-Voice is working fine but Desktop sharing, Netmeeting chat is not =
-working. I am=20
-getting not in a call error message.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Do I need to change anything on my =
-IPtables rules?=20
-Is any one running firewall with this feature.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Sundaram</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>EXT=3D"eth0"<BR>INT=3D"eth1"<BR>INT2=3D"eth2"<BR>LO=3D"lo"</FONT=
-></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>ANY=3D"Any/0"</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>GW_IP=3D"192.168.1.1"<BR>GW_EXT_IP=3D"XX.140.18.XX"<BR>SUB_NET=3D=
-"192.168.1.0/24"</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>PRIVP=3D"0:1023"<BR>UNPRI=3D"1024:65535"</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>IPT=3D"/sbin/iptables"</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV><FONT face=3DArial =
-size=3D2>
-<DIV><BR>: For NetMeeting<BR>$IPT -A OUTPUT -o $EXT -p udp --sport =
-1024:65535=20
---dport 53 -j ACCEPT<BR>$IPT -A INPUT&nbsp; -i $EXT -p udp --sport 53 =
---dport=20
-1024:65535 -j ACCEPT<BR>$IPT -A OUTPUT -o $EXT -p tcp --sport $UNPRI =
---dport 53=20
--j ACCEPT<BR>$IPT -A INPUT&nbsp; -i $EXT -p tcp --sport 53 --dport =
-$UNPRI -j=20
-ACCEPT</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>$IPT -A FORWARD -i $EXT -p tcp --dport 113 --syn -j=20
-REJECT</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_000D_01C26482.DD3920F0--
-
+# Allow Web traffic out
+echo -n "Allowing outgoing WWW traffic..."
+iptables -A FORWARD -i eth0 -s 192.168.100.0/24 -p tcp --sport 1023:65535
+--dport 80 -j ACCEPT
+iptables -A FORWARD -i eth1 -d 192.168.100.0/24 -p tcp --sport 80 --dport
+1023:65535 --tcp-flags ACK ACK -j ACCEPT
+echo " DONE"
 
