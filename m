@@ -1,12 +1,11 @@
-From: "Aldo Lagana" <ALagana@p21.com>
-Subject: RE: Send local traffic to a different server.
-Date: Wed, 23 Jun 2004 11:26:01 -0400
+From: "Linda Zhu" <lindazhu@utstar.com>
+Subject: remote telnet is blocked when internal ping is ongoing
+Date: Wed, 23 Jun 2004 15:53:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5EDC9B3CC8401E4184D3B43B75A75C2B46D668@mx.p21.com>
+Message-ID: <LCENIFAENEHNMKDCGDGBMELNCJAA.lindazhu@utstar.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +16,97 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: simpsonb@hillsboroughcounty.org, netfilter@lists.netfilter.org
-
-am i wrong or can you not send traffic to another server simply with =
-netfilter/iptables rules?  Does not that require iproute2?  In other =
-words don't all of the rules assume that the NAT addresses are bound to =
-local interfaces?=20
-
-aldo
-
------Original Message-----
-From: Brett Simpson [mailto:simpsonb@hillsboroughcounty.org]
-Sent: Wednesday, June 23, 2004 11:12 AM
 To: netfilter@lists.netfilter.org
-Subject: Re: Send local traffic to a different server.
+
+Hi,
+
+This is Linda from UTStarcom. I have problems with iptable configuration.
+
+The problem happens on one card. The card has two ethernet interfaces:
+One is 172.16.xx.xx, and another is 192.168.xx.xx. The 172.16.xx.xx
+interface
+is used for remotely acceccing the card. The 192.168.xx.xx interface
+receives
+and transmit traffic.
+
+Part of our iptable configuration is attached below.
+
+In normal case, user can remotely telnet into this card with no problme.
+The problem occurs when we run ping from 196.168.xx.xx interface at a fast
+rate.
+
+e.g. ping -i 0.01 -s 1400 192.168.100.2, then the remote telnet to
+172.168.xx.xx
+interface is blocked.
+
+In the iptable configuration, we have one rule:
+
+$IPTABLES -A allowed_tcp -p TCP --syn -m limit --limit 1/second -j ACCEPT
+
+If we change the limit from 1/second to 20/second, then with one ping
+session,
+the telnet will be successful. After that, if we run two ping sessions:
+e.g.
+ping -i 0.01 -s 1400 192.168.100.2
+ping -i 0.01 -s 1400 192.168.100.3
+
+then telnet is blocked again.
+
+Then if we change the limit from 20/second to 100/second, remote telnet
+success.
+With the 100/second, even 4 ping sessions ongoing at same time, the remote
+telnet is OK.
+
+Basically, we don't setup any firewall for 192.168.xx.xx interface. My
+question
+is why the ping on 192.168.xx.xx interface will affect the remote telnet.
+The two
+interface are in different IP groups and on different hardware. Please
+advice.
+
+Thank you,
+Linda
+
+================== part of our iptable configuration =======================
+
+###
+# Create separate chains for TCP,UDP,ICMP to traverse
+#
+#
+
+$IPTABLES -N allowed_tcp
+$IPTABLES -N tcp_packets
+$IPTABLES -N udp_packets
+$IPTABLES -N icmp_packets
+#$IPTABLES -N allowed_ping
+
+#
+# Allowed chain
+#
+
+$IPTABLES -A allowed_tcp -p TCP --syn -m limit --limit 1/second -j ACCEPT
+$IPTABLES -A allowed_tcp -p TCP -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+$IPTABLES -A allowed_tcp -p TCP -j DROP
+
+#
+# TCP rules
+#
+
+### Telnet ###
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 23 -j allowed_tcp
 
 
-On Wed, 2004-06-23 at 10:00, Antony Stone wrote:
-> On Wednesday 23 June 2004 3:33 pm, Brett Simpson wrote:
->=20
-> > On Wed, 2004-06-23 at 09:33, Antony Stone wrote:
-> > > On Wednesday 23 June 2004 3:08 pm, Brett Simpson wrote:
-> > > > I've tried a number of different PREROUTING and POSTROUTING =
-rules and
-> > > > can't seem to make this work.
-> > > >
-> > > > I have a system with a single nic (eth0). While I'm on the =
-system via a
-> > > > shell I would like to connect to 127.0.0.1:6000 and get =
-seemlessly
-> > > > translated to 207.156.7.15:80.
-> > > >
-> My rule will send packets to 207.156.7.15 with a source address of =
-127.0.0.1
->=20
-> Not surprisingly, you don't get anything back...
->=20
-> Try:
->=20
-> iptables -A OUTPUT -t nat -p tcp --dport 6000 -d 127.0.0.1 -j DNAT =
---to=20
-> 207.156.7.15:80
-> iptables -A POSTROUTING -t nat -p tcp --dport 80 -d 207.156.7.15 -s =
-127.0.0.1=20
-> -j SNAT --to a.b.c.d
->=20
-> Where a.b.c.d is the routable address of your machine, to which reply =
-packets=20
-> can successfully return.
+#
+# ICMP rules
+#
 
-Still no go. My machine is 172.27.228.145. I'm using lynx for the
-browser on my machine.
-
-iptables -A OUTPUT -t nat -p tcp --dport 6000 -d 127.0.0.1 -j DNAT --to
-207.156.7.15:80
-iptables -A POSTROUTING -t nat -p tcp --dport 80 -d 207.156.7.15 -s
-127.0.0.1 -j SNAT --to 172.27.228.145
-
-Thanks,
-Brett
-
-
-
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 -m limit --limit
+3/second --icmp-type 8
+ -j ACCEPT
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type pong -j ACCEPT
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type port-unreachable -j
+ACCEPT
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
 
 
