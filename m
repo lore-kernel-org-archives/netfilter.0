@@ -1,10 +1,9 @@
-From: - = k o l i s k o = - <kolisko@penguin.cz>
-Subject: iptables stateful inspection and H.323
-Date: 18 Feb 2003 10:48:48 +0100
+From: "Andrej Ricnik" <lemmetink@hotmail.com>
+Subject: iptables 1.2.7a install
+Date: Tue, 18 Feb 2003 20:44:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045561728.1515.25.camel@kolisko>
+Message-ID: <F3x3JZcv2FdmVb74atR00029b56@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,31 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi Guys!
 
-What is the current state of stateful inspection and H.323 protocol
-(netmeeting).=20
+I was just upgrading (trying to upgrade) from
+1.2.6 to 1.27a...
 
-I would like to know if will H.323 work:
+However, when I
+--------8<--------8<--------8<--------8<--------8<--------8<--------
+root@diggn:/usr/src/iptables-1.2.7a# make KERNEL_SOURCE=/usr/src/linux
+Extensions found:
+root@diggn:/usr/src/iptables-1.2.7a#
+--------8<--------8<--------8<--------8<--------8<--------8<--------
+nothing but that Extensions found happens ... is that
+working as designed? And if not, what am I doing wrong?
 
---state NEW,REL..,EST..  - OUT=20
---state REL..,EST..  - IN
+Cheers,
+Tink
 
---=20
+-----BEGIN GEEK CODE BLOCK-----
+Version: 3.12
+GCM/IT/O d-(++)@ a C+(+++)@ UL++>+++ P+>+++ L++ E+@ W+@ N+ o? K? w---@(+) 
+O+++(+)@ M-@ V? PS+ PE- Y+ PGP++ t- 5- X- R-(*) tv-@ b+ DI++ D-- G++ !e* 
+h--- r++ z?
+------END GEEK CODE BLOCK------
 
----
-Michal Koles=E1r
-kolisko@penguin.cz
-http://kolisko.penguin.cz
-+420.777.225.297
 
-
-Don't send me any attachment in Micro$oft (.DOC, .PPT) format please
-Read http://www.fsf.org/philosophy/no-word-attachments.html
-Preferable attachments: .PDF, .HTML, .TXT
-Thanx for adding this text to Your signature
+_________________________________________________________________
+Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
 
 
