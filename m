@@ -1,10 +1,9 @@
-From: deniska@westnet.com.au
-Subject: Traffic counts wrongly in OUTPUT.
-Date: Sat, 5 Mar 2005 17:46:03 +1030
-Message-ID: <12893.1204475977$1110006499@news.gmane.org>
-Reply-To: deniska@westnet.com.au
+From: "hareram" <hareram@sol.net.in>
+Subject: yahoo mail problem
+Date: Sat, 5 Mar 2005 13:52:19 +0530
+Message-ID: <0dd101c5215c$7393efb0$09603fca@southern>
 Mime-Version: 1.0
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,20 +14,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi all
 
-My counter in OUTPUT grows with >10MBytes/sec but I have only 64kbit of
-bandwidth. I have QoS shaping outgoing traffic, so, my guess is, the
-kernel sends packets as quick as possible but most of them are
-dropped in a queue by QoS.
+I have iptables running with FC3
+I have some different problem
+when iam doing NAT and masq.. iam not able to check yahoo mails
+when i use the public IP i could able to check mails and send/receive
 
-Now the question: is it possible to obtain the correct value of
-out-counters in iptables?
+iam doing ip masq using 1 public ip address.
+when i change to another public ip for 2 days iam able to check the yahoo 
+mails send/receive ok.
+then again start getting the same yahoo mail problem
 
-Regards,
-D.
+does any one face this kind of problem or any solution for this kind of 
+situation ??
+
+suggestion and some docs will be appreciated
+
+hare 
+
+
 
