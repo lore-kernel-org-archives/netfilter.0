@@ -1,12 +1,13 @@
-From: Tom Eastep <teastep@shorewall.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: IP address to MAC address
-Date: Tue, 11 Jun 2002 14:27:15 -0700 (PDT)
+Date: Tue, 11 Jun 2002 22:36:07 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0206111418380.4051-100000@wookie.shorewall.net>
-References: <200206112109.g5BL9xA22717@Networker.rockstone.co.uk>
+Message-ID: <200206112136.g5BLa9A24240@Networker.rockstone.co.uk>
+References: <Pine.LNX.4.44.0206111418380.4051-100000@wookie.shorewall.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206112109.g5BL9xA22717@Networker.rockstone.co.uk>
+In-Reply-To: <Pine.LNX.4.44.0206111418380.4051-100000@wookie.shorewall.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,43 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
 
-On Tue, 11 Jun 2002, Antony Stone wrote:
+On Tuesday 11 June 2002 10:27 pm, Tom Eastep wrote:
 
-> 
-> Well, on my system at least (Slackware 8.0), /proc/net/arp has permissions 
-> -r--r--r-- so anyone can read it.   The arp program is in /sbin, so it can 
-> only be run by root.
-> 
+> On Tue, 11 Jun 2002, Antony Stone wrote:
 
-Are you saying that Slack secures /sbin against access by non-root users 
-or the files there from being executed by non-root users? Not so on 
-RedHat:
+> > Well, on my system at least (Slackware 8.0), /proc/net/arp has
+> > permissions -r--r--r-- so anyone can read it.   The arp program is in
+> > /sbin, so it can only be run by root.
+>
+> Are you saying that Slack secures /sbin against access by non-root users
+> or the files there from being executed by non-root users? Not so on
+> RedHat:
+>
+> Note that /sbin isn't in non-root's PATH so by default an absolute path
+> name must be used. But:
 
+Okay - turns out I'm telling you Slackware's the same - I just naively 
+assumed that when someone decided not to include /sbin on non-root user PATH, 
+then they would have given it permissions dr-xr-x--- to stop non-root users 
+getting at the juicy commands inside.
 
-[teastep@wookie Shorewall]$ /sbin/arp -na
-? (192.168.1.5) at 00:A0:CC:DB:31:C4 [ether] on eth0
-? (192.168.1.254) at 02:00:08:E3:4C:48 [ether] on eth0
-[teastep@wookie Shorewall]$
+Just shows you something you think is security is just obscurity :-)
 
-Note that /sbin isn't in non-root's PATH so by default an absolute path
-name must be used. But:
+ 
 
-[teastep@wookie Shorewall]$ PATH=$PATH:/sbin
-[teastep@wookie Shorewall]$ arp -na
-? (192.168.1.5) at 00:A0:CC:DB:31:C4 [ether] on eth0
-? (192.168.1.254) at 02:00:08:E3:4C:48 [ether] on eth0
-[teastep@wookie Shorewall]$
-
-
--Tom
--- 
-Tom Eastep    \ Shorewall - iptables made easy
-AIM: tmeastep  \ http://www.shorewall.net
-ICQ: #60745924  \ teastep@shorewall.net
-
+Antony.
 
