@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNAT Problem
-Date: Thu, 22 Apr 2004 14:21:44 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: logging/preventing RST as in US-CERT TA04-111A
+Date: Thu, 22 Apr 2004 16:20:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404221421.44015.Antony@Soft-Solutions.co.uk>
-References: <1611.80.0.0.23.1082351242.squirrel@80.0.0.175> <200404221347.13412.Antony@Soft-Solutions.co.uk> <1645.80.0.0.23.1082639169.squirrel@80.0.0.175>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1082643602.1826.60.camel@anduril.intranet.cartel-securite.net>
+References: <20040422132701.87006.qmail@web21411.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1645.80.0.0.23.1082639169.squirrel@80.0.0.175>
+In-Reply-To: <20040422132701.87006.qmail@web21411.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +17,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: unor <unorlist@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 22 April 2004 2:06 pm, test@seaconindia.com wrote:
+Le jeu 22/04/2004 =E0 15:27, unor a =E9crit :
+> Will something like:
+> $IPTABLES -A INPUT -p tcp --tcp-flags RST -m state
+> --state NEW -j LOG
+> Log "RST injection" packets potentially explointing
+> that mentioned in US-CERT TA04-111A?  If not, any
+> ideas?
 
-> Hi Antony
->
-> > On Thursday 22 April 2004 1:42 pm, test@seaconindia.com wrote:
-> >> Hi Antony
-> >>
-> >> Thanks for your reply, but my problem is as follows
-> >>
-> >> I have email server running behind my firewall. Now all request coming
-> >> from internet are logged as if coming from my firewall. I want the
-> >> request to be logged with source ip and not with firewall ip.
-> >
-> > I know that is your problem.
-> >
-> > I believe the change to your MASQUERADE / SNAT rule which I posted is a
-> > solution to that problem.
-> >
-> > If it is not a solution, then post your current ruleset so that we can
-> > think about it further.
->
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 -j DNAT --to
-> 192.168.0.6:25
->
-> Regards
->
-> Joel
+Nope.
 
-I don't believe that can be your complete ruleset.
+First, the rule should be :
 
-I see nothing wrong with the above rule as it stands, however on its own it's 
-not much good - you need a FORWARD rule to allow packets through to the mail 
-server as well.
+	$IPTABLES -A INPUT -p tcp --tcp-flags RST RST \
+		-m state --state NEW -j LOG
 
-Anyway, I thought (I may be mistaken) that the problem was not with the 
-inbound DNAT, but with SNAT?
+So you won't get this error :
 
-Regards,
+iptables v1.2.9-20040302: --tcp-flags requires two args.
+Try `iptables -h' or 'iptables --help' for more information.
 
-Antony.
+;@
 
--- 
-Software development can be quick, high quality, or low cost.
 
-The customer gets to pick any two out of three.
+To get serious... This rule will show you RST that don't have the
+correct tuple (src IP, src port, dst IP, dst port) for targeted
+connection.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+If RST has correct tuple, I don't know how it will get handled by
+conntrack, since it does not track TCP window for stock kernel. Maybe
+someone could answer here. Will RST get caught and conntrack entry
+dropped ? I'm too lazy to check code ;)
 
+If you patch your kernel with TCP windows tracking, out of windows RST
+should get INVALID state (I may be wrong), so you can match them and
+LOG.
+
+BTW, you won't be able to spot successful ones...
+
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
