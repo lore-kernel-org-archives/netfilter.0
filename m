@@ -1,9 +1,11 @@
-From: "Philippe Anctil" <z77y16@hotmail.com>
-Subject: safe default chain policies
-Date: Thu, 01 Apr 2004 23:58:08 -0500
+From: "andy" <anci@centrin.net.id>
+Subject: kernel compile error after patch-o-matic 20040401
+Date: Fri, 2 Apr 2004 14:05:56 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY16-F59EdJ7BzKkc100034639@hotmail.com>
+Message-ID: <000301c41880$f1f7dcd0$1500a8c0@itasam>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0004_01C418BB.9E56B4D0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,34 +16,108 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello list,
+This is a multi-part message in MIME format.
 
-I've had quite a bit of trouble setting up nat rules on my iptables home 
-network firewall. Machines behind my firewall box couldn't host games, use 
-bittorrent efficiently, that type of thing. Not that nothing works. I've 
-been surfing, playing games and ftp'ing happily for a while. My problems 
-were nat-specific.
 
-I have known for a while my problems were related to my default chain 
-policies. I never wanted to compromise security, so I set all of input and 
-nat chains to DROP. I left the mangle to accept (never took time to 
-understand this table). Is this excessive security? I find such a firewall 
-quite hard to maintain because you need to know exactly how chains are 
-traversed.
 
-I am thinking to set all chains to ACCEPT except the INPUT chain. Is this 
-minimalist security? This is one chain I think I should not be open.
+------=_NextPart_000_0004_01C418BB.9E56B4D0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Where to draw the line for a home network?
+I'm using 2.4.25
+Here is the err msg :
+ 
+ipt_connlimit.c: In function `init':
+ipt_connlimit.c:219: error: `ip_conntrack_module' undeclared (first use
+in this function)
+ipt_connlimit.c:219: error: (Each undeclared identifier is reported only
+once
+ipt_connlimit.c:219: error: for each function it appears in.)
+ipt_connlimit.c:220: warning: value computed is not used
+ipt_connlimit.c: In function `fini':
+ipt_connlimit.c:227: error: `ip_conntrack_module' undeclared (first use
+in this function)
+ipt_connlimit.c:228: warning: value computed is not used
+make[2]: *** [ipt_connlimit.o] Error 1
+make[2]: Leaving directory `/usr/src/linux-2.4.25/net/ipv4/netfilter'
+make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.25/net'
+make: *** [_mod_net] Error 2
 
-Thanks for sharing your thoughts!
+Any clue ?
+Thanks
+Andy
+ 
+ 
 
-_________________________________________________________________
-MSN Messenger : discutez en direct avec vos amis !  
-http://messenger.fr.msn.ca/
+------=_NextPart_000_0004_01C418BB.9E56B4D0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D375325906-02042004>I'm =
+using=20
+2.4.25</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN class=3D375325906-02042004>Here =
+is the&nbsp;err=20
+msg :</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D375325906-02042004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>ipt_connlimit.c: In function=20
+`init':<BR>ipt_connlimit.c:219: error: `ip_conntrack_module' undeclared =
+(first=20
+use in this function)<BR>ipt_connlimit.c:219: error: (Each undeclared =
+identifier=20
+is reported only once<BR>ipt_connlimit.c:219: error: for each function =
+it=20
+appears in.)<BR>ipt_connlimit.c:220: warning: value computed is not=20
+used<BR>ipt_connlimit.c: In function `fini':<BR>ipt_connlimit.c:227: =
+error:=20
+`ip_conntrack_module' undeclared (first use in this=20
+function)<BR>ipt_connlimit.c:228: warning: value computed is not=20
+used<BR>make[2]: *** [ipt_connlimit.o] Error 1<BR>make[2]: Leaving =
+directory=20
+`/usr/src/linux-2.4.25/net/ipv4/netfilter'<BR>make[1]: ***=20
+[_modsubdir_ipv4/netfilter] Error 2<BR>make[1]: Leaving directory=20
+`/usr/src/linux-2.4.25/net'<BR>make: *** [_mod_net] Error =
+2<BR></FONT></DIV>
+<DIV><FONT><SPAN class=3D375325906-02042004><FONT face=3DArial =
+size=3D2>Any clue=20
+?</FONT></SPAN></FONT></DIV>
+<DIV><FONT><SPAN class=3D375325906-02042004><FONT face=3DArial=20
+size=3D2>Thanks</FONT></SPAN></FONT></DIV>
+<DIV><FONT><SPAN class=3D375325906-02042004><FONT face=3DArial=20
+size=3D2>Andy</FONT></SPAN></DIV></FONT>
+<DIV align=3Dleft><SPAN=20
+style=3D"FONT-SIZE: 12pt; COLOR: black; FONT-FAMILY: 'Trebuchet =
+MS'"><SPAN=20
+style=3D"FONT-SIZE: 12pt; COLOR: black; FONT-FAMILY: 'Trebuchet =
+MS'"><SPAN=20
+style=3D"FONT-SIZE: 12pt; COLOR: black; FONT-FAMILY: 'Trebuchet =
+MS'"></SPAN></SPAN></SPAN></DIV>
+<DIV align=3Dleft><SPAN=20
+style=3D"FONT-SIZE: 12pt; COLOR: black; FONT-FAMILY: 'Trebuchet =
+MS'"><FONT=20
+face=3DArial size=3D2><SPAN=20
+style=3D"FONT-SIZE: 12pt; COLOR: black; FONT-FAMILY: 'Trebuchet =
+MS'"></SPAN></FONT></SPAN></DIV>
+<DIV align=3Dleft><SPAN=20
+style=3D"FONT-SIZE: 12pt; COLOR: black; FONT-FAMILY: 'Trebuchet =
+MS'"><FONT=20
+face=3DArial size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0004_01C418BB.9E56B4D0--
 
 
