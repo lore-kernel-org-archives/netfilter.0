@@ -1,12 +1,12 @@
-From: Ron Arts <raarts@netland.nl>
-Subject: ASSERT ip_conntrack_core.c:622 &ip_conntrack_lock not readlocked
-Date: Wed, 12 Mar 2003 14:09:10 +0100
+From: "Cassani Alexio" <alexio.cassani@bhuman.it>
+Subject: VPN Server behind a iptables FW (PPTP)
+Date: Wed, 12 Mar 2003 16:06:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E6F3176.4040600@netland.nl>
-Reply-To: raarts@office.netland.nl
+Message-ID: <DBF92B7FA3E6C94A99B4AE5938A62B7E4023BC@excw2k01.bhlan.bhuman.it>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms030508020103060704000102"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,111 +16,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a cryptographically signed message in MIME format.
+Hi all,
+I've set up a linux box with iptables 1.2.7a + pptp patch.
+Then I've configured a VPN server win2k-based and if I try to connect to
+it using a client of my LAN I have no problem, obviously the problems
+are present when the vpn client is outside my network.
+The architecture is here reported:
 
---------------ms030508020103060704000102
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+ VPN	     IPTables			 VPN
+Server ---  Server --- Internet --- Client
 
-I get this error on kernel 2.4.21pre4 when I boot. RH 2.4.18 didn't have this problem:
-
-Mar 12 14:05:52 n000007 kernel: ASSERT ip_conntrack_core.c:622 &ip_conntrack_lock not readlocked
-Mar 12 14:05:52 n000007 last message repeated 2 times
-Mar 12 14:05:52 n000007 kernel: unable to load module ip_conntrack_ftp
-Mar 12 14:05:52 n000007 kernel: ip_nat_ftp: error registering helper for port 121
-Mar 12 14:05:52 n000007 kernel: ASSERT ip_conntrack_core.c:622 &ip_conntrack_lock not readlocked
-Mar 12 14:05:52 n000007 nbs-iptables: /lib/modules/2.4.21-0NBS/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
-Mar 12 14:05:52 n000007 nbs-iptables: Hint: insmod errors can be caused by incorrect module parameters, including invalid IO
-  or IRQ parameters
-Mar 12 14:05:52 n000007 nbs-iptables: init_module: Device or resource busy
-Mar 12 14:05:52 n000007 nbs-iptables: /lib/modules/2.4.21-0NBS/kernel/net/ipv4/netfilter/ip_nat_ftp.o: insmod /lib/modules/2
-.4.21-0NBS/kernel/net/ipv4/netfilter/ip_nat_ftp.o failed
-Mar 12 14:05:52 n000007 nbs-iptables: /lib/modules/2.4.21-0NBS/kernel/net/ipv4/netfilter/ip_nat_ftp.o: insmod ip_nat_ftp fai
-led
-
-Is this a known problem?
-
-Ron Arts
+VPN Server Internal IP:192.168.0.1
+VPN Server public IP (hosted by the firewall) is a global address.
+So IPTables server performs NAT.
 
 
--- 
-Netland Internet Services
-bedrijfsmatige internetoplossingen
+Actions performed:
 
-http://www.netland.nl   Kruislaan 419              1098 VA Amsterdam
-info: 020-5628282       servicedesk: 020-5628280   fax: 020-5628281
+- from VPN client (a win2k box) I can telnet my vpn server at the 1723
+port
+- from VPN client I've configured a VPN connection to my VPN server and
+the connection stops with the following error "721 remote computer is
+not responding" after hanging for a few seconds on the window "Verifying
+Username and Password"
 
-Unrecoverable Error #666: Armegeddon in 30..29..28..27..
+My opinion is that GRE packet are not routed by the linux box, so
+authentication fails.
 
---------------ms030508020103060704000102
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+The iptables script used to set up the fw includes the following lines
+regarding GRE protocol:
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJdjCC
-AxkwggKCoAMCAQICAwdzkDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
-BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
-HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
-bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMDUxMzEyNDI0OFoXDTAzMDUxMzEyNDI0OFowXDEN
-MAsGA1UEBBMEQXJ0czERMA8GA1UEKhMIUm9uIFIuQS4xFjAUBgNVBAMTDVJvbiBSLkEuIEFy
-dHMxIDAeBgkqhkiG9w0BCQEWEXJhYXJ0c0BuZXRsYW5kLm5sMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAsz1vQDs+fOlea3WOBrQay1HHCqENWzUhuaMzDYKduzVxGzwNmc7j
-HnR0QflErghjp61ihnDQI1EF3NbIlSAne3fiCQ/9i2Ztbtxa1dlhzu3iZzMvCX4MDaIFwgk1
-rkdVG2sVZwgjV9nvroVZoV3Mqgh2ev7Cd6USxG9yJ3HFaK/BntOhCnRv52jTPOFqlZfD37FH
-XNmllxdmdfD7VKE7ssTr+wq336cm2uqqY0BEiovD1W6gyG2UXDBRo7ExhCroJzzirmsffW09
-p5XTdzC5CO3tdYqz5rtUua5ED0AwJGK7WO4YO2jHRSg7jykc+XvSXvL9SdlhKMqeWt1b/im+
-XQIDAQABoy4wLDAcBgNVHREEFTATgRFyYWFydHNAbmV0bGFuZC5ubDAMBgNVHRMBAf8EAjAA
-MA0GCSqGSIb3DQEBBAUAA4GBABNzXukOa8Lhmw1d12+RvwFORDhX2FEy+iaXkG6RDTcctEuc
-QBAebt1ialWEa3MAI5R7xKhkF78W/RilmHbSMr5MX3RfSnmi49n0+rzqtXDygci1PJfZFLSi
-cNx8GreiFF9H1id3F0LmJpkc2WEEJxJ5ofKVpXjjrt1MkMm2X8KtMIIDGTCCAoKgAwIBAgID
-B3OQMA0GCSqGSIb3DQEBBAUAMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBD
-YXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2Vy
-dGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAw
-LjguMzAwHhcNMDIwNTEzMTI0MjQ4WhcNMDMwNTEzMTI0MjQ4WjBcMQ0wCwYDVQQEEwRBcnRz
-MREwDwYDVQQqEwhSb24gUi5BLjEWMBQGA1UEAxMNUm9uIFIuQS4gQXJ0czEgMB4GCSqGSIb3
-DQEJARYRcmFhcnRzQG5ldGxhbmQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
-AQCzPW9AOz586V5rdY4GtBrLUccKoQ1bNSG5ozMNgp27NXEbPA2ZzuMedHRB+USuCGOnrWKG
-cNAjUQXc1siVICd7d+IJD/2LZm1u3FrV2WHO7eJnMy8JfgwNogXCCTWuR1UbaxVnCCNX2e+u
-hVmhXcyqCHZ6/sJ3pRLEb3InccVor8Ge06EKdG/naNM84WqVl8PfsUdc2aWXF2Z18PtUoTuy
-xOv7Crffpyba6qpjQESKi8PVbqDIbZRcMFGjsTGEKugnPOKuax99bT2nldN3MLkI7e11irPm
-u1S5rkQPQDAkYrtY7hg7aMdFKDuPKRz5e9Je8v1J2WEoyp5a3Vv+Kb5dAgMBAAGjLjAsMBwG
-A1UdEQQVMBOBEXJhYXJ0c0BuZXRsYW5kLm5sMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEE
-BQADgYEAE3Ne6Q5rwuGbDV3Xb5G/AU5EOFfYUTL6JpeQbpENNxy0S5xAEB5u3WJqVYRrcwAj
-lHvEqGQXvxb9GKWYdtIyvkxfdF9KeaLj2fT6vOq1cPKByLU8l9kUtKJw3Hwat6IUX0fWJ3cX
-QuYmmRzZYQQnEnmh8pWleOOu3UyQybZfwq0wggM4MIICoaADAgECAhBmRXK3zHT1z2N2RYTQ
-LpEBMA0GCSqGSIb3DQEBBAUAMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBD
-YXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgw
-JgYDVQQLEx9DZXJ0aWZpY2F0aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3
-dGUgUGVyc29uYWwgRnJlZW1haWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVt
-YWlsQHRoYXd0ZS5jb20wHhcNMDAwODMwMDAwMDAwWhcNMDQwODI3MjM1OTU5WjCBkjELMAkG
-A1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8w
-DQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQD
-Ex9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwMIGfMA0GCSqGSIb3DQEBAQUAA4GN
-ADCBiQKBgQDeMzKmY8cJJUU+0m54J2eBxdqIGYKXDuNEKYpjNSptcDz63K737nRvMLwzkH/5
-NHGgo22Y8cNPomXbDfpL8dbdYaX5hc1VmjUanZJ1qCeu2HL5ugL217CR3hzpq+AYA6h8Q0JQ
-UYeDPPA5tJtUihOH/7ObnUlmAC0JieyUa+mhaQIDAQABo04wTDApBgNVHREEIjAgpB4wHDEa
-MBgGA1UEAxMRUHJpdmF0ZUxhYmVsMS0yOTcwEgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8E
-BAMCAQYwDQYJKoZIhvcNAQEEBQADgYEAMbFLR135AXHl9VNsXXnWPZjAJhNigSKnEvgilegb
-SbcnewQ5uvzm8iTrkfq97A0qOPdQVahs9w2tTBu8A/S166JHn2yiDFiNMUIJEWywGmnRKxKy
-QF1q+XnQ6i4l3Yrk/NsNH50C81rbyjz2ROomaYd/SJ7OpZ/nhNjJYmKtBcYxggMnMIIDIwIB
-ATCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJ
-Q2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZp
-Y2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwAgMHc5AwCQYF
-Kw4DAhoFAKCCAWEwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcN
-MDMwMzEyMTMwOTEwWjAjBgkqhkiG9w0BCQQxFgQU22WsLiOYnvPD8EaELKstgHPd8WIwUgYJ
-KoZIhvcNAQkPMUUwQzAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwIC
-AUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwga0GCyqGSIb3DQEJEAILMYGdoIGaMIGSMQsw
-CQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24x
-DzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNV
-BAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzACAwdzkDANBgkqhkiG9w0BAQEF
-AASCAQBtRpVHfBxM3IkDKqC5QodaXLyM7Fd4NxEGO2b0pMPw9IDWbZlJVAtFlUFndog66sHg
-4E6DvYKTfjUNDoUBP+zFWSqS2nm2NvkMtbagNrO3yNNL+8M4nOSq+gcNbVhJJgvCJOFl+wkp
-3P78apdoTpJhaQ40lBxs6kXFWNe8Rd3FTgxFl21+Hz1X08Sy616HY0oPyXATw2bf9wvpiox8
-TISiIzT/UTaEjvrnnrtLfmlHeQyJNPawLWk/yueTGWkanSGBKpShHLCcJ4xsKnHWXNuoukZy
-RiNe8ytPgtaZ7NULa8k7asPZ/TuXUjuI+MCdatMcGKSUQYB3Su2MNJouUwDdAAAAAAAA
---------------ms030508020103060704000102--
+$IPTABLES -t nat -A PREROUTING -p GRE -i $INET_IFACE -j DNAT
+--to-destination $LAN_VPNSERVER_IP
+$IPTABLES -A FORWARD -p 47 -i $INET_IFACE -o $LAN_IFACE -d
+$LAN_VPNSERVER_IP -j allowed
+$IPTABLES -A FORWARD -p 47 -s 0/0 -d $LAN_VPNSERVER_IP -j ACCEPT
 
+The ones regarding PPTP are (restricted to the vpn client's ip):
+
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -s $VPNCLIENT_IP -d
+$VPNSERVER_IP --dport 1723 \
+-j DNAT --to-destination $LAN_VPNSERVER_IP:1723
+$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $LAN_IFACE -d
+$LAN_VPNSERVER_IP \
+--dport 1723 -j allowed
+$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $LAN_IFACE -d
+$LAN_VPNSERVER_IP \
+-j icmp_packets
+
+Any suggestions?
+TIA
+Alexio
 
