@@ -1,9 +1,14 @@
-From: iansolo <iansolo.netfilter@betisgroup.com>
-Subject: ftp nat  MAX PORTS
-Date: Wed, 02 Feb 2005 17:32:47 +0100
-Message-ID: <420100AF.1040105@betisgroup.com>
+From: =?iso-8859-1?Q?Herv=E9?= <herve@lucidia.net>
+Subject: Re: Two NICS with same IP and same client IP
+Date: Wed, 2 Feb 2005 16:40:45 -0000 (GMT)
+Message-ID: <50719.57.66.65.39.1107362445.squirrel@57.66.65.39>
+References: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>	<4200A1F3.8030609@imag.fr>	<5172.57.66.65.39.1107338261.squirrel@57.66.65.39>	<4200AB33.1010308@imag.fr>
+	<1107352680.4916.8.camel@hubcap.ljm.dom>
+	<63838.57.66.65.39.1107354736.squirrel@57.66.65.39>
+	<4200E762.2020501@imag.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <4200E762.2020501@imag.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,57 +19,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter  <netfilter@lists.netfilter.org>
 
-Hi All,
-I've a problem with ftpserver behind a NAT.
-My necessity is to run ftpserver in a different port then 21.
-This is the situation:
+> Herv=E9 wrote:
+>>
+>> In my case, the point is to help the routing by modifying the source
+>> address. For example, you give eth0 two addresses: 192.168.100.1 and
+>> 192.168.101.1, and eth1: 192.168.100.1 (yes, the same) and
+>> 192.168.102.1.
+>
+> what's the point ???
+>
+I have two identical test benches, in which one box has a fixed IP
+address, hence I can't change the subnets.
+What is more, this box always accesses the same IP address for the server=
+.
 
-Router
-|
-Firewall
-|
-Ftpserver
+Yeah, not so easy, but hey, it's Linux, so it's possible!
 
-I use this modules ad pass these parameters :
-
-/sbin/modprobe ip_tables
-/sbin/modprobe ip_conntrack
-/sbin/modprobe ip_conntrack_ftp ports=21,9000
-/sbin/modprobe iptable_nat
-/sbin/modprobe ip_nat_ftp ports=21,9000
-/sbin/modprobe ipt_MASQUERADE
-/sbin/modprobe ipt_state
-
-The realtive iptables rules are only these:
-
-$IPTABLES -t nat -A PREROUTING -p tcp -d $EXT_LAN_FW --dport 9000 -j NAT 
---to-destination $IP_FTPSERVER:9000
-$IPTABLES -A FORWARD -i $EXT_IF -p tcp --dport 9000 -j ACCEPT -d 
-$IP_FTPSERVER
-
-Unfortunately don't work!
-
-
-VERY IMPORTANT :
-
-- All work fine is the port is 21!!
-
-- When I try to connect with my ftp-client(with port 9000), at a certain 
-point I tray to send packets to local IP of firewall ($EXT_LAN_FW).....
-
-Others Questions:
-
-- In the source code of ip_conntrack_ftp there is a variable "MAX_PORTS",
-but I don't understand what mean...
-- What is "Patch-O-Matic" ?
-
-
-Thanks a lot in advance!
-iansolo
-
-ps: excuse me, my English is poor
-
+Cheers,
+Herv=E9.
 
