@@ -1,16 +1,14 @@
-From: Martin Tomasek <mtd@mk.cvut.cz>
-Subject: Re: advanced ip accounting
-Date: Fri, 5 Jul 2002 13:46:00 +0200
+From: Jan Humme <jan.humme@xs4all.nl>
+Subject: Re: how to delete *some* netfilter rules?
+Date: Fri, 5 Jul 2002 13:49:22 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020705114600.GA4851@mt.mk.cvut.cz>
-References: <20020705074508.GB2006@mt.mk.cvut.cz> <02070513000901.14428@Lms>
-Reply-To: mtd@mk.cvut.cz
+Message-ID: <02070513492203.14428@Lms>
+References: <20020614161800.GA6137@kostra.uh.cz>
+Reply-To: jan.humme@xs4all.nl
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <02070513000901.14428@Lms>
+In-Reply-To: <20020614161800.GA6137@kostra.uh.cz>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,55 +18,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: Jan Humme <jan.humme@xs4all.nl>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pavel Mores <pvl@uh.cz>, netfilter@lists.samba.org
 
+On Friday 14 June 2002 18:18, Pavel Mores wrote:
+> Hello,
+>
+> the problem I'm facing now might well be already solved by someone else
+> so I thought I'd better ask.
+>
+> My filter table is filled by several separate independent scripts, each
+> serving a distinct purpose.  Say that I use one script to generate
+> firewalling rules and another to enter a couple of packet accounting
+> rules needed by a monitoring subsystem.  Now, what if I want to flush
+> the firewalling rules *without* disturbing the traffic monitoring rules?
+>
+> It certainly is possible to add to the firewall script a "delete_rules"
+> function that would basically mimic my "insert_rules" function, only
+> with -D instead of -A or -I.  But this tends to be ugly and avoiding the
+> need to edit 2 places for every single change is not easy in bash (can't
+> use perl there).
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Your bash script could look like this:
 
-> How about using the "IP accounting" facility of iptables? Try:
->=20
-> #iptables -A FORWARD -s 1.2.0.0/16
->=20
-> i.e. without the -j option, to create a counter, and use
->=20
-> #iptables -L -v
->=20
-> to read out the results.
+#!/bin/bash
 
-Thanks, but you are writing about something different.
+ADD=3D-A
+INS=3D-I
 
-Counters are good, but I must
-be able to see for all ips byte counts on any port or protocol, which
-is specified _after_ byte counts are recorded. I must store it into
-database and select specific port, ip and/or protocol by database query.
+if [ -n "$1" ]; then
+	if [  "$1" !=3D "delete" ]; then
+		echo usage: $0 [delete]
+		exit 1
+	fi
+	ADD=3D-D
+	INS=3D-D
+fi
 
-So I'm asking about accounting _target_, which will allow me to collect
-all the data without sending one packet to userspace immediately after
-rule matches (as -j ULOG does). pcap is unusable for me too.
+#examples:
+iptables $ADD INPUT -i eth0 10.0.0.0/8 -j DROP
+iptables $INS OUTPUT -i eth0 192.168.0.0/16 -j DROP
 
-I heard, that something like this exists (or existed ;-), but couldn't
-find anything about it.
+# etc etc etc
 
---=20
-Martin Tomasek, mtd@email.cz
-BOFH excuse #30:
-positron router malfunction
+Now:
+1) If you run your script w/o any parameter, it works like today.
+2) If your provide the text "delete" as the second parameter, it deletes al=
+l=20
+the rules.
+3) In all other cases, it prints an error message.
 
---DocE+STaALJfprDB
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+>P.S. =A0Please Cc: your replies to me since I'm not subscribed to this
+list.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+Please do.
 
-iD8DBQE9JYb4zWKqGie3rqoRArZaAJ9A2j0T/UbH+1msyDIIhkqXw4AumgCeNGvh
-99SAHrvVljWAL0DqvgJOs74=
-=qp3s
------END PGP SIGNATURE-----
-
---DocE+STaALJfprDB--
+Jan Humme.
 
