@@ -1,13 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
 Subject: Re: blocking by domain
-Date: Sun, 13 Jun 2004 10:29:01 +0200
+Date: Sun, 13 Jun 2004 07:26:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087115340.1891.2.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <1087125996.2011.6.camel@grendel>
 References: <200406122127.i5CLR0bJ009276@ylpvm15.prodigy.net>
+	 <1087115340.1891.2.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406122127.i5CLR0bJ009276@ylpvm15.prodigy.net>
+In-Reply-To: <1087115340.1891.2.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +18,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Spiro Azkoul <spiro@snacorp.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Le sam 12/06/2004 =E0 23:27, Spiro Azkoul a =E9crit :
-> Is it possible to block any packets that ride on a specific domain by
-> domain? I know blocking is possible based on IP/Subnet, but wanted to
-> double-check the domain
+On Sun, 2004-06-13 at 04:29, Cedric Blancher wrote:
+>
+> Moreover, I
+> think it would generate too much latency if you had to check DNS for
+> packets at firewall level.
 
-Unless you use a dedicated userspace application using QUEUE target to
-reverse lookup source and/or destination IP, you can't.
+Not to mention the accuracy is pretty poor. Say I'm fubar.com and you
+have a rule blocking traffic from my domain. I can either:
 
-Netfilter is a paquet filter and works on IP, not names. Moreover, I
-think it would generate too much latency if you had to check DNS for
-packets at firewall level.
+1) Not create a PTR record for my IP
+2) Create a PTR calling myself www.microsoft.com or similar
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Both methods will defeat a domain based filter. So blocking at an IP
+level is faster and more accurate. Best bet is to just do a few whois
+queries to identify the IP range for the domain and block accordingly. 
+
+HTH,
+Chris
+
+
 
