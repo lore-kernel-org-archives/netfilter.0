@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Problems with Portforwarding -- Loopback problems---
-Date: Tue, 16 Mar 2004 17:11:45 +0000
+Date: Tue, 16 Mar 2004 17:25:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403161711.45869.Antony@Soft-Solutions.co.uk>
-References: <405624A2.60906@imperium-noctem.de> <200403161637.39934.Antony@Soft-Solutions.co.uk> <40573025.9050009@imperium-noctem.de>
+Message-ID: <200403161725.37484.Antony@Soft-Solutions.co.uk>
+References: <405624A2.60906@imperium-noctem.de> <200403161711.45869.Antony@Soft-Solutions.co.uk> <40573742.6070606@imperium-noctem.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40573025.9050009@imperium-noctem.de>
+In-Reply-To: <40573742.6070606@imperium-noctem.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +20,49 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Tuesday 16 March 2004 4:49 pm, Ronny Fauth wrote:
+On Tuesday 16 March 2004 5:20 pm, Ronny Fauth wrote:
 
 > Antony Stone wrote:
-> >>Test --> Router/Gateway ---> Inet --> Router/Gateway --> Test2
 >
->        192.168.0.2 ---> 192.168.0.1 ---> dynamicIP, the IP i'm using at
-> the Internet ---> 192.168.0.1 ---> 192.168.0.3
+> >Think about the replies.
+> >
+> >192.168.0.3 sends a packet to xxx.dyndns.org, that gets translated by
+> >192.168.0.1 into 192.168.0.2
+> >
+> >192.168.0.2 receives the packet, sees that the sender is 192.168.0.3, and
+> >replies.
+> >
+> >Therefore 192.168.0.3 sent a packet to xxx.dyndns.org and got a reply from
+> >192.168.0.2.   It can't handle this, so fails.
 >
-> i want to forward some ports, port 192.168.0.1:4711 should be forwarded
-> to 192.168.0.2:4711, well this works, but i want to try it..... so i'm
-> typing on a browser on 192.168.0.3 "http://xxx.dyndns.org:4711/" and this
-> doesn't work, if i'm typing "http://192.168.0.2:4711" it works, this is the
-> major problem i have.
+> Well ya, sounds logically..... but how can i solve this Problem? so i
+> can test wether the forwarding is working or not
 
-Think about the replies.
+This depends on whether you need the address translation system to work (after 
+you've tested it and decided it's okay):
 
-192.168.0.3 sends a packet to xxx.dyndns.org, that gets translated by 
-192.168.0.1 into 192.168.0.2
+a) only from the Internet, or
+b) from both the Internet and the local network.
 
-192.168.0.2 receives the packet, sees that the sender is 192.168.0.3, and 
-replies.
+If (a), then you should test it from the Internet, because that's what you 
+need to work correctly - testing from the local network is not the same.
 
-Therefore 192.168.0.3 sent a packet to xxx.dyndns.org and got a reply from 
-192.168.0.2.   It can't handle this, so fails.
+If (b), then you should be using split DNS to give the private address to 
+local clients, and the public address to external clients - then each will 
+connect to the correct IP address depending on where they're starting from.
 
-(I'm assuming in all the above that xxx.dyndns.org does not resolve to 
-192.168.0.2, of course).
-
-Also see http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
+Of course the other solution is to put local clients, and the server you're 
+talking to, on separate subnets from the firewall, so no matter who talks to 
+them, the packets always go through the firewall and always get NATted.
 
 Regards,
 
 Antony.
 
 -- 
-If the human brain were so simple that we could understand it,
-we'd be so simple that we couldn't.
+People who use Microsoft software should be certified.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
