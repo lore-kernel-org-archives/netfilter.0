@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Squid Accelerator configuration
-Date: Mon, 19 Jul 2004 22:00:10 +0100
+From: Mail Lists <lists@sapience.com>
+Subject: Re: subnet problem
+Date: Mon, 19 Jul 2004 23:17:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407192200.10863.Antony@Soft-Solutions.co.uk>
-References: <OF79696C32.B5892048-ON85256ED6.006F014E-85256ED6.0070F054@banquo.mc.duke.edu >
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040720031708.GD7576@sapience.com>
+References: <20040718205007.GA7576@sapience.com> <200407182202.20404.Antony@Soft-Solutions.co.uk> <20040718221008.GB7576@sapience.com> <1090234347.27794.13.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OF79696C32.B5892048-ON85256ED6.006F014E-85256ED6.0070F054@banquo.mc.duke.edu >
+Content-Disposition: inline
+In-Reply-To: <1090234347.27794.13.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +18,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Monday 19 July 2004 9:33 pm, Jim Matthews wrote:
+On Mon, Jul 19, 2004 at 06:52:55AM -0400, John A. Sullivan III wrote:
+> On Sun, 2004-07-18 at 18:10, Mail Lists wrote:
+> <snip>
+> You are appending a logging rule and then appending a drop rule so the
+> order of processing would be log and then drop - John
 
-> Antony
->
-> Thanks for the reply.
->
-> I added port 113 to the "allow" list and when I tried to reconnect to the
-> Squid box, those 113 port packets are still being dropped.  Any idea why
-> the port 80 packets are being dropped as well?  I think my rules are setup
-> correctly, so I'm not sure why they're not being allowed.  I'm attaching
-> my rules if someone would like to take a look and see what's happening.
+   Yep - thats right - log it and then drop it - is that not ok?
 
-Maybe my earlier explanation was not entirely clear.
-
-The squid *server* is the ident *client* - it initiates the connection to the 
-ident server running on the http client.
-
-The rules for TCP port 113 in your ruleset seem to assume the opposite - that 
-one machine is both http and ident client, and the other machine is both http 
-and ident server.
-
-Regards,
-
-Antony.
-
--- 
-I love deadlines.   I love the whooshing noise they make as they go by.
-
- - Douglas Noel Adams
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+   gene/
 
