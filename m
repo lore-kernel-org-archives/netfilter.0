@@ -1,12 +1,13 @@
-From: "Didier Hung Wan Luk" <DidierH@frci.net>
-Subject: Upgrade Iptables...
-Date: Mon, 16 Sep 2002 13:12:08 +0400
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: Re: secure ftp with SSL
+Date: Mon, 16 Sep 2002 10:32:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <39778BFB9C25BA429794B15B50AEC781045434@server-dcms>
+Message-ID: <200209161032.37482.roy@karlsbakk.net>
+References: <754E53EEA7D3D31194E50050DAB99F6E705442@thor.id.magnus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <754E53EEA7D3D31194E50050DAB99F6E705442@thor.id.magnus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +18,59 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Rendy V <RendyV@atd.magnus.co.id>, "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
-Hi All,
+Use sftp - see http://www.openssl.org/
 
-I have redhat 7.3 with kernel linux-2.4.18-10 and I want to use iptables =
-1.2.7a.
+On Monday 16 September 2002 06:21, Rendy V wrote:
+> roy,
+> yes, i have loaded ip_conntrack_ftp.
+> Is there any better idea because if i change it i have to change all my
+> application..
+>
+> regards,
+> rendy
+>
+> On Friday 13 September 2002 05:09, Rendy V wrote:
+> > Hi All,
+> > I have a strange problem, the problem is like this :
+> > I have an application that use secure ftp and for that reason I have
+>
+> opened
+>
+> > up the command port (990) with state NEW and allowed data port
+> > (20000:20049) with state ESTABLISHED, RELATED on the firewall. It fai=
+ls
+> > when it try to use data port, for authentication it working just fine=
+=2E
+> > Please see the log on the below.
+> > If I open data port 2000:20049 with state NEW it working normally but=
+ I
+> > don't want to make a big hole on my firewall. I suspect that the ipta=
+bles
+> > connection tracking cannot track the relation between command port an=
+d
+>
+> data
+>
+> > port because it is encrypted using SSL. Is it true or is there someth=
+ing
+> > I miss here?? What should I do now??
+>
+> first - have you loaded ip_conntrack_ftp?
+>
+> second - I'm not sure the ip_conntrack_ftp module can understand encryp=
+ted
+> traffic. Try using sftp from openssh instead. That only uses 22/tcp.
+>
+> roy
 
-When I compile iptables do I need to recompile my kernel to use the =
-1.2.7a version of iptables?
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
 
-Didier Hung Wan Luk
-FRCI, Sibotie House
-L'Anse Courtois
-Pailles
-Tel: 230-2869636
-Fax: 230-2869629
-
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
