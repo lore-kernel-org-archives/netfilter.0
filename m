@@ -1,9 +1,10 @@
-From: Aldo Lagana <ALagana@p21.com>
-Subject: RE: Transparent firewall
-Date: Wed, 2 Jun 2004 16:17:27 -0400
+From: Andreas =?iso-8859-1?Q?Westend=F6rpf?= <a.westendoerpf@gmx.de>
+Subject: security question
+Date: Wed, 02 Jun 2004 14:58:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0776B9DA384FFB4C94A6B73F7DC87A6003F35CC4@newman.p21.com>
+Message-ID: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,58 +15,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Janos Makadi' <maki@freemail.hu>, netfilter@lists.netfilter.org
-
-you want to BRIDGE the two interfaces - look at ebtables and BRIDGING HOW-TO
-
------Original Message-----
-From: Janos Makadi [mailto:maki@freemail.hu]
-Sent: Wednesday, June 02, 2004 4:10 PM
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
-Subject: Transparent firewall
 
+Hi *!
 
-Hi,
+I have the following setup. Please tell me if I have some security
+issues here.
 
-I have a problem, and I don`t know how to solve it.
+A linux box with two ethernet interfaces to work as a masquerading
+router. One of them (eth0) is connected to a dsl-modem, the other is a
+wlan card (eth1). All client systems get this box a default gateway
+via dhcp.
 
-What I would like to do is this:
+My goal is to drop everything coming from the wlan by default. I do
+this with:
 
-I have a database server and I want to protect it. It has one nic 
-connected to the local network. I want to setup a new linux box with two 
-nics connected to the same ip network like this:
+# iptables -t nat -P PREROUTING  DROP
 
-        ****        ****
-  ------*  *--------*  *
-        ****        ****
+I want the all www-requests of the client systems to be redirected to
+the local Apache on the box. I do this with:
 
-       Linux       RDBMS
+# iptables -t nat -A PREROUTING -p tcp --dport 80 -i eth1 - REDIRECT
 
-Every traffic has to go through the Linux box, and filter out the 
-unneded packets. I dont know how to config the linux to use the same ip 
-network with this confoguration. Let me explain. For example the server 
-has 10.1.0.5/255.255.255.0 address, and all the clients use this network 
-config too. What ip addresses is allowed to use with the linux box? I 
-mean can I use 10.1.0.4, 10.1.0.3 for the two nics at the linux box?
+As I need DNS for these www-requests I have to let DNS be accepted:
 
-Any RTFM answers, with links is appreciated.
+# iptables -t nat -A PREROUTING -p udp --dport 53 -i eth1 -j ACCEPT
 
-Thanks,
+Then, in the POSTROUTING chain I need all the packets that made it
+here to be masqueraded:
 
-Janos Makadi
+# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
+If I want to allow a specific wlan client to get outside connections I
+use:
 
-Visit our website at http://www.p21.com/visit 
-The information in this e-mail is confidential and may contain legally
-privileged information.  It is intended solely for the person or entity to
-which it is addressed.  Access to this e-mail by anyone else is
-unauthorized. If you are not the intended recipient, any disclosure,
-copying, distribution, action taken, or action omitted to be taken in
-reliance on it, is prohibited and may be unlawful.  If you received this
-e-mail in error, please contact the sender and delete the material from any
-computer. 
+# iptables -t nat -I PREROUTING -m mac --mac-source XX:XX:XX:XX:XX:XX
+-i the1 -j ACCEPT
+
+to let him through.
+
+Beside of MAC-spoofing, is this setup safe? Can someone get though the
+PREROUTING chain, without being "MAC-inserted".
+
+What can I do to block incoming connection attempts? I only want to
+allow ssh from outside (internet) to the box.
+
+Any help would be appreciated!
+
+THX,
+Andreas Westend=F6rpf
 
 
 
