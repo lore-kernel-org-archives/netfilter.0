@@ -1,11 +1,13 @@
-From: Ulises Hernandez Pino <ulises@unicauca.edu.co>
-Subject: SNAT for a firewall machine
-Date: 02 Aug 2003 18:53:07 -0500
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: SNAT for a firewall machine
+Date: Sun, 3 Aug 2003 10:28:06 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059868386.29439.7.camel@nerv.unicauca.edu.co>
+Message-ID: <FDEMKKNJDLAJDPNDPCDDMEDHNFAA.georgev@citadelcomputer.com.au>
+References: <1059868386.29439.7.camel@nerv.unicauca.edu.co>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1059868386.29439.7.camel@nerv.unicauca.edu.co>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,12 +18,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Ulises Hernandez Pino <ulises@unicauca.edu.co>, netfilter@lists.netfilter.org
+
+Firstly why not get rid of the router (if possible, makes thing simpler).
+Can you not give your internal machines private IPs and MAQSUERADE that
+instead of live IPs. It's a waste to put live IPs only to SNAT them to the
+firewalls ext IP anyway.
+
+If you can't get rid of the router for some reason, you can do what I've
+done and given 2 of the external IPs to the router and firewall so they see
+each other as live IPs, then in the router router all hosts to the firewall
+(or add all external IPs to the external NIC of the firewall using
+iproute2).
+
+Then you can use a proper/standard network structure and do whatever you
+like with the firewall.
+
+ie.
+
+|
+|
+|
+203.xx.10.126
+ROUTER
+203.yy.11.253
+|
+|
+203.yy.11.254 (203.yy.11.253,203.yy.11.252,203.yy.11.251)
+FIREWALL
+192.168.150.254
+|
+|
+192.168.150.1-153 (workstations)
+
+this way you can keep your router and use the firewall for VPN which NAT
+breaks.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Ulises
+Hernandez Pino
+Sent: Sunday, August 03, 2003 9:53 AM
 To: netfilter@lists.netfilter.org
+Subject: SNAT for a firewall machine
+
 
 
 Hi... I have a problem with the implementation of a firewall. The
 firewall machine isconnected to router by an interface and a LAN
-(computer with real IP) by anotherinterface. 
+(computer with real IP) by anotherinterface.
 
 The router had IP 192.168.150.1 and the firewall machine had IP
 192.168.150.2 with mask 255.255.255.252. The other interface of firewall
@@ -33,7 +78,7 @@ to use more real IP.
 I don't have problem with the forward connection in the machine
 firewall. My problem this when I'm wanted toconnect to Internet from the
 firewall machine, because theconnections are make with IP 192.168.150.2
-(interface withconnection to router) an not with the real IP. 
+(interface withconnection to router) an not with the real IP.
 
 I had tried use SNAT (with the next script) but I follow without being
 able to me to connect.
@@ -87,6 +132,8 @@ machine?
 
 Ulises Hernandez
 Red de Datos - Universidad del Cauca
+
+
 
 
 
