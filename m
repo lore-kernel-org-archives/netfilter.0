@@ -1,10 +1,13 @@
-From: =?gb2312?B?ucjX0w==?= <wsgtrsys@cta.cq.cn>
-Subject: Re: OS Fingerprint
-Date: Tue, 30 Nov 2004 22:15:30 +0800
-Message-ID: <002201c4d6e7$0f2ca4f0$0a00a8c0@gtr>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: protocol 50 unreachable
+Date: Thu, 2 Dec 2004 10:14:47 -0500
+Message-ID: <20041202151447.GA4749@bender.817west.com>
+References: <1101964546.2025.149.camel@localhost>
+	<Pine.LNX.4.44.0412012128370.22471-100000@gollum.grajagan.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0412012128370.22471-100000@gollum.grajagan.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +19,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-T24gMTEvMjkvMDQgMTc6MTIsIERhbmllbCBDaGVta28gd3JvdGU6DQo+IFZsYWRvIEhhZCB3cm90
-ZToNCj4gDQo+PmhpLCBjb3VsZCBzb21lYm9keSBoZWxwIG1lLCBob3cgY2FuIGkgY2hhbmdlDQo+
-Pm9zZmluZ2VycHJpbnQgaW4gcGFja2V0cz8NCj4+dGhhbmtzDQo+IA0KPiANCj4gRG8gc29tZSBo
-b21ld29yay4gQmFzaWNhbGx5IGEgc2Nhbm5lciB1c2VzIGluaGVyZW50IGZsYXdzIGluIGEgcGFj
-a2V0DQo+IHJlc3BvbnNlIHRvIGRldGVybWluZSB0aGUgZGVzdGluYXRpb24gbWFjaGluZSwgYnV0
-IGl0IGNvdWxkIGFsc28gdXNlIHRoZQ0KPiBmaW5nZXJwcmludCBvZiB0aGUgc2VydmljZXMgcnVu
-bmluZyBvbiB0aGUgUEMuIEV4LiBpZiBJIGltcGxlbWVudCAxMDAlDQo+IGZha2luZyBvbiB0aGUg
-bmV0d29ya2luZyBwYXJ0IG9mIG15IHN0ZWFsdGhpbmcsIGJ1dCBsZWF2ZSBhcGFjaGUgb3BlbiwN
-Cj4gdGhlIGFwYWNoZSBjb3VsZCBzYXkgUmVkaGF0IExpbnV4IGJsYWhibGFoYmxhaCBhbmQgZ2l2
-ZSBpdCBhbGwgYXdheSB0bw0KPiB0aGUgaGFja2VyLiBJdCBpc24ndCBqdXN0ICdjaGFuZ2UgVE9T
-IHRvIHJhbmRvbScsIG9yIE1TUyB0byB5LCBvciBibG9jaw0KPiBhbGwgbiBwYWNrZXRzIHRvIHBv
-cnQgcS4gVGhvc2UgYXJlIHNvbWUgT1MgZmluZ2VycHJpbnQgZXhhbXBsZXMsIGJ1dCB0aGUNCj4g
-dGVjaG5pcXVlIGlzIGEgbG90IG1vcmUgZGV0YWlsZWQuIElmIGluIGRvdWJ0LCB0ZWFyIG9wZW4g
-dGhlIG5tYXAgY29kZSENCj4NCj4NCj5UaGUgSVAgUGVyc29uYWxpdHkgcGF0Y2ggbWF5IGJlIGEg
-c29sdXRpb24sIGFsdGhvdWdoIGl0IGNvdWxkIG9ubHkgZG8gc28gDQo+bXVjaCBhcyBwb2ludGVk
-IG91dCBhYm92ZSAocnVubmluZyBuZXR3b3JrIHByb2Nlc3NlcyBnaXZpbmcgeW91IGF3YXksIA0K
-PmV0YykgLi4uICJodHRwOi8vaXBwZXJzb25hbGl0eS5zb3VyY2Vmb3JnZS5uZXQvIg0KDQo+DQo+
-VW5mb3J0dW5hdGVseSwgaXQgZG9lc24ndCBhcHBlYXIgdG8gYmUgYWN0aXZlbHkgbWFpbnRhaW5l
-ZCBhbnkgbG9uZ2VyLi4gDQogPiBMaW51eCAyLjQuMTggYW5kIGlwdGFibGVzIDEuMi4yIHdlcmUg
-dGhlIGxhc3Qgb2ZmaWNpYWwgcmVsZWFzZXMsIHdpdGggDQo+YSAyLjQuMjAgcGF0Y2ggaGVyZSB0
-aGF0IGRvZXNuJ3Qgc2VlbSB0byBoYXZlIGV2ZXIgbWFkZSBpdCBvbnRvIHRoZSANCj5vZmZpY2lh
-bCBkb3dubG9hZCBwYWdlLg0KPiJodHRwOi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvaW5kZXgu
-cGhwP2Z1bmM9ZGV0YWlsJmFpZD02NDcwNDUmZ3JvdXBfaWQ9NzU1NyZhdGlkPTMwNzU1NyIgDQoN
-Cg0KPkFkZGl0aW9uYWx5LCBzb21lIE9TIGZpbmdlcnByaW50aW5nIHRvb2xzIHN1Y2ggYXMgcDBm
-IGNhbiBiZSB0cmlja2VkIGJ5IA0KPmNhcmVmdWxseSBtb2RpZnlpbmcgc3lzY3RsIHZhbHVlcyBz
-dWNoIGFzIGlwX2RlZmF1bHRfdHRsLCBldGMgYXMgdGhleSANCj5yZWx5IG9uIG1hdGNoaW5nIGEg
-Y2VydGFpbiBwcm9maWxlLg0KDQo+QnJ5YW4NCg0KDQpidXQgaXBwZXJzb25hbGl0eSBjYW4ndCBz
-dXBwb3J0IGtlcm5lbCAyLjQuMjcgYW5kIGlwdGFibGVzIDEuMi4xMT8=
+On Wed, Dec 01, 2004 at 09:44:13PM -0800, Helge Weissig wrote:
+> ok... I now have: 
+
+<snip>
+
+do you control the VPN server?  it looks like the packets from your
+client are getting dropped at that end either pre or post decrypting
+(most likely post).  what is the VPN server?
+
+-j
+
+--
+"English - Who needs that? I'm never going to England!"
+        --The Simpsons
+
