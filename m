@@ -1,12 +1,16 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
+From: Josh Nerius <jnerius@gmail.com>
 Subject: Re: Fwd: Linux as router (Gateway Server)
-Date: Sun, 13 Feb 2005 04:13:23 +0200
-Message-ID: <420EB7C3.7040303@hotpop.com>
-References: <1dceb012050211233357e23dd4@mail.gmail.com>	<1dceb01205021123483860fb86@mail.gmail.com>	<1108216901.4462.27.camel@hubcap.ljm.dom>
+Date: Sat, 12 Feb 2005 20:33:52 -0600
+Message-ID: <4f3930a70502121833627af1bd@mail.gmail.com>
+References: <1dceb012050211233357e23dd4@mail.gmail.com>
+	<1dceb01205021123483860fb86@mail.gmail.com>
+	<1108216901.4462.27.camel@hubcap.ljm.dom>
 	<4f3930a705021214026db11902@mail.gmail.com>
+	<420EB7C3.7040303@hotpop.com>
+Reply-To: Josh Nerius <jnerius@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4f3930a705021214026db11902@mail.gmail.com>
+In-Reply-To: <420EB7C3.7040303@hotpop.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,71 +21,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Josh Nerius wrote:
+> hello josh.
+> 
+> I stand 100% with Jason O.'s opinion ..
+> netfilter/iptables has nothing to do with squid binding to some/any port.
+> whoever had to do his homework ... i beleive has done it.
+> Accessing that port is something different (-i lo -j ACCEPT), but i
+> beleive that's not the case.
+> 
+> regards,
+> Georgi Alexandrov
 
->>>that has nothing to do with iptables. 
->>>      
->>>
->
->This could have everything to do with iptables, depending on his
->configuration. If there is a redirector being used, the connection
->that a child redirector process makes to the squid daemon can be
->affected by iptables rules. The fact that it has difficulty binding to
->the assigned port may be due to other errors related to this child
->process communication causing the squid process to die before it
->finishes starting.
->
->As to trying to bind to a privileged port from an unprevileged
->account, he already stated that he's binding to the standard 3128.
->
->  
->
->>>(ps - google is your friend)
->>>      
->>>
->
->It may do you good to keep that in mind. 
->
->  
->
->>>>Why my iptables rule blocking squid to open HTTP port.
->>>>        
->>>>
->
->I'm currently searching for the exact information from the squid
->documentation, but when I had a similar problem about 6 months ago, I
->recall adding rules to the INPUT and possibly OUTPUT chains to accept
->traffic coming from the loopback interface to/from the squid (or
->possibly redirector) port.
->
->  
->
->>it isn't.
->>
->>-j
->>    
->>
->
->Jason, please do your homework. You have a good knowledge of
->netfilter/iptables but please leave subjects you don't understand to
->those who do.
->
->Josh Nerius
->
->  
->
-hello josh.
+Hello George,
 
-I stand 100% with Jason O.'s opinion ..
-netfilter/iptables has nothing to do with squid binding to some/any port.
-whoever had to do his homework ... i beleive has done it.
-Accessing that port is something different (-i lo -j ACCEPT), but i 
-beleive that's not the case.
+From experience...not speculation, I still stand by what I said.
+
+Squid can be a strange animal. In many configurations, the
+communication between child processes relies on being able to
+communicate via the loopback interface of the machine.  Iptables can,
+and and in configurations I've worked with, has caused the same
+symptoms described. Basically, the daemon never gets a chance to bind
+to a port as the initial communication between these child processes
+is broken causing the entire startup procedure to fail. This makes the
+illusion that the problem is related to binding the port when in fact
+the program can't start for other reasons.
+
+This problem *can* be caused by firewall rules in place that prevent
+this communication from happening. If you examine the rulesets posted,
+it looks like he is using policy DROP on the INPUT chain which may
+certainly cause problems with squid if proper rules to allow the
+necessary traffic are not in place.
+
+Another thing to note here, and the reason that I'm of the opinion
+that this could be a netfilter/iptables problem is the fact that the
+original poster seems to have indicated that squid works when iptables
+is flushed.
+
+The last point mentioned above, coupled with the fact that I've dealt
+with this problem during the development of a transparent redirection
+appliance for the company I work for, is why I maintain the opinion
+that I do.
+
+As mentioned before, Jason has a good knowledge of netfilter, but
+apparently not Squid, thus my homework comment.
+
+Thanks, and hopefully this information helps to clarify the
+information I posted. :-)
+
+Josh Nerius
 
 
-regards,
-Georgi Alexandrov
+-- 
+Math problems? Call 1-800-[(10x)(13i)^2]-[sin(xy)/2.362x]
 
