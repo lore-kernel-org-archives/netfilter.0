@@ -1,13 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Need help have some questions...
-Date: 25 Aug 2003 22:57:05 +0200
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: Re: unexpected behaviour...?
+Date: Mon, 25 Aug 2003 14:29:13 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1061845024.1507.93.camel@kermit>
-References: <20030825203905.32224.qmail@web40207.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.53.0308251407140.2855@xena.cft.ca.us>
+References: <20030822224241.97443.qmail@web21408.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030825203905.32224.qmail@web40207.mail.yahoo.com>
+In-Reply-To: <20030822224241.97443.qmail@web21408.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: SBlaze <dagent.geo@yahoo.com>
-Cc: nf <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: =?iso-8859-1?q?Christof=20Nyffenegger?= <cnyf@yahoo.de>
+Cc: netfilter@lists.netfilter.org
 
-Am Mon, 2003-08-25 um 22.39 schrieb SBlaze:
+On Sat, 23 Aug 2003, Christof Nyffenegger wrote:
+> We're in trouble with our brand new linux hot standby firewall cluster. it
+--- snip ---
 
-> Currently I am using Apache and I have two sites vhosted on it. The only =
-sort
-> thing I really use my windows box for is web browsing/multimedia that sor=
-t...it
-> has no services available to the world. So thats whats confusing me is th=
-at
-> everyone says use a proxy but I don't see how using a proxy can stop thos=
-e
-> unwanted requests. I'm trying to stop certain requests from reaching my w=
-eb
-> server which is my router/firewall/web/file server. So how is a proxy sup=
-posed
-> to help in this case? Everyone says it is but I just don't know much abou=
-t
-> "proxying" or proxying soloutions for that matter
-Oh, that i might not remember your original post correctly. Lets see ...
-Well, yeah you are right, you never said you wanted to redirect but just
-reject. Ok, my fault.
-Then you could just put a proxy in between. Run your Apache on 8080 and
-run a reverse proxy like apache or squid on 80. But I doubt, that you
-would be happy with it, because it will eat up resources.=20
-Make a long thread short:
-There is no good way to do it on one machine. Since you are using Apache
-and not IIS, you will be fine. If the log messages annoy you, bad luck.
-This is just life if you don't filter the request first using a proxy.
+> now one would expect all the sessions to freeze immediately after failover.
+> this is the case indeed with the ftp session and the http download - they
+> freeze to ice because FW B has no established sessions in its connection table
+> when it acquires the service adresses and the connections are routed through it
+> (after the gratuitous arp from heartbeat). but surpise - the ssh session
+> survives the failover. a few seconds after the failover it shows up in the
+> connection table on FW B as an established session. Hmm.
+--- snip ---
+> am i getting something wrong? or is this the expected behaviour?
 
-Cheers,
+It's the behavior I expect :-)  When the MAC address of the gateway changes
+from firewall A to firewall B, the packets of the SSH connection go there
+and are routed through, no sweat.
 
-Ralf
+FTP is another matter.  The control channel is getting through, I'm sure,
+but if you fail over, most likely firewall B would not be aware that that
+it's a FTP control channel and would not do the conntrack magic necessary
+to let the FTP server originate data connections to the client, or in
+passive mode, to let the client originate data connections to the arbitrary
+ports that the server tells it to use.  Similarly for any service that uses
+multiple connections.
 
---=20
-Ralf Spenneberg
-RHCE, RHCX
+On the HTTP proxy action, if you failed over in the middle of a download,
+of course it would freeze, because the proxy on the other server would not
+have an established connection and the packets would be tossed, but
+subsequent downloads should work, since each one is an independently opened
+connection.  Unless for some reason the server on firewall A answered using
+its own IP address and the client said, hey, I used the proxy on
+192.168.2.3 (the shared address), but it's answering from 192.168.2.1, so
+I'm supposed to use that from now on.  When the failover happened, the
+client would find that it had been too smart for its own good.
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+You might try setting "ServerName 192.168.2.3:80" in
+/etc/apache2/httpd.conf, and see if that makes a difference in the client's
+behavior, because the default for ServerName is the box's own IP address
+on the interface that the request came from.
+
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
+Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
