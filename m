@@ -1,12 +1,14 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: which version of iptables supports iplimit or connlimit?
-Date: 25 Jan 2005 13:50:29 +0100
-Message-ID: <1106652426.16306.17.camel@nostromo.bgsecm.com>
-References: <531442a505012415241a77865c@mail.gmail.com>
+Subject: Re: iptables and SMP performance
+Date: 25 Jan 2005 13:50:45 +0100
+Message-ID: <1106655752.16306.75.camel@nostromo.bgsecm.com>
+References: <1106588554.8961.41.camel@d-phiggins-lnx.rovingplanet.com>
+	<1106594540.28221.44.camel@nostromo.bgsecm.com>
+	<1106603598.13691.2.camel@d-phiggins-lnx.rovingplanet.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <531442a505012415241a77865c@mail.gmail.com>
+In-Reply-To: <1106603598.13691.2.camel@d-phiggins-lnx.rovingplanet.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +20,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Patrick Higgins <phiggins@rovingplanet.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mar, 25 de 01 de 2005 a las 00:24, GiGi Zick escribi=C3=B3:
-> Hi all,
->=20
-> Can someone please recommend me a version of iptables and linux kernel
-> that supports iplimit or connlimit?
->=20
-> I'm currently testing kernel 2.6 and iptables 1.2.11 on FC3 and they
-> don't seem to support what I need.
-> Thanks!
+El lun, 24 de 01 de 2005 a las 22:53, Patrick Higgins escribi=C3=B3:
+> We know that there are ways to optimize the rules themselves, but they
+> will mostly require new netfilter modules or at least revive some of th=
+e
+> nf-hipac work. The fact is, our firewall is inherently complex and will
+> probably always be our bottleneck. We're just looking for generic ways
+> to leverage hardware for short-term speed gains, and are running into a
+> wall.
 
-Best you can do it's to download the last vanilla kernel, the
-iptables 1.2.11 and the last patch-o-matic, apply the patches
-to the kernel and install it.
+Reading my own post I have realize that maybe I have not explained
+myself well. What I propose it's to separate the traffic in multiple
+chains, so the traverse of the packets through the chains makes the
+Netfilter system have to test the minimum number of rules. We've
+did some test while we were designing our bastion-firewall GPL software
+and it sure improves the performance of the firewall a lot.
 
-Or you can try to find an rpm with the kernel compiled with
-the options you want. I prefer to compile my own kernels,
-but that's only my opinion.
+Probably you had understand me, but I wanted to make it clear.
 
 Regards.
-
 
 --=20
 Jose Maria Lopez Hernandez
