@@ -1,11 +1,13 @@
-From: "Jonathan Villa" <jvilla@e37.net>
-Subject: allow range syntax - perplexed
-Date: Tue, 15 Jun 2004 12:00:49 -0500 (CDT)
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: allow range syntax - perplexed
+Date: Tue, 15 Jun 2004 19:19:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108>
+Message-ID: <1087319969.3576.12.camel@anduril.intranet.cartel-securite.net>
+References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,24 +17,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jonathan Villa <jvilla@e37.net>
+Cc: netfilter@lists.netfilter.org
 
-To my understanding the following will allow any address in the x.x.x.0
-block access
+Le mar 15/06/2004 =E0 19:00, Jonathan Villa a =E9crit :
+> my temporary solution : looping through 1-254
 
-$IPTABLES -A INPUT -p tcp --dport 22 -s xxx.xxx.xx.0/24  -j ACCEPT
-$IPTABLES -A INPUT -p tcp --dport 3306 -s xxx.xxx.xx.0/24  -j ACCEPT
-$IPTABLES -A INPUT -p tcp --dport 80 -s xxx.xxx.xx.0/24 -j ACCEPT
+As someone pointed out yesterday, you can use iprange match from POM :
 
-It of course is not working...
+http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-iprange
 
-my temporary solution : looping through 1-254
-
-not very nice when I need to show someone the current rules.
-
--confused
-
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
