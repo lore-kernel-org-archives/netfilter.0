@@ -1,8 +1,8 @@
 From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: FW: logging a range of ips
-Date: Mon, 3 Nov 2003 14:08:42 +0800
+Subject: logging a range of ips
+Date: Mon, 3 Nov 2003 14:06:34 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8DD7@overlord.overturemedia.com>
+Message-ID: <F22386C3FEB012449238672E38ED61E70A8DD6@overlord.overturemedia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,18 +20,9 @@ Content-Type: text/plain; charset="us-ascii"
 To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
 
-Sorry for sending that too quickly.
+Greetings!
+How do I log a range of ips?
 
-Here is what I want to achieve...
-$IPTABLES -A INPUT -p tcp -s 190.201.0.0 -j LOG --log-level DEBUG =
---log-prefix "***LOGTCP: "
-$IPTABLES -A INPUT -p udp -s 190.201.0.0 -j LOG --log-level DEBUG =
---log-prefix "***LOGUDP: "
-
-It doesn't seem to work. I want to log all transactions of the network =
-of 190.201.x.x.
-
-Thanks.
 
 Cheers,
 
@@ -39,27 +30,6 @@ fritz <www.mesedilla.com>
 ---
 + Basta Ikaw Lord
 
-
-
-> -----Original Message-----
-> From: Fritz Mesedilla=20
-> Sent: Monday, November 03, 2003 2:07 PM
-> To: Netfilter Mailing List (E-mail)
-> Subject: logging a range of ips
->=20
->=20
->=20
-> Greetings!
-> How do I log a range of ips?
->=20
->=20
-> Cheers,
->=20
-> fritz <www.mesedilla.com>
-> ---
-> + Basta Ikaw Lord
->=20
->=20
 
 ----------------------------------------------------------------------
 This email and any files transmitted with it are confidential and
