@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: connlimit against flashget
-Date: Mon, 31 Jan 2005 11:08:05 -0500
-Message-ID: <20050131160805.GA24888@bender.817west.com>
-References: <87vf9fz31o.fsf@c3po.zlatenlist.net>
+Subject: Re: extension modules in patch-o-matic
+Date: Mon, 31 Jan 2005 11:15:33 -0500
+Message-ID: <20050131161533.GA24914@bender.817west.com>
+References: <20050130203332.0F16066E@mail.817west.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <87vf9fz31o.fsf@c3po.zlatenlist.net>
+In-Reply-To: <20050130203332.0F16066E@mail.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,40 +21,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sun, Jan 30, 2005 at 11:20:19AM +0200, Kamen TOMOV wrote:
-> Hi,
+On Sun, Jan 30, 2005 at 09:38:56PM +0100, Seferovic Edvin wrote:
+> Hi all,
 > 
-> I am running a small LAN and my Internet provider has limited the
-> number of my outgoing web connections. My clients use programs like
-> Flashget that spawn multiple connections to the server when
-> downloading big files from web sites and it is very likely that the
-> limit will be reached.
+> I am kinda new to extension modules, but I could really use some of them (
+> ip_limit, accounting etc ). The problem I have is following.. after I
+> download patch-o-matic and try to implement it I cannot find e.g. ip_limit
+> module :-( where did it go? Is it already in iptables? I cannot find it
+> there neither... 
 > 
-> That is why I would like to ask you if it is a good idea to use the
-> connlimit match with iptables to restrict the number of parallel TCP
-> connections to a server per client IP address.
-> 
-> I plan to do something like that:
-> 
-> iptables -p tcp --syn --dport 80 --dst www.warez.net -m connlimit \
->          --connlimit-above 2 -j REJECT
+> I use iptables 1.2.9 / kernel 2.6.5 ( Suse Lin 9.1 x86-64 )!
 
-just as an FYI--that rule does not limit the "number of parallel TCP
-connections to a server per client IP address."  it limits the total
-number of connections to that destination to 2, regardless of client IP
-address.
+make sure you are following this process:
 
-someone more adept with the connlimit match will hopefully jump in and
-correct me, but i *believe* if you want your limit to be 2 connections
-per host IP, you would use:
+cd /path/to/patch-o-matic
+KERNEL_DIR=/usr/src/linux-$VER IPTABLES_DIR=/path/to/iptables-src ./runme
+[select desired patches]
+recompile kernel
+recompile iptables
+reboot with new kernel
+ensure that your PATH points you to your new iptables binary and not
+some distro-provided iptables
 
-  iptables -p tcp --syn --dport 80 --dst www.warez.net -m connlimit \
-    --connlimit-above 2 --connlimit-mask 32 -j REJECT
+HTH...
 
 -j
 
 --
-"Be careful when we capture him! We cannot claim the reward unless
- we have 51% of the carcass"
+"Poor predictable Bart, always picks rock.
+ Good ol' rock, nothing beats that.
+ Rock.
+ Paper.
+ D'oh!"
         --The Simpsons
 
