@@ -1,15 +1,17 @@
 From: Mike <1100100@gmail.com>
-Subject: Re: Port 21, 23, and 80 are open according to Shields Up at grc.com
-Date: Mon, 13 Sep 2004 19:47:47 -0400
+Subject: Re: <SOLVED>Port 21, 23,
+	and 80 are open according to Shields Up at grc.com
+Date: Mon, 13 Sep 2004 20:12:21 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <8ca42282040913164724b70aa4@mail.gmail.com>
-References: <1095079786.1899.8.camel@wolfpack.ljm.dom>
-	<200409132122.i8DLM1i6001590@bassett.home.org>
+Message-ID: <8ca4228204091317124f5d5731@mail.gmail.com>
+References: <200409111150.50506.bulliver@badcomputer.no-ip.com>
+	<8ca42282040911160952abec3b@mail.gmail.com>
+	<1095079786.1899.8.camel@wolfpack.ljm.dom>
 Reply-To: Mike <1100100@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409132122.i8DLM1i6001590@bassett.home.org>
+In-Reply-To: <1095079786.1899.8.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,52 +22,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "James B. Hiller" <jhiller@visi.net>
+To: Jason Opperisano <opie@817west.com>
 Cc: netfilter@lists.netfilter.org
 
-Hi James,
+This is pretty embarassing but I will go ahead and post it so that it
+is forever archived under the "silly noobs on routers" directory.
 
-Thanks for your reply, but I'm fairly certain this is not a kernel issue.
+1.  I've been too lazy to get the roaring penguin dsl client working
+on my routerbox.  Historically, I've had trouble with making the right
+data packet sizes and providing headroom for packet headers, etc.
 
+2.  So, I'm still using a simple $50 Netgear cable/dsl router to act
+as my LAN's DHCP server.
 
-On Mon, 13 Sep 2004 17:22:01 -0400 (EDT), James B. Hiller
-<jhiller@visi.net> wrote:
-> Hi.
-> 
-> 
-> 
-> > On Sat, 2004-09-11 at 19:09, Mike wrote:
-> > > Hi Group:
-> > >
-> > > I've tested for open ports from all the LAN clients behind my linux
-> > > box router/gateway/firewall and all of them come up with the same
-> > > results: port 21, 23, and 80 are open according to the results of the
-> > > Steve Gibson Shields Up test.
-> > >
-> > > I can't figure out how this can be happening.
-> > > I've run a full nmap -P0 (that's a zero) on all my local ip addresses
-> > > - 192.168.169.*
-> >
-> > you need to keep in mind that if your netfilter box is performing
-> > MASQ/SNAT for your LAN machines--the IP being scanned by grc.com is the
-> > public IP of the netfilter box.
-> >
-> > unless your doing some DNATs to machines on your LAN--you should focus
-> > your efforts on the netfilter machine itself.
-> >
-> > "netstat -lntu" would be a good place to start.
-> >
-> > i've always questioned the output of web-based scanners like grc.com;
-> > however, i just went to grc.com and tried it out, and achieved a
-> > *perfect* "TruStealth" rating...which must mean i'm super l33t like
-> > stevie...  :-P
-> 
-> For whatever it may be worth:  I have linux 2.6.0 running on my firewall
-> machine, and 2.6.9-rc1 running on a machine behind it, and I get (and
-> have always gotten) a *perfect* TruStealth result relative to both
-> machines.
-> 
-> jbh
-> 
->
+3.  The LAN diagram looks like:  Internet --> Netgear Router --> Linux
+firewall/router/gateway --> LAN clients.
+
+4.  A while back I needed to set up some video conferencing for my
+boss.  I wanted to make sure there were no issues with the Netgear
+router so I simply turned it into a DMZ that let everything through to
+the Linux routerbox.
+
+5.  Forgetful as I am, I modified the linux firewall back to its
+original state once the video conferencing was completed, but never
+turned off the DMZ settings on the Netgear router.  That was the
+entire problem.  The netgear was responding and opening ports as it is
+designed to do while set on DMZ.
+
+Long story, short.  I tested the linux box on its own with no Netgear
+in front of it, and then also tested it with the Netgear set up as the
+DHCP server, but no longer set up as a DMZ.  Both tests yielded
+results of complete stealth.
+
+Where's the beer.
+
+Mike
 
