@@ -1,11 +1,10 @@
-From: "William L. Childers" <childew@cox.net>
-Subject: SNAT rule
-Date: 22 Oct 2002 07:36:50 -0500
+From: Chris Poupart <cpoupart@canada.com>
+Subject: Tunneling FTP over SSH through an IPTables NAT/Filter setup...
+Date: Tue, 22 Oct 2002 09:27:13 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1035290210.2921.4.camel@develop.wlc.net>
+Message-ID: <3DB55231.6050802@canada.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-J2dfzFf+L0SpC6ovuK7T"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,59 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
+I am trying to tunnel FTP over SSH, as it sais in the subject, using 
+Dreamweaver MX as the FTP client and PuTTY as the SSH client.
 
---=-J2dfzFf+L0SpC6ovuK7T
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I believe what this setup does by default is to send the FTP commands 
+via the SSH tunnel, but then to return information and send data through 
+another port (the FTP client defaults to Passive when I tell Dreamweaver 
+to tunnel through SSH.)
 
-All,
+Because the command strings are sent through SSH, the ftp_conntrack 
+module will not work to recognize the other connections are RELATED or 
+ESTABLISHED.
 
-	Now that I have made myself look like a fool, by sending the wrong
-rules.  Please excuse my other email. =20
+What I end up with is a connection, through which I can not browse the 
+remote directories, nor upload or download files.  FTP by itself works fine.
 
-        I have a network with 4 computers behind the firewall.  Three of
-these
-are workstations.  The firewall works fine for these.  Here is the fun
-part. =20
+The rules are pretty simple.  Defaut drop policies, followed by standard 
+MASQ rules, and then INPUT rules that only allow RELATED or ESTABLISHED 
+rules back in.  There are no OUPUT rules for the moment.
 
-One of the computers is a server with the Windows 2000 Operating System
-installed.  It is running IIS, and a mail server.  The SMTP portion of
-IIS is configured to send email out on port 1125.  I have DNAT working
-for the WEB server and SMTP.  There is, however, an issue with one of
-the applications that is running on the web server.  It will not send
-email out on port 1125.  The rule that I am trying to get to work is:
+I tried allowing all connections from the FTP server back through, but I 
+am not sure if I wrote the rule correctly.
 
-## Outgoing from IIS Web Server
-$IPTABLES -t nat -A POSTROUTING -p tcp -o $EXTERNALIF -j SNAT --to
-$MYADDR:1125
+The funny thing is, if I use the SSH client from SSH.com, they have an 
+"FTP" mode for tunneling, and that works fine with my setup.  I guess 
+that it has some built in connection tracking itself?
 
+Any help would be much appreciated.
 
-$INTERNALIF is the Private Interface
-$MYADDR is the Public IP Address
-
-192.168.0.4 is the Private IP of the IIS Server=20
-
-Thank you in advance for any assistance that you may be able to provide.
-
-Bill
-
-
-
---=-J2dfzFf+L0SpC6ovuK7T
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA9tUZiieQ+LKG9MTARAvAAAJ9jA5gfUoIpRD2i4fpLsNFUVSRWZACeNvrA
-nY5VkyMYA21pZH3wo7taGbU=
-=Z12c
------END PGP SIGNATURE-----
-
---=-J2dfzFf+L0SpC6ovuK7T--
+-- Chris
 
 
