@@ -1,11 +1,11 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: PPTP through question
-Date: Tue, 16 Nov 2004 20:01:14 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F0197D9@pxtvjoexd01.pxt.primeexalia.com>
+From: "Hirantha Wijayawardena" <hirantha@crescat.com>
+Subject: Need an advice
+Date: Wed, 17 Nov 2004 11:16:19 +0600
+Message-ID: <C97EC9D40F9B8E469B2187228615909102CC50@mail.crescat.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,58 +19,68 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Dear Experts,
 
-We just replace an old solid state firewall with a new RHEL3 firewall
-running iptables 1.2.11.  We compiled config_ip_nf_pptp in the kernel.
-Everything appears to be fine and stable with the exception of a small
-problem with PPTP clients.  With the old firewall the PPTP works fine.
-Addresses are NAT'd into a private 192.168.0.x range.  With the new
-firewall in place several of the clients get dropped after exactly two
-minutes.  These clients are behind multiple different types of
-firewalls.
+These days I'm following the iptables tutorial 1.1.19 to refresh my mind
+with iptables. But I came across some confusions while reading the doc
+(I thinks I'm having some misunderstands). The following are my
+questions and please explain how these packets traverse.
 
-Earlier this week I had a problem with local routing of external IP
-accesses.  I've resolved that.  But I'm not sure if this has anything to
-do with the two minute cutoff or if it's something independent of the
-routing.  (ROUTING INCLUDED BELOW)
+# INPUT chain
 
-Also, I have loaded these modules listed below.  It doesn't matter if I
-include ip_conntrack_pptp or not.  We still have the same problem. =20
+$IPTABLES -A INPUT -p TCP -i $INET_IFACE -j tcp_packets
+This match all TCP packets in the INPUT chain that comes in on the
+$INET_IFACE interface, and send those to the tcp_packets
 
-/sbin/modprobe iptable_nat
-/sbin/modprobe ipt_MASQUERADE
-/sbin/modprobe ip_conntrack
+#
+# TCP rules
+#
 
-#/sbin/modprobe ip_conntrack_proto_gre
-#/sbin/modprobe ip_conntrack_pptp
-/sbin/modprobe ip_nat_proto_gre
-/sbin/modprobe ip_nat_pptp
-/sbin/modprobe ip_conntrack_irc
-/sbin/modprobe ip_nat_irc
-/sbin/modprobe ip_conntrack_ftp
-/sbin/modprobe ip_nat_ftp
-#/sbin/modprobe ip_conntrack_mms
-#/sbin/modprobe ip_nat_mms
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ip_gre
-/sbin/modprobe ipt_TARPIT
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 21 -j allowed
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 22 -j allowed
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 80 -j allowed
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 113 -j allowed
 
-[0:0] -A PREROUTING -d 206.53.45.51 -j DNAT --to-destination
-192.168.0.51
-[0:0] -A PREROUTING -d 206.53.45.52 -j DNAT --to-destination
-192.168.0.52
-...
-[0:0] -A PREROUTING -d 206.53.45.62 -j DNAT --to-destination
-192.168.0.62
-#Outgoing Maps (2 per IP - 1 local translation 1 remote)
-[0:0] -A POSTROUTING -d 192.168.0.51 -j SNAT --to-source 206.53.45.51
-[0:0] -A POSTROUTING -d 192.168.0.52 -j SNAT --to-source 206.53.45.52
-...
-[0:0] -A POSTROUTING -d 192.168.0.62 -j SNAT --to-source 206.53.45.62
-[0:0] -A POSTROUTING -o eth0 -j SNAT --to-source 206.53.45.50
-#************************************************************
-[0:0] -A OUTPUT -d 192.168.0.51 -j DNAT --to-destination 206.53.45.51
-[0:0] -A OUTPUT -d 192.168.0.52 -j DNAT --to-destination 206.53.45.52
-...
-[0:0] -A OUTPUT -d 192.168.0.62 -j DNAT --to-destination 206.53.45.62
+
+-A tcp_packets tells iptables in which chain to add the new rule, the
+rule will be added to the end of the chain. -p TCP tells it to match TCP
+packets and -s 0/0 matches all source addresses from 0.0.0.0 with
+netmask 0.0.0.0, in other words all source addresses. If all the
+criteria are matched, then the packet will be targeted for the allowed
+chain. If it doesn't match any of the rules, they will be passed back to
+the original chain that sent the packet to the tcp_packets chain.
+
+1.) If the packet does not match, then it will return to the original
+chain. So what is the chain? Is it:
+
+$IPTABLES -A INPUT -p TCP -i $INET_IFACE -j tcp_packets=20
+or
+$IPTABLES -P INPUT DROP
+
+2.) If that is send to $IPTABLES -P INPUT DROP, do we have to create TCP
+rules for each destination port?
+3.) TCP rules set are for only we are running particular services on the
+filerwall or should assign if we running services behind the firewall?
+
+4.) What is the best method to sharing the internet for the LAN users?
+Is it SNAT or MASUERADE?
+
+$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source
+$INET_IP
+or
+$iptables -A POSTROUTING -t nat -o $INET_IP -s $LAN_IP_RANGE -d 0/0 -j
+MASQUERADE
+
+According to the tutorial -
+It is still possible to use the MASQUERADE target instead of SNAT even
+though you do have an static IP, however, it is not favorable since it
+will add extra overhead, and there may be inconsistencies in the future
+which will thwart your existing scripts and render them "unusable".
+
+But I saw from the scratch, some firewall scripts are enabled with
+MASQUERADE
+
+Please advice & thanks in advance
+
+- Hirantha
+
