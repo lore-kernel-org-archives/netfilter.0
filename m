@@ -1,15 +1,14 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: ipsec troubles
-Date: Fri, 15 Oct 2004 14:44:50 -0400
+Subject: Re: static IP to dynamic IP
+Date: Fri, 15 Oct 2004 14:55:51 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041015184450.GA7688@bender.817west.com>
-References: <0f2001c4b2e0$cbd8fbb0$49caa8c0@caris.priv>
-	<20041015181025.GA7564@bender.817west.com>
-	<0f3101c4b2e5$02c5d130$49caa8c0@caris.priv>
+Message-ID: <20041015185551.GA7745@bender.817west.com>
+References: <20041015182253.GA7592@bender.817west.com>
+	<20041015184106.39028.qmail@web21526.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <0f3101c4b2e5$02c5d130$49caa8c0@caris.priv>
+In-Reply-To: <20041015184106.39028.qmail@web21526.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,23 +22,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Oct 15, 2004 at 03:30:13PM -0300, Peter Marshall wrote:
-> Thanks for the fast reply ...
-> 
-> So you are saying I should use a value of 1440 for X ?
-> What rule do I apply it too ? (sorry to sound stupid .. brain is fried ..
-> have been working on this for a long time).
-> 
-> Peter
+On Fri, Oct 15, 2004 at 11:41:06AM -0700, kate wrote:
+> 1. yes I have ipt_MASQUERADE loaded.
+> 2. my logic was to substitute any static_ip refernce
+> with -i eth0, but you're saying that doesn't work.
 
-you would add a new rule that matches your outbound VPN
-traffic...something along the lines of (this is 2.4 and *swan biased):
+no--it doesn't work.  might be a nice feature request...but alas at the
+current state of technology--no dice.
 
-  iptables -A FORWARD -i $INSIDE_IF -o $IPSEC_IF -p tcp --syn \
-    -j TCPMSS --set-mss 1440
+> Would refernce to the box eg. myfw.mydomain.com work
+> instead of ip_static ?
 
-from my own personal experience--i use lower values than 1440, but 1440
-is the mathematical maximum you can use...so that's your starting point.
+nope--same problem, essentially.  when you use an FQDN in a rule--it is
+resolved to an IP address once, at the time the rule is loaded.
+
+> Your neat script, where would I place that in my fw
+> script? at the top? Does it need anything else to make
+> it work?
+
+it's really just a variable declaration, but yeah--at the top would be a
+good place for it.
+
+once you have a script that can figure out your IP addresses for you at
+the time of execution--the only other piece you need is to reload your
+rules each time your IP address changes--the man page of your particular
+DHCP client should have details on how to execute a script on IP
+change.
+
+this also isn't as big a deal in practice as it may seem--my firewall on
+my cable modem at my house has had the same IP address since 11-27-2003
+(the day i upgraded it).
+
+> you can see that I am new at this!
+
+s'alright--that's what these lists are for.  a good read for newbies is
+the IPTables Tutorial, located at:
+
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
 -j
 
