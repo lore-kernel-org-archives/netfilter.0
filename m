@@ -1,12 +1,12 @@
-From: "Simon Garner" <sgarner@expio.co.nz>
-Subject: Re: a sort of n00b question here but I'ld like to know.
-Date: Wed, 22 Oct 2003 10:12:19 +1300
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: iptables1.2.7 + pptp + rh9
+Date: Tue, 21 Oct 2003 14:15:05 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ea01c39818$162e5c80$0301a8c0@SIMON>
-References: <20031021181138.49502.qmail@web40202.mail.yahoo.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E76@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: SBlaze <dagent.geo@yahoo.com>, netfilter@lists.netfilter.org
+To: Fernando Barrocal <fbarrocal@uol.com.br>, netfilter@lists.netfilter.org
 
-On Wednesday, October 22, 2003 7:11 AM [GMT+1200=NZT],
-SBlaze <dagent.geo@yahoo.com> wrote:
+Download ipt 1.2.8 or 1.2.9 if it is out.
+Or, use the CVS userspace
 
->
-> Wouldn't ntop be considered a "probing" tool?
->
+# KERNEL_DIR=3D<yourkerneldir> make
+# make install
 
-I wouldn't consider it a probing tool... something like nmap would be
-probing, ntop just listens. And although it puts your eth into
-promiscuous mode, I wouldn't call it a packet sniffer since it won't
-tell you the contents of any packets, only where they're going and how
-big they are etc. I don't think you have anything to worry about.
+You might want to change the destination directories in the Makefile to
+conform to the Redhat deployment layout
+LIBDIR=3D/lib/
+MANDIR=3D/usr/man
+etc..
 
-Now I have no experience with cable or cable modems (they're practically
-non-existent over here) but wouldn't running this on your linux box only
-show you whatever data your cable modem is sending to you anyway...
-you'd need to put the *cable modem* into promiscuous mode (or
-equivalent) to actually receive any data you shouldn't.
+-----Original Message-----
+From: Fernando Barrocal [mailto:fbarrocal@uol.com.br]=20
+Sent: Tuesday, October 21, 2003 2:04 PM
+To: netfilter@lists.netfilter.org
+Subject: iptables1.2.7 + pptp + rh9
 
->
-> And getting back to my original reason and question for this post. How
-> statistically can you see just how much iptables/netfilter is using
-> of system resources?
->
 
-I think we're agreed that the level of data you're seeing wouldn't cause
-any problems CPU-wise. You can see kernel CPU usage as "system CPU%" in
-top and vmstat and they're saying 0, which would be expected.
+Hi,
 
--Simon
+I am applying the pptp patch with patch-o-matic in my redhat 9.0.
+Somebody=20
+have somer step by step to patch the kernel, compile the iptable
+userspace=20
+and compile the kernel to accept DNAT ?
+
+Thanks in advance
+
+Fernando Barrocal
+
 
 
