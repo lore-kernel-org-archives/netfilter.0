@@ -1,13 +1,13 @@
-From: David Cary Hart <DCH@TQMcube.com>
-Subject: Re: Still having problems...
-Date: Wed, 30 Jun 2004 16:44:22 -0400
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: traceroute
+Date: Wed, 30 Jun 2004 22:51:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088628262.4626.0.camel@localhost>
-References: <9E8B5B9C-CAC3-11D8-A356-000A95AD0230@mac.com>
+Message-ID: <1088628661.1755.59.camel@anduril.intranet.cartel-securite.net>
+References: <2E314DE03538984BA5634F12115B3A4E62E80C@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <9E8B5B9C-CAC3-11D8-A356-000A95AD0230@mac.com>
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62E80C@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Sam Loy <sampaw@mac.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2004-06-30 at 14:30, Sam Loy wrote:
-> I sorry to be such a newbie, but I still cannot get my firewall up and 
-> running.
-> 
-> Actually, I had it working with the enclosed script, until I generated 
-> /etc/sysconfig/iptables using /sbin/service iptables save.
-> 
+Le mer 30/06/2004 =E0 17:21, Piszcz, Justin Michael a =E9crit :
+> I do not know where you are getting your info from, but it is clearly
+> incorrect.
 
-I'm  not sure what OS you are using but I have found that the easiest
-way to configure netfilter is through the Webmin modules. Have you tried
-it.
-> After I tried to get things to spin up at boot time it quit 
-> working...not sure what I did.
-> 
-> I erased my tracks, can still ping and set the net before loading 
-> iptables. Afterwords, I can't even ping the 192.168.1.1 interface on 
-> the same machine!
-> 
-> Anyway, jason, antony, dick, a lot of you have been very helpful. Thank 
-> you so much for your continued help and patience.
-> 
-> It is starting to make sense, but I still don't get it. I'm also in 
-> processing of up2dating my linux. maybe that will help.
-> 
-> fwscript is the script I'm using (from Jason with slight mods). I run 
-> it after I connect ppp0 and get an ip from my isp, before running 
-> dhcpd. stillnowork is the output of iptables-save.
-> 
-> Like I said, it worked until I tried to get it to start at boot time.
-> 
-> Thanks,
-> 
-> Sam
--- 
-                            David Cary Hart
-Hart's PGP key: http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x58A60BB1
+From the source code, I guess, just like I did.
 
+You have two type of ICMP handling. On one hand hand, you have
+request/response ICMP stuff : echo, timestamp, netmask and info. Theses
+messages are handled with state NEW for request and state ESTABLISHED
+for answer. So an ICMP echo request has NEW state and related ICMP echo
+reply is ESTABLISHED. A lonely ICMP echo reply is INVALID. On the other
+hand, you have ICMP errors, that have RELATED state as long as kernel is
+able to find to which conntrack entry they belong. Otherwise, they're
+INVALID.
+
+So, if you don't allow ICMP with NEW state in INPUT chain, then no one
+will be able to ping you.
+
+See /usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_icmp.c file.
+
+So you're simply wrong.
+
+> I do not allow any ICMP explicitly and I have never had a problem
+> using NAT or similar.
+
+And if you're able to ping anyway, it means you have a rule that
+implicitly accepts thoses packets, and then should read your ruleset
+again.
+
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
