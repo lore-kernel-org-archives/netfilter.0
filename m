@@ -1,8 +1,8 @@
-From: "mark smith" <markcs@wildmail.com>
-Subject: problems using FTOS extension
-Date: Thu, 5 Feb 2004 11:42:43 +1000
+From: "Saeed Zamani" <szamani@concept.ae>
+Subject: Need urgent help on NAT/load sharing
+Date: Thu, 5 Feb 2004 20:54:44 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <598558C21D078804AB348529E476E840@markcs.wildmail.com>
+Message-ID: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,52 +19,18 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hi all,
-
-I need to use the FTOS target. Took me quite a
-while to figure out how to get it 'available' for
-use. (I added 'FTOS' to the PF_EXT_SLI field of
-the Makefile in the extensions directory of the
-1.2.9 distro and that seems to have done the
-trick. After running make and make install the
-libipt_FTOS.so file gets copied into
-/usr/local/lib/iptables).
-
-I'm having trouble using the correct syntax for a
-rule though. This rule,using TOS, works fine:
-iptables -I OUTPUT -t mangle -j TOS --set-tos 0x02
-
-Trying the same thing with FTOS:
-iptables -I OUTPUT -t mangle -j FTOS --set-ftos 0x02
-Produces the error message:
-iptables: No chain/target/match by that name
-
-Looks weird. Interestingly, if I don't provide
-the --set-ftos argument I get a logical error
-message:
-iptables v1.2.9: FTOS target: Parameter
---set-ftos is required
-So it looks like FTOS can be used but I'm doing
-something wrong with the --set-ftos argument.
-
-I'm running a 2.4.20-8 kernel on RH9.
-
-Thanks,
-
-Mark.
+   I am new to list and have a basic nat question on Redhat Linux 9. I
+have to translate my local IP ( 192.168.1.0/24 ) to two different public
+IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
+example for every 4 received packet, one have to translate to IPE1 and
+other three to IPE2. I need this for load balacing the internet traffic
+between two isp. At the end, it is excellent if there is an option that
+If one the ISP gateway is dead, all packets have to translate to other
+public IP. Please help me. 
+Thanks, 
+Saeed Zamani, 
+Technical Manager, 
+Concept FZ LLC. 
 
 
-&#8216;The ideals which have lighted my way, 
-and time after time given me new 
-courage 
-to face life cheerfully, have 
-been kindness, beauty, and truth. The 
-trite subjects of life &#8211; possessions, 
-outward success, luxury &#8211; have always 
-seemed contemptible.&#8217; 
-
-Albert Einstein
-------------------
-
-Protect your right to breathe clean, smoke-free air:
-http://www.care2.com/go/z/11238/1043
 
