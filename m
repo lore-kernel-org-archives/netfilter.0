@@ -1,13 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: web server in DMZ
-Date: Tue, 28 Sep 2004 10:17:29 -0400
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: how to log dropped packet
+Date: Tue, 28 Sep 2004 09:21:26 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096381048.2330.47.camel@wolfpack.ljm.dom>
-References: <web-6416739@infinito.it>
+Message-ID: <41597366.3010108@pbl.ca>
+References: <web-6413785@infinito.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-6416739@infinito.it>
+In-Reply-To: <web-6413785@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +17,31 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tue, 2004-09-28 at 06:21, hamals@infinito.it wrote:
-> I have a big problem
+hamals@infinito.it wrote:
 > 
-> I have a web server in my DMZ, I reach it with his 
-> internal IP 192.168.1.10 from my internal LAN, but I can't 
-> reach them with his public IP.
+> hello
 > 
-> I did a DNAT and from internet everythings is ok, my web 
-> server is working in right by DNAT.
+> I wrote all my firewall rules, and now I would like to log all packet 
+> that will be dropped by my policy rule..
 > 
-> Where is the problem?
+> ..how can I do it?
+> 
+> what kind of rules do I need?..and where have I to write them?
 
-are you asking how to connect to the web server from the inside by its
-public IP address?  if so, you just need another DNAT rule, probably:
+Use the LOG target.
 
-  iptables -t nat -A PREROUTING -i $INSIDE_IF -p tcp -d $WWW_PUB_IP \
-    --dport 80 -j DNAT --to-destination 192.168.1.10
-
--j
+However, if this is your firewall host toward Internet, are you sure you 
+want to log *everything* that is dropped?  There are so many worms and 
+automatic scanning tools out there that your logs will get *huge* with 
+nothing but crap very fast.  This is especially true for Windows 
+specific TCP and UDP ports.  Anything that might be interesting will get 
+completely lost in all that noise.
 
 -- 
-Jason Opperisano <opie@817west.com>
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
