@@ -1,11 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Redirecting outgoing SMTP from LAN to another LAN server
-Date: Thu, 29 Apr 2004 10:59:49 +0100
+From: Kiran Kumar <immidi_kiran@yahoo.com>
+Subject: Re: NF_IP_LOCAL_OUT
+Date: Wed, 28 Apr 2004 20:24:46 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040429095949.GB22172@acentral.co.uk>
+Message-ID: <20040429032446.85818.qmail@web14002.mail.yahoo.com>
+References: <OF596492DE.CDD1ECA3-ON65256E83.00377D3E@hss.hns.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <OF596492DE.CDD1ECA3-ON65256E83.00377D3E@hss.hns.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +18,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: aksingh@hss.hns.com, netfilter@lists.netfilter.org
 
-Hullo :)
+--- aksingh@hss.hns.com wrote:
 
-I'd like to do $SUBJECT, but after much playing with commands like
+>   I have a doubt regarding the NF_IP_LOCAL_OUT hook,
+> suppose i use libnet
+> to inject some packets into the kernel ..... the
+> dest ip address of this
+> packet is my own linux box( the same box that is
+> injecting those packet).
+> Now, the netfilter NF_IP_LOCAL_OUT hook catches
+> those packets, and the
+> routing decision is taken after this hook is passed,
+> what happens after
+> this, since these packets are destined to this
+> machine, do these packets go
+> to the wire then again the ethernet card of this
+> machine catches these
 
-iptables -t nat -A PREROUTING -p tcp -i eth1 --dport 25 -j DNAT --to 10.0.0.253:25
+  No, packets destined to the local machine do not go
+on to the wire.
 
-I have given up and have come to you fine people for help...
+> packets (i.e a new sk_buff is again assigned for
+> them etc) or do they
+> retain their old sk_buff and are directly sent to
+> the application waiting
+> for them ?
 
-My LAN is on eth1, with WAN on eth0. The gateway machine is 10.0.0.254 doing masq for 
-LAN clients, but I'd like to send any outgoing SMTP connections to 10.0.0.253 - alas 
-any time I've tried, I just end up killing ALL outgoing SMTP :(
+> ip_packet(dest add==ip addr of this machine) ---->
+> NF_IP_LOCAL_OUT hook
+> --->routing decision --> wire(old sk_buff freed) -->
+> ethernet card ---> new
+> sk_buff ---> NF_IP_PRE_ROUTING hook ---> application
+> on this machine
+> waiting for this packet.(as part of this new
+> sk_buff)
 
-Any suggestions warmly received!
+  surely not this.
 
-Cheers,
-Gavin.
+> 
+> or,
+> 
+> ip_packet(dest add==ip addr of this machine) ---->
+> NF_IP_LOCAL_OUT hook
+> --->routing decision -->application on this machine
+> waiting for this packet
+> (as part of its old sk_buff itself)
+
+  I am not sure of the sk_buff, but the packet gets
+looped back, so this is atleast partially right.
+
+=====
+Regards,
+Kiran Kumar Immidi
+
+
+	
+		
+__________________________________
+Do you Yahoo!?
+Win a $20,000 Career Makeover at Yahoo! HotJobs  
+http://hotjobs.sweepstakes.yahoo.com/careermakeover 
 
