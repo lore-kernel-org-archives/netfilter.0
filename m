@@ -1,11 +1,13 @@
-From: mgeschermann@arcor.de
-Subject: http-rules and browsing ebay Problem
-Date: Wed, 11 Feb 2004 13:35:38 +0100 (CET)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: http-rules and browsing ebay Problem
+Date: Wed, 11 Feb 2004 12:43:54 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <25706769.1076502938552.JavaMail.ngmail@webmail02.arcor-online.net>
+Message-ID: <200402111243.54271.Antony@Soft-Solutions.co.uk>
+References: <10581301.1076502927332.JavaMail.ngmail@webmail02.arcor-online.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <10581301.1076502927332.JavaMail.ngmail@webmail02.arcor-online.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +20,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+On Wednesday 11 February 2004 12:35 pm, mgeschermann@arcor.de wrote:
 
-I spend a lot of time on building my own firewall-script. Mostly everything is working fine (some things aren't tested yet), but I've got a tricky problem and hope you can help me.
+> Hi all,
+>
+> I spend a lot of time on building my own firewall-script. Mostly everything
+> is working fine (some things aren't tested yet), but I've got a tricky
+> problem and hope you can help me.
+>
+> If I want to open the ebay-site from either the firewall or an client my
+> browser tells me after a some seconds "This site could not be displayed."
+>
+> I've done some logging and noticed, that after the reply I get a packet
+> with status "NEW" from ebay. (within a few seconds after the the first
+> reply)
 
-If I want to open the ebay-site from either the firewall or an client my browser tells me after a some seconds "This site could not be displayed."
+What sort of packet?   Show us the log (preferably with both the original 
+connection, and the new packet, including the timings).
 
-I've done some logging and noticed, that after the reply I get a packet with status "NEW" from ebay. (within a few seconds after the the first reply)
+Regards,
 
+Antony.
 
-I'm running Suse 9.0 on my router/firewall with iptables 1.2.8. I'm using ip_conntrack.
-(The problem occurs even without conntrack.)
+-- 
+There's no such thing as bad weather - only the wrong clothes.
 
+ - Billy Connolly
 
-here my rules:
-
-iptables -t nat -A PREROUTING -i $IFACE_LAN -p tcp -s $LOCAL_LAN --dport $HTTP_PORT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-iptables -A FORWARD -i $IFACE_LAN -o $IFACE_EXT -p tcp -s $LOCAL_LAN --dport $HTTP_PORT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-
-iptables -A FORWARD -i $IFACE_EXT -o $IFACE_LAN -p tcp -d $LOCAL_LAN --sport $HTTP_PORT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-
-
-I allready spent a lot of time on searching the and the mail-archive from netfilter but couldn't find a solution.
-
-So I hope there is anyone reading this mail who can help me.
-
-Thanks
-
-M. Geschermann
-
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
