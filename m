@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Problems Pinging the Internet w/this script
-Date: Sat, 11 Sep 2004 21:24:37 -0400
+From: "Mike Boden" <mpboden@surfcity.net>
+Subject: confused about a specific log
+Date: Sat, 11 Sep 2004 18:13:55 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094952277.5506.26.camel@wolfpack.ljm.dom>
-References: <41439912.2090701@juno.com>
+Message-ID: <001e01c49865$c646e3f0$0d01a8c0@bedroom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41439912.2090701@juno.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,146 +18,122 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sat, 2004-09-11 at 20:32, Jesse wrote:
-> Here's a script I'm using to create some tables which will only allow in 
-> on ports I'm running services. One of the problems I'm havng is that I 
-> can't ping the Internet with a DNS address from this machine. I've 
-> allowed everything in the OUTPUT table and can ping the Internet when 
-> using a straight IP, but when I type in "ping google.com" the machine 
-> hangs for a few seconds and gives me a server request error. I know it's 
-> something with my rules because when I flush them all I can ping 
-> google.com just fine. Any ideas would be greatly appreciated. I'm 
-> guessing it's something trivial but can't put my finger on it yet.
-> 
-> thanks
-> 
-> #!/bin/bash
-> ########## Beginning 
-> ###########################################################
-> 
-> # Define Interfaces/Networks
-> 
->     # Inside/Intranet Interface
->       INSIDEIP="192.168.7.55"
->       INSIDEINT="eth0"
-> 
->     # External/Internet Interface   
->     # OUTSIDEIP=
->     # OUTSIDEINT=
-> 
->     # LAN Network
->       LAN="192.168.7.0/24"
-> 
->     # Admin Host
->       ADMIN="192.168.7.51"
-> 
-> # Define other Variables
-> 
->     RULE="/usr/sbin/iptables"
-> 
-> # Flushing All rules/chains
->   $RULE -A INPUT LOG
->   $RULE -A OUTPUT LOG
->   $RULE -A FORWARD LOG
+Hello,
 
-um--any particular reason why you append 3 LOG rules (with incorrect
-syntax, btw...) 3 lines before you flush everything out?  nevermind--i'm
-sure there's a fantastic reason behind it--so i'll just note, that they
-should be:
+I'm a little confused with something I've noticed in my logs. Basically, =
+I don't understand why the following is being logged:
 
-  iptables -A INPUT -j LOG
-  iptables -A OUTPUT -j LOG
-  iptables -A FORWARD -j LOG
+Sep 11 00:25:53 boden kernel: IN=3Deth2 OUT=3Deth0 SRC=3D192.168.0.2 =
+DST=3D66.77.124.62 LEN=3D64 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D13002 =
+DF PROTO=3DTCP SPT=3D81 DPT=3D8252 WINDOW=3D16160 RES=3D0x00 ACK =
+URGP=3D0=20
 
->   $RULE -P INPUT DROP
->   $RULE -P OUTPUT DROP
->   $RULE -P FORWARD DROP
->   $RULE -F INPUT
->   $RULE -F OUTPUT
->   $RULE -F FORWARD
-> 
-> # Adding Permittable Network/Hosts/Ports to Input Table on Internal 
-> Interface
-> 
->   # Allowing DNS,FTP,SSH,Webmin,HTTP,SWAT,and Samba to Server
-> 
->   $RULE -A INPUT -i $INSIDEINT --proto icmp --icmp-type any -j ACCEPT
->   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 21 -d $INSIDEIP -j ACCEPT
->   $RULE -A INPUT -i $INSIDEINT --proto tcp -s $ADMIN --dport 22 -d 
-> $INSIDEIP -j ACCEPT
->   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 53 -d $INSIDEIP -j ACCEPT
+To start, I have set up a DMZ with a web server running on port 81 with =
+an IP of 192.168.0.2, and it seems to be working great. I can connect to =
+the server from my LAN and from the internet and there doesn't seem to =
+be any problems.
 
-if this machine is a DNS server offering name resolution to hosts on
-$INSIDEINT--those requests are UDP, not TCP.  TCP 53 is used for zone
-transfers between name servers.
+With regards to the above log, the noted destination IP is my work =
+address. So when I'm at there, I can connect to my server on my DMZ and =
+everything seems fine. I'm not getting any errors or anything. So that's =
+why I'm confused. Why is the above ACK packet getting dropped when by =
+all accounts everything seems to be working correctly. Furthermore, from =
+what I can gather, I've set my FORWARD Policies correctly. So why is the =
+above ACK getting dropped at all? Is this a problem that I need to worry =
+about?
 
->   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 80 -d $INSIDEIP -j ACCEPT
->   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 137 -d $INSIDEIP -j 
-> ACCEPT
->   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 138 -d $INSIDEIP -j 
-> ACCEPT
+Shouldn't the following Forward rule cover the above packet:
 
-ports 137 and 138, if being used in the "nmbd" sense--are UDP, not TCP. 
-try "netstat -lntu" if you don't believe me.
+6 8210 6044K ACCEPT tcp -- eth2 eth0 0.0.0.0/0 0.0.0.0/0 tcp spt:81 =
+state ESTABLISHED=20
 
->   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 139 -d $INSIDEIP -j 
-> ACCEPT
->   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 445 -d $INSIDEIP -j 
-> ACCEPT
+Here are my iptables rules:
 
-stylistic note:  you could reduce the number of rules you have by using
-the "-m multiport" match:
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+num pkts bytes target prot opt in out source destination=20
+1 4 296 ACCEPT all -- lo * 0.0.0.0/0 0.0.0.0/0=20
+2 0 0 DROPLOG all -- eth0 * 192.168.1.0/24 0.0.0.0/0=20
+3 0 0 DROPLOG all -- eth0 * 192.168.0.0/24 0.0.0.0/0=20
+4 0 0 DROPLOG all -- eth0 * 127.0.0.0/8 0.0.0.0/0=20
+5 136 6478 ACCEPT tcp -- eth1 * 192.168.1.0/24 0.0.0.0/0=20
+6 0 0 ACCEPT tcp -- eth2 * 192.168.0.0/24 0.0.0.0/0=20
+7 0 0 ACCEPT icmp -- eth1 * 192.168.1.0/24 0.0.0.0/0=20
+8 0 0 ACCEPT icmp -- eth2 * 192.168.0.0/24 0.0.0.0/0=20
+9 9 412 ACCEPT tcp -- eth0 * 0.0.0.0/0 0.0.0.0/0 tcp dpt:21 state =
+NEW,ESTABLISHED=20
+10 14072 1436K ACCEPT tcp -- eth0 * 0.0.0.0/0 0.0.0.0/0 tcp dpt:80 state =
+NEW,RELATED,ESTABLISHED=20
+11 54 8922 ACCEPT all -- eth0 * 0.0.0.0/0 xxx.xxx.xxx.xxx state =
+RELATED,ESTABLISHED=20
+12 677 92464 ACCEPT udp -- eth1 * 0.0.0.0/0 0.0.0.0/0=20
+13 515 35571 DROPLOG all -- * * 0.0.0.0/0 0.0.0.0/0=20
 
-  iptables -A INPUT -i $INSIDEINT -p tcp -d $INSIDEIP \
-    -m multiport --dports 21,80,139,445 -j ACCEPT
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+num pkts bytes target prot opt in out source destination=20
+1 0 0 ACCEPT icmp -- eth2 eth1 192.168.0.0/24 192.168.1.0/24=20
+2 0 0 ACCEPT icmp -- eth1 eth2 192.168.1.0/24 192.168.0.0/24=20
+3 7690 2386K ACCEPT all -- eth0 eth1 0.0.0.0/0 0.0.0.0/0 state =
+RELATED,ESTABLISHED=20
+4 7357 424K ACCEPT all -- eth1 eth0 0.0.0.0/0 0.0.0.0/0=20
+5 8260 948K ACCEPT tcp -- eth0 eth2 0.0.0.0/0 0.0.0.0/0 tcp dpt:81 state =
+NEW,ESTABLISHED=20
+6 8210 6044K ACCEPT tcp -- eth2 eth0 0.0.0.0/0 0.0.0.0/0 tcp spt:81 =
+state ESTABLISHED=20
+7 1899 166K ACCEPT tcp -- eth1 eth2 0.0.0.0/0 0.0.0.0/0 tcp dpt:81 state =
+NEW,ESTABLISHED=20
+8 1799 1328K ACCEPT tcp -- eth2 eth1 0.0.0.0/0 0.0.0.0/0 tcp spt:81 =
+state ESTABLISHED=20
+9 103 12036 ACCEPT tcp -- eth2 eth0 0.0.0.0/0 0.0.0.0/0 tcp dpt:80 state =
+NEW,ESTABLISHED=20
+10 95 72114 ACCEPT tcp -- eth0 eth2 0.0.0.0/0 0.0.0.0/0 tcp spt:80 state =
+ESTABLISHED=20
+11 0 0 ACCEPT tcp -- eth2 eth0 0.0.0.0/0 0.0.0.0/0 tcp dpt:21 state =
+NEW,RELATED,ESTABLISHED=20
+12 0 0 ACCEPT tcp -- eth0 eth2 0.0.0.0/0 0.0.0.0/0 tcp spt:21 state =
+RELATED,ESTABLISHED=20
+13 0 0 ACCEPT tcp -- eth0 eth2 0.0.0.0/0 0.0.0.0/0 tcp spt:443 state =
+RELATED,ESTABLISHED=20
+14 0 0 ACCEPT tcp -- eth2 eth0 0.0.0.0/0 0.0.0.0/0 tcp dpt:443 state =
+NEW,RELATED,ESTABLISHED=20
+15 9 553 ACCEPT udp -- eth2 eth0 0.0.0.0/0 0.0.0.0/0 state =
+NEW,ESTABLISHED udp dpt:53=20
+16 9 1317 ACCEPT udp -- eth0 eth2 0.0.0.0/0 0.0.0.0/0 state ESTABLISHED =
+udp spt:53=20
+17 1 76 ACCEPT udp -- eth2 eth0 0.0.0.0/0 0.0.0.0/0 udp dpt:123 state =
+NEW,ESTABLISHED=20
+18 1 76 ACCEPT udp -- eth0 eth2 0.0.0.0/0 0.0.0.0/0 udp spt:123 state =
+ESTABLISHED=20
+19 22 14992 DROPLOG all -- * * 0.0.0.0/0 0.0.0.0/0=20
 
-  iptables -A INPUT -i $INSIDEINT -p udp -d $INSIDEIP \
-    -m multiport --dports 53,137,138 -j ACCEPT
+Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+num pkts bytes target prot opt in out source destination=20
+1 4 296 ACCEPT all -- * lo 0.0.0.0/0 0.0.0.0/0=20
+2 0 0 ACCEPT icmp -- * eth1 0.0.0.0/0 192.168.1.0/24=20
+3 0 0 ACCEPT icmp -- * eth2 0.0.0.0/0 192.168.0.0/24=20
+4 0 0 DROPLOG all -- * eth0 0.0.0.0 192.168.1.0/24=20
+5 0 0 DROPLOG all -- * eth0 0.0.0.0 192.168.0.0/24=20
+6 0 0 DROPLOG all -- * eth0 0.0.0.0 127.0.0.0/8=20
+7 149 15331 ACCEPT all -- * eth1 xxx.xxx.xxx.xxx 192.168.1.0/24=20
+8 0 0 ACCEPT tcp -- * eth2 xxx.xxx.xxx.xxx 192.168.0.0/24 tcp spt:80=20
+9 17763 16M ACCEPT all -- * eth0 xxx.xxx.xxx.xxx 0.0.0.0/0=20
+10 0 0 ACCEPT tcp -- * eth2 192.168.0.1 192.168.0.2 tcp dpt:81=20
+11 0 0 ACCEPT tcp -- * eth1 192.168.1.1 255.255.255.255 tcp spt:67 =
+dpt:68=20
+12 0 0 ACCEPT udp -- * eth1 192.168.1.1 255.255.255.255 udp spt:67 =
+dpt:68=20
+13 0 0 ACCEPT udp -- * eth1 192.168.1.1 192.168.1.0/24 udp spt:67 dpt:68 =
 
->   $RULE -A INPUT -i $INSIDEINT --proto tcp -s $ADMIN --dport 901 -d 
-> $INSIDEIP -j ACCEPT
->   $RULE -A INPUT -i $INSIDEINT --proto tcp -s $ADMIN  --dport 10000 -d 
-> $INSIDEIP -j ACCEPT
-> 
-> # Denying Everything on Local Network
-> 
-> # Adding entry to allow everything originating from Internal Interface out
->    
->   $RULE -A OUTPUT -j ACCEPT
-> 
-> ########## END 
-> ################################################################
+14 0 0 ACCEPT tcp -- * eth1 192.168.1.1 192.168.1.120 tcp dpt:9100=20
+15 0 0 DROPLOG all -- * * !xxx.xxx.xxx.xxx 0.0.0.0/0=20
 
-the reason you can ping by IP is:
-
-  iptables -A OUTPUT -j ACCEPT
-
-allows the ICMP echo-request out, and
-
-  iptables -A INPUT -i $INSIDEINT --proto icmp --icmp-type any -j ACCEPT
-
-allows the ICMP echo-reply back in.
-
-the above does not hold true for a DNS request (UDP 53 out & in)
-
-i might recommend investigating the use of:
-
-  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-as the first rule in your INPUT chain. and the use of:
-
-  iptables -A INPUT -j LOG --log-prefix "FW DROP IN: "
-  iptables -A OUTPUT -j LOG --log-prefix "FW DROP OUT: "
-
-as the last rules in your chains.
-
-all this (and more) is covered in depth in:
-
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
+Chain DROPLOG (9 references)
+num pkts bytes target prot opt in out source destination=20
+1 537 50563 LOG all -- * * 0.0.0.0/0 0.0.0.0/0 LOG flags 0 level 6=20
+2 537 50563 DROP all -- * * 0.0.0.0/0 0.0.0.0/0=20
 
 
+
+
+Thanks a bunch.=20
+
+Mike
