@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: ICQ file transfers
-Date: Fri, 8 Aug 2003 08:19:55 +1000
+Subject: RE: (newbie) SNAT woes
+Date: Fri, 8 Aug 2003 08:53:21 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C078@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C079@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,13 +16,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solucoesip.net>, netfilter ML <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Martin Djernaes <martin@djernaes.dk>, netfilter@lists.netfilter.org
 
-Block everything and allow only port 5190/4000 (don't know if groupware =
-is the same ports or not)..
-Obviously if your allowing everything then expect more problems when =
-people use IRC or Direct Connect to send to others..
+What you've missed is that tcpdump and other utilities work on different =
+layers and if I'm not wrong (hopefully not) it's seeing the packets =
+before the SNAT.
+
+Also, better to use MASQUERADE rather than SNAT for workstation access =
+to the internet.
 
 Thanks,
 ____________________________________________
@@ -32,38 +34,52 @@ georgev@citadelcomputer.com.au
 
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
-
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
 =20
 
 -----Original Message-----
-From: Leonardo Rodrigues Magalh=E3es [mailto:leolistas@solucoesip.net]
-Sent: Friday, August 08, 2003 7:59 AM
-To: netfilter ML
-Subject: ICQ file transfers
+From: Martin Djernaes [mailto:martin@djernaes.dk]
+Sent: Friday, August 08, 2003 12:15 AM
+To: netfilter@lists.netfilter.org
+Subject: (newbie) SNAT woes
 
 
+Hi,
 
-    Hello Guys,
+I realise that you have seen mails like mine lots of time before, but I
+have spend hours reading howtos and googling for some hint as to why my
+very simple setup doesn't work.
 
-    I have two LANs interconnected with FreeSWAN IPSec tunnel. It's =
-working
-fine. Gateway in both sides is a linux box running iptables. We're =
-running
-ICQ Groupware Server and ICQ Groupware clients for instant messages.
+I have a simple box which just is suppose to do normal NATing of =
+outgoing
+traffic so it uses the public IP address.
 
-    I need, somehow, block ICQ File transfers, but I cannot block ICQ
-messages. ICQ Client does not allow this kind of config. I was thinking =
-on
-some string match to block the initial ICQ File transfer request. =
-Question
-is: do anybody here has the string I'm looking for ? Has anyone =
-experienced
-a similar problem ?
+I thought that I had it all setup right (that was at least what I
+understood from everything I read), so here is my nat table:
 
-    Sincerily,
-    Leonardo Rodrigues
+# iptables -t nat -v -L
+Chain PREROUTING (policy ACCEPT 1774 packets, 193K bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination
+
+Chain POSTROUTING (policy ACCEPT 1443 packets, 77156 bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination
+    0     0 SNAT       all  --  any    eth1    anywhere           =20
+anywhere           to:11.22.33.44
+
+Chain OUTPUT (policy ACCEPT 317 packets, 23092 bytes)
+ pkts bytes target     prot opt in     out     source             =20
+destination
+
+Now if I ping an external IP address from another box on the "inside" =
+and
+run "tcpdump -ni eth1" on the gateway box, I will see the source address
+being unchanged! (and I don't get an icmp echo reply back).
+
+So what did I miss? Isn't it just a oneliner to turn SNAT on?
+
+Martin
+
 
 
 
