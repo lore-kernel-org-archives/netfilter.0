@@ -1,8 +1,8 @@
 From: "it clown" <suse@mailbox.co.za>
-Subject: iptables + squid
-Date: Sun, 26 Sep 2004 07:35:35 +0200
+Subject: iptables+squid
+Date: Sun, 26 Sep 2004 12:40:06 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <web-453410391@mail01.infosat.net>
+Message-ID: <web-453549346@mail01.infosat.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
