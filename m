@@ -1,13 +1,14 @@
-From: Ludo Stellingwerff <ludo@protactive.nl>
-Subject: RE: mangle, filter & FORWARD
-Date: Wed, 02 Jun 2004 08:34:06 +0200
+From: Rio Martin <rio@martin.mu>
+Subject: Re: Blocking Streaming Media (Was: Re: (no subject)..)
+Date: Wed, 2 Jun 2004 14:32:36 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1086158045.4482.19.camel@laptop.stwerff.xs4all.nl>
-References: <20040602051716.80453.qmail@web41705.mail.yahoo.com>
+Message-ID: <200406021432.36436.rio@martin.mu>
+References: <20040601053750.50670.qmail@web61008.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040602051716.80453.qmail@web41705.mail.yahoo.com>
+In-Reply-To: <20040601053750.50670.qmail@web61008.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +19,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Kevin D. White" <web_crawlz@yahoo.com>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-<<snip>>
-> > 
-> > Nope (thankfully)
-> I know now that there are two FORWARD chains,
-> mangle.FORWARD and filter.FORWARD.  They have the same
-> name and are the same chain structure, they will
-> contain completely different rules.
+On Tuesday 01 June 2004 12:37, SBlaze wrote:
+> --- Rio Martin <rio@martin.mu> wrote:
+> > On Monday 31 May 2004 18:18, Ivan wrote:
+> STRING matching is at best a primative method of any kind of filtration. It
+> has been demonstrated and documented many times here that it's simply not
+> an efficent option. However I do think I might can help with this. First
+> you need to identify what and where the radio stations are coming from. If
+> they are from the new Yahoo LAUNCHcast...stoping them should be fairly
+> easy...with some work.
+> First this is good info to know...
+> http://search1.cc.dcn.yahoo.com/cct_search.php?ui_mode=answer&prior_transac
+>tion_id=248668163&action_code=5&answer_id=14755094#__highlight
+> It contains info for firewalls and LAUNCHcast.
+> Assuming you are NATing your internal machines.... set up rules to block
+> certain hosts at yahoo.
 
-It's quite confusing for people used to working with ipchains:)
-The terminology changed a bit:
+I guess, blocking ports or defining ports to be allowed to users is not 
+enough. Users are clever and smart from day to day. Once the originial and 
+standard ports blocked by administrator, they use port forwarding sometimes 
+to some kind of hosting server or dedicated server, and they still able to do 
+music streaming.
 
-Chains are now called tables and you have 3 root-tables: mangle, nat and
-filter. To select them you would use the '-t' option of iptables,
-defaulting to 'filter'.
+If you checkout the greatest site, let say www.shoutcast.com, u can see lots 
+of stations use port 80, it means connecting to radio stations would be the 
+same as clients surfing to the web. 
 
-Then you have 5 'hooks': the places in the network subsystem where these
-tables can be used:
-PRE-ROUTING, INPUT, FORWARD, OUTPUT, POST-ROUTING
+I'm still thinking patch-o-matic STRING would be the best solustion for now ..
 
-Differents hooks accept different tables: 
-the mangle table at all-5 hooks.
-the nat table at OUTPUT, PRE- and POST-ROUTING.
-and filter table at INPUT, FORWARD and OUTPUT.
-
-> >Not all tables
-> > are run on each chain. Eg. FORWARD table only has
-> > mangle/filter.
-> 
-> Ok, you must mean "not all the chains are used in each
-> table", right?  "The FORWARD chains only appear in the
-> mangle and filter tables", yes?
->  
-
-Therefore it was the correct terminology: not all tables are tun on each
-chain (hook).
-In ipchains it was the other way around.
-
-> > 
-> > For a really good refreence on iptables in general,
-> > check out
-> > http://iptables-tutorial.frozentux.net/
-> 
-
-Did you check the http://lartc.org/howto/ ?
-It very clear and handson.
-
-Greetings,
-
-Ludo Stellingwerff.
-
-
-
+Regards,
+Rio Martin.
 
