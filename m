@@ -1,12 +1,14 @@
-From: Rakotomandimby Mihamina <mrakotom@free.fr>
-Subject: sendmail : dport 25 , sport 25 or both?
-Date: Thu, 22 Jan 2004 08:50:27 +0100
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: could someone translate these rules inot plain english
+Date: Thu, 22 Jan 2004 10:04:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401220850.27734.mrakotom@free.fr>
+Message-ID: <20040122100448.1845bf6b.arnt@c2i.net>
+References: <33682.66.65.52.125.1074751856.squirrel@sojourn.dyndns.org>
+	<400F6EF4.2060608@lintelsys.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <400F6EF4.2060608@lintelsys.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,17 +21,32 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-HEllo ,
-I'm running sendamil on my box .
-I'm dropping all outgoing packets ( policy ) .
-I want the sendmail packets not to be dropped , have i got to allow outgoing 
-"--sport 25" packets , "--dport 25" or just "--ports 25" 
+On Thu, 22 Jan 2004 17:34:28 +1100, 
+Alex Satrapa <alex@lintelsys.com.au> wrote in message 
+<400F6EF4.2060608@lintelsys.com.au>:
 
-thanks in advance for your help .
+>  Technical wrote:
+>  > -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j
+>  > ACCEPT
+> 
+>  For this chain (presumably packets inbound to the network), accept
+>  any packets that are part of established TCP connections (ie: a SYN
+>  packet for the connection has gone out from the network), or related
+>  to UDP packets that have gone out through the firewall.
+> 
+> > -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+> 
+> Otherwise, reject the packet by sending back an ICMP message telling
+> the remote host that communication with its intended target is 
+> administratively prohibited.
+
+.."Otherwise, " is not part of this last rule.  "Otherwise, " could
+understood as a context where these 2 rules appear as shown. 
 
 -- 
-Rakotomandimby Mihamina Andrianifaharana
-Tel : +33 2 38 76 43 65
-http://stko.dyndns.info/site_principal/Members/mihamina
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
