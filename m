@@ -1,13 +1,11 @@
-From: "Benny Butler" <benny.butler@nexusitg.com>
-Subject: RE: Multiple source question
-Date: Wed, 19 Jun 2002 09:01:53 -0500
+From: "Schrader, Jochen" <joSchrader@TundO.de>
+Subject: AW: Weird behavior on simple -j MASQUERADE
+Date: Wed, 19 Jun 2002 16:02:26 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000e01c21799$ddca6820$0205a8c0@maxima>
-References: <200206191342.g5JDg1U30168@vulcan.rissington.net>
+Message-ID: <3D5DCAD22EE2D41194B800D0B7A9B841289D6D@EXCHANGE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206191342.g5JDg1U30168@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,86 +15,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: 'Valentin LAB' <vaab@wanadoo.fr>, netfilter@lists.samba.org
 
-Ok, lemme explain the setup a bit.
+Hallo!
 
-This machine sits between a doctors office's network and the hospital's
-network. Eth1 (192.168.2.2) is static on the doctor's side, and eth0
-(10.46.1.254 I believe) is on the hospital's side.  We've told the local
-router that anything trying to get to the hospital should go through the
-linux box, and not use it's default gw.  We've also added a route to the
-linux box so it can get to 10.46.210.5.
+It could be, that you don't really have a netfilter problem. Some DSL
+Providers tell your PPP the wrong MTU. This leads to the same problems =
+you
+described. An upgrade of your pppd should solve the problems. Just =
+check the
+version of your pppd - should be 2.4.1-170 or higher.
 
-Now, the rules.  The hospital will only let the users access this web
-based X-ray viewing system across the network if they can control how
-many IP's come from each office because they bought so many licenses
-from GE and only allow so many connects from each office.  That's where
-my box comes in.  By default the firewall denies access to each doctors
-office computer.  To get access they go to the webpage on 192.168.2.2,
-this php looks at their IP address and compares it to a list of IP's in
-a mysql dbase.  If they are in it, it just lets them through.  If they
-aren't in it it looks to see how many spaces are left.  If there's a
-space left it ads them to the database, then runs the rule below to
-allow their IP address to get through.  Like I said, it only allows the
-first person to get through, no one else (btw, if anyone wants the php
-I'll share it, it's nothing impressive)
+OK. This is only an asumption, that the providers in France have the =
+same
+problems as in Germany.
 
-That should answer #1 and #3
+Bye,
+Jochen Schrader
+
+-----Urspr=FCngliche Nachricht-----
+Von: Valentin LAB [mailto:vaab@wanadoo.fr]=20
+Gesendet: Freitag, 24. Mai 2002 09:02
+An: netfilter@lists.samba.org
+Betreff: Weird behavior on simple -j MASQUERADE
 
 
+Hi
 
-#2 sounds great.  I missed that before because I copied a rule off of my
-home firewall which is a dhcp slave to comcast.  Do you think that will
-fix the problem or just make the system run better?
-
-
-
-
-
-
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org] On Behalf Of Antony Stone
-Sent: Wednesday, June 19, 2002 8:42 AM
-To: netfilter@lists.samba.org
-Subject: Re: Multiple source question
+    I made a complex firewall script that had very strange problems. I=20
+took plenty of time trying to find out what was wrong until I found =
+that=20
+even this simple script (that is said to be working in NAT-HOWTO on=20
+netfilter website) had the same problems :
 
 
-On Wednesday 19 June 2002 2:31 pm, Benny Butler wrote:
+# Begin script
 
-> Ok, after much hacking together the rule below I finally get the
-machine
-> at 192.168.2.70 to access 10.46.210.5.  Great, but if I run the same
-> rule on any more internal IP addresses, still only 2.70 works.
->
-> sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -s 192.168.2.70 -d /
-> 10.46.210.5 -p tcp --dport 80 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
 
-1. Why do you need to use Source NAT at all in order to access the
-machine on 
-10.46.210.5 ?   What is there in the routing tables which prevents 
-192.168.2.70 from accessing 10.46.210.5 and the replies going back again
+# Turn on IP forwarding
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-without any NAT involved ?
+# End script
 
-2. I think you should be using -j SNAT --to a.b.c.d instead of -j
-MASQUERADE.
 
-You must surely have a fixed address on eth0 (ie it's not DHCP)
-therefore 
-SNAT is the way to do it - it's much clearer what the rule is doing, and
-it's 
-(marginally) more efficient in operation.
+    These are the strange behavior :
 
-3. Maybe I've missed something earlier that you've posted (?) but please
-can 
-you explain your network setup what you're trying to do / what doesn't
-work ?
+- Can access some http website (www.lemonde.fr www.google.com ...)
+- Can't access some http website (www.yahoo.fr www.meteo-france.fr ..)
+- Some apps that were working under a firewall under ipchains (the=20
+roaring penguin ADSL firewall script) do not work any more.
 
- 
+    I tried a simple "telnet www.yahoo.fr 80" to see what was wrong,=20
+connection was accepted, I typed "GET" and i received the HTML code to=20
+the ending "</html>", but it didn't close the connection as they did =
+for=20
+the working website.
+    A friend told me that it could be the website with cookies that are =
 
-Antony.
+involved in the problem.
+
+    My config :
+
+Firewall :
+
+    Processor : 486 DX 33 (is it enough ?)
+    Connection type : ADSL (France telecom, modem ECI) on ppp0
+    Kernel : Linux 2.4.18 + patch-o-matic 1.2.6a
+    IPtable ver : 1.2.6a
+    LAN device : NE2000 (10BASET) compatible device on eth0
+
+LAN computer :
+
+    Linux or win2000, with bigger config than Firewall connected on 100 =
+
+Mbits network device.
+    DNS are those of the provider or an internal DNS. (that doesn't=20
+change anything to my problems)
+
+I would appreciate a quick help. I'm quite new to firewall and =
+iptables, so
+even if you haven't the solution, i'll be glad to learn more. Do not=20
+hesitate to answers if you have something in mind.
+
+                         Valentin LAB
+                         mail : vaab at wanadoo.fr
+
+
 
 
