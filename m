@@ -1,16 +1,14 @@
-From: alucard@kanux.com
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: forwarding
-Date: Tue, 18 May 2004 11:12:56 -0400 (VET)
+Date: Tue, 18 May 2004 16:09:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <34103.200.44.170.105.1084893176.squirrel@200.44.170.105>
-References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105> 
-    <1084891180.6410.18.camel@localhost> 
-    <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
-    <1084892325.6417.40.camel@localhost>
+Message-ID: <200405181609.59945.Antony@Soft-Solutions.co.uk>
+References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105> <1084891180.6410.18.camel@localhost> <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1084892325.6417.40.camel@localhost>
+In-Reply-To: <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,29 +21,50 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Tuesday 18 May 2004 3:57 pm, alucard@kanux.com wrote:
 
-> Although it probably did, are you sure nmap scanned port 8080? How about
-> nmap -sT -p 8080 10.73.219.156
+> Hi there again...
 >
-> I would then trace both the wire and the iptables rules to find out
-> where it is breaking - John
+> Here's my changed rule:
+>
+> -------
+> echo "Borrando posibles reglas anteriores..."
+> iptables -F
+> iptables -X
+>
+> echo "Habilitando politicas de negacion total de paquetes"
+>
+> iptables -P FORWARD DROP
+> iptables -P INPUT DROP
+>
+> #para el forward
+> echo 0 > /proc/sys/net/ipv4/ip_forward
+> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
+> iptables -t nat -A PREROUTING -d 10.73.219.156 -p 6 --dport 8080 \
+>     -j DNAT --to-destination 192.168.0.2:80
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> -------
+>
+> and after I executed this, here's my nmap output
+>
+> -------
+> root@mail:~# nmap 10.73.219.156
+>
+> (The 1652 ports scanned but not shown below are in state: filtered)
+> PORT     STATE SERVICE
+> 22/tcp   open  ssh
+> 25/tcp   open  smtp
+> 80/tcp   open  http
+> 143/tcp  open  imap
+> 3306/tcp open  mysql
+> --------
 
-Yes, it filters now but now it seems that the problem is in the 2nd server
-because I try to telnet to server 1's 8080 port and I get no response. Is
-it any missconfiguration on the router? take a look at this:
-----
-root@mail:~# nmap -sT -p 8080 10.73.219.156
+Where are you running nmap from?
 
-Starting nmap 3.48 ( http://www.insecure.org/nmap/ ) at 2004-05-18 11:06 VET
-Interesting ports on mail.aeropostal.com.ve (10.73.219.156):
-PORT     STATE    SERVICE
-8080/tcp filtered http-proxy
-----
+I wonder if the problem is thr routes on machine2 (the genuione web server) 
+not sending the reply packets back via machine1 (the firewall) correctly?
 
-the webserver in server 2 is working perfectly but im not able to reach it
-from server one, look at this in server 2, maybe im doing something wrong
-
-[root@linserv root]# route
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 192.168.0.0     *               255.255.255.0   U     0      0        0 eth1
@@ -54,11 +73,19 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 127.0.0.0       *               255.0.0.0       U     0      0        0 lo
 default         192.168.0.1     0.0.0.0         UG    0      0        0 eth1
 
+If the requests come in on eth1 but the replies go out on eth0 that would be a 
+problem.
 
-Thanx a lot for this great help
-Juan
+Regards,
 
+Antony.
 
+-- 
+"The future is already here.   It's just not evenly distributed yet."
 
+ - William Gibson
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
