@@ -1,9 +1,12 @@
-From: Wolfgang Meyerle <procrash@neusob.de>
-Subject: Qos Problem
-Date: Sun, 13 Feb 2005 20:55:25 +0100
-Message-ID: <420FB0AD.9050008@neusob.de>
+From: Simon Turvey <simon@catandsimon.com>
+Subject: Re: Question about POM
+Date: Sun, 13 Feb 2005 20:14:11 +0000
+Message-ID: <cuocah$8mk$1@sea.gmane.org>
+References: <cuo6t4$q0h$1@sea.gmane.org>
+	<1108322722.17214.1.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <1108322722.17214.1.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +20,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi, has anybody of you ever tried Qos with iptables?
-===============================
+Jose Maria Lopez Hernandez wrote:
 
-My Problem is that when I set up htb to classify my packets every 
-traffic should go to one of three classes.
+>>Are the POM patches only supposed to apply to a particular 2.4.x or 
+>>2.6.x?  The reason I ask is that the ipsec* patches don't seem to apply 
+>>cleanly to my 2.6.10 tree.
+> 
+> 
+> They are supposed to be for both 2.4 and 2.6, but in my own
+> experience it works better on newer kernels. Now that Netfilter
+> doesn't gives you an official pom you can check their snapshots
+> from the CVS. The last one should be prepared for 2.6.10.
 
--The first class is the priorisized one (thought for myself to put in 
-http packets)
--the second one is for peer2peer traffic which should be unpriorisized.
--And third is for the rest of the packets.
+Curious.  It was patch-o-matic-ng-20050212.tar.bz2 that I grabbed from 
+the site.  There seems to have been a minor reorganisation of some of 
+the files in at least net/ipv4 that prevent the patches applying 
+cleanly.  The complete absence of any changelogs in POM doesn't help much :(
 
-Now classifying works very good, but when I want to surf the www the htb 
-qdisc doesn't seem to give my http packets fast sending.
-My Browser reacts ver slow and surfing seems quite impossible.
-I thought the problem could be in the pfifo fast queues that the every 
-leaf is assigned by htb.
-For this I introduced and bfifo with limit for every leaf.
-I gave it simply a limit of 1500bytes no exactly knowing what I'm doing.
-Now I can browse perfectly but the throughput of my peer2peer program is 
-slow as hell.
-
-To differentiate the Peer2Peer Traffic I uses ipp2p filter with iptables.
-
-What's wrong in my thoughts? Can anybody of you tell me?
-
-Cheers
-Wolfgang Meyerle
+Simon
 
 
