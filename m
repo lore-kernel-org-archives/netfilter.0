@@ -1,20 +1,15 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: chance to impress the suits
-Date: Fri, 28 Feb 2003 20:24:35 +0100
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Hummingbird eXceed and SNAT
+Date: Fri, 28 Feb 2003 15:44:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030228202435.62be6828.arnt@c2i.net>
-References: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
-	<200302270201.04762.netfilter@newkirk.us>
-	<20030227134810.7728c8d5.arnt@c2i.net>
-	<Pine.LNX.4.50.0302270811550.19694-100000@alfred.home.cyborgworkshop.com>
-	<20030228014041.7394bcfa.arnt@c2i.net>
-	<Pine.LNX.4.50.0302271518100.19962-100000@alfred.home.cyborgworkshop.com>
-	<20030228173420.1a1bdc11.arnt@c2i.net>
-	<Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.com>
+Message-ID: <200302281544.11398.Alistair@nerdnet.ca>
+References: <200302281638.h1SGcG029063@ithaca.mcs.le.ac.uk>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.com>
+In-Reply-To: <200302281638.h1SGcG029063@ithaca.mcs.le.ac.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -25,32 +20,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jason <baker@cyborgworkshop.com>
-Cc: netfilter@lists.netfilter.org
+To: "J. A. Landamore" <jal@mcs.le.ac.uk>, netfilter@lists.netfilter.org
 
-On Fri, 28 Feb 2003 06:53:45 -0600 (CST), 
-Jason <baker@cyborgworkshop.com> wrote in message 
-<Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.co
-m>:
 
-> well remember, them getting bigger boxes are to handle the number of
-> connections that I am giving to them.  Its not a matter of TCP slowing
-> down, its us waiting on their application to finish and their app just
-> handles waits very poorly.
+	Greetings:
+ 
+	I take it that you're trying to connect direct from windows system to unix 
+system through a firewall with exceed??
 
-...effectively dos attacking itself, and with authority?  How is 
-it controlled?  There must have been a control philosophy somewhere 
-between the design stage and the upgrade of this application?   
+	Personally What I've always done is to use SSH's X forwarding capacity and 
+running exceed in local mode -- or sometimes running the WM and Desktop off a 
+local X box.  This works transparently so long as ssh is running.  I use 
+Simon Tatham's excellent windows putty client for SSH on windows.
 
-..an idea: limit the number of connections to a level the authorized 
-dos attack app _can_ handle, and to reject or reset rather than 
-dropping connections?
+	But you would have to open ports 6000-6010 for TCP ... to start, and manage 
+that set of connections, as to source and destination.
+
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
+
+On February 28, 2003 11:38 am, J. A. Landamore wrote:
+> Has anyone succeeded in getting an eXceed session through iptables running
+> SNAT? If so guidance on how you did it would be much appreciated.
+>
+> TIA
+>
+> John Landamore
 
 -- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
-
 
