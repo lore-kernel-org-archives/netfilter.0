@@ -1,13 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: destinations interface must be eth0?
-Date: Tue, 16 Sep 2003 19:07:10 +0200
+From: Jim Redman <jredman@ergotech.com>
+Subject: Re: UDP Redirects
+Date: Tue, 16 Sep 2003 11:20:41 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063732030.784.35.camel@elendil.intranet.cartel-securite.net>
-References: <1063637259.2318.3.camel@dod-secure.e-masi.com>
+Message-ID: <20030916172041.GE1321@charizard>
+References: <20030916000714.GC3213@charizard> <20030916010550.GC1272@charizard.ergotech-usa.com> <20030916142432.GD16559@cannon.eng.us.uu.net> <20030916154220.GC8490@charizard.ergotech-usa.com> <20030916155245.GF16559@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063637259.2318.3.camel@dod-secure.e-masi.com>
+Content-Disposition: inline
+In-Reply-To: <20030916155245.GF16559@cannon.eng.us.uu.net>; from ramin@cannon.eng.us.uu.net on Tue, Sep 16, 2003 at 09:52:45 -0600
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +18,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: jburnett@e-masi.com
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: netfilter@lists.netfilter.org
 
-Le lun 15/09/2003 =E0 16:47, Jim Burnett a =E9crit :
-> I have found that my destination IP in my rules MUST be bound on eth0
-> what is this? I thought I could use any working IP on my internal
-> network as the --to-destination IP...??
-> Example:
-> internal machine:
-> eth0:192.168.1.55
-> eth1:192.168.1.56
 
-There's a wierd thing in your setup. Can you show us your routing table,
-as I don't see how you could assign 192.168.1.55 and 192.168.1.56 in two
-different subnets.
 
-Btw, I tried on my box that has two interfaces the same thing, and it
-works :
 
-cbr@elendil:~$ ifconfig
-eth0      Lien encap:Ethernet  HWaddr 00:0A:41:EE:A5:50
-          inet adr:192.168.100.10  Bcast:192.168.100.127
-		Masque:255.255.255.128
-[...]
-eth1      Lien encap:Ethernet  HWaddr 00:01:02:50:0E:0E
-          inet adr:192.168.100.130  Bcast:192.168.100.255=20
-Masque:255.255.255.128
-[...]
-cbr@elendil:~$ sudo iptables -v -t nat -A PREROUTING -i eth0 -p tcp
---dport 80 -j DNAT --to 192.168.100.15:80
-DNAT  tcp opt -- in eth0 out *  0.0.0.0/0  -> 0.0.0.0/0  tcp dpt:80
-to:192.168.100.15:80
-cbr@elendil:~$ sudo iptables -v -t nat -A PREROUTING -i eth0 -p tcp
---dport 80 -j DNAT --to 192.168.100.155:80
-DNAT  tcp opt -- in eth0 out *  0.0.0.0/0  -> 0.0.0.0/0  tcp dpt:80
-to:192.168.100.155:80
-cbr@elendil:~$ sudo iptables -t nat -L PREROUTING -v
-Chain PREROUTING (policy ACCEPT 140 packets, 23585 bytes)
- pkts bytes target     prot opt in     out     source             =20
-destination                                                              =
-                  =20
-    0     0 DNAT       tcp  --  eth0   any     anywhere           =20
-anywhere        tcp dpt:www to:192.168.100.15:80
-    0     0 DNAT       tcp  --  eth0   any     anywhere           =20
-anywhere        tcp dpt:www to:192.168.100.155:80
 
-And :
+On 2003.09.16 09:52, Ramin Dousti wrote:
+> On Tue, Sep 16, 2003 at 09:42:20AM -0600, Jim Redman wrote:
+> 
+> > Ramin,
+> >
+> > On 2003.09.16 08:24, Ramin Dousti wrote:
+> > >Do the packets belong to one UDP session? If not, this number of
+> > >packets
+> > >might overflow your connection-tracking table.
+> >
+> > The packets are all individual entities.  Any solution if this is
+> the
+> > problem?  Any way to test?  (There are no indications in the syslog
+> > that I've noticed).
+> 
+> I'm sure there are better ways of doing this but a simple
+> 
+> cat /proc/net/ip_conntrack | wc
 
-cbr@elendil:~$ iptables --version
-iptables v1.2.8
-cbr@elendil:~$ uname -r
-2.4.22
+Seems I must have told you an untruth since this is all I have in the 
+file relating to the particular connection.  192.168.2.189 is the 
+device sending data to me and 192.168.2.97 is me.  I suspect the first 
+line is a connection from my app back to the device, since it only 
+appears when the app is running.
 
-Patch-o-matic pending and submitted sections are applied.
+udp      17 179 src=192.168.2.97 dst=192.168.2.189 sport=32815 
+dport=995 src=192.168.2.189 dst=192.168.2.97 sport=995 dport=32815 
+[ASSURED] use=1
+udp      17 179 src=192.168.2.189 dst=192.168.2.97 sport=995 dport=995 
+src=192.168.2.97 dst=192.168.2.189 sport=1995 dport=995 [ASSURED] use=1
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+Today, however, everything is working (at least at the moment)!  It's 
+very strange.  Nothing has changed.  I took the notebook home and 
+brought it back.  Same software running here, same device still sending 
+the values, etc. etc.   
+I still don't know that it's a netfilter problem.  I see the packet 
+with tcpdump and don't receive them in the application.  NMAP says the 
+port is open and the code is just open connection & receive (in Java).
+
+Ugh.  Well, better get on with the debugging while I'm receiving data.
+
+Ji
+
+
+-- 
+
+Jim Redman
+(505) 662 5156 x85
+http://www.ergotech.com
 
