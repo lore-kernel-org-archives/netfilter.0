@@ -1,13 +1,13 @@
-From: PayalR <payal@hotpop.com>
-Subject: Re: are these enough now?
-Date: Fri, 4 Oct 2002 16:55:41 +0530
+From: "HareRam" <hareram@sol.net.in>
+Subject: ilimit problem
+Date: Fri, 4 Oct 2002 18:36:39 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5707.72010037235$1033730999@news.gmane.org>
-References: <200210041218.26636@.> <200210040947.g949lgL10535@vulcan.rissington.net>
+Message-ID: <021501c26ba6$e113a760$7cfcc5cb@humanpc>
+References: <200210041218.26636@.> <200210040947.g949lgL10535@vulcan.rissington.net> <200210041648.00792@.>
+Reply-To: "HareRam" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210040947.g949lgL10535@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,38 +20,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-Thanks a lot for the mails.
-> 161 - snmp - are you managing this system from elsewhere, or is this
-> machine the snmp monitor ?   UDP 161 only needs to be inbound if this
-> machine is being monitored from elsewhere
-Well, I don't know anyting about SNMP thing. But the guys at the server f=
-arm=20
-suggested I make some changes as told by them in my snmpd.conf, so that t=
-hey=20
-say I there will be able to monitor my machine. I guess so I am just a cl=
-ient=20
-SNMP. So, which ports to keep open?
+Hi all
 
-> > Also, nmap shows that 2002/udp globe is open. Shall I close it?
-> machine already has the Slapper worm on it, since that opens UDP port 2=
-002
-well, my machine had a slapper worm. I removed the .bugtraq file from /tm=
-p.=20
-Now still the port is open. This is very important to me. How do I close =
-the=20
-port???? nmap report says,
-2002/udp   open        globe
-How do I know where and what is globe? How do I shut it?
+iam trying to use iplimit in iptables, iam getting the below problem
+can any one help what is the caused problem
 
-> I would recommend setting your OUTPUT chain to ESTABLISHED,RELATED and =
-then
-do you mean similar to INPUT rule i.e using -m and all?
+[root@cache root]# iptables -A INPUT -p tcp --syn --dport http -m
+iplimit --iplimit-above 4 -j REJECT
+iptables: No chain/target/match by that name
 
-> add any rules for traffic which is supposed to originate on your server
-> (such as DNS queries).
 
-Thanks a lot and eagerly waiting for the mails.
-Bye and thanks.
--Payal
+thanks in advanced
+
+hare
+
 
