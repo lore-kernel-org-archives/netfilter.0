@@ -1,9 +1,8 @@
-From: Stefan Urbat <stefan.urbat@apastron.lb.shuttle.de>
-Subject: ecn_tcp_remove enabling problem
-Date: Sun, 1 Dec 2002 16:58:44 +0100 (CET)
+From: David Larson <digitaldavel@yahoo.com>
+Subject: multi-homed responses to DNAT'd packets
+Date: Sat, 30 Nov 2002 22:00:11 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0212011641050.2222-100000@apastron.lb.shuttle.de>
-Reply-To: Stefan Urbat <stefan.urbat@apastron.lb.shuttle.de>
+Message-ID: <20021201060011.86334.qmail@web40302.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -15,26 +14,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-At now I'm clueless, despite viewing the source of iptables v1.27a. When I
-invoke
+Anyone using DNAT (port-forwarding) on a multi-homed
+linux box with netfilter?  I am having trouble getting
+it to work.
 
-iptables -t mangle -A ecn_defunct -p tcp -d 216.104.161.48/29 -j ECN -m
-ecn --ecn-tcp-remove
+My system is multi-homed (dsl and cable) and I have a
+box with route2 configured to support inbound
+connections to SMTP and HTTP services.  It is all
+working fine with response packets going out the
+correct interface.
 
-on the existing, empty chain ecn_defunct, an error message emerges:
+I am trying to move these services off of the
+firewall/router box.  I tried to configure DNAT to
+"port-forward" these services to a new box, and the
+DNAT starts out working fine, from the original
+request (from outside), NAT'd properly to the new
+inside box, the response goes back through the
+firewall/router box, and the response gets NAT'd
+properly, BUT ... the packet goes out the wrong
+interface!  It goes out the interface of the "default"
+gateway.
 
-iptables v1.2.7a: ECN match: some option required
+It appears that the iproute2 configuration is being
+ignored.  I am using source routing to get packets
+steered out the correct interface.
 
-Seems that any parameter is lacking, judging after the ipt_ECN.c source,
-but how to resolve this issue?
+Any help much appreciated.
+Dave Larson
 
-The modules ipt_ecn and ipt_ECN are loaded due to lsmod, by the way.
-Kernel is 2.4.20 vanilla with xfs patch only applied.
 
-Registered Linux-User #169380 on http://counter.li.org/
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
