@@ -1,8 +1,8 @@
-From: "Steele, David S." <daves@xetron.com>
+From: "per jarevez" <perj8@hotmail.com>
 Subject: RE: block downloads on file type
-Date: Wed, 23 Apr 2003 18:12:14 -0400
+Date: Wed, 23 Apr 2003 23:50:25 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <69B1CAEF4FC66F4D9A07B903E0265D3F01A623@s3cin>
+Message-ID: <Sea1-F3BRArVc4Iu1B600000750@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,33 +14,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
-Cc: 'NetSnake' <netsnake@963.net>
+To: daves@xetron.com, netfilter@lists.samba.org
+Cc: netsnake@963.net
 
+Hi,
 
-What if I want to prioritize/shape traffic based on file type? Is there some
-way to mark subsequent packets in the same TCP connection?
+You can use Squid Cache + [content filtering ] + Apache mod_proxy + 
+RewriteMap in mod_rewrite + your own script to process requests passed to it 
+from RewriteMap + Netfilter + IPRoute2 Traffic Control (TC tool).
 
------Original Message-----
-From: NetSnake [mailto:netsnake@963.net]
-Sent: Wednesday, April 23, 2003 4:26 AM
-To: netfilter@lists.samba.org
-Subject: Re: block downloads on file type
+Or just [content filtering] + Apache mod_cache + mod_proxy + mod_rewrite + 
+Netfilter + TC Tool.
 
+You can also use Snort + [ snortSnaf, etc. ] + Netfilter + TC tool.
 
-May be you can use iptables string match patch, or use Squid + iptables.
+Or you can use hogwash + TC tool.
 
->hi guys,
-> is there anyway in which we can block a certain file
->from being downloaded ? i mean i need to block mp3
->downloads, is there anyway the linux box can
->understand the file type while downloading it ... 
->
->please put some light on it even if u have the
->slightest idea, it might lead me to some result
->
->thanks a lot
->hemant
+I don't know if you can do it just with Squid + IPTables as he mentioned, 
+but I'm sure you eventually gonna want to use a traffic shaper (TC tool) 
+somewhere.
+
+Just to tell ya that if you are doing it to slow down those downloads, might 
+as well post up a user policy that they are responsible for their own 
+bandwidth usage and just do IPRoute2 traffic shaper and a suitable Qdisc to 
+fair share available bandwidth among people on your network.  A lot less 
+hassle and less bugs / security problems.
+
+Good luck.
+
+_________________________________________________________________
+Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
+
 
