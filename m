@@ -1,10 +1,12 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Need help have some questions...
-Date: Fri, 15 Aug 2003 02:29:58 -0700 (PDT)
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: Exposing an internal server through an iptables firewall
+Date: Fri, 15 Aug 2003 10:37:36 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030815092958.19403.qmail@web40208.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.44.0308151025340.31438-100000@localhost>
+References: <DB7AEF327F702A4FA4D6E130C51BE756245A48@mainserver.amfeslan.local>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <DB7AEF327F702A4FA4D6E130C51BE756245A48@mainserver.amfeslan.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,33 +16,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "Daniel L. Miller" <dmiller@amfes.com>
+Cc: Netfilter Users <netfilter@lists.netfilter.org>
 
-I've been toying around with the idea of redirecting unwanted traffic to the
-discard surface. I'm having trouble understanding some concepts though. Could
-anyone please explain this in more detail or perhaps suggest a way to
-accomplish this.
+Hi Daniel,
 
-On the filter tables using IMPUT there is no way to change or alter the
-destination of packets and cause them to be sent to another port?
+> Postfix is running on the gateway server - works fine.
+> 
+> What do I need to set on the firewall/gateway to make my Postfix server
+> available to the internet?  I've tried:
+> 
+> iptables -t nat -A PREROUTING -p tcp --dport 25 -i eth1 -j DNAT --to
+> 192.168.69.2:25
 
-Using the POSTROUTING chain in the nat table is impoosible to effectively
-filter traffic via specific matches due to the fact that POSTROUTED packets are
-sort of "lumped together" for lack of a better way to explain it?
+This looks wrong to me:
 
-If anyone can answer these I would MOST appreciate it as it is really causing
-me alot of confusion.
+[Firewall]
+> Chain PREROUTING (policy ACCEPT 68 packets, 4258 bytes)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>     2   120 DNAT       tcp  --  eth1   *       0.0.0.0/0
+> 67.106.235.126     tcp dpt:25 to:192.168.0.2:25
 
-Thanks
-s-blaze
+Isn't your Postfix server on 192.168.69.2 port 25? If so, then change the 
+PREROUTING rule to DNAT to that address instead. If not, then change this 
+one:
 
-=====
-"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
+[Firewall]
+> Chain FORWARD (policy DROP 0 packets, 0 bytes)
+>  pkts bytes target     prot opt in     out     source
+> destination
+[...]
+>     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+> 192.168.69.2       tcp dpt:25
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+Otherwise, the rules look OK to me.
+
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+
 
