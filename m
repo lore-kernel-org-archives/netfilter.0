@@ -1,14 +1,10 @@
-From: "Storm D. J. Petersen" <stormp@telus.net>
-Subject: RE: linux-2.4.20 iptables-1.2.7a  DHCP on EXTIF
-Date: Tue, 25 Feb 2003 17:01:15 -0800
+From: "Andrej Ricnik" <lemmetink@hotmail.com>
+Subject: Re: lan users surfing on lan webserver
+Date: Wed, 26 Feb 2003 01:37:01 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LKEMIKEDGPBEAFDKINCGIEJCEDAA.stormp@telus.net>
-References: <20030221081303.15658.76956.Mailman@kashyyyk>
-Reply-To: <stormp@telus.net>
+Message-ID: <F65mOV39Y1Ije0f3aRN00013cfa@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030221081303.15658.76956.Mailman@kashyyyk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,107 +14,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have solved my own problem!
+>I'm configuring a firewall on a network where we have put
+>the webserver on the inside of the firewall and given it
+>a reserved ip-address.
+>I have done the appropriate forwarding so that the webserver
+>can be reached from the internett. Trouble is, users on the
+>LAN have to use its internal ip-address to reach the web-
+>pages. I know I can set up an internal dns-server to fix this,
+>but I was hoping it would be possible to solve this with some
+>more ip-forwarding.
+>
+>Is it possible to forward internal requests going to the
+>external webserver-address back into it's internal address?
+>
+>Is it recommended? :)
 
-I am posting it because I've received a few private messages with people
-suffering from the same symptoms.
+Not quite sure what you're actually after, but to
+me it sounds as if what you *really* need is Squid
+and transparent proxying :)
 
-I have Redhat7.3 base install and the default location of iptables is
-/sbin/iptables*  and /lib/iptables/*
+Cheers,
+Tink
 
-The default for iptables Makefile is to install to /usr/local/sbin/iptables*
-and /usr/local/lib/iptables/*
-
-Originally I had compensated for the executable path but not for the library
-path.  As a result, I am assuming that iptables was using my old
-iptables*.so's.
-
-
-QUICK FIX:
-
-#  cp /usr/local/sbin/iptables*  /sbin
-
-#  cp /usr/local/lib/iptables/*    /lib/iptables
-
-# iptables -version
-iptables v1.2.7a
-
-#  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-WORKS
-
-Hope that helps anyone with the same problem.
-
-
------Original Message-----
-Message: 3
-Reply-To: <stormp@telus.net>
-From: "Storm D. J. Petersen" <stormp@telus.net>
-To: <netfilter@lists.netfilter.org>
-Subject: linux-2.4.20 iptables-1.2.7a  DHCP on EXTIF
-Date: Thu, 20 Feb 2003 19:48:09 -0800
-
-
-Hi,
-
-I am still confused. ;-)
-
-I upgraded my kernel to 2.4.20 and now  # iptables -t nat -A POSTROUTING -o
-eth0 -j MASQUERADE  doesn't work.
-
-However,  # iptables -t nat -A POSTROUTING -j SNAT -to $EXTIP    works!
-
-My problem is that I am behind a cable modem that changes my IP address
-daily.  So, what does one do if their eternal interface uses DHCP?
-Thanks.
-S.
+-----BEGIN GEEK CODE BLOCK-----
+Version: 3.12
+GCM/IT/O d-(++)@ a C+(+++)@ UL++>+++ P+>+++ L++ E+@ W+@ N+ o? K? w---@(+) 
+O+++(+)@ M-@ V? PS+ PE- Y+ PGP++ t- 5- X- R-(*) tv-@ b+ DI++ D-- G++ !e* 
+h--- r++ z?
+------END GEEK CODE BLOCK------
 
 
 
-
---__--__--
-
-Message: 4
-Reply-To: <stormp@telus.net>
-From: "Storm D. J. Petersen" <stormp@telus.net>
-To: <netfilter@lists.netfilter.org>
-Subject: linux-2.4.20 iptables-1.2.7a  DHCP on EXTIF
-Date: Thu, 20 Feb 2003 20:05:03 -0800
-
-Whoops should read:
-
-However,  # iptables -t nat -A POSTROUTING -o eth1 -j SNAT -to $EXTIP
-works!
-
-
-
------Original Message-----
-From: Storm D. J. Petersen [mailto:stormp@telus.net]
-Sent: Thursday, February 20, 2003 7:48 PM
-To: netfilter@lists.netfilter.org
-Subject: linux-2.4.20 iptables-1.2.7a DHCP on EXTIF
-Importance: High
-
-
-Hi,
-
-I am still confused. ;-)
-
-I upgraded my kernel to 2.4.20 and now  # iptables -t nat -A POSTROUTING -o
-eth0 -j MASQUERADE  doesn't work.
-
-However,  # iptables -t nat -A POSTROUTING -j SNAT -to $EXTIP    works!
-
-My problem is that I am behind a cable modem that changes my IP address
-daily.  So, what does one do if their eternal interface uses DHCP?
-Thanks.
-S.
-
-
-
-
+_________________________________________________________________
+MSN 8 with e-mail virus protection service: 2 months FREE* 
+http://join.msn.com/?page=features/virus
 
 
