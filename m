@@ -1,14 +1,13 @@
-From: "Shazad Malik" <smalik@vistawiz.com>
-Subject: Re: ip_conntrack: table full, dropping packet. - Anyone????? Frustrating!
-Date: Mon, 3 Jun 2002 13:18:47 -0400 (EDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Needing some help to check iptables configuration
+Date: Mon, 3 Jun 2002 19:39:15 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <4884.24.168.132.35.1023124727.squirrel@mail.vistawiz.com>
-References: <20020603104627.Q27307@funkyjesus.org>
-Reply-To: smalik@vistawiz.com
+Message-ID: <200206031839.g53IdFA13473@Networker.rockstone.co.uk>
+References: <HCEEIHCIBILHEDFLFOKFGEGMCIAA.mailings@peyron.nom.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020603104627.Q27307@funkyjesus.org>
+In-Reply-To: <HCEEIHCIBILHEDFLFOKFGEGMCIAA.mailings@peyron.nom.fr>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,63 +18,80 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: nickd@funkyjesus.org
-Cc: netfilter@lists.samba.org
+To: netfilter <netfilter@lists.samba.org>
 
-Hi Nick,
+On Monday 03 June 2002 6:28 pm, Francois Peyron wrote:
 
-This is the output from my /proc/net/ip_conntrack:
-========================
-tcp      6 432000 ESTABLISHED src=192.168.100.100 dst=192.168.100.1
-sport=4885 dport=22 src=192.
-168.100.1 dst=192.168.100.100 sport=22 dport=4885 [ASSURED] use=1
-tcp      6 431991 ESTABLISHED src=192.168.100.100 dst=24.228.35.215
-sport=4884 dport=8080 src=24
-.228.35.215 dst=24.168.132.35 sport=8080 dport=4884 [ASSURED] use=1
-udp      17 137 src=24.168.132.35 dst=24.29.99.36 sport=45028 dport=53
-src=24.29.99.36 dst=24.16
-8.132.35 sport=53 dport=45028 [ASSURED] use=1
-=========================
-
-This is the output from /var/log/messages
-
-Jun  3 08:03:28 new kernel: ip_conntrack: table full, dropping packet.
-Jun  3 08:04:52 new last message repeated 7 times
-Jun  3 08:04:53 new last message repeated 2 times
-
-
-Seriously, I going beserk now!  I just have two machine sitting behind my
-test box and just one user(thats me!). All I'm doing is surfing the web.
-Dont have a clue why its happening!
-
-shazad
-
-> On Sun, Jun 02, 2002 at 11:25:31PM -0400, Shazad Malik wrote:
+> Hi there,
 >
->> I have seen other explanations such as incresing your tcp max number
->> as your physical mem. increase.  Check you /proc/net/ip_conntrack file
->> for the current connections.  But none of these factors have anything
->> to do with this error.  I have only 2 connections, doing regular HTTP
->> gets and its filling my log file:
->>
->> Jun  2 09:50:39 new kernel: ip_conntrack: table full, dropping packet.
->> Jun  2 09:53:29 new kernel: ip_conntrack: table full, dropping packet.
->> Jun  2 09:57:14 new kernel: ip_conntrack: table full, dropping packet.
->
-> What's the output of
->
-> cat /proc/net/ip_conntrack
->
-> look like?
->
-> --
-> FunkyJesus System Administration Team
+> I did setup a classical linux firewall box with two private ip segment, one
+> for the intranet(192.168.1.0/24), the other one for dmz (10.0.0.0/8).
+
+> DMZ_LAN="10.0.0.1/8"
+
+This is not good - it should be 10.0.0.0/8
+
+> # Activation de la NAT
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+
+Not a very accurate comment, however the command is important :-)
+
+> iptables -A SSH_FW -p tcp --dport ssh -j ACCEPT
+> iptables -A SSH_FW -p udp --dport ssh -j ACCEPT
+
+Why do you allow UDP port 22 ?   What's the point ?
+
+> iptables -A TRA_NET -p udp --dport http -j ACCEPT #http
+> iptables -A TRA_NET -p udp --dport https -j ACCEPT #https
+> iptables -A TRA_NET -p udp --dport ftp -j ACCEPT #ftp
+> iptables -A TRA_NET -p udp --dport ftp-data -j ACCEPT #ftp-data
+
+Same for all of these - why do yu allow UDP ?
+
+> iptables -A TRA_NET -p tcp --dport domain -j ACCEPT #dns
+> iptables -A TRA_NET -p udp --dport domain -j ACCEPT #dns
+
+Now this one's okay - you *should* allow both TCP and UDP for DNS.
+
+> # Remove des regles bloquantes
+> ###########################################################################
+># ###
+> iptables -D INPUT 1
+> iptables -D FORWARD 1
+> iptables -D OUTPUT 1
+
+It would be a good idea to set the default policy on all three tables to DROP:
+
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+This way you include rules to allow the packets you know you want, and 
+anything you didn't think of gets thrown away, just the way you want it.
+
+> Not all the tables are written but no matter, what I need is to connect to
+> this box using sshd.
+
+So why is your SSH rule in the FORWARD chain ?:
+
+iptables -A FORWARD -s *ip adress allowed to connect* -d $IP_NET -i
+$NET_IFACE -j SSH_FW
+
+If $IP_NET is on this box itself then this should be in the INPUT chain, 
+because it's a packet coming IN to the box.
+
+> The problem I've got is that I can connect on this box with ssh but from
+> whatever the ip is ...
+
+> ______________________________________________________________________
+> Chain INPUT (policy ACCEPT)
+> target     prot opt source               destination
+
+That is why.   You have a completely open policy on your INPUT chain, so 
+anyone can connect from anywhere using any service :-)
+
+Not a secure system (yet).....
 
 
--- 
-Shazad Malik
-work: (845)623-2161
-fax: (845) 623-1154
-
-
+Antony.
 
