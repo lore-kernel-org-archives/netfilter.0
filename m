@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Vlad H." <cpsgx@yahoo.com>
 Subject: Re: How to build a better security setup for my problem?
-Date: Sat, 13 Mar 2004 17:50:10 +0000
+Date: Sat, 13 Mar 2004 10:19:27 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403131750.10374.Antony@Soft-Solutions.co.uk>
-References: <20040313174106.31077.qmail@web41610.mail.yahoo.com>
+Message-ID: <20040313181927.80861.qmail@web41605.mail.yahoo.com>
+References: <200403131750.10374.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative; boundary="0-335992904-1079201967=:76707"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040313174106.31077.qmail@web41610.mail.yahoo.com>
+In-Reply-To: <200403131750.10374.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 13 March 2004 5:41 pm, Vlad H. wrote:
+--0-335992904-1079201967=:76707
+Content-Type: text/plain; charset=us-ascii
 
-> Hello to all,
->
-> I have to give internet access to a small group of users from a local
-> network. Internet interface is eth0 and local lan interface is eth1. I
-> guess these rules are ok for my intention:
->
-> But I recently found out that mac address can be changed. So, I need a
-> third security identifier for iptables or any other solution to increase
-> security. Any clues on this? thx.
 
-What is your concern?   What activity are you trying to prevent?   What 
-activity are you trying to allow (ie: what sort of access to the Internet do 
-you want to allow people - mail? web? ftp? telnet? ssh? etc...)
+1.) What activity are you trying to allow?
+General internet access for a small group of users from a larger local network: web, ftp, mail, etc.
 
-Antony.
+2.) What activity are you trying to prevent?
+Deny internet access for all other local users.
 
--- 
-Normal people think "If it ain't broke, don't fix it".
-Engineers think "If it ain't broke, it doesn't have enough features yet".
+3.) What is your concern?
+A denied user can change his mac address to aa:aa:aa:aa:aa:aa and ip address to x.x.x.x for example and become a valid internet user.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+Do you Yahoo!?
+Yahoo! Mail - More reliable, more storage, less spam
+--0-335992904-1079201967=:76707
+Content-Type: text/html; charset=us-ascii
+
+<DIV>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0 ?>
+<TBODY>
+<TR>
+<TD>
+<P><FONT size=2>1.) What&nbsp;activity are you trying to allow?<BR>General internet access for a small group of users from a larger local network: web, ftp, mail, etc.</FONT></P>
+<P><FONT size=2>2.) What activity are you trying to prevent?<BR>Deny internet access for all other local users.</FONT></P>
+<P><FONT size=2>3.) What is your concern?<BR>A denied user can change his mac address to aa:aa:aa:aa:aa:aa and ip address to x.x.x.x&nbsp;for example&nbsp;and become a valid internet user.</FONT></P></TD></TR></TBODY></TABLE></DIV><p><font face=arial size=-1>Do you Yahoo!?<br>
+<a href="http://us.rd.yahoo.com/mailtag_us/*http://mail.yahoo.com" target="_blank"><b>Yahoo! Mail</a></b> - More reliable, more storage, less spam
+--0-335992904-1079201967=:76707--
 
