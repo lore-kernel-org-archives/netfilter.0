@@ -1,11 +1,13 @@
-From: not4u2know <crazyhacker@sympatico.ca>
-Subject: iproute2 and iptables help
-Date: Sat, 05 Apr 2003 01:21:55 -0500
+From: Arkadiusz Patyk <areq@topnet.pl>
+Subject: Re: diskless iptables
+Date: Sat, 05 Apr 2003 16:07:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E8E7603.4040102@sympatico.ca>
+Message-ID: <onot8vodm5gvom0a55augco6vl6v45ljlk@4ax.com>
+References: <200304041440450637.241F386F@lei.fis.uc.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200304041440450637.241F386F@lei.fis.uc.pt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,36 +17,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi, my isp issues ip addresses via pppoe. i have the capability to lease 
-multiple ips at once, as i can pass through the pap authentication 
-simultaneously.  i also have a dial up modem to serial line for standard 
-ppp.  i was wondering if anyone had any idea as to how i can do 
-something like this with my nat/packet filter machine....
+On Fri, 04 Apr 2003 14:40:45 +0100, you wrote:
 
+>Does anyone know a linux distribution to run iptables in a floppy disk (for diskless systems)?
 
-dsl pppoe modem--->eth0--->ppp0--->eth1--->10.0.0.0/16
-                                         \
-                                           \--->ppp1-->eth2--->10.0.0.0/24
-                                            \
-                                             
-\--->ppp2-->eth3-->192.18.0.1/24
+on cdrom:
+http://rescuecd.pld.org.pl/
 
-the dsl line on rj11 connector connects to the dsl modem, the dsl modem 
-connects to eth0.  when i lease my first external ip, my dialer creates 
-ppp0.  i do snat to allow the network connected to eth1 appear as if its 
-all coming from ppp0.  now, what i want to do is know how i can make the 
-second and third leased ip addresses used by the otherr internal 
-networks. so basically what i want to do is have separate external ip 
-addresses for each of my internal networks.  i tried doing this with 
-snat, but it did not work and i feel i would have to do something with 
-the routing tables.  does anyone know precisely what user space tools to 
-work with? somoene once mentioned to me iproute2, is this the tool i 
-should use?  anyone recommend reading material for doing such things as 
-described further up?
-
-thanks.
-
+-- 
+Arkadiusz Patyk [areq(at)pld.org.pl] [http://www.pld.org.pl]
+[IRC:areq ICQ:16231667  GG:1383]  [AP3-6BONE] [AP14126-RIPE]
 
