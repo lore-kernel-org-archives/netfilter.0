@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: HELP - how to block a specific ip
-Date: Sat, 22 Jun 2002 08:35:43 +0100
+Subject: Re: Rule question
+Date: Sat, 22 Jun 2002 08:38:37 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020622073546.JWKB19225.mta07-svc.ntlworld.com@there>
-References: <3CE02CD9.CC9BC3E2@attbi.com> <200205132126.g4DLQXR03194@Networker.rockstone.co.uk> <3D13FC27.5050406@attbi.com>
+Message-ID: <20020622073839.JXYQ19225.mta07-svc.ntlworld.com@there>
+References: <200206220935.12908.captain.nuke@gmx.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3D13FC27.5050406@attbi.com>
+In-Reply-To: <200206220935.12908.captain.nuke@gmx.at>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,22 +18,33 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Saturday 22 June 2002 5:25 am, Robert La Ferla wrote:
+On Saturday 22 June 2002 8:35 am, Patrick Petermair wrote:
 
-> Thanks again for your help.  I have a question.  If I wanted to block
-> 11.22.33.xx (all 256 ips) from accessing my system, what command would I
-> use?
+> Hi!
 >
-> Is this correct?
+> I've read the following example script for a linux box with masquerading
+> and some firewall rules:
+> http://www.ecst.csuchico.edu/~dranch/LINUX/ipmasq/examples/rc.firewall-2.4-
+>stronger
 >
-> iptables -A INPUT -s 11.22.33.0/24 -j DROP
+> So far I think I understand everything except this line:
+> $IPTABLES -A OUTPUT -o $INTIF -s $EXTIP -d $INTNET -j ACCEPT
+>
+> How can an OUTPUT of the internal interface have the external IP address as
+> source IP ?? And why would it be accepted?
+> As far as I understand it, the masquerading and stuff is all done in the
+> FORWARD chain. I can't think of an example where a packet originating from
+> the internal interface of my firewall can have the external IP as source.
 
-Yes.
+Masquerading is done in the POSTROUTING chain - pretty much immediately 
+before the packet goes out on the wire.
 
-Make sure you put it before any other rules which might allow the packets 
-through.
+In a wayt that makes it even worse, because POSTROUTING comes *after* all the 
+other chains - FORWARD, OUTPUT etc.
+
+I don't understand the above rule either.
 
  
 
