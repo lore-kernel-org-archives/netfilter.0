@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DHCRELAY through IPTABLES Firewall
-Date: Mon, 28 Oct 2002 08:49:05 +0000
+Subject: Re: Packet chain traversals
+Date: Mon, 28 Oct 2002 08:32:46 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021028084908.MGPW27595.mta05-svc.ntlworld.com@there>
-References: <001001c27d72$1352c350$8f33e40f@lsmith5953> <20021027080906.OMSF9836.mta01-svc.ntlworld.com@there> <001c01c27d96$fafd0ed0$8f33e40f@lsmith5953>
+Message-ID: <20021028083249.ZXO18329.mta06-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210271951170.12007-200000@laptop1.agatha>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001c01c27d96$fafd0ed0$8f33e40f@lsmith5953>
+In-Reply-To: <Pine.LNX.4.44.0210271951170.12007-200000@laptop1.agatha>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,44 +20,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 27 October 2002 8:58 am, bigman@monster-solutions.net wrote:
+On Sunday 27 October 2002 6:52 pm, Oskar Andreasson wrote:
 
-> I am running DHCRELAY as below
->
-> dhcrelay -i eth2 192.168.1.70
->
-> 192.168.1.70    DHCP Server (W2K)
-> LAN1 192.168.1.0
-> LAN2 192.168.2.0
->
-> Here is my routing tables
-> Destination     Gateway         Genmask         Flags Metric Ref    Use
-> Iface
-> 192.168.2.0     *               255.255.255.0   U     0      0        0
-> eth2 192.168.1.0     *               255.255.255.0   U     0      0       
-> 0 eth1 x.x.x.x (ISP Subnet)     *               255.255.252.0   U     0    
->  0 0 eth0
-> 127.0.0.0       *               255.0.0.0       U     0      0        0 lo
-> default         x.x.x.x (ISP Assigned IP) 0.0.0.0         UG    0      0
-> 0 eth0
+> Forgot to attach the script in question....
 
-Okay, that all looks sensible.   By the way, just thought I'd check - I 
-assume you are running dhcrelay on the firewall machine ?
+Hi Oskar.
 
-> Here are my Netfilter settings
+Just a small point which has me puzzled about the diagram:
 
-Please post the iptables commands used to set up your ruleset.
-
-You sent the ouput of iptables -L which doesn't show all the information we 
-need: even the verbose version iptables -L -v is not as informative as the 
-original commands.   Thanks,
+Why do you have a routing decision between OUTPUT and NAT ?   What "decision" 
+is there to be made ?
 
 Antony.
 
 -- 
 
-With thanks to God,
-For all that's come before,
-For all that will come after,
-But most of all, for this bit right here now.
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
