@@ -1,12 +1,12 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: netfilter meets iproute in distributed routers
-Date: Tue, 10 Feb 2004 15:35:24 -0800
+From: "Alexis" <alexis@attla.net.ar>
+Subject: Re: Major NAT Problem
+Date: Tue, 10 Feb 2004 21:32:42 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5679156@alderaan.smgtec.com>
+Message-ID: <008c01c3f036$90067b70$0200000a@heretic>
+References: <Sea2-F19kyCKDkb9pPF00000901@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,69 +17,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Frank Gruellich <frank@home.manuelm.org>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Quick and Dirty: SNAT the connection when it is leaving Box A. The
-problem instantly goes away.
+This is a mtu problem
 
-Frank Gruellich wrote:
-> Hello,
->=20
-> I am trying to do some weird routing.  This is my (simplified[1])
-> setup:=20
->=20
->                     ,---.
->                     | S |
->                     `-+-'
->                       | .1.0/24
->       ,---. .3.0/24 ,-+-.
->  0/0--+ A +---------+ B +--0/0
->       `---'         `---'
->=20
-> Well, we moved to the new IPv2 last year... just kiddin, all nets are
-> subnets of 192.168.0.0/16.  Box A and B masq the internal nets to
-> their IP# given from the (different) ISPs.  S has .1.1 and runs
-> several services reachable via B and, by default, uses B as its
-> gateway to 0/0.   =20
->=20
-> Sometimes somebody connects to box A on a specific port $P, which I
-> DNAT to S.  (Every connect to box B to this port will be refused.)=20
-> The problem arises, when I try to catch the answer to route it to A.=20
-> I thought about using -j MARK of -t mangle and a special routing
-> table (as described in the LARTC, chapter 11).   =20
->=20
-> Okay, let's say I would use
->=20
->  # iptables -t mangle -A PREROUTING -p tcp -s 192.168.1.1 \
->  > --sport $P --dport 1024:65535 -m state --state RELATED,ESTABLISHED
-> \  > -j MARK --set-mark 1=20
->=20
-> on box B.  Replys to the connect will match, get the mark and will be
-> routed the right way to box A.  Now let's assume, S itself opens a
-> connection to the net.  It happens it uses $P as local port[2].  The
-> first packet would be -m state --state NEW and will not match the
-> above rule.  But any further will and will be routed a completely
-> different way[3].  If I omit the -m state every connections opened by
-> S from $P will be marked and routed via B (that would be acceptable,
-> but is somehow ugly).      =20
->=20
-> Cool thing would be, if a packet is matched by the rule any
-> subsequent packets would match, too.  The -j DNAT works this way,
-> AFAIK, but I found nothing next to the -j MARK in the docs[4].  Then,
-> similar to the shown rule, I could accept all new connections and
-> mark any remaining. More cool thing would be, if I could use the
-> conntrack of box A in a rule on box B... well lets stay realistic.  =20
->=20
-> Any hints, how I could do the trick?
->=20
-> Thanks in advance and sorry for my poor english,
->  regards, Frank.
-> =3D=3D=3Dfootnotes=3D=3D=3D
-> [1] The whole setup can be found at
-> <URL:http://manuelm.clug.de/~frank/network/topologie.png> (48KB).=20
-> Box A is loki + hydra, box B is morpheus. [2] Is this possible when a
-> service runs at this port? [3] Would this work? [4]
+linksys for sure is announcing a tcpmss adjust at 1450 bytes or less.
+
+You have 2 options
+
+1- disable pmtud in the lan boxes and decrease the mtu (begin with 1490 and
+no more of 1400) and test it.
+2- make linux to announce an mss of 1450 (commonly mtu-20)
+
+(let me know if you need the theory applied to it)
+
+
+pmutd send packets with DF=1 and expects icmp messages anouncing to reduce
+the mtu, then pmtud drecreases the mtu over and over again (always with
+df=1) until the icmp announce dont arrive anymore. Then assumes that this is
+the correct mtu and send all packets with this mtu.
+
+If you can generate this mss icmp packets, its enough and it will work ok,
+if you dont, you must decrease the mtu of lan interfaces (all of them)
+
+hope it helps
+
+
+
+
+----- Original Message ----- 
+From: "Ted Erickson" <tederickson7582@hotmail.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, February 05, 2004 11:54 PM
+Subject: Major NAT Problem
+
+
+> I am somewhat new to IPTables but not to linux.  I have a major problem.
+> Some background first... I have a PPoA SDSL connection with Qwest running
+at
+> 640k/up/down.  I have a static block of 8 addresses.....I have a
+connection
+> from the DSL modem to eth0 on my Redhat 9.0 box and I have my local
+network
+> pluged into eth1.  The only thing running on the linux box is IPTables
+> nothing else.  I turned on echo 1 > /proc/sys/net/ipv4/ip_forward and
+> enabled MASQ in several different ways..... no problem.  I can surf the
+> internet just fine on my local network machine but I have ONE BIG
+PROBLEM!!!
+>   I can't view a handfull of websites.  If I take the linux box out of the
+> picture and throw a cheap Linksys Router on the same DSL connection I can
+> see all the web sites i want.  IPTables is blocking something but I don't
+> know what? I can't find any info on the web with this problem.  I need to
+> fix this ASAP or I will have to go with something else, but I want to stay
+> with linux.
 >
-<URL:http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TABLE
-.MARKMATCH>
+> theo
+>
+> _________________________________________________________________
+> Get some great ideas here for your sweetheart on Valentine's Day - and
+> beyond. http://special.msn.com/network/celebrateromance.armx
+>
+>
+>
+
+
 
