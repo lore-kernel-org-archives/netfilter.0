@@ -1,16 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: MAC addresses
-Date: Sat, 11 Sep 2004 22:30:51 -0400
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Problems Pinging the Internet w/this script
+Date: Sat, 11 Sep 2004 21:24:37 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094956251.3969.123.camel@grendel>
-References: <200409111150.50506.bulliver@badcomputer.no-ip.com>
-	<1094941410.3925.20.camel@wolfpack.ljm.dom>
-	<200409111726.53499.bulliver@badcomputer.no-ip.com>
-	<1094950452.5506.4.camel@wolfpack.ljm.dom>
+Message-ID: <1094952277.5506.26.camel@wolfpack.ljm.dom>
+References: <41439912.2090701@juno.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1094950452.5506.4.camel@wolfpack.ljm.dom>
+In-Reply-To: <41439912.2090701@juno.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,42 +18,148 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Sat, 2004-09-11 at 20:54, Jason Opperisano wrote:
->
-> On Sat, 2004-09-11 at 20:26, Darren Kirby wrote:
-> > I will look into this. I assume however that I would need to keep port 23 open 
-> > for everyone on the public side for this to work. I was hoping to drop the 
-> > packets from everyone except my notebook, hence the original question. Is 
-> > there no way to do this?
+On Sat, 2004-09-11 at 20:32, Jesse wrote:
+> Here's a script I'm using to create some tables which will only allow in 
+> on ports I'm running services. One of the problems I'm havng is that I 
+> can't ping the Internet with a DNS address from this machine. I've 
+> allowed everything in the OUTPUT table and can ping the Internet when 
+> using a straight IP, but when I type in "ping google.com" the machine 
+> hangs for a few seconds and gives me a server request error. I know it's 
+> something with my rules because when I flush them all I can ping 
+> google.com just fine. Any ideas would be greatly appreciated. I'm 
+> guessing it's something trivial but can't put my finger on it yet.
 > 
-> if you're looking for a secure way to manage your firewall from the
-> internet without allowing "-s 0/0 --dport 22" type access; you probably
-> want to setup some sort of VPN access for yourself.
+> thanks
+> 
+> #!/bin/bash
+> ########## Beginning 
+> ###########################################################
+> 
+> # Define Interfaces/Networks
+> 
+>     # Inside/Intranet Interface
+>       INSIDEIP="192.168.7.55"
+>       INSIDEINT="eth0"
+> 
+>     # External/Internet Interface   
+>     # OUTSIDEIP=
+>     # OUTSIDEINT=
+> 
+>     # LAN Network
+>       LAN="192.168.7.0/24"
+> 
+>     # Admin Host
+>       ADMIN="192.168.7.51"
+> 
+> # Define other Variables
+> 
+>     RULE="/usr/sbin/iptables"
+> 
+> # Flushing All rules/chains
+>   $RULE -A INPUT LOG
+>   $RULE -A OUTPUT LOG
+>   $RULE -A FORWARD LOG
 
-A VPN is probably overkill as SSH is already a VPN (strong built in
-authentication and encryption. Heck, I'll take Blowfish over 3DES or AES
-for privacy any day of the week :). Two other options come to mind:
+um--any particular reason why you append 3 LOG rules (with incorrect
+syntax, btw...) 3 lines before you flush everything out?  nevermind--i'm
+sure there's a fantastic reason behind it--so i'll just note, that they
+should be:
 
-1) Bind SSH to a non-standard port
-Yes someone doing a full port scan can still find it, blah, blah, blah.
-I've been running this for years and have yet to receive a single
-non-authorized connect to the port that has actually performed an SSH
-handshake.
+  iptables -A INPUT -j LOG
+  iptables -A OUTPUT -j LOG
+  iptables -A FORWARD -j LOG
 
-2) Setup port knocking
-http://www.linuxjournal.com/article.php?sid=6811
-I know a few people that have set this up with great success. Sure its
-vulnerable to replay, but since we're talking SSH that's not really a
-problem. Great way to expose ports to only certain users.
+>   $RULE -P INPUT DROP
+>   $RULE -P OUTPUT DROP
+>   $RULE -P FORWARD DROP
+>   $RULE -F INPUT
+>   $RULE -F OUTPUT
+>   $RULE -F FORWARD
+> 
+> # Adding Permittable Network/Hosts/Ports to Input Table on Internal 
+> Interface
+> 
+>   # Allowing DNS,FTP,SSH,Webmin,HTTP,SWAT,and Samba to Server
+> 
+>   $RULE -A INPUT -i $INSIDEINT --proto icmp --icmp-type any -j ACCEPT
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 21 -d $INSIDEIP -j ACCEPT
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp -s $ADMIN --dport 22 -d 
+> $INSIDEIP -j ACCEPT
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 53 -d $INSIDEIP -j ACCEPT
 
-So with either option you still want to use public/private keys or
-strong passwords with SSH. They are designed to simply mask the service
-from all the SSH scanning that's running around the Internet.
+if this machine is a DNS server offering name resolution to hosts on
+$INSIDEINT--those requests are UDP, not TCP.  TCP 53 is used for zone
+transfers between name servers.
 
-HTH,
-Chris
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 80 -d $INSIDEIP -j ACCEPT
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 137 -d $INSIDEIP -j 
+> ACCEPT
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 138 -d $INSIDEIP -j 
+> ACCEPT
 
+ports 137 and 138, if being used in the "nmbd" sense--are UDP, not TCP. 
+try "netstat -lntu" if you don't believe me.
+
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 139 -d $INSIDEIP -j 
+> ACCEPT
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp --dport 445 -d $INSIDEIP -j 
+> ACCEPT
+
+stylistic note:  you could reduce the number of rules you have by using
+the "-m multiport" match:
+
+  iptables -A INPUT -i $INSIDEINT -p tcp -d $INSIDEIP \
+    -m multiport --dports 21,80,139,445 -j ACCEPT
+
+  iptables -A INPUT -i $INSIDEINT -p udp -d $INSIDEIP \
+    -m multiport --dports 53,137,138 -j ACCEPT
+
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp -s $ADMIN --dport 901 -d 
+> $INSIDEIP -j ACCEPT
+>   $RULE -A INPUT -i $INSIDEINT --proto tcp -s $ADMIN  --dport 10000 -d 
+> $INSIDEIP -j ACCEPT
+> 
+> # Denying Everything on Local Network
+> 
+> # Adding entry to allow everything originating from Internal Interface out
+>    
+>   $RULE -A OUTPUT -j ACCEPT
+> 
+> ########## END 
+> ################################################################
+
+the reason you can ping by IP is:
+
+  iptables -A OUTPUT -j ACCEPT
+
+allows the ICMP echo-request out, and
+
+  iptables -A INPUT -i $INSIDEINT --proto icmp --icmp-type any -j ACCEPT
+
+allows the ICMP echo-reply back in.
+
+the above does not hold true for a DNS request (UDP 53 out & in)
+
+i might recommend investigating the use of:
+
+  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+as the first rule in your INPUT chain. and the use of:
+
+  iptables -A INPUT -j LOG --log-prefix "FW DROP IN: "
+  iptables -A OUTPUT -j LOG --log-prefix "FW DROP OUT: "
+
+as the last rules in your chains.
+
+all this (and more) is covered in depth in:
+
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
 
 
