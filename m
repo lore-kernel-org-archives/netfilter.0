@@ -1,10 +1,11 @@
-From: wlagmay@yanbulink.net
-Subject: Yahoo and MSN messenger problem
-Date: Fri,  1 Apr 2005 13:40:08 +0300
-Message-ID: <1112352008.424d2508ac331@webmail.yanbulink.net>
+From: "Brown, Michael" <Michael.Brown@InterCept.Net>
+Subject: blocking same src/dst traffic (land attacks?)
+Date: Thu, 31 Mar 2005 15:35:22 -0500
+Message-ID: <3BEC0FC090F538409A0736B2D37DA0ED0246F62C@icptex02.corp.icpt.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +19,12 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
 
-Im using Iptables for routing, redirection and Network Address Translation
-(SNAT), everything is working fine execpt for yahoo and MSN voice chat. I found
-out that there seems to a problem with SNAT, I cannot use masquerading, I know
-that voice chat will work on masquerading but my requirement is many to many
-IP.
+What type of rule could you write to block same src/dst traffic. This is
+inregards to blocking land attacks coming in from the outside interface.
 
-Is ther any solution on this issue? I need many local IP address to be converted
-to many public IP addresses dynamically.
-
-Any information is surely a big help, thank you very much,
-
-wennie
-
+Thanks,
+Michael Brown
 
 
 
