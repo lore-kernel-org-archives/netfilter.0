@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: quick question re: natting
-Date: Fri, 21 Nov 2003 11:43:29 +0000
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: (no subject)
+Date: Fri, 21 Nov 2003 12:52:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311211143.hALBhX724622@onyx.rockstone.co.uk>
-References: <FDB52A0429DFD31196FB0008C7D972D50EA57A69@OST_EXCH_USR5>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019D11@hslex01.hslbz.local>
+References: <1069413363.3fbdf3f35886d@paris-hme1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FDB52A0429DFD31196FB0008C7D972D50EA57A69@OST_EXCH_USR5>
+In-Reply-To: <1069413363.3fbdf3f35886d@paris-hme1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,52 +17,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: 'skydive' <skydive@megamail.pt>, netfilter@lists.netfilter.org
 
-On Friday 21 November 2003 10:58 am, Knight, Steve wrote:
+> now i happen to have a proxy server running on the=20
+> same machine as the web server, and i would like to=20
+> block incoming traffic to my web server from addresses
+> wich are not portuguese. i already got a list of the=20
+>=20
+> ip ranges and net masks of all autonomous systems=20
+> located in portugal. i first tried to accept all those=20
+> ip ranges, and then droped all other incoming. what=20
+> happens is that proxy will accept connections only=20
+> from those ip ranges i accepted initialy ( the=20
+> postuguese ones). Let=B4s say i'm trying to connect to=20
+> hotmail.com. i won't work since that ip range is not=20
+> being accepted.
 
-> Hi there
->
-> I've got ADSL ppp0 facing the net, at x.x.x.47 [as part of a x.x.x.46/29
-> subnet], and I want to do static NAT for hosts 48,49 and 50.
->
-> I have a quick question, and my Ziegler book is at home at the moment. 
-> Back in the days when I worked with Checkpoint, I would have had to have
-> ARPed 48, 49 and 50 onto the external interface via the operating system,
-> for the one-to-one static NAT to work.  Do I need to ARP the IP addresses
-> onto ppp0 under Linux / iptables also?
+If I understand this correctly... :
 
-Maybe :)
+If you don't want to accept IP's that are not from Portugal then you
+should put the block in the INPUT chain only.
+iptables -P INPUT DROP
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -s <ip/mask> -j ACCEPT
+...
+iptables -A INPUT -s <ip/mask> -j ACCEPT
+Accept everything that has a rule ; drop the rest.
+The RELATED,ESTABLISHED rule catches everything you need in addition to
+the initial connection.
 
-Sorry to be uncertain, but it depends how your ADSL link works.
 
-If this were a 'normal' routed leased-line type link, then I would say "Yes, 
-you need to ARP for the extra addresses (a simple way is to use ip addr to 
-assign those addresses to you external interface, although I'm not sure if 
-you can do this with ppp interfaces?)".
+If you want Squid to connect to hotmail.com for you, it generates
+outgoing traffic -> it needs an OUTPUT rule to let it do that.
+When you set the default policy of the OUTPUT chain to DROP, it can
+cause unexpected results if you don't accept packets coming back from
+the server. If set to ACCEPT, you shouldn't need a rule for the OUTPUT
+chain to accept.
+iptables -P OUTPUT DROP
+iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 3128 -j ACCEPT
 
-However, since this is an ADSL setup (and certainly on UK BT ADSL connections 
-I've seen some very odd routing arrangements), it may be that all addresses 
-in your range are being routed through to your end of the ppp link, and you 
-don't need to ARP for them (ARP is not needed on a point to point link, only 
-on broadcast-type network structures).
+> is there a way to accept connections related with=20
+> previous conections made to this machine to por 3128=20
+> (squid default port)?
 
-I would recommend just trying it without ARP and see if you get packets - 
-either set up a netfilter rule matching one of the the addresses and see if 
-"iptables -L -n -v -x" shows any bytes or packets being counted for it, or 
-else use a packet sniffer / protocol analyser such as tcpdump or ethereal to 
-see if such packets arrive at your machine.   If they do, no need for ARP.
+See above.
 
-Hope this helps,
+> i want to accept conections that even if they do not=20
+> match with ipranges i'm accepting, they're related=20
+> with a previous connection made to the proxy server,=20
+> related with proxy port whatever it'll be ;))
 
-Antony.
+The connections are 2 way :
+1. from webbrowser to proxy and vv (initital conn. is INPUT)
+2. from proxy to webserver and vv (initial conn. is OUTPUT)
+You have to write rules for the initial connection, and catch the rest
+with "RELATED,ESTABLISHED".
 
--- 
+> i'm aware this can not be this easy... but still=20
+> believe there is a way out :))
 
-The difference between theory and practice is that
-in theory there is no difference, whereas in practice there is.
+Of course ;-)
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+Gr,
+Rob
+
 
