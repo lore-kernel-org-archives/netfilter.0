@@ -1,63 +1,98 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: need help firewalling homebrew http+smtp+dns+vpn
-Date: Sun, 21 Dec 2003 10:38:34 +0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312211038.35016.Antony@Soft-Solutions.co.uk>
-References: <20031221070757.GD15390@dragonII>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Call for testing: patch-o-matic-ng
+Date: Sun, 21 Dec 2003 13:24:45 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20031221122445.GC5058@obroa-skai.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031221070757.GD15390@dragonII>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Sunday 21 December 2003 7:07 am, Andrea Tasso wrote:
 
-> hello, these are my naive questions, I am a newbie:
->
-> I need to firewall my homebrew linux boxes, say to close everything I can
-> to/from outside (internet), and do everything inside my vpn. On the
-> FIREWALL machine I also run some server whose services/ports must keep to
-> be accessible to/from outside. Those kinds of connections I need to do also
-> to servers outside. All the machines of the VPN need to be free to suft the
-> outside internet. So also masquerading and forwarding are needed.
+--WYTEVAkct0FjGQmd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't really see anything about this setup which is not dealt with very well 
-by the tutorials available at 
-http://www.netfilter.org/documentation/index.html#tutorials
+Hi!
 
-The only thing I would say about the protocols marked with "?" on your diagram 
-is that DNS uses TCP port 53 and UDP port 53; it does not use port 42.   I 
-can't understand why you have marked the DSL router with "?" as this is 
-nothing to do with the netfilter setup.
+I've now gotten patch-o-matic-ng to a state where it is actually quite
+useable. =20
 
-It would help us greatly if you could read one of the tutorials, use a ruleset 
-which you think will do (part of) what you want, and then tell us if you are 
-having specific problems afterwards.
+Everybody interested can check it out from CVS
+(netfilter/patch-o-matic-ng).  Everything should look exactly like the
+old patch-o-matic, including screen output and command syntax.
 
-Read the documentation - it really is good, and it will not only give you good 
-examples of what to do, but help you understand why it works as well.
+However, the implementation behind the curtain is completely different.
+Interested people are invited to look into the perl source of
+Netfilter_POM.pm and 'runme'.
 
-Regards,
+I would like to have people start testing/using pom-ng and report errors
+back to me (via email).
 
-Antony.
+The differences from a user's point of view:
 
--- 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
+- dependencies are resolved recursively
+- verbose error reporting
+- new, more verbose './runme --man' documentation
+- if you want to apply a specific set of patches, don't prefix them
+  with the repository name (i.e. use
+  	./runme pptp-conntrack-nat
+  instead of
+  	./runme extra/pptp-conntrack-nat
 
- - William Gibson, Neuromancer (1984)
+The differences from a developer's point of view:
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+- support for requirements (i.e. kernel >=3D 2.4.22)
+- recursive dependencies
+- support for multiple kernel build systems (i.e. 2.4.x and 2.6.x)
+- automatic creation of Configure.help entries / Kconfig help sections
+  from the patches 'help' file
+- no wholefile-patches in CVS.  This means that entirely new files like
+  net/ipv4/netfilter/ipt_foo.c / ipt_foo.h are not stored as patches but
+  rather in their original form.   This in turn means real version
+  control on the sourcecode!
+- backend seperated from frontend (i.e. other user frontends could be
+  implemented
+- not limited to the linux sourcecode.  It is easy to add support for
+  other projects (if a patchlet would have to patch other software, too)
 
+However, some stuff is still missing (see the patch-o-matic/TODO file).
+I'm working on implementing those missing features, though.
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--WYTEVAkct0FjGQmd
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/5ZENXaXGVTD0i/8RAuBYAJ0fYlBOrW2VjaII8vfTtegnqaXYdwCgnu/S
+hx1A9hlikuWdGktclY7czYc=
+=fZLo
+-----END PGP SIGNATURE-----
+
+--WYTEVAkct0FjGQmd--
 
