@@ -1,14 +1,14 @@
 From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: SNAT firewall maybe compromised. Misconfiguration?
-Date: Tue, 29 Apr 2003 10:55:21 -0400
+Subject: Re: Re[2]: PREROUTING
+Date: Tue, 29 Apr 2003 10:49:38 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304291055.21445.Alistair@nerdnet.ca>
-References: <00a501c30d91$cf0b7740$1800a8c0@medusa>
+Message-ID: <200304291049.38735.Alistair@nerdnet.ca>
+References: <13955288009.20030429092330@o2.pl> <200304290949.10989.pc-secure@home.nl> <50633741.20030429145355@o2.pl>
 Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00a501c30d91$cf0b7740$1800a8c0@medusa>
+In-Reply-To: <50633741.20030429145355@o2.pl>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,89 +20,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Thiago Lima  <thiagolima@webforce.com.br>, netfilter@lists.netfilter.org
+To: netfilter_user <netfilter_user@o2.pl>, SaVaGE <pc-secure@home.nl>
+Cc: netfilter@lists.netfilter.org
 
-On April 28, 2003 10:23 am, Thiago Lima wrote:
->     I'm using iptables v1.2.6a (RPM from redhat) in a firewall that has
-> 5 external ips and lots of machines in the internal network.
+On April 29, 2003 08:53 am, netfilter_user wrote:
+> Hello SaVaGE,
 >
->     iptables should port foward services based on external ip/port to
-> some internal machines and port.
+> Tuesday, April 29, 2003, 9:49:10 AM, you wrote:
 >
->     Everything is working fine, but I've seen entries in my internal
-> servers logs to 192.168.1.254 and my internal network is 192.168.0.254.
-> Ping shows that 192.168.1.254 does not exist.  So I'm thinking that
-> maybe my firewall script has a hole. And someone discoved it.
+> S> Op dinsdag 29 april 2003 09:23, schreef netfilter_user:
+> >> Hello everyone,
+> >>
+> >> this is my problem:
+> >> My LAN is connected to Internet via Linux machine with 2 interface (
+> >> ppp0 - for internet and eth1 for local net). I need to connect from
+> >> local host, service that is running on port 23073 and 23083 UDP in
+> >> internet. For this i wrote afew rules with PREROUTING but when I start
+> >> script with rules below i receive:
+> >>
+> >> Bad argument `PREROUTING'
+> >> Try `iptables -h' or 'iptables --help' for more information.
+> >> Bad argument `PREROUTING'
+> >> Try `iptables -h' or 'iptables --help' for more information.
+> >>
+> >>
+> >> iptables -t nat -A PREROUTING -p udp -d 80.50.60.185 --dport 23073 -j
+> >> DNAT --to-destination 192.168.1.2 iptables -t nat -A PREROUTING -p udp
+> >> -d 80.50.60.185 --dport 23083 -j DNAT --to-destination 192.168.1.2
+> >>
+> >> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23073 -j ACCEPT
+> >> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23083 -j ACCEPT
+> >>
+> >> What maybe a reason of this msg?
+> >> Im using slackware 8.1 with iptables 1.2.6a
 >
->     My external interface is eth0 (200.200.200.111~115 eth0:1~eth0:5)
-> and the internal is eth1 (192.168.0.254)
->
-> 	Can someone point me if I'm doind something very wrong here?
->
-> 	Thanks alot
-> 	Thiago Lima.
->
->
-> Here goes my fw script.
->
-> -- fw.sh
->
-> echo -n  Starting firewal ..
-> # enable packet forwarind
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> echo -n .
->
-> # clear all tables
-> /sbin/iptables -t nat -F
-> /sbin/iptables -F
-> echo -n .
+> S> This behaviour is correct NATting is done on the POSTROUTING table !!!!
 >
 >
-> # eth0 is the external interface. blocking packages to internal net
-> /sbin/iptables  -A INPUT -d 192.168.0.0/24 -i eth0  -j DROP
-> echo -n .
+> S> Pascal (PC-Secure Dutch security service)
 >
-> # install snat
-> /sbin/iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source
-> 200.200.200.110
-> /sbin/iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/24 -j SNAT
-> --to 200.200.200.110
-> echo -n .
+> ammm....im afraid its not correct because I have received msg like this:
 >
-> # port forwarding
+>  Bad argument `PREROUTING'
+>  Try `iptables -h' or 'iptables --help' for more information.
+>  Bad argument `PREROUTING'
+>  Try `iptables -h' or 'iptables --help' for more information.
 >
-> # http goes to server #1
-> /sbin/iptables  -A PREROUTING -t nat -p tcp -d 200.200.200.111 --dport
-> 80 -j DNAT --to 192.168.0.1:80
-> /sbin/iptables  -A PREROUTING -t nat -p tcp -d 200.200.200.111 --dport
-> 443 -j DNAT --to 192.168.0.1:443
-> echo -n .
->
-> ## pop goes to server #2
-> /sbin/iptables  -A PREROUTING -t nat -p tcp -d 200.200.200.112 --dport
-> 110 -j DNAT --to 192.168.0.4:110
-> echo -n .
->
-> # DNS goes to server #3
-> /sbin/iptables  -A PREROUTING -t nat -p tcp  -d 200.200.200.114 --dport
-> 53 -j DNAT --to 192.168.0.6
-> /sbin/iptables  -A PREROUTING -t nat -p udp  -d 200.200.200.114 --dport
-> 53 -j DNAT --to 192.168.0.6
-> echo -n .
->
-> # enables access from internet net to external virtual servers
-> /sbin/iptables  -A POSTROUTING -t nat -d 192.168.0.0/24 -s
-> 192.168.0.0/24 -j SNAT --to 192.168.1.254
-> --cut
+> ...its not correct in my newbe opinion.
 
-	You aren't showing us your policies, and that leads me to believe
-	that the chain policies might be ACCEPT ... which is very not good.
-	Also it ranter looks like this script was cut off.... so I can't be sure...
+
+
+	Actually DNAT is acceptable in the PREROUTING chain.
+	change the --to-destination option to 
+  	--to ip.ad.dr.ess:portnum
+	or 
+	--to ip.ad.dre.ss
 	
-	$IPTABLES -P INPUT DROP
-	$IPTABLES -P FORWARD DROP
-	
-	?? do you do this at all??
 -- 
 
 	Alistair Tonner
