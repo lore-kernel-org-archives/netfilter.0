@@ -1,14 +1,11 @@
-From: Mickael DILY <woksy@ether.net1.nerim.net>
-Subject: Re: ip_conntrack module, advanced routing and multiple ISP
-Date: Tue, 16 Sep 2003 13:25:46 +0200
+From: "Matthew Mileham" <matthew@postbag.co.za>
+Subject: STATELESS
+Date: Tue, 16 Sep 2003 13:36:12 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309161325.59214.woksy@ether.net1.nerim.net>
-References: <MGEFIJGLOCLFFKBKAFEPGEDIEHAA.mt.netfilter@comelis.fr>
-Reply-To: woksy@ether.net1.nerim.net
+Message-ID: <02ba01c37c46$bb7a5f60$798014ac@matthew>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <MGEFIJGLOCLFFKBKAFEPGEDIEHAA.mt.netfilter@comelis.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +15,14 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Matthieu Turpault <mt.netfilter@comelis.fr>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi 
 
-3 ISP... Wow, personally, i can't answer you, Mathieu (hi french people ;=
--) I=20
-never seen a such installation. Maybe someone in this list, but =E7a va =EA=
-tre=20
-dur ;-). Just to be curious, how high is your bandwith, and what are the=20
-specs of your computer(s) ?=20
+Does any know how to change Iptables from statefull to stateless ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+Thanks
 
-iD8DBQE/ZvM6zEzekoYhlpsRAjcYAKDaM6hMacP1IYJq0O1faXUqRkMevQCgt2BF
-EXoh8fbAOTU8z80brH3HkKc=3D
-=3DQRzz
------END PGP SIGNATURE-----
 
 
