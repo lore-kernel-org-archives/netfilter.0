@@ -1,13 +1,12 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: 'recent' module HOWTO
-Date: Wed, 11 Aug 2004 12:21:42 -0400 (EDT)
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Question about REJECT in FORWARD rule
+Date: Wed, 11 Aug 2004 12:30:50 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2197.216.239.93.106.1092241302.squirrel@216.239.93.106>
-References: <4119B0DA.6030903@svw.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC905126E@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4119B0DA.6030903@svw.com>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,53 +17,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sudheer Divakaran <sudheer@svw.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, August 11, 2004 1:38 am, Sudheer Divakaran said:
-> Hi,
->     Where can I find detailed documentation of 'recent' module?.
->
+> I attached output of iptables, y.y.y. is my WAN IP range and x.x.x. is =
+a
+> range
+> outside. Problematic REJECT rule can be found in FORWARD chain.
 
-http://snowman.net/projects/ipt_recent/
+upon further review--i think you'd be best to only match that rule on =
+SYN packets, in addition to specifying the inbound interface.  something =
+along the lines of:
 
->
-> To test the recent module, I've given the following commands and pinged
-> to my machine from another one.  But I got the reply 'Destination port
-> Unreachable'.  What is wrong in it?
+  -A FORWARD -i $INTERNAL_IF -p tcp --syn -d $SQL_SERVER --dport 445 -j =
+REJECT --reject-with tcp-reset
 
-There's nothing wrong with that.  You did specify to REJECT packets, whic=
-h
-means that you can send back an ICMP error of your choice.
+since the rule you're using according to:
 
-I guess 'Destination port Unreachable' is the default one.
+Chain FORWARD (policy DROP 1 packets, 58 bytes)
+ pkts bytes target     prot opt in     out     source               =
+destination        =20
+    0     0 REJECT     tcp  --  *      *       0.0.0.0/0            =
+sql.se.rv.er      tcp dpt:445 reject-with tcp-reset
 
->
-> iptables -F
->
-> iptables -P INPUT ACCEPT
->
-> iptables -P OUTPUT ACCEPT
->
-> iptables -A INPUT -m recent -p icmp --icmp-type echo-request --update
-> --seconds 10 -j REJECT
->
-> iptables -A INPUT -m recent -p icmp --icmp-type echo-request --set -j
-> ACCEPT
->
+is not narrowing down the interface/source, and is hit before any =
+connection tracking occurs.  i've never used "-j REJECT --reject-with =
+tcp-reset" without also specifying "--syn" as it could have very odd =
+results (and also doesn't make sense from a TCP perspective)...
 
-However, you should be able to get a single ping reply before being
-rejected. Is that what happen ?
+you should be able to test this from a client on the internal network by =
+just typing "telnet <sql.srv.ip.addr> 445" and making sure you get back =
+"Connection refused" instead of a timeout.
 
-
->
-> Kind Regards,
-> Sudheer
->
-
-Hope this helps.
-
-Samuel Jean
-CookingLinux.org
-
+-j
 
