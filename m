@@ -1,13 +1,13 @@
-From: rob@sterenborg.info
-Subject: Re: Multiple PPTP clients behind NAT
-Date: Wed, 15 Sep 2004 11:25:27 +0200 (CEST)
+From: Stephane Delcroix <stephane@delcroix.org>
+Subject: --mac-dest matching
+Date: Wed, 15 Sep 2004 11:56:30 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <33106.194.109.165.130.1095240327.squirrel@194.109.165.130>
-References: <20040914091713.68587.qmail@web52508.mail.yahoo.com>
+Message-ID: <1095242190.2267.24.camel@tartiflette>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-/eOulUtpIdPfKIm6XAj/"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040914091713.68587.qmail@web52508.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,81 +17,40 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
->>(Why would you use a 9 months old POM when a new one
->>is available ?)
->
-> The reason for using this patch is because
-> patch-o-matic-ng-20040621 said my kernel
-> is too old (I donot know why, my kernel was 2.4.20-8
-> which is the default kernel from RedHat 9).
->
-> The reason for using kernel 2.4.26 is because we
-> searched on the web and someone said using
-> this kernel with this patch works.
 
-IMHO if you have to compile a new kernel it is best use a new one with
-the latest patches unlesss there is a very good reason not to.
-But ; that's IMHO ;-).
+--=-/eOulUtpIdPfKIm6XAj/
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> My configuration is exactly the following
->
-> PPTP     |
-> client1->|
->          |
-> PPTP     |
-> client2->|                                   |->PPTP
->          |                                   |  Server
->          |->eth1->NAT->eth0->...Internet...->|
-> ... ...->|                                   |->...
->          |                                   |
-> PPTP     |
-> client n->|
->
-> A. Private LAN: 192.168.10.0/24
-> B. eth1 IP:     192.168.10.1
-> C. eth0 IP:     129.94.60.128
-> D. PPTP server: 129.94.133.1
-> E. IPs in PPTP Server: 129.94.182.130, 129.94.182.131
-> (These IPs cannot be accessed without VPN)
-> F. All clients in private LAN are windows or Mac
-> machines. After the VPN is setup, they will be
-> assigned with IP addresses of 129.94.165.3 and
-> 129.94.165.4
-> G. The PPTP Server is not firewalled
->
-> The problem is decribed as following:
-> 1. I setup one connection from client 1 to the PPTP
-> server, then I tried to test the connection by ping
-> either 129.94.182.130 or 129.94.182.131. It is
-> working.
-> 2. I setup the other connection from client 2 to the
-> same PPTP server. Then two cases will happen:
->    a) if the client 1 keep pinging (a MAC), the
-> connection will fail;
->    b) if client 1 stop pinging, the connection can be
-> established.
-> 3. After the second connection is setup. Client 2 can
-> ping, client 1 cannot ping any more, but the status
-> shows that the connection is still there.
+Hi,
+for a particular firewall, I need to match packet by mac-dest.
+I didnt find anything neither in netfilter doc nor in the kernel
+sources :(
 
-Sounds like conntrack is not working because then only 1 client would
-be able to connect to the PPTP server.
+Is there a patch or an extension for netfilter to do that?
 
-Are you sure the following are loaded :
-ip_conntrack_proto_gre
-ip_nat_proto_gre
-ip_conntrack_pptp
-ip_nat_pptp
+regards,
 
-You also create logging rules on the firewall to see what is going on.
-And you could check on the PPTP server if your ping arrives.
+Stephane
 
+--=20
+Stephane Delcroix <stephane@delcroix.org>
 
-Gr,
-Rob
+--=-/eOulUtpIdPfKIm6XAj/
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQBBSBHOSfiQDLvtSM8RAmYRAKCBvLMr7VOMcsrInNzEKTxg5cRH9QCfX0Mw
+6yTCF39WbVsKHMGx9zwzQa0=
+=R319
+-----END PGP SIGNATURE-----
+
+--=-/eOulUtpIdPfKIm6XAj/--
 
 
