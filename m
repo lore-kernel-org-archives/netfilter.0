@@ -1,11 +1,11 @@
-From: Lee Leahu <lee@ricis.com>
-Subject: Dynamicly Updating Rules
-Date: Thu, 27 Jun 2002 13:31:09 -0500
+From: Doug Monroe <doug@planetconnect.com>
+Subject: Re: Dynamicly Updating Rules
+Date: Thu, 27 Jun 2002 14:26:31 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206271331.09893.lee@ricis.com>
-Reply-To: lee@ricis.com
+Message-ID: <3D1B58D7.EABEFCB2@planetconnect.com>
+References: <200206271331.09893.lee@ricis.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -17,29 +17,21 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: lee@ricis.com
+Cc: netfilter@lists.samba.org
 
-Is there a way to dynamically add and remove rules to an iptables live co=
-nfiguration?
+Lee Leahu wrote:
+> 
+> Is there a way to dynamically add and remove rules to an iptables live configuration?
+> 
+> For example:
+> 
+> I have a server and a workstion.  the workstation is locked down tightly.  I would like for
+> when i ssh to a remote server, that iptables automatically opens the ident port on the workstation
+> to that remote server, and after a connection is made, to automatically close it back up again.
+> 
+> Is this possible???
 
-For example:
-
-I have a server and a workstion.  the workstation is locked down tightly.=
-  I would like for
-when i ssh to a remote server, that iptables automatically opens the iden=
-t port on the workstation
-to that remote server, and after a connection is made, to automatically c=
-lose it back up again.
-
-Is this possible???
-
---=20
-Lee Leahu
-Internet Technologies Specialist
-RICIS, Inc.
-
-email--> lee@ricis.com
-voice--> 708-444-2690
-fax--> 708-444-2697
-
+I suppose you could write a "wrapper" around the workstation ssh client that
+does -I (insert), -A (append), -D (delete) as needed.
 
