@@ -1,13 +1,11 @@
-From: Rowan Reid <rreid@studio3arc.com>
-Subject: RE: kazaa
-Date: Thu, 19 Dec 2002 08:26:29 -0800
+From: "Michael J. Tubby B.Sc. \(Hons\) G8TIC" <mike@thorcom.com>
+Subject: NAT of Cisco Voice-Over-IP with Skinny protocol and CallManager
+Date: Thu, 19 Dec 2002 18:49:19 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001601c2a77b$62b0dfd0$6601a8c0@s3ac>
-References: <1040285287.11114.143.camel@bigblue>
+Message-ID: <001d01c2a78f$56e16850$6401a8c0@int.thorcom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <1040285287.11114.143.camel@bigblue>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +16,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Paulo Andre' <pandre@darkstar.nom.za>, 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+All,
 
+I have acquired access to a Cisco CallManager (on the internet)
+and a pile of Cisco VIP-30 VOIP phones. I have got everything
+up and working when they are directly connected to the 'net but
+now I want to put some of the phones at friend's houses behind
+the Linux boxen that I've built as NAT/firewalls for their cable
+modem and ADSL connections...
 
-I run a plain 1.2.6a version of netfilter. Wherein all internal hosts
-are masquaraded I've never had a problem with Kaaza inbound or outbound.
-To be honest most complaints I've heard is how to stop the damn thing
-from connecting.
+I'm using RedHat 7.3 but with own compiled 2.4.20 kernel and
+iptables 1.2.7a.
 
- 
-Rowan Reid
-Job Captain, 
-Systems Administrator
-STUDIO 3 ARCHITECTS
-909  982  1717
+Problem is that the phone gets it's directory number and connects
+just fine using the Skinny protocol on and TCP:2000 and TFTP on
+UDP:69, however the called party can hear me but the return UDPs
+don't get back in.
 
+A bit of tcpdump-ing shows that there's no obvious/direct relationship
+between the outgoing UDP port numbers on the voice stream and
+the incomming reply packets, and hence netfilter/nat has no way
+to know what do do unless there's a helper.
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Paulo Andre
-> Sent: Thursday, December 19, 2002 12:08 AM
-> To: netfilter
-> Subject: kazaa
-> 
-> 
-> I know that this is an old topic but I have done some reading 
-> and am still stuck. I have opened tcp and udp for port 1214 
-> outgoing, but Kazaa is still not connecting am I missing 
-> something..???
-> 
-> Paulo
-> 
-> 
-> 
-> 
+Searching on google reveals only a posting from back in the summer
+by Fred N. van Kempen about the subject/problem:
+
+http://lists.netfilter.org/pipermail/netfilter-devel/2002-July/008844.html
+
+Does anyone know if there's a fix for this? Is there a helper (connection
+tracking) module that can prime the netfilter/DNAT to get the packets
+back in by watching the connection set up?
+
+Any help appreciated.
+
+Mike
+
 
 
