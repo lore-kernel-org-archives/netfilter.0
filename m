@@ -1,11 +1,10 @@
-From: =?ISO-8859-9?Q?=DDhsan__Turkmen?= <iturkmen@ifk.com.tr>
-Subject: i386 or i686.. which one?
-Date: Mon, 9 Sep 2002 18:02:59 +0300
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: Fw: Netmeeting NATing IP address
+Date: Mon, 9 Sep 2002 11:02:57 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <A758C299015FD411887B0000E2131186C213E6@TRUVA>
+Message-ID: <001401c25811$fb42c2e0$8701a8c0@sundaram>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C25811.FFFC227C"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,48 +15,95 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
 
-------_=_NextPart_001_01C25811.FFFC227C
-Content-Type: text/plain;
-	charset="ISO-8859-9"
+ Hi,
 
-Hi..
-This is not the right place of asking that question, but i hope nobody minds
-my asking:
-----"How to understand if my kernel source is RedHat  i386 or i686. Is there
-a shoert way of undersatnding it...?"
- 
-Best regards..
- 
- 
+ I want  outside user  initiate the  Netmeeting connection to inside user, I
+ NATed public IP address to my user machine, but still  we are not able to
+ connect from outside.
 
-------_=_NextPart_001_01C25811.FFFC227C
-Content-Type: text/html;
-	charset="ISO-8859-9"
+ I am attaching me script. can any one help me on this. Is there any other
+ way to achive this.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-9">
+ Thanks
+ -SR
 
 
-<META content="MSHTML 5.00.3315.2870" name=GENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=Arial><SPAN class=994225814-09092002>Hi..</SPAN></FONT></DIV>
-<DIV><FONT face=Arial><SPAN class=994225814-09092002>This is not the right place 
-of asking that question, but i hope nobody minds my asking:</SPAN></FONT></DIV>
-<DIV><FONT face=Arial><SPAN class=994225814-09092002>----"How to understand if 
-my kernel source is RedHat&nbsp; i386 or i686. Is there a shoert way of 
-undersatnding it...?"</SPAN></FONT></DIV>
-<DIV><FONT face=Arial><SPAN class=994225814-09092002></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial><SPAN class=994225814-09092002>Best 
-regards..</SPAN></FONT></DIV>
-<DIV><FONT face=Arial><SPAN class=994225814-09092002></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial><SPAN 
-class=994225814-09092002></SPAN></FONT>&nbsp;</DIV></BODY></HTML>
+ #!/bin/bash
+ #set -xv
 
-------_=_NextPart_001_01C25811.FFFC227C--
+ EXT="eth0"
+ INT="eth1"
+ LO="lo"
+
+ GW_IP="192.168.1.10"
+ ANY="Any/0"
+ SUB_NET="192.168.1.0/24"
+
+ PRIVP="0:1023"
+
+ UNPRI="1024:65535"
+
+ IPT="/sbin/iptables"
+
+ modprobe ip_nat_h323
+
+ echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+
+ for f in /proc/sys/net/ipv4/conf/*/rp_filter; do
+         echo 1 > $f
+ done
+
+ echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+ $IPT -P INPUT DROP
+ $IPT -P OUTPUT ACCEPT
+ $IPT -P FORWARD DROP
+
+ $IPT -X
+ $IPT -F
+ $IPT -t nat -F
+ $IPT -t nat -X
+
+
+ $IPT -A INPUT   -i $INT -j ACCEPT
+ $IPT -A OUTPUT  -o $INT -j ACCEPT
+ $IPT -A FORWARD -i $INT -j ACCEPT
+ $IPT -A FORWARD -o $INT -j ACCEPT
+
+ $IPT -A INPUT  -i $LO -j ACCEPT
+ $IPT -A OUTPUT -o $LO -j ACCEPT
+
+
+ $IPT -t nat -A POSTROUTING -o $EXT -j MASQUERADE
+ $IPT -A FORWARD -i $EXT -m state --state ESTABLISHED,RELATED -j ACCEPT
+ $IPT -A FORWARD -i $EXT -m state --state NEW -j ACCEPT
+
+ : For NetMeeting
+ $IPT -A OUTPUT -o $EXT -p udp --sport 1024:65535 --dport 53 -j ACCEPT
+ $IPT -A INPUT  -i $EXT -p udp --sport 53 --dport 1024:65535 -j ACCEPT
+ $IPT -A OUTPUT -o $EXT -p tcp --sport $UNPRI --dport 53 -j ACCEPT
+ $IPT -A INPUT  -i $EXT -p tcp --sport 53 --dport $UNPRI -j ACCEPT
+
+ $IPT -A FORWARD -i $EXT -p tcp --dport 113 --syn -j REJECT
+
+ #NAT to user machine for Netmeeting
+ EXT_IP1=215.183.76.135
+ INT_IP1=192.168.1.135
+
+ ip addr add $EXT_IP1 dev $EXT
+
+ $IPT -t nat -A PREROUTING -i $EXT -d $EXT_IP1 -j DNAT --to $INT_IP1
+ $IPT -t nat -A POSTROUTING -o $EXT -s $INT_IP1 -j SNAT --to-source $EXT_IP1
+
+ $IPT -A INPUT -j LOG --log-prefix "input "
+ $IPT -A OUTPUT -j LOG --log-prefix "output "
+ $IPT -A FORWARD -j LOG --log-prefix "forward "
+
+
+
 
