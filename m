@@ -1,9 +1,8 @@
-From: =?UTF-8?B?0JvQvtC20LXRh9C90LjQuiDQkNC70LXQutGB0LDQvdC00YA=?=
-	<A.Logechnik@itak.ua>
+From: Logechnik Alexandr <A.Logechnik@itak.ua>
 Subject: Re: problem using MAC address.
-Date: Wed, 27 Oct 2004 12:57:48 +0000
+Date: Wed, 27 Oct 2004 13:41:54 +0000
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <417F9B4C.3080007@itak.ua>
+Message-ID: <417FA5A2.9080204@itak.ua>
 References: <20041027095016.39480.qmail@web60408.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -42,25 +41,17 @@ ads nat wrote:
 >I am using Redhat 9.0 Linux.
 >Please guide me.
 >
->Thanks for support.
+>Thanks for support.	
 >
->
->
->		
->__________________________________
->Do you Yahoo!?
->Take Yahoo! Mail with you! Get it on your mobile phone.
->http://mobile.yahoo.com/maildemo 
->
->
->  
->
-You try delete some chain. You need:
+Sorry, for the fulless answer.
 
-"iptables -A FORWARD -i eth1 -p tcp -m tcp --dport 25
--s 192.168.0.42 -d ! 10.0.0.2 -j DROP"
+You not need:
+iptables -I INPUT 1 -i eth1 -p tcp --dport 25 -m mac --mac-source 
+00:08:A1:53:BE:71 -j DROP
 
-
+You need:
+iptables -A FORWARD -p tcp --dport 25 -m --mac-source 00:08:A1:53:BE:71 
+-j DROP
 
 -- 
 wbr, Logechnik Alexandr
