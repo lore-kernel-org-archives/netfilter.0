@@ -1,13 +1,13 @@
 From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Dynamic redirection?
-Date: Thu, 26 Feb 2004 18:32:44 +1000
+Subject: Re: connection dropouts
+Date: Thu, 26 Feb 2004 19:00:35 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <403DAF2C.1090303@snapgear.com>
-References: <1077774151.3036.78.camel@merlin>
+Message-ID: <403DB5B3.7030509@snapgear.com>
+References: <E1Aw4LY-001AoE-0V@alf1.lmb.internal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077774151.3036.78.camel@merlin>
+In-Reply-To: <E1Aw4LY-001AoE-0V@alf1.lmb.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +18,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Glen Becker <solar04@comcast.net>
+To: "T. Horsnell (tsh)" <tsh@mrc-lmb.cam.ac.uk>
 Cc: netfilter@lists.netfilter.org
 
-Glen Becker wrote:
-> Is there a way to "redirect" web connections only if the packet hasn't
-> already been ACCEPTed for forwarding?
-
-Since DNAT is performed in PREROUTING, which comes before FORWARD,
-it is impossible to base the DNAT decision off whether the packet is
-accepted in FORWARD.
-
-You need to duplicate your authentication rules in the nat table.
-
-> For example:
-> Host 192.168.2.128 is authenticated and should be allowed any internet
-> connections.  http requests from all other internal hosts are sent to
-> the local web server:
+T. Horsnell (tsh) wrote:
+> The firewall box is a 1GHz AMD with 128MBytes mem, and
+> /proc/sys/net/ipv4/ip_conntrack_max is currently set to 8184.
 > 
-> -P FORWARD DROP
-> -A FORWARD -p udp --dport 53 -j ACCEPT
-> -A FORWARD -p udp --sport 53 -j ACCEPT
-> -A FORWARD -s 192.168.2.128 -p ALL -j ACCEPT
-> -A FORWARD -d 192.168.2.128 -p ALL -j ACCEPT
-> -A [something really smart like DNAT but only if the packet traverses
-> this far]
+> How can I track how close I get to this limit? 
 
-Use these rules:
+There will be a syslog message telling you when you reach the limit.
+Or 'grep ip_conntrack /proc/slabinfo', and read the first number
+(active_objs).
+Or 'wc -l /proc/net/ip_conntrack', but that is slow and maybe unreliable.
 
--t nat -A PREROUTING -s 192.168.2.128 -j ACCEPT
--t nat -A PREROUTING -d 192.168.2.128 -j ACCEPT
--t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 192.168.2.1
--P FORWARD DROP
--A FORWARD -p udp --dport 53 -j ACCEPT
--A FORWARD -p udp --sport 53 -j ACCEPT
--A FORWARD -s 192.168.2.128 -p ALL -j ACCEPT
--A FORWARD -d 192.168.2.128 -p ALL -j ACCEPT
+> What is the memory use per conntrack entry?
 
-If you don't like duplicating the rules like that, then you could
-set marks in mangle PREROUTING and base both the nat and filter rules
-off the mark.  Or you could patch your kernel to use ippool or ipset,
-then you wouldn't need to dynamically add rules at all, you just
-have one rule each in nat and filter referring to the pool/set.
+The kernel displays this when the conntrack module is loaded, eg
+kernel: ip_conntrack version 2.1 (8191 buckets, 65528 max) - 300 bytes
+per conntrack
+Or 'grep ip_conntrack /proc/slabinfo', and read the third number (objsize).
+(Hmm, except I noticed those two numbers are different on my PC.  The
+slabinfo may be more accurate.)
+
+> Is there anything particular about NAT entries in the conntrack
+> tables that would make NAT'd hosts more prone to net hangups
+> that unNAT'd ones?
+
+Not that I'm aware of.  Do the hangups have any sort of consistency?
+
+> If I raise my ip_conntrack_max value, am I likely to crash
+> the firewall if I raise it too high?
+> What is the theoretical maximum number of conntrack entries?
+> What is the theoretical maximum number of NAT connections?
+> (this would seem to me to be 65536 - the maximum number
+> of ports available on a single host, i.e. the NAT box
+> since it has to map a source host:hostport into a NAT:natport)
+
+The only limit is available memory.  It is not limited to 65536 since
+each entry is based off protocol/source host/source port/dest host/dest
+port, the number of combinations of which is more than you'll ever need.
+There is a limitation of 65535 NATed connections to a single port on a
+given dest host (ie if source host, dest host, and dest port are all
+constant), but that would be unusual to encounter.
 
 -- 
 Philip Craig - SnapGear, A CyberGuard Company - http://www.SnapGear.com
