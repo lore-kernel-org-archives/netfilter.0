@@ -1,13 +1,13 @@
 From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Help! NAT unable to routing
-Date: Fri, 31 Oct 2003 15:34:58 -0500
+Subject: Re: Kernel, IPTables or Router Anomaly? Maybe me?
+Date: Fri, 31 Oct 2003 15:49:49 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031031203458.GF30565@cannon.eng.us.uu.net>
-References: <BEA73FB6B8F62545A5B2818724D0DF2902E7084A@u.library.Arizona.EDU>
+Message-ID: <20031031204949.GB30613@cannon.eng.us.uu.net>
+References: <1067611776.1427.47.camel@main.tqmcube.com> <20031031191842.GA30613@cannon.eng.us.uu.net> <1067630965.1432.59.camel@main.tqmcube.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <BEA73FB6B8F62545A5B2818724D0DF2902E7084A@u.library.Arizona.EDU>
+In-Reply-To: <1067630965.1432.59.camel@main.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,33 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Han, Yan" <hany@u.library.arizona.edu>
-Cc: netfilter@lists.netfilter.org
+To: "David C. Hart" <DCH@TQMcube.com>
+Cc: iptables mailing list <netfilter@lists.netfilter.org>
 
-On Fri, Oct 31, 2003 at 12:30:10PM -0700, Han, Yan wrote:
+OK, first of all don't use ifconfig and the family. Use iproute2.
+By doing:
 
-> Are you saying the FORWARD chain should ACCEPT?
-> All forward is accepted. 
+ip addr add 192.168.0.31/24 dev eth0
+ip addr add 192.168.0.5/24 dev eth0
+ip addr add 192.168.0.32/24 dev eth1
 
-I'm sorry. I had not read your first message. So you say you want to reroute
-the traffic instead of 150.135.44.245 to 150.135.44.96.
-
-Is 150.135.44.96 behind 150.135.44.245 with respect to the client? if not
-you need to apply an SNAT so that the return traffic gets back to the router
-in order to apply the de-DNATting.
-
-Client --> 150.135.44.245
-DNAT takes place and it becomes
-Client --> 150.135.44.96
-the server replies back to the client directly
-150.135.44.96 --> Client
-the clients TCP stack drops the packets as it has no reference to such a
-socket between 150.135.44.96 and Client.
-
-But if 150.135.44.96 is behind 150.135.44.245 with respect to the client and
-your forwarding is on and the FORWARD policy is ACCEPT, then I don't know.
+This way you will not have the weird eth0:1 which most probably is
+the culprit.
 
 Ramin
+
+On Fri, Oct 31, 2003 at 03:09:26PM -0500, David C. Hart wrote:
+
+> On Fri, 2003-10-31 at 14:18, Ramin Dousti wrote:
+> > You have three interfaces on the same 192.168.0.0/24. Why?
+> > 
+> Postfix needs two. While I could create a virtual IP, NIC cards are
+> cheap enough.
+> 
+> eth0: SMTP Postfix
+> eth1: HTTP, FTP, etc and Postfix redirects for regex header and body
+> checks.
+> eth0:1 A virtual IP used exclusively to direct port scans and other
+> miscreant traffic to.
 
 
 
