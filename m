@@ -1,9 +1,9 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: sugestion needed for session marking from different default
 	routres
-Date: Wed, 01 Oct 2003 13:06:14 +0200
+Date: Wed, 01 Oct 2003 13:11:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065006374.870.59.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <1065006675.879.62.camel@elendil.intranet.cartel-securite.net>
 References: <34887.212.202.127.214.1065004876.squirrel@knex.zedx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -23,59 +23,16 @@ To: axel@zedx.org
 Cc: netfilter@lists.netfilter.org
 
 Le mer 01/10/2003 =E0 12:41, Axel Christiansen a =E9crit :
-[...]
 > Now, ssh from inet on the DSL line works fine. The
 > Pakets get back the right way by the active default
 > route. I also want to ssh in over the other interface,
 > and want the packets back in that line.
-> I am thinking about marking the incoming packets and
-> then finding out about the returning packets some how.
-> If this would work, the routing then can by done by
-> ip rule (routing).
 
-You must have a look to CONNMARK target and connmark match that stands
-in pom extra section :
+Well, something I missed. Your two interfaces must have different IP ?
+So you can set source based routing, as described as example for
+advanced routing in LARTC[1].
 
-http://www.netfilter.org/documentation/pomlist/pom-extra.html#CONNMARK
-
----
-This patch adds per connection marks, and a target (CONNMARK)
-respective a match (connmark) for using these.
-
-Usage:
-
-   connmark
-       This  module  matches  the netfilter mark field associated
-       with a connection (which can be  set  using  the  CONNMARK
-       target below).
-
-       --mark value[/mask]
-              Matches  packets  in  connections  with  the  given
-              unsigned mark value (if a mask is  specified,  this
-              is logically ANDed with the mark before the compar=AD
-              ison).
-
-
-   CONNMARK
-       This  is  used  to set the netfilter mark value associated
-       with the connection
-
-       --set-mark mark
-              Set connection mark
-
-       --save-mark
-              Set connection mark to the same as the one  on  the
-              packet
-
-       --restore-mark
-              Set  the  netfilter  packet  mark  value to the one
-              associated with the connection. This is only  valid
-              in the mangle table.
----
-
-That means you can affect different marks to SSH sessions depending on
-what interface they come in. This mark will get restored on replies you
-generate for they will get flaged as ESTABLISED by conntrack engine.
+[1] : http://lartc.org/
 
 --=20
 http://www.netexit.com/~sid/
