@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
+From: "Kevin P. Fleming" <kpfleming@starnetworks.us>
 Subject: Re: Bizarre rule requirement
-Date: Fri, 31 Dec 2004 14:54:06 -0500
-Message-ID: <20041231195406.GA7578@bender.817west.com>
+Date: Fri, 31 Dec 2004 13:05:48 -0700
+Message-ID: <41D5B11C.9060303@starnetworks.us>
 References: <41D5A87C.4040508@starnetworks.us>
+	<20041231195406.GA7578@bender.817west.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <41D5A87C.4040508@starnetworks.us>
+In-Reply-To: <20041231195406.GA7578@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,58 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Fri, Dec 31, 2004 at 12:29:00PM -0700, Kevin P. Fleming wrote:
-> I have an application that needs an unusual rule, and I don't think I 
-> can construct it using standard netfilter targets (in 2.6 kernel series).
-> 
-> I have a Linux machine configured as a NATing firewall using 
-> iptables/netfilter; it has a public IP and a private IP on separate 
-> NICs, standard config.
-> 
-> On the private LAN, there is a node (at 10.1.1.2) that sends out UDP 
-> (from port 4000) to a public IP of 200.200.200.1 (made up <G>) at port 
-> number 5000.
-> 
-> When this passes through the NAT, the source IP address and port number 
-> change to 100.100.100.2 (the public IP of the NAT) and port 32450 
-> (random assignment).
-> 
-> Because we allow ESTABLISHED return traffic, UDP packets coming from 
-> 200.200.200.1 sent to 100.100.100.2 port 32450 are accepted and 
-> de-NATted back to 10.1.1.2 port 4000. This is good :-)
-> 
-> However, I need to modify this a bit; I need to accept traffic from 
-> _any_ IP address/port to port 32450 on the NAT, and have it forwarded to 
-> 10.1.1.2 port 4000, as long as 10.1.1.2 continues to send outbound 
-> packets and keep the "connection" alive. In other words, I need the 
-> "conntrack" data to be asymmetric:
-> 
-> Outbound: 10.1.1.2/32:4000 > 200.200.200.1:5000
-> Inbound: 0.0.0.0/0:(any) > 10.1.1.2/32:4000
-> 
-> Is something like this possible?
-> 
+Jason Opperisano wrote:
 
-here's a thought:  fix your fscking application.
+> here's a thought:  fix your fscking application.
 
-beyond that--state tracking can't help you:
+A working SIP ALG would be the fix for my fscking application... but so 
+far there isn't one available. What's really happening here is that the 
+far end of the "connection" is being moved to a different IP and port; 
+the local end is notified of that before it happens, but conntrack has 
+no idea it is occurring.
 
-  # DNAT all UDP ports to 10.1.1.2 port 4000
-  iptables -t nat -A PREROUTING -i $EXT_IF -p udp \
-    -j DNAT --to-destination 10.1.1.2:4000
+>   # DNAT all UDP ports to 10.1.1.2 port 4000
+>   iptables -t nat -A PREROUTING -i $EXT_IF -p udp \
+>     -j DNAT --to-destination 10.1.1.2:4000
+> 
+>   # accept all udp port 4000 packets to 10.1.1.2
+>   iptables -A FORWARD -i $EXT_IF -p udp -d 10.1.1.2 --dport 4000 \
+>     -j ACCEPT
 
-  # accept all udp port 4000 packets to 10.1.1.2
-  iptables -A FORWARD -i $EXT_IF -p udp -d 10.1.1.2 --dport 4000 \
-    -j ACCEPT
+Even that won't quite do it; I don't want to accept all destination UDP 
+ports to DNAT to the inside device. I want to accept all _source_ UDP 
+ports (from any IP address) as long as they are addressed to the 
+randomly-assigned outbound UDP port that my inside device got when it 
+sent out the first packet. Yeah, I know, it's screwy and funky.
 
-if those keep-alive packets are of a fixed length--you can use the
-length match to limit you exposure with that DNAT rule.
-
-another option would be to fix your fscking application.
-
--j
+If I could do it, though, it would allow me to redirect traffic around 
+with aplomb, without having to wait for (or try to implement) a SIP ALG.
 
