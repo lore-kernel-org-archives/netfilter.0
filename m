@@ -1,12 +1,11 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: Re: limit speed of file transfer
-Date: Mon, 24 Jan 2005 09:38:07 -0800
-Message-ID: <41F5327F.3070803@wildcash.com>
-References: <001001c5001e$d80df760$0201a8c0@micah>
+From: "Mario Ohnewald" <mario.Ohnewald@gmx.de>
+Subject: ftp contrack
+Date: Mon, 24 Jan 2005 00:57:14 +0100 (MET)
+Message-ID: <22793.1106524634@www29.gmx.net>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001001c5001e$d80df760$0201a8c0@micah>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,55 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello List!
 
-An option may be to use SSH with RSYNC instead of SCP.
-The Rsync command has a bandwidth limit option.
+I am trying to redirect (NAT) to a internal ftp box (but both have a public
+ip).
+I am using those rules:
 
-I use it like this:
+modprobe ip_conntrack_ftp ports=21,2121
+modprobe ip_nat_ftp
+iptables -t nat -A PREROUTING -d $FW -p tcp --dport 2121 -j DNAT --to
+$FTP:21
+iptables -A POSTROUTING -t nat -d $FTP -p tcp --dport 21 -j SNAT --to
+$FW:2121
 
-rsync -avz --bwlimit 10 -e ssh remoteuser@remotehost:/remote/dir /this/dir/
 
-Check the 'man' pages for more info on the 'bwlimit' option.
+They kind of worked for a while. The forwarding of port 21 to 2121 worked
+one out of 10 times maybe.
 
-HTH
-Regards
-Rudi.
+Now the packets dont get forwarded at all anymore.
+/proc/sys/net/ipv4/ip_forward is set to 1.
 
-Micah Wedemeyer wrote:
+Default policy is set to ACCEPT when i am testing it.
+With tcpdump i see the packets coming in, but they don`t get forwarded.
 
->Hi,
->
->My system consistently locks up on file transfers across the LAN.  When
->transferring a file to it using scp, it dies after less than 5 seconds.
->However, if I use it to download a file from the Internet (using wget),
->it does just fine.
->
->I have heard that my motherboard (a Via Epia MII) has DMA problems and
->that high Ethernet traffic is known to lock them up.  My theory is that
->the Internet connection is slow enough to not hit whatever magic
->threshold causes the crash.  So, I was hoping to find a way to limit the
->speed of transfers with scp and ftp so that they also don't lock up the
->machine.
->
->I asked on a few message boards, and they all mentioned iptables.  I've
->never used it before, and am a total noob when it comes to networking
->stuff.  So, I was hoping that the people on this list could point me in
->the right direction of where to start.
->
->To sum up:  I need a way to limit the speed of incoming file transfers
->using ftp or scp.
->
->Any help would be greatly appreciated,
->Micah
->
->
->
->
->  
->
 
+Any idea what i am doing wrong?
+
+
+Cheers, Mario
+
+-- 
+Sparen beginnt mit GMX DSL: http://www.gmx.net/de/go/dsl
 
