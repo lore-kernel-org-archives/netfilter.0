@@ -1,12 +1,11 @@
-From: "Khanh Tran" <khanh@slc.edu>
-Subject: RE: virus scanning with iptables
-Date: Thu, 9 Sep 2004 20:36:24 -0400
+From: "John Black" <black@arbbs.net>
+Subject: assigning alias ip address
+Date: Thu, 9 Sep 2004 22:10:22 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC02CE644C@exchange.admin.slc.edu>
+Message-ID: <003c01c496e3$b6416c60$f82ffea9@black>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-How about port scanning clients behind from the firewall?  Suggestions?
-I'm thinking of something that could be scripted to append an iptables
-rule to block the MAC address of the offending client, then notify me.
-Am I looking at an NMAP plugin possibly?
+How does assigning alias IP address work?
 
+I have one network jack coming into my server room. 
+eth0  10.10.10.10
 
-Khanh Tran
-Network Operations
-Sarah Lawrence College
+I have two servers with public IP address.
+this assigns them, right?
+ifconfig eth0:10 192.168.1.10 netmask 255.255.255.0
+ifconfig eth0:11 192.168.2.11 netmask 255.255.255.0
 
+iptables -t nat -A PREROUTING -d 192.168.1.10 -i eth0 \
+                -j DNAT --to-destination 10.10.10.11
+iptables -t nat -A PREROUTING -d 192.168.2.11 -i eth0 \
+                -j DNAT --to-destination 10.10.10.12
 
------Original Message-----
-From: Daniel Chemko [mailto:dchemko@smgtec.com]=20
-Sent: Thursday, September 09, 2004 7:27 PM
-To: Khanh Tran; netfilter@lists.netfilter.org
-Subject: RE: virus scanning with iptables
+When a mail or web request is made from the internet.  
+How does it know where the servers are?
 
-Khanh Tran wrote:
-> Is any using a virus scanning application with iptables?  I'd like to=20
-> know if it's possible for me to detect viruses that go across my=20
-> iptables firewalls.
-
-There isn't currently a tool to perform Virus scanning of iptables data.
-The closest match would be snort-inline which can locate some virus
-signatures. Inline scanning of anything can have averse effects on the
-transmission. You'll quickly find that detailed scans require a lot of
-CPU usage. Just for monitoring network thoughtput with ntop, I'd max out
-my P4 CPU when backups kicked off.
-
-The better approach would be to implement transparent proxies of
-pertinent services like SMTP and use virus scanning addons. for them.
-You may also look at the 'l7-filter' project or the 'string' extension
-to see if their implementation suits your needs.
+thanks
+John
 
 
