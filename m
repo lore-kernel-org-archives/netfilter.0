@@ -1,14 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: list delete bug: kernel crash
-Date: Tue, 31 Aug 2004 12:01:29 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Access to two identical subnets
+Date: Tue, 31 Aug 2004 09:52:33 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200408311201.29993.Alistair@nerdnet.ca>
-References: <000801c48f65$58d3c940$0a00a8c0@aziz>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E366@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000801c48f65$58d3c940$0a00a8c0@aziz>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,76 +17,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Andreas Granheim <andreasg@client.no>, netfilter@lists.netfilter.org
 
-On August 31, 2004 10:18 am, security wrote:
-> ----- Original Message -----
-> From: "security" <security@lea-linux.com>
-> To: "Gavin Hamill" <gdh@acentral.co.uk>; <netfilter@lists.netfilter.org>
-> Sent: Tuesday, August 31, 2004 3:34 PM
-> Subject: Re: list delete bug: kernel crash
->
-> >> This may be a long shot, but there may exist the possibility of the
-> >> files on
-> >> disk being corrupted when they were installed, due to your faulty
-> >> memory?
-> >>
-> >> Try to reinstall the kernel / modules and iptables userspace?
-> >>
-> >> Cheers,
-> >> Gavin.
-> >
-> > Ok. I go re-compil my kernel and re-install iptable package :)
->
-> Ok still have  crash after re-compil my kernel and re-install iptable
-> userspace package.
-> Allways the same error:
->
-> Aug 31 16:01:39 gateway kernel: LIST_DELETE:
-> net/ipv4/netfilter/ip_conntrack_core.c:300
-> `&ct->tuplehash[IP_CT_DIR_REPLY]'(d3ac9224) not in
-> &ip_conntrack_hash[hr].
-> Aug 31 16:01:39 gateway kernel: LIST_DELETE:
-> net/ipv4/netfilter/ip_conntrack_core.c:300
-> `&ct->tuplehash[IP_CT_DIR_REPLY]'(d3ac9524) not in
-> &ip_conntrack_hash[hr].
-> Aug 31 16:03:26 gateway kernel: LIST_DELETE:
-> net/ipv4/netfilter/ip_conntrack_core.c:300
-> `&ct->tuplehash[IP_CT_DIR_REPLY]'(d6537224) not in
-> &ip_conntrack_hash[hr].
 
-	I recall having memory problems in the past (about three years ago) ... 
-	never very fun, and the issue was so fine grained that I ended up having to 
-rebuild the box from a zeroed disk.  Reading backward I see you are using 
-2.6.8.1 kernel code.  Can you check 
+> When I ping 10.100.50.5 (linux server on B Subnet) from 192.168.1.35
+> (linux comp), I LOG in the VPN 1 box:=20
+>=20
+> 12206.080946 192.168.1.35 -> 10.50.50.5: icmp: echo request
+> 12207.081074 192.168.1.35 -> 10.50.50.5: icmp: echo request=20
+>=20
+> But it doesn't get any reply.
 
-	1) the MD5 sum of the tarball of kernel code and the 
-	2)MD5 sum of the tarball of iptables, 
-	
-	just as a quick verification that they are (close to) clean.  
+Since 10.50.50.0 Exists on both sides of the VPN1 server, it can't tell
+which path to route the return traffic. I assume the default route for
+VPN1 is anything but FW when the VPN is engaged.
+=20
 
-	next == which version of iptables ( i didn't notice that in your original 
-post) and what  elements if any out of patch-o-matic(-ng) are installed?
+The rest of what you describe is pretty ambiguous. I'm making
+assumptions about your design since the ASCII art looked like spahgetti.
+Here goes:
 
-	Keep in mind that you now have to question any code that is on your system 
-that might have been built wilst that damaged memory module was installed, 
-one never knows where a bit might have been flipped. *sigh*
+Internet  192.168.1.0
+  |  |        |
+  |  ---------FW---------
+  |                     |
+ 10.50.50.0        10.100.50.0
+ ROUTER            IPTables FW
+    |          10.50.6.0   10.50.50.0
+ 10.50.50.0       |            |---10.50.50.0
+ VPN2<.Internet.>VPN1
 
-	This particular message is from LIST_DELETE in function
-	clean_from_lists() and appears at first glance to be the cleanup after 
-expectation timeout.  You don't have any tweaks to any of the (expectation) 
-timeout code somewhere do you?
-	
-	You could *try* running MD5sum against ip_*.c 
-in /usr/src/linux/net/ipv4/netfilter dir -- and *possibly* someone could 
-verify the numbers  .....but I  personally would redownload the whole lot to 
-be safe  (i.e. kernel code/iptables code etc) -- if this is a recently built 
-box, I'd rebuild from the ground up based on the bad memory module... but I'm 
-paranoid....
 
-	Alistair Tonner
+Before knowing why the hell your performing suck a royally disgusting
+hack (Subnets are atomicly located for a reason), why do you need both
+networks to be 10.50.50.0?
 
-	
+Why can't you drag VPN1 into the 10.50.50.0 network and use bridging
+software on the VPN to perform interface bridging between the
+Ipsec/PPTP/etc.. interface and the interface used on 10.50.50.n? In
+which case, you could redirect all traffic destined for 10.50.50.n in
+the same direction, into subnet B. Once there, the packet will be
+received by one of the servers in that network, or it'll get proxyarped
+(which you'll have to setup) on the VPN1 and forward it through to
+(subnetA). Once again, unless there's a damn good business reason why
+these subnets must be identical, then CHANGE IT!
 
-	
 
