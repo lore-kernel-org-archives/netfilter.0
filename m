@@ -1,8 +1,8 @@
 From: Juan Hernandez <alucard@kanux.com>
 Subject: RE: port forwarding in a web server
-Date: 24 Nov 2003 13:47:58 -0400
+Date: 24 Nov 2003 13:56:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069696078.1083.25.camel@webmail.aeropostal.com.ve>
+Message-ID: <1069696580.1083.27.camel@webmail.aeropostal.com.ve>
 References: <20031124171108.6D4DC8047@sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,16 +18,13 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: 'Lista de netfilter' <netfilter@lists.netfilter.org>
+To: Rob Sterenborg <rob@sterenborg.info>, Lista de netfilter <netfilter@lists.netfilter.org>
 
-No, the webserver (the one that has the internet address 1.1.1.1 and the
-internal in another NIC 192.168.0.1) is the one that is forwarding
-everything that comes to port 25 to the mailserver 192.168.0.2 
+Thank you so much pal... 
 
-Thanx
+Now its working
 
-Juan
+Juan :D
 
 On Mon, 2003-11-24 at 13:11, Rob Sterenborg wrote:
 > > simple. Here's my scenario: I have a static IP address routed 
