@@ -1,9 +1,11 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: RFC 1035 Bind
-Date: Tue, 9 Nov 2004 11:22:47 -0800
-Message-ID: <29F6FAF7F2C0D41190980002A513591E0E473235@FSNSAB30>
+From: a.ledvinka@promon.cz
+Subject: Re: RFC 1035 Bind
+Date: Tue, 9 Nov 2004 22:10:06 +0100
+Message-ID: <OF126E9AEB.2741841F-ONC1256F47.006CCB1D-C1256F47.0074485C@promon.cz>
+References: <20041109190202.GB18755@marschmellow.homeunix.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20041109190202.GB18755@marschmellow.homeunix.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,63 +18,78 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'Mark-Walter@t-online.de'" <Mark-Walter@t-online.de>, netfilter@lists.netfilter.org
+To: Mark-Walter@t-online.de
+Cc: netfilter@lists.netfilter.org
 
+> As I understand RFC 1035 answering packet's over TCP are truncated
+> at a limit of 512 bytes but it could be more ...
+there is no such limit for tcp. for udp don't forget to look at eDNS 
+definition.
 
-use of port 53 is for zone transfers between dns servers and for when dns
-tries to mux up traffic over tcpmux service on tcp port 1.
-if one is defining what dns traffic to allow internally trhen in order to
-prevent a bunch of needless coding include tcp port 53 in your plans
-else you aewe asking for resolution problem down the road.
-4.2.2. TCP usage
+> Isn't it the comparing this document the best way while using 
+> UDP to DROP TCP packets over port 53 and to allow only UDP port 
+> 53 at it does not use the IP protocol ?
+both queries and answers are limited. udp - length in udp header. tcp 
+length of query before query itself. so you just can't have answer or 
+question longer then 65535 bytes but that's without udp/tcp/ip headers. so 
+tcp can carry queries which udp can't because of size limits...
 
-Messages sent over TCP connections use server port 53 (decimal). The message
-is prefixed with a two byte length field which gives the message length,
-excluding the two byte length field.  This length field allows the low-level
-processing to assemble a complete message before beginning to parse it. this
-is an advantage as this extends the bogus 512 byte limit set by udp.
+but anyawy if you need zone transfers you can't live without TCP unless 
+you use other mechanism to transfer dns zones.
 
+> but generally I would like prefer to avoid TCP over port 53 concerning
+> to avoid a man-in-the-middle attack.
+see DNS_ALG rfc 2694, dnsmasq project and maybe some day you will be able 
+recover alpha quality code for dns(udp) nat in 2.2.12 kernel hooked into 
+ipchains from web.archive.org - it's not limited to masqurading setup. it 
+could be used for any nat you could setup.
 
-as far as connectivity management, the dns server should not block other
-activities waiting for TCP data and should support multiple connections,
-should assume that the client will initiate
-close a dormant connection to reclaim resources, it wait 120 seconds of idle
-time before killing the connex.
+here are the most relevant parts of rfcs you should not miss before you 
+ever try to limit size of dns on udp.
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of
-Mark-Walter@t-online.de
-Sent: Tuesday, November 09, 2004 11:02 AM
-To: netfilter@lists.netfilter.org
-Subject: RFC 1035 Bind 
+taken from rfc 1035:
+Messages carried by UDP are restricted to 512 bytes (not counting the IP
+or UDP headers).  Longer messages are truncated and the TC bit is set in
+the header. 
+(see 2.3.4. Size limits)
 
+taken from rfc1035:
+Messages sent over TCP connections use server port 53 (decimal).  The
+message is prefixed with a two byte length field which gives the message 
+length, excluding the two byte length field.  This length field allows
+the low-level processing to assemble a complete message before beginning
+to parse it.
+(see 4.2.2. TCP usage) 
 
-Hi,
+parts of RFC 2671 
+2 - Affected Protocol Elements
+2.3. DNS Messages are limited to 512 octets in size when sent over UDP.
+     While the minimum maximum reassembly buffer size still allows a
+     limit of 512 octets of UDP payload, most of the hosts now connected
+     to the Internet are able to reassemble larger datagrams.  Some
+     mechanism must be created to allow requestors to advertise larger
+     buffer sizes to responders. 
 
-there's quite a lot to read about open UPD and TCP port for DNS
-queries.
+4 - OPT pseudo-RR
+4.1. One OPT pseudo-RR can be added to the additional data section of
+     either a request or a response.  An OPT is called a pseudo-RR
+     because it pertains to a particular transport level message and not
+     to any actual DNS data.  OPT RRs shall never be cached, forwarded,
+     or stored in or loaded from master files.  The quantity of OPT
+     pseudo-RRs per message shall be either zero or one, but not
+     greater. 
 
-I read an article from a tech guru from microsoft as follow:-)
+4.5.3. The requestor's maximum payload size can change over time, and
+       should therefore not be cached for use beyond the transaction in
+       which it is advertised.
+4.5.4. The responder's maximum payload size can change over time, but
+       can be reasonably expected to remain constant between two
+       sequential transactions; for example, a meaningless QUERY to
+       discover a responder's maximum UDP payload size, followed
+       immediately by an UPDATE which takes advantage of this size.
+       (This is considered preferrable to the outright use of TCP for
+       oversized requests, if there is any reason to suspect that the
+       responder implements EDNS, and if a request will not fit in the
+       default 512 payload size limit.) 
 
-http://certcities.com/editorial/columns/story.asp?EditorialsID=144&page=2
-
-As I understand RFC 1035 answering packet's over TCP are truncated
-at a limit of 512 bytes but it could be more ...
-
-Isn't it the comparing this document the best way while using 
-UDP to DROP TCP packets over port 53 and to allow only UDP port 
-53 at it does not use the IP protocol ?
-
-Ok, I know there could be a problem in the inside of a webserverfarm
-and you need to allow both protocols and he is refering to this
-but generally I would like prefer to avoid TCP over port 53 concerning
-to avoid a man-in-the-middle attack.
-
--- 
-Best Regards, Mark. 
-"Hello, I am brand new to meditation, and I have a frustrating habit of
-falling asleep in class. I don't know how to stop this. When my teacher
-tells us to relax our bodies and focus on breathing, my body relaxes, but so
-does my brain."
 
