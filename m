@@ -1,11 +1,13 @@
-From: "L.Malinov" <lucho@galix.com>
-Subject: IPTABLES + IPROUTE2
-Date: Fri, 30 Jan 2004 11:39:58 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: FORWARDING and NAT chains
+Date: Fri, 30 Jan 2004 10:23:14 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <EHENIKBEJAMHPLPJOJBPMEFKDIAA.lucho@galix.com>
+Message-ID: <200401301023.14772.Antony@Soft-Solutions.co.uk>
+References: <001901c3e670$a4bd2250$3d40000a@wisdom> <1075441811.1999.116.camel@raylinux.internal>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1075441811.1999.116.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,49 +18,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hi Antony,
+On Friday 30 January 2004 5:50 am, Ray Leach wrote:
 
-According to the iproute2 manual, I can't do routing based on a destination
-port but based on the fwmark. So that's why I think I can achieve that alone
-with iproute2 only and I need iptables to put the mark as well. But in this
-case I'm not sure that this can be achieved on a box with one network card
-only or for traffic generated lacaly from the box. Any suggestions?
-
-Regards
-
-L.Malinov
-
-
-On Saturday 24 January 2004 12:57 pm, L.Malinov wrote:
-
-> Hi Antony,
+> On Thu, 2004-01-29 at 16:02, Srinivasa Hebbar wrote:
+> > Hello,
+> >
+> > I believe that the NAT PREROUTING and POSTROUTING will
+> > always takes place for all the incoming/outgoing packets
+> > irrespective of whether the packet is destined to the node or not.
+> >
+> > I have a situvation that if the dest. IP address of the packet is
+> > for the local node, then apply NAT rule, otherwise it should simply
+> > forward the packet according to the routing table.
+> >
+> > How can I achive the above?
 >
-> In my situation is not possible to set router1 as a default route because
-> the machine acts as a mail server as well and the mail needs to go through
-> router1.
+> Use the INPUT chain of the nat table.
 
-Okay then - in that case I suggest you use iproute2 to route all TCP port 80
-packets via router2, all TCP port 25 packets via router1, and decide what
-you
-want to do with everything else such as DNS.   I don't see that there should
-be any need to MARK packets - just route based on the destination port
-number.
-
-see http://lartc.org for more details of iproute2 and what it can do.
-
-Regards,
+What does this mean?   nat can be done in PREROUTING or POSTROUTING (as 
+Srinivasa correctly said).   You cannot do nat in INPUT.
 
 Antony.
 
---
-Wanted: telepath.   You know where to apply.
+-- 
+Anything that improbable is effectively impossible.
 
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
+ - Murray Gell-Mann, Novel Prizewinner in Physics
 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
