@@ -1,13 +1,13 @@
-From: Jason Joines <joines@bus.okstate.edu>
-Subject: Re: Another Hardware Sizing Question
-Date: Mon, 08 Sep 2003 09:34:44 -0500
+From: "Vladimir Potapov" <varyag18@mail.ru>
+Subject: RE: Re[2]: Problems with DNS
+Date: Mon, 8 Sep 2003 19:13:24 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F5C9384.1050600@bus.okstate.edu>
-References: <3F58B934.3060902@bus.okstate.edu> <1062999695.827.19.camel@india.nsecure.net>
+Message-ID: <HMEKJPOHJKKBIDHGBCMDKEHLCAAA.varyag18@mail.ru>
+References: <1063028676.1133.11.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1062999695.827.19.camel@india.nsecure.net>
+In-Reply-To: <1063028676.1133.11.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Dharmendra.T" <dharmu@nsecure.net>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cedric Blancher <blancher@cartel-securite.fr>
 Cc: netfilter@lists.netfilter.org
 
-Dharmendra.T wrote:
-> On Fri, 2003-09-05 at 21:56, Jason Joines wrote:
-> 
-> /   We have a subnet with a potential of 1022 hosts.  Each machine is ///
-> /connected to a 100 Mbps switch.  The connection from our subnet to the ///
-> /main university network is I believe OC-3, ~154 Mbps.  There are ///
-> /currently less than 500 active machines on the network.  They do the ///
-> /normal web brosing, and connect to NetWare and Domino servers outside ///
-> /the subnet.  With that, the maximum traffic we've ever seen between our ///
-> /subnet and the rest of the world is about 40 Mbps.///
-> ////
-> /   We'd like to put all the boxes on our subnet behind and IPTables ///
-> /firewall and NAT them.  We'd also like to take into consideration the ///
-> /possibility of the number of machines growing to ~1000.  We have quite a ///
-> /few spare PIII 450 boxes setting around.///
-> ////
-> /   What would be the mininum, ideal, etc., hardware setup for this ///
-> /environment.///
-> ////
-> ////
-> /Thanks,///
-> ////
-> /Jason Joines///
-> /Open Source = Open Mind///
-> /========================///
-> ////
-> 
-> Hi,
-> 
-> Ideally if you put p-3 machine with 256MB ram should work in this 
-> situation assuming that you are not running any application on the 
-> firewall other than packet filtering.
-> 
-> ////
-> 
-> -- 
-> Regards
-> Dharmendra.T
-> dharmu@nsecure.net
-> Linux Security and Admin
-> 
+I edit the /etc/sysconfig/iptables and iptables give my error.
+Now I add rules from console and they applying ok.
+Thank you.
 
 
-  Yep, just doing packet filtering.  How many p3 with 256 MB would you 
-recommend?
+-----Original Message-----
+From: Cedric Blancher [mailto:blancher@cartel-securite.fr]
+Sent: Monday, September 08, 2003 5:45 PM
+To: Vladimir Potapov
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Re[2]: Problems with DNS
 
-Thanks,
 
-Jason
-===========
+Le lun 08/09/2003 =E0 14:51, =3D?koi8-r?Q?=3D22?=3DVladimir
+Potapov=3D?koi8-r?Q?=3D22=3D20?=3D a =E9crit :
+> I cannot add this rules with --syn, because iptables tell me error :
+> bad argument '--syn'.
+
+Strange...
+
+root@elendil:~# iptables --version
+iptables v1.2.8
+root@elendil:~# iptables -A FORWARD -d 192.168.5.2/255.255.255.255 -i
+eth0 -o eth1 -m state --state NEW -p tcp -m tcp --dport 53 --syn -j
+ACCEPT
+root@elendil:~# iptables -L FORWARD
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     tcp  --  anywhere             192.168.5.2        state NEW
+tcp dpt:domain flags:SYN,RST,ACK/SYN
+
+Are you sure you specify TCP protocol with --syn, for --syn is only
+valid for TCP. If you specify another protocol, or no protocol at all,
+you'll get an error :
+
+root@elendil:~# iptables -A FORWARD -d 192.168.5.2/255.255.255.255 -i
+eth0 -o eth1 -m state --state NEW --syn -j ACCEPT
+iptables v1.2.8: Unknown arg `--syn'
+Try `iptables -h' or 'iptables --help' for more information.
+
+> If write this rules without --syn argument , the iptables rules
+> applying success.If I write rules with chain NEW but without --syn
+> argument , are the my packet filter will be accept(or forward) new
+> packet without --syn ?
+
+If you don't specify --syn, both SYN and non SYN packets with state NEW
+will be accepted.
+
+--
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
 
