@@ -1,12 +1,13 @@
-From: RedNuX@gmx.at
-Subject: ROUTING A IP and EREASE the URL EXTENSION ?
-Date: Sat, 13 Mar 2004 11:35:50 +0100 (MET)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ROUTING A IP and ERASE the URL EXTENSION ?
+Date: Sat, 13 Mar 2004 10:51:07 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <23362.1079174150@www13.gmx.net>
+Message-ID: <200403131051.07728.Antony@Soft-Solutions.co.uk>
+References: <23362.1079174150@www13.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <23362.1079174150@www13.gmx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On my network a Client has problems with an URL which has burned in, in his
-system. Even if I remove the entries from registry, the URL is there with a
-restart again.
+On Saturday 13 March 2004 10:35 am, RedNuX@gmx.at wrote:
 
- I have diverted the inquiries the hate IP on google.de.
+> On my network a Client has problems with an URL which has burned in, in his
+> system. Even if I remove the entries from registry, the URL is there with a
+> restart again.
+>
+> The Problem is the URL-Extension... ( $HATEIP/index.php?v=4&aff=2130 ) ...
+>
+> Is it possible to be deleted this extension or gives it another possibility
+> the inquiry on " $HATEIP / index.php? V=4*aff=2130 " on "google.de" farther
+> supply?
 
-$IPTABLES -t nat -A PREROUTING -p tcp -d $HATEIP --dport 80 -i eth1 -j DNAT
---to $GOOGLE
+Yes - use Squid, with its rewrite capability.   You could probably get Apache 
+to do this for you as well, running in proxy mode.
 
-The Problem is the URL-Extension... ( $HATEIP/index.php?v=3D4&aff=3D2130 ) =
-...
+This is not a task for netfilter.
 
-On my Client, google says:
+Antony.
 
-Not Found
-The requested URL /index.php?v=3D4&aff=3D2130 was not found on this server.
+-- 
+Having been asked for a reference for this man,
+I can confirm that you will be very lucky indeed if you can get him to work 
+for you.
 
-
-Is it possible to be deleted this extension or gives it another possibility
-the inquiry on " $HATEIP / index.php? V=3D4*aff=3D2130 " on "google.de" far=
-ther
-supply?
-
-sorry for my bad English 8/
-
---=20
-+++ NEU bei GMX und erstmalig in Deutschland: T=DCV-gepr=FCfter Virenschutz=
- +++
-100% Virenerkennung nach Wildlist. Infos: http://www.gmx.net/virenschutz
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
