@@ -1,8 +1,8 @@
-From: Geoff Silver <geoff@uslinux.net>
-Subject: DNAT problem
-Date: Wed, 27 Nov 2002 14:28:10 -0500 (EST)
+From: bob bob <jlpeow314@yahoo.com>
+Subject: issues with iptables
+Date: Wed, 27 Nov 2002 15:54:05 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0211271417310.12858-100000@mail.uslinux.net>
+Message-ID: <20021127235405.35532.qmail@web14505.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,50 +14,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'll preface this by saying I'm not subscribed to the list, so if anyone
-who can help would CC me, that would be appreciated.  Thanks!
+Hello, I'm trying to setup my comp to do NAT. I've
+compiled
+all the necessary options into the kernel (2.4.18),
+turned
+on ip forwarding, and setup my iptables rules to
+forward all
+traffic. I've been trying to setup NAT on multiple OSs
+and had
+no success, which leads me to believe that this might
+be a
+hardware issue. I'm able to get an internet connection
+by plugging
+in my nics one at a time, but not with NAT. The cards
+I'm using
+are 2 D-link 530tx+, and 1 Realtek 8139. Any ideas
+what might
+be wrong?
 
-I have a 3-way firewall doing DNAT from a public address space (66.243
-net) to a private address space (10.102 net).  Everything works, except
-when I'm on the DMZ and try to reach another DMZ machine through it's
-public IP.  The requests traverse the DNAT rule which *should* translate
-them to their 10.102 destination address (and it works from my LAN or from
-the internet), but instead the address isn't rewritten.
+---------------------information---------------------
 
-Example:  public IP is 66.243.73.184 which is NAT'd to 10.102.1.2.  If I
-tcpdump on 10.102.1.2 and use a web browser from an internet host
-(somewhere else in the world), I see something like:
+ifconfig -a:
 
-14:25:00.353543 152.163.190.1.38300 > 10.102.1.2.80: S
-3550573715:3550573715(0) win 24820 <nop,nop,sackOK,mss 1412> (DF) [tos
-0x10]
-14:25:00.353578 10.102.1.2.80 > 152.163.190.1.38300: S
-1480002886:1480002886(0) ack 3550573716 win 15532 <mss
-1412,nop,nop,sackOK> (DF)
-14:25:00.423200 152.163.190.1.38300 > 10.102.1.2.80: . ack 1 win 25416
-(DF) [tos 0x10]
-14:25:01.333833 152.163.190.1.38300 > 10.102.1.2.80: P 1:6(5) ack 1 win
-25416 (DF) [tos 0x10]
+eth0      Link encap:Ethernet  HWaddr
+00:50:BA:61:20:C1
+          inet addr:192.168.0.175  Bcast:192.168.0.255
+ Mask:255.255.255.0
+          UP BROADCAST NOTRAILERS RUNNING MULTICAST 
+MTU:1500  Metric:1
+          RX packets:4345 errors:0 dropped:0
+overruns:0 frame:0
+          TX packets:4885 errors:0 dropped:0
+overruns:0 carrier:0
+          collisions:0 txqueuelen:100
+          RX bytes:2703357 (2.5 Mb)  TX bytes:713218
+(696.5 Kb)
+          Interrupt:5 Base address:0xd000
 
-However, if I tcpdump and try the same thing from the host itself, I see:
+eth1      Link encap:Ethernet  HWaddr
+00:50:BA:61:1E:DC
+          inet addr:192.168.0.1  Bcast:192.168.0.255 
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500 
+Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0
+frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0
+carrier:0
+          collisions:0 txqueuelen:100
+          RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+          Interrupt:10 Base address:0xf400
 
-13:59:42.698619 10.102.1.2.3024 > 66.243.73.184.80: S
-4167737472:4167737472(0) win 16060 <mss 1460,sackOK,timestamp 25440395
-0,nop,wscale 0> (DF) [tos 0x10]
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:410 errors:0 dropped:0 overruns:0
+frame:0
+          TX packets:410 errors:0 dropped:0 overruns:0
+carrier:0 
+          collisions:0 txqueuelen:0
+          RX bytes:20416 (19.9 Kb)  TX bytes:20416
+(19.9 Kb)
 
-Since I can look at the number of packets sent over the DNAT rule via
-'iptables -t nat -v -L' and *see* the number of packets changing
-corresponding to the number sent (and the intervals sent), I'm *sure* the
-packets are traversing that rule, but not getting NAT'ed.  Does anyone
-have any ideas *why* this might be happening?  Is this a bug?  Does anyone
-perhaps have a workaround for it?  I could run split-DNS (DNS-views) or IP
-alias the server, but it's a kludge, and I really *want* my firewall to do
-the translation right.
+route:
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags
+Metric Ref    Use
+Iface
+192.168.0.0     *               255.255.255.0   U    
+0      0        0
+eth0
+192.168.0.0     *               255.255.255.0   U    
+0      0        0
+eth1
+loopback        *               255.0.0.0       U    
+0      0        0 lo
+default         192.168.0.2     0.0.0.0         UG   
+0      0        0
+eth0
 
-Thanks!
 
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
