@@ -1,12 +1,10 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: VPN?
-Date: Fri, 13 Aug 2004 12:30:28 -0400
+From: "dravya" <dravya@magma.ca>
+Subject: Masqureading issues... packets go over wrong link
+Date: Fri, 13 Aug 2004 12:42:30 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC905127F@asimail2.alphanumeric.com>
+Message-ID: <200408131642.i7DGgUwE021467@webmail2.magma.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +15,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter mailing list <netfilter@lists.netfilter.org>
 
-> On Fri, Aug 13, 2004 at 11:16:58AM -0400, Jason Opperisano wrote:
-> >
-> > are you NAT-ing the connections from 192.168.0.0/24 to the PPTP =
-server?  according to "-A POSTROUTING -s 192.168.0.0/255.255.0.0 -j =
-MASQUERADE" in your posted rules, you are.
->
-> Yes I am.
->
-> > you need the pptp-conntrack-nat from POM for this to work.
->
-> # modprobe pptp-conntrack-nat
-> FATAL: Module pptp-conntrack-nat not found.
 
-well--to be strict about the syntax--it would be:
+Hello all,
 
-        # modprobe ip_conntrack_pptp
-        # modprobe ip_nat_pptp
+I have a system setup with two phones/interfaces (ppp0 and ppp1). I access the internet
+via these two interfaces only.
 
-> Do I need to recompile the kernel for that?
-> I use mandrake 10.0, 2.6.3-7mdksmp.
+The problem is that there are times when a packet with the ip address of ppp0 goes over
+ppp1 and vice-versa. For example, when a machine (with my machine as the gateway) pings a
+website outside, I get a change of ip address (from my service provider), meaning that the
+packet went on the wrong link. 
 
-heh heh--well the pptp-conntrack-nat patch doesn't actually officially =
-support the 2.6 kernel:
+I want to be able to send these pings on a particular interface (src add of packet should
+be same as ip add of interface (ppp0 or ppp1)).
 
-$ cat /usr/local/src/patch-o-matic-ng-20040621/pptp-conntrack-nat/info
-Title: PPTP connection tracking and NAT helper
-Author: Harald Welte <laforge@netfilter.org>
-Status: Testing
-Requires: linux < 2.6.0
-Repository: extra
+I have the following rules in my iptables:
 
-as far as i can tell--the stock mandrake 10 kernel (2.6.3.7mdk-1-1mdk) =
-doesn't include these modules...however--the current cooker kernel =
-(kernel-2.6.8.0.rc1.2mdk-1-1mdk) does...  depending on how important =
-this is to you--it might be worth investigating...
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o ppp1 -j MASQUERADE
 
--j
+and yet when a machine on my network uses my machine as the gateway to ping outside,
+packets travel on the wrong link causing change of ip address of the phones. I have tested
+this using ethereal and it clearly shows a ppp0 packet (src add of ppp0) outgoing on ppp1,
+as I was capturing on ppp1. Also, iptables is masquerading as it shows the number of
+packets it masqueraded.
+
+Isn't iptables the last thing before the packet actually goes on the wire??? Even if
+ip_route_output() gives me the wrong link shouldn't iptables be able to overright it??
+
+Has this problem been addressed before???? Has it been fixed???
+
+Any help would be appreciated. 
+Thank you
+
+Dravya
 
