@@ -1,16 +1,13 @@
-From: Askar <askarali@gmail.com>
-Subject: Re: IPTables & HTTPD Conflict
-Date: Mon, 4 Apr 2005 17:32:07 +0600
-Message-ID: <a0f69e505040404325bf851f5@mail.gmail.com>
-References: <200504031339.j33DdR2X003262@osprey.tkevans.com>
-	<249c202905040319115c97c290@mail.gmail.com>
-	<a0f69e5050404024079ea9980@mail.gmail.com>
-	<249c20290504040259680894c@mail.gmail.com>
-Reply-To: Askar <askarali@gmail.com>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: iptables crashes server?
+Date: Mon, 4 Apr 2005 13:47:26 +0200
+Message-ID: <1403218a05040404475c810345@mail.gmail.com>
+References: <4250F7E0.3070203@uplink-verein.ch>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <249c20290504040259680894c@mail.gmail.com>
+In-Reply-To: <4250F7E0.3070203@uplink-verein.ch>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,94 +19,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: J A <jake.lists@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: Moritz Gartenmeister <moritz@uplink-verein.ch>, netfilter <netfilter@lists.netfilter.org>
 
-On Apr 4, 2005 3:59 PM, J A <jake.lists@gmail.com> wrote:
-> Sorry, when i replied to the thread, i seemed to have copied only
-> guido, here's a re-send:
+Can you check the memory ??
+May be it is a faulty RAM
+
+On Apr 4, 2005 10:16 AM, Moritz Gartenmeister <moritz@uplink-verein.ch> wrote:
+> hi all
 > 
-> Here are our rules (pls refer to the thread for the problem
-> description), hope you could share us your vasluable insight.
-> --------------------------------------------------------------------------
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :RH-Lokkit-0-50-INPUT - [0:0]
-> -A INPUT -j RH-Lokkit-0-50-INPUT
-> -A FORWARD -j RH-Lokkit-0-50-INPUT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 25 --syn -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 80 --syn -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 21 --syn -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 22 --syn -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 23 --syn -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -i lo -j ACCEPT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 0:1023 --syn -j REJECT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 2049 --syn -j REJECT
-> -A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 0:1023 -j REJECT
-> -A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 2049 -j REJECT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 6000:6009 --syn -j REJECT
-> -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 7100 --syn -j REJECT
-> COMMIT
-> --------------------------------------------------------------------------
+> i'm running linux 2.6.11.3 and iptables 1.3.1 with pom 20050321. i patched the kernel with ipp2p,
+> and layer-7 patch.
+> 
+> the server is running as a bridge and is working absolutly fine. after a while (there is no specific
+> time limit) the server crashes. the server is no more able to allocate new memory and even swapping
+> doesn't help. in this state i am unable to log in, i have to push the power button.
+> 
+> i don't see heavy traffic before a crash and i don't see any flooding. is there a known memory leak
+> problem?
+> 
+> i checked /proc/sys/net/ipv4/netfilter/ip_conntrack_count this number is in the range of 2'000 - 5'000.
+> i checked /proc/slabinfo <active_objs> is more or less similiar to ip_conntrack_count, <num_objs> is
+> the maximum of ip_contrack_count.
+> i also was checking /proc/meminfo and there was no steady increase.
+> 
+> /var/log/messages shows no warning.
+> /var/log/syslog shows nothing
+> icmp is working.
+> imap is probably working (someone told me).
+> http is not working.
+> pop over ssl is working (sometimes).
+> 
+> does anyone had/have the same experience? or does anyone have some hints for further steps?
+> 
+> hardware: dell poweredge 2560 with 2gybte ram, 2 xenon dual cpus.
+> 
+> i was running the same setup wiht an older kernel 2.6.7/10 without much troubles.
+> 
+> regards
+> moritz
 > 
 > 
-> On Apr 4, 2005 5:40 PM, Askar <askarali@gmail.com> wrote:
-> > how should we suggest something without watchen your iptables rules set?
-> >
-> > regards
-> >
-> >
-> > On Apr 4, 2005 8:11 AM, J A <jake.lists@gmail.com> wrote:
-> > > Hello All,
-> > >
-> > > We're using Redhat 9
-> > > We've been running a Web Server (Apache & Tomcat), and were told to
-> > > run a firewall, in this case IPTables.  When we enabled IPTables, many
-> > > of our web sites (BUT not all) could no longer be browsed from the
-> > > Internet.
-> > >
-> > > Could you tell us which specific IPTables parameter is doing this, so
-> > > we could disable only the specific parameter?
-> > > Or is it not advisable to run IPTables side-by-side with Web services?
-> > >
-> > > Thanks, appreciate your ideas.
-> > >
-> > > ---jake
-> > >
-> > >
-> >
-> > --
-> > I love deadlines. I like the whooshing sound they make as they fly by.
-> > Douglas Adams
-> >
-> 
-okay try these iptables rules as starting point, 
 
-# Load the FTP connection state helper module.
-#Clear \ Flush all the rules from the different chains and tables
-for table in mangle nat filter; do
-   iptables -t $table -F
-   iptables -t $table -X
-done
-# Set the default filter table policy
-iptables --policy INPUT   DROP
-iptables --policy OUTPUT  ACCEPT
-iptables --policy FORWARD DROP
-
-# Using Connection State to By-pass Rule Checking
-iptables -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p tcp -m multiport --dport 25,80,21,22,23 -m state
---state NEW -j ACCEPT
-
-Note: save these rules to a file, then chmod +x the file and then
-execute it with ./filename :)
-
-regards
 
 
 -- 
-I love deadlines. I like the whooshing sound they make as they fly by.
-Douglas Adams
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
