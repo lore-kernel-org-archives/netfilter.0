@@ -1,12 +1,13 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: iptable_nat and Linksys VPN box?
-Date: Wed, 3 Sep 2003 10:32:58 -0700 (PDT)
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: iptables SNAT and sip "REGISTER"
+Date: Wed, 3 Sep 2003 19:46:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309031014150.1440@simba.math.ucla.edu>
-References: <3F55FD19.7080804@palaver.net>
+Message-ID: <20030903194627.25529b33.arnt@c2i.net>
+References: <20030901082901R.zenkato@pis.bekkoame.ne.jp>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F55FD19.7080804@palaver.net>
+In-Reply-To: <20030901082901R.zenkato@pis.bekkoame.ne.jp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,49 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Brian Capouch <brianc@palaver.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 3 Sep 2003, Brian Capouch wrote:
-> I have a new client who has a Linksys NAT appliance in his office, and
-> he claims he needs "public IP on the interface and public IP to the
-> router" in order to make it work.
+On Mon, 01 Sep 2003 08:29:01 +0900, 
+Zen Kato <zenkato@pis.bekkoame.ne.jp> wrote in message 
+<20030901082901R.zenkato@pis.bekkoame.ne.jp>:
 
-He may not be using FreeS/WAN, but it trips over all the relevant issues,
-and it's free, and it works.  So you could use that for your own
-experimentation.
+>            |.1           192.168.0.0/24
+>       --------------------------------
+>                    |.30(eth1,eth1:0 tel.no-ip.com)
+>               -------------------
+>               | RHL7.3          |
 
-Some VPN products (e.g. Cisco VPN-5000) can work through a NAT box, and
-some can't, including FreeS/WAN.  The key management daemon on each end
-expects to be able to send to port 500 of the other partner, and to hell
-with this fancy NAT stuff, specifically the way port numbers are
-rearranged.  There's a RFC out about NAT traversal (Nat-T) and a patch for
-FreeS/WAN that's supposed to implement it, but I got distracted before
-being able to give it a good test.
+..ok.
 
-Another problem is that FreeS/WAN sometimes identifies connections by the
-IP address of the remote end, which therefore has to be unique.  The README
-for Nat-T says that you really should be using something else to identify
-connections, like X.509 certificates.
+>               | Linux-2.4.18-3  |
+>               | iptables V1.2.5 |
 
-Finally, if the remote IP is not unique, there will be multiple tunnel
-devices to which returning packets might be sent, and by Murphy's law, the
-wrong one will be picked.  This problem applies to a variety of tunnel
-schemes.
+..no way!  Go check http://rhn.redhat.com/errata/rh73-errata.html
+and fix your RH box, if it _ever_ sees Internet or vice versa.
 
-Can anyone on the netfilter list suggest how to guarantee that returning
-packets in a connection go to the interface from which the connection
-originated, even in case of non-unique IP addresses like the very commonly
-used 192.168.0.1?  In other words, several tunnel devices have host routes
-with 192.168.0.1 on the remote end, and all of them initiate connections,
-and you're supposed to keep traffic from all being sent to the first
-tunnel.  I've figured out something really kludgey with the connmark and
-ROUTE extension targets, but this only works if preconfigured, i.e. the
-number of tunnels cannot grow (and shrink) dynamically.
+>               -------------------
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  90095-1555
-Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
