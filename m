@@ -1,46 +1,35 @@
-From: "Brian Bunnell" <bbunnell@iastate.edu>
-Subject: Start Up Script
-Date: Sun, 2 Mar 2003 12:43:02 -0600
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NHBBICNKELBGKGHPCFMPOEMFCAAA.bbunnell@iastate.edu>
+From: mdew <mdew@mdew.dyndns.org>
+Subject: blocking servers
+Date: 06 Mar 2003 17:25:10 +1300
+Sender: mldonkey-users-bounces+gnm-mldonkey-users-651=gmane.org@nongnu.org
+Message-ID: <1046924708.1182.6.camel@nirvana.flat>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <mldonkey-users-bounces+gnm-mldonkey-users-651=gmane.org@nongnu.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Help: <mailto:mldonkey-users-request@nongnu.org?subject=help>
+List-Post: <mailto:mldonkey-users@nongnu.org>
+List-Subscribe: <http://mail.nongnu.org/mailman/listinfo/mldonkey-users>,
+	<mailto:mldonkey-users-request@nongnu.org?subject=subscribe>
+List-Archive: <http://mail.gnu.org/pipermail/mldonkey-users>
+List-Unsubscribe: <http://mail.nongnu.org/mailman/listinfo/mldonkey-users>,
+	<mailto:mldonkey-users-request@nongnu.org?subject=unsubscribe>
+Errors-To: mldonkey-users-bounces+gnm-mldonkey-users-651=gmane.org@nongnu.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hello
-
-Thank you very much for helping me.  I have a perfectly good netfilter
-script that I run from the command line and everything works fine.  I would
-like this script to run when I boot up the computer.  I am having a lot of
-trouble finding quality resources on the net about this.
-
-There are great resources for learning how to use netfilter.  However, when
-it comes to startup scripts, all the examples seem to be 25 pages long and
-incomprehensible or wnat me to completely rewrite the script I already have.
-
-Why can't I just tell the computer to run my script instead of the "Let the
-world in" script it runs at boot?
-
-Does anyone have any recommendations, resources or better yet, a good
-concise example for run level 3?
-
-Thank you very much
-Brian Bunnell
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.445 / Virus Database: 250 - Release Date: 1/21/03
+To: mldonkey-users@nongnu.org
+Cc: netfilter@lists.netfilter.org
 
 
+Ive been messing with iptables, trying to block the connection o 
+certain mldonkey general servers.
 
+On my firewall, i used these lines...
+
+iptables -A FORWARD -s 10.0.0.3 -d 148.216.18.89 -j DROP
+iptables -A FORWARD -s 10.0.0.3 -d 24.128.236.196 -j DROP
+iptables -A FORWARD -s 10.0.0.3 -d 24.132.124.37 -j DROP
+
+but I still managed to connect to the servers
+
+-- 
+mdew <mdew@mdew.dyndns.org>
