@@ -1,13 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: some iptable logs
-Date: Tue, 05 Oct 2004 20:21:34 -0400
+From: J Kim <jindor@yahoo.com>
+Subject: Transparent proxy rule at tun interface
+Date: Tue, 5 Oct 2004 18:39:39 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097022094.1720.17.camel@wolfpack.ljm.dom>
-References: <20041005235755.KYAS2497.mta9.adelphia.net@mail.adelphia.net>
+Message-ID: <20041006013939.26732.qmail@web50903.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041005235755.KYAS2497.mta9.adelphia.net@mail.adelphia.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,72 +15,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, 2004-10-05 at 19:57, menonrr@adelphia.net wrote:
-> Hello,
-> 
-> I am a new user of iptables. I implemnted logging on my INPUT, OUTPUT, and FORWARD chains. The result is hundreds of messages like these:
-> 
-> Entry 1:
-> 
-> Oct  5 10:12:04 nessusClient kernel: INPUT packets:IN=lo OUT= MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 LEN=65 TOS=0x00 PREC=0x00 TTL=64 ID=45019 DF PROTO=TCP SPT=33871 DPT=631 WINDOW=32767 RES=0x00 ACK PSH URGP=0
+Hello all,
 
-part of a connection from the local machine to the local machine on the
-cupsd port (TCP 631)...  your firewall is a print server?
+I've been using iptables without problem for a long time, but finally faced one
+when I tried a new thing.
 
-> Entry 2:
-> 
-> 
-> Oct  5 10:12:04 nessusClient kernel: OUTPUT packetsIN= OUT=lo SRC=127.0.0.1 DST=127.0.0.1 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=45619 DF PROTO=TCP SPT=631 DPT=33871 WINDOW=32754 RES=0x00 ACK URGP=0 
+I'm using Linux 2.4.20. What I want to be able to do is having a rule in NAT
+table PREROUTING chain for transparent proxy at 'tun' interface, instead of
+usual physical (ethx) one, like following:
+                              ~~~~~~~~~
+iptables -t nat -A PREROUTING -i tun255 -p tcp -m tcp \
+ --dport 80 -j REDIRECT --to-ports 3128 
 
-the reply to the previous packet.
+I confirmed that packets are coming in from tun255 to system. Another rule I
+setup at mangle PREROUTING chain (-t mangle -A PREROUTING -i tun255 ...) for
+debugging tells me that packets come visit the mangle table (the rule's
+packet/byte counts increases).
 
-> Entry 3:
-> 
-> Oct  5 10:50:09 nessusClient kernel: INPUT eth1 Ext:IN=eth1
-> OUT= MAC=ff:ff:ff:ff:ff:ff:00:08:74:ce:1a:21:08:00
-> SRC=134.126.21.73 DST=255.255.255.255 LEN=68 TOS=0x00
-> PREC=0x00 TTL=128 ID=13372 PROTO=UDP SPT=1053 DPT=7100 LEN=48
+Problem is, packets never come into nat table. Packet/byte count stays zero (-t
+nat -L PREROUTING -v -x).
 
-broadcast packet looking for a font server (xfs)
+For debugging, if I do something like this at mangle table, traffic is blocked:
 
-> My network is NOT a production network. There is very little activity form it. The firewall/gateway communicates to 192.16.18.0 and 172.16.4.0 through interface eth1.
-> 
-> I have 4 questions:
-> 
-> 1. How can I limit logging to all packets on eth0 (external) and eth1(internal) to and from 192.168.18.0, 172.16.4.0, and 192.168.1.10/the gatewat itself?
+iptables -t mangle -A PREROUTING -i tun255 -j DROP
 
-with various combinations of:
+but same rule at nat table never affects the traffic:
 
-  -i eth0
-  -i eth1
-  -s 192.168.18.0/24
-  -d 192.168.18.0/24
-  -s 172.16.4.0/24
-  -d 172.16.4.0/24
+iptables -t mangle -A PREROUTING -i tun255 -j DROP
 
-you could also employ "-i ! lo" and "-o ! lo" to filter out loopback
-traffic (through you really should probably be accepting input/output
-packets on lo)
+Transparent proxy rule at ethx interface works with no problem. So proxy itself
+works fine.
 
-> 2. What is a good log level?
+I tried same thing with tap device as well, but it doesn't work either. Is this
+a limitation of iptables that nat table works only with physical device, or am
+I missing something?
 
-depends where you want the messages to end up:  man 5 syslog.conf
 
-6 seems to be a popular choice.
+Any clue or suggestion would be appreciated. Thanks in advance.
 
-> 3. How can I limit syslog size so that my computer does not crash?
+Jinsuk Kim
 
-man 8 logrotate
 
-> 4. How can I log the iptables to a different log file?
-
-see answer to #2.
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+		
+_______________________________
+Do you Yahoo!?
+Declare Yourself - Register online to vote today!
+http://vote.yahoo.com
 
