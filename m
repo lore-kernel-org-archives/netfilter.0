@@ -1,13 +1,14 @@
-From: Sander Sneekes <sander@dmdsecure.com>
-Subject: Re: Query....  redirecting traffic
-Date: 13 Dec 2002 10:47:00 +0100
+From: Andrea Rossato <mailing_list@istitutocolli.org>
+Subject: Re: Does IPTables have a 1:1 port-forwarding capability for a DNAT
+ port-range ?
+Date: Fri, 13 Dec 2002 13:02:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039772820.15363.4.camel@sander>
-References: <008401c2a286$4cd80ca0$0501a8c0@gndn.subspace.au.com>
+Message-ID: <3DF9CC70.3080603@istitutocolli.org>
+References: <000601c2a23f$619ffef0$0100a8c0@zultys.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <008401c2a286$4cd80ca0$0501a8c0@gndn.subspace.au.com>
+In-Reply-To: <000601c2a23f$619ffef0$0100a8c0@zultys.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +18,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: paul.gibson@subspace.net.au
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j MASQUERADE
+Ranjeet Shetye wrote:
+> The reason for wanting a 1:1 rule is for X windows and other fat port
+> ranges. Dont want hundreds of rules in there if one can do the job. Can
+> IPTables do it ? If so how ? If not, I guess I'll have to get in touch
+> with the developers for tips on a good starting point.
 
-iptables -A FORWARD -p tcp --dport 80 -d 192.168.1.1 -j ACCEPT
-iptables -A PREROUTING -t nat -p tcp --dport 80 -d 10.10.10.10 -j DNAT
---to 
-192.168.1.1:12345
-
-On Fri, 2002-12-13 at 10:02, Paul Gibson wrote:
-> Hello,
-> 
-> 	I am wondering if netfilter can do the following.....
-> 
-> http connection comes in on 10.10.10.10 port 80, can iptables then redirect
-> this to go to 192.168.1.1 port 12345 & also allow the returning data to go
-> back the opposite way ???
-> 
-> We are currently using "redir" to do it and are having some porblems with it
-> due to an application we run.
-> 
-> TIA
-> 
-> Paul.
--- 
-Sander Sneekes
-sander@dmdsecure.com
-
---
-Never argue with an idiot. They drag you down to their level, then beat
-you with experience.
+I believe that the only way is to hack nat code.
+I will start looking in
+net/ipv4/netfilter/ip_nat_core.c
+and the function manip_pkt that, as far as I understand, is actually
+writing the NATed packet
+andrea
 
 
