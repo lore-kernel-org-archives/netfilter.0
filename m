@@ -1,13 +1,12 @@
-From: "Sven-Ake Larsson" <sven-ake.larsson@hiq.se>
-Subject: SV: Ports opened without request
-Date: Wed, 25 Feb 2004 20:24:26 +0100
+From: "rruegner" <robowarp@gmx.de>
+Subject: Re: [ANNOUNCE] call for testing of patch-o-matic-ng
+Date: Wed, 25 Feb 2004 20:31:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IKEBLEEAACOIAKBCECDDOECICAAA.sven-ake.larsson@hiq.se>
-References: <403CD4DF.1070704@stupar.homelinux.net>
+Message-ID: <001101c3fbd6$0310ed80$32640a0a@robopc>
+References: <20040225182828.GP13386@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <403CD4DF.1070704@stupar.homelinux.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Harald Welte <laforge@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
+Hi Harald,
 
-How did you make scan, from the machine itself or from another machine on
-the outside? Some rulesets doesn't really work when you are at the same
-machine.
-Do you allow any ICMP packets? If so, try to drop them too and scan the
-machine again.
-What is your current ruleset? It helps a lot if you can add it to the list.
+do you mean something like this ?
+fresh 2.6.3 kernel with patch-o-matic-ng-20040224
 
-I believe you'll have the masters answers soon... ;-)
+Welcome to Patch-o-matic (1.13)!
 
-Regards,
-S
+Kernel:         /usr/src/linux
+Iptables:       /usr/src/iptables
 
------Ursprungligt meddelande-----
-Fran: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]F=F6r Sasa Stupar
-Skickat: den 25 februari 2004 18:01
-Till: netfilter@lists.netfilter.org
-=C4mne: Ports opened without request
+Each patch is a new feature: many have minimal impact, some do not.
+Almost every one has bugs, so don't apply what you don't need!
+-------------------------------------------------------
+Already applied:
 
+Not all requirements fulfilled for quake3-conntrack-nat, skipping:
+ requirement 'linux < 2.6.0' not fulfilled
 
-Hi!
+Excellent! Source trees are ready for compilation.
 
-I have linux RH8 with kernel 2.4.20-28.8, iptables v1.2.8. I have setup
-a firewall with some tcp ports opened (21,25,80,110,443) for servers.
-Then I have ran a port scan  and scanned all 65535 tcp and udp ports. I
-was suprised that 3 ports were opened even if I didn't opened them in
-the configuration. These ports are tcp 389,1002 and 1720.
-I have tried to block them manually by entering a drop command for these
-three ports but no success-they are still open.
-What am I missing here? Is this some problem with iptables?
+your rewrite seems to work , but the h323 which i could compile in the past
+was rejected too
+is this current state of art ?
+Regards Robert
+----- Original Message ----- 
+From: "Harald Welte" <laforge@netfilter.org>
+To: "Netfilter Development Mailinglist"
+<netfilter-devel@lists.netfilter.org>
+Cc: "Netfilter Mailinglist" <netfilter@lists.netfilter.org>
+Sent: Wednesday, February 25, 2004 7:28 PM
+Subject: [ANNOUNCE] call for testing of patch-o-matic-ng
 
-Sasa
 
 
