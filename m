@@ -1,12 +1,12 @@
-From: "Hanz F." <hanz852@yahoo.com>
-Subject: Re: Block/Accept by MAC Address
-Date: Mon, 30 Sep 2002 23:15:47 -0700 (PDT)
+From: "Andreas Wolff" <aw-netfilter@mw-itcon.de>
+Subject: Re: ip_nat_pptp & ip_conntrack_pptp help appreciated.
+Date: Tue, 1 Oct 2002 08:43:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021001061547.95787.qmail@web40007.mail.yahoo.com>
-References: <003a01c268ea$d98408a0$e951ea43@W2RZ8L4S02>
+Message-ID: <002901c26915$d2e6dc90$03c0a8c0@aw01>
+References: <20020930213601.9696.62125.Mailman@kashyyyk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003a01c268ea$d98408a0$e951ea43@W2RZ8L4S02>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,58 +17,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jim Gifford <maillist@jg555.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Your situation is similar to mine, and this is what I
-did :
+Hello,
 
-******************************************
-#eth0 has the IP 192.168.3.133 which is connected 
-#to the internet.
+> > My configuration is like this :
+> > ---------------------------------------------
+> > 80.x.x.x  (Valid IP)
+> > Cisco DSL router
+> > (one rule - NAT all to 10.0.2.1)
+> >
+> > 10.0.2.1 - RedHat 7.3 - kernel-2.4.20-pre8   (this Iface will receive
+> >      all data
+> > from valid-IP)
+> > (Routing enabled, Netfilter 1.2.7a)
+> > 10.0.0.1 - RedHat 7.3 - kernel-2.4.20-pre8
+> >
+> > 10.0.0.2 - Windows box (Client)
+> >
+> > My goal is to have a PPTP server (with PoPToP).
+>
+> If you need to build NAT support for PPTP into the Linux box, then you
+would
+> need to do the same thing on the Cisco box if you're going to do NAT there
+as
+> well.
 
-iptables -t nat -P POSTROUTING DROP
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to
-192.168.3.133
-
-
-iptbales -P INPUT DROP
-iptbales -P FORWARD DROP
-iptbales -P OUTPUT ACCEPT
-
-#list here all your clients who are allowed to hace
-#access
-
-iptables -A INPUT -p all -s client -m mac --mac-source
-client's mac -j ACCEPT
-iptables -A FORWARD -p all -s client -m mac
---mac-source client's mac -j ACCEPT
-
-#then block anyone else
-iptables -A INPUT -p all -s 0/0 -j DROP
-iptables -A FORWARD -p all -s 0/0 -j DROP
-
-************************************************
-
-U can also allow all people and block the buy u want
-but in this case he may change his network card and
-will be able to have access again.
-
-The problem here (and with every iptables rule) that
-ur clients will not be able to use some internet
-applications like ICQ, IRC,yahoo messenger ,...... and
-that's what I am looking for.
-Some guys here have informed me that it's posiible to
-use IRC and FTP by using related modules, but it seems
-there's no modules to other applications.
+Just check my understanding: Do you really need to have NAT support for PPTP
+on the Cisco if just maps the 80.x.x.x address to the internal 10.0.2.1? My
+understanding up to now was that I only need NAT support for PPTP if I have
+multiple local addresses that are SNAT-ed to a single external address (to
+keep track of and map callids).
 
 
+Regards,
 
+Andreas
+------------------------------------------------------------
+Andreas Wolff
+Menzebach und Wolff IT-Consulting
 
+phone: +49 7503 916 716 - 2, mobile: +49 160 7 54 11 53
+email: Andreas.Wolff@mw-itcon.de
+http:  www.mw-itcon.de
+------------------------------------------------------------
 
-__________________________________________________
-Do you Yahoo!?
-New DSL Internet Access from SBC & Yahoo!
-http://sbc.yahoo.com
 
