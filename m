@@ -1,9 +1,9 @@
 From: Chip Upsal <chip@cyberwolf.com>
 Subject: Update httpd.conf file:  Apache virtualhost not working behind fi
 	rewall.
-Date: Fri, 20 Dec 2002 12:43:18 -0700
+Date: Fri, 20 Dec 2002 14:00:07 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3019863CF306D211BA4500A0CC30812DB4C242@exchange.cyberwolf.com>
+Message-ID: <3019863CF306D211BA4500A0CC30812DB4C24D@exchange.cyberwolf.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
