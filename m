@@ -1,12 +1,14 @@
-From: Tommy W <tommy@svearike.sytes.net>
-Subject: Redirect local OUTPUT attempt
-Date: Fri, 28 Jan 2005 12:50:08 +0100
-Message-ID: <200501281250.08563.tommy@svearike.sytes.net>
-Reply-To: 189@telia.com
+From: Radien Radien <radien@gmail.com>
+Subject: Re: monitoring
+Date: Fri, 28 Jan 2005 15:53:38 +0330
+Message-ID: <4a0a384e050128042340fbf31@mail.gmail.com>
+References: <20050126183331.GA25316@ranjeet-pc2.zultys.com>
+	<20050128052108.64827.qmail@web51906.mail.yahoo.com>
+Reply-To: Radien Radien <radien@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20050128052108.64827.qmail@web51906.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,19 +22,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a rather easy question , I hope !
-I'm trying to make a local connection attempt (specific port) to be redirected 
-to (local computer, different port)
-When configuring my gateway (another case and another computer)
-I can use
-iptables -t nat -I PREROUTING -s $IP -d $IP2 -p tcp -m tcp --dport 3434 -j 
---to-destination $IP3:$PORT
+Try SAWMIL but I think it is commercial
 
-that works perfectly, but it's not working now.. I guess it's because it's a 
-local connection (!?) as opposed to nat ,as it is in the gateway 
-configuration.
-What am I missing ?
 
-I want 192.168.0.8:25 to be redirected to localhost:2525 basically.. (but only 
-locally)
+On Thu, 27 Jan 2005 21:21:07 -0800 (PST), Alireza Yazdani
+<yazdani1193@yahoo.com> wrote:
+> 
+> Hello all,
+> 
+> some question about report program:
+> 
+> 1) I use of BandwidthD monitoring program. this program is IP based and shows all trafic throgh text&graphic mode but this program hasn't a good performance. I want a program such as it with good performance.
+> 
+> 2) I use MRTG prgram on cache-server . this program shows all traffic but I want a program that shows all traffic that the end-user get from internet & cache separately.
+> 
+> Thanks
+> 
+> __________________________________________________
+> Do You Yahoo!?
+> Tired of spam?  Yahoo! Mail has the best spam protection around
+> http://mail.yahoo.com
+> 
+
+
+-- 
+__ Radien__
 
