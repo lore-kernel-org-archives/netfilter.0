@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: pptp + iptables MTU ???
-Date: Sun, 15 Sep 2002 15:03:24 +0100
+From: Kim Jong Tae <dejavu@bora.dacom.co.kr>
+Subject: Re: hook function in  NF_IP_LOCAL_IN does not interruptible_sleep_on?
+Date: Mon, 16 Sep 2002 09:58:52 +0900 (KST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020915140326.SRYC11421.mta03-svc.ntlworld.com@there>
-References: <20020913173529.41af8435.pulsar@bofh.homeunix.org> <20020915111113.OSCA14766.mta05-svc.ntlworld.com@there> <3D8491CE.1010100@bewegungsmelder.de>
+Message-ID: <Pine.GSO.3.94K.1020916094553.18116A-100000@bora.dacom.co.kr>
+References: <3D84939A.9000005@fugmann.dhs.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3D8491CE.1010100@bewegungsmelder.de>
+In-Reply-To: <3D84939A.9000005@fugmann.dhs.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +16,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Anders Fugmann <afu@fugmann.dhs.org>
+Cc: netfilter@lists.netfilter.org
 
-On Sunday 15 September 2002 2:57 pm, Thomas Lussnig wrote:
 
-> >>i have one question, when TCP packet's where send the filter change the
-> >>MTU sice (T-Error.com problem)
-> >>But i do not acivate such an rule for UDP or GRE Protocol. Is it
-> >>possible that this is the source for the
-> >>problems with pptp conection over an maserading server ?
-> >
-> >MTU applies to IP packets, not specifically to TCP packets (which are a
-> >particular form of data inside an IP packet).
-> >
-> >UDP and GRE are also transported inside IP packets, so if you need to set
-> > the MTU on your external interface to get TCP/IP packets to work, I think
-> > you should do the same thing for UDP/IP and GRE/IP packets too.
-> >
-> >Antony.
+On Sun, 15 Sep 2002, Anders Fugmann wrote:
+
+>Kim Jong Tae wrote:
+>> Hi all.
+>> 
+>> I  makes hook function, which will communicate with user process
+>> for each packet's arrival.
+>> First, hook function sends data to user process and user process sends
+>> back data. I think that before receiving data from user process, hook
+>> function must wait.  hook func's wait is using interruptible_sleep_on.
+>> When hook func call interruptible_sleep_on, system hangs!!!
+>You are calling sleep in_interrupt. This is not allowed.
+
+
+  I want to make hook func sleep , Is there any solution to avoid
+  problems?
+
 >
-> Hi,
-> i used this as an entry in the iptables. its mentioned in most of the
-> examples. But i think it do not work for UPD and GRE.
+>You forgot to mention how you cummunicate with the userspace process. 
+>Throgh a device-node?
 
-Why do you think that ?
+  I made that communication  which is implemented by
+  setsockopts and getsockopts func registered by
+  nf_register_sockopt.
 
-> This was the question if GRE / UDP need such spezial handling
-> to maybe this is the problem for the failed pptp connections ?
+  From kernel to user app, getsockopt works well.
+  From user app to kernel , setsockopt does not work because  kernel
+  does not wait.
 
-I do not *know* whether UDP or GRE require MSS/MTU adjustments.   However I 
-do know that fragmentation / MTU is handled at the IP level, which is common 
-to all of TCP / UDP / GRE protocols, so I don't see why it should be specific 
-to TCP.
+  Eventually I want to route incoming packet by using DR (direct routing) 
+  technique  according to  anther machine's policy.
+   
+  It necessary to communicate with another machine's user application.
+  It will be implemeted by UDP/ TCP socket code. 
 
-Maybe someone else who either knows more about this than I do, or who has a 
-connection which has to use MTU / MSS adjustments, can comment on this ?
 
-Antony.
+ 
+>
+>Regards
+>Anders Fugmann
+>
+>
+>
+>
+>
 
--- 
-
-There are only 10 types of people in the world:
-those who understand binary notation,
-and those who don't.
 
