@@ -1,12 +1,12 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: traceroute
-Date: Wed, 30 Jun 2004 11:21:17 -0400
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: track bandwith used
+Date: Wed, 30 Jun 2004 11:07:37 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62E80C@email1.mitretek.org>
+Message-ID: <12a101c45eab$99055aa0$49caa8c0@caris.priv>
+References: <00e501c45ea3$28e2d110$49caa8c0@caris.priv> <200406301441.22500.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +17,93 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-I use -I INPUT ESTABLISHED,RELATED.
+ya, that was great.  I guess there was one thing that you said that worried
+me ... you said almost all packets will match the ESTABLISHED,RELATED check
+on the forwared chain ... would that not be a bad thing ... is it dangerous
+to have RELATED as an option on the FORWAED CHAIN.
 
-I can ping outbound just fine, ESTABLISHED,RELATED keeps track of the
-ICMPs.
+???
 
-Here:
+Thankls
 
-$ ping yahoo.com
-PING yahoo.com (216.109.127.28) 56(84) bytes of data.
-64 bytes from w1.rc.dcn.yahoo.com (216.109.127.28): icmp_seq=3D1 =
-ttl=3D54
-time=3D114 ms
---- yahoo.com ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev =3D 114.523/114.523/114.523/0.000 ms
-$
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Wednesday, June 30, 2004 10:41 AM
+Subject: Re: track bandwith used
 
-I do not allow any ICMP explicitly and I have never had a problem using
-NAT or similar.
 
-I do not know where you are getting your info from, but it is clearly
-incorrect.
+On Wednesday 30 June 2004 2:07 pm, Peter Marshall wrote:
 
------Original Message-----
-From: Jozsef Kadlecsik [mailto:kadlec@blackhole.kfki.hu]=20
-Sent: Wednesday, June 30, 2004 11:19 AM
-To: Piszcz, Justin Michael
-Cc: netfilter
-Subject: RE: traceroute
+> Hi again,
+>
+> I was also wondering if anyone knows a way to track bandwith being used
+> through the firewall .......
 
-On Wed, 30 Jun 2004, Piszcz, Justin Michael wrote:
+Well, there are plenty of network monitoring tools which will give you this
+sort of information as an aggregate figure for an interface, or broken down
+by source/destination address, port number etc - iptraf is not a bad start
+to
+see what can be done.
 
-> ICMP is "allowed" when you -I INPUT ESTABLISHED,RELATED.
+Other than that you can use netfilter rules to count the packets & bytes,
+and
+then use a cron job to record the counts at whatever intervals you want
+(every minute, every hour, every day...), and then process them yourself.
 
-That's false.
+Things I would mention if you're going to try the latter option:
 
-> You do not have to allow it explicitly (ie: allow icmp so other
-machines
-> can ping your machine).
+1. Most packets do not match against rules in the nat table, so don't try
+counting those - the only packets which match these are the first of each
+connection - all the rest are processed invisibly by netfilter in the
+background, and your rules don't see them (this is also the reason why you
+should never set a default DROP policy on a nat table!)
 
-That's false, again.
+2. If you are using a standard -m state --state ESTABLISHED,RELATED rule in
+your FORWARD chain, remember that nearly all packets will match that, no
+matter which direction they're going through the machine, and which port/s
+they're going to or from.   Again, most of the rules in your FORWARD chain
+will only match the first packet of a given connection, so you won't see
+much
+traffic on these rules either (although they can give you a useful
+indication
+of the number of connections of that type which get created).
 
-Read the documentation and do not spread false info.
+3. The FORWARD mangle table can be a good place to put rules which will see
+all traffic going through the system.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+4. For accounting purposes, you can quite readily use rules with no target
+(eg: iptables -A FORWARD -p tcp --dport 25); these will make no difference
+to
+whether the packets are ACCEPTed, DROPped, LOGged, REJECTed, or whatever
+(obviously you need separate rules to do that somewhere else), but the
+packet
+& byte counters from iptables -L -nvx will show you how many of that type of
+packet were seen.   You can make the rules as specific as you like if you
+want to count certain connections in minute detail (eg: iptables -A FORWARD
+-p tcp --dport 25 -s my.mail.ser.ver -d ISP.mail.ser.ver)
+
+5. Don't overlook the raw packet & byte counts available from ifconfig if
+all
+you want to do is monitor traffic in & out of an interface.
+
+Hope this give you some ideas.
+
+Regards,
+
+Antony.
+
+-- 
+"The future is already here.   It's just not evenly distributed yet."
+
+ - William Gibson
+
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
+
 
 
