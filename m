@@ -1,14 +1,15 @@
 From: Nick Drage <nickd@metastasis.org.uk>
 Subject: Re: No internet connection
-Date: Thu, 9 Sep 2004 17:00:53 +0100
+Date: Thu, 9 Sep 2004 17:02:42 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040909160053.GN8419@metastasis.org.uk>
-References: <20040909144044.27300.qmail@web50208.mail.yahoo.com>
-	<1094742137.14416.3.camel@wolfpack.ljm.dom>
+Message-ID: <20040909160242.GO8419@metastasis.org.uk>
+References: <20040909140459.92337.qmail@web50209.mail.yahoo.com>
+	<1094739351.2044.35.camel@wolfpack.ljm.dom>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1094742137.14416.3.camel@wolfpack.ljm.dom>
+In-Reply-To: <1094739351.2044.35.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,22 +23,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Sep 09, 2004 at 11:02:18AM -0400, Jason Opperisano wrote:
-> On Thu, 2004-09-09 at 10:40, Giancarlo Boaron wrote:
-> > Ok. I made my iptables script and I forgot to handle
-> > the DHCP protocol. So, my firewall box gets its IP
-> > address via DHCP. Thats a nice thing to test.
-> 
-> for the sake of the list archives:
-> 
->   # DHCP server -> client
->   iptables -A INPUT -p udp --sport 67 --dport 68 -j ACCEPT
-> 
->   # DHCP client -> server
->   iptables -A OUTPUT -p udp --sport 68 --dport 67 -j ACCEPT
+On Thu, Sep 09, 2004 at 10:15:51AM -0400, Jason Opperisano wrote:
+> On Thu, 2004-09-09 at 10:04, Giancarlo Boaron wrote:
+> > Hello.
+> > I'm testing a new iptables script on my server box but
+> > after some minuts that this script is running, the
+> > clients in my LAN have no access to Internet.
+> > I'm using SQUID for proxing and caching.
 
-Not wishing to be paranoid, buuuuuuuuutttttttt..... couldn't you
-usefully restrict those by source and destination IP?
+<snip>
+
+> i've been batting about zero with my stabs in the dark here
+> recently--but here goes...
+
+Heh, nice way of putting it.
+
+> is it possible that you get your external IP via DHCP; and that you're
+> blocking the DHCP packets between your firewall and the ISP's DHCP
+> server.  so you get an IP, start up your firewall, and at the first
+> semaphore period, and either the DHCP server or client decides the
+> other is no longer there, and your IP gets released?
+
+Isn't "some minutes" a rather short time for a DHCP lease to expire
+though?
+
+That said, I'm not even going to swing for this one until we get some
+more information.
 
 -- 
 mors omnia vincit
