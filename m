@@ -1,11 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Port-forwarding + collisions
-Date: Thu, 24 Feb 2005 08:16:17 -0500
-Message-ID: <1109250977.7583.3.camel@hubcap.ljm.dom>
-References: <421EA02A.3030606@wildcash.com>
+From: "Tomas Daniska" <tomas@tronet.com>
+Subject: ip_nat_snmp_basic
+Date: Thu, 24 Feb 2005 14:25:44 +0100
+Message-ID: <A5ED43533E983E4685C9E6156BE8874FB255AA@kenya.tronet.as>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <421EA02A.3030606@wildcash.com>
+Content-Transfer-Encoding: quoted-printable
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +18,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2005-02-24 at 22:48, Rudi Starcevic wrote:
-> Hi,
-> 
-> I'm still working on why I have poor performance and have found some 
-> data I need to check as I'm not that familiar.
-> 
-> Below I have the output from ifconfig.
-> eth0 is my Internet NIC with eth1 my internal 192.168.0.x network.
-> 
-> On my eth0 NIC we can see there is 0 collisions
-> 
-> On eth1 we can see collisions:6810362
 
-i would go out on a limb and say that's your problem.  how's about
-tcpdumping eth1 on the linux machine and see what's really going on on
-the wire?
 
-i would also point back to the possibility that the internal switch is
-horribly misconfigured.
+hi all,
 
--j
+
+has anyone managed to get it working as expected?
+
+
+so far i have been able to find several threads with about the same
+symptoms, but none of them resolved.
+
+
+
+i can confirm the module registers the helpers correctly (after adding
+some printk() stuff), but nat_helper() is never called, regardless of
+how i had set up the nat rules
+
+
+
+thanks for any points
 
 --
-"I bet Einstein turned himself all sorts of colors before he invented
- the light bulb."
-	--The Simpsons
+=20
+Tomas Daniska
+systems engineer
 
+Tronet, a.s.
+Plynarenska 5, 829 75 Bratislava, Slovakia
+tel: +421 2 58224111, fax: +421 2 58224199
+=20
+Nobody ever got rich by telling the American public that what they had
+was good enough and that they really didn't need anything better!
+-- Bob Atkins
 
