@@ -1,13 +1,13 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: examining data portion of packet
-Date: Wed, 24 Mar 2004 06:50:35 -0500
+From: Mihael Kukec <mkukec@public.srce.hr>
+Subject: Re: newbie question : ip_conntrack_ftp
+Date: Wed, 24 Mar 2004 14:04:23 +0100 (MET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080129035.1980.0.camel@localhost>
-References: <20040324054521.27142.qmail@web60002.mail.yahoo.com>
+Message-ID: <Pine.GSO.4.50.0403241401480.16713-100000@jagor.srce.hr>
+References: <Pine.GSO.4.50.0403231611290.14538-100000@jagor.srce.hr>
+ <20040324031150.GN3387@samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040324054521.27142.qmail@web60002.mail.yahoo.com>
+In-Reply-To: <20040324031150.GN3387@samad.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Sandy C <sc_netfiltermail@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Wed, 2004-03-24 at 00:45, Sandy C wrote:
->    I would like to be able to be able to examine the
-> data portion of a network packet after matching it. 
-> 
->    I figured there would be some kind of target for
-> this, but there isn't...or at least I couldn't find
-> any.
-> 
->    What is the best way to go about this? Should I be
-> thinking of writing a target extension?
-<snip>
-It depends on what you want to do.  What do you want to do with the
-information?
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+
+
+
+On Wed, 24 Mar 2004, Alexander Samad wrote:
+
+> On Tue, Mar 23, 2004 at 04:13:52PM +0100, Mihael Kukec wrote:
+> > not have ip_conntrack_ftp module included and I need it. Can someone give
+> then run
+> dpkg -L '<insert the package name from above>' | grep -i conn
+> this should show you all the conntrack modules in the packages.
+> Some else stated in another thread that the BF2.4 package doesn't come
+> with all the conn track modules
+
+
+Well. tih was the outcome:
+
+sphere:~# dpkg -L kernel-image-2.4.18-686 | grep -i conn
+/lib/modules/2.4.18-686/kernel/net/ipv4/netfilter/ip_conntrack.o
+/lib/modules/2.4.18-686/kernel/net/ipv4/netfilter/ip_conntrack_irc.o
+/lib/modules/2.4.18-686/kernel/net/ipv4/netfilter/ip_conntrack_ftp.o
+sphere:~# insmod ip_conntrack_ftp
+Using /lib/modules/2.4.18-686/kernel/net/ipv4/netfilter/ip_conntrack_ftp.o
+sphere:~#
+
+
+Module was all the time here. Sorry for stupid question :)
+
+
+Mihael
+
 
 
