@@ -1,12 +1,10 @@
-From: "Roksana Boreli" <Roksana.Boreli@nicta.com.au>
-Subject: Multiple IPSEC VPNs through a firewall based on 2.4.2X kernel
-Date: Tue, 24 Aug 2004 15:11:43 +1000
+From: ads nat <adsnat@yahoo.com>
+Subject: Is it possible to Jam windows network neighbour?
+Date: Mon, 23 Aug 2004 22:23:17 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09D3F703EF3B0A4CBE28449EA9F3D32069F456@nicta-atp-mail.in.nicta.com.au>
+Message-ID: <20040824052317.8287.qmail@web60407.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +15,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-
-I am trying to set up multiple ipsec VPN clients working behind a Linux
-router with NAT/PAT, based on a 2.4.20 (can be 2.4.22) kernel. I would
-like to be able to connect a number of Windows (2k or XP) machines to an
-existing Cisco VPN server.=20
-
-client 1 (ipsec) --->  | router	|
-client 2 (ipsec) --->  |  NAT/	|
-.		        PAT	| -> ipsec VPN server (Cisco)
-.		     |		|
-client 10 (ipsec) --->|		|
-
-A patch seems to be needed to make this work, and I have seen a lot of
-emails with a similar question in regards to pptp VPN clients, but
-nothing encouraging for ipsec.  I have also seen the IP masquerade HOWTO
-and the VPN HOWTO, which both refer to a patch for 2.2 kernels, but
-claim nothing is available for 2.4 kernels. I am a netfilter newbie (if
-this is not blindingly obvious), so any help would be much appreciated.
+I am running Redhat Linux 9.0 machine for routing as
+well as iptables firewall for my network serving 
+win 98 clients. For security reasons I do not want win
+98 clinets to use pier to pier for transfering
+files/data among them. In this case win 98 clients do
+not need to talk to server.
+Is it possible to Jam pier to pier network ? so that
+copying of files from one win 98 client to other can
+be restricted.
+Thanks for support.
 
 
-Kind regards, Roksana
+
+	
+		
+__________________________________
+Do you Yahoo!?
+New and Improved Yahoo! Mail - 100MB free storage!
+http://promotions.yahoo.com/new_mail 
 
