@@ -1,13 +1,13 @@
 From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: two negatived parameters
-Date: Tue, 07 Sep 2004 10:43:30 -0500
+Date: Tue, 07 Sep 2004 11:10:05 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <413DD722.2010307@pbl.ca>
-References: <7421.1094459312@www2.gmx.net>
+Message-ID: <413DDD5D.1000006@pbl.ca>
+References: <5943.1094471335@www56.gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7421.1094459312@www2.gmx.net>
+In-Reply-To: <5943.1094471335@www56.gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,30 +21,58 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 Akolinare@gmx.net wrote:
-> Hi,
+>>iptables -A FORWARD -s host1 -d host2 -j DROP
 > 
-> I have a little question with two negatived parameters in one rule.
-> 
-> I create a rule, which should only match if source and destination are not
-> the given. I think that it is easy and try the following rule:
-> 
-> iptables -A FORWARD -s ! host1 -d ! host2 -j ACCEPT
-> 
-> But with this rule pakets from host1 to host3 (or from host2 to host3) were
-> not affected. It seems like the logical combination is OR and not AND unlike
-> the not negatived rule.
-> I think that the rule is logical right. Is it a little bug or have I
-> misunderstood something?
+> well sorry it is not that easy as it seems. The rule should forward pakets
+> to a user-chain only if host1 ist not the source and host2 are is not the
+> destination.
 
-If src is host1 and dst is host3 you get:
+Actually, it is...  Let draw things out, so that you can see clearly 
+where you made mistake...
 
-not true and not false = false and true = false
+What you have is !A AND !B, which is the same thing as !(A OR B), which 
+gives you following table:
 
-So the rule does not match, and packets from host1 to host3 will not be 
-affected by it.  Also, note that "not host1 and not host2" is logically 
-the same thing as "not (host1 or host2)".  Which was probably the reason 
-why it looked like an or to you.  Double negations in human languages do 
-not always translate well into negations in computer languages.
+A B T
+0 0 1
+0 1 0
+1 0 0
+1 1 0
+
+This obviously is not what you wanted.  It matches only when both source 
+and destination of the packet are not as specified.
+
+What you want is logical operation that will result in this table:
+
+A B T
+0 0 1
+0 1 1
+1 0 1
+1 1 0
+
+Translated from table to formula, this would be !(A AND B) (it is 
+trivial to see that above is negated AND operator table), which could 
+also be written as !A OR !B (if you preffer this form).  Now, AFAIK, 
+neither of those can be acomplished directly in Netfilter as one liner. 
+  You can only use and operator, and you can negate arguments only 
+directly, and somehow I doubt you can specify -s or -d multiple times on 
+same line.  But as a workaround, what  somebody (you ommited who when 
+quoting) suggested will do exactly what you want:
+
+    iptables -A FORWARD -s host1 -d host2 -j DROP
+    iptables -A FORWARD -j ACCEPT
+
+The first line will drop what you wanted to drop.  The second will 
+accept all the rest.  Unless there were more rules to follow and more 
+checks to be done for host1 and host2 (in which case, you can do them in 
+user defined chain, and change first line to jump there instead of 
+dropping packet right away).  Something along the lines of:
+
+    iptables -A FORWARD -s host1 -d host2 -j SOMETHING
+    iptables -A FORWARD -j ACCEPT
+    iptables -N SOMETHING
+    iptables -A SOMETHING -p tcp --dport 80 -j ACCEPT
+    iptables -A SOMETHING -j DROP
 
 -- 
 Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
