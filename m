@@ -1,13 +1,12 @@
-From: Wenzhuo Zhang <wenzhuo@zhmail.com>
-Subject: Re: internal host can not access hotmail
-Date: Thu, 24 Feb 2005 14:09:51 +0800
-Message-ID: <421D6FAF.8070207@zhmail.com>
-References: <f7e5481105022104583d0d3b19@mail.gmail.com>	
-	<421A9F1F.5080906@zhmail.com>
-	<f7e5481105022306175a6b09dc@mail.gmail.com>
+From: Rudi Starcevic <tech@wildcash.com>
+Subject: Re: Port-forwarding Perfomance
+Date: Thu, 24 Feb 2005 16:15:16 -0800
+Message-ID: <421E6E14.5020905@wildcash.com>
+References: <421D2F04.8090100@wildcash.com>	<1109156169.11713.2.camel@nostromo.bgsecm.com>	<421DE4AF.6040702@wildcash.com>
+	<20050223211053.GA12107@bender.817west.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <f7e5481105022306175a6b09dc@mail.gmail.com>
+In-Reply-To: <20050223211053.GA12107@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +18,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Yuwen Dai wrote:
->>Probably you're encoutering the Path MTU Discovery problem. There are
->>serveral solutions to this problem.
->>
->>1. Lower the MTU of the network interface of your internal host.
->>
->>2. Use the clamp-mss-to-pmtu feature of iptables:
->>    # iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS \
->>         --clamp-mss-to-pmtu
-> 
-> 
-> Thank you.  I used this rule to solved the problem.
+Hi,
 
-You are welcome. Actually, the three methods are not really solutions; 
-they are workarounds. The real solution is to fix the broken firewalls 
-on the Internet, which incorrectly block vital ICMP traffic.
+
+I'm still seeing slow performance with my port-forwarding but
+have found something interesting that may be problematic.
+
+Just to re-cap:
+
+I have one Linux 66.283.12.21 box and one Windows box 192.168.0.10
+I can download a file of the linux box at around 140K/s
+That very same file download on the Windows machine is around 15K/s using DNAT and Masq/Forwarding.
+
+However we can upload to the Windows box at 140k/s.
+
+So it is only slow, 15K/s, when the data is coming from Windows then through the Linux Iptables Masq/Forwarding Firewall.
+
+I contacted an earlier Admin for the Windows machine and was informed the TCP window size has been manually increased.
+
+Could this affect Forwarding in Iptables ?
+
+The default maximum TCP window size in Win2000 is 17520 bytes (12 segments).
+The current value is set at 131400.
+
+90% of the traffic being port-forwarded are Digital video files.
+These range in size from 2MB to 200MB.
+
+So I assume with large files like these Windows would opt for it's largest TCP window size.
+
+I guess the next step is to lower these to their default values and see if it affect bandwidth.
+
+Your thoughts on that would be much appreciated.
+
+Thanks.
+Regards,
+Rudi
+
+
+
 
 -- 
-Wenzhuo Zhang <wenzhuo@zhmail.com>  GnuPG Key ID 0xBA586A68
-Key fpr: 89C7 C6DE D956 F978 3F12  A8AF 5847 F840 BA58 6A68
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.300 / Virus Database: 266.4.0 - Release Date: 22/02/2005
+
 
