@@ -1,84 +1,58 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Change iptables log format (would be a nice feature)
-Date: Wed, 8 Oct 2003 14:24:27 +0200
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031008122427.GU25743@sunbeam.de.gnumonks.org>
-References: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk> <1065456746.1189.32.camel@valhalla> <20031007094746.GJ18246@sunbeam.de.gnumonks.org> <Pine.LNX.4.56L0.0310081208511.5838@sutsko.kollegie.dk>
+From: Tobias DiPasquale <toby@cbcg.net>
+Subject: [PATCH] kfree_skb() bug in 2.4.22
+Date: Wed, 08 Oct 2003 08:44:35 -0400
+Sender: linux-net-owner@vger.kernel.org
+Message-ID: <1065617075.1514.29.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UC+RhZhEc8lcmajv"
-Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.56L0.0310081208511.5838@sutsko.kollegie.dk>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-net-owner@vger.kernel.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Lasse B. Jensen" <gymer@odense.kollegienet.dk>
-Cc: Chris Brenton <cbrenton@chrisbrenton.org>, netfilter@lists.netfilter.org, ulogd@lists.gnumonks.org
+Content-Type: text/plain; charset="us-ascii"
+To: netdev@oss.sgi.com
+Cc: linux-net@vger.kernel.org, linux-kernel@vger.kernel.org, coreteam@netfilter.org, netfilter@lists.netfilter.org, akpm@zip.com.au, jgarzik@pobox.com, davem@redhat.com, kuznet@ms2.inr.ac.ru, pekkas@netcore.fi, jmorris@intercode.com.au, yoshfuji@linux-ipv6.org
+
+Hi all,
+
+I was debugging one of my iptables/netfilter modules yesterday and I
+came across this bug in kfree_skb(). One of my functions returns a
+struct skbuff * on success and NULL on failure. When it failed, the code
+calling said function attempted to free the struct skbuff *, which at
+that point was NULL. This produced a kernel panic. I investigated the
+problem and found that, not only should I be checking for a NULL pointer
+when freeing the struct skbuff *, but the actual cause of the panic was
+because kfree_skb() and kfree_skb_fast() do not check for skb==NULL,
+either. They immediately attempt to dereference the users field of the
+struct skbuff * in order to decrement that reference counter. 
+
+I have come up with a patch that applies to both the 2.4.22 pristine
+source tree and the 2.4.23-pre6 source tree that solves this issue (see
+below). I tried to follow Documentation/SubmittingPatches to the letter;
+please let me know if I failed this in some way. Thanks :)
+
+P.S. I wasn't sure who exactly maintains this particular code; that's
+why I just sent it to everyone listed in MAINTAINERS remotely associated
+with include/linux/skbuff.h ;)
 
 
---UC+RhZhEc8lcmajv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--- include/linux/skbuff.h.orig	2003-10-08 07:52:31.000000000 -0400
++++ include/linux/skbuff.h	2003-10-08 07:52:52.000000000 -0400
+@@ -293,6 +293,8 @@
+  
+ static inline void kfree_skb(struct sk_buff *skb)
+ {
++	if (!skb)
++		return;
+ 	if (atomic_read(&skb->users) == 1 || atomic_dec_and_test(&skb->users))
+ 		__kfree_skb(skb);
+ }
+@@ -300,6 +302,8 @@
+ /* Use this if you didn't touch the skb state [for fast switching] */
+ static inline void kfree_skb_fast(struct sk_buff *skb)
+ {
++	if (!skb)
++		return;
+ 	if (atomic_read(&skb->users) == 1 || atomic_dec_and_test(&skb->users))
+ 		kfree_skbmem(skb);	
+ }
 
-On Wed, Oct 08, 2003 at 12:11:46PM +0200, Lasse B. Jensen wrote:
->=20
-> On Tue, 7 Oct 2003, Harald Welte wrote:
->=20
-> > On Mon, Oct 06, 2003 at 12:12:26PM -0400, Chris Brenton wrote:
-> > > On Thu, 2003-10-02 at 10:40, Lasse B. Jensen wrote:
-> > > >
-> > > > Is it possible to change the log format of iptables?
-> > >=20
-> > > As others have pointed out this is not possible, however it might mak=
-e a
-> > > nice feature to be added in. I've noticed that in high bandwidth
-> > > environments what chokes throughput the most is logging.=20
-> >=20
-> > This is why you should use ULOG / ulogd if you log many packets.
->=20
-> I have now tried with ulog and ulogd and got a much better performance...=
-=2E=20
-> however i seem that the timestamp i ulog i "fucked up". My time on the=20
-> machine i fine, but the ulog timestamp says Jan 12 00.04.02 when the=20
-> date-output says Okt 8 11.43.22=20
->=20
-> Can anyone give me an explanation?
-
-the answer is in the ulogd@lists.gnumonks.org mailinglist archive, there
-is also a patch for it (in ulogd CVS).  I'm about to release ulogd-1.02
-because of that bug.
-
-> /Lasse
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---UC+RhZhEc8lcmajv
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/hAH7XaXGVTD0i/8RAi6aAKCi7zcBimzwKME36aOZ6qMyreVH0QCgrkeg
-hn/Im1Ql3Cu5SyG1Hf/Nw30=
-=O3da
------END PGP SIGNATURE-----
-
---UC+RhZhEc8lcmajv--
 
