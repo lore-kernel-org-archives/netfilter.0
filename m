@@ -1,9 +1,10 @@
-From: joe@princerupertlibrary.ca
-Subject: something won't respond...
-Date: Wed, 23 Apr 2003 12:25:09 -0700 (PDT)
+From: Chris Garringer <chris.garringer@tic.toshiba.com>
+Subject: INSMOD ip_nat_ftp on RH 7.3
+Date: 23 Apr 2003 15:29:31 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304231222380.5931-100000@orca.princerupertlibrary.ca>
+Message-ID: <1051129770.9228.8.camel@bordercollie>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,57 +15,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-...vague I know.
+I have a ftp server running RH7.3.  I loaded iptables to function as a
+backup host firewall (a commercial firewall is running in front of the
+box).   To get ftp running I followed the instructions  found in the
+archives and everything appears to be working with a few exceptions (and
+I can't find a consistent error at the client).  The problem I have for
+the list is :  in the archives I needed to run insmod ip_conntrack_ftp
+and ip_nat_ftp.   I am not doing NAT on the box (it is host protection
+only) but I tried loaded the module anyway and I get the following:
 
-Hello All:
-I am having a problem with iptables that I can't figure out, hopefully someone can help.
-I was able to get this capacity functional with ipchains, but we've moved 
-to iptables and the new firewall is doing what it should for mail and ssh 
-but not connecting to our webserver. Well, I'm not exactly sure whats going wrong. 
-The only error message is one I get from my web browser 
-when I try to test the firewall.  The error is:
-"The operation timed out when attempting to contact 209.53.133.149"
+[root@ftp linux-2.4]# /sbin/insmod ip_nat_ftp
+Using
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
+unresolved symbol ip_nat_seq_adjust_Rsmp_cbe29a5f
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
+unresolved symbol ip_nat_mangle_tcp_packet_Rsmp_eb464ab9
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
+unresolved symbol ip_nat_setup_info_Rsmp_7f3533b7
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
+unresolved symbol ip_nat_helper_unregister_Rsmp_031dc71b
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
+unresolved symbol ip_nat_delete_sack_Rsmp_adb77a5a
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
+unresolved symbol ip_nat_helper_register_Rsmp_af7071d1
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
+unresolved symbol ip_nat_expect_register_Rsmp_6e1e3482
+/lib/modules/2.4.18-27.7.xsmpA/kernel/net/ipv4/netfilter/ip_nat_ftp.o:
+unresolved symbol ip_nat_expect_unregister_Rsmp_4a740962
 
-We are running webserver behind a firewall. 
-Webserver(Dynix) internal IP address = 192.168.0.244
-Firewall external IP address = 209.53.133.149
-
-The firewall script contains different commands but the following are the pertinent ones (AFAIK).
-
----
-
-# enable Masquerade and forwarding
-/sbin/iptables -t nat -A POSTROUTING -s $LAN_IP_NET -j MASQUERADE
-/sbin/iptables -A FORWARD -j ACCEPT -i $LAN_NIC -s $LAN_IP_NET
-/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-#This opens the www port on raven
-/sbin/iptables -A INPUT -j ACCEPT -p tcp --dport 80
-#Dynix also needs port 5050
-/sbin/iptables -A INPUT -j ACCEPT -p tcp --dport 5050
+The kernel is compiled starting from the RH standard configuration file
+in /usr/src/configs/.....-i686-smp.  The compilation had no errors and
+the system is running fine except for some packets that get blocked as
+though it has lost track of a conversation.   The server is NOT heavily
+(or even somewhat) loaded the traffic is LIGHT.   Why am I getting the
+insmod errors and do I need to care since I am not doing NAT?
 
 
-#Open ports on Dynix machine
-#First the regular port 80
-/sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 80
-/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 192.168.0.244:80
-#
-#WebPAC  also needs needs port 5050 on Dynix as well
-/sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 5050
-/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 5050 -j DNAT --to 192.168.0.244:5050
-
----
-
-But I still get the error message.
-Am I missing something specific re:iptables or something more obvious?
-
-Any help REALLY appreciated.
-
-Joe Zelwietro
-
+-- 
+Chris D. Garringer
+LAN/WAN Supervisor
+Tel.  713-466-0277 x3756
+Certified Solaris Administrator
+Redhat Certified Engineer
+Microsoft MCSE
+Novell CNE
 
 
