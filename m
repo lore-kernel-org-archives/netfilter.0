@@ -1,13 +1,12 @@
-From: Miguel Angel Amador L <amador@puc.cl>
-Subject: Re: bad tcp packets
-Date: Tue, 23 Nov 2004 09:42:24 -0300
-Message-ID: <1101213743.32475.37.camel@JOKER.INFOWORLD.CL>
-References: <web-23112413@infinito.it>
-Reply-To: amador@puc.cl
+From: primero <primero@hdrroma.it>
+Subject: Re: DNATed packet not hitting FORWARD chain
+Date: Tue, 23 Nov 2004 10:00:46 +0100
+Message-ID: <41A2FC3E.2040904@hdr-roma.it>
+References: <9FB9C39FACF4034BB4AC7F89F2AEB0AB0159373A@win2k.aries.dpmg.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-23112413@infinito.it>
+In-Reply-To: <9FB9C39FACF4034BB4AC7F89F2AEB0AB0159373A@win2k.aries.dpmg.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,55 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: James <newsjn@dpmg.com>
+Cc: netfilter@lists.netfilter.org
 
+James wrote:
 
+>Hi,
+>
+>I'm having some trouble getting DNAT to work properly.  I have a gateway
+>machine that has two different connections to the Internet, on eth1 and
+>eth2.  I'm trying to allow inbound port 1723 to be forwarded to an internal
+>PPTP server through both interfaces.  It works on eth2, but not eth1.
+>Here's what I've got:
+>
+>  
+>
+Hi
+I would try to check if packets arrives on .165 by tcpdump on this host. 
+just to see if DNATTING and FORWARDING is done correctly, and it should 
+be based on rules u showed us.
 
-El mar, 23-11-2004 a las 09:18, hamals@infinito.it escribi=C3=B3:
-> Hello to everyone
->=20
-> I'm reading "Iptables Tutorial 1.1.19" by Oskar=20
-> Andreasoon, and I cant understand these bad packets rules
->=20
->=20
-> $IPTABLES -N bad_tcp_packets
-> #
-> #
-> # bad_tcp_packets chain
-> #
-> $IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK=20
-> SYN,ACK \
-> -m state --state NEW -j REJECT --reject-with tcp-reset
+Then i would ask how do you deal with routing packets on your gw. I 
+mean, if u receive the connection on eth2 and you DNAT and forward to 
+.167 , the returning packets from .167 should be routed to the eth2 and 
+exit the gw from that interface. The same for eth1 and .165
 
-May be that you can't got the three flags on, in the same packet
+What about you routing settings on the gw? maybe u use eth2 as default 
+route interface and also the packets that come back from .165 exits and 
+are routed by eth2. this way you'll never get the SNAT rule associated 
+to the previous DNAT rule matched and applied .
 
+BTW this is just an idea ;)
 
-> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state=20
-> --state NEW -j LOG \
-> --log-prefix "New not syn:"
-
-> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state=20
-> --state NEW -j DROP
-
-May be, if the packet haven't the syn flags on, the packet is not new
-
-> someone could explain me why that are bad tcp packets?
-I don't secure, but i thing that is this.
-regards
-
- Miguel Amador
-
-> Thanks
->=20
-> _______________________________________
-> Connessione ed e-mail gratuita da 10 mb
-> consultabile tramite web e tramite pop.
-> www.infinito.it vieni a scoprire tutti=20
-> i nostri servizi!
->=20
-> http://www.infinito.it/xmail
->=20
->=20
-
+bye
+primero
 
