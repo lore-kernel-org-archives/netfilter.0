@@ -1,14 +1,10 @@
-From: =?iso-8859-1?Q?Herv=E9?= Eychenne <rv@wallfire.org>
-Subject: Re: Looking for Log Analyzer
-Date: Wed, 19 Feb 2003 17:26:33 +0100
+From: "Warren P" <warrenp@websurfer.co.za>
+Subject: Redirecting to more than 1 port.
+Date: Wed, 19 Feb 2003 19:23:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030219162633.GC455@eychenne.org>
-References: <HEEHJDADEHEPKKEAOCPPAEPHCCAA.susan.sagan@cgi.com>
+Message-ID: <200302191723.h1JHNAq26668@mailgate.mailbox.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <HEEHJDADEHEPKKEAOCPPAEPHCCAA.susan.sagan@cgi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +14,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Susan Sagan <susan.sagan@cgi.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Thu, Jan 30, 2003 at 03:48:47PM -0500, Susan Sagan wrote:
+hi
 
-> Before writing my own, I was wondering if there were tools available for
-> analyzing the output log file from iptables.  I was in particular looking
-> for tools which created a variety of different reports.  One such example
-> being a report listing the top traffic generators.=20
+I want to run 2 instances of SQUID (Transparent Proxy). Currently I'm
+running only one instance of squid and my IPTABLE is as follows:
 
-Try wflogs...
-http://www.wallfire.org/wflogs/
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
+--to-port 3128
 
- RV
+My 2nd instance of Squid will run one port 8080, will the following
+configuration be correct:
 
---=20
- _
-(=B0=3D  Herv=E9 Eychenne
-//)
-v_/_ WallFire project:  http://www.wallfire.org/
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
+--to-port 3128:8080
+
+If not, can you please advice.
+_______________________________________________________________
+ http://www.webmail.co.za the South-African free email service
+
+  NetWiseGurus.Com Portal - Your Own Internet Business Today!
+
 
