@@ -1,14 +1,14 @@
 From: Herman <Herman@AerospaceSoftware.com>
 Subject: Re: Bridge question
-Date: Fri, 17 Oct 2003 07:49:50 -0600
+Date: Fri, 17 Oct 2003 07:52:17 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310170749.50608.Herman@AerospaceSoftware.com>
-References: <200310170839.h9H8dY8206228@alf1.lmb.internal>
+Message-ID: <200310170752.17546.Herman@AerospaceSoftware.com>
+References: <B4B08E56FC7A304EB88DC4B97043921816EFBE@hqmail03.mpr.org> <200310162115.00685.Herman@AerospaceSoftware.com> <1066397839.29597.6.camel@jccn-crux-linux.djc.state.id.us>
 Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200310170839.h9H8dY8206228@alf1.lmb.internal>
+In-Reply-To: <1066397839.29597.6.camel@jccn-crux-linux.djc.state.id.us>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,56 +20,57 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: tsh@mrc-lmb.cam.ac.uk
-Cc: netfilter@lists.netfilter.org
+To: Jeremy Jones <jeremy@samnjack.com>, netfilter@lists.netfilter.org
 
-Hmmm, could you clue me up a little more?
+Aaaaaaaaah...  Thanks Jeremy!
 
-Our problem is this:
-- Hotel with 300 rooms.
-- VLANs on 3COM switches to isolate the guests and consolidate the feed, back 
-to the server.
-- Kernel 2.2 server system - does not understand VLAN packets and rejects 
-them.
+I think ebtables is exactly what the doctor ordered.
 
-As a stop-gap, until the server is updated to kernel 2.4, we want to filter 
-the VLAN Q-tags using a kernel 2.4 bridge.  We have this working, but the 
-bridge works like a hub and connects everything to everything, so then the 
-VLAN 'security' is lost, putting us back to square one.
-
-We therefore need to add filtering capability to the bridge to keep the guests 
-separated.  Preferably, this should be done at the ethernet level, but since 
-this is a stopgap solution, we could use netfilter to block certain packets 
-to prevent guests from browsing each other.
-
-Now, the part from your comment that I don't understand is 'proxy ARP'.
-
-Could you clue me up?
-   We're using netfilter as a filtering bridge + NAT + local router between
-   us and the the local university router (via which we are attached to
-   *its* LAN) using proxy arp and iptables. It's been running happily for
- about 1.5 years (touch wood) supporting about 1200 hosts behind it.
-
-What I have been thinking, in order to avoid having to apply patches to the 
-kernel to get bridge+iptables to work, is to simply use more ethernet ports 
-and loop two of them with a cross-over cable.  Then run a bridge between eth0 
-and eth1, loop eth1 to eth3 and run iptables between eth2 and eth3.  Kludgy 
-but doable.  Finally, use iptables as an Ingress filter to the Bridge to 
-block the MS Windows Network Neighborhood feature, making the usual kind of 
-guest unable to browse other guests.  
-
-The 3COM switches will then be connected to the iptables side of the thing and 
-the server to the bridge side.  Technically, the VLAN security will still be 
-lost, but the addition of iptables will allow us to limit the damage and have 
-improved isolation between guests.
-
-Comments?
+I'll try my bridge+iptables kludge - explained in another post - as well and 
+see which one we get to work properly first - we are running short on time 
+with this project.
 
 Cheers,
--- 
-Herman Oosthuysen 
-B.Eng(E), MIEEE
-Aerospace Software Ltd.
-Ph: 1.403.241-8773, Cell: 1.403.852-5545, Fx: 1.403.241-8841
-Herman@AerospaceSoftware.com, http://www.AerospaceSoftware.com
+
+Herman
+
+On Friday 17 October 2003 7:37 am, Jeremy Jones wrote:
+   Herman,
+
+   in addition to the bridge.sourceforge.net pages, have a look at
+   ebtables.sourceforge.net.  the howto documentation you'll find at, say,
+   tldp.org is a little out of date, but at ebtables, you may find more
+   helpful info.  i've been using the bridging code & netfilter-bridge
+   kernel patch with 2.4.x for a while now, along with ebtables (analagous
+   to iptables, but filters at layer 2), and it's doing wonders for me.
+
+   good luck,
+
+   Jeremy
+
+   On Thu, 2003-10-16 at 21:15, Herman wrote:
+   > Hi everybody,
+   >
+   > This question is not about iptables, but it is closely related, so
+
+   somebody
+
+   > might know the answer:
+   > I am trying to construct a bridge, to filter 802.1q tags and protect a
+
+   legacy
+
+   > version 2.2 kernel server, while preserving port to port security on
+
+   the LAN,
+
+   > using the VLAN module.
+   >
+   > Can anybody refer me to some documentation on filtering on a bridge
+
+   for the
+
+   > 2.4 kernel?
+   >
+   > Regards,
 
