@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNAT, SNAT, Portforward
-Date: Fri, 1 Nov 2002 08:58:23 +0000
+From: "Ben Tan" <linuxnewbie74@hotmail.com>
+Subject: does the ip_conntrack subjected to DOS attack???
+Date: Fri, 1 Nov 2002 18:44:15 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021101085825.SDDP292.mta03-svc.ntlworld.com@there>
-References: <34BE59D9.590F1486.03240133@netscape.net> <200211010108.18555.netfilter@newkirk.us>
+Message-ID: <002401c28193$9fcbbba0$1801010a@demo>
+Reply-To: "Ben Tan" <linuxnewbie74@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0021_01C281D6.ADB80D20"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200211010108.18555.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +17,84 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: a <netfilter@lists.netfilter.org>
 
-On Friday 01 November 2002 6:08 am, Joel Newkirk wrote:
+This is a multi-part message in MIME format.
 
-> Question to list:  At what point in its own travels does the returning
-> packet get automatically un-DNATed?  Prerouting again?
+------=_NextPart_000_0021_01C281D6.ADB80D20
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-No, it happens in POSTROUTING - because it is then a SNAT operation.
+hi,
+    it seems that once the ip_conntrack table is being filled up, the =
+system will crash.=20
 
-Useful rule of thumb - in the FORWARD chain, all packets have their "real" =
-IP=20
-addresses.
+    Does it means that it is very vulnerable to DOS attack?
 
-That's because DNAT rules have already happened in PREROUTING, so packets n=
-ow=20
-have the destination address of the machine they're really being sent on to=
-,=20
-and SNAT rules have not yet happened in POSTROUTING, so packets still have =
+    I have performed a port scan using nmap on my box, and it is able to =
+scan alot of ports being opened? How come this happened? I only allow =
+established,related tcp packets and tcp port 22 New on INPUT to the box? =
+The default policy is DROP.
 
-the source address of the machine they really came in from.
+    The result is=20
+    port 22 open=20
+    port 80 open
 
-Antony.
+Why it is so? Pls advise. Thanks in advanced.
 
---=20
+ben
+    =20
 
-This email is intended for the use of the individual addressee(s) named abo=
-ve=20
-and may contain information that is confidential, privileged or unsuitable =
+   =20
 
-for overly sensitive persons with low self-esteem, no sense of humour, or=20
-irrational religious beliefs.
+------=_NextPart_000_0021_01C281D6.ADB80D20
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-If you have received this email in error, you are required to shred it=20
-immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
-caster sugar. =A0 Whisk until soft peaks form, then place in a warm oven fo=
-r 40=20
-minutes. =A0 Remove promptly and let stand for 2 hours before adding some=20
-decorative kiwi fruit and cream. =A0 Then notify me immediately by return e=
-mail=20
-and eat the original message.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; it seems that once =
+the=20
+ip_conntrack table is being filled up, the system will crash. =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Does it means that =
+it is very=20
+vulnerable to DOS attack?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I have performed =
+a&nbsp;port=20
+scan using nmap on my box, and it is able to scan alot of ports being =
+opened?=20
+How come this happened? I only allow established,related tcp packets=20
+and&nbsp;tcp port 22 New on INPUT to the box? The default policy is=20
+DROP.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; The result is =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; port 22 open =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; port 80 =
+open</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Why it is so? Pls advise. Thanks in=20
+advanced.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>ben</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; </FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; =
+</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0021_01C281D6.ADB80D20--
+
 
