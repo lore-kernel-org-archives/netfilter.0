@@ -1,10 +1,10 @@
-From: cc <cc@kdtc.net>
-Subject: source quench packets
-Date: Fri, 25 Jul 2003 11:28:05 +0800
+From: Damien Mason <kinetic@suse.net.au>
+Subject: VLANS + intervlan forwarding + SNAT
+Date: Fri, 25 Jul 2003 15:19:05 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F20A3C5.4020501@kdtc.net>
+Message-ID: <3F20BDC9.4060904@suse.net.au>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_1059103877-1335-294"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,41 +15,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Group <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format...
+Hi All,
 
-------------=_1059103877-1335-294
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+    Sorry I think my last post needs some clarification, so here it is, 
+any help would be appreciated :)
 
-Hi,
+I have the following setup:
 
-I was wondering if I should be worried about
-an influx of SourceQuench packets coming from
-a particular system?
+Client Vlans (coming in on a single interface, trunked (802.1q).
+   Client 1
+       eth1.2    ip:    192.168.0.0/24
+       eth1.3    ip:    192.168.10.0/24
+       eth1.4    ip:    192.168.20.0/24
+   Client 2
+       eth1.5    ip:    192.168.0.0/25
+       eth1.6    ip:    192.168.0.128/25
 
-My log is showing (recently) quite a lot of
-these ICMP messages being sent from one
-system to mine.
+External Interface (to the internet) (examples only).
+eth0:1       ip:    203.1.1.2
+eth0:2       ip:    203.1.1.3
+eth0:3       ip:    203.1.1.4
+eth0:4       ip:    203.1.1.5
 
-Is there a way to check whether or not the firewall
-is sending major packets to this particular
-system?
+DMZ Intefaces, will not have overlapping network addresses.
+eth2.1       ip:    10.0.0.0/24
+eth2.2       ip:    10.0.1.0/24
 
-Btw, I'm using Iptables 1.2.8 on a Linux 2.4.x
-machine.
+I want to be able to enable clients on the eth1.x vlan interfaces to be 
+able to:
+   a) access the internet, that's easy, i've just setup masquerading.
 
-Thanks.
+   b) every 'client' has at least 1 external ip address, I want to be 
+able to forward traffic to a vlan'ed server, that is, say traffic coming 
+into 203.1.1.2 on port 80, is redirected to 192.168.0.10:80 on interface 
+eth1.2, I cannot do this in iptables prerouting because you can not 
+specify an outgoing interface in prerouting, if I could I would use 
+something like:
+
+iptables -A PREROUTING -t nat -p tcp -d 203.221.181.27 --dport 80 -j 
+DNAT --to  192.168.50.10:80 -i eth1.2
+
+But, of course, that's impossible.
+
+So, if i use an snat setup, I've come up with something like:
+iptables -t nat -A POSTROUTING -s 0/0 -d 203.1.1.2 -p tcp --dport 80 -j 
+SNAT --to 192.168.0.10:80 -o eth1.2
+
+Anything with a destination of  203.1.1.2, tcp, with a destination of 
+port 80, nat it to 192.168.0.10, port 80, output on interface eth1.2
 
 
+   c) inter-vlan routing/forwarding, eg. have hosts on (eth1.5 - 
+192.168.0.0/25) access hosts (eth1.6 - 192.168.0.128/25)
 
+Thanks in advance,
 
-** All information contained in this email is strictly     **
-** confidential and may be used by the intended receipient **
-** only.                                                   **
+Damien Mason
+SuSE Linux Asia-Pacific
 
+Email: damien at suse.net.au 
+<mailto:damien@suse.net.au?subject=Reply%20Email>
+Web: http://www.suse.net.au./
 
-------------=_1059103877-1335-294--
 
