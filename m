@@ -1,14 +1,15 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: natting help needed urgently.
-Date: Sat, 6 Sep 2003 12:29:35 -0700
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Server can't send :-/
+Date: Sat, 6 Sep 2003 19:38:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <DKEDJAAMDCDBHFKPBEMPCEICCIAA.markee@bandwidthco.com>
-References: <20030907110417.GA1463@linux.local>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <200309061938.58991.Alistair@nerdnet.ca>
+References: <006801c37224$ef009dd0$0000fea9@kessler.local>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030907110417.GA1463@linux.local>
+In-Reply-To: <006801c37224$ef009dd0$0000fea9@kessler.local>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,86 +20,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Payal Rathod <payal-iptables@staticky.com>, netfilter@lists.netfilter.org
-
-Here is an example for HTTP.  All the services will work the same except for
-the destination port number.  This needs to be done in two stages basically:
-
-Step 1 is to DNAT the requests from the firewall box to your internal
-Windows server (prerouting):
-
-####################################################################
-# SET VARIABLES
-####################################################################
-WINDOWS_IP="192.168.10.3"
-
-####################################################################
-# HTTP/SHTTP
-####################################################################
-# send all new incoming web requests to HTTP server (HTTP & SHTTP)
-if [ "$WINDOWS_HTTP_AVAILABLE" = "1" ] && [ "$HTTP_SERVER" = "1" ];
-then
-	$IPT -t nat -A PREROUTING -p tcp --destination-port 80 -i $FW_INET_IFACE -j
-LOG --log-prefix "DNAT IN WINDOWS HTTP: "
-	$IPT -t nat -A PREROUTING -p tcp --destination-port 80 -i $FW_INET_IFACE -j
-DNAT --to $WINDOWS_IP:80
-	$IPT -t nat -A PREROUTING -p tcp --destination-port 443 -i
-$FW_INET_IFACE -j LOG --log-prefix "DNAT IN WINDOWS SHTTP: "
-	$IPT -t nat -A PREROUTING -p tcp --destination-port 443 -i
-$FW_INET_IFACE -j DNAT --to $WINDOWS_IP:443
-fi
-
-Step 2 is to accept the packets after they have been DNATed:
-
-$IPT -t filter -A TCP_RULES -i $FW_INET_IFACE -d $WINDOWS_IP -p
-tcp --source-port $UNPRIVPORTS --destination-port 80 -m state --state NEW -j
-LOG --log-prefix "WEB ACCESS -> WINDOWS BOX: "
-$IPT -t filter -A TCP_RULES -i $FW_INET_IFACE -d $WINDOWS_IP -p
-tcp --source-port $UNPRIVPORTS --destination-port 80 -m state --state NEW -j
-ACCEPT
-$IPT -t filter -A TCP_RULES -i $FW_INET_IFACE -d $WINDOWS_IP -p
-tcp --source-port $UNPRIVPORTS --destination-port 443 -m state --state
-NEW -j LOG --log-prefix "SWEB ACCESS -> WINDOWS BOX: "
-$IPT -t filter -A TCP_RULES -i $FW_INET_IFACE $WINDOWS_IP -p
-tcp --source-port $UNPRIVPORTS --destination-port 443 -m state --state
-NEW -j ACCEPT
-
-Hope this helps.
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Payal Rathod
-Sent: Sunday, September 07, 2003 4:04 AM
-To: netfilter@lists.netfilter.org
-Subject: natting help needed urgently.
+To: Stephan Kessler <stephankessler@gmx.de>, 'Ralf Spenneberg' <lists@spenneberg.org>
+Cc: 'Netfilter' <netfilter@lists.netfilter.org>
 
 
-Hi,
-I have asked this before but nobody responded. Is this un-do-able?
-I have a windows box which is on intertnal ip 192.168.10.3. I want the
-outside world to access the servers (ftp, http, smtp, pop3) from it.
-The scene is something like this,
 
+	in reality, just to conserve rule scans and sanity, you want 
+related,established rules to be at the TOP of the list ... once the conntrack 
+has been accepted you don't want to have it fall through a list of rules.
 
-+----------+       +--------------+         +---------------+
-|          +---><--+ Linux        +---->--<-+win2k          |
-|router    |       |  (1.2.3.4)   |         | (192.168.10.3)|
-+----------+       +--------------+         +---------------+
+On September 3, 2003 10:09 am, Stephan Kessler wrote:
+> > I suspect your machine is warpy.yomeganet.biz. The last input
+> > rule drops all incoming tcp-traffic. You a just accepting
+> > traffic going to 22,80,21,20,etc. Since I do not actually
+> > understand your ruleset, you just might want to insert the
+> > following rule before this DROP rule
+> > iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+>
+> Thx thats it!
+>
+> Greetings,
+> Stephan
 
-I am not able to redirect any request for windows box from outside world
-to internal machine 192.168.10.3
+-- 
 
-Please help me to solve this problem.
-
-Waiting eagerly for any help on this.
-
-With warm regards,
--Payal
-
---
-"Visit GNU/Linux Success Stories"
-http://payal.staticky.com
-Guest-Book Section Updated.
-
-
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
