@@ -1,17 +1,13 @@
-From: Vincent Blondel <vincent.blondel@chello.be>
-Subject: Re: FTP Connection problems.
-Date: Wed, 25 Aug 2004 16:58:51 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: capture arp in hook and queue to userspace
+Date: Wed, 25 Aug 2004 17:17:40 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093445930.1781.61.camel@lbedlbxl.dev.xtra-net.org>
-References: <1093352834.1894.16.camel@lbedlbxl.dev.xtra-net.org>
-	<412B685E.2080000@pbl.ca>
-	<1093428637.1781.17.camel@lbedlbxl.dev.xtra-net.org>
-	<412C9E90.90902@pbl.ca>
-Reply-To: vincent.blondel@chello.be
+Message-ID: <1093447059.2246.45.camel@anduril.intranet.cartel-securite.net>
+References: <2E314DE03538984BA5634F12115B3A4E62EABD@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <412C9E90.90902@pbl.ca>
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62EABD@email1.mitretek.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,90 +17,20 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-08-25 at 16:13, Aleksandar Milivojevic wrote:
-> Vincent Blondel wrote:
-> > Thanks a lot for all the details but I still get some problems. As I
-> > said it all the netfilter source code is compiled in a custom kernel
-> > without any modules. 
-> > 
-> > Concerning the little iptables script I have written, I updated it with
-> > your comments and now I get the next script 
-> 
-> [snip]
-> 
-> > if [ "$CONN_TRACK" = "1" ]; then
-> >         $fw -A INPUT -m state --state ESTABLISHED -j ACCEPT
-> >         $fw -A OUTPUT -m state --state ESTABLISHE -j ACCEPT
-> >         $fw -A FORWARD -m state --state ESTABLISHED -j ACCEPT
-> >         $fw -A INPUT -p icmp -m state --state RELATED -j ACCEPT
-> > fi
-> 
-> Add these too:
-> 
-> $fw -A OUTPUT -p icmp -m state --state RELATED -j ACCEPT
-> $fw -A FORWARD -p icmp -m state --state RELATED -j ACCEPT
-> 
-> > ... but the connection takes a long time to terminate. If I disable all
-> > the rules, ftp connection goes directly but with iptables enabled it
-> > takes such 8 seconds to accomplish the annonymomus connection ( with
-> > data port and passive models ).
-> > 
-> > What is this all about ???
-> 
-> You could use a bit of logging.  Add these as last rules (at the very 
-> end of your script):
-> 
-> iptables -A INPUT -j LOG --log-prefix "INPUT "
-> iptables -A OUTPUT -j LOG --log-prefix "OUTPUT "
-> iptables -A FORWARD -j LOG --log-prefix "FORWARD "
-> 
-> Logs will go wherever your kernel logs go.  Usually /var/log/messages.
-> 
-> Since these will be at the end of your rules, they will log all packets 
-> dropped by policy just before they are dropped.  My guess is that you 
-> will either find TCP SYN packets to port 113 (ident) or UDP packets to 
-> port 53 (DNS).
-> 
-> To silently disable ident (incoming and outgoing) on FTP server, you 
-> could do something like this (you can add line for FORWARDED packets, if 
-> you wish):
-> 
-> iptables -A INPUT -p tcp --sport 1024: --dport 113 \
->     -j REJECT --reject-with tcp-reset
-> iptables -A OUTPUT -p tcp --sport 1024: --dport 113 \
->     -j REJECT --reject-with tcp-reset
-> iptables -A OUTPUT -p tcp --sport 113 --dport 1024: \
->     -m state --state RELATED -j ACCEPT
-> 
-> If you want your FTP server to be able to resolve names and reverse 
-> lookup IP addresses:
-> 
-> iptables -A OUTPUT -p udp --sport 1024: --dport 53 \
->     -m state --state NEW -j ACCEPT
-> iptables -A OUTPUT -p tcp --sport 1024: --dport 53 \
->     -m state --state NEW -j ACCEPT
-> 
-> (you can add IP address(es) of your DNS server(s) there)
+Le mer 25/08/2004 =E0 17:09, Piszcz, Justin Michael a =E9crit :
+> Doesn't etables handle ARP packets?
 
-this is the result from /var/log/sys.log on my firewall with logging
-enabled without anything else changed.
+Yes it does.
 
-Aug 25 16:56:20 lfs kernel: device eth0 entered promiscuous mode
-Aug 25 16:56:23 lfs kernel: FORWARD IN=eth1 OUT=eth0 SRC=192.168.125.1
-DST=192.168.124.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=10297 DF PROTO=TCP
-SPT=33306 DPT=113 WINDOW=5840 RES=0x00 SYN URGP=0 
-Aug 25 16:56:26 lfs kernel: FORWARD IN=eth1 OUT=eth0 SRC=192.168.125.1
-DST=192.168.124.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=10298 DF PROTO=TCP
-SPT=33306 DPT=113 WINDOW=5840 RES=0x00 SYN URGP=0 
-Aug 25 16:56:32 lfs kernel: FORWARD IN=eth1 OUT=eth0 SRC=192.168.125.1
-DST=192.168.124.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=10299 DF PROTO=TCP
-SPT=33306 DPT=113 WINDOW=5840 RES=0x00 SYN URGP=0 
-Aug 25 16:56:37 lfs kernel: device eth0 left promiscuous mode
+Another approach could be to implement a QUEUE target for arptables
+framework.
 
-
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
