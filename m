@@ -1,15 +1,11 @@
-From: "Alexander W. Janssen" <alexander.janssen@gmx.de>
-Subject: Re: netfilter hangups
-Date: Wed, 12 Mar 2003 06:51:38 +0100
+From: Bill Davidsen <davidsen@prodigy.com>
+Subject: Getting info from ifconfig output
+Date: Wed, 12 Mar 2003 18:03:27 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030312055138.GB1282@ynfonatic.de>
-References: <3019863CF306D211BA4500A0CC30812DC6790D@exchange.cyberwolf.com>
+Message-ID: <3E6FBCBF.3D80FAE@prodigy.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="s/l3CgOIzMHHjg/5"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3019863CF306D211BA4500A0CC30812DC6790D@exchange.cyberwolf.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,83 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Browsing the list I saw a question regarding using grep and friends
+to get an IP. I do this, but to allow a single firewall config file to
+be used on a number of machines without editing. Here are the first few
+lines, I hope they are useful to someone. I extract the IP and the
+broadcast (I don't always have 8 bit subnetting).
 
 
---s/l3CgOIzMHHjg/5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+# define internal and external interfaces
+int_i=eth0
+ext_i=eth1
+loopback=lo
 
-On Tue, Mar 11, 2003 at 03:00:20PM -0700, Chip Upsal wrote:
-> [root@iptables1 root]# /etc/sysconfig/iptables condrestart
-> iptables: Chain already exists
-> iptables: Chain already exists
-> iptables: Chain already exists
-> iptables: Chain already exists
-> iptables: Chain already exists
+# define the IP of the external address, only IP used
+AdrsLine=$(ifconfig ${ext_i} | grep "inet addr:")
+ext_ip=$(expr "$AdrsLine" : ".*inet addr: *\([0-9.]*\)")
+Bcast=$(expr "$AdrsLine" : ".*Bcast: *\([0-9.]*\)")
 
-The error is, what is says. If you create a custom chain with the -N switch
-and fill it with data, the following can happen:
-
-castor:~# iptables -N bla                   # New chain
-castor:~# iptables -A bla -j REJECT         # some rule
-castor:~# iptables -X bla                   # try to delete
-iptables: Chain is not empty                # doesn't work. surprise
-castor:~# iptables -N bla                   # that seems to be your problem
-iptables: Chain already exists              # oh, well...
-castor:~# iptables -F bla                   # flush the chain
-castor:~# iptables -X bla                   # delete it
-castor:~# iptables -N bla                   # be a lucky boy
-castor:~# echo $?
-0                                           # yeah, baby
-
-=20
-> Or if i get no error the firewall will not recognize any of the changes i
-> have made.
-
-What i gues what happens is that:
-
-1. Create chain
-2. Fill chain
-3.1. Try to delete chain without flushing it first -> will fail
-3.2. Forget to delete chain
-4. Try to create chain -> chain allready exists
-5. Fill chain with rules -> since the chain was never flushed, it just keeps
-up filling with rules
-
-> In either case i am forced to reboot the firewall to get things going aga=
-in.
-
-Na, i don't think so. Look into your script into the "stop" section (i don't
-really know that script, but SYSV-init-style scripts should be the same
-everywhere). Look if you custom created chains are getting flushed and
-deleted. If they arent't do it there. Save. Try.
-
-If it doesn't work: Send the script.
-
-> Chip Upsal
-> SysAdmin
-
-Alex.
-
---=20
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
-l."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
-
---s/l3CgOIzMHHjg/5
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Weitere Infos: siehe http://www.gnupg.org
-
-iEYEARECAAYFAj5uyuoACgkQEMMZKORQoYIsDwCfbHrLYR9AVmax0/0UMozC8jVU
-qfQAnA5CHIiUzuOCUpNb9j39uvRBW1H6
-=qwEQ
------END PGP SIGNATURE-----
-
---s/l3CgOIzMHHjg/5--
+-- 
+bill davidsen (davidsen@tmr.com)
+Doing interesting things with small computers since 1979.
 
