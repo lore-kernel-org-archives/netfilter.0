@@ -1,10 +1,12 @@
-From: Tomasz Czapiewski <xeros@telesat.eu.org>
-Subject: iptables 1.2.9 + kernel 2.6.7 NAT problem
-Date: Wed, 23 Jun 2004 16:04:43 +0200 (CEST)
+From: =?iso-8859-1?Q?P=E4r_H=E4ggblad?= <par.haggblad@terraplay.com>
+Subject: iptables 1.2.10 and linux kernel 2.6.7 problems.
+Date: Wed, 23 Jun 2004 14:24:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.58L0.0406231604010.6996@debian.telesat.eu.org>
+Message-ID: <6BFFA187E8806C4E9740A353F715DDBDE57169@newmailer.terraplay.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,32 +16,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi.
+I have used iptables 1.2.9 with kernel 2.4.x since a week ago.
+Now I'm using the new 2.6.7 kernel and iptables 1.2.10.=20
 
-I've got a problem with the new kernel.
-On 2.6.6 kernel there were no problems with NAT (SNAT/MASQUERADE) in
-iptables, but since I've upgraded my kernel to 2.6.7-rc3 and later 2.6.7
-I've got 'Target problem' when I try to add an iptables Masquerade rule
-(ex. iptables -t nat -I POSTROUTING -s 192.168.1.1/32 -o eth0 -j
-MASQUERADE).
-I've tried without '-o eth0', without prefix and with prefix /24, -d
-x.y.z.q parameter...
-Everything is the same.
-When I user -A POSTROUTING then iptables prints: 'iptables: Invalid
-argument'.
-ipt_MASQUERADE and conntrack modules are loaded without problems.
-Since 2.6.7 I've used the same rules for kernels: 2.6.1-2.6.6 without
-problems with iptables 1.2.9.
+The problem is that my firewall script does not work anymore.
+The setup is as followed:
+ - Every thing in the kernel that has to do with the net filter options =
+are
+   Set to compile as modules. So I have done this in the beginning of =
+the       script:
 
-Could you help me to solve this problem?
+modprobe ip_tables
+modprobe iptable_filter
+modprobe iptable_mangle
+modprobe ipt_MASQUERADE
+modprobe ipt_conntrack
+modprobe ipt_multiport
+modprobe ipt_state
+modprobe ipt_REDIRECT
+modprobe ipt_REJECT
+modprobe ipt_SAME
+modprobe ipt_LOG
+modprobe ip_conntrack
+modprobe ip_conntrack_ftp ports=3Dab,cde,fgh
+modprobe ip_conntrack_irc
+modprobe iptable_nat
+modprobe ip_nat_ftp ports=3D ab,cde,fgh
+modprobe ip_nat_irc
 
--- 
-:  `Yg. ,P' ,gP""Yg. gP""Yg. ,gP""Yg. ,gP""Yg   :     Tomasz Czapiewski       :
-:   `Y$B'   $P   ,$' $$   YP d'   `Y$ `Y._      :        xeros@irc.pl         :
-:    ,PY$.  Y$.-"`   Y$ _,P' $b.   ,P   `""Yg.  :       ICQ: 109320380        :
-:  ,P'  `Y$.`Yg._.:' :$ `s._ `Yb._,P' `Y.__,P"  :        GG: 1578983          :
+I have two major problems:
+
+1. modprobe ip_conntrack_ftp ports=3Dab,cde,fgh
+   modprobe ip_nat_ftp ports=3D ab,cde,fgh
+   Does not seem to work. I can't ftp to the defined ports. There is no
+   answer what so ever.
+
+2. $IPTABLES -v -A INPUT -i eth0 -p icmp -j DROP
+   Does not work. I can still ping my compu, the packets are not =
+dropped.
+
+What you have to understand is that my firewall script worked fine =
+before=20
+the kernel change and iptables change.=20
+So does anybody know anything about what has changed and can explain how
+I could redesign my script. There are of course more iptables configs in =
+the script, but everything is quiet basic, a lot of port forwarding and =
+such stuff.=20
+
+Thanks.
+
+/Per  =20
+
 
