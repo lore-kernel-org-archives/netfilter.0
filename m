@@ -1,12 +1,11 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Port Scanner
-Date: Wed, 5 Nov 2003 11:19:55 -0800 (PST)
+From: "Leandro Takashi Hirano" <takashi@alcidesmaya.com.br>
+Subject: IP Spoofing
+Date: Wed, 5 Nov 2003 17:31:16 -0200 (BRST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031105191955.89083.qmail@web40207.mail.yahoo.com>
-References: <200311051707.hA5H7qr13228@agate.rockstone.co.uk>
+Message-ID: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311051707.hA5H7qr13228@agate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,45 +15,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Lista de Mail netfilter <netfilter@lists.netfilter.org>
 
-In the interest of sharing.. I'ld like to show how I stop portscanning.
+Thanks for the port scanner help....
 
-Please take note about this and my method. It's for a NATed network on a home
-cable line. If you want to open services to the world they should preceed these
-lines. This is a very hard nosed way to stop portscanning and any other types
-of connections to your computer. Please note that you may want to add other
-protcols to the list as well if you use this method.. such as IGMP etc etc
+Now I would like to know about the IP Spoofing rule, how does it works?
 
-This does stop any and all of NMAPs cuurrent scans.
+-	iptables -A INPUT -s 192.168.1.0/24 -i ! eth0 -j DROP
+-	iptables -A INPUT ! -s 192.168.1.0/24 -i eth0 -j DROP
 
-# NMAP and Connection killer
-#
-# iptables -A INPUT -p tcp -i eth0 -m state --state NEW -j LOG
-iptables -A INPUT -p tcp -i eth0 -m state --state NEW,INVALID -j DROP
-iptables -A INPUT -p tcp -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+I don=B4t know how can it block ip spoofing attack...
 
-# UDP Filters
-#
-#iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j LOG
-iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j DROP
-iptables -A INPUT -p udp -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+Takashi
 
-# ICMP Filtration
-#
-iptables -A INPUT -p icmp -i eth0 -m state --state NEW,INVALID -j DROP
-iptables -A INPUT -p icmp -i eth0 -m state --state ESTABLISHED,RELATED -j
-ACCEPT
 
-SBlaze
-
-=====
-In the absence of order there will be chaos.
-
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
 
