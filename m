@@ -1,10 +1,8 @@
-From: "Chow Kin Lum" <kinlum.chow@flex-p.com>
-Subject: port triggering with iptables
-Date: Tue, 22 Mar 2005 12:37:42 +0800
-Message-ID: <000401c52e98$e3f10f60$2f01a8c0@rndchow>
-References: <005e01c52e96$e29cdbf0$7900000a@vita.local>
+From: Linux Query <linux_query@yahoo.com>
+Subject: limiting outgoing connections
+Date: Mon, 21 Mar 2005 22:19:12 -0800 (PST)
+Message-ID: <20050322061913.21052.qmail@web30801.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,20 +14,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-I have searched for a long time on net.
-Can't get any useful info regarding how to implement port triggering using
-iptables (kernel 2.4.22)
-Those available information is all about ip_autofw, portfw etc. instead of
-iptables.
+Hi All!
 
-Hope can get some input from here.
+I want to limit each clients outgoing connections.
+Will the following be ok ?
 
-Thanks.
-Regards,
-Chow
+iptables -A FORWARD -i $internal_interface -s $ip -m
+limit --limit 10/s -j ACCEPT
+iptables -A FORWARD  -i $internal_interface -s $ip -j
+DROP
 
+What is a good limit figure ?
+
+regards to all,
+jim
+
+
+ 
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
