@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Completely NAT an ISP: A practical possibility?
-Date: Thu, 20 Jun 2002 10:48:01 +0100
+From: Alexey Talikov <alexey_talikov@texlab.com.uz>
+Subject: simple error in extensions/libipt_ROUTE.c extensions/libipt_IMQ.c
+Date: Thu, 20 Jun 2002 16:17:50 +0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206200948.g5K9m7U31874@vulcan.rissington.net>
-References: <3D0BBC45.5000807@palaver.net> <20020618202115.32CD7C94DF@srv11-sao.terra.com.br> <20020618225058.GC27054@cannon.eng.us.uu.net>
+Message-ID: <31HD43XO85VPGD98ZXBRM4XJIYV1X.3d11b9de@ALEXEY>
+Reply-To: alexey_talikov@texlab.com.uz
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020618225058.GC27054@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,25 +16,20 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Tuesday 18 June 2002 11:50 pm, Ramin Alidousti wrote:
+Simple error in extensions/libipt_ROUTE.c
+line 24 and 127 need change NETFILTER_VERSION to IPTABLES_VERSION
+also
+extensions/libipt_IMQ.c
+line 18 and 87 need change NETFILTER_VERSION to IPTABLES_VERSION
+-----------------------------------
+mailto:alexey_talikov@texlab.com.uz
+BR
+Alexey Talikov
+FORTEK
+-----------------------------------
 
-> On Tue, Jun 18, 2002 at 05:22:03PM -0300, Rodrigo Senra wrote:
-> > > This would break lots of protocols. How would the clients put up with
-> > > this broken functionality?
-> >
-> > Good observation. Yes it breaks some (all not NAT-able), and when this is
-> > used clients have to live up with the limitations. But as I said, for the
-> > time being this is used to accomodate a multiple-ISP cenario where
-> > clients need basically HTTP, FTP, and less percentage of H.323.
->
-> Just a small note. FTP is one of the protocols that would break...
 
-This is, of course, assuming that they only do "simple NAT", rather than 
-implementing netfilter + associated helper modules inside the ISP....
-
- 
-
-Antony.
 
