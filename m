@@ -1,12 +1,11 @@
-From: Oskar Andreasson <oan@frozentux.net>
-Subject: Re: HELP!!! (ip_conntrack: table full)
-Date: Mon, 27 Oct 2003 22:04:38 +0100 (CET)
+From: Jason Mallory <jason@phxrising.com>
+Subject: Port Forwarding
+Date: Mon, 27 Oct 2003 15:17:01 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0310272204010.26196@oskar-lap.agatha>
-References: <web-171348616@mail01.infosat.net>
+Message-ID: <3F9D995D.8080709@phxrising.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <web-171348616@mail01.infosat.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,93 +15,13 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Warren P <warrenp@websurfer.co.za>
-Cc: nighthawk@ezsm.net, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Will not work at all. The NAT part is dependant upon connection tracking,
-which is done by... tada, ip_conntrack;).
+I am tring to do a simple port forwarding from the Internet to a mcahine 
+on my LAN. This has proven IMPOSSIBE! No matter how I try to forward 
+ports, its not working. I am thinking about just setting up a simple 
+Windows XP box and doing it that way after trying for 12 hours and 5 
+different configuration methods. Any last suggestions before I switch?
 
-On Mon, 27 Oct 2003, Warren P wrote:
-
-> Hi
->
-> Thanks ...
->
-> But tell me ... do i really need ip_conntrack? What would
-> happen if i remove it permanently ... how will this affect
-> my IP Table rule ...
-> I've only got one rule:
-> e.g: iptables -t nat -A PREROUTING -p tcp --dport 80 -j
-> DNAT --to 192.168.22.33:3128
->
-> ------------------------------------------------------------
->
->
-> On Mon, 27 Oct 2003 16:09:14 -0400
->  NightHawk <nighthawk@easyservermanagement.com> wrote:
-> > -----BEGIN PGP SIGNED MESSAGE-----
-> > Hash: SHA1
-> >
-> > Warren,
-> >    I would only raise the value in /proc/net/ip_conntrack
-> > a little bit at a
-> > time till you find the lowest number that works for your
-> > situation.  Once you
-> > have everything under control, the number shouldn't have
-> > to be too high, at
-> > least this has been my experience.  I only raise the
-> > number when having a
-> > "situation", and then lower it back down once things are
-> > calmed down.
-> >
-> > And yes, I did mean to rmmod ip_conntack, when I
-> > mentioned dropping
-> > ip_conntrack.  Although, this tends to require dropping a
-> > few other modules
-> > as well, and also tends to require stopping iptables
-> > while you do so. (due to
-> > some of the modules that you have to remove.)  Which is
-> > why it is not the
-> > best solution for all situations....
-> >
-> > NH
-> >
-> > On Monday 27 October 2003 2:52 pm, Warren P wrote:
-> > > hi
-> > >
-> > > WRT echo ## > /proc/net/ip_conntrack
-> > >
-> > > Considering i've got 1gig of RAM ... what is a safe
-> > value i
-> > > can set ip_conntrack_max to? The current value is 65528
-> > >
-> > > Also when you refer to dropping ip_conntrack ... do
-> > mean
-> > > like rmmod ip_conntrack.o?
-> > >
-> > > Regards,
-> > > Warren P
-> > >
-> > -----BEGIN PGP SIGNATURE-----
-> > Version: GnuPG v1.2.1 (GNU/Linux)
-> >
-> >
-> iD8DBQE/nXtqb58ZIoF+byQRAgbWAKCOgeguwsDsDnvsH/8MHx5BTwKuSQCffJ+t
-> > fcgUdKA6Npi/VyhejhJegOE=
-> > =Th5c
-> > -----END PGP SIGNATURE-----
-> >
->
->
->
->
-
-----
-Oskar Andreasson
-http://www.frozentux.net
-http://iptables-tutorial.frozentux.net
-http://ipsysctl-tutorial.frozentux.net
-mailto:blueflux@koffein.net
 
