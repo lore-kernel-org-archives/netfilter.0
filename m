@@ -1,8 +1,8 @@
-From: "Martin Leduc" <marled3@hotmail.com>
-Subject: Re: Problem behind my DMZ
-Date: Sat, 10 Jan 2004 13:26:45 +0000
+From: =?iso-8859-1?B?SOVrYW4gRW5nYmxvbQ==?= <cynic_0@hotmail.com>
+Subject: source-mac filtering
+Date: Sun, 11 Jan 2004 00:20:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law9-F98nYrdH1ofVE100016b62@hotmail.com>
+Message-ID: <Sea1-F7gMiX6AZCFgXe000520e9@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,103 +14,135 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Antony@Soft-Solutions.co.uk
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
-On Friday 09 January 2004 9:54 am, Martin Leduc wrote:
+Hi,
 
->The /32 and /28 netmasks operate quite simply:
->On one interface you use a /32 netmask, which means there is only one 
->accessible IP on that network - that of the router leading to the Internet.
+I've run in to a strange problem. I have a dhcp-server on a 2.4.22 kernel=20
+with a 1.2.8 iptables. The dhcp-server is configured only to offer=20
+IP-addresses to one single mac-address (it is a single host on a private=20
+network)
 
->On the other interface you use a /28 netmask, which means there are 16 IP 
->addresses (14 usable) accessible on that network.
+However I'd like to block all other mac-addresses on this interface since I=
+=20
+plan to have a W-LAN here as well. (to prevent attackers from using=20
+potential exploits in the dhcp-server)
 
->Linux uses its routing table entries from most specific to least specific, 
->so if a packet for the one IP address on the /32 network needs to be 
->routed, it will go in the direction of the Internet.   If a packet for any 
->other address in your public IP range needs to be routed, it won't match 
->the /32 but it will match the /28, so it will go to the internal network.
+The mac-filter works fine for http, telnet, ssh aso, I can see the=20
+drop-counter increasing and no traffic is let through (when I change the=20
+mac-address in the iptables-config to something else than what I have on my=
+=20
+"dhcp-client-host"). BUT the dhcp-server keeps sending offers and ack's=20
+evethough the incoming discover/request is blocked by iptables.
 
-Ok,  so if I understand correctly, my home internet ISP who provide me the 
-route:
+What makes this even more strange is that the "DROP-counters" when using=20
+"iptables -L -v" increases, and at the same time the dhcp server responds t=
+o=20
+the requests.
 
-67.68.181.1     0.0.0.0         255.255.255.255 UH    0      0        0 ppp0
-0.0.0.0         67.68.181.1     0.0.0.0         UG    0      0        0 ppp0
+I'm using Internet Software Consortium DHCP Server V3.0.1rc11
 
-have is 67.68.181.1 on his internet network and we are all connect into a 
-master switch behind this router, i'm able to ping 67.68.181.2, .3, .4, .5, 
-etc...
+The machine has only one physical interface whith two IP's one private and =
 
-It is possible to do something like
+one for public. The IP-address offered by the dhcp-server is private (as=20
+seen below)
 
-                     LAN1                       ---------------
-192.168.1.1--------------192.168.1.2 |  BOX 1 |  192.168.1.3
-                                                 ---------------             
-  |
-                                                                             
-  |  LAN 2
-                                                                             
-  |
-                                                                 192.168.1.4
+Does anyone have a clue ?
 
-I know I can use Ramin solution, but can we? it is possible?
+br H=E5kan Engblom
 
-It is possible to create this topology using Linux BOX?  I have already do 
-it using CISCO Router with the IGRP protocol.  I know I can use RIP too.
+Some "logs" :
 
-                     LAN                       ---------------
-192.168.1.X--------------192.168.1.1 |  BOX 1 |  10.0.0.1 |
-                                                 ---------------             
-  |
-                                                                             
-  |
-                                                                             
-|   NET
-                                                                             
-  |
-                     LAN                       ---------------              
-|
-192.168.2.X--------------192.168.2.1 |  BOX 2 |  10.0.0.2 |
-                                                 ---------------             
-  |
-                                                                             
-  |
-                                                                             
-  |  10.0.0.3
-                                                                        
--------------
-                                                                       | BOX 
-3  |
-                                                                       
---------------
-                                                                             
-|
-                                                                             
-|
-                                                                   INTERNET 
-PUBLIC IP
+00:30:88:00:63:10 is my DSL-connection (having to accepted packets during=20
+this test)
 
-192.168.1.X PING 192.168.2.X PING INTERNET PUBLIC IP
+X.X.X.X is my public IP.
 
-I guess I need routed deamon to do that, no? RIP is supported by routed.
+(This is not the complete iptables, but it is teh interesting part for this=
+=20
+matter)
 
->The fact that the two network ranges overlap does not matter (despite what 
->you may read in introductory networking books - this is beyond introductory 
->networking).
+00:08:29.540872      0.0.0.0 -> 255.255.255.255 DHCP DHCP Discover -=20
+Transaction ID 0xae749e48
+00:08:29.541303 X.X.X.X -> 10.0.0.217   DHCP DHCP Offer    - Transaction ID=
+=20
+0xae749e48
+00:08:29.542117      0.0.0.0 -> 255.255.255.255 DHCP DHCP Request  -=20
+Transaction ID 0xae749e48
+00:08:29.542299 X.X.X.X -> 10.0.0.217   DHCP DHCP ACK      - Transaction ID=
+=20
+0xae749e48
 
->Regards,
 
-Best regards, and thanks for your time and help, I appreciate it.
 
->Antony.
+# date
+Sun Jan 11 00:08:08 CET 2004
+# iptables -L -v
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+pkts bytes target     prot opt in     out     source              =20
+destination
+    0     0 mactable   all  --  eth0   any     anywhere             anywhere
+    0     0 ACCEPT     all  --  lo     any     anywhere             anywhere
+    0     0 DROP      !icmp --  any    any     anywhere             anywher=
+e=20
+           state INVALID
+    0     0 eth0_in    all  --  eth0   any    !10.0.0.0/24          anywhere
+    0     0 eth0_1_in  all  --  eth0   any     anywhere             anywhere
+    0     0 common     all  --  any    any     anywhere             anywhere
 
-Martin
+Chain mactable (2 references)
+pkts bytes target     prot opt in     out     source              =20
+destination
+    0     0 ACCEPT     all  --  any    any     anywhere             anywher=
+e=20
+           MAC 01:01:01:01:01:01
+    0     0 RETURN     all  --  any    any     anywhere             anywher=
+e=20
+           MAC 00:30:88:00:63:10
+    0     0 RETURN     all  --  any    any     anywhere             anywher=
+e=20
+           MAC 00:90:D0:AF:A3:F1
+    0     0 LOG        all  --  any    any     anywhere             anywher=
+e=20
+           LOG level info prefix `Shorewall:mac:DROP:'
+    0     0 DROP       all  --  any    any     anywhere             anywhere
+
+# date
+Sun Jan 11 00:08:36 CET 2004
+# iptables -L -v
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+pkts bytes target     prot opt in     out     source              =20
+destination
+    4   948 mactable   all  --  eth0   any     anywhere             anywhere
+    0     0 ACCEPT     all  --  lo     any     anywhere             anywhere
+    0     0 DROP      !icmp --  any    any     anywhere             anywher=
+e=20
+           state INVALID
+    2   288 eth0_in    all  --  eth0   any    !10.0.0.0/24          anywhere
+    0     0 eth0_1_in  all  --  eth0   any     anywhere             anywhere
+    0     0 common     all  --  any    any     anywhere             anywhere
+
+Chain mactable (2 references)
+pkts bytes target     prot opt in     out     source              =20
+destination
+    0     0 ACCEPT     all  --  any    any     anywhere             anywher=
+e=20
+           MAC 01:01:01:01:01:01
+    2   288 RETURN     all  --  any    any     anywhere             anywher=
+e=20
+           MAC 00:30:88:00:63:10
+    0     0 RETURN     all  --  any    any     anywhere             anywher=
+e=20
+           MAC 00:90:D0:AF:A3:F1
+    2   660 LOG        all  --  any    any     anywhere             anywher=
+e=20
+           LOG level info prefix `Shorewall:mac:DROP:'
+    2   660 DROP       all  --  any    any     anywhere             anywhere
+#
 
 _________________________________________________________________
-MSN Messenger : discutez en direct avec vos amis !  
-http://messenger.fr.msn.ca/
+L=E4ttare att hitta dr=F6mresan med MSN Resor http://www.msn.se/resor/
 
 
