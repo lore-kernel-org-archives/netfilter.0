@@ -1,12 +1,13 @@
-From: "david" <david@aid.inf.cu>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: I need help , please
-Date: Fri, 5 Jul 2002 14:50:19 +0200
+Date: Fri, 5 Jul 2002 20:03:50 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <019f01c22422$852d6d30$8703000a@aid.inf.cu>
-References: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com>
+Message-ID: <20020705190352.UMUN4119.mta06-svc.ntlworld.com@there>
+References: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com> <019f01c22422$852d6d30$8703000a@aid.inf.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <019f01c22422$852d6d30$8703000a@aid.inf.cu>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,136 +18,44 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Joe Patterson <jpatterson@asgardgroup.com>, Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-which iptables
-/sbin/iptables
+On Friday 05 July 2002 1:50 pm, david wrote:
 
-Let me say you something.I have a smp kernel(simetric multi procesor kernel)
-, maybe that is the reason
-
-
------ Original Message -----
-From: "Joe Patterson" <jpatterson@asgardgroup.com>
-To: "david" <david@aid.inf.cu>; "Antony Stone" <Antony@Soft-Solutions.co.uk>
-Cc: <netfilter@lists.samba.org>
-Sent: Friday, July 05, 2002 6:45 PM
-Subject: RE: I need help , please
-
-
-> next tell us the output of these commands:
->
 > which iptables
-> file `which iptables`
->
-> and did you mean to mis-spell INPUT as INPUD?
->
-> -Joe
->
->
-> > -----Original Message-----
-> > From: netfilter-admin@lists.samba.org
-> > [mailto:netfilter-admin@lists.samba.org]On Behalf Of david
-> > Sent: Friday, July 05, 2002 6:37 AM
-> > To: Antony Stone
-> > Cc: netfilter@lists.samba.org
-> > Subject: Re: I need help , please
-> >
-> >
-> > Antony;
-> >
-> > #iptables -P INPUD DROP
-> > iptables:Bad built in chain name
-> >
-> > if I turn to:
-> > #iptables -P inpud DROP
-> > iptables:Bad built in chain name
-> >
-> > if I try:
-> > #iptables -p inpud DROP
-> > iptables v1.2.3: unknown protocol `inpud` specified
-> >
-> > thanks again tony
-> >
-> > david
-> >
-> > ----- Original Message -----
-> > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> > To: <netfilter@lists.samba.org>
-> > Sent: Friday, July 05, 2002 6:35 PM
-> > Subject: Re: I need help , please
-> >
-> >
-> > > On Friday 05 July 2002 11:18 am, david wrote:
-> > >
-> > > > iptables:Bad built-in change name
-> > >
-> > > What *exactly* did you type (punctuation as well) and what *exactly*
-is
-> > the
-> > > response ?
-> > >
-> > > The command I want you to try is
-> > >
-> > > iptables -P INPUT DROP
-> > >
-> > > That is:
-> > > "iptables" in lower case
-> > > a space
-> > > a hyphen or minus sign
-> > > a capital P
-> > > a space
-> > > "INPUT" in capitals
-> > > a space
-> > > "DROP" in capitals
-> > > <enter>.
-> > >
-> > > If you really do get an error in response to this, your system is very
-> > sick.
-> > >
-> > >
-> > >
-> > > Antony.
-> > >
-> > > >  ----- Original Message -----
-> > > > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-> > > > To: <netfilter@lists.samba.org>
-> > > > Sent: Friday, July 05, 2002 6:00 PM
-> > > > Subject: Re: I need help , please
-> > > >
-> > > > > On Friday 05 July 2002 10:25 am, david wrote:
-> > > > > > OK , I agree.In fact I  am just trying.
-> > > > > > I heve tested a simpler script :
-> > > > > >
-> > > > > > # Standard default policies
-> > > > > > iptables -P INPUT DROP
-> > > > > > iptables -P FORWARD DROP
-> > > > > > iptables -P OUTPUT DROP
-> > > > > >
-> > > > > > am here you have the output.
-> > > > > > /etc/rc.d/init.d/iptables : command not found
-> > > > > > iptables: bad police name
-> > > > > > iptables: bad police name
-> > > > > > iptables: bad police name
-> > > > > > /etc/rc.d/init.d/iptables : command not found
-> > > > >
-> > > > > Do you have . in your path ???   It looks to me as though you're
-in
-> > > > > /etc/rc.d/init.d when you type this, and it's trying to run the
-> > iptables
-> > > > > script in the local directory instead of the iptables
-> > binary in /sbin
-> > > > >
-> > > > > What happens if you cd to /root and type
-> > > > > iptables -P INPUT DROP
-> > > > >
-> > > > >
-> > > > >
-> > > > > Antony.
-> >
-> >
-> >
-> >
+> /sbin/iptables
 
+Okay, and what is the answer to
+file `which iptables`
+
+What is the response to
+iptables -P INPUT DROP
+
+What is the result of
+echo $PATH
+
+> Let me say you something.I have a smp kernel(simetric multi procesor
+> kernel) , maybe that is the reason
+
+No, iptables works fine on SMP machines.
+
+ 
+
+Antony.
+
+> ----- Original Message -----
+> From: "Joe Patterson" <jpatterson@asgardgroup.com>
+> To: "david" <david@aid.inf.cu>; "Antony Stone"
+> <Antony@Soft-Solutions.co.uk> Cc: <netfilter@lists.samba.org>
+> Sent: Friday, July 05, 2002 6:45 PM
+> Subject: RE: I need help , please
+>
+> > next tell us the output of these commands:
+> >
+> > which iptables
+> > file `which iptables`
+> >
+> > and did you mean to mis-spell INPUT as INPUD?
+> >
+> > -Joe
 
