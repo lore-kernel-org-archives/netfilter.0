@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Redirecting to more than 1 port.
-Date: Wed, 19 Feb 2003 19:19:08 -0500
+Subject: Re: using iptables for poor-man's load balancing?
+Date: Wed, 19 Feb 2003 19:12:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302191919.08655.netfilter@newkirk.us>
-References: <200302191723.h1JHNAq26668@mailgate.mailbox.co.za>
+Message-ID: <200302191912.06748.netfilter@newkirk.us>
+References: <HMEBKOCKLOOEJGIOMFAPAEJNFJAA.ian@icreditvision.com>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200302191723.h1JHNAq26668@mailgate.mailbox.co.za>
+In-Reply-To: <HMEBKOCKLOOEJGIOMFAPAEJNFJAA.ian@icreditvision.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,35 +19,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Warren P <warrenp@websurfer.co.za>, netfilter@lists.netfilter.org
+To: Ian Douglas <ian@icreditvision.com>, netfilter@lists.netfilter.org
 
-On Wednesday 19 February 2003 12:23 pm, Warren P wrote:
-> hi
+On Wednesday 19 February 2003 06:17 pm, Ian Douglas wrote:
+> > Say for argument's sake that our public IP is 1.2.3.4 and our
+> > internal LAN machines are:
+> >   192.168.1.1
+> >   192.168.1.12
 >
-> I want to run 2 instances of SQUID (Transparent Proxy). Currently I'm
-> running only one instance of squid and my IPTABLE is as follows:
+> (cut two of them out since they're not actually ready to run yet)
 >
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
-> --to-port 3128
->
-> My 2nd instance of Squid will run one port 8080, will the following
-> configuration be correct:
->
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
-> --to-port 3128:8080
+> > Just curious if the following rules would work to round-robin the
+> > connections:
+> >
+> > /sbin/iptables -t nat -A PREROUTING -p udp -d 1.2.3.4 --dport 80  -j
+> > DNAT \ --to-destination 192.168.1.1:80 \
+> >    --to-destination 192.168.1.12:80
 
-I don't think this isn't valid construction for a rule.  "--to-port=20
-3128-8080" would be valid, but would map over that entire range of port=20
-numbers.   You will probably only get this working the way you want it=20
-if you use sequential ports.
+AFAIK, you can only DNAT to a contiguous range of IPs from a single rule,=
+=20
+and the rule construction you have here will ignore 'excess'=20
+destinations.  If you have (or can arrange) your internal machines to=20
+have sequential IPs, then try something like this (which is=20
+"by-the-book"):
 
-Why would you want two squids running on one machine handling the same=20
-traffic?
+/sbin/iptables -t nat -A PREROUTING -p TCP -d 1.2.3.4 --dport 80  \
+-j DNAT --to 192.168.1.1-192.168.1.5
 
-> If not, can you please advice.
-> _______________________________________________________________
->  http://www.webmail.co.za the South-African free email service
->
->   NetWiseGurus.Com Portal - Your Own Internet Business Today!
+The port number is only needed after the new IP if you are redirecting to=
+=20
+a different port than the original destination, and "--to" is an=20
+acceptable substitute for both "--to-source" and "--to-destination".
+
+j
 
 
