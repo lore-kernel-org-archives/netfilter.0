@@ -1,12 +1,14 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: PLs HELP !
-Date: Mon, 3 Jun 2002 11:38:59 +0200 (CEST)
+From: Nick Drage <nickd@funkyjesus.org>
+Subject: Re: tcpdump behavior not getting all packets in promisc mode
+Date: Mon, 3 Jun 2002 10:40:24 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206031029580.4553-100000@blackhole.kfki.hu>
-References: <3CF6F8A7.3010501@inbox.lv>
+Message-ID: <20020603104024.P27307@funkyjesus.org>
+References: <20020603043902.GB19986@cannon.eng.us.uu.net> <GAZVTN6M1YT4WFEXT1WGDBAMIJHKH.3cfaf4cb@ALEXEY> <20020603045526.GE19986@cannon.eng.us.uu.net>
+Reply-To: Nick Drage <nickd@funkyjesus.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CF6F8A7.3010501@inbox.lv>
+Content-Disposition: inline
+In-Reply-To: <20020603045526.GE19986@cannon.eng.us.uu.net>; from ramin@cannon.eng.us.uu.net on Mon, Jun 03, 2002 at 12:55:26AM -0400
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,30 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Arindam Haldar <arindamhaldar@inbox.lv>
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-On Fri, 31 May 2002, Arindam Haldar wrote:
+On Mon, Jun 03, 2002 at 12:55:26AM -0400, Ramin Alidousti wrote:
+> On Mon, Jun 03, 2002 at 09:47:07AM +0500, Alexey Talikov wrote:
+> 
+> > See log 
+> 
+> I understand your reasoning. But he seems to be aware of the hub/switch
+> situation and he claims that he has a hub between the two interfaces and
+> still unable to see other traffic... which is weird...
 
-> i am getting these messages in my /var/log/messages..
-> can someone tell me whats hapenning here..
-> iptables v1.2.7-2--2-423 with  kernel 2.4.18 & patched htb3.3-020512 &
-> imq-2.4.18...
-> May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840
-> &ip_conntrack_lock not readlocked
+Yes, I'm wondering if the sniffing host is connected to the hub, but then
+the hub is connected to a switch, and all the other hosts are connected to
+the switch?
 
-The connection tracking part of netfilter does not fuction properly on
-your system. Is it a vanilla 2.4.18 or shipped by some vendor?
+<snip>
 
-Regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-WWW-Home: http://www.kfki.hu/~kadlec
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+BTW - this isn't reallt on-topic is it, I presume we're all answering
+because we're lovely people?
 
+-- 
+FunkyJesus System Administration Team
 
 
