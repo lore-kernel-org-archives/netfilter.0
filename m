@@ -1,12 +1,13 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: RST packets
-Date: Mon, 16 Aug 2004 09:17:48 -0300
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Subject: POM problem: kernel 2.6.8, iptables 1.2.11, patch-o-matic-ng 08/15/04
+Date: Mon, 16 Aug 2004 08:45:12 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001e01c4838b$0cd6c0f0$49caa8c0@caris.priv>
-References: <024c01c47fe6$40e03e60$49caa8c0@caris.priv> <0c0701c4808d$8757d180$49caa8c0@caris.priv> <1092410257.1664.226.camel@grendel>
+Message-ID: <2E314DE03538984BA5634F12115B3A4E62EA16@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4838E.DF324152"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,85 +17,140 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Thanks for the suggestions ... I will have a look at the mod_jk logs ....
+This is a multi-part message in MIME format.
 
-Peter
+------_=_NextPart_001_01C4838E.DF324152
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
------ Original Message ----- 
-From: "Chris Brenton" <cbrenton@chrisbrenton.org>
-To: "Peter Marshall" <peter.marshall@caris.com>
-Cc: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Friday, August 13, 2004 12:17 PM
-Subject: Re: RST packets
+Is it possible to build/patch the 2.6.x kernel with the following
+patch-o-matic modules?
 
+=20
 
-On Thu, 2004-08-12 at 12:58, Peter Marshall wrote:
->
-> I am having a problem now where I am getting RST packets being blocked
-from
-> my internal network heading out to the external network.  It looks like
-RST
-> packets are used to stop a TCP connection when there is a problem.
+1] rtsp
 
-Per chance do you have a tcpdump trace of the activity? RST's are
-usually an indication of one or two problems:
-1) One end of the session has stopped responding
-2) Connection attempt to a closed port
+2] mms
 
-There are other reasons, but these are the most common. You may want to
-investigate why you are seeing the RSTs packets in the first place.
-Sounds like the problem might be broken communications.
+3] h323
 
-> The setup is like this:
-> I have a web box in my dmz that people connect to.  A mod-jk connection is
-> made through my firewall, and the responses are allowed back with the
-> standard ESTABLISHED,RELATED allow on the Forward chain.
+=20
 
-What errors (if any) are you seeing in mod_jk.log?
+There is no name.patch files in these directories.
 
-> I guess I was wondering why I was getting a bunch of RST packets and also,
-> why the firewall was blocking them.  Would they not be part of the
-> ESTABLISED-RELATED chain ?
+=20
 
-If a valid session has been established, the first issued RST will be
-considered part of that session. Netfilter does work this way as I have
-confirmed through many a traces. The only reason I can think of for
-Netfilter to block the RST is that it does not have a state entry for
-the traffic.
+With 2.4 and the old patch-o-matic, everything worked fine, but with 2.6
+I have not had any luck, suggestions?
 
-> Here are the relevant rules.
-> $IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> $IPT -A FORWARD -s $WEB_BOX_IP -I eth1 -j web-int
-> $IPT -A web-int -d 192.168.202.168 -p tcp --dport 8009:8020 -j ACCEPT
+=20
 
-I assume there are other rules as I *think* mod-jk starts off on 80/TCP.
-Also, I thought ports all the way down to 8005 were valid? Check me on
-this as its been a while.
-
-> I do have a chain for int-web ... which is used to connect to a webserver
-> running on it ..(and it rejects everything else).  This is the chain that
-> the RST packet is making it too and is then getting rejected.  However, I
-> did not think that the packet should reach this chain as it is related (or
-> establised) to the web-int connection ...
-
-This is a pretty clear indication that there is no state entry for the
-packet. Again, a trace would help to diagnose this.
-
-> Any suggestions would be greatly appreciated.  My network set up is a DMZ
-> between two firewalls.  The web box is in the DMZ.
-
-Not a big fan of this setup as whacking the Web server permits an
-attacker to sniff all your inbound and outbound traffic. Greatly prefer
-to add a third NIC to the firewall and isolate the system. Just a
-personal preference.
-
-HTH,
-Chris
+=20
 
 
+------_=_NextPart_001_01C4838E.DF324152
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Is it possible to build/patch the 2.6.x kernel with =
+the
+following patch-o-matic modules?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>1] rtsp<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>2] mms<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>3] h323<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>There is no name.patch files in these =
+directories.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>With 2.4 and the old patch-o-matic, everything worked =
+fine,
+but with 2.6 I have not had any luck, =
+suggestions?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C4838E.DF324152--
 
