@@ -1,12 +1,11 @@
-From: Guilherme Cesar Soares Ruppert <ruppert@las.ic.unicamp.br>
-Subject: Re: How to drop ping silently??
-Date: Thu, 27 Jan 2005 13:21:15 -0200 (BRST)
-Message-ID: <Pine.LNX.4.61.0501271207150.20294@quasar.las.ic.unicamp.br>
-References: <Pine.LNX.4.61.0501270958520.18509@quasar.las.ic.unicamp.br>
-	<23331.142.169.215.10.1106832640.squirrel@142.169.215.10>
+From: Kevin Van Workum <kevin_vanw@yahoo.com>
+Subject: Re: udp port forwarding from internal network to internet
+Date: Thu, 27 Jan 2005 07:17:43 -0800 (PST)
+Message-ID: <20050127151743.84393.qmail@web30903.mail.mud.yahoo.com>
+References: <1106836627.5784.28.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <23331.142.169.215.10.1106832640.squirrel@142.169.215.10>
+In-Reply-To: <1106836627.5784.28.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Samuel Jean <sj-netfilter@cookinglinux.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+> > What IP does my app connect to, the internal IP of
+> my
+> > server with the internet connection?
+> 
+> nope--the IP of the server on the internet.
+
+How does the machine on the internal network know to
+go through my firewall server to make the connection?
+Is there any configuration required on the internal
+machine running the app?
 
 
-> Use -j REJECT instead of -j DROP. You cannot act like if ping was received
-> on the other side tho.
 
-I tried REJECT and it didn't worked:
-$ iptables -A OUTPUT -p icmp -j REJECT
-PING 10.1.1.2 (10.1.1.2) 56(84) bytes of data.
-ping: sendmsg: Operation not permitted
-
-I do NOT want to act like if ping was received on the other side. I just 
-want to avoid this error message "operation not permitted" acting like 
-ping (echo request) was successfully sent. So ping won't receive any reply 
-nor any error message.
-
-
-> Depends what you want the user to see.
-> Maybe some more info would help ?
-
-I just need to drop the packets on the OUTPUT chain without let the sender 
-app know that these packets were dropped. Ping is returning an error when 
-I drop his packets and I want to avoid it.
-
-Tks for the Help
-
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - Helps protect you from nasty viruses. 
+http://promotions.yahoo.com/new_mail
 
