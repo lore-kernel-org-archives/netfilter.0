@@ -1,8 +1,8 @@
 From: aksingh@hss.hns.com
-Subject: NF_IP_LOCAL_OUT
-Date: Wed, 21 Apr 2004 10:02:46 +0530
+Subject: loop problem
+Date: Wed, 21 Apr 2004 12:08:33 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFF002E97E.E621AC9C-ON65256E7D.001892FA@hss.hns.com>
+Message-ID: <OF5A3E4536.070CB617-ON65256E7D.0023533F@hss.hns.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,21 +16,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Jee J.Z." <jz105@york.ac.uk>, Sven Schuster <schuster.sven@gmx.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 
 
 
 
-hi
+Hi All
 
-  I had doubt using this "NF_IP_LOCAL_OUT" netfilter hook, do all locally
-generated packets hit this hook first ? .. i.e a packet comes from
-application running on this machine, goes to TCP , then comes to ip... or
-say a normal TCP ack going out from this machine ... so would all such
-"locally generated" packets hit this hook first ? and is the routing
-decision for such packets taken after they traverse this hook ?
+   I am getting into a loop as i capture packets from the kernel using
+netfilter hooks ... if somebody has encountered this problem before or has
+a solution please respond .
+
+I will explain the scenario here :
+
+  capture packets using the netfilter PRE_ROUTING(all packets coming from
+outside this machine wld be captured here) and  and the NF_IP_LOCAL_OUT
+loop(all packets that are going out of my machine would be captured here).
+Then I do a bit of packet mangling in the user space by returning NF_QUEUE
+from these two hook functions , my user space process which gets the
+packets can do two things, it can either reinject the same into the kernel
+... by setting the verdict in ip_set_verdict  as NF_ACCEPT .... or it can
+generate(absolutely new packets) its own packets which it wants to send to
+the kernel. I use libnet to inject these new packets, my context in libnet
+is RAW. Now when these newly injected packets reach the ip( the ones that
+were reinjected .. using the ip_set_verdict call are handled fine ... no
+problems there) , they are caught by my NF_IP_LOCAL_OUT hook and handed
+back to my user space appliaction, i dont want this to happen. what can i
+do here to prevent this loop.
 
 thanks
 Amit
