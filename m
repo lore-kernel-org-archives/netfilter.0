@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: vpn between networks with private ip network segment conflicts
-Date: Wed, 28 May 2003 16:48:47 +1000
+Subject: RE: iptables + access-list
+Date: Wed, 28 May 2003 16:54:06 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D24@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D25@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,15 +17,10 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ray Leach <raymondl@knowledgefactory.co.za>, Drew Einhorn <drew.einhorn@starband.net>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Burak Sahin <burak.sahin@is.net.tr>, netfilter@lists.netfilter.org
 
-That's what I already said in my last post on this thread.. it's a =
-virtual network which is basically known only to the 2 firewall and not =
-assigned to any specific host, hence virtual ;)
-
-but best use the NETMAP module otherwise you'll have a whole lot of =
-rules to make....
+Just ACCEPT those wanting to bypass squid and REDIRECT into squid (as =
+the last line) for the rest of the networks.....
 
 Thanks,
 ____________________________________________
@@ -41,41 +36,52 @@ HelpDesk: +61 2 9955 2698
 =20
 
 -----Original Message-----
-From: Ray Leach [mailto:raymondl@knowledgefactory.co.za]
-Sent: Wednesday, May 28, 2003 4:38 PM
-To: Drew Einhorn
-Cc: Netfilter Mailing List
-Subject: Re: vpn between networks with private ip network segment
-conflicts
+From: Burak Sahin [mailto:burak.sahin@is.net.tr]
+Sent: Wednesday, May 28, 2003 4:33 PM
+To: netfilter@lists.netfilter.org
+Subject: iptables + access-list
 
 
-Yes.
+Hi to all,
 
-I had another thought (those are rare for me)
+I am using squid as transparent proxy. So I use iptables.Command I use =
+is:
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
+REDIRECT --to-port 3128
 
-What if you created a network between the two networks. Like this:
+I want to use such an access-list: For instance if you want a page from
+nework A.B.C.D/a.b.c.d, you do not use squid. It is possible doing with
+squid, however I need to do this with iptables. I changed my command =
+such
+that:
 
-Net1 <-> VPN (CIPE) <-> New NET <-> VPN (CIPE) <-> Net2
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
+A.B.C.D/a.b.c.d -j REDIRECT --to-port 3128
 
-Then your routing would be to the new network.
 
-Maybe use some kind of NAT rules to map the new net back to the dest
-net. For example:
 
-Net1.host1 (192.168.0.1) wants to connect to net2.host1 (192.168.0.1)
-He actually connects to 10.0.0.1 and the VPN/Router1 does a SNAT to its
-IP.
-VPN/Router2 does a DNAT for the traffic from 10.0.0.1 back to
-192.168.0.1
+MY QUESTION is;
 
-VPN/Router1 has to have a route for 10.0.0.1 pointing to VPN/Router2
+For two networks, A.B.C.D/a.b.c.d and E.F.G.H/e.f.g.h how can I do this?
 
-Do the same on the other side.
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
+A.B.C.D/a.b.c.d -j REDIRECT --to-port 3128
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d !
+E.F.G.H/e.f.g.h -j REDIRECT --to-port 3128
 
-I was thinking of something along the lines of the P-O-M 1:1 NAT patch.
+Does not work. Because, when a request comes for an ip in the network
+E.F.G.H/e.f.g.h, it is forwarded to squid, because of the iptabes first
+rule...
 
-Does this make sense, and might it work?
+How can I do access-list with iptables?
 
-Ray
+I need help
+
+Thanks for your attention
+
+
+
+
+
 
 
