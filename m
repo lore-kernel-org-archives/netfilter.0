@@ -1,17 +1,14 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Re: kernel 2.6 ipsec and DNAT
-Date: Fri, 10 Sep 2004 16:59:29 +1000
+From: Victor Julien <victor@nk.nl>
+Subject: Re: virus scanning with iptables
+Date: Fri, 10 Sep 2004 09:49:10 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040910065929.GY6074@samad.com.au>
-References: <ED78BD9E-FDCA-11D8-8A26-000A95BDFB08@equation.fr>
-	<20040903223115.GP3169@samad.com.au>
-	<20040910081322.1a2e843a@xenia.leun.net>
+Message-ID: <200409100949.10565.victor@nk.nl>
+References: <7C9884991ADAE0479C14F10C858BCDF591E36E@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4XGXW98AkZ9Jbbyi"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF591E36E@alderaan.smgtec.com>
 Content-Disposition: inline
-In-Reply-To: <20040910081322.1a2e843a@xenia.leun.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,67 +18,41 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: Daniel Chemko <dchemko@smgtec.com>, Khanh Tran <khanh@slc.edu>
 
+On Friday 10 September 2004 01:26, Daniel Chemko wrote:
+> Khanh Tran wrote:
+> > Is any using a virus scanning application with iptables?  I'd like to
+> > know if it's possible for me to detect viruses that go across my
+> > iptables firewalls.
+>
+> There isn't currently a tool to perform Virus scanning of iptables data.
+> The closest match would be snort-inline which can locate some virus
+> signatures. Inline scanning of anything can have averse effects on the
+> transmission. You'll quickly find that detailed scans require a lot of
+> CPU usage. Just for monitoring network thoughtput with ntop, I'd max out
+> my P4 CPU when backups kicked off.
 
---4XGXW98AkZ9Jbbyi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We have developed a virusscanning preprocessor for Snort-inline about one 
+month ago. It will be in the upcoming Snort-inline 2.2.0 rc1 due to be 
+released this weekend (a patch for Snort-inline 2.1.3 is available at the 
+project site). 
 
-On Fri, Sep 10, 2004 at 08:13:22AM +0200, Michael Leun wrote:
-> Hello,
->=20
-> On Sat, 4 Sep 2004 08:31:15 +1000
-> Alexander Samad <alex@samad.com.au> wrote:
->=20
-> > > The problem I am encountering now is that it seems that DNAT is not=
-=20
-> > > working when the d-natted session is from a tunneled site. My settup
-> > > is=20
-> [...]
-> > > Is there any problem like this under the current 2.6.8 kernel ? Do
-> > > you have any idea to try to bypass the problem ?
->=20
->=20
-> > This is a known problem with netfilter and 2.6 and ipsec with the
-> > native stack, there are fixs in pom-ng (Patch o matic), but this means
-> > building your own kernel as it patches the kernel and the netfilter
-> > modules.  Not to bad though, been doing this for a while and haven't
-> > had any majour problems
->=20
-> But, as far as I know, the patches in pom-ng (even cvs) do not work
-> since 2.6.7.
+The ClamAV plugin scans the raw networkdata, an we have been successfully 
+detecting viruses in http, smtp, pop3, msn, imap, etc. Note however, that 
+scanning the raw data means we don't detect viruses in archives.
 
-This might be the case as I haevn't looked at it since 2.6.7
->=20
-> I mailed the author of this patches (Patrick McHardy) and he told me two
-> times he is going to fix this RSN(tm) - but unfortunately does seem to
-> have not had time to do it yet.
->=20
-> Have I overlooked something, or is there indeed no working solution for
-> 2.6.8? Has anybody fixed the patches?
->=20
-> --=20
-> Bye,
->=20
-> Michael Leun
->=20
->=20
->=20
+The cpu-load of the plugin seems to be ok...
 
---4XGXW98AkZ9Jbbyi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+>
+> The better approach would be to implement transparent proxies of
+> pertinent services like SMTP and use virus scanning addons. for them.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+I agree with Daniel here, especially for stmp. For other stuff you can try the 
+above solution!
 
-iD8DBQFBQVDRkZz88chpJ2MRAhAwAJ0SKTSKduid9b0nsDrI+C3jlX+MgQCgw5ir
-n/ryUZMflu8to2kK7B1vvro=
-=hMlc
------END PGP SIGNATURE-----
-
---4XGXW98AkZ9Jbbyi--
+Regards,
+Victor
 
