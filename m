@@ -1,13 +1,14 @@
-From: "Sez" <sezmillenium@yahoo.es>
-Subject: RE: Iptables do nat with Protocol 47 or GRE
-Date: Fri, 14 May 2004 14:15:01 +0200
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: smtp
+Date: Fri, 14 May 2004 13:28:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BObZs-0004GV-Ld@vishnu.netfilter.org>
-References: <200405141230.14670.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405141328.49497.gdh@acentral.co.uk>
+References: <BAY15-F11n0swXX1sPt0005ad74@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405141230.14670.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <BAY15-F11n0swXX1sPt0005ad74@hotmail.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,46 +21,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-And, with l2pt or ipsec, iptables work fine without path GRE???
+On Friday 14 May 2004 13:07, azeem ahmad wrote:
+> thanks a lot Mr. Gavin Hamill
+> but i have blocked all the port 25 traffic even then the infected ip which
+> is 192.168.0.105 is reciving smtp from many ip addresses from out side
+> the script i run is as follow
 
- 
+That's fairly comprehensive - I don't think much will be getting through 
+that :)
 
------Mensaje original-----
-De: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] En nombre de Antony Stone
-Enviado el: divendres, 14 / maig / 2004 13:30
-Para: netfilter@lists.netfilter.org
-Asunto: Re: Iptables do nat with Protocol 47 or GRE
+You'll be running iptables on a machine with at least 2 network cards, so you 
+may wish to try tcpdump on both eth0 and eth1 - since you will still likely 
+be seeing the incoming traffic from the outside listed in the 'tcpdump' 
+ouput, but no replies should be happening.
 
-On Friday 14 May 2004 12:14 pm, Sez wrote:
+Likewise, when you try on the other interface, you may see the LAN machine 
+trying to send out a lot, but the connections will be failing and there 
+should be nothing to worry about.
 
-> I am a newbie ... Some tutorial to do this?? I have redhat 8.0, some 
-> rpm with pptp nat connection tracking??
->
-> I read in some site that i must recompile the kernel??? Or only
-iptables???
-> I am a bit confussed!
+Feel free to post a small amount of 'tcpdump' output if it would help clear 
+things up?
 
-I hope someone else here will be able to help you.   I do not use Red Hat, 
-RPMs or PPTP (I use Slackware and IPsec), so although I know what's
-involved, I can't give you detailed instructions for this setup.
-
-I'm sure other people here know and will be able to advise you how to do it.
-
-Regards,
-
-Antony.
-
---
-"640 kilobytes (of RAM) should be enough for anybody."
-
- - Bill Gates
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-                           please don't CC me.
-
+Cheers,
+Gavin.
 
