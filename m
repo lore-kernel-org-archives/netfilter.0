@@ -1,91 +1,50 @@
-From: "Carlo Florendo" <carlo@hq.astra.ph>
-Subject: Re: DNAT from an IP address that does not exist to another that exists
-Date: Wed, 30 Jul 2003 12:06:26 +0800
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008601c3564f$f2b3ca60$200aa8c0@thorin>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0192D4@wardrive.citadelcomputer.com.au>
+From: Rick Kennell <kennell@ecn.purdue.edu>
+Subject: port-based filtering of ESP packets with in-kernel IPsec?
+Date: 29 Jul 2003 23:44:57 -0500
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <1059540296.16545.305.camel@k7.localnet>
+Reply-To: netfilter-devel@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hello George,
+I asked about this last week in the general netfilter list, but it
+appears that most folks are still using FreeS/WAN for IPsec.
 
-Thanks a lot for this!!!!!  That was fast!!!!   I tried your first post and was about to send a follow up when you immediately sent
-the modified syntax.
+I'm using the in-kernel IPsec and want to be able to filter ESP packets
+based on protocol or port number.  These values are encapsulated in the
+ESP payload and are unavailable to netfilter.  If I were using
+FreeS/WAN, I could use standard netfilter techniques on the ipsec0
+device.  With the in-kernel IPsec, there's no extra pseudo-device with
+which to examine unencapsulated ESP packets.
 
-Everything works well now.
+It looks too me like netfilter sees the packet as ESP in all chains in
+all tables.  (I'd be delighted to be corrected.)
 
-Thanks so much!  :-)
+Since ESP packets that reach the mangle INPUT chain are destined for a
+local process, why not unencapsulate them just before that point?  It
+might still be nice to have an indication that this was once an ESP
+packet for filtering, but that could be done by setting a mark in the
+mangle PREROUTING chain.
 
-Best Regards,
+I realize that this would probably require some heavy lifting in the
+network layer to accomplish this nesting of functionality.
 
-Carlo
-------
-Carlo Florendo
-Astra Philippines Inc.
-URL: http://www.hq.astra.ph
+Am I missing something obvious?
 
-
-
-
-
-
-
------ Original Message -----
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-To: "George Vieira" <georgev@citadelcomputer.com.au>; "Carlo Florendo" <carlo@hq.astra.ph>; <netfilter@lists.netfilter.org>
-Sent: Wednesday, July 30, 2003 11:48 AM
-Subject: RE: DNAT from an IP address that does not exist to another that exists
-
-
-sorry, foot in mouth... syntax was wrong..
-
-iptables -I PREROUTING  -t nat -s 192.168.30.0/24 -i $INTDEV -d 192.168.40.40 -j DNAT --to 192.168.30.11
-iptables -I POSTROUTING -t nat -s 192.168.30.0/24 -o $INTDEV -d 192.168.30.11 -j SNAT --to 192.168.30.1
-
-I think that's better...
-
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-
-
------Original Message-----
-From: George Vieira
-Sent: Wednesday, July 30, 2003 1:41 PM
-To: Carlo Florendo; netfilter@lists.netfilter.org
-Subject: RE: DNAT from an IP address that does not exist to another that
-exists
-
-
-You must
-
-iptables -I PREROUTING  -t nat -s 192.168.30.0/24 -i $INTDEV -d 192.168.40.40 -j DNAT --to 192.168.40.40
-iptables -I POSTROUTING -t nat -s 192.168.30.0/24 -d 192.168.40.40 -j SNAT --to 192.168.30.1
-
-so basically your masquerading the internal users like you would if the server was outside, you replace the source IP with the masq
-server so the 192.168.40.40 (192.168.30.11) machine knows it MUST send it back via the gateway and NOT DIRECT to the 192.168.30.X
-user...
-
+-- 
+Rick Kennell <kennell@ecn.purdue.edu>
+Purdue University School of Electrical and Computer Engineering
 
 
