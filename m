@@ -1,8 +1,8 @@
 From: udo <udovdh@yahoo.com>
 Subject: ipt_string...
-Date: Thu, 6 May 2004 10:24:51 -0700 (PDT)
+Date: Thu, 6 May 2004 10:26:36 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040506172451.29665.qmail@web40703.mail.yahoo.com>
+Message-ID: <20040506172636.31443.qmail@web40702.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -18,7 +18,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello
+Hello,
+
+Does the string match function better (uses less CPU)
+when matching long patterns or is it better to keep
+the patterns as short as possible?
+Or in other words: how can I use as many matches as
+possible without hitting the CPU too much?
+
+Kind regards,
+Udo
 
 
 	
