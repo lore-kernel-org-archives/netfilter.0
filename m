@@ -1,11 +1,11 @@
-From: "Yan Li" <netfilterlist@hotmail.com>
-Subject: Header information of the packets
-Date: Tue, 29 Oct 2002 10:49:17 -0000
+From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
+Subject: Re: Rules for blocking Email from libero.it domain
+Date: Tue, 29 Oct 2002 10:40:41 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE304Kcx5lmMahglk4Q0000a5db@hotmail.com>
+Message-ID: <0a9501c27f37$a0cf6370$eb00010a@andromeda>
+References: <200210281507.g9SF70e08704@vulcan.rissington.net> <42647.192.168.7.14.1035847030.squirrel@iw.k1k2.com> <20021029085004.FRPW1554.mta07-svc.ntlworld.com@there>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C27F38.D416DF00"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,54 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Antony Stone wrote Tuesday, October 29, 2002 8:50 AM
 
-------=_NextPart_000_0005_01C27F38.D416DF00
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
+> The latter is correct.   Before an email is transmitted, the sender tells
+the
+> receiver what size it is so that the receiver can decide whether it has
+space
+> to accept it.
 
-SGkgYWxsLA0KDQpJIHdyb3RlIGEgc21hbGwgcHJvZ3JhbSB3aGljaCBjb3B5IHRoZSBpbnB1dCBw
-YWNrZXRzIGZyb20gdGhlIGtlcm5lbCB0byB0aGUgDQp1c2Vyc3BhY2UgdXNpbmcgbGliaXBxLiBB
-bmQgdGhlIHBhY2tldHMgYXJlIHN0b3JlZCBpbiBhIGJ1ZmZlciBpbiB1c2Vyc3BhY2UgDQp3aGlj
-aCBpcyBhY3R1YWxseSBhbiBhcnJheSwgc2F5IGJ1Zi4NCg0KVXNpbmc6DQppcHFfcGFja2V0X21z
-Z190ICogbSA9IGlwcV9nZXRfcGFja2V0KGJ1Zik7DQoNCkkgY2FuIGFjY2VzcyBzb21lIHBhcmFt
-ZXRlcnMgb2YgdGhlIHBhY2tldHMgbGlrZSB0aGUgcGFja2V0IElELCBwYWNrZXQgDQpsZW5ndGgg
-d2hpY2ggYXJlIGRlZmluZWQgaW4gdGhlIHN0cnVjdCBpcHFfcGFja2V0X21zZ190LiBGb3IgZXhh
-bXBsZSwgDQptLT5wYWNrZXRfaWQgcG9pbnRzIHRvIHRoZSBwYWNrZXQgSUQuIEJ1dCBob3cgY2Fu
-IEkgZ2V0IG90aGVyIGluZm9ybWF0aW9uIG9mIA0KdGhlIHBhY2tldHMsIGxpa2UgdGhlIHNvdXJj
-ZSBhbmQgZGVzdGluYXRpb24gYWRkcmVzcywgdGhlIHByb3RvY29sLCBldGMuIElzIA0KdGhlcmUg
-YW55IGZ1bmN0aW9uIG9yIHNob3VsZCBJIHJlYWQgZGlmZmVyZW50IHVuaXQgb2YgdGhlIGFycmF5
-LCBidWYsIHRvIGRvIA0KdGhhdD8NCg0KSSBhbSBvbmx5IGEgYmVnaW5uZXIuIE1hbnkgdGhhbmtz
-IGZvciB5b3VyIGtpbmQgcmVwbHkuDQoNCllhbg0K
+In most cases, no such decision takes place. Specifically, there are very
+few servers (IME) that actually implement the SIZE extension, as defined in
+RFC1870.
 
-------=_NextPart_000_0005_01C27F38.D416DF00
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
+Note that RFC2821 discourages decisions based on message size:
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWlzby04ODU5LTEiPg0KPE1FVEEgY29udGVudD0iTVNIVE1M
-IDYuMDAuMjgwMC4xMTA2IiBuYW1lPUdFTkVSQVRPUj4NCjxTVFlMRT48L1NUWUxFPg0KPC9IRUFE
-Pg0KPEJPRFkgYmdDb2xvcj0jZmZmZmZmPg0KPERJVj48Rk9OVCBmYWNlPUFyaWFsIHNpemU9Mj5I
-aSBhbGwsPEJSPjxCUj5JIHdyb3RlIGEgc21hbGwgcHJvZ3JhbSB3aGljaCBjb3B5IA0KdGhlIGlu
-cHV0IHBhY2tldHMgZnJvbSB0aGUga2VybmVsIHRvIHRoZSA8QlI+dXNlcnNwYWNlIHVzaW5nIGxp
-YmlwcS4gQW5kIHRoZSANCnBhY2tldHMgYXJlIHN0b3JlZCBpbiBhIGJ1ZmZlciBpbiB1c2Vyc3Bh
-Y2UgPEJSPndoaWNoIGlzIGFjdHVhbGx5IGFuIGFycmF5LCBzYXkgDQpidWYuPEJSPjxCUj5Vc2lu
-Zzo8QlI+aXBxX3BhY2tldF9tc2dfdCAqIG0gPSBpcHFfZ2V0X3BhY2tldChidWYpOzxCUj48QlI+
-SSBjYW4gDQphY2Nlc3Mgc29tZSBwYXJhbWV0ZXJzIG9mIHRoZSBwYWNrZXRzIGxpa2UgdGhlIHBh
-Y2tldCBJRCwgcGFja2V0IDxCUj5sZW5ndGggDQp3aGljaCBhcmUgZGVmaW5lZCBpbiB0aGUgc3Ry
-dWN0IGlwcV9wYWNrZXRfbXNnX3QuIEZvciBleGFtcGxlLCANCjxCUj5tLSZndDtwYWNrZXRfaWQg
-cG9pbnRzIHRvIHRoZSBwYWNrZXQgSUQuIEJ1dCBob3cgY2FuIEkgZ2V0IG90aGVyIGluZm9ybWF0
-aW9uIA0Kb2YgPEJSPnRoZSBwYWNrZXRzLCBsaWtlIHRoZSBzb3VyY2UgYW5kIGRlc3RpbmF0aW9u
-IGFkZHJlc3MsIHRoZSBwcm90b2NvbCwgZXRjLiANCklzIDxCUj50aGVyZSBhbnkgZnVuY3Rpb24g
-b3Igc2hvdWxkIEkgcmVhZCBkaWZmZXJlbnQgdW5pdCBvZiB0aGUgYXJyYXksIGJ1ZiwgdG8gDQpk
-byA8QlI+dGhhdD88QlI+PEJSPkkgYW0gb25seSBhIGJlZ2lubmVyLiBNYW55IHRoYW5rcyBmb3Ig
-eW91ciBraW5kIA0KcmVwbHkuPEJSPjxCUj5ZYW48QlI+PC9GT05UPjwvRElWPjwvQk9EWT48L0hU
-TUw+DQo=
+"Since the introduction of Internet standards for multimedia mail [12],
+message lengths on the Internet have grown dramatically, and message size
+restrictions should be avoided if at all possible.  SMTP server systems that
+must impose restrictions SHOULD implement the "SIZE" service extension [18],
+and SMTP client systems that will send large messages SHOULD utilize it when
+possible."
 
-------=_NextPart_000_0005_01C27F38.D416DF00--
+Adam
+
 
