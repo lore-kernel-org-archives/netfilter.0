@@ -1,15 +1,11 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: IPTables articles links
-Date: Fri, 1 Aug 2003 16:19:57 +0200
+From: "Carlo Florendo" <carlo@astra.ph>
+Subject: DNAT from an IP address that does not exist to another that exists
+Date: Wed, 30 Jul 2003 11:09:16 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030801141957.GM6894@naboo>
-References: <3F29BBA1.4030405@davidcoulson.net>
+Message-ID: <018f01c35647$f68f9ea0$200aa8c0@thorin>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="asNXdz5DenlsLVVk"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3F29BBA1.4030405@davidcoulson.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,74 +15,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: David Coulson <david@davidcoulson.net>
-Cc: webmaster@netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hello iptables gurus,
+
+How do I setup iptables such that connections to a certain non-existent IP address is DNAT to another IP address within the
+network?
+
+Here's an explanation of the problem.  Sorry for the verbosity.  It's my first time to post in this list. :-)
+
+I have several machines on my network and one gateway machine.
+I've setup the gateway to do IP masquerading and everything's fine (i.e. any machine from the local network can acces the  internet
+flawlessly).
+
+The gateway  runs services such as ssh and http.  Other machines on the local network run their respective services as well.
+
+I want to achieve a setup such that connections to a certain non-existent IP address is DNAT to another IP address within the
+network.
+
+The gateway address is 192.168.30.1
+The non-existent address which I want to DNAT to another machine within the network is 192.168.40.40
+The existent IP address where I want 192.168.40.40 to be forwarded to, is 192.168.30.11
 
 
---asNXdz5DenlsLVVk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 31, 2003 at 09:00:17PM -0400, David Coulson wrote:
-> http://www.iptables.org/documentation/index.html
->=20
-> # Part 1 of an introductory iptables tutorial by David Culson
-> # Part 2 of an introductory iptables tutorial by David Culson
->=20
-> Please do the following:
->=20
-> 1) Spell my name correctly - It's right above the two which were spelled=
-=20
-> wrong.
+Here are 2 cases:
 
-sure.
+case 1).  The non-existent IP address is DNAT to the the gateway (i.e. the accepting machine itself).
 
-> 2) Link directly to my PDFs, so that the copyright information is easily=
-=20
-> accessable for those who need to know about it.
+When I do this, everything works fine.  (i.e. I get to access 192.168.40.40 as if it really existed although what I'm really
+accessing is the gateway machine 192.168.30.1).
 
-The links are directly to the PDF files.
+Here is how the configuration worked:
 
-> I e-mailed webmaster@netfilter.org eariler this week, but had no response.
+iptables -t nat -D PREROUTING -d 192.168.40.40 -j DNAT --to 192.168.30.1
 
-Sorry, the position of the webmaster seems to be 'vacant' currently.=20
-We might want to do a new 'call for volunteer', but I want to discuss
-this first with the rest of the coreteam at the summit at the end of
-august.
+case 2).  The non-existent IP address is DNAT to another machine within the network (not the gateway).
 
-So the work ends up to be done by myself - and I'm currently travelling
-qute a lot (now after karlsruhe(de) and ottawa(ca) in edinburgh(uk)), so
-I don't have email access that often.
+Here's what I think is the solution but it does not work.
 
-The links are most of the time contributed by people who send emails to
-webmaster@netfilter.org - and I usually don't spell-check them.
+iptables -t nat -D PREROUTING -d 192.168.40.40 -j DNAT --to 192.168.30.11
 
-Thanks for your corrections.
+I wanted to force our users to access 192.168.40.40 since it is *NOT* in the same network.  Thus, all connections to it pass through
+the gateway.
 
-> David
+The solution does not work.  Are there any pointers on how to make this possible?
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+A link to the network diagram is here:  http://210.23.193.154/zxff/qsz.html
 
---asNXdz5DenlsLVVk
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Thanks a lot!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Best Regards,
 
-iD8DBQE/KncNXaXGVTD0i/8RAr6sAJ9fnZexOpozmOo+NLJBYk93eFHfMwCgkvbZ
-hopZ9eO9i7TxrkKems7DToE=
-=ybdS
------END PGP SIGNATURE-----
+Carlo
+------
+Carlo Florendo
+Astra Philippines Inc.
+URL: http://www.hq.astra.ph/resources
 
---asNXdz5DenlsLVVk--
+
+
+
+
+
+
 
