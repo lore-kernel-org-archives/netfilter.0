@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: nat table
-Date: Sat, 7 Sep 2002 20:06:20 +0100
+From: "Raj Wurttemberg" <rajw@c64.us>
+Subject: RE: Netfilter on RH 7.3 (x86)
+Date: Sat, 7 Sep 2002 15:27:21 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020907190623.JDLP25423.mta01-svc.ntlworld.com@there>
-References: <000901c2568f$757ca410$0100a8c0@poste1>
+Message-ID: <001201c256a4$967fac10$d201a8c0@hornet>
+References: <000b01c25683$b173b550$d201a8c0@hornet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000901c2568f$757ca410$0100a8c0@poste1>
+In-Reply-To: <000b01c25683$b173b550$d201a8c0@hornet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,48 +20,69 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 07 September 2002 5:56 pm, Guillaume wrote:
+I figured it out...  No help required. 
 
-> I have a windows PC behind a linux gateway with iptables. Whit it, the
-> default policy for all is DROP, but the two line "mangle" are ACCEPT.
-> .....But, when I put policy for nat table "POSTROUTING, OUTPUT"
-> to ACCEPT, it's work!
+It's strange that RedHat does not provide this file by default. :(
 
-It is *strongly* recommended that you do not change the default policy for 
-either the nat or mangle tables from the standard ACCEPT.
+/*Raj*/
 
-There are two reasons for this:
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org 
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Raj 
+> Wurttemberg
+> Sent: Saturday, September 07, 2002 11:32 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Netfilter on RH 7.3 (x86)
+> 
+> 
+> 
+> Hello Everyone,
+> 
+> I am new to this mailing list and new to iptables. I have an 
+> x86 Linux system running RedHat 7.3 as my SMTP gateway. The 
+> default RedHat install was using iptables 1.2.5. I have 
+> recompiled my kernel (2.4.19) after applying the latest 
+> netfilter "Patch-o-matic" and I have compiled and installed 
+> iptables 1.2.7a.
+> 
+> I am more of a user and could not find any good HOWTO files 
+> for this, so my example below is based completely on trial, 
+> error, and learning. :) Please advise or correct me if I did 
+> anything wrong. To get iptables installed on RedHat 7.3, I 
+> had to do several things:
+> 
+> 1) Run "chkconfig --list" to verify the run levels for the 
+> installed iptables 1.2.5
+> 2) Copy the "iptables" file from the /etc/init.d to a 
+> temporary directory for safe keeping.
+> 3) Run "rpm -e iptables" to remove the installed iptables 1.2.5
+> 4) Installed the new iptables 1.2.7a (/usr/local/sbin/)
+> 5) Made symbolic links to the iptables files from the /sbin 
+> directory (RedHat default location)
+> 6) Copied the "iptables" file from my temporary directory 
+> back to /etc/init.d directory
+> 7) Run "chkconfig --add iptables" to add the service back 
+> into the RedHat configuration
+> 8) Run "ntsysv" and enabled iptables
+> 9) Rebooted my server. Iptables 1.2.7a started properly
+> 
+> Now my system appears to be configured properly. Here is the 
+> output of "iptables -L"
+> 
+> Chain INPUT (policy ACCEPT)
+> target     prot opt source               destination
+> Chain FORWARD (policy ACCEPT)
+> target     prot opt source               destination
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+> 
+> I can see that I have no firewall rules. I also see that the 
+> iptables script in /etc/init.d is looking for a file called 
+> "/etc/sysconfig/iptables". Is this the file that is supposed 
+> to contain the rules? Any help would be appreciated.
+> 
+> Thanks,
+> /*Raj*/
+> 
 
-1. It will cause a lot of things not to work properly.
-
-2. The nat and mangle tables are for natting and mangling, not for filtering, 
-therefore you should not apply a filtering policy to them.
-
-> Why when i put default policy of nat table to DROP, i can't connect? even
-> with this rules? What i have to do against?
-
-If you DROP packets in the nat table, they will not be able to go through 
-your Firewall, even if you allow them in the FORWARD chain of your filter 
-table.
-
-All packets entering your firewall go through the PREROUTING chain (nat and 
-mangle tables) before entering either the INPUT or FORWARD chain (filter 
-table).
-
-All packets going out of your firewall go through either the FORWARD or 
-OUTPUT chain (filter table) and then the POSTROUTING table (nat and mangle 
-tables).
-
-If you block them at any one of these points they will not get to their 
-destination.
-
-Antony.
-
--- 
-
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
 
