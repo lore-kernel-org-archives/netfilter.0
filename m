@@ -1,15 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: permanent ip forwarding
-Date: 28 Feb 2003 12:42:27 +0100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ICMP and state/conntrack
+Date: Fri, 28 Feb 2003 12:59:52 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1046432547.1936.16.camel@kermit.spenneberg.de>
-References: <1131.192.168.35.11.1046409994.squirrel@webmail.satconet.com>
-	<1046417290.1936.5.camel@kermit.spenneberg.de> 
-	<3289.192.168.129.22.1046421799.squirrel@webmail.satconet.com>
+Message-ID: <Pine.LNX.4.33.0302281258240.27528-100000@blackhole.kfki.hu>
+References: <20030228103743.GA31779@ok.is>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3289.192.168.129.22.1046421799.squirrel@webmail.satconet.com>
+In-Reply-To: <20030228103743.GA31779@ok.is>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,80 +16,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: muffadal.essaji@mail.intafrica.com
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@tommi.org
+Cc: netfilter@lists.netfilter.org
 
-Am Fre, 2003-02-28 um 09.43 schrieb muffadal.essaji@mail.intafrica.com:
-> hi thanks
-> i need to put the ip forwarding permanent .
-> how can i do it.
-Which distribution?
-Check if there is a /etc/sysctl.conf file. If there is you can enter it
-there. Otherwise you have to edit your /etc/rc.d/rc.local file.
+On Fri, 28 Feb 2003 netfilter@tommi.org wrote:
 
-Cheers,
+> I'm wondering if state doesn't apply to ICMP packets.
+>
+> iptables -A FORWARD -p icmp -m state -d 1.2.3.4 --state NEW -j ACCEPT
+> iptables -A FORWARD -m state --state NEW,INVALID -j REJECT
+>
+> if I ping 1.2.3.4 the echo-reply is blocked from 1.2.3.4. Is this normal, I
+> thought that the echo-reply should be marked RELATED and therefore not
+> blocked?
 
-Ralf
-> urgent
-> muffadal.
-> 
-> > Am Fre, 2003-02-28 um 06.26 schrieb muffadal.essaji@mail.intafrica.com:
-> >> hi.
-> >> i need a step by step prodecure to configure NAT.
-> >> I havee eth1 thats my internal internetwork
-> >> and eth0 which have a public ip.
-> > Ok, lets see.
-> > Either you have a static or dynamic public IP.
-> >
-> > #!/bin/bash
-> > # Firewall skript
-> > # We need to load several modules for NAT
-> > modprobe ip_tables
-> > modprobe ip_conntrack_ftp
-> > modprobe ip_nat_ftp
-> > #In both cases you need to have forwarding on:
-> > sysctl -w net.ipv4.ip_forward=1
-> > #In both cases you need some rules to forward the traffic:
-> > # Drop everything by default
-> > iptables -P FORWARD DROP
-> > # Allow new connections from the inside
-> > iptables -A FORWARD -i eth1 -o eth0 -m state --state NEW -j ACCEPT #
-> > Allow established connections to communicate
-> > iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT # Now
-> > NAT, you want the following rule for a static IP
-> > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to <enter your IP here>
-> > # if you use a dynamic IP you need:
-> > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> >
-> >
-> > Cheers,
-> >
-> > Ralf
-> >> i need all internal machines to access the internet.
-> >> i went to documentation but  i went crazy.
-> >> urgent help.
-> >> yours
-> >> muffadal
-> >>
-> >>
-> >>
-> > --
-> > Ralf Spenneberg
-> > RHCE, RHCX
-> >
-> > IPsec/PPTP Kernels for Red Hat Linux:
-> > http://www.spenneberg.com/.net/.org/.de
-> > Honeynet Project Mirror:                http://honeynet.spenneberg.org
-> > Snort Mirror:                           http://snort.spenneberg.org
-> 
-> 
--- 
-Ralf Spenneberg
-RHCE, RHCX
+ICMP echo-reply is not an ICMP error message, it is not RELATED to
+another connection. You can match is as ESTABLISHED.
 
-IPsec/PPTP Kernels for Red Hat Linux:  
-http://www.spenneberg.com/.net/.org/.de
-Honeynet Project Mirror:                http://honeynet.spenneberg.org
-Snort Mirror:                           http://snort.spenneberg.org
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
 
