@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: inner workings of IP tables
-Date: Sun, 29 Sep 2002 10:19:31 +0100
+From: "hard__ware" <hard__ware@hotmail.com>
+Subject: ipt_iplimit - IPtables 1.2.7a - Kernel 2.4.18 Issue Resolved
+Date: Sun, 29 Sep 2002 21:18:24 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020929091933.FWMZ13996.mta05-svc.ntlworld.com@there>
-References: <6029A399F5BFD6118BB200104B0DF37302766F@mailgate.dms.lanka.net>
+Message-ID: <OE29obC32qU4Z5flHgS00004b68@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <6029A399F5BFD6118BB200104B0DF37302766F@mailgate.dms.lanka.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,92 +18,123 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 28 September 2002 3:11 pm, Naleendra@dms.lanka.net wrote:
+Hello Eveyone .. :D
 
-> I am working on the qualitative analysis of IPTABLEs... & I need to compare
-> it with Checkpoint. From what I've heard Checkpoint is still the best.
+just been doing alot of kernel patching / hacking lately with Netfilter , (i
+luv it :-D ).
 
-Have you heard this from people who have compared the products, and can show 
-you how they tested them, or have you heard this from people who either 
-bought or sell the Checkpoint product, on the basis that it's got the biggest 
-name in the market (the "no-one got fired for buying IBM" philosophy) ?
+I found that with iptables 1.2.7a  Tar.gz & the Patch-o-matic for it, that
+when you include
 
-> 1- Because there is minimal network load
+the ipt_iplimit Extension (Info at
+http://www.netfilter.org/documentation/pomlist/pom-base.html#iplimit )
 
-I do not think a firewall product can generate any network load.   A firewall 
-filters packets which pass through it, therefore the network load is created 
-by the clients and servers on either side, not by the firewall itself.
+When using this on a RH 7.3 system with a custom 2.4.18-10 kernel i found
+that the Module compiles with insmod erros becuase of an unresloved symbol
+..
 
-Checkpoint's product is available to run on Windows Operating Systems, 
-Solaris, Red Hat Linux, and Nokia IPSO (a BSD derivative).   The performance 
-of their product varies tremendously on these different platforms (from bad 
-to good in the order I've given), but that's no reflection on Firewall-1 
-itself.
+went for a bit of google to find to many differnet patchs on this subjct so
+i decided to do it myself,,,
 
-If you want netfilter to give you high performance, run it on a fast 
-processor with enough memory.
+To my amusment it actually worked ? ( what i broke im not sure, but it works
+great fo me. )
+may require a little rule tweaking in your firewall script to get it working
+well.
 
-> 2- It works between the layers datalink & network making the OS that much
-> secure & making it a must pass-through layer for all pkts. in & out.
+here is what i included to the Redhat 7.3  Kernel 2.4.18-10 Source before a
+Re-Compile..
 
-No - Check Point's product works at a higher level than netfilter, in my 
-opinion.   They are both OSI layer 3/4 filtering systems, however netfilter 
-is built into the Operating System kernel, whereas Firewall-1 is added on top 
-of the Operating System as an application.   There is, for example, no 
-inherent packet filtering in the Windows 2k kernel, yet once you put 
-Firewall-1 on top, it becomes a firewall.
+-------------------------------------------
++ ~src/linux-2.4/net/ipv4/netfilter/Makefile
++++
++ O_TARGET := netfilter.o
+-+ M_OPJS := ipt_iplimit.o
 
-I would say that for this question netfilter is more secure because it is 
-embedded in the kernel; Firewall-1 is an application which could get stopped.
+#### here is what is used to be ####
+---
+- O_TARGET := netfilter.o
+-
+---------------end of patch---------------
 
-> 3- It securely supports typical " loop-hole prone protocols such as FTP,
-> UDP & RPC protocols.
+---------This one goes near of file--------
++ ~src/linux-2.4/net/ipv4/netfilter/ip_conntrack_standalone.c
++++
++EXPORT_SYMBOL(ip_conntrack_expected_related);
++EXPORT_SYMBOL(ip_conntrack_unexpected_related);
+-+EXPORT_SYMBOL(ip_conntrack_find_get);
++EXPORT_SYMBOL(ip_conntrack_tuple_taken);
 
-What do you mean by "loop-hole prone" ?   FTP is well supported by netfilter 
-and is no less secure than Firewall-1's support for it.
+---
+-EXPORT_SYMBOL(ip_conntrack_expected_related);
+-EXPORT_SYMBOL(ip_conntrack_unexpected_related);
+-EXPORT_SYMBOL(ip_conntrack_tuple_taken);
+--------------------EOP-------------------
 
-I don't know what you mean by UDP in this context, however I do not believe 
-there is any difference between the security of netfilter vs Firewall-1 for 
-UDP protocols.
+Now Make sure you re-do your Kernel Config...
 
-RPC is an application-level protocol (usually classified as OSI layer 5) and 
-both netfilter and Firewall-1 are stateful inspection packet filters.   
-Again, I do not believe there is any difference between the security of 
-netfilter vs Firewall-1 for RPC.
+#### In the Netfilter section it will come up with a (NEW)
+#### ipt_iplimit select (m) or yes and compile it in.. :D
+### Run the following from your Kernel SRC Dir  ####
+###   For you first time newb's plz run /> make mrproper # First, Thanks #
 
-> No, I am not here to brag about checkpoint. I hardly know the thing.
+make config
 
-Where have you got your information suggesting that Firewall-1 is better ?
+### This next one cleans out any other build we preformed previously ###
+make clean
 
-> I use a IPTables firewall. I need some info /web sites on how the
-> Iptables modules work.. yeah the inner workings. Can some one help pls. ?
+### Now here's a real nice one. Sick of two many connetions being tracked by
+netfilter that are not even ### being used or conntrack's that didnt recive
+a CLOSE or FIN message, this way you can lower the ### default Time To Tive
+for TCP connection tracking while using NetFilter / Iptables.  Try setting
+the
+### time value's in this lower,  Expecially the one that Says 5 Bloody Days
+???? What Tha ??? ---->
+###  --- 5 DAYS, /* TCP_CONNTRACK_ESTABLISHED, */
 
-If you want to see how netfilter works inside, the source code is readily 
-available, and you can really see how everything gets done.   You won't get 
-*that* opportunity with Firewall-1,
++++
+here is what is did to my test box, ( Dual PIII 866 1024 MB SDRAM 2.4.18-10
+SMP Custom)
++++
++ ~src/linux-2.4/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
 
-Check Point Firewall-1 does not have a flawless security record.   Did you 
-know, for example, that until FW-1 v4.1 (about 2 years ago) every version of 
-FW-1 allowed access from the Internet to any machine on the internal network 
-on TCP/UDP ports 53 under a standard installation ?
+= { 30 MINS,  /* TCP_CONNTRACK_NONE, */
+    30 MINS, /* TCP_CONNTRACK_ESTABLISHED, */
+    2 MINS, /* TCP_CONNTRACK_SYN_SENT, */
+    60 SECS, /* TCP_CONNTRACK_SYN_RECV, */
+    2 MINS, /* TCP_CONNTRACK_FIN_WAIT, */
+    1 MINS, /* TCP_CONNTRACK_TIME_WAIT, */
+    12 SECS, /* TCP_CONNTRACK_CLOSE, */
+    1 MINS, /* TCP_CONNTRACK_CLOSE_WAIT, */
+    60 SECS, /* TCP_CONNTRACK_LAST_ACK, */
+    2 MINS, /* TCP_CONNTRACK_LISTEN, */
+};
+------------------------EOP-----------------------------
 
-Netfilter does not have a flawless security record either, but like most open 
-source projects, the flaws tend to get found sooner in the development cycle, 
-and they certainly get fixed pretty damned fast if they ever get out into a 
-released vesion, compared to commercial / proprietary systems.
+#### now we can continue on with our mission ..#####
 
-I wuld be very interested in any reproducible data you have comparing the 
-security of Check Point Firewall-1 with netfilter.
+make dep
+make bzImage
+make modules
+make modules_install
 
-Antony.
+#### and if all goes well (like my Dual P3) it compiles with no errors and
+you wont gets Insmod errors ect
 
--- 
 
-In science, one tries to tell people
-in such a way as to be understood by everyone
-something that no-one ever knew before.
+....
 
-In poetry, it is the exact opposite.
+anyway let me know what yas think :D
 
- - Paul Dirac
+catch ya
+
+Hard__warE
+
+{the void has struck}
+
+
+
+
+
+
+
 
