@@ -1,8 +1,9 @@
-From: Evgeni Vachkov <evgeni.vachkov@investis.com>
-Subject: [Fwd: POM-NG run v1.17 error]
-Date: 01 Jul 2004 14:37:10 +0100
+From: "sarky" <sarky@raycon.net>
+Subject: Re: Configuring zone
+Date: Thu, 1 Jul 2004 15:12:08 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088689030.13933.426.camel@spudgun.dhcp.internal>
+Message-ID: <03a001c45f75$651c6ab0$3c8c1fd9@CPQ48762168204>
+References: <032001c45f11$b5455880$3c8c1fd9@CPQ48762168204> <200407010948.02278.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,23 +19,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-While tweaking the kernel one of our sysadmins got the following error. 
------
-It's not a huge error, but it is annoying.
+sorry made a mistake with the mailling list :)
 
-The documentation all refers to --exclude requiring parameters of the
-format "suite/patchdir"
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, July 01, 2004 9:48 AM
+Subject: Re: Configuring zone
 
-The script actually accepts, and only pays any attention to "patchdir" -
-no suite needed.
 
-Either runme or the documentation should probably be changed to match...
-
-Rob Dawson
-Senior Systems Administrator
-----
-Regards,
-Evgeni Vachkov
-
+> On Thursday 01 July 2004 3:18 am, sarky wrote:
+>
+> > How do i configure a zone to put the ip address before the domain name.
+> > i.e 10.10.10.10.isp.com
+>
+> This doesn't seem like a netfilter question to me.
+>
+> Perhaps you should consult the documentation or mailing list for whichever
+> name server software you use?
+>
+> Antony.
+>
+> -- 
+> I own three Windows books, published by O'Reilly.   They are "Windows
+> Annoyances", "Office 97 Annoyances" and "Windows 98 Annoyances".   That
+> pretty much sums it up for me.
+>
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
+>
 
 
