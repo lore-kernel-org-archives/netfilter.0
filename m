@@ -1,12 +1,14 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Masquarede stalls?
-Date: Tue, 10 Aug 2004 14:33:23 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: firewall problem continued
+Date: Tue, 10 Aug 2004 19:45:46 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051263@asimail2.alphanumeric.com>
+Message-ID: <200408101945.46837.Antony@Soft-Solutions.co.uk>
+References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408101014.22969.Antony@Soft-Solutions.co.uk> <20040810114645.GA27182@tranquility.scriptkitchen.com>
+Reply-To: Netfilter ML <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <20040810114645.GA27182@tranquility.scriptkitchen.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +19,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Meszaros Gergely <monk@geotronic.hu>, netfilter@lists.netfilter.org
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-> Hi!
->
-> Are there any issues about netfilter in kernel 2.4.25 ?
->
-> I tried to make a masquerading setup, but all connections from the =
-internal network what is larger than a minimal size are stalls, and just =
-waits waits waits...
->
-> What can it be?
->
-> My ultra-simplified ipfilter (for debugging purpose) is:
->
->       iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
->       iptables -A FORWARD -j ACCEPT
->
->
-> . I have a simple two-network-card-gateway server and 192.168.* =
-internal net setup.
-> . from the server everything is perfect.
-> . from the internal net, one can ping everything correctly (masquerade =
-is working, just buggy)
-> . from the internal net every connection initialised correctly, =
-however
->       large enough (larger than 1 packet?) data is buggy and stalls.
->
-> So, i can reach very short homepages, and can ping from the int net =
-but
-> everything else will stall.
+On Tuesday 10 August 2004 12:46 pm, Payal Rathod wrote:
 
-those symptoms point to an MTU issue.  the way to check this would be to =
-tcpdump on the outside interface of your firewall for ICMP unreachable =
-messages (tcpdump -n -nn -p -i ppp0 icmp)...look for something along the =
-lines of "need to frag, but DF bit is set"  if you see that, you need to =
-lower the MTU/MSS of your clients, either directly on the clients or =
-with some mangling on the firewall.
+> On Tue, Aug 10, 2004 at 10:14:22AM +0100, Antony Stone wrote:
+> > > No idea. I thought that is recommended. I mean every machine should
+> > > be able to access itself using all its IPs.
+> >
+> > That would mean "all IPs on all interfaces of the machine".   It doesn't
+> > include arbitrary IPs which some other machine may choose to translate to
+> > an IP on this machine's interface.
+>
+> Let me rephrase it. A mail server needs to connect to any IP in the world
+> so why cannot it connect to an IP which is in its subnet.
 
--j
+Because the public IP is not in its own subnet.
+
+Your mail server's real address is 10.10.10.2, with a /8 netmask.
+
+Its public IP (as far as the firewall is concerned) is 1.2.3.4.
+
+Those are different subnets.
+
+Regards,
+
+Antony.
+
+-- 
+Never automate fully anything that does not have a manual override capability. 
+Never design anything that cannot work under degraded conditions in emergency.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
