@@ -1,11 +1,10 @@
-From: "Luigi Cartuccia" <luigicart@tin.it>
-Subject: okfn
-Date: Sat, 5 Oct 2002 19:53:55 +0200
+From: =?iso-8859-1?Q?Jeppe_S=F8rensen?= <smed@tdcadsl.dk>
+Subject: iptables with alias?
+Date: Sat, 5 Oct 2002 22:45:47 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008401c26c98$2d3b8760$d1dd2dd5@q8c7l5>
+Message-ID: <000a01c26cb0$309bdc80$1801a8c0@CBOOK>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0081_01C26CA8.F0366F40"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,40 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello
 
-------=_NextPart_000_0081_01C26CA8.F0366F40
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have a little question that perhaps someone can help me with
 
-Hi to all. I'm Luigi. I have a question.
-What makes the okfn function????
-Thank you=20
-Luigi
+I have a interface to the inet with 4 dynamic ip addr
+eth0 = first dynamic ip addr
+eth0:0 = second dynmaic ip addr
+and so on
 
-------=_NextPart_000_0081_01C26CA8.F0366F40
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I want to make 1 on 1 nat on the frist 2 aliass and the last 2 alias are for
+the rest of the network
+192.168.1.5 nat to eth0
+192.168.1.6 nat to eth0:0
+192.168.1.7-to-15 nat to eth0:1
+192.168.1.16-to-30 nat to eth0:2
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi to all. I'm Luigi. I have a=20
-question.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What makes the okfn =
-function????</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Thank you </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Luigi</FONT></DIV></BODY></HTML>
+but iptables wan't take alias
 
-------=_NextPart_000_0081_01C26CA8.F0366F40--
+What do I do / what can I do ?
+
+I have looked in the The netfilter user mailinglist Archives and found the
+following solution
+
+ip addr add w.x.y.z/bits dev eth0 label eth00
+
+but how does I get it to work with dynamic address?
+
+
+The archive mail I found the solution in
+http://lists.netfilter.org/pipermail/netfilter/2002-June/034592.html
+
+
+Jeppe Sorensen
+Denmark
 
 
