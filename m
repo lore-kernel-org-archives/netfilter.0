@@ -1,7 +1,9 @@
-From: "lux" <netfilter@iotti.biz>
-Subject: Openswan compiling problem with pom-ng ipsec patches
-Date: Mon, 7 Mar 2005 07:59:11 +0100
-Message-ID: <NCBBJCDIGFAINBLFEHILMENBGMAA.netfilter@iotti.biz>
+From: "hareram" <hareram@sol.net.in>
+Subject: Re: yahoo mail problem
+Date: Mon, 7 Mar 2005 12:48:32 +0530
+Message-ID: <0f7a01c522e5$deac0dc0$09603fca@southern>
+References: <0dd101c5215c$7393efb0$09603fca@southern>
+	<4229C04F.1000103@cardvn.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
@@ -14,38 +16,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: Nguyen Dinh Nam <64vn@cardvn.net>
+Cc: netfilter@lists.netfilter.org
 
-I just added to my kernel (Fedora 3) the ipsec patches from
-patch-o-matic-ng.
-This introduces a problem in compiling klips (openswan 2.3.0) with errors
-about #defines being redefined:
+Hi
 
-In file included from
-/usr/src/redhat/BUILD/openswan-2.3.0/BUILD.i386/ipsec_init.c:97:
-/usr/src/redhat/BUILD/openswan-2.3.0/linux/include/pfkeyv2.h:39:1: warning:
-"SADB_X_NAT_T_NEW_MAPPING" redefined
-In file included from include/net/xfrm.h:10,
-                 from include/linux/netfilter_ipv4.h:93,
-                 from include/net/ip.h:34,
-                 from
-/usr/src/redhat/BUILD/openswan-2.3.0/BUILD.i386/ipsec_init.c:63:
-include/linux/pfkeyv2.h:243:1: warning: this is the location of the previous
-definition
-...
-The same thing about SADB_EXT_MAX, SADB_SATYPE_MAX,... lots of constants in
-pfkeyv2.h.
+no iam not using pppoe
+iam using plain ethernet based connectivity to my ISP
 
-The problem arises because the pom-ng patches #include netfilter_ipv4.h in
-ip.h , which in turn includes xfrm.h which includes pfkeyv2.h from the
-current kernel, hence the conflict with openswan's own pfkeyv2.h.
-It would be fairly trivial to eliminate the problem, testing in either
-pfkeyv2.h if the other was already included.
-What looks a problem to me is that the two pfkeyv2.h are fairly different,
-and I don't know what is the right one.
-Someone has a solution for this issue, allowing me to use openswan's klips
-and to have the pom-ng's ipsec patches installed?
-Maybe this issue should be posted on the dev ML?
+any other suggestions
+
+hare
+----- Original Message ----- 
+From: "Nguyen Dinh Nam" <64vn@cardvn.net>
+To: "hareram" <hareram@sol.net.in>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Saturday, March 05, 2005 7:51 PM
+Subject: Re: yahoo mail problem
+
+
+> If you use pppoe, and your ISP blocks ICMP packets (many incompetent ISPs 
+> do so), you will need tp CLAMP MSS:
+> http://lists.roaringpenguin.com/pipermail/rp-pppoe/2004-August/000006.html
+>
+> hareram wrote:
+>
+>> Hi all
+>>
+>> I have iptables running with FC3
+>> I have some different problem
+>> when iam doing NAT and masq.. iam not able to check yahoo mails
+>> when i use the public IP i could able to check mails and send/receive
+>>
+>> iam doing ip masq using 1 public ip address.
+>> when i change to another public ip for 2 days iam able to check the yahoo 
+>> mails send/receive ok.
+>> then again start getting the same yahoo mail problem
+>>
+>> does any one face this kind of problem or any solution for this kind of 
+>> situation ??
+>>
+>> suggestion and some docs will be appreciated
+>>
+>> hare
+>
+>
+>
+> 
+
 
 
