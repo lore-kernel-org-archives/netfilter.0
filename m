@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FTP-SSL explicit
-Date: Mon, 9 Aug 2004 21:32:35 +0100
+From: E-mail by Joe <joe_hot66@yahoo.com>
+Subject: How can be user time management implemented through netfilter for MASQ?
+Date: Mon, 9 Aug 2004 13:56:50 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408092132.35073.Antony@Soft-Solutions.co.uk>
-References: <810BC538117E9F4E9BB152E0C100DF1F18F5D2@farmer.vikus.net>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <20040809205650.45180.qmail@web40414.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <810BC538117E9F4E9BB152E0C100DF1F18F5D2@farmer.vikus.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +14,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-On Monday 09 August 2004 9:27 pm, Patrick Ahler wrote:
+hi/
+I'm facing some problem for user time management like
+Squid. I want to let=20
+some user get the internet connection for 12 hours and
+some users for 24=20
+hours. how can i do=A0 this with netfiltering?
+JOE.=20
 
-> Does anyone know off hand which ports I need to open on my
-> gateway/firewall for ftp over ssl (explicit) besides port 990???
 
-I don't know, but I know how you can find out.
 
-Add a LOG rule at the end of your FORWARD chain (just before the packets get 
-DROPped), and see what's trying to get between client & server.
 
-That'll tell you what you need to add as an ACCEPT rule.
-
-Regards,
-
-Antony.
-
--- 
-Wanted: telepath.   You know where to apply.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+	=09
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - 50x more storage than other providers!
+http://promotions.yahoo.com/new_mail
 
