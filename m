@@ -1,13 +1,12 @@
-From: "Tarek W." <ticallion@hotpop.com>
-Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
-Date: Fri, 31 Oct 2003 04:45:34 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: PLEASE HELP with DNAT problem
+Date: Fri, 31 Oct 2003 13:57:14 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067568347.1470.21.camel@carve.localdomain>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A28AC99@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A28AC9F@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <09B04A55822EFF4DA48D2E0BB2941D4A28AC99@wardrive.citadelcomputer.com.au>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: ml@proficuous.com, netfilter@lists.netfilter.org
 
+> I tried to DNAT the lan back=20
+> to itself and
+> it just isn't working..
 
-I didn't remember exactly when I started using it... hence, the
-reference to RHL 7.0.
+If I think I know what your trying to do, you are doing a LAN to LAN =
+connection right?
 
-http://mirrors.kernel.org/redhat/redhat/linux/7.0/en/ -> 13-Jul-2002
-03:32
+Don't forget that a LAN to LAN DNAT also must have a POSTROUTING SNAT =
+rule so the destination server replies back via the firewall/NAT server. =
+otherwise it'll reply directly to the client and the client will drop =
+the packet immediately.
 
-http://netfilter.org/files/iptables-1.0.0.tar.bz2 -> 04-Jan-2002 23:54
+Have you done any tcpdumping or -j LOGing??
 
-have u heard of vanilla kernels?! some people use RHL for the structured
-fs layout and the care developers give sysadmins in sysVinit scripts for
-one, using custom kernels in case the concept is foreign to u.
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
-and just for people like u, in the errata, I'll change "ever since RHL
-7.0" to "ever since I started using RHL 7.0", might even add "in 2003"
-just cos I'd rather have constructive criticism.
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 
-happy hacking everybody,
-Tarek
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
 
-On Fri, 2003-10-31 at 02:36, George Vieira wrote:
-> that's interesting..(off that URL) "I've been using iptables since RHL 7.0, a bit before that"
-> 
-> RedHat 7.0 came with 2.2 kernel... how you get iptables compilable on it?? ;)
-> 
-> Thanks,
-> ____________________________________________
-> George Vieira 
-> 
-> > -----Original Message-----
-> > From: Tarek W. [mailto:ticallion@hotpop.com]
-> > Sent: Friday, 31 October 2003 11:08 AM
-> > To: netfilter@lists.netfilter.org
-> > Subject: Re: thoughts on a newbie tutorial i'll be giving shortly
-> > 
-> > 
-
-
+> -----Original Message-----
+> From: ml@proficuous.com [mailto:ml@proficuous.com]
+> Sent: Friday, 31 October 2003 1:18 PM
+> To: netfilter@lists.netfilter.org
+> Subject: PLEASE HELP with DNAT problem
 
