@@ -1,12 +1,11 @@
-From: Andero Belov <belov@ut.ee>
-Subject: IPv6 conntrack
-Date: Wed, 4 Feb 2004 16:33:31 +0200
+From: "Saeed Zamani" <szamani@tavanesh.com>
+Subject: Please  help me on NAT w/load sharing
+Date: Wed, 4 Feb 2004 23:16:14 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402041633.31714.belov@ut.ee>
+Message-ID: <000401c3eb57$90887550$2b30d9d5@Zamani>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,20 +18,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi!
 
-I searched this list several ways but I couldn't find any information about 
-IPv6 connection tracking. Is it implemented and how to get the software to 
-get it running? 
-I want to get it running on 2.6.1 kernel with newest USAGI patches. The kernel 
-seems to have options that allow IPv6 conntrack, but iptables-1.2.9 doesn't 
-seem to know anything about it.
+   Hi all,
+   I am new to list and have a basic nat question on Redhat Linux 9. I
+have to translate my local IP ( 192.168.1.0/24 ) to two different public
+IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
+example for every 4 received packet, one have to translate to IPE1 and
+other three to IPE2. I need this for load balacing the internet traffic
+between two isp. At the end, it is excellent if there is an option that
+If one the ISP gateway is dead, all packets have to translate to other
+public IP. Please help me.
+Thanks,
+Saeed Zamani,
+Technical Manager,
+Concept FZ LLC. 
 
-Any ideas where could one get additional information about this topic?
 
-Thanks in advance,
--- 
-Andero Belov
-belov@ut.ee
 
 
