@@ -1,8 +1,8 @@
-From: besteinm@phys.ethz.ch (Benoit Steinmetz)
-Subject: dhcp weirdness with iptables
-Date: Tue, 23 Sep 2003 16:09:33 +0200
+From: a.ranu@ugrad.unimelb.edu.au
+Subject: keeping track of ack no
+Date: Wed, 24 Sep 2003 01:17:16 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030923140933.GA22498@phys.ethz.ch>
+Message-ID: <200309231517.h8NFHGsx029764@cassius.its.unimelb.edu.au>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
@@ -19,18 +19,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi
+hi,
 
-i get my ip address from a dhcp server. i have experienced strange behaviour of
-my iptables-firewall:
+i am writing a module that clamps the tcp receiver window size... 
+i need to be able to tell when slow start ends, but at the receiver... so 
+i need to be able to keep track of when 3 duplicate acknowledgements 
+are sent out by the receiver...
 
-it seems that the dhcp packets seem to be unaffected by the firewall, because,
-no matter how restrictive i setup the firewall, the udp packets coming from
-port 67 on the dhcp-server and going to the local port 68 pass through. has this
-something to do with the linux socket filter (CONFIG_FILTER in the kernel
-configuration), which is needed by dhcp to work correctly?
+what info in the kernel do i access to do this...
+skb->h.th->ack???
 
+i need to know asap and any help will be greatly appreciated...
 thanks
 
-benoit steinmetz.
+Asmeet.
+
+-- 
+a.ranu@ugrad.unimelb.edu.au
 
