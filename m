@@ -1,13 +1,12 @@
-From: Rick Kennell <kennell@ecn.purdue.edu>
-Subject: RE: port-based filtering of IPsec packets?
-Date: 25 Jul 2003 01:14:43 -0500
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: Not quite understanding DNAT
+Date: Fri, 25 Jul 2003 10:47:30 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059113683.16545.162.camel@k7.localnet>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0192CB@wardrive.citadelcomputer.com.au>
+Message-ID: <Pine.LNX.4.44.0307251045220.1760-100000@localhost>
+References: <3F1FA56E.28480.E59161E@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0192CB@wardrive.citadelcomputer.com.au>
+In-Reply-To: <3F1FA56E.28480.E59161E@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Coutts, Ashe (Testing Account)" <ATest@sbsdk12.org>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, 2003-07-24 at 16:37, George Vieira wrote:
-> >Surely there must be some way of doing port-based filtering of ESP
-> >packets that are known to be bound for the local host.
-> If the packet isn't intended for the firewall/ipsec server, then
-> it's forwarded unencrypted to the internal hosts.... I'm sure by
-> then the data in decrypted right? Because it can't pass an encrypted
-> packet to a host who isn't using IPSEC.
+Hi Ashe,
+
+> I have set up a very basic firewall for our system. 
+> We have 126 addresses to be used to/from the outside world (204.48.178.0/25) 
+> and are using 10.x numbers on the inside.
 > 
-> Can you put -j LOG rules in the FORWARD chain to filter on it?
-> Mine appear to pickup port 23 telnet sessions... sorry if what
-> you want isn't this..
-> 
-> 
-> [root@firewall root]# iptables -I FORWARD -i ipsec0 -o eth0 -p tcp --dport 23
-> [root@firewall root]# iptables -L FORWARD -n -v -x
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->     pkts      bytes target     prot opt in     out     source               destination
->        2      104            tcp  --  ipsec0 eth0    0.0.0.0/0            0.0.0.0/0          tcp dpt:23
+> It is working almost as I expected except for the following. The DNAT 
+> connections come into the system fine but are seen as originating from the 
+> eth0 interface rather than their eth0:x interface. So, when attaching to a linux 
+> cpu with ssh I am needing to place the ip# for the eth0 interface in the 
+> hosts.allow file rather than the much more restrictive eth0:x ip#. Can it be set 
+> up so the connection is between the external eth0:x ip# and its linked internal 
+> ip#?
 
-You're using FreeS/WAN, and you're right that it creates an ipsec0
-network device where you can see unencapsulated packets.
+You could try:
 
-Meanwhile, I'm using the IPsec built-in to Linux v2.6.
-No user-land daemon.
-No ipsec0 device.
-And no port-based filtering of ESP packets.
+	route add <internal-server-10.0.0.x> dev eth0 \
+		gw <address-of-eth0:x>
 
-Maybe what I'm asking is going to be a FAQ in a few months when the
-in-kernel IPsec catches on.  I'm fairly convinced that port- or
-payload-based filtering of IPsec packets isn't presently possible with
-such that environment.  Either something needs to change or I need to
-get a little smarter.
+Using an address of your own box as the gateway of a route will cause
+locally-generated traffic going down that route to come from that address,
+instead of the default address on the device. This should mean that the
+masquerading uses that address too, but I haven't tested it.
 
-Time to bother the folks on netfilter-devel?
-
+Cheers, Chris.
 -- 
-Rick Kennell <kennell@ecn.purdue.edu>
-Purdue University School of Electrical and Computer Engineering
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
 
