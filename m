@@ -1,10 +1,14 @@
-From: "SB CH" <chulmin2@hotmail.com>
-Subject: "connection tracking" and "Connection state"?
-Date: Wed, 02 Apr 2003 01:18:53 +0000
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: iptables - bridge - physin
+Date: Tue, 1 Apr 2003 22:21:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F9fFM7FJ5l7rOwSbiqW0000601a@hotmail.com>
+Message-ID: <200304012221.23826.netfilter@newkirk.us>
+References: <D3DD55FDB74AD511BA51005004163680176597@orion.ibh.de>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <D3DD55FDB74AD511BA51005004163680176597@orion.ibh.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,18 +18,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"; format="flowed"
-Content-Transfer-Encoding: base64
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jochen Vogel <jvogel@it-sec.de>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'bridge@math.leidenuniv.nl'" <bridge@math.leidenuniv.nl>
 
-SGVsbG8sIGFsbC4KCmNvbm5lY3Rpb24gdHJhY2tpbmcoc3RhdGVmdWwgaW5zcGVjdGlvbikgaGFz
-IGEgcmVsYXRpb24gd2l0aCB0aGlzIG1lbnUobWFrZSAKY29uZmlnKT8KCiJDb25uZWN0aW9uIHRy
-YWNraW5nIG1hdGNoIHN1cHBvcnQiCgpCdXQgd2hlbiBJIGRlc2VsZWN0IHRoaXMgbWVudSwgSSBj
-YW4gdXNlIGNvbm5lY3Rpb24gdHJhY2tpbmcgbGlrZSAKTkVXLEVTVEFCTElTSEVELFJFTEFURUQg
-IGV0Yy4KSSB0aGluayB0aGF0IG9ubHkgIkNvbm5lY3Rpb24gc3RhdGUgbWF0Y2ggc3VwcG9ydCIg
-bWVudSBpcyByZXF1aXJlZCB0byB1c2UgCnRoaXMgZnVuY3Rpb24uCgp0aGVuIHdoYXQgaXMgdGhl
-IGZ1bmN0aW9uIGFuZCBtZWFuaW5nIG9mIHRoZSAiQ29ubmVjdGlvbiB0cmFja2luZyBtYXRjaCAK
-c3VwcG9ydCI/CgoKVGhhbmtzIGluIGFkdmFuY2UuCgoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCsiuwM7Hz8DaLiC/wLTD
-wMcgv+68vCC5q7fhILvnwdYsILHDx9UsIMDbuO0sIMD8u/0gsKHAzLXlICAgCmh0dHA6Ly93d3cu
-bXNuLmNvLmtyL2ZvcnR1bmUvZGVmYXVsdC5hc3AgIAoKCg==
+On Tuesday 01 April 2003 05:18 am, Jochen Vogel wrote:
+> hi all,
+>
+> i compiled iptables and teh bridge patch.
+> all is working fine. but in my old iptables script i configured many
+> rules with -i and -o.
+> in the logs i can see, that iptables use as IN and OUT the bridge and
+> have an additional entry for PHYSIN.
+> is there an option to use the PHYSIN?
+>
+> thx for help
+> jo
+
+No option, just reference them directly.  You can use any of the three=20
+interface names, IE eth0,eth1,br0 in your rules.
+
+j
+
+
