@@ -1,10 +1,9 @@
-From: "Bo Jacobsen,  SystemHouse" <bo@systemhouse.dk>
-Subject: iptables-save/restore question
-Date: Tue, 17 Sep 2002 12:08:55 +0200
+From: Andrei Ivanov <andrei.ivanov@ines.ro>
+Subject: tos 0x62
+Date: Mon, 16 Sep 2002 17:51:14 +0300 (EEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006101c25e32$3e0fe500$6307a8c0@net>
+Message-ID: <Pine.LNX.4.44.0209161748060.6328-100000@webdev.ines.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,50 +14,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-HI,  I have tried the following:
 
-I run some iptables commands then run iptables -L -n > testfile1 to save =
-the setup.
-Then I run iptables-restore testfile1 and than run iptables-save again:
-iptables -L -n > testfile2
+Hello,
+I'm trying to filter packets which have a TOS value of 0x62, and it seems 
+I cannot.
+I tried the tos module, but it only knows valid tos values.
+I look for the ftos module from patch-o-matic, but it seems it has been 
+obsoleted by DSCP and ECN module.
+If I try iptables -I acc_IN -i eth1 -m dscp --dscp 0x62 it spits out:
+iptables v1.2.7a: DSCP `98` out of range
 
-When I run diff on the two files (testfile1, testfile2) I can see that =
-they are NOT the same.
-In the following is an example of what diff finds different:
-
-104,105c104,105
-< ACCEPT     tcp  --  192.168.7.0/24       0.0.0.0/0          state =
-NEW,ESTABLISHED tcp spts:1024:65535 dpt:53
-< ACCEPT     tcp  --  0.0.0.0/0            192.168.7.0/24     state =
-ESTABLISHED tcp spt:53 dpts:1024:65535
----
-> ACCEPT     tcp  --  192.168.7.0/24       0.0.0.0/0          tcp =
-spts:1024:65535 dpt:53 state NEW,ESTABLISHED
-> ACCEPT     tcp  --  0.0.0.0/0            192.168.7.0/24     tcp spt:53 =
-dpts:1024:65535 state ESTABLISHED
-
-The first two lines are after running the iptables commands directly.
-The result of the two command semantics are of course the same, but why =
-is this happening.
-
-The reason we want to make this test is that we need to be sure that the =
-rules generated directly by
-the iptables commands, are EXATLY the same as what the =
-iptables-save/restore command pair does.
-
-One thing is to test that the iptable commands works, another is to =
-blindly trust that our 300 iptable rules
-are correctly saved and restored by iptables-save/restore (a firewall =
-with 4 different local lans).
-If there is another way of confirming iptables-save/restore results, I =
-would appreciate some info.
-
-
-Thanks in advance
-Bo Jacobsen
-
+How can I do this ?
+(I coudln't search the mail archives for this problem because this mailing 
+list manager doesn't offer such a facility)
 
 
