@@ -1,11 +1,10 @@
-From: Glenn Hancock <ghancock@softeksoftware.com>
-Subject: iptables question
-Date: 13 Aug 2003 16:49:58 -0400
+From: cc <cc@belfordhk.com>
+Subject: port 80 redirection
+Date: Thu, 14 Aug 2003 09:45:53 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060807798.4082.8.camel@localhost.localdomain>
-Reply-To: ghancock@softeksoftware.com
+Message-ID: <3F3AE9D1.1010600@belfordhk.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-vPIxFra1LAjT4afc0acZ"
+Content-Type: multipart/mixed; boundary="----------=_1060825753-32021-547"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,101 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Netfilter Group <netfilter@lists.netfilter.org>
 
+This is a multi-part message in MIME format...
 
---=-vPIxFra1LAjT4afc0acZ
-Content-Type: text/plain
+------------=_1060825753-32021-547
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I have my rules setup the way I would guess they should be based on 5
-tutorials, 1 book and the man pages.  However, I still can't seem to get
-the thing to do what I want.  Could someone please help me?
+Hi,
 
-I will make this very simple:
-1)  I want to allow all incoming requests to port 80
-2) I want to allow all outgoing requests .... period.
+(This isn't a repost of my original post a few days ago.  I just
+wanted to mention that I lost the two response from those who
+sent me email regarding my issue.  I had used my other
+email address (which conveniently was also subscribed to this
+ML for the reason being that I'm at two different places during
+certain parts of the month so I didn't want to miss anything.)
 
-I want to drop all other incoming requests not addressed to port 80.
+Anyway, someone emailed me regarding that I could always
+redirect all outgoing POrt 80 traffic to the Squid-based
+machine.
 
-Thats it.  I've been fighting with this all day and still can't get it
-to act right.  If you like I can send my current iptables file but its
-basically the same as the earlier one I sent.
+Can that person please repost?  Sorry for the inconvenience.
+I should've forwarded my email to myself.
 
-P.S.  I'm sorry if someone has already answered my question.  I was
-having a little trouble with my email before...  As long as you reply to
-the list group I should get any further emails without a problem.
+Thanks.
 
-Thanks,
 
--- 
-Glenn Hancock
-SofTek Software International, Inc.
-813 Pavilion Court
-T: 678-583-5720
-I: ghancock@softeksoftware.com
-www.softeksoftware.com
-www.Spambite.com
-NOTE: My email address is currently protected by Spambite. If
-you send me an email, you will be asked to validate your email
-address on the Spambite network AND re-send you original email
-to me. Or, you can pro-actively register your email address on
-the Spambite network by visiting the website:
-www.spambite.com
-When visiting the website, please feel free to look around to
-learn about this exciting new technology.
 
---=-vPIxFra1LAjT4afc0acZ
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.7">
-</HEAD>
-<BODY>
-I have my rules setup the way I would guess they should be based on 5 tutorials, 1 book and the man pages.&nbsp; However, I still can't seem to get the thing to do what I want.&nbsp; Could someone please help me?<BR>
-<BR>
-I will make this very simple:<BR>
-1)&nbsp; I want to allow all incoming requests to port 80<BR>
-2) I want to allow all outgoing requests .... period.<BR>
-<BR>
-I want to drop all other incoming requests not addressed to port 80.<BR>
-<BR>
-Thats it.&nbsp; I've been fighting with this all day and still can't get it to act right.&nbsp; If you like I can send my current iptables file but its basically the same as the earlier one I sent.<BR>
-<BR>
-P.S.&nbsp; I'm sorry if someone has already answered my question.&nbsp; I was having a little trouble with my email before...&nbsp; As long as you reply to the list group I should get any further emails without a problem.<BR>
-<BR>
-Thanks,<BR>
-<BR>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
-Glenn Hancock
-SofTek Software International, Inc.
-813 Pavilion Court
-T: 678-583-5720
-I: ghancock@softeksoftware.com
-www.softeksoftware.com
-www.Spambite.com
-NOTE: My email address is currently protected by Spambite. If
-you send me an email, you will be asked to validate your email
-address on the Spambite network AND re-send you original email
-to me. Or, you can pro-actively register your email address on
-the Spambite network by visiting the website:
-www.spambite.com
-When visiting the website, please feel free to look around to
-learn about this exciting new technology.</PRE>
-</TD>
-</TR>
-</TABLE>
 
-</BODY>
-</HTML>
 
---=-vPIxFra1LAjT4afc0acZ--
 
+
+** All information contained in this email is strictly     **
+** confidential and may be used by the intended receipient **
+** only.                                                   **
+
+
+------------=_1060825753-32021-547--
 
