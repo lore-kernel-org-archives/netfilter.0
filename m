@@ -1,8 +1,9 @@
-From: Henti Smith <bain@tcsn.co.za>
-Subject: transparent squid with internal sites as well
-Date: Mon, 25 Nov 2002 12:19:35 +0200
+From: "Remus" <rmocius@auste.elnet.lt>
+Subject: router protection with iptables
+Date: Mon, 25 Nov 2002 10:45:28 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021125121935.0adac911.bain@tcsn.co.za>
+Message-ID: <01bd01c2946f$c8498fa0$6e69690a@rimas>
+References: <B5D7C6B6D020D511838A0060082D4CC90299BBF7@kheops.sigma.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,38 +19,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi there 
+Hi folks,
 
-I have a little problem I'm hoping somebody can help me with.
+I have small router on Linux box.
+It has two NICs and I use it to route real IP addresses (basicly I use it to
+replace CISCO router, it is cheaper :-) )
+I have a command echo 1 > /proc/sys/net/ipv4/ip_forward and everything works
+just fine.
 
-We are running a WAN here with firewall and tranparent proxy. I have some webservers on the inside of the firewall (yes I know .. this is not my choice... *sigh*)
-which I'm forwarding all data to ip's to those machines. 
+I'm wondering about iptables rules which I can use to protect my router from
+hackers.
+I want all IP/UDP/ICMP packets to go trought my router in both ways, just to
+protect my router.
+Behind the router I have Firewalls and they do a protection job for my www,
+mail and local network.
 
-The problem is:
+What you can recomend for me?
 
-With transparent proxy working the way it should, nobody on the internal network can see the internal websites.
-With transparent proxy off, all works but I have no way of seeing who browses where anor content control.
+Thank you
 
-here is firewall rules that pertain to setup.
+Remus
 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination         
-REDIRECT   tcp  --  10.0.0.0/8           0.0.0.0            tcp dpt:www redir ports 3128 
-REDIRECT   tcp  --  10.0.0.0/8           0.0.0.0            tcp dpt:3128 redir ports 3128 
-DNAT       tcp  --  anywhere             web1		    tcp dpt:www to:10.0.0.10:80 
-DNAT       tcp  --  anywhere             web1               tcp dpt:https to:10.0.0.10:443 
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination         
-SNAT       all  --  10.0.0.0/8          !10.2.0.0/16        to:liveip
-SNAT       all  --  192.168.1.0/24       anywhere           to:liveip
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-as off right now .. transparent proxy is not logging any internal traffic ... but I need to have tranparent proxy but still allow internal users to browse to web1
-
-any suggestions ? 
-
-Henti Smith
 
