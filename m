@@ -1,9 +1,10 @@
-From: "Mark Alzino" <tirixil@hotmail.com>
-Subject: DNS and iptables : is this rule bad ??
-Date: Fri, 28 May 2004 15:26:38 +0000
+From: "Crasher Guo" <gdz@sinfors.com.cn>
+Subject: how to patch netfilter to support h323.
+Date: Fri, 28 May 2004 16:16:57 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY16-F99Flatq6TnSL0003998f@hotmail.com>
+Message-ID: <200405280804.i4S84YEk025493@name.sinfors.com.cn>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,47 +15,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+Hi,all
 
-Here is my problem more simply explained ...
+My OS is Redhat 9.0 , kernel 2.4.20-8 , iptables: 1.2.9a
+I've download patch-o-matic-ng-20040302  from www.netfilter.org and patch the kernel source code as follow:
+./runme extra 
 
-An user (IP address : 10.0.0.1) has a DNS server IP address specified in hi=
-s=20
-configuration (we don't know the address, and maybe this address is invalid=
-=20
-so we want to change it with a iptables rules).
+==>select h323  patch and press "Y" , get there messge :" apply cleanly"
+then I use make menuconfig to reconfigure the kernel complie option, but I  can't find any option about H323 in "netfilter configure -->" .   why?
 
-His gateway is 10.0.0.254. The gateway has another interface at=20
-192.168.100.254 where a DNS server is launch (by named).
-At the gateway, a iptables rule send all his DNS packets at the DNS server =
+Could you help me ? 
 
-(192.168.100.254)
-The rule is :
-iptables -A PREROUTING -t nat -s 10.0.0.1 -p UDP --dport 53 -j DNAT=20
---to-destination 192.168.100.254
+------ which patch I've patched to the kernel -------------------
+This adds CONFIG_IP_NF_H323: H.323/netmeeting support module for
+netfilter
+connection tracking and NAT. H.323 uses/relies on the following data
+streams:
 
-** BUT ** this rule is not effective immediately, and take fews minutes=20
-before to be active !!!
-Same thing if you flush the nat table (iptables -F PREROUTING -t nat ) : th=
-e=20
-last DNS is active during some minutes (sometimes immediately but not=20
-systematically)...
+   Port         Description
+   389          Internet Locator Server (TCP)
+   522          User Location Server (TCP)
+   1503                 T.120 Protocol (TCP)
+   1720         H.323 (H.225 call setup, TCP)
+   1731         Audio call control (TCP)
+   Dynamic              H.245 call control (TCP)
+   Dynamic              RTCP/RTP streaming (UDP)
 
-To easely see that : just put an invalid DNS server in the configuration of=
-=20
-the client, and a real one at the gateway (192.168.100.254). You will see=20
-that rules are not immediately active !!!
+   The H.323 conntrack/NAT modules support the connection tracking/NATing of
+   the data streams requested on the dynamic ports. The helpers use the
+   search/replace hack from the ip_masq_h323.c module for the 2.2 kernel
+   series.
 
-Is someone know why ???
+   At the very minimum, H.323/netmeeting (video/audio) is functional by
+letting
+   trough the 1720 port and loading these H.323 module(s).
 
-Thanks.
--- Mark
+   The H.323 conntrack/NAT modules do not support
 
-_________________________________________________________________
-Bloquez les fen=EAtres pop-up, c'est gratuit ! http://toolbar.msn.fr
+   - H.245 tunnelling
+   - H.225 RAS (gatekeepers)
+-----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
+
+
+Thanks for your time.
+Thanks for your help.
+			
+Crasher Guo
+
+
 
 
