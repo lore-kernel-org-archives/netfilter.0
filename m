@@ -1,12 +1,12 @@
-From: "Robert Gil" <rgil@bodybuildingdiscount.com>
-Subject: Re:  mysql remote connections
-Date: Mon, 1 Mar 2004 15:42:58 -0500
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: Security question
+Date: Mon, 1 Mar 2004 16:24:14 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b001c3ffcd$c7ee7d20$3901a8c0@AFBWholesale.com>
-References: <009001c3ffc8$5eacc970$3901a8c0@AFBWholesale.com>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731018D5467@coxhpexg.coxhp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,92 +19,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-its compiled from source... seems to be listening correctly
 
-tcp        0      0 *:time                  *:*                     LISTEN
-79/inetd
-tcp        0      0 *:3306                  *:*                     LISTEN
-181/mysqld
-tcp        0      0 *:sunrpc                *:*                     LISTEN
-68/rpc.portmap
-tcp        0      0 *:auth                  *:*                     LISTEN
-79/inetd
-tcp        0      0 *:ssh                   *:*                     LISTEN
-82/sshd
+Anthony is correct.  Google it and you'll find numerous examples:
+
+http://www.google.com/search?hl=3Den&lr=3D&ie=3DUTF-8&oe=3DUTF-8&safe=3Do=
+ff&q=3Dforg
+e+MAC+address+nic
+
+Despite this fact, however, you don't seem to be using your imagination.
+I've always preferred it when security people were just a little more
+paranoid:
+
+Imagine a scenario where some form of unknown attack is used to kill
+your 'router' and turn one of your connected PC's into a 'router'
+instead.
+
+In that case, you would probably wish you had used scenario #2...  With
+#2 a dead router means no internet, and that might actually be a good
+thing - in an ostrich sort of way.
 
 
------ Original Message ----- 
-From: "Robert Gil" <rgil@bodybuildingdiscount.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, March 01, 2004 3:04 PM
-Subject: mysql remote connections
+Bob
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Sasa Stupar
+Sent: Monday, March 01, 2004 8:25 AM
+To: Netfilter-List
+Subject: Re: Security question
 
 
-> mysql port is 3306.... its currently running on the same box as the
-firewall
-> just for testing purposes... but i cant figure out why i cant connect
-> remotely.. im sure its just a careless mistake somewhere or a mixup.. if
-> somone can just take a quick peek i would appreciate it alot.
->
-> # Start With Everything Closed
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT ACCEPT
->
-> # Connection Tracking
-> #TCP
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
->
-> #ICMP
-> iptables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED,RELATED -j
-> ACCEPT
-> iptables -A INPUT -p icmp -m state --state ESTABLISHED,RELATED  -j ACCEPT
->
-> # Open Ports
->
-> iptables -A INPUT -j ACCEPT -p tcp --dport 80
-> iptables -A INPUT -j ACCEPT -p tcp --dport 21
-> iptables -A INPUT -j ACCEPT -p tcp --dport 110
-> iptables -A INPUT -j ACCEPT -p tcp --dport 25
-> iptables -A INPUT -j ACCEPT -p tcp --dport 22
-> iptables -A INPUT -j ACCEPT -p tcp --dport 3389
-> iptables -A INPUT -j ACCEPT -p tcp --dport 3306
-> iptables -A INPUT -j ACCEPT -p tcp --dport 2121
-> iptables -A INPUT -j ACCEPT -p tcp --dport 53
->
-> # Masquerading and NAT
-> iptables -t nat -A POSTROUTING -s 192.168.1.2 -j MASQUERADE
-> iptables -A FORWARD -j ACCEPT -i eth1 -s 192.168.1.2
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> # Terminal Services Forwarding
-> iptables -A FORWARD -j ACCEPT -p tcp --dport 3389
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 3389 -j DNAT --to
-> 192.168.1.2:3389
->
-> # MS BOX FTP Fowarding
-> iptables -A FORWARD -j ACCEPT -p tcp --dport 2121
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2121 -j DNAT --to
-> 192.168.1.2:2121
->
-> # Flood Protection
-> # SYN
-> iptables -A FORWARD -p tcp --syn -m limit --limit 1/s -j ACCEPT
->
-> # Port Scan
-> iptables -A FORWARD -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m
-limit --limit
-> 1/s -j ACCEPT
->
-> # Ping Of Death
-> iptables -A FORWARD -p icmp --icmp-type echo-request -m limit --limit
-1/s -j
-> ACCEPT
->
-> # Enable Forwarding
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->
->
+But with the MAC/IP filtering I can restrict access to the router. So=20
+anyone who is not in the MAC table for accept it will be refused.
+I don't think that it is possible to forge MAC address of nic, or am I=20
+wrong?
 
+Sasa
 
