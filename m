@@ -1,56 +1,69 @@
-From: Kishore Dharmavaram <kishored@servgate.com>
-Subject: RE: Memory leaks in ip_conntrack?
-Date: Tue, 11 Nov 2003 16:49:12 -0800
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B2061@skat.sky.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Pls help me    DHCP / MAC
+Date: Wed, 12 Nov 2003 09:32:24 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019CCA@hslex01.hslbz.local>
+References: <20031111165718.17211.qmail@web60205.mail.yahoo.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: 'Jozsef Kadlecsik' <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031111165718.17211.qmail@web60205.mail.yahoo.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Jozsef & All,
-It seems some patches were already applied on base 2.4.20 kernel netfilter
-sources that iam working with, is there a way to findout what patches were
-applied on netfilter code? and are some must-apply patches for 2.4.20?, if
-so can you please give me a list or pointout few?
-Thanks,
-Kishore
+> In my LAN i have prepaired 3 PCs.
+> 1. Configured the DHCP server and test the other clients for 
+> the ip assining , they connected well . 
+> 2.Now i need to allow DHCP faclility for a One PC and others 
+> should be DROP.So those machines NICs have MAC addresses . 
 
------Original Message-----
-From: Jozsef Kadlecsik [mailto:kadlec@blackhole.kfki.hu]
-Sent: Tuesday, November 11, 2003 3:35 PM
-To: Kishore Dharmavaram
-Cc: netfilter@lists.netfilter.org; 'netfilter-devel@lists.netfilter.org'
-Subject: RE: Memory leaks in ip_conntrack?
+Set default policy to DROP. Then you only have to worry about letting
+certain IP/MAC addresses through.
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+
+> 3.MAC address wise it can be DROP/ACCEPT the users. 
+
+Do you *know* the MAC address of all cable modems ? 
+If so, you can configure the dhcp server to assing an IP based on the
+MAC address of the cable modem and not assign an IP to any other cable
+modem plugged in. 
+Next you can put iptables rules in place to ACCEPT only traffic from IP
+addresses you assinged (using dhcp) and(/or) from MAC addresses of these
+cable modems.
+
+I never used the MAC match, but I think it should be something like :
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i <eth_in> -s <ip_from> -m mac --mac-source
+<xx:xx:xx:xx:xx:xx> -j ACCEPT
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i <eth_in> -s <ip_from> -m mac --mac-source
+<xx:xx:xx:xx:xx:xx> -j ACCEPT 
+
+Of course you also need rules to allow for dhcp IP assigning...
+
+> 4. finally when test the clients there must be only one 
+> users has to be connected to the DHCP server  and the others 
+> can't be have an ip .
+
+See 3.
+I think it's a good thing to know the MAC addresses because then no
+unauthorized cable modem can get a valid IP by dhcp, but it will require
+some work to update the configuration.
+I know of least one cable ISP that does (something like) this.
+But this is dhcp configuration, not an iptables thing.
 
 
-On Tue, 11 Nov 2003, Kishore Dharmavaram wrote:
+Gr,
+Rob
 
-> I verified & I find my 2.4.20 is already patched with UNCONFIRMED
-> connections fix: http://www.netfilter.org/security/2003-08-01-listadd.html
->
-> > Did you apply any patches from patch-o-matic? If yes, which one?
-
-There are other patches in p-o-m. Didn't you apply anything else?
-Say the nfnetlink/ctnetlink patch? It is known that there was a buggy
-version of that which screwed up the internal conntrack counter.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
 
