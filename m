@@ -1,12 +1,14 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: mangle tables.
-Date: Tue, 10 Sep 2002 15:04:26 +0200
+From: Fabrice MARIE <fabrice@celestix.com>
+Subject: Re: patch-o-matic question.
+Date: Tue, 10 Sep 2002 20:50:14 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D7DEDDA.2080404@fugmann.dhs.org>
-References: <FLEKIPPLAEDMJMOOBBDPCECJCOAA.stewart.thompson@shaw.ca>
+Message-ID: <200209102050.14948.fabrice@celestix.com>
+References: <A758C299015FD411887B0000E2131186C213E8@TRUVA>
+Reply-To: fabrice@celestix.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <A758C299015FD411887B0000E2131186C213E8@TRUVA>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +18,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: stewart.thompson@shaw.ca
-Cc: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-9?q?=DDhsan=20=20Turkmen?= <iturkmen@ifk.com.tr>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Thanks.
+On Tuesday 10 September 2002 18:52, =DDhsan Turkmen wrote:
+> When I run the following command from within the extracted folder of
+> path-o-matic,
+> ./runme pending KERNEL_DIR=3D/usr/src/linux-2.4
+> I get the error:
+> "ERROR: Invalid option KERNEL_DIR=3D/usr/src/linux-2.4"
+> What am I doing wrong?
+> Thanks..
 
-This makes alot of sence.
-To sum up, tables are traversed in the following mannor:
+Hello,
 
-             [Packet enters the machine]
-                          |
-                    mangle-prerouting
-                    /              \
-   <To the machine itself>  <To be forwarded> [Locally gen. packet]
-                   |                |                 |
-             mangle-input     mangle-forward    mangel-output
-                   |                |                 |
-             filter-input     filter-forward    filter-output
-                   |                \                 /
-       [next level of the OSI]       mangle-postrouting					                                    |
-                                 [packet leaves the machine]
+you should run
 
-Legend:
-[]: Event.
-<>: Case (if).
-| : Connector.
+# KERNEL_DIR=3D/usr/src/linux-2.4 ./runme pending
+or
+# export KERNEL_DIR=3D/usr/src/linux-2.4; ./runme pending
 
-(mangle tables intentionally left out)
-So there is no doubt that mangle-forward is traversed _before_ 
-filter-forward.
+Have a nice day,
 
-Thanks again for clarifying.
+Fabrice.
+--
+Fabrice MARIE
+Senior R&D Engineer
+Celestix Networks
+http://www.celestix.com/
 
-Regards
-Anders Fugmann
-
+"Silly hacker, root is for administrators"
+       -Unknown
 
