@@ -1,12 +1,17 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: capture arp in hook and queue to userspace
-Date: Wed, 25 Aug 2004 11:09:45 -0400
+From: Vincent Blondel <vincent.blondel@chello.be>
+Subject: Re: FTP Connection problems.
+Date: Wed, 25 Aug 2004 17:51:15 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62EABD@email1.mitretek.org>
+Message-ID: <1093449075.3120.77.camel@lbedlbxl.dev.xtra-net.org>
+References: <1093352834.1894.16.camel@lbedlbxl.dev.xtra-net.org>
+	<412B685E.2080000@pbl.ca>
+	<1093428637.1781.17.camel@lbedlbxl.dev.xtra-net.org>
+	<412C9E90.90902@pbl.ca>
+Reply-To: vincent.blondel@chello.be
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <412C9E90.90902@pbl.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,95 +22,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>, aksingh@hss.hns.com, magnus@comcon.se
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Doesn't etables handle ARP packets?
+On Wed, 2004-08-25 at 16:13, Aleksandar Milivojevic wrote:
+> Vincent Blondel wrote:
+> > Thanks a lot for all the details but I still get some problems. As I
+> > said it all the netfilter source code is compiled in a custom kernel
+> > without any modules. 
+> > 
+> > Concerning the little iptables script I have written, I updated it with
+> > your comments and now I get the next script 
+> 
+> [snip]
+> 
+> > if [ "$CONN_TRACK" = "1" ]; then
+> >         $fw -A INPUT -m state --state ESTABLISHED -j ACCEPT
+> >         $fw -A OUTPUT -m state --state ESTABLISHE -j ACCEPT
+> >         $fw -A FORWARD -m state --state ESTABLISHED -j ACCEPT
+> >         $fw -A INPUT -p icmp -m state --state RELATED -j ACCEPT
+> > fi
+> 
+> Add these too:
+> 
+> $fw -A OUTPUT -p icmp -m state --state RELATED -j ACCEPT
+> $fw -A FORWARD -p icmp -m state --state RELATED -j ACCEPT
+> 
+> > ... but the connection takes a long time to terminate. If I disable all
+> > the rules, ftp connection goes directly but with iptables enabled it
+> > takes such 8 seconds to accomplish the annonymomus connection ( with
+> > data port and passive models ).
+> > 
+> > What is this all about ???
+> 
+> You could use a bit of logging.  Add these as last rules (at the very 
+> end of your script):
+> 
+> iptables -A INPUT -j LOG --log-prefix "INPUT "
+> iptables -A OUTPUT -j LOG --log-prefix "OUTPUT "
+> iptables -A FORWARD -j LOG --log-prefix "FORWARD "
+> 
+> Logs will go wherever your kernel logs go.  Usually /var/log/messages.
+> 
+> Since these will be at the end of your rules, they will log all packets 
+> dropped by policy just before they are dropped.  My guess is that you 
+> will either find TCP SYN packets to port 113 (ident) or UDP packets to 
+> port 53 (DNS).
+> 
+> To silently disable ident (incoming and outgoing) on FTP server, you 
+> could do something like this (you can add line for FORWARDED packets, if 
+> you wish):
+> 
+> iptables -A INPUT -p tcp --sport 1024: --dport 113 \
+>     -j REJECT --reject-with tcp-reset
+> iptables -A OUTPUT -p tcp --sport 1024: --dport 113 \
+>     -j REJECT --reject-with tcp-reset
+> iptables -A OUTPUT -p tcp --sport 113 --dport 1024: \
+>     -m state --state RELATED -j ACCEPT
+> 
+> If you want your FTP server to be able to resolve names and reverse 
+> lookup IP addresses:
+> 
+> iptables -A OUTPUT -p udp --sport 1024: --dport 53 \
+>     -m state --state NEW -j ACCEPT
+> iptables -A OUTPUT -p tcp --sport 1024: --dport 53 \
+>     -m state --state NEW -j ACCEPT
+> 
+> (you can add IP address(es) of your DNS server(s) there)
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Hudson
-Delbert J Contr 61 CS/SCBN
-Sent: Wednesday, August 25, 2004 11:07 AM
-To: 'aksingh@hss.hns.com'; magnus@comcon.se
-Cc: netfilter@lists.netfilter.org
-Subject: RE: capture arp in hook and queue to userspace
+ok great ... It works now. I just added a rule 
 
-buy a sniffer or check out dug song's modules at monkey.org.
+iptables -A FORWARD -i eth1 -o eth0 \
+    -p tcp -s 192.168.125.1 -d 192.168.124.1 \
+    --sport $UNPRIVPORTS --dport 131 \
+    -j REJECT --reject-with tcp-reset
 
-v/r,
-~piranha
+Thanks a lot to all of you for helping me to solve this problem. I will
+now investigate on the net what is this IDENT protocol about and I can
+now go further with my iptables configuration.
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of
-aksingh@hss.hns.com
-Sent: Wednesday, August 25, 2004 3:16 AM
-To: magnus@comcon.se
-Cc: netfilter@lists.netfilter.org
-Subject: Re: capture arp in hook and queue to userspace
-
-
-
-
-
-
-ARP packets are not really IP packets, hence I dont think you can catch
-them using netfilter hooks as they sit in the IP layer.
-
-regards
-Amit
-
-
-
-
-"Magnus Westbergh" <magnus@comcon.se>@lists.netfilter.org on 08/25/2004
-02:54:30 PM
-
-Please respond to magnus@comcon.se
-
-Sent by:    netfilter-bounces@lists.netfilter.org
-
-
-To:    <netfilter@lists.netfilter.org>
-cc:
-
-Subject:    capture arp in hook and queue to userspace
-
-
-
-Hello,
-
-I intend to capture all incoming packets (IP and ARP) and queue them for
-userspace using the ip_queue module, and let my userspace application
-make
-all verdicts. I have written a module using netfilter, and successfully
-queued all IP-packets, but now I have no clue how to capture the ARP
-packets, using this hook...
-
-my_pre.hook        =3D my_in_hook;
-my_pre.hooknum     =3D NF_IP_PRE_ROUTING;
-my_pre.pf          =3D PF_INET;
-my_pre.priority    =3D NF_IP_PRI_FIRST;
-
-unsigned int my_in_hook( unsigned int hooknum,
-                         struct sk_buff **skb,
-                         const struct net_device *in,
-                         const struct net_device *out,
-                         int ( *okfn ) ( struct sk_buff *) )
-
-
-How does the ARP hook work? What do I have to change to capture all ARP
-packets? Please show me an example
-Thanks for helping me,
-
-Sincerely Magnus
-
-
-
-
-
-*****************    HSS-Unclassified    *************
-
+:)
+Vincent
 
 
