@@ -1,13 +1,13 @@
 From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: SSH Connections Lost After 1 minute idle
-Date: Wed, 14 Jul 2004 06:48:04 +0300
+Subject: Re: Wierd problem with irqs
+Date: Wed, 14 Jul 2004 06:57:49 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3063e504071320487c04cd2b@mail.gmail.com>
-References: <D5C9032B2B09C64EA2409D6214E91AC90511B9@asimail2.alphanumeric.com>
+Message-ID: <3063e5040713205720cd6fbf@mail.gmail.com>
+References: <017901c468e1$2c7aeb80$3b7819c4@PHAKE>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90511B9@asimail2.alphanumeric.com>
+In-Reply-To: <017901c468e1$2c7aeb80$3b7819c4@PHAKE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,63 +18,230 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: tanuki <phake@sadomain.co.za>
+Cc: netfilter@lists.netfilter.org
+
+I think it is hardware related(well, DOH), which is causing large
+packets dropping. You could try sending ping of different packets
+size, and see when they begin to get dropped
+
+
+----- Original Message -----
+From: tanuki <phake@sadomain.co.za>
+Date: Tue, 13 Jul 2004 15:56:19 +0200
+Subject: Wierd problem with irqs
 To: netfilter@lists.netfilter.org
 
-I had somehow a similar problem, but it didn't involved any tunnel,
-the problem were some ESTABLISHED connections which remained hanged in
-ip_conntrack for a long time (5 days is the default).
-So I tryed to decrease the default.
-I have these for sysctl:
-net/ipv4/tcp_keepalive_time=300
-this means the state of connection is rechecked after 300 seconds,
-this usually means that the TTL from ip_conntrack will go to maximum
-again (that 5 days thingy)
-I also changed this:
-net/ipv4/netfilter/ip_conntrack_tcp_timeout_established=400
-this is what before was 5 days
-You may want to check if somewhere between you and the other side has
-some bad configurations, maybe changing tcp_keep_alive_time to
-something much lower than 60, would help out (the kernel sends some
-sort of packets for checking) but try to tune these on both sides, a
-statefull firewall somewhere may forget the connections after 60
-seconds, maybe an low ip_conntrack_tcp_timeout_established
-I hope this may help you
 
-> -----Original Message-----
-> From: Real Cucumber [mailto:monkcucumber@yahoo.com]
-> Sent: Tuesday, July 13, 2004 12:51 PM
-> To: netfilter@lists.netfilter.org
-> Subject: SSH Connections Lost After 1 minute idle
-> 
-> I have a fedora firewall/router using iptables to
-> forward incoming SSH packets to an internal server and
-> it works great....however, only if the user does not
-> remain idle for 1 minute.  If they idle for 1 minute,
-> the connection "freezes" in the sense that it drops
-> the connection but its not a proper "connectoin
-> closed" from the server as if it is a timelimit, but
-> rather just a connectoin loss like you've unplugged
-> your cable in the middle of a connection.
-> 
-> If the user is connecting from within the network,
-> they can remain idle for an unlimited amount of time
-> without being disconnected.  It is only ones
-> connecting from outside hte network going through the
-> iptables firewall that have this idle problem.
-> 
-> I am only allowing TCP and UDP for SSH to be
-> forwarded.
-> 
-> Do I need any ICMP or any other special connection
-> timeout rules on the iptables side to fix this
-> problem?
-> 
-> Any help appreciated!
-> 
-> __________________________________
-> Do you Yahoo!?
-> New and Improved Yahoo! Mail - 100MB free storage!
-> http://promotions.yahoo.com/new_mail
-> 
->
+
+
+
+
+
+
+
+Hi all
+
+ 
+
+ 
+
+had an interresting problem the other day, just 
+thought i'd share it with you all and see if 
+
+any body else had a similar experience. 
+
+
+ 
+
+ 
+
+I set up a small nat/firewall box for a client of 
+ours. we had 5 interfaces and they were as follows 
+
+ 
+
+eth0   192.168.10.1 netmask 
+255.255.255.255 pointopoint 192.168.10.2   <--- adsl modem 
+ doing nat 
+
+eth1   192.168.0.1 netmask 
+255.255.255.0 
+
+eth2   192.168.1.1 netmask 
+255.255.255.0
+
+eth3   192.168.2.1 netmask 
+255.255.255.0
+
+eth4    192.168.3.1 netmask 
+255.255.255.255 pointopoint 192.168.3.2 <-- some upstairs router 
+
+
+ 
+
+and the routing table looked like you would expect 
+it to, with 
+
+ 
+
+route add default gw 192.168.10.1 dev eth0 
+
+
+ 
+
+also we had 
+
+ 
+
+echo "1" > /proc/sys/net/ipv4/ip_forward 
+
+
+ 
+
+for simplicity , iptables rules were as follows 
+
+
+ 
+
+iptables -t nat --append POSTROUTING -o eth0 --jump 
+MASQUERADE 
+
+ 
+
+so, now all traffic using 192.168.0.1 , 1.1, 2.1 
+and 3.1 as a gateway should be able to reach the 
+
+internet via the modem on 192.168.10.2 , right ? 
+
+
+ 
+
+well, all icmp worked, perfectly 
+
+ 
+
+but everything else , ie , udp, tcp didn't 
+
+
+ 
+
+say for example http : packets get sent to tcp 80, 
+tcp replies get recieved, but no data gets back to 
+
+the user on 192.168.whatever
+
+ 
+
+strange huh ? 
+
+ 
+
+so i thought my mtu was befuqed, so i do 
+
+
+ 
+
+iptables --append FORWARD --proto tcp --tcp-flags 
+SYN,RST SYN --jump TCPMSS --clamp-mss-to-pmtu 
+
+ 
+
+no luck though. 
+
+ 
+
+tried a plethora of other stuff too , but didn't 
+work, so i'll leave that there 
+
+ 
+
+obviously the nat works, becuase all my icmp's are 
+natted. 
+
+mmm
+
+ 
+
+so i go into the boxes bios set up and tell it to 
+assign irq's to all pci devices automatically 
+
+ 
+
+boot up into linux and do 
+
+ 
+
+ifconfig eth4 up 
+
+ 
+
+eth4: error fetching interface information: Device 
+not found
+
+
+eh ? wtf ? so i do 
+ifconfig eth0 up 
+
+ 
+
+and the device gets brought up 
+
+ 
+
+then i do ifconfig eth4 up 
+
+ 
+
+and it brings it up . Strange huh ? 
+
+ 
+
+so now i see that all my cards are swopped arround. 
+that which used to be eth0 is now eth4 and so 
+
+on and so on. 
+
+ 
+
+anyway, plug in the appropiate network cables to 
+the relevant nics and run the script 
+
+ 
+
+to a ping to google.com ... everything works fine. 
+
+
+right, so far so good. right back were i 
+started
+
+ 
+
+now, do a HTTP-GET http://www.google.com and guess what 
+
+
+i get a lovely html page. 
+
+ 
+
+strange that changing the device irg assignment in 
+the bios solved my problem ? 
+
+ 
+
+any ideas what could have caused this ? 
+
+
+ 
+
+thanks a lot for bearing with my idiotic ramblings 
+so far 
+
+ 
+
+----------------
+
+ 
+
+tanuki
 
