@@ -1,12 +1,14 @@
-From: "Storm D. J. Petersen" <stormp@telus.net>
-Subject: Re: Command not working  in latest version
-Date: Mon, 17 Feb 2003 17:46:29 -0800
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: can't patch with patch-o-matic
+Date: 18 Feb 2003 07:32:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LKEMIKEDGPBEAFDKINCGEEKFDGAA.stormp@telus.net>
-Reply-To: <stormp@telus.net>
+Message-ID: <1045546373.18829.47.camel@rayw.knowledgefactory.co.za>
+References: <5.2.0.9.2.20030217171848.01c2e5c0@172.26.0.8>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-8FQr6WzZk0feGq1WjrsC"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <5.2.0.9.2.20030217171848.01c2e5c0@172.26.0.8>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,184 +18,98 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter@Lists. Netfilter. Org" <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hi,  I believe that I am having the same problem too.  I have linux-2.4.20
-kernel and iptables-1.2.7a
-# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE   returns   iptables:
-Invalid argument.
-I also reviewed
-http://www.e-infomax.com/ipmasq/howto/c-html/ipmasq-compiling3.1.html  and
-am certain the kernel is configured correctly.  Does anyone have masquerade
-working in 2.4.20 kernel?
-Any help would be greatly appreciate!
-S.
 
-Message: 11
-From: "Paulo Jorge O. C. Matos" <pocm@mega.ist.utl.pt>
-To: Khanh Tran <khanh@slc.edu>,
- netfilter@lists.netfilter.org
-Subject: Re: Command not working  in latest version
-Date: Mon, 17 Feb 2003 23:13:37 +0000
+--=-8FQr6WzZk0feGq1WjrsC
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Unfortunately enabling Full NAT into the kernel didn't solve the
-problem. I don't know what else to do.
-Any ideas?
+You are probably missing the patch program.
 
-Best regards,
-Paulo
+Do rpm -qa | grep patch
 
-On Monday 17 February 2003 00:13, Khanh Tran wrote:
-> Well, Full NAT might take care of your "arguments" problem.  I don't
-> know exactly what it affects, but it's NAT and that's what you are
-> trying to do. Plus, the instructions say so!  What kernel are you
-> using?  What OS/distribution?
->
-> Khanh Tran
-> Network Operations
-> Sarah Lawrence College
->
->
-> -----Original Message-----
-> From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> Sent: Sunday, February 16, 2003 6:55 PM
-> To: Khanh Tran; netfilter@lists.netfilter.org
-> Subject: Re: Command not working in latest version
->
-> > You may not have all of the proper elements compiled into your
-> > kernel.
->
-> Try:
-> > http://www.e-infomax.com/ipmasq/howto/c-html/ipmasq-compiling3.1.ht
-> >ml
->
-> Hi Khanh,
->
-> I've compiled the kernel specifically like they said in your
-> reference except those new options of 2.4.20 but still I get 'Invalid
-> Arguments' from iptables 1.2.7a. What's Full NAT in kernel config, is
-> that useful for iptables?
->
-> I've run the line:
-> # iptables -v -t nat -A POSTROUTING -o eth1 -j SNAT --to
-> 217.129.146.56 SNAT all opt -- in * out eth1 0.0.0.0/0 -> 0.0.0.0/0
-> to:217.129.146.56 iptables: Invalid Argument
->
-> This is indeed strange. Do you have any idea of what could I do now?
->
-> Is there any other iptables command line with the same outcome?
->
-> Best regards,
->
-> Paulo
->
-> > Khanh Tran
-> > Network Operations
-> > Sarah Lawrence College
-> >
-> >
-> > -----Original Message-----
-> > From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> > Sent: Sunday, February 16, 2003 11:04 AM
-> > To: Khanh Tran; netfilter@lists.netfilter.org
-> > Subject: Re: Command not working in latest version
-> >
-> > > You should also make sure you are loading modules ip_tables and
-> >
-> > ip_conntrack
-> >
-> > > before you load your other modules.
-> >
-> > Iptables are built into the kernel, even after loading
-> > ipt_conntrack I receive invalid argument.
-> >
-> > I just do:
-> > iptables -t nat -F
-> > iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
-> >
-> > First line is ok, second returns invalid argument. Getting
-> > desperate. Any ideas?
-> >
-> > Best regards,
-> >
-> > Paulo
-> >
-> > > Khanh Tran
-> > > Network Operations
-> > > Sarah Lawrence College
-> > >
-> > >
-> > > -----Original Message-----
-> > > From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> > > Sent: Sunday, February 16, 2003 9:45 AM
-> > > To: Khanh Tran; netfilter@lists.netfilter.org
-> > > Subject: Re: Command not working in latest version
-> > >
-> > > > You'll now want to do:
-> > > >
-> > > > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $EXTIP
-> > > >
-> > > > where eth0 is the interface going out to the Internet and
-> > > > $EXTIP is
->
-> the
->
-> > > > public IP on that interface.
-> > >
-> > > Hi Khanh, strangely I still get Invalid Argument.
-> > > iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to
-> > > 217.129.146.56
-> > >
-> > > where eth1 is the interface that gives access to the internet
-> > > with IP 217.129.146.56 (given by DHCP server).
-> > >
-> > > Thx for your patience,
-> > >
-> > > Paulo
-> > >
-> > > > Khanh Tran
-> > > > Network Operations
-> > > > Sarah Lawrence College
-> > > >
-> > > >
-> > > > -----Original Message-----
-> > > > From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> > > > Sent: Sunday, February 16, 2003 9:00 AM
-> > > > To: netfilter@lists.netfilter.org
-> > > > Subject: Command not working in latest version
-> > > >
-> > > >
-> > > > Hi all,
-> > > >
-> > > > I've changed from my old distribution to a new one that comes
-> > > > with
-> > >
-> > > iptables
-> > >
-> > > > 1.2.7a.
-> > > > I have iptables in the kernel (2.4.20) and I've loaded the
-> > > > modules iptable_nat, ipt_REDIRECT and ipt_MASQUERADE.
-> > > > I had in my previous distributions the following lines:
-> > > > iptables -t nat -F
-> > > > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> > > >
-> > > > This would give total access from lan attached to eth0 to the
-> > > > internet through my computer. But now, line 1 executes ok, line
-> > > > 2 gives: iptables: Invalid Argument
-> > > >
-> > > > If I do :
-> > > > iptables -t nat -A POSTROUTING -o eth0
-> > > > everything runs ok but lan has still no access to the internet
-> > > > as
-> > >
-> > > expected.
-> > >
-> > > > What's happening, any ideas?
-> > > >
-> > > > Best regards,
-> > > >
-> > > > Paulo
+Ray
 
+On Mon, 2003-02-17 at 18:27, Luis Miguel Cruz Miranda wrote:
+> Hi all,
+>=20
+> I am using patch-o-matic to patch a 2.4.20 kernel but I am having some=20
+> problems here:
+>=20
+> For example:
+>=20
+> Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
+> Testing patch extra/tcp-window-tracking.patch...
+>     Placed new Makefile line
+> Failed to patch copy of /usr/src/linux
+> TEST FAILED: patch NOT applied.
+>=20
+> I want to use that patch but I don't know why I can't.
+> I have these patches applied:
+>=20
+> Already applied: submitted/01_2.4.19
+>                   submitted/02_2.4.20
+>                   submitted/ipt_multiport-invfix
+>                   submitted/ipt_ULOG-mac_len-fix
+>                   pending/01_ip_conntrack_proto_tcp-lockfix
+>                   pending/02_newnat-udp-helper
+>                   pending/03_REJECT-fwspotting-phrack60-fix
+>                   pending/04_ftp-conntrack-msg-fix
+>                   pending/05_ECN-tcpchecksum-littleendian-fix
+>                   base/fuzzy
+>                   base/iplimit
+>                   base/ipt_unclean-ubit
+>                   base/ipv4options
+>                   base/IPV4OPTSSTRIP
+>                   base/mport
+>                   base/NETLINK
+>                   base/NETMAP
+>                   base/nth
+>                   base/pool
+>                   base/psd
+>                   base/quota
+>                   base/random
+>                   base/realm
+>                   base/SAME
+>                   base/time
+>                   base/TTL
+>                   extra/condition
+>                   extra/CONNMARK
+>                   extra/h323-conntrack-nat
+>                   extra/ip_tables-proc
+>                   extra/ipt_TARPIT
+>                   extra/mms-conntrack-nat
+>                   extra/pptp-conntrack-nat
+>                   extra/recent
+>                   extra/ROUTE
+>                   extra/rsh
+>                   extra/string
+>                   extra/talk-conntrack-nat
+>                   extra/tftp-conntrack-nat
+>=20
+> What is wrong?
+>=20
+>=20
+> Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+> CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+>                                          |       C/A - Parcela 86-C
+> Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+> Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
+
+
+--=-8FQr6WzZk0feGq1WjrsC
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA+UcWFh1fuR/Bv+ygRAkLRAKC7RT0zk4XI1JM0UfQvVf+36Z8ZGQCgpEj2
+znT4wAwVZZMn8nK5zX5Wr8c=
+=gNUl
+-----END PGP SIGNATURE-----
+
+--=-8FQr6WzZk0feGq1WjrsC--
 
 
