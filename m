@@ -1,12 +1,12 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: RE: NAT issues on a VPN tunnel
-Date: Tue, 02 Nov 2004 19:27:13 -0500
-Message-ID: <1099441632.2022.35.camel@localhost>
-References: <CARBONeduV9t6Au4hiI00002261@carbon.netsvcs.com>
+Date: Tue, 02 Nov 2004 21:43:35 -0500
+Message-ID: <1099449815.3181.3.camel@hubcap.ljm.dom>
+References: <9AD7A9B0E0BFCF42A76E29CF9F5B4087B46615@carbon.netsvcs.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <CARBONeduV9t6Au4hiI00002261@carbon.netsvcs.com>
+In-Reply-To: <9AD7A9B0E0BFCF42A76E29CF9F5B4087B46615@carbon.netsvcs.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,151 +18,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Lyon <cslyon@netsvcs.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tue, 2004-11-02 at 15:05, Chris Lyon wrote:
-> > -----Original Message-----
-> > From: John A. Sullivan III [mailto:john.sullivan@nexusmgmt.com]
-> > Sent: Tuesday, November 02, 2004 10:50 AM
-> > To: Christopher Lyon
-> > Cc: Netfilter users list
-> > Subject: RE: NAT issues on a VPN tunnel
-> > 
-> > On Tue, 2004-11-02 at 12:02, Chris Lyon wrote:
-> > > > -----Original Message-----
-> > > > From: John A. Sullivan III [mailto:john.sullivan@nexusmgmt.com]
-> > > > Sent: Tuesday, November 02, 2004 8:09 AM
-> > > > To: Christopher Lyon
-> > > > Cc: Netfilter users list
-> > > > Subject: Re: NAT issues on a VPN tunnel
-> > > >
-> > > > On Tue, 2004-11-02 at 10:40, Chris Lyon wrote:
-> > > > > So, I am trying to use NAT to solve the problem below because of an
-> > IP
-> > > > > addressing conflict issue but I am not having much luck. Basically
-> > all
-> > > > of
-> > > > > the Site A needs to get to only a few devices at each site B&C so I
-> > am
-> > > > > trying to do PREROUTING NAT on the far end systems. I have the
-> > tunnels
-> > > > up
-> > > > > and I can see the traffic getting to the remote side on ipsec0 but I
-> > > > just
-> > > > > can't get it to NAT from the 1.1.1.1 to the real 10.10.1.1.
-> > > > >
-> > > > > Command that I think should work
-> > > > > iptables -t nat -A PREROUTING -i ipsec0 -d 1.1.1.1 -j DNAT --to
-> > > > 10.10.10.10
-> > > > > iptables -t nat -A POSTROUTING -o ipsec0 -s 10.10.10.10 -j SNAT --to
-> > > > 1.1.1.1
-> > > > >
-> > > > >
-> > > > > Any ideas? Layout and configs are below.
-> > > > >
-> > > > >
-> > > > > Site A eth0 - 192.168.254.0/24--Internet--Site B eth0 - 10.10.0.0/16
-> > > > > 					 \ NAT FROM 1.1.1.1
-> 10.10.1.1
-> > > > > example
-> > > > > 					  \--Internet--Site C eth0 -
-> > > > > 10.10.0.0/16
-> > > > > 						NAT FROM 1.1.2.1
-> 10.10.1.1
-> > > > > example
-> > > > >
-> > > > >
-> > > > > So here is the openswan configurations for your reference:
-> > > > >
-> > > > > Site A
-> > > > >
-> > > > > conn site_a-to-site_b
-> > > > >         #---------(local side is left side)
-> > > > >         left=<public site a>
-> > > > >         leftsubnet=192.168.254.0/24
-> > > > >         leftnexthop=%defaultroute
-> > > > >         #---------(remote side is right side)
-> > > > >         right=<public site b>
-> > > > >         rightsubnet=1.1.0.0/16
-> > > > >         #---------Auto Key Stuff
-> > > > >         pfs=yes
-> > > > >         auth=esp
-> > > > >         authby=secret
-> > > > >         esp=3des-md5-96
-> > > > >         keylife=8h
-> > > > >         keyingtries=0
-> > > > >
-> > > > >
-> > > > > Site B
-> > > > >
-> > > > > conn site_b-to-site_a
-> > > > >         #---------(local side is left side)
-> > > > >         left=<public site b>
-> > > > >         leftsubnet=1.1.0.0/16
-> > > > >         leftnexthop=%defaultroute
-> > > > >         #---------(remote side is right side)
-> > > > >         right=<public site a>
-> > > > >         rightsubnet=192.168.254.0/24
-> > > > >         #---------Auto Key Stuff
-> > > > >         pfs=yes
-> > > > >         auth=esp
-> > > > >         authby=secret
-> > > > >         esp=3des-md5-96
-> > > > >         keylife=8h
-> > > > >         keyingtries=0
-> > > > This looks terribly familiar.  Is this an old post come back to life
-> > or
-> > > > was it on one of the *swan lists? I thought we left off with some
-> > > > discussion of where to do the NAT and that the basic set up described
-> > > > should work but were unsure about how you knew the packets were not
-> > > > being NATd correctly.  I don't recall a reply after that.  Take care -
-> > > > John
-> > >
-> > > Hello John,
-> > >
-> > > It was actually on the openswan list and since this is more of an
-> > iptables,
-> > > nat question I moved the post to here.
-> > >
-> > > Yes, I did reply and I am still trying to get this working. I have tried
-> > a
-> > > bunch of combinations and have yet to find the answer.
-> > >
-> > <snip>
-> > Ah, that's where I saw it.  I must have missed the response.  You said,
-> > "I can see the traffic getting to the remote side on ipsec0 but I
-> > > just
-> > > > can't get it to NAT from the 1.1.1.1 to the real 10.10.1.1."
-> > 
-> > How are you seeing this? If you place a log rule, do you see the packet
-> > in the nat table PREROUTING chain on ipsec0? Just for kicks, what kernel
-> > version are you running? Take care - John
-> 
-> I am using tethereal to see the ssh and ping requests come across the
-> tunnel. 
-> 
-> Kernel - 2.4.26 or 2.4.26-gentoo-r9
-<snip>
-So what do you see in tethereal? I would suggest that you place a log
-rule with a match identical to your NAT rule in front of the rule which
-you expect will perform the NAT and see if the packet ever makes it to
-that NAT rule.  If you do not see the packet matched by the log rule,
-either the match is wrong or your have an upstream problem.  You could
-then put a more general match log rule in place to see what the packets
-which you are receiving do look like.  In other words, see if you can
-narrow down exactly where the process is not behaving as expected rather
-than just looking at the packets going in and out of the interface. 
-Hope this helps - John  
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+On Tue, 2004-11-02 at 19:35, Christopher Lyon wrote:
+> I believe that would cause a problem on the VPN tunnel as the endpoints
+> won't match. This would need to be done on the far end (site b). 
+
+believe what you want--it works for me.
+
+-j
+
+--
+"Eww, Daddy, this tastes like Gramma!"
+	--The Simpsons
 
 
