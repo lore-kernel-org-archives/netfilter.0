@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Passive FTP through IPTables DNAT
-Date: Thu, 6 Mar 2003 22:12:03 +0100
+From: "Patrick Ahler" <patrick@vikus.com>
+Subject: Thanks
+Date: Thu, 6 Mar 2003 17:08:24 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008d01c2e425$0938de80$0401000a@sterenborg.info>
-References: <4D613EBFB75BD6118A5B00508BEEC62C0111CB53@JESS>
+Message-ID: <ABEKJILKOKKGGDJKHKDFEEBKCAAA.patrick@vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4D613EBFB75BD6118A5B00508BEEC62C0111CB53@JESS>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +16,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-> Subject: Passive FTP through IPTables DNAT
-> 
-> 
-> Does anyone have a working script for this? 
-> I'm attempting to hide a FTP server behind a Linux IPTables 
-> firewall using dnat but having problems 
+Just want to say thanks to all the helpful people on this mail list, I've
+only been on it a couple days and already learned a great deal about
+netfilter. I'm a Jr. CSA major and just got my first job as a sys admin.
+Would have taken me forever to learn how to build this firewall with you,
+thanks alot.
 
-Do you load the ip_conntrack_ftp and ip_nat_ftp modules ?
-
-insmod ip_nat_ftp
-insmod ip_conntrack_ftp
-
-If so, and it doesn't work, what are your current rules ?
-
-
-Rob
+Patrick
 
 
