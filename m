@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables rules do not work
-Date: Mon, 5 Apr 2004 18:51:52 +0100
+Subject: Re: Problem with Port forwarding
+Date: Mon, 5 Apr 2004 18:54:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404051851.52998.Antony@Soft-Solutions.co.uk>
-References: <B1A93958FC04D311B0240008C7F9DD2416227399@nalgexc1.nalg>
+Message-ID: <200404051854.13708.Antony@Soft-Solutions.co.uk>
+References: <146373237921.20040405211401@internetplustravel.ru>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <B1A93958FC04D311B0240008C7F9DD2416227399@nalgexc1.nalg>
+In-Reply-To: <146373237921.20040405211401@internetplustravel.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,58 +21,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 05 April 2004 4:51 pm, Montreuil, Scott NALG-CA wrote:
+On Monday 05 April 2004 6:14 pm, Oleg Savostyanov wrote:
 
-> Hello,
+> I get lost, trying to do a very simple thing...
+> My mail server is inside my lan with IP 10.10.10.252
+> I need to open port 25 of my mailserver  to the universe
+> I made following
+> 1)I permit in forward chain packets with dest. port 25
+> and
+> 2)do DNAT in PREROUTING chain
 >
-> I have the exact same rules here for the exact same machine.
+> when I try to telnet to $EXTIP on 25 from outside
+> telnet: Unable to connect to remote host: Connection refused
 
-Please can you show us the full ruleset with the interfaces listed as well 
-(ie: post "iptables -L -nvx" instead of just "iptables -L")?
-
-> I can connect internal to this machine on the ports specified but the rules
-> are not working for the IMAP server, they work no problem for the SMTP
-> server.
-
-Do you see the packet counters from "iptables -L -nvx" incrementing when you 
-try to connect, indicating that packets are matching the rules?
-
-> ACCEPT     tcp  --  anywhere             10.10.10.2         tcp dpt:smtp
-> DNAT       tcp  --  anywhere             static-89-102.dsl.tht.nettcp
-> dpt:smtp to:10.10.10.2:25
-> DNAT       udp  --  anywhere             static-89-103.dsl.tht.netudp
-> dpt:smtp to:10.10.10.2:25
-> DNAT       tcp  --  anywhere             static-89-103.dsl.tht.nettcp
-> dpt:smtp to:10.10.10.2:25
-> SNAT       tcp  --  10.10.10.0/24        10.10.10.2         tcp dpt:smtp
-> to:10.10.10.1
->
-> ACCEPT     tcp  --  anywhere             10.10.10.2         tcp dpt:imap
-> DNAT       tcp  --  anywhere             static-89-102.dsl.tht.nettcp
-> dpt:imap to:10.10.10.2:143
-> DNAT       tcp  --  anywhere             static-89-103.dsl.tht.nettcp
-> dpt:imap to:10.10.10.2:143
-> DNAT       udp  --  anywhere             static-89-103.dsl.tht.netudp
-> dpt:imap to:10.10.10.2:143
-> SNAT       tcp  --  10.10.10.0/24        10.10.10.2         tcp dpt:imap
-> to:10.10.10.1
->
->
-> Any dieas why I can't connet to IMAP?
-
-Is your IMAP server configured to accept connections from the address/es 
-you're trying to connect from?
-
-What do your system or mail server logs say when a connection is attempted?
+Your FORWARD rule needs to allow the packets to the real IP address 
+(10.10.10.252) because the packets have already been translated by the 
+PREROUTING rule by the time they get to FORWARD.
 
 Regards,
 
 Antony.
 
 -- 
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
+I want to build a machine that will be proud of me.
+
+ - Danny Hillis, creator of The Connection Machine
 
                                                      Please reply to the list;
                                                            please don't CC me.
