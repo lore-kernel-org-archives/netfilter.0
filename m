@@ -1,12 +1,12 @@
-From: "Marcelo Moreira" <marcelom@qualitau.com>
-Subject: Re: SSH and NAT
-Date: Mon, 24 Mar 2003 17:08:19 -0800
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipv6 and state matching
+Date: Tue, 25 Mar 2003 09:33:26 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <037001c2f26b$05ef5a70$a828a8c0@qualitau.com>
-References: <20030324182922.GF8391@netinertia.co.uk> <NABBJOOEOFODEALNMJAJCEFEHOAA.B-Morgan@concentric.net> <20030324203629.GH8391@netinertia.co.uk> <200303242314.13073.kimj@dawn.dk> <20030324224026.GN8391@netinertia.co.uk>
+Message-ID: <Pine.LNX.4.33.0303250926560.7010-100000@blackhole.kfki.hu>
+References: <1048536519.1040.5.camel@aurora.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1048536519.1040.5.camel@aurora.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,39 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: James O'Gorman <james@netinertia.co.uk>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Trever L. Adams" <tadams-lists@myrealbox.com>
 Cc: netfilter@lists.netfilter.org
 
-> > The IP packet only contain some primitive information - if you wish to
-deal
-> > with names, then you have to use DNS. You can't store the name
-information in
-> > the packet header.
->
-> Not quite sure what you mean by this? I've set up the DNS so that box1
-> and box2 both point to an IP (albeit the same one as I only have the
-> one) - an A record on the DNS server.
+On 24 Mar 2003, Trever L. Adams wrote:
 
-Ok. Let me see if I can explain this a little bit better.
-An IP packet has only the numeric address information on it.
-So essentialy, a ssh packet to box1 and another to box2 are
-the same (except for time, sequence, flags, etc).
-The DNS information is not on the IP header at all. It is just
-another protocol that is used to map names to numeric addresses.
+> I am unable to find any questions about this.  I really love state
+> matching in ipv4.  I find that w/ RedHat 8.0 and Phoebe (8.1.99 or
+> something like that), that I cannot do this.  This does indeed seem to
+> be an accurate state.
 
-> > I can recommend that you read about IP headers if you wish to know more
-about
-> > the construction of these magic little packets :-)
->
-> I understand bits of it, but obviously not enough. :)
-> Guess I should get reading!
+Brad Chapman had an attempt to port IPv4 conntrack to IPv6 but his code
+was never accepted.
 
-Yes, I guess you should also. In fact, get the definitive IP guide:
-TCP/IP Illustrated, Vols I II and III. Author is Stevens.
-Have fun on your reading...
+Last year I worked on the prototype of an unified conntrack code, but it
+was never released. Unfortunately just conntrack doesn't seem to be enough
+- one is tempted to implement NAPT etc. as well.
 
-Marcelo.
+> Are there plans on doing state support?  Is it all that much more
+> difficult?
 
+A straight porting is not so difficult, but that direction cannot be
+followed because it would result in a severe code-duplication.
+Unification takes a lot of time.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
