@@ -1,14 +1,12 @@
-From: "Stephen J. McCracken" <sjmccracky@myrealbox.com>
-Subject: RE: Blocking Kazaa
-Date: 29 Aug 2003 16:12:19 -0500
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: IPTables State Tracking
+Date: Fri, 29 Aug 2003 20:33:39 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062191539.1672.9.camel@localhost.localdomain>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15C17F@wardrive.citadelcomputer.com.au>
-Reply-To: sjmccracky@myrealbox.com
+Message-ID: <3F4FF0E3.2070709@chrisbrenton.org>
+References: <0C7C6E1720E8D74FB52EBEF93649730A0116BF07@2k099exm01.compucom.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15C17F@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: Jean-Rene Cormier <jean-rene.cormier@cipanb.ca>, Netfilter List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Josh.Berry@compucom.com
+Cc: netfilter@lists.netfilter.org
 
-A link found on another list describing how Kazaa tries to bypass
-filters...
+Greetings Josh,
 
-http://lists.q-linux.com/pipermail/ph-isp/2003-May/003234.html
+Josh.Berry@compucom.com wrote:
+>
+> Does IPTables track virtual state of ICMP and UDP packets? 
+
+That it does.
+
+> I know that
+> UDP and ICMP are not stateful connections, but does IPTables perform
+> pseudo-stateful tracking of these connections such as some other
+> firewalls that basically timeout UDP/ICMP connections after a specific
+> time?
+
+ICMP gets a bit more complex than that. You can do this for things like 
+Echo-requests, time request, subnet mask requests, etc. as the source 
+and destination remains constant. You can also predict the transport and 
+type/codes used in the response. This is referred to as traffic that is 
+part of a previously "established" session.
+
+When you get into ICMP type 3's and 11's however (host unreachables, TTL 
+exceeded, etc.) you get a bit of a problem as the system transmitting 
+these packets is usually _not_ the host you sent the original packet to. 
+Usually its some router or firewall along the path of the connection. 
+Also, the packet type to some extent is unexpected (you transmitted TCP 
+or UDP and now you are getting back an ICMP packet from some 
+unidentified host).
+
+Both of these packet types store 28 bytes in the payload which 
+identifies the original packet that generated the error (like the TCP or 
+UDP example above). A good firewall (like iptables) can use this payload 
+information to determine if the packet should be allowed through or not.
+
+So these ICMP error packets are not part of the original session, but 
+they were generated because of it. For this reason it is referred to as 
+"related" traffic.
+
+So the good news is yes, iptables will easily handle established and 
+related traffic. The better news is that you have the flexibility to 
+handle them independently and do what ever you want with either.
+
+Note that when you are comparing firewalls you really have to look at 
+the vendor implementation. For example there are a number of firewalls 
+on the market that claim to be based on stateful inspection, and for 
+some protocols they actually are, but for type 3's and 11's they fall 
+back on rudimentary packet filtering (let them all in including the 
+bogus ones, or none at all).
+
+HTH,
+C
 
 
-On Sat, 2003-08-23 at 20:47, George Vieira wrote:
-> well if it help, use squid to block anything to the kazaa servers (whatever they are..)since kazaa tries to use port 80, a transparent proxy would be good in this case..
-> 
-> Thanks,
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
-> 
-> Citadel Computer Systems Pty Ltd
-> http://www.citadelcomputer.com.au
-> 
-> Phone   : +61 2 9955 2644
-> HelpDesk: +61 2 9955 2698
->  
-> 
-> -----Original Message-----
-> From: Jean-Rene Cormier [mailto:jean-rene.cormier@cipanb.ca]
-> Sent: Friday, August 22, 2003 9:50 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Blocking Kazaa
-> 
-> 
-> Anybody know a way of blocking Kazaa? I've tried the string matching way
-> but it doesn't seem to work. I tried logging all connections from  my
-> windows desktop so I could see to which port it connects and it connects
-> to so many different port that you basically need to block ports 1000 to
-> 4000 but after that it connects to port 80 which obviously I can't
-> block. I installed ethereal on the windows desktop to check which string
-> I could filter but couldn't find anything useful.
-> 
-> Anybody have an idea what can be done? I'm thinking another option would
-> be to block the IP of the servers but there seem to be quite a list...
-> that's if it doesn't just try some random IPs...
-> 
-> Jean-Rene Cormier
-> 
-> 
-> 
+
 
 
