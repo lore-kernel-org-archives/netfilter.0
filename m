@@ -1,12 +1,12 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: IP Personality 20020427 breaks ip_conntrack_ftp
-Date: Fri, 14 Jun 2002 12:56:59 +0200 (CEST)
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: iptables, stateful checking using tcp sequence numbers
+Date: Fri, 14 Jun 2002 13:15:06 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.21.0206141230290.9436-100000@dns.toxicfilms.tv>
-References: <08690CFFD361A946AE65793A726D276902DEAE@smirnoff.netbeat-security.ch>
+Message-ID: <Pine.LNX.4.33.0206141310510.17402-100000@blackhole.kfki.hu>
+References: <67024BB66045D511A9380000F6B2EF85F20C1F@RBGMSG02>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <08690CFFD361A946AE65793A726D276902DEAE@smirnoff.netbeat-security.ch>
+In-Reply-To: <67024BB66045D511A9380000F6B2EF85F20C1F@RBGMSG02>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,31 +18,30 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Pascal C. Kocher" <pascal.kocher@netbeat.biz>
-Cc: netfilter@lists.samba.org, ippersonality-devel@lists.sourceforge.net
+To: "Williamson, Fionn" <FWilliamson@fnb.co.za>
+Cc: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
-> Was this already a known issue?
-A similar one.
-Yes, about a year ago I wrote about this patch breaking
-tcp-window-tracking.
+On Tue, 7 May 2002, Williamson, Fionn wrote:
 
-Look here:
-http://lists.samba.org/pipermail/netfilter/2001-October/015930.html
+> 1. if the sequence numbers are actually used in iptables to MAINTAIN the
+> state of a connection, or if it is merely used to ESTABLISH connections,
+> and thereafter ignored.
 
-Jozsef answered it.
+Sequence numbers are checked when the tcp-window-tracking patch is applied
+from patch-o-matic. Otherwise sequence numbers are *used* only when the
+mangling of those is required (ftp/irc/etc NAT helpers).
 
-I think that what you want to do with IP Personality can be done with
-the gr security patch (www.grsecurity.net), when you patch the kernel
-2.4.18,or 2.4.18-pre1 (the latter don't patch yet) you will have
-grsecurity options concerning various methods to do such thing, like
-randomizing ttl, IP IDs, etc. But only without fine tuning that IP
-personality can have with its configuration files.
+> 2. point me towards documentation confirming or denying this.
 
-I tried that, and i do not remember having trouble with ip_conntrack_ftp
-nor ip_nat_ftp.
+The documentation states nowhere that sequence number would be used to
+check wether the packets belongs to a TCP session.
 
-> Pascal.
-Maciej
-
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+WWW-Home: http://www.kfki.hu/~kadlec
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
