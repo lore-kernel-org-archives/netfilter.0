@@ -1,13 +1,12 @@
-From: Rodrigo Otavio <rodrigo@prcarvalho.com.br>
-Subject: Re: Multiple -d flags
-Date: 13 Jan 2003 09:32:49 -0200
+From: =?ks_c_5601-1987?B?sei1tbHV?= <naeilgi@lineinfo.co.kr>
+Subject: iptables problem
+Date: Wed, 27 Nov 2002 12:26:31 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042457571.1139.2.camel@rodrigo.prc>
-References: <3E20826E.50308@mattiamartinello.com>
+Message-ID: <008b01c295c4$c82546d0$6f00a8c0@ugvcwygb92wo27g>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0088_01C29610.37941550"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E20826E.50308@mattiamartinello.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +16,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hellow Mattia,
+This is a multi-part message in MIME format.
 
-correct sintaxe is --dport, not -dport :)
+------=_NextPart_000_0088_01C29610.37941550
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 
-test :
+aGkuDQpJIGFtIHVuc2tpbGxlZCBlbmdsaXNoLiBqdXN0IHVuZGVyc3RhbmQgbXkgbWFpbC4NCg0K
+bXkgYm94IDoga2VybmVsIDIuNC4xOCwgaXB0YWJsZXMgMS4yLjUNCg0KaSBhbSBzZXJjaGluZyBp
+cF9tYXNxX2gzMjMgZm9yIGtlcm5lbCAyLjQuMTggYnV0IGl0IGlzIHRvbyBoYXJkIHRvIGZpbmQu
+DQoNCmJlY2F1c2UsIGluIG15IE5BVCwgSSB3YW50IHRvIHVzZSBWb0lQKFZvaWNlIG92ZXIgSVAp
+Lg0KDQpIb3cgdG8gZ2V0IGgzMjMgbW9kdWxlIG9yIHNvdXJjZSBmb3IgaXB0YWJsZXMgMS4yLjUg
+b3IgbGF0ZXI/DQoNCg0KDQoNCg==
 
-iptables -A FORWARD -s 0/0 -d 213.21.136.8 --dport 80 -j ACCEPT 
+------=_NextPart_000_0088_01C29610.37941550
+Content-Type: text/html;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWtzX2NfNTYwMS0xOTg3Ij4NCjxNRVRBIGNvbnRlbnQ9Ik1T
+SFRNTCA1LjUwLjQ5MjIuOTAwIiBuYW1lPUdFTkVSQVRPUj4NCjxTVFlMRT48L1NUWUxFPg0KPC9I
+RUFEPg0KPEJPRFkgYmdDb2xvcj0jZmZmZmZmPg0KPERJVj48Rk9OVCBzaXplPTI+aGkuPC9GT05U
+PjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+SSBhbSB1bnNraWxsZWQgZW5nbGlzaC4ganVzdCB1
+bmRlcnN0YW5kIG15IG1haWwuPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05U
+PiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+bXkmbmJzcDtib3ggOiA8L0ZPTlQ+PEZP
+TlQgc2l6ZT0yPmtlcm5lbCAyLjQuMTgsIGlwdGFibGVzIA0KMS4yLjU8L0ZPTlQ+PC9ESVY+DQo8
+RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5p
+IGFtIHNlcmNoaW5nIGlwX21hc3FfaDMyMyBmb3Iga2VybmVsIDIuNC4xOCBidXQgaXQgaXMgdG9v
+IA0KaGFyZCB0byBmaW5kLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4m
+bmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPmJlY2F1c2UsIGluIG15IE5BVCwgSSB3YW50
+IHRvIHVzZSBWb0lQKFZvaWNlIG92ZXIgDQpJUCkuPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBz
+aXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+SG93IHRvIGdldCBo
+MzIzIG1vZHVsZSBvciBzb3VyY2UgZm9yIGlwdGFibGVzIDEuMi41IG9yIA0KbGF0ZXI/PC9GT05U
+PjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9O
+VCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZu
+YnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48
+Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPjwvQk9EWT48L0hUTUw+DQo=
 
-bye
-
-surf3r 
-
-
-On Sat, 2003-01-11 at 18:45, Mattia Martinello wrote:
-> Hi
-> 
-> I wish to create a rule that allow a packet to a specified IP on a 
-> specified port.
-> 
-> The rule:
-> 
-> iptables -A FORWARD -s 0.0.0.0/0 -d 213.21.136.8/255.255.255.255 -dport 
-> 80 -j ACCEPT
-> 
-> shows me the following error:
-> 
-> iptables v1.2.5: multiple -d flags not allowed
-> Try `iptables -h' or 'iptables --help' for more information.
-> 
-> How I can solve my problem?
-> 
-> Thank you very much
-> Bye
-> Mattia
-> 
-> 
-> 
+------=_NextPart_000_0088_01C29610.37941550--
 
 
 
