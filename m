@@ -1,13 +1,10 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: how to stop broadcasts using iptables
-Date: Tue, 27 Apr 2004 09:56:51 -0500
+From: Garison Piatt <todo@garisonpiatt.com>
+Subject: Well, it works, but...
+Date: Tue, 27 Apr 2004 10:24:32 -1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <408E74B3.6000906@pbl.ca>
-References: <20040427131900.JCWU23570.viefep19-int.chello.at@localhost>
+Message-ID: <6.0.0.22.0.20040427101125.03638320@mail.garisonpiatt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040427131900.JCWU23570.viefep19-int.chello.at@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,20 +15,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-sschlesi@chello.at wrote:
-> my policies are set to -P FORWARD ACCEPT because its just an simple ethernet router, w/o nat and stuff.
-> so i thought iptables'll also forward broadcasts from one net to the other.
+I've got the following working -- which is to say, it no longer crashes the 
+system.  I can get in through ssh, web documents work fine, but FTP is 
+still s-l-o-w.   I generally have time for a nice lunch before it comes 
+back with a directory listing.  Any idea what's going on?  Obviously 
+there's something I haven't done right, but I don't know what.   Don't be 
+afraid to ask if I've done something that "every intelligent person" knows 
+needs to be done.  When it comes to stuff like this, I'm really a moron.
 
-No.  Netfilter is not going to forward them all-by-itself.  The packet 
-will end up in FORWARD chain only if the kernel decides it needs to 
-route it from one interface to another.  So, if your kernel is not 
-routing broadcast packets (it shouldn't by default), you will not see 
-them in FORWARD chain.
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Thanks,
+-garison
+
+#!/bin/sh
+#
+# IP Firewall script for iptables
+echo "Define IP Firewall"
+# Command definitions
+echo " setup..."
+IPT="/sbin/iptables"
+IPT="/sbin/iptables"
+IPTR="/sbin/iptables-restore"
+IPTS="/sbin/iptables-save"
+INSMOD="/sbin/modprobe"
+DEPMOD="/sbin/depmod"
+# Pre-load modules
+echo " load modules..."
+$DEPMOD -a
+$INSMOD ip_tables
+$INSMOD ip_conntrack
+$INSMOD ip_conntrack_ftp
+$INSMOD iptable_filter
+$INSMOD ipt_state
+# Set default drop policy on all tables
+echo " clear policies..."
+$IPT -P INPUT DROP
+$IPT -P OUTPUT DROP
+$IPT -P FORWARD DROP
+echo " define tables..."
+# Allow replies out for anything which comes in
+$IPT -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# Allow the machine to do its own DNS lookups
+$IPT -A OUTPUT -p tcp --dport 53 -j ACCEPT
+$IPT -A OUTPUT -p udp --dport 53 -j ACCEPT
+# Allow replies in for anything which goes out (eg DNS)
+$IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# Allow the world to access by HTTP
+$IPT -A INPUT -p tcp --dport 80 -j ACCEPT
+# Allow the world to access by FTP
+$IPT -A INPUT -p tcp --dport 20 -j ACCEPT
+$IPT -A INPUT -p tcp --dport 21 -j ACCEPT
+# Allow the world to access by SSH
+$IPT -A INPUT -p tcp --dport 22 -j ACCEPT
+echo "Done."
+
 
