@@ -1,7 +1,7 @@
-From: "Kevin Hilscher" <KHilscher@Hatsize.com>
-Subject: Duplicate IP scenario. Doable with iptables?
-Date: Tue, 23 Nov 2004 12:44:07 -0700
-Message-ID: <s1a330bd.064@mail2.hatsize.com>
+From: Ugo Bellavance <ugob@camo-route.com>
+Subject: DNAT/NAPT
+Date: Tue, 23 Nov 2004 14:43:56 -0500
+Message-ID: <co03tv$7f0$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,34 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have a somewhat odd scenario that requires the same pools of 192.168
-IPs to be bound to eth1 and eth2 on the same machine. I need to NAT
-another pool of 10.x.x.x IPs bound to eth0 to these two pools of 192.168
-IPs. The setup is as follows:
- 
-eth0:10.115.0.1/16 -> eth1:192.168.0.1/24
-eth0:10.115.0.2/16 -> eth1:192.168.0.2/24
-eth0:10.115.0.3/16 -> eth1:192.168.0.3/24
-eth0:10.115.0.4/16 -> eth1:192.168.0.4/24
-eth0:10.115.0.5/16 -> eth1:192.168.0.5/24
-eth0:10.115.0.6/16 -> eth1:192.168.0.6/24
-   
-eth0:10.116.0.1/16 -> eth2:192.168.0.1/24
-eth0:10.116.0.2/16 -> eth2:192.168.0.2/24
-eth0:10.116.0.3/16 -> eth2:192.168.0.3/24
-eth0:10.116.0.4/16 -> eth2:192.168.0.4/24
-eth0:10.116.0.5/16 -> eth2:192.168.0.5/24
-eth0:10.116.0.6/16 -> eth2:192.168.0.6/24
- 
-Suse 8.1 has no problem letting me bind the same IPs to eth1 and eth2,
-since eth1 and eth2 are not on the same physical network. However, I am
-having problems writing my NAT rules for this scenario.
- 
-Is this scenario doable under iptables?
- 
-TIA,
- 
-Kevin
+Hi,
+
+   I think that it is possible to achieve some kind of load-balancing 
+between two servers using iptables NAPT (Network and port translation, 
+which is usually called port forwarding).
+
+I want to run 2 web servers and use my firewall to do some 
+load-balancing between them, but I was wondering if it only forwarded 
+the packets on some round-robin way, even if one host is down.  To 
+summarize, I want to know if I can do some automatic failover with iptables.
+
+If you need more info, let me know
+
+Thanks
+
+Ugo
+
+
