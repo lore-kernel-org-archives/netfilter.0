@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Sasa Stupar <sasa@stupar.homelinux.net>
 Subject: Re: Transparent proxy question
-Date: Mon, 15 Mar 2004 11:02:42 +0000
+Date: Mon, 15 Mar 2004 12:07:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403151102.42684.Antony@Soft-Solutions.co.uk>
-References: <40556EE6.6040809@stupar.homelinux.net> <200403151036.00538.Antony@Soft-Solutions.co.uk> <40558A9E.4040202@stupar.homelinux.net>
+Message-ID: <40558E8D.2010303@stupar.homelinux.net>
+References: <40556EE6.6040809@stupar.homelinux.net> <200403151036.00538.Antony@Soft-Solutions.co.uk> <405589BC.70703@stupar.homelinux.net> <200403151057.13169.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40558A9E.4040202@stupar.homelinux.net>
+In-Reply-To: <200403151057.13169.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter-List <netfilter@lists.netfilter.org>
 
-On Monday 15 March 2004 10:51 am, Sasa Stupar wrote:
+Antony Stone pravi:
 
-> PS: sorry Antony for sending directly to you but this list doesn't
-> automatically put the list address when replying. Maybe something for
-> moderators to configure.
+> On Monday 15 March 2004 10:47 am, Sasa Stupar wrote:
+> 
+> 
+>>Antony Stone pravi:
+>>
+>>
+>>>>$IPT -t nat -A POSTROUTING -o $INIF -s $INNET -d 192.168.10.10 -j SNAT
+>>>>--to 192.168.10.111
+>>>>
+>>>>Is there something to add or change here?
+>>>
+>>>Yes.   Remove the POSTROUTING rule, because it is specifically changing
+>>>the source address of all packets sent to the proxy server to be that of
+>>>the firewall.
+>>
+>>Not good. Now my transparent proxy doesn't work anymore. :(
+>>What's the catch?
+> 
+> 
+> 1. Now that it isn't working, do you get any errors in your proxy log file, or 
+> does it think there are no requests?
+> 2. What source IPs does your proxy server allow access for?
+> 3. Does the proxy server know how to route back to the clients?
+> 4. Do you have a suitable ESTABLISHED,RELATED rule on your firewall to allow 
+> back the replies?   (I expect so, but you didn't post your full ruleset 
+> earlier, so I can't be sure...)
+> 5. Where are the clients on the network in relation to the firewall and the 
+> proxy server (please don't tell me they're on the same subnet as the 
+> proxy...?)
+> 
+> Regards,
+> 
+> Antony.
+> 
 
-http://www.unicom.com/pw/reply-to-harmful.html
+1. I've got nothing in the squid log but in the browser I get Timeout 
+error, so looks like squid doesn't get any requests
+2. It allows for LAN IP's
+3. Yep
+4. Yep $IPT -A STATE -m state --state ESTABLISHED,RELATED -j ACCEPT
+5. Some of them are on the same subnet and some not.
 
- :)
-
-Antony.
-
--- 
-Christmas was just an opportunity to upgrade to kernel 2.6 while no-one was 
-around to notice the downtime.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Regards,
+Sasa
 
