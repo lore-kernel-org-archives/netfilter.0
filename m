@@ -1,12 +1,13 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: dns question
-Date: Thu, 18 Nov 2004 09:50:50 -0400
-Message-ID: <005101c4cd75$9d193880$49caa8c0@caris.priv>
-References: <000d01c4cd6a$a1b8b240$49caa8c0@caris.priv>
-	<1100785489.3848.24.camel@hubcap.ljm.dom>
+From: Mattia Martinello <liste@mattiamartinello.com>
+Subject: Re: Transparent gateway
+Date: Thu, 18 Nov 2004 14:56:29 +0100
+Message-ID: <419CAA0D.8090400@mattiamartinello.com>
+References: <419C7FE2.8060002@mattiamartinello.com>
+	<1100785310.3848.20.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1100785310.3848.20.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,61 +18,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Jason Opperisano <opie@817west.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-No .. but I do have the following at the end of my named.conf file .... the
-db.cache file has all of the root servers.   I just was not sure if it would
-cause problems just removing that section as it was in all of the examples I
-read.
+> why?
 
-zone "." {
-       type hint;
-       file "/etc/named/db.cache";
-       };
+Beacuse I want to call from my LAN the server using its public IP address.
+
+> because you told it to...
+
+Can't I solve this problem?
+
+> don't NAT traffic from your LAN to your DMZ.  if clients inside the LAN
+> are requesting the public IP of the DMZ server and not it's actual DMZ
+> IP, you'll need something along the lines of:
+
+See above... I always want to call the server using its public IP address.
+
+> other than that--you haven't provided near enough information to answer
+> your questions (hint:  post your rules [1])
+
+This is my simple script:
 
 
------ Original Message ----- 
-From: "Jason Opperisano" <opie@817west.com>
-To: "Peter Marshall" <peter.marshall@caris.com>
-Cc: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Thursday, November 18, 2004 9:44 AM
-Subject: Re: dns question
+#!/bin/sh
+
+modprobe iptable_nat
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
+
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+iptables -t nat -F POSTROUTING
+iptables -t nat -F PREROUTING
+iptables -t nat -F OUTPUT
+
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -t nat -P POSTROUTING ACCEPT
+iptables -t nat -P PREROUTING ACCEPT
+iptables -t nat -P OUTPUT ACCEPT
+
+iptables -t nat -A POSTROUTING -s 192.168.1.0/255.255.255.0 -o ppp0 -j 
+MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.1.0/255.255.255.0 -o eth0 -j 
+MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.1.0/255.255.255.0 -o eth2 -j 
+MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.2.0/255.255.255.0 -o ppp0 -j 
+MASQUERADE
+
+iptables -t nat -A PREROUTING -s 0.0.0.0/0 -d $EXTERNAL_IP -j DNAT --to 
+192.168.2.99
 
 
-On Thu, 2004-11-18 at 07:32, Peter Marshall wrote:
-> I am sure this is a stupid question ...but I will ask anyway.  Should I be
-> allowing my dns server (in my dmz) connect to root servers ?   At the
-moment
-> it is being bloced, and the only thing it can connect to is my ISP's DNS
-> server.  Basically, my dns server serves requests for servers in my dmz
-for
-> my internal users.  If it can't find the hit, it passs the request on to
-my
-> ISP's ... I am trying to clean up my firewall logs, and noticed that the
-DNS
-> server is always trying to query root servers.  I was just not sure if
-this
-> should be allowed.  If it is not, (and I suspect there is no need to) Is
-> there a way to make my DNS server stop quering the root servers ?
->
-> PS  DNS is a rh9 box running bind.
 
-if your bind configuration specifies:
+So all trafic to the external server IP seems to come from 
+192.168.2.254. How I can avoid this?
 
-        forwarders {
-                x.x.x.x;
-                x.x.x.x;
-                // 24.25.4.107;
-                // 24.25.4.108;
-                4.2.2.2;
-                4.2.2.1;
-                4.2.2.3;
-        };
---
-"My cat's breath smells like cat food."
---The Simpsons
-
+Thank you very much!
+Bye
+Mattia.
 
 
