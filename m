@@ -1,10 +1,8 @@
-From: "David Busby" <busby@pnts.com>
-Subject: Re: Newbie question about iptables an gateway boxes
-Date: Fri, 1 Aug 2003 16:50:56 -0700
+From: Bill Chappell <bill.chappell@critical.com>
+Subject: [Fwd: Newbie question about iptables an gateway boxes]
+Date: Fri, 01 Aug 2003 21:11:23 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <029401c35887$c06e28e0$1100000a@busbydev>
-References: <3F2AE3B8.1090008@bigpond.net.au>
-Reply-To: "David Busby" <busby@pnts.com>
+Message-ID: <3F2B0FBB.3A2295A7@critical.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,172 +16,69 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Paul Baxter <ppabaxte@bigpond.net.au>, netfilter@lists.netfilter.org
+To: nflist <netfilter@lists.netfilter.org>
 
-Do you have squid running?
+ 
+Paul Baxter wrote:
 
------ Original Message ----- 
-From: "Paul Baxter" <ppabaxte@bigpond.net.au>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, August 01, 2003 15:03
-Subject: Newbie question about iptables an gateway boxes
-
-
-> Hi I have a small net at home with linux box as gateway hopefully. I can 
-> ping the net from my windows box and get email...,but web pages don't 
-> open, the DNS numbers are correct in /etc/resolv.conf and it will 
+> Hi I have a small net at home with linux box as gateway hopefully. I
+> can
+> ping the net from my windows box and get email...,but web pages
+> don't
+> open, the DNS numbers are correct in /etc/resolv.conf and it will
 > resolve when I  "ping  -c 5 www.atomicmpc.com.au ".
-> I am thinking it is todo with my iptables script...here it is;   Thanks 
+> I am thinking it is todo with my iptables script...here it is;
+> Thanks
 > for all help Paul
-> 
-> #!/bin/sh
-> #
-> # Atomic IPTables firewall script v1.0
-> #
-> # Simple but effective firewall for use
-> # in home/small office installations.
-> #
-> # Ashton Mills
-> # Written for the Atomic Uber Linux box guide,
-> # Issue 21, Oct 2002.
-> #
-> # Props to Con Tassios and Technion for their sample scripts.
-> 
-> # Environment variables, change these values accordingly
-> 
->     EXT_IF="ppp0"
->     INT_IF="eth0"
->     INT_NET="192.168.1.0/24"
-> 
->     ANY="0.0.0.0/0"
-> 
->     IPTABLES="/sbin/iptables"
->     MODPROBE="/sbin/modprobe"
-> 
-> #
-> # You shouldn't need to touch anything below here
-> #
-> 
-> # Load appropriate iptables modules, others will be loaded dynamically 
-> on demand
-> 
->     $MODPROBE ip_tables
->     $MODPROBE iptable_filter
->     $MODPROBE ip_nat_ftp
->     $MODPROBE ip_conntrack
->     $MODPROBE ip_conntrack_ftp
-> 
+
+
+I see one thing you should change and a possible problem.
+
+
 > # Set proc values for TCP/IP. In order:
 > #
 > # Disable IP spoofing attacks
-> # Ignore broadcast pings
-> # Block source routing
-> # Kill redirects
-> # Set acceptable local port range
-> # Allow dynamic IP addresses
-> # Enable forwarding (gateway)
-> 
 >     echo "2" > /proc/sys/net/ipv4/conf/all/rp_filter
->     echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
->     echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
->     echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects
->     echo "32768 61000" > /proc/sys/net/ipv4/ip_local_port_range
->     echo "1" > /proc/sys/net/ipv4/ip_dynaddr
->     echo "1" > /proc/sys/net/ipv4/ip_forward
-> 
-> # Flush everything
-> 
->     $IPTABLES -F INPUT
->     $IPTABLES -F OUTPUT
->     $IPTABLES -F FORWARD
->     $IPTABLES -t nat -F
->    
-> #
-> ## --- DEFAULT POLICY --- ##
-> #
-> 
-> # Drop everything on INPUT and FORWARD chains, accept OUTPUT
-> 
->     $IPTABLES -P INPUT DROP
->     $IPTABLES -P FORWARD DROP
->     $IPTABLES -P OUTPUT ACCEPT
-> 
-> #
-> ## --- INPUT CHAIN --- ##
-> #
-> 
-> # Allow Telstra hearbeat -- BPA users uncomment this
-> 
-> #    $IPTABLES -A INPUT -p udp --sport 5050 -j ACCEPT
-> #    $IPTABLES -A INPUT -p udp --sport 5051 -j ACCEPT
-> 
-> # Allow bootp port -- Optus users need this apparently
->    
->     $IPTABLES -A INPUT -p udp -d 255.255.255.255 --dport 68 -j ACCEPT
-> 
-> # Accept all connections on local and internal interfaces
-> 
->     $IPTABLES -A INPUT -i lo -j ACCEPT
->     $IPTABLES -A INPUT -i $INT_IF -j ACCEPT
-> 
-> # Stateful inspection -- Allow packets in from connections already 
-> established
-> 
->     $IPTABLES -A INPUT -i $EXT_IF -m state --state ESTABLISHED,RELATED 
-> -j ACCEPT
-> 
-> # Drop packets from invalid sources (reserved networks and localhost)
-> 
->     $IPTABLES -A INPUT -i $EXT_IF -s 10.0.0.0/8 -j DROP
->     $IPTABLES -A INPUT -i $EXT_IF -s 172.16.0.0/12 -j DROP
->     $IPTABLES -A INPUT -i $EXT_IF -s 192.168.0.0/16 -j DROP
->     $IPTABLES -A INPUT -i $EXT_IF -s 169.254.0.0/16 -j DROP
->     $IPTABLES -A INPUT -d 127.0.0.0/8 -j DROP
->    
-> # Don't log igmp, ident, web or ssl. More noise we don't need to log.
-> 
->     $IPTABLES -A INPUT -p igmp -j DROP
->     $IPTABLES -A INPUT -p tcp --dport 113 -j DROP
->     $IPTABLES -A INPUT -p tcp --dport 80 -j DROP
->     $IPTABLES -A INPUT -p tcp --dport 443 -j DROP
-> 
-> # Log everything else
-> 
->     $IPTABLES -A INPUT -i $EXT_IF -j LOG --log-prefix "|iptables -- "
-> 
-> #
-> ## --- FORWARD CHAIN --- ##
-> #
-> 
-> # Stateful inspection -- Allow packets in from connections already 
-> established
-> 
->     $IPTABLES -A FORWARD -i $EXT_IF -o $INT_IF -s $ANY -d $INT_NET -m 
-> state --state ESTABLISHED,RELATED -j ACCEPT
-> 
-> # Allow all traffic out
-> 
->     $IPTABLES -A FORWARD -i $INT_IF -d $ANY -j ACCEPT
-> 
-> #
-> ## --- OUTPUT CHAIN --- ##
-> #
-> 
-> # Follows policy
-> 
-> #
-> ## --- NAT --- ##
-> #
-> 
-> # Enable masquerade
-> 
->     $IPTABLES -A POSTROUTING -t nat -o $EXT_IF -j MASQUERADE
-> 
-> #
+
+I would change the above line to echo "1": I found
+a thread in lists.debian.org that says that "2" is not
+recognized in the 2.4 kernel,
+so as long as we are looking at things.
+
+
 > ## -- Transparent proxy to Squid --- ##
 > #
-> 
->     $IPTABLES -t nat -A PREROUTING -i $INT_IF -p tcp --dport 80 -j 
+>
+>     $IPTABLES -t nat -A PREROUTING -i $INT_IF -p tcp --dport 80 -j
 > REDIRECT --to-port 3128
-> 
+
+I looked up linux+Squid on Google, as I have not used Squid yet in my
+work, and found the following page that tells how to edit squid.conf for
+RedHat:
+ 
+http://www.doc.eng.cmu.ac.th/ldp/solrhe/Securing-Optimizing-Linux-RH-Edition-v1.3/chap28sec231.html
+ 
+It talks about setting Squid to listen on ports 81 and 80.
+
+More to the point here is that if Squid is not listening on port 3128,
+either not configured to do so or not running/listening, then
+your requests for web pages are just going into the bit bucket (what I
+once knew as data heaven, which shows my age), and you
+won't get web pages.
+email works because it uses port 25, so is not getting REDIRECTed,
+so is getting through.
+
+One way to check on your traffic is to run tcpdump, as in
+"tcpdump -n -i eth0" (quotes only for emphasis, don't type them)
+and see what is traversing your interfaces.
+
+
+Hope this helps.
+
+
+--
+William Chappell,     Software Engineer,     Critical Technologies, Inc.
+Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica, NY
+13501
+315-793-0248  x148  < bill.chappell@critical.com >  www.critical.com
 
