@@ -1,9 +1,9 @@
 From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: opening connection for Tomcat
-Date: Fri, 9 Apr 2004 09:23:49 +0200
+Subject: Re: [Q] Some newbie questions.....
+Date: Fri, 9 Apr 2004 09:26:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002c01c41e03$9a4736b0$1202a8c0@admin>
-References: <40756C19.3010606@tin.it> <1081446600.2453.63.camel@katala.sterenborg.info> <4075B24D.1020601@tin.it> <200404082253.44301.Antony@Soft-Solutions.co.uk> <407642A3.1040700@tin.it>
+Message-ID: <003301c41e04$0aa9d020$1202a8c0@admin>
+References: <052501c41deb$9c6dd420$3228a8c0@homer>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,23 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> >>Ok, I've fixed the problem: it seems that the address 0.0.0.0 is no
-good.
-> >
-> >
-> > You are certainly very unlikely to receive packets from that address, as
-it
-> > does not exist.
+> I have the following setup: CAPS = Device / Machine
 >
-> Well, I'm not a firewall guru, but I think that 0.0.0.0 address is often
-> used to indicate "every address", isn't it?
+> - ROUTER: WAN Address: xxxxxxxxx LAN Address: 192.168.40.1
+> - IPTABLES: 1 LAN Interface 192.168.40.5 (Gateway: 192.168.40.1)
+> - PROXY: 1 LAN Interface 192.168.40.10 (Gateway: 192.168.40.5)
 
-Neither am I ;o). I overlooked that one too.
+These only have 1 interface each ?
+Are you connecting all the machines (clients too) to a hub or switch ?
 
-0.0.0.0 = 0.0.0.0/32. 0.0.0.0 as a host does not exist.
-What you meant is 0.0.0.0/0, which is the same as not specifying it.
+> I have a number of other machines also on the 192.168.40/24 network who
+all
+> have their GW set to 192.168.40.5. What I want NETFILTER to do is the
+> following:
+>
+> - Have a transparent proxy such that any port 80 connections from
+> these machines get processed by PROXY on port 3128
+
+If iptables is not doing NAT, then what is it for with 1 NIC ?
+You could as well set the default gateway of the workstations to
+192.168.40.1 and configure the webbrowsers to use the proxy at
+192.168.40.10. So you can skip the iptables box.
+
+Anyway, not sure if it will work but you can try this :
+
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED \
+  -j ACCEPT
+iptables -A FORWARD -s 192.168.40.0/24 -d 192.168.40.10 -p tcp \
+  --dport 3128 -j ACCEPT
+iptables -t nat -A PREROUTING -s 192.168.40.0/24 -p tcp \
+  --dport 80 -j DNAT --to-destination 192.168.40.10:3128
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+> - Allow all established connections from these machines to be allowed
+> out via 192.168.40.1 otherwise disallowed
+> - IPTABLES to do no NAT as that is already being done by ROUTER
+
+Don't use any SNAT/MASQUERADE rules. Then it won't NAT.
 
 
 Gr,
