@@ -1,8 +1,8 @@
 From: "Didier Hung Wan Luk" <DidierH@frci.net>
 Subject: RE: Iptables --owner-uid
-Date: Mon, 16 Sep 2002 10:08:57 +0400
+Date: Mon, 16 Sep 2002 11:12:35 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <39778BFB9C25BA429794B15B50AEC781045426@server-dcms>
+Message-ID: <39778BFB9C25BA429794B15B50AEC78104542D@server-dcms>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,6 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+I think that it will be easier if I create a logon script for each user =
+which will then create the appropriate iptables rule set for that user =
+and deletes them after logging off.
+
+What do you think? Is it doable?
+
+Didier Hung Wan Luk
+FRCI, Sibotie House
+L'Anse Courtois
+Pailles
+Tel: 230-2869636
+Fax: 230-2869629
+
+
+-----Original Message-----
+From: Didier Hung Wan Luk=20
+Sent: Monday, September 16, 2002 10:09 AM
+To: Netfilter Mailing List
+Subject: RE: Iptables --owner-uid
 
 
 
@@ -91,5 +111,6 @@ How I want a drink, alcoholic of course, after the heavy chapters
 involving quantum mechanics.
 
  - 3.14159265358979
+
 
 
