@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: dnat with mac instead of ip address?
-Date: Tue, 13 Jul 2004 12:00:27 +0100
+Date: Tue, 13 Jul 2004 13:40:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407131200.03000.Antony@Soft-Solutions.co.uk>
+Message-ID: <1089718849.2100.1.camel@anduril.intranet.cartel-securite.net>
 References: <OF10BF823B.F4DC31CA-ONC1256ED0.0034E497-C1256ED0.0034FAB7@promon.cz>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+	 <200407131200.03000.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OF10BF823B.F4DC31CA-ONC1256ED0.0034E497-C1256ED0.0034FAB7@promon.cz>
+In-Reply-To: <200407131200.03000.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +18,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Tuesday 13 July 2004 10:38 am, a.ledvinka@promon.cz wrote:
+Le mar 13/07/2004 =E0 13:00, Antony Stone a =E9crit :
+> Change the destination MAC address on a packet, without changing the IP=
+=20
+> address?
 
-> has anyone seen it yet and where?
+OP has to see ebtables :
 
-What are you trying to do?
+	http://ebtables.sourceforge.net/
 
-Change the destination MAC address on a packet, without changing the IP 
-address?
+Ebtables can perform SNAT and DNAT regarding MAC addresses, but as far
+as I could see, you can provide a solution to all examples without this.
+In fact, MAC DNAT could be seen as a "simple" form of ARP proxy.
 
-Netfilter can't do this sort of thing for you - either you need to put some 
-static entries in your ARP table, or you need to configure the required MAC 
-address on the destination machine.
-
-I'm puzzled as to why you think you want to do this, though - what's the 
-application?
-
-Regards,
-
-Antony.
-
--- 
-Normal people think "If it ain't broke, don't fix it".
-Engineers think "If it ain't broke, it doesn't have enough features yet".
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
