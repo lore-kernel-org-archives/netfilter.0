@@ -1,14 +1,13 @@
-From: Frank Smith <fsmith@hoovers.com>
-Subject: Re: Need help have some questions...
-Date: Mon, 18 Aug 2003 16:14:39 -0500
+From: "Len L." <len@euler.com>
+Subject: Messages to console
+Date: Mon, 18 Aug 2003 17:29:13 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <70530000.1061241278@hoovers-59.hoovers.com>
-References: <20030818201333.57194.qmail@web40202.mail.yahoo.com>
+Message-ID: <12CC60849165134FB7DF8570B621F4D558B079@mailxserver.euler.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C365D8.270560A0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030818201333.57194.qmail@web40202.mail.yahoo.com>
-Content-Disposition: inline
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,63 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: SBlaze <dagent.geo@yahoo.com>, nf <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
---On Monday, August 18, 2003 13:13:33 -0700 SBlaze <dagent.geo@yahoo.com> wrote:
+This is a multi-part message in MIME format.
 
-> To Ralf, the netfilter team, and the whole of the OS community
-> 
-> How am I supposed to proxy apache? Why should I have to? Is it not a firewalls
-> job to protect a system(and LAN behind it)? This is a very valid form of
-> protection I'm asking for here.
-> 
-> A more detailed explanation of what I need is this and I know I'm not alone in
-> this as I have been corresponding with people who want the very same thing(cc
-> if ya our there lemme hear ya..post up with me here.)
-> 
-> Anyone who runs apache and logs(which is EVERYONE who runs apache unless they
-> are brain dead or don't care about security) is constantly BOMBARDED DAILY with
-> CODE/RED and NIMDA(and I'm sure other types of invalid requests they would like
-> to protect against).
+------_=_NextPart_001_01C365D8.270560A0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-'Bombarded' is a relative term.  On a busy site they aren't even noticable
-unless you're looking for them.
+SGV5IGd1eXMsDQogDQpOb3QgYSBraWxsZXIsIGJ1dCBJIGdldCBhbGwgdGhlIGlwdGFibGUgbG9n
+IG1lc3NhZ2VzIHRvIC9kZXYvY29uc29sZS4gIEkgY2FuIG5vdCBmaW5kIHdoZXJlIHRvIGNvbnRy
+b2wgdGhpcy4gIEkgY2hlY2tlZCAvZXRjL3N5c2xvZy5jb25mLCBidXQga2VybmFsIG1lc3NhZ2Vz
+IHdhcyB0dXJuZWQgb2ZmIChpbiBmYWN0IGlmIEkgdHVybiBrZXJuYWwgbG9nZ2luZyBvbiBJIGdl
+dCBkdXBsaWNhdGUgbWVzc2FnZXMgdG8gdGhlIGNvbnNvbGUpLiAgSSBhbHNvIGRpZCBtYW4gb24g
+aXB0YWJsZXMsIGJ1dCBJIGRvIG5vdCBzZWUgYW55IHJlZmVyZW5jZSB0byBsb2dnaW5nIHRvIC9k
+ZXYvY29uc29sZSANCiANCkNhbiBhbnlvbmUgcG9pbnQgbWUgaW4gdGhlIHJpZ2h0IGRpcmVjdGlv
+bj8NCg==
 
-> Knowing this... and knowing that the discard service is a very nice and clean
-> way to sort of send things like this to the great packet /dev/null , I do not
-> think it is too much to ask that iptables provide me a way to keep those
-> invalid requests AWAY from my web server. I should be able to route packets to
-> the discard service without having to use the NAT table(although if that was
-> even an option I would use it.) All my services run on ONE machine NAT should
-> not be nessecery.
-> 
->   If this can not be done I would love for someone to give me a half technical
-> half lamen's terms explanation. I honestly don't think I'm asking so much of
-> the  iptables firewall that I should have to go proxying things and
-> circumventing things here and there.
+------_=_NextPart_001_01C365D8.270560A0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 
-You might want to take a look at http://www.securityfocus.com/infocus/1553
-It's about IDS signatures, but it shows the complexity of the problem of
-string-matching URLs due to path obuscation and character encoding, and
-doesn't even mention that the URL could possibly be spread over fragmented
-packets.
-   Even with plain URL's, string matching takes time and CPU, increasing
-the latency through your firewall.  You could probably do what you want
-by shunting your port 80 packets to userspace and filtering it there.
-   A proxy really is the best tool for the job, it already has everything
-you need and is  well-optimized for the task.
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj48SFRNTD48SEVBRD48TUVUQSBIVFRQLUVRVUlWPSJDb250ZW50LVR5cGUiIENPTlRFTlQ9
+InRleHQvaHRtbDsgY2hhcnNldD11dGYtOCI+PC9IRUFEPjxCT0RZPjxESVY+SGV5IGd1eXMsPC9E
+SVY+CjxESVY+Jm5ic3A7PC9ESVY+CjxESVY+Tm90IGEga2lsbGVyLCBidXQgSSBnZXQgYWxsIHRo
+ZSBpcHRhYmxlIGxvZyBtZXNzYWdlcyB0byAvZGV2L2NvbnNvbGUuJm5ic3A7IApJIGNhbiBub3Qg
+ZmluZCB3aGVyZSB0byBjb250cm9sIHRoaXMuJm5ic3A7IEkgY2hlY2tlZCAvZXRjL3N5c2xvZy5j
+b25mLCBidXQgCmtlcm5hbCBtZXNzYWdlcyB3YXMgdHVybmVkIG9mZiAoaW4gZmFjdCBpZiBJIHR1
+cm4ga2VybmFsIGxvZ2dpbmcgb24gSSBnZXQgCmR1cGxpY2F0ZSBtZXNzYWdlcyB0byB0aGUgY29u
+c29sZSkuJm5ic3A7IEkgYWxzbyBkaWQgbWFuIG9uIGlwdGFibGVzLCBidXQgSSBkbyAKbm90IHNl
+ZSBhbnkgcmVmZXJlbmNlIHRvIGxvZ2dpbmcgdG8gL2Rldi9jb25zb2xlJm5ic3A7PC9ESVY+CjxE
+SVY+Jm5ic3A7PC9ESVY+CjxESVY+Q2FuIGFueW9uZSBwb2ludCBtZSBpbiB0aGUgcmlnaHQgZGly
+ZWN0aW9uPzwvRElWPjwvQk9EWT48L0hUTUw+
 
-Frank
-
-> 
-> Much Respect to the netfilter team and the OS Community
-> SBlaze
-> 
-
--- 
-Frank Smith                                      fsmith@hoovers.com
-Systems Administrator                           Voice: 512-374-4673
-Hoover's Online                                   Fax: 512-374-4501
-
+------_=_NextPart_001_01C365D8.270560A0--
 
