@@ -1,12 +1,12 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: return
-Date: Fri, 4 Jun 2004 09:49:16 -0400
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: return
+Date: Fri, 4 Jun 2004 11:02:02 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5D3C2276FD64424297729EB733ED1F760639A8FC@email1.mitretek.org>
+Message-ID: <015201c44a3c$82f712e0$49caa8c0@caris.priv>
+References: <5D3C2276FD64424297729EB733ED1F760639A8FC@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,7 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
+To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>, netfilter <netfilter@lists.netfilter.org>
+
+I don't mean to sound rude .. but your response ( as far as I can tell ..
+and I apologize if I am missing something) has nothing to do with my
+question .. at all ...
+
+Peter
+
+----- Original Message ----- 
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
+<netfilter@lists.netfilter.org>
+Sent: Friday, June 04, 2004 10:49 AM
+Subject: RE: return
+
 
 I do after reading this message:
 
@@ -40,7 +54,7 @@ I've been using this approach:
 ...and, on the high-traffic site involved, have had occasions when the
 machine became unreachable, the server load too high.
 
-Someone suggested ipt_recent could handle this matter more accurately.=20
+Someone suggested ipt_recent could handle this matter more accurately.
 I found a rule on the web that someone was using, and tried that a few
 minutes ago, with this approach:
 
@@ -65,7 +79,7 @@ ruleset that works well to ameliorate syn-flooding, please let me know.
 
 Thanks kindly,
 
---=20
+-- 
 
  -- Jeff --   <http://www.wellnow.com>
 
@@ -110,6 +124,8 @@ Peter Marshall, BCS
 Network Administrator, CARIS
 115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
 Phone:  (506) 458-8533 (Reception)
+
+
 
 
 
