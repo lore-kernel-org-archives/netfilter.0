@@ -1,12 +1,18 @@
-From: "prince" <prince@resoftcorp.com>
-Subject: Re: iptables v1.2.7a: can't initialize iptables table `filter'
-Date: Tue, 13 Jan 2004 10:39:04 -0800
+From: Joel Newkirk <firewalldude@newkirk.us>
+Subject: Re: kernel 2.6.x and iptables
+Date: Tue, 13 Jan 2004 16:15:52 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040113183904.M50828@resoftcorp.com>
-References: <20040113001933.M22372@resoftcorp.com> <002d01c3d9bb$52e42120$16c8a8c0@goiania.empreza.com.br>
+Message-ID: <1074028552.1586.17.camel@alpha.newkirk.us>
+References: <00cb01c3d9b6$cd9b2d00$23c051cb@ns3.worldcall.net.pk>
+	 <008401c3d9cb$d634aa30$23c051cb@ns3.worldcall.net.pk>
+	 <00c201c3d9ce$62968d70$23c051cb@ns3.worldcall.net.pk>
+	 <200401130838.47327.Alistair Tonner <> >
+	  <012001c3d9ea$a64d8a20$23c051cb@ns3.worldcall.net.pk>
+Reply-To: firewalldude@newkirk.us
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002d01c3d9bb$52e42120$16c8a8c0@goiania.empreza.com.br>
+In-Reply-To: <012001c3d9ea$a64d8a20$23c051cb@ns3.worldcall.net.pk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,74 +23,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: VJr <vitorjunior@empreza.com.br>, netfilter@lists.netfilter.org
+To: Muhammad Talha <talha@worldcall.net.pk>
+Cc: netfilter@lists.netfilter.org
 
-Thanks Vjr.
+On Tue, 2004-01-13 at 10:33, Muhammad Talha wrote:
+> Thanks Alistair for respones
+> 
+> there is no .o file there only .ko i think these are changed in 2.6.x kernel
+> i see them when kernel is compiling as well
+> 
+> there is /etc/rc.local which can load things @ startup in RedHat
+> 
+> thanks and Regards
+> 
+> Talha
 
-"Verify the modules iptables are compile to your kernel". How do I do this? I 
-am not so good at Linux administration.
+Since you're successfully inserting modules under 2.6.x I assume you
+installed module-init-tools to replace modutils.  However, I think you
+might have missed this part of the module-init-tools FAQ:
 
-Prince.
+{excerpt}
+Q) I'm using RedHat and modules don't autoload any more.
+A) RedHat turns module autoloading off if /proc/ksyms isn't found.
+   Change line 337 of /etc/rc.d/rc.sysinit from:
 
-On Tue, 13 Jan 2004 07:55:06 -0200, VJr wrote
-> Hello! ;)
-> 
-> Try use
-> /sbin/insmod /lib/modules/2.4.20/kernel/net/ipv4/netfilter/iptable_filter.o
-> 
-> iptables -L
-> 
-> Verify the modules iptables are compile to your kernel (my english 
-> is bad  )
-> 
-> ;0
-> 
-> VJr
-> 
-> ----- Original Message -----
-> From: prince <prince@resoftcorp.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Monday, January 12, 2004 10:19 PM
-> Subject: iptables v1.2.7a: can't initialize iptables table `filter'
-> 
-> > Dear Group,
-> >
-> > I am getting the following whenever I tried to do any operation with
-> iptables.
-> >
-> > % iptables -L
-> >
-> > iptables v1.2.7a: can't initialize iptables table `filter': iptables who?
-> (do
-> > you need to insmod?)
-> > Perhaps iptables or your kernel needs to be upgraded.
-> >
-> > % rpm -qa | grep kernel
-> > kernel-pcmcia-cs-3.1.31-13
-> > kernel-2.4.20-28.9
-> > kernel-BOOT-2.4.20-28.9
-> > kernel-doc-2.4.20-28.9
-> > kernel-source-2.4.20-28.9
-> >
-> > % lsmod
-> > Module                  Size  Used by    Not tainted
-> > e1000                  54528   1
-> > ext3                   61280   2
-> > jbd                    46804   2  [ext3]
-> > 3w-xxxx                36192   3
-> > sd_mod                 11916   6
-> > scsi_mod               63416   2  [3w-xxxx sd_mod]
-> >
-> > How do I get this resolved? It seems the problem is after I upgraded the
-> > kernel. I am running RH 9.
-> >
-> > Thanks,
-> > Prince.
-> >
-> >
+  if ! grep -iq nomodules /proc/cmdline 2>/dev/null && [ -f /proc/ksyms
+]; then
+
+   to
+
+  if ! grep -iq nomodules /proc/cmdline 2>/dev/null && [ -f
+/proc/modules ]; then
 
 
+Q) Things still don't load properly.
+A) Do you have an /etc/modprobe.conf?  If not, use
+   generate-modprobe.conf to generate an /etc/modprobe.conf from your
+   old setup.
+{/excerpt}
+
+You may not find 'line 337' at line 337.  Search "/proc/ksyms" - don't
+change the ones later in the file, though!
+
+j
+
+> ----- Original Message ----- 
+> From: <Alistair Tonner>
+> To: "Muhammad Talha" <talha@worldcall.net.pk>;
+> <netfilter@lists.netfilter.org>
+> Sent: Tuesday, January 13, 2004 6:38 PM
+> Subject: Re: kernel 2.6.x and iptables
+> 
+> 
+> > On January 13, 2004 07:11 am, Muhammad Talha wrote:
+> > > i insert modules located at /lib/modules/2.6.1/kernel/net/ipv4/netfilter
+> > >
+> > > like
+> > >
+> > > insmod ip_tables.ko
+> > > insmod iptables_filter.ko
+> > >
+> > AHhhhh ...
+> >    Your modutils is out of date.
 
 
 
