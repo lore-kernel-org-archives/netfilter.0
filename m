@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Problems with Portforwarding -- Loopback problems---
-Date: Tue, 16 Mar 2004 17:25:37 +0000
+From: arif <djreef@yahoo.com>
+Subject: Re: forwarding rule (internal webserver) HELLPP!!
+Date: Tue, 16 Mar 2004 09:32:19 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403161725.37484.Antony@Soft-Solutions.co.uk>
-References: <405624A2.60906@imperium-noctem.de> <200403161711.45869.Antony@Soft-Solutions.co.uk> <40573742.6070606@imperium-noctem.de>
+Message-ID: <20040316173219.5817.qmail@web10202.mail.yahoo.com>
+References: <20040316021346.GG26800@samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40573742.6070606@imperium-noctem.de>
+In-Reply-To: <20040316021346.GG26800@samad.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +17,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Tuesday 16 March 2004 5:20 pm, Ronny Fauth wrote:
 
-> Antony Stone wrote:
->
-> >Think about the replies.
-> >
-> >192.168.0.3 sends a packet to xxx.dyndns.org, that gets translated by
-> >192.168.0.1 into 192.168.0.2
-> >
-> >192.168.0.2 receives the packet, sees that the sender is 192.168.0.3, and
-> >replies.
-> >
-> >Therefore 192.168.0.3 sent a packet to xxx.dyndns.org and got a reply from
-> >192.168.0.2.   It can't handle this, so fails.
->
-> Well ya, sounds logically..... but how can i solve this Problem? so i
-> can test wether the forwarding is working or not
+--- Alexander Samad <alex@samad.com.au> wrote:
+> On Mon, Mar 15, 2004 at 11:10:20AM -0800, arif
+> wrote:
+> > Anyone know why the following rule does not work
+> when
+> > i use SNAT but does when i use MASQUERADE??
+> > 
+> > /sbin/iptables -A PREROUTING -t nat -p tcp -d
+> 63.x.x.x
+> > --dport 80 -j DNAT --to 10.0.0.3:80
+> > 
+> > When I use the following rule, the previous rule
+> > works: 
+> > /sbin/iptables -t nat -A POSTROUTING -o eth1 -j
+> > MASQUERADE
+> > 
+> > but when i do it like this, i just get a
+> connection
+> > refused from the outside:
+> > /sbin/iptables -t nat -A POSTROUTING -s
+> 10.0.0.0/24 -o
+> > eth0 -j SNAT --to-source 63.203.63.246
+> 
+> Not sure if its a typo MASQ is for eth1 and the SNAT
+> is for eth0 
+> 
+> > 
+> > Both work as far as NAT'ing my internal hosts, but
+> i
+> > cant get the darn forward to work! thanks!! :)
+> > 
 
-This depends on whether you need the address translation system to work (after 
-you've tested it and decided it's okay):
+yes, you are correct, i made a typo - the MASQ rule
+should read:
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -j
+MASQUERADE
 
-a) only from the Internet, or
-b) from both the Internet and the local network.
+i still can't get this port forward to work no matter
+what i try with SNAT, i guess i will just use
+masquerade although i really wish i knew why i can't
+get it to work with SNAT :(
 
-If (a), then you should test it from the Internet, because that's what you 
-need to work correctly - testing from the local network is not the same.
-
-If (b), then you should be using split DNS to give the private address to 
-local clients, and the public address to external clients - then each will 
-connect to the correct IP address depending on where they're starting from.
-
-Of course the other solution is to put local clients, and the server you're 
-talking to, on separate subnets from the firewall, so no matter who talks to 
-them, the packets always go through the firewall and always get NATted.
-
-Regards,
-
-Antony.
-
--- 
-People who use Microsoft software should be certified.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - More reliable, more storage, less spam
+http://mail.yahoo.com
 
