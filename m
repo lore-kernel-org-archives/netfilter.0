@@ -1,8 +1,8 @@
 From: Jochen Vogel <jvogel@it-sec.de>
-Subject: AW: ipt_tos.ko vs ipt_TOS.ko
-Date: Thu, 29 Apr 2004 17:31:01 +0200
+Subject: AW: AW: GRE/PPTP and modules
+Date: Thu, 29 Apr 2004 17:33:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D3DD55FDB74AD511BA5100500416368053E88F@ORION>
+Message-ID: <D3DD55FDB74AD511BA5100500416368053E890@ORION>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Received: **stripped**
@@ -17,28 +17,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-pptp-conntra
+ck-nat
 
-I doesnt load ipt_TOS.ko in the script but if i do lsmod i can see
-ip_tables 15096 11 [iptable_mangle ipt_TOS ipt_tos ipt_ULOG ipt_MASQUERADE
-ipt_state ipt_LOG iptable_nat iptable_filter]
+> What should i do to get the modules?
 
-Did the module load himself?
-
-
-In the script i do
-$IPT -A PREROUTING -t mangle -p TCP --sport 80  -j TOS --set-tos 16
-$IPT -A PREROUTING -t mangle -p TCP --dport 80  -j TOS --set-tos 16
+1. get iptables 1.2.9, patch-o-matic-ng and kernel sources (you can use
+   Fedora SRPM package)
+2. patch kernel sources using patch-o-matic-ng (see README)
+3. configure, build and install pacthed kernel (you should be able to
+   create a new RPM package, see RedHat documentation)
+4. build and install iptables
 
 
-In the log i can see
-IN=eth1 OUT=ppp0 SRC=192.168.63.4 DST=212.185.47.48 LEN=40 TOS=0x08
-PREC=0x00 TTL=127 ID=62141 DF PROTO=TCP SPT=2531 DPT=80 WINDOW=64952
-RES=0x00 ACK URGP=0
+Thx for the instructions.
 
-If fill up the bandwidth with an ftp download i doesnt feel an priorizing of
-http traffic.
-Any idea whats wrong? 
+Is it possible to get the modules precompiled?
+For a lazy bugger ;)
+
 
