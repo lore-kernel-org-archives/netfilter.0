@@ -1,14 +1,13 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Block for MAC Address
-Date: 17 Feb 2003 08:28:19 +0200
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: [PATCH] snort hex strings and libipt_string.c
+Date: 17 Feb 2003 08:38:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045463298.17705.15.camel@rayw.knowledgefactory.co.za>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAFXnZnPTWmEuxnKJINDeV5MKAAAAQAAAAbn072oWMbEu2LnhUyjfPEwEAAAAA@prodigy.net.mx>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <1045467495.18515.109.camel@tux.rsn.bth.se>
+References: <20030216234709.A13902@orthanc.gambrl01.md.comcast.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Pi50rkBtOchX6E1icqW6"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAFXnZnPTWmEuxnKJINDeV5MKAAAAQAAAAbn072oWMbEu2LnhUyjfPEwEAAAAA@prodigy.net.mx>
+In-Reply-To: <20030216234709.A13902@orthanc.gambrl01.md.comcast.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Michael Rash <mbr@cipherdyne.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
+On Mon, 2003-02-17 at 05:47, Michael Rash wrote:
+> The attached patch adds an option "--hex-string" to the string match
+> module to allow snort-style hex strings to be specified on the
+> command line.  This is useful because there are many signatures that
+> consist of non-printable characters and without this patch there is
+> no way to easily tell iptables to search for them.
 
---=-Pi50rkBtOchX6E1icqW6
-Content-Type: text/plain; charset=windows-1251
-Content-Transfer-Encoding: quoted-printable
+Please send patches to the netfilter-devel@lists.netfilter.org list, not
+too many developers read this list on a regular basis and might miss
+patches.
 
-You need to get the POM (patch-o-matic) from the netfilter site and
-apply the MAC address match patch for netfilter to your kernel source
-and then recompile your kernel and select the MAC address matching in
-the netfilter section of the kernel config.
+I've been working a little with a patch from Gianni Tedesco to speed
+things up (it really speeds up the stringmatch) and adding support for
+ranges to it (which bytes to search in the packet). I'll add your patch
+to the mix when I get some time to play with this stuff again (might be
+a while).
 
+-- 
+/Martin
 
-On Wed, 2003-02-12 at 20:31, Juan Carlos Hernandez Gonzalez wrote:
-> Hi list:
->=20
-> =20
->=20
-> I have a linux red hat and need configure my iptables for permit only
-> mac address of clients =85=85 some know how make this .. Thanks
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
-
---=-Pi50rkBtOchX6E1icqW6
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA+UIECh1fuR/Bv+ygRAiuMAKCutzu170Y0r7e2utXQeeN8yTcEjgCeKiXk
-nd+szpi8iZEEnj6QzowrCKQ=
-=8Jo1
------END PGP SIGNATURE-----
-
---=-Pi50rkBtOchX6E1icqW6--
-
+Never argue with an idiot. They drag you down to their level, then beat you with experience.
 
