@@ -1,13 +1,11 @@
-From: SaVaGE  <pc-secure@home.nl>
-Subject: Re: per user IP adresses
-Date: Sun, 4 May 2003 21:19:15 +0200
+From: "David Gaudine" <david@annette.concordia.ca>
+Subject: RELATED is not recognized
+Date: Sun, 4 May 2003 16:05:59 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305042119.15316.pc-secure@home.nl>
-References: <000101c3126c$6c64d020$0200a8c0@WKSJOHN>
+Message-ID: <001101c31278$94dc0ad0$0432cd84@sleepy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000101c3126c$6c64d020$0200a8c0@WKSJOHN>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,24 +18,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Op zondag 4 mei 2003 20:38, schreef John Guntenaar:
-> Hello,
->
-> I have a linux machine with 4 IP addresses, I have a couple of friends
-> on that machine and I don't allow them to use IRC, so I simply blocked
-> the IRC ports, but I want to use IRC from the 4th IP without the other
-> users being able to use it. I think I can reach that goal by using the
-> owner match facility of iptables, though I can't find any good examples
-> with google, is it correct and can somebody post an example?
->
-> Thanks in advantage,
->
-> John
+When I try this line
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+the response is
+iptables: No chain/target/match by that name
 
-this one is very easy , you can use the same rule , you used before , but=
- now=20
-you say :     ..........     -s ! $4th_ip -j DROP
+I am using kernel 2.4.20 and iptables 1.2.8, and have included these
+options:
+CONFIG_IP_NF_CONNTRACK=y
+CONFIG_IP_NF_FTP=y
+CONFIG_IP_NF_IPTABLES=y
+CONFIG_IP_NF_FILTER=y
 
+If I shorten the command to
+iptables -A INPUT -m state --state -j ACCEPT
+(which is obviously invalid) the error message is
+iptables v1.2.8: Bad state `-j'
+which shows that "-m state" and "--state" are recognized, only the part
+about
+ESTABLISHED,RELATED
+is unrecognized.  Why is this?  Is there another kernel options that I
+should have included?
 
-Pascal
+Also, I'd love to see a working example of using iptables to handle ftp
+connections.  The above line doesn't seem quite right; for one thing, it
+doesn't specifically mention that it's for ftp.  Should I have an INPUT and
+an OUTPUT line that both specify port 20 and the connection tracking?
+
+I was quite pleased that I was able to get my firewall working without
+flooding you people with questions, until I noticed that ftp wasn't working.
+Silly me, during my early testing I tested ftp just by establishing a
+connection and quitting, it didn't occur to me to try to transfer a file.
+
+David
+
 
