@@ -1,8 +1,8 @@
-From: "Andrew Brink" <abrink@netstandard.net>
-Subject: Traffic Reflecting / Redirecting
-Date: Thu, 3 Apr 2003 15:36:15 -0600
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Traffic Reflecting / Redirecting
+Date: Thu, 3 Apr 2003 14:48:09 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <B45570C481D7904FA8C47E19444BF6CD030B1F@nsimail1.netstandard.inc>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DB0@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,7 +17,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Andrew Brink <abrink@netstandard.net>, netfilter@lists.netfilter.org
+
+If you have a single entry point and a single IP address, this is a
+non-issue.=20
+
+iptables -A PREROUTING -j DNAT -p tcp --destination-port 22
+--destination 10.1.1.1 --to-destination 192.168.1.1
+
+If you have multiple gateways that a PC can use to get out of a network,
+there is no guarantee that the return packet will take the correct path
+back through 10.1.1.1. In this case I don't believe there is a way to
+accomplish this with total transparency.
+
+You can use an SNAT rule to make 192.168.1.1 see the middle party, but
+the originating host would still be unknowing of any NAT occurrences.
+
+Hope this helps.
+
+-----Original Message-----
+From: Andrew Brink [mailto:abrink@netstandard.net]=20
+Sent: Thursday, April 03, 2003 1:36 PM
 To: netfilter@lists.netfilter.org
+Subject: Traffic Reflecting / Redirecting
 
 All -=20
 
@@ -38,4 +60,5 @@ Thanks.
 Andrew Brink, CCNA, WCSP=20
 NetStandard, Inc.=20
 913-262-3888=20
+
 
