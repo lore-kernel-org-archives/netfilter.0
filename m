@@ -1,15 +1,13 @@
-From: Corin Langosch <corinl@gmx.de>
-Subject: Re[2]: netmeeting ?
-Date: Sun, 16 Jun 2002 20:20:35 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Flag SYN not necessarily state NEW?
+Date: Sun, 16 Jun 2002 19:30:43 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <17730668368.20020616202035@gmx.de>
-References: <17729088316.20020616195415@gmx.de>
- <200206161807.g5GI7DA29086@Networker.rockstone.co.uk>
-Reply-To: Corin Langosch <corinl@gmx.de>
+Message-ID: <200206161830.g5GIUlA30385@Networker.rockstone.co.uk>
+References: <000501c21415$544d0e40$7b0010ac@dynamicaccess.lan> <1024250696.6468.3.camel@geggo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206161807.g5GI7DA29086@Networker.rockstone.co.uk>
+In-Reply-To: <1024250696.6468.3.camel@geggo>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,57 +18,25 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: IP-Tables Maillingliste <netfilter@lists.samba.org>
+To: NetFilter Mailinglist <netfilter@lists.samba.org>
 
-Hi !
+On Sunday 16 June 2002 7:04 pm, Geog Hofstetter wrote:
 
-thanks for the fast reply...i'm going to look for these messages.
-but i don't really understand the problem. even if netmeeting uses
-different ports, it must work i assume, when i forward the traffic
-of *all* ports from the caller's ip to my pc behind the fireall.
-(this is what my rules do: forward all traffic from a specified ip
-execept data on port 80)
-or does netmeeting use other protocols than tcp or udp which i
-also have to forward ??
+> hmm is it possible that (if u use target LOG) your syslog just shows up
+> 'blah: SYN packet received'
+> 'last message repeatet 2 times'
 
-thanks,
-Corin
+I would hope not - both the Source Port and the TCP ID number should be 
+different for the two connections, and since these are both included in the 
+LOG output from netfilter, the messages would not be identical...
 
-Check it out => http://www.find-mich.net
+Antony.
 
-Sunday, June 16, 2002, 8:07:12 PM, you wrote:
-AS> On Sunday 16 June 2002 6:54 pm, Corin Langosch wrote:
-
->> Hi all,
->>
->> im behind a iptables firewall and want to be able to accept incomming
->> netmeeting calls. To make things simple I added the following rules:
-
-AS> [snip]
-
->> unluckily, no incomming calls are detected and the other party gets an
->> error. other programms like my local ftp server etc. work fine, this means
->> the rules are correct.
-
-AS> It means the rules are correct for ftp, yes, but that's not necessarily true 
-AS> for every other protocol you might want to put through your firewall...
-
-AS> Netmeeting is one of those protocols which buries IP addresses & port numbers 
-AS> inside the messages, therefore it needs a helper on the firewall to NAT it 
-AS> properly.
-
-AS> You should look at the h323 patch in a *very* recent version of netfilter 
-AS> (1.2.6a or 1.2.7 from CVS), and also look back through some of the recent 
-AS> messages on this mailing list, because there have been a number of posts from 
-AS> people trying to get it working / failing to get it working / reporting 
-AS> success in getting it working.....
-
-AS> Sorry I can't offer you any direct advice, but I don't use netmeeting - I've 
-AS> just seen all the posts on the mailing list from other people who've done the 
-AS> same thing you want to.
-
- 
-
-AS> Antony.
-
+>     >>On Wed, 8 May 2002, Ing. Christian Ogris wrote:
+>     >> I connect from Box A via SSH to Box B, where the firewall runs, and
+>     >> i get the state "NEW" on the first packet.
+>     >> Then - the first connection is still established - i connect AGAIN
+>     >> from Box A to Box B and do NOT get the state "NEW" anymore. (So
+>     >> obviously it's already accepted by the ESTABLISHED,RELATED -j ACCEPT
+>     >> rule). Is this behavior correct?
 
