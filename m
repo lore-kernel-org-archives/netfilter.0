@@ -1,8 +1,8 @@
 From: Juan Hernandez <alucard@kanux.com>
-Subject: any sugestions
-Date: 28 Nov 2003 12:01:11 -0400
+Subject: flushing
+Date: 28 Nov 2003 12:11:43 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070034917.1170.15.camel@webmail.aeropostal.com.ve>
+Message-ID: <1070035903.1086.6.camel@webmail.aeropostal.com.ve>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,23 +18,12 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Lista de netfilter <netfilter@lists.netfilter.org>
 
-Im using this in a webserver that must redirect everything to
-192.168.0.2 in port 25... any suggestions? using this script will enable
-to accept connections in port 80 and forward all the port 25 to the
-other server?? am I missing something or could it be improved?? 
+Hi there again
 
-echo 0 > /proc/sys/net/ipv4/ip_forward
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -i eth1 -d 192.168.0.2 -p tcp --dport 25 -j ACCEPT
-iptables -t nat -A PREROUTING -i eth0 -d 192.168.0.1 -p tcp --dport 25
--j DNAT --to-destination 192.168.0.2:25
-echo 1 > /proc/sys/net/ipv4/ip_forward
+is there any better way to delete everything in memory than iptables
+-F?? it's just that it doesn't seem to delete everything sometimes
 
-Thanx a lot 
-
+thanx
 
 -- 
 Juan Hernandez
