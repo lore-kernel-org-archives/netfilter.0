@@ -1,13 +1,14 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Modules
-Date: Mon, 10 Mar 2003 18:13:47 +0100
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: internal > external > internal NAT
+Date: Mon, 10 Mar 2003 13:39:05 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005a01c2e728$69bb35e0$0401000a@sterenborg.info>
-References: <4D613EBFB75BD6118A5B00508BEEC62C0111CB8A@JESS>
+Message-ID: <200303101339.05891.netfilter@newkirk.us>
+References: <Pine.LNX.4.53.0303101302320.5044@gypsy>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4D613EBFB75BD6118A5B00508BEEC62C0111CB8A@JESS>
+In-Reply-To: <Pine.LNX.4.53.0303101302320.5044@gypsy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,16 +19,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Steve Mickeler <steve@warning.ca>, netfilter@lists.netfilter.org
 
-> I am loading these modules to get FTP working, however they=20
-> are no auto loading so each time i restart the server i havbe=20
-> to manually reload them insmod ip_nat_ftp=20
-> insmod ip_conntrack_ftp=20
+On Monday 10 March 2003 01:02 pm, Steve Mickeler wrote:
+> I have a requirement where I need to NAT some internal connections to
+> make sure everything to the destination appears to be coming from the
+> same source.
 
-You can also put them in /etc/rc.d/rc.local or in your iptables script.
+> What I need to do is this:
+>
+> If the destination IP =3D 172.17.4.200 then redirect it to 192.168.32.1=
+8
+> but first NAT the source IP to 192.168.32.200
+>
+> Anyone know a simple way to do this ?
 
+iptables -t nat -A PREROUTING -d 172.17.4.200 -j DNAT --to 192.168.32.18
+iptables -t nat -A POSTROUTING -d 192.168.32.18 -j SNAT --to=20
+192.168.32.200
 
-Rob
+You can't SNAT first, but you can DNAT then SNAT.  This will accomplish=20
+what you ask.  (as always, make sure you ACCEPT the traffic in FORWARD,=20
+based on "-d 192.168.32.18", if not covered by a more general rule)
+
+j
 
 
