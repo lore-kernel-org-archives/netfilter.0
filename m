@@ -1,13 +1,12 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Help with iptables
-Date: Wed, 10 Dec 2003 19:31:13 -0500
+From: "Lawrence Tang" <ingsiong@daltron.com.pg>
+Subject: Block MSN Messenger & Yahoo Messenger
+Date: Thu, 11 Dec 2003 10:43:28 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071102673.1876.42.camel@jasiiitosh.nexusmgmt.com>
-References: <FB11F223A1DE69499D299308731DD413014A2A@mail.SBPC>
+Message-ID: <01a301c3bf7f$cb941fe0$7700000a@lawrencewin2k>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_019E_01C3BFD3.9C8BFB10"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FB11F223A1DE69499D299308731DD413014A2A@mail.SBPC>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +16,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Bryan Dyson <lan_administrator@solanapres.org>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2003-12-10 at 18:45, Bryan Dyson wrote:
-> Hi folks,
-> 
-> I've got my iptables setup and working with one small glitch. My ISP
-> says I'm an open proxy.
-> What I'm trying to do is set a rule in iptables that will drop port
-> 3128 requests coming from the outside but still allow my internal
-> network to use the proxy on this port.
-> 
-> I've tried the following, but they seem to shut down routing of e-mail
-> from the internal mail server:
-> 
-> -A PREROUTING -I eth1 -p tcp -m tcp --dport 3128 -j DROP
-> And
-> -A PREROUTING -I x.x.x.x (public IP) -p tcp -m -tcp --dport 3128 -j
-> DROP
-<snip>
+This is a multi-part message in MIME format.
 
-If it helps, here are some excerpts from a file I pass to
-iptables-restore -n (minus the comments) to activate my proxy:
+------=_NextPart_000_019E_01C3BFD3.9C8BFB10
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-*filter
--A INPUT -i eth0 -p tcp -m tcp --dport 3128 -j ACCEPT
-	#allow the proxy to receive traffic from the internal devices (eth0 is
-the private interface in my set up)
--A OUTPUT -o eth0 -p tcp -m tcp --sport 3128 -j ACCEPT
-	#allow the proxy to respond to the internal clients
--A OUTPUT -p 6 -m tcp --dport 80 -m state --state NEW -j ACCEPT
-	#allow the proxy to talk to the web servers of the world! Of course,
-there is a corresponding --state RELATED, ESTABLISHED -j ACCEPT
-somewhere else in the configuration
-COMMIT
-*nat
--A PREROUTING -i eth0 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports
-3128
-	#Cause the redirection from the internal interface (eth0 in my case)
-COMMIT
+Hi,
+    I have an RH9 with NAT access for the client. I would like to block =
+MSN & Yahoo messenger from the client to access.
+    Can any body advice me ? Thanks in advance.
 
-All filter table policies are DROP so if I do not explicitly allow it,
-it is denied.
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+Best Regards,
+=20
+Lawrence Tang=20
+
+------=_NextPart_000_019E_01C3BFD3.9C8BFB10
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dwindows-1252">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I have an RH9 with =
+NAT access=20
+for the client. I would like to block MSN &amp; Yahoo messenger from the =
+client=20
+to access.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Can any body advice =
+me ? Thanks=20
+in advance.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Best Regards,<BR>&nbsp;<BR>Lawrence =
+Tang=20
+<BR></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_019E_01C3BFD3.9C8BFB10--
 
 
