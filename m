@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Firewalling non-IPsec connections
-Date: Tue, 16 Dec 2003 15:12:24 +0000
+From: Jason Cook <jg0327@yahoo.com>
+Subject: Port Redirection with iptables
+Date: Tue, 16 Dec 2003 07:21:52 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312161512.24688.Antony@Soft-Solutions.co.uk>
-References: <GFEPJIHHFOJDOFDMNAJDCEPFEJAA.mark@npsl.co.uk>
+Message-ID: <20031216152152.37192.qmail@web41114.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <GFEPJIHHFOJDOFDMNAJDCEPFEJAA.mark@npsl.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +15,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: cookj@dennis.capemayschools.com
 
-On Tuesday 16 December 2003 2:45 pm, Mark Weaver wrote:
+I am trying to install Linux as a firewall and caching
+server with iptables and Linux.  I 
+need to do this transparently.
 
-> > > The in-kernel ipsec does not have an ipsec0 virtual interface, that is
-> > > where the problem come from - I don't see a way yet to destinguish
-> > > decapsulated ipsec traffic from eth0 to eth1 from raw traffic
-> > > between the two interfaces.
-> >
-> > Ah.   I have yet to play with the features of 2.6 kernels,
-> > therefore I didn't
-> > realise that this version of IPsec has such a drawback compared
-> > to FreeS/WAN.
->
-> I solved this using firewall marks.  Essentially, packets that come in via
-> IPSEC and then get untunelled retain the fwmark, so you can do something
-> like:
->
-> iptables -t mangle -A PREROUTING -i eth0 -p esp -j MARK --set-mark 1
-> iptables -A INPUT -m mark --mark 1 -j ACCEPT
+I installed Red Hat Linux 9.  Ran all of the updates
+nice and smooth.  Turned on ip forwarding.  
+Configured Squid...and tested it by specifying the
+servers ip address and port 3128 from the 
+browser.  Works great.  Here the options I had changed
+in the config file.
 
-I'm intrigued by this.   If the packets are encrypted with ESP as they go 
-through PREROUTING, but you need to MARK them in order to recognise which 
-ones they are by the time they hit the INPUT chain, at what point does the 
-decryption occur?   Does it mysteriously happen somewhere between the 
-PREROUTING and INPUT chains?   (If it does, I can see an awful lot more 
-puzzled newbies asking questions here once 2.6 takes off....)
+http_port 3128
+http_access deny to_localhost
+acl our_networks src 10.0.0.0/8
+http_access allow our_networks
+httpd_accel_host virtual
+httpd_accel_port 80
+httpd_accel_with_proxy on
+httpd_accel_uses_host_header on
 
-Antony.
+For iptables I used 
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
+80 -j REDIRECT --to-port 3128
 
--- 
-"Reports that say that something hasn't happened are always interesting to me, 
-because as we know, there are known knowns; there are things we know we know. 
-We also know there are known unknowns; that is to say we know there are some 
-things we do not know. But there are also unknown unknowns - the ones we 
-don't know we don't know."
+I then try to browse the internet from a client
+through the firewall and nothing.
 
- - Donald Rumsfeld, US Secretary of Defence
+When I run iptables -t nat -nv -L
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Chain PREROUTING (policy ACCEPT 31254 packets, 3971K
+bytes)
+ pkts bytes target     prot opt in     out     source 
+             destination
+    0     0 REDIRECT   tcp  --  eth1   *      
+0.0.0.0/0            0.0.0.0/0          tcp dpt:80
+redir ports 3128
 
+PREROUTING is accepting packets...but none are
+processes by the redirect rule.
+
+
+I've been pulling my hair out for about a week.  Can
+anyone help?  
+
+__________________________________
+Do you Yahoo!?
+New Yahoo! Photos - easier uploading and sharing.
+http://photos.yahoo.com/
 
