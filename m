@@ -1,11 +1,11 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: Squid + iptables (different networks)
-Date: Thu, 18 Nov 2004 09:45:28 -0400
-Message-ID: <004501c4cd74$dd0b1d10$49caa8c0@caris.priv>
-References: <MCEJJKCAIMHFOKODABEICEDHMFAA.cox@ieee.org>
+From: a.ledvinka@promon.cz
+Subject: Re: dns question
+Date: Thu, 18 Nov 2004 14:49:07 +0100
+Message-ID: <OFE1A4EFA8.9A32DF5F-ONC1256F50.004BC256-C1256F50.004BE8B8@promon.cz>
+References: <1100785489.3848.24.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1100785489.3848.24.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: cox@ieee.org, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
-Get rid of your nat rule to the proxy.  Your proxy will change the IP from
-your internal IP when it connects out to a webpage anyway.
+and see also "forward only;" and "forward first;"
 
-Peter
-
-
-
------ Original Message ----- 
-From: "cox" <cox@ieee.org>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, November 17, 2004 11:07 AM
-Subject: Squid + iptables (different networks)
-
-
-Hi,
-
-I've got my internal network (192.168.7.0/24, gw=192.168.7.1) and my
-squid-cache server runs on my DMZ.
-
-On my gateway I have:
-
-iptables -t nat -A PREROUTING -s 192.168.7.0/24 -p tcp --dport 80  -j
-DNAT --to <real-ip>:3128
-
-And my squid-server was compiled with --linux-netfilter, etc.
-
-It's working, but the log file (access.log) shows me that all connections
-came from my gateway, and it's correct. I'd like to know if someone have a
-way to change that, and in the logfile, and squid acl management I can
-use/see my internal network ips. They are in different subnets.
-
-regards, cox
-
-
+> if your bind configuration specifies:
+> 
+>         forwarders {
+>                 x.x.x.x;
+>                 x.x.x.x;
+>                 // 24.25.4.107;
+>                 // 24.25.4.108;
+>                 4.2.2.2;
+>                 4.2.2.1;
+>                 4.2.2.3;
+>         };
 
 
