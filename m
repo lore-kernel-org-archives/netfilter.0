@@ -1,11 +1,12 @@
-From: Madison Kelly <linux@alteeve.com>
-Subject: Looking for an editable script
-Date: Thu, 29 Jan 2004 12:02:03 -0500
+From: "Eliot, GLI wireless tech support" <support8@greatlakes.net>
+Subject: Classifying W32/MyDoom.A
+Date: Thu, 29 Jan 2004 13:06:50 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40193C8B.1030900@alteeve.com>
+Message-ID: <3383379105910242B6F8878D41FA834201A7B5@glsql.greatlakes.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,29 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Has anyone come up with a ruleset for classifying a random TCP or
+specific SMTP connection as being the W32/MyDoom.A virus?
 
-   I am trying to build a script to serve my office network. To date I 
-have used Monmotha's Firewall script but I need more than it provides. I 
-have been trying to hack his excellent script to fit my needs but a 
-programmer I am not! :)
+For instance, it spreads two ways:
 
-   I need something I can work into doing the following;
+1) Through email
+2) Through Kazaa
 
-- Allow limited TCP/UDP ports into the firewall/router (easy enough)
-- Allow limited TCP/UDP ports into LAN clients (common list for all LAN 
-clients)
-- NAT clients that will be public and for each client allow a specific 
-list of inbound TCP/UDP ports and where the clients will, internally, 
-have their own subnet seperate from the LAN clients.
+I want to be able to take a TCP stream (like a Kazaa download) and match
+it against a rule that would flag the packets with a specific MARK value
+if it is the MyDoom.A virus being transferred. I would also like a
+ruleset that would match if it is being transferred through SMTP.=20
 
-   I am not asking anyone to do my work, but a head start would be 
-greatly appreciated! In the meantime, back to trying to bang Monmotha's 
-script to suite (please save me!) ;)
+Anyone have any ideas how to do this without too many false positives?
+(IE a document on the web that describes the characteristics of
+MyDoom.A).=20
 
-Madison
+Eliot Gable
+iSWAT Leader
+Internet Service Without Any Telephones
+Great Lakes Internet, Inc.
+112 N Howard Ave
+Croswell, MI 48422
+(810) 679-3395
 
 
