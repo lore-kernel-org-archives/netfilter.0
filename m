@@ -1,13 +1,11 @@
-From: aksingh@hss.hns.com
-Subject: ipq_read timeout
-Date: Wed, 19 May 2004 16:49:22 +0530
+From: "test" <psycho@farah.net.lb>
+Subject: route marking pzckets in the mangle  FORWARD table
+Date: Wed, 19 May 2004 14:03:44 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF0887896F.AC63B2A0-ON65256E99.003DE252@hss.hns.com>
+Message-ID: <000501c43d90$f3eeb970$1101000a@accounting>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; 
-	Boundary="0__=EABBE40ADFAE64C28f9e8a93df938690918cEABBE40ADFAE64C2"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,88 +15,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Sven Schuster <schuster.sven@gmx.de>
-Cc: "Jee J.Z." <jz105@york.ac.uk>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
---0__=EABBE40ADFAE64C28f9e8a93df938690918cEABBE40ADFAE64C2
-Content-type: text/plain; charset=US-ASCII
-
-
-
+Good Day .....
+I have a question regarding marked packets in the FORWARD mangle
+table.......
 
 
-Hi Sven,
+suppose i have .......
 
-   Which version of iptables/libipq do you use. As u said we can define a
-negative timeout value for ipq_read so that it returns immediately. I have
-iptables-1.2.1a-1.on a system. A man ipq_read there shows me that the
-timeout parameter for ipq_read has not yet been implemented.
+iptables -A FORWARD -t mangle -i eth1 -p tcp --dport 1863 -j MARK --set-mark
+0x1
 
-thanks
-Amit
-
-
-
-
-Sven Schuster <schuster.sven@gmx.de>@lists.netfilter.org on 04/20/2004
-02:16:26 PM
-
-Sent by:    netfilter-admin@lists.netfilter.org
+then if i do :
+ip ru add fwmark 0x1 table 1
+ip ro add default via w.x.y.z table 1
+and my default gw is a.b.c.d ..... packets will continue to go through
+a.b.c.d .....
+it seems that only routing decisions  takes place only in PREROUTING mangle
+table for marked packets ......
 
 
-To:    "Jee J.Z." <jz105@york.ac.uk>
-cc:    netfilter@lists.netfilter.org
-
-Subject:    Re: whether there are any packets in the ip_queue
-
-
-On Tue, Apr 20, 2004 at 01:16:17AM +0100, Jee J.Z. told us:
-> Hi all,
->
-> I am using libipq for userspace programming on netfilter. I am having
-> problems to determine whether there are any packets in the ip_queue
-before I
-> call the function ipq_read(). I just don't wish to call ipq_read() when
-> there is no packet in the ip_queue, because I need my program to do other
-> things rather than waiting for a packet arriving (after calling
-ipq_read(),
-> the program will stop and wait for some time or until a packet coming
-from
-> the kernel). Are there anybody on the list who has any idea about this?
-
-Why don't you just call ipq_read with a negative timeout value?? When
-there's no packet available it will return immediately with a return
-code of 0. (see "man ipq_read")
-
-
-HTH
-
-Sven
-
->
-> BTW, may I ask whether this is the proper list to ask about
-netfilter/libipq
-> programming, since it seems few people on the list talking about this
-kind
-> of questions?
->
-
---
-Linux zion 2.6.6-rc1 #1 Sat Apr 17 11:50:12 CEST 2004 i686 athlon i386
-GNU/Linux
-  10:44:31  up 2 days, 17:42,  1 user,  load average: 0.00, 0.01, 0.00
-
---0__=EABBE40ADFAE64C28f9e8a93df938690918cEABBE40ADFAE64C2
-Content-type: application/octet-stream; 
-	name="C.DTF"
-Content-Disposition: attachment; filename="C.DTF"
-Content-transfer-encoding: base64
-
-LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0NClZlcnNpb246IEdudVBHIHYxLjIuMSAoR05V
-L0xpbnV4KQ0KDQppRDhEQlFGQWhPTmlvNEZBZEIyUG5lUVJBdHlPQUo0N1VCaFVOUjRldk05T0l2
-dzBrQ3NOOUxYNldBQ2VOSEZiDQplNHZIZHFuRTFkUHBCZ0laRGtPUEhLTT0NCj1LVEVJDQotLS0t
-LUVORCBQR1AgU0lHTkFUVVJFLS0tLS0NCg0K
-
---0__=EABBE40ADFAE64C28f9e8a93df938690918cEABBE40ADFAE64C2--
+Regards !!!!!
+__________________________________________________________________ Faysal
+Banna ICQ#: 213953617 Current ICQ status: + More ways to contact me Get ICQ!
+__________________________________________________________________
 
 
