@@ -1,14 +1,13 @@
 From: "Tarek W." <mailinglists1@hotpop.com>
-Subject: Re: Ip tables is not startting up FC1
-Date: Fri, 19 Mar 2004 14:22:15 +0200
+Subject: Re: Log Entries with multiple PROTO fields?
+Date: Fri, 19 Mar 2004 14:22:33 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1079697794.2346.1.camel@carve.personal.localdomain>
-References: <2577.128.59.176.161.1079019761.squirrel@sojourn.dyndns.org>
-	 <1079451986.6656.7.camel@casa>
+Message-ID: <1079698506.2346.4.camel@carve.personal.localdomain>
+References: <20040317141056.M19130@tkevans.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1079451986.6656.7.camel@casa>
+In-Reply-To: <20040317141056.M19130@tkevans.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +17,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 2004-03-16 at 17:46, Alexandre Strube wrote:
-> Em Qui, 2004-03-11 =C3=A0s 12:42, Technical escreveu:
-> > When I reboot my box, iptables does not run.
->=20
-> > if I service iptables start|stop iptables get start it.  I checked
-> > chkconfig and iptables is on on run level 3 and 5.  what could be wrong;
-> > which log can look into to see why ipatabels is not launching on reboot?
->=20
-> This is a fedora-specific bug. I've already spoke about it here, no one
-> heard. They kept asking me about generic solutions, none worked.
+On Wed, 2004-03-17 at 16:10, Tim Evans wrote: [snipped]
+> What do these kind of log message mean?  Note there are two PROTO fields:
+> 
+> Mar  8 08:19:43 kernel: IPT OUT_ICMP: IN= OUT=eth1 SRC=x.x.x.xDST=x.x.x.
+> .x LEN=76 TOS=0x00 PREC=0xC0 TTL=64 ID=54844 PROTO=ICMP TYPE=11 CODE=0
+> [SRC=x.x.x.x DST=x.x.x.x LEN=48 TOS=0x00 PREC=0x00 TTL=1 ID=0 DF PROTO=TCP
+> SPT=110 DPT=4312 WINDOW=5840 RES=0x00 ACK SYN URGP=0 ]
 
-did u recompile iptables?! if yes, the path to iptables-save/restore
-probably changed and /etc/rc.d/init.d/iptables has either been removed
-or is reflecting the wrong path
+this is an ICMP packet sent in response to the TCP packet which is
+detailed inside []
 
 
