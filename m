@@ -1,14 +1,14 @@
-From: Michael Gale <michael@bluesuperman.com>
-Subject: Re: Looking for 'ntop' for Redhat linux.
-Date: Wed, 24 Dec 2003 10:52:57 -0700
+From: Joel Newkirk <firewalldude@newkirk.us>
+Subject: Re: OT: Serial ATA
+Date: Wed, 24 Dec 2003 13:29:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031224105257.26f97512.michael@bluesuperman.com>
-References: <20031224121405.47716.qmail@web60402.mail.yahoo.com>
-	<200312241220.42428.Antony@Soft-Solutions.co.uk>
+Message-ID: <1072290556.1519.28.camel@alpha.newkirk.us>
+References: <200312240940.41374.pandre@darkstar.nom.za>
+Reply-To: firewalldude@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312241220.42428.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200312240940.41374.pandre@darkstar.nom.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,85 +19,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Paulo Andre <pandre@darkstar.nom.za>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
-
-	I have done some testing with NTOP and it may not be what you want.
-
-First  by default it uses a RRD (round robin database) so everytime it
-restarts you loose all your date. There was a command line switch that
-you could use that was supposed to save your date. 
-
-But I always received error while trying to use it.
-
-The web GUI did not seem to reliable .. after I started NTOP with http
-or https I could connect once , maybe twice but after that I could not
-longer connect. It seemed that NTOP would not release my connect every
-until restarted. You may by able to work around it running apache and
-just proxying a connection to NTOP's web listener. It is documented on
-there web page.
-
-At last .. it seemed to crash on a weekly bases. I could never get it to
-run more then 7 days in a row with it crashing. 
-
-I am contemplating running ntop from Monday to Friday and on Friday have
-cron that uses curl to download the states and save it to a file. Then
-have NTOP restart. And do the same on Monday. But this seems like a lot
-of work.
-
-You may want to look at iptraf or ipfw. Cacti is also good.
-
-P.S I always compiled mine from source.
-
-Michael.
-
-
-
-On Wed, 24 Dec 2003 12:20:42 +0000
-Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-
-> On Wednesday 24 December 2003 12:14 pm, ads nat wrote:
+On Wed, 2003-12-24 at 02:40, Paulo Andre wrote:
+> I have to build a new firewall and the salesman is trying to sell me Serial 
+> ATA as part of the solution.
+> Has anyone used this, because I have heard that Serial ATA is not up to spec?
 > 
-> > Hi,
-> > I am looking for REDHAT linux rpm for Network program
-> > "NTOP".
-> > I tried to locate at NTOP home page. But could not get
-> > for REDHAT linux. I also checked at REDHAT download
-> > page.
-> > Any idea where I can get NTOP?
-> 
-> A Google search for "ntop rpm download" shows some promising-looking
-> results.
-> 
-> http://www.google.com/search?q=ntop+rpm+download
-> 
-> I use neither ntop nor RedHat, however, so I can't say whether it's
-> exactly what you want.
-> 
-> Antony.
-> 
-> -- 
-> All matter in the Universe can be placed into one of two categories:
-> 
-> 1. Things which need to be fixed.
-> 2. Things which need to be fixed once you've had a few minutes to play
-> with them.
-> 
->                                                      Please reply to
->                                                      the list;
->                                                            please
->                                                            don't CC
->                                                            me.
-> 
-> 
+> Paulo
+
+I have an Asus mobo with VIA chipset that includes SATA.  I'm delighted
+with the performance.
+
+HOWEVER...
+
+Until a distro is released that has SATA drivers on the install media it
+is exceptionally difficult to actually install Linux to the SATA drive. 
+I ended up needing to install to my old IDE drive, build a 2.6.0 kernel,
+mount the SATA drive and prep it, transfer all partitions from the old
+drive to the SATA, then install Grub on the SATA drive.
+
+The short of it: make DAMN sure that if you go the SATA-only route that
+the SATA chipset is supported by 2.4.2x kernels that are used by
+installers, or be prepared for a long tortuous process getting it up and
+running.  
+
+SATA is great, IMHO, but support for it under Linux is not sufficient
+for worry-free installs, YET... With the final release of kernel 2.6.0
+last week, I expect that to change in the near future for many
+distributions.  (although not RedHat, of course :( and Fedora is on a
+scheduled release cycle, so I don't anticipate it there for a few months
+either)
+
+j
 
 
--- 
-Hand over the Slackware CD's and back AWAY from the computer, your geek
-rights have been revoked !!!
-
-Michael Gale
-Slackware user :)
-Bluesuperman.com 
 
