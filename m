@@ -1,12 +1,10 @@
-From: "Didier Hung Wan Luk" <DidierH@frci.net>
-Subject: nmap difficulty number??
-Date: Wed, 30 Oct 2002 18:08:31 +0400
+From: MValentin@imsidc.com
+Subject: FW: Opening connection
+Date: Wed, 30 Oct 2002 10:19:41 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <39778BFB9C25BA429794B15B50AEC78104B1F3@server-dcms>
+Message-ID: <F047A8A03CB7D5118B850060083783CE03BB13@columbia.imsidc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,9 +15,12 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-aGVsbG8gYWxsLA0KIA0Kd2hhdCBkbyB0aGUgZGlmZmljdWx0eSBudW1iZXJzIG1lYW4gaXMgaGln
-aGVyIGJldHRlciBvciB3b3JzZT8/DQogDQpEaWZmaWN1bHR5PTI0NjMxMDkgKEdvb2QgbHVjayEp
-ID8/IHdoYXQgZG9lcyB0aGlzIG1lYW4/DQogDQp0aGFua3MsDQogDQpkaWRpZXINCg==
+
+
+> Please if anybody can help me. My first Linux 7.2 firewall. How do I setup
+> a connection using NAT for a web and mail server in the LAN. Also, Do I
+> have to create entries for the routing table?
 
