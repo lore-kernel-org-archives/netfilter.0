@@ -1,12 +1,10 @@
-From: Eric Leblond <regit@inl.fr>
-Subject: Re: how to match connection tracker's flows?
-Date: Wed, 03 Nov 2004 20:05:29 +0100
-Message-ID: <1099508729.24863.6.camel@porky>
-References: <20041103181718.GA16850@oasis.frogfoot.net>
+From: "Wei Ming Long" <WEI_Ming_Long@dsi.a-star.edu.sg>
+Subject: iptables help
+Date: Thu, 04 Nov 2004 10:40:51 +0800
+Message-ID: <s18a0743.032@dsi.a-star.edu.sg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041103181718.GA16850@oasis.frogfoot.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +16,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@lists.netfilter.org, Netfiltermailinglistnetfilter@lists.netfilter.org
 
-On Wed, 2004-11-03 at 20:17 +0200, Abraham van der Merwe wrote:
-> Hi!
-> 
-> If I add
-> 
-> # rules to track ftp
-> iptables -t mangle -A POSTROUTING -p tcp -j CONNMARK --restore-mark
-> iptables -t mangle -A POSTROUTING -p tcp -m mark ! --mark 0 -j RETURN
 
-If packet are marked they return so leave mangle, so if CONNMARK works
-leave mangle.
+Hi everone,
 
-> # a rule to see how much ftp traffic is matched
-> iptables -t mangle -A POSTROUTING -m mark --mark 2
+I have a setup as shown below:
 
-This line is never reached if CONNMARK works.
+                   VNC Server 192.168.1.4
+                          |
+                          | --------> ssh tunnel on port 5800
+                          |
+                eth1= 192.168.1.2
+                          |
+                Linux Gateway
+                          |
+                 eth0=192.168.33.167
+                          |
+                          |
+                 WindowsXP 192.168.33.164 
+          
 
-BR,
--- 
-Eric Leblond <regit@inl.fr>
+Requirement: To be able to access the VNC Server behind the Linux gateway
+using the web browser on port 5800 tunneled through ssh.
 
+I created a ssh tunnel between the VNC Server(192.168.1.4) & the Linux
+Gateway(192.168.1.2) for port 5800 and the following iptables command in
+Gateway:
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to
+192.168.1.2:5800 
+
+When I type in http://192.168.33.167 in the browser on the WindowsXP machine,
+Iwas expecting that the http request on port 80 would be redirected to port
+5800 & go through the tunnel & reach the VNC Server.
+
+But it doesn't work, what is wrong? can someone please help me with this?
+
+
+Best regards
+Matthew
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+This email is confidential and may be privileged. If you are not the intended recipient, please delete it and notify us immediately. Please do not copy or use it for any purpose, or disclose its contents to any other person. Thank You.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
