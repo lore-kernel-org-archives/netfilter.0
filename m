@@ -1,12 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipv6 and state matching
-Date: Wed, 26 Mar 2003 00:33:38 +0100 (CET)
+From: "Farshad" <farshadas@excite.com>
+Subject: netfilter and packet manipulation
+Date: Tue, 25 Mar 2003 20:09:27 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0303260014340.1739-100000@blackhole.kfki.hu>
-References: <1048607597.1052.9.camel@localhost.localdomain>
+Message-ID: <20030326010927.E3382133B7@xmxpita.excite.com>
+Reply-To: farshadas@excite.com
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1048607597.1052.9.camel@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Trever L. Adams" <tadams-lists@myrealbox.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 25 Mar 2003, Trever L. Adams wrote:
 
-> > Last year I worked on the prototype of an unified conntrack code, but it
-> > was never released. Unfortunately just conntrack doesn't seem to be enough
-> > - one is tempted to implement NAPT etc. as well.
->
-> What is NAPT? Do you mean NAT?  Why was yours never released?
+Hello,
 
-Sorry, I meant NAT-PT.
+ I need to choose a tool for packet manipulation. So I wonder if you could give me your comments on the below issues:
+ 
+- How do you compare Netfilter to Divert Sockets and Netlink?
+  (other than what Divert Sockets mini-HOWTO says)
+  Two factors are important for me: the below question and the 
+  efficency of communication between user and kernel space
+  (doing packet processing in user space)
 
-I did not release the code because it was never finished. That was just a
-prototype, alone for conntrack.
+- (just to make sure) Using Netfilter, is it possible to capture a packet on its way to another host while it is being routed, send it to the user space, then create a number of packets (e.g. two packets) in user space, and send them down into the kernel instead of the original packet towards the destination of the original packet?
 
-> > > Are there plans on doing state support?  Is it all that much more
-> > > difficult?
-> >
-> > A straight porting is not so difficult, but that direction cannot be
-> > followed because it would result in a severe code-duplication.
-> > Unification takes a lot of time.
->
-> Hmm, what is the desired route right now?  Are they wanting to just
-> share code base (lots of ifdefs all over) or are they wanting to
-> actually have the two code bases use the same binary object?
+        thanks very much,
+        Farshad
 
-ifdefs would be simply unmanageable. Kisza tried to use macros, but
-the required macro levels were too deep.
 
-Same binary objects are preferred...
-
-> If one object is desired, can you just use ipv6 structs (whatever ones
-> are involved) in all cases, or should there be a flag and use pointers
-> so that each connection uses the appropriate structres?
-
-...but without a blind union of the data structures: it'd mean a horrid
-waste of the memory.
-
-> I am willing to give this a go, I think.  However, this would be my
-> first "major" work in the kernel (I have only helped a bit with cipe
-> before).  I am not sure how great it would be.
-
-It's a big challenge.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
-
+_______________________________________________
+Join Excite! - http://www.excite.com
+The most personalized portal on the Web!
 
