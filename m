@@ -1,14 +1,12 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: UDP packet storm
-Date: 28 Dec 2004 23:43:02 +0100
-Message-ID: <1104256475.14057.27.camel@nostromo.bgsecm.com>
-References: <1139dfe204122711405ed3a4e7@mail.gmail.com>
-	<558224e304122712367f38de5d@mail.gmail.com>
-	<558224e304122712386be36d59@mail.gmail.com>
+Subject: Re: LOG de iptables con 0 bytes
+Date: 28 Dec 2004 23:43:04 +0100
+Message-ID: <1104256728.14057.32.camel@nostromo.bgsecm.com>
+References: <028d01c4ec1e$8aaaa630$0200a8c0@ale>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <558224e304122712386be36d59@mail.gmail.com>
+In-Reply-To: <028d01c4ec1e$8aaaa630$0200a8c0@ale>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,26 +18,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-El lun, 27 de 12 de 2004 a las 21:38, ASHISH escribi=C3=B3:
-> I would suggest the following method:-
+El lun, 27 de 12 de 2004 a las 15:15, Alejandro Cabrera Obed escribi=C3=B3=
+:
+> Mi regla de LOG de iptables seguramente estaba vacia (cero pkts y bytes=
+) y
+> es verdad, ya lo comprobe con "iptables -L INPUT -v"....ahora les muest=
+ro
+> mis dos reglas en la cadena INPUT para loguear primero y luego acceder =
+al
+> servicio SSH. Pero ocurre que yo puedo acceder al port ssh pero NO qued=
+an
+> logs en el archivo /var/log/messages.
 >=20
-> 1. Go through  the network activity logs, and estimate the average no
-> of packets per unit time that you consider as normal to your packet.
+> $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 22 -j LOG --log-level
+> INFO --log-prefix "SSH Access:"
+> $IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 22 -j allowed
 >=20
-> 2. Then think of a tolerance margin.
+> Como puedo hacer para que se logueen los ingresos ssh ??? Esta mal el o=
+rden
+> o algo por el estilo ???
 >=20
-> 3. Write appropriate rules for limting the rate of packets.
+> Mil gracias !!!!!!!!!!
 >=20
-> I would recommend genarating a cron job that estimates the average
-> number of packets per unit time after every day, and update the rule
-> in filter table. Again optimal estimation is not a trivial job as it
-> depends on several factors.
+> A.K.
 
-I agree with all. I just would like to add that if the storm
-comes to a destination port you don't use (normally the ones
-from Netbios) then just drop them down.
+Yo quitar=C3=ADa el "-s 0/0" de tus reglas. No creo que sirvan para nada =
+y
+probablemente son las que te est=C3=A1n causando el problema. Tambi=C3=A9=
+n
+deber=C3=ADas comprobar que tus reglas para aceptar los paquetes ESTABLIS=
+HED,
+RELATED,etc de connection tracking no est=C3=A9n interfiriendo con tu
+capacidad para loggear y aceptar los paquetes.
+
+Tambi=C3=A9n ten en cuenta (supongo que ya lo has hecho) que est=C3=A1s i=
+ncluyendo
+tus reglas en la cadena "tcp_packets" y haces el iptables -L INPUT -v de
+la cadena INPUT, por lo que en principio no ver=C3=A1s los datos de los l=
+ogs
+de la cadena "tcp_packets".
+
+Espero que sirva de algo. Saludos y felices fiestas.
 
 --=20
 Jose Maria Lopez Hernandez
