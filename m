@@ -1,13 +1,13 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: over a 1,000,000,000 individual ips to block
-Date: Mon, 28 Jun 2004 06:45:01 -0600
+From: Dimitar Katerinski <train@bofh.bg>
+Subject: Re: ip_conntrack_tcp Errors
+Date: Mon, 28 Jun 2004 15:45:16 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040628064501.3bab3f3c@mgalepc.utilitran.com>
-References: <20040624145732.25300.qmail@team.outblaze.com>
+Message-ID: <40E012DC.20204@bofh.bg>
+References: <1088423237.13933.127.camel@spudgun.dhcp.internal> <40E00F6A.2010604@bofh.bg>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040624145732.25300.qmail@team.outblaze.com>
+In-Reply-To: <40E00F6A.2010604@bofh.bg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,61 +17,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
-
-	Why don't you block networks ??
-
-Firewall - SYN Cookie enabling ? 
-
-Mail servers - use RBL list - this list will contain networks of IP's that
-belong to home users. So they do not need to connect directly to your mail
-server.
-
-Web servers -- rate limiting ? block networks ? Better web server ?
-
-If you blocked networks ? The estimated max number of rules a packet might have
-to match would be 254 ... plus the rest of your filtering for ports and other
-needs. This could slow down network access because of all the rules to check for
-each packet.
-
-If you are not using network addresses the list would become to long.
-
-Michael.
+Hm, it seems that Jozsef Kadlecsik wrote tcp window tracking patch ;-)
+So he should know better whats really going on, right Jozsef?
 
 
-On Thu, 24 Jun 2004 22:57:32 +0800
-"Timothy Webster" <timothyw@outblaze.com> wrote:
-
-> I have a need to block 1 -> 2 million ips. 
-> This edge firewall will be blocking dos attackers, spammers
-> from hitting our proxys, and mail/web servers.
-> I also need to be able to reload the 1 -> 2 million blocked 
-> ips from time to time as they change. 
-> But this list is not changing continuously.
-> 
-> Thoughts how to do this?
-> What would you recommend for a hardware?
-> The iptables set patch, what else?
-> 
-> 
-> I need to come of with a plan so I can begin testing for
-> deployment.
-> 
-> Thanks,
-> 
-> -Tim
-> 
-> 
-> 
-> 
-> 
-
+Regards,
+Dimitar
 
 -- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+"The only thing necessary for the triumph of evil is for good men to do nothing."
+                                                   --Edmund Burke.
 
