@@ -1,14 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: iptables acting as a TCP proxy
-Date: Mon, 15 Mar 2004 12:43:31 +0000
+From: vlad <faktroot@mail.ru>
+Subject: Not compiled  connlimit
+Date: Mon, 15 Mar 2004 17:42:24 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403151243.31703.gdh@acentral.co.uk>
-References: <1079349033.10231.14.camel@gdh.walshsimmons.co.uk> <200403151128.20474.Antony@Soft-Solutions.co.uk>
+Message-ID: <702781646.20040315174224@mail.ru>
+Reply-To: vlad <faktroot@mail.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403151128.20474.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,21 +17,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Monday 15 March 2004 11:28, Antony Stone wrote:
+Hello netfilter,
 
-> iptables -A PREROUTING -p tcp --dport 80 -d old.ip.add.ress -j DNAT --to
-> new.ip.add.ress
-> iptables -A FORWARD -p tcp --dport 80 -d new.ip.add.ress -j ACCEPT
-> iptables -A POSTROUTING -p tcp --dport 80 -d new.ip.add.ress -j SNAT --to
-> my.ip.add.ress
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.25/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpreferred-stack-boundary=2 -march=i686 -DMODULE -DMODVERSIONS -include /usr/src/linux-2.4.25/include/linux/modversions.h  -nostdinc -iwithprefix include -DKBUILD_BASENAME=ipt_connlimit  -c -o ipt_connlimit.o ipt_connlimit.c
+ipt_connlimit.c: In function `init':
+ipt_connlimit.c:219: error: `ip_conntrack_module' undeclared (first use in this function)
+ipt_connlimit.c:219: error: (Each undeclared identifier is reported only once
+ipt_connlimit.c:219: error: for each function it appears in.)
+ipt_connlimit.c:220: warning: value computed is not used
+ipt_connlimit.c: In function `fini':
+ipt_connlimit.c:227: error: `ip_conntrack_module' undeclared (first use in this function)
+ipt_connlimit.c:228: warning: value computed is not used
+make[2]: *** [ipt_connlimit.o] Error 1
+make[2]: Leaving directory `/usr/src/linux-2.4.25/net/ipv4/netfilter'
+make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.25/net'
+make: *** [_mod_net] Error 2
 
-A thousand thanks, Antony - you're a giraffe among men - so walk tall :)
+Where?
 
-Yep this works a treat, and you're quite right the fact that requests will all 
-come from the firewall doesn't matter :)
+Thnx.
 
-Cheers,
-Gavin.
+-- 
+With best wishes,
+ vlad                          mailto:faktroot@mail.ru
+
+System/Network Administrator
+TV/Video Engineer
+ICQ 163227020
+----------------------------------------------
+
+
 
