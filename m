@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Port FWD via 2 NAT
-Date: Thu, 22 May 2003 09:56:06 +1000
+Subject: RE: Multiple IP addresses
+Date: Thu, 22 May 2003 09:53:51 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C8A@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019235@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,12 +17,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Adi <adi@nettek.pl>, netfilter@lists.netfilter.org
+To: "Brei, Matt" <mbrei@medclaiminc.com>, netfilter@lists.netfilter.org
 
-Also, you might best use IPSEC and create a tunnel instead of telnetting =
-over the internet which people can not only catch passwords but also =
-know your IP address behind the NAT. I have IPSEC running and can help =
-you set this up but off the list as it's non related..
+Yes, almost anything is possible.
+
+>For instance, there are 3 web servers on the lan say 10.1.1.1 - =
+10.1.1.3 and
+>I want all port 80/443 that comes to the netfilter machine on the
+>inet_address 1.2.3.4 to go to lan_address 10.1.1.1=20
+
+iptables -A PREROUTING -i $EXTDEV -d 1.2.3.4 -p tcp --dport 80 -j DNAT =
+10.1.1.1=20
+# If I understand what you said is that "on the inet_address" meanin the =
+-d destintion address..??
+
+
+>and all port 80/443 from inet_address 4.3.2.1 to forward to 10.1.1.2 =
+etc.  Is this possible?
+
+iptables -A PREROUTING -i $EXTDEV -s 4.3.2.1 -p tcp --dport 443 -j DNAT =
+10.1.1.1
+# Also you said "from inet_address"..
+
+>If so, how about a point in the right direction.
+
+
+So what your doing is making everybody browse 10.1.1.1 but yourself =
+coming from a different source IP outside to view a different =
+webserver?? right??
 
 Thanks,
 ____________________________________________
@@ -33,38 +55,31 @@ georgev@citadelcomputer.com.au
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
 
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
 =20
 
 -----Original Message-----
-From: Adi [mailto:adi@nettek.pl]
-Sent: Thursday, May 22, 2003 7:09 AM
+From: Brei, Matt [mailto:mbrei@medclaiminc.com]
+Sent: Thursday, May 22, 2003 9:02 AM
 To: netfilter@lists.netfilter.org
-Subject: Port FWD via 2 NAT
+Subject: Multiple IP addresses
 
 
-Hello,
+Greetings,
 
-For ascii art fans:
+I'm using netfilter to nat/firewall my cable connection to my lan.  I
+currently have 5 static IP addresses and would like to know if it is
+possible to alias all 5 addresses on the inet_iface and then forward to
+different machines on the lan_iface based on destination IP.  For
+instance, there are 3 web servers on the lan say 10.1.1.1 - 10.1.1.3 and
+I want all port 80/443 that comes to the netfilter machine on the
+inet_address 1.2.3.4 to go to lan_address 10.1.1.1 and all port 80/443
+from inet_address 4.3.2.1 to forward to 10.1.1.2 etc.  Is this possible?
+If so, how about a point in the right direction.
 
-INTERNET----[eth0 LINUX1 eth1]----[eth0 LINUX2 eth1]----[Windows]
+TIA
 
-Linux1 eth0 - public address, NAT, eth1 - 10.0.2.1
-Linux2 eth0 - 10.0.2.2, NAT, eth1 - 10.0.5.1
-Windows - 10.0.5.13
-
-What I can do on Linux1 and Linux2 to allow connect
-from INTERNET to telnet on Windows machine?
-
-I put on Linux1 something like this:
-iptables -A PREROUTING -t nat -p tcp -d (public address) --dport 23 -j =
-DNAT
---to 10.0.2.2:23
-On Linux2:
-iptables -A PREROUTING -t nat -p tcp -d 10.0.2.2 --dport 23 -j DNAT --to
-10.0.5.13
-
-But it still not working :( What I doing wrong?
-Adi
-
+Matt=20
 
 
