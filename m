@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Intercept name lookup discover SA and alter reply?
-Date: Fri, 20 Sep 2002 22:33:17 +0100
+Subject: Re: Internal ip exiting network on firewall external nic despight rule
+Date: Fri, 20 Sep 2002 22:36:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020920213318.TKBX295.mta06-svc.ntlworld.com@there>
-References: <86E43FEDC7E2D411B9610002A50900EB881B7D@ddsmttayz076.ref.whs.mil>
+Message-ID: <20020920213602.TMJS295.mta06-svc.ntlworld.com@there>
+References: <000a01c260e8$91e2bc30$0801a8c0@s3ac>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <86E43FEDC7E2D411B9610002A50900EB881B7D@ddsmttayz076.ref.whs.mil>
+In-Reply-To: <000a01c260e8$91e2bc30$0801a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,30 +20,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 20 September 2002 8:45 pm, Vosburgh, Brian P, CTR, WHS-BB wrote:
+On Friday 20 September 2002 9:59 pm, Rowan Reid wrote:
 
-> I've seen iptables used to block SPAM via dnsbl so I'm wondering... can
-> iptables watch UDP 53, inspect for a specific name query
-> (server.company.com), remap the address to a closer server?
+> > don't understand
+> > why it would be picked up by a rule in your INPUT chain,
+> > because this
+>
+> I should have mentioned the internal machine is masquaraded. Therefore
+> It should go to the input chain no ?
 
-Well, you could certainly create a NAT rule which looks for connections to 
-UDP (&TCP?) port 53 to a specific IP address (= a specific server), and 
-redirect them to anyting you liike, really.
+The INPUT chain is for packets addressed to the firewall itself.
 
-Is that helpful ?
+The FORWARD chain is for packets going through the firewall to some other 
+machine.
 
-> It would be even better if iptables would know (via TCP connect) if the
-> alternate server were up or down and if down resort to the main server.
-
-Surely you can rely on your DNS resolver to do this for you ?   If you set up 
-multiple DNS servers and the first doesn't respond, the next will 
-automatically be tried...?
+Destination NAT is performed in the PREROUTING chain, which comes before 
+either INPUT or FORWARD, therefore it is the "real" destination which 
+determines whether a packet traverses the INPUT or the FORWARD chain.
 
 Antony.
 
 -- 
 
-Having been asked to provide a reference for this man,
-I can confidently state that you will be very lucky indeed
-if you can get him to work for you.
+Success is a lousy teacher.   It seduces smart people into thinking they 
+can't lose.
+
+ - William H Gates III
 
