@@ -1,12 +1,15 @@
-From: Michael <freeware@adsl-209-204-165-151.sonic.net>
-Subject: netfilter resets TCP conversation that was DNATed from the local
- machine to another
-Date: Fri, 27 Jun 2003 20:50:58 -0700
+From: Rocco Stanzione <grasshopper@linuxkungfu.org>
+Subject: Re: clear the ip_conntrack entry
+Date: Thu, 26 Jun 2003 13:21:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EFD10A2.6020807@adsl-209-204-165-151.sonic.net>
+Message-ID: <200306261321.55275.grasshopper@linuxkungfu.org>
+References: <20030625110648.E38F.YOUNGH0702@21cn.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030625110648.E38F.YOUNGH0702@21cn.com>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +19,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: Text/Plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Dear netfilter gods,
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I have a configuration, so:
+I recently reached the same conclusion when unsuccessfully testing cutter. =
+ It=20
+didn't kill the connection but it did remove the conntrack entry, so I=20
+figured the RST packets might be doing the trick.
 
-/------------\ .0.2     .{0,1}.1 /----------\ 1.2.3.4  (          )
-| Web server |-----+-------------| firewall |---------(  Internet  )
-\------------/     |        eth0 |  Squid   | eth1     (          )
-                    |             \----------/
-/---------\ .1.2   |
-| browser |--------/
-\---------/
+On Tuesday 24 June 2003 10:06 pm, =D1=EE=BB=AA spake thusly:
+> Hi everyone :
+> 	I have notice that many request about how to clear the
+> /proc/net/ip_conntrack entry , and someone suggest that it have no
+> resolution except restart the interface .
+> 	I think the answer : send a fake ip packet (with RST set) to
+> firewall , to let it think the connection terminate .
+> 	By this methode , I have the following script written , it work
+> well for me.
+> 	To use this script , you must have hping2 installed , it can be
+> download from http://www.hping.org
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-- The 192.168.{0,1}. subnets run on the same wire.
-- Port 80 on the public i/f is DNATed to the internal Web server.
-
-The firewall is running Squid to proxy for 192.168.1. clients, and it 
-works fine *except* when the target server resolves to a public IP on 
-eth1.  When that happens, I see the client-to-Squid communication go OK, 
-then Squid send a SYN (from .0.1) to .0.2:80, .0.2 sends a SYN ACK,... 
-but then netfilter spontaneously issues a RST to .0.2:80 from another 
-port (i.e., not the one that Squid was using)!  I have no 
-reject-with-tcp-reset lines in my tables.
-
-What up?
-
-
-Squid really doesn't belong on a firewall, but I'm curious to resolve 
-this mystery first.
+iD8DBQE++znDSCmJfrlriowRAuc7AKDo0NRLi4sqXACU66x8l+T9cQeJjACfYk8F
+ta8F/i4Ke4B3rYRNuiqc3gM=3D
+=3D7GIt
+=2D----END PGP SIGNATURE-----
 
 
