@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Setting and Routing on the TOS Source (SRC) and Destination (DST) Bits
-Date: Sun, 22 Sep 2002 11:35:28 +0100
+Subject: Re: ipt_string, udp, dns problem...
+Date: Sun, 22 Sep 2002 11:23:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020922103530.LBDI6699.mta01-svc.ntlworld.com@there>
-References: <Pine.LNX.4.44.0209202140330.2337-100000@laptop1.agatha> <20020922082118.EQR13996.mta05-svc.ntlworld.com@there> <004801c26222$7229fe40$026410ac@honor>
+Message-ID: <20020922102356.DEQK13996.mta05-svc.ntlworld.com@there>
+References: <1292.24.200.104.128.1032687264.squirrel@www.funio.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004801c26222$7229fe40$026410ac@honor>
+In-Reply-To: <1292.24.200.104.128.1032687264.squirrel@www.funio.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,44 +20,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 22 September 2002 11:25 am, Sascha Reissner wrote:
+On Sunday 22 September 2002 10:34 am, Mark Steele wrote:
 
-> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> Hi there,
 >
-> > By the way, I was not advocating IPv6 per se - I was simply commenting on
-> > the confusion which would ensure if this thing called IPv8 became at all
-> > well known in the time between IPv4, which we all use now, and IPv6, which
-> > we're all supposed to be using sometime soon.
+> I have a quick question regarding the iptables string module.
 >
-> Antony, don't care..
-
-Oh, that's okay - I don't.
-
-> Jim Flemming was known for abusing this list as a propagate medium for his
-> - what he calls - IPv8 and IPv16 theories.
+> I'm currently under siege from a DOS attack which is aimed
+> at my name server. I believe the culprit is spoofing
+> his IP address, and sending DNS requests to various
+> recursive name servers for a domain which used to be
+> hosted in my servers. To block this, I am trying to use
+> a string match to drop the packets like so:
 >
-> He used to reply with total off-topic stuff mentioning his theories..
+> /usr/sbin/iptables -I INPUT -j DROP -p udp -s 0.0.0.0/0 -m \
+> string --string "militaire.org" --dport 53
+>
+> I have noticed however, that this hasn't had much of a significant
+> effect, as my name server is still receiving the requests.
+>
+> And the requests are getting through to my
+> name server. Any ideas on what I might
+> be doing wrong?
 
-Hmmm.   I thought I'd been around this list for quite some time, but this is 
-the first I'd come across anything called IPv8, and it just seemed such a 
-silly idea that I didn't want to leave it in the archives without some 
-response pointing out how it breaks the IPv4 standard and could confuse a lot 
-of people who aren't too familiar with normal routing.
+Yes.   You are assuming that a UDP port 53 packet corresponding to a lookup 
+of militaire.org actually contains the literal string "militaire.org".
 
-> just try to not get into deeper discussions with him about that stuff and
-> he will calm down, too.
+In fact it doesn't.   Specifically, the dot separating the domain name from 
+the org is not an Ascii 46 (0x2E).
 
-Fair enough.   I already said in my last posting that it was getting too 
-off-topic for netfilter, so let's stop.   It's only in retrospect that I 
-realised how off-topic it had already got from the original poster's 
-question, which was how to recognise the TOS bits being set by his ISP...
+Try changing your string match to look for just "militaire" and see if that 
+works.
 
 Antony.
 
 -- 
 
-Success is a lousy teacher.   It seduces smart people into thinking they 
-can't lose.
+Software development can be quick, high-quality, or low-cost.
 
- - William H Gates III
+The customer gets to pick any two out of three.
+
 
