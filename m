@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables user defined chains disappear after a few hours ...
-Date: Tue, 10 Feb 2004 12:36:57 +0000
+From: <root@scheuchenstuel.com>
+Subject: bandwidth problems [Linux 2.4.20] [iptables 1.2.7a]
+Date: Tue, 10 Feb 2004 18:28:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402101236.57066.Antony@Soft-Solutions.co.uk>
-References: <1076413370.2747.23.camel@raylinux.internal>
+Message-ID: <E1Aqbgf-0000sd-OV@vishnu.netfilter.org>
+Reply-To: <XXmas@gmx.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1076413370.2747.23.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +17,81 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tuesday 10 February 2004 11:42 am, Ray Leach wrote:
+Hi!
+ 
+My configuration:
+=================
 
-> Hi
->
-> Has anyone encountered the above before?
+O-------------o    O-----------------------o
+|    WinXP    |    |    eth0     |   eth1  |
+| 10.10.1.100 |----| 10.10.1.254 | D H C P |----INTERNET
+|             |    |             |         |
+O-------------o    O-----------------------o
+  My Computer           My NAT-Computer
 
-Do you perhaps have some cron job running on your system which periodically 
-reloads some standard ruleset, and this ruleset doesn't include the 
-user-defined chains which you've added by hand?
+NAT-Computer:
+  Linux 2.4.20-4GB
+  load average: 0.08, 0.05, 0.06
+  iptables v1.2.7a
+All the NICs I use are 3com 3C905-TX
 
-Make a careful note of the exact time the chains disappear, put them back in, 
-and see when they disappear again.   The two times may give you a clue as to 
-what to look for on your system.
+When I do some bandwidth tests on the NAT-Computer
+(provider's service page) my bandwidth is about 1MBit/second
+When I do the same on my computer I only get about 100kbit/second
 
-I'd be pretty certain this is not netfilter losing chains all by itself.
+Now I wonder if there are any problems with my configuration...?
+Would be nice if you could help me...
 
-Antony.
+Thanks in advance
+Florian St.
 
--- 
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
+Root(AT)scheuchenstuel(DOT)com
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+My iptables-configuration:
+==========================
+
+############################################################################
+######
+
+#!/bin/bash
+#
+
+modprobe iptable_nat
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+########## CLEARING TABLES
+iptables -F
+iptables -t nat -F
+iptables -t mangle -F
+iptables -X
+
+########## SETTING POLICIES
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD DROP
+
+########## NAT
+iptables -A INPUT -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+
+########## LOOPBACK SETTINGS
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -s 127.0.0.1/32 -j ACCEPT
+
+########## EXTERNAL OPEN PORTS
+iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
+
+########## INTERNAL OPEN PORTS
+iptables -A INPUT -s 10.10.1.100/32 -j ACCEPT
+
+######### NAT FORWARDING
+iptables -A FORWARD -s 10.10.1.100/32 -j ACCEPT
+iptables -A FORWARD -d 10.10.1.100/32 -j ACCEPT
+
+############################################################################
+######
 
 
