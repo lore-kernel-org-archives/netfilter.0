@@ -1,14 +1,15 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+From: "Daniel Wittenberg" <daniel-wittenberg@starken.com>
 Subject: Re: question about -t nat
-Date: Sat, 19 Jun 2004 18:18:38 -0400
+Date: Sat, 19 Jun 2004 17:40:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087683517.2052.3.camel@localhost>
+Message-ID: <1087684836.8013.3.camel@hawk.wittenberg.org>
 References: <000701c45626$e27411a0$6900a8c0@W2K>
 	 <1087670301.2051.0.camel@localhost>  <000b01c45637$42d805a0$6900a8c0@W2K>
+	 <1087683517.2052.3.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000b01c45637$42d805a0$6900a8c0@W2K>
+In-Reply-To: <1087683517.2052.3.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +20,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Postmaster <iptables-pmd0052@promind.de>
+To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Cc: netfilter@lists.netfilter.org
 
-On Sat, 2004-06-19 at 15:54, Postmaster wrote:
-> > But what, exactly, is the question?
-> 
-> I'm not sure after your question. The following error "iptables: target
-> problem" comes, if i enter this rule in a user-chain:
-> iptables -t nat -A first_group -s a.b.c.d -d x/y -p tcp --dport 10001  \
-> -j DNAT --to-destination 1.2.3.4:25
-> 
-> her are my version and modules:
-> uname -r --> 2.4.20
-> iptables -V --> v1.2.8
-> lsmod --> ipt_REJECT
-> ipt_REDIRECT
-> ipt_limit
-> ipt_LOG
-> ipt_multiport
-> ipt_state
-> ipt_MASQUERADE
-> iptable_filter
-> iptable_nat
-> ip_conntrack_ftp
-> ip_conntrack
-> ip_tables
-> 
-> after your asks i made a test on a other maschine. what an miracle, the same
-> rule works fine. and here my question again. what kind of modul is missing
-> to me?
-> 
-> best regards
-> 
-> Jan
-Hmmm . . . I'll have to defer to others who know more about modules.  I
-always compile mine as part of the kernel just in case.  I see the
-iptable_nat so I'm not sure what's missing.  Is there any chance the
-userland tools are mismatched to the kernel?
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+On Sat, 2004-06-19 at 17:18, John A. Sullivan III wrote:
+> On Sat, 2004-06-19 at 15:54, Postmaster wrote:
+> > > But what, exactly, is the question?
+> > 
+> > I'm not sure after your question. The following error "iptables: target
+> > problem" comes, if i enter this rule in a user-chain:
+> > iptables -t nat -A first_group -s a.b.c.d -d x/y -p tcp --dport 10001  \
+> > -j DNAT --to-destination 1.2.3.4:25
+
+DNAT target can only be used with PREROUTING and OUTPUT.
+
+Dan
 
 
