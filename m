@@ -1,12 +1,13 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Iptables problem
-Date: Wed, 25 Aug 2004 16:04:17 -0400
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: RE: How do I masquerade based on the interface???
+Date: Wed, 25 Aug 2004 19:29:52 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512E4@asimail2.alphanumeric.com>
+Message-ID: <32800.207.236.167.240.1093476592.squirrel@207.236.167.240>
+References: <D5C9032B2B09C64EA2409D6214E91AC90512E0@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512E0@asimail2.alphanumeric.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +18,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: dravya@magma.ca
+Cc: netfilter@lists.netfilter.org
 
-> I use slackware 9.0. I have made the upgrade to the lastest iptables, =
-and nowi want to compile the 2.4.27 kernel and enable nat of pptp. I =
-applied the path-o-matic and actvated the option for it. After compile =
-the kernel, almost everything is funcional, but the targets MASQUERADE =
-and SNAT had a problem.. Show an error: Invalid argument. They are =
-Modules and are loaded at the kernel. A frind had the same problem doing =
-the same thing I wanted to do!
+On Wed, August 25, 2004 2:05 pm, Jason Opperisano said:
+>> Hi all,
+>>
+>> I know that Masquerade makes the outgoing packet with the src "ip
+>> address" ofthe link it
+>> is going out on. BUT is there a way to specify the actual interface it
+>> shouldgo out on.
+>>
+>> for example, if there is ppp0 and ppp1, I want to be able to send all
+>> ICMP packets through
+>> say ppp0.
+>>
+>> Basically I want all ICMP packets to go through one interface, don't
+>> care which one...
+>>
+>> What kind of rules will I need?
 >
-> Anyone knows what can i do ?
+> two thoughts come to mind:
 >
+> 1) using the MARK target to set marks and using iproute2 to route the
+> traffic accordingly (you can't swing a dead cat on this mailing list or=
+ on
+> google without hitting an example on how to do this)
 >
-> Marcelo
+> 2) using the ROUTE target.  seems to be a less common answer--but the
+> example used in the help file is your exact scenario:
+>
+>   # To force all outgoing icmp packet to go through the eth1 interface
+>   # (final target) :
+>   iptables -A POSTROUTING -t mangle -p icmp -j ROUTE --oif eth1
+>
 
-i can tell you "what" you need to do, but i learned this morning that i =
-can't necessarily tell you "how" to do it.
+*For suggestion (2)*
 
-what:  you need to rebuild your userspace "iptables" utility.  the error =
-you're seeing is what happens when you apply patches to the kernel that =
-change the internal structures of netfilter.  in order to interact with =
-the new kernel, you need to compile a new iptables command against that =
-patched kernel source.
+To make it working with the MASQUERADE target, you'll need this :
 
-this is normally as simple as:
+1) Force the packet to continue traversing the other rules.
+   iptables -A POSTROUTING -t mangle -p icmp -j ROUTE --oif ppp1 --contin=
+ue
 
-cd /usr/local/src/iptables-x.x.x
-make KERNEL_DIR=3D<<where-you-built-your-kernel>>
-make install KERNEL_DIR=3D<<where-you-built-your-kernel>>
+2) Read & patch ipt_MASQUERADE.c with the following post:
+https://lists.netfilter.org/pipermail/netfilter-devel/2004-January/013695=
+.html
 
-i can only assume that your friend is Paulo Andre, and this is =
-apparently more complicated than i realize.
+If nothing works, try using the ROUTE target in the FORWARD chain instead=
+.
 
--j
+HTH,
+
+Samuel Jean
+CookingLinux.org
+
 
