@@ -1,13 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Static NAT Mappings
-Date: Wed, 06 Oct 2004 19:01:46 -0400
+From: Lucio <lcml@pixel.it>
+Subject: gateway without nat
+Date: Thu, 7 Oct 2004 16:31:58 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097103706.1716.29.camel@wolfpack.ljm.dom>
-References: <416470cc.39e.491e.214291233@arbbs.net>
+Message-ID: <200410071631.58038.lcml@pixel.it>
+Reply-To: lcml@pixel.it
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <416470cc.39e.491e.214291233@arbbs.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,37 +20,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-10-06 at 18:25, John Black wrote:
-> I'm trying to setup static NAT mappings.
-> 
-> this is what i did, but it doesn't work:
-> public address 1.2.3.4/24
-> ifconfig eth0:0 1.2.3.4 netmask 255.255.255.0
+Hello everybody.
 
-ip address add 1.2.3.4 dev eth0
+I need to setup a linux firewall with iptables with 3 NICs (LAN, WAN, DMZ). 
+The LAN/WAN routing is no problem because I'm going to use NAT and a couple 
+of rules to filter out the packets; so is the LAN/DMZ routing. However the 
+computers that make up the DMZ are already in place (with an old firewall 
+that's being substituted by the linux box), and they are already configured 
+with their respective public ip addresses. What I need is a gateway for the 
+DMZ that doesn't translate those public ip addresses, because I cannot modify 
+the configurations of the computers in the DMZ to make them become 
+192.168.whatever.youwant.
+The problem is that I don't know how to make the kernel route packets between 
+the DMZ and WAN NICs without using a SNAT rule: can anyone help me please?
 
-> then in my firwall script:
-> iptables -t nat -A POSTROUTING -s 192.168.0.4 \
->  -o eth0 -j SNAT --to 1.2.3.4
-
-OK--looks good.
-
-> i tried this also:
-> iptables -t nat -A POSTROUTING -s 192.168.0.4/24
->   -o eth0 -j SNAT --to 1.2.3.4
-
-that's nonsense.  .4 is not the network address, .0 is.
-
-> i have read the howto on the netfilter web site. 
-> but i'm still lost.
-
-do you have filter rules in place that could be blocking the traffic?
-
-have you enabled IP forwarding (sysctl -w net.ipv4.ip_forward=1)?
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
+Thanks in advance,
+Lucio.
 
 
