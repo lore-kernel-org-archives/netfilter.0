@@ -1,10 +1,14 @@
-From: "zhang ping" <dqzhangp@hotmail.com>
-Subject: kernel-2.6, iptables-1.2.9, pppd-2.4.2
-Date: Thu, 25 Dec 2003 08:11:17 +0800
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Problem of Setting dafault polocies to 'DROP'
+Date: Thu, 25 Dec 2003 05:01:21 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY2-F119GDlAiDZX560002d7de@hotmail.com>
+Message-ID: <20031225050121.3439e53a.arnt@c2i.net>
+References: <20031224110324.15253.qmail@web60404.mail.yahoo.com>
+	<200312241112.00560.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200312241112.00560.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,16 +18,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-CkkgdXNlIGxpbnV4IGJveCB0byBzaGFyZSBhIEFEU0w6CgogIC0tLS1BRFNMLS0tLVBQUG9FLS0t
-LS0tTEFOCgpUaGUgbGludXgga2VybmVsIGlzIDIuNi4wClRoZSBpcHRhYmxlcyBpcyAxLjIuOQpU
-aGUgcHBwZCBpcyAyLjQuMgoKcHBwZCBldGgyIGNvbm5lY3QgdG8gaW50ZXJuZXQsIG9uIGxpbnV4
-IGJveCwgZXZlcnl0aGluZyBpcyBvay4KCmlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAt
-aiBNQVNRVUVSQURFCgpXaXRoaW4gdGhlIExBTiAsIGkgY2FuIHN1cmYgc29tZSBzaXRlcywgYnV0
-IGNhbid0IHN1cmYgdGhlIG90aGVycywKCldoYXQgaXMgdGhlIG1hdHRlcj8/Pz8/Pz8/Pz8KClBs
-cyBoZWxwIG1lCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwrP7dPDysC958nP1+6087XEtefX09PKvP7Ptc2zoaogTVNOIEhv
-dG1haWyhoyAgaHR0cDovL3d3dy5ob3RtYWlsLmNvbSAgCgoK
+On Wed, 24 Dec 2003 11:12:00 +0000, 
+Antony Stone <Antony@Soft-Solutions.co.uk> wrote in message 
+<200312241112.00560.Antony@Soft-Solutions.co.uk>:
+
+> On Wednesday 24 December 2003 11:03 am, ads nat wrote:
+> 
+> > The moment I set "iptables -P INPUT DROP"
+> > System hangs.
+> 
+> Are you working on a local keyboard + screen, or via a remote ssh
+> session?
+> 
+> If you are on a network connection, then of course an empty ruleset +
+> default DROP policy will block your connection.
+
+...so you will wanna set up a rule set that allows you to finish 
+setup of the firewall, before you set up the drop policy.  ;-)
+
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
+
+
