@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: one to one NAT
-Date: Fri, 27 Sep 2002 22:04:58 +0100
+Subject: Re: IPtables and DDclient
+Date: Fri, 27 Sep 2002 22:44:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020927210500.VYRD6699.mta01-svc.ntlworld.com@there>
-References: <ADCE7AEB26CBD511B4D100508B66D3063BD421@fmsmsx115.fm.intel.com>
+Message-ID: <20020927214402.UJBU13996.mta05-svc.ntlworld.com@there>
+References: <000801c26504$df5d3f60$0401a8c0@crazymother>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ADCE7AEB26CBD511B4D100508B66D3063BD421@fmsmsx115.fm.intel.com>
+In-Reply-To: <000801c26504$df5d3f60$0401a8c0@crazymother>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Tuesday 24 September 2002 1:13 am, Brennan, JosephX M wrote:
+On Thursday 26 September 2002 3:31 am, Marc-Andr=E9 Boulais wrote:
 
-> I have a dual homed box with interfaces: eth1(internal card):192.168.1.254
-> and eth2(external card):10.10.10.254.  In addtion I have an external test
-> box with an ip of 10.10.11.23.
-> On the other side I have an internal test box with an ip of
-> 192.168.1.24.
+> hi, I am currently looking for a way to let "ddclient" ( IP updater progr=
+am
+> ) pass through iptables. I was first looking for the ports involved with =
+it
+> but I can't seem to find any info on that.
 >
-> My question however is i have tried this command
->
-> iptables -t nat -A PREROUTING -d 10.10.10.254 -j DNAT --to 192.168.1.24
->
-> and my internal box gets a request from the outside box however it does not
-> look like there has been any "NAT"ing taken place because when I run a
-> packet sniffer on the internal box the packets are still coming from the
-> 10.10.10.23 address and obviously the internal box has no idea how to send
-> the information back.
+> If you know how I could build a rule to let it pass through ( cuz right
+> now, it is blocked ) iptables. Please let me know.
 
-The NAT *has* taken place, otherwise it wouldn't have got to the destination 
-machine.
+I do not know what ddclient is, however you can find out what sort of packe=
+ts=20
+it uses by putting a LOGging rule at the end of your FORWARD chain, just=20
+before you throw all the remaining packets away with the default DROP polic=
+y:
 
-However, you have set up a DNAT rule, so that's what netfilter has done - 
-destination NAT.   It has not changed the source address because you have no 
-SNAT rule.
+iptables -A FORWARD -j LOG --log-prefix "Forward block "
 
-Why does the internal box have no idea how to send the information back ?   
-What is its default gateway ?
+This is assuming, of course, that you're trying to send ddclient *through* =
+
+the firewall, and not from it or to it (in which case you'd want to LOG the=
+=20
+packets in the OUTPUT or INPUT chains).
+
+Once you've seen what sort of packets it's using, you can add the appropria=
+te=20
+rules to let it through...
+
 
 Antony.
 
--- 
+--=20
 
-KDE 3.0.3 contains an important fix for handling SSL certificates.  Users of 
-Internet Explorer, which suffers from the same problem but which
-does not yet have a fix available, are also encouraged to switch to KDE 3.0.3.
+All matter in the Universe can be placed into one of two categories:
 
-http://www.kde.org/announcements/announce-3.0.3.html
+1. things which need to be fixed
+2. things which will need to be fixed once you've had a few minutes to play=
+=20
+with them
 
