@@ -1,13 +1,10 @@
-From: jo@neolabs.be
-Subject: ipfilter vs. netfilter keepalive
-Date: Sat, 31 Jan 2004 0:49:07 +0200
+From: <seldeterre@yahoo.com>
+Subject: Multihomed firewall/router
+Date: Fri, 30 Jan 2004 06:21:17 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401302349.i0UNn7u19236@neo1.neolabs.be>
-Reply-To: jo@neolabs.be
+Message-ID: <20040130142117.66050.qmail@web41209.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: binary
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +15,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi, 
+I have a firewall/router performing snat.  This is its
+configuration.
 
-my company sits on a LAN with private addresses. We have a box that
-filters the traffic (Cisco) and another box that does the SNAT. This
-second box used to be a Solaris with ipfilter. Three days ago my company
-replaced it by a linux machine running netfilter (iptables).
+                        eth1-192.168.1.0/24
+                       /
+Internet--eth0-firewall-eth2-192.168.2.0/24
+                       \
+                        eth3-192.168.3.0/24
 
-Since then users are complaining about the following phenomenon :
+My iptables setup is successfully blocking connections
+from eth0.  However, I need to segregate the internal
+subnets from each other because the belong to
+different organizations.  No matter what I try I can't
+seem to block pings from one subnet to another.  I can
+lock it down to only allow input access to the
+interface the subnet is directly connected to, but I
+need to provide dns access to eth1 and this breaks
+when I do this.
 
-ssh-connections that are left open but unused seem to be cut off after a
-certain period of non-activity (users report from 30 min. up to 2 housr). 
-They simply have to log in again. This problem never occured with the
-ipfilter box.
+The firewall is running a caching dns server(djbdns)
+on eth1.  It also provides dhcp leases, and ntp
+services on eth1-3.
 
-I guess the remote ssh-server is sending keepalive packets, and somehow
-the ipfilter understands that those packets must be passed to the
-intranet, eventhough they are OOB to the outgoing TCP connection.
-Netfilter does not seem to understand this.
+I have also noticed that when I flush the tables and
+delete the chains.  Nat is still provided, i.e. I can
+still connect to the internet.
 
-Is this assumption correct? If so, does netfilter have a tuning so it
-keep ssh connections alive or do I advise to switch back to ipfilter?
+Any pointers or help would be greatly appreciated.
 
-Thanks for any hints.
+Jeremy Hendrickson
 
-Jo De Baer
-
-NEOlabs - http://www.neolabs.be - mailto:info@neolabs.be
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free web site building tool. Try it!
+http://webhosting.yahoo.com/ps/sb/
 
