@@ -1,9 +1,8 @@
-From: "Leonardo Rodrigues Magalhaes" <leolistas@solucoesip.net>
-Subject: Re: question on ip_conntrack log entries and behavior
-Date: Fri, 21 Mar 2003 08:32:36 -0300
+From: Henry Ritzlmayr <h.ritzlmayr@gmx.at>
+Subject: Redirecting incoming traffic to 127.0.0.1
+Date: 21 Mar 2003 15:31:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002201c2ef9d$932eb190$3201a8c0@ESTACAO>
-References: <Pine.LNX.4.33.0303201500280.17210-100000@blackhole.kfki.hu>
+Message-ID: <1048257065.1493.137.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,80 +16,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter ML <netfilter@lists.samba.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+I have a service running on a box wich is only able to bind to 127.0.0.1
+(hardcoded and I can=B4t get the source to change it). Since I want to use
+it from any other box the only way to solve that I think is to nat
+incoming packets to 127.0.0.1.
 
-    OK ......... i downloaded latest patch-o-matic snapshot, get a new
-kernel 2.4.20 source tree and tried to aplly the needed patchs. But, I got a
-problem here ....
+IPTABLES -t nat -A PREROUTING -p tcp -d 172.16.172.12 -j DNAT
+--to-destination 127.0.0.1
 
-    Seems I need submitted/10_confirm_fix.patch to fix the CLOSE stuff .....
-but I also need tcp-window-tracking.patch for allowing deal with conntrack
-timeouts in kernel runtime. But both patchs seems to change the SAME line in
-two files. So, I cannot apply the two. I can only apply one of them ( any
-one ) and it will apply correctly. The other will always fail.
+and many others wich I tried don=B4t work.=20
 
-    Problem seems to be:
+If I understood REDIRECT correctly it only changes to the local IP where
+the packet came in (in my situation 172.16.172.12) wich also not solves
+the problem.=20
 
-hunk from submitted/10_confirm_fix.patch
+any ideas?
 
---- linux-2.4.20-base/net/ipv4/netfilter/ip_conntrack_proto_tcp.c       Tue
-Feb 18 17:07:26 2003
-+++ linux-2.4.20-del/net/ipv4/netfilter/ip_conntrack_proto_tcp.c        Fri
-Feb 21 17:03:35 2003
-@@ -192,7 +192,7 @@
-           have an established connection: this is a fairly common
-           problem case, so we can delete the conntrack
-           immediately.  --RR */
--       if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
-+       if (!test_bit(IPS_SEEN_REPLY_BIT, &conntrack->status) && tcph->rst)
-{
-                WRITE_UNLOCK(&tcp_lock);
-                if (del_timer(&conntrack->timeout))
-                        conntrack->timeout.function((unsigned
-long)conntrack);
-
-    in extra/tcp-window-tracking.patch file, I have, among several other
-changes:
-
--       if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
-+       if (!(conntrack->status & IPS_SEEN_REPLY)) {
-
-    Question ...... and now, what should I do ?? :) It would be very
-interesting to me having both patchs applied. Do the mainteners of these
-patchs are subscribed to this list ? If yes, can you help me ?
-
-
-    Sincerily,
-    Leonardo Rodrigues
-
------ Original Message -----
-From: "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu>
-To: "Leonardo Rodrigues Magalhaes" <leolistas@solucoesip.net>
-Cc: "netfilter ML" <netfilter@lists.samba.org>
-Sent: Thursday, March 20, 2003 11:04 AM
-Subject: Re: question on ip_conntrack log entries and behavior
-
-
-On Thu, 20 Mar 2003, [iso-8859-1] Leonardo Rodrigues Magalh=E3es wrote:
-
->     I got a firewall running kernel 2.4.20 with some p-o-m patches,
-> including tcp-window-tracking which allows me change timeout stuff in
-> runtime.
->
->     Well ...... my /proc/net/ip_conntrack log is PLENTY of CLOSE
-> connections, just like:
-
-This is a bug in 2.4.20. You need the submitted/10_confirm_fix.patch.help
-patch from the most recent patch-o-matic.
-
-Regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
-
+Henry
 
 
