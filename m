@@ -1,14 +1,11 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: 3 part firewall
-Date: Wed, 21 May 2003 18:08:26 +0800
+From: "Michael Forrest" <michael@erg.abdn.ac.uk>
+Subject: Libipq problems...
+Date: Wed, 21 May 2003 12:23:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030521100826.GA1359@floyd>
-References: <200305202342.51581.robert.cole@support4linux.com>
-Reply-To: kluivert@tm.net.my
+Message-ID: <000201c31f8b$64eec270$66cf858b@ENTERPRISE>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200305202342.51581.robert.cole@support4linux.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,61 +16,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, May 20, 2003 at 11:42:51PM -0700, Robert Cole spoke thusly:
->I have a server that has 3 real interfaces (no aliases). eth0 is the
->public, eth1 is the private and eth2 is the DMZ interface. All the books
->and docs I've seen so far work with only two interfaces and trying to
->adapt those scripts is giving me a headache.
 
-You did not supply any real IP addresses to go with it. Therefore, I'll
-assume it like so :
+Hi all,
 
-eth0	- 1.1.1.1
-eth1	- 192.168.250.0/24
-eth2	- 172.30.55.0/24
+I was wondering if anyone had seen a similar problem to the one am
+having? Its more than likely a simple issue, but just cant seem to
+figure it out at the mo. I'm connecting two machines to a hub and the
+hub is then connected onwards into the network. The machine that I wish
+to see all traffic has the promisc mode on the interface and should see
+all traffic.
 
-and the eth0 IP is static.
+I'm using a QUEUE target with an appropriate program for receiving the
+packets in userspace, I'm almost 100% certain the program works. It
+works for loopback cases and receives all other traffic I throw at it.
+Locally generated traffic is seen by the QUEUE module...although other
+traffic on the hub is not seen by the QUEUE module. It sees only
+broadcast messages and multicast, but no unicast.
 
->I want to allow all private traffic out to the internet through PAT (port
->address translation). But when going from the LAN to the DMZ I want no nat
->or pat going on, only when leaving to the internet. 
+I'm adding a hook to the mangle table on the PREROUTING chain as follows
+:-
 
-Hmm, I don't think we hold the same definition for PAT. In any case, if you
-merely want normal SNAT / MASQ, do it like so.
+	iptables -t mangle -I PREROUTING -j QUEUE
 
-/sbin/iptables -F
-/sbin/iptables -P INPUT DROP
-/sbin/iptables -P OUTPUT DROP
-/sbin/iptables -P FORWARD DROP
+This should queue anything......from my understanding of the iptables
+command syntax.
 
-/sbin/iptables -A FORWARD -p all -s 192.168.250.0/24 -d any/0 -j ACCEPT
-/sbin/iptables -t nat -A POSTROUTING -p all -j SNAT --to-source \
-               1.1.1.1
+Watching the physical packet counts on the mangle chains, they don't
+increment by much...usually only a few packets here and there, which are
+network broadcasts or multicast packets from other machines.
 
-/sbin/iptables -A OUTPUT -p all -m state --state ESTABLISHED,RELATED \
-               -j ACCEPT
-/sbin/iptables -A FORWARD -p all -m state --state ESTABLISHED,RELATED \
-               -j ACCEPT
-/sbin/iptables -A INPUT -p all -m state --state ESTABLISHED,RELATED \
-               -j ACCEPT
+The strange part is, if I run tcpdump on the machine or use pcap for
+packet capture. All packets are seen by the machine on tcpdump/or
+pcap...although the QUEUE module only sees the packets I mentioned
+above.
 
->Next I would like a strict rule that allows another public IP to be 1 to 1 
->nat'd from the public interface to a server out the DMZ interface.
+Is this normal or have I missed something here??
 
-/sbin/iptables -t nat -A PREROUTING -p tcp -s any/0 -d 1.1.1.1 \
-               --dport 12345 -j DNAT --to-destination 172.30.55.100:12345
+Thanks,
 
-/sbin/iptables -A FORWARD -p tcp -s any/0 -d 172.30.55.100 --dport 22 \
-               -j ACCEPT
+Michael.
 
->I'm currently using narc to setup the firewall and it appears to work to
->get basic internet bound traffic from the lan and I can get to the DMZ
->from the LAN without translation so I'm close here but getting the 1 to 1
->NAT working is causing me grief.
+--
+[root@atlantis root]# ifconfig -a
+eth0      Link encap:Ethernet  HWaddr 00:04:76:DD:BD:3A  
+          inet addr:192.168.0.103  Bcast:192.168.0.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1500  Metric:1
+          RX packets:201616 errors:0 dropped:0 overruns:1 frame:0
+          TX packets:86807 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:100 
+          RX bytes:229546583 (218.9 Mb)  TX bytes:7732765 (7.3 Mb)
+          Interrupt:11 Base address:0xdc00 
 
-Haven't use narc, can't comment. The aforementioned rules can be tightened
-somemore, depending on your overall situation.
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:94 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:94 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:6307 (6.1 Kb)  TX bytes:6307 (6.1 Kb)
+--
+
 
