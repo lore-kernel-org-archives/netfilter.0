@@ -1,10 +1,10 @@
-From: "Stuart Clark" <elmhurst@spacelink.com.au>
-Subject: nat table not working with 'iptables -L nat'
-Date: Wed, 23 Apr 2003 09:01:26 +1000
+From: "Mathias Sundman" <Mathias.Sundman@sungard.se>
+Subject: Match DF ( =?iso-8859-1?Q?Don=B4t_Fragment=29_bit?=
+Date: Wed, 23 Apr 2003 17:24:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002001c30923$1a65a440$0100a8c0@yogi>
+Message-ID: <OF0AE04567.652B900B-ONC1256D11.0042E920@guardianit.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,56 +15,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi
+I=B4m using vtun to create an encrypted ethernet bridge.
 
-When I try and add a rule to the nat table it seems to work but when I
-do 'iptables -L nat' I get the error 
+My setup is like this:
+LocalNet1 - BRIDGE1 - Internet - BRIDGE2 - LocalNet2
 
-'iptables: Table does not exist (do you need to insmod?)'
+where BRIDGE1 and BRIDGE2 is linux mashines that bridge
+between one physical interface and a tap device created
+by vtun.
 
-All the other tables are there when I do 'iptables -L' but no nat table.
+This works great, however there is a problem with the MTU.
 
-How can I get this working?
+If a mashine on LocalNet1 sends full size packets (1500b)
+to a mashine on LocalNet2, it will exceed 1500 bytes
+when it=B4s encrypted and sent over the internet. These packets
+will then be fragmented. This is fine as long as the fragments
+gets through...
 
-I don't want to recompile the kernel
+However, this is not always the case. Therefor I=B4ve tried to
+find a way to make the mashines understand that they can=B4t
+use that big packets when talking to mashines on the other side
+of the bridge.
 
-Machine Specifications
+So I made a quick hack in netfilter/iptables which enabled me
+to return ICMP "dest-unreachable, fragementation needed but
+DF flag set" packets when a to large packet arrives.
 
-Pentium2, 266Mhz
-64meg Ram
-Redhat 7.3
-iptables-1.2.5-3.rpm
+That seemed to do the trick, but I=B4d like to do this only if the
+original packet had the DF flag set, so my question is, is it
+possible to check whether the DF flag is set or not?
 
+(Please CC me on replies)
 
-Here is my module config
-
-#
-# 2.1 Required modules
-#
-
-/sbin/modprobe ip_tables
-/sbin/modprobe ip_conntrack
-/sbin/modprobe iptable_filter
-/sbin/modprobe iptable_mangle
-/sbin/modprobe iptable_nat
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ipt_limit
-/sbin/modprobe ipt_state
-/sbin/modprobe ip_nat_ftp
-
-#
-# 2.2 Non-Required modules
-#
-
-#/sbin/modprobe ipt_owner
-#/sbin/modprobe ipt_REJECT
-/sbin/modprobe ipt_MASQUERADE
-/sbin/modprobe ip_conntrack_ftp
-#/sbin/modprobe ip_conntrack_irc
-#/sbin/modprobe ip_nat_irc
+Regards
+Mathias Sundman
+=
 
 
 
