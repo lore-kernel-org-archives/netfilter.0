@@ -1,12 +1,14 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: RE: firewalled dns clients
-Date: Fri, 7 Nov 2003 13:05:09 +0800
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: IP-Range and Subnetmask
+Date: Thu, 6 Nov 2003 21:27:32 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8E31@overlord.overturemedia.com>
+Message-ID: <LFEHKEBEBHAFGJBMNKAOKEFLCEAA.markee@bandwidthco.com>
+References: <20031105214204.GI30148@iwoars.net>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <20031105214204.GI30148@iwoars.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,130 +19,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair@nerdnet.ca, "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+To: Thomas Themel <themel@iwoars.net>, "Bewerbungsadresse@web.de" <bewerbungsadresse@web.de>
+Cc: netfilter@lists.netfilter.org
+
+I think this is what you are looking for:
+CLASS_B="172.16.0.0/12"
+
+$IPT -t filter -A SPOOFING_RULES -i $FW_INET_IFACE -s $CLASS_B -j
+LOG --log-level $LOG_LEVEL --log-prefix "IP SPOOFING ATTEMPT: "
+$IPT -t filter -A SPOOFING_RULES -i $FW_INET_IFACE -s $CLASS_B -j DROP
 
 
-No I don't have a dns server. I want them to be able to access the isp's =
-dns.
-
-I guess I have to forward them.
-
-Thanks.
-
-Cheers,
-
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Thomas Themel
+Sent: Wednesday, November 05, 2003 1:42 PM
+To: Bewerbungsadresse@web.de
+Cc: netfilter@lists.netfilter.org
+Subject: Re: IP-Range and Subnetmask
 
 
+bewerbungsadresse@web.de wrote on 2003-11-05:
+> is it possible to prevent spoofing attacks to 172.16.0.0-172.31.255.255
 
-> -----Original Message-----
-> From: Alistair Tonner [mailto:Alistair@nerdnet.ca]
-> Sent: Friday, November 07, 2003 12:46 PM
-> To: Fritz Mesedilla; Netfilter Mailing List (E-mail)
-> Subject: Re: firewalled dns clients
->=20
->=20
-> On November 6, 2003 10:49 pm, Fritz Mesedilla wrote:
-> > Greetings!
-> > Thank to all of your help I was able to create a safe=20
-> network behind an
-> > iptables firewall. Now I need help again.
-> > How do I let the workstations do a nslookup?
-> >
-> >           Internet
-> >
-> >
-> >           Firewall
-> >
-> >
-> >     -------------------------------
-> >
-> >
-> > workstation    workstation    workstation
-> >
-> >
-> >
-> >
-> > From their windows workstation, I want to be able to let=20
-> them perform a
-> > nslookup.
-> >
-> > I tried this and nothing happened.
-> > $IPTABLES -A INPUT -p tcp --sport 53 -j ACCEPT
-> > even a
-> > $IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
-> >
-> > Do I need a nat?
-> >
-> 	You may need to include upd port 53 access for the clients.
-> 	is your DNS server on the iptables firewall box?=20
-> 	if not the above rules aren't gonna help.
-> 	you need to allow 53 to the DNS server -- if you are=20
-> using external DNS you=20
-> need to allow the ports through the FORWARD chain.
-> >
-> > Cheers,
-> >
-> >
-> > fritz <www.mesedilla.com>
-> > ---
-> > + Basta Ikaw Lord
-> >
-> >
-> >=20
-> ----------------------------------------------------------------------
-> > This email and any files transmitted with it are confidential and
-> > intended solely for the use of the individual or entity to whom they
-> > are addressed. If you have received this email in error=20
-> please notify
-> > the sender immediately by e-mail and delete this e-mail from your
-> > system. Please note that any views or opinions presented in this
-> > email are solely those of the author and do not necessarily=20
-> represent
-> > those of the company. Finally, the recipient should check this email
-> > and any attachments for the presence of viruses. The company accepts
-> > no liability for any damage caused by any virus transmitted by this
-> > email.
-> >
-> > Overture Media, Inc.
-> > Direct Line: (632) 635-4785
-> > Trunkline:   (632) 631-8971 Local 146
-> > Fax: (632) 637-2206
-> > Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor.=20
-> Ortigas Ave.,
-> > Quezon City 1100
->=20
-> --=20
->=20
-> 	Alistair Tonner
-> 	nerdnet.ca
-> 	Senior Systems Analyst - RSS
-> =09
->      Any sufficiently advanced technology will have the=20
-> appearance of magic.
-> 	Lets get magical!
->=20
+> something like that
+> iptables -A INPUT -p tcp -s 172.16.0.0/255.31.0.0 -d $INET_IP -i ppp0 -j
+> SPOOFED
+>
+> but i think the rule above is wrong
 
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
+It is. Netmasks are comprised of a sequence of 0..* ones followed by a
+sequence of 0..* zeroes, which is why you can write them as /nn, nn
+being the number of ones.
 
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
+255.31.0.0 	= 1111 1111 0000 1111 0000 0000 0000 0000
+
+What you want is
+
+1111 1111 1111 0000 0000 0000 0000 0000 -> /12 if you want it easy,
+
+255.240.0.0 if you like doing binary conversion.
+
+
+> so: is it possible at all?
+> or do i have to write a loop or all single ip-ranges manually?
+
+Not in this case (since you've got an area that fits exactly into a
+/12).
+
+ciao,
+--
+[*Thomas  Themel*]  While differing widely in the various little bits we
+know,
+[extended contact]  in our infinite ignorance we are all equal.
+[info provided in]
+[*message header*]      - Karl Popper
+
 
 
