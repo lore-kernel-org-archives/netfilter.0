@@ -1,11 +1,14 @@
-From: Matthias Hopf <Matthias.Hopf@informatik.uni-stuttgart.de>
-Subject: QoS traffic shaping behaves strangely with addressed based filtering
-Date: Mon, 19 Jul 2004 16:47:59 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: bridge + nat
+Date: Mon, 19 Jul 2004 15:48:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040719144759.GA11352@vismail.informatik.uni-stuttgart.de>
+Message-ID: <200407191548.30354.Antony@Soft-Solutions.co.uk>
+References: <3063e5040718224645349687@mail.gmail.com> <200407191025.44076.Antony@Soft-Solutions.co.uk> <3063e504071907313a194279@mail.gmail.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <3063e504071907313a194279@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +19,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all!
+On Monday 19 July 2004 3:31 pm, George Alexandru Dragoi wrote:
 
-I found a rather esotheric bug / misconfiguration, and now I'm lost.
-Maybe somebody else has a clue what is going on here.
+> That is what i wanted to do, with 2 NICs to make a bridge between
+> internet and the LAN, assign the public ip to one of the LAN machine,
+> and prite ips to the rest of machines, and to hope it will work, seems
+> not, i hoped i could do this.
 
-I am connected to the internet via a typical DSL router with integrated
-4-port switch. One of my computers should be able to serve local
-machines at full speed, but internet bandwith usage should be limited.
-Just for the record, it is running 2.4.27-pre3, but I have checked
-several kernel versions (not the 2.6 series, though).  Additionally, a
-set of firewall rules is active. The system is rather slow with C3
-@533MHz, but has 512MB RAM.
+No.   With 2 NICs you can either bridge, or route, but not both.
 
-Now what happens is the following: With the QoS rules enabled, the
-system behaves as anticipated (fast local traffic, limited internet
-traffic), but suddenly for a couple of seconds it won't talk to local
-computers any longer. ssh connections freeze, no ping, nothing.
-Strangely enough, remote connections are still alive.  Other systems can
-talk with each other and are routed to the internet as well, so I
-conclude that this has nothing to do with the router.  This mostly
-happens when a lot of upstream traffic is going on, that is, the
-internet limit is hit. The time of traffic breakdown varies from event
-to event and can be as large as a minute. Needless to say that the
-system itself is almost idle during that time and that it won't happen
-with QoS disabled.
+With 3 NICs you could bridge 2 of them together, and route between the bridged 
+pair and the 3rd NIC, however in this situation I think you would need to 
+have an IP address on the bridged pair, and you say you have only 1 public IP 
+address available?
 
-I narrowed down the strange behaviour and can sort of reproduce it with
-the following subset of my QoS rules - the exact bandwidth limits do not
-really matter, I got this with 50kbit uplink and 400kbit local traffic
-and different quantum values as well:
+> If the voip hardware/software wont work
+> in nat with port forward, i wont change there with linux.
+> Maybe there is a suggestion for that voip, or if i can do this with 3
+> NICs, and 1 single public IP.
 
+With only 1 public IP address I think you are stuck as soon as you assign that 
+address to any machine except the VoIP server.
 
-DEV=eth0
-LOCAL=192.168.2.0/24
+Why do people keep on coming up with protocols which don't work across NAT?
 
-tc qdisc add dev $DEV root handle 1: htb default 2
-# Class 1:1 local traffic
-tc class add dev $DEV parent 1: classid 1:1 htb prio 1 \
-   rate 80mbit quantum 32768
-# Class 1:2 remote traffic
-tc class add dev $DEV parent 1: classid 1:2 htb prio 2 \
-   rate 80kbit ceil 80kbit burst 2k quantum 1500
+NAT works at OSI layer 3.   Any higher level protocols should not care about 
+it.
 
-# Local traffic goes unconditionally to 1:1
-tc filter add dev $DEV parent 1: protocol ip prio 1 \
-   u32 match ip dst $LOCAL \
-   flowid 1:1
+Regards,
 
-
-Any ideas?
-
-Thanks
-
-Matthias
+Antony.
 
 -- 
-Matthias Hopf - Visualization and Interactive Systems Group    \  |  |  /--
-                  University of Stuttgart,                      \ |  |   \
-       Universitaetsstr. 38, 70569 Stuttgart, Germany            \|  |  --/
-Phone +49-711-7816-404    Fax -340          mat@mshopf.de     www.mshopf.de
+There's no such thing as bad weather - only the wrong clothes.
+
+ - Billy Connolly
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
