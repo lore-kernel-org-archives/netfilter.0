@@ -1,13 +1,17 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SNAT does not work
-Date: Thu, 6 Jun 2002 15:55:47 +0100
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: dns server
+Date: 06 Jun 2002 17:06:30 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206061455.g56EttA31457@vulcan.rissington.net>
-References: <3CFF6327.5020306@globit.com> <200206061357.g56DvOA31162@vulcan.rissington.net> <3CFF7596.4090300@globit.com>
+Message-ID: <1023375991.8473.43.camel@billy.demon.nl>
+References: <Pine.LNX.4.21.0206061542060.7290-100000@dns.toxicfilms.tv>
+	<200206061548.32785.raymondl@knowledgefactory.co.za> 
+	<200206061400.g56E0BA31175@vulcan.rissington.net> 
+	<1023374193.1070.14.camel@icewind.arne.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-IwTu2+XW2kHArOl4Q+Ff"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CFF7596.4090300@globit.com>
+In-Reply-To: <1023374193.1070.14.camel@icewind.arne.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,53 +21,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
-
-On Thursday 06 June 2002 3:45 pm, Uwe Eisner wrote:
-
-> >Surely that means that your address translation *is* working ?
->
-> But why is the external ip-address from the firewall showen at the www?
-> I specifyed the IP-address 141.12.218.99 not 141.12.129.9 (ext.
-> Router-IP-Address)
-
-Sorry - I did not realise from your original email that 141.12.218.99 was not 
-the external address of your firewall.
-
-> > I do not understand what you mean by this.   Surely you do not mean that
-> > if you remove the POSTROUTING rule, you can still connect to a remote web
-> > server and have a Perl script tell you your source address ???
->
-> Yes, that is it! I removed every POSTROUTING rule, but I could still
-> connect to the web.
-
-In that case you must have Network Address Translation in operation on your 
-external router ?   If not, then there is no way that:
-
-a) privately-addressed machines 10.x.y.z, 172.16.s.t, 192.168.a.b could 
-contact external servers
-
-b) your router address would show up on an external machine.
-
-> Afterwards I typed the flash command 'iptables -F'. Now ALL rules should
-> be removed, souldn't it?
-
-No.   Not unless you also typed
-iptables -F -t nat
-
-"iptables -F" on its own will *only* clear the filtering table, not the nat 
-table or the mangle table.
-
-Try iptables -L -t nat to see what rules you really have in place.
-
-> I started my configuration script with the new rule (see above), but
-> nothing has changed.
->
-> First I tought, that iptables -F does not delete the POSTROUTING rules,
-
-Correct :-)
+To: Arne Sagnes <ASagnes@Tickets.com>
+Cc: NetFilter <netfilter@lists.samba.org>
 
 
-Antony.
+--=-IwTu2+XW2kHArOl4Q+Ff
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+tor, 2002-06-06 kl. 16:36 skrev Arne Sagnes:
+
+>   DNS, specifically Bind, has options in the named.conf to limit zone
+> transfers and recursive lookups.  You can use the 'allow-transfer { IP;
+> IP };' directive to restrict zone transfers.
+
+Yes, but this nothing to do with netfilter. Nor the purpose for which
+the name server is intended.
+
+E.g. I don't even want people querying my Compaq notebook DNS. It's a
+caching DNS and not meant for others.
+
+Nevertheless, because of the nasties on the Internet (see CERT Advisory
+CA-2002-15 Denial-of-Service Vulnerability in ISC BIND 9, Original
+release date: June 04, 2002), one *hell* of a lot of nasties are trying,
+at the moment (yes, thanks Oskar, for pointing out the use of logging).
+
+What they're actually trying, is to get to stop traffic to my Compaq.
+
+N=E6hnen=E6hnen=E6hne, nasties! I've got iptables and you can't get me.
+
+*That's* what Netfilter is all about.
+
+Tony
+
+Henne er "tickets.com" henne, Arne; du som sier at du "engang var
+nordmann"? Flyttet til Utlandet, er du?
+
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
+
+
+
+--=-IwTu2+XW2kHArOl4Q+Ff
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA8/3p299dgUTvnuYERAgFOAKCCl1CCVFFt7vPqSFp2HpeDylWMSwCeImVe
+10uaTWontynz8GAISSZfIL8=
+=D7/t
+-----END PGP SIGNATURE-----
+
+--=-IwTu2+XW2kHArOl4Q+Ff--
+
 
