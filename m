@@ -1,15 +1,12 @@
-From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: Too many ARP entries and Re: sendto: No buffer space available
-Date: Tue, 3 Dec 2002 13:27:58 +0000
+From: James Morris <jmorris@intercode.com.au>
+Subject: Re: [SECURITY] Local Netfilter / IPTables IP Queue PID Wrap Flaw
+Date: Wed, 4 Dec 2002 00:29:11 +1100 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021203132758.I14289@funkyjesus.org>
-References: <571705138.20021202111645@pobox.com> <14127620470.20021202182836@pobox.com> <1038920934.8888.4.camel@elendil.intranet.cartel-securite.net>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <Mutt.LNX.4.44.0212040025010.28607-100000__30251.6040196226$1038924980@blackbird.intercode.com.au>
+References: <Mutt.LNX.4.44.0212032155570.27990-100000@blackbird.intercode.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1038920934.8888.4.camel@elendil.intranet.cartel-securite.net>; from blancher@cartel-securite.fr on Tue, Dec 03, 2002 at 02:08:54PM +0100
+In-Reply-To: <Mutt.LNX.4.44.0212032155570.27990-100000@blackbird.intercode.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter-announce@lists.netfilter.org
+Cc: netfilter-devel@lists.samba.org, netfilter@lists.samba.org
 
-On Tue, Dec 03, 2002 at 02:08:54PM +0100, Cedric Blancher wrote:
-> Le lun 02/12/2002 =E0 21:28, andre.correa@pobox.com a =E9crit :
-> > But  there  is  still a question for me. Looking at my arp table, I
-> > see that there are =3D~ 150 entries, seconds passing and more entries
-> > coming, 20 seconds after I can have =3D~1100, it goes on until it reachs
-> > =3D~2200  entries,  then it goes back to the =3D~100 and starts over ag=
-ain.
->=20
-> Wierd...
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Weird, certainly... haven't seen anything like this before.
+Just an update on this, someone has pointed out that the recommended
+2.4.20 kernel has a ext3 data corruption bug (which fortunately will not
+affect most users).
 
-<snip>
+The changset comments for the ext3 bug are at:
+<http://linux.bkbits.net:8080/linux-2.4/cset@1.793?nav=index.html|ChangeSet@-1d>
 
-> It is not normal. You should monitor ARP traffic on your network using
-> arpwatch (see Freshmeat, available as .deb, .rpm too) to see if someone
-> would be playing ARP cache poisoning (see http://www.arp-sk.org/).
+Please be careful if updating to 2.4.20, or wait until 2.4.21.
 
-I haven't looked at arpwatch recetly, but presumably that will just scream
-blue bloody murder.
 
-What does
+- - James
+- -- 
+James Morris
+<jmorris@intercode.com.au>
 
-tcpdump -npevvvi <<interface>> arp=20
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-look like?
-
-The original paragraph of:
-
-> > I  have  less  then  50  NAT users. Is it normal to have some many ARP
-> > entries with this variation? Looking the ARP table I see my "Internet"
-> > interface with lots of entries, with internet host IP addresses and my
-> > gateway's NIC MAC address.
-
-Isn't quite as clear as required.  Andre, any chance you could cut and paste
-a few examples, so we can try to understand the symptoms a bit better?
-
---=20
-FunkyJesus System Administration Team
+iD8DBQE97LGqKVbBrEQtqycRAnyaAJ9xMP2FFhMiB4EHQlEdCQ2Kf7z2bwCeLq2J
+IS9YvQzsHYCJILYLo6vsbmo=
+=V9f/
+-----END PGP SIGNATURE-----
 
 
