@@ -1,12 +1,12 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: forwarding on the same NIC
-Date: Tue, 11 May 2004 15:18:57 -0700
+From: "Peter Marshall" <pmarshal@caris.com>
+Subject: Re: pop3 and dns
+Date: Tue, 11 May 2004 10:37:36 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122F51@alderaan.smgtec.com>
+Message-ID: <162701c4375d$1f28a4a0$49caa8c0@caris.priv>
+References: <F22386C3FEB012449238672E38ED61E706C2D5@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +17,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: alucard@kanux.com, netfilter@lists.netfilter.org
+To: Fritz Mesedilla <fritz.mesedilla@overturemedia.com>, "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
 
-> To make matters worse, the second webserver is IIS and I have no idea
-> how to use IP Multiplexing on Win2k, I could do it in linux but
-> Windows systems are not my expertise. What I'm going to do -if I get
-> the permission- is this: Install a 2nd nic on the 2nd webserver so
-> the IP address that is being used doesn't get affected and I will
-> configure it's router to the linux box so it can redirect packets
-> where they should go...    =20
+I have an aside question ... Do you need to listen on both tcp and udp port
+53 for DNS ?  Can you just listen on the UDP one ?  Does it require both ?
 
-You are either not grasping how difficult what your trying to do, or you
-haven't used proper the wording. Source Routing from windows =3D=3D =
-blah! If
-you're relying on windows to do routing, I pity thou.=20
+Thank you,
+
+Peter Marshall
 
 
-To the best of my knowledge, you have:
-x.x.x.254 ROUTER
-   |--x.x.x.1 Linux Server 1  (default route x.x.x.254)
-   |--x.x.x.2 Windows IIS (default route x.x.x.254)
+----- Original Message ----- 
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+To: "Netfilter Mailing List (E-mail)" <netfilter@lists.netfilter.org>
+Sent: Tuesday, May 04, 2004 6:40 AM
+Subject: pop3 and dns
 
-You have the router forwarding a public IP address and PATing it to
-x.x.x.1. You want x.x.x.1:8080 to go to x.x.x.2:80
 
-To get this to work, use:
 
-# Allow any established traffic to traverse the machine
-iptables -A FORWARD -m state ESTABLISHED,RELATED -j ACCEPT
-# Forward the packet destined for 8080 to the windows machine on port 80
-iptables -t nat -A PREROUTING --destination x.x.x.1 -p tcp --dport 8080
--j DNAT --to x.x.x.2:80
-# Allow new web traffic into the network
-iptables -A FORWARD --destination x.x.x.2 -p tcp --dport 80 -j ACCEPT
-# Forces the windows box to route back to you before leaving the network
-iptables -t nat -A POSTROUTING --destination x.x.x.2 -p tcp --dport 80
--j SNAT --to x.x.x.1
+Greetings!
+I have been looking for the answer to this through google...
 
-The order of traversal becomes:
+How do I allow POP3 through my iptables rules?
 
-Router->Firewall->Windows->Firewall->Router
-Instead of
-Router->Firewall->Windows->Router
-The later breaks as I've described earlier.
+I have done this...
+$IPTABLES -A FORWARD -p tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -p udp --dport 53 -j ACCEPT
+
+$IPTABLES -A FORWARD -p tcp --dport 110 -j ACCEPT
+
+I included the dns forward rule to allow the internal clients to be able to
+resolve pop3 domain names.
+
+The problems:
+1) They still can't resolve domain names.
+2) POP3 can't seem to pass through going outside from the internal clients.
+
+Please advise me to what I still need to add. Thanks.
+
+Cheers,
+
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
+
+
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Fax: (632) 637-2206
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave.,
+Quezon City 1100
+
+
+
 
