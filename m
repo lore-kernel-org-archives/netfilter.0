@@ -1,13 +1,14 @@
-From: William Stearns <wstearns@pobox.com>
-Subject: RE: logging with iptables
-Date: Sun, 14 Dec 2003 11:57:35 -0500 (EST)
+From: =?iso-8859-1?Q?Lo=EFc?= Minier <lool+netfilter@via.ecp.fr>
+Subject: Re: Connections with SYN aren't NEW
+Date: Sun, 14 Dec 2003 17:59:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0312141156080.2784-100000@sparrow>
-References: <37701240971DD31193970000F6CCB9F704CB7EFF@duke.datcon.co.uk>
-Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <20031214165943.GB897@via.ecp.fr>
+References: <20031214162315.GA897@via.ecp.fr> <200312141634.54552.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <37701240971DD31193970000F6CCB9F704CB7EFF@duke.datcon.co.uk>
+Content-Disposition: inline
+In-Reply-To: <200312141634.54552.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +18,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Piers Finlayson <pdf@dataconnection.com>
-Cc: Antony Stone <Antony@Soft-Solutions.co.uk>, ML-netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Good day, Piers,
+Antony Stone <Antony@Soft-Solutions.co.uk> - Sun, Dec 14, 2003:
 
-On Sun, 14 Dec 2003, Piers Finlayson wrote:
+> So, if your HTTP client is just dropping a connection without closing it =
 
-> Bill - thanks a lot.  That's exactly what I was after.
+> nicely (using FIN, or even RST) then netfilter will think it is still=20
+> ESTABLISHED.
 
-	All the credit goes to Harald - I'm just the messenger.  :-)
-	Cheers,
-	- Bill
+ I should have written that the connection is closed nicely, with a FIN
+ packet (I just re-checked). Please note that the conntrack keeps closed
+ connection for a while exactly like a normal connection, and with the
+ [ASSURED] flag but it adds a TIME_WAIT flag to closed connections.
 
-> On Sat, 13 Dec 2003, Antony Stone wrote:
-> 
-> > On Saturday 13 December 2003 9:45 am, Piers Finlayson wrote:
-> > 
-> > > Is it possible to log a packet's entire contents with iptables,
-> > > rather than just useful stuff from the packet header?
-> > 
-> > No.  Netfilter has a single fixed logging format which shows onlt the
-> > packet header information, nothing from the body itself.
-> > 
-> > > I can run tcpdump/tethereal etc to log the packets I'm interested
-> > > in, but figure it would be much neater if I can just use iptables to
-> > > do it.
-> > 
-> > You might want to have a look at http://gnumonks.org/projects/ulogd to
-> > see if it will help with what you want, but I suspect tcpdump etc will
-> > remain your best bet.
-> 
-> 	It will help. http://www.stearns.org/doc/iptables-ulog.current.html
+> I don't know if this explains the problem you are seeing, but it's a reas=
+on=20
+> why netfilter may think the connection is in a different state than the=20
+> client does.
 
+ Yes, it could have been a good explanation.
 
----------------------------------------------------------------------------
-        "I plan to live forever.  So far, so good."
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
-Linux articles at:                         http://www.opensourcedigest.com
---------------------------------------------------------------------------
-
+--=20
+Lo=EFc Minier <lool@dooz.org>
 
