@@ -1,19 +1,25 @@
 From: Nilesh <niluforalways@yahoo.com>
-Subject: Giving trouble when blocking MSN messenger
+Subject: [squid-users] Giving trouble when blocking MSN messenger
 Date: Mon, 1 Nov 2004 06:21:01 -0800 (PST)
-Message-ID: <20041101142101.25476.qmail@web50505.mail.yahoo.com>
+Message-ID: <20041101145915.575CF3451A@1am>
 Mime-Version: 1.0
-Return-path: <squid-users-return-49588-gcwsg-squid-users=m.gmane.org@squid-cache.org>
-List-Post: <mailto:squid-users@squid-cache.org>
-List-Help: <mailto:squid-users-help@squid-cache.org>
-List-Unsubscribe: <mailto:squid-users-unsubscribe@squid-cache.org>
-List-Subscribe: <mailto:squid-users-subscribe@squid-cache.org>
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Squid <squid-users@squid-cache.org>
 Cc: netfilter@lists.netfilter.org
 
+====== (Header) e-mail Filtrado ======
 Hello All,
 
 I am not able to block MSN Messenger when I put this
@@ -35,3 +41,5 @@ __________________________________________________
 Do You Yahoo!?
 Tired of spam?  Yahoo! Mail has the best spam protection around 
 http://mail.yahoo.com 
+
+
