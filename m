@@ -1,12 +1,12 @@
-From: "mdpeters" <michael.peters@lazarusalliance.com>
-Subject: Re: transparent bridge troubles?
-Date: Fri, 7 Jan 2005 17:02:57 -0500
-Message-ID: <005601c4f504$a59b4ff0$3e0010ac@esonet18>
-References: <074001c4f4ea$388d1070$3e0010ac@esonet18>
-	<20050107215324.GA1430@bender.817west.com>
+From: Andy Furniss <andy.furniss@dsl.pipex.com>
+Subject: Re: questions about chain traversal, new ascii diagram
+Date: Fri, 07 Jan 2005 22:08:39 +0000
+Message-ID: <41DF0867.2060505@dsl.pipex.com>
+References: <BAY101-F23030A22FC86C1A88C1F93DF930@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY101-F23030A22FC86C1A88C1F93DF930@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +17,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Curby ." <kirbysdl@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-[-]arp Enable or disable the use of the ARP protocol on this interface.
-
-I was told to do that by the Snort folks but maybe .... not?
-
------ Original Message ----- 
-From: "Jason Opperisano" <opie@817west.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, January 07, 2005 4:53 PM
-Subject: Re: transparent bridge troubles?
-
-
-> On Fri, Jan 07, 2005 at 01:53:48PM -0500, mdpeters wrote:
->> This is my bridge setup:
->> 
->> /sbin/modprobe ip_queue
->> /sbin/ifconfig eth1 0.0.0.0
->> /sbin/ifconfig eth2 0.0.0.0
->> /usr/local/sbin/brctl addbr br0
->> /usr/local/sbin/brctl addif br0 eth1
->> /usr/local/sbin/brctl addif br0 eth2
->> /sbin/ifconfig br0 up
->> /usr/local/sbin/brctl stp br0 off
->> /sbin/ifconfig br0 0.0.0.0 -arp
+Curby . wrote:
+> ----Original Message Follows----
 > 
-> i'm a little rusty on my linux bridging commands--but why did you
-> execute that last command?  the "ifconfig br0 0.0.0.0 -arp" one.  it
-> seems like that would block arp traffic from traversing the bridge, but
-> i could be mistaken...
+>> http://joerg.fruehbrodt.bei.t-online.de/pics/abb3_netfilter_ablaufdiagramm.jpg 
+>>
+>>
+>> What about the mangle decisions, do you also want to include them :D?
 > 
-> -j
 > 
-> --
-> "I bet Einstein turned himself all sorts of colors before he invented
-> the light bulb."
->        --The Simpsons
+> It looks reasonable, but if this is true then the article I mentioned 
+> was wrong.  Perhaps there should be a disclaimer by the link on the 
+> netfilter documentation page?
 > 
->
+> Does anyone know the answers to my other questions? Specifically, is it 
+> due to style or technical reasons that people don't filter traffic in 
+> PREROUTING, and instead put the same rules in both FORWARD and INPUT?
+
+Respecting johns answer - as I don't do much firewall stuff, but I 
+thought it was because there are no filter tables in pre/post.
+
+http://www.docum.org/docum.org/kptd/
+
+> 
+> I think you were probably just being facetious, but I wouldn't mind 
+> knowing when the mangle chains come into play.  If we have to jump to 
+> them explicitly though, then I'll just RTFM. =)
+
+AIUI use mangle if you want to mark/change(mangle) packets eg TOS bits.
+
+
+> 
+> Thanks again!
+> 
+> --Curby
+> 
+> 
+> 
+> 
+
+
 
