@@ -1,8 +1,8 @@
 From: "Allan Kissack" <lists@kissack.freeserve.co.uk>
 Subject: Re: iptables from cgi script
-Date: Tue, 3 Jun 2003 07:28:15 -0000
+Date: Tue, 3 Jun 2003 07:28:51 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001a01c329a1$b28d8b40$2c00a8c0@local.net>
+Message-ID: <001b01c329a1$c8074920$2c00a8c0@local.net>
 References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D8B@wardrive.citadelcomputer.com.au>
 Reply-To: "Allan Kissack" <lists@kissack.freeserve.co.uk>
 Mime-Version: 1.0
@@ -20,13 +20,14 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: George Vieira <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org
 
->----- Original Message -----
->From: "George Vieira" <georgev@citadelcomputer.com.au>
->To: "Allan Kissack" <lists@kissack.freeserve.co.uk>;
+
+----- Original Message -----
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+To: "Allan Kissack" <lists@kissack.freeserve.co.uk>;
 <netfilter@lists.netfilter.org>
->Sent: Monday, June 02, 2003 10:33 PM
->Subject: RE: iptables from cgi script
->
+Sent: Monday, June 02, 2003 10:33 PM
+Subject: RE: iptables from cgi script
+
 
 > No your not missing anything.. But I like this idea for the fact that
 someone who wants to maliciously attack your site and also open your
@@ -42,20 +43,47 @@ these and apply them in a seperate process..
 > Thanks,
 > ____________________________________________
 > George Vieira
-
-
-Thanks George,
-I already use webmin for admin, and write the rules via a command line.
-What I am looking for is a cgi script that displays the results of
-/sbin/iptables -L -n -v and allows no other iptables commands.  This web
-server is protected from the outside by the iptables and is for convenient
-monitoring internally (ie dont need to go to a command line).  Do you knwo
-of a way I can allow this?  The script works except for the "can't
-initialize iptables table `filter': Permission denied (you must be root)
-Perhaps iptables or your kernel needs to be upgraded."  security issue
-
---
-Allan
-
+> Systems Manager
+> georgev@citadelcomputer.com.au
+>
+> Citadel Computer Systems Pty Ltd
+> http://www.citadelcomputer.com.au
+>
+> Phone   : +61 2 9955 2644
+> HelpDesk: +61 2 9955 2698
+>
+>
+> -----Original Message-----
+> From: Allan Kissack [mailto:lists@kissack.freeserve.co.uk]
+> Sent: Monday, June 02, 2003 5:35 PM
+> To: netfilter@lists.netfilter.org
+> Subject: iptables from cgi script
+>
+>
+> I used to be able to list my rules via a cgi script but since moving to
+> redhat 9 (iptables 1.2.7a) it fails. The reason given is "can't initialize
+> iptables table `filter': Permission denied (you must be root) Perhaps
+> iptables or your kernel needs to be upgraded." which is absolutely
+accurate
+> (because I get this logging in as a local user and running
+/sbin/iptables -L
+> too) - but I need to know how to achieve this.
+> I tried altering the group on /sbin and /sbin/iptables and adding my local
+> user to that, but still it fails.
+>
+> Am I missing something really obvious?  Either way, your assistance/advice
+> is welcome.
+>
+> Thanks
+>
+> --
+> Allan
+>
+>
+>
+>
+>
+>
+>
 
 
