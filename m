@@ -1,13 +1,18 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: another quick question
-Date: Mon, 20 Sep 2004 06:02:41 -0400
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: Blocking Netranges Based on IP-to-Country CSV
+Date: Mon, 20 Sep 2004 12:53:57 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095674560.1779.96.camel@grendel>
-References: <a0f69e50409200102455b0172@mail.gmail.com>
+Message-ID: <20040920115357.GE3786@metastasis.org.uk>
+References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
+	<20040917114613.GP452@metastasis.org.uk>
+	<1403218a0409190209416c12b9@mail.gmail.com>
+	<20040919110111.GA706@metastasis.org.uk>
+	<1403218a04091904173de016ea@mail.gmail.com>
+	<3063e504091904456844d5cf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e50409200102455b0172@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <3063e504091904456844d5cf@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +23,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Askar <askarali@gmail.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Mon, 2004-09-20 at 04:02, Askar wrote:
->
-> iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -A INPUT -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -A FORWARD -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -A FORWARD -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -t nat -A PREROUTING -p TCP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> iptables -t nat -A PREROUTING -p UDP -s 0/0 -d 0/0 --dport 135:140 -j DROP
-> 
-> aren't there are unnecessary repitions ?
+On Sun, Sep 19, 2004 at 02:45:48PM +0300, George Alexandru Dragoi wrote:
+> Good point, not to mention disliking a country sounds so nazi :D
 
-Agreed. The "proper" place for filtering rules is the INPUT and/or
-FORWARD chain. You should be able to delete the two PREROUTING rules
-without a problem.
+It does, but its not.
 
-> also why he (my
-> predecssor) droping such port in INPUT table ? aren't it unnecessary,
-> coz it a linux box no port 135:140 are open on our fw machine.
+> So, whats the reason is banning some countryes?
 
-Unless you run SAMBA. ;-)
+Why not?  Don't you effectively ban huge ranges of IP addresses, and
+therefore countries, every time you restrict access to a host?  Imagine
+I'm going travelling, and I know I'm only going to South America, so I
+want to open up my ssh daemon to more addresses.  However I don't want
+to permit the entire Internet to have a go at the daemon, but I'm
+willing to open it up to South America to increase the risk slightly
+in return for permitting myself SSH access wherever I am.
 
-My guess is it was done to keep the traffic from hitting a later logging
-rule, but its hard to say without seeing the entire rule base. It could
-also have something to do with the "permit what has not been denied"
-policy you mentioned in your last e-mail. Either way, it should not hurt
-anything and its a good idea to block outbound NetBIOS/IP if your
-organization does not need it to do business. Attackers can use it to
-transfer a rootkit onto the system. If the ports are blocked, their
-lives become just a little bit harder.
+I must admit I'm a little worried that everyone is thinking that this
+will be used to prevent access by certain countries for nefarious /
+racist reasons when there are so many useful applications.
 
-HTH,
-Chris
-
-
+-- 
+mors omnia vincit
 
