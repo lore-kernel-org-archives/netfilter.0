@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Marco Colombo <netfilter@esiway.net>
 Subject: Re: Is Linux based Gateway/Firewall feasible
-Date: Thu, 8 Jul 2004 14:38:11 +0100
+Date: Thu, 8 Jul 2004 16:05:08 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407081438.11445.Antony@Soft-Solutions.co.uk>
-References: <BAY4-F14s1UAuiJ1yhn000561d1@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0407081537580.3962-100000@Megathlon.ESI>
+References: <40ED39B9.30608@svw.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY4-F14s1UAuiJ1yhn000561d1@hotmail.com>
+In-Reply-To: <40ED39B9.30608@svw.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +16,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Sudheer Divakaran <sudheer@svw.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday 08 July 2004 2:21 pm, Mike O wrote:
+On Thu, 8 Jul 2004, Sudheer Divakaran wrote:
 
-> I'd like to chime in here considering I brought this topic up a few years
-> ago. From a standpoint of routing data from one subnet to another with high
-> speed serial interfaces etc.. nothing beats a cisco. Cisco routers have
-> special ASIC(application specific intergrated circuits) that do nothing but
-> routing and other features.
+> Hi,
+> 
+> I've a local LAN consisting of about 150 machines.  I'm using a machine 
+> with Linux + IPTables  as the gateway machine which inturn connects to 
+> two different ISPs.  My question is can a Linux based machine match the 
+> performance of a hardware based routers provided by Cisco,... OR is my 
+> decision to go for a Linux based solution is a wrong one?.
+> 
+> Is there so much difference between these two solutions?
+> 
+> Can I achieve the same performance using a high end PC and Linux?
+> 
+> I'm asking this because one guy told me that my decision to go for a 
+> Linux based solution is a wrong one and it can never match the 
+> performance of hardware based Routers.
 
-That's true, however the benefits of ASICs (in this context) are throughput 
-and latency.   If you don't have a high-speed (by which I mean more than 
-about 10Mbps) pipe to the Internet, then throughput is not an issue (ie: your 
-firewall / router is not the bottleneck in the system), and as for latency, 
-well how important is it to you really?
+iptables is not concerned with routing. If you're comparing 
+a Cisco _routing_ solution with a linux-based one, this is the wrong
+list I think. There are many things to consider: raw performances,
+routing software (are you running EIGRP?) and so on, all off topic here.
 
-A Linux box with a Sangoma WAN card will happily connect directly into a high 
-speed serial port on a Telco NTU, and I've yet to see any external connection 
-running at less than ATM speeds (155Mbps or 625Mbps) where a Linux system 
-can't handle the packets.
+Despite, ask that guy to show you a real 'hardware based router'.
+That is, remove any software (IOS) from a Cisco piece of hardware
+and see how it performs. Ciscos (but high end ones only) do have
+specialized hardware, so you may refer to it as "hardware-assisted
+routing", no more. But they're software-based routers, too.
+Again, this is quite off topic.
 
-My feeling is that unless you're an ISP in the core of the Internet, where the 
-important features are gigabit routing, dynamic routing protocol support, and 
-apart from dropping a few RFC1918 addresses, you're not trying to do any 
-firewalling, then you don't need to spend money on a dedicated router when a 
-Linux system will do all the routing you need and supply firewalling and 
-traffic control if you want it as well.
+iptables is about filtering, NATing, mangling IP packets (am I missing
+anything?). Yeah, Ciscos can do that too. But, please correct me
+if I'm wrong, I'm not aware of _any_ hardware that assists them in
+that. So it's not hardware-based filtering anyway. It's all in software.
 
-Regards,
+The following rule:
 
-Antony.
+iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+which may make sense in simple setups, takes _global_ decisions,
+hardly it can be "distributed" to interface processors (think of
+packets belonging to the same flow that may arrive from two different
+interfaces).
+
+In the end, the right question is: how do iptables compare to IOS
+access-lists? I'll leave the comparison to others. All I know is
+that there's no UNIX shell running on a Cisco. There's no UNIX-like
+environment. Put two lines in crontab, and have them invoke a script
+that sets iptables up, passing it a parameter (night/day), in order
+to implement less permissive rules at night and during weekends.
+Now do the same with a Cisco. You get the idea.
+
+.TM.
 -- 
-Wanted: telepath.   You know where to apply.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+      ____/  ____/   /
+     /      /       /			Marco Colombo
+    ___/  ___  /   /		      Technical Manager
+   /          /   /			 ESI s.r.l.
+ _____/ _____/  _/		       Colombo@ESI.it
 
 
