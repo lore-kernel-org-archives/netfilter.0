@@ -1,8 +1,8 @@
-From: Gary Thomas <gary@chez-thomas.org>
-Subject: PPTP in 2.4.20
-Date: 20 Dec 2003 07:49:45 -0700
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: excellent rule archive
+Date: Mon, 22 Dec 2003 07:37:42 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071931784.1641.3.camel@hermes>
+Message-ID: <1072096662.2076.323.camel@grendel>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,29 +16,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-I've tried to build kernel 2.4.20, using the patches applied
-via patch-o-matic (thanks, Harald!)  However, I can't get the
-PPTP modules to load.  In particular, when I try to load
-'ip_conntrack', I get these messages:
+Greets all,
 
-[root@hermes gthomas]# insmod ip_conntrack
-Using /lib/modules/2.4.20-TEST/kernel/net/ipv4/netfilter/ip_conntrack.o
-/lib/modules/2.4.20-TEST/kernel/net/ipv4/netfilter/ip_conntrack.o: init_module: Device or resource busy
-[root@hermes gthomas]# tail /var/log/messages
-Dec 20 07:34:31 hermes kernel: ip_conntrack version 2.1 (4094 buckets, 32752 max) - 312 bytes per conntrack
-Dec 20 07:34:31 hermes kernel: Unable to register netfilter socket option
+I figure Bill is too shy to point out all the excellent work he's done,
+but I thought list members would find it interesting. ;-)
 
-Of course, without this module loaded, I can't load any of the 
-other [important for PPTP] ones.
+Check out Bill's firebrick project:
+http://www.stearns.org/firebricks/
 
-Any help or ideas greatly appreciated.
+Firebrick is a set of independent modules that are designed to plug-in
+to an iptables firewall. Some of the cooler modules:
 
-n.b. I'm not on this mailing list, so please copy replies to me as well.
-Thanks.
+* Filter legal but unallocated source IPs (common in spoof attacks)
+* Identify probing based on inbound scan patters as well as outbound
+unreachables
+* Check/record/drop odd packet sizes (like non-terminal fragments
+smaller than 512 bytes).
+* Filter out all loose and strict source route packets
+* When suspicious patterns are detected, drop and log all traffic from
+that IP for 30 seconds
+* Log SSH traffic using non-stand ports (other than 22/TCP)
+* Record internal servers by monitoring outbound SYN/ACKs
 
--- 
-Gary Thomas <gary@chez-thomas.org>
+There are others, but you get the idea. IMHO there are some extremely
+useful tweaks up there that people can use.
+
+HTH,
+C
+
+ 
 
 
