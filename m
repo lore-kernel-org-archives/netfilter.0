@@ -1,14 +1,11 @@
-From: "pheusion@snet.net" <pheusion@snet.net>
-Subject: Re: Installing patch
-Date: Fri, 19 Dec 2003 16:04:20 -0500
+From: "Ian Hunter" <ihunter@hunterweb.net>
+Subject: Argh!  I'm kicking myself
+Date: Fri, 19 Dec 2003 15:42:21 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071867860.2383.67.camel@GenMicroSys>
-References: <Pine.SOL.4.51.0312181413325.3485@herald.cc.purdue.edu>
-Reply-To: pheusion@snet.net
+Message-ID: <015b01c3c670$99b77600$3dc2a70a@melita.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.SOL.4.51.0312181413325.3485@herald.cc.purdue.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +16,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Bingrui Foo <foob@purdue.edu>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Let me clarify:
+For days now I've been trying to figure out how to recompile my Redhat
+2.4.20-24.9 kernel to allow masquerading IPSec ESP traffic.  I ran the
+much-vaunted "grep -i masq /proc/ksyms" and to my chagrin got nothing back,
+but on a lark decided I'd try "iptables -A FORWARD -t nat -i ppp0 -p esp -j
+ACCEPT" just to see if it would fly and it did.  Of course.  And now you're
+all laughing at me.
 
-Get the IPtables source
+Where is this documented, that gre, esp, ah, and the like are acceptable
+protocols?  The docs mention icmp, tcp, and udp only.
 
-get the patch
+Is there such a document, or have I discovered a particular cover of the
+netfilter doc-hole?
 
-cd /path/to/iptables/source
-patch -p1 < /path/to/patch
-
-Hope it Helps
-
-Nox
-GenMicro Systems
-
-On Thu, 2003-12-18 at 14:13, Bingrui Foo wrote:
-> Hi,
-> 
-> Could somebody teach me how to install the patch-iptables-1.2.8-1.2.9.bz2?
-> 
-> Thanks.
-> 
-> 
+Ian
 
 
