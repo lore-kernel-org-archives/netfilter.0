@@ -1,13 +1,13 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: SNAT of ICMP fragmentation-nee
-Date: Mon, 10 Jun 2002 14:03:34 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables
+Date: Mon, 10 Jun 2002 20:27:33 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020610180334.GA21405@cannon.eng.us.uu.net>
-References: <Pine.LNX.4.44.0206101340570.30649-100000@albert.ha-vel.cz> <200206101218.g5ACIKU08127@vulcan.rissington.net> <0GXH0068QZEYYV@l-daemon>
+Message-ID: <200206101927.g5AJRdA00657@Networker.rockstone.co.uk>
+References: <CC845BB8BC74D6119934000347DD23E87C0BA5@jhbmail.autopage.co.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <0GXH0068QZEYYV@l-daemon>
+In-Reply-To: <CC845BB8BC74D6119934000347DD23E87C0BA5@jhbmail.autopage.co.za>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,38 +18,30 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jack Bowling <jbinpg@shaw.ca>
-Cc: netfilter@lists.samba.org
+To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
 
-On Mon, Jun 10, 2002 at 09:06:41AM -0700, Jack Bowling wrote:
+On Monday 10 June 2002 3:06 pm, Paulo Andre wrote:
 
-> ** Reply to message from Antony Stone <Antony@Soft-Solutions.co.uk> on Mon, 10 Jun 2002 13:18:12 +0100
-> 
-> 
-> > On Monday 10 June 2002 12:45 pm, jakub@angel.cz wrote:
-> > 
-> > > :) this is really not the problem, now I am logging all packets, no adress
-> > >
-> > > specification ;)
-> > >
-> > > -A POSTROUTING -p icmp -m icmp --icmp-type 3/4 -j LOG --log-prefix "icmp
-> > > SNAT POST "
-> > 
-> > Hmmm.   Okay - this is beyond my understanding of netfilter - can anyone else 
-> > suggest why icmp packets going through the machine would get logged and 
-> > processed by PREROUTING and FORWARD but not by POSTROUTING ?
-> 
-> Wouldn't hurt to add the interface(s).
+> I have a Exchange server
 
-Absolutely!! You omit the -i/-o switches only when you _really_
-don't care about the direction of the packet flow.
+You have our sympathies...
 
-Ramin
+> that needs to send mail out, the firewall
+> (iptables) is set up as follows:
+>
+> iptables -A FORWARD -s (mail srv) -p tcp --dport 25 -j ACCEPT
+>
+> The mail server comes back with a "Host unreachable" error, and nslookup
+> and traceroute takes me to the destination fine. Anyone have any
+> ideas...???
 
-> jb
-> 
-> -- 
-> Jack Bowling
-> mailto: jbinpg@shaw.ca
+Try putting a rule at the start of your FORWARD chain:
+
+iptables -I FORWARD -s (mail srv) -j LOG --log-prefix "Exchg Svr"
+
+And see if it's doing something strange....
+
+ 
+
+Antony
 
