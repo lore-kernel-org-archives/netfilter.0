@@ -1,13 +1,13 @@
-From: Jim Carter <jimc@math.ucla.edu>
+From: Brent Gregersen <gregerse@chemsun.chem.umn.edu>
 Subject: RE: work ip address at home
-Date: Wed, 22 Oct 2003 19:35:51 -0700 (PDT)
+Date: Wed, 22 Oct 2003 22:20:25 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0310221918430.4648@xena.cft.ca.us>
+Message-ID: <20031022220332.U2796@chemsun.chem.umn.edu>
 References: <7C9884991ADAE0479C14F10C858BCDF5122E78@alderaan.smgtec.com>
- <20031022125857.K34090@chemsun.chem.umn.edu>
+ <20031022125857.K34090@chemsun.chem.umn.edu> <Pine.LNX.4.53.0310221918430.4648@xena.cft.ca.us>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031022125857.K34090@chemsun.chem.umn.edu>
+In-Reply-To: <Pine.LNX.4.53.0310221918430.4648@xena.cft.ca.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,46 +19,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Brent Gregersen <gregerse@chemsun.chem.umn.edu>
+To: Jim Carter <jimc@math.ucla.edu>
 Cc: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
 
-On Wed, 22 Oct 2003, Brent Gregersen wrote:
-> The license server is a machine I do not have access to. It is running
-> Elan License Manager software for Tecplot (application I want to use at
-> home to prepare graphs/plots for journal articles). I believe tecplot
-> compares the ip address of application machine to a 'valid' ip domain
-> contained in license obtained from the license server.  This was the reasoning
-> behind the 'trick application into thinking I am at work' approch. I
-> could be wrong on this however. If thats the case, I'll look into
-> implementing a VPN solution between my home machine and work machine.
-> (wrong forum, but any pointers/urls on useful VPN software?)
+> If it's anything like flexlm, there's a license file on the local machine
+> which tells it the host name and port number of the server.  Flexlm
+> actually doesn't care which of our various subnets the client is on, only
+> how many licenses it's passed out, though our firewall rules DO care :-)
+> In any case, it would be worth the effort to try to fake it out using ssh.
+> Here's a sample command line for forwarding SMTP (port 25) that I (used to)
+> use for sending mail as if local, to bypass our anti-relaying rules (look
+> at the headers of this message, for the current solution :-)
+>
+> /usr/bin/ssh -q -x -f -N -L 20025:julia.math.ucla.edu:25 julia.math.ucla.edu
+>
+> (-q - quiet, -x = omit X-windows, -f = drop into background, -N = omit
+> shell command, -L = port forwarding.)  I test by doing...
+>
+> telnet localhost 20025
+>
+> To my HELO, it responds:
+>
+> 250 julia.math.ucla.edu Hello julia.math.ucla.edu [128.97.4.254], pleased
+> to meet you
+>
+> The packets appear to come from Julia, the host listed in the -L parameter.
+> It might be a good idea to turn on keepalives, so a forgotten connection
+> automatically exits when the net connection goes down.
+> >
 
-If it's anything like flexlm, there's a license file on the local machine
-which tells it the host name and port number of the server.  Flexlm
-actually doesn't care which of our various subnets the client is on, only
-how many licenses it's passed out, though our firewall rules DO care :-)
-In any case, it would be worth the effort to try to fake it out using ssh.
-Here's a sample command line for forwarding SMTP (port 25) that I (used to)
-use for sending mail as if local, to bypass our anti-relaying rules (look
-at the headers of this message, for the current solution :-)
+Yes, like flexlm there is an enviroment variable TLMHOST that is set to
+the name of the license server.
 
-/usr/bin/ssh -q -x -f -N -L 20025:julia.math.ucla.edu:25 julia.math.ucla.edu
+I had actually just tried the ssh tunnel, only to find out the the license
+request goes out over udp, and dosent get forwarded.
 
-(-q - quiet, -x = omit X-windows, -f = drop into background, -N = omit
-shell command, -L = port forwarding.)  I test by doing...
+I now however have pptp(d) set up on my home and work machines.
+Communication between home and work over point-to-point link is verified
+and I added a route on the home machine 'route add -host $TLMHOST ppp0' so
+that requests to the license server will be carried over the ptp
+connection.
 
-telnet localhost 20025
+however, when I ping $TLMHOST, the packets are getting swallowed by my
+machine at work. (ifconfig at work shows arriving packets on ppp0 and the
+pptp-php-gtk.php status window at home shows outgoing packets on ptp
+connection.)
 
-To my HELO, it responds:
+Im sure I just dont have the firewall/routing rules configured on my work
+machine to properly route the ppp0 connection (to/from home) onto eth0 (public ip
+subnet at work). Im fairly certain that if the routing/forwarding/nat is
+set up correctly, I could obtain a key over the point-to-point link.
 
-250 julia.math.ucla.edu Hello julia.math.ucla.edu [128.97.4.254], pleased
-to meet you
+Any suggestions on a 'proper' iptables configuration to do the above?
+(pass ppp0 packets from home onto eth0 at work so that replies will come
+back through ppp0 to my home machine)
 
-The packets appear to come from Julia, the host listed in the -L parameter.
-It might be a good idea to turn on keepalives, so a forgotten connection
-automatically exits when the net connection goes down.
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+Thanks again for all the suggestions...
 
