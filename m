@@ -1,7 +1,7 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: RE: Can an iptables NAT firewall Block URL's and Attachments?
-Date: Thu, 18 Nov 2004 21:51:38 -0300
-Message-ID: <E1CUx11-0008Mf-00@deer.gmane.org>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Can an iptables NAT firewall Block URL's and Attachments?
+Date: Thu, 18 Nov 2004 20:10:46 -0500
+Message-ID: <1100826646.3874.13.camel@hubcap.ljm.dom>
 References: <20041119004820.3753.qmail@web54501.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,41 +19,51 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: realcucumber@hotmail.com
 
-I think this could be done using l7-filtering, but my option would be use a
-proxy to do this job because its was designed  for (among other things)
-
-> -----Mensaje original-----
-> De: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] En nombre de 
-> Real Cucumber
-> Enviado el: Jueves, 18 de Noviembre de 2004 21:48
-> Para: netfilter@lists.netfilter.org
-> Asunto: Can an iptables NAT firewall Block URL's and Attachments?
+On Thu, 2004-11-18 at 19:48, Real Cucumber wrote:
+> If using an Iptables fedora box to act as a networks
+> internety gateway NAT server, is it possible to create
+> rules to block specific URL's or attachments?
 > 
-> If using an Iptables fedora box to act as a networks 
-> internety gateway NAT server, is it possible to create rules 
-> to block specific URL's or attachments?
-> 
-> ie: block any URL's ending in *.exe or block any URL's 
+> ie: block any URL's ending in *.exe or block any URL's
 > containing the word "sex"
 > 
-> If anybody knows please reply directly to me at 
+> If anybody knows please reply directly to me at
 > realcucumber@hotmail.com
 > 
 > Any help is much appreciated.
 > 
 > Thanks!
-> 
-> 
-> 		
-> __________________________________
-> Do you Yahoo!? 
-> The all-new My Yahoo! - Get yours free! 
-> http://my.yahoo.com 
->  
-> 
-> 
-> 
+
+iptables does a fantastic job of transparently redirecting port 80
+requests:
+
+  http://www.tldp.org/HOWTO/TransparentProxy.html
+
+to squid:
+
+  http://www.squid-cache.org/
+
+which supports infinitely flexible acls:
+
+  http://squid.visolve.com/squid/squid24s1/access_controls.htm#acl
+
+and category-based URL filtering redirectors like squidGuard:
+
+  http://www.squidguard.org/
+
+and dansguardian:
+
+  http://dansguardian.org/
+
+hope this helps.
+
+-j
+
+--
+"Okay, retrace your steps. Woke up, fought with Marge, ate Guatemalan
+ insanity peppers, then I... Oh..."
+	--The Simpsons
 
 
