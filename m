@@ -1,12 +1,10 @@
-From: Krystian <optimusprime@o2.pl>
-Subject: Re: connection limit for UDP
-Date: Sat, 06 Nov 2004 09:30:17 +0100
-Message-ID: <418C8B99.3050401@o2.pl>
-References: <4187E5DF.6040509@o2.pl> <20041104081226.GA16468@kuleuven.net>
+From: Taso Hatzi <ahg2@swiftdsl.com.au>
+Subject: Tracing the passage of packets thru the various chains
+Date: Sat, 06 Nov 2004 23:19:24 +1100
+Message-ID: <418CC14C.4080803@swiftdsl.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041104081226.GA16468@kuleuven.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +16,9 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Du Caju <Jan.DuCaju@kuleuven.net>
-Cc: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Jan Du Caju wrote:
+The subject says what I want to do. Is there any way I can get a
+stock kernel (Mdk 9.1 in this case) to show me what's going on?
 
->On Tue, Nov 02, 2004 at 08:54:07PM +0100, Krystian wrote:
->  
->
->>Hi
->>
->>I there a way to limit connections one host can make to another host 
->>("dstlimit" like), but for UDP?
->>
->>I know UDP doesnt have FIN... but I thought since do connection can be 
->>assumed closed after some time of innactivity i ...
->>
->>is there a way? :)
->>    
->>
->
->I once posted (february 2003 ) udplimit (a shameless copy of iplimit of 
->Gerd Knorr ;-) I never got any reaction except from the people who also 
->needed it at that time. By the way iplimit 's current name is connlimit. 
->If you can't find it in the archives I can mail it.
->
->Greetz,
->Jan.
->------------------------------------------------------ KULeuvenNet ----
->Jan.DuCaju@kuleuven.net			        http://www.KULeuven.Net
->Katholieke Universiteit Leuven               http://kuleuven.be/english
->LUDIT - KULeuvenNet				    http://www.ludit.be
->-----------------------------------------------------------------------
->  
->
-Please post it :)
-or send it through mail :)
-
-Thanx
-Krystian
 
