@@ -1,8 +1,8 @@
-From: "Travis Bell" <travis@dptexas.net>
-Subject: ARP traffic on a large-ish network
-Date: Tue, 15 Mar 2005 10:24:01 -0600
-Message-ID: <42B3C34A03A8FC4BB0A80082CE8993F31C1C25@onstopnt.onestop.com>
-Mime-Version: 1.0
+From: Todd Landfried <tlandfried@hotmail.com>
+Subject: Redirecting HTTPS traffic to third-party proxy
+Date: Tue, 15 Mar 2005 12:24:19 -0700
+Message-ID: <c12578b1c800d58c9c0d9312b36ba944@hotmail.com>
+Mime-Version: 1.0 (Apple Message framework v619.2)
 Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,30 +14,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I wasn't clear on my question yesterday.  Here's what I'm trying to do:
+We're working on a project in the Middle East where we're required to 
+route all HTTP and HTTPS traffic through a government-managed proxy 
+server answering only on port 80 (both HTTP and HTTPS traffic).  We get 
+the basic stuff to work, but HTTPS times out when attempting to connect 
+to the proxy.
 
-We've got a /19 block of public IPs from our provider to give to
-customers.
-Because we want customers to have a public IP, as opposed to NATing a
-private IP, they are essentially just plugged into my switch just on the
-other side of the Cisco router from our T1s.
+Does anyone know a way of solving this problem?
 
-Our Cisco router is ARP who-has'ing for the entire block of IPs (as it
-should).
+Thx
 
-I'd like to stick something between the Cisco router and the customers
-that keeps them from getting so much ARP traffic.  It seems like it's a
-lot of traffic going through.  Ethereal captured 1260 ARP packets in 10
-seconds.
-
-So is there anything I can do?  Or is that much ARP traffic reasonable?
-
-Thanks,
-Any advice is appreciated.
-
-Travis Bell
+Todd
 
 
