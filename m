@@ -1,13 +1,13 @@
-From: "Jacob Chan" <jacob_chan@so-net.net.tw>
-Subject: RE: GUI to configure IPTables rules
-Date: Fri, 4 Jul 2003 13:37:05 +0800
+From: Michal Kepien <lordpopcorn@poczta.onet.pl>
+Subject: Re: Firewall setup at boot - trouble with setting up the LOG target
+Date: Fri, 04 Jul 2003 09:39:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c341ee$5219cbb0$a865a8c0@ThinkPadX31>
-References: <1057290039.813.0.camel@samwise>
+Message-ID: <chbagvsp3mcblk39e4n5u9od1ntja2ksb1@4ax.com>
+References: <7C9884991ADAE0479C14F10C858BCDF52E3554@alderaan.smgtec.com> <tcp8gvc03vldjthtabk4s3ii2pv96a7is9@4ax.com> <20030704024217.5e231e71.arnt@c2i.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1057290039.813.0.camel@samwise>
+In-Reply-To: <20030704024217.5e231e71.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Daniel Bidwell' <bidwell@andrews.edu>
-Cc: netfilter@lists.netfilter.org
+To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
 
-I like
-http://www.giptables.org/
+>>I've searched Google but found nothing worth interest.
+>..not even in http://tldp.org/ ???
 
-Best regards,
-Jacob Chan
-Jacob_chan@so-net.net.tw
+Of course, I'm sorry... Looks like I'm an amateur in searching the
+Web, too. Well, this:
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Daniel Bidwell
-Sent: Friday, July 04, 2003 11:40 AM
-To: Garcia Ruiz
-Cc: netfilter@lists.netfilter.org
-Subject: Re: GUI to configure IPTables rules
+http://tldp.org/LDP/intro-linux/html/sect_04_02.html
 
-On Thu, 2003-07-03 at 17:01, Garcia Ruiz wrote:
-> Hello everybody,
-> 
-> Could someone suggest me a GUI tool to configure IPTables rules? Is
-there
-> any tool that is also able to configure freeswan VPNs?
-> 
-Take a look at fwbuilder.sourceforge.net
+helped me a bit (can't forget Jeremy :) however I still don't know
+what can be the cause of my problem (from what I've read, these
+iptables v1.2.3 entries really _shouldn't_ be where they are...)
 
-> Thanks
-> 
-> Juan
-> 
-> 
--- 
-Daniel R. Bidwell	|	bidwell@andrews.edu
-Andrews University	|	Information Technology Services
-If two always agree, one of them is unnecessary
-"Friends don't let friends do DOS"
-"In theory, theory and practice are the same.
-In practice, however, they are not."
-
-
-
-
+Michal Kepien
 
