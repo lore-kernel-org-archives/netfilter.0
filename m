@@ -1,13 +1,12 @@
-From: Patrick Dung <patrick_dkt@yahoo.com.hk>
-Subject: Re: How to use netfilter to do static IP mapping?
-Date: Sat, 25 Sep 2004 09:40:43 +0800 (CST)
+From: Askar <askarali@gmail.com>
+Subject: going default DROP
+Date: Sat, 25 Sep 2004 11:31:20 +0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040925014043.62520.qmail@web51807.mail.yahoo.com>
-References: <1096009057.9581.68.camel@wolfpack.ljm.dom>
+Message-ID: <a0f69e5040924223152fe70b6@mail.gmail.com>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1096009057.9581.68.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +16,40 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="big5"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-QnkgdGhlIHdheSwgZm9yIG15IGNhc2UsIGRvIEkgYWxzbyBuZWVkIHRvIGFkZCB0aGlzCnJ1bGU6
-CgppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAtcyAxMC4xLjEuMiAtLWoK
-U05BVCAtLXRvIDEuMS4xLjIKLi5ldGMuLgoKUmVnYXJkcwpQYXRyaWNrCgogLS0tIEphc29uIE9w
-cGVyaXNhbm8gPG9waWVAODE3d2VzdC5jb20+IKS6rmWhRwo+IE9uIFRodSwgMjAwNC0wOS0yMyBh
-dCAyMzoyNCwgUGF0cmljayBEdW5nIHdyb3RlOgo+ID4gRGVhciBBbGwKPiA+IAo+ID4gVGhpcyBp
-cyB3aGF0IEkgd2FudDoKPiA+IAo+ID4gZXRoMCBhcyBpbnRlcm5ldCAoMS4xLjEuMSkKPiA+IGV0
-aDEgYXMgZG16ICgxMC4xLjEuMSkKPiA+IAo+ID4gZG16IGhhcyBhIHdlYiAoMTAuMS4xLjIpIGFu
-ZCBkbnMgKDEwLjEuMS4zKSBzZXJ2ZXIKPiA+IHdpdGggcHJpdmF0ZSBJUC4KPiA+IFRoZSBuZXRm
-aWx0ZXIgZncgd2lsbCBkbyB0aGUgc3RhdGljIElQIChwdWJsaWMgdG8KPiA+IHByaXZhdGUpIElQ
-IG1hcHBpbmcuCj4gPiBBdmFsaWFibGUgcHVibGljIElQIChleGFtcGxlKToKPiA+IDEuMS4xLjEg
-KGV0aDApLCAxLjEuMS4yIChmb3Igd2ViKSwgMS4xLjEuMyAoZm9yCj4gZG5zKQo+ID4gCj4gPiBO
-b3cgSSBoYXZlIHRoZXNlIHJ1bGVzOgo+ID4gCj4gPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9V
-VElORyAtaSBldGgwIC1kIDEuMS4xLjIKPiAtcAo+ID4gdGNwIC0tZHBvcnQgODAgLWogRE5BVCAt
-LXRvIDEwLjEuMS4yOjgwCj4gPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgw
-IC1kIDEuMS4xLjMKPiAtcAo+ID4gdWRwIC0tZHBvcnQgNTMgLWogRE5BVCAtLXRvIDEwLjEuMS4z
-OjUzCj4gPiAKPiA+IFRoZSBwcm9ibGVtIGlzIHRoYXQgdGhlcmUgaXMgbm8gcmVzcG9uc2UgZnJv
-bQo+IDEuMS4xLjIKPiA+IGFuZCAxLjEuMS4zLgo+ID4gRG8gSSBuZWVkIG90aGVyIHNwZWNpYWwg
-c2V0dGluZyAocHJveHkgYXJwPykKPiAKPiB5dXAuICBvbiBuZXRmaWx0ZXIgbWFjaGluZToKPiAK
-PiAgIGlwIGFkZHJlc3MgYWRkIDEuMS4xLjIgZGV2IGV0aDAKPiAgIGlwIGFkZHJlc3MgYWRkIDEu
-MS4xLjMgZGV2IGV0aDAKPiAKPiAgcmVtZW1iZXIgdG8gdXNlIDEwLjEuMS5bMjNdIGluIHlvdXIg
-ZmlsdGVyIHJ1bGVzCj4gYW5kIG5vdCAxLjEuMS5bMjNdLgo+IAo+IC1qCj4gCj4gLS0gCj4gSmFz
-b24gT3BwZXJpc2FubyA8b3BpZUA4MTd3ZXN0LmNvbT4KPiAKPiAKPiAgCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KpbKx/qfeoUK2vLpx
-oUKkcKxQrFAuLi4Krva6qblhwW4gILGhpN+zc8O0Cmh0dHA6Ly91cy5yZC55YWhvby5jb20vZXZ0
-PTIyMjgxLypodHRwOi8vcmluZ3RvbmUueWFob28uY29tLmhrLwoK
+hi,
+
+okay now im seriously wanted to convert the default ACCEPTED fw
+machine by my predecessor to default DROP. coz it is very hard to
+maintain ACCEPTED fw and im getting tired of monitoring tcpdump and
+then adding new rules to firewall script.
+As I told before it is a small ISP (limitations: no more then 150
+users at a time) and our clients connected to us via dialup.
+Before going to deploy my desired fw script I want to monitor the
+users traffic for a while may be I would go outside and interview few
+cyber cafes, to decide *what* to DROP and which packets to allow.
+Remember our clients are not that power users, very normal in nature,
+when online majority of them acccessing port 80, IM, chatting,
+emailing, irc etc. we have setup a cache "squid" for port 80 related
+things and its doing very well.
+Therefore I thinks it would not be difficult to deploy default DROP
+script, yes may be in starting days we could loose few clients ;)
+As im kinda new to security and iptables stuff, however I want to
+prove that this sort of  policy is possible in ISP (small) enviroment
+.
+
+=now can someone guide me what is the good way to monitor traffic i-e
+what ports clients accessing and then in teh light of this i would
+finialize my script.
+= any sample scripts for such enviroment and links ?
+Any other suggestions would be greatly appreciated.
+
+regards
+Askar
+
+-- 
+(after bouncing head on desk for days trying to get mine working, I'll make
+yer life a little easier)
+
