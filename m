@@ -1,13 +1,14 @@
-From: MAB <mabaeyens@eresmas.com>
-Subject: Re: New chain
-Date: Sun, 12 Jan 2003 01:54:06 +0000
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Help in IPTABLES
+Date: Sat, 11 Jan 2003 21:32:00 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301120154.06722.mabaeyens@eresmas.com>
-References: <3E20AFBE.5060404@mattiamartinello.com>
+Message-ID: <200301112132.00991.netfilter@newkirk.us>
+References: <20030111054656.20063.qmail@web40711.mail.yahoo.com> <20030111085730.43b83107.arnt@c2i.net>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E20AFBE.5060404@mattiamartinello.com>
+In-Reply-To: <20030111085730.43b83107.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +18,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Mattia Martinello <mattia@mattiamartinello.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
 
-El S=E1b 11 Ene 2003 23:58, Mattia Martinello escribi=F3:
+On Saturday 11 January 2003 02:57 am, Arnt Karlsen wrote:
+> On Fri, 10 Jan 2003 21:46:56 -0800 (PST),
+> Mohammad Shakir <shakirz1@yahoo.com> wrote in message
+>
+> <20030111054656.20063.qmail@web40711.mail.yahoo.com>:
+> > Dear Friends,
 
-If I am not wrong, chains are read sequentially. If you say first:
+[snipped]
 
-> iptables -A LOG_DROP -j DROP
+> > Please help my what script I make for this.
+> >
+> > I hope you will help me in this regard.
+> >
+> > Thanks
+> >
+> > MOHAMMAD SHAKIR
+>
+> ..unless you can afford to hire my firm, learn from
+> http://tldp.org/HOWTO/HOWTO-INDEX/networking.html .
 
-and then you add "new" rules to your firewall script:
+I think that's pretty unnecessary.  Referring to a useful reference is=20
+great.  Doing so with an attitude isn't.  This IS the neftilter user=20
+list.  People come here with questions, often with minimal experience=20
+and background.  In fact Mr Shakir's post included a script (which needs=20
+some work, which I noted in my reply) and then asked for advice on a=20
+second similar situation.  If all you have to offer is a link and a kick=20
+in the ass, why bother?
 
-> iptables -A LOG_DROP -s 192.168.1.0/24 -d 192.168.1.254/255.255.255.255
-> -j ACCEPT
-> iptables -A LOG_DROP -s 192.168.1.254/255.255.255.255 -d 192.168.1.0/24
-> -j ACCEPT
+j
 
-it wont work, because everything before the DROP rule will NOT be parsed.=
- I'm=20
-my particular case, I should "insert" those rules you want to be accepted=
-=20
-before de DROP one. That's why I set my LOG and DROP rules in the last li=
-nes=20
-of the script.
 
-Please, correct me if I am in mistake, and sorry my bad english.
-
-Regards.
-
--Miguel Angel Baeyens
-
-KeyID: 0x6FB7A511 en rediris.es
 
