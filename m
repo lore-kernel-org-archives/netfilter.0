@@ -1,11 +1,13 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: failover with iptables?
-Date: Wed, 11 Sep 2002 14:10:14 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Filtering Nimda, Code Red and Code Red II
+Date: Wed, 11 Sep 2002 13:00:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209111410.14005.roy@karlsbakk.net>
+Message-ID: <200209111200.g8BC0Yv08428@vulcan.rissington.net>
+References: <Pine.LNX.4.33.0209091917581.31845-100000@panda.center-f1.ru> <3D7EFBCF.70406@fugmann.dhs.org> <00a601c259ee$57f815c0$6500a8c0@systemsadmin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00a601c259ee$57f815c0$6500a8c0@systemsadmin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,56 +18,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-hi
+On Thursday 12 September 2002 12:52 am, Joe de Vera Jr. wrote:
 
-I currently have two identical servers I want to use in parallel with an=20
-iptables gate in front of them, so if one chrashes, iptables just sorts o=
-ut=20
-and redirects to the other.
+> hello fellas,
+>
+> can i make use of the iptables scripting to disable the access pages... for
+> example for code red it access /default.ida page while in nimda /root.exe
+> and cmd.exe
+>
+> is there a way to dis allow this..
 
-but
+You'd be better off doing this in your apache httpd.conf (or whatever server 
+you happen to be using).
 
-is it possible to make the below (as stolen from various cisco sketches) =
-with=20
-iptables?
+Netfilter is not really a content filter.
 
-If iptab_1 fails, iptab_2 should take over ip and (perhaps) mac address o=
-f=20
-iptab_1.=20
+Antony.
 
-ps: I don't think I need connection tracking.=20
+-- 
 
-roy
+Anyone that's normal doesn't really achieve much.
 
-
-         clients
-
-     |               |       =20
-     |               |
-+----+----+     +----+----+
-|         |     |         |
-| iptab_1 |     | iptab_2 |
-|         |     |         |
-+----+----+     +----+----+
-     |     \   /     |       =20
-     |      \ /      |
-     |       X       |       =20
-     |      / \      |
-     |     /   \     |
-+----+----+     +----+----+
-|         |     |         |
-| server1 |     | server2 |
-|         |     |         |
-+---------+     +---------+
-    =20
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
-
-Computers are like air conditioners.
-They stop working when you open Windows.
-
+ - Mark Blair, Australian rocket engineer
 
