@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Subject: Re: newbie URL with lots of examples?
-Date: Fri, 2 Apr 2004 19:33:18 +0100
+Date: Fri, 02 Apr 2004 13:48:06 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404021933.18595.Antony@Soft-Solutions.co.uk>
+Message-ID: <1080931686.17764.48.camel@localhost>
 References: <200404030001.04793.fajarpri@arinet.org>
-Reply-To: netfilter@lists.netfilter.org
+	 <200404021933.18595.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404030001.04793.fajarpri@arinet.org>
+In-Reply-To: <200404021933.18595.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,34 +21,36 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 02 April 2004 6:01 pm, Fajar Priyanto wrote:
+Oskar's is the one that I used to get started.  There are also some
+slide shows in the training section at http://iscs.sourceforge.net
 
-> Hi guys,
-> Thanks for helping me with the ssh thing.
-> I'm really newbie in iptables, and I want to learn more.
-> Can anybody give me directions where I can find a good tutorial (I've
-> downloaded one from netfilters.org, but, my logic can't quite follow it)
 
-Which one?
-
-> with loooottttsss of examples and explanataions? I really need the
-> examples. Thanks.
-
-Have you tried Oskar's?   http://iptables-tutorial.frozentux.net
-
-Even if you find that one hard to understand, Oskar might actually appreciate 
-the feedback if it helps make it better for future readers?   (That's a guess 
-on my part; I can't speak for Oskar...)
-
-Regards,
-
-Antony.
-
+On Fri, 2004-04-02 at 13:33, Antony Stone wrote:
+> On Friday 02 April 2004 6:01 pm, Fajar Priyanto wrote:
+> 
+> > Hi guys,
+> > Thanks for helping me with the ssh thing.
+> > I'm really newbie in iptables, and I want to learn more.
+> > Can anybody give me directions where I can find a good tutorial (I've
+> > downloaded one from netfilters.org, but, my logic can't quite follow it)
+> 
+> Which one?
+> 
+> > with loooottttsss of examples and explanataions? I really need the
+> > examples. Thanks.
+> 
+> Have you tried Oskar's?   http://iptables-tutorial.frozentux.net
+> 
+> Even if you find that one hard to understand, Oskar might actually appreciate 
+> the feedback if it helps make it better for future readers?   (That's a guess 
+> on my part; I can't speak for Oskar...)
+> 
+> Regards,
+> 
+> Antony.
 -- 
-If the human brain were so simple that we could understand it,
-we'd be so simple that we couldn't.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Open Source Development Corporation
+Financially Sustainable open source development
+http://www.opensourcedevelopmentcorp.com
 
 
