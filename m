@@ -1,13 +1,12 @@
-From: Wayne Topa <brittman@capital.net>
-Subject: Re: I need help , please
-Date: Fri, 5 Jul 2002 16:15:12 -0400
+From: "Thomas Hilgert" <Thomas.Hilgert@hilgert.de>
+Subject: snat dnat question
+Date: Sat, 6 Jul 2002 00:57:26 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020705201512.GA5896@dmcom.net>
-References: <002701c2242f$9498cd20$0a01a8c0@ed> <200207051600.g65G0V802444@vulcan.rissington.net> <017d01c2240d$599336b0$8703000a@aid.inf.cu> <200207051635.g65GZC802568@vulcan.rissington.net> <019301c2240f$e8e004e0$8703000a@aid.inf.cu>
+Message-ID: <8C14C590A51EB74285ADCA3DAD1A9DD705C282@hilgert-srv1.internal.hilgert.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <019301c2240f$e8e004e0$8703000a@aid.inf.cu>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,23 +17,54 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-david(david@aid.inf.cu) is reported to have said:
-> Antony;
-> 
-> #iptables -P INPUD DROP
-               INPUD???  INPUT
-> iptables:Bad built in chain name
-> 
-> if I turn to:
-> #iptables -P inpud DROP
-> iptables:Bad built in chain name
+Hi guys,
+
+I have some question regarding snat / dnat witch iptables. Here is what
+I do
+1. setup a packetfilter linuxbox with 3 interfaces.
+   ETH0: Connected to the internet (public ip)
+   ETH1: DMZ with stmp server 10.2.0.0/24
+   ETH2: Internal LAN with ip address 10.1.0.0/24
+
+   Snat all to the official ip address
+   Dnat all incoming to the smtp server
+See the and of mail for a iptables -t nat -L
+And now the question :-)=20
+If I do a telnet to mail.mailwatch.com 25 (simulating smtp) is all I get
+SYN_SENT and that is no connection from the DMZ. The packet filter has
+no problem to establish a connection.=20
+PLEASE explain me why
+
+Thanks in advance
+
+Thomas Hilgert
+-----------------
+Here are the rules to play:=20
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       all  --  anywhere             anywhere           to:10.2.0.2
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+SNAT       all  --  anywhere             anywhere
+to:212.23.129.186
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+[root@gw1 iproute2]# iptables -t nat -L
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       all  --  anywhere             anywhere           to:10.2.0.2
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+SNAT       all  --  anywhere             anywhere
+to:212.23.129.186
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
 
--- 
-Everyone can be taught to sculpt: Michelangelo would have had to be
-taught how __not to.  So it is with the great programmers.
-_______________________________________________________
 
