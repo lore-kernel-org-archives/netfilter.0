@@ -1,12 +1,12 @@
-From: O-Zone <liste@zerozone.it>
-Subject: Multiple output routes
-Date: Wed, 15 Dec 2004 10:44:46 +0100
-Message-ID: <200412151044.46362@X-Blurb>
-Reply-To: o-zone@zerozone.it
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: Max Concurrent Session
+Date: 15 Dec 2004 15:41:42 +0100
+Message-ID: <1102796799.29423.2.camel@nostromo.bgsecm.com>
+References: <1102705899.4516.50.camel@JOKER.INFOWORLD.CL>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1102705899.4516.50.camel@JOKER.INFOWORLD.CL>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: NetFilter Users <netfilter@lists.netfilter.org>
 
-Hi all,
-i want to route traffico for a specific subnet to routeA while default route 
-for my linuxbox is routeB. Here's the diagram:
+El vie, 10 de 12 de 2004 a las 20:11, Miguel Angel Amador L escribi=C3=B3=
+:
+> Hi All
+>  I need implement a firewall that support 2000 concurrent sessions, it
+> is posible with Iptables/Netfiler ??=20
+>  What need to do?
+>=20
+> Thanks for all
+>=20
+> regards
+>  Miguel Angel Amador L.
+> =20
 
-(internet)--[Router A]---+
-                                    |
-                                [Linux BOX]----(Subnet 10.0.0.x)
-                                    |
-(internet)--[Router B]---+
+In theory you should have no problems or netfilter limitations on
+that matter. What you will need it's enough memory and a powerful
+CPU. It's very important that you optimize the rules as much as
+you can, having in mind how the packets traverse the chains and
+the rules and trying that the sessions traverse the minimum number
+of rules. You should also use connection tracking so related and
+established connections are accepted with just a few rules.
 
-RouterA and RouterB have the same subnet (i.e. RouterA lan is 192.168.0.1 and 
-RouterB has 192.168.0.2) and LinuxBox have ONLY ONE externat iface like 
-192.168.0.3. While i use LinuxBOX i wanna go "out" trought 192.168.0.1 but 
-PC's MASQ'ed in Subnet 10.0.0.x must go out throug 192.168.0.2. 
 
-Can someone point me in the right direction ?
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
-Thanks ! Oz
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
--- 
-------
-O-Zone ! www.zerozone.it
 
