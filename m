@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: [OT] Was: ESP does not hit the nat table
-Date: Wed, 4 Aug 2004 09:49:39 +0100
+From: "david" <david@suarapembaruan.co.id>
+Subject: Re: block port 137
+Date: Wed, 4 Aug 2004 17:01:19 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408040949.39972.Antony@Soft-Solutions.co.uk>
-References: <D5C9032B2B09C64EA2409D6214E91AC9051228@asimail2.alphanumeric.com>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <006f01c47a09$fdc3d2e0$858310ac@suarapembaruan.com>
+References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net> <200408030717.59289.Antony@Soft-Solutions.co.uk> <00d601c479cf$352a91f0$858310ac@suarapembaruan.com> <200408040803.02568.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC9051228@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,51 +19,96 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 03 August 2004 1:42 pm, Jason Opperisano wrote:
+Thank's a lot.
 
-> > My main problem however was that ESP packets do not hit the nat table,
-> > but it does traverse mangle/filter table. Is this normal? I am mainly
-> > looking at SNAT/MASQUERADING ipsec traffic and I am not able to find any
-> > documentation on doing this, especially since there is no point in
-> > putting a "iptables -t nat -A PREROUTING -p 50 -j SNAT --to-source <me>".
-> > -p 50 means ESP as you can already guess. Am I missing something here?
-> > How do I masquerade ipsec traffic? (assuming my ipsec-VPN client/server
-> > is fine with it...)
+Rgds,
+David
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, August 04, 2004 2:03 PM
+Subject: Re: block port 137
+
+
+> On Wednesday 04 August 2004 4:00 am, david wrote:
 >
-> if i had to take a stab in the dark as to why you're having trouble--i
-> would say that it's related to the fact that the outbound interface of your
-> IPSec traffic needs to be specified as "-o ipsec0" (or whatever number your
-> actual ipsec interface is), not ethX...
-
-Actually, I thought the ipsecX interface was used for the plaintext traffic, 
-and ethX was used for the encrypted stream?
-
-My model of frees/wan and netfilter is:
- - encrypted packet arrives on ethX, passes through INPUT to local klips 
-process
- - decrypted packet appears on ipsecX pseudo-interface, passes through 
-FORWARD, and goes to local client
-
- - plaintext reply data comes in on standard ethernet from local network, gets 
-FORWARDed to ipsecX
- - ipsecX has local process listening, captures plaintext and encrypts it
- - encrypted packet getnerated by local process, passes through OUTPUT and 
-exists via ethX
-
-Therefore I believe the TCP/UDP/ICMP traffic etc would be going in/out via 
-ipsecX, whereas the ESP traffic will be going in/out via ethX.
-
-Regards,
-
-Antony.
-
--- 
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing on usenet and in e-mail?
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> > Dear Antony,
+> > I agree with you, i must block all traffic and accept one-by-one rules
+that
+> > i want, but the problem is i don't know how to do this
+>
+> 1. Here's the basic idea:
+>
+> iptables -P FORWARD DROP
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -i $INTIF -p tcp --dport 80 -j ACCEPT
+> iptables -A FORWARD -i $INTIF -p udp --dport 53 -j ACCEPT
+> iptables -A FORWARD -i $INTIF -p tcp --dport 53 -j ACCEPT
+> iptables -A FORWARD -j LOG
+>
+> These rules mean "DROP any packets which I don't have a rule to ACCEPT,
+then
+> ACCEPT all packets except the first of any connection, then ACCEPT the
+first
+> packets for web browsing and DNS, then LOG any other packets which try to
+get
+> through."
+>
+> 2. The important part of the above ruleset, for someone like you who is
+not
+> quite sure what rules to use to ACCEPT the packets you want (and you don't
+> want to default DROP any packets by omission), is the final LOG rule.
+>
+> That rule will tell you what packets are trying to get through the
+ruleset,
+> but haven't been ACCEPTed by one of the previous rules - and you may want
+to
+> add a rule to specifically ACCEPT some of them.   Of course, you may *not*
+> want to accept some of them either, so you're happy for those to continue
+> being DROPped.   In that case (packets you know that you don't want), the
+> next refinement of the ruleset is:
+>
+> 3. Add some specific DROP rules just before the final LOG rule, so that
+the
+> packets you know about and do not want get DROPped without being logged.
+>
+> The final outcome of this is a ruleset which:
+> a) ACCEPTs the packets you know you want
+> b) DROPs the packets you know you don't want
+> c) LOGs any other packets you haven't thought about or weren't expecting
+>
+> As you can see, you can build such a ruleset gradually - if you don't want
+to
+> disrupt communications through the firewall as you do it, just leave the
+> default policy on ACCEPT as you add the specific ACCEPT rules, and then
+once
+> you have no more wanted packets being DROPped, you can set the policy to
+DROP
+> and concentrate on cutting down what gets LOGged.
+>
+> I do recommend studying one of the netfilter tutorials such as Oskar
+> Andreasson's at http://iptables-tutorial.frozentux.net so that you get a
+> better understanding of how packets make their way through netfilter, and
+> also what packets are necessary for correct and efficient operation of a
+> network (some of them may be non-obvious, such as TCP DNS in my
+mini-ruleset
+> above, or certain types of ICMP packets etc).
+>
+> Regards,
+>
+> Antony.
+>
+> -- 
+> Anyone that's normal doesn't really achieve much.
+>
+>  - Mark Blair, Australian rocket engineer
+>
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
+>
 
 
