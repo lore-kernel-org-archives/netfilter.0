@@ -1,13 +1,12 @@
-From: xchris <lyra@fastwebnet.it>
-Subject: Re: redirection
-Date: Wed, 9 Apr 2003 12:25:21 +0200
+From: Simone Sestini <simone.sestini@plugit.net>
+Subject: Redirection
+Date: Wed, 09 Apr 2003 12:15:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304091225.21246.lyra@fastwebnet.it>
-References: <7497DCA1C240C042B28F6657ADFD8E09268774@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <5.2.0.9.0.20030409121155.02472d98@imap4.plugit.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="=====================_63945879==.ALT"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7497DCA1C240C042B28F6657ADFD8E09268774@i2km11-ukbr.domain1.systemhost.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +16,82 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: dhiraj.2.bhuyan@bt.com, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wednesday 09 April 2003 12:03 pm, dhiraj.2.bhuyan@bt.com wrote:
-> try one thing - flush all rules and add the rule
-> iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j DNAT
-> --to-destination x.y.z.2:80
->
-> I have a feeling that you are doing something in the POSTROUTING chain
-> which is why you are not getting the right result. Or maybe you have a =
-rule
-> to drop the packet defined?
->
+--=====================_63945879==.ALT
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 
-nope.
+Hi all.. i have a situation where i need to use iptables..
 
-i flushed everithing!
-all tables cleared.
+I have a public www with some virtual hosts on a machine with public ip 
+2.2.2.2.
+I have with another provider a second server with public ip 1.1.1.1
 
-i added only the DNAT line...
-but it still doesn't work.
-thank you
+On dns server i wrote that intra.pippo.foo has address 1.1.1.1 so all the 
+internet request come to machine 1.1.1.1 port 80.
+I want that the server 1.1.1.1 redirects all the call on port 80 and 443 to 
+the server 2.2.2.2 in transparent mode.. i don't want end user to know that 
+datas are over server 2.2.2.2.
 
-P.S.:I don't understand why if i use an ip of another interface it works.=
- (a=20
-classic DNAT to dmz)
+Naturally the www server on 2.2.2.2 listen on port 80 for intra.pippo.foo
+
+How can i menage the packets with iptables for do that ?
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+Simone Sestini [ SS971-RIPE ]
+
+Plug IT s.p.a. - Technical Office
+Via Galileo Ferraris 216
+52100 Arezzo
+
+Titles:
+System and Network Administrator
+Data Transmission Manager
+
+Fax             +39-199-4400-88
+E-mail  simone.sestini@plugit.net
+Web             http://www.plugit.it
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+--=====================_63945879==.ALT
+Content-Type: text/html; charset="us-ascii"
+
+<html>
+<body>
+Hi all.. i have a situation where i need to use iptables..<br><br>
+I have a public www with some virtual hosts on a machine with public ip
+2.2.2.2.<br>
+I have with another provider a second server with public ip
+1.1.1.1<br><br>
+On dns server i wrote that intra.pippo.foo has address 1.1.1.1 so all the
+internet request come to machine 1.1.1.1 port 80.<br>
+I want that the server 1.1.1.1 redirects all the call on port 80 and 443
+to the server 2.2.2.2 in transparent mode.. i don't want end user to know
+that datas are over server 2.2.2.2.<br><br>
+Naturally the www server on 2.2.2.2 listen on port 80 for
+intra.pippo.foo<br><br>
+How can i menage the packets with iptables for do that ?<br>
+<x-sigsep><p></x-sigsep>
+<font face="Verdana">::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::<br><br>
+</font><font face="Verdana" color="#FF0000"><b>Simone Sestini
+</font><font face="Verdana" size=2 color="#FF0000">[ SS971-RIPE
+]<br><br>
+</b></font>Plug IT s.p.a. - Technical Office<br>
+Via Galileo Ferraris 216<br>
+52100 Arezzo<br><br>
+<tt><font face="Courier New, Courier" color="#0000FF">Titles:<br>
+System and Network Administrator<br>
+Data Transmission Manager<br><br>
+Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>+39-199-4400-88<br>
+E-mail<x-tab>&nbsp;&nbsp;</x-tab>simone.sestini@plugit.net<br>
+Web<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><a href="http://www.plugit.it/" eudora="autourl">http://www.plugit.it</a><br><br>
+</font></tt><font face="Verdana"><u>::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+<br>
+</font></u></body>
+</html>
+
+--=====================_63945879==.ALT--
 
 
