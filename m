@@ -1,12 +1,14 @@
-From: Bob Keyes <bob@sinister.com>
-Subject: Re: assymetrical routing, iptables problem.
-Date: Thu, 3 Oct 2002 13:36:08 -0400 (EDT)
+From: Zoilo <zoilo@xs4all.nl>
+Subject: Re: First iptables script - comments please
+Date: Thu, 3 Oct 2002 20:58:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.BSO.4.33L0.0210031331220.12795-100000@sinister.com>
-References: <1033627561.652.9.camel@elendil>
+Message-ID: <02100320584201.02373@Lms>
+References: <20021003172228.GC7407@gentoo.coot.net>
+Reply-To: zoilo@xs4all.nl
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1033627561.652.9.camel@elendil>
+In-Reply-To: <20021003172228.GC7407@gentoo.coot.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +18,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Craig H. Anderson" <craigha@attbi.com>, netfilter@lists.netfilter.org
 
-
-
-On 3 Oct 2002, Cedric Blancher wrote:
-
-> You really should use a GRE tunnel between your two routers and route
-> your 1.1.1.1 IP directly through it. I use it quite often when migrating
-> hosts from one location to another (physically or logically) without
-> havin to change IP addresses.
-
-What I want here is a half-tunnel, of a sort. GRE Tunnels does not do
-this, as far as I can tell.
-
+On Thursday 03 October 2002 19:22, Craig H. Anderson wrote:
+> I've just tried iptables for the first time
+> and would like comments on this simiple
+> script.
 >
-> Note that you can also use packet MARK packets to identify them using
-> mangle table which prevents you to alter layer 4 stuff. You can also use
-> this MARK to route packets using iproute (see LARTC).
+> Gateway box with
+>    cable modem on one NIC (eth2)
+>    2 NIC's connected to local hubs.
+>    local subnets are 10.0.0.0/24 and 10.0..1.0/24
+>    only 10.0.0.0 is currently in use
 >
-> > The problem is, the latter half of this doesn't work. What I really want
-> > is SNAT in OUTPUT, as I believe that POSTROUTING won't touch packets that
-> > originate on the local machine.
+> I am successful in getting to the internet
+> with this script.
 >
-> SNAT on POSTROUTING will also affect locally originated packets as they
-> get through this chain.
+> # $Id: localFirewall,v 1.1 2002/10/03 16:31:21 craig Exp $
+> iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
+> iptables -A FORWARD -s 10.0.0.0/24 -j ACCEPT
+> iptables -A FORWARD -d 10.0.0.0/24 -j ACCEPT
+> iptables -A FORWARD -j DROP
 
-OK, this is good to know, there is something else going wrong than I had
-thought.
+I would say that it's somewhat minimalistic, but OK.
 
+Better to use "iptables -P FORWARD DROP" to establish default DROP-policy for 
+the FORWARD chain, although you effectively achieve the same result by 
+putting your DROP-rule at the end of the list.
 
+A little further improvement may be obtained by adding "-i eth0" and "-o 
+eth0" to your FORWARD rules.
+
+And don't forget to handle INPUT and OUTPUT chains as well (default DROP 
+policy).
+
+-- 
+Z.
+------------------------------------------------------------
+"If all you have is a hammer, everything looks like a nail."
 
