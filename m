@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: subnet problem
-Date: Sun, 18 Jul 2004 22:02:20 +0100
+Subject: Re: matching on ICMP responses
+Date: Sun, 18 Jul 2004 22:09:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407182202.20404.Antony@Soft-Solutions.co.uk>
-References: <20040718205007.GA7576@sapience.com>
+Message-ID: <200407182209.28604.Antony@Soft-Solutions.co.uk>
+References: <40FAE42A.6090300@metaloft.com>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040718205007.GA7576@sapience.com>
+In-Reply-To: <40FAE42A.6090300@metaloft.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,35 +21,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 18 July 2004 9:50 pm, Mail Lists wrote:
+On Sunday 18 July 2004 9:57 pm, Dirk Morris wrote:
 
->   I disallow iana reserved and some rfc 1918 from my firewall.
+> Is there a way to match only certain ICMP responses that relate to
+> certain other sessions.
 >
->   cRES_LDROP  all  --  172.16.0.0/12        0.0.0.0/0
->
->   which I would expect to block 172.16 to 172.31.
->
->   However I get these in my log files:
->
->   Jul 18 16:21:47 fw kernel:  [FW Drop-Res] IN=eth1 OUT= MAC=<xx>
-> SRC=172.139.140.122 DST=<myip> LEN=48 TOS=0x00 PREC=0x00 TTL=109 ID=30189
-> DF PROTO=TCP SPT=3477 DPT=1025 WINDOW=16384 RES=0x00 SYN URGP=0
->
->    I'm stumped - why did 172.139 get dropped here? Not that the packet
->  wouldn't have gotten dropped later anyway but this rule should not
->  have matched?
->
->  Suggestions?
+> example: is there a rule/match I can use to specify that I want to block
+> all ICMP port unreachable errors, but _only_ in response to UDP packets (not
+> TCP).
 
-Please post your ruleset so we can see everything relating to cRES_LDROP.
+Why would you get an ICMP message in response to a TCP port being unreachable?
+
+TCP will either return RST, or simply won't return the SYN-ACK packet, and 
+eventually the client will timeout.   There should be no ICMP packets 
+involved.
+
+> Or maybe both TCP and UDP, but only port 123. etc etc.
+
+If you want to match ICMP packets which are in response to an unsuccessful UDP 
+packet to port 123, you could try the "string" match?   It has the 
+disadvantage (which for most other purposes is a severe one) that it will 
+only match strings contained competely within one packet, however in this 
+case I think all the data you will be interested in will be in one packet, 
+therefore it might be a good solution to the problem.
 
 Regards,
 
 Antony.
 
 -- 
-If you can't find an Open Source solution for it, then it isn't a real 
-problem.
+Perfection in design is achieved not when there is nothing left to add, but 
+rather when there is nothing left to take away.
+
+ - Antoine de Saint-Exupery
 
                                                      Please reply to the list;
                                                            please don't CC me.
