@@ -1,12 +1,11 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: -m helper --helper -irc
-Date: Tue, 17 Aug 2004 15:46:06 -0400
+From: Jim Gifford <maillist@jg555.com>
+Subject: Use of Kernel Headers
+Date: Tue, 17 Aug 2004 13:40:54 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC905129B@asimail2.alphanumeric.com>
+Message-ID: <41226D56.3080800@jg555.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
->   I use following rule for marking irc dcc transfers from my NATed =
-lan.
->
->   iptables -t mangle -A PREROUTING -p tcp -m helper --helper irc \
->   -m mark --mark 0 -j MARK --set-mark 1
->
->   And this works perfectly when I send a file to somebody, and doesn't
->   when somebody sends something to me. Why?
+I have been asked this question a lot of times, and I think it should be 
+asked here for an official answer.
 
-i was under the impression that ip_conntrack_irc was written to handle =
-outbound DCC transfers only...not inbound.  there may be a patch =
-floating around that makes it work inbound as well--try google / =
-marc.theaimsgroup.com/?l=3Dnetfilter...
+It has been stated numerous times that userspace programs should not be 
+compiled against raw kernel headers, but iptables does compile against 
+userspace headers and breaks this rule. With the advent of the 
+linux-libc-headers package, should iptables be compiled against the 
+linux-libc-headers or the raw kernel headers since iptables is a user 
+space program?
 
-as an aside--what is that rule doing exactly, 'cause you've stumped me.  =
-to me, it says, "if a packet has a mark =3D 0, set the mark to 1" and =
-you're doing this in the PREROUTING chain of the mangle table--where is =
-the mark =3D 0 coming from (as i can tell, it could only be coming from =
-a previous rule in mangle:PREROUTING)?
+Should patch-o-matic update the headers in the proper location, 
+/usr/include/linux/netfilter_ipv4 etc?
 
--j
+----
+Jim Gifford
+maillist@jg555.com
+
 
