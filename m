@@ -1,11 +1,15 @@
-From: Carol Anne Ogdin <caogdin@deepwoods.com>
-Subject: Making this list more readable
-Date: Wed, 8 Jan 2003 08:59:16 -0800
+From: Athan <netfilter@miggy.org>
+Subject: Re: Making this list more readable
+Date: Wed, 8 Jan 2003 17:09:18 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF86C0DB41.716D3A1B-ON88256CA8.005CC9AB-88256CA8.005D516A@deepwoods.com>
+Message-ID: <20030108170918.GB21359@miggy.org>
+References: <OF86C0DB41.716D3A1B-ON88256CA8.005CC9AB-88256CA8.005D516A@deepwoods.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=_alternative 005D515E88256CA8_="
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tjCHc7DPkfUGtrlw"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <OF86C0DB41.716D3A1B-ON88256CA8.005CC9AB-88256CA8.005D516A@deepwoods.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +21,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This is a multipart message in MIME format.
---=_alternative 005D515E88256CA8_=
-Content-Type: text/plain; charset="us-ascii"
 
-Is there any way to change the listserv so it doesn't convert control 
-characters (e.g., tabs, quotes and spaces at ends of lines) to '=xx' form 
-of hex characters.  It's hard to read.  (I read the digest, so perhaps the 
-problem lies there, and not in the main listserv?)
+--tjCHc7DPkfUGtrlw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Does your listserv software have a conversion table you can set that will 
-make things more readable?
+On Wed, Jan 08, 2003 at 08:59:16AM -0800, Carol Anne Ogdin wrote:
+>    Is there any way to change the listserv so it doesn't convert control
+>    characters (e.g., tabs, quotes and spaces at ends of lines) to '=3Dxx'
+>    form of hex characters.  It's hard to read.  (I read the digest, so
+>    perhaps the problem lies there, and not in the main listserv?)
+>    Does your listserv software have a conversion table you can set that
+>    will make things more readable?
 
-Thanks
+  I don't see this, and I'm getting the list direct.  The =3DXX thing is
+"Quoted Printable" encoding.  Probably an option on the listserv to turn
+it on/off for the digest.
 
---Carol Anne
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
 
-Examples include these from a recent digest:
+--tjCHc7DPkfUGtrlw
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-> F1=3D"eth0"
-> IF2=3D"eth1"   (what's the "=3D" mean?)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-and
+iEYEARECAAYFAj4cWz4ACgkQzbc+I5XfxKcAwQCfdEFn7mRKGczRBAkugcJsqeHp
+iZgAnjx8s4v5BU2JjDjIPdfWdKpLkpvr
+=/N4j
+-----END PGP SIGNATURE-----
 
-
-with the cisco's firewall enabled.  If this fails, I suspect the 
-cisco's=20
-configuration is blocking outbound replies, so you'd have to dig there.=20
-
-(What to the trailing "=20" sequences add?  They appear to be spaces in 
-the original message.)
---=_alternative 005D515E88256CA8_=
-Content-Type: text/html; charset="us-ascii"
-
-
-<br><font size=2 face="sans-serif">Is there any way to change the listserv so it doesn't convert control characters (e.g., tabs, quotes and spaces at ends of lines) to '=xx' form of hex characters. &nbsp;It's hard to read. &nbsp;(I read the digest, so perhaps the problem lies there, and not in the main listserv?)</font>
-<br>
-<br><font size=2 face="sans-serif">Does your listserv software have a conversion table you can set that will make things more readable?</font>
-<br>
-<br><font size=2 face="sans-serif">Thanks</font>
-<br><font size=2 face="sans-serif"><br>
-</font><font size=3 face="Times New Roman">--Carol Anne</font>
-<br>
-<br><font size=2 face="sans-serif">Examples include these from a recent digest:</font>
-<br>
-<br><font size=2 face="Courier New">&gt; F1=3D&quot;eth0&quot;<br>
-&gt; IF2=3D&quot;eth1&quot;</font><font size=2 face="sans-serif"> &nbsp; (what's the &quot;=3D&quot; mean?)</font>
-<br>
-<br><font size=3 face="Times New Roman">and</font>
-<br>
-<br><font size=2 face="Courier New"><br>
-with the cisco's firewall enabled. &nbsp;If this fails, I suspect the cisco's=20<br>
-configuration is blocking outbound replies, so you'd have to dig there.=20<br>
-</font>
-<br><font size=3 face="Times New Roman">(What to the trailing &quot;=20&quot; sequences add? &nbsp;They appear to be spaces in the original message.)</font>
---=_alternative 005D515E88256CA8_=--
+--tjCHc7DPkfUGtrlw--
 
