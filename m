@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How to drop/reject packets amongst LAN clients?
-Date: Mon, 10 May 2004 18:43:30 +0100
+From: michael@floog.net
+Subject: Fwd: Re: How to drop/reject packets amongst LAN clients?
+Date: Mon, 10 May 2004 10:46:17 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405101843.30575.Antony@Soft-Solutions.co.uk>
-References: <1084206191.409fac6f1176a@webmail.floog.net> <200405101743.54501.Antony@Soft-Solutions.co.uk> <1084210299.409fbc7b3288c@webmail.floog.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1084211177.409fbfe9b99c3@webmail.floog.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1084210299.409fbc7b3288c@webmail.floog.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,33 +18,66 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 10 May 2004 6:31 pm, michael@floog.net wrote:
 
-> Hi Antony,
->
-> Thanks for the rapid response to my post.  I see you what you are
-> saying.
->
-> Maybe I could add a 3rd NIC to the linux router/firewall box and call it
-> eth2 and give it a different subnet like 192.168.2.1 and then
-> 192.168.1.9 will become 192.168.2.2 on the new subnet.
 
-That would be an excellent solution - using NAT if you need the other machines 
-to think it's 192.168.1.9 instead of 192.168.2.9 (however, they may be happy 
-with the real address - it depends what you're using it for).
+----- Forwarded message from michael@floog.net -----
+    Date: Mon, 10 May 2004 10:36:27 -0700
+    From: michael@floog.net
+Reply-To: michael@floog.net
+ Subject: Re: How to drop/reject packets amongst LAN clients?
+      To: Cedric Blancher <blancher@cartel-securite.fr>
 
-Regards,
+Fantastic mailing list!
+I just finished a response to Antony Stone in which I inquired about a
+possible 3rd NIC.  I checked my email at the same time and see your
+response with an answer about the very inquiry I made only a minute
+before!  :-)
 
-Antony.
+Thank you so much for your input.
 
--- 
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
+I think I will read up on this and see if it's something I can handle.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Mike
+
+
+Quoting Cedric Blancher <blancher@cartel-securite.fr>:
+
+> your box. If you want to achieve this, then you have a Linux box a a
+> filtering bridge. Cheap quick recipe would be to add a third
+> ethernet
+> interface to your box and configure it like this :
+> 
+> eth0 gos to the internet
+> eth1 goes to a switch where *.2 to *.6 are connected
+> eth2 goes to a switch where *.7 to *.9 are connected
+> create a bridge (br0) to which belong eth1 and eth2.
+> assign br0 former eth1 IP
+> 
+> Activate bridge filtering (available in stock 2.6 kernels) using
+> Netfilter and you're done. Just filter traffic in FORWARD chain,
+> using
+> physdev match to specify eth1 and eth2 and incoming and/or outgoing
+> interface, and restrict traffic other than IP stuff using ebtables.
+> 
+> See http://ebtables.sourceforge.net/ documentation section.
+> 
+> 
+> -- 
+> http://www.netexit.com/~sid/
+> PGP KeyID: 157E98EE FingerPrint:
+> FA62226DA9E72FA8AECAA240008B480E157E98EE
+> >> Hi! I'm your friendly neighbourhood signature virus.
+> >> Copy me to your signature file and help me spread!
+> 
+
+
+
+
+
+----- End forwarded message -----
+
+
+
+
 
 
