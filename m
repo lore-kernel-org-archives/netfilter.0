@@ -1,13 +1,11 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: Re: pptp+masq fsckup! PLEASE help...
-Date: Tue, 7 Jan 2003 19:33:16 +0100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: [PATCH][TRIVIAL] warnings removal in some ip6 patches
+Date: Tue, 7 Jan 2003 20:00:24 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301071933.16959.roy@karlsbakk.net>
-References: <200301061926.49827.roy@karlsbakk.net> <010901c2b665$1d078760$6400a8c0@diego>
+Message-ID: <Pine.LNX.4.44.0301071958170.19704-200000@dns.toxicfilms.tv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: MULTIPART/MIXED; BOUNDARY="-23717851-1463801144-1041966024=:19704"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <010901c2b665$1d078760$6400a8c0@diego>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,191 +15,150 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Diego Sarasua <debian@sarasuasys.com.ar>, Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.samba.org
 
-hi
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-it now works fine AFAICS with iptables-1.2.7a.
-however - I have some intermittent errors with the 802.1q VLAN configurat=
-ion.=20
-suddenly the machine is unreachable, and suddenly it's back there again.=20
-Dunno why, but it might be that #=A4(/#!!$@=A3 D-Link switch
+---23717851-1463801144-1041966024=:19704
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-On Tuesday 07 January 2003 16:54, Diego Sarasua wrote:
-> Roy ! - i was trying to compile the kernel 2.4.20 and i have the same
-> problem that U have ..... really i don=B4t know why.
-> But , becuase i really need the solution quicly as U need too.I was try=
-ing
-> with another kernels , and i was surprised because the same thing that
-> happends on 2.4.20 dont happend on  2.4.17 , and now im using that kern=
-el
-> and it works awesome.-
-> i know thath is not an correctly solution ok ?
-> but IT works Correctly .- Why ? really dont know , if U can givme an ft=
-p or
-> something  i have a 2.4.17 already patched i can upload it to You.-
->
->
-> p/d : I know thats is not a right way , but i U need a solution now , t=
-hat
-> help i can give U , as I say U before , i have a 2.4.20 kernel working =
-,
-> but when i try to make the same compilation in another machine , i don'=
-t
-> know waths go wrong... and invalid arguments apears.....
->
-> Thats all
-> Please forgive my very bad english
-> Diego  : )
-> San Juan
-> Sol y buen Vino (Sun , and very good Wines)
->
-> ----- Original Message -----
-> From: "Roy Sigurd Karlsbakk" <roy@karlsbakk.net>
-> To: "Netfilter mailinglist" <netfilter@lists.netfilter.org>
-> Sent: Monday, January 06, 2003 3:26 PM
-> Subject: pptp+masq fsckup! PLEASE help...
->
-> > hi all
-> >
-> > still I can't make it
-> >
-> > compiled in the patch at http://roeder.goe.net/~koepi/newnat.html, as
->
-> Diego
->
-> > Sarasua pointed to, but getting the same ole crap as the only time I'=
-ve
->
-> ever
->
-> > managed to patch-o-maticize the kernel. As I try to add the following
->
-> rule, I
->
-> > just get an 'invalid argument' message. The following shows an strace=
- of
-> > iptables.
-> >
-> > thanks
-> >
-> > roy
-> >
-> > nyfw:~# strace iptables -t nat -A POSTROUTING -s
->
-> 192.168.0.0/255.255.0.0 -d !
->
-> > 192.168.0.0/255.255.0.0 -j MASQUERADE
-> > execve("/sbin/iptables", ["iptables", "-t", "nat", "-A", "POSTROUTING=
-",
->
-> "-s",
->
-> > "192.168.0.0/255.255.0.0", "-d", "!", "192.168.0.0/255.255.0.0", "-j"=
-,
-> > "MASQUERADE"], [/* 13 vars */]) =3D 0
-> > uname({sys=3D"Linux", node=3D"nyfw", ...})  =3D 0
-> > brk(0)                                  =3D 0x8056a5c
-> > open("/etc/ld.so.preload", O_RDONLY)    =3D -1 ENOENT (No such file o=
-r
-> > directory)
-> > open("/etc/ld.so.cache", O_RDONLY)      =3D 3
-> > fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D11871, ...}) =3D 0
-> > old_mmap(NULL, 11871, PROT_READ, MAP_PRIVATE, 3, 0) =3D 0x40014000
-> > close(3)                                =3D 0
-> > open("/lib/libdl.so.2", O_RDONLY)       =3D 3
-> > read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0T\27\0\000"..=
-=2E,
->
-> 1024)
->
-> > =3D 1024
-> > fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D8008, ...}) =3D 0
-> > old_mmap(NULL, 11004, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D
-> > 0x40017000 mprotect(0x40019000, 2812, PROT_NONE)   =3D 0
-> > old_mmap(0x40019000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXE=
-D,
-> > 3, 0x1000) =3D 0x40019000
-> > close(3)                                =3D 0
-> > open("/lib/libc.so.6", O_RDONLY)        =3D 3
-> > read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\30\222"...,
-> > 1024)
->
-> =3D
->
-> > 1024
-> > fstat64(3, {st_mode=3DS_IFREG|0755, st_size=3D1153784, ...}) =3D 0
-> > old_mmap(NULL, 1166560, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D
->
-> 0x4001a000
->
-> > mprotect(0x4012d000, 40160, PROT_NONE)  =3D 0
-> > old_mmap(0x4012d000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIX=
-ED,
->
-> 3,
->
-> > 0x113000) =3D 0x4012d000
-> > old_mmap(0x40133000, 15584, PROT_READ|PROT_WRITE,
-> > MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) =3D 0x40133000
-> > close(3)                                =3D 0
-> > old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,=
- -1,
->
-> 0) =3D
->
-> > 0x40137000
-> > munmap(0x40014000, 11871)               =3D 0
-> > brk(0)                                  =3D 0x8056a5c
-> > brk(0x8056a94)                          =3D 0x8056a94
-> > brk(0x8057000)                          =3D 0x8057000
-> > open("/lib/iptables/libipt_MASQUERADE.so", O_RDONLY) =3D 3
-> > read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\220\4\0"...,
->
-> 1024) =3D
->
-> > 1024
-> > fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D3276, ...}) =3D 0
-> > old_mmap(NULL, 6720, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D 0x40=
-014000
-> > mprotect(0x40015000, 2624, PROT_NONE)   =3D 0
-> > old_mmap(0x40015000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXE=
-D,
-> > 3,
->
-> 0)
->
-> > =3D 0x40015000
-> > close(3)                                =3D 0
-> > socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  =3D 3
-> > getsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], [84]) =3D 0
-> > brk(0x8058000)                          =3D 0x8058000
-> > getsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], [656]) =3D 0
-> > setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], 876) =3D -1 EINVA=
-L
->
-> (Invalid
->
-> > argument)
-> > write(2, "iptables: Invalid argument\n", 27iptables: Invalid argument
-> > ) =3D 27
-> > _exit(1)                                =3D ?
-> >
-> > --
-> > Roy Sigurd Karlsbakk, Datavaktmester
-> > ProntoTV AS - http://www.pronto.tv/
-> > Tel: +47 9801 3356
-> >
-> > Computers are like air conditioners.
-> > They stop working when you open Windows.
+Hello,
 
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
+this patch adds casts to some ipv6 patches to remove warnings.
 
-Computers are like air conditioners.
-They stop working when you open Windows.
+Best Regards,
+Maciej Soltysiak
 
+diff -ru netfilter.orig/patch-o-matic/base/ahesp6.patch.ipv6 netfilter/patch-o-matic/base/ahesp6.patch.ipv6
+--- netfilter.orig/patch-o-matic/base/ahesp6.patch.ipv6	2003-01-07 19:49:12.000000000 +0100
++++ netfilter/patch-o-matic/base/ahesp6.patch.ipv6	2003-01-07 19:52:51.000000000 +0100
+@@ -101,7 +101,7 @@
+ +                     break;
+ +              }
+ +
+-+              hdr=skb->data+ptr;
+++              hdr=(struct ipv6_opt_hdr *)skb->data+ptr;
+ +
+ +              /* Calculate the header length */
+ +                if (nexthdr == NEXTHDR_FRAGMENT) {
+@@ -320,7 +320,7 @@
+ +			break;
+ +		}
+ +
+-+		hdr=skb->data+ptr;
+++		hdr=(struct ipv6_opt_hdr *)skb->data+ptr;
+ +
+ +		/* Calculate the header length */
+ +                if (nexthdr == NEXTHDR_FRAGMENT) {
+diff -ru netfilter.orig/patch-o-matic/base/frag6.patch.ipv6 netfilter/patch-o-matic/base/frag6.patch.ipv6
+--- netfilter.orig/patch-o-matic/base/frag6.patch.ipv6	2003-01-07 19:49:12.000000000 +0100
++++ netfilter/patch-o-matic/base/frag6.patch.ipv6	2003-01-07 19:53:00.000000000 +0100
+@@ -115,7 +115,7 @@
+ +                     break;
+ +              }
+ +
+-+              hdr=skb->data+ptr;
+++              hdr=(struct ipv6_opt_hdr *)skb->data+ptr;
+ +
+ +              /* Calculate the header length */
+ +                if (nexthdr == NEXTHDR_FRAGMENT) {
+diff -ru netfilter.orig/patch-o-matic/base/ipv6header.patch.ipv6 netfilter/patch-o-matic/base/ipv6header.patch.ipv6
+--- netfilter.orig/patch-o-matic/base/ipv6header.patch.ipv6	2003-01-07 19:49:12.000000000 +0100
++++ netfilter/patch-o-matic/base/ipv6header.patch.ipv6	2003-01-07 19:53:07.000000000 +0100
+@@ -120,7 +120,7 @@
+ +			break;
+ +		}
+ +
+-+		hdr=skb->data+ptr;
+++		hdr=(struct ipv6_opt_hdr *)skb->data+ptr;
+ +
+ +		/* Calculate the header length */
+ +                if (nexthdr == NEXTHDR_FRAGMENT) {
+diff -ru netfilter.orig/patch-o-matic/base/route6.patch.ipv6 netfilter/patch-o-matic/base/route6.patch.ipv6
+--- netfilter.orig/patch-o-matic/base/route6.patch.ipv6	2003-01-07 19:49:12.000000000 +0100
++++ netfilter/patch-o-matic/base/route6.patch.ipv6	2003-01-07 19:53:23.000000000 +0100
+@@ -139,7 +139,7 @@
+ +                     break;
+ +              }
+ +
+-+              hdr=skb->data+ptr;
+++              hdr=(struct ipv6_opt_hdr *)skb->data+ptr;
+ +
+ +              /* Calculate the header length */
+ +                if (nexthdr == NEXTHDR_FRAGMENT) {
+
+
+
+
+-----BEGIN GEEK CODE BLOCK-----
+VERSION: 3.1
+GIT/MU d-- s:- a-- C++ UL++++$ P L++++ E- W- N- K- w--- O! M- V- PS+ PE++
+Y+ PGP- t+ 5-- X+ R tv- b DI+ D---- G e+++> h! y?
+-----END GEEK CODE BLOCK-----
+
+---23717851-1463801144-1041966024=:19704
+Content-Type: TEXT/plain; name="trivial_warnings.diff"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.44.0301072000240.19704@dns.toxicfilms.tv>
+Content-Description: trivial warnings
+Content-Disposition: attachment; filename="trivial_warnings.diff"
+
+ZGlmZiAtcnUgbmV0ZmlsdGVyLm9yaWcvcGF0Y2gtby1tYXRpYy9iYXNlL2Fo
+ZXNwNi5wYXRjaC5pcHY2IG5ldGZpbHRlci9wYXRjaC1vLW1hdGljL2Jhc2Uv
+YWhlc3A2LnBhdGNoLmlwdjYNCi0tLSBuZXRmaWx0ZXIub3JpZy9wYXRjaC1v
+LW1hdGljL2Jhc2UvYWhlc3A2LnBhdGNoLmlwdjYJMjAwMy0wMS0wNyAxOTo0
+OToxMi4wMDAwMDAwMDAgKzAxMDANCisrKyBuZXRmaWx0ZXIvcGF0Y2gtby1t
+YXRpYy9iYXNlL2FoZXNwNi5wYXRjaC5pcHY2CTIwMDMtMDEtMDcgMTk6NTI6
+NTEuMDAwMDAwMDAwICswMTAwDQpAQCAtMTAxLDcgKzEwMSw3IEBADQogKyAg
+ICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KICsgICAgICAgICAgICAgIH0N
+CiArDQotKyAgICAgICAgICAgICAgaGRyPXNrYi0+ZGF0YStwdHI7DQorKyAg
+ICAgICAgICAgICAgaGRyPShzdHJ1Y3QgaXB2Nl9vcHRfaGRyICopc2tiLT5k
+YXRhK3B0cjsNCiArDQogKyAgICAgICAgICAgICAgLyogQ2FsY3VsYXRlIHRo
+ZSBoZWFkZXIgbGVuZ3RoICovDQogKyAgICAgICAgICAgICAgICBpZiAobmV4
+dGhkciA9PSBORVhUSERSX0ZSQUdNRU5UKSB7DQpAQCAtMzIwLDcgKzMyMCw3
+IEBADQogKwkJCWJyZWFrOw0KICsJCX0NCiArDQotKwkJaGRyPXNrYi0+ZGF0
+YStwdHI7DQorKwkJaGRyPShzdHJ1Y3QgaXB2Nl9vcHRfaGRyICopc2tiLT5k
+YXRhK3B0cjsNCiArDQogKwkJLyogQ2FsY3VsYXRlIHRoZSBoZWFkZXIgbGVu
+Z3RoICovDQogKyAgICAgICAgICAgICAgICBpZiAobmV4dGhkciA9PSBORVhU
+SERSX0ZSQUdNRU5UKSB7DQpkaWZmIC1ydSBuZXRmaWx0ZXIub3JpZy9wYXRj
+aC1vLW1hdGljL2Jhc2UvZnJhZzYucGF0Y2guaXB2NiBuZXRmaWx0ZXIvcGF0
+Y2gtby1tYXRpYy9iYXNlL2ZyYWc2LnBhdGNoLmlwdjYNCi0tLSBuZXRmaWx0
+ZXIub3JpZy9wYXRjaC1vLW1hdGljL2Jhc2UvZnJhZzYucGF0Y2guaXB2Ngky
+MDAzLTAxLTA3IDE5OjQ5OjEyLjAwMDAwMDAwMCArMDEwMA0KKysrIG5ldGZp
+bHRlci9wYXRjaC1vLW1hdGljL2Jhc2UvZnJhZzYucGF0Y2guaXB2NgkyMDAz
+LTAxLTA3IDE5OjUzOjAwLjAwMDAwMDAwMCArMDEwMA0KQEAgLTExNSw3ICsx
+MTUsNyBAQA0KICsgICAgICAgICAgICAgICAgICAgICBicmVhazsNCiArICAg
+ICAgICAgICAgICB9DQogKw0KLSsgICAgICAgICAgICAgIGhkcj1za2ItPmRh
+dGErcHRyOw0KKysgICAgICAgICAgICAgIGhkcj0oc3RydWN0IGlwdjZfb3B0
+X2hkciAqKXNrYi0+ZGF0YStwdHI7DQogKw0KICsgICAgICAgICAgICAgIC8q
+IENhbGN1bGF0ZSB0aGUgaGVhZGVyIGxlbmd0aCAqLw0KICsgICAgICAgICAg
+ICAgICAgaWYgKG5leHRoZHIgPT0gTkVYVEhEUl9GUkFHTUVOVCkgew0KZGlm
+ZiAtcnUgbmV0ZmlsdGVyLm9yaWcvcGF0Y2gtby1tYXRpYy9iYXNlL2lwdjZo
+ZWFkZXIucGF0Y2guaXB2NiBuZXRmaWx0ZXIvcGF0Y2gtby1tYXRpYy9iYXNl
+L2lwdjZoZWFkZXIucGF0Y2guaXB2Ng0KLS0tIG5ldGZpbHRlci5vcmlnL3Bh
+dGNoLW8tbWF0aWMvYmFzZS9pcHY2aGVhZGVyLnBhdGNoLmlwdjYJMjAwMy0w
+MS0wNyAxOTo0OToxMi4wMDAwMDAwMDAgKzAxMDANCisrKyBuZXRmaWx0ZXIv
+cGF0Y2gtby1tYXRpYy9iYXNlL2lwdjZoZWFkZXIucGF0Y2guaXB2NgkyMDAz
+LTAxLTA3IDE5OjUzOjA3LjAwMDAwMDAwMCArMDEwMA0KQEAgLTEyMCw3ICsx
+MjAsNyBAQA0KICsJCQlicmVhazsNCiArCQl9DQogKw0KLSsJCWhkcj1za2It
+PmRhdGErcHRyOw0KKysJCWhkcj0oc3RydWN0IGlwdjZfb3B0X2hkciAqKXNr
+Yi0+ZGF0YStwdHI7DQogKw0KICsJCS8qIENhbGN1bGF0ZSB0aGUgaGVhZGVy
+IGxlbmd0aCAqLw0KICsgICAgICAgICAgICAgICAgaWYgKG5leHRoZHIgPT0g
+TkVYVEhEUl9GUkFHTUVOVCkgew0KZGlmZiAtcnUgbmV0ZmlsdGVyLm9yaWcv
+cGF0Y2gtby1tYXRpYy9iYXNlL3JvdXRlNi5wYXRjaC5pcHY2IG5ldGZpbHRl
+ci9wYXRjaC1vLW1hdGljL2Jhc2Uvcm91dGU2LnBhdGNoLmlwdjYNCi0tLSBu
+ZXRmaWx0ZXIub3JpZy9wYXRjaC1vLW1hdGljL2Jhc2Uvcm91dGU2LnBhdGNo
+LmlwdjYJMjAwMy0wMS0wNyAxOTo0OToxMi4wMDAwMDAwMDAgKzAxMDANCisr
+KyBuZXRmaWx0ZXIvcGF0Y2gtby1tYXRpYy9iYXNlL3JvdXRlNi5wYXRjaC5p
+cHY2CTIwMDMtMDEtMDcgMTk6NTM6MjMuMDAwMDAwMDAwICswMTAwDQpAQCAt
+MTM5LDcgKzEzOSw3IEBADQogKyAgICAgICAgICAgICAgICAgICAgIGJyZWFr
+Ow0KICsgICAgICAgICAgICAgIH0NCiArDQotKyAgICAgICAgICAgICAgaGRy
+PXNrYi0+ZGF0YStwdHI7DQorKyAgICAgICAgICAgICAgaGRyPShzdHJ1Y3Qg
+aXB2Nl9vcHRfaGRyICopc2tiLT5kYXRhK3B0cjsNCiArDQogKyAgICAgICAg
+ICAgICAgLyogQ2FsY3VsYXRlIHRoZSBoZWFkZXIgbGVuZ3RoICovDQogKyAg
+ICAgICAgICAgICAgICBpZiAobmV4dGhkciA9PSBORVhUSERSX0ZSQUdNRU5U
+KSB7DQo=
+---23717851-1463801144-1041966024=:19704--
 
