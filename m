@@ -1,14 +1,12 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: chance to impress the suits
-Date: Thu, 27 Feb 2003 02:01:04 -0500
+From: "louie miranda" <lmiranda@chikka.com>
+Subject: Re: managing another network route, can't connect to it! Pls see!
+Date: Thu, 27 Feb 2003 15:20:44 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302270201.04762.netfilter@newkirk.us>
-References: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <01ce01c2de30$be8a3400$0b00000a@nocpc3>
+References: <030f01c2dd88$2f277140$0b00000a@nocpc3> <20030226150447.435f450b.arnt@c2i.net> <002a01c2ddfe$67e0e9a0$0b00000a@nocpc3>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,49 +17,65 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jason <baker@cyborgworkshop.com>, Netfilter List <netfilter@lists.netfilter.org>
+To: louie miranda <lmiranda@Chikka.com>, Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
 
-On Wednesday 26 February 2003 06:57 pm, Jason wrote:
-> Hello,  I have been given a task that I think netfilter is ideal for,
-> but need a little help.  I need to be able to limit the number of
-> connections going through a router running netfilter to a max of 500.
-> When I hit 500, I want to reject any new connections. I know that the
-> iplimit match does this, but I don't seem to be having any luck
-> getting it to work.  Here is the scenario..
+hi thanks 2 everyone! :) all is working now..
+
+
+
+--
+thanks,
+louie miranda
+
+
+
+----- Original Message -----
+From: "louie miranda" <lmiranda@Chikka.com>
+To: "Arnt Karlsen" <arnt@c2i.net>; <netfilter@lists.netfilter.org>
+Sent: Thursday, February 27, 2003 9:20 AM
+Subject: Re: managing another network route, can't connect to it! Pls see!
+
+
+> Arnt,
 >
-> ----                ----                ----
-> =3DA =3D  -> Port 80 -> +NF+  -> Port 80 -> =3DC =3D
-> ----                ----                ----
+> Hi..
 >
-> Simple enough.  NF is my netfilter router, A is source, C is
-> destination. C is an application that when it gets overworked, pretty
-> much tarpits connecting clients and never lets go.  I have tried many
-> permutations of
+> I already add another ip over my gw w/c is 192.168.129.50 and point the
+> route to 10.0.0.2. On my WS there's still no response when i go to
+> 192.168.129.x block. But i can ping 192.168.129.50 ip.
 >
-> iptables -A FORWARD -p tcp -i lan -m state --state NEW -m iplimit
-> --iplimit-above 1 -j REJECT
+> What else could be possibly be missing?
 >
-> with out much luck.  Does anyone have any idea on how to make iplimit
-> in a router situation work?  Should I apply this to the output chain?
-
-Definitely the FORWARD chain, OUTPUT is for connections from the=20
-firewalling box itself.  Make sure this appears before any ACCEPT rules=20
-in your FORWARD chain, too.  Have you tried:
-
-iptables -A FORWARD -i eth0 -p tcp --syn --dport 80 -m iplimit=20
---iplimit-above 500 -j REJECT
-
-This is almost precisely the format of the example rule for iplimit...  I=
-=20
-noticed you used "-i lan" above - is that a typo?  You have to specify a=20
-valid interface name, which my version presumes is eth0 for traffic from=20
-the LAN.
-
-When you say "without much luck" what do you mean?  Everything still gets=
-=20
-through, nothing gets through at all, or what?  Does "iptables -L -v -n"=20
-show any matches to this rule?
-
-j
+>
+> --
+> thanks,
+> louie miranda
+>
+>
+>
+> ----- Original Message -----
+> From: "Arnt Karlsen" <arnt@c2i.net>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Wednesday, February 26, 2003 10:04 PM
+> Subject: Re: managing another network route, can't connect to it! Pls see!
+>
+>
+> >
+> > ..'info ifconfig', you wanna do 'ifconfig eth1:0 192.168.129.254 up'
+> > or somesuch, on your gw.  The new boxes on that net needs to know
+> > where to go, too.
+> >
+> > --
+> > ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+> > ...with a number of polar bear hunters in his ancestry...
+> >   Scenarios always come in sets of three:
+> >   best case, worst case, and just in case.
+> >
+> >
+> >
+> >
+>
+>
+>
 
 
