@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: More neqbie questions
-Date: Mon, 2 Aug 2004 21:08:50 +0100
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: More neqbie questions
+Date: Mon, 2 Aug 2004 16:09:10 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408022108.50336.Antony@Soft-Solutions.co.uk>
-References: <410E7DFB.9000505@mail.co.gilchrist.fl.us> <410E9AFD.90500@mail.co.gilchrist.fl.us> <200408022102.19083.Antony@Soft-Solutions.co.uk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051222@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408022102.19083.Antony@Soft-Solutions.co.uk>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +17,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Eric Ellis <eellis@mail.co.gilchrist.fl.us>, netfilter@lists.netfilter.org
 
-On Monday 02 August 2004 9:02 pm, Antony Stone wrote:
-
-> On Monday 02 August 2004 8:50 pm, Eric Ellis wrote:
-> > Antony Stone wrote:
-> > > My recommendation is to put a LOG rule at the end of each chain, just
-> > > before the default DROP policy takes effect, and you'll see what
-> > > packets are getting that far and then being lost.
-> >
-> > Now here's something interesting that I discovered when you mentioned
-> > it...
-> >
-> > It appears that all of my HTTP packets are making it through the chains
-> > without being picked up by my redirect rule.  The same appears to be
-> > happening with mail.  I put the LOG at the end of the 3 filter tables,
-> > In, Out, and FWD, so assuming that it's line by line filtering (eg, runs
-> > until a rule catches it), my packet is making it throught the chains
-> > without being caught.  Any suggesstions on what could cause that?
+> Now here's something interesting that I discovered when you mentioned
+> it...
 >
-> Yes.   You have no FORWARD rule allowing packets to TCP port 80 (well, you
-> do, but it's commented out...).
+> <code>
+> root@firewall:/var/log# tail syslog -f|grep 10.1.1.100
+>
+> Aug  2 13:41:38 firewall kernel: IN=3Deth1 OUT=3Deth0 SRC=3D10.1.1.100
+> DST=3D212.19.193.43 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D
+> 49518 DF PROTO=3DTCP SPT=3D3571 DPT=3D80 WINDOW=3D64240 RES=3D0x00 SYN =
+URGP=3D0
 
-Sorry, scrub that - you're right about the REDIRECT rule.   However, I don't 
-see an INPUT rule allowing packets in to Squid on port 8080.
+your redirect rule is:
 
-You also seem to have two OUTPUT rules allowing TCP packets to port 80 - why?
+	$IPT -t nat -A PREROUTING -i $INT -p tcp --dport 80 \
+	  -j REDIRECT --to-port 8080
 
-How about showing us the output of "iptables -L -nvx; iptables -L -t nat -nvx" 
-so we can see the rules in the right order?
+where $INT =3D eth0
 
-Regards,
+the inbound interface of the logged packet above is eth1; therefore, it =
+does not match your REDIRECT rule (or any FORWARD rule either).
 
-Antony.
+are your interface variables ($INT and $EXT) backwards?
 
--- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
-
- - William H Gates III
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+-j
 
 
