@@ -1,13 +1,13 @@
-From: David A Golden <david@hyperbolic.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Followup on Checkpoint VPN through Iptables
-Date: Thu, 26 Sep 2002 09:58:46 -0400
+Date: Thu, 26 Sep 2002 15:31:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.2.20020926091300.00aba1d0@secure.hyperbolic.net>
+Message-ID: <200209261431.g8QEVfv29808@vulcan.rissington.net>
 References: <5.1.0.14.2.20020926073737.00acd7f0@pop.mindspring.com>
- <5.1.0.14.2.20020926073737.00acd7f0@pop.mindspring.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020926122640.GA725@Ajftl1.ajfthome.on.ca>
+In-Reply-To: <5.1.0.14.2.20020926073737.00acd7f0@pop.mindspring.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, Alistair Tonner <Alistair@alistairt.ath.cx>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Great idea, Alistair!  At the time you wrote, my INPUT rules were turned 
-off, but I was surprised to see that nothing had hit the FORWARD rules.  So 
-I tried turning off the FORWARD rules and it still worked.  ?!?  So now I'm 
-baffled.
+On Thursday 26 September 2002 1:03 pm, David A Golden wrote:
 
-I suppose I deserve a slap on the wrist for at some point in the past 
-changing too many things at once and not following a nice scientific method 
-so I really knew what was necessary and what not.
+> I've got Checkpoint SecuRemote working from a windows client to my office
+> Checkpoint firewall through a linux netfilter firewall/router/NAT box
+> without having to specify a specific client on the internal network in the
+> pre-routing.
 
-Based on what I just saw, my advice now seems to collapse down to "ignore 
-what everyone says, don't set any special firewall rules, and just don't 
-use UDP encapsulation or IKE over TCP".  Was there some "recent" change to 
-netfilter to properly do connection tracking for IPSEC protocols that's 
-making this work?
+> Voila.  It worked.  I'm not sure if all of this is necessary (e.g. the AH
+> protocol bit) but I haven't had the time/chance/inclination to do a
+> methodical trial and error test of shutting off each rule to try and break
+> it.
 
-I've turned all the rules back on and will watch vi iptables -L -v to see 
-if any of the rules are being hit.  (Ha! a job for MRTG!)
+You shouldn't need to remove the rules to see what breaks - simply try doing:
 
-Regards,
-David
+iptables -L -n -x -v
 
-At 08:26 AM 9/26/2002, Alistair Tonner wrote:
+which will list the rules and give you packet / byte counters to show which 
+ones have matched packets going through the system.   You can then tell if 
+any of the rules seem unnecessary, because those counters will remain at zero.
 
->         Hi David:
->            If this is working, I suspect that you could figure out which
->         rules aren't being used by iptables -L -v|more ... if its up and
->         running and working, and the rule has a 0 byte/packet count ..
->         its likely not doing anything...
->
->         I'm going to keep *this* one handy ...I'm going to need it 
-> shortly              as I get VPN to work soon... Thanks David
->
->         Alistair Tonner
 
+Antony.
+
+-- 
+
+This email was created using 100% recycled electrons.
 
