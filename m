@@ -1,11 +1,14 @@
-From: "Simon Lodal" <simonl@mirrormind.com>
-Subject: Re: Netfilter in an HA-Enviroment
-Date: Tue,  7 Oct 2003 01:37:24 +0200
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Change iptables log format (would be a nice feature)
+Date: Tue, 07 Oct 2003 07:27:47 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310070137.AA367067176@mirrormind.com>
-Reply-To: <simonl@mirrormind.com>
+Message-ID: <1065504467.2952.16.camel@raylinux.internal>
+References: <Pine.LNX.4.56L0.0310021637520.11122@sutsko.kollegie.dk>
+	 <1065456746.1189.32.camel@valhalla>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-6LvIlyggywMTrqf5YLsj"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1065456746.1189.32.camel@valhalla>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,47 +18,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Harald Welte <laforge@netfilter.org>, netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Hello
+--=-6LvIlyggywMTrqf5YLsj
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Harald, I read your paper, and I'd love something like this. As I understand it, you imply a one master / multiple slaves model. However, what would prevent your protocol from being used in a master/master setup?
+On Mon, 2003-10-06 at 18:12, Chris Brenton wrote:
+> On Thu, 2003-10-02 at 10:40, Lasse B. Jensen wrote:
+> >
+> > Is it possible to change the log format of iptables?
+>=20
+What about using something like ULOG?
 
-That would be much better, sometimes one fast machine is not enough. Each master could have a lighter load, and therefore more ressources to communicate with the others. And when one master goes down, only a group of users will be bothered by the delay before the others catch up it's traffic.
+AFAIR you can use ULOG (and ulogd) to 'redirect' the log to almost any
+other format, including a SQL database.
 
-Simon
+> As others have pointed out this is not possible, however it might make a
+> nice feature to be added in. I've noticed that in high bandwidth
+> environments what chokes throughput the most is logging. This
+> materializes as the boxes throughput topping out quicker as well as
+> garbled/partial log entries being written.
+>=20
+> I *strongly* feel that one of Netfilter's biggest strengths is the level
+> of detail in the logs and would hate to see that change. When your
+> pushing high speeds however, your choices come down to collecting
+> verbose info (and thus limiting throughput) or not collecting log
+> entries. An option that permits a terse log format (say IPs, ports &
+> transport only) might be a nice balance.
+>=20
+> Just my $.02,
+> Chris
+>=20
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
+--=-6LvIlyggywMTrqf5YLsj
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
----------- Original Message ----------------------------------
-From: Harald Welte <laforge@netfilter.org>
-Date:  Fri, 3 Oct 2003 13:05:43 +0200
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
 
->On Mon, Sep 22, 2003 at 09:04:49AM +0200, Marc Hansen wrote:
->> Hello,
->> how is it possible to have two firewalls in an HA-Enviroment?
->
->only if you do stateless packet filtering and no NAT. 
->
->> Does somebody have a hint or a link for me?
->
->There is an ongoing implementation for conntrack state synchronization,
->but it's not finished or public yet.
->
->For the design paper, please
->see
->http://cvs.gnumonks.org/presentation/netfilter-failover-ols2002/netfilter-failover-ols2002.tex?rev=1.1&content-type=text/x-cvsweb-markup
->
->> Marc 
->
->-- 
->- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
->============================================================================
->  "Fragmentation is like classful addressing -- an interesting early
->   architectural error that shows how much experimentation was going
->   on while IP was being designed."                    -- Paul Vixie
->
->
+iD8DBQA/gk7Th1fuR/Bv+ygRAlBLAJ9FWiVCFEaI0ebaTwppkkrBz8qKiACfduzv
+qO+wd9b2W8equFLCT7v+964=
+=Qryy
+-----END PGP SIGNATURE-----
+
+--=-6LvIlyggywMTrqf5YLsj--
+
 
