@@ -1,12 +1,14 @@
-From: "krv" <krv@kaevee.com>
-Subject: Synfloods - SNAT slow down
-Date: Fri, 23 Apr 2004 06:53:50 +0530
+From: David Cannings <lists@edeca.net>
+Subject: Re: Synfloods - SNAT slow down
+Date: Fri, 23 Apr 2004 08:01:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005201c428d1$a2ab2ea0$2800a8c0@jupiter>
+Message-ID: <200404230801.57077.lists@edeca.net>
+References: <005201c428d1$a2ab2ea0$2800a8c0@jupiter>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_004F_01C428FF.BBD47110"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <005201c428d1$a2ab2ea0$2800a8c0@jupiter>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +18,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Friday 23 April 2004 02:23, krv wrote:
+> We have a Linux gateway (2.4.22) which does NAT for all local hosts.
+> Where there is ICMP or SYN floods to be forwarded, the gateway starts
+> slowing down an there will be serious drop in packets being forwarded.
 
-------=_NextPart_000_004F_01C428FF.BBD47110
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+You could try using the limit match in your FORWARD chain, with --limit 
+and --limit-burst to limit the number of ICMP or packets with only the 
+SYN flag set per second.  Your gateway would still have to process the 
+packets, at least as far as deciding to drop them, but would not have to 
+forward them on so you might see an improvement in performance.
 
-Hi,
+If you do examine this route, be careful you don't quench good ICMP 
+packets as there is no retransmission in ICMP and you'll never know if 
+certain wanted messages didn't get through.  For example, host X is 
+sending you an ICMP flood so netfilter starts to drop ICMP packets, but 
+host Y tries to send you a host unreachable message.
 
-We have a Linux gateway (2.4.22) which does NAT for all local hosts. =
-Where there is ICMP or SYN floods to be forwarded, the gateway starts =
-slowing down an there will be serious drop in packets being forwarded.
+Also don't forget that even if you decide not to forward the packets they 
+are still there "on the wire", thus you will not see any improvement with 
+external speeds.
 
-Is there a patch available to fix this problem?
-
-KRV
-------=_NextPart_000_004F_01C428FF.BBD47110
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>We have a Linux gateway (2.4.22) which =
-does NAT for=20
-all local hosts. Where there is ICMP or SYN floods to be forwarded, the =
-gateway=20
-starts slowing down an there will be serious drop in packets being=20
-forwarded.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Is there a patch available to fix this=20
-problem?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>KRV</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_004F_01C428FF.BBD47110--
-
-
+David
 
