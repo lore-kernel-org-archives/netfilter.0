@@ -1,14 +1,13 @@
-From: Les Mikesell <les@futuresource.com>
+From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
 Subject: Re: GRE problem
-Date: Thu, 13 Jan 2005 15:40:23 -0600
-Message-ID: <1105652423.18586.49.camel@moola.futuresource.com>
+Date: Thu, 13 Jan 2005 22:20:43 +0100
+Message-ID: <41E6E62B.4010400@eulerhermes.pl>
 References: <200501131013.17416.marcin.giedz@eulerhermes.pl>
 	<1105626751.917.21.camel@les-home.futuresource.com>
-	<41E6E3C1.7030909@hermes-kredit.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41E6E3C1.7030909@hermes-kredit.pl>
+In-Reply-To: <1105626751.917.21.camel@les-home.futuresource.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,29 +18,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Marcin Giedz <marcin.giedz@hermes-kredit.pl>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 Cc: netfilter@lists.netfilter.org
 
-On Thu, 2005-01-13 at 15:10, Marcin Giedz wrote:
+U=BFytkownik Les Mikesell napisa=B3:
 
-> >I think you need to get rid of the /proc/net/ip_conntrack
-> >entry but there is no mechanism to do this.
-> >
-> >
-> So how this is removed from ip_conntrack after some period of time?. As 
-> I said before, on a next day all GRE packets are transimited through 
-> router, thence it seems that there is some "TTL" on "these" packets.
+>On Thu, 2005-01-13 at 03:13, Marcin Giedz wrote:
+>
+> =20
+>
+>>When first client is trying to connect to VPN server out side our office =
+all
+>>packets are sent through "linux router". When he finishes the connection
+>>and second client wants to make a new connection no GRE packets are sent
+>>through router. If I down and up interfaces on "linux router" everything
+>>works OK as earlier - GRE packets are transmitted through router. If I
+>>don't down and up interfaces but wait eg. for next day everything also
+>>works OK. It seems for me that some "timeout" variable is set on my linux
+>>router but I didn't set anything.=20
+>>   =20
+>>
+>
+>Is NAT involved here? =20
+>
+Yes it is
 
-There is some kind of timeout on the conntrack entries and I assume
-each protocol (tcp/udp/icmp/gre) has its own value.  In my case it
-never does work because the source never stops sending and even though
-it is doing the wrong thing applying the NAT it keeps the timeout
-from expiring.
+>I have a similar problem where a GRE
+>connection goes out the wrong interface as the gateway starts
+>up, getting a NAT association in ip_conntrack and the NAT
+>never goes away after the correct interface and route come
+>up. =20
+>
+Seems similar ;)
 
--- 
-  Les Mikesell
-   les@futuresource.com
+>I think you need to get rid of the /proc/net/ip_conntrack
+>entry but there is no mechanism to do this.
+>
+> =20
+>
+So how this is removed from ip_conntrack after some period of time?. As
+I said before, on a next day all GRE packets are transimited through
+router, thence it seems that there is some "TTL" on "these" packets.
 
+BR,
+Marcin
 
 
