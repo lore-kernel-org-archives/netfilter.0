@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: rtsp-conntrack help needed...
-Date: Sat, 17 Jan 2004 12:08:57 +0000
+From: "mukesh Kumar" <mk34@hotmail.com>
+Subject: Multiple IPSec sessions
+Date: Tue, 13 Jan 2004 18:19:55 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401171208.57545.Antony@Soft-Solutions.co.uk>
-References: <20570477.1074334865111.JavaMail.www@wwinf0601>
+Message-ID: <000101c3da34$232e0940$e964da9e@gtgjhrm31>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0002_01C3DA01.D8939940"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20570477.1074334865111.JavaMail.www@wwinf0601>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,57 +16,112 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 17 January 2004 10:21 am, meillnco wrote:
+This is a multi-part message in MIME format.
 
-> Hello all,
->
-> This is my first post on this list but I've known netfilter for a while
-> now... I'm just about to start using it though.
->
-> Here is my question / problem : I have a generic configuration LAN <=>
-> FIREWALL <=> INTERNET. My goal is to be able to play a video streamed by a
-> public server. However, for the moment, my local clients can't stream as
-> all RTP packets are stopped by the firewall.
+------=_NextPart_000_0002_01C3DA01.D8939940
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Why are they being stopped?   What is your ruleset?
+Hi All,
 
-> Here comes (maybe ?) rtsp-conntrack...
+   I am trying to extend conntrack/NAT to allow multiple IPsec(ESP)
+tunnels to pass through.
 
-Maybe, but let's not assume that's the solution until we've clearly identified 
-the problem.
+The purpose is to allow multiple lan clients to have sessions with the
+same server.
 
-> I was wondering if anyone had already (and successfully) installed this
-> patch ? I've been facing this problem for soooo long, any help would be
-> much appreciated.
+    Can someone suggest some designs for doing something like this .Any
+help is greatly appreciated.
 
-Have you attempted installing this patch and had a problem?   Or are you just 
-asking "how do I install a patch"?
+ 
 
-> Especially regarding installation / compliation tips and
-> examples of the rules to add in my firewall configuration file.
+Mukesh
 
-Tell us what rules you have now and we may be able to suggest what to change.   
-We can't tell you what rules you should be using because we don;t know the 
-rest of your protocol requirements or your network configuration.
 
-> PS : sorry if this message is inaccurate, I'm not so deep into Linux...
+------=_NextPart_000_0002_01C3DA01.D8939940
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-No problem - it's not Linux we need details of - it's your network and your 
-firewall rules.
+<html>
 
-Regards,
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
-Antony.
 
--- 
-The words "e pluribus unum" on the Great Seal of the United States are from a 
-poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
-dressing.
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#606420;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3D"#606420">
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi All,</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp; I am trying to extend conntrack/NAT to =
+allow
+multiple IPsec(ESP) tunnels to pass through.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>The purpose is to allow multiple lan clients to have
+sessions with the same server.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp; Can someone suggest some designs =
+for
+doing something like this .Any help is greatly =
+appreciated.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Mukesh</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0002_01C3DA01.D8939940--
 
 
