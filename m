@@ -1,10 +1,12 @@
-From: Sergio Basurto Juarez <sbasurtoj@yahoo.com>
-Subject: Re: A DNAT question.
-Date: Mon, 7 Feb 2005 08:06:03 -0800 (PST)
-Message-ID: <20050207160603.13080.qmail@web41626.mail.yahoo.com>
-References: <20050207155858.25262.qmail@web41628.mail.yahoo.com>
+From: Stephen Shirley <diamond+netfilter@skynet.ie>
+Subject: Re: conntrack broken with multiple gateways?
+Date: Mon, 07 Feb 2005 16:48:08 +0000
+Message-ID: <42079BC8.1020303@skynet.ie>
+References: <4202FA6F.5080500@skynet.ie>
+	<d64535605020403435dcc2b0b@mail.gmail.com>
 Mime-Version: 1.0
-In-Reply-To: <20050207155858.25262.qmail@web41628.mail.yahoo.com>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <d64535605020403435dcc2b0b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,72 +17,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ulysses Almeida <ulysses.almeida@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-
---- Sergio Basurto Juarez <sbasurtoj@yahoo.com> wrote:
-
+Ulysses Almeida wrote:
+> Do you have your ReturnPathFilter disable? If it's enabled, multiple
+> routing is supose not to work
 > 
-> --- Ted Gervais <ve1drg@av.eastlink.ca> wrote:
-> 
-> > 
-> > I am new to this list and to iptables generally.
-> > 
-> > I have a line I am trying to translate into a
-> > current iptables line that
-> > will work in my firewall.
-> > 
-> > ' DNAT net loc:192.168.0.147 udp 5198,5199 '
-> > 
-> > If anyone could venture a thought as to how that
-> > might be translated into
-> > a current iptables statement I would really
-> > appreicate it.
-> > 
-> > I have tried - iptables -t nat -A PREROUTING -i
-> eth0
-> > -d 192.168.0.1 -p tcp
-> > --dport 5198:5199 -j DNAT --to 192.168.0.147
-> > 
-> > That doesn't appear to work so obviously I have
-> not
-> > interpreted that line
-> > correctly..
-> > 
-> I experienced a similar problem with a rule like
-> iptables -t nat -A PREROUTING -d 200.65.184.223 -j
-> DNAT --to 192.168.0.10
-> 
-> and it does not work until I put the rule at the
-> begining changing the -A to -I
-> 
-> I do not know exactly why this work but it works. I
-> guess that the the rules of redirecting should comes
-> before any other rule.
-> 
-> 
-> Hope this help.
+> echo 0 > /proc/sys/net/ipv4/conf/*/rp_filter
 
-Also check the protocol because in your rule you put
-udp and in your rule of iptables you choose tcp, you
-must change your protocol to udp.
+And that was it, thank you!
 
+Steve
 
-
-=====
--- 
-Sergio Basurto J.
-
-If I have seen further it is by standing on the 
-shoulders of giants. (Isaac Newton)
---
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - Find what you need with new enhanced search.
-http://info.mail.yahoo.com/mail_250
 
