@@ -1,9 +1,11 @@
-From: "M. A. Imam" <maimam@wichita.edu>
-Subject: RE: Packets Counting
-Date: Wed, 16 Mar 2005 11:50:06 -0600
-Message-ID: <42389BFF@webmail.wichita.edu>
+From: Steven M Campbell <Netfilter@SCampbell.net>
+Subject: Re: Packets Counting
+Date: Wed, 16 Mar 2005 12:54:37 -0500
+Message-ID: <423872DD.8020009@SCampbell.net>
+References: <4238655B@webmail.wichita.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <4238655B@webmail.wichita.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,37 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: edvin.seferovic@kolp.at, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: iptables <netfilter@lists.netfilter.org>
 
-Can i record the the number of packets each 2 seconds with tcpdump. i can see 
-packets with tcpdump but how to count it every 2 seconds
+M. A. Imam wrote:
 
->=3D=3D=3D=3D=3D Original Message From edvin.seferovic@kolp.at =3D=3D=3D=3D=3D
->Maybe you should use tcpdump for testing purposes instead of using iptables.
->
->Just my opinion.
->
->Regards,
->
->Edvin
->
->-----Original Message-----
->From: netfilter-bounces@lists.netfilter.org
->[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of M. A. Imam
->Sent: Mittwoch, 16. M=E4rz 2005 16:56
->To: netfilter@lists.netfilter.org
->Subject: Packets Counting
->
 >Hi,
 >
->How can i count the number of packets on an interface evry 2 or 5 seconds.
->and
->i want to count only specific packets like only arriving packets from port
+>How can i count the number of packets on an interface evry 2 or 5 seconds. and 
+>i want to count only specific packets like only arriving packets from port 
 >5001
 >
 >Any ideas...
 >
->Muhammad
+>Muhammad 
+>
+>
+>  
+>
+iptables -L -v will show packet counts and byte counts on rules so, 
+using your specific example and assuming you meant tcp port 5001
+
+First create a matching rule that has no target
+#  iptables -I INPUT 1 -p tcp --dport 5001
+
+Then, every x seconds run
+iptables -L -v -n
+and parse out the counter of interest.
+
+Hope that helps,
+SCampbell
+
+
+
 
 
