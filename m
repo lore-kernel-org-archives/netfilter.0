@@ -1,10 +1,12 @@
 From: Ruben I Safir <ruben@mrbrklyn.com>
-Subject: Simple Packet Forwarding
-Date: Tue, 25 Jun 2002 11:06:30 -0400
+Subject: Re: Simple Packet Forwarding
+Date: Tue, 25 Jun 2002 11:19:02 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <afa1ph$5hd$2@main.gmane.org>
+Message-ID: <20020625111902.A3037@www2.mrbrklyn.com>
+References: <20020625110630.G2549@www2.mrbrklyn.com> <200206251514.QAA20663@slate.rockstone.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <200206251514.QAA20663@slate.rockstone.co.uk>; from Antony@Soft-Solutions.co.uk on Tue, Jun 25, 2002 at 11:14:22 -0400
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,58 +18,42 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-Hello
+Yes - well
 
-I've been banging my head on documentation trying to get simple packet forwarding to function.
+Those are the ip addesses I've been assigned 
 
-I could use some help.
-
-I have a simple network with a gateway to DSL running on the ipaddess
-
-Internet <-->216.254.112.136(eth1 gatway machine eth0)<-->216.254.112.135 <-->INTERNAL NETWORK
-
-The Internal Netowrk has 216.254.112.137 and 216.254.112.138 plus the a 10.0.0.0 subnet
-
-The routing looks like this
-
-216.254.112.1   0.0.0.0         255.255.255.255 UH    0      0        0 eth1
-216.254.112.135 0.0.0.0         255.255.255.255 UH    0      0        0 eth0
-216.254.112.136 0.0.0.0         255.255.255.255 UH    0      0        0 eth1
-216.254.112.137 0.0.0.0         255.255.255.255 UH    0      0        0 eth0
-216.254.112.138 0.0.0.0         255.255.255.255 UH    0      0        0 eth0
-10.0.0.0        0.0.0.0         255.255.255.0   U     0      0        0 eth0
-
-
-I need to do simple packet forwarding without a Masquarade to test VPN on a lap top
-
-
-I can't seem to get it to work without MASQUARADE.
-
-My list looks like this
-
-Chain INPUT (policy ACCEPT 1689 packets, 796K bytes)
- pkts bytes target     prot opt in     out     source               destination         
-   81  9031 ACCEPT     all  --  eth0   any     anywhere             anywhere           
- 2085  350K ACCEPT     all  --  eth1   any     anywhere             anywhere           
-
-Chain FORWARD (policy ACCEPT 151 packets, 12660 bytes)
- pkts bytes target     prot opt in     out     source               destination         
- 1307  110K ACCEPT     all  --  any    any     anywhere             anywhere           
-    0     0 ACCEPT     all  --  any    any     anywhere             anywhere           
-
-Chain OUTPUT (policy ACCEPT 1687 packets, 792K bytes)
- pkts bytes target     prot opt in     out     source               destination         
-  132 11168 ACCEPT     all  --  any    eth0    anywhere             anywhere           
- 2617 1574K ACCEPT     all  --  any    eth1    anywhere             anywhere           
+So my routing is a lot ip addresses host assignemnt
 
 
 
 
-
-
-
+On 2002.06.25 11:14 Antony Stone wrote:
+> On Tuesday 25 June 2002 4:06 pm, Ruben I Safir wrote:
+> 
+> > I have a simple network with a gateway to DSL running on the ipaddess
+> >
+> > Internet <-->216.254.112.136(eth1 gatway machine eth0)<-->216.254.112.135
+> > <-->INTERNAL NETWORK
+> 
+> This is not my idea of a "simple network" :-)
+> 
+> You have assigned two addresses from the same network range to different 
+> ethernet cards on one machine.
+> 
+> It will be horribly upset and confused by this.
+> 
+> Change one of them so that you have two different network ranges on the two 
+> sides of your firewall and life will become an awful lot simpler and easier 
+> to handle.
+> 
+>  
+> 
+> Antony.
+> 
+-- 
 __________________________
 
 Brooklyn Linux Solutions
