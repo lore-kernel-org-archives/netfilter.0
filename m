@@ -1,11 +1,13 @@
-From: "Erik Ahlner" <whyz@home.se>
-Subject: Network bandwidth usage monitor
-Date: Fri, 7 Feb 2003 17:34:50 +0100
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Lan traffic Monitoring tools
+Date: Fri, 07 Feb 2003 08:14:16 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001001c2cec6$d6310b20$0200a8c0@whyzpc>
+Message-ID: <000701c2cec3$f6e20f70$6601a8c0@s3ac>
+References: <003501c2ceb7$c3713af0$8c01a8c0@sundaram>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <003501c2ceb7$c3713af0$8c01a8c0@sundaram>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,19 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Sundaram Ramasamy' <sun@percipia.com>, netfilter@lists.netfilter.org
 
-Hi!
 
-I have used IPtraf for measuring how much of my network is beeing used for a
-while now, but since I got 100mbit connection it doesn't fulfill my
-needs..when downloading thing in 5 megabytes/second, Iptraf says
-300kb/second.. not very accurate huh?
 
-Is there some other tool which can measure the ethernet traffic speed?
+> 
+> I have firewall based on iptables (Redhat 7.3) Custom build 
+> kernel. I want to  monitor the my LAN traffic, basically I 
+> need a report  PC IP Address : web site it accessing, date and time
+> 
+> I am not using any proxy in my gateway machine.
+> 
+>  I checked out ntop, mrtg. I would like to know which is best 
+>  tool for this propose.
 
-Byebye!
-
-Erik
+I use a combo of mrtg (which is excellent) and analog analog  being my
+web traffic analyzer. Both are fairly light resource wise and very easy
+to set up and monitor. Mrtg can also monitor multiple systems. Systems
+being switches, routers, gateway machines all from one station.
 
 
