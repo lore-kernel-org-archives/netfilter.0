@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: POP3 Forwarding ok or not.
-Date: Tue, 18 Jan 2005 14:23:44 -0500
-Message-ID: <20050118192344.GA8624@bender.817west.com>
-References: <20050118195858.GD27505@omega.lacnic.net.uy>
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: Two links and a SMTP sever.
+Date: Tue, 18 Jan 2005 15:54:39 -0500 (EST)
+Message-ID: <26550.142.169.215.10.1106081679.squirrel@142.169.215.10>
+References: <d645356050118053928226673@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050118195858.GD27505@omega.lacnic.net.uy>
+In-Reply-To: <d645356050118053928226673@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,53 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Ulysses Almeida <ulysses.almeida@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, Jan 18, 2005 at 04:58:58PM -0300, Pablo Allietti wrote:
-> hi people. 
-> 
-> 
-> i have a question..
-> 
-> my net is 
-> 
-> 
-> 		|200.40.228.64/28
-> 		|
-> 		Firewall FC2 (200.40.229.67)
-> 		|	dns midomain.com
-> 		|
-> 		|192.168.1.0/24
-> -------------------------------
->     |
->     |
->     |
-> FC2 (pop3) 192.168.1.6
-> 
-> 
-> i need to check mail in midomain.com but the pop3 server and mail server
-> is in 192.168.1.8
-> 
-> is that correct to check and send mail?
-> 
-> iptables -A FORWARD -i eth1 -o eth0 -p tcp -s 0/0 -d 192.168.1.6 --dport
-> 110 -j ACCEPT
-> iptables -A FORWARD -i eth1 -o eth0 -p tcp -s 0/0 -d 192.168.1.6 --dport  
-> 25 -j ACCEPT
+On Tue, January 18, 2005 8:39 am, Ulysses Almeida said:
+> Hi folks,
 
-those are correct for your filter rules.  do you already have the NAT
-setup for this as well?
+Hi Ulysses!
 
-  iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 110 \
-    -j DNAT --to-destination 192.168.1.6
+>
+>   I have an unsolved problem with iptables + iproute2 that I can't
+> figure out how to solve it.
 
-  iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 25 \
-    -j DNAT --to-destination 192.168.1.6
+(After looking attached file)
+Did you enable NAT of local connection in your kernel ?
+To be honest, I don't know anything about Lartc. And can't tell you
+how it should behave (my guess is it should pickup the right IP, of cours=
+e)
 
--j
+However, the (ugly) SNAT work-around should work with
+NAT of local connection enabled.
 
---
-"This has purple stuff inside - purple is a fruit."
-        --The Simpsons
+>
+>   I explaint it on the attachment (i sent this attachment, because I
+> don't thin it will cause any trouble, since it's text/plain, if does,
+> say and I won't send again).
+
+Please put it in the body so we can comment some part.
+
+>   If some one can help-me track this problem, I thank in advance.
+>
+>   Regars.
+>
+> --
+>  - Ulysses Almeida
+>
+
+HTH,
+
+Samuel
+
 
