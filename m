@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: close port 80 but allow some IPs to use port 80
-Date: Thu, 6 Mar 2003 09:43:18 +0100
+From: Javier Miguel =?unknown-8bit?q?Rodr=EDguez?= <javier@talika.eii.us.es>
+Subject: Rule matchup in iptables
+Date: Thu, 6 Mar 2003 13:47:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019C1E@hslex01.hslbz.local>
-References: <F10E4LiCtjFEDeYOS2C000398f0@hotmail.com>
+Message-ID: <20030306124758.GB23703@talika.eii.us.es>
+Reply-To: javier@talika.eii.us.es
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F10E4LiCtjFEDeYOS2C000398f0@hotmail.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +17,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> how do i close port 80 to all users except for a few ips ? 
-> the generic match 
-> of --dport doesn't work for me.
 
-Why not ?
-Are these users on your LAN or on the internet ?
-Do these users have a fixed IP ?
+	Hello
 
-iptables -P INPUT DROP
-iptables -A INPUT -s <src_ip> -p tcp --dport 80 -j ACCEPT
-...
-iptables -A INPUT -s <src_ip> -p tcp --dport 80 -j ACCEPT
+	I have a iptables based firewall, with 5 gigabit ethernet
+adapters and almost 8000 rules (ouch!). This is a "test bed", (still) not a
+production enviroment
 
+	I can see delays in traffic when crosses the firewall
+(miliseconds). I want to optimize the firewall rules (we use a LOT of
+VoIP) , so this is my question: Is there any way to know when a packet matches a rule? 
+-j LOG is not feasible (thousands of packets per second). I want something like this: 
 
-Or maybe you can use the MAC address match.
+Last two hours:
 
-iptables -P INPUT DROP
-iptables -A INPUT -m mac --mac-source <src_mac> -p tcp --dport 80 -j
-ACCEPT
-...
-iptables -A INPUT -m mac --mac-source <src_mac> -p tcp --dport 80 -j
-ACCEPT
+Rule 1: 15000 hits, 150 megabytes
+Rule 2: 3500 hits, 34 megabytes
+Rule 3: 9675 hits, 2 megabytes
+ad infinitum...
 
+	Other question? How can I test iptables rules? In ipchains I
+could try them, but with iptables do I have to generate fake traffic?
 
-Rob
+	Thank you for your support.
 
 
