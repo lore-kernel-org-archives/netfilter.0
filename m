@@ -1,8 +1,8 @@
 From: Michael Gale <michael@bluesuperman.com>
 Subject: Re: Performance Monitoring
-Date: Mon, 5 Jan 2004 22:58:38 -0700
+Date: Mon, 5 Jan 2004 23:01:15 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040105225838.68cdadc5.michael@bluesuperman.com>
+Message-ID: <20040105230115.687bded9.michael@bluesuperman.com>
 References: <004401c3d17c$4baa7cc0$0a01000a@xcom1>
 	<3FF9E4B7.8010109@lintelsys.com.au>
 	<011001c3d3f8$6a6a7e20$7700000a@lawrencewin2k>
@@ -24,12 +24,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hello,
 
+	Yesterday I was a reply on Performance Monitoring on the netfilter mail
+list, it suggested the user use IPAC-NG. The admin then have to create a
+chain for each IP they want to monitor.
 
-Wait a minute here ... you want a rule for each IP ?
-
-Depending on the stats you need I suggest you strongly look into the
-following:
+I did not think this is a good idea ... so for those of you who want to
+do bandwidth monitoring I suggest you check out the following. Here is a
+list of ones I have tried.
 
 ntop -- provides a web GUI for real time monitoring. Using it now on a
 firewall box to monitoring traffic on each interface. 
