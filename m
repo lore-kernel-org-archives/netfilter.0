@@ -1,8 +1,9 @@
-From: "Zander Subatomic" <zander@subatomic.org.uk>
-Subject: firewall script placement
-Date: Sun, 19 Jan 2003 13:04:29 -0000
+From: justin <cmbb@dslr.net>
+Subject: DOS/Crikey attacks, and ip_conntrack
+Date: Sun, 19 Jan 2003 13:52:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00d601c2bfbb$4d85a930$0401a8c0@darthvader>
+Message-ID: <61535048953.20030119135255@dslr.net>
+Reply-To: justin <cmbb@dslr.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,31 +19,56 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-ok this may sound like a silly question but where do I put the script?? I'm
-running 7.3 RedHat and before I used to just write the script in a file and
-then copy & paste it into a command line for the initial creation and then
-use the iptables-save to /etc/sysconfig/iptables which worked fine for it to
-be loaded on a reboot. Now I have a larger, more complex rule set I thought
-I'd finall write a script for it but I've only got a slight understanding of
-the start up process.
 
-Do I need to put the script in the /etc/rc.d/init.d/ directory and then
-create the startup/kill links in the /etc/rcX.d/ directories by hand or can
-I just put a:
+this
+ http://www.qorbit.net/documents/maximizing-firewall-availability.htm
 
-# chkconfig: 2345 <one above iptables start number> <one below iptables kill
-number>
+is a very interesting paper on the limitations of commercial
+firewalls when their state tables are filled by DOS attacks.
+It shows that even with a capability for two MILLION tracked
+connections, a DOS attack using spoofed IPs, of 21mbit, will
+fill this table up.. and the DOS succeeds.
 
-Could I change the line: IPTABLES_CONFIG=/etc/sysconfig/iptables in
-/etc/rc.d/init.d/iptables script to my script? I'm assuming though it would
-have to be in the format of the iptables-save command so wouldn't work? I
-have looked around the place and previous posts but have never seen this
-mentioned.
+The paper does not talk about netfilter/iptables, except to
+point out that syncookies are a linux/bsd feature, that
+mitigate SYN flood attack.
 
-Or am I way of the mark? :o)
+My question is this, ip_conntrack can be filled up fairly
+easily with UNREPLIED entries. There seems to be some confusion
+in the archives of this list as to whether behavior at the
+limit is good or not:
 
-cheers
+1. With a hashsize of 16384, on a machine with 2gb of memory
+or more, will the table fill up before
+kernel memory is exhausted instead, and bad things happen?
+is there any protection/tests built in that stop conntrack
+filling kernel memory before it fills its set max table size?
 
-Zander
+2. When the ip_conntrack table is full, are old UNREPLIED
+connections dropped to make room for new entries? (this,
+the DOS attack will not succeed), or, are random UNREPLIED
+entries removed, or, are packets just dropped?
+
+3. Do kernel SYNcookies stop additional ip_conntract table
+entries, when the kernel decides to start issuing them?
+
+4. Using the patch for NOTRACK, that provides a path that
+does not add an entry to the session table, does this mean
+the only thing that will break is any ESTABLISHED tests
+elsewhere in the rules? or does it break NAT completely
+and thus can only be used for packets coming in for services
+on the local box, not any hidden NAT'd services?
+
+Ie: NOTRACK can be used for tcp/80 path only, correct?
+-->port 80-->firewall+webserver---nat+portfwding--->other services
+
+or is this also ok
+--->port 27015 udp-->firewall---->nat+portfwding--->game servers
+where the udp path is marked NOTRACK?
+
+
+thanks, any answers would be very helpful.
+
+-Justin
 
 
