@@ -1,11 +1,11 @@
-From: Metzger Kobi <Yaakov_Metzger@persay.com>
-Subject: Changing the source on incoming messages
-Date: Wed, 9 Oct 2002 15:06:58 +0200
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: blocking Emails using ip address or domain name
+Date: Wed, 9 Oct 2002 09:31:01 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <385D702A9C11D511A9E90008C7160AD5C38887@ismail1.comverse.com>
+Message-ID: <002201c26f98$1cab84b0$8c01a8c0@sundaram>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C26F94.BFEC5658"
+	boundary="----=_NextPart_000_001F_01C26F76.952D6740"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,85 +16,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C26F94.BFEC5658
+------=_NextPart_000_001F_01C26F76.952D6740
 Content-Type: text/plain;
-	charset="windows-1255"
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-I am quite new to the netfilter buisiness, however I have the following
-problem that I am not sure wether i can solve using iptables.
+We are getting lot of porn Email from mailme.dk, kiwwi.cz domain =
+address. I have NATed mail server. Is it possible to block all incoming =
+mails from these domains.
 
-I would like to fool an aplication in my computer so while it thinks it
-communicates with x.y.z.w it will actually connect to a.b.c.d. (port number
-unchanged).
+Thanks
 
 
-I succeeded in diverting the outgoing messages using DNAT on teh OUTPUT. The
-problem is that I could not change the source address on the incoming
-messages,
- and the aplication won't work if the source is different. The SNAT cannot
-be put on the incoming messages (while DNAT can be put
-on outgoing messages).
 
-Is there any other way to do this without touching other components on the
-net, and without touching the application.
+$ ping mailme.dk
 
-Coby.
+Pinging mailme.dk [194.234.11.210] with 32 bytes of data:
 
-------_=_NextPart_001_01C26F94.BFEC5658
+Reply from 194.234.11.210: bytes=3D32 time=3D280ms TTL=3D39
+Reply from 194.234.11.210: bytes=3D32 time=3D281ms TTL=3D39
+
+
+$ ping www.kiwwi.cz
+
+Pinging syst.globaltel.cz [217.66.160.2] with 32 bytes of data:
+
+Reply from 217.66.160.2: bytes=3D32 time=3D131ms TTL=3D240
+Reply from 217.66.160.2: bytes=3D32 time=3D130ms TTL=3D240
+
+------=_NextPart_000_001F_01C26F76.952D6740
 Content-Type: text/html;
-	charset="windows-1255"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dwindows-1255">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2655.35">
-<TITLE>Changing the source on incoming messages</TITLE>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4807.2300" name=3DGENERATOR>
+<STYLE></STYLE>
 </HEAD>
-<BODY>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>We are&nbsp;getting lot of porn Email =
+from=20
+mailme.dk, kiwwi.cz domain address. I have NATed mail server. Is it =
+possible to=20
+block all incoming mails from these domains.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2><A=20
+href=3D"mailto:netfilter@lists.netfilter.org">$ ping =
+mailme.dk</A></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2>Pinging mailme.dk =
+[194.234.11.210]=20
+with 32 bytes of data:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#000000 size=3D2>Reply from =
+194.234.11.210: bytes=3D32=20
+time=3D280ms TTL=3D39<BR>Reply from 194.234.11.210: bytes=3D32 =
+time=3D281ms=20
+TTL=3D39</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>$ ping <A=20
+href=3D"http://www.kiwwi.cz">www.kiwwi.cz</A></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Pinging syst.globaltel.cz =
+[217.66.160.2] with 32=20
+bytes of data:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Reply from 217.66.160.2: bytes=3D32 =
+time=3D131ms=20
+TTL=3D240<BR>Reply from 217.66.160.2: bytes=3D32 time=3D130ms=20
+TTL=3D240</FONT></DIV></FONT></DIV></BODY></HTML>
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
-</P>
+------=_NextPart_000_001F_01C26F76.952D6740--
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">I am quite new to the netfilter =
-buisiness, however I have the following problem that I am not sure =
-wether i can solve using iptables.</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">I would like to fool an aplication in =
-my computer so while it thinks it communicates with x.y.z.w it will =
-actually connect to a.b.c.d. (port number unchanged).</FONT></P>
-<BR>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">I succeeded in diverting the outgoing =
-messages using DNAT on teh OUTPUT. The problem is that I could not =
-change the source address on the incoming messages,</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">&nbsp;and the aplication won't work if =
-the source is different. The SNAT cannot be put on the incoming =
-messages (while DNAT can be put</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">on outgoing messages).</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Is there any other way to do this =
-without touching other components on the net, and without touching the =
-application.</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Coby.</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C26F94.BFEC5658--
 
