@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: satellite users can't connect to port forwarded services
-Date: Wed, 10 Jul 2002 01:13:30 +0100
+From: "j davis" <davis_compz@hotmail.com>
+Subject: Reply to For this List
+Date: Wed, 10 Jul 2002 10:31:14 +0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020710001332.QHQO19225.mta07-svc.ntlworld.com@there>
-References: <F2178nzRC1uQdfNPqvW0000bba8@hotmail.com>
+Message-ID: <F128q8MdU3ZhFLCir640000c3dd@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <F2178nzRC1uQdfNPqvW0000bba8@hotmail.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,17 +14,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Wednesday 10 July 2002 1:00 am, j davis wrote:
+I really wish that who ever admins this page could make the REPLY TO
+for all mails sent to list subscribers BE NETFILTER!!! I bet at lest 30%
+of my mail goes dirrectly to users insted of netfilter.
+the value of a maling list could only improve if it gets all its mail!
 
-> Starband satallites claim they dont support real-time protocalls
-> like telnet,ssh,ftp and so on.
+thanks,
+jd
 
-What protocols qualify as non real-time ?
+jd@taproot.bz
+http://www.taproot.bz
 
- 
+_________________________________________________________________
+Chat with friends online, try MSN Messenger: http://messenger.msn.com
 
-Antony.
 
