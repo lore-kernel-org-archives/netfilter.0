@@ -1,8 +1,9 @@
-From: Henti Smith <bain@tcsn.co.za>
-Subject: problem with DNAT ..
-Date: Mon, 17 Feb 2003 18:05:30 +0200
+From: Andreas Meyer <anmeyer@gmx.net>
+Subject: fetchmail from intern
+Date: Mon, 17 Feb 2003 17:11:03 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030217180530.31ed041a.bain@tcsn.co.za>
+Message-ID: <20030217161103.D1AE417C93@delta.meyer.home>
+Reply-To: anmeyer@gmx.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,36 +17,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: IPtables <netfilter@lists.netfilter.org>
 
-hi all 
+Hello!
 
-I have some DNAT rules which seems not to be working and I don't understand why not here is the rules : 
+Running fetchmail from the mailserver behind the firewall I have
+the problem to go to the WAN.
 
-I have aliased the IP's on the firewall in front of the servers to control access and such (this cannot be changed)
+It works as long as I stay within the LAN.
 
-$IPTABLES -t nat -I PREROUTING -d $WEBMAIL_IP 		-p tcp --dport 80 	-j DNAT --to-dest $MAIL_SERVER:80
-$IPTABLES -t nat -I PREROUTING -d $WEBMAIL_IP 		-p tcp --dport 443 	-j DNAT --to-dest $MAIL_SERVER:443
-$IPTABLES -t nat -I PREROUTING -d $LIVE_IP  		-p tcp --dport 110 	-j DNAT --to-dest $MAIL_SERVER:110
-$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP1 	-p tcp --dport 0:65535 	-j DNAT --to-dest $IMSI_INT_IP1
-$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP2 	-p tcp --dport 0:65535 	-j DNAT --to-dest $IMSI_INT_IP2
-$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP1 	-p udp --dport 0:65535 	-j DNAT --to-dest $IMSI_INT_IP1
-$IPTABLES -t nat -I PREROUTING -d $IMSI_LIVE_IP2 	-p udp --dport 0:65535 	-j DNAT --to-dest $IMSI_INT_IP2
+iptables -t nat -A PREROUTING -p TCP --dport 110 -m state --state
+NEW,ESTABLISHED,RELATED -j DNAT --to 192.168.1.75:110
 
-in the output of iptables -t nat -L I get all the rules as they should be : 
+But writing
 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       udp  --  anywhere             external      udp to:internal
-DNAT       udp  --  anywhere             external      udp to:internal
-DNAT       tcp  --  anywhere             external      tcp to:internal
-DNAT       tcp  --  anywhere             external      tcp to:internal
-DNAT       tcp  --  anywhere             external      tcp dpt:pop-3 to:internal:110
-DNAT       tcp  --  anywhere             external      tcp dpt:https to:internal:443
-DNAT       tcp  --  anywhere             external      tcp dpt:www to:internal:80
+iptables -t nat -A PREROUTING -p TCP --dport 110 -m state --state
+NEW,ESTABLISHED,RELATED -j DNAT --to 0.0.0.0:110
 
-But when I telnet to port 110 on external I don't get to the internal port 110 nor with any of the other stuff.
-Can anybody suggest places to look at why not ? 
+I get a
+kernel: martian destination 0.0.0.0 from 192.168.1.3, dev eth0
 
-Henti 
+Must I install fetchmail on the firewall? Is this the only
+way to go?
+
+
+-- 
+
+  Andreas Meyer
+
+Object Class   Common Name   userPassword
+posixAccount   andreas       {SSHA}hpyqObx1/BXbKFgXoqCayoGsvIgPYiVc
 
