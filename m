@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Log Problem
-Date: Mon, 9 Aug 2004 18:34:14 +0100
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Netfilter vs commercial
+Date: Mon, 09 Aug 2004 13:35:17 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408091834.14556.Antony@Soft-Solutions.co.uk>
-References: <200408091241665.SM01376@Hope> <200408091758.59638.Antony@Soft-Solutions.co.uk> <4117AEF4.9030904@mail.co.gilchrist.fl.us>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1092072916.18396.104.camel@localhost>
+References: <BAY4-F16p4k1Cz5WqET0000e7bd@hotmail.com>
+	 <200408091803.51995.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4117AEF4.9030904@mail.co.gilchrist.fl.us>
+In-Reply-To: <200408091803.51995.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +21,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 09 August 2004 6:05 pm, Eric Ellis wrote:
-
-> Antony Stone wrote:
+On Mon, 2004-08-09 at 13:03, Antony Stone wrote:
+> On Monday 09 August 2004 5:48 pm, Mike O wrote:
+> 
+> > John,
 > >
-> > It seems unlikely, but has your kernel been compiled without support for
-> > the LOG target (and by the way, why are you using a three year old kernel
-> > anyway?)?
-
-> IIRC, Debian ships with 2.4.8 on Current-Stable.  Could be wrong, tho.
-
-I thought that was 2.4.18 (which is still 2.5 years old...)
-
-I recommend an upgrade.   Whether that is the kernel or the distro I leave up 
-to you :)    (No, not a flame war, please!)
-
-Regards,
-
-Antony.
-
+> > Would you mind elaborating on your comment about Netfilter's stateful
+> > engine being weaker than Checkpoint's? and how would the window tracking
+> > patch make it more secure. We have checkpoint here and have ran into
+> > problems, where checkpoint has limited us in the way we do things here and
+> > I have always wanted to implement netfilter but couldn't because it's open
+> > source.
+> 
+> Why couldn't you implement netfilter "because it's open source"?
+> 
+> Do you know someone who has a plausible argument saying that open source 
+> software is lower quality or less secure than commercial closed-source 
+> software (or is someone simply living under the illusion that if something 
+> goes wrong with their FW-1 firewall, they can sue Check Point, haha) ?
+> 
+> I'm very interested in any meaningful rationale for saying "we won't use it 
+> because it's open source".   I could understand if the argument was "we won't 
+> use it because it doesn't meet our needs", but that's a different argument.
+> 
+> Regards,
+> 
+> Antony.
+The "sue" argument is, sadly, very powerful among those who do corporate
+risk assessment :-(  (financial risk - not security risk)
 -- 
-Never automate fully anything that does not have a manual override capability. 
-Never design anything that cannot work under degraded conditions in emergency.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
