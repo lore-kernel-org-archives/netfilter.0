@@ -1,11 +1,11 @@
 From: "Alexander Wied" <mikroplan@gmx.de>
 Subject: Connecting to PPtP Servers from a LAN
-Date: Sun, 21 Sep 2003 15:00:56 +0200
+Date: Sun, 21 Sep 2003 15:01:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309211251.h8LCpQK25496@circle.mikroplan.com>
+Message-ID: <200309211252.h8LCq5K25534@circle.mikroplan.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0004_01C38051.2C644160"
+	boundary="----=_NextPart_000_0008_01C38051.40DDA640"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,7 +20,7 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0004_01C38051.2C644160
+------=_NextPart_000_0008_01C38051.40DDA640
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -63,7 +63,7 @@ Thanks in advance,
 Alex
 
 
-------=_NextPart_000_0004_01C38051.2C644160
+------=_NextPart_000_0008_01C38051.40DDA640
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -128,9 +128,8 @@ style=3D'font-size:
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
 style=3D'font-size:
 10.0pt;font-family:Arial'>ournetwork&nbsp;&nbsp; =
------------------&nbsp;&nbsp;
-Router with iptables =
-----------------Internet<o:p></o:p></span></font></p>
+-----------------&nbsp;&nbsp; Router
+with iptables ----------------Internet<o:p></o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
 style=3D'font-size:
@@ -165,9 +164,8 @@ configuring anything.<o:p></o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
 style=3D'font-size:
-10.0pt;font-family:Arial'>What&nbsp; rules do I have to configure for my =
-Clients,
-so that they may access an PPtP-Server localted in the =
+10.0pt;font-family:Arial'>What&nbsp; rules do I have to configure for my
+Clients, so that they may access an PPtP-Server localted in the =
 Internet?<o:p></o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
@@ -197,6 +195,6 @@ style=3D'font-size:
 
 </html>
 
-------=_NextPart_000_0004_01C38051.2C644160--
+------=_NextPart_000_0008_01C38051.40DDA640--
 
 
