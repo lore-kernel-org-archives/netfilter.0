@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Simon Lodal <simonl@parknet.dk>
 Subject: Re: DNAT hiding routers behind it
-Date: Fri, 6 Aug 2004 23:56:16 +0100
+Date: Sat, 07 Aug 2004 04:51:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408062356.16206.Antony@Soft-Solutions.co.uk>
-References: <4113BEF9.5090706@parknet.dk> <16659.52594.461489.174741@saint.heaven.net> <4113F33C.7060601@parknet.dk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <411443B8.8090202@parknet.dk>
+References: <4113BEF9.5090706@parknet.dk> <16659.52594.461489.174741@saint.heaven.net> <4113F33C.7060601@parknet.dk> <200408062356.16206.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4113F33C.7060601@parknet.dk>
+In-Reply-To: <200408062356.16206.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Friday 06 August 2004 10:08 pm, Simon Lodal wrote:
+> My guess is that you have a MASQUERADE rule with no interface specified - so 
+> packets get the source address of the firewall whether they're going out or 
+> coming in?
+> 
+> Make sure you specify "-o eth0" or "-o ppp0" or whatever your external 
+> interface is called.
+> 
+> If not that, post your ruleset so we can have a further think...
 
-> No Linksys here, the firewall is a linux PC, the "router" is an Extreme
-> Networks Summit 200 switch that acts like a router.
->
-> I do not think it matters. Point is that the router sends an icmp
-> ttl-exceeded, which the firewall apparently considers part of the
-> connection, and therefore does reverse DNAT on.
->
-> My problem is why it does that, and if it can be avoided.
+Testcase, as simple as possible:
+pc has 10.44.252.2
+fw has 10.44.252.1 on inside (vmnet2), 10.44.8.10 on outside (eth0).
 
-My guess is that you have a MASQUERADE rule with no interface specified - so 
-packets get the source address of the firewall whether they're going out or 
-coming in?
+On outside of fw there is a chain of routers; 10.44.8.1 => 192.168.44.1, 
+which is again connected to both 192.168.1.11 and 192.168.2.11 which 
+I'll use below.
 
-Make sure you specify "-o eth0" or "-o ppp0" or whatever your external 
-interface is called.
+masquerading or snat (tried both, no difference):
+root@fw # iptables -t nat -A POSTROUTING -o eth0 -s 10.44.252.2 -j SNAT 
+--to-source 10.44.8.10
 
-If not that, post your ruleset so we can have a further think...
+No other iptables rules are defined yet.
 
-Regards,
+simonl@pc $ traceroute -q1 -I 192.168.1.11
+traceroute to 192.168.1.11 (192.168.1.11), 30 hops max, 38 byte packets
+  1  10.44.252.1 (10.44.252.1)  4.297 ms
+  2  10.44.8.1 (10.44.8.1)  3.892 ms
+  3  192.168.44.1 (192.168.44.1)  4.826 ms
+  4  192.168.1.11 (192.168.1.11)  5.095 ms
 
-Antony.
+All good. Now for the fun (dnat to another host at similar distance):
+root@fw # iptables -t nat -A PREROUTING -i vmnet2 -s 10.44.252.2 -d 
+192.168.1.11 -j DNAT --to-destination 192.168.2.11
 
-> Dick St.Peters skrev:
-> > Simon Lodal writes:
-> >>I am traceroute'ing a DNAT'ed host. Surprisingly, all routers between
-> >>the DNAT'ing firewall and the host appear as the IP address I am
-> >>traceroute'ing. Is this intended? Can it be controlled in some way? (it
-> >>is not necessarily bad)
-> >>
-> >>Example:
-> >>traceroute to 217.116.235.62 (217.116.235.62), 30 hops max, 38 byte
-> >> packets 1  192.168.0.2 (192.168.0.2)  4.152 ms  0.875 ms  0.865 ms
-> >>  2  217.116.235.62 (217.116.235.62)  1.928 ms  1.272 ms  1.430 ms
-> >>  3  217.116.235.62 (217.116.235.62)  2.013 ms  2.338 ms  2.330 ms
-> >>
-> >>Line 1: DNAT'ing firewall.
-> >>Line 2: A router.
-> >>Line 3: DNAT'ed host.
-> >
-> > Is the router a small Linksys router?  They do this without being
-> > behind a firewall or NAT box.
-> >
-> > --
-> > Dick St.Peters, stpeters@NetHeaven.com
+simonl@pc $ traceroute -q1 -I 192.168.1.11
+traceroute to 192.168.1.11 (192.168.1.11), 30 hops max, 38 byte packets
+  1  10.44.252.1 (10.44.252.1)  1.854 ms
+  2  192.168.1.11 (192.168.1.11)  9.378 ms
+  3  192.168.1.11 (192.168.1.11)  17.237 ms
+  4  192.168.1.11 (192.168.1.11)  3.783 ms
 
--- 
-The difference between theory and practice is that in theory there is no 
-difference, whereas in practice there is.
+See?
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+I tried dnat'ing without snat on a real network, same problem.
+So snat/masquerade has no influence (it is just needed for my setup).
+
+
+Simon
 
 
