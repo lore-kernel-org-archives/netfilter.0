@@ -1,16 +1,13 @@
-From: Karl Lattimer <karl@kms-lan.co.uk>
-Subject: Re: Kernel 2.6.5 - iptables 1.2.9 problems
-Date: Wed, 30 Jun 2004 15:15:19 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: traceroute
+Date: Wed, 30 Jun 2004 22:55:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088604919.667.13.camel@despair.kent-music.com>
-References: <1088179390.2701.14.camel@despair.kent-music.com>
-	 <40DC4F0E.5040609@kanux.com>
-	 <1088590006.667.7.camel@despair.kent-music.com>  <40E2ADE8.4020401@mayn.de>
-	 <1088602005.667.11.camel@despair.kent-music.com>
+Message-ID: <1088628937.1755.63.camel@anduril.intranet.cartel-securite.net>
+References: <2E314DE03538984BA5634F12115B3A4E62E819@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088602005.667.11.camel@despair.kent-music.com>
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62E819@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,38 +17,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Karl Lattimer <karl@kms-lan.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter <netfilter@lists.netfilter.org>
 
-Its ok i fixed it, if you notice from my debug script there was a : on
-the prerouting rules.
+Le mer 30/06/2004 =E0 20:20, Piszcz, Justin Michael a =E9crit :
+> If the output chain POLICY is set to ACCEPT; there is no need to setup
+> rules for it.
 
-Thanks for your help anyway
+Indeed, if you accept _any_ packet, you don't need to make rules to
+accept ICMP ones in particular... And if you set all chains policy to
+accept, then you do not need any rule, for any type of packet, and then
+it's so easy to configure...
 
-Karl
-
-On Wed, 2004-06-30 at 14:26, Karl Lattimer wrote:
-> my rule set was attached to my last email.
-> 
-> firewall.debug.sh
-> 
-> 
-> On Wed, 2004-06-30 at 13:11, Ruprecht Helms wrote:
-> > Karl Lattimer wrote:
-> > 
-> > >Hi IP-Tables isn't outputting any error messages at all. Heres my
-> > >script. Or there abouts.
-> > >
-> > >The problems i am getting are the port forwards for 4662 and 4672 arn't
-> > >working correctly. I'm getting port forwards adding themselves in for
-> > >ports 5800,5900,3372,6502,1025,1026,42 and 366. 
-> > >
-> > please be so kind and post your ruleset into the list. So it`s better to 
-> > say what you have to change.
-> > 
-> > Regards,
-> > Ruprecht
-> 
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
