@@ -1,13 +1,13 @@
 From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: ip_conntrack vs netstat
-Date: 02 Sep 2003 22:19:46 +0200
+Subject: Re: ip_contrackt message
+Date: 31 Aug 2003 12:46:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062533985.6144.18.camel@kermit>
-References: <Pine.LNX.4.53.0308301423020.30825@apollo.rsn.bth.se>
+Message-ID: <1062326762.1607.13.camel@kermit>
+References: <3F4D1828.8070605@nas.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.53.0308301423020.30825@apollo.rsn.bth.se>
+In-Reply-To: <3F4D1828.8070605@nas.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Jonas Lindborg <jools@apollo.nu>
+To: ea@nas.at
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Am Sam, 2003-08-30 um 14.37 schrieb Jonas Lindborg:
-> Hello,
+Am Mit, 2003-08-27 um 22.44 schrieb Erwin Ambrosch:
+> Hi all,
 >=20
-> When comparing the output of /proc/net/ip_conntrack with the "netstat"
-> command, I'm seeing a few established connections in ip_conntrack that ar=
-e
-> not presented by netstat.
->=20
-> These are familiar connections (ssh, imap) to known hosts that could very
-> well have been done by me but not in the last 24 hrs so they should have
-> timed out a long time ago.
-It takes five days for an established TCP connection to time out in the
-conntrack table.
+> I'm using iptables-1.2.5-3 and got the following messages in my logfile.
+> Please can one say me what exactly does this mean.
+Apparently your ip_conntrack table is full. This table has a maximum
+size:
+/proc/net/ipv4/ip_conntrack_max
+You can set it using=20
+echo X > /proc/net/ipv4/ip_conntrack_max
+Replace X with a number.
+
+Read up on conntrack_max and remember to set the hashsize for
+performance issues.
 
 Cheers,
 
