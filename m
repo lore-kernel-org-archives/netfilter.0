@@ -1,13 +1,12 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
+From: "Kjetil Laasby" <Kjetil@laasby.com>
 Subject: RE: ip_nat_pptp & ip_conntrack_pptp help appreciated.
-Date: Tue, 1 Oct 2002 00:22:50 +0200
+Date: Tue, 1 Oct 2002 01:22:05 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608F615F38@w2ks-e2k.iconos.be>
+Message-ID: <0EB90DD25728C04CBD401CDCD72D2A655A8B@homer.no.laasby.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C268CF.E981A8A1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,136 +16,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Kjetil Laasby <Kjetil@laasby.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, Sneppe Filip <Filip.Sneppe@cronos.be>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Anthony, Filip,
 
-------_=_NextPart_001_01C268CF.E981A8A1
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Thank you very much for your comments.=20
 
-Kjetil Laasby [mailto:Kjetil@laasby.com] wrote:
+It might be a good idea as you say, Anthony, to use a 'dual-nat' to
+fake the valid-ip address on the internal LAN. I really don't need
+NAT support on the RedHat box, it could just routing capabilities, and
+the cisco could do the NATing.
+
+Then you might ask why I'm want to do some (D)NATing on the RedHat box.=20
+This is because if I don't do anything, just let's the packets hit on
+the external interface on the RedHat - the GRE protocol encounters
+some errors that are beyond my understanding. This I assume is because
+of the nat _all_ rule on the cisco - and as you say, the whole point
+for PPTP support in netfilter.=20
+
+(Thanks Filip, I did forget the nat_proto_gre - and I got a little
+closer to the goal! ip_nat_pptp works ok! ;-) )
+
+Thank you both !
+Regards
+Kjetil Laasby
+
+-----Original Message-----
+From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]=20
+Sent: 30. september 2002 23:22
+To: netfilter@lists.netfilter.org
+Subject: Re: ip_nat_pptp & ip_conntrack_pptp help appreciated.
+
+On Monday 30 September 2002 10:10 pm, Kjetil Laasby wrote:
+
+> Hello !
 >
->Following interessting modules are loaded :=20
->------------------------------------------------
->ip_conntrack_pptp       3392   0  (autoclean)
->ip_conntrack_proto_gre  3328   0  [ip_conntrack_pptp]
->ipt_REDIRECT            1408   0  (autoclean)
->ppp_mppe               24736   0  (autoclean)
->ppp_async               8096   0  (autoclean)
->ppp_generic            23692   0  (autoclean) [ppp_mppe ppp_async]
->slhc                    6092   0  (autoclean) [ppp_generic]
->ipt_multiport           1216   5  (autoclean)
->ipt_LOG                 4160   3  (autoclean)
->ipt_state               1056  86  (autoclean)
->iptable_nat            19124   1  (autoclean) [ipt_REDIRECT]
->iptable_filter          2336   1  (autoclean)
->ipt_conntrack           1664   0  (autoclean) (unused)
->ip_tables              13728   9  (autoclean) [ipt_REDIRECT
->ipt_multiport ipt_LOG ipt_state iptable_nat iptable_filter =
-ipt_conntrack]
->ip_conntrack           25996   5  (autoclean) [ip_conntrack_pptp
->ip_conntrack_proto_gre ipt_REDIRECT ipt_state iptable_nat =
-ipt_conntrack]
+> I've got a little problem thats disrupting my nightsleep - and I
+>  hope someone could point me into where I'm doing wrong.
 >
-Hi,
+> My configuration is like this :
+> ---------------------------------------------
+> 80.x.x.x  (Valid IP)
+> Cisco DSL router
+> (one rule - NAT all to 10.0.2.1)
+>
+> 10.0.2.1 - RedHat 7.3 - kernel-2.4.20-pre8   (this Iface will receive
+> 							     all data
+> from valid-IP)
+> 	(Routing enabled, Netfilter 1.2.7a)
+> 10.0.0.1 - RedHat 7.3 - kernel-2.4.20-pre8
+>
+> 10.0.0.2 - Windows box (Client)
+>
+> My goal is to have a PPTP server (with PoPToP).
 
-In addition to what Anthony has already said: make sure
-ip_nat_proto_gre is also loaded.
+If you need to build NAT support for PPTP into the Linux box, then you
+would=20
+need to do the same thing on the Cisco box if you're going to do NAT
+there as=20
+well.
 
-Regards,
-Filip
+The whole point of netfilter support for PPTP through NAT is that PPTP=20
+doesn't work through NAT without it - therefore it won't work through
+NAT on=20
+the Cisco box either.
 
+Your best bet might actually be to perform the opposite NAT on the Linux
+box=20
+that you're doing on the Cisco, put the same 80.x.x.x valid IP on the
+Windows=20
+client as you have on the outside of the Cisco router, and see whether
+PPTP=20
+will work, thinking there's no NAT going on at all (because the two
+cancel=20
+each other out).
 
+Antony.
 
+--=20
 
-=20
+The difference between theory and practice is that
+in theory there is no difference, whereas in practice there is.
 
-
-
-
-
-------_=_NextPart_001_01C268CF.E981A8A1
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: ip_nat_pptp &amp; ip_conntrack_pptp help appreciated.</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>Kjetil Laasby [<A =
-HREF=3D"mailto:Kjetil@laasby.com">mailto:Kjetil@laasby.com</A>] =
-wrote:<BR>
-&gt;<BR>
-&gt;Following interessting modules are loaded :<BR>
-&gt;------------------------------------------------<BR>
-&gt;ip_conntrack_pptp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-3392&nbsp;&nbsp; 0&nbsp; (autoclean)<BR>
-&gt;ip_conntrack_proto_gre&nbsp; 3328&nbsp;&nbsp; 0&nbsp; =
-[ip_conntrack_pptp]<BR>
-&gt;ipt_REDIRECT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp; 1408&nbsp;&nbsp; 0&nbsp; (autoclean)<BR>
-&gt;ppp_mppe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp; 24736&nbsp;&nbsp; 0&nbsp; (autoclean)<BR>
-&gt;ppp_async&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp; 8096&nbsp;&nbsp; 0&nbsp; (autoclean)<BR>
-&gt;ppp_generic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp; 23692&nbsp;&nbsp; 0&nbsp; (autoclean) [ppp_mppe ppp_async]<BR>
-&gt;slhc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6092&nbsp;&nbsp; =
-0&nbsp; (autoclean) [ppp_generic]<BR>
-&gt;ipt_multiport&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp; 1216&nbsp;&nbsp; 5&nbsp; (autoclean)<BR>
-&gt;ipt_LOG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4160&nbsp;&nbsp; 3&nbsp; =
-(autoclean)<BR>
-&gt;ipt_state&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp; 1056&nbsp; 86&nbsp; (autoclean)<BR>
-&gt;iptable_nat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp; 19124&nbsp;&nbsp; 1&nbsp; (autoclean) [ipt_REDIRECT]<BR>
-&gt;iptable_filter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-2336&nbsp;&nbsp; 1&nbsp; (autoclean)<BR>
-&gt;ipt_conntrack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp; 1664&nbsp;&nbsp; 0&nbsp; (autoclean) (unused)<BR>
-&gt;ip_tables&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp; 13728&nbsp;&nbsp; 9&nbsp; (autoclean) =
-[ipt_REDIRECT<BR>
-&gt;ipt_multiport ipt_LOG ipt_state iptable_nat iptable_filter =
-ipt_conntrack]<BR>
-&gt;ip_conntrack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp; 25996&nbsp;&nbsp; 5&nbsp; (autoclean) [ip_conntrack_pptp<BR>
-&gt;ip_conntrack_proto_gre ipt_REDIRECT ipt_state iptable_nat =
-ipt_conntrack]<BR>
-&gt;<BR>
-Hi,<BR>
-<BR>
-In addition to what Anthony has already said: make sure<BR>
-ip_nat_proto_gre is also loaded.<BR>
-<BR>
-Regards,<BR>
-Filip<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C268CF.E981A8A1--
 
