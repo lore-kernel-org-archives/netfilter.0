@@ -1,10 +1,15 @@
-From: Mike Ireton <mike-netfilter@tiedyenetworks.com>
-Subject: Hashing iptables rules for improved peformance?
-Date: Mon, 21 Apr 2003 11:12:33 -0700 (PDT)
+From: Stephen Frost <sfrost@snowman.net>
+Subject: Re: Hashing iptables rules for improved peformance?
+Date: Mon, 21 Apr 2003 14:31:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304211022100.7357-100000@252.1.168.192.in-addr.arpa>
+Message-ID: <20030421183102.GC8524@ns.snowman.net>
+References: <Pine.LNX.4.44.0304211022100.7357-100000@252.1.168.192.in-addr.arpa>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+xNpyl7Qekk2NvDX"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0304211022100.7357-100000@252.1.168.192.in-addr.arpa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,73 +19,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-
-Hello all,
-
-	I'm working on a project involving bandwidth management and I want 
-it to include accurate ip accounting per ip address that is under it's 
-control. Presently this is a /23 netblock but this is expected to grow 
-substantially, and the number of rules needed to account for traffic is 
-quite substantial. 
-
-	My conceptual model is simple: For each ip address, I want to know 
-four things - the number of bytes output for local destination, number 
-output headed to the Internet, the number input from local destinations, 
-and the number received from the Internet. This would generate four rules 
-in the router for each ip address of interest:
-
-iptables -A accounting -s ipaddress -d localnet/mask -j RETURN
-iptables -A accounting -s ipaddress -d 0.0.0.0/0 -j RETURN
-iptables -A accounting -s localnet/mask -d ipaddress -j RETURN
-iptables -A accounting -s 0.0.0.0/0 -d ipaddress -j RETURN
+To: Mike Ireton <mike-netfilter@tiedyenetworks.com>
+Cc: netfilter@lists.netfilter.org
 
 
-So potentially we're looking at 1024 rules here.
+--+xNpyl7Qekk2NvDX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(* Assuming that the 'acocunting' table exists and the forwarding table 
-contains rules to jump here).
+* Mike Ireton (mike-netfilter@tiedyenetworks.com) wrote:
+> My question for the iptables hackers is - am I being silly by trying to=
+=20
+> peform accounting this way, and does netfilter already implement effecien=
+t=20
+> internal hashing that destroys my presumption about a long list of rules=
+=20
+> resulting in linear table lookups? I would assume that netfilter does has=
+h=20
+> where it can, but filtering rules have a second key to worry about -=20
+> namely, their order in the list is relevent, which makes me think=20
+> netfilter would have to do the linear lookup.
 
-	Some problems with this are 1) This isn't going to scale very 
-well. As I see it, there's going to be (?) many linear table searches for 
-every packet passed thru this accounting table, and 2) I can't 
-simultaniously read and reset the counters for any given address. 
+As it turns out you're not alone in wanting to do things along those
+lines.  Someone actually modified my ipt_recent module to track
+accounting information per-IP address.  There's a 'new' ippool out there
+for which a mini-module which did this could probably be written.  I'm
+afraid the existing iptables setup would be slow if you tried to do it
+in the way you're describing, especially since you'd have to do it for
+every packet.
 
-	So then my thought was to counstruct these rules using hash 
-tables, where there existed many accounting tables representing the entire 
-address space in chunks ranging in size from /23 to /30. For example:
+What's your time frame for needing something?
 
+	Stephen
 
-Network 1.1.1.0/24
-iptables -N acct_1_1_1_0_25
-iptables -N acct_1_1_1_0_26
-iptables -N acct_1_1_1_0_27
+--+xNpyl7Qekk2NvDX
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-iptables -I acct_1_1_1_0_25 -s 1.1.1.0/25 -j acct_1_1_1_0_26
-iptables -I acct_1_1_1_0_25 -s 1.1.1.128/25 -j acct_1_1_1_128_26
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-iptables -I acct_1_1_1_0_26 -s 1.1.1.0/26 -j acct_1_1_1_0_27
-iptables -I acct_1_1_1_0_26 -s 1.1.1.64/26 -j acct_1_1_1_64_27
+iD8DBQE+pDjmrzgMPqB3kigRAh56AJwPsUKpRNo+CwMZqVI/Vvh8gk3CmwCgmIOT
+KvUAF5XO+6E3xZMf7sr9NEg=
+=M73a
+-----END PGP SIGNATURE-----
 
-
-and so on, until we get down to a /30. This would reduce the number of 
-lookups for any given rule to some small garuenteed maximum, where it 
-would also be easy for a userspace program to lookup any range of 
-addresses and examine the byte counters. 
-
-My question for the iptables hackers is - am I being silly by trying to 
-peform accounting this way, and does netfilter already implement effecient 
-internal hashing that destroys my presumption about a long list of rules 
-resulting in linear table lookups? I would assume that netfilter does hash 
-where it can, but filtering rules have a second key to worry about - 
-namely, their order in the list is relevent, which makes me think 
-netfilter would have to do the linear lookup.
-
-	Thanks in advance for your feedback.
-
-Mike-
-
-
+--+xNpyl7Qekk2NvDX--
 
