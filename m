@@ -1,11 +1,12 @@
-From: cc <cc@kdtc.net>
-Subject: PCAnywhere and netfilter
-Date: Fri, 27 Jun 2003 17:22:04 +0800
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: MARK and ! question: one more question
+Date: Fri, 27 Jun 2003 10:38:17 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EFC0CBC.4000207@kdtc.net>
+Message-ID: <Pine.LNX.4.44.0306271035100.28942-100000@localhost>
+References: <3EFBFA7F.3080304@is.lg.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3EFBFA7F.3080304@is.lg.ua>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,44 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ruslan Spivak <alienoid@is.lg.ua>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Hi Ruslan,
 
-I am having some troubles figuring out how to get a remote
-PCAnywhere station log onto a local pcanywhere station.
+> Can you help me to construct logic: (from src1 OR from src2) AND 
+> dst=some_dst_addr THEN mark packet with 108
+> Possible form: (from src1 OR from src2 OR from src3 OR ... and so on) 
+> AND dst=some_dst_addr THEN mark packet with 108
 
-Here's my config:
+That's easy:
 
-Firewall  :  (eth0 : external IP) - a.b.c.d
-             (eth1 : internal IP - 192.168.5.17)
-Int IP (one with PCAnywhere) : 192.168.5.31
+iptables -
 
-Here's my attempt at a netfilter script for this:
+iptables -t mangle -N setmark
+iptables -t mangle -A setmark -j MARK --set-mark 107
+iptables -t mangle -A POSTROUTING -s src1 -d dst1 -j setmark
+iptables -t mangle -A POSTROUTING -s src2 -d dst1 -j setmark
+iptables -t mangle -A POSTROUTING -s src3 -d dst1 -j setmark
 
-iptables -A INPUT -i eth0 -d 192.168.5.31 -p tcp --dport "5631:5632" -j
-ACCEPT
-iptables -A INPUT -i eth0 -d 192.168.5.31 -p udp --dport "5631:5632" -j
-ACCEPT
+> Can you give me an example with above networks? - i mean packets with
+> (src=193.220.70.0/27 or with src=193.108.240.0/22) and 
+> dst=193.220.70.32/27 will be marked with 108.
 
-iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p tcp --dport
-"5631:5632" -j DNAT --to 192.168.5.31
-iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p udp --dport
-"5631:5632" -j DNAT --to 192.168.5.31
+Just substitute whatever addresses you want into the above.
 
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
-I actually got this off the net and am still trying to disect it.
-Am I supposed to have Output, or just forward chains since in essence
-I'm just forwarding the PCA packets to a different station?
-
-I'm still barely understanding Netfilters.  For the other services
-(smtp, www, etc...) they are working.  I don't understand why I'm
-having so much trouble with PCAnywhere.
-
-Thanks
-
-Edmund
 
 
 
