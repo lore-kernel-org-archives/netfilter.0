@@ -1,8 +1,8 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: traceroute:
-Date: Sun, 25 May 2003 22:45:27 +0200
+From: Hugh Buchanan <isp-lists@userfriendly.com>
+Subject: iptables not correctly marking packets based on source address
+Date: Sun, 25 May 2003 14:48:02 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3ED12B67.3030104@fugmann.dhs.org>
+Message-ID: <3ED13A12.9000601@userfriendly.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,34 +18,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Greetings,
 
-I'm having problems doing traceroute through my firewall.
+I am using iptables, currently as a NAT firewall but it will become a 
+bridge firewall when I have it working correctly.
 
-It seems that the rule:
-iptables -A OUTPUT -m state --state INVALID -j DROP
-catches the ICMP error messages that is returned when TTL=0, and hence 
-traceoute comes out showing "* * *" instead of the name of my firewall.
+I have two simple rules for marking right now:
 
-When logging the INVALID packets, this is entered in the system log:
+iptables -A PREROUTING -i eth1 -s $LAN -t mangle -j MARK --set-mark 1
+iptables -A PREROUTING -i eth1 -t mangle -j MARK --set-mark 2
 
-May 25 22:38:42 debian kernel: INVALID:IN= OUT=eth1 SRC=10.0.0.254 
-DST=10.0.0.2 LEN=66 TOS=0x00 PREC=0xC0 TTL=64 ID=52226 PROTO=ICMP 
-TYPE=11 CODE=0 [SRC=10.0.0.2 DST=130.225.76.31 LEN=38 TOS=0x00 PREC=0x00 
-TTL=1 ID=46519 PROTO=UDP SPT=46518 DPT=33435 LEN=18 ]
+$LAN is defined to be "192.168.0.0/24"
 
-Is this a known problem, or is blocking outgoing invalid packets not 
-recommended?
-
-Regards
-Anders Fugmann
+Now.. I found a bit in the list archives about mangling with NAT.. so I 
+am wondering if the source address is wrong.  But shouldn't PREROUTING 
+happen before the NAT takes place?
 
 
+My end goal is to have a mangle line for each of the half a dozen source 
+addresses.  For example:
+192.168.0.5 - mark as '2'
+192.168.0.6 - mark as '3'
+192.168.0.7 - mark as '4'
+192.168.0.8 - mark as '5'
+192.168.0.9 - mark as '6'
+192.168.0.10 - mark as '7'
+And all other source addresses should be marked as '1'.
 
+I was thinking that I could do something like:
+iptables -A PREROUTING -s 192.168.0.5 -t mangle -j MARK --set-mark 2
 
+But that isn't working for me.
 
-
-
+Hugh Buchanan
 
 
 
