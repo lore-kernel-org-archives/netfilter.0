@@ -1,13 +1,12 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: tcpdump and Iptables
-Date: Thu, 2 Sep 2004 19:07:05 +0100
+From: Bgs <bgs@bgs.hu>
+Subject: Problem with SNAT
+Date: Thu, 02 Sep 2004 20:57:18 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040902180705.GG3755@metastasis.org.uk>
-References: <41375ED1.5090400@kdtc.net>
+Message-ID: <41376D0E.3070208@bgs.hu>
+Reply-To: bgs@bgs.hu
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <41375ED1.5090400@kdtc.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,17 +16,28 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Fri, Sep 03, 2004 at 01:56:33AM +0800, CC wrote:
 
-> If I have iptables running and I do a tcpdump -i eth0,   at what point
-> is tcpdump listening to the connection?
+  Greetings,
 
-tcpdump will see the packets before IPTables does anything to them.
+I have problems with the following setup:
 
--- 
-mors omnia vincit
+A linux with two NICs. One with IP of 10.0.2.2 and one with 10.0.3.57.
+I have DNAT-ed traffic coming in on the 10.0.2.2 that was originally 
+sent to 10.0.2.1. (Another node doing the DNAT). I have problems on the 
+route back so I decided to SNAT the backward udp traffic to  soource 
+10.0.2.1 and send the SNATed packets back on another route.
+
+I added the line to nat postrouting (-d target_net -s 10.0.2.2 -p udp -j 
+SNAT --to-source 10.0.2.1) but the packages don't even seem to hit the 
+nat postrouting chain. Let alone my SNAT rule.
+
+Any ideas what could be wrong ?
+
+Thanks
+Bgs
+
+
 
