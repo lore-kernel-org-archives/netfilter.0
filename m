@@ -1,11 +1,9 @@
-From: Michael <mutk@ozemail.com.au>
-Subject: Re: NetBIOS browsing across subnets
-Date: Fri, 05 Jul 2002 13:21:31 +1000
+From: George Vieira <GeorgeV@citadelcomputer.com.au>
+Subject: RE: NetBIOS browsing across subnets
+Date: Fri, 5 Jul 2002 12:30:44 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D2510BB.7090905@ozemail.com.au>
-References: <200FAA488DE0D41194F10010B597610D2BA23E@JUPITER>
+Message-ID: <200FAA488DE0D41194F10010B597610D2BA240@JUPITER>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,8 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Cc: netfilter@lists.samba.org
+
+OMG..What the..
+
+so much trouble.. wasn't the original problem that they wanted to see each
+others machine/shares off NN? I'm getting off track now and confused...
+
+You don't need smbmount on the firewall.. it's just there to handle the
+broadcast of machines on both networks and broadcasts to both networks like
+a *yes* proxy server for Netbios.. BUT it must be the master browser.. 1
+machine 1 solution, not 2 and transfering this and that,etc.. *shudders*...
+
+thanks,
+George Vieira
+Systems Manager
+Citadel Computer Systems P/L
+http://www.citadelcomputer.com.au
+
+
+
+-----Original Message-----
+From: Michael [mailto:mutk@ozemail.com.au]
+Sent: Friday, 05 July 2002 1:22 PM
 To: netfilter@lists.samba.org
+Subject: Re: NetBIOS browsing across subnets
+
 
 Yes, I did say you compromise the Samba servers by doing this.....
 
