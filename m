@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: problem with iptables with forward drop  policy.
-Date: Tue, 23 Sep 2003 12:09:18 -0700
+From: Nik Trevallyn-Jones <nik@designer.com.au>
+Subject: Re: active firewall
+Date: Wed, 24 Sep 2003 07:19:58 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E48@alderaan.smgtec.com>
+Message-ID: <03092407195802.03859@slinky.exmosys.com>
+References: <03092320103102.01185@slinky.exmosys.com> <200309231611.20748.mark@ifl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200309231611.20748.mark@ifl.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +18,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables@isabeldeespana.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-1. Are these subnets on the same network segment or different network
-interfaces?
+On Wed, 24 Sep 2003 01:11, Mark Vevers wrote:
 
-2. Are you trying to ping based on hostnames or IP's?
+> You can do most of what you are after with the 'RECENT' match and target
+> ...
+>
+> I.e. if 'X' seen from 'Y' within n seconds - block Y
+> You can create some quite interesting rulesets with recent and a few logic
+> chains .....
 
-3. INTIF/EXTIF corresponds to what network IP subnets?
+Awesome! This sounds to be exactly what I was looking for!
 
-4. What gets dumped to the Logs? In all likelihood it will show you
-exactly what the problem is.
+Many thanks - I'm off to find out about RECENT...
 
-The ICMP pings should work the same between Linux and Windows so I don't
-see the 'visibility' the firewall allows as the issue. I can only assume
-that your Windows machines are not configured the same way as your Linux
-machine (192.168.3.15). Could this be a subnet masking problem?
-
-Try tracert from 192.168.1.19 to the machines tried and see if they both
-take the paths that they should be.
-
+Cheers!
 
