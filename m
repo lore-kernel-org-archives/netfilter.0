@@ -1,12 +1,14 @@
-From: "louie miranda" <lmiranda@chikka.com>
-Subject: Re: portfw on iptables 2.4 kernel problem.
-Date: Thu, 12 Dec 2002 11:11:41 +0800
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: hostname forwarding
+Date: 12 Dec 2002 07:36:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00f301c2a18c$373cf3b0$0b00000a@nocpc3>
-References: <014901c2a02a$0dbf59f0$0b00000a@nocpc3> <3DF720D9.7030501@istitutocolli.org>
+Message-ID: <1039671369.4125.12.camel@rayw.knowledgefactory.co.za>
+References: <Pine.LNX.4.33.0212111606240.17876-100000@www.csbenter.at>
+Reply-To: raymondl@knowledgefactory.co.za
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-aHYyzQbX48qLjKl+yRY2"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.33.0212111606240.17876-100000@www.csbenter.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,71 +18,84 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Thanks for those people who replied, But still i can't get it to work.
-Ill be posting my rule set here.
-
-=======================================
-panic:/# iptables -nL --line-num
-Chain INPUT (policy ACCEPT)
-num  target     prot opt source               destination
-
-Chain FORWARD (policy DROP)
-num  target     prot opt source               destination
-1    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          state
-RELATED,ESTABLISHED
-2    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
-3    LOG        all  --  0.0.0.0/0            0.0.0.0/0          LOG flags 0
-level 4
-
-Chain OUTPUT (policy ACCEPT)
-num  target     prot opt source               destination
-panic:/#
-=======================================
-panic:/# iptables -nL --line-num -t nat
-Chain PREROUTING (policy ACCEPT)
-num  target     prot opt source               destination
-1    REDIRECT   tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:80
-redir ports 3128
-
-Chain POSTROUTING (policy ACCEPT)
-num  target     prot opt source               destination
-1    MASQUERADE  all  --  0.0.0.0/0            0.0.0.0/0
-
-Chain OUTPUT (policy ACCEPT)
-num  target     prot opt source               destination
-panic:/#
-=======================================
-
-My rule set is just a simple masq w/ port redirection internally, catching
-all port 80 request
-and redirect it to my squid on port 3128
+To: Patrick Maartense <patrick@patrick.at>
+Cc: bernard <bernard@gers.net>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-I tried the simple rule set that Joel Newkirk, Andrea Rossato and all the
-people who have
-helped me on my problem but still It does not work, I actually set all the
-IPTABLES/NETFILTER
-options on my kernel and add "1" on /proc/sys/net/ipv4/ip_forward. I
-actually search and
-search google.com for my similar problem and tried it all, I had no error's
-or such all is working
-i think. It just does not connect over to my granted port. Ill try any port
-even port 80 or port 139
-on my firewall just get this forwarding to work.
+--=-aHYyzQbX48qLjKl+yRY2
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Well, thanks again. I hope what i have posted here "my rule set" will give
-me such nice answers
-to resolved my probem, And ill cont. reading and reading any docs i can find
-on the internet.
+On Wed, 2002-12-11 at 17:06, Patrick Maartense wrote:
+> this is not possible using ipotables
+>=20
+Ummm, what is the -s parameter for then?
+iptables -t nat -A PREROUTING -p tcp -s <hostname A> --dport 80 -j
+REDIRECT --to-destination 192.168.1.1:80
+iptables -t nat -A PREROUTING -p tcp -s <hostname B> --dport 80 -j
+REDIRECT --to-destination 192.168.1.2:80
 
+Or am I missing something?
 
+Ray
+> Apache however can very well handle this ..
+>=20
+>=20
+> On Wed, 11 Dec 2002, bernard wrote:
+>=20
+> > I'm using iptables to redirect external requests depending on their=20
+> > port/protocol like this :
+> >=20
+> > 	hostname A:80 -> public ip -> iptables -> 192.168.1.1:80
+> > 	hostname B:80 -> public ip -> iptables -> 192.168.1.1:80
+> >=20
+> > It works pretty well, thanks to iptables :-)
+> >=20
+> > Now I want to redirect on a hostname basis on different private ip's=20
+> > like this :
+> >=20
+> > 	hostname A:80 -> public ip -> iptables -> 192.168.1.1:80
+> > 	hostname B:80 -> public ip -> iptables -> 192.168.1.2:80
+> >=20
+> > Does anyone know a solution ?
+> >=20
+> > Thanks for your help.
+> >=20
+> > Bernard
+> >=20
+--=20
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(  Raymond Leach                       )
+ ) Knowledge Factory                  (
+(                                      )
+ ) Tel: +27 11 445 8100               (
+(  Fax: +27 11 445 8101                )
+ )                                    (
+(  http://www.knowledgefactory.co.za/  )
+ ) http://www.saptg.co.za/            (
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   o                                o
+    o                              o
+        .--.                  .--.
+       | o_o|                |o_o |
+       | \_:|                |:_/ |
+      / /   \\              //   \ \
+     ( |     |)            (|     | )
+     /`\_   _/'\          /'\_   _/`\
+     \___)=3D(___/          \___)=3D(___/
 
---
-thanks,
-louie miranda
+--=-aHYyzQbX48qLjKl+yRY2
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9+CBJh1fuR/Bv+ygRAqg3AJsHV20whXMMp2ZTGU9yj2qv6gVbIACfWhRJ
+DofJTC9JynNR1QDvPvmBI1Q=
+=Lgoh
+-----END PGP SIGNATURE-----
+
+--=-aHYyzQbX48qLjKl+yRY2--
 
 
