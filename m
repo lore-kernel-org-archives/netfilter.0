@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FORWARD RULE -- please help
-Date: Tue, 9 Mar 2004 08:46:46 +0000
+Subject: Re: A practical problem regarding  IP Accounting ...?
+Date: Tue, 9 Mar 2004 09:04:01 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403090846.46608.Antony@Soft-Solutions.co.uk>
-References: <20040309075404.92394.qmail@web13206.mail.yahoo.com>
+Message-ID: <200403090904.01979.Antony@Soft-Solutions.co.uk>
+References: <7C9884991ADAE0479C14F10C858BCDF5122F0B@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040309075404.92394.qmail@web13206.mail.yahoo.com>
+In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122F0B@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,32 +20,48 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 09 March 2004 7:54 am, Nilesh wrote:
+On Tuesday 09 March 2004 1:02 am, Daniel Chemko wrote:
 
-> 203.129.224.149 is my firewall machine running
-> IPTABLES and 192.168.0.22 is my local machine on 2090
-> port service is running
+> # Outbound to PC
+> iptables -t mangle -A PREROUTING -i eth1 --source <ip_address>
+> # Inbound to PC
+> iptables -t mangle -A POSTROUTING -o eth1 --destination <ip_address>
 >
-> 202.129.227.3 is his firewall IP and 192.168.1.25 is
-> his local machine where on 2090 port services is
-> running
->
-> I want to communicate this both internal
-> machines(192.168.0.22 and 192.168.1.25) through
-> firewall
+> Then use your own accounting tool to rip the byte count from "iptables -t
+> mangle -nvxL". Remember though, the byte count can reset or overflow to 0,
+> so make sure your accounting package can handle this.
 
-If you want his 192.168.1.0/24 network to be able to communicate with your 
-192.168.0.0/24 network then you should investigate IP in IP tunnelling / 
-encapsulation (see the Linux Advanced Routing Guide at http://lartc.org for a 
-simple guide to how to do this), or else set up a VPN (eg : FreeS/WAN, or the 
-IPsec implementation built into the 2.6 kernel).
+I think this is an excellent answer, but there are some subtleties about it 
+which Daniel did not empphasise, and I think they're worth explaining so 
+people understand a little more about netfilter:
+
+1. The rules have no targets!   ie: there is no "-j ACCEPT" etc at the end.   
+This is perfectly correct and acceptable (in any chain, not just mangle), and 
+means the netfilter will count the packets which match, but not do anything 
+special with them.   Such a rule is useful only for counting packets & bytes, 
+but it means you can count them without immediately deciding what happens to 
+them - you can sgtill follow the accounting rules with your normal filtering 
+/ natting / mangling rules.
+
+2. The rules are in the mangle tables because this is the closest that 
+netfilter can get to the interfaces themselves, and it makes sure that the 
+rules really do count all the packets going in and out of the machine, 
+without some quietly slipping past behind the scenes as they could do if you 
+counted packets in the nat table (the rules would not see reply packets being 
+automatically de-natted), or the filter table (where it would be difficult to 
+combine sensible accounting with the stanadard stateful ESTABLISHED, RELATED 
+rule).
+
+I hope this helps a few people understand a bit more about why this is a very 
+good solution to packet accounting, as well as perhaps a bit more about the 
+way packets go through mangle, nat and filter.
 
 Regards,
 
 Antony.
 
 -- 
-If at first you don't succeed, destroy all the evidence that you tried.
+Wanted: telepath.   You know where to apply.
 
                                                      Please reply to the list;
                                                            please don't CC me.
