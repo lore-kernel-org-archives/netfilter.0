@@ -1,9 +1,10 @@
-From: =?iso-8859-1?Q?"Bj=F6rn=20Eberth"?= <Bjoern.Eberth@web.de>
-Subject: Changing the ip_ct_tcp_timeout_established value
-Date: Thu, 24 Mar 2005 10:23:56 +0100
-Message-ID: <1132008238@web.de>
+From: "N Gal" <n7799@hotmail.com>
+Subject: Re: Iptables forwarding
+Date: Thu, 24 Mar 2005 10:19:47 +0000
+Message-ID: <BAY21-F16E8DAAD21CC64EA47D1BCA1400@phx.gbl>
+References: <200503221047.39552.gdh@acentral.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <200503221047.39552.gdh@acentral.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,20 +15,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: gdh@acentral.co.uk
+Cc: netfilter@lists.netfilter.org
 
-Hi there,
 
-the default value for "ip_conntrack_tcp_timeout_established" is set to 5 days.
-My problem is, that after about 2 days of using a filesharing client the ip_conntrack table runs full.
-Im using a dial-up connection with 24 hours reconnect.
-So my question is: Could i run into problems, if i set this value to 24 hours or something like this?
 
-Regards
-Bjoern
-______________________________________________________________
-Verschicken Sie romantische, coole und witzige Bilder per SMS!
-Jetzt bei WEB.DE FreeMail: http://f.web.de/?mc=021193
+>From: Gavin Hamill <gdh@acentral.co.uk>
+>To: netfilter@lists.netfilter.org
+>Subject: Re: Iptables forwarding
+>Date: Tue, 22 Mar 2005 10:47:39 +0000
+>
+>On Tuesday 22 March 2005 10:33, N Gal wrote:
+> > Hallo,
+> >
+> > I'm  trying to set up a 'statistics box' that should simply IP forward
+> > everything from one ethernet card to the other (Transparent Firewall?) 
+>in
+> > the same subnet. The problem is that it will not do this. Any 
+>suggestions
+> > welcome...
+>
+>You want this : http://ebtables.sf.net
+>
+>Short version - use a 2.6 kernel and when you configure Linux Bridging
+>(interface br0 spanning eth0 and eth1, for example), you will be able to
+>apply rules, or simply count the number of packets matching rules /
+>interfaces...
+>
+>If you use a 2.4 kernel, you will need to patch it (see URL above)
+>
+>Cheers,
+>Gavin.
+>
+>
+
+
+Hi Gavin,
+
+yes, I found the ebtables site after I sent the message and am using a 2.4 
+kernel, so a patch will be necessary.
+
+Do I need iptables as well as ebtables or is ebtables a 'drop-in' 
+replacement?
+
+Thanks for the help,
+
+Neil
+
+_________________________________________________________________
+It's fast, it's easy and it's free. Get MSN Messenger today! 
+http://www.msn.co.uk/messenger
 
 
