@@ -1,10 +1,10 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: A simple question
-Date: Thu, 19 Aug 2004 07:04:27 -0400
+Subject: RE: Port Forwarding with iptables
+Date: Thu, 19 Aug 2004 07:13:32 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512A7@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512A8@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,34 +19,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Hi,
->
-> In almost all IP Tables articles I've found that the default policy of
-> all tables (INPUT,OUTPUT,FORWARD) set to DROP.  I can understand it as
-> far as INPUT and FORWARD tables are concerned, but I do not understand
-> why should we set the default policy of OUTPUT chain to DROP.  OUTPUT
-> chain is responsible for packets originating from the firewall itself.
-> Whay should we DROP it?
->
-> Thanks,
-> Sudheer
-
-two reasons i can think of:
-
-1) your firewall is no better than any other machine in your network.  =
-all of the machines behind it are only allowed out on specific ports to =
-specific destinations, so why should the firewall be any different?
-
-2) it helps lazy admins (i.e. me).  on more than one occasion i've found =
-myself ssh'ed into a firewall and tried to go somewhere/do something and =
-it didn't work; and i thought to myself "i probably shouldn't be doing =
-this from the firewall."  it keeps you from treating the machine that is =
-supposed to be the most locked down, tightly secured machine in the =
-network like a common client.  for me anyways...
-
-i only allow out ftp or http to the specific IP's of the machines that i =
-update from (via apt or yum).
-
--j
-
+PiBIaSBhbGwsDQo+DQo+IEkgbGlrZSB0byBkbyB0aGUgcG9ydGZvcndhcmRpbmcgd2l0aCBpcHRh
+Ymxlcyhmb3J3YXJkIHdlYiB0cmFmZmljIG9mIGFuDQo+IGFsaWFzIElQIC0gPGV4dCBpcD4gdG8g
+aW50ZXJuYWwgd2ViIHNlcnZlcikuICBIZXJlIGlzIHdoYXQgSSBoYXZlOg0KPg0KPiBpcHRhYmxl
+cyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgwIC1kIDxleHQgaXA+IC1wIHRjcCAtLWRwb3J0
+IDgwIC1qDQo+IEROQVQgLS10byAxMC4xLjAuMTI6ODANCg0Kb2sNCg0KPiBpcHRhYmxlcyAtQSBJ
+TlBVVCAtcCB0Y3AgLWkgZXRoMCAtZCA8ZXh0IGlwPiAtLWRwb3J0IDgwIC1tIHN0YXRlDQo+IC0t
+c3RhdGUgTkVXIC1qIEFDQ0VQVA0KDQp1bS0tbm9wZS4gIHRoZSBwYWNrZXRzIGFyZSBnb2luZyB0
+byBiZSBGT1JXQVJELWVkLS10aGV5IHdpbGwgbmV2ZXIgYmUgc2VlbiBieSB0aGUgSU5QVVQgY2hh
+aW4uDQoNCj4gaXB0YWJsZXMgLUEgRk9SV0FSRCAtcCB0Y3AgLWkgZXRoMCAtbyBldGgxIC1kIDxl
+eHQgaXA+IC0tZHBvcnQgODAgLW0NCj4gc3RhdGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUDQoNCmht
+bS4uLmxldCdzIGhvbGQgb2ZmIG9uIHRoaXMgZm9yIGEgc2VjLi4uDQoNCj4gSG93ZXZlciwgaXQg
+a2VlcCBkcm9waW5nIHRoZSBwYWNrZXRzIHdoZW4gZ2V0dGluZyB0byB0aGUgTkFUIGJveC4NCj4N
+Cj4gTG9ncw0KPiA9PT09DQo+IChXaXRoIGlwdGFibGVzIC1BIEZPUldBUkQgLWQgMTAuMS4wLjEy
+IC1qIExPRzsgaXB0YWJsZSAtQSBGT1JXQVJEIC1qIERST1ApDQo+DQo+IGtlcm5lbDogSU49ZXRo
+MCBPVVQ9ZXRoMSBTUkM9MjAyLnh4eC4xMjIueHh4IERTVD0xMC4xLjAuMTIgTEVOPTQ4DQo+IFRP
+Uz0weDAwIFBSRUM9MHgwMCBUVEw9MTIwIElEPTY0OTEgREYgUFJPVE89VENQIFNQVD00MDIzIERQ
+VD04MA0KPiBXSU5ET1c9NjQyNDAgUkVTPTB4MDAgU1lOIFVSR1A9MA0KPg0KPiBBbnkgY2x1ZXM/
+ICBEaWQgSSBtaXNzIHNvbWV0aGluZyBoZXJlPw0KDQp5ZWFoLS1yZWFkIHRoYXQgbG9nIGVudHJ5
+LiAgbm93IGxvb2sgYXQgeW91ciBGT1JXQVJEIHJ1bGUuICBub3cgcmVhZCB0aGF0IGxvZyBlbnRy
+eSBhZ2Fpbi4gIGdvdCBpdD8NCg0Kbm8/ICBvay4uLiAgbG9vayBhdCB0aGUgIi1kIDxleHQgaXA+
+IiBpbiB0aGUgcnVsZSBhbmQgdGhlICJEU1Q9MTAuMS4wLjEyIiBpbiB0aGUgbG9nIGVudHJ5Lg0K
+DQpETkFUIGhhcHBlbnMgaW4gUFJFUk9VVElORzsgYXMgaW4sICJiZWZvcmUgcm91dGluZyItLXNv
+IGFueSBGT1JXQVJEIHJ1bGVzIHdpbGwgc2VlIHRoZSBETkFULWVkIGFkZHJlc3MsIG5vdCB0aGUg
+b3JpZ2luYWwgZGVzdCBJUC4gIHRyeToNCg0KICBpcHRhYmxlcyAtQSBGT1JXQVJEIC1wIHRjcCAt
+aSBldGgwIC1vIGV0aDEgLWQgMTAuMS4wLjEyIFwNCiAgICAtLWRwb3J0IDgwIC1tIHN0YXRlIC0t
+c3RhdGUgTkVXIC1qIEFDQ0VQVA0KDQpob3BlZnVsbHkgeW91IGFsc28gc29tZXRoaW5nIGFsb25n
+IHRoZSBsaW5lcyBvZiB0aGlzIHNvbWV3aGVyZSBhcyB3ZWxsOg0KDQogIGlwdGFibGVzIC1BIEZP
+UldBUkQgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KDQot
+ag0K
 
