@@ -1,13 +1,12 @@
-From: Felipe <fflores@millicom.com.pe>
-Subject: Re: SNAT question
-Date: Mon, 01 Mar 2004 20:28:05 -0500 (PET)
+From: Stindl Wolfgang EXT <Wolfgang.Stindl.extern@icn.siemens.de>
+Subject: Macimum number of rules?
+Date: Tue, 2 Mar 2004 10:35:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078190885.4043e325cc3b0@milliweb.millicom.com.pe>
-References: <1078185401.4043cdb979aab@milliweb.millicom.com.pe> <200403020022.47603.Antony@Soft-Solutions.co.uk>
+Message-ID: <47D438A0510BD611B9470002A58EDAE704DE64CF@mchh2a6e.mchh.siemens.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C40039.BF4C7994"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403020022.47603.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,60 +16,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Is there any special configuration to do this, perhaps any kernel values?
-That's because without set up the ip on the interface that rule doesn't work
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Thanks
+------_=_NextPart_001_01C40039.BF4C7994
+Content-Type: text/plain
 
-Felipe
+Hi,
 
-Antony Stone <Antony@Soft-Solutions.co.uk> escribi=F3:
+We are running a quite big iptables-Firewall with about 34000 rules.
+Since today we cannot add any new rules.
+All we get is a Memory allocation Problem.
 
-> On Monday 01 March 2004 11:56 pm, Felipe wrote:
->=20
-> > It's necessary to set up phisically the public address used in SNAT
-> rule ?
-> > For this rule:
-> >
-> > iptables -t nat -A POSTROUTING -s 172.21.0.0/16 -j SNAT --to
-> 200.110.2.181
-> >
-> > For that rule, its necessay set up phisically the IP 200.110.2.181
-> over the
-> > interface ?
->=20
-> No, it is not necessary to set up that address on that interface in
-> order to=20
-> use that rule and send out packets with that source address.
->=20
-> However, if you send out packets with that source address, and you want
-> to=20
-> receive the replies, the address must exist on whatever machine the
-> address=20
-> will get routed to.
->=20
-> If you are only doing UDP transmits, and never expect a reply, it might
-> work.
->=20
-> Regards,
->=20
-> Antony.
->=20
-> --=20
-> "The joy of X!!??  I've always hated compiling graphical shite.  You
-> have a 10=20
-> line program, and it ends up depending on the entire known universe."
->=20
->  - Philip Hands
->=20
->                                                      Please reply to the
-> list;
->                                                            please don't
-> CC me.
->=20
->=20
->=20
+When we delete a rule, we can add 1 new rule. So is there a maximum number?
+
+The firewall box is an dual xeon with 1 GB memory (most is still free)
+
+So is there anything we can do?
+
+Thanks a lot
+Wolfgang
+
+------_=_NextPart_001_01C40039.BF4C7994
+Content-Type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2657.73">
+<TITLE>Macimum number of rules?</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=2 FACE="Arial">Hi,</FONT>
+</P>
+
+<P><FONT SIZE=2 FACE="Arial">We are running a quite big iptables-Firewall with about 34000 rules.</FONT>
+<BR><FONT SIZE=2 FACE="Arial">Since today we cannot add any new rules.</FONT>
+<BR><FONT SIZE=2 FACE="Arial">All we get is a Memory allocation Problem.</FONT>
+</P>
+
+<P><FONT SIZE=2 FACE="Arial">When we delete a rule, we can add 1 new rule. So is there a maximum number?</FONT>
+</P>
+
+<P><FONT SIZE=2 FACE="Arial">The firewall box is an dual xeon with 1 GB memory (most is still free)</FONT>
+</P>
+
+<P><FONT SIZE=2 FACE="Arial">So is there anything we can do?</FONT>
+</P>
+
+<P><FONT SIZE=2 FACE="Arial">Thanks a lot</FONT>
+<BR><FONT SIZE=2 FACE="Arial">Wolfgang</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C40039.BF4C7994--
 
