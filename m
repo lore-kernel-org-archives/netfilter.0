@@ -1,11 +1,10 @@
-From: "Tuyo Board Unilago" <tboard@incolombia.com>
-Subject: help!!
-Date: Fri, 18 Jul 2003 10:22:11 -0500
+From: Xemul <epv_xemul@mail.ru>
+Subject: Double nat
+Date: Fri, 18 Jul 2003 20:31:22 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001b01c34d40$5c963760$6400a8c0@midway>
+Message-ID: <20030718203122.0f105933.epv_xemul@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0018_01C34D16.73860C90"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,79 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Well here goes my network configuration.
+I have two computers.
+1st has two ifs:
+eth0 192.168.2.91
+eth1 172.16.1.1
+2nd has one if:
+eth0 172.16.1.2
 
-------=_NextPart_000_0018_01C34D16.73860C90
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On 192.168.2.0/24 subnet I have a 192.168.2.254 router (I can't admin
+it) which provides NAT for the 192.168.2.0 subnet.
 
-Hi, This is probably very basic to all of you guys, but i would =
-apreciate a helping hand.
+I want to make NAT for my 2nd comp on the 1st one.
 
-I have a linux red hat 9.2, 2.4 kernel machine with a cable modem signal =
-with a DHCP ip adress from the cable company
+I do the following on the 1st comp:
 
-I=B4m tring to "PROXY" all services to internet : telnet, Kazaa, httpd, =
-etc...
+#/sbin/iptables -A POSTROUTING -t nat -s 192.168.1.0/24 -j SNAT
+--to-source 192.168.2.91
+#/sbin/iptables -A FORWARD -i eth0 -o eth1 -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+#/sbin/iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
 
-But the more i try, the father my goal seems.
+The 2nd comp has default router set to 172.16.1.1.
 
-I been reading all the how to=B4s but no luck.
-
-Any help. ANY. Will be apreciated.
-
-Thanks
-
-Tuyo Isaza
-
-
-
-------=_NextPart_000_0018_01C34D16.73860C90
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2726.2500" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi, This is probably very basic to all =
-of you guys,=20
-but i would apreciate a helping hand.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have a linux red hat 9.2, =
-</FONT><FONT face=3DArial=20
-size=3D2>2.4 kernel </FONT><FONT face=3DArial size=3D2>machine with a =
-cable modem=20
-signal with a DHCP ip adress from the cable company</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I=B4m tring to "PROXY" all services to =
-internet :=20
-telnet, Kazaa, httpd, etc...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>But the more i try, the father my goal=20
-seems.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I been reading all the how to=B4s but =
-no=20
-luck.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Any help. ANY. Will be =
-apreciated.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Tuyo Isaza</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0018_01C34D16.73860C90--
-
+Everything goes fine but nothing works.
+I can see with tcpdump all incoming packets from eth1 but I can't see
+any outgoing from eth0 corresponding to them.
+What should I do?
 
