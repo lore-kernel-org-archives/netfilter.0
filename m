@@ -1,8 +1,8 @@
-From: <homsher@dejazzd.com>
-Subject: ip_conntrack_max
-Date: Thu, 13 Feb 2003 14:04:54 EST
+From: "Peter Hurley" <phurley@charter.net>
+Subject: SNMP device replies by alternate address
+Date: Wed, 12 Feb 2003 08:20:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030213190454.MFRO18193.mailrelay@[66.109.229.25]>
+Message-ID: <000001c2d299$853c0e50$3201a8c0@BEOWULF>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,18 +18,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi everyone,
+Is there an extension target that can be used in the PREROUTING chain of
+nat and/or mangle to alter the incoming source ip address? Say something
+in the form of...
 
-I hope this is an easy question for someone...
+iptables -t nat -A PREROUTING -i eth1 -m mac --mac-source
+xx.xx.xx.xx.xx.xx -j SRC_MANGLE --from_src 192.168.50.17/32
 
-I upgraded my memory to 1.3 GB and my ip_conntrack_max increased to 65536 (from 16,xxx). Does this seem sufficient for a 50+ network? I've noticed that ip_conntrack tends to 'hang onto' connections when the remote client terminates abrubtly. For example, an incoming ssh connection on which the ssh client is rebooted may stay in ip_conntrack for 15 minutes or more -- I'm watching this now and it's been 20 minutes. The ssh client machine got M$ blue-screen-o-death and my iptables firewall hasn't figured out that the connection is gone. 
+The situation is this:  a SNMP device accepts SNMP requests on two
+separate ip addresses.  One ip is fixed and private, the other is
+dynamic/unknown.  This device is on the outside of a private network
+being SNAT'ed.  The problem is that even though it receives SNMP
+requests on the private ip address it replies with the other
+dynamic/unknown ip address as the source.
 
-My question(s) are: Is it normal for conntrack entries to hang around after the remote connection has terminated ungracefully? If so, should the state table be 'cleaned up' periodically (and how is this done)? 
+This means that ip_conntrack_core doesn't recognize the reply packet as
+belonging to the previous outgoing request.
 
-And, what happens if/when the firewall exceeds the 65536 connection limit?
+Matching the reply packet is easy with the mac address which is fixed.
+But I can't seem to get past that.  Marking and using iproute2 won't
+work since only ip_conntrack* knows the reply path.  Mapping both
+request and reply packets onto the same network (say 10.x.x.x) won't
+work because the two SNMP addresses aren't simple
+reflections/derivatives of each other (e.g., 192.168.50.17 and
+xx.xx.72.116).
 
-Thanks to anyone who can enlighten me on this!
+Perhaps I'm missing something that already exists in the stock
+netfilter?
 
-Lori
+Thanks in advance,
+
+Peter Hurley
+imagine XD, inc.
+phurley@imaginexd.com
 
 
