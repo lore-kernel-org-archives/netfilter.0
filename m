@@ -1,14 +1,10 @@
-From: c0ldbyte <c0ldbyte@myrealbox.com>
-Subject: Re: (no subject)
-Date: Sat, 21 Feb 2004 22:23:00 -0500
+From: "T. Take" <t_takejp@hotmail.com>
+Subject: Re: ULOG: invalid argument
+Date: Sun, 22 Feb 2004 15:28:16 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040221222300.03a31efa.c0ldbyte@myrealbox.com>
-References: <1077367619.1966.3.camel@frozen>
-	<1717113755.20040221194922@attla.net.ar>
+Message-ID: <BAY15-F664DVvm24Tzm00001610@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1717113755.20040221194922@attla.net.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,84 +14,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-How about a faster way to do that, that is static to any interface that
-pops up, "iptables -A INPUT -i ! lo --tcp-flags SYN,FIN SYN,FIN -j DROP"
-that will protect every interface that is not lo(Loop Back).
+Hi, Mr Stearns. 
 
-On Sat, 21 Feb 2004 19:49:22 -0300
-Alexis <alexis@attla.net.ar> wrote:
+Thank you for explaining it in detail.
 
-> A fast way to do this is with a script and something like this (could
-> be a lot of other options and ways to do this)
-> 
-> MY_IP=`ifconfig eth0 | grep "inet addr" | cut -d':' -f2 | cut -d' '
-> -f1`
-> 
-> and then
-> iptables -A INPUT -p tcp -d $MY_IP --tcp-flags SYN,FIN SYN,FIN -j DROP
-> 
-> of course, you need to change eth0 to the interface that you need to
-> obtain an ip address.
-> 
-> If this interface is related to an ppp interface it could be easy, in
-> a file called ip-up in /etc/ppp you could set your script with the
-> following vars
-> 
-> # When the ppp link comes up, this script is called with the following
-> # parameters
-> #       $1      the interface name used by pppd (e.g. ppp3)
-> #       $2      the tty device name
-> #       $3      the tty device speed
-> #       $4      the local IP address for the interface
-> #       $5      the remote IP address
-> #       $6      the parameter specified by the 'ipparam' option to pppd
-> 
-> 
-> pppd executes this script when it comes up
-> 
-> so you can use $1 where i put $MY_IP in the iptables command.
-> 
-> then, if you need to change some parameters when the ppp connection
-> cames down, just set it in ip-down
-> 
-> and thats it
-> 
-> 
-> 
-> 
-> Hello Anthony,
-> 
-> Saturday, February 21, 2004, 9:46:59 AM, you wrote:
-> 
-> AdAL> Hi, I would like to add a certain rule to my firewall, but I have a
-> AdAL> dynamic IP, I'm wondering if there is some way I can work with this
-> AdAL> the line is as follows:
-> 
-> AdAL> iptables -A INPUT -p tcp -d <MyDynamicIP> --tcp-flags SYN,FIN SYN,FIN -j
-> AdAL> DROP
-> 
-> AdAL> Thanks for any information you can provide.
-> 
-> AdAL> --tony
-> 
-> 
-> -- 
-> Best regards,
->  Alexis                            mailto:alexis@attla.net.ar
-> 
-> 
-> 
+>	One quick check is to type:
+>
+>iptables -j ULOG -h
+>
+>	which should show the help text for the ULOG module at the end if
+>your binary has support for ULOG.
 
+As you write above,  the command shows the help.
 
--- 
-        This e-mail may be privileged and/or confidential, and the sender
-does not waive any related rights and obligations. Any distribution, use
-or copying of this e-mail or the information it contains by other than an
-intended recipient is unauthorized. If you received this e-mail in error,
-please advise me (by return e-mail or otherwise) immediately.
+>	The iptables binary support is generally provided as a module.
+>Where this is found depends on the compile time options used, but on a
+>Redhat stock system it's found as /lib/iptables/libipt_ULOG.so (worst
+>case, do a "locate libipt_ULOG.so").  That module not only provides the
+>help text but also all the code necessary to parse command line options
+>and actually insert your request to _use_ the ULOG kernel module into the
+>kernel.
 
+I checked that there was /lib/iptables/libipt_ULOG.so.
+
+Judging from the two points that you teached me, iptables in my system 
+seems to support ULOG.
+
+>
+>	If you don't have that file, you'll need to compile the iptables
+>binary.  The source code is available from
+>ftp://ftp.netfilter.org/pub/iptables/ (I personally get the snapshots, but
+>for critical systems you might want to stick with the last released
+>1.2.9).  The INSTALL file should provide enough hints of what you need to
+>do.
+
+The other day, I updated iptables to 1.2.9. But, I haven't resolved the 
+problem yet.
+
+Best regards.
+
+_________________________________________________________________
+友達と24時間ホットライン「MSN メッセンジャー」、今すぐダウンロード！  
+http://messenger.msn.co.jp 
 
 
