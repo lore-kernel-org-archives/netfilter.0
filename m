@@ -1,13 +1,14 @@
-From: Patrick Turley <pturley@rocksteady.com>
-Subject: Re: mac-source matching
-Date: Mon, 26 Apr 2004 13:45:06 -0500
+From: "Dick St.Peters" <stpeters@NetHeaven.com>
+Subject: Re: DNAT and promiscuous mode
+Date: Mon, 26 Apr 2004 16:27:07 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <408D58B2.1040201@rocksteady.com>
-References: <1083003321.408d51b9cea5e@webmail.bme.med.ualberta.ca>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <16525.28827.98470.297348@saint.heaven.net>
+References: <408D40DC.2010201@ida.net>
+	<1083000628.1795.4.camel@anduril.intranet.cartel-securite.net>
+	<408D4875.2030407@ida.net>
+	<1083001435.1795.8.camel@anduril.intranet.cartel-securite.net>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1083003321.408d51b9cea5e@webmail.bme.med.ualberta.ca>
+In-Reply-To: <1083001435.1795.8.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +18,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Beau Sapach wrote:
-> Hello everyone,
-> 
-> I have a system running redhat with kernel 2.4.26 and iptables 1.2.1a that is a 
-> routing firewall.  If I use the mac-source extension to match packets from the 
-> internal network (a workstation for which this system is the gateway) it works 
-> fine, but it won't match packets originating from the outside world.  The rule 
-> I use is this:
-> 
-> iptables -A FORWARD -m mac --mac-source 00:00:00:00:00:00 -j ACCEPT
-> 
-> It could be me, I may be completely misunderstanding how this is supposed to 
-> work.  I am by no means a guru.... any help would be appreciated, thanks!
+Cedric Blancher writes:
+> Le lun 26/04/2004 =E0 19:35, Travis Johnson a =E9crit :
+> > I am looking to re-direct my customers that are past due to a
+> > different web page.
+>=20
+> Then transparent proxying is what you need and do not require
+> promiscuous mode.
 
-Please excuse me if I've misunderstood what you're doing, but this is 
-what occurs to me first...
+If the context is local users (such as dialup customers) accessing the
+internet, it's not necessary to run a proxy to divert them to a
+different web page.  I do this with a combination of policy routing
+and DNAT.
 
-You say that your machine is running a firewall? That means it's 
-filtering traffic arriving from the outside world, which I presume means 
-that it's connected to a cable modem/DSL/T-1/etc.
+First, set aside a small block of IP addresses to be assigned only to
+overdue customers.  RADIUS does this easily.  Then route all web
+queries from these addresses to the overdue site using policy routing.
+I do this in a Cisco because it's there, but most any modern router,
+including a Linux box, will do.  Then on the overdue site box, DNAT
+all packets from those sources to the IP address and port of the
+overdue site.
 
-MAC addresses (almost) never survive more than one hop. If a packet is 
-traveling to your LAN from a server on the other side of the country, 
-the MAC address of that server will never be observed at your firewall. 
-In fact, it's probably the case that *ALL* the packets arriving at your 
-firewall have the same source MAC address - the MAC address of the first 
-router upstream from you.
+This works like a charm and completely ignores traffic to/from other
+users.
 
-So, it's certainly possible for your firewall to match incoming traffic 
-by MAC address, but it is also almost certainly useless to do so.
-
-I hope that helps.
+--
+Dick St.Peters, stpeters@NetHeaven.com=20
 
