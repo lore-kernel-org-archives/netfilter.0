@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPSEC and other non tcp/udp/icmp blocking
-Date: Sun, 13 Oct 2002 02:05:57 +0100
+From: Alexandros Papadopoulos <apapadop@cmu.edu>
+Subject: owner module + patch-o-matic
+Date: Sun, 13 Oct 2002 00:19:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021013010600.ROPW459.mta02-svc.ntlworld.com@there>
-References: <42349.64.86.49.17.1034435865.squirrel@www.icafe.co.tz>
+Message-ID: <200210130019.19902.apapadop@cmu.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <42349.64.86.49.17.1034435865.squirrel@www.icafe.co.tz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,28 +18,57 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 11 October 2002 11:45 pm, Mitesh P Choksi wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Dear All,
+Hi all. This is a known issue, but I didn't find any answer, hence I'm as=
+king.
+
+I'm trying to use the owner module (option --cmd-owner) with my freshly=20
+compiled iptables v1.2.7a.
+
+Problem:
+
+[root@localhost ~]# /sbin/iptables -A OUTPUT -m owner --cmd-owner ssh -p =
+tcp=20
+- -j DROP
+iptables v1.2.7a: Unknown arg `--cmd-owner'
+
+So I downloaded patch-o-matic and tried using it, but:
+
+[alex@localhost ~/patch-o-matic]$ ./runme pending KERNEL_DIR=3D/usr/src/l=
+inux   =20
+Please call ./runme from the patch-o-matic directory!
+
+So I looked up the archives and found the following advice:
+
+>> Download full netfilter cvs tree and run patch-o-matic/runme from ther=
+e.
 >
-> How does netfilter work with other protocols apart tcp/udp/icmp?
+>Or just copy isapplied from the iptables directory to the patch-o-matic
+>directory and run:
+>
+>perl -pi -e 's|../userspace/isapplied|./isapplied|g' runme
+>
+>Is there any reason that this is not already done?
 
-Perfectly well.
+=2E..but I can't find "isapplied" in either of the dirs!
 
-> I am trying to either block or account IPSec traffic.
+Is CVS the only way out of this? And if it is, is there any page that exp=
+lains=20
+how to use the netfilter CVS? (never used CVS before)
 
-All you need to do is specify the relevant protocol in your rules, eg:
+Thanks
 
-iptables -A FORWARD -p esp ...etc.....
+- -A
+- --=20
+http://www.andrew.cmu.edu/~apapadop/pub_key.asc
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.0 (GNU/Linux)
 
-You can still specify things like source & destination addresses, but of 
-course there are no port numbers in anything except TCP & UDP.
+iD8DBQE9qPRHgmAMwQt1gmURAnyuAJkBNpoVUrWJQTDQ5dzf+22iRhmwnwCcCN6R
+T55ALtkCUa7J8ctDV72eShI=3D
+=3DNW1P
+-----END PGP SIGNATURE-----
 
-Antony.
-
--- 
-
-Anyone that's normal doesn't really achieve much.
-
- - Mark Blair, Australian rocket engineer
 
