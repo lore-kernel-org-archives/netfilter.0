@@ -1,12 +1,11 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
-Subject: Re: problem with trying the example
-Date: Mon, 1 Dec 2003 15:47:17 -0000
+From: "Fabrice Grelaud" <f.grelaud@free.fr>
+Subject: patch nth, load balancing
+Date: Mon, 1 Dec 2003 17:01:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000f01c3b822$66414be0$68892090@grouse>
-References: <00a201c3b7ad$06b73100$cb0210ac@jz105> <1070265652.29823.3.camel@porky>
+Message-ID: <003801c3b824$64bb5d40$5618a8c0@imperial.local>
+References: <Pine.GSO.4.33.0312011606350.27223-100000@horus.imag.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_000C_01C3B822.6630AA10"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,61 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Eric Leblond <eric@regit.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi everybody,
 
-------=_NextPart_000_000C_01C3B822.6630AA10
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+I have 2 connections adsl on my gateway (eth1, eth2) and one card for the
+LAN (eth0).
+netfilter-extension-HOWTO: "easy and quick method to produce load-balancing"
 
+I would like to know if it's possible to balance the load of incoming
+packets (eth0) to the two externals interfaces.
+                                          _______
+                                          |             |-eth1
+(66.12.24.36)----------
+------eth0 (192.168.0.254)|    FW   |                                    NET
+                                          |    NAT |-eth2
+(66.13.52.36)----------
+                                          _______
 
-------=_NextPart_000_000C_01C3B822.6630AA10
-Content-Type: text/plain;
-	name="ATT00008.txt"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="ATT00008.txt"
+And so use the command:
+#iptables -t nat -A POSTROUTING -o eth1 -m nth --counter 7 --every
+2 --packet 0 -j SNAT --to-source 66.12.24.36
+#iptables -t nat -A POSTROUTING -o eth2 -m nth --counter 7 --every
+2 --packet 1 -j SNAT --to-source 66.13.52.36
 
-=EF=BB=BFHi Eric,
+In the howto's example, each time the output card is eth0 ???
 
-Thank you very much. I went through the link process, but when I execute =
-the program:
+what do you think ???
+Or do i have to use the target ROUTE or iproute2 & netfilter ???
 
-./test
+Cordially yours
+Fabrice
 
-The following occurs:
-
-passer: Failed to send netlink message: Connection refused
-
-Could you point out for me how I can solve it again? Cheers!
-
-Regards,
-Ji
-
-
-
-Le lun 01/12/2003 =C3=A0 02:47, Jee J.Z. a =C3=A9crit :
-> Hi all,
->=20
-> I am new to netfilter and even linux. I just wish to try the example =
-code in the man page of libipq (I saved it as test.c and have compiled =
-it to test.o). But when I make it: #cc test.o -o test, the following =
-errors showed up:
->=20
-> [root@kite1 netfilter]# cc test.o -o test
-
-you need to link with the libipq library :
-=20
-	cc test.o -o test -lipq
-
-
---=20
-Eric Leblond
-Nufw, Now User Filtering Works (http://www.nufw.org)
-
-------=_NextPart_000_000C_01C3B822.6630AA10--
 
 
