@@ -1,15 +1,12 @@
-From: Fabrice MARIE <fabrice@netfilter.org>
-Subject: Re: (no subject)
-Date: Sun, 26 Jan 2003 16:20:54 +0800
+From: "Michael J. Tubby B.Sc. \(Hons\) G8TIC" <mike@thorcom.com>
+Subject: NAT of TFTP sessions
+Date: Sun, 26 Jan 2003 11:26:24 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301261620.55164.fabrice@netfilter.org>
-References: <5.2.0.9.0.20030124154733.00a0bd10@mail.SoftHome.net> <1043409967.1998.31.camel@rayw.knowledgefactory.co.za>
-Reply-To: fabrice@netfilter.org
+Message-ID: <001901c2c52d$c2457fd0$0a90a8c0@boris>
+References: <1043539676.5018.19.camel@underworld> <20030126024127.5ab3f927.arnt@c2i.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1043409967.1998.31.camel@rayw.knowledgefactory.co.za>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: raymondl@knowledgefactory.co.za, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org, mb@ozaba.mine.nu
 
-On Friday 24 January 2003 20:06, Raymond Leach wrote:
-> AFAIK most *nix's support it... Solaris does.
+Magnus et al,
 
-Hello,
+I have several Linux firewall/gateway machines dotted around the
+UK and Europe which are basically RedHat 7.3 + Kernet 2.4.20
++ iptables 1.2.7a.
 
-well, if solaris does support iptables, I'm sure there
-is going to be plenty of people interested, if you could
-please post us a link, as well as on the developer mailing
-list ? ;-)
+We have things on the inside like Cisco VoIP phones, print servers,
+etc. that need to be able to TFTP code or configs in from a
+server on the outside (public internet).
 
-[the coreteam said they would not bother to port it to solaris,
- which many people agree with.. including me. It would be a LOT
- of work, and it's probably not worth the time. If you want
- netfilter, linux kernel 2.4.x coming 2.4.6 are the way to go :)]
+TFTP appears not to work and when I search google I find
+information which refers to patches to "oldnat" but not to "newnat".
 
-> On Fri, 2003-01-24 at 12:18, Blesson Paul wrote:
-> > Hi all
-> >          Is IPTables are only supported by linux. Which of the OS's
-> > support IPTables
-> > regards
-> > Blesson Paul
+Is there something that I am missing? Is there a configuiration
+module, helper, patch or something for iptables 1.2.7a which will
+fix this?
 
-Have a nice day,
+Mike
 
-Fabrice.
---
-Fabrice MARIE
 
-"Silly hacker, root is for administrators"
-       -Unknown
+
+
 
