@@ -1,12 +1,14 @@
-From: Karel Rericha <karel@maxent.cz>
-Subject: Re: downlink marked packets dont go to qdisc, uplink ok
-Date: Wed, 15 Dec 2004 16:55:54 +0100
-Message-ID: <41C05E8A.3020809@maxent.cz>
-References: <41B97CCE.2060904@maxent.cz>
+From: Jason Williams <jwilliams@courtesymortgage.com>
+Subject: Re: Help with iptables script
+Date: Wed, 15 Dec 2004 09:16:50 -0800
+Message-ID: <6.1.2.0.0.20041215090840.025e0ec0@corpmail.courtesymortgage.com>
+References: <6.1.2.0.0.20041214161928.02702088@corpmail.courtesymortgage.com>
+	<1103073463.2028.13.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41B97CCE.2060904@maxent.cz>
+In-Reply-To: <1103073463.2028.13.camel@localhost>
+References: <6.1.2.0.0.20041214161928.02702088@corpmail.courtesymortgage.com>
+	<1103073463.2028.13.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,174 +20,130 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Hi list, maybe I wasn't clear enough last time :-)
-
-I'm offering 4 bottles of superb beer for first working solution with 
-free shipping ofcourse.
-
-Any contestants ?
-
-Karel Rericha napsal(a):
-
-> Short:**********************************************************
->
-> On Mandrake 10.0 router with htb shaping I have to use U32 classifier 
-> for inserting
-> packets to downlink qdiscs, because marking packets only work for 
-> uplink qdiscs.
-> Downlink packets are properly market, but always reach only default 
-> class without
-> U32. Why?
->
->
-> Detail:**********************************************************
->
-> kernel: 2.6.3-19mdk
-> iptables: stock 1.2.9
-> external network: 172.16.0.0/24
-> local network: 10.0.0.0/8
-> NAT+Shorewall firewall used
-> external interface: eth1 10/100
-> local interface: br0 (eth0 and wlan0 bridged, wlan0 is hostap 0.2.5)
->
->
-> I have two chains, MARKOUT and MARKIN. MARKOUT is targetted in PREROUTING
-> and MARKIN is targetted in POSTROUTING. They are marking packets by 
-> src or dst
-> local IP. Command
->
-> iptables -t mangle  -L  -v
->
-> shows that packets in both chains are properly marked. But
->
-> tc -s qdisc ls dev br0
-> tc -s class ls dev br0
->
-> shows only traffic in default class, if I use only classifying by 
-> handle and not U32.
-> Uplink lists
->
-> tc -s qdisc ls dev eth0
-> tc -s class ls dev eth0
->
-> shows that all traffic is where it should be with classifying by handle.
->
-> Commands:********************************************************
->
-> # prepare uplink chain for marking packets
-> iptables -t mangle -D PREROUTING -j MARK_OUT
-> iptables -t mangle -F MARK_OUT
-> iptables -t mangle -X MARK_OUT
-> iptables -t mangle -N MARK_OUT
-> iptables -t mangle -A PREROUTING -j MARK_OUT
->
-> # prepare downlink chain for marking packets
-> iptables -t mangle -D POSTROUTING -j MARK_IN
-> iptables -t mangle -F MARK_IN
-> iptables -t mangle -X MARK_IN
-> iptables -t mangle -N MARK_IN
-> iptables -t mangle -A POSTROUTING -j MARK_IN
->
-> # new uplink root
-> tc qdisc del dev eth1 root handle 2: >/dev/null
-> tc qdisc add dev eth1 root handle 2: htb default 100 r2q 5
-> # shaping root class
-> tc class add dev eth1 parent 2: classid 2:1 htb rate 752kbit burst 2k
->
-> #new downlink root
-> tc qdisc del dev br0 root handle 1: >/dev/null
-> tc qdisc add dev br0 root handle 1: htb default 100 r2q 5
-> #shaping root class
-> tc class add dev br0 parent 1: classid 1:1 htb rate 752kbit burst 2k
->
-> #default class
-> tc class add dev br0 parent 1:1 classid 1:100 htb rate 8kbit ceil 
-> 512kbit burst 2k prio 300
-> tc qdisc add dev br0 parent 1:100 handle 100: sfq perturb 10
-> tc class add dev eth1 parent 2:1 classid 2:100 htb rate 8kbit ceil 
-> 512kbit burst 2k prio 300
-> tc qdisc add dev eth1 parent 2:100 handle 100: sfq perturb 10
-> tc filter add dev eth1 protocol ip parent 2:0 prio 1 handle 100 fw 
-> flowid 2:100
->
-> ... snip ...
->
-> ########## client example with U32 - this is runs as it should, but I 
-> have to use U32 for downlink
-> tc class add dev br0 parent 1:1 classid 1:105 htb rate 16kbit ceil 
-> 128kbit burst 2k prio 100
-> tc qdisc add dev br0 parent 1:105 handle 105: sfq perturb 10
-> tc class add dev eth1 parent 2:1 classid 2:105 htb rate 16kbit ceil 
-> 128kbit burst 2k prio 100
-> tc qdisc add dev eth1 parent 2:105 handle 105: sfq perturb 10
-> tc filter add dev eth1 protocol ip parent 2:0 prio 1 handle 105 fw 
-> flowid 2:105
->
-> iptables -t mangle -A MARK_IN --out-interface br0 --destination 
-> 10.1.1.5 -j MARK --set-mark 105
-> iptables -t mangle -A MARK_IN --out-interface br0 --destination 
-> 10.1.1.5 -j RETURN
-> tc filter add dev br0 protocol ip parent 1:0 prio 1 u32 match ip dst 
-> 10.1.1.5 flowid 1:105
-> iptables -t mangle -A MARK_OUT --in-interface br0 --source 10.1.1.5 -j 
-> MARK --set-mark 105
-> iptables -t mangle -A MARK_OUT --in-interface br0 --source 10.1.1.5 -j 
-> RETURN
->
-> OR
->
-> ########## !!! SAME !!! client without U32 - uplink shapes fine, but 
-> why the hell all the downlink traffic ends in default class 
-> !!!!!!!!!!!!!!
-> tc class add dev br0 parent 1:1 classid 1:105 htb rate 16kbit ceil 
-> 128kbit burst 2k prio 100
-> tc qdisc add dev br0 parent 1:105 handle 105: sfq perturb 10
-> tc filter add dev br0 protocol ip parent 1:0 prio 1 handle 105 fw 
-> flowid 1:105
-> tc class add dev eth1 parent 2:1 classid 2:105 htb rate 16kbit ceil 
-> 128kbit burst 2k prio 100
-> tc qdisc add dev eth1 parent 2:105 handle 105: sfq perturb 10
-> tc filter add dev eth1 protocol ip parent 2:0 prio 1 handle 105 fw 
-> flowid 2:105
->
-> iptables -t mangle -A MARK_IN --out-interface br0 --destination 
-> 10.1.1.5 -j MARK --set-mark 105
-> iptables -t mangle -A MARK_IN --out-interface br0 --destination 
-> 10.1.1.5 -j RETURN
-> iptables -t mangle -A MARK_OUT --in-interface br0 --source 10.1.1.5 -j 
-> MARK --set-mark 105
-> iptables -t mangle -A MARK_OUT --in-interface br0 --source 10.1.1.5 -j 
-> RETURN
->
-> Award:*********************************************************
->
-> I'm working on it for few weeks now, tried every possible solution 
-> which I could find. But nothing
-> helped. Packets are marked fine, but never reach its class for 
-> downlink. U32 is fine, but I need
-> marking for some reason.
->
-> I'm offering 4 bottles of Prazdroj (http://www.pilsner-urquell.com/ , 
-> Pilsner Urquell - first beer of its type,
-> most of modern beers are named by it "pilsner", and by the way, the 
-> best of all), from the beer country,
-> Czech Republic, where no one match our 160+ litres of beer per man 
-> per  year (but I must say Germany
-> holds strong second place), to first working solution. Worldwide 
-> shipping free :-)
->
->
->
->
+Content-Transfer-Encoding: 7bit
+To: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
+Cc: netfilter@lists.netfilter.org
 
 
+>Welcome to netfilter/iptables - it's a fabulous product.  You do indeed
+>seem to know what you are doing.  I'll make some comments in your text.
 
--- 
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.296 / Virus Database: 265.5.2 - Release Date: 13.12.2004
+Thanks for the welcome. I am quite intrigued with iptables. Definitely 
+different and a new thing to learn.
+
+
+> > $IPTABLES -P INPUT DROP
+> > $IPTABLES -P OUTPUT DROP
+> > $IPTABLES -P FORWARD DROP
+> >
+>Very good start :-)
+
+Alright...good to know. :)
+
+
+> > $IPTABLES -N bad_tcp_packets
+> > $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG
+> > --log-prefix "New not syn:"
+> > $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+>I would be interested to see some list discussion here.  When I use
+>connection tracking, I generally do not drop NEW not SYN packets.  NEW
+>packets initiated from untrusted sources are generally dropped anyway
+>whether they have the SYN bit flipped or not.  On the other hand, you
+>may find legitimate NEW packets that are not SYN, e.g., if a session has
+>been interrupted (e.g., firewall reset), the sessions may still be alive
+>on the end points.  Dropping the non-SYN packets will force a time out
+>or application hang and a call to the help desk.  Letting those packets
+>through will renew the connection tracking state and keep the
+>application alive.
+
+I was thinking about this after you mentioned this. I may go back and look 
+further into the details of this, see if I can't find something better to 
+do. I am thinking, that this could be a good and bad thing, depending upon 
+the connection(s). I may rethink this set of rules.
+
+
+> > $IPTABLES -A bad_tcp_packets -i $INET_IFACE -s 192.168.0.0/16 -j DROP
+> > $IPTABLES -A bad_tcp_packets -i $INET_IFACE -s 10.0.0.0/8 -j DROP
+> > $IPTABLES -A bad_tcp_packets -i $INET_IFACE -s 172.16.0.0/12 -j DROP
+>We usually take anti-spoofing one step further in the ISCS network
+>security project (http://iscs.sourceforge.net).  To be good Internet
+>citizens, we also want to make sure that only valid internal addresses
+>are sending traffic out.  If you have and will alway have only one
+>protected network, one can do this with a single inverse rule, e.g.,
+>$IPTABLES -A bad_tcp_packets -i $LAN_IFACE -s ! $LAN_IP - j DROP
+>
+>If you have multiple protected networks, you can do this with the RETURN
+>target and a separate chain, e.g.,
+>$IPTABLES -N SpoofChain
+>$IPTABLES -A bad_tcp_packets -i $LAN_IFACE -j SpoofChain
+>$IPTABLES -A SpoofChain -s $LAN_IP1 -j RETURN
+>$IPTABLES -A SpoofChain -s $LAN_IP2 -j RETURN
+>$IPTABLES -A SpoofChain -j DROP
+
+Thanks for the link and tips on rules. anything i can do to be a better 
+internet citizen, I am all for. :)
+
+
+> > #Simple NAT setup
+> >
+> > $IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
+
+This should be correct for my NAT setup on my private LAN correct? Think 
+so, just want to double check.
+
+> >
+> > # Accept the packets we actually want to forward
+> >
+> > $IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+> > $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > $IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG
+> > --log-level DEBUG --log-prefix "IPT FORWARD packet died: "
+> >
+> > # INPUT chain
+> >
+> > $IPTABLES -A INPUT -p tcp -j bad_tcp_packets
+>Since you're not accepting any packets on the INPUT chain, you don't
+>need to filter bad packets unless you want to log them.  Are you sure
+>you don't want to accept RELATED,ESTABLISHED traffic on your INPUT
+>chain?
+
+Hmm. Good point. Just to make sure I follow, even though I am not accepting 
+any packets on the input chain, traffic from the private LAN still should 
+traverse through the firewall and back correct? Assuming that is correct, 
+then the problems i would have then would be the loopback interface (stuff 
+like X windows, subsystems) and also when the host itself tries to call the 
+interent for patches, packages etc. Is that a correct assumption?
+
+> >
+> >
+> > # OUTPUT chain
+> >
+> > $IPTABLES -A OUTPUT -p tcp -j bad_tcp_packets
+>Are you expecting bad packets on your OUTPUT chain?
+> >
+> > #
+> > # Special OUTPUT rules to decide which IP's to allow.
+> > #
+> >
+> > $IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+> > $IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
+>I believe you can drop the -p ALL.  What about traffic on lo?
+
+Yep. Forgot the Loopback interface.
+
+I will be pouring over my book and how-to's today.
+just a quick question. Is there a website, other than the netfiler website 
+that has some sample table scripts? I'd like to see just a few examples of 
+simple iptable scripts so I can further wrap my head around this.
+My intentions with this first script was to put a simple firewall script 
+that would block my private lan, do NAT and of course, pass out traffic to 
+and from the private LAN.
+
+i appreciate the feedback. Nice product indeed. i like. :)
+
+Cheers,
+
+Jason
 
 
 
