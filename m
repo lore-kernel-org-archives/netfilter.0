@@ -1,11 +1,14 @@
-From: "Dhyanesh Ramaiya" <dhyanesh@intafrica.com>
-Subject: Asymmetric routing
-Date: Mon, 12 May 2003 12:12:12 +0300
+From: "P.Italiaander" <pc-secure@home.nl>
+Subject: Re: Performance Decrease
+Date: Mon, 12 May 2003 01:36:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <03d301c31866$937b2d80$0223a8c0@satconet.com>
+Message-ID: <200305120136.48436.pc-secure@home.nl>
+References: <001201c31411$b3ccaa40$c90c010a@TMCSHAWN>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001201c31411$b3ccaa40$c90c010a@TMCSHAWN>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +21,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear all,
+Op dinsdag 6 mei 2003 22:54, schreef Shawn Mall:
+> I am running iptables version 1.2.2 -- This has never been an issue until I
+> have begun to do some bandwidth intensive stuff. I also had a friend of
+> mine point this out as well...
+>
+> There seems to be a huge performance decrease when using iptables. I am not
+> sure where the bottleneck is occuring. My friend has a 3Mbit/sec pipe, was
+> getting about 500kb/sec on average, and since implenting iptables, is only
+> receiving about 50kb/sec. That is a huge decrease. Can anybody point out
+> what is going wrong?
+>
+> Thanks,
+> Shawn
+ 
+need more info on rule-set for this.
 
-Below is a simple diagram of my network:
+Perhaps a faulty rule with an 'limit' and high burst max,  so instead that 
+limiting from outside (like Pings of Death) , you limit your own connection.
 
-| LAN 1 | ---- | Linux RTR 1 | ---- | INTERNET | ---- | Linux RTR 2 | ---- |
-LAN 2 |
 
-What I want to do:
-- I want to be able to access a server on LAN 2 from nodes on LAN 1. LAN 1
-and LAN 2 are both using private IPs. However, the gateway for the server
-that I want to access on LAN2 is not my router (Linux RTR 2). It is another
-router (let's say RTR 3 on that network). An easier way to achieve this
-requirement is by adding a static route on the server on LAN 2. However, the
-requirement is such that no configurations should be added/changed on the
-server on LAN 2 and the RTR 3. This results in an asymmetric route for
-packets from LAN 1 to server on LAN 2 as they do not follow the same path on
-the return.
-
-Kindly assist on how this can be achieved using iptables only (DNAT, SNAT,
-route, etc.).
-
-Dhyanesh Ramaiya
-
+Pascal
+ 
 
