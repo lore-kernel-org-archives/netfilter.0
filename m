@@ -1,13 +1,15 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ICMP and state/conntrack
-Date: 28 Feb 2003 12:17:14 +0100
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: permanent ip forwarding
+Date: 28 Feb 2003 12:42:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1046431034.14100.17.camel@elendil.intranet.cartel-securite.net>
-References: <20030228103743.GA31779@ok.is>
+Message-ID: <1046432547.1936.16.camel@kermit.spenneberg.de>
+References: <1131.192.168.35.11.1046409994.squirrel@webmail.satconet.com>
+	<1046417290.1936.5.camel@kermit.spenneberg.de> 
+	<3289.192.168.129.22.1046421799.squirrel@webmail.satconet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030228103743.GA31779@ok.is>
+In-Reply-To: <3289.192.168.129.22.1046421799.squirrel@webmail.satconet.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +19,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@tommi.org
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: muffadal.essaji@mail.intafrica.com
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Le ven 28/02/2003 =E0 11:37, netfilter@tommi.org a =E9crit :
-> I'm wondering if state doesn't apply to ICMP packets.
+Am Fre, 2003-02-28 um 09.43 schrieb muffadal.essaji@mail.intafrica.com:
+> hi thanks
+> i need to put the ip forwarding permanent .
+> how can i do it.
+Which distribution?
+Check if there is a /etc/sysctl.conf file. If there is you can enter it
+there. Otherwise you have to edit your /etc/rc.d/rc.local file.
 
-It applies.
+Cheers,
 
-> iptables -A FORWARD -p icmp -m state -d 1.2.3.4 --state NEW -j ACCEPT
-> iptables -A FORWARD -m state --state NEW,INVALID -j REJECT
-> if I ping 1.2.3.4 the echo-reply is blocked from 1.2.3.4. Is this norma=
-l, I
-> thought that the echo-reply should be marked RELATED and therefore not
-> blocked?
+Ralf
+> urgent
+> muffadal.
+> 
+> > Am Fre, 2003-02-28 um 06.26 schrieb muffadal.essaji@mail.intafrica.com:
+> >> hi.
+> >> i need a step by step prodecure to configure NAT.
+> >> I havee eth1 thats my internal internetwork
+> >> and eth0 which have a public ip.
+> > Ok, lets see.
+> > Either you have a static or dynamic public IP.
+> >
+> > #!/bin/bash
+> > # Firewall skript
+> > # We need to load several modules for NAT
+> > modprobe ip_tables
+> > modprobe ip_conntrack_ftp
+> > modprobe ip_nat_ftp
+> > #In both cases you need to have forwarding on:
+> > sysctl -w net.ipv4.ip_forward=1
+> > #In both cases you need some rules to forward the traffic:
+> > # Drop everything by default
+> > iptables -P FORWARD DROP
+> > # Allow new connections from the inside
+> > iptables -A FORWARD -i eth1 -o eth0 -m state --state NEW -j ACCEPT #
+> > Allow established connections to communicate
+> > iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT # Now
+> > NAT, you want the following rule for a static IP
+> > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to <enter your IP here>
+> > # if you use a dynamic IP you need:
+> > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> >
+> >
+> > Cheers,
+> >
+> > Ralf
+> >> i need all internal machines to access the internet.
+> >> i went to documentation but  i went crazy.
+> >> urgent help.
+> >> yours
+> >> muffadal
+> >>
+> >>
+> >>
+> > --
+> > Ralf Spenneberg
+> > RHCE, RHCX
+> >
+> > IPsec/PPTP Kernels for Red Hat Linux:
+> > http://www.spenneberg.com/.net/.org/.de
+> > Honeynet Project Mirror:                http://honeynet.spenneberg.org
+> > Snort Mirror:                           http://snort.spenneberg.org
+> 
+> 
+-- 
+Ralf Spenneberg
+RHCE, RHCX
 
-Nope.
-In fact, you can separate ICMP messages in two categories :
-
-	. ICMP errors
-	. standelone ICMP
-
-ICMP errors are related to an existing IP flow. As such, conntrack
-engine flags them as RELATED.
-
-Standelone ICMP (ping, netmask, timestamp and info, cf.
-ip_conntrack_proto_icmp.c) are not related to IP flow, and are flagged
-using NEW/ESTABLISHED states.
-If you ping someone, echo-request is NEW, echo-reply is ESTABLISHED.
-
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
-
+IPsec/PPTP Kernels for Red Hat Linux:  
+http://www.spenneberg.com/.net/.org/.de
+Honeynet Project Mirror:                http://honeynet.spenneberg.org
+Snort Mirror:                           http://snort.spenneberg.org
 
