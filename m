@@ -1,11 +1,11 @@
-From: Christian Hesse <mail@earthworm.de>
-Subject: match all private addresses in one rule
-Date: Sun, 20 Feb 2005 15:42:07 +0100
-Message-ID: <200502201542.12562.mail@earthworm.de>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: providing partial access to iptables for non root user
+Date: Mon, 21 Feb 2005 08:38:44 -0500
+Message-ID: <1108993123.2238.90.camel@grendel>
+References: <4219C6F1.2070500@juergens.name>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2408325.pcdE49gPej";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <4219C6F1.2070500@juergens.name>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Michael =?ISO-8859-1?Q?J=FCrgens?= <netfilter@juergens.name>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
---nextPart2408325.pcdE49gPej
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Mon, 2005-02-21 at 06:33, Michael J=FCrgens wrote:
+>=20
+> I=B4m looking for a solution to provide a non root user write access to=
+ a=20
+> chain.
 
-Hello netfilter folks!
+I've written up some stuff using sudo in order to create an auditing
+trail. You can read about it here:
 
-Is there a way to match all private addresses (10.0.0.0/8, 172.16.0.0/12,=20
-192.168.0.0/16) in only one rules? I think of something like
+http://www.loganalysis.org/sections/parsing/application-specific/firewall=
+-logging.html#iptables
 
-$ iptables -A INPUT -s private -j ACCEPT
+> his special case I have to provide the a mechanism to block some ip=20
+> adresses to connect to http.
+> But this should be done by a non root user. The non root user should no=
+t=20
+> change any other rule.
 
-I've googled for a solution, but couldn't find one yet.
+The problem is you can not set permissions to different iptables
+switches. So granting a person access to the binary implies they will be
+able to do pretty much anything they want.
 
-Please cc as I'm not subscribed to the list.
-=2D-=20
-Regards,
-Christian
+You might be able to create a front end that accepts just an IP address,
+and then the back end fills out the rest of the command, but you would
+need really good data scrubbing to ensure that only IP addresses are
+accepted, not command line switches. You would also need to ensure that
+the user does not have direct access to the binary.
 
---nextPart2408325.pcdE49gPej
-Content-Type: application/pgp-signature
+HTH,
+Chris
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.9.15 (GNU/Linux)
 
-iD8DBQBCGKHElZfG2c8gdSURAgALAKDt4SjKJSuiyGMn2Efn35JqZMNqQACg5X8/
-37r11RWD3aezthh/1iGcin0=
-=q5ac
------END PGP SIGNATURE-----
-
---nextPart2408325.pcdE49gPej--
 
