@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: mail server problem
-Date: Mon, 10 Nov 2003 10:25:40 +0000
+From: "Lohan Spies" <l.spies@petzetakis.co.za>
+Subject: open port to specific ip address
+Date: Mon, 10 Nov 2003 12:55:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311101025.hAAAPjj16744@agate.rockstone.co.uk>
-References: <008a01c3a76f$d084fa10$0101010a@tv.smc> <200311100958.hAA9wwj16722@agate.rockstone.co.uk> <20031110101509.GA9937@ok.is>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAAnvBmZOFHB0Oj5+mf5BZEMgEAAAAA@petzetakis-africa.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00C0_01C3A789.DF5084A0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031110101509.GA9937@ok.is>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +16,165 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 10 November 2003 10:15 am, netfilter@tommi.org wrote:
+This is a multi-part message in MIME format.
 
-> > ip addr add dev eth0 213.25.24.3
->
-> If I have a network routed to my linux box say 192.168.1.0/24, do I still
-> have to add every IP on the subnet if I want to be able to use NATing for
-> the entire subnet?
+------=_NextPart_000_00C0_01C3A789.DF5084A0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-You need to add every IP address for which you want an interface to accept 
-packets on a local subnet.   Otherwise the upstream router won't know where 
-to send them becaause nothing responds to ARP requests.
+Hi All,
+ 
+I need to know how will i open a specific port to a external ip mapping!
+ 
+I need to specify a internal_ip:port on my internal network, and then if
+someone connects to internal_ip:port it must redirect them to
+external_ip with no cgi scripting and no authentication support!
+ 
+How will i do this?
+ 
+Thanks,
+ 
+Lohan Spies 
+Systems Administrator CSA / DBA / MCP
+IQ Business  <http://www.iqgroup.net/> Group
+Tel: +27 12 521 7309
+Fax: +27 12 541 3441
+Cell: +27 83 258 2698
+l.spies@petzetakis-africa.co.za 
 
-> Also doesn't adding 250 IP addresses to a NIC affect performance?
 
-I'm inclined to say "no", however someone's bound to say "it affects it by 
-some miniscule amount", so I'll say "it affects the performance of the box a 
-lot less than does routing the traffic you want to push through it".
+ 
 
-If you don't like the idea of adding 250 addresses to an interface, simply 
-change your network layout so that those addresses are being routed through 
-the netfilter machine, rather than existing on a subnet it is directly 
-connected to, then you can do the DNAT and the FORWARD without needing thr 
-address attached to the interface.
+ 
 
-Antony.
 
--- 
+CONFIDENTIALITY CAUTION: If you have received this communication in error, please note that it is intended for the addressee only, is private and confidential and dissemination or copying prohibited. Please notify us immediately by e-mail and return the original message. We cannot assure that the integrity of this communication has been maintained nor that it is free of errors, virus, interception or interference. Thank you
 
-Most people have more than the average number of legs.
-                                                     Please reply to the list;
-                                                           please don't CC me.
+------=_NextPart_000_00C0_01C3A789.DF5084A0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
+
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV>
+<DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr =
+align=3Dleft><FONT face=3DTahoma=20
+size=3D2></FONT></DIV>
+<DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr =
+align=3Dleft><FONT face=3DTahoma=20
+size=3D2></FONT></DIV>
+<DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr =
+align=3Dleft><FONT face=3DTahoma=20
+size=3D2></FONT></DIV>
+<DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr =
+align=3Dleft><FONT face=3DTahoma=20
+size=3D2></FONT></DIV><SPAN class=3D609595009-04112003><FONT =
+face=3DArial size=3D2>Hi=20
+All,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial size=3D2>I need =
+to know how=20
+will i open a specific port to a external ip =
+mapping!</FONT></SPAN></DIV>
+<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial size=3D2>I need =
+to specify a=20
+internal_ip:port on my internal network, and then if someone connects to =
+
+internal_ip:port it must redirect them to external_ip with no cgi =
+scripting and=20
+no authentication support!</FONT></SPAN></DIV>
+<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial size=3D2>How =
+will i do=20
+this?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
+size=3D2>Thanks,</FONT></SPAN></DIV>
+<DIV>&nbsp;</DIV><FONT face=3DArial size=3D2></FONT><FONT face=3DArial=20
+size=3D2></FONT><FONT face=3DArial size=3D2></FONT>
+<MARQUEE id=3DMarquee2 style=3D"WIDTH: 340px; HEIGHT: 17px" trueSpeed =
+scrollAmount=3D1=20
+scrollDelay=3D1 behavior=3Dslide loop=3D1 width=3D394 height=3D19 =
+border=3D"0"><B><FONT=20
+size=3D5>Lohan Spies</FONT></B></MARQUEE>
+<DIV></DIV></SPAN></FONT></B><FONT face=3DVerdana color=3D#ff0000 =
+size=3D2><SPAN=20
+style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana"><FONT face=3DArial=20
+color=3D#000000></FONT><FONT face=3DArial color=3D#000000></FONT>
+<MARQUEE id=3DMarquee2 style=3D"FONT-WEIGHT: bold; COLOR: #ff0000" =
+trueSpeed=20
+scrollAmount=3D1 scrollDelay=3D2 behavior=3Dslide loop=3D1 width=3D550 =
+height=3D19=20
+border=3D"0">Systems Administrator CSA / DBA /=20
+MCP</MARQUEE></SPAN></FONT><BR><FONT face=3DVerdana size=3D2><SPAN=20
+style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana">
+<MARQUEE id=3DMarquee2 style=3D"WIDTH: 340px; HEIGHT: 17px" trueSpeed =
+scrollAmount=3D1=20
+scrollDelay=3D2 behavior=3Dslide loop=3D1 width=3D393 height=3D19 =
+border=3D"0"><A=20
+href=3D"http://www.iqgroup.net/">IQ Business=20
+Group</A></MARQUEE></SPAN></FONT><BR><FONT face=3DVerdana size=3D1>
+<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
+16px"=20
+trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
+width=3D390 height=3D16=20
+border=3D"0"><SPAN=20
+style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Tel: +27 =
+12 521=20
+7309</SPAN></MARQUEE></FONT><BR>
+<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
+16px"=20
+trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
+width=3D390 height=3D16=20
+border=3D"0"><SPAN=20
+style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Fax: +27 =
+12 541=20
+3441</SPAN></MARQUEE></FONT><FONT face=3DVerdana><SPAN=20
+style=3D"FONT-FAMILY: Verdana"><BR></SPAN></FONT><FONT face=3DVerdana =
+size=3D1>
+<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
+16px"=20
+trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
+width=3D390 height=3D16=20
+border=3D"0"><SPAN=20
+style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Cell: +27 =
+83 258=20
+2698</SPAN></MARQUEE></FONT><FONT face=3DVerdana><SPAN=20
+style=3D"FONT-FAMILY: Verdana"><BR></SPAN></FONT><FONT face=3DVerdana =
+size=3D1>
+<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 340px; HEIGHT: =
+17px"=20
+trueSpeed scrollAmount=3D4 scrollDelay=3D5 behavior=3Dslide loop=3D1 =
+width=3D391 height=3D16=20
+border=3D"0"><SPAN style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: =
+Verdana"><A=20
+href=3D"mailto:l.spies@petzetakis-africa.co.za">l.spies@petzetakis-africa=
+.co.za</A></SPAN></MARQUEE></FONT>
+<P><FONT face=3DArial size=3D2></FONT><FONT face=3DArial =
+size=3D2></FONT><BR>&nbsp;</P>
+<DIV><FONT face=3DVerdana color=3D#0000ff></FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+
+<html>
+<br>
+CONFIDENTIALITY CAUTION: If you have received this communication in error, please note that it is intended for the addressee only, is private and confidential and dissemination or copying prohibited. Please notify us immediately by e-mail and return the original message. We cannot assure that the integrity of this communication has been maintained nor that it is free of errors, virus, interception or interference. Thank you</html>
+
+------=_NextPart_000_00C0_01C3A789.DF5084A0--
+
 
