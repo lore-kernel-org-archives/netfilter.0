@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: quick syntax query
-Date: Mon, 07 Jun 2004 07:54:21 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: FIB LPM algorithm
+Date: Mon, 7 Jun 2004 13:02:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1086609260.21179.4.camel@localhost>
-References: <FDB52A0429DFD31196FB0008C7D972D51259E6CF@OST_EXCH_USR5>
+Message-ID: <200406071302.15598.Antony@Soft-Solutions.co.uk>
+References: <9e3aacf40406070423583216f@mail.gmail.com>
+Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FDB52A0429DFD31196FB0008C7D972D51259E6CF@OST_EXCH_USR5>
+In-Reply-To: <9e3aacf40406070423583216f@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,53 +19,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Knight, Steve" <Steve.Knight@bskyb.com>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Mon, 2004-06-07 at 06:53, Knight, Steve wrote:
-> Hi there
-> 
-> Can one use syntax other than CIDR notation when defining things like
-> networks?
-> 
-> i.e. it's common to see
-> 
-> LAN_RANGE="192.168.0.0/24"
-> 
-> in rule bases, but I would like to use
-> 
-> DODGY_RANGE="192.168.0.1-5"
-> GOOD_RANGE="192.168.0.6-30"
-> BAD_BAD_RANGE="192.168.31-40"
-> 
-> 
-> a la `nmap` syntax.
-> 
-> Is this something netfilter can handle?
-> 
-<snip>
-Yes, besides using CIDR and Dotted Decimal notation, one can apply the
-IPRange patch-o-matic patch and use a rule such as
+On Monday 07 June 2004 12:23 pm, Tobias DiPasquale wrote:
 
-iptables -A FORWARD -m iprange --src-range 192.168.1.10-192.168.1.20 -j
-ACCEPT
+> Hello all,
+>
+> I was wondering if someone could point me to a discussion of what LPM
+> algorithm the Linux routing FIB uses?
 
-We use it all the time in the ISCS project.
+Er, what do LPM and FIB mean please?   I think I know netfilter quite well, 
+and I've not come across these abbreviations so far...
 
-If you do not want to patch, you can use SubnetCreator
-(http:subnetcreator.sourceforge.net) to turn a range into a list of
-subnets and then make rules for each of the subnets.  If you are using
-Qt, it also provides a series of routines to do this programatically.
+Antony.
 
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+"I estimate there's a world market for about five computers."
+
+ - Thomas J Watson, Chairman of IBM
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
