@@ -1,13 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: FTP +SLL + PortForwarding
-Date: Wed, 15 Sep 2004 13:57:18 -0400
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: Netfilter bug ? NAT'ed connections ignore icmp redirect
+Date: Wed, 15 Sep 2004 13:18:10 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095271038.3718.80.camel@wolfpack.ljm.dom>
-References: <20040915164437.83457.qmail@web20928.mail.yahoo.com>
+Message-ID: <41488762.60309@pbl.ca>
+References: <20040915133959.GA22165@hswn.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040915164437.83457.qmail@web20928.mail.yahoo.com>
+In-Reply-To: <20040915133959.GA22165@hswn.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,69 +17,29 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-09-15 at 12:44, yann Conan wrote:
-> Hi all,
+Henrik Stoerner wrote:
+> I have a setup where I use a Linux box with netfilter to forward
+> tcp connections between a "client" and a "server.
 > 
-> I'm trying to configure a iptables firewall in a
-> structure in double bastion mode.
-> 
-> this is the configuration:
-> 	internet
-> 	   :
-> 	   :
-> 	   :
-> 	FW (RH/iptables)
-> 	   :
-> 	   :
-> 	   :
-> 	DMZ/w2k/FTPS server
-> 	   :
-> 	   :
-> 	   :
-> 	FW(w2k/Isa server)
-> 	   :
-> 	   :
-> 	   :
-> 	  LAN
-> 	  
-> the tranfer of the data from the FTP server must be
-> protected with SSL (no SSH)
-> 
-> for the FTP transfer I make a portForwarding with
-> ip_conntrack_ftp and it works.
-> 
-> but now I would like to know how I have to do to
-> PortForward ftp data with SSL.
-> There is a problem because iptables must find during
-> the FTP connect the random client port in active  FTP
-> or the random server port in passive FTP. And if it's
-> encrypted with SSL it's impossible for iptables to
-> find the right ports.
+> The Linux box has a default gateway defined. However, there are
+> multiple other routers on the same network, and the default
+> gateway router sends ICMP redirects to inform the Linux box 
+> which router should be used to reach some destination.
 
-correct.
+Probably a stupid question.  But.  Why don't you simply define two 
+static routes on the NAT box pointing to firewall (packets to server) 
+and routerC (packets to client)?  Or let the router do its job of 
+actually routing packets instead of generating error messages back to 
+clients (in which case you would really need one router with 5 interfaces).
 
-> Then I would like to know if it is possible for
-> iptables to read SSL or if there is a possibility to
-> unencrypt in input, read the FTP connect with
-> ip_conntrack_ftp and re-encrypt in output.
-
-no.  connection tracking an SSL-encrypted FTP session is impossible for
-the exact reasons you describe.  i once came across an FTP over SSL
-client/server that used something called "Clear Control Channel" that
-after the user was authenticated, switched the control channel from SSL
-to clear text to allow firewalls to read the responses to PASV
-requests.  it was proprietary and closed, though.
-
-setup the FTP to respond with a fixed range of ports for passive mode
-requests and allow all those ports through to the FTP server--it's your
-only option.
-
--j
+IMHO, relying on ICMP redirects to create routes for you is inefficient 
+and error prone.  It's kind of asking for trouble.
 
 -- 
-Jason Opperisano <opie@817west.com>
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
