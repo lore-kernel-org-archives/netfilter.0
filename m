@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Send local traffic to a different server.
-Date: Thu, 24 Jun 2004 09:46:22 +0100
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: ACK,RST getting dropped in the firewall.
+Date: Thu, 24 Jun 2004 10:37:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406240946.22212.Antony@Soft-Solutions.co.uk>
-References: <5EDC9B3CC8401E4184D3B43B75A75C2B46D668@mx.p21.com>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <200406241037.01994.gdh@acentral.co.uk>
+References: <GHEILNONPACCGBGKBEKKKEAMCHAA.manikandan@manikandan.org> <1087990356.2064.47.camel@grendel>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5EDC9B3CC8401E4184D3B43B75A75C2B46D668@mx.p21.com>
+In-Reply-To: <1087990356.2064.47.camel@grendel>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,29 +21,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 23 June 2004 4:26 pm, Aldo Lagana wrote:
+On Wednesday 23 June 2004 12:32, Chris Brenton wrote:
 
-> am i wrong or can you not send traffic to another server simply with
-> netfilter/iptables rules?  Does not that require iproute2?  In other words
-> don't all of the rules assume that the NAT addresses are bound to local
-> interfaces?
+> Seen this a lot. When ever I record a trace it ends up being the
+> following:
 
-No, you can use any address you like in nat rules (both SNAT and DNAT).
+> There is obviously data getting blocked (based on the packet size) but
+> I've never had a user complaint.
 
-Whether or not it makes sense is another matter (eg: do the packets get routed 
-back through the machine and get reverse-natted?), however netfilter will 
-allow you to specify whatever you like.
+Just wanted to add a 'me too' - I've asked on-list a couple of times about 
+this but never really got an answer. Neither the server nor clients seem to 
+be any the worse off for it, but it's obviously incorrect, and it'd be nice 
+to be able to nail it =)
 
-Regards,
+Any takers? Antony? :)
 
-Antony.
-
--- 
-Software development can be quick, high quality, or low cost.
-
-The customer gets to pick any two out of three.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+gdh
 
