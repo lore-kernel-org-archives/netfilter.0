@@ -1,13 +1,12 @@
-From: Mihael Kukec <mkukec@public.srce.hr>
-Subject: Re: newbie question : ip_conntrack_ftp
-Date: Wed, 24 Mar 2004 14:04:23 +0100 (MET)
+From: "=?ISO-8859-1?Q?Bj=F6rn=20Reese?=" <ReeseB@minimax.de>
+Subject: Server crash after LIST_DELETE in Log
+Date: Wed, 24 Mar 2004 17:04:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSO.4.50.0403241401480.16713-100000@jagor.srce.hr>
-References: <Pine.GSO.4.50.0403231611290.14538-100000@jagor.srce.hr>
- <20040324031150.GN3387@samad.com.au>
+Message-ID: <s061bfaf.021@odnw1.minimaxgmbh.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040324031150.GN3387@samad.com.au>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
+** Low Priority **
+
+Hello,
+
+ I have a strange Problem with (I guess) the Netfilter. I have a Proxy-Serv=
+er running, that is dual-homed with a transparent Squid on one Interface =
+listening. After some time, the syslog lists these messages:
+
+Mar 24 15:36:18 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntrack_=
+core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(e96c0d64) not in &ip_conntrack=
+_hash[hr].
+Mar 24 15:36:39 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntrack_=
+core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(dd67fd24) not in &ip_conntrack=
+_hash[hr].
+Mar 24 15:36:55 Proxy kernel: LIST_DELETE: net/ipv4/netfilter/ip_conntrack_=
+core.c:299 `&ct->tuplehash[IP_CT_DIR_REPLY]'(dc976864) not in &ip_conntrack=
+_hash[hr].
+
+5 seconds more...
+and the server freezes...
+
+Sometimes the machine runs well for a whole week, sometimes a few hours.
+
+I've googled around for it, and saw some other people having equal =
+Problems, most of the time with older kernels.
+
+The Hardware I use is a Compaq ProLiant DL 380, OS is S.u.S.E Linux 9.0 =
+with a self-compiled 2.63 Kernel, and iptables 1.2.9. I've had earlier =
+versions of iptables & Linux running, but the Problem stayed the same.
+
+It'd be really nice, if someone's got a clue about that.
+
+Best Regards and thanks in advance for any hints.
+
+bj=F6rn
 
 
 
-On Wed, 24 Mar 2004, Alexander Samad wrote:
 
-> On Tue, Mar 23, 2004 at 04:13:52PM +0100, Mihael Kukec wrote:
-> > not have ip_conntrack_ftp module included and I need it. Can someone give
-> then run
-> dpkg -L '<insert the package name from above>' | grep -i conn
-> this should show you all the conntrack modules in the packages.
-> Some else stated in another thread that the BF2.4 package doesn't come
-> with all the conn track modules
-
-
-Well. tih was the outcome:
-
-sphere:~# dpkg -L kernel-image-2.4.18-686 | grep -i conn
-/lib/modules/2.4.18-686/kernel/net/ipv4/netfilter/ip_conntrack.o
-/lib/modules/2.4.18-686/kernel/net/ipv4/netfilter/ip_conntrack_irc.o
-/lib/modules/2.4.18-686/kernel/net/ipv4/netfilter/ip_conntrack_ftp.o
-sphere:~# insmod ip_conntrack_ftp
-Using /lib/modules/2.4.18-686/kernel/net/ipv4/netfilter/ip_conntrack_ftp.o
-sphere:~#
-
-
-Module was all the time here. Sorry for stupid question :)
-
-
-Mihael
 
 
 
