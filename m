@@ -1,12 +1,12 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: backroute problem
-Date: Thu, 24 Jul 2003 07:58:43 +1000
+From: "Andrew St. Jean" <ast.000@sympatico.ca>
+Subject: trying to get oddball setup to work
+Date: Sat, 26 Jul 2003 09:18:52 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15BF94@wardrive.citadelcomputer.com.au>
+Message-ID: <3F227FBC.6000403@sympatico.ca>
+Reply-To: "Andrew St. Jean" <ast.000-dated-1059657524.a03b81@sympatico.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,62 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Wolfgang Pichler <madmin@dialog-telekom.at>, netfilter@lists.netfilter.org
-
-You have to use iproute2 to route by source IP and not destination =
-(default gateway).
-
-There is an iptables patch in p-o-m which does some funky iproute stuff =
-too but not sure the name.. have a look
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
------Original Message-----
-From: Wolfgang Pichler [mailto:madmin@dialog-telekom.at]
-Sent: Thursday, July 24, 2003 6:03 AM
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Subject: backroute problem
 
+I'm hoping someone can tell me if what I'm trying to do is possible and 
+if so, how.
 
-hi all,
+Here's a picture of my network topology:
 
-we have got new ip addresses - the old one's still exists so that i can
-migrate them to the new ones.
+machine x-------internet---------machine y-----private LAN----host a/b/c
 
-the old ip's are directly assigned to the web/mail server (i know that
-this isn't good - but i havn't had a fireall at this time) - now i have
-a seperate firewall which has the new ip's assigned to it.
+Machine x has one interface with a public static IP.
+Machine y has two interfaces, one with a public dynamic IP and the other 
+with a private static IP.
 
-Now i'd like to change the dns entries so that the traffic goes over the
-new ip's (a 4 MBit line ;-) ) - the problem i have is:
+Both machines x and y have iptables installed and running.
+I have an ipsec tunnel (using FreeS/Wan) working between machines x and 
+y. With this tunnel I can ping any of the hosts on my private LAN from 
+machine x. I can also mount a shared partition from, say, host b onto 
+machine x. I include this just to show that the ipsec tunnel is working.
 
-when a packet on the new ip comes then it gets prerouted by the firewall
-to the webserver - the webserver gets the packet with the original
-source address - now to webserver wants to answer to the packet - but
-becuase of the old ip's the webserver have a default route with the old
-ip and try's to route the packet over the old gateway - and not back to
-the firewall... You know - that can't work.
+What I want to do is use NAT to forward certain ports on machine x to 
+machines on my private LAN. Right now, if I open a port in iptables on 
+machine x, I can connect to machine x from the internet on that port. If 
+I try to forward the port to host c, packets seem to disappear on 
+machine x. I can see the packets arrive at machine x using tcpdump but 
+nothing goes out again.
 
-I am now searching for a solution for this problem. Can netfilter help
-me with this problem - or do i have to use iproute (i havn't ever done
-something with iproute) help me ?
+Thanks for any help provided.
 
-Can i mark the packet's so the the webserver can send them back in the
-right direction ?
-
-mfG
-Wolfi
-
-
-
-
-
+Andrew
 
