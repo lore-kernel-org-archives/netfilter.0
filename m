@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Port forwarding across two firewalls
-Date: Tue, 11 May 2004 09:33:25 +0100
+From: alucard@kanux.com
+Subject: Re: forwarding on the same NIC
+Date: Tue, 11 May 2004 09:49:39 -0400 (VET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405110933.25194.Antony@Soft-Solutions.co.uk>
-References: <000301c4369f$8f8710b0$0f01020a@taita>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <1166.200.44.170.105.1084283379.squirrel@200.44.170.105>
+References: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105> 
+    <200405102115.14089.Antony@Soft-Solutions.co.uk> 
+    <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>
+    <1084227992.14224.5.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000301c4369f$8f8710b0$0f01020a@taita>
+In-Reply-To: <1084227992.14224.5.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,81 +22,90 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: alucard@kanux.com
 
-On Monday 10 May 2004 4:00 pm, R D wrote:
+Hi again
 
-> Hi all,
->
-> I sent this before but got no reply...is there nobody out there that can
-> help me!?
+   I used a trace program and there are no packets going thru, and I scan
+the ports and there's no 8080 open, let me show you everything again
 
-I'll have a go, but please confirm I understand correctly what you need to 
-do...
+Here's my /etc/rc.d/rc.firewall
+-----
+echo "Borrando posibles reglas anteriores..."
+iptables -F
+iptables -X
 
-> I have a static IP (10.2.1.15) on which I need to have both TCP and UDP
-> ports 5000 appearing to be external! The subnet I'm on has a
-> firewall(Debian) with an int IP 10.2.1.1 & ext 10.1.1.77 with gw 10.2.1.1
-> obviously. The second firewall/router is a US Robotics ADSL
-> Modem/Router with int IP 10.1.1.1 & ext 1.2.3.4.
+echo "Habilitando politicas de negacion total de paquetes"
 
-So, is this your setup?
+iptables -P FORWARD DROP
+iptables -P INPUT DROP
 
-Internet
-    |
-1.2.3.4
-US Robotics ADSL
-10.1.1.1
-    |
-10.1.1.77
-Debian netfilter
-10.2.1.1
-    |
-Your subnet
+echo "Reglas para paquetes de entrada y salida"
 
-And you want a machine 10.2.1.15 on your subnet to be accessible on TCP & UDP 
-ports 5000 using public IP address 1.2.3.4?
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-> When I lived in a house with just a Debian firewall and nothing configured
-> on the modem the following worked:
->
-> iptables -A FORWARD -p udp -d 10.2.1.15 --dport 5000 -j ACCEPT
-> iptables -A PREROUTING -t nat -p udp -d fw-ext --dport 5000 -j DNAT --to
-> 10.2.1.15:5000
->
-> iptables -A FORWARD -p tcp -d 10.2.1.15 --dport 5000 -j ACCEPT
-> iptables -A PREROUTING -t nat -p tcp -d fw-ext --dport 5000 -j DNAT --to
-> 10.2.1.15:5000
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 
-Looks simple and effective, yes.
+##internas
+iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
 
-> I've tried the same commands with fw-ext=10.1.1.77 and setting a 'port
-> range mapping' on the modem 10.1.1.77:5000-1.2.3.4:5000 for both UDP/TCP,
-> but to no avail!
+#para el forward a la maquina compaq
 
-Put a packet sniffer on the link between US Robotics ADSL and the Debian 
-netfilter, or else add some LOGging rules to the netfilter, and check that 
-the ADSL router is forwarding (and NATting) the packets through correctly.
+echo 0 > /proc/sys/net/ipv4/ip_forward
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT
+--to-destination 10.73.219.77:80
+echo 1 > /proc/sys/net/ipv4/ip_forward
+-----
 
-Since you have successfully used the above rules on a different system, and 
-they look correct to me too, I think any problem is on the US Robotics ADSL, 
-not on the Debian netfilter.   Therefore start by checking that the netfilter 
-system is receiving some packets to pass on.
+Here's my nmap scan
+-----
+root@mail:~# nmap 10.73.219.156
 
-I would check carefully that the "port range mapping" you have described is 
-bidirectional - it has to NAT and forward packets both ways through the ADSL 
-router (the description you've given above makes me wonder if the rule 
-applies outbound only?).
+Starting nmap 3.48 ( http://www.insecure.org/nmap/ ) at 2004-05-11 09:42 VET
+Interesting ports on mail.aeropostal.com.ve (10.73.219.156):
+(The 1651 ports scanned but not shown below are in state: filtered)
+PORT     STATE  SERVICE
+21/tcp   closed ftp
+22/tcp   open   ssh
+25/tcp   open   smtp
+80/tcp   open   http
+143/tcp  open   imap
+3306/tcp open   mysql
 
-Regards,
+------
 
-Antony.
+As we can see, there's no 8080 port. We have to remember that the
+interface that is nat'ed' from the internet is the same one that's
+forwarding packets to 10.73.219.77. Do you think that this could be the
+reason? should I use a second card and use it to forward packets? Here's
+setup, the one I wrote on the first message
 
--- 
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
+-----
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+- The linux box has only one NIC -and having a second one is not a
+problem- It functions as a web/mail server, and that means that I'm using
+80 and 25 already. What i'd like to do is, access another internal
+webserver from the outside getting in using another port in the nat'ed'
+linux box.
 
+
+-------      -----------------      ----------------
+router |<--->|Linux box      |<---->|2nd WebServer |
+-------      |using web/mail |      |10.73.219.77  |
+             |10.73.219.156  |      ----------------
+             -----------------
+
+-------------
+
+Thanx a lot for your time...
+
+Juan
 
