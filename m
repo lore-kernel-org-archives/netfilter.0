@@ -1,44 +1,87 @@
-From: Willy Tarreau <willy@w.ods.org>
-Subject: Re: [ANNOUNCE] Release of iptables-1.2.9
-Date: Fri, 7 Nov 2003 08:35:18 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20031107073518.GA1215@alpha.home.local>
-References: <20031102171611.GF1536@sunbeam.de.gnumonks.org>
+From: "Jin Gu, Kim" <lilia21@postech.ac.kr>
+Subject: string match?
+Date: Fri, 07 Nov 2003 16:37:19 +0900
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <3FAB4BAF.8000107@postech.ac.kr>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20031102171611.GF1536@sunbeam.de.gnumonks.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter Core Team <coreteam@netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter mailing lists <netfilter@lists.netfilter.org>
 
-Hi Harald,
+Dear all.
 
-> 	http://www.netfilter.org/files/iptables-1.2.9.tar.bz2
-> 	ftp://ftp.netfilter.org/pub/iptables/iptables-1.2.9.tar.bz2
+How can I check if iptables string match support is enabled?
 
-I was wondering why this file was nearly 50kB bigger than rc1. In fact, the
-archive contains some old files, totalizing about 160 kB :
+I applied patch-o-matic in order to use string match support and 
+recompiled kernel to support it.
+(iptables v1.2.8)
 
-  extensions/.#libipt_ECN.c.1.7
-  extensions/.#libipt_recent.c.1.6
-  .#iptables.c.1.54
-  .#iptables.c.1.55
-  libiptc2/.libiptc.c.1.40
+When done, I tried this
 
-That's harmless however. I will probably upgrade today some hosts on which
-I installed rc1 a few days ago and which didn't have any problem with it.
+--> host_1# iptables -m string -h
 
-Cheers,
-Willy
+,which produced the related help file :
+
+STRING match v1.2.9rc1 options:
+--string [!] string          Match a string in a packet
+--hex-string [!] string      Match a hex string in a packet
+host_1#
+
+Does it mean that the support can be used?
+
+If yes, when I tried this code, there was no message. What's wrong?
+
+<Run>
+
+--> host_1# iptables -A FORWARD -m string --string "test" -j LOG 
+--log-prefix "TEST: "
+--> host_1# iptables -A FORWARD -m string --string "test" -j DROP
+
+Then I started a netcat server by :
+
+--> host_1# nc -l -p 3456
+
+I connected to this via :
+
+--> host_2# telnet host_1 3456
+
+and type
+
+--> test
+--> test
+
+
+
+I think this should yield some log or footprint. But I can't see any 
+messages related to this.
+
+Furthermore, when I check "iptables -L -v", there was no records about it.
+
+-->host_1# iptables -L -v
+................
+Chain FORWARD (policy DROP 248 packets, 22560 bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
+    0     0 LOG        all  --  any    any     anywhere             
+anywhere            STRING match test LOG level info prefix `TEST: '
+    0     0 DROP       all  --  any    any     anywhere             
+anywhere            STRING match test
+.....................
+
+
+
+
+What would be wrong?
+
 
 
