@@ -1,11 +1,15 @@
-From: <tsh@mrc-lmb.cam.ac.uk>
-Subject: Solved: routing between 2 nets on same LAN
-Date: Wed, 4 Jun 2003 12:07:48 +0100 (BST)
+From: Fabrice MARIE <fabrice@netfilter.org>
+Subject: Re: libipt_time.so
+Date: Wed, 4 Jun 2003 20:34:29 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306041107.MAA512607@alf1.mrc-lmb.cam.ac.uk>
+Message-ID: <200306042034.29616.fabrice@netfilter.org>
+References: <000b01c32a19$6397d630$3fc348d8@GONDOR>
+Reply-To: fabrice@netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000b01c32a19$6397d630$3fc348d8@GONDOR>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,54 +19,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Many thanks to those who replied.
-There turned out to be two problems:
 
-1. I didnt have entries in my FORWARD chain for forwarding
-   traffic between my 10.* and my 131.111 subnets, so
-   the box couldnt route between those addresses
+Hello,
 
-and
+On Wednesday 04 June 2003 05:44, Francisco Ra=FAl Flores wrote:
+> I'm trying with fwbuilder, i'm running in a redhat 8 box and i need the
+> libipt_time.so, (this does not come with the original iptables in my
+> distribution, so i build iptables from the sources, version 2.8), every
+> thing compiles fine ...at least i think so ;), but the problem is that
+> the libipt_time.so doesn't get compiled...
+> Do i have to do something special in order to get this library?, is
+> there some compile script somewhere?, where i could tell the compiler t=
+o
+> produce the library?... Because reading the INSTALL file, all starts
+> with the make stuff...
+> May some of you could helpme with this...
+> Thank you so much!...
+> Francisco R. Flores,
 
-2. I didnt have have entries in my NAT table to prevent
-   the NAT'ing of packets between 10.* and my 131.111
-   subnets, so the box was rewriting addresses when it
-   shouldnt have.
+The time match is an extension which is not built by default.
+You should find more info in the netfilter-extensions-HOWTO:
+http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO.h=
+tml
 
-Cheers,
-Terry
+Have a nice day,
 
+--
+Fabrice MARIE
 
-Original msg:
-
->I'm trying to use iptables to route between two networks
->on the same LAN. I'm attempting to migrate our ip addresses
->from a bunch of global subnets (131.111.x/y/z.*) to
->10. and to use NAT thereafter, and I was hoping to
->be able to use iptables to route between these address
->ranges whilst the migration was in progress.
->
->I have entries like:
->
->iptables -A FORWARD -i eth0 -o eth0 -s 131.111.26.0/24 -d 10.0.0.0/9
->iptables -A FORWARD -i eth0 -o eth0 -d 10.0.0.0/9 -s 131.111.26.0/24
->
->and IP_FORWARDING turned on, but when I try 'ping 131.111.26.1' from
->10.0.0.1, I get no ICMP echo. On the iptables box,
->
->tcpdump -i eth0 src 10.0.0.1 dst 131.111.26.1
->
->sees the ICMP packets. The firewall eth0 has 2 ip addresses,
->131.111.26.200 and  10.0.0.200 ('using ip address add').
->10.0.0.1 has 10.0.0.200 as its default router and 131.111.26.1 has
->131.111.26.200 as its default router. Each can successfully ping,
->and be ping'd by, the firewall.
->
->
->Is it legit in iptables to have the FORWARD input and output
->interfaces the same? Or am I doing something wrong?
+"Silly hacker, root is for administrators"
+       -Unknown
 
 
