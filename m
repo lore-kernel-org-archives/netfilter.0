@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: debugging iptables
-Date: Mon, 17 Jun 2002 23:04:45 +0100
+From: George Georgalis <georgw@galis.org>
+Subject: not loadbalancing but 2 ISPs
+Date: Mon, 17 Jun 2002 23:27:00 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206172204.g5HM4kA26349@Networker.rockstone.co.uk>
-References: <20020617165903.4b7ac76a.mt@open2web.com> <200206172112.g5HLCMA23419@Networker.rockstone.co.uk> <20020617173308.6b2bfc5d.mt@open2web.com>
+Message-ID: <20020617232700.A3401@trot>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020617173308.6b2bfc5d.mt@open2web.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,36 +16,49 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Monday 17 June 2002 10:33 pm, Mark Tessier wrote:
+I'm going to be migrating some servers from one ISP to another at the
+same location.
 
-> > What are the values of the variables $SMTP_SERVER and $POP_SERVER in your
-> > script ?
->
-> SMTP_SERVER="smtp1.my.isp.ca"
-> POP_SERVER="mail.my.isp.com"
+Does this scenario hold water (simplified syntax for clarity). The idea
+is for the server to respond (all the way to the client) regardless of
+whether the request went to the IP on ISP1 or ISP2.
 
-Okay, so your firewall needs to be able to resolve hostnames at the time it 
-processes any rules containing these names.   Are you sure it can do that at 
-that time ?
+T1a_host01=host ip on ISP 1
+T1b_host01=host ip on ISP 2
+DMZ_host01=host ip on DMZ
+EXT_T1a=external interface for ISP 1
+EXT_T1b=external interface for ISP 2
+INT_DMZ=internal interface for DMZ
 
-I see FORWARD and OUTPUT rules for destination port 53, but what rules do you 
-have for allowing packets into the INPUT chain so that the DNS server can 
-reply ?
+nat PREROUTING --dst $T1a_host01 DNAT $DMZ_host01
+nat PREROUTING --dst $T1b_host01 DNAT $DMZ_host01
 
-Also, I'm a bit puzzled at your labelling of the interfaces - am I right in 
-thinking you have an internal network interface called $LAN_INTERFACE, and an 
-external interface called $DMZ_INTERFACE ?   It's more common to use DMZ for 
-a second 'internal' interface which has some access from the inside, and some 
-from the outside, rather than to label the external interface like this...
+INPUT -i $EXT_T1a -d $DMZ_host01 -j ACCEPT
+INPUT -i $EXT_T1b -d $DMZ_host01 -j ACCEPT
 
-I assume you have the recommended DROP policy on your INPUT and OUTPUT 
-chains, so try putting a LOG line at the end of each of those and see what 
-gets logged (just before getting dropped).   I'll bet something gets logged 
-from your INPUT chain which doesn't look good.....
+nat -A POSTROUTING -s $DMZ_host01 -o $EXT_T1a -j SNAT --to-source $T1a_host01
+nat -A POSTROUTING -s $DMZ_host01 -o $EXT_T1b -j SNAT --to-source $T1b_host01
 
- 
+FORWARD -i $INT_DMZ -o $EXT_T1a -m state --state ESTABLISHED,RELATED -j ACCEPT
+FORWARD -i $INT_DMZ -o $EXT_T1b -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Antony.
+If this wouldn't work, why? I'm concerned about those POSTROUTING
+lines, is there a workaround?  Would the system also work for high
+availability, if I could get DNS to behave?
+
+// George
+
+
+
+
+
+
+-- 
+GEORGE GEORGALIS, System Admin/Architect    cell: 347-451-8229 
+Security Services, Web, Mail,            mailto:george@galis.org 
+File, Print, DB and DNS Servers.       http://www.galis.org/george 
+
 
