@@ -1,13 +1,12 @@
-From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl?= Le Mignot)
-Subject: Re: Nobody can help me ???   :(
-Date: Mon, 30 Sep 2002 11:30:18 +0200
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: -j ECN --ecn-tcp-remove seems to be mangling the TCP checksum...
+Date: Mon, 30 Sep 2002 11:55:56 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <plopm3ptuvomdx.fsf@drizzt.dyndns.org>
-References: <20020930082725.79600.qmail@web40007.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.44.0209301153320.10012-100000@dns.toxicfilms.tv>
+References: <20020927062753.13067.qmail@science.horizon.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020930082725.79600.qmail@web40007.mail.yahoo.com> ("Hanz
- F."'s message of "Mon, 30 Sep 2002 01:27:25 -0700 (PDT)")
+In-Reply-To: <20020927062753.13067.qmail@science.horizon.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +16,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Hanz F." <hanz852@yahoo.com>
+To: netfilter@horizon.com
 Cc: netfilter@lists.netfilter.org
 
+> Is this a bug?  The ipt_ECN.c file is
+> ipt_ECN.c,v 1.4 2002/08/05 19:36:51 laforge Exp
+No it is not. Do the same with a remote host.
+Send a ECNstripped packets to some other host, and tcpdump there.
+The checksum will be ok.
+It is the problem with tcpdump getting a cloned copy of the packet,
+read the RR's FIXME notes in netfilter sources about it.
 
-Mon, 30 Sep 2002 01:27:25 -0700 (PDT), tu as dit : 
+I noticed that too, once, and thought it's a checksum calculation bug.
 
- > HI
- > I've posted an email asking for help, but got no
- > answer !! Isn't this mailing list usefull for new
- > members or what ??
- > All I need is to run all kind of softwares (IRC, ICQ,
- > yahoo messenger ,.....) through Netfilter , isn't that
- > possible ???
+> Thanks!
+Regards,
+Maciej Soltysiak
 
-for IRC, you can use the IRC protocol helper (modprobe ip_conntrack_irc and
-modprobe ip_nat_irc if you do NAT too).
-
-For others, you'll have to find a protocol helper, which is not included
-in the "standard" kernels (I'm not even sure they exist).
-
-But I use ICQ through a netfilter-powered gateway that does NAT and 
-firewalling, and it seems to work
-
--- 
-Gael Le Mignot "Kilobug" - kilobug@freesurf.fr - http://kilobug.free.fr
-GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
-Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
-
-Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
 
