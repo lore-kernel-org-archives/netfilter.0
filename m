@@ -1,13 +1,12 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: FORWARD-ed packet doens't reach POSTROUTING
-Date: Mon, 23 Aug 2004 13:45:58 -0500
+From: Michael Eck <michael.eck@gmail.com>
+Subject: Bridging QoS Box Crashing
+Date: Mon, 23 Aug 2004 15:48:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <412A3B66.3070907@pbl.ca>
-References: <200408201559.49352.fred@gansevles.defamilie.nl>
+Message-ID: <d82fbdb704082312482f02c2c8@mail.gmail.com>
+Reply-To: Michael Eck <michael.eck@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408201559.49352.fred@gansevles.defamilie.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
-Cc: Fred Gansevles <fred@gansevles.defamilie.nl>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Fred Gansevles wrote:
-> Hello,
-> 
-> First: I'm not subscribed to this list so please make sure that any reply is 
-> also sent to: fred@gansevles.defamilie.nl
+Greetings,
+I have a Debian Woody box running Linux 2.4.24, iptables 1.2.11 with
+pom-ng-20040621
+patches ipt_helper_invert-fix proc_net_conntrack-permissions CLASSIFY
+CONNMARK, ipp2p, and l7-filter.
 
-This is very unpolite (to say it mildly).  I could bet you haven't 
-checked the archives either?  Please, subscribe.
+I have the kernel oops, and have processed the output with ksymoops
+using logged output
+for my /proc/ksym, and /proc/modules.  
 
-Just to not be labeled as (total) old grunge.  I'd check rules in 
-FORWARD chain.  Packets are dropped somewhere, and by what you 
-described, FORWARD chain is the most likely culprit.
+I'm not sure what I should do with the ksymoops output now that I've
+done, as far as I can tell, all the
+right things to make it intelligable to a developer.  I'm writing this
+here because I hadn't had any trouble with the machine until I applied
+all of those patches and started running with them.  At this point I'm
+getting about 1 week uptimes until the kernel panics.  I am not
+finding any corresponding event to the oops and cannot therefore
+reproduce it.
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Apologies in advance if this is the wrong forum for this message. 
+I'll post the ksymoops output if it's appropriate.
+
+Thanks for the help,
+Michael Eck
+Chilitech Internet Solutions, Inc
 
