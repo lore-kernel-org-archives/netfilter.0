@@ -1,13 +1,12 @@
-From: Anoop S <anoop@it-om.com>
-Subject: Re: help..... pleeaseeee
-Date: 31 Jan 2003 14:01:32 +0530
+From: "Narendra Prabhu. B" <naren@deeproot.co.in>
+Subject: Re: Iptables Queuing Problem
+Date: Fri, 31 Jan 2003 15:10:29 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044001893.1361.8.camel@brahmos>
-References: <010b01c2c8f1$0c023520$210aa8c0@sabirin>
+Message-ID: <Pine.LNX.4.43.0301311503330.287-100000@abodh.pesit.deeproot.co.in>
+References: <20030130071453.54533.qmail@web8206.mail.in.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <010b01c2c8f1$0c023520$210aa8c0@sabirin>
+In-Reply-To: <20030130071453.54533.qmail@web8206.mail.in.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +16,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: =?iso-8859-1?q?pooja?= <pooja2909@yahoo.co.in>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
 
-On Fri, 2003-01-31 at 11:51, inghau@perkom.co.id wrote:
-> hello everybody
+Hello ...
 
-Hi
+Are you using the QUEUE target? If so, where are you using it?
+This list could help you better, if you could post the code.
 
-> 
-> i ''m having problem accessing FTP sites on the net through my linux firewall
-> 
-> 
+Are you using libipq?
 
-try loading (modprobe) ip_nat_ftp and ip_conntrack_ftp modules
-this may solve your problem
+Regards,
+Narendra.
 
-> some of my friend told me that because WS-FTP support "passive transfer mode" 
-so the program can connect through the firewall. Which is not supported if i'm using 
-FTP ftom command or windows explorer
+-------------------------
+Narendra Prabhu. B
+DeepRoot Linux
+http://www.deeproot.co.in
 
-correct, windows ftp client doesnt support passive transfers.
+On Thu, 30 Jan 2003, [iso-8859-1] pooja wrote:
+> Hi!!
+>
+> I am using iptables queuing concept to get the packets
+> for my application.The applicaction is just doing
+> simple dynamic nat if reqd..I change the dest ip in
+> prerouting hook if reqd and the src ip i postrouting
+> hook...This is working fine for first few pkts after i
+> start my application..But after that i am getting
+> segmentation fault...What is happening is one pkt
+> after passing through and accepted by prerouting hook
+> disappears..it gets lost..neither it enters FORWARD
+> hook nor postrouting hook..and the next pkt gives me
+> the SEGMENTATION FAULT ERROR ..
+>
+> CAn somebody tell me why is this happening????
+>
+> Thanx in advance,
+> Pooja
 
-regards
-anoop
 
 
