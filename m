@@ -1,11 +1,14 @@
-From: "R D" <rkd@myrealbox.com>
-Subject: Port forwarding across two firewalls
-Date: Thu, 6 May 2004 21:36:28 +0100
+From: Wolfgang Walter <ml-linux-net@studentenwerk.mhn.de>
+Subject: Re: IPSec - IPTables issues
+Date: Thu, 6 May 2004 11:10:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000301c433a9$dcd73f00$0f01020a@taita>
+Message-ID: <200405061110.40346.ml-linux-net@studentenwerk.mhn.de>
+References: <20040502155538.GD515@schottelius.org> <4096317F.8020609@eurodev.net> <20040504211557.GA236@schottelius.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040504211557.GA236@schottelius.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,41 +18,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Nico Schottelius <nico-linux-net@schottelius.org>, netfilter@lists.netfilter.org
 
+Am Dienstag, 4. Mai 2004 23:15 schrieb Nico Schottelius:
+> Hello Pablo,
+> (netfilter guys, please read
+> http://www.uwsg.iu.edu/hypermail/linux/net/0405.0/0002.html before)
+>
+> Pablo Neira [Mon, May 03, 2004 at 01:48:15PM +0200]:
+> > Hi Nico,
+> >
+> > since this stuff is netfilter-related and netfilter/iptables geeks are
+> > mostly in netfilter's maillist, I think you could redirect this request
+> > there, someone could help you out.
+>
+> Thank you for the hint. I first thought this is a netfilter problem, but
+> currently I don't think so.
+>
+> The problem is IMHO the design of the Linux IPSec implementation.
+>
+> I'll compare what freeswan did with what Linux 2.6 does now:
+>
+> Freeswan has virtual devices (ipsec*), through which the unencrypted
+> packets come into the system. So you can add these firewall lines:
+>
+> - allow AH, ESP, UDP/500, deny rest on eth0
+> - allow IPs/networks, etc. on ipsec0
+>
+> With Linux 2.6 I don't have virtual devices. This means that my IPSec
+> packets enter the physical device twice:
+>
+> 1. esp encrypted packet enters
+> 2. Linux decrypts it
+> 3. Linux sends the unencrypted packets through the same device again
+>
+> The problem with that is, that
+>
+> - allow AH, ESP, UDP/500, deny rest on eth0
+>
+> will deny the _content_ of my encrypted packages (step three is broken).
+>
+> Wouldn't this work fine, if we have the virtual device like freeswan had
+> or is netfilter broken with this?
+>
+> I mean I cannot practicly setup an IPSec only access point with the curre=
+nt
+> netfilter and ipsec in Linux 2.6, or am I deadly wrong?
+>
+> Greetings,
+>
+> Nico
 
-Hi all,
+We solved the problem by marking ipsec traffic in the mangle table=20
+(PREROUTING). This mark is preserved when the packet gets decrypted. So=20
+basically:
 
-I have a static IP (10.2.1.15) on which I need to have both TCP and UDP
-ports 5000 appearing to be external! The subnet I'm on has a
-firewall(Debian)
-with an int IP 10.2.1.1 & ext 10.1.1.77 with gw 10.2.1.1 obviously. The
-second firewall/router is a US Robotics ADSL Modem/Router with int IP
-10.1.1.1
-& ext 1.2.3.4.
+* if a paket is AH, ESP mark it with 1 in mangle table, PREROUTING chain
 
-When I lived in a house with just a Debian firewall and nothing configured
-on
-the modem the following worked:
+* if you see non-ip-sec pakets: if it is marked with 1 it is a decrypted ip=
+sec=20
+packet, otherwise it came in unencrypted.
 
-iptables -A FORWARD -p udp -d 10.2.1.15 --dport 5000 -j ACCEPT
-iptables -A PREROUTING -t nat -p udp -d fw-ext --dport 5000 -j DNAT --to
-10.2.1.15:5000
+Greetings,
 
-iptables -A FORWARD -p tcp -d 10.2.1.15 --dport 5000 -j ACCEPT
-iptables -A PREROUTING -t nat -p tcp -d fw-ext --dport 5000 -j DNAT --to
-10.2.1.15:5000
-
-I've tried the same commands with fw-ext=10.1.1.77 and setting a 'port range
-mapping' on
-the modem 10.1.1.77:5000-1.2.3.4:5000 for both UDP/TCP, but to no avail!
-
-Any gurus out there that can help/explain!?
-
-
-Many thanks,
-R
-
-
+=2D-=20
+Wolfgang Walter
+Studentenwerk M=FCnchen
+Anstalt des =F6ffentlichen Rechts
 
