@@ -1,13 +1,14 @@
-From: "Manikandan" <mani@manikandan.org>
-Subject: Multiple PPTP clients behind iptables.
-Date: Fri, 9 Apr 2004 20:38:53 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Multiple PPTP clients behind iptables.
+Date: Fri, 9 Apr 2004 16:20:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GHEILNONPACCGBGKBEKKMEBICFAA.mani@manikandan.org>
-Reply-To: <manikandan@manikandan.org>
+Message-ID: <200404091620.59338.Antony@Soft-Solutions.co.uk>
+References: <GHEILNONPACCGBGKBEKKMEBICFAA.mani@manikandan.org>
+Reply-To: "Netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0000_01C41E72.AC37A750"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <GHEILNONPACCGBGKBEKKMEBICFAA.mani@manikandan.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,121 +18,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: Netfilter <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+On Friday 09 April 2004 4:08 pm, Manikandan wrote:
 
-------=_NextPart_000_0000_01C41E72.AC37A750
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+> I read few guides and howtos to configure my firewall to allow multiple
+> PPTP sessions. But still I couldn't get through.
+>
+> Do I need to patch my kernel? What support do I need to enable this
+> multiple PPTP traffic.
 
-Dear friends,
-
-	As I am getting more confused about VPN masq., request your help on
-this.
-
-My local LAN is 10.35.0.0/24 
-My Linux box running red hat linux 9.0 with kernel 2.4.20-8. acting as the
-gateway for my LAN to Internet.
-
-I need to allow my LAN clients to access Microsoft windows VPN (Windows 2000
-Adv. Server) using PPTP over Internet.
-I am not able to make more than one connection to the VPN server as my LAN
-outgoing traffic to Internet is getting SNAT to single public IP.
-
-
-I read few guides and howtos to configure my firewall to allow multiple PPTP
-sessions. But still I couldn't get through.
-
-Do I need to patch my kernel? What support do I need to enable this multiple
-PPTP traffic.
-
-Request your views and help on this.
-
-
-Have a nice day
+http://www.netfilter.org/patch-o-matic/pom-extra.html#pom-extra-pptp-conntrack-nat
 
 Regards,
-Manikandan.
 
+Antony.
 
+-- 
+In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
+the mechanics are German, the lovers are French, the entertainment is 
+American, and everything is organised by the Swiss.
 
+In Hell, the police are German, the chefs are British, the beer is American, 
+the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
+and everything is organised by the Italians.
 
-
-
-
-
-------=_NextPart_000_0000_01C41E72.AC37A750
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
-
-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
-BgAAAAAAwAAAAAAAAEYAAAAAUoUAACdqAQAeAA2ACCAGAAAAAADAAAAAAAAARgAAAABUhQAAAQAA
-AAQAAAA5LjAACwAOgAggBgAAAAAAwAAAAAAAAEYAAAAABoUAAAAAAAADAA+ACCAGAAAAAADAAAAA
-AAAARgAAAAABhQAAAAAAAAsAGIAIIAYAAAAAAMAAAAAAAABGAAAAAA6FAAAAAAAAAwAZgAggBgAA
-AAAAwAAAAAAAAEYAAAAAEYUAAAAAAAADABuACCAGAAAAAADAAAAAAAAARgAAAAAYhQAAAAAAAB4A
-KoAIIAYAAAAAAMAAAAAAAABGAAAAADaFAAABAAAAAQAAAAAAAAAeACuACCAGAAAAAADAAAAAAAAA
-RgAAAAA3hQAAAQAAAAEAAAAAAAAAHgAsgAggBgAAAAAAwAAAAAAAAEYAAAAAOIUAAAEAAAABAAAA
-AAAAAAsANIAIIAYAAAAAAMAAAAAAAABGAAAAAIKFAAABAAAAAgH4DwEAAAAQAAAAdNt1ux6NZ0i9
-7YT5FNEKJwIB+g8BAAAAEAAAAHTbdbsejWdIve2E+RTRCicCAfsPAQAAAEkAAAAAAAAAOKG7EAXl
-EBqhuwgAKypWwgAAUFNUUFJYLkRMTAAAAAAAAAAATklUQfm/uAEAqgA32W4AAABEOlxNYWlsXHBl
-ci5wc3QAAAAAAwD+DwUAAAADAA00/TcAAAIBfwABAAAAMwAAADxHSEVJTE5PTlBBQ0NHQkdLQkVL
-S01FQklDRkFBLm1hbmlAbWFuaWthbmRhbi5vcmc+AAADAAYQt/RunQMABxBfAgAAAwAQEAAAAAAD
-ABEQAQAAAB4ACBABAAAAZQAAAERFQVJGUklFTkRTLEFTSUFNR0VUVElOR01PUkVDT05GVVNFREFC
-T1VUVlBOTUFTUSxSRVFVRVNUWU9VUkhFTFBPTlRISVNNWUxPQ0FMTEFOSVMxMDM1MDAvMjRNWUxJ
-TlVYQk8AAAAAbFc=
-
-------=_NextPart_000_0000_01C41E72.AC37A750--
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
