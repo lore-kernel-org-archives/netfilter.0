@@ -1,12 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
+From: Feizhou <feizhou@linuxmail.org>
 Subject: Re: Is this firewall good enough?
-Date: Wed, 9 Jun 2004 11:56:03 +0200
+Date: Wed, 09 Jun 2004 17:57:34 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001d01c44e07$fbc1b490$1201a8c0@admin>
-References: <20040609081453.75751.qmail@web14704.mail.yahoo.com>
+Message-ID: <40C6DF0E.4020404@linuxmail.org>
+References: <Pine.LNX.4.33.0406091112130.5934-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.33.0406091112130.5934-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,51 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: David Cannings <lists@edeca.net>, netfilter@lists.netfilter.org
 
-> > > 7.  /sbin/iptables -A INPUT -p tcp --dport 53
-> > --syn
-> > > -j ACCEPT #DNS
-> >
-> > DNS uses udp for normal lookups. Only in special
-> > cases tcp is used.
-> >
-> I noted --syn can only be used with protocol tcp. How
-> do I write a similar rule to accept connections to udp
-> port 53?
+Jozsef Kadlecsik wrote:
+> On Wed, 9 Jun 2004, Feizhou wrote:
+> 
+> 
+>>>Is there any good reason not to load connection tracking?
+>>
+>>SLOW. It isn't good enough to use on a high traffic server.
+> 
+> 
+> Could you back your claims up with data?
 
-Packets with syn set are (almost ? someone please correct me if I'm
-wrong) always in NEW state.
-So, a similar rule would be :
+What kind of data?
 
-iptables -A INPUT -p udp --dport 53 -j ACCEPT
+I can tell you what I observed.
 
-which implies :
+I have two dnscaches running dnscache. Single PIII 800 cpus with 512MB 
+of RAM.
 
-iptables -A INPUT -m state --state NEW -p udp \
-  --dport 53 -j ACCEPT
+One box had the command iptables -t nat -L -n run and that caused 
+ipt_conntrack to be loaded.
 
-> I don't see a good explanation of tcp-flags either on
-> iptables man pages or Packet Filtering HOWTO. What are
-> meaning of SYN,ACK,FIN,RST,URG,PSH? What combinations
-> can be logged/dropped?
+Instantly queries to that box took over 200ms to return (cached entries) 
+and sometimes timeouts even occured while the other box happily kept 
+return times to under 20ms for cached entries.
 
-A little info I found about tcp flags :
-http://www.whitehats.ca/main/members/Seeker/seeker_tcp_header/seeker_tcp_header.html
-http://www.spirit.com/Network/net0900.html
-http://www.securityfocus.com/infocus/1524
-I don't think it's all that you want to know about it but it's as much
-as I could find right now.
-Not sure what URG and PSH really do.
+These are with a RH 2.4.20-20 with XFS patches applied.
 
-You could DROP :
-- SYN,FIN SYN,FIN (Both SYN and FIN set in 1 packet.)
-- SYN,RST SYN,RST (SYN and RST set, probably a scan)
-- Anybody any additions, comments ?
+> 
+> At testing connection tracking we could pump trough two million concurrent
+> connection at 200000pps rate with opening up 20000 new connection per
+> second on a dual Xeon PC with Serverworks chipset and Intel copper GE
+> cards. Best results were achieved by Linux kernel 2.6.x with conntrack
+> locking and TCP window tracking patches applied and NAPI enabled.
+> I'd say that's not bad at all.
 
 
-Gr,
-Rob
+Which tcp window tracking patches? On my mail gateways, I had 2.6.4 with 
+e100 driver and NAPI enabled and that proved to be a disaster. I had to 
+turn NAPI off and also muck around:
 
+net.ipv4.tcp_max_syn_backlog = 2048
+net.ipv4.route.gc_thresh = 65536
+
+to keep the box accessible. Otherwise, the kernel would spew dst cache 
+overflow/BUGTRAP errors or oops or even garbage.
 
