@@ -1,43 +1,63 @@
-From: Felipe <fflores@millicom.com.pe>
-Subject: SNAT not working
-Date: Sun, 29 Feb 2004 04:34:44 -0500 (PET)
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1078047284.4041b234e0530@milliweb.millicom.com.pe>
+From: Willy TARREAU <willy@w.ods.org>
+Subject: Re: [ANNOUNCE] call for testing of patch-o-matic-ng
+Date: Sun, 29 Feb 2004 11:11:16 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20040229101116.GA10012@pcw.home.local>
+References: <20040225182828.GP13386@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20040225182828.GP13386@sunbeam.de.gnumonks.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Harald Welte <laforge@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-I've tried to set up SNAT to match INTERNAL network to a external ip,
+Hi Harald,
 
+Just tested it on top of 2.4.25, like this :
 
-/usr/local/sbin/iptables -t nat -A POSTROUTING -o eth0 -s 10.0.0.0/16 -j SNAT --to-source 200.110.2.179
+    KERNEL_DIR=/usr/src/linux-2.4.25-pomng ./runme --batch extra
 
-But that's working, it only works when i put:
+and I got a few problems :
 
-/usr/local/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+  - first, I didn't find how to specify where my iptables sources is
+    installed, so I had to enter it by hand each time I restarted it.
+    I did not find any env variable in the perl code, and I must say
+    that my understanding of perl is, hmmm.. very limited.
+  - ROUTE and TRACE told me :
+    "unable to find ladd slot in src /usr/src/linux-2.4.25-pomng/./net/ipv6/Makefile"
+    I think they wanted to add a line in the Makefile but didn't find
+    the right place to do so. BTW, is there a way to install a patch
+    only for ipv4 or for ipv6 like before ?
+  - I observed usual conflicts :
+    present 'CONNMARK' conflicts with to-be-installed 'connbytes'
+    present 'raw' conflicts with to-be-installed 'conntrack-seqfile'
+    present 'CONNMARK' conflicts with to-be-installed 'conntrack_arefcount'
+  - and finally, trying to apply conntrack_locking litterally killed my
+    box in out of memory within a few tens of seconds (I could not even
+    run ps) :
+      Out of Memory: Killed process 9841 (runme).
+      Out of Memory: Killed process 9970 (ps).
+      Out of Memory: Killed process 159 (bash).
+      Out of Memory: Killed process 158 (bash).
 
+    Since conntrack_locking needs conntrack_arefcount which could not
+    be applied, I wonder if there's some problem resolving dependancies.
 
-eth0= external interface
-eth1= internal interface
+I've not gone further yet.
+Do you need more info ? There may be some things I did wrong, do not hesitate
+to tell me ;-)
 
-i've linux 7.3 kernel 2.6.3 andiptables v1.2.9
-
-
-Could you help me please?
-
-
-Thanks
-
+Cheers,
+Willy
 
 
