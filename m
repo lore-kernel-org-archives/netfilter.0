@@ -1,14 +1,13 @@
-From: Rob Verduijn <rverduij@dds.nl>
-Subject: Re: nfs
-Date: Tue, 05 Aug 2003 11:02:57 +0200
+From: "Lawrence - D" <ingsiong@daltron.com.pg>
+Subject: Re: Firewall software
+Date: Tue, 5 Aug 2003 19:02:08 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060074177.2848.3.camel@rincewind>
-References: <1060065419.3395.1.camel@rincewind>
-	 <20030805081723.GD11849@localnet>
+Message-ID: <003a01c35b30$41204ea0$7700000a@lawrencewin2k>
+References: <003801c35b2a$c9a8c1e0$7700000a@lawrencewin2k> <001201c35b47$2c5c06a0$6ee00b42@na6xxo6g5tg9af>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0037_01C35B84.11A87810"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030805081723.GD11849@localnet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +17,120 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: sr@gimp.org
-Cc: netfilter@lists.netfilter.org
+To: Paul Ammann <pammann@execomm.net>, Netfilter <netfilter@lists.netfilter.org>
 
-Hi there,
+This is a multi-part message in MIME format.
 
-I do have some influence over the nfs server, (it's my backup server) so
-that wouldn't be a big problem.
+------=_NextPart_000_0037_01C35B84.11A87810
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-My second question would be what the IP table rule settings would be on
-the server :)
+thanks guy.
+
+Lawrence
+  ----- Original Message -----=20
+  From: Paul Ammann=20
+  To: Lawrence - D ; Netfilter=20
+  Sent: Tuesday, August 05, 2003 9:46 PM
+  Subject: Re: Firewall software
 
 
+  Go to Sourceforge, and look up Firewall Builder. This VERY user =
+friendly interface interacts with IPtables as well as PIX.
+
+  Best regards,
+
+  Paul Ammann
+
+    ----- Original Message -----=20
+    From: Lawrence - D=20
+    To: Netfilter=20
+    Sent: Tuesday, August 05, 2003 1:22 AM
+    Subject: Firewall software
 
 
-On Tue, 2003-08-05 at 10:17, Sven Riedel wrote:
-> On Tue, Aug 05, 2003 at 08:36:59AM +0200, Rob Verduijn wrote:
-> > What would be the rule setting I need to mount a remote nfs share when I
-> > am using connection tracking and a default DROP policy?
-> 
-> First, since NFS uses RPCs you need to know what ports rpc.mountd,
-> rpc.statd and maybe rpc.lockd are running on. If you have influence over
-> the server, try setting the ports explictly (invoke the daemons with the
-> -p flag. Works with statd and mountd, lockd is a bit more tricky). 
-> 
-> Otherwise the ports are
-> allocated dynamically and the client has to ask the remote portmapper
-> where the daemons are listening. Any rules in this case are only valid
-> as long as the rpc-services on the nfs-server aren't restarted.
-> 
-> You'll have to allow the following ports:
-> udp/2049: nfs 
-> tcp/2049: nfs, if you're using nfs over tcp, nfs v3 and up
-> udp/111: portmap/sunrpc
-> tcp/111: portmap/sunrpc
-> udp/<rpc.statd>
-> tcp/<rpc.statd>
-> udp/<rpc.mountd>
-> tcp/<rpc.mountd>
-> and maybe:
-> udp/<rpc.lockd>
-> tcp/<rpc.lockd>
-> 
-> Regs,
-> Sven
-> 
+    Hi,
+        Can anyone recommend firewall software that can work together =
+with IPtables ? User friendly interface.
+
+
+    Lawrence Tang=20
+
+------=_NextPart_000_0037_01C35B84.11A87810
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>thanks guy.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Lawrence</FONT></DIV>
+<BLOCKQUOTE dir=3Dltr=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3Dpammann@execomm.net =
+href=3D"mailto:pammann@execomm.net">Paul Ammann</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
+title=3Dingsiong@daltron.com.pg=20
+  href=3D"mailto:ingsiong@daltron.com.pg">Lawrence - D</A> ; <A=20
+  title=3Dnetfilter@lists.netfilter.org=20
+  href=3D"mailto:netfilter@lists.netfilter.org">Netfilter</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Tuesday, August 05, 2003 =
+9:46=20
+  PM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Re: Firewall =
+software</DIV>
+  <DIV><BR></DIV>
+  <DIV><FONT face=3DArial size=3D2>Go to Sourceforge, and look up =
+Firewall Builder.=20
+  This VERY user friendly interface interacts with IPtables as well as=20
+  PIX.</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Best regards,</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>Paul Ammann</FONT></DIV>
+  <DIV>&nbsp;</DIV>
+  <BLOCKQUOTE dir=3Dltr=20
+  style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+    <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+    <DIV=20
+    style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+    <A title=3Dingsiong@daltron.com.pg=20
+    href=3D"mailto:ingsiong@daltron.com.pg">Lawrence - D</A> </DIV>
+    <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
+    title=3Dnetfilter@lists.netfilter.org=20
+    href=3D"mailto:netfilter@lists.netfilter.org">Netfilter</A> </DIV>
+    <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Tuesday, August 05, =
+2003 1:22=20
+    AM</DIV>
+    <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Firewall =
+software</DIV>
+    <DIV><BR></DIV>
+    <DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+    <DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Can anyone=20
+    recommend&nbsp;firewall software that can work together with =
+IPtables ? User=20
+    friendly interface.</FONT></DIV>
+    <DIV>&nbsp;</DIV>
+    <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+    <DIV><FONT face=3DArial size=3D2>Lawrence Tang=20
+<BR></FONT></DIV></BLOCKQUOTE></BLOCKQUOTE></BODY></HTML>
+
+------=_NextPart_000_0037_01C35B84.11A87810--
 
 
