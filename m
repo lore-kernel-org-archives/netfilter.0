@@ -1,14 +1,17 @@
 From: Tony Earnshaw <tonye@billy.demon.nl>
-Subject: Re: Redirecting ports on localhost
-Date: Wed, 31 Mar 2004 00:03:18 +0200
+Subject: Re: Adding a flag to a packet
+Date: Wed, 31 Mar 2004 00:12:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080684198.2471.106.camel@localhost>
-References: <20040330133505.22298.90925.Mailman@vishnu.netfilter.org>
-	 <406980E5.6080107@personalsoft.com.br> <200403302013.40298.lists@edeca.net>
+Message-ID: <1080684756.2471.113.camel@localhost>
+References: <20040328155231.32b07799@darna.vectec.net>
+	 <200403301253.18383.Antony@Soft-Solutions.co.uk>
+	 <20040330160158.2e247c46@darna.vectec.net>
+	 <200403302124.18451.Antony@Soft-Solutions.co.uk>
+	 <20040330163510.4bddd065@darna.vectec.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403302013.40298.lists@edeca.net>
+In-Reply-To: <20040330163510.4bddd065@darna.vectec.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +24,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-tir, 30.03.2004 kl. 21.13 skrev David Cannings:
+tir, 30.03.2004 kl. 22.35 skrev Cody Harris:
 
-> I've linked to the English HTML version of the HOWTO, other languages and 
-> formats are available at:
+[...]
+
+> > > When the computer sent a response, it just reversed the process.
+> > 
+> > I've chosen the sig on this email especially for you this time :)
 > 
-> http://netfilter.org/documentation/index.html#documentation-howto
+> Hahaha.
 > 
-> Have a read, see if you can make some sense of it.  If not, post back with 
-> what you've tried and why it doesn't work.  For the record, I've never 
-> tried redirecting a port to localhost although I can see no reason why it 
-> would not work as any other does.  I will have to give it a go myself 
-> when I have a few minutes spare.
+> So estentally (SP), i want to  create a "patch" between to physical
+> networks transparently. So as far as the internet network computers
+> (192.168.*.*) are concerned, they're phsically attached. The
+> 192.168.0.* system is actually a different physical site then
+> 192.168.1.*. Just when one sends to the other, it's altered to send
+> accross the net and re-wrote at the other end and it continues on it's
+> marry way.
+> 
+> Get it? lol
 
-Hi David,
-
-Dunno if you're the one responsible for the general Netfilter HOWTO. But
-if so, could you please change "iplimit" to "connlimit"? I've used vi to
-great effect after txt2html for my own copy, but I frigged around with
-iplimit for a while with the non-existent iplimit first. I was *not*
-pleased.
-
-B.t.w., connlimit works a treat :)
-
-Best,
+Hmmm ... to my mind you've just made an "unfriend" (uvenn) of one of the
+gentlemen on this mailing list. On each mailing list there are one or
+two gentlemen. These are those whom it is unwise (uklokt) to tangle
+with. Even when one has had one or two.
 
 --Tonni
 
