@@ -1,73 +1,52 @@
-From: Kishore Dharmavaram <kishored@servgate.com>
-Subject: RE: Memory leaks in ip_conntrack?
-Date: Sat, 8 Nov 2003 19:08:13 -0800
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B204A@skat.sky.com>
-Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Harald Welte' <laforge@netfilter.org>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
-
-Hi Herald & All,
-
-I verified & I find my 2.4.20 is already patched with UNCONFIRMED
-connections fix. 
-
-How it possible that /proc/slabinfo shows a lot more ip_conntracks than are
-shown in "/proc/net/ip_conntrack"?. /proc/slabinfo shows that maximum
-possible conntracks, 131072, are being currently used but
-/proc/net/ip_conntrack  shows only 21 connections. My box is refusing new
-connections because max conntracks have reached. 
-
-Please take a look at my console output given below:
-
-[root@Firewall root]# cat /proc/sys/net/ipv4/ip_conntrack_max
-13072
-[root@Firewall root]# cat /proc/slabinfo | fgrep ip_conn
-ip_conntrack      131072 131080    384 13108 13108    1
-[root@Firewall root]# cat /proc/net/ip_conntrack | wc -l
-     21
-
-Can anyone tell how to findout which connections are using up the
-conntracks.
-
-Thanks,
-Kishore
-
------Original Message-----
-From: Harald Welte [mailto:laforge@netfilter.org]
-Sent: Saturday, November 08, 2003 3:44 AM
-To: Kishore Dharmavaram
-Cc: 'netfilter@lists.netfilter.org';
-'netfilter-devel@lists.netfilter.org'
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Memory leaks in ip_conntrack?
+Date: Sun, 9 Nov 2003 03:43:49 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200311090343.hA93hrj15884@agate.rockstone.co.uk>
+References: <EFBADA8C200C2B418DA39734FD15475B0B204A@skat.sky.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <EFBADA8C200C2B418DA39734FD15475B0B204A@skat.sky.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
+On Sunday 09 November 2003 3:08 am, Kishore Dharmavaram wrote:
 
-On Fri, Nov 07, 2003 at 02:21:13PM -0800, Kishore Dharmavaram wrote:
-> Hi All,
-> 
-> I have a Linux box running 2.4.20 kernel with netfilter(ip_conntrack)
+> Hi Herald & All,
+>
+> I verified & I find my 2.4.20 is already patched with UNCONFIRMED
+> connections fix.
+>
+> How it possible that /proc/slabinfo shows a lot more ip_conntracks than are
+> shown in "/proc/net/ip_conntrack"?. /proc/slabinfo shows that maximum
+> possible conntracks, 131072, are being currently used but
+> /proc/net/ip_conntrack  shows only 21 connections. My box is refusing new
+> connections because max conntracks have reached.
 
-http://www.netfilter.org/security/2003-08-01-listadd.html
+Are you getting any messages "ip_conntrack : table full, dropping packet" in 
+your syslog or kernel log output?
 
-> Thanks,
-> Kishore
+If not, how do you know that the box is refusing new connections because max 
+conntracks have been reached?
+
+Antony.
 
 -- 
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-============================================================================
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+
+It suddenly dawns on the observer that there is no end to the creativity that 
+these mindless hackers can come up with.
+
+ - Kevin Kelly, Out of Control
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
