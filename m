@@ -1,12 +1,13 @@
-From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
-Subject: Problem with POM
-Date: Mon, 30 Aug 2004 18:01:30 +0800
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: tracking usage by mac address
+Date: Mon, 30 Aug 2004 06:17:12 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <E1C1j0g-0007UK-00@deer.gmane.org>
-Reply-To: bassam@palettemm.com
+Message-ID: <1093861031.1660.30.camel@grendel>
+References: <41329413.3080407@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <41329413.3080407@shaw.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,51 +17,39 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi All,
-   I am trying to install the patch =93pptp-conntrack-net=94 from the =
-pom. When
-I lunch the pom I don't get the request of installing the
-pptp-conntrack-nat, while I am getting the others. In order to make the
-image more clear please follow my steps as stated down (please correct =
-for
-me in I am mistaken):
+On Sun, 2004-08-29 at 22:42, Henry Baxter wrote:
+>
+> Ultimately I am hoping to track the bandwidth usage of about 50 client 
+> computers through my router based on their MAC address. I understand 
+> that by simply writing a rule that does nothing to the packet, such as 
+> 'iptables -A FORWARD -m <mac address>' I can parse the netfilter log and 
+> find out what I need.
 
-# KERNEL_DIR=3D/usr/src/linux-2.4.20-8/ ./runme pending
-Where is your iptables source code? [/usr/src/iptables]
-/usr/src/iptables-1.2.11
+How about:
+iptables -A FORWARD -m mac --mac-source <mac address 1> -j LOG "
+CLIENT_1 "
+iptables -A FORWARD -m mac --mac-source <mac address 2> -j LOG "
+CLIENT_2 "
 
-I got the following report
+Then when you need a report, just run:
+iptables -L -nvx
 
-The "init_conntrack-optimize" patch ---> cannot apply (1 missing files)
-The "linuxdoc" patch			---> cannot apply (6 missing files)
-The "nf-log" patch			---> can apply
+Now the caveat is this will only show you outbound traffic, not inbound.
+In other words, there is no "--mac-destination" option so you can't log
+reply packets based on MAC address. Kind of a bummer in your case
+because if these clients are mostly downloading data, that's the
+direction that's going to see the most bandwidth usage.
 
-Then I went through extra by writing the following=20
+Two options:
+1) Log by IP instead of MAC (maybe hand the clients fixed IP's via DHCP)
+2) Use ebtables instead of iptables (90% certain it will work but have
+not tried it)
 
-# KERNEL_DIR=3D/usr/src/linux-2.4.20-8/ ./runme extra
-Where is your iptables source code? [/usr/src/iptables]
-/usr/src/iptables-1.2.11
+HTH,
+C
 
-Here I got a list of patches, but I have never seen "pptp-conntrack-nat" =
-in
-between.
-
-May I have you support regarding this matter so I can be able to install =
-the
-patch "pptp-conntrack-nat"
-
-Thanks for the help in advance
-
-Regards
-Bassam
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.744 / Virus Database: 496 - Release Date: 8/24/2004
-=20
 
 
