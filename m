@@ -1,10 +1,18 @@
-From: Elitesyntax <elitesyntax@yahoo.com>
-Subject: iptables Question
-Date: Mon, 8 Sep 2003 09:43:04 -0700 (PDT)
+From: Stephen Satchell <list@fluent2.pyramid.net>
+Subject: Re: Dropping RST of SYN
+Date: Mon, 08 Sep 2003 04:53:29 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030908164304.95550.qmail@web14703.mail.yahoo.com>
+Message-ID: <5.2.1.1.0.20030908044636.01188b18@fluent2.pyramid.net>
+References: <3F5C539E.8030704@chrisbrenton.org>
+ <1063000297.827.26.camel@india.nsecure.net>
+ <3F5C539E.8030704@chrisbrenton.org>
+ <20030908204206.C148.ATNAK@chejz.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030908204206.C148.ATNAK@chejz.com>
+References: <3F5C539E.8030704@chrisbrenton.org>
+ <1063000297.827.26.camel@india.nsecure.net>
+ <3F5C539E.8030704@chrisbrenton.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,96 +22,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Atsushi Nakagawa <atnak@chejz.com>, Chris Brenton <cbrenton@chrisbrenton.org>
+Cc: "Dharmendra.T" <dharmu@nsecure.net>, Ralf Spenneberg <lists@spenneberg.org>, Netfilter <netfilter@lists.netfilter.org>
 
-#!/bin/sh
-#
-# The location of the IPTables binary file on your
-system.
-IPT="/sbin/iptables"
+At 08:58 PM 9/8/2003 +1000, Atsushi Nakagawa wrote:
+>Both Dharmendra and Chris have pointed out perfectly legitimate reasons
+>why it is a bad idea to drop RSTs in general.  However, these warnings
+>have taken the original proposition slightly out of context. --AFAIS
+>
+>Ralf's response was to a question regarding the removal of outgoing RST
+>packets that are generated in reply to incoming SYN packets.  (These
+>RSTs being the kind that causes the "Connection Refused" TCP message)
+>
+>Hence, "dropping all RST packets", should implicitly have meant, "all
+>outgoing RST packets".  (The -m state ... -j DROP line is ambiguous.)
 
-# The Internet interface. For ADSL or Dialup users,
-this should be "ppp0".
-# For a cable modem connection, this will probably be
-"eth0".
-INT="eth0"
+There is a corner case when communicating with certain older stacks that 
+have, er, unusual takes on the RFCs regarding TCP connections.  The Bay 
+Networks (now Nortel) modem concentrators want to see RSTs in response to 
+an unusual probe done by the stack when closing a connection:  if I 
+remember correctly those things will close the connection (using FIN) and 
+then send out an empty ACK, expecting a RST back from the other end.  I 
+suspect this was some programmer's bright idea to avoid having to implement 
+all the "overhead" of implementing a true TIME_WAIT state for a closed 
+connection.
 
-# Out with the old stuff.
-$IPT -F
-$IPT -F INPUT
-$IPT -F OUTPUT
-$IPT -F FORWARD
-$IPT -F -t mangle
-$IPT -F -t nat
-$IPT -X
+I ran into this as the software developer for an analog modem testing 
+package that tests V.90 and V.92 modems, and it caused no end of grief for 
+me as the old 2.0.0 kernels didn't react the way that Bay Networks wanted 
+them to.  This caused the particular modem module to go out of service for 
+45 seconds, so there were several failed connection attempts as the 
+multiplexor did the active timeout thing instead of just moving to a 
+different 6-tuple for IP connections.
 
-# These will setup our policies.
-$IPT -P INPUT DROP
-$IPT -P OUTPUT ACCEPT
-$IPT -P FORWARD ACCEPT
+I don't know where else this "idea" might have taken hold.
 
-# Use this for NAT or IP Masquerading.
-echo 1 > /proc/sys/net/ipv4/ip_forward
-$IPT -t nat -A POSTROUTING -o $INT -j MASQUERADE
-
-# This rule protects your fowarding rule.
-$IPT -A FORWARD -i $INT -m state --state NEW,INVALID
--j DROP
-
-# Port forwarding looks like this.
-#$IPT -t nat -A PREROUTING -i $INT -p tcp --dport 25
--j DNAT --to 192.168.0.50
-#$IPT -t nat -A PREROUTING -i $INT -p tcp --dport 53
--j DNAT --to 192.168.0.50
-#$IPT -t nat -A PREROUTING -i $INT -p udp --dport 53
--j DNAT --to 192.168.0.50
-# These two redirect a block of ports, in both udp and
-tcp.
-#$IPT -t nat -A PREROUTING -i $INT -p tcp --dport
-2300:2400 -j DNAT --to 192.168.0.50
-#$IPT -t nat -A PREROUTING -i $INT -p udp --dport
-2300:2400 -j DNAT --to 192.168.0.50
-
-# This rule will accept connections from local
-machines.
-$IPT -A INPUT -i lo -j ACCEPT
-$IPT -A INPUT -s 192.168.0.0/24 -d 0/0 -p all -j
-ACCEPT
-
-# Drop bad packets.
-$IPT -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j
-DROP
-$IPT -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
-$IPT -A INPUT -p tcp --tcp-flags ALL
-SYN,RST,ACK,FIN,URG -j DROP
-$IPT -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-$IPT -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j
-DROP
-$IPT -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j
-DROP
-
-# Drop icmp, but only after letting certain types
-through.
-$IPT -A INPUT -p icmp --icmp-type 0 -j ACCEPT
-$IPT -A INPUT -p icmp --icmp-type 3 -j ACCEPT
-$IPT -A INPUT -p icmp --icmp-type 11 -j ACCEPT
-$IPT -A INPUT -p icmp --icmp-type 8 -m limit --limit
-1/second -j ACCEPT
-$IPT -A INPUT -p icmp -j DROP
+Stephen Satchell
+Satchell Evaluations
+OTTO:3800 and LOTTO modem testing products
 
 
 
+-- 
+Human beings, who are almost unique in having the ability to learn from the 
+experience of others, are also remarkable for their apparent disinclination 
+to do so.  -- Douglas Adams  
 
-Is there a way i can make this script more stable?I
-have not got done with this script just yet.
-
-=====
-You are entering the lands of packets, brute force and misuse of trust.This is a dark land. Full of problems and choices. Be carefull when you use your knowledge. Be also carefull with your tools and weapons. Never underestimate your enemy.
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
