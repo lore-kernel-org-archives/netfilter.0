@@ -1,10 +1,10 @@
-From: =?iso-8859-1?q?ONeill=20Jack?= <jackoneill9@yahoo.fr>
-Subject: pppOE and Netfilter
-Date: Sat, 6 Dec 2003 01:14:48 +0100 (CET)
+From: Evan Harper <elh1@sympatico.ca>
+Subject: Can't get port forwarding DNAT to work
+Date: Sun, 07 Dec 2003 20:14:44 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031206001448.24838.qmail@web25202.mail.ukl.yahoo.com>
+Message-ID: <3FD3D084.7060206@sympatico.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,22 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+I have a few machines on a LAN connected to the internet via a gateway 
+server with a DSL connection. I have packet filtering and IP masq up and 
+running with no problems -- the internal machines can connect out to the 
+Internet and everything is good. However I've been trying for a while 
+now to forward port 25 to a mail server inside the LAN with absolutely 
+no luck. The relevant rc.firewall line is:
 
-Can Netfilter filter pppoe trafic ?
-Or is it rp-pppoe's job only ?
+iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 25 -j DNAT --to 
+192.168.0.4:25
+# forward smtp traffic to mail server
 
-(Config :
-Net -- ADSL Card|linuxbox|eth -- LAN)
+Everything looks normal except that packets sent from outside the 
+network to port 25 just fall into a black hole. I've fiddled with the 
+options for a while, changing nothing. Help would be much appreciated.
 
-Best Regards
+Evan Harper
 
-___________________________________________________________________________=
-_________
-Do You Yahoo!? -- Avec Yahoo! soyez au coeur de la r=E9colte de dons pour l=
-e T=E9l=E9thon.
-http://fr.promotions.yahoo.com/caritatif/
 
