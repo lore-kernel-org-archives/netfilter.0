@@ -1,9 +1,11 @@
-From: Colin <cheming@nsw.bigpond.net.au>
-Subject: UDP packet forwarding
-Date: Fri, 20 Dec 2002 17:32:02 +1100
+From: "Bailey Kong" <bailey@tgpsolutions.com>
+Subject: how IPTables MIRROR works?
+Date: Mon, 23 Dec 2002 09:15:26 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.1.20021220172335.01d43550@144.135.24.13>
+Message-ID: <32803.64.81.237.3.1040663726.squirrel@mail.tgpsolutions.com>
+Reply-To: bailey@tgpsolutions.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,30 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi everyone,
 
-I am running Linux Kernel 2.4.20 and iptables 1.2.7a, with a Linux server 
-doing primarly SNAT work for masquerading. I don't seem to be able to 
-forward UDP packets with iptables. I am able to forward TCP packets through 
-the firewall, such as identd requests, like so:
+I understand from the manual that Mirror switches the scr and des IPs and
+sends off the packet without traversing any outgoing packet filter chains.
 
-iptables -t nat -A PREROUTING -j DNAT -p tcp --destination-port 113 
---to-destination xxx.xxx.xxx.xxx
+I was just curious if the packet needs to hit the mirroring machine twice?
+let me explain.
 
-What I'm doing here is forwarding a packet from an external system to a 
-machine on an internal network, so that it can answer an identd request. 
-The above works fine for that. However, it doesn't seem to work for UDP 
-packets. Even when I forward all data from the source IP address to an 
-internal host (as opposed to limiting it by --destination-port), the UDP 
-data refuses to be forwarded, and my linux machine sends out ICMP port 
-unreachable errors to the external machine. No data is sent across the 
-local ethernet at all.
+so say a "bad client" trys to access the ssh server on the mirroring machine
 
-Is there any reason for this? Anything I'm doing wrong or can change to 
-correct it? Any help would be greatly appreciated.
+192.168.1.20 => 192.168.1.1:22
+(bad client) => (mirroring machine)
+
+so Mirror swaps the IPs and sends it back out
+
+192.168.1.1        => 192.168.1.20:22
+(mirroing machine) => (bad client)
+
+so the "bad clients" computer doesn't run ssh-server and responds to the
+packet as connection refused
+
+my understanding is that the connection refused packet comes back to the
+mirror machine and the mirror machine swaps the src and des again for the
+"bad client" to get the connection refused.
+
+is my understanding incorrect?
+
+Any feedback is much appreciated
+Bailey
+
+-- 
+bailey@tgpsolutions.com
+
+Administrator, tgpsolutions
+http://www.tgpsolutions.com
+
 
 
