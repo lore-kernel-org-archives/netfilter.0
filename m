@@ -1,9 +1,11 @@
-From: Chris Born <ragable@attbi.com>
-Subject: (no subject)
-Date: Tue, 15 Oct 2002 17:12:21 -0600
+From: "Jan" <Oblivion@tiscali.be>
+Subject: Re: Netfilter and multiple internet connections
+Date: Wed, 16 Oct 2002 01:42:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.1.6.0.20021015165737.00ba9370@mail.attbi.com>
+Message-ID: <002101c274a4$76ec9570$0100a8c0@obsidian>
+References: <00d701c27441$c9578e90$0100a8c0@obsidian> <34894.192.168.7.14.1034716936.squirrel@iw.k1k2.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,33 +16,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Andrew Smith <nfml@k1k2.com>, netfilter@lists.netfilter.org
 
-I'm trying to setup a Hotline server on an internal NATed machine and I'm 
-having problems with getting clients to download. Here's what I have so far:
+> My guess, based on how my dual ADSL connection works, is that you will
+> need an extra route to send out the replies to the cable modem supplier
+> via the cable modem
+>
+> Assume Cable is NETC and ADSL is NETA
+> If your default route sends everything out NETA, then even anything
+> that "should" be sent to the cable modem provider via NETC will go
+> out NETA
+> (e.g. cable here in Australia on Telstra requires a heartbeat sent
+> back to Telstra and that MUST go out the Telstra connection)
+>
+> Also, if both connections are masqueraded then anything that goes out
+> NETA will say it is from an IP address provided by your ADSL provider
+> and thus will also be the wrong source for any "connection keep-alive"
+> traffic
+>
+> As far as I understand also - it is common practice in the USA to use
+> egress filters that stop you from sending data out the wrong connection
+> (this is only relevant if either connection is not masqueraded)
+> - so you will need to check that also
+> (my ISP's in Aus don't do this - lucky me - no need for iproute2 :-)
+>
+> Hope there is something here that helps you
+>
+> --
+> -Cheers
+> -Andrew
 
-$EXTIF = "eth1"
-$INTIF = "eth0"
-$IPTABLES = /sbin/iptables
-$EXTIP = 12.252.56.159
+Thanks Andrew,
+your comments made me think.  From a remote server, I performed a constant
+ping to both of my internet IP addresses.  Only the ones for the currently
+active default gateway got trough to iptables.  Changing the default
+gateway, changed the ping that got trough.  So I started playing with the
+kernel parameters in /proc/sys/net/ipv4/conf/...
+What I saw was that setting /proc/sys/net/ipv4/conf/eth1/rp_filter to "0"
+fixed the issue I saw.  I googled for rp_filter, and found the Linux
+Advanced Routing howto explaining this setting.
 
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 5500:5503 -m state 
---state NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF --dport 5549 -m state --state 
-NEW,ESTABLISHED,RELATED
-$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 5500:5003 -j DNAT 
---to $RAGABLE:5500:5503
-$IPTABLES -A PREROUTING -t nat --dport 5549 -j SNAT --to $EXTIP
+rp_filter = Reverse Path Filtering
 
-According to the Hotline server documentation, incoming connection requests 
-come in on ports 5500 - 5503 while outgoing download connections are on 
-port 5549. People are able to connect to the server just fine, but are 
-unable to download so I'm wondering what rules I need to let the download 
-through.
+Basicly, a packet coming in on one interface (provider1) is dropped when the
+"reply" would go out on another interface (provider2).
 
--Chris Born
+Now I know for sure iptables isn't faulty, I was just wondering why I only
+got firewall log entries from the active default gateway interface.
+
+Jan
 
 
 
