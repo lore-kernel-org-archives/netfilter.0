@@ -1,12 +1,14 @@
-From: David Cary Hart <DCH@TQMcube.com>
-Subject: "CE" - Where's the  snot?
-Date: Sat, 24 Jul 2004 11:15:17 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: "CE" - Where's the  snot?
+Date: Sat, 24 Jul 2004 16:44:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1090682116.3343.7.camel@dchws.tqmcube.com>
+Message-ID: <200407241644.01366.Antony@Soft-Solutions.co.uk>
+References: <1090682116.3343.7.camel@dchws.tqmcube.com>
 Reply-To: NetFilter List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1090682116.3343.7.camel@dchws.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,18 +19,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: NetFilter List <netfilter@lists.netfilter.org>
 
-I"m a struggling neophyte. 
+On Saturday 24 July 2004 4:15 pm, David Cary Hart wrote:
 
-I'm seeing quite a few of these in the (input filter) logs lately. Is.
-our server causing the print or is it the sender - and why? Should I be
-doing something about this? 
+> I"m a struggling neophyte.
+>
+> I'm seeing quite a few of these in the (input filter) logs lately.
 
-BTW, I am using the TARPIT chain on all TCP drops which probably adds to
-the issue
+Excuse me, but *what* are you seeing?
 
-Thanks. I notice that you folks are not only knowledgeable but,
-generally, pretty patient.
+I can see the subject of this posting, but it means nothing to me.
+
+Please explain the problem so we can understand what it is.
+
+Regards,
+
+Antony.
+
+-- 
+Ramdisk is not an installation procedure.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
