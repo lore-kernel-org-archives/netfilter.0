@@ -1,10 +1,11 @@
-From: Moritz Gartenmeister <moritz@uplink-verein.ch>
-Subject: nf-mark
-Date: Tue, 11 Jan 2005 11:38:10 +0100
-Message-ID: <41E3AC92.3020104@uplink-verein.ch>
+From: <Derek_Chen@trend.com.tw>
+Subject: packet filtering in virtual NIC
+Date: Tue, 11 Jan 2005 18:50:15 +0800
+Message-ID: <05D4351F36F7844CAE6F3C6499156745086969CF@twexmail01.tw.trendnet.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi
 
-can I use netfilter marks as:
+Hi, All
 
-6402 6617K MARK       icmp --  *      *       0.0.0.0/0            0.0.0.=
-0/0           icmp type 0=20
-MARK set 0x1
+I create a virtual netowrk card by supplementing a network driver. To=
+ simulate the activity of receving packets I customize packet data and call=
+ ioctl to feed them to netif_rx. My registered hook is like this
+ static struct nf_hook_ops ns_hook =3D { {NULL,NULL},scan_hook,
+                                                             =
+ //PF_INET,NF_IP_PRE_ROUTING,                           //I have tried this
+                                                             =
+ PF_BRIDGE,NF_BR_PRE_ROUTING,                     // and this
+                                                               1};
+Both hooks point does not work for my crafted data but work for real=
+ packets (through real NIC).
+Does anyone know what I'm doing wrong? Thanks for help.
 
-in my own application?
-which library?
+ Derek
 
-goal: i want to change bandwidthd (at the moment it classifies packets by=
- dst-port).
+                =0D
 
-cheers
-moritz
 
---=20
-Uplink student association
-Moritz Gartenmeister
-B=FClachstrasse 1 F
-8057 Z=FCrich
-Switzerland
 
+TREND MICRO EMAIL NOTICE
+The information contained in this email and any attachments is confidential=
+ and may be subject to copyright or other intellectual property protection.=
+ If you are not the intended recipient, you are not authorized to use or=
+ disclose this information, and we request that you notify us by reply mail=
+ or telephone and delete the original message from your mail system.
