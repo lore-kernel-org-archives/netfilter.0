@@ -1,13 +1,13 @@
-From: "Martin Djernaes" <martin@djernaes.dk>
-Subject: RE: (newbie) SNAT woes
-Date: Fri, 8 Aug 2003 06:14:06 +0200 (CEST)
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: logging and pinging localhost
+Date: 08 Aug 2003 08:25:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1941.12.232.115.115.1060316046.squirrel@mail.djernaes.dk>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15C079@wardrive.citadelcomputer.com.au>
+Message-ID: <1060323922.1880.3.camel@kermit>
+References: <1060278704.3499.8.camel@vimes.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A15C079@wardrive.citadelcomputer.com.au>
+In-Reply-To: <1060278704.3499.8.camel@vimes.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,80 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: georgev@citadelcomputer.com.au
-Cc: martin@djernaes.dk, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Rob Verduijn <rverduij@dds.nl>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
+Am Don, 2003-08-07 um 19.51 schrieb Rob Verduijn:
 
-Some pepole have helped me off the list and even though it all looked
-strange and I don't know what happened, it's working now!
+> the default policy that I set is drop
+> $IPTABLES -t filter -P INPUT DROP
+> $IPTABLES -t filter -P OUTPUT DROP
+> $IPTABLES -t filter -P FORWARD DROP
+> $IPTABLES -t nat -P PREROUTING DROP
+> $IPTABLES -t nat -P POSTROUTING DROP
+> $IPTABLES -t nat -P OUTPUT DROP
+> $IPTABLES -t mangle -P PREROUTING DROP
+> $IPTABLES -t mangle -P POSTROUTING DROP
+> $IPTABLES -t mangle -P INPUT DROP
+> $IPTABLES -t mangle -P OUTPUT DROP
+> $IPTABLES -t mangle -P FORWARD DROP
+Don't do this. The mangle and the nat table are only for mangling and
+natting. Please only filter in the filter table. Once you have
+understood why some packets traverse the nat table and others do not you
+may think about filtering in the nat table, but I would advise against
+it.
+The above rules are only useful if you do not want any traffic on your
+machine, like a panic situation.
 
-> What you've missed is that tcpdump and other utilities work on different
-> layers and if I'm not wrong (hopefully not) it's seeing the packets
-> before the SNAT.
+>=20
+> I also read that the following allows all the localtraffic
+> $IPTABLES -A INPUT  -i lo -j ACCEPT
+> $IPTABLES -A OUTPUT -o lo -j ACCEPT
+>=20
+> but why can't I ping localhost?????
+Because those packets still pass the nat and the mangle table. You drop
+everything there.=20
+Remove the DROP rules in the nat and mangle table.
 
-tcpdump works below ipfilter, so I see what comes out of the filter.
+Cheers,
 
-> Also, better to use MASQUERADE rather than SNAT for workstation access
-> to the internet.
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-Why? ... what I have read made me beleive that SNAT was prefered when ever
-possible, but I would be happy to hear something else.
-
-Martin
-
-> ____________________________________________
-> George Vieira
-> Systems Manager
-> georgev@citadelcomputer.com.au
->
-> Citadel Computer Systems Pty Ltd
-> http://www.citadelcomputer.com.au
->
->
-> -----Original Message-----
-> From: Martin Djernaes [mailto:martin@djernaes.dk]
-> Sent: Friday, August 08, 2003 12:15 AM
-> To: netfilter@lists.netfilter.org
-> Subject: (newbie) SNAT woes
->
->
-> Hi,
->
-> I realise that you have seen mails like mine lots of time before, but I
-> have spend hours reading howtos and googling for some hint as to why my
-> very simple setup doesn't work.
->
-> I have a simple box which just is suppose to do normal NATing of
-> outgoing traffic so it uses the public IP address.
->
-> I thought that I had it all setup right (that was at least what I
-> understood from everything I read), so here is my nat table:
->
-> # iptables -t nat -v -L
-> Chain PREROUTING (policy ACCEPT 1774 packets, 193K bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->
-> Chain POSTROUTING (policy ACCEPT 1443 packets, 77156 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->     0     0 SNAT       all  --  any    eth1    anywhere
-> anywhere           to:11.22.33.44
->
-> Chain OUTPUT (policy ACCEPT 317 packets, 23092 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->
-> Now if I ping an external IP address from another box on the "inside"
-> and run "tcpdump -ni eth1" on the gateway box, I will see the source
-> address being unchanged! (and I don't get an icmp echo reply back).
->
-> So what did I miss? Isn't it just a oneliner to turn SNAT on?
->
-> Martin
-
-
-
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
