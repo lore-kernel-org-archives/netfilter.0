@@ -1,14 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Port 25
-Date: Tue, 08 Feb 2005 09:10:25 -0500
-Message-ID: <1107871825.4399.7.camel@hubcap.ljm.dom>
-References: <Pine.LNX.4.05.10502071325260.15692-100000@darkstar.sysinfo.com>
-	<1107854056.17398.1.camel@nostromo.bgsecm.com>
-	<1107868554.4399.4.camel@hubcap.ljm.dom>
-	<1107870748.13418.17.camel@nostromo.bgsecm.com>
+From: Sergio Basurto Juarez <sbasurtoj@yahoo.com>
+Subject: Re: block ssh and ping
+Date: Tue, 8 Feb 2005 07:17:19 -0800 (PST)
+Message-ID: <20050208151719.31684.qmail@web41606.mail.yahoo.com>
+References: <5e36ca5e45b4.5e45b45e36ca@vsnl.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1107870748.13418.17.camel@nostromo.bgsecm.com>
+In-Reply-To: <5e36ca5e45b4.5e45b45e36ca@vsnl.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,23 +16,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, 2005-02-08 at 08:52, Jose Maria Lopez wrote:
-> I see your point, but just googling a bit:
+
+--- varun_saa@vsnl.net wrote:
+
+> Hello,
+>       My server is Mandrake 10.1
+> eth0 is WAN with static IP connected to 512k DSL
+> eth1 is LAN.
 > 
-> http://www.chiark.greenend.org.uk/~peterb/network/drop-vs-reject
+> 1. I would like to block ping to my external static
+> IP
 > 
-> so things are maybe somewhat more complex.
+> 2. I would like to block ssh to my external static
+> IP
+> 
+> Howto to do that ?
+> 
+> Thanks
+> 
+> Varun
+> 
+This is easy to block
 
-i think it's really a matter of opinion.  i happen to not agree with the
-author of the link you provided.  that doesn't make me right, though.
+$UNIVERSE=0.0.0.0/0
+$EXTIP=[whatever external ip you have]
 
--j
+iptables -A INPUT -p tcp -s $UNIVERSE -d $EXTIP
+--dport 22 -j REJECT
+iptables -A INPUT -p ICMP -s $UNIVERSE -d $EXTIP -j
+REJECT
 
+Also check the documentation for iptables, there is a
+predefine firewall and for me works ok, nevertheless I
+should modify it to fit my needs.
+
+
+Regards.
+
+
+=====
+-- 
+Sergio Basurto J.
+
+If I have seen further it is by standing on the 
+shoulders of giants. (Isaac Newton)
 --
-"Be careful when we capture him! We cannot claim the reward unless
- we have 51% of the carcass"
-	--The Simpsons
 
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - 250MB free storage. Do more. Manage less. 
+http://info.mail.yahoo.com/mail_250
 
