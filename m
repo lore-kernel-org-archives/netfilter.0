@@ -1,12 +1,15 @@
-From: Kevin McConnell <kevymac@yahoo.com>
+From: Stephen Frost <sfrost@snowman.net>
 Subject: Re: Doing Bridge with firewalling
-Date: Tue, 31 Dec 2002 12:23:21 -0800 (PST)
+Date: Tue, 31 Dec 2002 15:54:17 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021231202321.1635.qmail@web40307.mail.yahoo.com>
-References: <20021231190312.98050.qmail@web40908.mail.yahoo.com>
+Message-ID: <20021231205417.GQ677@ns>
+References: <20021231202708.GP677@ns> <20021231204756.1918.qmail@web40306.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LvAn5G4Ewe70kJ1i"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021231190312.98050.qmail@web40908.mail.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <20021231204756.1918.qmail@web40306.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +19,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Brad Chapman <kakadu_croc@yahoo.com>, Afshin Lamei <linux_st@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: Kevin McConnell <kevymac@yahoo.com>
+Cc: Brad Chapman <kakadu_croc@yahoo.com>, Afshin Lamei <linux_st@hotmail.com>, netfilter@lists.netfilter.org
 
 
---- Brad Chapman <kakadu_croc@yahoo.com> wrote:
-> Yes. You have to remove all addressing data from the
-> config files your distro uses
-> to configure eth0 and eth1. Then you need to use a
-> kernel with CONFIG_BRIDGE and the
-> netfilter-bridge patches applied, and you need the
-> bridge-utils package installed.
-> Those thre items can be found at kernel.org and
-> http://www.math.leidenuniv.nl/~buytenh/bridge. The
-> Red Hat 8.0 2.4.18-14 kernel has
-> the appropriate infrastructure present.
+--LvAn5G4Ewe70kJ1i
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have a question though. If he removes all addressing
-data, how can he do NAT'ing properly?
+* Kevin McConnell (kevymac@yahoo.com) wrote:
+>=20
+> --- Stephen Frost <sfrost@snowman.net> wrote:
+> > The two havn't got anything to do with each other.=20
+> > NATing is modifying
+> > packets as they pass through the router.  Addressing
+> > is the IP address
+> > and whatnot to access the firewall/router.  One does
+> > not require the
+> > other.
+>=20
+> This leads me to another question then. What are the
+> advantages of not having an IP address assigned to=20
+> interface(s) of the firewall? Like for instance, if my
+> firewall was the gateway to the outside world, how
+> would I tell machines behind the firewall to get out
+> to the outside world if they didn't have a default
+> route pointing to the internal address of the
+> firewall? Also, how would packets that hit the
+> firewall get routed through the other side?
 
+A router is not a bridge.  The two are different things.  You're
+thinking of things in terms of a 'router'.  In order for your computers
+to reach the external network they have to go through a router, true.  A
+firewall can be implemented as part of a router or as part of a bridge.
+The only requirement being that the packets are required to pass through
+the device.  If you implemented your firewall as a bridge then the
+machines on the network wouldn't 'see' it, they would point their
+default routes to the router on the opposite side of the bridge.
 
-=====
-Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
+I think the critical point here is that you need to understand what a
+bridge is and how it works and how it's different from a router.
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+	Stephen
+
+--LvAn5G4Ewe70kJ1i
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+EgP5rzgMPqB3kigRAtuvAJwLr3xOtMnmCG4HvULOhg76k+hurgCfaDNF
+2Fbe5waiHoRtfPcCha8Ednc=
+=qbek
+-----END PGP SIGNATURE-----
+
+--LvAn5G4Ewe70kJ1i--
 
