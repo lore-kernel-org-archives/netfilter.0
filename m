@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: Problem behind my DMZ
-Date: Thu, 8 Jan 2004 17:53:06 +0000
+Date: Thu, 8 Jan 2004 14:18:28 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401081753.06528.Antony@Soft-Solutions.co.uk>
-References: <Law9-F95jyNQD9Y7j8J00010259@hotmail.com>
+Message-ID: <20040108191828.GC22229@cannon.eng.us.uu.net>
+References: <Law9-F5F4g09DudNhpK000185fd@hotmail.com> <200401081616.08717.Antony@Soft-Solutions.co.uk> <20040108181009.GB22229@cannon.eng.us.uu.net> <200401081717.52555.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Law9-F95jyNQD9Y7j8J00010259@hotmail.com>
+Content-Disposition: inline
+In-Reply-To: <200401081717.52555.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,51 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thursday 08 January 2004 5:46 pm, Martin Leduc wrote:
+On Thu, Jan 08, 2004 at 05:17:52PM +0000, Antony Stone wrote:
 
-> >So where are the local client machines?
->
-> No one, it's my dedicate server network.  My server are on a metal box with
-> one RJ-45 cable from my ISP.  That's it!
+> On Thursday 08 January 2004 6:10 pm, Ramin Dousti wrote:
+> 
+> > Dividing the /28 to 2x /29's is a waste.
+> 
+> I agree (and it wasn't what I meant to suggest - sorry if it seemed that I 
+> had).
 
-> Example:
->
-> My Server 1 (192.168.0.2) tried to send Email to abcd.com.  abcd.com are
-> resolved by my internal DNS server.  The MX of the domain abcd.com is
-> 20.0.0.4, but this address is, from the server 1 point of view my Firewall.
-> So I lost the email.
+No worries. The above statement about wasting IP's is a general
+statement and wasn't directed to you, sorry if it seemed that
+it was :-)
 
-Okay, so what I was calling your "client machines" are actually just the other 
-servers on your network.
-
-In this case if you want to continue using NAT then I cannot see an 
-alternative solution to split DNS, so that machines within your network 
-receive DNS replies containing the private addresses, and machines outside 
-your network receive the public addresses.
-
-If on the other hand you use the suggestion of putting genuine public IPs onto 
-your servers (and Ramin Dousti's detailed answer is definitely the best 
-solution given your network topology - mine assumed you might want other 
-public IPs for some other purpose, but with only one internal network this is 
-obviously not the case) then everyone (internal and external) will use public 
-IPs and the problem goes away.
-
-Regards,
-
-Antony.
-
--- 
-In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
-the mechanics are German, the lovers are French, the entertainment is 
-American, and everything is organised by the Swiss.
-
-In Hell, the police are German, the chefs are British, the beer is American, 
-the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
-and everything is organised by the Italians.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Ramin
 
