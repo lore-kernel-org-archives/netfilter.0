@@ -1,12 +1,11 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: ever block *outgoing* packets on your firewall?
-Date: Mon, 7 Feb 2005 17:44:27 +0000
-Message-ID: <20050207174427.GZ14572@metastasis.org.uk>
-References: <20050114200228.GA21562@spawar.navy.mil>
-	<20050114201404.GA27341@bender.817west.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Port 25
+Date: Mon, 7 Feb 2005 13:30:20 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10502071325260.15692-100000@darkstar.sysinfo.com>
+References: <1107767854.10815.3.camel@nostromo.bgsecm.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20050114201404.GA27341@bender.817west.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1107767854.10815.3.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +16,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Jose Maria Lopez <jkerouac@bgsec.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Fri, Jan 14, 2005 at 03:14:04PM -0500, Jason Opperisano wrote:
-> On Fri, Jan 14, 2005 at 12:02:28PM -0800, seberino@spawar.navy.mil wrote:
+On 7 Feb 2005, Jose Maria Lopez wrote:
 
-> > I'm wondering if it is ever necessary to block
-> > *outgoing* packets at your firewall.
+> El dom, 06 de 02 de 2005 a las 22:03, Jason Opperisano escribi=C3=B3:
+> > Ron has an excellent point here about IDENT.  a "good Internet citize=
+n"
+> > thing to do when running a mail server is to reject ident instead of
+> > dropping it:
+> >=20
+> >   iptables -A INPUT -p tcp --syn --dport 113 \
+> >     -j REJECT --reject-with tcp-reset
+>=20
+> Isn't it advisable for every tcp port you want to block?
+> I have some documentation that says that doing otherwise
+> it's even bad for your network communications.
+>=20
 
-Yes, but others have answered this in a far more timely fashion than
-myself.
+I've never heard it is bad, but, te question is how nice one wishes to be
+to those trying to transgess your security profile.  I tend to use alot o=
+f
+drops, especially for ports like ftp, telnet, some of the printer and
+shell exec ports, any ports trojans are fond of.  The drop make the other
+end continue trying till the command/connect attepmt is either aborted or
+timesout, and with autoomated attacks, that can slow down the how little
+nasty prog.  Kinder to me and my other servers, as well as others on the
+net when I can slow these things down some.  Reject with rst, those are
+for the ports that you wish to treat the otherend nicely from.
 
-> i run a default DROP policy on the OUTPUT chain of my firewalls and
-> only allow out necessary traffic (DNS, HTTP/FTP to update servers,
-> NTP, etc).  but i'm pretty odd when it comes to these things--i don't
-> know how necessary it is.  the one nice side-effect is that is keeps
-> me from doing something stupid when i'm ssh-ed into a firewall.
+Thanks,
 
-Out of interest why "DROP" rather than "REJECT"?  With reject users,
-hosts or programs on the inside tend to fail straight away rather than
-taking a while to time out annoyingly.
+Ron DuFresne
+--=20
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
--- 
-Where are we going and what's with the hand basket?
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
+
 
