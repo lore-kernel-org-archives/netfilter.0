@@ -1,12 +1,12 @@
-From: Andre Correa <andre.correa@pobox.com>
-Subject: DAT - dynamic address translation
-Date: Mon, 2 Jun 2003 16:40:31 -0300
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: KAZAA
+Date: Tue, 3 Jun 2003 08:36:01 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <15818692816.20030602164031@pobox.com>
-Reply-To: Andre Docena Correa <andre.docena@pobox.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D8C@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +17,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Pedro C. Arias" <parias@agatha.unr.edu.ar>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+Read the Patch-o-matic help file on "string" matching.
+Maybe even do a little research on "-m string --string", there was a =
+post previously which had a rule for it too.
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+-----Original Message-----
+From: Pedro C. Arias [mailto:parias@agatha.unr.edu.ar]
+Sent: Tuesday, June 03, 2003 12:46 AM
+To: Netfilter Mailing List
+Subject: Re: KAZAA
 
 
-Hi Netfilter list, I would like to know if anyway here have experience
-trying  to  make  a  box act as a DAT system. DAT means that a box can
-SNAT  any  IP  address  behind it. This is usefull on systems that sits
-in front of a  network  that  may  have  clients using any static IP
-address and its traffic should be NATed...
+how make a rule with an string matching ?
 
-Ex: the linux box have an internal IP: 192.168.0.1/255.255.255.0 and a
-client behind it have a 200.200.200.200/255.255.255.0 IP that should
-be NATed to access the Internet...
+Saludos
+Pedro.
+Rosario - Argentina.
 
-Does anyway have tried this before? Is it possible under Linux?
+----- Original Message -----=20
+From: "Ray Leach" <raymondl@knowledgefactory.co.za>
+To: "Netfilter Mailing List" <netfilter@lists.netfilter.org>
+Sent: Monday, June 02, 2003 3:09 AM
+Subject: Re: KAZAA
 
-Any information will be appreciated.
 
-tks in advance...
 
-Andre Correa
-andre.correa@pobox.com
 
 
