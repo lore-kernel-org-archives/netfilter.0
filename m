@@ -1,13 +1,10 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: PRE and POST routing ...
-Date: 15 Nov 2002 15:49:27 +0200
+From: James Stickland <jimmy@sympatico.ca>
+Subject: cannot open shared object file: no such file or directory
+Date: Tue, 12 Nov 2002 21:27:38 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1037368167.4958.4.camel@rayw.knowledgefactory.co.za>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <Pine.LNX.4.33.0211122116250.189-100000@laptop.sympatico.ca>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-1Uh1VKZ/5TgJ5QFYQEgS"
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Raymond Leach <Ray@work>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +14,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+
+Hi, i recently ran patch-o-matic to patch my kernel for the string match
+from the extra patches.
+
+I ran patch-o-matic, and it copied the string files to
+/usr/src/linux/net/ipv4/netfilter.  Ok, so far so good.
+
+I went to compile my kernel, and have ipt_string as a module.  I did so by
+adding the line CONFIG_IP_NF_MATCH_STRING=m in my /usr/src/linux/.config.
+
+I proceeded to do the standard make dep ; make modules ; make
+modules_install ; make bzImage.  THe kernel compiled, i rebooted, and was
+successfully able to modprobe ipt_string.
+(/lib/modules/2.4.19/kernel/net/ipv4/netfilter/ipt_string.o)
+
+However, when i went to make use of the ipt_string match in an iptables
+rule, i was given the following error:
+
+iptables v1.2.7a: Couldn't load match
+`string':/usr/local/lib/iptables/libipt_st
+ring.so: cannot open shared object file: No such file or directory
+
+Upon inspection, the libipt_string.so did not exist in
+/usr/local/lib/iptables.  How do i get this netfilter library to exist?
+
+I had this problem the last time i patched my kernel to support ipt_psd,
+but i cannot recall how i was able to get the psd library to exist.
+
+Did i miss a step while patching this time?  Anyone with help please
+respond to the list and my email directly - jamesstickland@sympatico.ca
+
+Thank you.
 
 
---=-1Uh1VKZ/5TgJ5QFYQEgS
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-Hi
-
-If I have a web server in my DMZ, then I have a PREROUTING rule to
-redirect incoming traffic to the server, like :
-$IPTABLES -t nat -A PREROUTING -i $IFACE_INET -p tcp --dport 80 -d
-$IP_INET_WEB1 -j DNAT --to $IP_INT_WEB1
-
-I also have the FORWARDing rules ...
-
-Do I need a POSTROUTING rule in the nat table for return/reply traffic,
-or is that automagically handled by nat?
-
-Obviously I have the FORWARD rule to forward the replies from
-$IP_INT_WEB1 back to the source.
-
-Ray
---=20
-
---=-1Uh1VKZ/5TgJ5QFYQEgS
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA91Ptmh1fuR/Bv+ygRAhW7AJ9irTlsU4QvwxzS6jhJ6PPJxIUZHwCfctHI
-iMPs7QLCXsEzTfWjgWkzuF0=
-=JbMJ
------END PGP SIGNATURE-----
-
---=-1Uh1VKZ/5TgJ5QFYQEgS--
 
 
