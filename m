@@ -1,14 +1,14 @@
-From: "B. van Ouwerkerk" <bvo@atz.nl>
-Subject: RE: nat no traffic returns
-Date: Thu, 22 May 2003 00:33:45 +0200
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Mangling problem
+Date: Thu, 22 May 2003 01:33:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.0.0.25.0.20030522001817.01e5c8b0@pop.atz-hosting.nl>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C75@wardrive.citadelcom
- puter.com.au>
+Message-ID: <20030522013356.798353f8.arnt@c2i.net>
+References: <20030415222001.8410.94392.Mailman@kashyyyk>
+	<000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6C75@wardrive.citadelcom
- puter.com.au>
+In-Reply-To: <000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,71 +18,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-At 07:42 22-05-2003 +1000, you wrote:
->Hi,
->
->stupid question but has the inside machine got a default gateway to the 
->firewall?
+On Wed, 21 May 2003 12:49:54 +0100, 
+"Regina Reine" <regina@erg.abdn.ac.uk> wrote in message 
+<000001c31f8f$1866f1d0$88cc858b@TOSHIBAFIRE>:
 
-Last time I checked the default gateway was set to the firewall.
+> 
+> Hi,
+> I am doing an experiment with iptables. I use a hub to connect two
 
->Have you also tried running tcpump with the command : tcpdump -x port 3389 
->and host public_ip
->to check the traffic and the direction all of it going to and from?
+..hub?  And being visible wont hurt your experiment?
 
-tcpdump is broke on this box ARGH.
+> computers. Computer A captures the video packet (or any packets) and
+> computer B runs iptables and my code in Red Hat 8. Basically, with
+> hub, computer B will be able to see the packets coming to computer A.
+> I would like computer B to preroute this packet and put these packets
+> in userspace where I run my code. 
+> 
+> I uses :
+> 
+> ** Iptables -t mangle -I PREROUTING -p udp -I eth0 -j QUEUE
+> 
+> However, seems like I only be able to capture broadcast packets. (But
+> TCPDUMP could see the udp packets). I have checked my code (just a
+> simple code that scan what kind of packets and it worked with udp
+> generator such as iperf or hping). 
+> I have tried a few other similar ways but still only could capture
+> broadcast packets. Does anybody spots my mistake or could give me
+> advice for better solution? Thank you
+> 
+> Best regards,
+> Regina Reine
+> 
 
-But I double checked to see if I could connect to the firewalled box while 
-I was connected to the firewall, and I could. As soon as I add rules to 
-allow traffic on the INPUT and OUTPUT chains from and to the firewalled box 
-I can connect from the firewall to the firewalled box using FTP or WWW. but 
-not through the firewall.
+..you want tcpdump running in promiscous mode, 'info tcpdump' 
+for the gory details, it is also possible to pipe it.
 
-TIA,
+..you could also set up an ip-less sniff bridge, it works nicely 
+for bandwidth throttling too.  ;-)
 
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-B.
-
->____________________________________________
->George Vieira
->Systems Manager
->georgev@citadelcomputer.com.au
->
->Citadel Computer Systems Pty Ltd
->http://www.citadelcomputer.com.au
->
->
->-----Original Message-----
->From: B. van Ouwerkerk [mailto:bvo@atz.nl]
->Sent: Thursday, May 22, 2003 7:34 AM
->To: netfilter@lists.netfilter.org
->Subject: Re: nat no traffic returns
->
->
->
-> > > iptables -P FORWARD DROP
-> > >
-> >You are only allowing packets through the forward chain in the direction
-> >eth1->eth0.
-> >There is no packet allowed in the other direction.
-> >iptables -A FORWARD -i eth0 -o eth1 -d 10.0.0.112 -m multiport --dport
-> >3389,21,80 -m state --state NEW -j ACCEPT
-> >iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
->Thank you for your reply, you are right.. but it didn't help..
->
->Been looking a bit further.. again.. iptables -v -L tells that packets are
->forwarded to eth1, on eth1 I notice that the TX bytes is increasing but the
->RX are stable at the same value.
->Would it be correct to assume this is not an iptables issue but an issue of
->the box behind the Linux box?
->
->TIA,
->
->B.
 
 
