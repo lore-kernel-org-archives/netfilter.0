@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Logging MAC
-Date: Sat, 22 May 2004 17:17:20 +0100
+From: Paul Lambert <paul@digis.net>
+Subject: mark causes high CPU/using tc in conjunction with NAT
+Date: Sat, 22 May 2004 13:22:40 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405221717.20889.Antony@Soft-Solutions.co.uk>
-References: <5390820828.20040521103958@alternativa.com.br> <200405221333.35216.Antony@Soft-Solutions.co.uk> <200405221157.32312.Alistair@nerdnet.ca>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <40AFA880.60003@digis.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405221157.32312.Alistair@nerdnet.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +15,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Saturday 22 May 2004 4:57 pm, Alistair Tonner wrote:
+Using below configuration multiplied by 3000+ nodes to control bandwidth 
+causes very high kernel cpu usage (99.5%) narrowed it down to the mangle 
+table. Any ideas to do this more efficiently would be appreciated.
 
-> On May 22, 2004 08:33 am, Antony Stone wrote:
-> >
-> > I guess (without having looked at the source) that it should be a simple
-> > enough hack to get ipt_LOG.c to log MAC addresses for all chains.
->
-> 	should be ridiculously simple -- the limiter is a wrapping if statement
->
-> 	if ( in && !out) {
->
-> 	(logging of MAC code)
-> 	}
->
-> 	I suspect that the clever hacker will want to re-wrap that if statement
-> such that it only logs it if there IS a MAC address present.  Not being a
-> maven with such, I'm NOT gonna make any suggestions as to how.
+The mangle table entry (indicated by ***) is sucking all the cpu. I am 
+running RH7.3 kernel  2.4.18-3 and iptables 1.2.5
+This setup has worked well for more than 1000 devices but as the network 
+has grown to 3000+ devices the CPU is not keeping up. I have thought to 
+use IPMARK instead of MARK. Or, to possibly use CLASSIFY. Since this is 
+hard to recreate in the lab I was looking for some experienced advice on 
+the matter.
 
-I would guess that such a check is already present (still not having bothered 
-to look at the source code), because as you said yourself earlier in this 
-thread:
+### root ###
+tc qdisc add dev eth0 root handle 1: cbq bandwidth 100Mbit avpkt 1000 cell 8
 
-> >     I note that iptables doesn't log mac addresses it cannot see (i.e. not
-> > directly connected)
+tc qdisc add dev eth1 root handle 1: cbq bandwidth 100Mbit avpkt 1000 cell 8
 
-And this is true even for the INPUT chain (eg: when you are using a ppp 
-interface), so presumably the check for "only show MAC if one exists" is 
-already coded.
 
-Regards,
+### Classful qdisc upload/download rate for a group of IP address ###
+tc class add dev eth0 parent 1:0 classid 1:11 cbq bandwidth 100Mbit rate 
+100Mbit weight 54Kbit prio 8 allot 1514 cell 8 maxburst 20 av pkt 1000
 
-Antony.
+tc qdisc add dev eth0 parent 1:11 tbf rate 2048Kbit buffer 10Kb/8 limit 
+15Kb mtu 1500
 
--- 
-"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
-Blaster].   However, these products are no longer supported.   Users of these
-products are strongly encouraged to upgrade to later versions."
+tc class add dev eth1 parent 1:0 classid 1:11 cbq bandwidth 100Mbit rate 
+100Mbit weight 54Kbit prio 8 allot 1514 cell 8 maxburst 20 av pkt 1000
 
-(which *are* affected by MS Blaster...)
+tc qdisc add dev eth1 parent 1:11 tbf rate 2048Kbit buffer 10Kb/8 limit 
+15Kb mtu 1500
 
-http://www.microsoft.com/security/security_bulletins/ms03-026.asp
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+### A single IP address and it's own upload/download rate ###
+tc class add dev eth0 parent 1:11 classid 1:2115 cbq bandwidth 100Mbit 
+rate 100Mbit weight 54Kbit prio 8 allot 1514 cell 8 maxburst 20 avpkt 1000
+
+tc qdisc add dev eth0 parent 1:2115 tbf rate 2048Kbit buffer 10Kb/8 
+limit 15Kb mtu 1500
+
+*** eth0 is MASQUERADE'd so I mark the packet on eth1 ***
+*** I have narrowed it down to this one entry sucking all the CPU ***
+iptables -t mangle -A PREROUTING -s 10.10.6.20 -i eth1 -j MARK 
+--set-mark 0x843
+
+tc filter add dev eth0 parent 1:0 protocol ip prio 1 handle 2115 fw 
+classid 1:2115
+
+tc class add dev eth1 parent 1:11 classid 1:2115 cbq bandwidth 100Mbit 
+rate 100Mbit weight 54Kbit prio 8 allot 1514 cell 8 maxburst 20 avpkt 1000
+
+tc qdisc add dev eth1 parent 1:2115 tbf rate 2048Kbit buffer 10Kb/8 
+limit 15Kb mtu 1500
+
+tc filter add dev eth1 parent 1:0 protocol ip prio 1 u32 match ip dst 
+10.10.6.20 flowid 1:2115
+
+
+
 
 
