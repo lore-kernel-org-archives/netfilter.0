@@ -1,15 +1,12 @@
-From: "Alexander W. Janssen" <yalla@ynfonatic.de>
-Subject: Re: ICMP TTL=255
-Date: Wed, 5 Mar 2003 18:23:31 +0100
+From: "David Ruggles" <david@safedatausa.com>
+Subject: Re: Quick Routing question
+Date: Wed, 5 Mar 2003 13:14:14 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030305172331.GE12124@ynfonatic.de>
-References: <3E65FC55.9050400@imos.net>
+Message-ID: <01cb01c2e343$16cb9570$1f0016ac@daviddesktop>
+References: <016701c2e28a$239fbab0$1f0016ac@daviddesktop><20030305010744.5828b6d3.arnt@c2i.net><00ae01c2e323$ca9b6fa0$1f0016ac@daviddesktop> <20030305173750.5f93ec8f.arnt@c2i.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="so9zsI5B81VjUb/o"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3E65FC55.9050400@imos.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,56 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Arnt Karlsen <arnt@c2i.net>
+Cc: netfilter@lists.netfilter.org
+
+I'm pretty sure my problem was I didn't have ip forwarding turned on. I've
+enabled it but machine A is being used for something else right now so I
+haven't tested it yet. I thought it might be something dumb, and that fits
+the bill, but if I have any other problems I'll be sure to ask. ;)
+
+On a side note, I'm reading the LARTC howto and it's impressive.
+
+Thanks,
+David Ruggles
+
+CCNA MCSE (NT) CNA A+
+Network Engineer, Safe Data, Inc
+910-285-7200    david@safedatausa.com
+0100011101101111011001000110110001101111011101100110010101110011011110010110
+111101110101
+----- Original Message -----
+From: "Arnt Karlsen" <arnt@c2i.net>
+To: "David Ruggles" <david@safedatausa.com>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Wednesday, March 05, 2003 11:37 AM
+Subject: Re: Quick Routing question
 
 
---so9zsI5B81VjUb/o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, 5 Mar 2003 09:30:35 -0500,
+> "David Ruggles" <david@safedatausa.com> wrote in message
+> <00ae01c2e323$ca9b6fa0$1f0016ac@daviddesktop>:
+>
+> > ----- Original Message -----
+> > From: "Arnt Karlsen" <arnt@c2i.net>
+> > Subject: Re: Quick Routing question
+> >
+> > [Snipped Dig commands]
+> >
+> > >
+> > > ..you run a _root_ name server and come here asking us amateur
+> > > newbies with less than 25 yrs internet experience for netfilter
+> > > advice????? ;-)
+> > >
+> >
+> > I hope you're joking. 172.22.x.x is inside the Class B non-routable
+> > addresses set aside by RFC 1918
+>
+> ..got that right, only just _after_ posting.  ;-)
+>
+> ..it's 172.22.0.0/what-netmask?
+>
+> > Thanks,
+> > David Ruggles
+> >
+> > CCNA MCSE (NT) CNA A+
+> > Network Engineer, Safe Data, Inc
+> > 910-285-7200    david@safedatausa.com
+> > 010001110110111101100100011011000110111101110110011001010111001101111
+> > 0010110 111101110101
+> >
+>
+>
+> --
+> ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+> ...with a number of polar bear hunters in his ancestry...
+>   Scenarios always come in sets of three:
+>   best case, worst case, and just in case.
+>
+>
 
-On Wed, Mar 05, 2003 at 02:32:05PM +0100, Ulrich Weber wrote:
-> Hi,
-
-Hi Ulrich,
-=20
-> I don't think that it's iptables fault, but I don't know where to ask els=
-e.
-> ICMP Ping ignores the TTL value of net/ipv4/ip_default_ttl and use 255.
-
-if you mean with "ICMP Ping" your /bin/ping, it sets it's own TTL value. pi=
-ng
-uses raw-sockets to send it's data, so i can set it's own values. What it
-likes. Btw: That's the reason why ping has the suid-bit set, only root is
-allowed to open raw-sockets.
-
-> All other traffic use the net/ipv4/ip_default_ttl value.
-
-Since they don't use raw-sockets.
-
-> Greets
->  Ulrich
-
-Alex.
-
-
---=20
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
-l."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
-
---so9zsI5B81VjUb/o
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Weitere Infos: siehe http://www.gnupg.org
-
-iEYEARECAAYFAj5mMpMACgkQEMMZKORQoYJ6RwCfX+fC/PZL1i0zvSfkbP+tozcg
-02QAn32vemeKWirx3DV5JCWTalsbnhkj
-=m+VK
------END PGP SIGNATURE-----
-
---so9zsI5B81VjUb/o--
 
