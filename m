@@ -1,8 +1,9 @@
-From: Marcus Zoller <Marcus.Zoller@idnt.net>
-Subject: ICMP type 3 input not related?
-Date: 10 Jun 2002 17:37:38 +0200
+From: Skull <skull@skullkrusher.net>
+Subject: Re: tftp conntrack
+Date: Mon, 10 Jun 2002 17:36:57 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023723458.5925.61.camel@Snoopy>
+Message-ID: <3D04C799.20102@skullkrusher.net>
+References: <E131E9F1848D0148813EAF06A846608F615DA7@w2ks-e2k.iconos.be> <3D04B8B5.8040608@skullkrusher.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -15,31 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.samba.org>
 
-Hi!
+Skull wrote:
+> 
+> Yes... To avoid any kind of misunderstanding during the configuration, 
+> this is what I did:
+> - I downloaded a 2.4.18-vanilla tarball
+> - I've checked out thru CVS the entire netfilter/userspace repository 
+> directory
+> - I launched the make patch-o-matic
 
-my rules allow related icmp type 3 input but this seems to be broken for
-the following:
+Oh, I made a mistake: tftp conntrack helper doesn't install because of
+the lack of the newnat patch, which refuses to install by itself because:
 
-IN=eth2 OUT= MAC=... SRC=[remote] DST=[local] LEN=56 TOS=0x00 PREC=0x00 TTL=141 
-	ID=0 PROTO=ICMP TYPE=3 CODE=3 
-	[SRC=[local] DST=[remote] LEN=204 TOS=0x00 PREC=0x00 TTL=54 ID=0 DF 
-	PROTO=UDP SPT=1 DPT=500 LEN=184 ]
+Testing patch pending/0-newnat13.patch...
+Failed to patch copy of /usr/src/linux
+TEST FAILED: patch NOT applied.
 
-iptables 1.2.6a, kernel 2.4.18 (with 2.4.19-pre6_icmp-nat.patch)
+hmmm not so exxaustive, huh?
 
-This works for anything else, just the ICMP reply to an connection from UDP SPT=1 to 
-DST=500 is not caught as related...
+Need to study why it fails.. :-P
 
-Someone with an idea why this is not handled as related?
+Just a question: when launching patch-o-matic how could I choose what to 
+install?
+Only reading what the it says about the single packets or is it present 
+somewhere
+a list of dependencies for patch installation?
 
-thanks!
--marcus
+thx
 
 
+-- 
+Emanuele "SKULL" Balla
+----------------------------------------------------------------------
+"How should I know if it works?  That's what beta testers are for. I
+only coded it." (Attributed to Linus Torvalds, somewhere in a posting)
 
-- IDNT Antivirus Solutions -
-This messages was scanned for virus infection on the IDNT Gateway Series. For more informations on how to protect your network see http://idnt.net/de/security/vprot.xsm or call us now: +49 6403 9526 0.
 
