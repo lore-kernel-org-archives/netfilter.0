@@ -1,30 +1,49 @@
-From: "Technical" <technical@sojourn.dyndns.org>
-Subject: how can i combine these 2 iprules
-Date: Fri, 5 Mar 2004 13:27:53 -0500 (EST)
-Sender: fedora-list-admin@redhat.com
-Message-ID: <3405.128.59.176.161.1078511273.squirrel@sojourn.dyndns.org>
-Reply-To: fedora-list@redhat.com
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: how can i combine these 2 iprules
+Date: Fri, 5 Mar 2004 18:33:16 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200403051833.16893.Antony@Soft-Solutions.co.uk>
+References: <3405.128.59.176.161.1078511273.squirrel@sojourn.dyndns.org>
 Mime-Version: 1.0
-Return-path: <fedora-list-admin@redhat.com>
-Errors-To: fedora-list-admin@redhat.com
-List-Help: <mailto:fedora-list-request@redhat.com?subject=help>
-List-Post: <mailto:fedora-list@redhat.com>
-List-Subscribe: <http://www.redhat.com/mailman/listinfo/fedora-list>,
-	<mailto:fedora-list-request@redhat.com?subject=subscribe>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3405.128.59.176.161.1078511273.squirrel@sojourn.dyndns.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://www.redhat.com/mailman/listinfo/fedora-list>,
-	<mailto:fedora-list-request@redhat.com?subject=unsubscribe>
-List-Archive: <http://www.redhat.com/archives/fedora-list/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, fedora-list@redhat.com
+To: netfilter@lists.netfilter.org
 
--A RH-Firewall-1-INPUT ! -s cnnp1.com  -j LOG --log-prefix "IPTABLES: "
--A RH-Firewall-1-INPUT ! -s cnnp2.com  -j LOG --log-prefix "IPTABLES: "
+On Friday 05 March 2004 6:27 pm, Technical wrote:
 
+> -A RH-Firewall-1-INPUT ! -s cnnp1.com  -j LOG --log-prefix "IPTABLES: "
+> -A RH-Firewall-1-INPUT ! -s cnnp2.com  -j LOG --log-prefix "IPTABLES: "
 
+iptables -N mychain
+iptables -A mychain -s cnnp1.com  -j RETURN
+iptables -A mychain -s cnnp2.com  -j RETURN
+iptables -A mychain -j LOG --log-prefix "IPTABLES: "
+iptables -A RH-Firewall-1-INPUT -j mychain
+
+Note that it is not recommended to use hostnames in netfilter rules - better 
+to identify the IP addresses and put them in yourself, to avoid possibly 
+hidden problems.
+
+Antony.
 
 -- 
-fedora-list mailing list
-fedora-list@redhat.com
-To unsubscribe: http://www.redhat.com/mailman/listinfo/fedora-list
+Behind the counter a boy with a shaven head stared vacantly into space,
+a dozen spikes of microsoft protruding from the socket behind his ear.
+
+ - William Gibson, Neuromancer (1984)
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
+
