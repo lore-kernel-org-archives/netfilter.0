@@ -1,10 +1,11 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Using -m limit to stop outbound portscanning viruses
-Date: Sat, 5 Feb 2005 17:49:55 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10502051748230.352-100000@darkstar.sysinfo.com>
-References: <42054ABB.5040700@tiedyenetworks.com>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: FYI only - bug filed downstream - Gentoo-dev-sources 2.6.10-r5
+	iptables 1.2.11 kernel panic udp_manip_pkt
+Date: Sat, 5 Feb 2005 17:54:23 -0500
+Message-ID: <200502051754.24311.Alistair@nerdnet.ca>
 Mime-Version: 1.0
-In-Reply-To: <42054ABB.5040700@tiedyenetworks.com>
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,57 +16,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mike Ireton <mike-netfilter@tiedyenetworks.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
 
-Why are you letting this traffic traverse your perimiters in the first
-place?  If there is a need to pass windows related problematic protocols
-across perimiters, they should be tunnels in a secure connection.
+ Please note I am filing this downstream first -- this is an FYI
 
-Thanks,
+ kernel 2.6.10 (gentoo-dev-sources gentoo-2.6.10-r5) 
+ iptables 1.2.11 
+ 
+ kernel built, booted and running,  iptables REBUILT after kernel build, 
+pointing into new kernel
 
-Ron DuFresne
+ Kernel Panic, not syncing:
+ 
+ EIP upd_manip_pkt + 0xbb/0xd0 -- iptable_nat
+ eax: c9eb3f44 ebx: d21c4844  ecx: 00000001 edx: 00000000
+ esi: d2592858 edi: c05c2ddc ebp: c05c2cd8 esp: c05c2cc0
+ ds 007b es 007b ss0068
 
-On Sat, 5 Feb 2005, Mike Ireton wrote:
+ process swapper pid 0 threadinfo c05c2000 task c04dcba0
 
-> Howdy list,
-> 
-> I'm concerned about portscanning viruses which have infected customer 
-> machines and are using all of that subscribers outbound to scan for 
-> (say) open port 445's all over the net. This isn't good for the wireless 
-> and tends to use up substantial resources in disproportion to the amount 
-> of data actually being moved. I have control over all my subscriber's 
-> CPE gear (running a custom embedded linux distro) and I am considering 
-> including an outbound firewalling feature to slow the rate at which new 
-> connections can be established. Basiclly, I want to ratelimit outbound 
-> syn's to some sane number (5/sec to start). I already have qos and 
-> bandwidth control in place at the cpe side, but this job is more 
-> 'packets per second' oriented than 'bytes per second'.
-> 
-> I've looked at various cookbook examples of using '-m limit 5/s' and did 
-> rules like '-p tcp --tcp-flags SYN -m limit --limit 5/s -j DROP', but I 
-> effectively cut myself off and couldn't make any connections at all. 
-> Does anyone have a code snippet that could share which would do this job 
-> for me?
-> 
-> Thanks.
-> 
-> 
+ results from a downstream windows 2k system logging onto MSN
 
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
+ This box is using ip route2 dual routing loadbalanced through two upstream 
+providers successfully.  The same signon is successfull on gentoo-dev-sources 
+2.6.9-r11 with iptables 1.2.11 (even after the rebuild of iptables against 
+2.6.9-r5!)
 
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
+ I don't have a ksymoops breakdown yet -- the oops doesn't get saved of course 
+and I'm not 100% on using ksymoops manually yet. *grin*
 
+ the backtrace shows 
+ icmp_reply_translation -> manip_pkt -> error_code -> OOPS.
+
+ I see only a few changes between the two kernels in ip_nat_proto_udp.c:
+
+diff 
+ip_nat_proto_udp.c /usr/src/linux-2.6.9-gentoo-r11/net/ipv4/netfilter/ip_nat_proto_udp.c
+86c86
+<             unsigned int iphdroff,
+---
+        >             unsigned int hdroff,
+90d89
+<       struct iphdr *iph = (struct iphdr *)((*pskb)->data + iphdroff);
+92d90
+<       unsigned int hdroff = iphdroff + iph->ihl*4;
+102c100
+<               oldip = iph->saddr;
+---
+      >               oldip = (*pskb)->nh.iph->saddr;
+106c104
+<               oldip = iph->daddr;
+---
+      >               oldip = (*pskb)->nh.iph->daddr;
+
+
+ I'm still looking, but if anyone sees anything glaringly obvious, please 
+holler at me on netfilter@lists.netfilter.org 
+
+ Thanks for all the great work Netfilter
+
+ Alistair Tonner
+ RSO Unix support admin
+
+ and linux addict.
+
+
+
+ 
 
