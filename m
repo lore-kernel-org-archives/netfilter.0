@@ -1,10 +1,14 @@
-From: Denis Tatarskikh <dendy@clamas.udsu.ru>
-Subject: Problem with 'random' module (v1.2.11)
-Date: Mon, 17 Jan 2005 00:22:41 +0400
-Message-ID: <20050116202241.GB22482@clamas.udsu.ru>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: not sure if 'iptables -Z' needed/useful/superfluous here..
+Date: 17 Jan 2005 14:15:11 +0100
+Message-ID: <1105963142.26574.6.camel@nostromo.bgsecm.com>
+References: <20050114060327.GA8917@spawar.navy.mil>
+	<1105728837.25584.63.camel@nostromo.bgsecm.com>
+	<1105831929.8208.1.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1105831929.8208.1.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,20 +19,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi all.
-I've just discouraged by following message:
-iptables -A FORWARD --match random --average 60 -j LOG
-iptables: No chain/target/match by that name
+El dom, 16 de 01 de 2005 a las 00:32, Jason Opperisano escribi=C3=B3:
+> On Fri, 2005-01-14 at 16:38, Jose Maria Lopez wrote:
+> > i	El vie, 14 de 01 de 2005 a las 07:03, seberino@spawar.navy.mil
+> > escribi=C3=B3:
+> >=20
+> > > I read man page on iptables but it still was not clear if I need
+> > > -Z to 'reset the byte count' and other stuff like it says it will d=
+o.
+> >=20
+> > If you delete your rules there are no counters, so you don't need
+> > to reset them.
+>=20
+> it will still reset the built-in chain counters.
+>=20
+> -j
 
-I'm using iptables 1.2.11 under Debian/testing with stock Debian
-kernel(2.4.27). Could anybody explain why that error show up?
+You are right. I didn't have in mind that. I will change it in
+our bastion-firewall GPL software, because it uses the counters
+to get statisticals.
 
-Thanking you in anticipation.
+Thanks for the information and regards.
 
--- 
-Denis Tatarskikh [UdSU/MF] [UdSU/IC]        mailto:dendy@udsu.ru
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
 
