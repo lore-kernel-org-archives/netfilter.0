@@ -1,14 +1,11 @@
-From: Alex Satrapa <alex@lintelsys.com.au>
-Subject: Re: could someone translate these rules inot plain english
-Date: Thu, 22 Jan 2004 17:34:28 +1100
+From: Brian Capouch <brianc@palaver.net>
+Subject: iptables NAT with "policy routing?"
+Date: Thu, 22 Jan 2004 01:49:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <400F6EF4.2060608@lintelsys.com.au>
-References: <33682.66.65.52.125.1074751856.squirrel@sojourn.dyndns.org>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <400F7264.1080201@palaver.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <33682.66.65.52.125.1074751856.squirrel@sojourn.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,22 +18,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Technical wrote:
-> -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+I have had to temporarily use a table-based route for one of my networks 
+for administrative reasons, e.g.
 
-For this chain (presumably packets inbound to the network), accept any 
-packets that are part of established TCP connections (ie: a SYN packet 
-for the connection has gone out from the network), or related to UDP 
-packets that have gone out through the firewall.
+ > ip rule from 192.168.1.0/24 lookup table temp
 
-> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+Then
 
-Otherwise, reject the packet by sending back an ICMP message telling the 
-remote host that communication with its intended target is 
-administratively prohibited.
+ > ip route add default via 192.168.127.1 dev eth0 table temp
 
+I have standard iptables NAT rules for a host on that network:
 
-HTH
-Alex Satrapa
+iptables -t nat -A POSTROUTING -s 192.168.1.10 -j SNAT --to-source A.B.C.D
 
+iptables -t nat -A PREROUTING -d A.B.C.D -j DNAT --to-destination 
+192.168.1.10
+
+**********
+
+I suspect though, that this mode of routing (as opposed to using the 
+"regular" table via "route add default") is somehow hosing my iptables NAT?
+
+At least sniffing the egress interface now shows the traffic heading out 
+with its NATted address of 192.168.1.10.
+
+Newbie here, I guess.  Can someone help/enlighten?
+
+Thx.
+
+B.
 
