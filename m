@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: VPN over netfilter NAT
-Date: Thu, 16 Sep 2004 08:30:50 -0400
+Subject: Re: Problem with ppt_conntrack_nat
+Date: Thu, 16 Sep 2004 08:37:05 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095337850.2045.11.camel@wolfpack.ljm.dom>
-References: <200409161436.26695.apapadop@alumni.carnegiemellon.edu>
+Message-ID: <1095338224.2045.17.camel@wolfpack.ljm.dom>
+References: <020101c49b05$5dc59c70$0a00a8c0@admin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409161436.26695.apapadop@alumni.carnegiemellon.edu>
+In-Reply-To: <020101c49b05$5dc59c70$0a00a8c0@admin>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +17,33 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-09-16 at 07:36, Alexandros Papadopoulos wrote:
-> I stumbled across 
-> http://www.linuxhomenetworking.com/linux-adv/vpn-linux.htm today, which 
-> states that "NAT breaks VPNs".
+On Wed, 2004-09-15 at 05:21, Pawe=C5=82 Filutowski wrote:
+> Hello,
+> I have just compiled a new kernel 2.4.27 with iptables 1.2.11 and patch=
+-o-matic-ng-20040621
+> First i tried to compile only kernel and iptables.
+> Finally, everythings worked fine.
+> But when I added the ppt_conntrack_nat (./runme pptp-conntrack-nat) and=
+ I compiled kernel - I noticed that NAT(MASQUARADE) didn`t work (although=
+ there wasn`t any errors during setting iptables).
+> I use rc.firewall to setup iptables.
+>=20
+> Can anyone help me ?
 
-yes it does.  not that you can't put a cast on it, though...
+this has got to go into a FAQ somewhere...oh wait--it already is...
 
-> Is this just an over-simplifying statement that really means "if you're 
-> reading this, then don't even try setting up a NAT-traversing VPN"?
-> 
+http://netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-2.ht=
+ml#ss2.3
 
-it is an over-simplifying statement--but it's generally good advice.
-
-> This is exactly what I'm planning to do; I've got my mind set on having 
-> the two VPN endpoints inside two NATed networks, both managed by 
-> respective dedicated linux boxes running only netfilter.
-
-move the endpoints of the VPN tunnel to be the linux boxes running
-netfilter, unless you have "i helped write the RFC's" level of
-familiarity with IPSec.
-
-> If that is indeed possible (and doable for a first timer), could anyone 
-> provide some relevant pointers to documentation?
-
-http://www.openswan.org/ has the latest version of the freeswan
-implementation, but their docs are still catching up.
-
-the old freeswan docs are still
-available--http://www.freeswan.org/freeswan_trees/freeswan-1.99/doc/toc.html might be a good place to start.
-
-having both ends of a site-to-site VPN behind NAT is an awfully painful
-situation.  especially if you have the netfilter gateways available to
-do the job.
-
-there's the common statement of "don't run any services on your
-firewall, period" which i generally agree with.  when it comes to
-IPSec--i do not.  i think the firewall is a fine place to terminate VPN
-tunnels (decrypt->filter->NEXT)...
+after you patch with POM, you need to rebuild your userspace iptables
+package.
 
 -j
 
--- 
+--=20
 Jason Opperisano <opie@817west.com>
 
 
