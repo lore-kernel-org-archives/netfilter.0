@@ -1,15 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Transparent Remote Proxy Server
-Date: Mon, 27 Sep 2004 14:27:56 -0400
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: re: ip_conntrack_max vs ip_conntrack
+Date: 27 Sep 2004 20:57:24 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096309676.16814.57.camel@wolfpack.ljm.dom>
-References: <666183F7-0DA7-11D9-99BA-000A95C71776@freezone.co.uk>
-	<41546F23.2010601@pbl.ca>
-	<9B51275E-10B2-11D9-9099-0003931DA24A@freezone.co.uk>
+Message-ID: <1096311443.1079.11.camel@nostromo.bgsecm.com>
+References: <561dc32604092710524f3a8b5b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9B51275E-10B2-11D9-9099-0003931DA24A@freezone.co.uk>
+In-Reply-To: <561dc32604092710524f3a8b5b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +17,40 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Mon, 2004-09-27 at 14:25, ms419@freezone.co.uk wrote:
-> Thank you sincerely for your suggestion! You are correct: It is simpler 
-> to use DNAT & MASQUERADE. I tried it & it works. But now, I am trying 
-> to avoid using NAT.
-> 
-> The problem with NAT (as I understand it) is it rewrites the 
-> destination address, which breaks HTTP/1.0 requests without a Host: 
-> header. By using policy routing, I hope to route traffic through wum 
-> without rewriting the destination address.
+El lun, 27 de 09 de 2004 a las 19:52, Jiann-Ming Su escribi=C3=B3:
+> I'd like to know what some of these proc paremeters mean as well.=20
+> What we're experiencing is a SYN flood attack that's filling up the
+> connection tables.  What I'd like to do is change the timeout to 5
+> seconds, instead of the default 30 seconds.
 
-your "-j REDIRECT" on wum rewrites the destination IP address as well.
+The ip_conntrack_max parameter is used to set the maximum
+entries in the conntrack table that the system can have at
+a time. The ip_conntrack is the file that contains the
+conntrack table, it lists the IPs and their states.
 
--j
+If you want to limit the SYN flooding you should use the
+limit match of iptables, or you can use the TCP SYN cookie
+feature of netfilter. It can be activated in
+/proc/sys/net/ipv4/tcp_syncookies
 
--- 
-Jason Opperisano <opie@817west.com>
+For the limit match look at:
+iptables -m limit --help
+
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
 
