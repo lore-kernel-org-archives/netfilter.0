@@ -1,12 +1,11 @@
-From: "Tomasz Wrona" <twr@wp.pl>
-Subject: Per IP packets/s limit.
-Date: Sat, 22 Nov 2003 17:34:34 +0100
+From: "Aaron P. Martinez" <ml@proficuous.com>
+Subject: pptp-conntrack-nat limitations
+Date: 23 Nov 2003 14:01:26 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3fbf901a8bd4c@wp.pl>
+Message-ID: <1069617685.25622.74.camel@aaron-rh9-ws.proficuous.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +18,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+This is hopefully a very easy question.  The help file on the 
+pptp-conntrack-nat says:
 
-I am a bit out of date... so I would like to ask if  does any
-iptables module support
-per IP pkt/s limit ?
+"- can only NAT connections from PNS to PAC"
 
-I mean something like "-m limit --limit X/s [--limit-burst Y]"
-but working per IP simmilar to iplimit module which do not
-require creating separate rules for each src IP.
+What does this mean exactly? 
 
-I think it could be usefull against simple icmp/udp DoS in large
-LAN enviroment.
+Thanks in advance.
 
-
-Regards
-tw
---
- 
-
+Aaron P. Martinez
 
 
