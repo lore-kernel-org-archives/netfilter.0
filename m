@@ -1,49 +1,43 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: newbie struggling with p-o-m in kernel 2.6
-Date: Sun, 14 Mar 2004 06:32:35 -0500
-Sender: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-Message-ID: <c31fsj$l7s$1@sea.gmane.org>
-References: <MPG.1abbd219144e52d99896a5@localhost>
+From: Per Jessen <per@computer.org>
+Subject: Re: simple load-distribution setup - but weird behaviour
+Date: Sun, 14 Mar 2004 18:14:57 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <c323uh$u07$1@sea.gmane.org>
+References: <c2s4k0$35s$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7Bit
-Return-path: <netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
-Errors-To: netfilter-admin-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmI2yCS0tKOigE@public.gmane.org>
-List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIRj+87qQpzpCql8G6E966Ow@public.gmane.org>
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPuLxvTOCFHmIFcjs2lY4wUfKtGCp0j7rLg@public.gmane.org>
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+To: netfilter@lists.netfilter.org
 
-Okay, I've figured out a couple of things.
+Per Jessen wrote:
 
-> - I grabbed patch-o-matic-ng-20040302, and tried it.  But it won't apply
-> the condition and time patches, because both of them are marked 'linux
-> < 2.6.0'.
+> iptables -t nat -A OUTPUT -d 192.168.3.200 -j DNAT --to
+> 192.168.3.101-192.168.3.108
+> 
+> All traffic originates on the local machine. It's been working fine for
+> quite a while, but today I noticed that only 7 of the 8 machines in the
+> cluster are being distributed to - 101,102,104,105,106,107,108 but not
+> 103.
 
-By deleting the line 'Requires: linux < 2.6.0' from the info files for these
-two parches, I got pom-ng to apply both of them to kernel 2.6.3 with
-complaint.  The kernel then built with no trouble, although the option help
-texts weren't available in 'make xconfig'.  However I haven't tested the
-modules yet.  But it seems that at least these two extensions are close to
-ready for kernel 2.6.
- 
-> - Even though I try to run runme in batch mode, it always asks where my
-> iptables source code is.  Looking through the script, there doesn't seem
-> to be an environment variable to set for that.
+I've just now seen this problem again - I had taken 2 nodes down for
+maintenance, and although they're both back up and running, iptables is now
+not distributing traffic to them. 
 
-Looking through the runme script again, I figured out that we have a new
-option for specifying the kernel and iptables source paths:
+Any hints or suggestions?  I'm sure clearing the filtering tables will do
+it, but I'd rather understand what's going on here. 
 
---path $KERNEL_DIR:$IPTABLES_DIR
 
-Of course this needs to be documented for the user.  And, I should be able
-to set an environment variable IPTABLES_DIR just as I do KERNEL_DIR, in
-order to avoid typing the directories on the command line each time.
-
+cheers,
+Per Jessen, Zurich
 
 
