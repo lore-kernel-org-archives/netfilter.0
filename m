@@ -1,9 +1,8 @@
-From: "John Black" <black@arbbs.net>
-Subject: Re: SNAT question
-Date: Fri, 20 Feb 2004 21:33:33 -0600
+From: Andreas Meyer <anmeyer@gmx.net>
+Subject: strange connetions to exodus.net
+Date: Sat, 21 Feb 2004 12:25:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002401c3f82b$7cab7740$ed02fea9@black>
-References: <40366adb.53af.0@arbbs.net> <200402202105.23417.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040221122547.1cb9a3eb.anmeyer@gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,17 +18,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hello!
 
-> 
-> Because Microsoft always do things differently from everyone else :) ?
-> 
+Just wrote a little iptables-script not allowing connections
+to port 80.
+Now in the log I see this:
 
-> 
-> Hope this helps clarify your confusion.
-> 
+Feb 21 11:53:41 delta kernel: DROP-TCP :IN= OUT=eth1 SRC=192.168.20.60 \
+ DST=209.225.0.6 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=22160 PROTO=TCP \
+ SPT=41197 DPT=80 WINDOW=5840 RES=0x00 SYN URGP=0
 
-yes it does, thank you
+It seems that with every request to a website there is also a request to
+IP 209.225.0.6 wich leads to exodus.net.
 
-john
+I am completely worried about this. Who can tell me what is going on?
 
+
+Regards
+-- 
+   Andreas Meyer
 
