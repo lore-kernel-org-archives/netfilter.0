@@ -1,13 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: no route to host on port 80
-Date: 11 May 2003 04:06:19 -0400
+From: Francois LE BOURDELLES <flebourdelles@free.fr>
+Subject: Re: DNAT/SNAT stuff
+Date: 11 May 2003 11:20:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1052640379.10080.104.camel@alpha.newkirk.us>
-References: <3EB5D2C1.5080001@ruffrecordings.com>
+Message-ID: <1052644854.17942.28.camel@charlebourg-2-81-57-105-138.fbx.proxad.net>
+References: <1052386761.5804.5.camel@mdew>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EB5D2C1.5080001@ruffrecordings.com>
+In-Reply-To: <1052386761.5804.5.camel@mdew>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,38 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Tim Dionne <tim@ruffrecordings.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: mdew <mdew@orcon.net.nz>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Sun, 2003-05-04 at 22:56, Tim Dionne wrote:
-> Hi --
-> 
-> I'm trying to allow outside access to my linux box on port 80.  However,
->    when I try to connect (using a web browser, or telnet) the connection
-> is not created.  When I use telnet and specify port 80 I get a "no route
-> to host" error.  I've experimented with my firewall by completely
-> removing all rules from all chains, but the connection can still not be
-> made.  I can establish connections on all other ports except 80!  Can
-> anyone help me?
-> 
-> Thanks.
-> 
+Hello ,
 
-Hmmm.  If this is a connection from outside that's failing, it sounds
-like an ISP blocking port 80 inbound to me.  I have that situation with
-VerizonDSL, and have been forced to run Apache on port 83.  (either that
-or pay $30/month extra for 'business' instead of 'residential' service -
-everything the same except static IP and port 80 unblocked)
+I just posted a similar question related to the same subject :
+nating a full subnet (as described in the NAT howto) that doesn't seems
+to work !
+in fact it seems that the --to A.B.C.D/X fromat is not implemented (or
+has been removed ?)
 
-If you have the machine on a LAN then ensure that you can successfully
-access port 80 from the LAN.  If it stands alone, then at least try
-browsing from it to http://localhost:80 and make sure you can access it
-that way.  If all of that is successful, try setting Apache (or whatever
-web server) up to respond to requests on a different port number, and
-try accessing it from outside with the explicit port number. 
+I'm waiting for a response ... from the list or the authors ....
 
-j
+Regards.
 
+Le jeu 08/05/2003 =E0 11:39, mdew a =E9crit :
+> current setup,=20
+>=20
+> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p tcp --dport
+> 4661 -j DNAT --to 10.0.0.3
+> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p tcp --dport
+> 4662 -j DNAT --to 10.0.0.3
+> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p tcp --sport 4661
+> -j SNAT --to 210.54.175.12
+> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p tcp --sport 4662
+> -j SNAT --to 210.54.175.12
+> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p udp --dport
+> 4665 -j DNAT --to 10.0.0.3
+> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p udp --dport
+> 4672 -j DNAT --to 10.0.0.3
+> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p udp --sport 4665
+> -j SNAT --to 210.54.175.12
+> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p udp --sport 4672
+> -j SNAT --to 210.54.175.12
+>=20
+> i would like specify 10.0.0.x instead of 10.0.0.3, how is this done?
+>=20
+> and some problems i had attempting it..
+>=20
+> Try `iptables -h' or 'iptables --help' for more information.
+> iptables v1.2.6a: Bad IP address `10.0.0.0/24'
+> iptables v1.2.6a: host/network `10.0.0.3-10.0.0.8' not found
+> Try `iptables -h' or 'iptables --help' for more information.
+>=20
+> cc: please :)
+--=20
+Francois LE BOURDELLES <flebourdelles@free.fr>
 
 
