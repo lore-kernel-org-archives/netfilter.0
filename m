@@ -1,13 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: RE: virus scanning with iptables
-Date: 10 Sep 2004 18:37:59 +0200
+Subject: Re: LAN Proxy - iptables gateway
+Date: 10 Sep 2004 18:37:51 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094820933.30362.23.camel@nostromo.bgsecm.com>
-References: <01CEA3A5B8B2D511890F0002A5870AEC02CE644C@exchange.admin.slc.edu>
+Message-ID: <1094820617.30362.16.camel@nostromo.bgsecm.com>
+References: <20040910053613.5C11C576@smtp-01.piensasolutions.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC02CE644C@exchange.admin.slc.edu>
+In-Reply-To: <20040910053613.5C11C576@smtp-01.piensasolutions.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +20,58 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El vie, 10 de 09 de 2004 a las 02:36, Khanh Tran escribi=C3=B3:
-> How about port scanning clients behind from the firewall?  Suggestions?
-> I'm thinking of something that could be scripted to append an iptables
-> rule to block the MAC address of the offending client, then notify me.
-> Am I looking at an NMAP plugin possibly?
+El vie, 10 de 09 de 2004 a las 07:36, Manikandan escribi=C3=B3:
+> Hi all,
 >=20
+> =20
 >=20
-> Khanh Tran
-> Network Operations
-> Sarah Lawrence College
+> I have a local LAN (10.35.50.0/24) which is connected to my linux
+> firewall/gateway running iptables for internet access using an internet
+> link. My LAN is connected to other subnets using a leased line.=20
+>=20
+> =20
+>=20
+> I had to add a few routes in my linux gateway (running iptables) to ena=
+ble
+> my LAN clients to access servers in other subnets and networks which ar=
+e in
+> the range of 10.0.0.0/8 and 97.0.0.0/8.=20
+>=20
+>            =20
+>=20
+> Everything seems to be working fine. But recently I found that one of m=
+y LAN
+> clients is running an Analog proxy. Few users sitting in other networks=
+ are
+> using this proxy and able to access internet.=20
+>=20
+> =20
+>=20
+> My firewall is configured to allow traffic to internet from LAN only
+> (10.35.50.0/24). As the proxy is inside this network, firewall allows t=
+he
+> traffic.
+>=20
+> =20
+>=20
+> How do I stop this? I don't want users in other network to access inter=
+net
+> through my iptables. Please help me. Thanks in advance.=20
+>=20
+> =20
 
-You can look at snort+guardian to make this kind of rules, but
-have in mind that are easy to bypass and also there's a real
-danger of having a DOS if you don't have a list of IPs you never
-want to block, as your DNS server, your own machines and so.
+You could look at your logs and find the port analog is using. If it's
+not a port you want to have opened then you should close it in the
+firewall. If it's a port you need, let's say port 80, then it's a little
+more complicated. You could use some kind of application proxy to stop
+people from using this kind of applications.
 
+>=20
+> Regards,
+>=20
+> Manikandan
+>=20
+> =20
 --=20
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
