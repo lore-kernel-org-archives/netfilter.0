@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Frank Gruellich <frank@home.manuelm.org>
 Subject: Re: block port 137
-Date: Tue, 3 Aug 2004 09:41:11 +0100
+Date: Tue, 3 Aug 2004 11:16:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408030941.11162.Antony@Soft-Solutions.co.uk>
-References: <267354A234DF4D46AA6AE56E1240BEF004A3BF@tv.wcslnet.net> <200408030717.59289.Antony@So ft-Solutions.co.uk> <1091518405.4693.15.camel@dc.nucleussoftware.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040803091658.GC1067@der-frank.org>
+References: <200408030717.59289.Antony@Soft-Solutions.co.uk> <1091518405.4693.15.camel@dc.nucleussoftware.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 In-Reply-To: <1091518405.4693.15.camel@dc.nucleussoftware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -19,42 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tuesday 03 August 2004 8:33 am, Dhananjoy Chowdhury wrote:
-
+* Dhananjoy Chowdhury <dhananjoy@nucleussoftware.com>  3. Aug 04:
 > On Tue, 2004-08-03 at 11:47, Antony Stone wrote:
-> >
+> > On Tuesday 03 August 2004 7:04 am, Dhananjoy Chowdhury wrote:
+> > > try dropping packets both with dport 137 and also with sport 137.
 > > I disagree.
-> >
-> > Try ACCEPTing the packets you *want* to go through the firewall, and DROP
-> > everything else.
->
+
+Me too.
+
 > Your terminology is very much true but David has already applied  the
 > rule
 > #iptables -A FORWARD -p udp -s 0/0 --dport 137 -j DROP
+> but then also he isn't able to stop output traffic through port 137.
+> So in this scenario he should appply the above rule for both --sport 
+> and --dport.
+> #iptables -I FORWARD -p udp -s 0/0 --dport 137 -j DROP
+> #iptables -I FORWARD -p udp -s 0/0 --sport 137 -j DROP
 
-That is not the same rule as "iptables -I FORWARD......"
+Well, from my point of view he should add to these rules:
+# iptables -P FORWARD DROP
+# iptables -F FORWARD
 
-I suspect he has a rule somewhere in the ruleset which is allowing the packets 
-(perhaps based on source address?), which adding a rule at the end will not 
-solve.   Putting the DROP rule at the top of the ruleset makes a big 
-difference.
+Then he should fix his network by imaging compromised hosts for further
+analysis, flatting them and installing them from trusted sources.  Later
+he should look for an appropriate L.A.R.T. for the users of the machines
+and maybe go online again.
 
-If the problem is packets to random destination ports, *from* UDP port 137, 
-then it doesn't sound like what the ISP originally complained about, and 
-what's the threat anyway (since destination port is what matters in terms of 
-vulnerabilities and exploits)?
-
-Regards,
-
-Antony.
-
+YMMV,
+ regards, Frank.
 -- 
-If the human brain were so simple that we could understand it,
-we'd be so simple that we couldn't.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Sigmentation fault
 
