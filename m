@@ -1,13 +1,13 @@
-From: Alok Nath Upadhyay <aloknathupadhyay@sunguru.com>
-Subject: Re: 2 ISP NAT configuration
-Date: Thu, 29 Jul 2004 06:49:27 -0700 (PDT)
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: Blocking IP
+Date: Thu, 29 Jul 2004 09:04:04 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040729134927.41DACAD56@sitemail.everyone.net>
-Reply-To: aloknathupadhyay@sunguru.com
+Message-ID: <410903D4.6050203@pbl.ca>
+References: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de> <001601c47565$8e0ba110$858310ac@suarapembaruan.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <001601c47565$8e0ba110$858310ac@suarapembaruan.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,66 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.netfilter.org
 
-dear guillaume,
-hi.
-i am currently working on the same kind of problem. i have three ISP links for connecting to the internet. 2 of these links have dynamic address and remaining one has static address. Now i wanted all of my LAN traffic to these 3 links simultaneously. i.e. in load balancing mode while keeping all links buzzing with traffic. i found a site whih was very useful for me. this is www.linux.com.lb. in the howto section there is a load balancing howto. moreover there is a patch available with netfilter at official site www.netfilter.org. this patch is named as random patch and i am using it to distribute the traffic as 33/33/33 percentagle of the total traffic on various ISP links. try it and i hope your problem will be resolved.
+david wrote:
+> Dear all,
+> 
+> My mail server received so many virus mails from ip 202.145.10.147 and after
+> i look at gateway (linux) and i using iptraf i see so many traffic from
+> 202.145.10.147.
+> After that i try to block all traffic from 202.145.10.147 with command :
+> #iptables -A INPUT -s 202.145.10.146 -j DROP
+> 
+> but i still receiveall traffic from 202.145.10.146......
+> Can anybody help me ........... that ip send virus in to mail server more
+> then 20 mails per minute.......
 
+Are the mail server and gateway two separate hosts?  If yes, you need to 
+add the rule to the FORWARD chain.  Packet will go through INPUT chain 
+of filter table only if its destination is local host (the gateway in 
+your case).  If packet is to be forwarded to another host, it will go 
+only through FORWARD chain of filter table.  In no circumstance are you 
+going to see packet going through both INPUT and FORWARD chains of 
+filter table.
 
-Alok Nath Upadhyay
-Suntech (OSM) Team
-PC Solutions (P) Limited
-12, Sant Nagar, East of Kailash
-New Delhi - 110 065.
-Tel.: +91-11-2621 3355 / 2621 7766 / 2688 4433 (Ext.: 51)
-Fax : +91-11-647 6822
+If the mail server is running on the gateway host, check the order of 
+your rules.  Are there any rules before the one you just added that 
+would accept the packets from "bad host"?
 
-
-
---- guillaume <guillaume.riviere@hcm.vsl-vn.com> wrote:
-Dear All netfilter users and developpers,
-
-This software is an amazing software,
-We are are very happy of this solution
-for our office.
-
-Now, I need some help to improve our network:
-
-Our office is based in Vietnam, and in this country
-(for the moment) all internet connections are unstable.
-
-We currently use an ISP with a (slow) connection, but
-providing real static IP address (6). We want to add a second ISP
-to our office with non static IP Address. They provide us also a
-modem/router for NAT.
-
-We already install a GNU/Debian Router with netfiler support (2.6 kernel)
-in order to manage our first ISP link.
-
-We would like to add a network card in this router and "loadbalance"
-our internet connection between those two ISPs.
-
-The problem is that some of our internal IP need to be link to
-a real external IP on the first provider only (For VPN connections).
-
-Is it possible with netfilter to link some internal IP to a "load 
-balancing" between 2 ISPs and some other on just one of those ISP ?
-
-Is there a possibility to detect a "down" line and to use automatically 
-the second line for all our internals IP ?
-
-How can I manage the differents bandwith with "load balancing" ( I mean, 
-my first ISP average is something around 64 kbps and my second is 512 
-kpbs: How can I said to net filter 20% on this line and 80% on this line)
-
-Is there How to or Dosumentation for this on 2.6 kernel ?
-
-Thank you in advance for your help,
-
-Guillaume
-
- 
-
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
