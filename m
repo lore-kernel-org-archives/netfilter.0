@@ -1,13 +1,12 @@
-From: alexb@spsul.com.br
-Subject: RE: Masquerading on local ports
-Date: Thu, 20 Mar 2003 15:34:23 -0300 (BRT)
+From: "Oliver Baltz" <oliver.baltz@genion.de>
+Subject: modprobe: Can't locate module ip_tables
+Date: Wed, 19 Mar 2003 03:16:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048185263.3e7a09af5b967@www.spsul.com.br>
-References: <FD8F124A387AD6119F7900A0D218B321019C75@hslex01.hslbz.local> <1048177609.1493.127.camel@localhost.localdomain>
+Message-ID: <001c01c2edbd$932b8560$0201a8c0@musikzimmer>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0017_01C2EDC5.F40DCAC0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1048177609.1493.127.camel@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +16,86 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Henry Ritzlmayr <h.ritzlmayr@gmx.at>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.samba.org
 
-This one works for me:
+This is a multi-part message in MIME format.
 
-iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 81 \
-         -j REDIRECT --to-ports 80
+------=_NextPart_000_0017_01C2EDC5.F40DCAC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Alex
+A real newbie needs your help! I just want to setup  an =
+internet-gateway...
 
-C=F3pia Henry Ritzlmayr <h.ritzlmayr@gmx.at>:
+My Problem:
 
-> Am Don, 2003-03-20 um 16.29 schrieb Rob Sterenborg:
-> > > And here is the question. How is it possible to nat a lokal port?
-> > >=20
-> > > IPTABLES -t nat -A PREROUTING -p tcp -d 127.0.0.1=20
-> > > --destination-port 81 -j DNAT --to-destination 127.0.0.1:80
-> > >=20
-> > > telnet localhost 80  <<< works
-> > > telnet localhost 81  <<< Connection refused
-> >=20
-> > iptables -t nat -A PREROUTING -d 127.0.0.1 -p tcp --dport 80 -j
-> REDIRECT
-> > --to-ports 81
-> >=20
-> >=20
-> > Rob
->=20
-> Tanks for the answer,
-> I tried that one already but it behaves the same.
-> I also tried=20
->=20
-> IPTABLES -t nat -A PREROUTING -p tcp -d 172.16.172.12
-> --destination-port
-> 81 -j REDIRECT --to-ports 80
->=20
-> wich works perfect for both port 80 and 81 from a foreign host.
->=20
-> Henry
->=20
->=20
+server:/home/ob# iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+modprobe: Can't locate module ip_tables
+iptables v1.2.6a: can't initialize iptables table `nat': iptables who? =
+(do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+
+My hardware:
+
+kernel 2.4
+debian 3.0
+ipchains deinstalled
+ipforward enabled
+
+
+Please help!
+
+Olli
+
+---------------------------------------------
+Oliver Baltz
+
+
+------=_NextPart_000_0017_01C2EDC5.F40DCAC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DTahoma size=3D2>A real newbie needs your help! I just =
+want to=20
+setup&nbsp; an internet-gateway...</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DTahoma size=3D2>My Problem:</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DTahoma size=3D2>server:/home/ob# iptables -t nat -A =
+POSTROUTING -o=20
+ppp0 -j MASQUERADE<BR>modprobe: Can't locate module =
+ip_tables<BR>iptables=20
+v1.2.6a: can't initialize iptables table `nat': iptables who? (do you =
+need to=20
+insmod?)<BR>Perhaps iptables or your kernel needs to be=20
+upgraded.<BR></FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2>My hardware:</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DTahoma size=3D2>kernel 2.4</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2>debian 3.0</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2>ipchains deinstalled</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2>ipforward enabled</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DTahoma size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DTahoma size=3D2>Please help!</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DTahoma size=3D2>Olli</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DTahoma=20
+size=3D2>---------------------------------------------<BR>Oliver=20
+Baltz</FONT></DIV>
+<DIV><FONT face=3DTahoma size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0017_01C2EDC5.F40DCAC0--
+
 
