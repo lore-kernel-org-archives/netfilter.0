@@ -1,10 +1,9 @@
-From: Saulius Menkevicius <razzmatazz@mail.lt>
-Subject: how to forward packets to another gateway, if i'm one
-Date: Fri, 6 Dec 2002 19:28:48 +0200
+From: "Ryan / Tilzs" <tilzs@hotmail.com>
+Subject: Couple IPQ questions
+Date: Tue, 10 Dec 2002 17:12:27 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ISPFE7vXn10A5fpk965000657df@mail.takas.lt>
+Message-ID: <F40hL7szm8xd8w5A8zW000126bf@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,55 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi,
-  I've spend some time searching Google on the topic, however 
-eventually gave up. So..
+Hi all,
 
-  Is there any way of forwarding packets to another gateway,=
- which, 
-besides, is on the same network. Say, I'm on IP 10.0.0.2, and I=
- act 
-as a gateway (ADSL, really) for a number of machines on the same=
- LAN. 
-And there's another such gateway, hooked to another ADSL, which 
-handles connections for another bunch of machines. Essentially=
- the 
-hosts 10.0.0.1 and 10.0.0.2 are identic and perform the same 
-function.
+I have a project where I need to mangle and route packets on 2 different 
+network interfaces. Each network interface will be assigned a different 
+subnet. I'm trying to figure out the best approach at doing this.
 
-  Now, I want to make some traffic that comes from some client=
- and 
-that should go through gateway 10.0.0.1 to be forwarded to=
- 10.0.0.2 
-(without any changes). The need is to make the forwarding=
- transparent 
-to both 10.0.0.2 and the client.
+I'm wondering if it is possible to choose what network interface to send 
+packets to via a user level IPQ app or is something like this only possible 
+doing a kenel level module.
 
-  So it's the way I suppose it should be done:
-=09a) No changes to be made 10.0.0.2's firewalling rules (in fact,=
- it 
-runs FreeBSD);
-=09b) Make 10.0.0.1 to forward them to 10.0.0.2 transparently. 
+I'm also curious if it is possible (I assume the answer is yes on this one) 
+to inject completely new packets to one NIC or the other using an IPQ user 
+level app.
 
-_This_is_the_culprit_. I don't know how to make them (packets) go=
- 
-that way. DNAT/SNAT doesn't suit, neither does REDIRECT, as they=
- 
-modify packets they filter.
+Third, if the answer is yes to both, if anyone has an example for me it 
+would be appreciated.
 
-=09In FreeBSD, there's ipfw rule fwd, e.g. if 10.0.0.1 ran bsd, i'd=
- 
-type "ipfw add fwd 10.0.0.2 ip from some_client to any". I'm=
- looking 
-for the a way on how to make the same effect on Linux/iptables.
-=09Wrote to much of blurb. Guess I didn't mess it up too much :)
+I've written kernel netfilter modules before, but I'd rather do codeing at 
+user level if IPQ will support what I need to do.
 
-=09Thanks. 
--- 
-Saulius Menkevicius, razzmatazz@mail.lt on 12.06.2002
 
+ryan hagelstrom
+
+Sonic Fury        - http://www.sonicfury.net
+
+_________________________________________________________________
+The new MSN 8: advanced junk mail protection and 2 months FREE* 
+http://join.msn.com/?page=features/junkmail
 
 
