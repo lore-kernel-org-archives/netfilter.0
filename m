@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables can protect syn-flooding?
-Date: Wed, 6 Nov 2002 17:17:46 +0000
+From: "Udo Rader" <spamtrash2@vibe.ac>
+Subject: Re: DNAT possible with the string module?
+Date: Wed, 06 Nov 2002 18:34:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211061717.gA6HHse21337@vulcan.rissington.net>
-References: <F124l1k7ZDGRLvoD6ax0001857d@hotmail.com> <001f01c285a6$1246f260$0300000a@hypnos>
+Message-ID: <pan.2002.11.06.17.34.41.666315@vibe.ac>
+References: <aq64dg$4br$1@hermes.vibe.ac> <20021104195745.DUTJ27595.mta05-svc.ntlworld.com@there>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001f01c285a6$1246f260$0300000a@hypnos>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +17,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 06 November 2002 3:06 pm, Jon Anderson wrote:
+On Mon, 04 Nov 2002 21:36:10 +0000, Antony Stone wrote:
 
-> Can't guarantee that I'm right about the following, or that it's even
-> relevant, but based on my experience, the following might help...
->
-> SB CH (chulmin2@hotmail.com) wrote:
-> > I saw that we can protect syn-flooding using iptables like this.
-> >
-> > $IPTABLES -N syn-flood
-> > $IPTABLES -A INPUT -p tcp --syn -j syn-flood
-> > $IPTABLES -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
-> > $IPTABLES -A syn-flood -j DROP
->
-> Of course one could achieve the same thing by using only two rules:
->
-> iptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 4 -j
-> ACCEPT
-> iptables -A INPUT -p tcp --syn -j DROP
+> On Monday 04 November 2002 3:40 pm, Udo Rader wrote:
+> 
+>> hi,
+>>
+>> I would like to do the following thing:
+>>
+>> 2 daemons listening on different ports (lets say 1234 and 2345).
+>>
+>> The firewall then ideally takes all connects from clients to port 1234,
+>> looks for a "magic string" (using -m string) in the packages and based
+>> upon the (non)existance of the string finally decides, which daemon to
+>> forward the connect to.
+>>
+>> ... is there a chance for this to work?
+> 
+> I think the answer is no, it cannot work (assuming you are talking about TCP 
+> ports and not UDP ports).
+> 
+> The reason is as follows:
+> 
+> Before a client can send the magic string you are looking for, it needs to 
+> have completed the TCP handshake of SYN - SYN/ACK - ACK, because it's only 
+> after that's done that any data gets transferred between the systems.
+> 
+> Obviously the SYN and the SYN/ACK are to and from a specific port number on 
+> the listening server, so by the time you get to see the magic string, the 
+> choice of port number to connect to has already been made.
+> 
+> Antony.
 
-Not really - the shorter version forces all SYN packets below the limit to be 
-ACCEPTed, whereas the longer version allows for later rules in the INPUT 
-chain to decide whether they ought to be accepted or not, based on the usual 
-things like source/destination address/port etc.
+I see your point. 
 
-Antony.
+So am I right that the only way to achive this is by having some kind of
+proxy dealing with this "magic-string"??
 
--- 
+thanks.
 
-Abandon hope, all ye who enter here.
-You'll feel much better about things once you do.
+udo
 
