@@ -1,11 +1,10 @@
-From: "Monkey" <Monkey@allthingsbyte.com>
-Subject: Forward UDP Broadcasts?
-Date: Sun, 1 Dec 2002 20:21:03 -0600
+From: Paulo Andre <pandre@darkstar.nom.za>
+Subject: Connectivity
+Date: 03 Dec 2002 08:30:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c299a9$76e7ca20$6400000a@hnic>
+Message-ID: <1038897009.345.7.camel@bigblue>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C29977.2C4D5A20"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,119 +15,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+I am running iptables 1.2.6a. The firewall/gateway server links a DMZ,
+Internal, External zones. The DMZ card is aliased with two different
+ip's (196.10.1.x and 196.10.10.x).
+I have a router on the DMZ that reboots every evening at a specific
+time, the router is not under our control.(196.10.10.y)
+When this happens iptables does not allow traffic through even though
+the router comes up immediately.
+I basically have to take the card down, reconfigure it with another ip
+(196.10.10.b) then it sees the router, take the card down again and
+reconfigure it to the original ip (196.10.10.x) and re-apply the rules. 
+Then everything works fine again.
 
-------=_NextPart_000_0001_01C29977.2C4D5A20
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+One way of fixing this is to get the router fixed, but this is not under
+my control. Could anyone tell me how I could fix the iptables side of
+things, surely iptables should be able to handle when and router
+reboots...???
 
-Hi, I'm looking to figure out how to forward UDP Broadcasts from PPP#
-interfaces to ETH# interfaces and vice versa. I have searched the net
-with not much luck, I don't understand the man pages much but I do
-understand some basics about IPTables, just not enough to figure this
-out.
- 
-My Setup is as follows:
- 
-Red Hat Linux 8
-IPV4 Forwarding Enabled
-One NIC (ETH0)
-PoPToP VPN Server (PPP0, PPP1, etc)  using only TCP/IP (No IPX, etc)
- 
-IPTables have no rules set currently:
- 
-Chain INPUT (policy ACCEPT 4039K packets, 1573M bytes)
- pkts bytes target     prot opt in     out     source
-destination         
- 
-Chain FORWARD (policy ACCEPT 89199 packets, 3128K bytes)
- pkts bytes target     prot opt in     out     source
-destination         
- 
-Chain OUTPUT (policy ACCEPT 3827K packets, 4349M bytes)
- pkts bytes target     prot opt in     out     source
-destination 
+Any suggestions please...
 
-------=_NextPart_000_0001_01C29977.2C4D5A20
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
 
-<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>Hi, =
-I'm looking to=20
-figure out how to forward UDP Broadcasts from PPP# interfaces to ETH# =
-interfaces=20
-and vice versa. I have searched the net with not much luck, I don't =
-understand=20
-the man pages much&nbsp;but I do&nbsp;understand some basics about=20
-IPTables,&nbsp;just not enough to figure this out.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>My =
-Setup is as=20
-follows:</FONT></SPAN></DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>Red =
-Hat Linux=20
-8</FONT></SPAN></DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>IPV4 =
-Forwarding=20
-Enabled</FONT></SPAN></DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>One =
-NIC=20
-(ETH0)</FONT></SPAN></DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
-size=3D2>PoPToP VPN Server=20
-(PPP0, PPP1, etc)&nbsp; using only TCP/IP (No IPX, =
-etc)</FONT></SPAN></DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
-size=3D2>IPTables have no=20
-rules set currently:</FONT></SPAN></DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
-size=3D2>Chain INPUT=20
-(policy ACCEPT 4039K packets, 1573M bytes)<BR>&nbsp;pkts bytes=20
-target&nbsp;&nbsp;&nbsp;&nbsp; prot opt in&nbsp;&nbsp;&nbsp;&nbsp;=20
-out&nbsp;&nbsp;&nbsp;&nbsp;=20
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;=20
-destination&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-</FONT></SPAN></DIV>
-<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
-size=3D2>Chain FORWARD=20
-(policy ACCEPT 89199 packets, 3128K bytes)<BR>&nbsp;pkts bytes=20
-target&nbsp;&nbsp;&nbsp;&nbsp; prot opt in&nbsp;&nbsp;&nbsp;&nbsp;=20
-out&nbsp;&nbsp;&nbsp;&nbsp;=20
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;=20
-destination&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-</FONT></SPAN></DIV>
-<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
-<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
-size=3D2>Chain OUTPUT=20
-(policy ACCEPT 3827K packets, 4349M bytes)<BR>&nbsp;pkts bytes=20
-target&nbsp;&nbsp;&nbsp;&nbsp; prot opt in&nbsp;&nbsp;&nbsp;&nbsp;=20
-out&nbsp;&nbsp;&nbsp;&nbsp;=20
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;=20
-destination </FONT></SPAN></DIV></BODY></HTML>
-
-------=_NextPart_000_0001_01C29977.2C4D5A20--
 
 
