@@ -1,13 +1,12 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Blocking IP
-Date: Thu, 29 Jul 2004 09:15:11 -0500
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Oulook express not working on client machine
+Date: Thu, 29 Jul 2004 10:54:23 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4109066F.50300@pbl.ca>
-References: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de>	 <001601c47565$8e0ba110$858310ac@suarapembaruan.com> <1091103519.13650.6.camel@aflores>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051206@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1091103519.13650.6.camel@aflores>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Alejandro Flores wrote:
-> 	But, if you're using sendmail, maybe the best to do is to tell sendmail
-> to reject the traffic from this particular host.
-> 	Go to /etc/mail, edit the file called 'access' and append a line like
-> this:
-> 202.154.10.146	REJECT "You're sending too much viruses!"
-> 	Then save, type 'make' and restart sendmail.
+> eth0: 192.168.1.97 (My Public IP)
+> eth1: 192.168.5.1 (My Lan IP)
+>
+> I have declared 25 and 110 as the safe ports also but still :((
 
-Access.db is a map.  You don't need to restart sendmail after you update 
-/etc/mail/access file and rebuild access.db map (either using supplied 
-Makefile if present, or by running "makemap hash access.db < access", I 
-prefer later over former).  Same for all other maps.  You only need to 
-restart sendmail when sendmail.cf is changed, and any of the files 
-referenced by F lines in sendmail.cf (those are read once at startup).
+are you trying to proxy SMTP and POP-3 through squid?
+from http://www.squid-cache.org/Doc/FAQ/FAQ-1.html#ss1.1
 
-Although solution with sendmail is cleaner and more polite (the offender 
-gets the error why he/she is refused, and you are blocking only email), 
-I don't think that somebody who is not noticing that he/she is spitting 
-out viruses in such a high rate is going to notice and/or care about it.
+	"Squid is a high-performance proxy caching server for web clients, =
+supporting FTP, gopher, and HTTP..."
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+i.e, not SMTP, not POP-3...
+
+>
+> Based on therad i saw at linux solve, I tried to do
+>
+> /sbin/iptables -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/24 -j =
+MASQUERADE
+
+if you're are trying to MASQUERADE your internal clients behind the =
+external IP of your firewall--you have that reversed (and the source =
+network doesn't match up)--it should be:
+
+	/sbin/iptables -t nat -A POSTROUTING -o eth0 -s 192.168.5.0/24 -j =
+MASQUERADE
+
+also--i'm assuming you are sanitizing your IP addresses here; as =
+MASQUERADING behind 192.168.1.97 won't do you much good if your traffic =
+is destined for the internet.
+
+it seems to me that you're missing some of the basics here--maybe a =
+review of http://iptables-tutorial.frozentux.net/iptables-tutorial.html =
+would help you out?
+
+-j
 
