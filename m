@@ -1,14 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: transparent bridge troubles?
-Date: Fri, 7 Jan 2005 16:01:03 -0500
-Message-ID: <20050107210103.GA1193@bender.817west.com>
-References: <7C9884991ADAE0479C14F10C858BCDF5679643@alderaan.smgtec.com>
-	<20050107204433.GA1112@bender.817west.com>
-	<002e01c4f4fb$4a24f080$3e0010ac@esonet18>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: [Fwd: Server machines behind Firewall]
+Date: Fri, 7 Jan 2005 16:09:50 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10501071608200.16399-100000@darkstar.sysinfo.com>
+References: <41DEAE9C.62B38374@ita.org.mo>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <002e01c4f4fb$4a24f080$3e0010ac@esonet18>
+In-Reply-To: <41DEAE9C.62B38374@ita.org.mo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +16,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: edwardspl@ita.org.mo
+Cc: netfilter@lists.netfilter.org
 
-On Fri, Jan 07, 2005 at 03:55:58PM -0500, mdpeters wrote:
-> OK. This is what I have loaded now.
+On Fri, 7 Jan 2005 edwardspl@ita.org.mo wrote:
+
+> Jason Opperisano wrote:
 > 
-> /usr/local/sbin/iptables -P FORWARD DROP
-> /usr/local/sbin/iptables -A FORWARD -j LOG --log-prefix 
-> /var/iptablequeue/pre_queue
-> /usr/local/sbin/iptables -A FORWARD -p tcp --syn -m state --state NEW -j 
-> QUEUE
-> /usr/local/sbin/iptables -A FORWARD -p tcp -m state --state 
-> RELATED,ESTABLISHED -j QUEUE
-> /usr/local/sbin/iptables -A FORWARD -p udp -j QUEUE
-> /usr/local/sbin/iptables -A FORWARD -p icmp -j QUEUE
-> /usr/local/sbin/iptables -A FORWARD -j LOG --log-prefix 
-> /var/iptablequeue/post_queue
+> > > Sorry, what useful about the following function ( command line ) ?
+> > >
+> > > > iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d $SRV1 \
+> > > > ? --dport 80 -j ACCEPT
+> >
+> > um--it allows the packet through the FORWARD chain of the filter table.
+> > remember--you're trying to build a firewall here.
 > 
-> I should see some sort of log file in /var/iptablequeue/post_queue or 
-> /var/iptablequeue/pre_queue now? Should I try sending packets through the 
-> bridge to generate something?
+> So, must I enable this kind of function for using the Firewall ?
+> 
+> 
+> 
 
-uh--no.  those rules might not even load.  "--log-prefix" specifies a
-string to prefix the log entries in your syslog files.  my rules were
-literal:
+unless the firewall(ed) system is a stand alone <no other ststems on the
+network> then yes, if you wish to forward or pass traffic to the internet
+and the other systems.  A stand alone box with a firewall can get by with
+just input and output rules.
 
-/usr/local/sbin/iptables -A FORWARD -j LOG --log-prefix "PRE QUEUE: "
+Thanks,
 
-...
+Ron DuFresne
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
-/usr/local/sbin/iptables -A FORWARD -j LOG --log-prefix "POST QUEUE: "
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
-so the entries in /var/log/messages will have the strings "PRE QUEUE: "
-and "POST QUEUE: " in them for identification purposes.
-
--j
-
---
-"Kids, you tried your best and you failed miserably. The lesson is,
- never try."
-        --The Simpsons
 
