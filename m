@@ -1,71 +1,64 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: tcp-window-tracking.patch fails to apply
-Date: 26 Apr 2003 08:29:38 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051360177.1437.4.camel@jasiiitosh.nexusmgmt.com>
-References: <1051339036.4860.26.camel@jasiiitosh.nexusmgmt.com>
-	 <1051354468.5942.72.camel@tux.rsn.bth.se>
+From: Oskar Andreasson <blueflux@koffein.net>
+Subject: [RELEASE] New version of iptables and ipsysctl tutorials
+Date: Sat, 26 Apr 2003 16:07:45 +0200 (CEST)
+Sender: lartc-admin@mailman.ds9a.nl
+Message-ID: <Pine.LNX.4.44.0304261551090.15921-100000@laptop1.agatha>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1051354468.5942.72.camel@tux.rsn.bth.se>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <lartc-admin@mailman.ds9a.nl>
+Errors-To: lartc-admin@mailman.ds9a.nl
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Martin Josefsson <gandalf@wlug.westbo.se>, Netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org
 
-No, I didn't.  I suppose I felt intimidated by the warning about not
-applying all the patches.  Is it safe to apply all the patches, or at
-least all the pending and submitted patches? Thanks - John
+Hi All,
 
-On Sat, 2003-04-26 at 06:54, Martin Josefsson wrote:
-> On Sat, 2003-04-26 at 11:19, John A. Sullivan III wrote:
-> > I very much wanted to use the window tracking patch but an unable to get
-> > it to apply.  I am running RedHat 7.3 with kernel 2.4.20.  The
-> > patch-o-matic test replies:
-> > 
-> > Testing... tcp-window-tracking.patch NOT APPLIED (29 rejects out of 32
-> > hunks)
-> > 
-> > When I try to apply the patch I get:
-> > 
-> > Patch extra/tcp-window-tracking.patch conflicts with
-> > extra/ip_conntrack-timeouts.patch...
-> > ip_conntrack-timeouts.patch NOT APPLIED (1 missing files)
-> > Testing patch extra/tcp-window-tracking.patch...
-> >    Placed new Makefile line
-> > Failed to patch copy of /usr/src/linux
-> > TEST FAILED: patch NOT applied.
-> > 
-> > I do not have ip_conntrack-timeouts.patch installed.  I even tried
-> > reversing that patch in case it was installed without my knowing it but
-> > it is not there.
-> > 
-> > I rebuilt the kernel and tried the tcp-window-tracking patch as the only
-> > patch but that didn't work either.  I tried applying it separately after
-> > applying all other patches.  That didn't work.  What am I doing wrong?
-> 
-> Did you apply all pending and submitted patches?
-> 
-> ./runme --batch pending
-> 
-> will do that and it is required for some patches to apply.
+Just to let people know, there are now new versions of the iptables 
+tutorial, and the ipsysctl tutorial available. 
+
+The iptables-tutorial was released the 24th in version 1.1.18, mainly a
+gather up on all the feedback I have gotten from people around the world.  
+Thanks to everyone for the feedback! I am currently considering to release
+another new version rather soon, mainly some small fixes that was too late
+to get into this version, and getting PS/PDF up to work again (possible). 
+There is also a spanish translation ongoing, as well as a stalled 
+portuguese translation. If anyone wants to work on it, it's in the source 
+tree (src.tgz from the homepage). 
+Homepage: 
+http://iptables-tutorial.frozentux.net
+
+The ipsysctl-tutorial is released just now, on the 26th, in version 1.0.3, 
+consisting of a lot of minor updates. Details updated, added some 
+explanations (jiffies, arp_filter), TCP tuning information, etc. This 
+version also fixes the PS and PDF format. I'm still holding my thumbs for 
+the PDF one though, since I didn't do any specific work to get it to 
+run.. hence, if you believe in miracles...;). 
+Homepage:
+http://ipsysctl-tutorial.frozentux.net
+
+Comments are more than welcome, and I am finally up to date with mails (I 
+think noone should have unreplied mails from christmas anymore at 
+least...). This means everyone should get replies within at least 2-3 days 
+now=). 
+
+And if you excuse me, I'm going to bed, 3 hours of sleep per day in 2
+weeks is taking its toll:)
+
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+----
+Oskar Andreasson
+http://www.frozentux.net
+http://iptables-tutorial.frozentux.net
+http://ipsysctl-tutorial.frozentux.net
+mailto:blueflux@koffein.net
 
-
+_______________________________________________
+LARTC mailing list / LARTC@mailman.ds9a.nl
+http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
