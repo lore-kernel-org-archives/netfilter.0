@@ -1,16 +1,14 @@
-From: alucard@kanux.com
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: forwarding
-Date: Tue, 18 May 2004 11:40:59 -0400 (VET)
+Date: Tue, 18 May 2004 16:51:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <34253.200.44.170.105.1084894859.squirrel@200.44.170.105>
-References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105>
-    <1084891180.6410.18.camel@localhost>
-    <34012.200.44.170.105.1084892235.squirrel@200.44.170.105>
-    <200405181609.59945.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405181651.16999.Antony@Soft-Solutions.co.uk>
+References: <7528A97D83FBD411BEF40003471B905B05D8FEF7@smtp.retecal.es>
+Reply-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405181609.59945.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <7528A97D83FBD411BEF40003471B905B05D8FEF7@smtp.retecal.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,29 +18,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    Use
-> Iface
-> 192.168.0.0     *               255.255.255.0   U     0      0        0
-> eth1
-> 10.73.216.0     *               255.255.252.0   U     0      0        0
-> eth0
-> 169.254.0.0     *               255.255.0.0     U     0      0        0
-> eth0
-> 127.0.0.0       *               255.0.0.0       U     0      0        0 lo
-> default         192.168.0.1     0.0.0.0         UG    0      0        0
-> eth1
+On Tuesday 18 May 2004 4:33 pm, CPD - David Carde=F1osa Rubio wrote:
+
+> HI!
 >
-> If the requests come in on eth1 but the replies go out on eth0 that would
-> be a
-> problem.
+> if you add
+>
+> iptables -t nat -A PREROUTING -d 192.168.0.1 -p tcp --dport 8080 \
+>     -j DNAT --to-destination 192.168.0.2:80
+>
+> you need
+>
+> iptables -t nat -A POSTROUTING -s 192.168.0.2 -p tcp --dport 80 -j SNAT
+> --to 192.168.0.1:8080
 
-well, in server2 -the one that that has to get the packets forwarded from
-server1- 192.168 network is in eth1, does anybody see anything wrong with
-it's route configuration? any suggestions??
+No, you don't.
 
-Thanks a lot
+Netfilter handles the reverse-natting of reply packets transparently - yo=
+u do=20
+not need to specify your own rule for them.
+
+The only reason you would want both the above rules is when you want a ma=
+chine=20
+accessible on a translated IP address, and you also want *new* connection=
+s=20
+from that machine to come from the translated address.   In both cases yo=
+u=20
+specify the rule for the "forward" packets, and the "return" packets get=20
+handled by netfilter.
+
+Regards,
+
+Antony.
+
+--=20
+"640 kilobytes (of RAM) should be enough for anybody."
+
+ - Bill Gates
+
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
+
 
