@@ -1,10 +1,11 @@
-From: DCulp@mcleodhealth.org
-Subject: Re: Losing packets using IPSec
-Date: Tue, 21 Oct 2003 11:05:12 -0400
+From: "James Miller" <jimm@simutronics.com>
+Subject: Dropping SYN with FIN flag set
+Date: Tue, 21 Oct 2003 10:47:22 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFA71B7840.697574FA-ON85256DC6.0052D65F@org>
+Message-ID: <NDBBKABJBJCIJNAELLKEEEDOJDAA.jimm@simutronics.com>
+Reply-To: <jimm@simutronics.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,46 +16,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: kenr@redergaard-it.no
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hi folks.. sorry if this is a really dumb question.. please don't flame me
+too much.
+
+Nessus is always alerting on  "Remote host does not discard TCP SYN packets
+which have the FIN flag set".  What is the best way to close up this hole?
+Is there a global rule I could setup or do I need to set this on a per rule
+basis?
+
+something like '-p tcp --tcp-flags SYN,FIN -j DROP'
 
 
 
 
 
-Check your MTU at both ends.
-  David
-
-
-
-
-
-kenr@redergaard-it.no@lists.netfilter.org on 10/20/2003 07:03:32 AM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    netfilter@lists.netfilter.org
-cc:
-
-Subject:    Losing packets using IPSec
-
-
-Hi,
-
-Have any of you experienced loosing bytes at the end of a packet when
-using IPSec (FreeSwan) ?
-
-I've turned on debugging in klips, and it prints the complete package
-before calling netif_rx(). I guess the problem must be related to iptab=
-les
-?
-
-With regards,
-Ken A. Rederg=E5rd
-
-=
+Thanks,
+Jim
 
 
 
