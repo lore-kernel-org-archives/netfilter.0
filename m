@@ -1,14 +1,14 @@
 From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: problems converting iptables script from eth2 ....
-Date: Wed, 29 Jan 2003 19:55:29 -0500
+Subject: Re: IP alias and NAT
+Date: Wed, 29 Jan 2003 21:04:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301291955.29061.netfilter@newkirk.us>
-References: <3E37CA31.3010907@optushome.com.au> <20030129150523.A14273@spawar.navy.mil>
+Message-ID: <200301292104.59028.netfilter@newkirk.us>
+References: <001e01c2c5f8$bc5d7d40$0bc8c80a@dolphin> <1043672915.15779.16.camel@elendil.intranet.cartel-securite.net> <006c01c2c74b$7f1b37c0$0bc8c80a@dolphin>
 Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030129150523.A14273@spawar.navy.mil>
+In-Reply-To: <006c01c2c74b$7f1b37c0$0bc8c80a@dolphin>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +19,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: seberino@spawar.navy.mil
-Cc: netfilter@lists.netfilter.org
+To: Jet <yenjet.chan@eglobal.com.my>
+Cc: netfilter@lists.samba.org
 
-On Wednesday 29 January 2003 06:05 pm, seberino@spawar.navy.mil wrote:
-> This firewall has 2 NICs for private LAN and 1 to connect
-> to Internet.  I can access Internet from firewall
-> fine with new DSL service if I kill iptables filtering.
+On Tuesday 28 January 2003 11:04 pm, Jet wrote:
+> Hi,
 >
-> I tried to modify old static ip script for DSL.
-> (eth2 became ppp0)
+> > To get packets NATed as you want them to, they have to reach
+> > PREROUTING chain on the firewall. That means when access router
+> > wants to forward theses packets, it must get an ARP reply for their
+> > destination IP. If NATed IPs were not aliased on firewall, then
+> > nobody would answer access router's ARP requests, and connections
+> > would not get established.
 >
-> Now I have a new guess...
+> I don't totally agree on this. How about POST ROUTING?
 >
-> Does DSL/PPPoE need to open certain other ports, etc.
-> I don't know about?? If so that would explain why
-> it don't work with old static ip script that closes
-> all ports it don't need.
+> > The only thing you have to keep in mind is that packets you want to
+> > NAT have to reach the firewall. As they're not destined to, you have
+> > to force them a bit ;)
+>
+> Can anyone explain why we don't have to do the same for POSTROUTING?
 
-No other communications needed, unless there's some custom client that=20
-the ISP has made you install.
-
-You are going to have problems with $INTERNET_ADDRESS in your rules,=20
-though, since that is now subject to change.  Is it truly dynamic?  If=20
-it usually only changes on reboot, you can get around it by setting=20
-$INTERNET_ADDRESS in the start of the script equal to:
-$(/sbin/ifconfig "$EXTIF" | grep inet | cut -d":" -f 2 | cut -d" " -f 1)
-($EXTIF is what I use, I believe you had INTERNET_INTERFACE?)
-
-If your IP is 'really' dynamic, you will probably need to remove that=20
-match from the rules, and change "-j SNAT --to $INTERNET_ADDRESS" to "-j=20
-MASQUERADE", also adding "echo 1 > /proc/sys/net/ipv4/ip_dynaddr" to=20
-enable automatic tracking of the dynamic IP.
-
-I also have a suspicion, which will take you but a moment to explore. =20
-With your connection up, go to console and try "ifconfig ppp0" and "cat=20
-/etc/resolv.conf" and see if you have any conflict with your=20
-"reserved_networks" list.  For my service, my own IP and the nameservers=20
-are public, but the P-t-P server (the 'gateway' that I talk to) is a=20
-10.10.x.x IP.  I have encountered setups before where the assigned IP or=20
-the nameservers are also in a 'reserved' private range, which would mean=20
-problems with your script.
+At POSTROUTING the packet is already IN the firewall box, and is about to=
+=20
+pass back out.  The issue mentioned above is trying to get an access=20
+router to recognize that the box is an appropriate destination for a=20
+given packet, so that the packet will be sent to it to begin with. If=20
+and when it does so, the packet first appears in the PREROUTING=20
+chain(s).
 
 j
+
+> - Jet
 
 
