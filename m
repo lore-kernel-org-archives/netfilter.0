@@ -1,8 +1,8 @@
 From: "Afshin Lamei" <linux_st@hotmail.com>
-Subject: iptables 1.2.7a management problem
-Date: Wed, 04 Dec 2002 19:58:51 +0330
+Subject: iptables management problem
+Date: Wed, 04 Dec 2002 20:05:26 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F117cdEc83LUEM7RAlu00028454@hotmail.com>
+Message-ID: <F139OSnJTycBI0c0deU0002173e@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,17 +16,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-Hi,
-How can I deal with iptables like a service? I've installed it according to 
-the netfilter's guide, after that, I expected that I could deal with it as a 
-service, but I coudn't.
-Do I need to manually setup iptables after each system boot??
+I have installed the Iptables 1.2.6a according to the netfilter's document, 
+but It doesn't act as a service.
+Do I need to manually setup my firewall after each system boot up?
 --afshin
 
+
+
+
+
 _________________________________________________________________
-The new MSN 8: advanced junk mail protection and 2 months FREE* 
+STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
 http://join.msn.com/?page=features/junkmail
 
 
