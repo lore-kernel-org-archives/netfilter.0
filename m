@@ -1,14 +1,12 @@
-From: "Bailey Kong" <bailey@tgpsolutions.com>
-Subject: Re: Changing the source on incoming messages
-Date: Wed, 9 Oct 2002 08:27:33 -0700 (PDT)
+From: Rickard Eriksson <riceri@home.se>
+Subject: Re: PPTP
+Date: Wed, 09 Oct 2002 17:31:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <32795.192.168.1.2.1034177253.squirrel@mail.tgpsolutions.com>
-References: <385D702A9C11D511A9E90008C7160AD5C38887@ismail1.comverse.com>
-Reply-To: bailey@tgpsolutions.com
+Message-ID: <3DA44BCF.5020900@home.se>
+References: <E131E9F1848D0148813EAF06A846608F615F6F@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <385D702A9C11D511A9E90008C7160AD5C38887@ismail1.comverse.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,23 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Yaakov_Metzger@persay.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Sneppe Filip <Filip.Sneppe@cronos.be>, netfilter@lists.netfilter.org
 
-> The problem is that I could not change the source address on the
-> incoming messages, and the aplication won't work if the source is
-different. > The SNAT cannot be put on the incoming messages (while DNAT
-can be put
-> on outgoing messages).
+Sneppe Filip wrote:
 
-y can't you put a SNAT on the incoming message?
+> Rickard,
+>
+> >When i try to install the pptp-conntrack module i get this error:
+> >
+> >Testing patch extra/pptp-conntrack-nat.patch...
+> >    Placed new Config.in line
+> >    Placed new Configure.help entry
+> >    Placed new Makefile line
+> >    Placed new Makefile line
+> >    Placed new ip_conntrack.h line
+> >    Placed new ip_conntrack.h line
+> >Could not find place to slot in ip_conntrack.h line
+> >Could not find place to slot in ip_conntrack.h line
+> >Could not find place to slot in ip_conntrack.h line
+> >Could not find place to slot in ip_conntrack.h line
+> >Could not find place to slot in ip_conntrack.h line
+> >Could not find place to slot in ip_conntrack.h line
+> >TEST FAILED: patch NOT applied.
+> >
+> >
+> >anyone know whats wrong?
+>
+> You *are* applying this to a kernel with newnat support, aren't you ?
+>
+> Regards,
+> Filip
+>
+The z-newnet patch? I can't install that patch.
 
--- 
-bailey@tgpsolutions.com
+BTW, this is the first time i am patching a kernel.
 
-Administrator, tgpsolutions
-http://www.tgpsolutions.com
+/Rickard
 
 
 
