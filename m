@@ -1,11 +1,15 @@
-From: michael@floog.net
-Subject: Fwd: Re: How to drop/reject packets amongst LAN clients?
-Date: Mon, 10 May 2004 10:46:17 -0700
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: How to drop/reject packets amongst LAN clients?
+Date: Mon, 10 May 2004 19:46:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084211177.409fbfe9b99c3@webmail.floog.net>
+Message-ID: <1084211184.1804.20.camel@anduril.intranet.cartel-securite.net>
+References: <1084206191.409fac6f1176a@webmail.floog.net>
+	 <1084209288.1804.13.camel@anduril.intranet.cartel-securite.net>
+	 <200405101834.13336.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200405101834.13336.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,69 +19,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
+Le lun 10/05/2004 =E0 19:34, Antony Stone a =E9crit :
+> [ Note to self: I must remember that people use things other than Linux=
+ on=20
+> their networks :)  ]
 
+True.
+But, if they don't, they still can use pf ;)))
 
------ Forwarded message from michael@floog.net -----
-    Date: Mon, 10 May 2004 10:36:27 -0700
-    From: michael@floog.net
-Reply-To: michael@floog.net
- Subject: Re: How to drop/reject packets amongst LAN clients?
-      To: Cedric Blancher <blancher@cartel-securite.fr>
-
-Fantastic mailing list!
-I just finished a response to Antony Stone in which I inquired about a
-possible 3rd NIC.  I checked my email at the same time and see your
-response with an answer about the very inquiry I made only a minute
-before!  :-)
-
-Thank you so much for your input.
-
-I think I will read up on this and see if it's something I can handle.
-
-Mike
-
-
-Quoting Cedric Blancher <blancher@cartel-securite.fr>:
-
-> your box. If you want to achieve this, then you have a Linux box a a
-> filtering bridge. Cheap quick recipe would be to add a third
-> ethernet
-> interface to your box and configure it like this :
-> 
-> eth0 gos to the internet
-> eth1 goes to a switch where *.2 to *.6 are connected
-> eth2 goes to a switch where *.7 to *.9 are connected
-> create a bridge (br0) to which belong eth1 and eth2.
-> assign br0 former eth1 IP
-> 
-> Activate bridge filtering (available in stock 2.6 kernels) using
-> Netfilter and you're done. Just filter traffic in FORWARD chain,
-> using
-> physdev match to specify eth1 and eth2 and incoming and/or outgoing
-> interface, and restrict traffic other than IP stuff using ebtables.
-> 
-> See http://ebtables.sourceforge.net/ documentation section.
-> 
-> 
-> -- 
-> http://www.netexit.com/~sid/
-> PGP KeyID: 157E98EE FingerPrint:
-> FA62226DA9E72FA8AECAA240008B480E157E98EE
-> >> Hi! I'm your friendly neighbourhood signature virus.
-> >> Copy me to your signature file and help me spread!
-> 
-
-
-
-
-
------ End forwarded message -----
-
-
-
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
