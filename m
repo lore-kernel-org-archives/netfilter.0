@@ -1,11 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
+From: Frank Gruellich <frank@der-frank.org>
 Subject: Re: bad tcp packets
-Date: Tue, 23 Nov 2004 08:49:46 -0500
-Message-ID: <1101217785.12981.10.camel@hubcap.ljm.dom>
+Date: Tue, 23 Nov 2004 14:59:10 +0100
+Message-ID: <20041123135910.GT21819@der-frank.org>
 References: <web-23112413@infinito.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 In-Reply-To: <web-23112413@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,58 +18,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, 2004-11-23 at 07:18, hamals@infinito.it wrote:
+* hamals@infinito.it <hamals@infinito.it> 23. Nov 04:
 > Hello to everyone
-> 
+
+Hi,
+
 > I'm reading "Iptables Tutorial 1.1.19" by Oskar 
 > Andreasoon, and I cant understand these bad packets rules
-> 
-> 
+
+Well choosen.  Please, don't wrap commands.  I'll fix in quoting.
+
 > $IPTABLES -N bad_tcp_packets
 > #
 > #
 > # bad_tcp_packets chain
 > #
-> $IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK 
-> SYN,ACK \
+> $IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK \
 > -m state --state NEW -j REJECT --reject-with tcp-reset
 
-SYN-ACK packets are step 2 in the TCP Three Way Handshake, and are
-always replies to SYN packets (which are step 1).  as a reminder, the
-TCP Three Way Handshake is:
+Conntrack treats a packet as state NEW, if it hits netfilter the first
+time.  The first packet of a TCP stream will never have set both of SYN
+and ACK.  This is the correct answer after a connection request (SYN)
+from your network, but then it wouldn't be the first packet in stream.
 
-client	server
----------------
-SYN   ->
-     <- SYN-ACK
-ACK   ->
-
-also as a reminder, "-m state --state NEW" packets are packets that do
-not match an entry in conntrack.
-
-if your are tracking the state of your connections:
-
-"-p tcp -m state --state NEW" packets should only ever be SYN packets
-(as they come first)
-
-the above rule sends a TCP RST to any SYN-ACK packet that is NEW; i.e, a
-response to a connection request that we never saw.
-
-> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state 
-> --state NEW -j LOG \
+> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG \
 > --log-prefix "New not syn:"
-> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state 
-> --state NEW -j DROP
 
-this drops and logs NEW packets that are anything besides a SYN packet.
+Same goes here: NEW in conntrack, but synflag not set should never
+occure.  So LOG...
 
--j
+> $IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
 
---
-"I've figured out an alternative to giving up my beer. Basically,
- we become a family of traveling acrobats!"
-	--The Simpsons
+... and DROP it.
 
+> someone could explain me why that are bad tcp packets?
+
+HTH,
+ regards, Frank.
+-- 
+Sigmentation fault
 
