@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Hogwash Vs snort-inline Vs Iptables
-Date: Tue, 31 Aug 2004 16:08:32 +0200
+From: "security" <security@lea-linux.com>
+Subject: Re: list delete bug: kernel crash
+Date: Tue, 31 Aug 2004 16:18:11 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093961312.2281.105.camel@anduril.intranet.cartel-securite.net>
-References: <a05ad87504083106581832c864@mail.gmail.com>
+Message-ID: <000801c48f65$58d3c940$0a00a8c0@aziz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a05ad87504083106581832c864@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +15,46 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Murugavel Thiruvengadam <tmurugavel@gmail.com>
-Cc: netfilter@lists.netfilter.org
-
-Le mar 31/08/2004 =E0 15:58, Murugavel Thiruvengadam a =E9crit :
-> Iptables will work in kernel level . What about the others.=20
-
-Snort Inline relies on Netfilter as it gets packets using iptables QUEUE
-target. This means you have total control of traffic being filtered by
-Netfilter and traffic being filtered by Snort Inline. That's why I do
-prefer Snort Inline to Hogwash.
-
-Speaking of string match in iptables, forget it. One basic  able thing
-an IPS/IPS has to implement is fragmentation resistance. String match
-will not work against TCP fragmentation, as it is a per packet match, so
-it will not detect an attack payload split on two TCP packets.
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: Gavin Hamill <gdh@acentral.co.uk>, netfilter@lists.netfilter.org
 
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+----- Original Message ----- 
+From: "security" <security@lea-linux.com>
+To: "Gavin Hamill" <gdh@acentral.co.uk>; <netfilter@lists.netfilter.org>
+Sent: Tuesday, August 31, 2004 3:34 PM
+Subject: Re: list delete bug: kernel crash
+
+
+> >
+>> This may be a long shot, but there may exist the possibility of the files 
+>> on
+>> disk being corrupted when they were installed, due to your faulty memory?
+>>
+>> Try to reinstall the kernel / modules and iptables userspace?
+>>
+>> Cheers,
+>> Gavin.
+>>
+>>
+> Ok. I go re-compil my kernel and re-install iptable package :)
+
+Ok still have  crash after re-compil my kernel and re-install iptable 
+userspace package.
+Allways the same error:
+
+Aug 31 16:01:39 gateway kernel: LIST_DELETE: 
+net/ipv4/netfilter/ip_conntrack_core.c:300 
+`&ct->tuplehash[IP_CT_DIR_REPLY]'(d3ac9224) not in
+&ip_conntrack_hash[hr].
+Aug 31 16:01:39 gateway kernel: LIST_DELETE: 
+net/ipv4/netfilter/ip_conntrack_core.c:300 
+`&ct->tuplehash[IP_CT_DIR_REPLY]'(d3ac9524) not in
+&ip_conntrack_hash[hr].
+Aug 31 16:03:26 gateway kernel: LIST_DELETE: 
+net/ipv4/netfilter/ip_conntrack_core.c:300 
+`&ct->tuplehash[IP_CT_DIR_REPLY]'(d6537224) not in
+&ip_conntrack_hash[hr].
+
+
 
