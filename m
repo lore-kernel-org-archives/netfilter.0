@@ -1,12 +1,13 @@
-From: "ihira" <ihira@rain.amath.nchu.edu.tw>
-Subject: A problem of libiptc !!
-Date: Wed, 9 Apr 2003 14:41:00 +0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: clearing basics: semi-OT
+Date: 10 Apr 2003 10:21:14 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000e01c2fe62$fbc50b40$7d08788c@ihira>
+Message-ID: <1049984474.3010.249.camel@alpha.newkirk.us>
+References: <20030410080650.GA1720@linux.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000B_01C2FEA6.09DA8FA0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030410080650.GA1720@linux.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,65 +17,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Payal Rathod <linux@rpayal.cjb.net>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Thu, 2003-04-10 at 04:06, Payal Rathod wrote:
+> Hi,
+> I am trying to clear some of my basics. I am reading IP-Masquerading HOWTO. 
+> In it these things were mentioned,
+> 
+> UNIVERSE="0.0.0.0/0"
+> $IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
+> 
+> What exactly does 0.0.0.0/0 mean? And why should we be concerned with
+> it? And what is the use of rule given after it?
 
-------=_NextPart_000_000B_01C2FEA6.09DA8FA0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+The important part here is the /0, which means that NO bits of the
+preceding IP are significant.  That means this will match any address. 
+The second rule deals with the lo interface, local loopback.  This rule
+lets the box talk to itself as much as it wants with any IP.  (although
+actually 127.0.0.1 is the standard, and 127.0.0.0/8 is the valid range)
 
-Dear all :
+> INTNET="192.168.1.0/24"
+> INTIP="192.168.1.1/24"
+> 
+> The first one means the entire network of 192.168.1.x? What exactly is
+> the second one. Does it just means 192.168.1.1 then why "/24"?
 
-I have a proble about using libiptc function "iptc_append_entry".
-When use this function, we should pass an argument *ipt_enrty.
-This argument include the IP header information!
-But where we pass the other information like tcp port to the function =
-for appending a rule to netfilter?
+First one - yep.  Second one means precisely the same thing.  It should
+probably be 192.168.1.1/32, or with no mask at all, and is probably
+intended to be used to indicate the IP of the internal (LAN-facing)
+interface.
 
-I hope somebody can give me an example code for adding a rule to =
-netfilter !
+> And lastly,
+> 
+> $IPTABLES -N drop-and-log-it
+> $IPTABLES -A drop-and-log-it -j DROP
+> 
+> Why was this rule made? And why was it "dropped"? What is the logic
+> behind this? Shouldn't it be,
+> $IPTABLES -P drop-and-log-it DROP
 
-I am sorry about my poor English and thank for everyone spending time =
-and pations to read my letter!
-Good luck for everyone and everyone's family 
-------=_NextPart_000_000B_01C2FEA6.09DA8FA0
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+-N makes a new chain, and the -A adds a DROP rule to it.  -P policy
+isn't valid for a custom chain, only the built-in chains.  The logic
+here is that you could use
+$IPTABLES -I drop-and-log-it 1 -j LOG
+and then everything would be logged before dropping.  More useful would
+be to use a --log-prefix to identify where the DROP came from, IE if it
+was INPUT, OUTPUT, FORWARD, etc, and WHY it was dropped, but that would
+mean individual LOG rules for each case.  (Or, log in the originating
+chain...  which defeats the concept of _LOG_ and drop...)
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
-<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>Dear all :</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I have a proble about using libiptc function=20
-"iptc_append_entry".</FONT></DIV>
-<DIV><FONT size=3D2>When use this function, we should pass an argument=20
-*ipt_enrty.</FONT></DIV>
-<DIV><FONT size=3D2>This argument include the IP header =
-information!</FONT></DIV>
-<DIV><FONT size=3D2>But where we pass the other information like tcp =
-port to the=20
-function for appending a rule to netfilter?</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I hope somebody can give me an example code for =
-adding a rule=20
-to netfilter !</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV>
-<DIV><FONT size=3D2>I am sorry about my poor English and thank =
-for&nbsp;everyone=20
-spending time and pations to read my letter!</FONT></DIV>
-<DIV><FONT size=3D2>Good&nbsp;luck for&nbsp;everyone and&nbsp;everyone's =
+> 
+> Thanks a lot for the patience and bye.
+> With warm regards,
+> -Payal
+> 
+> p.s please make a cc to me too.
 
-family</FONT>&nbsp;</DIV></DIV></BODY></HTML>
+j
 
-------=_NextPart_000_000B_01C2FEA6.09DA8FA0--
 
 
