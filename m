@@ -1,11 +1,13 @@
-From: Jeroen Vriesman <j.vriesman@prompt.nl>
-Subject: connmark on a bridge
-Date: Tue, 24 Feb 2004 13:04:16 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: dnat question
+Date: Wed, 25 Feb 2004 15:48:50 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040224130416.2184714d.j.vriesman@prompt.nl>
+Message-ID: <200402251548.50442.Antony@Soft-Solutions.co.uk>
+References: <403a6f6e.ec2.0@arbbs.net> <1077596302.394.3.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1077596302.394.3.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +20,42 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear all,
+On Tuesday 24 February 2004 4:18 am, John A. Sullivan III wrote:
 
-I've installed the connmark patch on a 2.4.24 kernel with ebtables patch, working as a bridging firewall, and I want to mark a tracked connection.
+> On Mon, 2004-02-23 at 16:23, John Black wrote:
+> > Since i'm  running separate servers for FTP, Mail, and Web, and using
+> > dnat to port forward to these machines. Do i need these ports open on the
+> > firewall?
+>
+> I am not an expert on the inward workings of iptables but I would assume
+> that you do.  The NAT targets will change the source and destination
+> addresses but the packets (at least the first packet in the case of
+> connection tracking) must traverse the FORWARD chain of the filter
+> table.  It will pass through that table with the real address so there
+> must be a rule to allow access to the real address.
 
-At the moment I've got the following FORWARD in the mangle table:
+What you say is correct - you must have a rule in the FORWARD chain to allow 
+the packets through the firewall.
 
-# iptables -t mangle -L FORWARD -n -x -v
+However, I think this is a very different thing from "having the ports open on 
+the firewall", since to me this means that the firewall itself is listening 
+on those ports.
 
-Chain FORWARD (policy ACCEPT 9861 packets, 5242217 bytes)
-    pkts      bytes target     prot opt in     out     source               destination
-     483    66527 CONNMARK   all  --  *      *       0.0.0.0/0            0.0.0.0/0          CONNMARK restore
-       0        0 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0          MARK match 0xa
-       0        0 MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:20 MARK set 0xa
-      52     2933 MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp dpt:21 MARK set 0xa
-       0        0 MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp spt:20 MARK set 0xa
-      40     4404 MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0          tcp spt:21 MARK set 0xa
-     473    65999 CONNMARK   all  --  *      *       0.0.0.0/0            0.0.0.0/0          CONNMARK save
+Hopefully the combination of your explanation about the FORWARD chain and my 
+previous explanation about not running local services has clarified things :)
 
-I've also tried it in PREROUTING and POSTROUTING
-The packets with sport/dport 21 or 20 do get marked, but as soon as I start a regular frt data transfer, these packets don't get marked.
-As you can see in the ACCEPT mark=0xa line, the CONNMARK restore doesn't seem to mark any packets (this is after a file transfer).
-The example on the connmark website has the same result.
+Regards,
 
-I wonder, is this a problem with connection tracking on a bridge, or is it the connmark module which has a problem on the bridge, or am I not getting it at all?
+Antony.
 
-Kind regards and thanks in advance,
-Jeroen Vriesman.
+-- 
+Never write it in Perl if you can do it in Awk.
+Never do it in Awk if sed can handle it.
+Never use sed when tr can do the job.
+Never invoke tr when cat is sufficient.
+Avoid using cat whenever possible.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
