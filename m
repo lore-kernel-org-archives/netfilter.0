@@ -1,13 +1,12 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: iptables port forwarding not working
-Date: Fri, 27 Jun 2003 16:07:45 -0400
+From: "Matthew Dale" <matthew.dale@ntlworld.com>
+Subject: MSN Messenger and Netfilter
+Date: Fri, 27 Jun 2003 21:08:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030627200745.GF11167@cannon.eng.us.uu.net>
-References: <3EFC878D.50304@cdf123.com> <20030627183259.GE11167@cannon.eng.us.uu.net> <3EFC9618.5070706@cdf123.com>
+Message-ID: <001c01c33ce7$f0f50fd0$0a00a8c0@dale>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0019_01C33CF0.529F6020"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3EFC9618.5070706@cdf123.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +16,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Chris Frederick <cdf123@cdf123.com>
-Cc: Ramin Dousti <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, Jun 27, 2003 at 02:08:08PM -0500, Chris Frederick wrote:
+This is a multi-part message in MIME format.
 
-> I'm running  SuperScan 3.00 on a Windows 2000 box and scanning all ports 
-> 1-1000 to test the firewall.
-> 
-> Are you saying to change the:
-> $IPTABLES -A FORWARD -p tcp -i $INET_IFACE -d $INET_IP --dport 80 -j ACCEPT
-> to:
-> $IPTABLES -A FORWARD -p tcp -d 2.2.2.3 --dport 80 -j ACCEPT
-> $IPTABLES -A FORWARD -p tcp -s 2.2.2.3 --sport 80 -j ACCEPT
-> or do both?  Or did I miss the point?
+------=_NextPart_000_0019_01C33CF0.529F6020
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The first one.
+I apologise if this has been asked before (undoubtedly it has).
+I've gone from a 2.2 kernel release and using ip_masq_mms.o to enable =
+file sending with MSN Messenger to a 2.4 kernel release and not knowing =
+what to do to make it work.
 
-The second one is not needed if you already have ESTABLISHED rule.
+Is there a module included with netfilter that enables this yet? From =
+what I have searched on the web, ip_nat_mms is does NOT do the same job =
+(and is not even related to) ip_masq_mms.
 
-> 
-> If a packet was forwarded to the new destination correctly, but the 
-> reply couldn't get through (due to the error you pointed out), would 
-> that show up as a closed port on the scanner?  That would explain why 
-> it's not showing as open.  When I get home I'll test it again with 
-> tcpdump and nmap.
-> 
-> And for the https, couldn't I use a cert made for the router(2.2.2.2) on 
-> ther apache server(2.2.2.3), and fool the client browsers to think that 
-> they're the same machine?  This is only for a test environment, so if 
-> the cleints testing it get invalid cert errors it's no big deal.
+If someone can tell me the procedures required under this new system, =
+I'd be grateful.
 
-Certs are based on DNS.
+Thanks,
+Matt.
+------=_NextPart_000_0019_01C33CF0.529F6020
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Ramin
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I apologise if this has been asked =
+before=20
+(undoubtedly it has).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I've gone from a 2.2 kernel release and =
+using=20
+ip_masq_mms.o to enable file sending with MSN Messenger to a 2.4 kernel =
+release=20
+and not knowing what to do to make it work.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Is there a module included with =
+netfilter that=20
+enables this yet? From what I have searched on the web, ip_nat_mms is =
+does NOT=20
+do the same job (and is not even related to) ip_masq_mms.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>If someone can tell me the procedures =
+required=20
+under this new system, I'd be grateful.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Matt.</FONT></DIV></BODY></HTML>
 
-> 
-> Thanks for the info, I'm gona read up on the FORWARD rules a bit more. 
-> I think I misunderstood how they worked.
-> 
-> Chris Frederick
-> 
+------=_NextPart_000_0019_01C33CF0.529F6020--
+
+
 
