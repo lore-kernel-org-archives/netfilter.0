@@ -1,13 +1,12 @@
-From: Martijn Klingens <mklingens@ism.nl>
-Subject: Re: Unexpected RSTs?
-Date: Fri, 11 Oct 2002 16:29:26 +0200
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: Send mail Secure(SSL): No, Socket Error
+Date: Fri, 11 Oct 2002 12:07:13 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210111629.26991.mklingens@ism.nl>
-References: <200210111434.52124.mklingens@ism.nl> <200210111303.g9BD3mL19306@vulcan.rissington.net>
+Message-ID: <001b01c27140$457471a0$8c01a8c0@sundaram>
+References: <200210111434.52124.mklingens@ism.nl> <200210111303.g9BD3mL19306@vulcan.rissington.net> <200210111629.26991.mklingens@ism.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210111303.g9BD3mL19306@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,32 +19,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 11 October 2002 15:03, Antony Stone wrote:
-> Depending on what else you're logging, 15% of your log entries could be a
-> lot of packets, could be only a few....
+hi ,
 
-It's thousands of them ;-)
+My external users are getting following error, while sending E-mail.
 
-(And the timeframe was only a day or so...)
+Your server has unexpectedly terminated the connection. Possible causes for
+this include server problems, network problems, or a long period of
 
-> I'd expect the reason might be a system sending two RST packets (I believe
-> this is quite common, but I haven't done any specific network sniffing to
-> check it out).   The first one takes down the connection so it is no longer
-> ESTABLISHED, the second one gets logged because it doesn't correspond to an
-> established connection...
+inactivity. Subject 'Coming Late', Account: 'www.percipia.com', Server:
+'www.percipia.com',
 
-Hmm, besides the obvious questions *why* the second RST is sent and why 
-conntrack doesn't have provisions for ignoring subsequent RSTs for a short 
-amount of time the reasoning itself makes sense.
+Protocol: SMTP, Port: 25, Secure(SSL): No, Socket Error: 10053, Error
+Number: 0x800CCC0F
 
-> Maybe you could try putting a LOG rule to catch *all* RSTs at the beginning
-> of your rules (before even the ESTABLISHED, RELATED rule) and see if this
-> shows they are coming along in pairs ?
 
-Good idea. I'm not going to modify the firewall so close before the weekend, 
-but will do so next monday. Thanks for the tip and I'll let you know about 
-the results!
--- 
-Martijn
+
+I am not allowing SSL port? Do I need to open the SSL port for this error?
+
+
+
+Thanks
+
+-SR
+
 
 
