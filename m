@@ -1,10 +1,11 @@
-From: YN <yutaka_web@hotmail.com>
-Subject: ULOG with dport problem?
-Date: Mon, 06 Oct 2003 22:00:05 +0900
+From: "Venkatesh. K" <venkatesh@cbayscribe.com>
+Subject: Re: NAT problem
+Date: Mon, 6 Oct 2003 18:49:51 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031006211617.739B.YUTAKA_WEB@hotmail.com>
+Message-ID: <06ba01c38c0c$8de8b440$2800a8c0@karu>
+References: <000001c38c05$923fb680$0f01a8c0@raul02>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,31 +17,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jose Pascual <jose.pascual@optivamedia.com>, netfilter@lists.netfilter.org
 
-Hi all.
+What you are trying to do is not possible with a straight forward
+configuration.
 
-I try to log usin ULOG and ulogd.
+You have to get the concept of DNAT right. DNAT only works when the DNAT ip
+address is on seperate subnet.
 
-When I sent tcp packet using netperf, ulogd (ulogd.syslogemu) get packet
-log only about 9 packet.
-iptable command line is here.
-# iptables -A INPUT -p tcp --dport 5001 -i eth3 -j ULOG --ulog-nlgroup 1
---ulog-cprange 40 --ulog-qthreshold 50
+For example,
 
-But when I set iptable without dport, ulogd can get all packet.
-# iptables -A INPUT -p tcp -i eth3 -j ULOG --ulog-nlgroup 1
---ulog-cprange 40 --ulog-qthreshold 50
+192.168.0.1 <-> 192.168.0.254 <-> 192.168.1.1
 
-=46rom the result when not specifying dport, ULOG seemed to work fine.
+you can DNAT requests coming from 192.168.0.1 to 192.168.0.254 to
+192.168.1.1 by doing
 
-Does someone know why ulogd cannot get all packet when specifying dport
-and how to config iptable.
+/sbin/iptables -t nat -I PREROUTING -s 192.168.0.1 -p tcp --dport www -j
+DNAT --to-destination 192.168.1.1
 
-Thanks in advance.
+Venkatesh K
 
-Yutaka
-yutaka_web@hotmail.com
+----- Original Message ----- 
+From: "Jose Pascual" <jose.pascual@optivamedia.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Monday, October 06, 2003 6:00 PM
+Subject: NAT problem
 
+
+> Hi all,
+> I am new using iptables and surelly  this wil be an easy and stupid
+question
+> but perhaps you can help me. I want to understand NAT so I am trying to do
+> the following:
+>
+> I have three computers in my LAN (192.168.1.1; 192.168.1.2 and
+192.168.1.3).
+> 192.168.1.1 has a web server and I would like to access it through
+> 192.168.1.2 with NAT. For example openning my browser in 192.168.1.3 and
+> connecting to 192.168.1.2   I  should see the same as if I connected to
+> 192.168.1.1 web server directly, so I have done the following in
+> 192.168.1.2:
+>
+>  iptables -t nat -A PREROUTING -p tcp --dport 80 -j
+> DNAT --to-destination 192.168.1.1
+>
+>
+>  iptables -t nat -A POSTROUTING -p tcp --sport 80 -j SNAT
+> --to-source 192.168.1.2
+>
+> However it doesn't work. Anyone can help me?
+>
+> Thanks
+>
+> Regards
+> Jose Pascual
+>
+>
+>
+>
+>
 
 
