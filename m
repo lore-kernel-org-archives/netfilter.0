@@ -1,10 +1,10 @@
 From: Nox <pheusion@snet.net>
 Subject: [Fwd: Re: POM woes]
-Date: Wed, 24 Sep 2003 17:14:56 -0400
+Date: Wed, 24 Sep 2003 17:15:15 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1064438096.22269.184.camel@shaolin.gridlocksecurity.com>
+Message-ID: <1064438115.27142.186.camel@shaolin.gridlocksecurity.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-7s9vYMarLocT0atsec/z"
+Content-Type: multipart/mixed; boundary="=-lRZDi0VmSJhFOmgCm3LG"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,14 +18,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
 
---=-7s9vYMarLocT0atsec/z
+--=-lRZDi0VmSJhFOmgCm3LG
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-resent due to address error,
+resent dude to address error
 
-
---=-7s9vYMarLocT0atsec/z
+--=-lRZDi0VmSJhFOmgCm3LG
 Content-Disposition: inline
 Content-Description: Forwarded message - Re: POM woes
 Content-Type: message/rfc822
@@ -37,20 +36,24 @@ Cc: netfilter@list.netfilter.org
 In-Reply-To: <20030924204804.56388.qmail@web60110.mail.yahoo.com>
 References: <20030924204804.56388.qmail@web60110.mail.yahoo.com>
 Content-Type: text/plain
-Message-Id: <1064437827.27142.182.camel@shaolin.gridlocksecurity.com>
+Message-Id: <1064437740.27142.180.camel@shaolin.gridlocksecurity.com>
 Mime-Version: 1.0
 X-Mailer: Ximian Evolution 1.4.4 
-Date: Wed, 24 Sep 2003 17:10:27 -0400
+Date: Wed, 24 Sep 2003 17:09:00 -0400
 Content-Transfer-Encoding: 7bit
 
-P.S
+Off the top of my head, I would say the patch-o-matic is failing due to
+the patch being for 2.4.21 and you have 2.4.20-8, although I thought
+this patch was for stock 2.4.20 - 2.4.21 kernels.
 
-Could you go through /var/log/syslog or messages,
-any error logs, that might contain more info
+What I do know is 2.4.21 => kernel src already has these updates.
 
-Let me know if you find anything
+Let me investigate your error, and Ill get back to you,
 
-Thanks
+what I would do if it were me though, I would upgrade kernel to 2.4.21,
+then try patch-o-matic again. (Only as a pressed for time reasons)
+
+Ill let you know what I find
 
 Nox
 GenMicro Systems
@@ -107,6 +110,6 @@ On Wed, 2003-09-24 at 16:48, Stack Buffer wrote:
 > Yahoo! SiteBuilder - Free, easy-to-use web site design software
 > http://sitebuilder.yahoo.com
 
---=-7s9vYMarLocT0atsec/z--
+--=-lRZDi0VmSJhFOmgCm3LG--
 
 
