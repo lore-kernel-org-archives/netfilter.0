@@ -1,162 +1,73 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: RE: logging a range of ips
-Date: Tue, 11 Nov 2003 10:20:46 +0800
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8E48@overlord.overturemedia.com>
+From: Kishore Dharmavaram <kishored@servgate.com>
+Subject: RE: Memory leaks in ip_conntrack?
+Date: Mon, 10 Nov 2003 19:07:09 -0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B2057@skat.sky.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Gebauer Ulrich <Ulrich.Gebauer@soldan.de>
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+Cc: "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-
-Thanks Gebauer!
-
-
-Cheers,
-
-fritz <www.mesedilla>
----
-+ Basta Ikaw Lord
-
-
-
+Anthony & All,
+Earlier when I checked, /proc/net/ip_conntrack  and /proc/slabinfo were both
+showing a number around 34000 to 36000, when I checked again after sometime,
+number of connections in /proc/slabinfo hit the maximum 131072 and number of
+connections went down to 20 to 30 in /proc/net/ip_conntrack andbox is
+rejecting new connections.
+Thanks,
+Kishore
 
 -----Original Message-----
-From: Gebauer Ulrich [mailto:Ulrich.Gebauer@soldan.de]
-Sent: Monday, November 03, 2003 2:33 PM
-To: Fritz Mesedilla
-Cc: netfilter@lists.netfilter.org
-Subject: AW: logging a range of ips
+From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+Sent: Monday, November 10, 2003 4:33 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: Memory leaks in ip_conntrack?
 
 
-Hi Fritz,
+On Tuesday 11 November 2003 12:03 am, Alistair Tonner wrote:
 
-Describe a network, not a single ip:
+> 	what is set in /proc/sys/net/ipv4/tcp_wmem?
+>
+> 	I suspect that what is STOPPing the network is there ..
+> 	cat /proc/sys/net/ipv4/tcp_wmem -- on my system the max is ...
+> 	!! 131072 !!
+>
+> 	Maybe you've maxed your memory allocation for TCP?
 
-$IPTABLES -A INPUT -p tcp -s 190.201.0.0/16 -j LOG --log-level DEBUG =
---log-prefix "***LOGTCP: "=20
-$IPTABLES -A INPUT -p udp -s 190.201.0.0/16 -j LOG --log-level DEBUG =
---log-prefix "***LOGUDP: "
+I can understand why you think this might be the magic number causing the 
+problem, but why would Kishore be running into this limit with only 20 to 30
 
-Or
+connections active on the machine?
 
-$IPTABLES -A INPUT -p tcp -s 190.201.0.0/255.255.0.0 -j LOG --log-level =
-DEBUG --log-prefix "***LOGTCP: "=20
-$IPTABLES -A INPUT -p udp -s 190.201.0.0/255.255.0.0 -j LOG --log-level =
-DEBUG --log-prefix "***LOGUDP: "
+> > I believe /proc/slabinfo gives # of conntracks being used, in my tests I
+> > usually find slabinfo number is same as number of entries in
+> > /proc/net/ip_conntrack. But, after 18hrs or so the number in
+> > /proc/slabinfo reaches maximum and box starts refusing connections,
+> > /proc/net/ip_conntrack show 20 to 30 entries, I hear
+> > /proc/net/ip_conntrack is unreliable and broken. Anyway, I guess I have
+> > to dig into the code.
 
-Mit freundlichen Gr=FC=DFen
-        Ulrich Gebauer
+Antony.
 
-Hans Soldan GmbH, Dienste f=FCr Anw=E4lte
-Organisation / IT
-Bocholder Stra=DFe 259, 45356 Essen
-Telefon:0201 / 8612-228, Telefax: 0201 / 8612-377
-Email: gebauer@soldan.de
-Internet: http://www.marktplatz-recht.de
+-- 
 
+What a waste it is to lose one's mind -- or not to have a mind.   How true 
+that is.
 
-
-
------Urspr=FCngliche Nachricht-----
-Von: Fritz Mesedilla [mailto:fritz.mesedilla@overturemedia.com]=20
-Gesendet: Montag, 3. November 2003 07:09
-An: Netfilter Mailing List (E-mail)
-Betreff: FW: logging a range of ips
-
-
-
-Sorry for sending that too quickly.
-
-Here is what I want to achieve...
-$IPTABLES -A INPUT -p tcp -s 190.201.0.0 -j LOG --log-level DEBUG =
---log-prefix "***LOGTCP: "=20
-$IPTABLES -A INPUT -p udp -s 190.201.0.0 -j LOG --log-level DEBUG =
---log-prefix "***LOGUDP: "
-
-It doesn't seem to work. I want to log all transactions of the network =
-of 190.201.x.x.
-
-Thanks.
-
-Cheers,
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-
-
-> -----Original Message-----
-> From: Fritz Mesedilla
-> Sent: Monday, November 03, 2003 2:07 PM
-> To: Netfilter Mailing List (E-mail)
-> Subject: logging a range of ips
->=20
->=20
->=20
-> Greetings!
-> How do I log a range of ips?
->=20
->=20
-> Cheers,
->=20
-> fritz <www.mesedilla.com>
-> ---
-> + Basta Ikaw Lord
->=20
->=20
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and =
-intended solely for the use of the individual or entity to whom they are =
-addressed. If you have received this email in error please notify the =
-sender immediately by e-mail and delete this e-mail from your system. =
-Please note that any views or opinions presented in this email are =
-solely those of the author and do not necessarily represent those of the =
-company. Finally, the recipient should check this email and any =
-attachments for the presence of viruses. The company accepts no =
-liability for any damage caused by any virus transmitted by this email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
-
-
-
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
-
+ - Dan Quayle, vice-president of the United States of America
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
 
