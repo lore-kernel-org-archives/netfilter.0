@@ -1,12 +1,13 @@
-From: James Morris <jmorris@intercode.com.au>
-Subject: Re: [SECURITY] Local Netfilter / IPTables IP Queue PID Wrap Flaw
-Date: Fri, 6 Dec 2002 10:48:49 +1100 (EST)
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Deleting iptable-extended rule
+Date: Fri, 6 Dec 2002 00:42:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Mutt.LNX.4.44.0212061047250.11132-100000@blackbird.intercode.com.au>
-References: <Pine.LNX.4.44.0212041127550.1841-100000@dns.toxicfilms.tv>
+Message-ID: <20021206004218.3bc66707.arnt@c2i.net>
+References: <20021204225754.87915.qmail@web41308.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0212041127550.1841-100000@dns.toxicfilms.tv>
+In-Reply-To: <20021204225754.87915.qmail@web41308.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,27 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Cc: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 4 Dec 2002, Maciej Soltysiak wrote:
+On Wed, 4 Dec 2002 14:57:54 -0800 (PST), 
+lists brk <brk_lists@yahoo.com> wrote in message 
+<20021204225754.87915.qmail@web41308.mail.yahoo.com>:
 
-> > ..url to a fix patch, anyone?
-> http://marc.theaimsgroup.com/?l=linux-kernel&m=103884408631368&w=2
+> Hi!
 > 
+> I am using iptables-1.2.7a. I have extended iptables
+> to do a coustom matching operation. The extension
+> works fine when I use it while adding new rules,
+> something like
+> iptables -A INPUT -m coustom --ip-id -j DROP. 
+> 
+> I am able to delete the rule using the rule number,
+> but I am not able to remove it using the rule specifed
+> above but with -D option, something like
+> iptables -D INPUT -m coustom --ip-id -j DROP
+> 
+> The error I get is:
+> iptables: Bad rule (does a matching rule exist in that
+> chain?)
+> 
+> I tried to debug it and found that iptables fails at
+> 
+> mptr = matchmask + sizeof(STRUCT_ENTRY);
+> 	if (IPT_MATCH_ITERATE(a, match_different, a->elems,
+> b->elems, &mptr))
+> 	  return 0;
+> 
+> in is_same() found in file libiptc/libip4tc.c
+> 
+> Any ideas why this might be happening??
 
-The ext3 fix is apparently still being worked on, the latest patch from 
-Andrew Morton is at 
-http://marc.theaimsgroup.com/?l=ext2-devel&m=103897994905702&w=2
+..custom spelling of "coustom" in your rule set?  ;-)
 
-
-
-- James
 -- 
-James Morris
-<jmorris@intercode.com.au>
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
 
