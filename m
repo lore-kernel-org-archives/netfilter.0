@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <John.Sullivan@nexusmgmt.com>
-Subject: Re: how to automate ip_forward
-Date: Thu, 08 Jul 2004 15:44:51 -0400
+From: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>
+Subject: Re: Is Linux based Gateway/Firewall feasible
+Date: Thu, 8 Jul 2004 19:38:09 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40EDA433.40900@nexusmgmt.com>
-References: <Pine.LNX.4.44.0407081443070.3962-100000@Megathlon.ESI>
+Message-ID: <200407081938.09690.danielf@supportteam.net>
+References: <40ED39B9.30608@svw.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0407081443070.3962-100000@Megathlon.ESI>
+In-Reply-To: <40ED39B9.30608@svw.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,70 +18,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Marco Colombo <netfilter@esiway.net>
-Cc: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+In my experience I would use a router and a firewall as separate devices. I 
+use Juniper routers and Linux firewalls. My network pushes about 800Mbs at 
+peak, we have over 4000 servers. And I have found using linux firewalls as 
+the gateway and then having the router in front to handle all of the WAN 
+connections works out best. 
+
+hope this helps.  
 
 
+On Thursday 08 July 2004 07:10, Sudheer Divakaran wrote:
+> Hi,
+>
+> I've a local LAN consisting of about 150 machines.  I'm using a machine
+> with Linux + IPTables  as the gateway machine which inturn connects to
+> two different ISPs.  My question is can a Linux based machine match the
+> performance of a hardware based routers provided by Cisco,... OR is my
+> decision to go for a Linux based solution is a wrong one?.
+>
+> Is there so much difference between these two solutions?
+>
+> Can I achieve the same performance using a high end PC and Linux?
+>
+> I'm asking this because one guy told me that my decision to go for a
+> Linux based solution is a wrong one and it can never match the
+> performance of hardware based Routers.
+>
+> Thanks
+> Sudheer
 
-Marco Colombo wrote:
-> On Thu, 8 Jul 2004, Peter Marshall wrote:
-> 
-> 
->>Hey guys, I know this sounds stupid, but I can not seem to get the value of
->>/proc/sys/net/ipv4/ip_forward to be 1 after boot.  I tried putting the echo
->>1 > /pro...../ip_forward in my iptables script .... (BTW, I have a bash
->>script with my rules in it and a startup script in rc2.d that calls it)
->>
->>I also tried making a separate starup script just for the ip_forward and set
->>it to run in as the last thing in rc2,d .....
->>
->>If anyone has any suggestions, I would greatly appreciate it.
->>
->>Thanks.
->>Peter
-> 
-> 
-> That depends on the distro you're running. On Red Hat / Fedora distros,
-> add (or change) the following line to /etc/sysctl.conf:
-> 
-> net.ipv4.ip_forward = 1
-> 
-> The echo you're using should work, just make sure nothing else
-> (i.e. sysctl) resets it to 0 later at boot time (but on RH and
-> Fedora, sysctl -p occurs in rc.sysinit, so before any rc.[2345]
-> script).
-> 
-> As an alternative to the echo approach, you can use the sysctl
-> command directly in your script. My iptables scripts start with:
-> 
->   sysctl -w net.ipv4.ip_forward=0
-> 
-> and end with:
-> 
->   sysctl -w net.ipv4.ip_forward=1
-> 
-> so that forwarding is disabled while the scripts are messing with rules:
-> I tend to use the scripts at runtime now and then, disabling forwarding
-> is just safer.
-> 
-> .TM.
-Exactly.  Plus, I believe you'll find that sysctl is called in 
-/etc/init.d/network.
-As recommended, I tend to set the /etc/sysctl.conf setting to 0.  While 
-I am there, I also disable redirects and source routing.  I then enable 
-forwarding with the echo command (for platform independence) in my 
-scripts after all the security scripts have successfully run.  This way, 
-if one of the iptables or *swan scripts fails, I fail safe and the 
-gateway does not forward - John
 -- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net
+"Unix IS user-friendly. It's just picky about who its friends are."
+_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_,.-:*"``'*:-.,_
+Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
+C I Host. 1851 Central Drive Suite 110. Bedford, TX 76021
+T. 888.868.9931 ext 7103
+F. 888.241.2294
+http://www.cihost.com
+-------------------------------------------
+Privileged/Confidential Information may be contained in this message.  If
+you are not the addressee indicated in this message (or responsible for
+delivery of the message to such person), you may not copy or deliver this
+message to anyone.  In such case, you should destroy this message and kindly
+notify the sender by reply email.  Please advise immediately if you or your
+employer do not consent to Internet email for messages of this kind.
+Opinions, conclusions and other information in this message that do not
+relate to the official business of my firm shall be understood as neither
+given nor endorsed by it.
 
