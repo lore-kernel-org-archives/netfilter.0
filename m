@@ -1,11 +1,13 @@
-From: "Aaron P. Martinez" <ml@proficuous.com>
-Subject: NETMAP patch
-Date: 21 Nov 2003 10:26:04 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: redirect squid to other proxy(windows) hearing in port 80
+Date: Fri, 21 Nov 2003 16:43:09 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069431963.25622.13.camel@aaron-rh9-ws.proficuous.com>
+Message-ID: <200311211643.hALGhD725640@onyx.rockstone.co.uk>
+References: <20031121132405.56143.qmail@web40812.mail.yahoo.com> <200311211411.hALEBN725115@onyx.rockstone.co.uk> <00b901c3b04b$3d88ff10$6500a8c0@ProxY>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <00b901c3b04b$3d88ff10$6500a8c0@ProxY>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +18,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-I'm tryin to use the netmap argument with iptables, and when i try using
-the example, which even though i don't have those ips, should still work
-i get the following....
+On Friday 21 November 2003 4:19 pm, Guillermo wrote:
 
+> hello!!
+> i need help with iptables and proxy squid...
+> i have a linux-proxy for tests and it is connected in the internal net
+> (LAN), but i need that this squid pass through a win2000 proxy that is
+> hearing in port 80 for all request....(view the picture)
+>
+> computers ----->squid-linux(hear port 3128)---->win2000-proxy(hear port
+> 80)----->internet (https-DNS)
+>
+> mi problem is that apparently the DNS petitions (port 53) not arrives at
+> the DNS server.
 
-root@test root]# iptables -t nat -A PREROUTING -d 1.2.3.0/24 -j NETMAP
---to 5.6.7.0/24
-iptables v1.2.8: Unknown arg `--to'
-Try `iptables -h' or 'iptables --help' for more information.
-[root@test root]#
+DNS from which machine/s?   The clients, or the proxy/ies?   (In a proxy 
+setup the clients will use DNS because they always do, and the proxy will use 
+DNS because it needs to contact the real server).
 
-I'm running RH 3.0EL, 2.4.22 kernel w/the current patchomatic installed,
-use the "base" option.
+> how i must setup IPTABLES for redirect this packets DNS (TCP and UDP) at
+> the win2000 proxy???
 
-Any ideas?
+It's not clear to me from the above diagram which computer is running 
+netfilter (iptables).   Tell us this and we can suggest how to redirect your 
+DNS requests (if indeed that is the problem).
 
-Thanks in advance,
+> or i must setup SQUID for this???
 
-Aaron P. Martinez
+Indeed - I would actually recommend that you chain the proxies together using 
+the squid configuration file, so that they know how they're interconnected.
 
+> or i must instal a BIND DNS in my Linux box??
+
+That would not be a bad idea at all.   If you're running a caching proxy, it 
+can benefit quite a bit from having a (very) local DNS server as well.
+
+> PD: sorry for my english.... i dont speak english very well..
+
+No problem at all.
+
+Antony.
+
+-- 
+
+Windows: just another pane in the glass.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
