@@ -1,10 +1,12 @@
-From: "Knight, Steve" <Steve.Knight@bskyb.com>
-Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
-Date: Thu, 30 Oct 2003 16:54:11 -0000
+From: Vicnent Haverlant <vincent@haverlant.org>
+Subject: Re: iptables analyzer
+Date: 30 Oct 2003 19:38:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA5791C@OST_EXCH_USR5>
+Message-ID: <m2llr2d103.fsf@haverlant.org>
+References: <20031028233053.25326.qmail@web40203.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031028233053.25326.qmail@web40203.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,63 +18,13 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: iptables mailing list <netfilter@lists.netfilter.org>
-
-Cheers guys - this is really helpful stuff. I've set it to OUTPUT ACCEPT and
-will ensure all works as expected then work my way from there, plus lots of
-logging. 
-
-Thanks heaps
-
-s
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: "Earl A.Killian" <netfilter@lists.killian.com>, netfilter@lists.netfilter.org
 
 
------Original Message-----
-From: Rob Sterenborg [mailto:rob@sterenborg.info] 
-Sent: 30 October 2003 3.56
-To: 'Robert P. J. Day'
-Cc: 'iptables mailing list'
-Subject: RE: thoughts on a newbie tutorial i'll be giving shortly
-
-
-> there are definitely two schools of thought: 1) those who set 
-
-I know ;o)
-
-> if you want to be really restrictive on your OUTPUT chain, 
-> that's fine.  but for testing purposes, you might want to 
-> open it up, make sure everything works, *then* lock it down 
-> and see what breaks.  at least you'll be closer to isolating 
-> the problem.
-
-I was referring to the last statement, not your question (which makes
-this OT btw, but I wanted to answer Steve) :
-> > Just my 0.02, if it's worth that much considering I cant even get 
-> > DNS lookups from my fw working.....
-
-In your case I'd not set policy to DROP for OUPUT.
-IMHO it would be overkill for an introduction of approx. 30 minutes.
-
-
-Gr,
-Rob
-
-
-
-
-.
-
-
------------------------------------------------------------------------
-Information in this email may be privileged, confidential and is 
-intended exclusively for the addressee.  The views expressed may
-not be official policy, but the personal views of the originator.
-If you have received it in error, please notify the sender by return
-e-mail and delete it from your system.  You should not reproduce, 
-distribute, store, retransmit, use or disclose its contents to anyone.
- 
-Please note we reserve the right to monitor all e-mail
-communication through our internal and external networks.
------------------------------------------------------------------------
-
+-- 
+   .~.     Vincent Haverlant  -- Galadril -- #ICQ: 35695155   
+   /V\      http://www.haverlant.org/
+  /( )\      Parinux (http://www.parinux.org/)
+  ^^-^^       MUD -- FranDUMII (http://perso.enst.fr/~frandum/)
 
