@@ -1,11 +1,13 @@
-From: Sabrina Lautier <slautier@lavache.com>
-Subject: error Invalid kernel header inluded in user space
-Date: Fri, 07 Mar 2003 11:58:45 +0100
+From: "Patrick Ahler" <patrick@vikus.com>
+Subject: RE: Thanks
+Date: Fri, 7 Mar 2003 10:25:04 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1047034725.3e687b653bce1@lavache.alinto.com>
+Message-ID: <ABEKJILKOKKGGDJKHKDFMEBLCAAA.patrick@vikus.com>
+References: <F67DPskiCFPwA0VHH6600027fbd@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <F67DPskiCFPwA0VHH6600027fbd@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,46 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-Hi all !
 
-I'm following the "Linux IP Masqueade HowTo" to set up a linux
-router-firewall.
-I'm having trouble compiling iptables and I don't know how to solve my
-problem...
+whoops =)
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Andrej Ricnik
+Sent: Thursday, March 06, 2003 10:23 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: Thanks
 
-I'm running linux redhat 7.3 with a 2.4.18-3 kernel but I've
-downloaded the latest kernel version (2.4.20) in order to compile it
-with iptables-1.2.7a and patch-o-matic kernel patches.
 
-When I try to compile here is the error I get:
-**********************************************************************
-$ make KERNEL_DIR=/usr/src/kernel/linux
-Extentions found:
-cc -02 ...
-In file included from /usr/src/kernel/linux/include/linux/config.h:4,
-from /usr/src/kernel/linux/include/linux/netfilter_ipv4.h:8,
-from /usr/src/kernel/linux/include/linux/netfilter_ipv4/iptables.h:25,
-from include/libiptc.h:6,
-from include/iptables.h:5,
-from extentions/libipt_ah.c:8,
-/usr/include/linux/autoconf.h:1:2: #error Invalid kernel header
-inluded in user space
-make: ** [extentions/libipt_ah_sh.o] Error 1
-**********************************************************************
 
-For information, I'm using gcc-2.96-110. I've tried to upgrade to
-gcc-3.2-7 but cannot find glibc-devel-2.2.90-12 required for this
-version of gcc (can someone tell me where to find it ?).
+>Would have taken me forever to learn how to build this firewall with you,
+>thanks alot.
+<chuckle> ... I hope you mean *without*? ;)
 
-Any idea of how to solve my issue ?
-Any help would be greatly appreciated.
 
-Regards,
-Sabrina
+>Patrick
+Cheers,
+Tink
 
----------------------------------------------
-Powered by Alinto (http://www.alinto.net)
-        for lavache.com (http://www.lavacheautomatique.com)
+_________________________________________________________________
+Add photos to your messages with MSN 8. Get 2 months FREE*. 
+http://join.msn.com/?page=features/featuredemail
+
+
+
 
