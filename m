@@ -1,16 +1,13 @@
-From: Rodrigo Senra <rodsenra@gpr.com.br>
-Subject: Re: Completely NAT an ISP: A practical possibility?
-Date: Thu, 20 Jun 2002 16:37:10 -0300
+From: Harald Welte <laforge@gnumonks.org>
+Subject: [ANNOUNCE] netfilter/iptables Anonymous CVS has been moved
+Date: Thu, 20 Jun 2002 21:38:08 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020620193615.40DDAC87AF@srv9-sao.terra.com.br>
-References: <3D0BBC45.5000807@palaver.net>
-	<20020618202115.32CD7C94DF@srv11-sao.terra.com.br>
-	<20020618225058.GC27054@cannon.eng.us.uu.net>
-	<200206200948.g5K9m7U31874@vulcan.rissington.net>
+Message-ID: <aetbhg$qs$2@main.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="88ivsf4xsnd8HFHJ"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206200948.g5K9m7U31874@vulcan.rissington.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,47 +17,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter-announce@lists.samba.org
+Cc: Netfilter Mailinglist <netfilter@lists.samba.org>, Netfilter Development Mailinglist <netfilter-devel@lists.samba.org>
 
-|On Thu, 20 Jun 2002 10:48:01 +0100
-|Antony Stone <Antony@Soft-Solutions.co.uk> wrote
-| about Re: Completely NAT an ISP: A practical possibility?:
 
- >> On Tuesday 18 June 2002 11:50 pm, Ramin Alidousti wrote:
-> 
-> > On Tue, Jun 18, 2002 at 05:22:03PM -0300, Rodrigo Senra wrote:
-> > > > This would break lots of protocols. How would the clients put up with
-> > > > this broken functionality?
-> > >
-> > > Good observation. Yes it breaks some (all not NAT-able), and when this is
-> > > used clients have to live up with the limitations. But as I said, for the
-> > > time being this is used to accomodate a multiple-ISP cenario where
-> > > clients need basically HTTP, FTP, and less percentage of H.323.
-> >
-> > Just a small note. FTP is one of the protocols that would break...
-> 
-> This is, of course, assuming that they only do "simple NAT", rather than 
-> implementing netfilter + associated helper modules inside the ISP....
-> 
+--88ivsf4xsnd8HFHJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you Antony.
+Hi!
 
-Indeed we were discussing different things! I believe now that Ramin
-made reference that protocols would break due to a lack of "connection
-conntracking" withou which packets couldn't suffer NAT properly. We have
-implemented a rudimentar NAT+conntrack kernel 2.2 patch, because by the time
-we netfilter/iptables was not available in all its glory ;o).
-What we did was to use a priority queue and hashtables to implement full
-NAT to FTP and H.323 only (our immediate needs by then).
+The anonymous CVS repository for the netfilter/iptables project has been
+moved.
 
-We've upgraded the solution to use netfilter/iptables last year.
+Please don't use the old (pserver.samba.org) repository anymore, since it
+is no longer updated and will run out of date very soon.
 
-regards,
-Senra 
+The new location for accessing the netfilter/iptables sourcecode via=20
+anonymous CVS repository is:
 
--- 
-Rodrigo Senra         
-MSc Computer Engineer   (GPr Sistemas Ltda)     rodsenra@gpr.com.br 
-http://www.ic.unicamp.br/~921234  (LinUxer 217.243) (ICQ 114477550)
+cvs -d:pserver:cvs@pserver.netfilter.org:/cvspublic login
+cvs -d:pserver:cvs@pserver.netfilter.org:/cvspublic co netfilter/userspace
+
+Or if you want to check out the full repository, including homepage, HOWTO
+sources, etc.:
+
+cvs -d:pserver:cvs@pserver.netfilter.org:/cvspublic login
+cvs -d:pserver:cvs@pserver.netfilter.org:/cvspublic co netfilter
+
+Please also note that the URL for CVSweb access has changed:
+
+http://cvs.netfilter.org/
+
+
+Thanks!
+
+--=20
+Live long and prosper
+- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+GCS/E/IT d- s-: a-- C+++ UL++++$ P+++ L++++$ E--- W- N++ o? K- w--- O- M+=
+=20
+V-- PS++ PE-- Y++ PGP++ t+ 5-- !X !R tv-- b+++ !DI !D G+ e* h--- r++ y+(*)
+
+--88ivsf4xsnd8HFHJ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE9Ei8gNfqJzMqajVsRApjdAJ4iK6VDVYZGE7yb0PJE7e3ZvKfUeQCgxaE2
+B/gdBjztbmVoJECT2dL7NcU=
+=KwGZ
+-----END PGP SIGNATURE-----
+
+--88ivsf4xsnd8HFHJ--
 
