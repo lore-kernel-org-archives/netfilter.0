@@ -1,9 +1,8 @@
-From: "hard__ware" <hard__ware@hotmail.com>
-Subject: JNAT and SNAT private <-> public, but can't get to port 80 . . .
-Date: Wed, 12 Jun 2002 13:10:07 +1000
+From: Aurelio Turco <a.turco@bom.gov.au>
+Subject: Matching HTTP/FTP packets
+Date: Wed, 12 Jun 2002 03:18:01 +0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <OE28aQUXPXF2aZcdjaS00008b5a@hotmail.com>
-Reply-To: "hard__ware" <hard__ware@hotmail.com>
+Message-ID: <3D06BD69.BB56C02F@bom.gov.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -19,18 +18,7 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Your problem might be to do with a ESTABLISHED, RELATED
+Is it possible, in a rule, to match for HTTP packets?
 
-in you Input & Output Chains (i mean you may have to add them)
-
-i have recently posted alot of Pre Writin scripts that will do all this for
-you ... :D
-
-if you wish you can look at them Posted all over the Netfilter Page from me
-...
-
-or if ya want i can send you my Latest Script , which has alot of these
-examples for what you doing ... :D
-
-
+Is it possible, in a rule, to match for FTP packets?
 
