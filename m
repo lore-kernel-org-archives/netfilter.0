@@ -1,10 +1,11 @@
-From: <kwang@kwang.org>
-Subject: IP forwarding on port 80
-Date: Tue, 10 Jun 2003 17:08:20 -0500 (CDT)
+From: "Garcia Ruiz" <gar_ruiz@teleline.es>
+Subject: Re: load balancing?
+Date: Tue, 17 Jun 2003 21:00:47 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <33603.128.83.147.87.1055282900.squirrel@www.kwang.org>
+Message-ID: <001301c33502$c3672770$05001aac@breton1>
+References: <1055479908.30352.7.camel@little.lethalwp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,62 +17,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jean-Yves Simon <lethalwp@tiscali.be>, netfilter@lists.netfilter.org
 
-Firewall, called dscp, has these iptables settings:
+Hello,
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     tcp  --  localhost.localdomain  anywhere
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-ACCEPT     icmp --  anywhere             anywhere
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:sftp
-DROP       all  --  anywhere             anywhere
+When nating a dest port to a server, if you tell iptables that there are two
+dest servers instead of one, it sends requests to them in a round-robin
+fashion (it sends one request -one TCP/IP connection- to the first server,
+another to the second, etc. -you can even tell iptables that there are 3, 4
+or even more servers).
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+The problem is that you don't have failure support, so I suggest you to look
+for other products if you have time (in any case it is true that with
+iptables you only need to set up one rule -easy- and there is no third party
+software so problems and performance OK). Be careful also if session track
+needed because the next connection that the external browser stablishes with
+the http server may be done to the other server.
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+Regards.
 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       tcp  --  anywhere             dscp.nur.utexas.edutcp dpt:http
-to:192.168.0.2
+JBGR
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
 
-HTTP server has these settings:
+----- Original Message ----- 
+From: "Jean-Yves Simon" <lethalwp@tiscali.be>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, June 13, 2003 6:51 AM
+Subject: load balancing?
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     tcp  --  localhost.localdomain  anywhere
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-ACCEPT     icmp --  anywhere             anywhere
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:sftp
-DROP       all  --  anywhere             anywhere
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Firewall connects to the world via eth1 and to the HTTP server on eth0. HTTP
-server connects to the firewall on eth0 and to another machine on eth1.
-
-I can access the HTTP server from the firewall just fine but not from the
-internet. Any clues?
+> Hello,
+>
+> I'm curious if load balancing can be done with iptables, like for
+> example forwarding incoming web requests to one of the multiple web
+> servers behind the firewall.
+>
+> Or is a third party software needed?
+>
+>
+> Maybe it is this planned for the future (pkttables or don't know what
+> name it will have)?
+>
+>
+>
+>
+> PS: can you please crosscopy to my email address, since i'm not a member
+> of this mailing list.
+>
+>
+>
+> -- 
+> Jean-Yves Simon <lethalwp@tiscali.be>
+>
+>
+>
 
 
 
