@@ -1,13 +1,15 @@
-From: "Danila Octavian" <octavian@service.agress.ro>
-Subject: Re: Hostname with DNAT  ? {OK}
-Date: Tue, 27 Jul 2004 10:54:33 +0300
+From: Michelle Konzack <linux4michelle@freenet.de>
+Subject: Re: Routing problem...
+Date: Tue, 27 Jul 2004 10:06:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007101c473af$108ddc60$da0da8c0@pisic>
-References: <D5C9032B2B09C64EA2409D6214E91AC90511F6@asimail2.alphanumeric.com>
-Reply-To: "Danila Octavian" <octavian@service.agress.ro>
+Message-ID: <20040727080623.GZ20473@freenet.de>
+References: <20040727072329.GV20473@freenet.de> <20040727074251.GA23024@zion.homelinux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ITEy4z2kE7rjCDPK"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20040727074251.GA23024@zion.homelinux.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +19,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <Jopperisano@alphanumeric.com>, netfilter@lists.netfilter.org
-
-I'm afraid i was not very explicit ...
-
-I was trying to use strictly names and that's why :
-
-I have only one public IP and 3 diferrent names. Behind the machine i have a
-network with 4 servers which use that names :
+To: netfilter@lists.netfilter.org
 
 
-Internet ---> eth0(public ip) eth1(private ip) ---> mail.server1.com
-                                                                   --->
-mail.server2.com
-                                                                   --->
-mail.server3.com
+--ITEy4z2kE7rjCDPK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-$IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server1.com --dport
-25 -j DNAT --to 192.168.14.254:25
-$IPTABLES -A FORWARD -i eth0 -p tcp -d mail1.server.com --dport 25 -j ACCEPT
+Good morning Sven,=20
 
-$IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server2.com --dport
-25 -j DNAT --to 192.168.14.251:25
-$IPTABLES -A FORWARD -i eth0 -p tcp -d mail.server2.com --dport 25 -j ACCEPT
+Am 2004-07-27 09:42:51, schrieb Sven Schuster:
+>
+>Hi Michelle,
 
-$IPTABLES -A PREROUTING -t nat -i eth0 -p tcp -d mail.server3.com --dport
-25 -j DNAT --to 192.168.14.253:25
-$IPTABLES -A FORWARD -i eth0 -p tcp -d mail.server3.com --dport 25 -j ACCEPT
+>at which iptables invocation do you get this error exactly?? Try
+>executing the script with "sh -x scriptname" and look where the
+>error occurs.
+>What kernel version are you using, what version of iptables?
 
-I realized that iptables uses the resolved IP address but that's exactly
-what i was trying to avoid.
+It is the line with the ESTABLISHED,RELATED
 
-Can that be possible ?
+I have found the lines in the Firewall-HOWTO=20
+and on <http://www.debianforum.de/>
 
-Thanks very much in advance,
+>Sven
 
-Danila Octavian
+Greetings
+Michelle
 
+--=20
+Linux-User #280138 with the Linux Counter, http://counter.li.org/=20
+Michelle Konzack   Apt. 917                  ICQ #328449886
+                   50, rue de Soultz         MSM LinuxMichi
+0033/3/88452356    67100 Strasbourg/France   IRC #Debian (irc.icq.com)
 
+--ITEy4z2kE7rjCDPK
+Content-Type: application/pgp-signature; name="signature.pgp"
+Content-Description: Digital signature
+Content-Disposition: inline
 
--- 
-This message has been scanned for viruses and
-dangerous content, and is believed to be clean.
-Service.Agress.Ro E-Mail Scanning Service
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
+iD8DBQFBBgz/C0FPBMSS+BIRAmBJAJ4yWj1bAZOf4W5dDwMjyqIUPIOczQCfcQKi
+UVgjyHCQjwNL08iMaY7UKPg=
+=9ETg
+-----END PGP SIGNATURE-----
+
+--ITEy4z2kE7rjCDPK--
 
