@@ -1,12 +1,14 @@
-From: Detmar  Liesen <mad.eye@gmx.net>
-Subject: static NAT and ARP problem
-Date: Fri, 13 Jun 2003 08:23:43 +0200 (MEST)
+From: "Kent Wang" <kwang@kwang.org>
+Subject: RE: IP forwarding on port 80
+Date: Fri, 13 Jun 2003 02:24:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <13472.1055485423@www20.gmx.net>
+Message-ID: <002201c3317c$d9fc6b50$0300a8c0@eclipse>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6E89@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0023_01C33152.F1266350"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6E89@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,73 +18,416 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: 'George Vieira' <georgev@citadelcomputer.com.au>, netfilter@lists.netfilter.org
 
-Hi all,
-I am new to the list, so please forgive me if this problem has already been
-discussed.
-;)
+This is a multi-part message in MIME format.
 
-I have installed a vpn-gateway (commercial solution) on linux.
+------=_NextPart_000_0023_01C33152.F1266350
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-This gateway does not provide NAT, so I have to use netfilter, which I am
-quite used to,=20
-because I already have set up 3 or so internet firewalls using
-netfilter/iptables.
+OK, more info. My belief is that the packets are not being DNAT'd
+properly. I added this to that chain:
 
-Now the problem is that we are NAT-ing vpn ip addresses (source) to internal
-LAN-addresses
-that are blocked on our DHCP in order to prevent conflicts.
+ 
 
-The netfilter NAT works great - I can see the packets leave the gateway with
-the correct=20
-source addresses - but of course - our internal machines do not
-automatically route the=20
-replies to those packets to the gateway, because the packets have internal
-addresses.
+-A PREROUTING -j LOG --log-prefix "test" --log-level 7
 
-Instead, the internal machines send out an arp-request in order to retrieve
-the MAC address
-for the corresponding ip address.
+ 
 
-Of course, my vpn-gateway does not respond to those arp-requests because
-it's own address is
-different from the NAT-source address.
+And was able to log all the incoming HTTP packets. I then added these
+two:
 
-Here is an example of my NAT rules:
-iptables -t nat -A POSTROUTING -s a.b.c.d/32 -o eth0 \
-           -j SNAT --to-source e.f.g.h
-  iptables -t nat -A PREROUTING -s e.f.g.h/32 -i tap0 \
-           -j DNAT --to-destination a.b.c.d
+ 
 
-where tap0 is the loopback-device for encryption/decryption (bump in the
-stack method).
+-A FORWARD -p tcp -m tcp --dport 80 -j LOG --log-prefix "test"
+--log-level 7 
 
-Now I have done some google search and found various ways to solve this:
+-A OUTPUT -p tcp -m tcp --dport 80 -j LOG --log-prefix "test"
+--log-level 7
 
-1. Multihoming (eth0:1, eth0:2, eth0:3 etc)
-2. arp -Ds w.x.y.z eth0 pub
-3. echo "1" > /proc/sys/net/ipv4/conf/eth0/proxy_arp
-4. using iproute2 instead of netfilter/iptables
+ 
 
-The first one works, but is not very elegant. Imagine a gateway having 60+
-virtual ip addresses (shudder).
-And another reason I don't like this is the additional administrative work
-for each new ip address.
+A properly DNAT'd packet should pass through FORWARD and then OUTPUT,
+but I found nothing in the log. Is it possible that the DNAT module
+isn't loaded?
 
-The second and the third solution didn't work (BTW: I am using SuSE 8.x)
+ 
 
-Iproute2 is completely new to me and I'd prefer iptables, because with
-iptables I can also edit=20
-complex stateful firewall rules - which iproute2 cannot.
+I've done tcpdump and the firewall definitely always receives the
+internet-incoming message and the web server never receives it.
 
-Please help me.
+ 
+
+Any clues?
+
+ 
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of George Vieira
+Sent: Thursday, June 12, 2003 5:18 PM
+To: Kent Wang; netfilter@lists.netfilter.org
+Subject: RE: IP forwarding on port 80 
+
+ 
+
+What debugging have you done? tcpdump, iptables logging, anything?
+
+ 
+
+Does your web server have a default gateway of the firewall?
 
 Thanks,
-Mad Eye
 
---=20
-+++ GMX - Mail, Messaging & more  http://www.gmx.net +++
-Bitte l=E4cheln! Fotogalerie online mit GMX ohne eigene Homepage!
+ 
+
+____________________________________________
+George Vieira
+Citadel Computer Systems Pty Ltd   Systems Manager   georgev AT
+citadelcomputer DOT com DOT au   
+
+Citadel Computer Systems Pty Ltd
+
+Phone : +61 2 9955 2644   HelpDesk: +61 2 9955 2698
+<http://www.citadelcomputer.com.au/>  http://www.citadelcomputer.com.au
+<http://www.citadelcomputer.com.au/>  
+
+ 
+
+
+------=_NextPart_000_0023_01C33152.F1266350
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+span.emailstyle17
+	{font-family:Arial;
+	color:windowtext;}
+span.EmailStyle20
+	{font-family:Arial;
+	color:navy;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>OK, more info. My belief is that =
+the
+packets are not being DNAT&#8217;d properly. I added this to that =
+chain:</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>-A PREROUTING -j LOG --log-prefix
+&quot;test&quot; --log-level 7</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>And was able to log all the =
+incoming HTTP
+packets. I then added these two:</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>-A FORWARD -p tcp -m tcp --dport 80 =
+-j LOG
+--log-prefix &quot;test&quot; --log-level 7 </span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>-A OUTPUT -p tcp -m tcp --dport 80 =
+-j LOG
+--log-prefix &quot;test&quot; --log-level 7</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>A properly DNAT&#8217;d packet =
+should pass
+through FORWARD and then OUTPUT, but I found nothing in the log. Is it =
+possible
+that the DNAT module isn&#8217;t loaded?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>I&#8217;ve done tcpdump and the =
+firewall
+definitely always receives the internet-incoming message and the web =
+server
+never receives it.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>Any clues?</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dnavy face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial;color:navy'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D2 =
+face=3DTahoma><span
+style=3D'font-size:10.0pt;font-family:Tahoma'>-----Original =
+Message-----<br>
+<b><span style=3D'font-weight:bold'>From:</span></b>
+netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] <b><span =
+style=3D'font-weight:bold'>On
+Behalf Of </span></b>George Vieira<br>
+<b><span style=3D'font-weight:bold'>Sent:</span></b> Thursday, June 12, =
+2003 5:18
+PM<br>
+<b><span style=3D'font-weight:bold'>To:</span></b> Kent Wang;
+netfilter@lists.netfilter.org<br>
+<b><span style=3D'font-weight:bold'>Subject:</span></b> RE: IP =
+forwarding on port
+80 </span></font></p>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'>&nbsp;</span></font></p>
+
+<div>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D2 =
+color=3Dblue face=3DArial><span
+style=3D'font-size:10.0pt;font-family:Arial;color:blue'>What debugging =
+have you
+done? tcpdump, iptables&nbsp;logging, anything?</span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D2 =
+color=3Dblue face=3DArial><span
+style=3D'font-size:10.0pt;font-family:Arial;color:blue'>Does your web =
+server have
+a default gateway of the firewall?</span></font></p>
+
+</div>
+
+<div>
+
+<p style=3D'margin-left:.5in'><font size=3D2 face=3DArial><span =
+style=3D'font-size:
+10.0pt;font-family:Arial'>Thanks,</span></font></p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+<div>
+
+<marquee id=3DMarquee1 style=3D"WIDTH: 220px; HEIGHT: 57px" trueSpeed
+scrollamount=3D1 scrolldelay=3D20 direction=3Ddown behavior=3Dslide =
+loop=3D1 border=3D2>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D1 =
+face=3D"Times New Roman"><span
+style=3D'font-size:7.5pt'>____________________________________________</s=
+pan></font><br>
+</marquee>
+
+<b><font size=3D2 color=3D"#000066" face=3DVerdana><span =
+style=3D'font-size:10.0pt;
+font-family:Verdana;color:#000066;font-weight:bold'>George Vieira<br>
+</span></font></b><b><font size=3D1 color=3Dblack face=3DVerdana><span
+style=3D'font-size:7.5pt;font-family:Verdana;color:black;font-weight:bold=
+'>
+
+<marquee id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed
+scrollamount=3D1 scrolldelay=3D3 behavior=3Dslide loop=3D1 =
+border=3D0>Citadel Computer
+Systems Pty Ltd</marquee>
+
+</span></font></b>&nbsp;<b><font size=3D1 color=3Dblack =
+face=3DVerdana><span
+style=3D'font-size:7.5pt;font-family:Verdana;color:black;font-weight:bold=
+'>
+
+<marquee id=3DMarquee2 style=3D"WIDTH: 240px; HEIGHT: 17px" trueSpeed
+scrollamount=3D1 scrolldelay=3D3 behavior=3Dslide loop=3D1 =
+border=3D0>Systems Manager</marquee>
+
+</span></font></b><font face=3DVerdana><span =
+style=3D'font-family:Verdana'>&nbsp;</span></font><font
+size=3D1 color=3D"#000099" face=3DVerdana>
+
+<marquee id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 255px; HEIGHT: =
+17px"
+trueSpeed scrollamount=3D2 scrolldelay=3D5 direction=3Dright =
+behavior=3Dslide loop=3D1
+width=3D300 height=3D16 border=3D0><span =
+style=3D'font-size:7.5pt;font-family:Verdana;
+color:#000099'>georgev AT citadelcomputer DOT com DOT =
+au</span></marquee>
+
+</font><font face=3DVerdana><span =
+style=3D'font-family:Verdana'>&nbsp;</span>
+
+<marquee id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
+17px"
+trueSpeed scrollamount=3D1 scrolldelay=3D3 behavior=3Dslide loop=3D1 =
+border=3D0></marquee>
+
+</font></p>
+
+<div>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D1 =
+color=3Dblack
+face=3DVerdana><span =
+style=3D'font-size:7.5pt;font-family:Verdana;color:black'>Citadel
+Computer Systems Pty Ltd</span></font></p>
+
+</div>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D1 =
+color=3Dblack
+face=3DVerdana>
+
+<marquee id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
+17px"
+trueSpeed scrollamount=3D1 scrolldelay=3D3 direction=3Dright =
+behavior=3Dslide loop=3D1
+border=3D0><span =
+style=3D'font-size:7.5pt;font-family:Verdana;color:black'>Phone :
++61 2 9955 2644</span></marquee>
+
+</font><font face=3DVerdana><span =
+style=3D'font-family:Verdana'>&nbsp;</span></font><font
+size=3D1 color=3Dblack face=3DVerdana>
+
+<marquee id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
+17px"
+trueSpeed scrollamount=3D1 scrolldelay=3D3 direction=3Dright =
+behavior=3Dslide loop=3D1
+border=3D0><span =
+style=3D'font-size:7.5pt;font-family:Verdana;color:black'>HelpDesk:
++61 2 9955 2698</span></marquee>
+
+</font>&nbsp;<a href=3D"http://www.citadelcomputer.com.au/">
+
+<marquee id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 220px; HEIGHT: =
+17px"
+trueSpeed scrollamount=3D4 scrolldelay=3D5 direction=3Dright =
+behavior=3Dslide loop=3D1
+border=3D0></a><font size=3D1 color=3D"#000099" face=3DVerdana><span =
+style=3D'font-size:
+7.5pt;font-family:Verdana;color:#000099'><a
+href=3D"http://www.citadelcomputer.com.au/">http://www.citadelcomputer.co=
+m.au</a></span></font></marquee>
+
+</p>
+
+</div>
+
+<div>
+
+<p class=3DMsoNormal style=3D'margin-left:.5in'><font size=3D3 =
+face=3D"Times New Roman"><span
+style=3D'font-size:12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0023_01C33152.F1266350--
+
 
 
