@@ -1,14 +1,14 @@
 From: Nick Drage <nickd@metastasis.org.uk>
 Subject: Re: bind 9 and iptables
-Date: Sat, 28 Aug 2004 01:44:36 +0100
+Date: Sat, 28 Aug 2004 01:47:46 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040828004436.GB22322@metastasis.org.uk>
-References: <web-420408468@mail01.infosat.net> <412F9B73.9010603@pbl.ca>
+Message-ID: <20040828004745.GC22322@metastasis.org.uk>
+References: <D5C9032B2B09C64EA2409D6214E91AC90512F9@asimail2.alphanumeric.co m>
 Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <412F9B73.9010603@pbl.ca>
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512F9@asimail2.alphanumeric.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,37 +22,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Aug 27, 2004 at 03:37:07PM -0500, Aleksandar Milivojevic wrote:
+On Fri, Aug 27, 2004 at 05:19:07PM -0400, Jason Opperisano wrote:
 
-<snip>
+> long answer:  it has been discussed on this list previously that
+> connection tracking DNS queries/responses on or for a busy DNS server
+> (i think the number was ~ 200 queries/second) will slow the name
+> resolution process down.  the reason being that the state creation
+> adds noticeable, unnecessary latency, as most (all?) queries are one
+> packet request--one packet response.
 
-> By the above rules, you are not allowing your clients to connect to your 
-> DNS server (you are only allowing DNS server to send queris outside). 
-> What you need is:
-> 
-> iptables -A INPUT -m state --state ESTABLISHED
-> iptables -A INPUT -p icmp -m state --state RELATED
-> 
-> iptables -A INPUT -i int_if -p udp --sport 1024: --dport 53 \
->    -m state --state NEW -j ACCEPT
-> iptables -A INPUT -i int_if -p tcp --sport 1024: --dport 53 \
->    -m state --state NEW -j ACCEPT
-
-Out of interest, why only permit packets with a source port of 1024 and
-above?  This rule might not pass DNS requests if they come from a local
-DNS server being used internally, if it's set up with a "query-source"
-of port 53.  Also the use of source ports is OS dependant, so if you're
-going to watch this why not pick the range the OS uses?  The range of
-your Linux system can be found via
-
-cat /proc/sys/net/ipv4/ip_local_port_range
-
-or
-
-sysctl net.ipv4.ip_local_port_range
-
-Apologies if I'm being pedantic, just wondering if I've missed
-something...
+I've a vague recollection of being able to specify that a rule won't
+create an entry in the state table, so for situations like this
+netfilter can act faster, as long as you specify the correct rules for
+connections both ways.  However I can't find anything in the
+documentation about this... after a cursory look... can anyone refresh
+my memory?
 
 -- 
 mors omnia vincit
