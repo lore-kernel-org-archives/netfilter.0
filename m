@@ -1,9 +1,8 @@
-From: Philip Ho <cbho@ie.cuhk.edu.hk>
-Subject: Re: libipq question
-Date: Fri, 23 May 2003 16:22:47 +0800
+From: Eric Constantineau <mekanik@nerim.net>
+Subject: passive mode ftp
+Date: Fri, 23 May 2003 10:56:35 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3ECDDA57.F90EC289@ie.cuhk.edu.hk>
-References: <Pine.SOL.4.33.0305142100520.21590-100000@cheetah.cs.ucla.edu>
+Message-ID: <3ECDE243.3133BBAA@nerim.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,38 +16,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Shirshanka Das <shanky@cs.ucla.edu>
-Cc: netfilter@lists.netfilter.org, Philip <cbho@ie.cuhk.edu.hk>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi Shirshanka
+Hi !
 
-I have the exact question as you. I can get the packet to Perl userspace,
-but don't know how to modify the packet and put it back into socket. Do you
-know the answer?
+I want to be able to use passive ftp under my firewall...
 
-Regards,
-philip
+Right now passive mode does not function because I allow only packets
+WITH port 21 as a destination OR source.  When in normal mode, packets
+from the ftp server have 21 for the source port and the packets from the
+client have 21 for the destination port so it works.  But, entering
+passive mode, the destination and source ports are not 21, so my
+firewall blocks.
+
+Using a ftp client such as leechftp, cuteftp, wsftp is okay, but using
+the browser (iexplore) does not because it use passive mode.
+
+I don't want to open too much my ports, it would mean that someone could
+use those ports to get access to inside networks...  But I want to be
+able to use passive mode, some users do not want to use ftp client
+software, or are not even able to install them...
+
+Is there a specific range of ports that all passive ftp use ?
+
+Thanks for helping me
+
+Eric
 
 
-
-Shirshanka Das wrote:
-
-> Hi all,
->   I'm new to lipipq...
->   I tried using the perlipq module.. but I'm unable to figure out
->   how to write a "modified" packet back to the queue..
->   the documentation says :
->   set_verdict(id,verdict,len,buf)
->
->   $msg = $queue->get_message() gives me the packet (i hope)..
->   however trying to do
->   set_verdict(id,NF_ACCEPT,len,$msg)
->   does not work properly...
->
->   does anyone have a piece of working code.. that mangles something in a
-> packet.. and then writes it out ?
->
-> Thanks,
-> Shanky
 
 
