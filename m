@@ -1,12 +1,13 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Differentiating direct, and redirected access?
-Date: Mon, 18 Oct 2004 10:40:39 -0400
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: No PREROUTING for OUTPUT?
+Date: Mon, 18 Oct 2004 09:51:07 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9C05825@asimail2.alphanumeric.com>
+Message-ID: <4173D85B.8060908@pbl.ca>
+References: <5FCB4E67C52322BD4ABBF882@[10.0.0.4]>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <5FCB4E67C52322BD4ABBF882@[10.0.0.4]>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +17,30 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Users <netfilter@lists.netfilter.org>
 
-> -t nat -A PREROUTING -i eth0 -d ! $INT_ROUTER_IP -p tcp --dport 80 -j
-> REDIRECT --to-ports 3128
-> -A INPUT -i eth0 -d $INT_ROUTER_IP -p tcp --dport 3128 -J REJECT
->
-> TCP SYN have external ip dst_ip.
+Kenneth Porter wrote:
+> Can anyone confirm that the PREROUTING chain is absent from the OUTPUT 
+> packet path? I wanted to tag my UDP packets with TOS Minimize-Delay so 
+> that they'd go in my high-priority traffic shaping queues, but if 
+> PREROUTING isn't used in the output path, the packets can't be tagged 
+> until after they've been through the shaper. (Isn't the shaper part of 
+> "routing decision" in the diagrams?)
 
-the TCP SYN to port 80 has the dst IP of the web server on the internet.
+The equivalent of PREROUTING chain for locally generated packets would 
+be OUTPUT chain.  It exists in filter, nat, and mangle tables.  I'd 
+guess what you need is something like:
 
-the redirected packet to TCP port 3128 has the dst IP of the redirected
-interface (eth0 in this case).
+    iptables -t mangle -A OUTPUT -p udp -j TOS --set-tos Minimize-Delay
+    iptables -t mangle -A PREROUTING -p udp -j TOS --set-tos Minimize-Delay
 
-your suggested REJECT rule will reject all redirected traffic to port
-3128, and is essentially the issue the OP had already run into, and was
-asking for a work-around.
+First line would handle locally generated packets, second would handle 
+forwarded packets (it would catch incoming too, but I guess it can be 
+safely ignored in this case).
 
--j
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
