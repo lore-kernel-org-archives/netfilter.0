@@ -1,8 +1,8 @@
-From: Fall Birahim <birahim.fall@upu.int>
-Subject: Checkpoint VPN through Iptables
-Date: Tue, 24 Sep 2002 11:42:59 +0200
+From: "Brennan, JosephX M" <josephx.m.brennan@intel.com>
+Subject: one to one NAT
+Date: Mon, 23 Sep 2002 17:13:08 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <8F31D8DF00BBD411975C00508B6D6E65F8908F@hermes.upu.int>
+Message-ID: <ADCE7AEB26CBD511B4D100508B66D3063BD421@fmsmsx115.fm.intel.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,66 +16,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'fw1@phoneboy.com'" <fw1@phoneboy.com>
-Cc: "'BNC.Bourqui Laurent'" <laurent@bnc.ch>, Bernieu Olivier <olivier.bernieu@upu.int>
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hi all,
+I have been trying for a couple days to set up one to one nat with iptables
+with a few weird results so I would any input out there that could help me
+resolve my problem.
 
-I'm hanged with the following problem.
-I want to access our enterprise network behind a Nokia checkpoint FW-UPU
-@a.b.c.d 
-from a Windows 2k Checkpoint NG client @192.168.0.2
-behind my Linux Redhat 7.2 iptables 1.2.6a FW-HOME with eth0 @DHCP and eth1
-@192.168.0.1
+First, what I am trying to do is set up a box with a virtual ip that will be
+mapped through my iptables box so that essentually the internal box is the
+external ip.
 
-I have the following script
+I have a dual homed box with interfaces: eth1(internal card):192.168.1.254
+and eth2(external card):10.10.10.254.  In addtion I have an external test
+box with an ip of 10.10.11.23.  Both the 10.10.10.254 and 10.10.11.23 boxes
+are hooked up to a 550T Intel routing switch so they are able to talk to
+each other.  On the other side I have an internal test box with an ip of
+192.168.1.24 and obviously because the routing box and internal test box are
+on the same network they can talk.
 
-$IPTABLES -F
-$IPTABLES -t nat -F
-$IPTABLES -t mangle -F
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -P FORWARD ACCEPT
-$IPTABLES -t nat -A POSTROUTING -s 192.168.0/24 -o eth0 -j MASQUERADE
+My question however is i have tried this command
 
-My little understanding of firewall, linux and iptables, makes me believe
-that :
-a) I've a quite secureless FW-HOME and my internal LAN is nated
-b) no matter the protocol, the src/dst ports etc, everything should pass.
-c) The checkpoint client should be able to access my enterprise VPN
-Is that right?
+iptables -t nat -A PREROUTING -d 10.10.10.254 -j DNAT --to 192.168.1.24
 
-My problem is that the client cannot access my enterprise VPN.
-I added some loging rules and it seems that
-My client uses UDP, src port 500 dst port 500.
-The FW-HOME send that to FW-UPU (prot udp, src port 500 dst port 500)
-(masquerading the IP@)
-The FW-UPU replies to FW-UPU (prot udp, src port 500 dst port 500)
-The FW-HOME replies : icmp port udp 500 unreachable
+and my internal box gets a request from the outside box however it does not
+look like there has been any "NAT"ing taken place because when I run a
+packet sniffer on the internal box the packets are still coming from the
+10.10.10.23 address and obviously the internal box has no idea how to send
+the information back.
 
-I made another test before incriminating the Client
-I plugged it directly to my CableModem and it worked immediately.
-I check that it was configured correctly (IKE + Force UDP encapsulation +
-IKE over TCP)
-according to PhoneBoy http://www.phoneboy.com/faq/0141.html 
-and http://www.phoneboy.com/faq/0372.html
-After this test I concluded that the Client is operational.
+So if anyone has any suggestions I would appreciate it.
 
-Another info:
-It worked with a Redhat 7.0 + ipchains
-It didn't worked with ISA
+Joe
 
-So for me the problem is located somewhere on FW-HOME.
-Anybody can help, explain, advice!?!?
-
-
-
-_________________________________________________________
-Birahim FALL
-Project Manager (Postal Technologie Centre)
-Universal Postal Union, PO Box, CH-3000 Bern 15 (Switzerland)
-Phone	+41 313.503.372
-Fax	+41 313.503.110
-Email	mailto:birahim.fall@upu.int
-
-
+PS.  I forgot to mention it above but I do have ip forwarding turned on.
 
