@@ -1,15 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: RELATED ICMP packets of type 3
-Date: Fri, 11 Feb 2005 17:02:09 +0100
-Message-ID: <1108137730.5565.71.camel@anduril.intranet.cartel-securite.net>
-References: <200502111757.16352.e-boogie@yandex.ru>
-	<20050211150635.GA2371@bender.817west.com>
-	<200502111641.19968.victor@nk.nl>
-	<20050211154955.GA2644@bender.817west.com>
+From: Tib <tib@tigerknight.org>
+Subject: Re: more limiting fun
+Date: Fri, 11 Feb 2005 10:05:53 -0600 (CST)
+Message-ID: <Pine.LNX.4.53.0502111005170.1996@altaica>
+References: <Pine.LNX.4.53.0502110936210.1996@altaica>
+	<20050211155352.GA2708@bender.817west.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050211154955.GA2644@bender.817west.com>
+In-Reply-To: <20050211155352.GA2708@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,23 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Jason Opperisano <opie@817west.com>
 Cc: netfilter@lists.netfilter.org
 
-Le vendredi 11 f=E9vrier 2005 =E0 10:49 -0500, Jason Opperisano a =E9crit :
-> in theory--they are RELATED.  in practice, i allow them explicitly.
-> looking at one of my firewalls, it appears as though there are ICMP Type
-> 3 packets that get past the RELATED rule and hit the explicit allow rule,
 
-Did you have a look at one of them, just to see if it's a legitimate
-one ? I have experienced some troubles with DNS and port unreachable on
-very slow links, but that was quite unusual.
+I see. I tried a NEW for the jump target but it didn't like that, so I
+tried accept instead. Now it seems to work just fine. Thanks everyone!
 
+<EOL>
+Tib
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+On Fri, 11 Feb 2005, Jason Opperisano wrote:
+
+> On Fri, Feb 11, 2005 at 09:43:05AM -0600, Tib wrote:
+> > Ok, I've done some fiddling but still have some issues. I went with some
+> > recommendations on what people said and here's what I have. The first
+> > three rules of my startup set are as follows:
+> >
+> > iptables -A INPUT -i eth0 -p tcp --dport 22 -m state \
+> >   --state ESTABLISHED -j ACCEPT
+> >
+> > iptables -A INPUT -i eth0 -p tcp --destination-port 22 -m limit \
+> > --limit 15/hour --limit-burst 5
+>
+> this rule doesn't jump anywhere; therefore it is a non-terminating match
+> and all packets will continue on to...
+>
+> > iptables -A INPUT -i eth0 -p tcp --destination-port 22 -j DROP
+>
+> ...the rule that drops all inbound ssh traffic.
+>
+> try adding a "-j ACCEPT" to the limit rule.
+>
+> -j
+>
+> --
+> "That's it! You people have stood in my way long enough. I'm going
+>  to clown college!"
+>         --The Simpsons
+>
 
