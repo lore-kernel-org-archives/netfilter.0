@@ -1,14 +1,12 @@
-From: "Peter E. Fry" <pfry@redsword.com>
-Subject: Re: Is dropping all ICMP traffic valid?
-Date: Tue, 12 Nov 2002 19:32:21 -0600
+From: Brad Chapman <kakadu_croc@yahoo.com>
+Subject: Re: NAT only - No connection tracking
+Date: Tue, 12 Nov 2002 16:36:05 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DD15745.1378.3D1FB1@localhost>
-References: <1037143537.8023.4.camel@trent.nin>
+Message-ID: <20021113003605.54039.qmail@web40904.mail.yahoo.com>
+References: <1037099676.12587.8.camel@hope>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20021113010119.NUVS26478.mta05-svc.ntlworld.com@there>
-Content-description: Mail message body
+In-Reply-To: <1037099676.12587.8.camel@hope>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,22 +17,69 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Filip Sneppe <filip.sneppe@cronos.be>
+Cc: netfilter@lists.netfilter.org
 
-On 13 Nov 2002 at 1:01, Antony Stone wrote:
+Mr. Filip,
 
-> ICMP type 3 code 4 is Source Quench - not very common these days, but
-> important to let through if you run systems which use it.
+--- Filip Sneppe <filip.sneppe@cronos.be> wrote:
+> On Mon, 2002-11-11 at 20:21, Brad Chapman wrote:
+> > 
+> > Basically, if this person wants to do NAT, he has to do connection tracking as
+> well.
+> > LYSB, he doesn't have to run ctrack without NAT, but without ctrack the current
+> > implementation of NAT in netfilter won't work. If there are other stateless NAT
+> > kernel implementations available that attach to netfilter, then I am currently
+> > unaware of them.
+> > 
+> Hi Brad & Antony,
+> 
+> There is one other way to do NAT without connection tracking - this is
+> even possible on 2.2 kernels. There is some NAT functionality in the
+> routing code (policy routing, advanced routing).
+> 
+> This is a form of NAT where only the IP addresses in the IP header
+> are changed, no data inside the packet payload is inspected or changed.
+> Also, there is no automatic retranslation of return packets, like with
+> iptables.
 
-  The only stack I've seen use source quench is the old Mac stack, 
-and it sent 'em gratuitously.  Funny -- I can't bloody well remember 
-how I found that out.  I must've shared a LAN with a Mac at some 
-point.
-  I just wanted to point that out, to those who see lots of 
-"quenches" on the Internet.  I'd never advocate dropping all ICMP.
+*thunk*
 
-[...]
+Duh! I had forgotten about that, having never used it. Good call. Maybe the original
+poster will be interested in this.
 
-Peter E. Fry
+> 
+> The syntax is a little different and takes some time to get used to;
+> basically you get something like this:
+> 
+> ip rule add from 192.168.1.32/27 nat 10.1.1.32 prio 14000
+> ip route add nat 10.1.1.32/27 via 192.168.1.32
+> 
+> to set up NAT rules.
+> 
+> For more info, see the iproute documentations. I can also recommend
+> the book "Policy Routing with Linux" by Matthew G. Marsh, who is also
+> a contributor on this list.
+> 
+> The book is being released online at http://www.policyrouting.org/,
+> but is definately worth the buy.
 
+> 
+> Regards,
+> Filip
+> 
+
+Brad
+
+
+=====
+Brad Chapman
+
+Permanent e-mail: kakadu_croc@yahoo.com
+
+__________________________________________________
+Do you Yahoo!?
+U2 on LAUNCH - Exclusive greatest hits videos
+http://launch.yahoo.com/u2
 
