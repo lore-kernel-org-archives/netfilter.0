@@ -1,9 +1,9 @@
-From: "John Paul" <voltaire@pinoylinux.sytes.net>
-Subject: Re: pptp broken after POM
-Date: Thu, 13 Nov 2003 10:31:05 +0800
+From: Milan =?ISO-8859-15?Q?Holz=E4pfel?= <mail@jagdfalke.net>
+Subject: Re: This rule doesn't work!...
+Date: Wed, 12 Nov 2003 20:14:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <015701c3a98e$34c2fcf0$63000a0a@pooh>
-References: <3FB2C509.5070703@yahoo.com> <00cd01c3a983$3a96ff10$63000a0a@pooh>
+Message-ID: <20031112201439.177a9171.mail@jagdfalke.net>
+References: <200311111945.01103.b.caruso@laposte.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,73 +17,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: John Paul <john@pinoylinux.sytes.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-oooopss... sorry for answering my own query. i have found the problem and
-has been fixed :-) i was previously using the old .so.
+On Tue, 11 Nov 2003 19:45:00 +0100
+caruso bruno <b.caruso@laposte.net> wrote:
 
------ Original Message -----
-From: "John Paul" <john@pinoylinux.sytes.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, November 13, 2003 9:12 AM
-Subject: pptp broken after POM
+> Hi
+> 
+> I have seen recently that I had many attempt connection from source
+> address 127.0.0.1, source port 80. 
+> 
+> I had theses rules in my list:
+> iptables -A INPUT -i ppp0 -s "127.0.0.0/8" -m limit --limit 30/m -j
+> LOG --log-prefix "iptable NO_ROUTABLE_ADDR "
+> iptables -A INPUT -i ppp0 -s "127.0.0.0/8" -j DROP
+> 
+> I haven't any log in syslog just for this rule otherwise everything
+> goes well. I don't understand why theses rules doesn't work.
+
+I'd guess that ppp0 isn't the interace dealing with 127.0.0.1 but it is
+the interface with your connection to the internet? The device for
+127.0.0.1 is called loopback-device, you might try with -i lo, but I'm
+not sure what to use here exactly.
+
+> 
+> Best regards
+> 
+> Bruno
+> 
+
+Regards,
+Milan
 
 
-> Hello Folks,
->
-> I got my PPTP working before patching my kernel with POM. Below is the log
-> when trying to connect to the vpn server. Am i missing something after the
-> POM patch?
->
-> iptables-1.2.9rc1
-> linux-2.4.22
->
-> Thanks.
-> PJ.
->
-> Nov 13 09:11:17 mail pppd[8395]: pppd 2.4.1 started by root, uid 0
-> Nov 13 09:11:17 mail pppd[8395]: using channel 3
-> Nov 13 09:11:17 mail pppd[8395]: Using interface ppp1
-> Nov 13 09:11:17 mail pppd[8395]: Connect: ppp1 <--> /dev/pts/3
-> Nov 13 09:11:17 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:19 mail pptpd[8394]: GRE: Discarding for incorrect call
-> Nov 13 09:11:20 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:22 mail pptpd[8394]: GRE: Discarding for incorrect call
-> Nov 13 09:11:23 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:26 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:26 mail pptpd[8394]: GRE: Discarding for incorrect call
-> Nov 13 09:11:29 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:30 mail pptpd[8394]: GRE: Discarding for incorrect call
-> Nov 13 09:11:32 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:34 mail pptpd[8394]: GRE: Discarding for incorrect call
-> Nov 13 09:11:35 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:38 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:38 mail pptpd[8394]: GRE: Discarding for incorrect call
-> Nov 13 09:11:41 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:42 mail pptpd[8394]: GRE: Discarding for incorrect call
-> Nov 13 09:11:44 mail pppd[8395]: sent [LCP ConfReq id=0x1 <asyncmap 0x0>
-> <auth chap 81> <magic 0x65a9be36> <pcomp> <accomp>]
-> Nov 13 09:11:46 mail pptpd[8394]: GRE: Discarding for incorrect call
-> Nov 13 09:11:47 mail pppd[8395]: LCP: timeout sending Config-Requests
-> Nov 13 09:11:47 mail pppd[8395]: Connection terminated.
-> Nov 13 09:11:47 mail pppd[8395]: Exit.
-> Nov 13 09:11:47 mail pptpd[8394]: GRE: read(fd=5,buffer=804d920,len=8196)
-> from PTY failed: status = -1 error = Input/output error
-> Nov 13 09:11:47 mail pptpd[8394]: CTRL: PTY read or GRE write failed
-> (pty,gre)=(5,6)
-> Nov 13 09:11:47 mail pptpd[8394]: CTRL: Client 10.10.0.99 control
-connection
-> finished
->
->
+-- 
+Missing signature...
 
 
