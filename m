@@ -1,10 +1,10 @@
-From: Muriel <muriel@arial-concept.com>
-Subject: how-to help
-Date: Mon, 24 Nov 2003 13:29:14 +0100
+From: Juan Hernandez <hvjuan@kanux.com>
+Subject: port forwarding in a web server
+Date: 24 Nov 2003 12:05:09 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069676953.14413.33.camel@muriel>
+Message-ID: <1069689909.1083.13.camel@webmail.aeropostal.com.ve>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-sngVNv/Wqn3EnFj00v3A"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,68 +15,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Lista de netfilter <netfilter@lists.netfilter.org>
 
---=-sngVNv/Wqn3EnFj00v3A
-Content-Type: multipart/alternative; boundary="=-Qoeby2tSYcaUzlVTf3qI"
+Hi there...
 
---=-Qoeby2tSYcaUzlVTf3qI
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+   This may have been answered many times in this mailing list but I
+haven't found anything on the web about something that would make my
+server forward the way I want to, and what's ironic is that it seems
+simple. Here's my scenario: I have a static IP address routed (1.1.1.1)
+to one server using a 192.168.0.* address. Is a cisco router and
+everything works fine. This server has 192.168.0.1 as it's address and
+functions as a web server, everything works fine but, I have another
+server that works as our mail server that is using 192.168.0.2. I've
+been trying to redirect everything coming from port 25 to my mail server
+but it doesn't get any answer. These are the rules I've been using: 
 
-Hello,
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-we have a nated box with transparent proxy squid  and wish to control
-all ports/protocols (143 110 119 80 etc...) with iptables and because of
-the transparent proxy we cannot control, with iptables "forward" rules,
-access to the transparent proxy any idea?=20
+modprobe iptable_nat
 
-ps: i already tell my boss to use squid's acl but he want all controls
-in one place...=20
+#allow all outgoing traffic from the mail server 
 
---=-Qoeby2tSYcaUzlVTf3qI
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+iptables -t nat -A POSTROUTING -p tcp -o eth0 -j SNAT --to 192.168.0.1
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; CHARSET=3DUTF-8">
-  <META NAME=3D"GENERATOR" CONTENT=3D"GtkHTML/3.0.9">
-</HEAD>
-<BODY>
-Hello,<BR>
-<BR>
-we have a nated box with transparent proxy squid&nbsp; and wish to control =
-all ports/protocols (143 110 119 80 etc...) with iptables and because of th=
-e transparent proxy we cannot control, with iptables &quot;forward&quot; ru=
-les, access to the transparent proxy any idea? <BR>
-<BR>
-ps: i already tell my boss to use squid's acl but he want all controls in o=
-ne place...=20
-</BODY>
-</HTML>
+#dnat
+iptables -t nat -A PREROUTING -p tcp --dport 25 -i eth0 -j DNAT --to
+192.168.0.1:25
 
---=-Qoeby2tSYcaUzlVTf3qI--
+The gateway on the mailserver is 192.168.0.1 which is the webserver that
+it's forwarding everything... and I have tried so many things that
+sometimes the webserver stops working...
 
---=-sngVNv/Wqn3EnFj00v3A
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
+Using that configuration, if I nmap the webserver it shows that tport 25
+is filtered but, if i telnet to taht port I wont get any response... and
+the mailserver is running perfectly, it's just not forwarding anything
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+Any suggestions would be appreciated...
 
-iD8DBQA/wfmZI+Zqkbo6UpQRAnqjAJ9hNA77NtFBAEAX1CnQYxnpzf635gCgtD1A
-k+4VMqlgyh49nNKNmSr6Z5Y=
-=+k13
------END PGP SIGNATURE-----
+Thanks a lot for your time
 
---=-sngVNv/Wqn3EnFj00v3A--
+Juan
 
--- 
-Ce message a iti virifii par MailScanner et le moteur F-Prot pour
-rechercher la prisence de virus et rien de suspect n'a iti trouvi.
-Pour tous renseignements complimentaires concernant cet anti-virus
-contactez Postmaster@arial-concept.com
+
+
+
 
