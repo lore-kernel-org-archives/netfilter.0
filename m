@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: Time based rules ...
-Date: Wed, 13 Nov 2002 16:50:29 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IPtables accounting ...
+Date: Wed, 13 Nov 2002 15:38:16 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019992@hslex01.hsl-brabantzuid.nl>
-References: <FD8F124A387AD6119F7900A0D218B321487E43@hslex01.hsl-brabantzuid.nl>
+Message-ID: <200211131538.gADFcPe32172@vulcan.rissington.net>
+References: <1037193855.4553.25.camel@rayw.knowledgefactory.co.za> <1037196520.7181.205.camel@tech004>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FD8F124A387AD6119F7900A0D218B321487E43@hslex01.hsl-brabantzuid.nl>
+In-Reply-To: <1037196520.7181.205.camel@tech004>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +18,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-> Is there a way to put time restrictions on rules?
-> For eaxmple, something like:
+On Wednesday 13 November 2002 2:08 pm, Eric Leblond wrote:
+
+> On Wed, 2002-11-13 at 14:24, Raymond Leach wrote:
+> > Hi
+> >
+> > Where do I do iptables accounting?
+> >
+> > For example: If I have users on a private LAN surfing via a proxy on the
+> > firewall and I have web servers in a DMZ also being routed via the
+> > firewall, where do I put my accounting rules? In the FORWARD chain, or
+> > the INPUT chain, or both?
 >
-> iptables -A FORWARD -i eth0 -p tcp -sport 1024: -dport 1024: -time
-> 0700:1700 -j DROP
+> Not INPUT if you don't have a web server on your firewall.
+> FORWARD is a good place.
 
-There is a time patch in pom (base).
+But he does have a web server on his firewall - he is running a proxy, which 
+is both a server and a client in a single application.
 
-From the website :
-This option adds CONFIG_IP_NF_MATCH_TIME, which supplies a time match
-module.
-This match allows you to filter based on the packet arrival time
-(arrival time at the machine which the netfilter is running on) or
-departure time (for locally generated packets).
+Antony.
 
+-- 
 
-Rob
-
+Most people have more than the average number of legs.
 
