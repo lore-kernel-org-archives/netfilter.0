@@ -1,13 +1,11 @@
-From: Jacob Helwig <jhelwig@cs.purdue.edu>
-Subject: Re: Patch-o-Matic problems
-Date: Fri, 8 Nov 2002 13:46:49 -0500
+From: "Amadej Bukorovic" <amadej@minet.si>
+Subject: "NET: 218 messages suppressed" and "TCP: drop open request from"
+Date: Sat, 9 Nov 2002 00:22:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021108184649.GA18276@Parkmoor.dyndns.org>
-References: <20021107005515.GB490@Parkmoor.dyndns.org> <200211071655.00285.fabrice@netfilter.org> <20021108150353.GB32438@Parkmoor.dyndns.org> <200211090206.38312.fabrice@netfilter.org>
+Message-ID: <006601c2877d$a999dcd0$0301010a@nexus>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200211090206.38312.fabrice@netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +16,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Thank ye kindly, sir.  Works like a charm.
+Hello everyone
+I'm hoping someone can explain to me the following flood of messages I
+found in my kernel log file:
 
-On Sat, Nov 09, 2002 at 02:06:38AM +0800, Fabrice MARIE wrote:
-> 
-> Hello Jacob,
-> 
-> I updated the SGML master of the documentation in the CVS, I guess
-> you'll have to wait until the webmaster regenerates the documentation
-> from the SGML before it appears on the website.. or you can regenerate
-> it yourself from the SGML master in the CVS.
-> 
-> Have a nice day,
-> 
-> Fabrice.
-> --
-> Fabrice MARIE
-> 
-> "Silly hacker, root is for administrators"
->        -Unknown
+A lot of:
+"Nov  8 15:47:19 mybox kernel: New,not syn:IN=eth0 OUT=
+MAC=00:50:8b:bd:05:1b:00:00:0c:5d:46:57:08:00 SRC=212.30.69.131
+DST=<XXX> LEN=40 TOS=0x00 PREC=0x00 TTL=124 ID=26922 PROTO=TCP SPT=3264
+DPT=80 WINDOW=0 RES=0x00 ACK URGP=0
+Nov  8 15:47:20 mybox kernel: New,not syn:IN=eth0 OUT=
+MAC=00:50:8b:bd:05:1b:00:00:0c:5d:46:57:08:00 SRC=212.30.69.131
+DST=<XXX> LEN=40 TOS=0x00 PREC=0x00 TTL=124 ID=26982 PROTO=TCP SPT=3266
+DPT=80 WINDOW=0 RES=0x00 ACK URGP=29742
+Nov  8 15:47:31 mybox kernel: New,not syn:IN=eth0 OUT=
+MAC=00:50:8b:bd:05:1b:00:00:0c:5d:46:57:08:00 SRC=212.30.69.131
+DST=<XXX> LEN=40 TOS=0x00 PREC=0x00 TTL=124 ID=28212 PROTO=TCP SPT=3283
+DPT=80 WINDOW=0 RES=0x00 ACK URGP=0
+Nov  8 15:47:31 mybox kernel: New,not syn:IN=eth0 OUT=
+MAC=00:50:8b:bd:05:1b:00:00:0c:5d:46:57:08:00 SRC=212.30.69.131
+DST=<XXX> LEN=40 TOS=0x00 PREC=0x00 TTL=124 ID=28214 PROTO=TCP SPT=3284
+DPT=80 WINDOW=0 RES=0x00 ACK URGP=0"
 
--- 
------BEGIN GEEK CODE-----
-Version: 3.12
-GCS/MU d- s+:- a-- C++++>$ UL+++ P++++ L+++>++++ !E
-W+++ N++ K? W--- M-- PS+ PE Y+ PGP++(+++) t+ 5+ X+
-R(+) tv b++(+++) DI++ D++(+++) G(++) e* h* r++>+++ y?
-------END GEEK CODE------
+and after a while followed by:
+"Nov  8 15:47:51 mybox kernel: TCP: drop open request from
+212.30.69.131/4824
+Nov  8 15:47:51 mybox kernel: TCP: drop open request from
+212.30.69.131/4825
+Nov  8 15:47:51 mybox kernel: TCP: drop open request from
+212.30.69.131/4826
+Nov  8 15:47:51 mybox kernel: TCP: drop open request from
+212.30.69.131/4827
+Nov  8 15:47:52 mybox kernel: TCP: drop open request from
+193.77.246.66/4389"
+
+and finally a bunch of this type of messages:
+
+"Nov  8 15:47:56 mybox kernel: NET: 148 messages suppressed.
+Nov  8 15:48:11 mybox kernel: NET: 232 messages suppressed."
+
+212.30.69.131 was the client's IP address, never mind the <XXX> in DST ,
+I changed it (don't hold it against me).
+It seems my Linux machine was flooded by the number of bad packages this
+client sent (well at least that's what I think).. can someone explain
+this to me - was this an accident (and how it happened) or was it some
+kind of a DOS attempt?
+
+Any info on this would be appreciated..
+Regards, 
+Amadej.
+
+
+
 
