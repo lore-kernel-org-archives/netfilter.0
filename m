@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Shareaza and IPtables
-Date: Sun, 14 Nov 2004 12:32:23 -0500
-Message-ID: <20041114173223.GA1071@bender.817west.com>
-References: <20041114041647.120.qmail@web40727.mail.yahoo.com>
+From: ro0ot <ro0ot@phreaker.net>
+Subject: Re: iptables with policy routing
+Date: Mon, 15 Nov 2004 01:58:14 +0800
+Message-ID: <41979CB6.5010703@phreaker.net>
+References: <41939AD2.602@phreaker.net> <4195BB80.5060702@newkirk.us>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20041114041647.120.qmail@web40727.mail.yahoo.com>
+In-Reply-To: <4195BB80.5060702@newkirk.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,96 +17,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Joel Newkirk <firewalldude@newkirk.us>
+Cc: netfilter@lists.netfilter.org
 
-On Sat, Nov 13, 2004 at 08:16:47PM -0800, Tasha Smith wrote:
-> Hii Everyone,
-> 
-> I am running Shareza(P2P) program on my laptop behind my Router/Firewall running
-> Linix 7.3 and Iptables 1.2.7a. Iam trying to open up port 6346 on my firewall so
-> it forwards it to my laptop where Sharaza is running. My OUTBOUND rule is
-> already sent to ACCEPT
-> # Set the default policy to drop.
-> $iptables --policy INPUT DROP
-> $iptables --policy FORWARD DROP
-> $iptables --policy OUTPUT ACCEPT
+Joel,
 
-the OUTPUT chain covers packets originating from the firewall
-itself--your FORWARD policy; which covers packets routed through the
-firewall, is set to DROP.
+Can I add the following?
 
-> $iptables -t nat --policy PREROUTING ACCEPT
-> $iptables -t nat --policy OUTPUT ACCEPT
-> $iptables -t nat --policy POSTROUTING ACCEPT
-> 
-> Here is Shareza's connection test the i keep timing out on.
-> http://www.crucial-forums.com/connectiontest/
-> 
-> I have Shareza's port configured to 6346.
-> My firewall rule that i thought should work but are not are here. This is for
-> emule as well. Any help guys to get this going. I googled but couldnt find
-> anything really useful on this.
+ip rule add nat 1.1.1.10 from 172.16.0.1 table 1
+ip rule add nat 2.2.2.10 from 192.168.0.1 table 2
 
-something useful would be to clue us into whether eth1 is internal or
-external--i'm going to *assume* it's internal and eth0 is external...
+Regards,
+ro0ot
 
-> #My rules for EMULE;
-> $iptables -A INPUT -p tcp --dport 4662 -j ACCEPT
-> $iptables -A OUTPUT -p tcp -m multiport --sport 4661,4662 -j ACCEPT
-> $iptables -t nat -A PREROUTING -p tcp --dport 4662 -j DNAT --to 192.168.0.69
+Joel Newkirk wrote:
 
-how's about a NAT rule for shareaza?
+> ro0ot wrote:
+>
+>> Hi,
+>>
+>> Below is my Linux firewall network configuration: -
+>>
+>
+>> iptables -t nat -A POSTROUTING -s 172.16.0.1 -j SNAT --to-source 
+>> 1.1.1.10
+>> iptables -t nat -A POSTROUTING -s 192.168.0.1 -j SNAT --to-source 
+>> 2.2.2.10
+>>
+>>
+>> Below is my split access routing for multiple providers: -
+>>
+>> # First ISP
+>> ip route add 1.1.1.8/30 dev eth0 src 1.1.1.10 table 1
+>> ip route add default via 1.1.1.9 table 1
+>>
+>> # Second ISP
+>> ip route add 2.2.2.8/30 dev eth1 src 2.2.2.10 table 2
+>> ip route add default via 2.2.2.9 table 2
+>>
+>> #
+>> ip rule add from 1.1.1.8/30 lookup 1
+>> ip rule add from 2.2.2.8/30 lookup 2
+>>
+>> # My default choice of gateway
+>> ip route add default via 1.1.1.9
+>
+>
+>
+>> When I perform a traceroute from a workstation with the IP address of 
+>> 192.168.0.1 and gateway 192.168.0.254, I can see the result of the 
+>> traceroute going through the 1.1.1.9 gateway, why?  It suppose to 
+>> SNAT to 2.2.2.10 via 2.2.2.9 gateway.
+>
+>
+> Happens because your default gateway is 1.1.1.9.  2.2.2.9 is only 
+> chosen when the source IP is 2.2.2.8/30.  Problem is, the routing 
+> decision is made BEFORE iptables->nat->POSTROUTING changes the source 
+> IP.  You will have to key your routing rules on the private IPs, like so:
+>
+> ip rule add from 172.16.0.0/24 lookup 1
+> ip r a from 192.168.0.0/24 lookup 2
+>
+> (I've gone through various configurations of a linux gateway router 
+> connecting multiple private networks to three T1s: bridge and plain 
+> router, load-balanced and source-routed, and with shaping/routing 
+> based on fwmarks)
+>
+> j
+>
+>
+>
+>> Regards,
+>> ro0ot
+>>
+>>
+>>
+>>
+>
+>
+>
 
-  iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 6346 \
-    -j DNAT --to-destination $LAPTOP_IP
 
-> #These are my Forwarding rules.
-> $iptables -A FORWARD -i eth1 -p tcp --dport 80 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 25,80,110,443 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp --dport 21 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp --dport 22 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp -m multiport --dport
-> 1040,1043,1046,1047,1048,1050,1051,1052,1053,1054 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p udp --dport 500 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p 50 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p 51 -j ACCEPT
-> #$iptables -A FORWARD -i eth1 -p udp --dport 10000 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p udp --dport 1863 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp --dport 1863 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 135,137,138,139 -j
-> ACCEPT
-> $iptables -A FORWARD -i eth1 -p udp -m multiport --dport 135,137,138,139 -j
-> ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp --dport 1214 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p udp --dport 1214 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p udp --dport 2644 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp --dport 3389 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p udp --dport 3389 -j ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 6344,6345,6346,6347 -j
-> ACCEPT
-> $iptables -A FORWARD -i eth1 -p udp -m multiport --dport 6344,6345,6346,6347 -j
-> ACCEPT
-> $iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 4242,4661,4662 -j
-> ACCEPT
-> $iptables -A FORWARD -i eth1 -p udp -m multiport --dport 4661,4662,4772 -j
-> ACCEPT
-> $iptables -A FORWARD -p tcp --dport 4662 -i eth0 -o eth1 -j ACCEPT
-> $iptables -A FORWARD -p udp --dport 4662 -i eth0 -o eth1 -j ACCEPT
 
-how's about a rule for shareaza?
-
-  iptables -A FORWARD -i eth0 -o eth1 -p tcp \
-    --dport 6346 -d $LAPTOP_IP -j ACCEPT
-
-> # Enables Packet Forwarding
-> $iptables -t nat -A POSTROUTING -o eth0  -j MASQUERADE
-> 
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
 
