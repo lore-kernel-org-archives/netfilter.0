@@ -1,11 +1,14 @@
-From: "Hwang, Byoung Woo" <bwh@net-safe.co.kr>
-Subject: TCM MSS control over OUTPUT chain
-Date: Sat, 3 May 2003 11:36:53 +0900
+From: Julian Gomez <kluivert@tm.net.my>
+Subject: Re: Is it possible to sync ip_conntrack between 2 hosts?
+Date: Sat, 3 May 2003 11:41:37 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000101c3111c$db9d9540$100aa8c0@bwhwangnotepc>
+Message-ID: <20030503034137.GC1239@floyd>
+References: <1051912895.26015.49.camel@martin.etecom.com>
+Reply-To: kluivert@tm.net.my
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1051912895.26015.49.camel@martin.etecom.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,23 +19,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi, all
-I tried to control the size of TCP MSS but failed by
-following command. I have a reason to contorl TCP MSS size on OUPUT
-chain
-not FORWARD chain.
+On Fri, May 02, 2003 at 03:01:35PM -0700, Zack Lawson spoke thusly:
+>I am trying to setup up a failover firewall using heartbeat. Everything
+>seems to work just fine except for the fact that the state of existing
+>connections is lost when the running firewall is stopped.
 
-iptables -A OUTPUT -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss
-1400
+(snip)
 
-I potentially conclude that the above command has no effect.
-
-How can I control the TCP MSS on OUTPUT chain?
-
-Reguards,
-Hwang, Byoung Woo
-
-
+Its planned for the iptables2 release. Check the archives, Harald has
+mentioned it before.
 
