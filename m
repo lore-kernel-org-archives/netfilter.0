@@ -1,13 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: RE: IP Alias with iptables
-Date: Mon, 19 Apr 2004 17:43:44 +0200
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Re: [OT]Re: intrusion detection
+Date: Mon, 19 Apr 2004 09:54:37 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082389424.1806.68.camel@anduril.intranet.cartel-securite.net>
-References: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx>
+Message-ID: <20040419095437.56501f75@mgalepc.utilitran.com>
+References: <web-288458957@mail01.infosat.net>
+	<1082388473.19332.33.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx>
+In-Reply-To: <1082388473.19332.33.camel@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +18,126 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Rodrigo Haces <rhaces_chistes@yahoo.com.mx>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le lun 19/04/2004 =E0 18:07, Rodrigo Haces a =E9crit :
-> Ok, this is what i want, i have a Restaurant, and have an administrativ=
-e
-> network (192.168.1.0) and i am giving wireless access to my clients, bu=
-t i
-> cant let them get into my administrative network, so i set them 192.168=
-.0.0.
+Hello,
 
-Then aliases are not secure enough to deal with your settings. I mean
-any wireless client that would change its IP manually to 192.160.1.0
-will get administrative network priviliedges. You have to separate
-thoses two LANs physically using a second network adapter or use a VLAN
-aware switch connected by a trunk to eth0, configured to support 802.1q
-tagging.
+	I appreciate the information, as I myself am also looking into a IDS solution
+of some sort. I was thinking along the lines of the following:
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+1. The NIDS would sit between the firewall internal line and our office
+backbone using a tap that would fail open. 
+
+I figure this was if anything breaks the firewall or a attack comes from inside
+and tries to make a outbound connection I would know. 
+
+I completely agree with you about the attack from inside vs a attacker from out
+side.
+
+I also come completely agree with the HIDS. I have also thought about a internal
+machine (not sure of the technical name for it) to act as a live bit box. I
+believe the theory is that you leave a internal box a little open or un-patched
+with bogus data on it, this is used to attract the attacker and trigger other
+bells and whistles.
+
+Michael.
+
+
+
+On Mon, 19 Apr 2004 11:27:54 -0400
+"John A. Sullivan III" <john.sullivan@nexusmgmt.com> wrote:
+
+> On Sun, 2004-04-18 at 13:29, IT Clown wrote:
+> > Hi
+> > 
+> > What intrusion detection software would you guys
+> > recommend?Is psad or portsentry any good? 
+> <snip>
+> I wonder if I might permutate this question slightly.  I have spent a
+> fair amount of time recently looking at Intrusion Detection Systems and
+> came away with a conclusion I did not expect.  I would like to share
+> that conclusion not to start a flame war but to hold it up to scrutiny
+> to see if I am truly out of my mind or whether it makes sense.
+> 
+> I concluded that NIDS can be effective but that they required so much
+> upkeep, maintenance and ongoing expertise that I would rather invest my
+> time and money in other security measures.  There were two primary
+> reasons for this conclusion.
+> 
+> 1) Those attempting to perpetrate an intensional, focused attack (as
+> opposed to the random "door-knob jiggling" antics of script-kiddies) are
+> as likely to attack from the inside as from the outside.  In other
+> words, if the front door firewall is secure, I would not waste my time
+> trying to break through it.  I would send forged e-mails that direct
+> internal users to a phished site where I would plant a malicious trojan
+> or I would find a vulnerable remote user, e.g., one with an insecure
+> home wireless access method and do a man-in-the-middle attack.  In our
+> brave new networked world, I would find a way to attack from the inside
+> rather than the outside.
+> That makes the placement of NIDS quite a challenge.  How many and where
+> do I place them? Do I use port mirroring or taps? What are the impacts
+> on network capacity and traffic patterns? Do I fail safe or open?
+> By the time of build a NIDS environment to protect against external and
+> internal attacks, I can have a very complex and very expensive
+> architecture - one that may have inflicted more impact on the business
+> bottom line that the attacks it may prevent.
+> 
+> 2) As I studied the mechanisms used to evade NIDS and the
+> counter-measures use to defeat the evasion attempts, it seemed like a
+> constant "cat and mouse" game -- one that required constant vigilance
+> and maintenance.  I felt like my NIDS would be secure only until the
+> next major publication of a new evasion technique.
+> 
+> This does not mean that NIDS cannot work -- just that it takes a lot of
+> effort and expertise to make it work well.  I felt I would rather make
+> the following investment in time and money:
+> 
+> 1) Create a multi-layered security environment with inter and intra
+> office access control and encryption and move away from the "hard and
+> crunchy outside - soft and chewy inside" perimeter security model.  Of
+> course, I am quite biased here as making this method affordable is one
+> of the driving factors behind the ISCS project I am working on
+> (http://iscs.sourceforge.net).  If an attacker breaches my outer
+> defenses or is attacking from the inside, I want to do my best to
+> contain them to a limited area.
+> 
+> 2) Combine regular vulnerability assessments using something like the
+> automated features of the fabulous Nessus product
+> (http://www.nessus.org) with an automated software management tool to
+> close known vulnerabilities as quickly as possible.  If an attacker
+> manages to break through all my defenses, I want to render them impotent
+> and unable to use known exploits against my systems.
+> 
+> 3) Implement even a simple HIDS or integrity checker like tripwire or
+> the fully open source Osiris (http://osiris.shmoo.com).  If an attacker
+> has penetrated all my defenses and succeeded in using some exploit, I
+> want to know about it.
+> 
+> This threefold solution is also not simple.  But given the return on
+> investment of my time an money maintaining NIDS in an ever changing
+> security world where an attack is as likely to come from the inside as
+> the outside versus maintaining these three combined strategies, I think
+> I get more from my investment in the latter.
+> 
+> However, as always, I am suspicious of putting too much faith in my own
+> conclusion without significant corroboration.  I would be interested in
+> other's thoughts, insights and insults -- well, maybe not too many
+> insults.  Thanks, all - John
+> -- 
+> Open Source Development Corporation
+> Financially Sustainable open source development
+> http://www.opensourcedevelopmentcorp.com
+> 
+> 
+> 
+> 
+> 
+> 
+
+
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
