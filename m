@@ -1,8 +1,8 @@
 From: "Sez" <sezmillenium@yahoo.es>
 Subject: RE: Iptables do nat with Protocol 47 or GRE
-Date: Fri, 14 May 2004 14:11:55 +0200
+Date: Fri, 14 May 2004 14:15:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1BObWp-00044c-Cv@vishnu.netfilter.org>
+Message-ID: <E1BObZs-0004GV-Ld@vishnu.netfilter.org>
 References: <200405141230.14670.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -20,12 +20,8 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, again...
+And, with l2pt or ipsec, iptables work fine without path GRE???
 
-I have other question about it.
-
-If i change the ip destination on GRE packets, i don't make nat... It can
-work? Exist other solution that i don't recompile the kernel???
  
 
 -----Mensaje original-----
