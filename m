@@ -1,9 +1,8 @@
 From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: Re: skip other iptables marking if packet is already marked
-Date: Mon, 31 May 2004 16:41:04 +0800
+Subject: Multiple matches and others
+Date: Mon, 31 May 2004 16:58:30 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <029101c446eb$024bfdd0$0100a8c0@newlife>
-References: <020701c446e0$44e95ee0$0100a8c0@newlife> <1085991395.26732.12.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <02c901c446ed$7237a7a0$0100a8c0@newlife>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,40 +19,24 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
-> 
-> Why don't you just match the mark the packet has been given ?
-> 
-> iptables -t mangle -A PREROUTING ..... -j MARK --set-mark 1
-> iptables -t mangle -A PREROUTING -m MARK --mark 1 -j ACCEPT
-> iptables -t mangle -A PREROUTING ..... -j MARK --set-mark 2
-> iptables -t mangle -A PREROUTING -m MARK --mark 2 -j ACCEPT
+I am try to figure out what is the meaning of multiple match
+like this :-
 
-Understand, but what if I have something on top :-
+   iptables ......     -m state --state NEW -m mark --mark 1
 
-iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+is it a boolean AND of two conditions or is it a boolean OR ?
 
-I don't know what is the mark value, but i want to return as soon as the 
-mark has been restored.
+If it is boolean AND, does it mean, 
 
-> 
-> I think your ruleset does not work because a packet without a mark will
-> match your non-zero mark rule. I mean that no mark is different than 0,
-> so all packets will match the first "-m mark ! --mark 0" rule.
-> 
+   iptables ..... -m mark --mark 1 -m state --state NEW ....
 
-No, it does not work because the syntax is rejected ! I tried with
-"-m mark --mark ! 0" ,  it is alway rejected.
+this is the same as the first  ?
 
-> 
-> > My next question is should I use -j ACCEPT or -j RETURN ?
-> 
-> RETURN should not be use within builtin chains. Moreover, both have the
-> same effect if used in builtin chain.
-> 
+Similarly I have problem with multiple states comma together, eg :-
 
-Point taken.
+  iptables ....  -m state --state NEW,INVALID ......
 
-Thanks.
+Does it mean state NEW --and-- INVALID or  NEW --or-- INVALID ?
 
 
 
