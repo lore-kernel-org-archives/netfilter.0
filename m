@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: my script
-Date: Fri, 16 Apr 2004 18:34:41 +0100
+From: "Ravi Verma" <ravi.verma@telecommand.com>
+Subject: Iptables ACCEPT and DROP
+Date: Fri, 16 Apr 2004 10:56:17 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404161834.41680.Antony@Soft-Solutions.co.uk>
-References: <20040416170456.5600.qmail@web40511.mail.yahoo.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <000401c423dc$1e471a10$8101a8c0@TELECOMME9F58X>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040416170456.5600.qmail@web40511.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,25 +18,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 16 April 2004 6:04 pm, Luis GUSTAVO wrote:
+Dear Friends:
 
-> what are you think, this my script
+I have observe a behavior of iptables which I need to understand.
 
-I think it's quite a long list of rules.
+216.155.193.168 is the IP address of Yahoo's messenger site and it
+listens on port 5050.
 
-If you want comments on whether it will do what you want, you'd better tell us 
-what you want it to do, and what your network setup is.
+The following command will allows the machine to connect to
+216.155.193.168.
 
-Regards,
+iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
+ACCEPT
 
-Antony.
+After that, I see output like following:
 
--- 
-"I estimate there's a world market for about five computers."
+#telnet 216.155.193.168 5050
+Trying 216.155.193.168...
+Connected to 216.155.193.168.
+Escape character is '^]'.
 
- - Thomas J Watson, Chairman of IBM
+Now when I issue
+iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport 5050 -j
+DROP And iptables -A OUTPUT -o eth0 -p tcp -d 216.155.193.168 --dport
+5050 -j REJECT
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Still, it allows connection to 216.155.193.168 on port 5050.
+
+How does this work? It seems -j DROP is not opposite of -j ACCEPT. How
+can stop this?
+
+Kind regards.
+
+Ravi Verma
 
 
