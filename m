@@ -1,10 +1,11 @@
-From: "Administrador de Red" <admin@gecyt.cu>
-Subject: what it is the better masquerade or SNAT
-Date: Fri, 29 Nov 2002 16:32:55 -0500
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: problem reach the internal.
+Date: Sat, 30 Nov 2002 02:35:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <web-110040@gecyt.cu>
+Message-ID: <3DE815EA.9040303@fugmann.dhs.org>
+References: <20021130010348.58897.qmail@web14507.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,18 +17,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: "james.Q.L" <shijialeeee@yahoo.ca>
+Cc: netfilter@lists.netfilter.org
 
-I has a Ip public true, I want to do a firewall, but i don 
-know wich I kind Should i use, masquerade or SNAT?, 
-someone can i help?.
+james.Q.L wrote:
+> sorry, i forgot mention that the request from outside my local network to the INET_IP:8888 is
+> fine. only the internal request to it fails.
+> 
+> i do not see what is wrong in the rules, anyone ? 
 
-thanks very well.
+It cannot be done, as the webserver will try to give an answer to the 
+query directly, and not back through your router, and thus the client 
+will not accept the reply.
 
-Thomas
-Estamos en Calle 20 Numero 4110 % 41 y 47,
-Miramar, Playa, Ciudad Habana, Cuba.
-Telf:537(203-01-60) y (202-79-20)
-Fax: 537(204-96-64)
-Visitenos en: http://www.gecyt.cu
+For a more complete explanation, search the email archives. This 
+question has been asked and answered numerous times.
+
+Regards
+Anders Fugmann
+
 
