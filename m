@@ -1,15 +1,10 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Re: Redirect ports on localhost
-Date: Wed, 24 Mar 2004 14:14:27 +1100
+From: "john bowers" <johnkbowers@hotmail.com>
+Subject: RE:Nat/router problem
+Date: Wed, 24 Mar 2004 03:56:46 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040324031427.GO3387@samad.com.au>
-References: <406099AD.2070403@verio.net>
+Message-ID: <BAY8-F1180J64TBU25J00001c00@hotmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QGBKWVSgmlsIyJ+t"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <406099AD.2070403@verio.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,61 +14,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Well I think I've solved my problem that I enquired about earlier. 
+Apparently the rule wich wouldn't let me do anything out the back interface 
+of my Masquerading Nat/router was  the one " iptables -t nat --policy 
+POSTROUTING DROP" . I just changed the drop to ACCEPT and everything seems 
+to work fine. I will defineatly audit it from the front side to make sure 
+though.
 
---QGBKWVSgmlsIyJ+t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry about the crap appended to my emails, I use hotmail and it looks as if 
+they add links on to you email to sell stuff. Oh, well I guess I get what I 
+pay for.
 
-On Tue, Mar 23, 2004 at 01:10:21PM -0700, Ben Yerushalmi wrote:
-> Hi,
->=20
-> I'm trying to redirect traffic on my DNS server. I have bind listening=20
-> on port 5300 (UDP) instead of 53. I've got it working from the internal=
-=20
-> network but seem to have problem on redirecting localhost traffic. I've=
-=20
-> tried changing both PREROUTING and OUTPUT chains in the nat table but it=
-=20
-> doesn't seem to help.
->=20
-> iptables -A PREROUTING -t nat -p udp -i lo --dport domain -j REDIRECT=20
-> --to-ports 5300
->=20
-> and
->=20
-> iptables -A OUTPUT -t nat -p udp -d localhost  --dport domain -j=20
-> REDIRECT --to-ports 5300
-might be of target but will the destination be localhost or the real ip
-address ?
+_________________________________________________________________
+Check out MSN PC Safety & Security to help ensure your PC is protected and 
+safe. http://specials.msn.com/msn/security.asp
 
-A
-
->=20
->=20
-> Anyone have luck doing this? What am I missing?
->=20
-> Thanks,
-> Ben
->=20
->=20
->=20
->=20
-
---QGBKWVSgmlsIyJ+t
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAYP0TkZz88chpJ2MRAs2OAJ0WTbv/F2W4FhZKjvjc3eqZiGXUvQCfS5P5
-yXXBcDYUYUfkeSA5B230eFY=
-=D+hs
------END PGP SIGNATURE-----
-
---QGBKWVSgmlsIyJ+t--
 
