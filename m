@@ -1,12 +1,12 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: FORWARD rules
-Date: Wed, 10 Sep 2003 14:44:30 -0400
+From: "Vladimir Potapov" <varyag18@mail.ru>
+Subject: RE: FORWARD rules
+Date: Wed, 10 Sep 2003 22:47:00 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030910184430.GB24654@cannon.eng.us.uu.net>
+Message-ID: <HMEKJPOHJKKBIDHGBCMDCEJBCAAA.varyag18@mail.ru>
 References: <20030910175253.GA2752@linux.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <20030910175253.GA2752@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,28 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Payal Rathod <payal-iptables@staticky.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Wed, Sep 10, 2003 at 11:22:53PM +0530, Payal Rathod wrote:
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p udp -m tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 80 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 110 -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-> Hi,
-> I had kept the default policy of FORWARD as drop.
-> Now, I wanted to see an internal machine from internet. So, I used
-> DNAT as,
-> 
-> iptables -A PREROUTING -t nat -d <ext ip> -j DNAT --to <int ip>
-> It didn't work. When I set the default FORWARD policy to ACCEPT it
-> worked.
-> 
-> What is a better approach? I want to have a default DROP in FORWARD
-> chain. My FORWARD chain looked like this,
+What more do I add to allow natting as well as a secure FORWARD policy?
+Is the position of ESTABLISHED rule ok?
 
-Keep the default "DROP" policy and just open whatever is needed
-including the DNAT'ed packets coming in.
+You need to add a chains for NEW packets with tcp-flags syn.You need replace
+from console :
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p udp -m tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 80 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 110 -j ACCEPT
 
-The place of the ESTABLISHED,RELATED rule should be at the top of
-your rule set.
+to
+-A FORWARD -d 125.125.125.0/32 -m state --state NEW -p tcp -m tcp --dport
+53 --syn -j ACCEPT
+-A FORWARD -d 125.125.125.0/32 -m state --state NEW -p udp -m udp --dport
+53 -j ACCEPT
+-A FORWARD -d 125.125.125.0/32 -m state --state NEW -p tcp -m tcp --dport
+80 --syn -j ACCEPT
+-A FORWARD -d 125.125.125.0/32 -m state --state NEW -p tcp -m tcp --dport
+110 --syn -j ACCEPT
 
-Ramin
+
+
+
+
+--
+"Visit GNU/Linux Success Stories"
+http://payal.staticky.com
+Guest-Book Section Updated.
+
+
 
