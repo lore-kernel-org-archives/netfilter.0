@@ -1,11 +1,11 @@
-From: Michael Gale <mgale@utilitran.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: dnatted interface showing up as FW interface
-Date: Thu, 11 Dec 2003 09:31:39 -0700
+Date: Thu, 11 Dec 2003 16:31:02 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031211093139.3721ead4.mgale@utilitran.com>
+Message-ID: <200312111631.02756.Antony@Soft-Solutions.co.uk>
 References: <FDB52A0429DFD31196FB0008C7D972D50EA57C04@OST_EXCH_USR5>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <FDB52A0429DFD31196FB0008C7D972D50EA57C04@OST_EXCH_USR5>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -20,54 +20,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Thursday 11 December 2003 4:20 pm, Knight, Steve wrote:
 
-	Do you have multiple external IP addresses ? If so the default my NAT out going connections to the primary external IP. All inbound connections that get DNATed (217.x.x.138 -> 192.168.1.2) would return from 217.x.x.138 because they are part of a already established connection.
-
-Michael.
-
-
-On Thu, 11 Dec 2003 16:20:01 -0000
-"Knight, Steve" <Steve.Knight@bskyb.com> wrote:
-
-> hi list - hope everyone's feeling christmassy!
-> 
-> This is another of my dumbo questions, I've had a good look through the
-> archives and googled but haven't turned up much helpful [maybe my search
-> syntax wasn't good?], so ....
-> 
 > Why would an address that DNATs quite happily inbound
-> 
+>
 > 217.x.x.138 -> 192.168.1.2
-> 
-> show up as the router address when performing outbound traffic - for example
-> when delivering mail it is connecting from 137, instead of 138?
-> 
+>
+> show up as the router address when performing outbound traffic - for
+> example when delivering mail it is connecting from 137, instead of 138?
+
+Probably because you have a general-purpose SNAT rule for outbound packets, 
+setting the source address on everything to 217.x.x.137?
+
 > Is there a forward rule I've forgotten?  Or do I need to do another DNAT
 > rule translating 192.168.1.2 -> 217.79.119.138?
-> 
-> Thanks for any pointers
-> 
-> Steve
-> 
-> 
-> -----------------------------------------------------------------------
-> Information in this email may be privileged, confidential and is 
-> intended exclusively for the addressee.  The views expressed may
-> not be official policy, but the personal views of the originator.
-> If you have received it in error, please notify the sender by return
-> e-mail and delete it from your system.  You should not reproduce, 
-> distribute, store, retransmit, use or disclose its contents to anyone.
->  
-> Please note we reserve the right to monitor all e-mail
-> communication through our internal and external networks.
-> -----------------------------------------------------------------------
-> 
-> 
 
+Change DNAT into SNAT in the above sentence, and yes.
+
+Antony.
 
 -- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+The first fifty percent of an engineering project takes ninety percent of the 
+time, and the remaining fifty percent takes another ninety percent of the 
+time.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
