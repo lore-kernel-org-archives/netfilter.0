@@ -1,12 +1,14 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: RE: mangle + TCP Flags
-Date: Thu, 11 Dec 2003 09:57:46 -0600
+From: Oleg Savostyanov <savostyanov@internetplustravel.ru>
+Subject: Re: PPTP NAT module
+Date: Thu, 11 Dec 2003 18:57:55 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D731012C61E7@coxhpexg.coxhp.com>
+Message-ID: <9115313499.20031211185755@internetplustravel.ru>
+References: <200312091803.55451.jjackson@vortech.net>
+Reply-To: Oleg Savostyanov <savostyanov@internetplustravel.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200312091803.55451.jjackson@vortech.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,58 +21,131 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hello Joshua,
+I successfully installed on a 2.4.23 kernel with ip_nat_pptp module
+I tested 3 vpn NATed connections to the SAME! server in the outside world
+see below my kernel's .config
 
-Now that is a truly interesting question, if a bit off-topic.  What is =
-the best way to handle recon?  Is it best to comply and hope your =
-network looks un-interesting?  Is it best to try and make scanning as =
-costly as possible (aka Tarpitting)?  Is it best to make everything =
-appear open, thereby polluting the results of the scans?
+#
+# Networking options
+#
+CONFIG_PACKET=y
+CONFIG_PACKET_MMAP=y
+# CONFIG_NETLINK_DEV is not set
+CONFIG_NETFILTER=y
+CONFIG_NETFILTER_DEBUG=y
+CONFIG_FILTER=y
+CONFIG_UNIX=y
+CONFIG_INET=y
+CONFIG_IP_MULTICAST=y
+CONFIG_IP_ADVANCED_ROUTER=y
+CONFIG_IP_MULTIPLE_TABLES=y
+CONFIG_IP_ROUTE_FWMARK=y
+CONFIG_IP_ROUTE_NAT=y
+CONFIG_IP_ROUTE_MULTIPATH=y
+CONFIG_IP_ROUTE_TOS=y
+CONFIG_IP_ROUTE_VERBOSE=y
+CONFIG_IP_PNP=y
+# CONFIG_IP_PNP_DHCP is not set
+# CONFIG_IP_PNP_BOOTP is not set
+CONFIG_NET_IPIP=y
+CONFIG_NET_IPGRE=y
+CONFIG_NET_IPGRE_BROADCAST=y
+CONFIG_IP_MROUTE=y
+CONFIG_IP_PIMSM_V1=y
+CONFIG_IP_PIMSM_V2=y
+CONFIG_ARPD=y
+CONFIG_INET_ECN=y
+# CONFIG_SYN_COOKIES is not set
 
-Personally, I go for a mix of the latter two.  I'd like to make recon =
-take absolutely forever AND return false information.  Particularly =
-randomly false information - to make the prospect of rescanning =
-unpalatable.
+#
+#   IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=y
+CONFIG_IP_NF_FTP=y
+# CONFIG_IP_NF_AMANDA is not set
+CONFIG_IP_NF_TFTP=y
+CONFIG_IP_NF_IRC=y
+CONFIG_IP_NF_CT_PROTO_GRE=y
+CONFIG_IP_NF_PPTP=y
+CONFIG_IP_NF_QUEUE=y
+CONFIG_IP_NF_IPTABLES=y
+CONFIG_IP_NF_MATCH_LIMIT=y
+CONFIG_IP_NF_MATCH_MAC=y
+# CONFIG_IP_NF_MATCH_PKTTYPE is not set
+CONFIG_IP_NF_MATCH_MARK=y
+CONFIG_IP_NF_MATCH_MULTIPORT=y
+CONFIG_IP_NF_MATCH_TOS=y
+# CONFIG_IP_NF_MATCH_RECENT is not set
+# CONFIG_IP_NF_MATCH_ECN is not set
+# CONFIG_IP_NF_MATCH_DSCP is not set
+CONFIG_IP_NF_MATCH_AH_ESP=y
+CONFIG_IP_NF_MATCH_LENGTH=y
+CONFIG_IP_NF_MATCH_TTL=y
+CONFIG_IP_NF_MATCH_TCPMSS=y
+CONFIG_IP_NF_MATCH_HELPER=y
+CONFIG_IP_NF_MATCH_STATE=y
+CONFIG_IP_NF_MATCH_CONNTRACK=y
+CONFIG_IP_NF_MATCH_UNCLEAN=y
+CONFIG_IP_NF_MATCH_OWNER=y
+CONFIG_IP_NF_FILTER=y
+CONFIG_IP_NF_TARGET_REJECT=y
+CONFIG_IP_NF_TARGET_MIRROR=y
+CONFIG_IP_NF_NAT=y
+CONFIG_IP_NF_NAT_NEEDED=y
+CONFIG_IP_NF_TARGET_MASQUERADE=y
+CONFIG_IP_NF_TARGET_REDIRECT=y
+CONFIG_IP_NF_NAT_PPTP=y
+CONFIG_IP_NF_NAT_PROTO_GRE=y
+# CONFIG_IP_NF_NAT_LOCAL is not set
+CONFIG_IP_NF_NAT_SNMP_BASIC=y
+CONFIG_IP_NF_NAT_IRC=y
+CONFIG_IP_NF_NAT_FTP=y
+CONFIG_IP_NF_NAT_TFTP=y
+CONFIG_IP_NF_MANGLE=y
+CONFIG_IP_NF_TARGET_TOS=y
+# CONFIG_IP_NF_TARGET_ECN is not set
+# CONFIG_IP_NF_TARGET_DSCP is not set
+CONFIG_IP_NF_TARGET_MARK=y
+CONFIG_IP_NF_TARGET_LOG=y
+CONFIG_IP_NF_TARGET_ULOG=y
+CONFIG_IP_NF_TARGET_TCPMSS=y
+CONFIG_IP_NF_ARPTABLES=y
+CONFIG_IP_NF_ARPFILTER=y
+CONFIG_IP_NF_ARP_MANGLE=y
 
-One down side is, I wind up making my network more 'interesting' than my =
-neighbors.  I'm not quite sure if it is worth the extra interest...
 
 
-Bob
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: Thursday, December 11, 2003 9:44 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: mangle + TCP Flags
+Wednesday, December 10, 2003, 2:03:55 AM, you wrote:
+
+JJ> I know there have been a pile of questions about this module in the past, but
+JJ> I can't seem to find any responses about the behaviour I am seeing.
+
+JJ> I am currently running a 2.4.23 kernel with the lastest officially released
+JJ> POM patches applied to it. The network being protected by the firewall is
+JJ> providing NAT for the hosts behind it. If the ip_nat_pptp module is loaded,
+JJ> none of the protected clients can establish an outbound PPTP session. If the
+JJ> conntrack modules are removed, a single session can be established (as would
+JJ> be expected).
+
+JJ> The remote PPTP server log shows the initial TCP connection, but never sees
+JJ> any GRE traffic from the connecting host.
+
+JJ> I have seen posts about the local NAT kernel option, I have tried it both ways
+JJ> with the same results. If there are any kernel settings in particular that I
+JJ> may be missing, please let me know.
+
+JJ> My iptables firewall rules include a default policy of DROP for INPUT and
+JJ> FORWARD, ACCEPT for OUTPUT. The first line in the rules includes an ACCEPT
+JJ> for the INPUT chain for established and related connection. There is also a
+JJ> rule allowing any traffic for all protocols to any host which originates from
+JJ> the protected network on the internal interface.
 
 
-On Thursday 11 December 2003 3:32 pm, Jean-Marie Orset wrote:
 
-> > Well, you could just:
-> > -p tcp -j REJECT --reject-with tcp-reset (uses tcp rst)
-> > -p udp -j REJECT (uses icmp port-unreach)
-> >That makes nmap say: ports closed.
->
-> Yes, that's what I should do but My idea was to answer false SYN,ACK
-> even if the ports are closed. In that way a scan would declare all my =
-ports
-> open but in reality, they would be closed.
-
-Why is that better for security?
-
-Antony.
-
---=20
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) =
-N(-) o?=20
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? =
-5?=20
-!X- !R K--?
-
-                                                     Please reply to the =
-list;
-                                                           please don't =
-CC me.
+-- 
+Best regards,
+ Oleg                            mailto:savostyanov@internetplustravel.ru
 
 
