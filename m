@@ -1,13 +1,12 @@
-From: Sascha Reissner <sascha.reissner@toxicnet.de>
-Subject: Re: Port is open but I am unable to connect
-Date: Tue, 07 Sep 2004 21:35:04 +0200
+From: Scott Mayo <sgmayo@mail.bloomfield.k12.mo.us>
+Subject: Dropping a specific Owner from a certain IP
+Date: Tue, 07 Sep 2004 14:46:12 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <413E0D68.6020208@toxicnet.de>
-References: <413E0B9E.8010708@list.idg.dk>
+Message-ID: <413E1004.5020808@mail.bloomfield.k12.mo.us>
+Reply-To: sgmayo@mail.bloomfield.k12.mo.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <413E0B9E.8010708@list.idg.dk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,65 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jacob Friis Larsen <jfl@list.idg.dk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+I have my filter set up with 1 internal nic and 1 external nic.  My 
+workstations are addressed 10.0.0.1-10.0.255.255 with a subnet of 
+255.255.0.0.  My filter 10.0.0.1 has Dansguardian and Squid/Squidguard 
+which authenticates through my Samba server 10.0.0.5.
 
-just to make sure.. you are certain, that you want -s 1.2.3.4?
+I have a generic user 'user' that I give to a lab in the elementary 
+(10.0.8.1-10.0.8.255).  Is there some way that I can stop that generic 
+login from being used from anywhere else?  I tried the following, but it 
+did not do anything.
 
-this means source ip is 1.2.3.4 (so the ip you connect from, not the ip 
-you connect _to_)
+iptables -A OUTPUT -m owner --uid-owner 10000 -s ! 10.0.8.0/24 -j DROP
 
+10000 is the uid of 'user' on my samba server.  Is the uid actually 
+pulled from the filter server?  If so then I guess that I cannot do this.
+Thanks for any info.
 
-Jacob Friis Larsen wrote:
-> When I add -s 1.2.3.4 I am unable to connect to my server.
-> nmap shows that the correct ports are open.
-> Any ideas?
-> 
-> iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 22 -m state 
-> --state NEW
-> 
-> This is my script:
-> <script>
-> #!/bin/sh
-> 
-> # Modules
-> modprobe ip_conntrack_ftp
-> 
-> # Defaults
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT DROP
-> 
-> # Flush
-> iptables -t nat -F POSTROUTING
-> iptables -t nat -F PREROUTING
-> iptables -t nat -F OUTPUT
-> iptables -F
-> 
-> # STATE RELATED for router
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> 
-> # Localhost
-> iptables -A INPUT -i lo -j ACCEPT
-> iptables -A OUTPUT -o lo -j ACCEPT
-> 
-> # Open ports on router for server/services
-> iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 20 -m state 
-> --state NEW
-> iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 21 -m state 
-> --state NEW
-> iptables -A INPUT -s 1.2.3.4 -j ACCEPT -p tcp --dport 22 -m state 
-> --state NEW
-> iptables -A INPUT -j ACCEPT -p tcp --dport 25 -m state --state NEW
-> iptables -A INPUT -j ACCEPT -p tcp --dport 80 -m state --state NEW
-> iptables -A INPUT -j ACCEPT -p tcp --dport 143 -m state --state NEW
-> iptables -A INPUT -j ACCEPT -p tcp --dport 993 -m state --state NEW
-> </script>
-> 
-> Thanks,
-> Jacob
-> 
-> 
+-- 
+Scott Mayo
+Technology Coordinator
+Bloomfield Schools
+PH: 573-568-4564
+FA: 573-568-4565
+Pager: 800-264-2535 X2549
 
+WindowS
+     LinUX!
+
+Duct tape is like the force, it has a light side and a dark side and it
+holds the universe together.
 
