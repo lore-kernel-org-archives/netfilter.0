@@ -1,10 +1,13 @@
-From: Khanh Tran <khanh@slc.edu>
-Subject: RE: awkward p2p clients ignoring tcp-reset and everything
-Date: Tue, 18 Feb 2003 19:23:11 -0500
+From: "William Olbrys" <william_olbrys@student.uml.edu>
+Subject: netfilter and Active Directory
+Date: Tue, 18 Feb 2003 20:59:39 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB605@EXCHANGE>
+Message-ID: <4f51249b6c.49b6c4f512@student.uml.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Language: en
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,44 +18,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Alexander W. Janssen" <yalla@ynfonatic.de>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-4662/tcp is Edonkey...
+Currently I have all my iptables rules turn on by default and MASQUERADE
+shut off. I'm trying to let a win2k domain controller keep it's ip
+address while changing the gateway to a linux box running iptables. the
+controller's gateway is the IP of an inbound nic. The inbound's gateway
+is the nic of a second nic on the linux box, which connects to my
+network.  All of the ips have the same first three octets and the mask
+is 255.255.255.0.
 
-Khanh Tran
-Network Operations
-Sarah Lawrence College
+The controller is connected to a hub which connects to the firewall.
+I've put other computers on the hub and can connect and play nicely with
+the controller. But nothing on the hub can ping or use NetBIOS anything
+after the firewall. 
+
+I thought this was an alias problem but when i set an alias on the
+outbound nic the domain controller complains of duplicate IP addresses. 
+
+If I try using internal network addresses and DNAT/SNAT it really screws
+with the WINS/NetBIOS/Domain Controller's Settings.  What can I do?
+
+thanks
+
+will.
 
 
 
------Original Message-----
-From: Alexander W. Janssen [mailto:yalla@ynfonatic.de]
-Sent: Tuesday, February 18, 2003 3:04 PM
-To: Netfilter Mailinglist
-Subject: awkward p2p clients ignoring tcp-reset and everything
+ E2-O: The presence of this footer indicates the message has been scanned for viruses by the WebShield e500.
 
-
-Hello,
-
-i'm writing to the list because of a topic which drives me mad. I'm talking
-about port 4662/tcp and about awkward p2p clients constantly ignoring
-tcp-resets and icmp-port-unreachables. Well, since i don't use p2p clients
-personally, can anyone tell me which p2p client uses that? Emule, Edonkey,
-Kazaa, whatever?
-
-I really can't understand why those hosts keep ignoring my refusal; they
-just
-keep sending syn after syn. Is it a broken ip-stack? Or is it a bad-coded
-client-application?
-
-Oh Bugger :) OK, that was offtopic.
-
-Alex.
-
--- 
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so
-literal."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
 
 
