@@ -1,9 +1,10 @@
-From: "Deks Vazquez" <jorvgl@msn.com>
-Subject: (no subject)
-Date: Tue, 25 Feb 2003 21:21:55 +0100
+From: <muffadal.essaji@mail.intafrica.com>
+Subject: pls can u let me know step by step to configure NAT
+Date: Fri, 28 Feb 2003 08:26:34 +0300 (EAT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F23niTwiwzRJFC4ucSo000016a8@hotmail.com>
+Message-ID: <1131.192.168.35.11.1046409994.squirrel@webmail.satconet.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,19 +15,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+hi.
+i need a step by step prodecure to configure NAT.
+I havee eth1 thats my internal internetwork
+and eth0 which have a public ip.
+i need all internal machines to access the internet.
+i went to documentation but  i went crazy.
+urgent help.
+yours
+muffadal
 
 
-
-
-i want know how i can stop any request of arp-spoofing to my router with=20
-iptables.
-
-_________________________________________________________________
-Charla con tus amigos en l=EDnea mediante MSN Messenger: =20
-http://messenger.microsoft.com/es
 
 
