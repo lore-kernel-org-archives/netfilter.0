@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how to block 10000's of addresses?
-Date: Sun, 13 Oct 2002 13:10:23 +0100
+From: "Svein E. Seldal" <Svein.Seldal@solidas.com>
+Subject: FTP/auth problems (slooow links)
+Date: Sun, 13 Oct 2002 15:08:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021013121026.EKOU27697.mta05-svc.ntlworld.com@there>
-References: <20021013065007.A15824@hamal.ipal.net>
+Message-ID: <3DA97045.2040803@solidas.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021013065007.A15824@hamal.ipal.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +15,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sunday 13 October 2002 12:50 pm, Phil Howard wrote:
+Hi,
 
-> I would like to know how best to block 10000's of addresses using
-> netfilter.  Clearly I do not want to be placing 10000's of individual
-> filter table entries in.
+I have read about a couple of previous discussions on the issues of 
+using iptables together with FTP and acheiving only really *slow* 
+throughputs. All Q's that I've read concludes that the remedy is to 
+either passthough auth (ident) packets or to reject it.
 
-Sounds like an incompatible set of requirements.   If you want to block 10000 
-addresses (and assuming they don't fit into contiguous network ranges) then 
-you need 10000 rules to be able to specify what you want to block.
+I have a linux (2.4.18) running iptables. It is a router and FW, and is 
+NAT'ing the internal address range (192.168.0.x) to the external range 
+(1.2.3.x). ip_conntrack, ip_conntrack_ftp and ip_nat_ftp are all loaded 
+in the router. It is a 266 PII with 128Mb memory.
 
-Why don't you want 10000 rules on your netfilter box ?   Have you tried it 
-and found it causes any problems ?
+For any machine that are placed on the inside, there are two methods of 
+getting to another machine on the inside: either using the direct 
+internal address 192.168.0.x or by using the external address 1.2.3.x. 
+The net result is the same, but the latter is routed through the router 
+(and will always be accepted).
 
-> Is there some kind of means to set up the
-> equivalent of a routing table like lookup structure (which can be
-> added to and removed from separately) which a single netfilter rule
-> would reference to apply matches?
+Now, the problem is this: I open two FTP connections from the client 
+machine 192.168.0.10 to a server, the first to 192.168.0.5 and the other 
+connection to 1.2.3.5. Again, this is the same machine, only one of them 
+is going via. the router while the other is not.
 
-Set up source routing and send the packets to a separate netfilter box whose 
-sole purpose is to eat packets ?
+The connection going via. the router is slow, very slow. The problem is 
+that is does not matter if I DROP, REJECT or ACCEPT the auth (ident) 
+port. It still is as extremely slow -- direct connection takes 20 mins, 
+while the routed version takes 2-3 hours!!.
 
-> I want to block _incoming_ packets.  Null routing these addresses is
-> not sufficient, as the lame SYNs will continue to eat up resources.
+My hypothesis could be that the ip_nat_ftp module is causing the 
+considerable delay, since it must read all FTP data (I'm unsure about 
+FTP-data though). Another theory could be that the routing memory of the 
+iptables/kernel is too small. How can I increase it?
 
-I don't understand that last part.   If you null route packets, surely 
-there's no destination for the SYNs, therefore no half-open connections get 
-set up ?
+Any one else got any ideas? (I've got a lot of angry customers on my 
+back...)
 
-Antony.
 
--- 
+Thanks,
+Svein Seldal
 
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
 
