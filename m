@@ -1,11 +1,12 @@
-From: Andreas =?iso-8859-1?Q?Westend=F6rpf?= <a.westendoerpf@gmx.de>
-Subject: security question
-Date: Wed, 02 Jun 2004 14:58:29 +0200
+From: "Dick St.Peters" <stpeters@NetHeaven.com>
+Subject: RE: magle, filter & FORWARD
+Date: Thu, 3 Jun 2004 09:06:14 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <16575.8774.50608.462899@saint.heaven.net>
+References: <20040602193313.85458.qmail@web41711.mail.yahoo.com>
+	<Pine.LNX.4.33.0406030956100.10743-100000@blackhole.kfki.hu>
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.33.0406030956100.10743-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,56 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi *!
+Jozsef Kadlecsik writes:
+> On Wed, 2 Jun 2004, Kevin D. White wrote:
+> 
+> > Netfilter is made up of 5 subsystems, Pre-routing,
+> > Input, Forward, Output and Post-routing.  These
+> > subsystems are governed by three tables, nat, magle,
+> > filter.  The elements of these tables have the
+    ...
+> Sorry, but the wording used above is incorrect and misleading.
+> 
+> Netfilter is *not* made of five subsystems and PREROUTING etc are
+> definitely not subsystems of netfilter.
 
-I have the following setup. Please tell me if I have some security
-issues here.
+Jozsef is correct, of course.  In addition, recent kernels have a
+fourth table, the "raw" table, with its own PREROUTING and OUTPUT
+chains.  Joszef is the originator of the raw table but apparently is
+too modest to mention it.
 
-A linux box with two ethernet interfaces to work as a masquerading
-router. One of them (eth0) is connected to a dsl-modem, the other is a
-wlan card (eth1). All client systems get this box a default gateway
-via dhcp.
+> Hooks, built-in chains, subsystems and tables are well covered in the
+> howtos and the tutorials. Please read them.
 
-My goal is to drop everything coming from the wlan by default. I do
-this with:
+I would second that advice.  What Kevin was attempting is already done
+well and correctly in the online documentation.  Please don't fill the
+list archives with unnecessary explanations - especially incorrect
+ones.
 
-# iptables -t nat -P PREROUTING  DROP
-
-I want the all www-requests of the client systems to be redirected to
-the local Apache on the box. I do this with:
-
-# iptables -t nat -A PREROUTING -p tcp --dport 80 -i eth1 - REDIRECT
-
-As I need DNS for these www-requests I have to let DNS be accepted:
-
-# iptables -t nat -A PREROUTING -p udp --dport 53 -i eth1 -j ACCEPT
-
-Then, in the POSTROUTING chain I need all the packets that made it
-here to be masqueraded:
-
-# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-If I want to allow a specific wlan client to get outside connections I
-use:
-
-# iptables -t nat -I PREROUTING -m mac --mac-source XX:XX:XX:XX:XX:XX
--i the1 -j ACCEPT
-
-to let him through.
-
-Beside of MAC-spoofing, is this setup safe? Can someone get though the
-PREROUTING chain, without being "MAC-inserted".
-
-What can I do to block incoming connection attempts? I only want to
-allow ssh from outside (internet) to the box.
-
-Any help would be appreciated!
-
-THX,
-Andreas Westend=F6rpf
-
-
+--
+Dick St.Peters, stpeters@NetHeaven.com 
 
