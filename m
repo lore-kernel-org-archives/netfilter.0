@@ -1,11 +1,10 @@
-From: Rocco Stanzione <iptables@linuxkungfu.org>
-Subject: PPTP Through a NAT
-Date: Tue, 8 Oct 2002 20:55:16 -0500
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: messages in /var/log/message file
+Date: Wed, 09 Oct 2002 12:33:42 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210082055.16202.iptables@linuxkungfu.org>
-Reply-To: grasshopper@linuxkungfu.org
+Message-ID: <3DA3D4CE.9050407@inbox.lv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,25 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi all.  I see a great deal of discussion of what needs to be done to get=
- PPTP=20
-to work through NAT.  AFAIK I have no support for this in my kernel, and=20
-though I have a pretty effective firewall configuration, PPTP has always=20
-worked through it without any trouble.  I do allow all outgoing traffic, =
-and=20
-maybe that accounts for it, but either I've done something to support thi=
-s=20
-without realizing it, or I'm doing something wrong with my config (other =
-than=20
-allowing all outgoing traffic.  I was wondering if anyone might have an i=
-dea=20
-to explain this.  I'm happy to provide any more information, but I can't=20
-imagine what might be relevant.
+hi all,
+im using RH7.3 with kernel 2.4.19 and have migrated to iptables 1.2.7a.
+earlier it was kernel 2.4.19 with iptables 1.2.6a..
+everything went ok but since using the newer version of iptables am 
+getting this messages in /var/log/message file...
 
-Thanks,
+Oct  9 12:25:24 ICG kernel: NET: 5 messages suppressed.
+Oct  9 12:26:31 ICG kernel: NET: 1 messages suppressed.
+Oct  9 12:26:31 ICG kernel: ip_conntrack: max number of expected 
+connections 1 of ftp reached for <ipA> -> <ipB>, reusing
+Oct  9 12:27:12 ICG kernel: ip_conntrack: max number of expected 
+connections 1 of ftp reached for <ipA> -> <ipB>, reusing
 
-Rocco Stanzione
+these messages are piling the message file.
+am cusrious now why so ?.. what does this message signify ?
+earlier verion of iptables never gave any error & the only difference in 
+compling new iptables(1.2.7a) is that this time its compiled for using 
+module ip_nat_h323.o
+Awaiting a reply very anxiously
+A.H
+
 
