@@ -1,11 +1,14 @@
-From: <tsh@mrc-lmb.cam.ac.uk>
-Subject: routing between 2 nets on same LAN
-Date: Mon, 2 Jun 2003 15:39:17 +0100 (BST)
+From: "Jose Luis Hime" <jhime@synchro.com.br>
+Subject: RE: routing between 2 nets on same LAN
+Date: Mon, 2 Jun 2003 13:58:37 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306021439.PAA426195@alf1.mrc-lmb.cam.ac.uk>
+Message-ID: <005b01c32928$36385d00$010319ac@jhime>
+References: <200306021439.PAA426195@alf1.mrc-lmb.cam.ac.uk>
+Reply-To: <jhime@synchro.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200306021439.PAA426195@alf1.mrc-lmb.cam.ac.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,7 +19,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: tsh@mrc-lmb.cam.ac.uk, netfilter@lists.netfilter.org
+
+It seems that you missed the INPUT chain: you must accept INPUT before
+FORWARD.
+
+But first of all, try 'debugging' your network removing all iptables
+rules and setting the default policies to "ACCEPT". You should see
+packets going from one "LAN" to other.
+
+One more doubt: did you check that the default gateway of your
+workstations are correctly set?
+
+Regards,
+Jose Hime
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
+tsh@mrc-lmb.cam.ac.uk
+Sent: Monday, June 02, 2003 11:39 AM
 To: netfilter@lists.netfilter.org
+Subject: routing between 2 nets on same LAN
+
 
 I sent this before subscribing to the list, so apologies
 to the moderator for duplication.
