@@ -1,13 +1,12 @@
-From: "Tarek W." <ticallion@terra.net.lb>
-Subject: Re: DNS
-Date: Wed, 12 Feb 2003 07:06:40 -0200
+From: "Narendra Prabhu. B" <naren@deeproot.co.in>
+Subject: Re: libipq installation
+Date: Wed, 12 Feb 2003 15:52:34 +0530 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045040802.1500.0.camel@carve.localdomain>
-References: <3E22A883.103@mattiamartinello.com>
+Message-ID: <Pine.LNX.4.43.0302121443100.24966-100000@abodh.pesit.deeproot.co.in>
+References: <3E498BB5.1070905@qwest.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <3E22A883.103@mattiamartinello.com>
+In-Reply-To: <3E498BB5.1070905@qwest.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Sapient2003 <sapient@qwest.net>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-ur second forward rule matches tcp conns when it should match udp.
+Hi,
 
-On Mon, 2003-01-13 at 09:52, Mattia Martinello wrote:
-> Hi all
-> 
-> I wish to open DNS connections and redirect it from the gateway and the 
-> server on the DMZ.
-> I tried these rules:
-> 
-> iptables -t nat -A PREROUTING -p tcp -i ppp0 -d [public IP] --dport 53 
-> -j DNAT --to [private IP]:53
-> iptables -A FORWARD -i ppp0 -d [private IP] -p tcp --dport 53 -j ACCEPT
-> 
-> iptables -t nat -A PREROUTING -p udp -i ppp0 -d [public IP] --dport 53 
-> -j DNAT --to [private IP]:53
-> iptables -A FORWARD -i ppp0 -d [private IP] -p tcp --dport 53 -j ACCEPT
-> 
-> But if I try to query my DNS server from the Internet my query goes in 
-> timeout.
-> The connections between [private IP] and the Internet are allowed (all 
-> other services work good without any problem, the only service that gets 
-> me some problems is DNS).
-> 
-> What have I to open to allow DNS connections from the gateway and the DMZ?
-> 
-> Thank you very much
-> Bye
-> Mattia
-> 
-> 
+First of all, how have you installed iptables through deb/rpm or thru
+source. If deb/rpm check for the package iptables-devel using dpkg -l/rpm
+-q .... If you have installed from the source you should install the
+development libraries using ... make install-devel  ... please read the
+README file in the source directory.
 
+I think this should solve your problem.
+
+Regards,
+Narendra.
+
+-------------------------
+Narendra Prabhu. B
+DeepRoot Linux
+http://www.deeproot.co.in
+
+On Tue, 11 Feb 2003, Sapient2003 wrote:
+
+> I am trying to install the perl module IPTables::IPv4::IPQueue. In doing
+> so, I get this error: No library found for -lipq. How do I install the
+> IPQ libraries that come with iptables? Right now I am using iptables-1.2.7a.
+>
+>
+>
+>
 
 
 
