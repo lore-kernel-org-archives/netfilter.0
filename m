@@ -1,12 +1,13 @@
-From: "Ben Tan" <linuxnewbie74@hotmail.com>
-Subject: setup firewall to allow Remote Desktop in XP???
-Date: Sun, 27 Oct 2002 23:05:00 +0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: i use iptables for nat, and can connect with ping command but other ports can't connect
+Date: Mon, 28 Oct 2002 15:17:41 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000f01c27dca$38bb9b00$1801010a@demo>
+Message-ID: <200210281517.g9SFHle08726@vulcan.rissington.net>
+References: <20021026211632.17973.qmail@web20305.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000C_01C27E0D.46C7F7A0"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021026211632.17973.qmail@web20305.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,51 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Saturday 26 October 2002 10:16 pm, Irvan Adrian Kristiono wrote:
 
-------=_NextPart_000_000C_01C27E0D.46C7F7A0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> iptables -t nat -A POSTROUTING -s 192.168.15.0/24 -o
+> eth0 -j SNAT --to-source myinternetip
 
-hi,
-    I am considering to setup a firewall to allow the remote desktop =
-connection for internet. which ports to allow for INPUT, FORWARD, =
-OUTPUT?
+Is that your complete ruleset ?   You have *no* other rules ?
 
-    There will be a DNAT for each connecton request to the internal =
-client.
+> when i try to browse from my workstation which at 192.168.15.0/24
+> it cannot find any page.. so i try ping command to yahoo.com
+> IP, and get the reply.
 
-thanxs.
+When you "try to browse from your workstation" is that machine able to 
+resolve the name to an IP address or not ?
 
-------=_NextPart_000_000C_01C27E0D.46C7F7A0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+When you try pinging to yahoo.com and get a reply is that also from the 
+workstation, or from the firewall ?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I am considering to =
-setup a=20
-firewall to allow the remote desktop connection for internet. which =
-ports to=20
-allow for INPUT, FORWARD, OUTPUT?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; There will be a DNAT =
-for each=20
-connecton request to the internal client.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>thanxs.</FONT></DIV></BODY></HTML>
+Tell us:
 
-------=_NextPart_000_000C_01C27E0D.46C7F7A0--
+1. The output of iptables -L -n -v
 
+2. The routing table on your firewall (route -n)
+
+3. Whether the firewall can resolve names (ping www.netfilter.org - doesn't 
+matter whether you get a reply; does it resolve the IP address ?)
+
+4. Whether the workstation can resolve names (ping www.samba.org - doesn't 
+matter whether you get a reply; does it resolve the IP address ?)
+
+Antony.
+
+-- 
+
+How I want a drink, alcoholic of course, after the heavy chapters
+involving quantum mechanics.
+
+ - 3.14159265358979
 
