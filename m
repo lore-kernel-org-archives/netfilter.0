@@ -1,13 +1,11 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: advantage and disadvantage between iptables and ISAServer?
-Date: Wed, 25 Feb 2004 08:49:59 -0700
+From: Thomas Martens <checky.real@gmx.net>
+Subject: problem with ip_connlimit modul
+Date: Mon, 23 Feb 2004 16:56:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040225084959.471bb675@mgalepc.utilitran.com>
-References: <Sea1-F121KV8iOFQeYm0000bd96@hotmail.com>
+Message-ID: <20040223165653.6434be53@tangle>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Sea1-F121KV8iOFQeYm0000bd96@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi!
 
-Performance / Stability ?
+I try to compile the new 2.4.25 kernel with patch-o-matic-20031219 and I've a little problem.
 
-I am not to familure with ISA because the M$ admins here tell me it is not =
-worth
-the enough to test it out. I would assume it is like any other M$ product t=
-hough
-... you need double or triple the hardware to run it as compared to iptable=
-s.
-You are stuck with the options the M$ provides instead of the endless
-possibilities the a Unix or Linux could offer.
+All iptables works fine, but just the ipt_connlimit module makes trouble, when I try to compile it.
 
-But I will give Microsoft this ... they make a nice user friendly desktop OS
-that my mom can use.
-
-Michael.
+Here's my output:
 
 
-On Tue, 24 Feb 2004 09:00:33 +0000
-"Monty Ree" <chulmin2@hotmail.com> wrote:
-
-> Hello, all.
->=20
-> I would like to know the advantage and disadvantage between iptables and=
-=20
-> ISAServer(www.isaserver.org).
->=20
-> Anyone who has used ISAserver for firewall?
-> What's the advantage and disadvantage about ISA against iptables?=20
->=20
-> Any comments or any documents(BMT..etc..), so thanks.
->=20
->=20
-> Thanks in advance.
->=20
-> _________________________________________________________________
-> =C3=A5=BB=F3=C0=A7=BF=A1 =B4=D9=B8=AE =BF=C3=B8=AE=B0=ED =B4=C0=B1=DF=C7=
-=CF=B0=D4 =C1=F1=B1=E4=B4=D9... MSN =BF=C2=B6=F3=C0=CE =BB=F3=BF=B5=B0=FC  =
-=20
-> http://vod.msn.co.kr =20
->=20
->=20
->=20
->=20
->=20
->=20
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.25/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe -mpreferred-stack-boundary=2 -march=athlon -DMODULE -DMODVERSIONS -include /usr/src/linux-2.4.25/include/linux/modversions.h  -nostdinc -iwithprefix include -DKBUILD_BASENAME=ipt_connlimit  -c -o ipt_connlimit.o ipt_connlimit.c
+ipt_connlimit.c: In function `init':
+ipt_connlimit.c:219: `ip_conntrack_module' undeclared (first use in this function)
+ipt_connlimit.c:219: (Each undeclared identifier is reported only once
+ipt_connlimit.c:219: for each function it appears in.)
+ipt_connlimit.c:220: warning: value computed is not used
+ipt_connlimit.c: In function `fini':
+ipt_connlimit.c:227: `ip_conntrack_module' undeclared (first use in this function)
+ipt_connlimit.c:228: warning: value computed is not used
+make[2]: *** [ipt_connlimit.o] Error 1
+make[2]: Leaving directory `/usr/src/linux-2.4.25/net/ipv4/netfilter'
+make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.25/net'
+make: *** [_mod_net] Error 2
 
 
---=20
-Michael Gale
-Network Administrator
-Utilitran Corporation
+Can anybody help? I think I've to rename something in ipt_connlimit.c, but I don't know that....
+Thanks in advance.
+
+Best regards,
+Thomas
 
