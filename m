@@ -1,11 +1,12 @@
-From: Adam Majer <adamm@galacticasoftware.com>
-Subject: DNAT forwarding problems
-Date: Wed, 04 Aug 2004 17:44:37 -0500
+From: =?iso-8859-1?Q?Ehrhardt_Ren=E9?= <r.ehrhardt@eviatec.de>
+Subject: (no subject)
+Date: Thu, 5 Aug 2004 13:52:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <411166D5.30105@galacticasoftware.com>
+Message-ID: <94F30CDB27E39547A10F4E71E9AF114B2DEE89@dlb-dc02.intern-eviatec.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,59 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hi all,
-
-I'm not subscribed to the list so please cc me any replies. Thank you.
-
-I seem to have a major problem with DNAT. The setup is as follows,
-
-external IP addresses: [A], [B]
-internal IP address: [C] - not the NAT box
-
-I want all udp port 53 traffic from [A]->[C] and from [B]->[C]. So I set
-up the following rules
-
-iptables -t nat -N dns-forward
-iptables -t nat -A dns-forward -p udp --dport 53 -j DNAT --to-dest [C]
-iptables -t nat -A PREROUTING -i A_interface -j dns-forward
-iptables -t nat -A PREROUTING -i B_interface -j dns-forward
-
-and in the packet table I set up forwarding as
-
-itpables -P FORWARD DROP
-iptables -A FORWARD -m conntrack --ctstate ESTABLISHED -j ACCEPT
-iptables -N dns
-iptables -A dns -d [C] -p udp --dport 53 -j ACCEPT
-iptables -A FORWARD -j dns
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org.
 
 
-When a packet comes over interface [A], (also the default route), it
-hits the PREROUTING chain, gets forwarded to [C] and then goes though
-FORWARD and gets to the DNS server.
+Hi,
 
-When the packet comes over interface[B], it also gets to the PREROUTING
-chain, but it never gets to the FORWARD chain and thus never even gets
-to [C]. It just dissapears into thin air. My routing seems correct..
+i=B4m running a debian sarge beta 4 box with iptables 1.2.10,
+I have to install the pptp-conntrack-nat patch.=20
+I have the newest CVS build of pom
 
-The routing is setup with the iproute2 tool. There are rule tables the
-specify correct paths for packets from interface_A and interface_B to
-all other interfaces and proper default routes (so that packets from B
-go back though B). The only difference is that [A] is also the default
-route in the default rule table. I can get from internal network D to C
-as it does not go though DNAT.
+Now my problem:
 
-Any ideas? Can someone reproduce this problem?
 
-- Adam
+./runme extra/pptp-conntrack-nat.patch
 
-PS. kernel 2.6.7, iptables 1.2.9
+Testing... pptp-conntrack-nat.patch NOT APPLIED (1 missing files)
+The extra/pptp-conntrack-nat patch:
+   Author: Harald Welte <laforge@netfilter.org>
+   Status: Beta
+...
+...
+...
+Testing patch extra/pptp-conntrack-nat.patch...
+Warning - no help text file could be found in either
+/usr/src/linux/net/ipv4/netfilter/Config.help
+or /usr/src/linux/Documentation/Configure.help
+grep: /usr/src/linux/net/ipv4/netfilter/Config.in: Datei oder =
+Verzeichnis nicht gefunden
+Could not find place to slot in Config.in line
 
--- 
-Building your applications one byte at a time
-http://www.galacticasoftware.com
+What does this mean??=20
+Is there any way to get this thing working?
+
+Could anybody help me??
+
 
 
 
