@@ -1,13 +1,14 @@
-From: "Spiro Azkoul" <spiro@snacorp.net>
-Subject: raw ICMP ports
-Date: Tue, 13 Jul 2004 01:31:44 -0700
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: Redirect to same LAN and preserve source IP
+Date: Tue, 13 Jul 2004 09:50:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407130831.i6D8Vg1m012187@ylpvm01.prodigy.net>
-References: <3700.211.24.230.5.1089591173.squirrel@somerset.sytes.net>
+Message-ID: <200407130950.44683.gdh@acentral.co.uk>
+References: <200407121419.40110.gdh@acentral.co.uk> <200407121612.27437.gdh@acentral.co.uk> <200407121631.56183.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <3700.211.24.230.5.1089591173.squirrel@somerset.sytes.net>
+In-Reply-To: <200407121631.56183.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,20 +21,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I shutdown a bunch of startup services and only have specific ports open,
-and IPTABLES on top. 
+On Monday 12 July 2004 16:31, Antony Stone wrote:
 
-Out of no where, the following lines appeared on my netstat as of 3 days ago
+> How about *configuring* the clients so they use the proxy "properly"
+> instead of doing transparent redirection?   Then you can keep the Squid box
+> on the same subnet as the clients, and still block people trying to do TCP
+> port 80 straight through the firewall (only one source IP is allowed - the
+> Squid box).   
 
-raw   125024      0 *:icmp                  *:*                     7
+The reason has been the desire to not have to ferry around dozens of machines 
+configuring proxy settings, really. I'll certainly give the seperate-subnet 
+idea some thought :)
 
-raw   126688      0 *:icmp                  *:*                     7
-
-raw   126688      0 *:icmp                  *:*                     7  
-
-I can't exactly figure out what this is. 
-Any feedback?
-Thanks
-
-
+Cheers,
+Gavin.
 
