@@ -1,12 +1,13 @@
-From: "Matthew G. Marsh" <mgm@paktronix.com>
-Subject: Re: Load Balancing
-Date: Wed, 2 Apr 2003 10:43:09 -0600 (CST)
+From: "Matteo" <matteo@oldamerika.com>
+Subject: Re: Info about H.323
+Date: Wed, 2 Apr 2003 18:58:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0304021041400.24259@netmonster.pakint.net>
-References: <se8ad4d0.010@hera>
+Message-ID: <001501c2f939$0d7552c0$0101a8c0@matteocasa>
+References: <008c01c2f89d$f6556260$0101a8c0@matteocasa> <3E8B1297.E9B91696@abc.at>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0012_01C2F949.D0EEB970"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <se8ad4d0.010@hera>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +17,178 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Allan de Borde <Allan@southport-college.ac.uk>
+To: Emanoil Kotsev <emanuel@abc.at>
 Cc: netfilter@lists.netfilter.org
 
-On Wed, 2 Apr 2003, Allan de Borde wrote:
+This is a multi-part message in MIME format.
 
-> I am trying to test the load balancing on a test machine with 2 external
-> 2Mb Internet links and it doesn't appear to be working. I am using
-> RedHat 8.0 and get this message when doing ip route list:
->
-> default equalize
->         nexthop via xxx.xxx.xxx.xxx  dev eth1 weight 1 dead onlink pervasive
->         nexthop via xxx.xxx.xxx.xxx  dev eth0 weight 1 onlink
->
-> I have read a similar problem from this list and it appears that the
-> RedHat RPM of iproute2 (iproute-2.4.7-5) is broken and this was resolved
-> by installing a newer version of iproute.
->
-> As I am very new to some aspects of Linux could someone inform me of how
-> to compile and install iproute as it asks for you to change the
-> KERNEL_INCLUDE directory in the Makefile and I have no idea where the
-> Kernel include directory is. I can't get it to make.
+------=_NextPart_000_0012_01C2F949.D0EEB970
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-KERNEL_INCLUDE=/usr/src/linux
+Hello,
 
-Even RH symlinks /usr/src/linux to the appropriate version of kernel
-installed. Make sure that you have installed the kernel development RPM as
-that has the actual include files. Not installed by default unless you
-installed the Developer workstation.
+yes, I have onlyone pc behind firewall, all this port who I must DNAT to =
+my pc are all UDP ??
 
-> I have downloaded and installed iproute-2.4.7-7.rpm but this also has the same problems.
->
-> Cheers
-> Allan
->
->
->
->
->
->
+Thank
+  ----- Original Message -----=20
+  From: Emanoil Kotsev=20
+  To: Matteo=20
+  Cc: netfilter@lists.netfilter.org=20
+  Sent: Wednesday, April 02, 2003 6:40 PM
+  Subject: Re: Info about H.323
 
---------------------------------------------------
-Matthew G. Marsh,  President
-Paktronix Systems LLC
-1506 North 59th Street
-Omaha  NE  68104
-Phone: (402) 553-2288
-Email: mgm@paktronix.com
-WWW:  http://www.paktronix.com
---------------------------------------------------
+
+  Hi,=20
+  forgot to tell you in case you don't know, that if your machine is the =
+onlyone behind the firewall, you can just forward Port 1720 to the =
+Client=20
+  Also 30000:30010 and 5003:5005 whould be open accepting =
+RELATED,ESTABLISHED traffic=20
+
+  in this case you should be able to receive voice&video to and only to =
+your client that you are forwarding to.=20
+
+  good luck=20
+
+  Matteo wrote:=20
+
+     Dear, the patch for Kernel is P-O-M ??? so it is I try install and =
+then I tell you if it work... Bye Mat=20
+    ----- Original Message -----
+    I have the same problem and no time to work on solution.=20
+    As far as I know there is a patch for the kernel to add support =
+H.323 into iptables.=20
+    As I said I don't have anytime to work on a kernel and iptables =
+configuration but if you manage to compile and configure H.323 support =
+with IPtables me  and my friends are going to be ver thankful if you =
+post a mail.=20
+    good luck=20
+
+    Matteo wrote:=20
+
+      Hello,I have a server linux with redhat 7.3 and shorewall as =
+firewall, now I try to set protocol H.323 becouse I must receive strem =
+video in multicast that use H.323....Now infact when I try to connect to =
+Strem video I don't see anythings when if I try connect my pc directly =
+to modem cable that it support h.323 strem video work at 100%.Now I want =
+use firewall in front of my pc and so I must set H.323.... How set it =
+??? how set iptable ?? I must use P-O-M ?? If yes, How I use P-O-M ??? =
+Thank youMatteo
+--=20
++ Emanoil Kotsev - - - - -+
+| tel. 0043(1)9253175     |
+| cel. --------------     |
++ E-Mail: emanuel@abc.at  +=20
+--=20
++ Emanoil Kotsev - - - - -+
+| tel. 0043(1)9253175     |
+| cel. --------------     |
++ E-Mail: emanuel@abc.at  +  
+------=_NextPart_000_0012_01C2F949.D0EEB970
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR></HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>yes, I have onlyone pc behind firewall, =
+all this=20
+port who I must DNAT to my pc are all UDP ??</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thank</FONT></DIV>
+<BLOCKQUOTE=20
+style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
+BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
+  <DIV=20
+  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
+black"><B>From:</B>=20
+  <A title=3Demanuel@abc.at href=3D"mailto:emanuel@abc.at">Emanoil =
+Kotsev</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A =
+title=3Dmatteo@oldamerika.com=20
+  href=3D"mailto:matteo@oldamerika.com">Matteo</A> </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Cc:</B> <A=20
+  title=3Dnetfilter@lists.netfilter.org=20
+  =
+href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
+rg</A>=20
+  </DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Wednesday, April 02, 2003 =
+6:40=20
+  PM</DIV>
+  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Re: Info about =
+H.323</DIV>
+  <DIV><BR></DIV>Hi, <BR>forgot to tell you in case you don't know, that =
+if your=20
+  machine is the onlyone behind the firewall, you can just forward Port =
+1720 to=20
+  the Client=20
+  <P>Also 30000:30010 and 5003:5005 whould be open accepting =
+RELATED,ESTABLISHED=20
+  traffic=20
+  <P>in this case you should be able to receive voice&amp;video to and =
+only to=20
+  your client that you are forwarding to.=20
+  <P>good luck=20
+  <P>Matteo wrote:=20
+  <BLOCKQUOTE TYPE=3D"CITE">&nbsp;<FONT face=3DArial><FONT=20
+    size=3D-1>Dear,</FONT></FONT> <FONT face=3DArial><FONT size=3D-1>the =
+patch for=20
+    Kernel is P-O-M ??? so it is I try install and then I tell you if it =
+
+    work...</FONT></FONT> <FONT face=3DArial><FONT =
+size=3D-1>Bye</FONT></FONT> <FONT=20
+    face=3DArial><FONT size=3D-1>Mat</FONT></FONT>=20
+    <DIV style=3D"FONT: 10pt arial">----- Original Message -----</DIV>I =
+have the=20
+    same problem and no time to work on solution. <BR>As far as I know =
+there is=20
+    a patch for the kernel to add support H.323 into iptables. <BR>As I =
+said I=20
+    don't have anytime to work on a kernel and iptables configuration =
+but if you=20
+    manage to compile and configure H.323 support with IPtables me&nbsp; =
+and my=20
+    friends are going to be ver thankful if you post a mail.=20
+    <P>good luck=20
+    <P>Matteo wrote:=20
+    <BLOCKQUOTE TYPE=3D"CITE">
+      <STYLE></STYLE>
+      <FONT face=3DArial><FONT size=3D-1>Hello,I have a server linux =
+with redhat 7.3=20
+      and shorewall as firewall, now I try to set protocol H.323 becouse =
+I must=20
+      receive strem video in multicast that use H.323....Now infact when =
+I try=20
+      to connect to Strem video I don't see anythings when if I try =
+connect my=20
+      pc directly to modem cable that it support h.323 strem video work =
+at=20
+      100%.Now I want use firewall in front of my pc and so I must set=20
+      H.323....</FONT></FONT> <FONT face=3DArial><FONT size=3D-1>How set =
+it ??? how=20
+      set iptable ?? I must use P-O-M ?? If yes, How I use P-O-M=20
+      ???</FONT></FONT> <FONT face=3DArial><FONT size=3D-1>Thank=20
+      youMatteo</FONT></FONT></BLOCKQUOTE><PRE>--&nbsp;
++ Emanoil Kotsev - - - - -+
+| tel. 0043(1)9253175&nbsp;&nbsp;&nbsp;&nbsp; |
+| cel. --------------&nbsp;&nbsp;&nbsp;&nbsp; |
++ E-Mail: emanuel@abc.at&nbsp; +</PRE>&nbsp;</BLOCKQUOTE><PRE>--&nbsp;
++ Emanoil Kotsev - - - - -+
+| tel. 0043(1)9253175&nbsp;&nbsp;&nbsp;&nbsp; |
+| cel. --------------&nbsp;&nbsp;&nbsp;&nbsp; |
++ E-Mail: emanuel@abc.at&nbsp; +</PRE>&nbsp; </BLOCKQUOTE></BODY></HTML>
+
+------=_NextPart_000_0012_01C2F949.D0EEB970--
+
 
