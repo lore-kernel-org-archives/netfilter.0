@@ -1,15 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: problem with samba
-Date: Sun, 27 Jul 2003 01:05:25 -0400
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: Basic firewalling
+Date: Sun, 27 Jul 2003 12:06:58 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307270105.25593.Alistair@nerdnet.ca>
-References: <001501c353b1$8fa0c220$4fef5b86@stw.uniduisburg.de>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <001801c35409$7aa86140$c2bf09ca@Housecall>
+References: <334618035904D611BBFE00306E12110C018107D3@terhemail01.corp.timken.com>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001501c353b1$8fa0c220$4fef5b86@stw.uniduisburg.de>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,37 +18,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sohail Ahmed Siddiqui <sohail@uni-duisburg.de>, netfilter@lists.netfilter.org
+To: "Santhosh, H." <SANTHOSH@timken.com>, netfilter@lists.netfilter.org
 
-On July 26, 2003 04:07 pm, Sohail Ahmed Siddiqui wrote:
-> Hi all,
-> i am new to iptables and i have a problem, i will be very greatful i fsome
-> one helps me out.
-> at my place i have a lan with 192.168.0.0/24 and in the building we have
-> 134.91.239.0. i have managed to firewall my local net and access the
-> internet with iptables but i want to share some files via samba. but my
-> samba connection is not going out. i am using
+Hi Santhosh
+
+The setup was not clear, what exactly you want to achive
+
+case 1
+
+Is this external PC and Internal PC are in the same Place ?
+
+case 2
+
+or external PC Over Internet and Internal PC at your Place ?
+
+
+hare
+----- Original Message -----
+From: "Santhosh, H." <SANTHOSH@timken.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Saturday, July 26, 2003 6:55 PM
+Subject: Basic firewalling
+
+
+> Hi
+> Please help me with the below setup
 >
-> iptables -A FORWARD -j lan -p tcp --dport 137:139
-> iptables -A FORWARD -j lan -p udp --dport 137:139
-
-	You would have to have appropriate ACCEPT statements in the
-	lan table --- cant tell why its not working since you haven't listed
-	the lan table.
-
+> External pc1<-------->(eth1)Server(eth0)<------>Internal pc1
 >
-> but this some how doesnt seem to work.
-> i have searched the internet but some how i didnt find any thing which can
-> solve my problem. any help is welcome
-> regards
-> Sohail Ahmed Siddiqui
+> 1. What is the cmd to route data from internal pc1 to external pc1 through
+> the server using iptables or route cmd
+> 2. What should be the gateway value in Internal & external pc
+> 3. How do I make the iptables make it permanent so that after reboot also
+> those rules should remain
+>
+> Thanks in advance
+>
+>
+>
+> Regards
+> Santhosh.H
+>
+>
 
--- 
-
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
 
