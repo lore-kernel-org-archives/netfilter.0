@@ -1,14 +1,10 @@
-From: Pedro Salazar <pedro-b-salazar@ptinovacao.pt>
-Subject: Re: load-balancing with netfilter: round robin or what??
-Date: 07 Oct 2003 10:35:52 +0100
+From: "Khan, Arshad" <a.m.khan@bham.ac.uk>
+Subject: RE: load-balancing with netfilter: round robin or what??
+Date: Tue, 7 Oct 2003 10:41:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1065519352.18400.9.camel@vitoria.intra.cet.pt>
-References: <1065434375.1604.33.camel@vitoria.intra.cet.pt>
-	 <1065472484.12495.190.camel@alpha.newkirk.us>
+Message-ID: <2967754783C6E34C94243EAC0D161368BB0393@med-ex1.bham.ac.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1065472484.12495.190.camel@alpha.newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,8 +15,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Pedro Salazar' <pedro-b-salazar@ptinovacao.pt>
+Cc: netfilter@lists.netfilter.org
+
+how does this compare with the Linux Virtual Server project?
+
+Arshad
+
+-----Original Message-----
+From: Pedro Salazar [mailto:pedro-b-salazar@ptinovacao.pt]
+Sent: 07 October 2003 10:36
 To: newkirk@newkirk.us
 Cc: netfilter@lists.netfilter.org
+Subject: Re: load-balancing with netfilter: round robin or what??
+
 
 > But the rule performing the balancing is in OUTPUT table, and so only
 > affects connections from the NAT box itself...  Also, I think your
