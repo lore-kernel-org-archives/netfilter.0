@@ -1,9 +1,10 @@
-From: Scott van Looy <scott@ethosuk.org.uk>
-Subject: iptables 1.2.7a and kernel 2.4.19
-Date: Tue, 17 Sep 2002 14:03:54 +0100 (BST)
+From: Ludovic Ducros <ludovic.ducros@isep.fr>
+Subject: h323-conntrack-nat.patch problem
+Date: Tue, 17 Sep 2002 15:58:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0209171400480.3423-100000@fire.ethosuk.org.uk>
+Message-ID: <DGEFLNBBHJDEGJNHJIEMGEELCEAA.ludovic.ducros@isep.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,52 +15,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I just took a clean 2.4.19 kernel, patched it with patch-o-matic-20020825 
-and then built the kernel, rebooted and then tried to install iptables 
-1.2.7a
+   Hi all,
 
-I get 
+   I have a very big problem to install the h323-conntrack-nat.patch.
+I have a Linux Red Hat 7.3 with a 2.4.18-3 kernel : that's my gateway to
+access the Internet.
+I would like to use netmeeting on a computer with Win2000 connected to this
+gateway.
 
-make
-Extensions found: IPv4:ipv4options IPv4:IPV4OPTSSTRIP IPv4:mport 
-IPv4:NETMAP IPv
-4:nth IPv4:pool IPv4:POOL IPv4:psd IPv4:quota IPv4:random IPv4:realm 
-IPv4:recent
- IPv4:ROUTE IPv4:string IPv4:time IPv6:ah IPv6:esp IPv6:frag 
-IPv6:ipv6header IPv
-6:hbh IPv6:dst IPv6:REJECT IPv6:rt
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
--DIPTABLES_VERSION=\"1
-.2.7a\"  -fPIC -o extensions/libipt_conntrack_sh.o -c 
-extensions/libipt_conntrac
-k.c
-In file included from 
-/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack.h
-:64,
-                 from extensions/libipt_conntrack.c:12:
-/usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_talk.h:6:2: 
-#error Only
- in kernel.
-make: *** [extensions/libipt_conntrack_sh.o] Error 1
+Here is what I did :
 
-Yet when I did this this morning on a different machine it worked fine, 
-same pom, same kernel, same iptables builds
+1 - I untar the linux kernel sources 2.4.18 in /usr/src/linux-2.4.18
+2 - I did the same with iptables-1.2.7a.
+3 - In the directory patch-o-matic, I ran './runme extra' to patch with
+h323-conntrack-nat.patch
+    Here is the result :
 
-Any ideas where I could start to look to see what's wrong?
+****************************************************************************
+*****
 
--- 
-Scott van Looy - email:me@ethosuk.org.uk | web:www.ethosuk.org.uk
-PGP Fingerprint: 7180 5543 C6C4 747B 7E74  802C 7CF9 E526 44D9 D4A7
-      -------------------------------------------
-      |/// /// /// /// WIDE LOAD /// /// /// ///|
-      -------------------------------------------
+-------------------------------------------------------
+Testing... h323-conntrack-nat.patch NOT APPLIED ( 3 missing files)
+The newnat/h323-conntrack-nat patch:
+   Author: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+   Status: Alpha
 
-Welcome to Lake Wobegon, where all the men are strong, the women are pretty,
-and the children are above-average.
-		-- Garrison Keillor
+   This adds CONFIG_IP_NF_H323: H.323/netmeeting support module for
+netfilter
+   connection tracking and NAT. H.323 uses/relies on the following data
+streams:
+
+   Port         Description
+   389          Internet Locator Server (TCP)
+   522          User Location Server (TCP)
+   1503                 T.120 Protocol (TCP)
+   1720         H.323 (H.225 call setup, TCP)
+   1731         Audio call control (TCP)
+   Dynamic              H.245 call control (TCP)
+   Dynamic              RTCP/RTP streaming (UDP)
+
+   The H.323 conntrack/NAT modules support the connection tracking/NATing of
+   the data streams requested on the dynamic ports. The helpers use the
+   search/replace hack from the ip_masq_h323.c module for the 2.2 kernel
+   series.
+
+   At the very minimum, H.323/netmeeting (video/audio) is functional by
+letting
+   trough the 1720 port and loading these H.323 module(s).
+
+   The H.323 conntrack/NAT modules do not support
+
+   - H.245 tunnelling
+   - H.225 RAS (gatekeepers)
+-----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] y
+Testing patch newnat/h323-conntrack-nat.patch...
+   Placed new Config.in line
+   Placed new Config.in line
+   Placed new Configure.help entry
+   Placed new Makefile line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+Could not find place to slot in ip_conntrack.h line
+TEST FAILED: patch NOT applied.
+
+[Press enter to continue]
+
+****************************************************************************
+*****
+
+At this point, I don't know what to do.
+However, I tried other combinations with kernel version 2.4.16 & 2.4.18 and
+iptables-1.2.6a & 1.2.7a, but all of them failed with the same trouble.
+I even checked in the list archive, but without success.
+I cannot apply the needed patch.
+I have been running in this problem for 15 days !!
+
+
+   Any idea would be welcomed.
+
+   Thanks a lot for your help.
+
+   Ludo.
 
 
