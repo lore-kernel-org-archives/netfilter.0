@@ -1,11 +1,12 @@
-From: Gustav Petersson <gustav.petersson@karlskrona.net>
-Subject: how do i forward ftp from my firewall to an internal server?
-Date: Sat, 28 Feb 2004 09:27:36 +0100
+From: "Lasse Pettersson" <lasse@humandata.se>
+Subject: RE: advantage and disadvantage between iptables and ISAServer?
+Date: Sat, 28 Feb 2004 12:33:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <404050F8.8040902@karlskrona.net>
+Message-ID: <F72D5632F55F1F4E8B78EE3E3DC735360C838D@oden.humandata.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,67 +16,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: bmcdowell@coxhealthplans.com, netfilter@lists.netfilter.org
+
+I agree
+
+ISA works very well as a proxy, not that good as a FW
+
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
+bmcdowell@coxhealthplans.com
+Sent: den 25 februari 2004 22:29
 To: netfilter@lists.netfilter.org
+Subject: RE: advantage and disadvantage between iptables and ISAServer?
 
-Like the subject line says.. how do I do it?
 
-I have port http traffic forwarded to the same server but when i use the 
-same rule with only the port(s) changed for ftp traffic my ftp server 
-opens the connection but immediately closes it again. I have tried 
-running both the standard in.ftpd and proftpd. Any help would be greatly 
-appreciated.
+I don't see them as all that comparable, and in fact I use both.  ISA
+makes a great proxy and uses AD permissions (groups, etc) for access
+control.  I see it as Proxy 2.0 Enhanced, rather than a 'firewall'.
 
-Gustav Petersson
 
-I am running debian 3.0 with kernel 2.4.24 and I have the following 
-modules loaded:
+Bob
 
-ipt_LOG
-ipt_state
-iptable_filter
-ip_nat_ftp
-ip_conntrack_ftp
-iptable_nat
-ip_conntrack
-ip_tables
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Maciej
+Soltysiak
+Sent: Wednesday, February 25, 2004 10:18 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: advantage and disadvantage between iptables and ISAServer?
 
-Here is my firewall config:
-#!/bin/sh
- 
-EXT_IP=1.2.3.4
-INT_IP=192.168.x.x
 
-modprobe iptable_nat
-modprobe ip_conntrack_ftp
-modprobe ip_nat_ftp
- 
-echo "1" > /proc/sys/net/ipv4/ip_forward
- 
-iptables -P INPUT ACCEPT
-iptables -F INPUT
-iptables -P OUTPUT ACCEPT
-iptables -F OUTPUT
-iptables -P FORWARD ACCEPT
-iptables -F FORWARD
-iptables -t nat -F
+> I am not to familure with ISA because the M$ admins here tell me it is
 
-# NAT
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 213.88.181.68
- 
-                                                                                
+> not
+worth
+> the enough to test it out. I would assume it is like any other M$=20
+> product
+though
+> ... you need double or triple the hardware to run it as compared to
+iptables.
+Agree, oh, this is true. Currently w2k3 runs very bad on:
+p4 1,5ghz, 384MB
+with a few of the services setup: AD, WMS, IIS (HTTP+FTP), SUS, SMS.
 
-# Forward port 80 to internal server
-iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 80 \
-        -j DNAT --to $INT_IP:80
 
-# Forward ports 20 and 21 to internal server
-iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 20 \
-        -j DNAT --to $INT_IP:20
-                                                                                
+> You are stuck with the options the M$ provides instead of the endless=20
+> possibilities the a Unix or Linux could offer.
+Well, sort of. iptables is very powerfull, but I think that upcomming
+isa
+2004
+is going to be modular and pluggable too, plus it will certainly address
+popular security issues like: p2p (yes, it is a security issue), worms,
+network attacks that have signatures: slammer, floods, land, dos, etc...
+Like checkpoint's SmartDefense.
 
-iptables -A PREROUTING -t nat -p tcp -d $EXT_IP --dport 21 \
-        -j DNAT --to $INT_IP:21
+
+I have not been using isa, but only read and seen a presentation of isa
+2004, It is possible that is going to be a powerfull tool. No
+information about stability, propably it'd depend on which version of
+windows you are running and how stable it is. Performance? No idea.
+
+Regards,
+Maciej
+
 
 
 
