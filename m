@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNAT possible with the string module?
-Date: Mon, 4 Nov 2002 19:57:35 +0000
+From: Peter <dslt03@pacbell.net>
+Subject: Simple Port Translation...
+Date: Mon, 04 Nov 2002 15:10:11 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021104195745.DUTJ27595.mta05-svc.ntlworld.com@there>
-References: <aq64dg$4br$1@hermes.vibe.ac>
+Message-ID: <3DC6FE53.6070803@pacbell.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <aq64dg$4br$1@hermes.vibe.ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +15,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Monday 04 November 2002 3:40 pm, Udo Rader wrote:
+First some explanation, I'm trying to proxy traffic from a linux box 
+behind a very restrictive firewall, the only way to get my traffic 
+through it is on port 9000; A friend with a static ip has agreed to 
+allow me to proxy my traffic through his box, but he is rightly 
+concerned about the security of such a simple proxy.  As you can see, or 
+infer, I've set the rules so that only connections comming from my 
+firewalled box are translated and only new, established and related 
+connections are allowed, but being the noob I am at this I'm not sure if 
+I need anything else.  Another translation to recieve and proxy 
+connections to my firewalled box?  Are there more restrictive rules I 
+can set so my friend doesnt have to worry?  Is there a more ellegant 
+solution that I just don't have the time to persue?  Do I need a routing 
+command on my Linux box?  I just need some help, since I don't have the 
+time at the moment to persue this as fully as I would like to.  Any help 
+would be most appreciated.
 
-> hi,
->
-> I would like to do the following thing:
->
-> 2 daemons listening on different ports (lets say 1234 and 2345).
->
-> The firewall then ideally takes all connects from clients to port 1234,
-> looks for a "magic string" (using -m string) in the packages and based
-> upon the (non)existance of the string finally decides, which daemon to
-> forward the connect to.
->
-> ... is there a chance for this to work?
+$IPTABLES -t nat -A PREROUTING -s (my ip address) --dport 9000 -j DNAT 
+--to-destination (your IP here):81
+$IPTABLES -A FORWARD -i (input interface) --dport 81 -m state --state 
+NEW,ESTABLISHED,RELATED -j ACCEPT
 
-I think the answer is no, it cannot work (assuming you are talking about TCP 
-ports and not UDP ports).
 
-The reason is as follows:
 
-Before a client can send the magic string you are looking for, it needs to 
-have completed the TCP handshake of SYN - SYN/ACK - ACK, because it's only 
-after that's done that any data gets transferred between the systems.
-
-Obviously the SYN and the SYN/ACK are to and from a specific port number on 
-the listening server, so by the time you get to see the magic string, the 
-choice of port number to connect to has already been made.
-
-Antony.
-
--- 
-
-If the human brain were so simple that we could understand it,
-we'd be so simple that we couldn't.
 
