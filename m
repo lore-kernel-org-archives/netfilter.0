@@ -1,12 +1,13 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: RE: netfiltering and ethernet bridging doesn't appear to work as advertised, help!
-Date: Wed, 21 Jan 2004 11:27:47 -0600
+From: Marc Haber <mh+netfilter@zugschlus.de>
+Subject: Re: [despammed] port based filtering and IPsec 2.6
+Date: Wed, 21 Jan 2004 22:46:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D731014BE7BB@coxhpexg.coxhp.com>
+Message-ID: <20040121214643.GA1308@torres.ka0.zugschlus.de>
+References: <20040114162623.GR4106@openoffice.nl> <20040117134519.GA4911@kaufbach.delug.de> <20040121153748.GA2715@openoffice.nl> <20040121154420.GH27986@torres.ka0.zugschlus.de> <20040121163130.GC2715@openoffice.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20040121163130.GC2715@openoffice.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,77 +18,66 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+On Wed, Jan 21, 2004 at 05:31:30PM +0100, Valentijn Sessink wrote:
+> At Wed, Jan 21, 2004 at 04:44:20PM +0100, Marc Haber wrote:
+> > On Wed, Jan 21, 2004 at 04:37:48PM +0100, Valentijn Sessink wrote:
+> > > Yes you can. Re-read my post, and be creative.
+> > That will work for incoming packets. And how do I protect myself
+> > against configuration errors sending out unencrypted packets? I'd need
+> > to put the mark on the packets for destination networks, which is
+> > error prone.
+> 
+> Why is that error prone? If your concern is putting out unencrypted packets
+> to certain networks, you can just use -p esp.
 
-From my point of view, you can ignore physical/virtual interfaces with
-respect to INPUT, OUTPUT, and FORWARD.  It's all about where the IP
-address resides, and whether or not that IP is local or remote.  Let me
-whip up a quick example.
+My concern is that I'd need to maintain the list of networks that
+should be reached only via ipsec twice: Once in the ipsec setup, and
+once in the packet filter. With a dedicated interface, I'd only have
+to maintain it in the ipsec setup with the packet filter automatically
+following with rules on --out-int ipsecfoo.
 
-Say we have a bridging firewall with two ethX interfaces and one brX
-interface:
+> It is no more or less complicated to say "-i ipsec0" or "-m mark --mark 1".
 
-eth0-br0-eth1
+But the interface comes automatically, while one would need to worry
+about putting the mark on the packet.
 
-Not that you would normally want to, but lets put IP's on all of these
-interfaces:
+This works "fine" for incoming packets, but gets ugly for outgoing
+packets.
 
-eth0(10.10.10.1)-br0(10.10.10.2)-eth1(10.10.10.3)
+> Apart from that, I do not exactly understand your point. AFAIK, FreeS/WAN
+> will only let you setup a tunnel or no tunnel, nothing in between. If you
+> would want to send some traffic through the tunnel, you would need a whole
+> lot of non-trivial policy routing rules. (But maybe I'm mistaken here).
 
-Now lets add a few clients:
+You mean a setup like "send everything to a.b.c.d/e through the ipsec
+tunnel, except for traffic to a.b.c.d/e TCP port 22"? Right, that's
+not possible with FreeS/WAN. Can 2.6 ipsec do that?
 
-client1(10.10.10.5) -
-[eth0(10.10.10.1)-br0(10.10.10.2)-eth1(10.10.10.3)] -
-client2(10.10.10.6)
+> > The idea is nice, but it looks like an ugly hack. And it _is_ an ugly
+> > hack.
+> 
+> IPsec tunnel mode is an ugly hack?
 
-With me so far?
+Not at all. Looks like two non-native speakers misunderstanding each
+other.
 
-Now let's apply those to filter chains.  Examples:
+> I wouldn't know what is ugly about marking packets to post-process them
+> later.
 
-	Situation				Chain (from the point of
-view of the bridge)
+Well, most systems make a tunnel look like a dedicated connection on a
+"virtual network interface". This makes sense, and is more natural to
+handle, IMO, than having to fiddle with marks in a number space that
+might already be populated for traffic shaping or policy routing.
 
-Client1 pings Client2			FORWARD
-Client2 pings Client1			FORWARD
-Client1 pings 10.10.10.1		INPUT (and OUTPUT for the reply)
-Client1 pings 10.10.10.2		INPUT (and OUTPUT for the reply)
-Client1 pings 10.10.10.3		INPUT (and OUTPUT for the reply)
-Client2 pings 10.10.10.1		Probably INPUT/OUTPUT - not sure
-here
+Greetings
+Marc
 
-It isn't recommended to have IP's on ethX's.  Really, my bridge should
-look more like this:
-
-eth0(0.0.0.0)-br0(10.10.10.2)-eth1(0.0.0.0)
-
-In this case, only traffic dealing with 10.10.10.2 would be handled by
-the INPUT/OUTPUT chains.  Everything else is FORWARD, because it deals
-with two non-local IPs.
-
-Have I confused you yet?
-
-
-Bob
-
------Original Message-----
-From: Kirk Reiser [mailto:kirk@braille.uwo.ca]
-Sent: Wednesday, January 21, 2004 10:35 AM
-To: Bob McDowell
-Cc: netfilter@lists.netfilter.org
-Subject: Re: netfiltering and ethernet bridging doesn't appear to work
-as advertised, help!
-
-<SNIP>
-I'm having a bit of trouble with this statement because to me it
-doesn't seem to make sense without the notion of the interface cards.
-If eth0 is our interface to the net and eth1 our interface to the lan
-then input to an interface makes sense because input to eth0 means one
-set of rules while input to eth1 means a totally separate set.  When
-you are talking about a virtual interface such as br0 how do input and
-output relate?  Is input meaning packets entering both real interfaces
-eth0 and eth1 or does input mean to the virtual device br0.  If the
-latter what direction is input verses output, the order you add the
-NICs?  I don't see how this can be.
-<SNIP>
+-- 
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Karlsruhe, Germany |  lose things."    Winona Ryder | Fon: *49 721 966 32 15
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 721 966 31 29
 
