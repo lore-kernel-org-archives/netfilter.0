@@ -1,8 +1,8 @@
 From: Joe Riley <irie@networks.org>
 Subject: Download/upload speeds sluggish behind iptables firewall
-Date: Fri, 7 May 2004 13:19:01 -0700 (PDT)
+Date: Fri, 7 May 2004 13:19:23 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040507201901.AEA423951@sitemail.everyone.net>
+Message-ID: <20040507201923.AE92A395C@sitemail.everyone.net>
 Reply-To: irie@networks.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
