@@ -1,13 +1,12 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: limit speed of file transfer
-Date: Sat, 22 Jan 2005 02:28:52 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10501220221210.6831-100000@darkstar.sysinfo.com>
-References: <001001c5001e$d80df760$0201a8c0@micah>
+From: Jan Du Caju <Jan.DuCaju@kuleuven.net>
+Subject: Re: netfilter efficiency
+Date: Sat, 22 Jan 2005 11:12:05 +0100
+Message-ID: <20050122101205.GC7171@kuleuven.net>
+References: <005c01c4ff19$508ade80$c0de623e@MAURO>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001001c5001e$d80df760$0201a8c0@micah>
-ReSent-To: netfilter@lists.netfilter.org
-ReSent-Message-ID: <Pine.LNX.4.05.10501220229280.6831@darkstar.sysinfo.com>
+Content-Disposition: inline
+In-Reply-To: <005c01c4ff19$508ade80$c0de623e@MAURO>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,69 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Micah Wedemeyer <fanmail@micah-wedemeyer.net>
+To: MauroTablo' <m.tablo@libero.it>
+Cc: netfilter@lists.netfilter.org
 
-On Fri, 21 Jan 2005, Micah Wedemeyer wrote:
+Hi,
 
-> Hi,
+On Thu, Jan 20, 2005 at 06:56:04PM +0100, MauroTablo' wrote:
+> Hi all.
+> My Linux (+ iptables) based firewall has about 90 forward filtering rules, for tcp packets (about 30 rules), udp datagram (about 40 rules) and icmp messages(about 20 rules).
+> Suppose that it comes a transit tcp packet that doesn't match anyone of my rules. So, the last rule will be applied, because it is the first one that matches the packet (/sbin/iptables -A FORWARD -j DROP)
 > 
-> My system consistently locks up on file transfers across the LAN.  When
-> transferring a file to it using scp, it dies after less than 5 seconds.
-> However, if I use it to download a file from the Internet (using wget),
-> it does just fine.
+> The question is: iptables confronts the TCP packet with all my 90 rules, or it confronts the packet ONLY WITH rules for tcp packets (-p tcp)?
+> In other words, is there a function in netfilter that looks up to the protocol type of a transit packet and decides which rules to confront the packet with?
 
+You should consider hipac (http://www.hipac.org) 
+Quote from their webside:
+ iptables, like most packet filters, uses a simple packet classification
+ algorithm which traverses the rules in a chain linearly per packet
+ until a matching rule is found (or not). Clearly, this approach lacks
+ efficiency. As networks grow more and more complex and offer a wider
+ bandwidth linear packet filtering is no longer an option if many rules
+ have to be matched per packet. Higher bandwidth means more packets per
+ second which leads to shorter process times per packet.
 
-Are you saying that only scp/ftp transfers on the local net are hanging?
-they work fine across your 'internet' nic?
+ With nf-HiPAC we offer a novel framework for packet classification which
+ uses an advanced algorithm to reduce the number of memory lookups per
+ packet. It is ideal for environments where large rulesets and/or high
+ bandwidth networks are involved. Thereby, the iptables' semantics of the
+ rules is preserved, i.e. you can construct your rules like you're used
+ to. From a user's point of view there is no need to understand anything
+ about the HiPAC algorithm.
 
-> 
-> I have heard that my motherboard (a Via Epia MII) has DMA problems and
-> that high Ethernet traffic is known to lock them up.  My theory is that
-> the Internet connection is slow enough to not hit whatever magic
-> threshold causes the crash.  So, I was hoping to find a way to limit the
-> speed of transfers with scp and ftp so that they also don't lock up the
-> machine.
-> 
-> I asked on a few message boards, and they all mentioned iptables.  I've
-> never used it before, and am a total noob when it comes to networking
-> stuff.  So, I was hoping that the people on this list could point me in
-> the right direction of where to start.
-> 
-> To sum up:  I need a way to limit the speed of incoming file transfers
-> using ftp or scp.
-> 
+At the hipac site you will find a comparison with iptables. The central
+firewall of our university ( http://www.kuleuven.ac.be/english/ ) uses
+hipac and we are very pleased with it. At the moment there is only an
+implementation for a 2.4 kernel but the developers are working on a 
+2.6 version :-)
 
-Perhaps you do, perhaps you do not.  I've seen issues with file transfers
-due to a number of reasons, tcp-keepalives was not set properly for the
-timeouts on firewalls that limit inactivity <yes these firewalls, most
-often pixen, do not know that a ftp or scp is active>, ssh2/scp2 being
-used inconjucntion with an older ssh1/ssh2/scp1/scp2 deamon/code <dropping
-to ssh1/scp1 with really old deamon/code seems to fix the probs, a 10/100
-nic is not auto-negociating it's connection speed properly, and this can
-often be due to a router in the connection stream being set half/full
-opposed to the nic's setting on this <hard coding the duplex and spped of
-the connection stream in the nic and/or the router so they match resolves
-this issue.
-
-
-
-Thanks,
-
-Ron DuFresne
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
-
-
+Hope this helps,
+Jan.
+--------------------------------------------------- KULeuvenNet -------         
+Jan.DuCaju@kuleuven.net         http://www.kuleuven.net/e_index.html
+K.U.Leuven                      http://www.kuleuven.ac.be/english/
+LUDIT - KULeuvenNet             http://ludit.kuleuven.be/index_en.html
+de Croylaan 52A                 3001 Leuven                     Belgium         
+-----------------------------------------------------------------------
 
