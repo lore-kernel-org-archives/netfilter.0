@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Memory leak problem
-Date: Fri, 27 Sep 2002 17:33:03 +0100
+From: Frank <Frank@duranicub.sytes.net>
+Subject: active Ftp Problems on different Port
+Date: 27 Sep 2002 17:22:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209271633.g8RGXPc32108@vulcan.rissington.net>
-References: <7F2740B50D94FD4B9EAF9AAC33016C3C45382C@lascar>
+Message-ID: <1033147370.979.16.camel@duranicub.duranicub.sytes.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7F2740B50D94FD4B9EAF9AAC33016C3C45382C@lascar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,38 +18,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 27 September 2002 4:03 pm, Jean Cantarutti wrote:
+Hi
 
-> <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-> <HTML>
-> <HEAD>
-> <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
-> <META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2653.12">
-> <TITLE>Memory leak problem</TITLE>
-> </HEAD>
-> <BODY>
->
-> <P><FONT SIZE=2 FACE="Arial">Hi, im using iptables 1.2.5 on a HP machine
-> working like firewall, it has 512 MB of RAM and every 30 seconds eats 6 kb
-> of RAM, in 48 hours only left 8300 kb of available RAM.</FONT></P>
+i have an FTP Server on the Firewall Machine itself but listen to Port
+21 and 210. For Port 21 active/passive Mode works fine, but for the Port
+210 it works only with passive Mode. My Question is, how can i enable
+active Mode for Port 210 ?
 
-Please:
+modprobe ip_nat_ftp ports=21,210
+modprobe ip_conntrack_ftp ports=21,210
+#
+$IPTABLES -t filter -P INPUT DROP
+$IPTABLES -t filter -P OUTPUT DROP
+$IPTABLES -t filter -P FORWARD DROP
+#
+$IPTABLES -A INPUT -p tcp ! --syn -m state --state NEW,INVALID -j DROP
+#
+$IPTABLES -A INPUT  -i ppp0 -p tcp --sport 21 -m state --state
+ESTABLISHED -j ACCEPT
+$IPTABLES -A OUTPUT -o ppp0 -p tcp --dport 21 -m state --state
+NEW,ESTABLISHED -j ACCEPT
+$IPTABLES -A INPUT  -i ppp0 -p tcp --sport 20 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A OUTPUT -o ppp0 -p tcp --dport 20 -m state --state
+ESTABLISHED -j ACCEP
+#
+#
+$IPTABLES -A INPUT -t filter -i ppp0 -p tcp --dport 21 -m state --state
+NEW,ESTABLISHED -j ACCEPT
+$IPTABLES -A OUTPUT -t filter -o ppp0 -p tcp --sport 21 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+#
+$IPTABLES -A INPUT -t filter -i ppp0 -p tcp --dport 20 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A OUTPUT -t filter -o ppp0 -p tcp --sport 20 -m state --state
+NEW,ESTABLISHED -j ACCEPT
+#
 
-1. Do not post html to this mailing list.
-2. Tell us the volume of traffic you have going through your firewall.
-3. Tell us the number of simultaneous connections you have through your 
-firewall.
-4. Tell us if you get any messages from netfilter in your syslog.
-5. Give us an idea of what protocols you're handling, and what your ruleset 
-is.
-6. Let us know if you have any other services or applications running on your 
-firewall.
+Any Suggestions what wrong here ?
 
-Antony.
 
--- 
+Regards
+Frank
 
-If you want to be happy for an hour, get drunk.
-If you want to be happy for a year, get married.
-If you want to be happy for a lifetime, get a garden.
 
