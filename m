@@ -1,13 +1,11 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: STATELESS
-Date: Tue, 16 Sep 2003 11:50:01 -0400
+From: "Russell P. Sutherland" <russ@quist.ca>
+Subject: policy based routing using netfilter
+Date: Tue, 16 Sep 2003 12:12:05 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030916155001.GE16559@cannon.eng.us.uu.net>
-References: <02ba01c37c46$bb7a5f60$798014ac@matthew> <200309161256.15286.gdh@acentral.co.uk> <1063716386.31093.160.camel@raylinux.internal> <20030916131153.GA16559@cannon.eng.us.uu.net> <1063720447.31093.166.camel@raylinux.internal> <20030916141505.GB16559@cannon.eng.us.uu.net> <plopm3isnshj1n.fsf@drizzt.kilobug.org>
+Message-ID: <20030916161205.GA29762@quist.ca>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <plopm3isnshj1n.fsf@drizzt.kilobug.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,23 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: =?iso-8859-1?Q?Ga=EBl?= Le Mignot <kilobug@freesurf.fr>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+Cc: russ@madhaus.cns.utoronto.ca
 
->  > OK. If you recompile without conntrack, can you do NAT? I'm just wondering?
-> 
-> no, Netfilter's NAT relies upon the conntrack.
-> 
-> Can I ask you why do you want  to turn off the conntrack?
+I would like to build a route server using Zebra
+and Linux.
 
-I don't. I just wanted to learn from the people who were saying "just don't
-load the ip_conntrack..."
+What policy based routing options are available using
+netfilter?
 
-Ramin
+Can I, for example have a separate routing table for
+each class of traffic?
 
-> If it's for
-> speed or memory  reasons, then using NAT will  have a similar overhead
-> (maybe  not exactly  the same,  but similar)  anyway. When  you  NAT a
-> connection, you're  forced to  keep track of  the connection a  way or
-> another, to NAT further packets of the connection the same way.
+A pointer to the relavent sections in the netfilter
+docs would be much appreciated.
+
+Thanks in advance.
+
+-- 
+Quist Consulting		Email: russ@quist.ca
+219 Donlea Drive 		Voice: +1.416.696.7600
+Toronto ON  M4G 2N1		Cell:  +1.416.803.0080
+CANADA				WWW:   http://www.quist.ca
 
