@@ -1,9 +1,10 @@
-From: "Jens =?iso-8859-15?q?Lechtenb=F6rger?=" <lechten@wi.uni-muenster.de>
-Subject: NEW vs INVALID
-Date: 30 Sep 2002 12:18:26 +0200
+From: Tom Crane <tom@mklab.ph.rhbnc.ac.uk>
+Subject: --limit 1/day problem
+Date: Fri, 27 Sep 2002 21:21:34 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <m2elbb4w7h.fsf@pcwi1068.uni-muenster.de>
+Message-ID: <200209272021.g8RKLYu11395@mklab.ph.rhbnc.ac.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,21 +16,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: Tom Crane <tom@mklab.ph.rhbnc.ac.uk>
 
-Hi there,
+Hello,
 
-using stateful packet matching I wonder how an INVALID tcp packet is
-defined.  In particular, I set up a rule to log inbound NEW ssh
-connections to port 22:
-iptables -A INPUT  -m state --state NEW -p TCP --dport 22 -j LOG --log-level 5 --log-prefix "IPTABLES: Legal NEW TCP: "
+I've just installed iptables-1.2.7a and am getting to grips with it. I 
+I have the following problem; 
 
-What confuses me, is that this rule not only logs initial SYN
-packets but also (initial) packets with SYN and FIN set. 
-I thought that such packets should be INVALID...
-Is this a bug or a feature?
+iptables -A INPUT -s 134.219.128.69 -j LOG -m limit --limit 1/day
 
-Jens
+gives 'iptables: Invalid argument'. Using '2/day' or higher or x/hour
+works fine. According to the source '1/day' is the maximum acceptable
+value. Is this a know bug or am I overlooking something obvious?
 
+Thanks
+Tom.
+
+ps. system details; 
+kernel: 2.4.19
+Distro: Slackware 7.1
+gcc: egcs-2.91.66
+
+-- 
+Tom Crane, Dept. Physics, Royal Holloway, University of London, Egham Hill,
+Egham, Surrey, TW20 0EX, England. 
+Email:  T.Crane@mklab.ph.rhbnc.ac.uk or T.Crane@rhul.ac.uk
+SPAN:   19.875
+Fax:    +44 (0) 1784 472794
 
