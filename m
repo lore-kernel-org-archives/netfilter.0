@@ -1,13 +1,15 @@
-From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
-Subject: Re: SNAT in OUTPUT chain of the nat table question?
-Date: 08 Jan 2003 18:11:54 +0100
+From: Fabrice MARIE <fabrice@netfilter.org>
+Subject: Re: length match problem
+Date: Thu, 9 Jan 2003 10:39:44 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042045914.17783.2.camel@ranjeet-linux-1>
-References: <20030109003721.GA26207@mit.edu>
+Message-ID: <200301091039.44259.fabrice@netfilter.org>
+References: <3E1CA2BF.6050707@boh.de>
+Reply-To: fabrice@netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030109003721.GA26207@mit.edu>
+In-Reply-To: <3E1CA2BF.6050707@boh.de>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +20,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jackfritt <jackfritt@boh.de>
+Cc: netfilter@lists.netfilter.org
 
 
-On Thu, 2003-01-09 at 01:37, bauer@mit.edu wrote:
-> Is there a good reason that I am unable to conceive of at the 
-> moment why SNAT is not a valid target in the OUTPUT chain of the
-> nat table? 
-> 
-> Thanks,
-> Steve 
-> 
-> 
+Hello Joerg,
 
-The OUTPUT chain is only for outgoing packets from the linux box itself.
+On Thursday 09 January 2003 06:14, Jackfritt wrote:
+> Ok I have the following problem.
+> iptables -A OUTPUT -o ppp0 -p tcp -m length --length :40 -j MARK --set-mark 10
+> That should mark all ACK's or not ?
+> When I try to do this I get the error:
+> iptables: Invalid argument
+> [...]
+> So now my question is what am I doin wrong ?
 
-The POSTROUTING chain is the one that contains all packets being
-routed/forwarded.
+Typically when the only error message from iptables
+is 'Invalid Argument', the actual error message would
+be most of the time in the kernel log.
+i.e. If I run your command above, it tells me
 
--- 
-Ranjeet Shetye
-Senior Software Engineer
-Zultys Technologies
-Ranjeet dot Shetye2 at Zultys dot com
-http://www.zultys.com/
+# dmesg
+MARK: can only be called from "mangle" table, not "filter"
 
+So, you should be using a -t mangle in front..
+
+Have a nice day,
+
+Fabrice.
+--
+Fabrice MARIE
+
+"Silly hacker, root is for administrators"
+       -Unknown
 
