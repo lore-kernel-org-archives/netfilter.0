@@ -1,8 +1,8 @@
-From: "Stiven Andre" <stiven_a@hotmail.com>
-Subject: Strange iptables behavior
-Date: Thu, 28 Nov 2002 01:26:33 +0200
+From: Geoff Silver <geoff@uslinux.net>
+Subject: DNAT problem
+Date: Wed, 27 Nov 2002 14:28:10 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F2230AmSS7U1Pd1DTM100010c28@hotmail.com>
+Message-ID: <Pine.LNX.4.44.0211271417310.12858-100000@mail.uslinux.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,145 +14,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
->From: "Stiven Andre" <stiven_a@hotmail.com>
->To: linux-il@linux.org.il
->Subject: Strange iptables behavior
->Date: Wed, 27 Nov 2002 17:28:05 +0200
->
->Hi List.
->
->I have my home network being masqueraded by linux router(RH8.0).
->Network topology:
->Linux router(192.168.1.1): eth0 to LAN, eth1 to adsl modem.
->LAN = 192.168.1.*
->
->I wrote iptables script that masquerades my network, but the problem is 
->when I run the script from the first time from /etc/rc.d/rc.local it works. 
->But if I then rerun it manualy (by root of couse) it stops working. Inside 
->hosts don't have access to the internet. My script does clear all old rules 
->at the start of it but it doesn't help or else...
->I tryed to clear all old rules manualy and then run the script, no luck 
->still not working. I tryed to unload all iptables modules then "insmod 
->ip_tables" and after that to run the script again, nothing it doesn't help 
->too... Can someone understand what is going on ? Why it works only the 
->first time ? After the second excution the rules are seem to be the same 
->but inside hosts can't ping internet.
->There is 2 LOG targets in the script, first with prefix "FORWARD PACKET" 
->and second with prefix "MASQ RULE MATCHED", after the first excution of the 
->script. I see 2 logs for each packet, first "FORWARD PACKET" and then "MASQ 
->RULE MATCHED" but after the second excution, when the NAT doesn't work the 
->logs doesn't show "MASQ RULE MATCHED"...
->
->Best Regards.
->S.A.
->
->The script:
->
->
->#!/bin/sh
->IPTABLES="/sbin/iptables"
->
-># Reset all.
->$IPTABLES -P INPUT ACCEPT
->$IPTABLES -P OUTPUT ACCEPT
->$IPTABLES -P FORWARD ACCEPT
->$IPTABLES -F
->$IPTABLES -X
->$IPTABLES -t nat -F
->
-># Modules and targets:
->/sbin/modprobe ipt_LOG
->/sbin/modprobe ipt_REJECT
->/sbin/modprobe ipt_MASQUERADE
->/sbin/modprobe ip_nat_ftp
->/sbin/modprobe ip_nat_irc
->/sbin/modprobe ip_conntrack_ftp
->/sbin/modprobe ip_conntrack_irc
->
-># IP Forwarding And Dynamic IP support:
->echo "1" > /proc/sys/net/ipv4/ip_forward
->echo "1" > /proc/sys/net/ipv4/ip_dynaddr
->
-># Create chains for packet types:
->$IPTABLES -N tcp_packets
->$IPTABLES -N udp_packets
->$IPTABLES -N icmp_packets
->
-># INPUT TABLE:
-># Permit ADSL, gre Tunnel (Protocol 47), loopback and a broadcast.
->$IPTABLES -A INPUT -p 47 -s 10.0.0.138 -j ACCEPT
->$IPTABLES -A INPUT -p tcp -s 10.0.0.138 --sport 1723 -j ACCEPT
->$IPTABLES -A INPUT -s 127.0.0.1 -j ACCEPT
->$IPTABLES -A INPUT -p ALL -d 192.168.1.255 -j ACCEPT
-># Ensure that established sessions will not die
->$IPTABLES -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT
-># Allow FTP active and passive port commands:
->#$IPTABLES -A INPUT -p tcp --sport 21 -m state --state ESTABLISHED -j 
->ACCEPT
->#$IPTABLES -A INPUT -p tcp --sport 20 -m state --state ESTABLISHED,RELATED 
->-j ACCEPT
-># Send all other traffic to it's chain:
->$IPTABLES -A INPUT -p tcp -j tcp_packets
->$IPTABLES -A INPUT -p udp -j udp_packets
->$IPTABLES -A INPUT -p icmp -j icmp_packets
->
-># OUTPUT TABLE:
-># Permit all.
->$IPTABLES -A OUTPUT -j ACCEPT
->
-># FORWARD TABLE:
->$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-># tcp_packets TABLE:
-># World accessible services:
->#$IPTABLES -A tcp_packets -p tcp --dport 21 --syn -j ACCEPT # FTP
->#$IPTABLES -A tcp_packets -p tcp --dport 80 --syn -j ACCEPT # HTTP
-># Private services:
->$IPTABLES -A tcp_packets -s 192.168.1.10/32 -p tcp --dport 23 --syn -j 
->ACCEPT # Telnet
->$IPTABLES -A tcp_packets -s 192.168.1.10/24 -p tcp --dport 139 --syn -j 
->ACCEPT # NetBIOS-ssn
->
-># udp_packets TABLE:
-># Private services:
->$IPTABLES -A udp_packets -s 192.168.1.10/24 -p udp --dport 137 -j ACCEPT # 
->NetBIOS-sn
->$IPTABLES -A udp_packets -s 192.168.1.10/24 -p udp --dport 138 -j ACCEPT # 
->NetBIOS-dgm
->
-># MASQUERADING:
->$IPTABLES -t nat -A POSTROUTING -o ppp0 -j LOG --log-level DEBUG 
->--log-prefix "matched MASQ RULE: "
->$IPTABLES -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
->
-># Set defaults to drop:
->$IPTABLES -P INPUT ACCEPT
->$IPTABLES -P OUTPUT ACCEPT
->$IPTABLES -P FORWARD ACCEPT
->
-># Debug
->$IPTABLES -A FORWARD -j LOG --log-level DEBUG --log-prefix "FORWARD PACKET: 
->"
->$IPTABLES -A INPUT -j LOG --log-level DEBUG --log-prefix "INPUT PACKET: "
->$IPTABLES -A OUTPUT -j LOG --log-level DEBUG --log-prefix "OUTPUT PACKET: "
->
->_________________________________________________________________
->STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
->http://join.msn.com/?page=features/junkmail
->
->
->=================================================================
->To unsubscribe, send mail to linux-il-request@linux.org.il with
->the word "unsubscribe" in the message body, e.g., run the command
->echo unsubscribe | mail linux-il-request@linux.org.il
+I'll preface this by saying I'm not subscribed to the list, so if anyone
+who can help would CC me, that would be appreciated.  Thanks!
 
+I have a 3-way firewall doing DNAT from a public address space (66.243
+net) to a private address space (10.102 net).  Everything works, except
+when I'm on the DMZ and try to reach another DMZ machine through it's
+public IP.  The requests traverse the DNAT rule which *should* translate
+them to their 10.102 destination address (and it works from my LAN or from
+the internet), but instead the address isn't rewritten.
 
-_________________________________________________________________
-The new MSN 8: advanced junk mail protection and 2 months FREE* 
-http://join.msn.com/?page=features/junkmail
+Example:  public IP is 66.243.73.184 which is NAT'd to 10.102.1.2.  If I
+tcpdump on 10.102.1.2 and use a web browser from an internet host
+(somewhere else in the world), I see something like:
+
+14:25:00.353543 152.163.190.1.38300 > 10.102.1.2.80: S
+3550573715:3550573715(0) win 24820 <nop,nop,sackOK,mss 1412> (DF) [tos
+0x10]
+14:25:00.353578 10.102.1.2.80 > 152.163.190.1.38300: S
+1480002886:1480002886(0) ack 3550573716 win 15532 <mss
+1412,nop,nop,sackOK> (DF)
+14:25:00.423200 152.163.190.1.38300 > 10.102.1.2.80: . ack 1 win 25416
+(DF) [tos 0x10]
+14:25:01.333833 152.163.190.1.38300 > 10.102.1.2.80: P 1:6(5) ack 1 win
+25416 (DF) [tos 0x10]
+
+However, if I tcpdump and try the same thing from the host itself, I see:
+
+13:59:42.698619 10.102.1.2.3024 > 66.243.73.184.80: S
+4167737472:4167737472(0) win 16060 <mss 1460,sackOK,timestamp 25440395
+0,nop,wscale 0> (DF) [tos 0x10]
+
+Since I can look at the number of packets sent over the DNAT rule via
+'iptables -t nat -v -L' and *see* the number of packets changing
+corresponding to the number sent (and the intervals sent), I'm *sure* the
+packets are traversing that rule, but not getting NAT'ed.  Does anyone
+have any ideas *why* this might be happening?  Is this a bug?  Does anyone
+perhaps have a workaround for it?  I could run split-DNS (DNS-views) or IP
+alias the server, but it's a kludge, and I really *want* my firewall to do
+the translation right.
+
+Thanks!
 
 
