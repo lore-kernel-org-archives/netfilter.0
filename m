@@ -1,12 +1,14 @@
 From: Jim Redman <jim@ergotech.com>
 Subject: UDP Redirects
-Date: Mon, 15 Sep 2003 18:07:14 -0600
+Date: Mon, 15 Sep 2003 19:05:50 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030916000714.GC3213@charizard>
+Message-ID: <20030916010550.GC1272@charizard.ergotech-usa.com>
+References: <20030916000714.GC3213@charizard>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <20030916000714.GC3213@charizard>; from jim@ergotech.com on Mon, Sep 15, 2003 at 18:07:14 -0600
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,6 +20,9 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; format="flowed"; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+[apologies if this is a duplicate - the list manager has ack'd my 
+request but still bounced the first copy]
 
 I have a system that is sending UDP packets to port 995 at about 100 
 packets/second.  I want to redirect these to 1995 so that I can listen 
