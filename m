@@ -1,16 +1,12 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: No PREROUTING for OUTPUT?
-Date: Mon, 18 Oct 2004 14:11:51 +0300
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Differentiating direct, and redirected access?
+Date: Mon, 18 Oct 2004 10:24:28 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <3063e5041018041127fd0308@mail.gmail.com>
-References: <5FCB4E67C52322BD4ABBF882@10.0.0.4>
-	<3063e504101713315f8fb386@mail.gmail.com>
-	<06B6B683FC4088203BA6B8D7@10.0.0.4>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9C05820@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <06B6B683FC4088203BA6B8D7@10.0.0.4>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,31 +17,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Users <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
--t mangle -A OUTPUT 
-or
--t nat OUTPUT
-or
--A OUTPUT (same with -t filter -A OUTPUT)
-Depends on what you need to do.
+> Hello all,
+>
+> I'm running a squid at port 3128 as a transparent proxy.
+>
+> There are requests coming directly to 3128 port and
+> those coming to 80 port and then redirected to 3128 by
+> following rule:
+>
+> -t nat -A PREROUTING -i eth0 -p tcp -m tcp \
+>    --dport 80 -j REDIRECT --to-ports 3128
+>
+> What I want is block direct requests to 3128, allowing
+> redirected access (transparent proxy) only. How do I do it?
+>
+> If I just set up a rule in filter chain like:
+>
+> -t filter -A INPUT -i eth0 -p tcp -m tcp \\
+>    --dport 3128 -j DROP
+>
+> Those requests redirected from port 80 to 3128 are also
+> blocked by this rule. It seems that the redirected packets
+> come in to this chain once again with the new port number.
+>
+> How can I differentiate these two different kinds of
+> request? Any clue will be greatly appreciated.
+>
+> Jinsuk Kim
 
+mark the packets that will get redirected, and only accept them if they
+have the mark:
 
-On Sun, 17 Oct 2004 14:10:24 -0700, Kenneth Porter
-<shiva@sewingwitch.com> wrote:
-> --On Sunday, October 17, 2004 11:31 PM +0300 George Alexandru Dragoi
-> <waruiinu@gmail.com> wrote:
-> 
-> > The routing decision is done after OUTPUT chains in both nat and
-> > mangle tables, and before POSTROUTING of course. Is this what you
-> > meant?
-> 
-> Ah, so for the output path, I need to use "-t mangle -A OUTPUT" instead of
-> "-A PREROUTING"? I just need to add the extra rule, then.
-> 
-> 
+  # mark packets with dst port 80
+  iptables -t mangle -A PREROUTING -i eth0 -p tcp --dport 80 \
+    -j MARK --set-mark 1
 
+  # redirect port 80 to 3128
+  iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 \
+    -j REDIRECT --to-ports 3128
 
--- 
-Bla bla
+  # accept packets to 3128 that have the mark
+  iptables -A INPUT -i eth0 -p tcp --dport 3128 -m mark --mark 1 \
+    -j ACCEPT
+
+-j
 
