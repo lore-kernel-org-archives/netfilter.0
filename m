@@ -1,12 +1,10 @@
-From: "Paul McDonald" <paul@emessaging.cw.com>
-Subject: Highly dynamic NAT source mapping
-Date: Fri, 31 Jan 2003 11:22:11 -0500
+From: "Federico Cruciani" <f.cruciani@oxys.it>
+Subject: Iptables Nat Problem
+Date: Sat, 1 Feb 2003 18:12:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006501c2c944$e8bffad0$2a2b8792@surecom.com>
-Reply-To: <paul@emessaging.cw.com>
+Message-ID: <000001c2ca15$12d750e0$0a00a8c0@oxys.lan>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0066_01C2C91A.FFE9F2D0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,108 +15,104 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: pablo@lacnic.net
 
-This is a multi-part message in MIME format.
+> Hi,=20
+>
+>
+> Have a 200.40.226.64 /28 net *public NET
+> have a 192.168.1.0 /24 net *private NET
+>
+> have a 200.40.226.66 server running iptables * Is the gateway
+>
+> have a VoIp box THIS is the PROBLEM.
+> i need to put behind the firewall and have the address 192.168.1.33 =
+but
+> i need to go outside with 200.40.226.69 and received external =
+requirements
+> with this ip but iptables not function for me. i Put this lines but =
+dont
+> work i need Route? or something else???
+>
+>
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+>.
+>.
+>.
+>
+> iptables -t nat -A POSTROUTING -s 192.168.1.33/255.255.255.255 -o eth0
+> -j SNAT --to 200.40.226.70
+>
+> iptables -t nat -A PREROUTING  -s 200.40.226.70/255.255.255.255 -i =
+eth0
+> -j DNAT --to 192.168.1.33
+>
+> ## When i put this lines the conecction for .33 down. if possible to
+> need some instructions, for route this to my gateway??? #.
+> .
+>.
+>.
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> iptables -A FORWARD -j ACCEPT -i eth0 -o eth0 -d 0/0
+>
+>
+> Any help me???? please?
+>--=20
+>
+>Pablo Allietti
+>
+>LACNIC=20
+>
 
-------=_NextPart_000_0066_01C2C91A.FFE9F2D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+I suppose you have a problem with "proxy-arp".
+Your iptables box does not have any interface, physical nor virtual, =
+with
+the address 200.40.226.70 assigned. As I can understand from your =
+message
+the only address assigned on the external side of your iptables box is
+200.40.226.69.
+In this scenario, you need a router in front of your iptables box with a
+static route which directs packet for 200.40.226.70 on your external
+address.
+It could be necessary, or it could be a valid alternative solution, to
+announce via arp the address 200.40.226.70 associated with the mac =
+address
+of your external gateway. To get a working proxy-arp on Linux you have =
+to
+complete two steps:
 
-We have an application where thousands of outbound TCP connections are
-generated from multiple servers.  We are interested in mapping some, but not
-all of those connections to specific source addresses.
+- first, publish via arp the address on your external interface. =
+Supposing
+that eth0 is your external interface and eth1 your internal interface, =
+the
+command is:
+ arp -Ds 200.40.226.70 eth0 pub
 
-The idea is to run netfilter on a box between these servers & the internet
-with a  'userland' server process that would be able to add/delete
-address/port mappings for SNAT.  This user process would be contacted by the
-software running on the servers generating the traffic after they bind to a
-local address/port but before attempting to connect.  They would then
-contact this process running on the netfilter box and request a specific
-SNAT for their address/port to a specified address.  When the server closes
-the connection, it would contact the process running on the netfilter box
-and remove the mapping.
+- second, put a static route for the address to proxy toward the =
+internal
+network in which the natted host is. So, for you:
+ route add -host 200.40.226.70 dev eth1
 
-As you can see there would be a *large* number of updates to the SNAT
-mapping tables on the netfilter box.  My question is:
+(The second step could be necessary even if you have a router in front =
+of
+your box with the correct routes).
 
-- Is this really doable?  Will the large number (possibly hundreds per
-second)  of table adds/deletes cause havoc on the linux box running
-netfilter, bringing performance to a standstill.
+I have a patched version of the /etc/init.d/network script for Red Hat =
+Linux
+which read the ARP's to publish from a file (/etc/sysconfig/static-arp)
+whenever the network or the PC is started or restarted. It's a "working"
+patch, so if you are using RH and think my patch could be useful for =
+you,
+write me and I'll send it to you.
+On RH you can put the static route in /etc/sysconfig/static-routes to =
+have
+it applied every time you start your PC or the network.=20
 
-thanks
+Let me know if this could help you.
 
-Paul
+Iok
 
-
-------=_NextPart_000_0066_01C2C91A.FFE9F2D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-
-
-<META content=3D"MSHTML 5.50.4207.2601" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial size=3D2>We =
-have an=20
-application where thousands of outbound TCP connections are generated =
-from=20
-multiple servers.&nbsp; We are interested in mapping some, but not all =
-of those=20
-connections to specific source addresses.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial size=3D2>The =
-idea is to run=20
-netfilter on a box between these servers &amp; the internet with a&nbsp; =
-
-'userland' server process that would be able to add/delete address/port =
-mappings=20
-for SNAT.&nbsp; This user process would be contacted by the software =
-running on=20
-the servers generating the traffic after they bind to a local =
-address/port but=20
-before attempting to connect.&nbsp; They would then contact this process =
-running=20
-on the netfilter box and request a specific SNAT for their address/port =
-to a=20
-specified address.&nbsp; When the server closes the connection, it would =
-contact=20
-the process running on the netfilter box and remove the=20
-mapping.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial size=3D2>As you =
-can see there=20
-would be a *large* number of updates to the SNAT mapping tables on the =
-netfilter=20
-box.&nbsp; My question is:</FONT></SPAN></DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial size=3D2>- Is =
-this really=20
-doable?&nbsp; Will the large number (possibly hundreds per second)&nbsp; =
-of=20
-table adds/deletes cause havoc on the linux box running netfilter, =
-bringing=20
-performance to a standstill.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
-size=3D2>thanks</FONT></SPAN></DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
-size=3D2>Paul</FONT></SPAN></DIV>
-<DIV><SPAN class=3D223491316-31012003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0066_01C2C91A.FFE9F2D0--
 
 
