@@ -1,15 +1,14 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: Broken MS tcp new not syn: better to REJECT or DROP?
-Date: Thu, 30 Jan 2003 00:20:29 +0000
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: problems converting iptables script from eth2 ....
+Date: Wed, 29 Jan 2003 19:55:29 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030130002029.GM11221@miggy.org>
-References: <3E307456.70104@orix.com.au.> <106459900750.20030129180342@dslr.net>
+Message-ID: <200301291955.29061.netfilter@newkirk.us>
+References: <3E37CA31.3010907@optushome.com.au> <20030129150523.A14273@spawar.navy.mil>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TKDEsImF70pdVIl+"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <106459900750.20030129180342@dslr.net>
+In-Reply-To: <20030129150523.A14273@spawar.navy.mil>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,43 +18,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: justin <cmbb@dslr.net>
-Cc: Phil Crooker <pcrooker@orix.com.au>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: seberino@spawar.navy.mil
+Cc: netfilter@lists.netfilter.org
 
+On Wednesday 29 January 2003 06:05 pm, seberino@spawar.navy.mil wrote:
+> This firewall has 2 NICs for private LAN and 1 to connect
+> to Internet.  I can access Internet from firewall
+> fine with new DSL service if I kill iptables filtering.
+>
+> I tried to modify old static ip script for DSL.
+> (eth2 became ppp0)
+>
+> Now I have a new guess...
+>
+> Does DSL/PPPoE need to open certain other ports, etc.
+> I don't know about?? If so that would explain why
+> it don't work with old static ip script that closes
+> all ports it don't need.
 
---TKDEsImF70pdVIl+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No other communications needed, unless there's some custom client that=20
+the ISP has made you install.
 
-On Wed, Jan 29, 2003 at 06:03:42PM -0500, justin wrote:
-> Is there a web page somewhere on this subject you can point me at?
-> "broken ms tcp" ?
+You are going to have problems with $INTERNET_ADDRESS in your rules,=20
+though, since that is now subject to change.  Is it truly dynamic?  If=20
+it usually only changes on reboot, you can get around it by setting=20
+$INTERNET_ADDRESS in the start of the script equal to:
+$(/sbin/ifconfig "$EXTIF" | grep inet | cut -d":" -f 2 | cut -d" " -f 1)
+($EXTIF is what I use, I believe you had INTERNET_INTERFACE?)
 
-  I presume they mean this:
+If your IP is 'really' dynamic, you will probably need to remove that=20
+match from the rules, and change "-j SNAT --to $INTERNET_ADDRESS" to "-j=20
+MASQUERADE", also adding "echo 1 > /proc/sys/net/ipv4/ip_dynaddr" to=20
+enable automatic tracking of the dynamic IP.
 
-	http://slashdot.org/article.pl?sid=3D03/01/05/2025254&mode=3Dthread
-	http://grotto11.com/blog/slash.html?+1039831658
+I also have a suspicion, which will take you but a moment to explore. =20
+With your connection up, go to console and try "ifconfig ppp0" and "cat=20
+/etc/resolv.conf" and see if you have any conflict with your=20
+"reserved_networks" list.  For my service, my own IP and the nameservers=20
+are public, but the P-t-P server (the 'gateway' that I talk to) is a=20
+10.10.x.x IP.  I have encountered setups before where the assigned IP or=20
+the nameservers are also in a 'reserved' private range, which would mean=20
+problems with your script.
 
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+j
 
---TKDEsImF70pdVIl+
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj44b80ACgkQzbc+I5XfxKftFACdGhdYXWyLbHGaI0XXaobY8UKh
-dNwAn1bhJPGHvvC4aQ+y3YBVwrp9ZSj2
-=fjFj
------END PGP SIGNATURE-----
-
---TKDEsImF70pdVIl+--
 
