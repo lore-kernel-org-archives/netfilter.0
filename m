@@ -1,13 +1,11 @@
-From: =?iso-8859-1?q?Stephen=20Bylo?= <stephenbylo@yahoo.com.sg>
-Subject: Re: DNAT/SNAT & existing connections
-Date: Wed, 16 Jul 2003 10:12:58 +0800 (CST)
+From: "Marek Zachara" <marek.zachara@telperion.pl>
+Subject: Strange behaviour of NAT under iptables
+Date: Thu, 17 Jul 2003 11:04:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030716021258.95036.qmail@web13103.mail.yahoo.com>
-References: <20030715140425.GB24604@cannon.eng.us.uu.net>
+Message-ID: <005501c34c42$78fb6640$019ea8c0@eriador>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030715140425.GB24604@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,96 +16,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Dear Ramin & List,
+I have a trustix 2.0 distribution installed with 2.4.21 kernel and 1.2.8 =
+iptables.
+thich machine is used as a gateway to the internet for a small lan of 25 =
+computers.
+All computers in local network have private 192.168.x.x addresses.
+eth1 at the router is connected to DSL/internet, eth0 to local lan.
 
-Thanx for your mail.  The world is getting more
-mobile, so here is some detail to my problem:
+I have a couple (4) of static public IPs which I want to assign to =
+certain of these
+25 computers, the rest of them communicate with internet via masquerade.
 
-A mobile host M has two interfaces 1 & 2.
-M is reading an open udp stream from host S (server)
-on interface 1.  Interface 1 is always on-line. 
-Interface 2 is only sometimes online and the route to
-2 provides much more bandwidth than the route to 1.  I
-want to route the stream through the higher bandwidth
-without S having to know about it.  S should always
-think its communicating with the IP on interface 1.
+Everything worked fine when I used kernel 2.2 and ipchains with fast =
+nat.
+Now I have upgraded to the 2.4/iptables. I have set up rules in firewall =
+script=20
+to SNAT and DNAT packets coming to/from machines that should have public =
+IPs.
+Now the funny part begins (here is the scenario):
 
-                      ____some network___(1) slow
-   S -------- NAT ---R___________________ M
-                          some network   (2) fast
+I boot up the router with iptables script which set up NAT for one of =
+the machines in the local
+ network (let's call it X - it has address in local network like =
+192.168.15.1).
+The NAT works. I can login to (X) from outside computer using the public =
+IP,
+when I log from this machine (X) to other computers, the connection is =
+shown
+as made from the right public ip that is assigned to (X).
 
-R = our router to two different external networks
+Everything seems fine, but works only for about 5 minutes. Then the =
+connection
+to the (X) is unavailable - can't ping it, log in to it, no traceroute - =
+in either (in/out) directions.
+everything is blocked at the router.
 
-Tcp connections should also be "kept alive" and
-diverted to interface 2 on M.
+Most strange thing is that if I set up an alias for eth1:1 with the =
+public IP
+assigned for (X) the traffic half-works (which is expectable) - I can =
+login from (X) to any
+other computer outside local network (and connection is registered as =
+from (X) public IP),
+but I can't login to (X) from outside - which is also fine since the =
+alias 'catches' all the
+incoming traffic.=20
+Now if I delete the alias the NAT works fine both directions .... for =
+another couple
+of minutes. Then all access to/from (X) is unavailable.
+If I set up the alias again I can repeat this scenario again and again. =
+When I put up a script
+which sets/deletes the alias every 2 mins, the connection lasts, but of =
+course there are
+short periods every 2 min. (between the alias set up and deletion which =
+takes about 2 seconds)
+when all traffic incoming to this IP is directed to the alias - which is =
+not good.
 
-After reading
-"netfilter-hacking-HOWTO.linuxdoc-4.html" and
-"iptables-tutorial.html" I find that existing
-connections will not be "diverted" in this way, only
-new connections are looked up in the NAT table.
-Would it be possible to change the dst values in the
-"conntrack" table as well as changing the NAT entry
-when interface (2) comes on-line ?
+I have tried several things, but nothing works :(  Any ideas? At least =
+how to debug it?
+Any help really appreciated.
 
-Any other ideas ?
-
-Thanx for any help,
-Steve
-
- --- Ramin Dousti <ramin@cannon.eng.us.uu.net> wrote:
-> On Tue, Jul 15, 2003 at 06:01:15PM +0800, Stephen
-> Bylo wrote:
-> 
-> > Dear list,
-> > 
-> > I am looking into the use of a NAT "router" to
-> change
-> > the destination (or source) IP addresses of
-> packets in
-> > existing connections.  Maybe it sounds weird why I
-> > might want to do this, but I need to divert
-> streams to
-> > other destinations!
-> > 
-> > I understand from the iptables docs that only the
-> > first packet of a connection is examined for NAT
-> > entries, subsequent packets do not need to be
-> > processed again.
-> 
-> They do get processed. There is a short circuit to
-> identify these
-> packets and avoid traversing the whole nat table.
-> 
-> It's not clear to me what you precisely want to do.
-> 
-> Ramin
-> 
-> > I would like all packets to be
-> > examined OR I would like to be able to "reset" the
-> > particular entry in the table so that the existing
-> > connection will be "re-considered" again using the
-> > NAT.
-> > 
-> > Is this possible in some way with iptables?  If
-> not,
-> > can you point me in the right direction to a
-> solution,
-> > please?
-> > 
-> > Thanx,
-> > Steve
-> > 
-> > __________________________________________________
-> > Do You Yahoo!?
-> > Send free SMS from your PC!
-> > http://sg.sms.yahoo.com 
-
-__________________________________________________
-Do You Yahoo!?
-Send free SMS from your PC!
-http://sg.sms.yahoo.com
+Marek
 
