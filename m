@@ -1,13 +1,13 @@
-From: "Bryan Dyson" <lan_administrator@solanapres.org>
-Subject: Help with iptables
-Date: Wed, 10 Dec 2003 15:45:52 -0800
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Help with iptables
+Date: Wed, 10 Dec 2003 19:31:13 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FB11F223A1DE69499D299308731DD413014A2A@mail.SBPC>
+Message-ID: <1071102673.1876.42.camel@jasiiitosh.nexusmgmt.com>
+References: <FB11F223A1DE69499D299308731DD413014A2A@mail.SBPC>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3BF77.BF04C962"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <FB11F223A1DE69499D299308731DD413014A2A@mail.SBPC>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,101 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Bryan Dyson <lan_administrator@solanapres.org>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Wed, 2003-12-10 at 18:45, Bryan Dyson wrote:
+> Hi folks,
+> 
+> I've got my iptables setup and working with one small glitch. My ISP
+> says I'm an open proxy.
+> What I'm trying to do is set a rule in iptables that will drop port
+> 3128 requests coming from the outside but still allow my internal
+> network to use the proxy on this port.
+> 
+> I've tried the following, but they seem to shut down routing of e-mail
+> from the internal mail server:
+> 
+> -A PREROUTING -I eth1 -p tcp -m tcp --dport 3128 -j DROP
+> And
+> -A PREROUTING -I x.x.x.x (public IP) -p tcp -m -tcp --dport 3128 -j
+> DROP
+<snip>
 
-------_=_NextPart_001_01C3BF77.BF04C962
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+If it helps, here are some excerpts from a file I pass to
+iptables-restore -n (minus the comments) to activate my proxy:
 
+*filter
+-A INPUT -i eth0 -p tcp -m tcp --dport 3128 -j ACCEPT
+	#allow the proxy to receive traffic from the internal devices (eth0 is
+the private interface in my set up)
+-A OUTPUT -o eth0 -p tcp -m tcp --sport 3128 -j ACCEPT
+	#allow the proxy to respond to the internal clients
+-A OUTPUT -p 6 -m tcp --dport 80 -m state --state NEW -j ACCEPT
+	#allow the proxy to talk to the web servers of the world! Of course,
+there is a corresponding --state RELATED, ESTABLISHED -j ACCEPT
+somewhere else in the configuration
+COMMIT
+*nat
+-A PREROUTING -i eth0 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports
+3128
+	#Cause the redirection from the internal interface (eth0 in my case)
+COMMIT
 
-Hi folks,
+All filter table policies are DROP so if I do not explicitly allow it,
+it is denied.
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
-I've got my iptables setup and working with one small glitch. My ISP
-says I'm an open proxy.
-What I'm trying to do is set a rule in iptables that will drop port 3128
-requests coming from the outside but still allow my internal network to
-use the proxy on this port.
-I've tried the following, but they seem to shut down routing of e-mail
-from the internal mail server:
-
--A PREROUTING -I eth1 -p tcp -m tcp --dport 3128 -j DROP
-And
--A PREROUTING -I x.x.x.x (public IP) -p tcp -m -tcp --dport 3128 -j DROP
-
-
-If anyone could help I'd appreciate it.
-
-Bryan Dyson
-LAN/db Administrator
-Solana Beach Presbyterian Church
-858-509-2580
-Shelby 5.4.1472
-
-
-
-------_=_NextPart_001_01C3BF77.BF04C962
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>Help with iptables</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
-<BR>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi folks,</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">I've got my iptables setup and working =
-with one small glitch. My ISP says I'm an open proxy.</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">What I'm trying to do is set a rule in =
-iptables that will drop port 3128 requests coming from the outside but =
-still allow my internal network to use the proxy on this =
-port.</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">I've tried the following, but they seem =
-to shut down routing of e-mail from the internal mail server:</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">-A PREROUTING -I eth1 -p tcp -m tcp =
---dport 3128 -j DROP</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">And</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">-A PREROUTING -I x.x.x.x (public IP) =
--p tcp -m -tcp --dport 3128 -j DROP</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">If anyone could help I'd appreciate =
-it.</FONT>
-</P>
-
-<P><FONT FACE=3D"Arial">Bryan Dyson</FONT>
-
-<BR><FONT FACE=3D"Arial">LAN/db Administrator</FONT>
-
-<BR><FONT FACE=3D"Arial">Solana Beach Presbyterian Church</FONT>
-
-<BR><FONT FACE=3D"Arial">858-509-2580</FONT>
-
-<BR><FONT FACE=3D"Arial">Shelby 5.4.1472</FONT>
-</P>
-<BR>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C3BF77.BF04C962--
 
