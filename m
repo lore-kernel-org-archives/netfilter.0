@@ -1,10 +1,10 @@
-From: Christian Kreibich <christian@whoop.org>
-Subject: ICMP replies aren't unnated
-Date: 05 May 2003 13:56:49 +0100
+From: "NetFilter Admin" <netfilter@everton.com>
+Subject: script help?
+Date: Mon, 5 May 2003 12:53:10 -0600 (MDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1052139409.21360.84.camel@ghouls.cl.cam.ac.uk>
+Message-ID: <1217.12.254.199.182.1052160790.squirrel@webmail.everton.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,40 +18,46 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+
+Dear Experts,
+
+I have a server with 1 nic (eth0) which will be used as a web/mysql
+server.  I am in a bind on space and I'm not allowed to have a seperate
+firewall and so I am in need of an iptables script which will work for
+this machine to allow everything from lo and very limited items from
+eth0.
+ I am pretty confident with ipchains and yet I don't have the time to
+become as experienced with iptables.  Will/would someone please write me
+a script which will allow:
+
+everything on localhost
+eth0 = inbound and outbound
+ssh2
+dns
+imap
+http
+https
+
+I cannot imaging that this would be a difficult script for someone who
+understands the normal chain process in iptables.  However I am in
+desperet times and I'm willing to pay someone for this script.  Please
+contact me at johnh@everton.com at the earliest possible.  All contacts
+are welcome.
+
+Thank you,
+John
 
 
-my apologies if this is a faq -- I feel I'm missing something obvious
-but couldn't find a pointer anywhere.
+-- 
+Thanks
+John Hardy
+Director of IT and Web Development
 
-Using iptables on a 2.4.18 kernel, I want a simple NAT for all IP
-packets going over my box's eth0 to my DSL provider. Say the
-dhcp-obtained IP address is ISP_IP. I want all IP packets to or from
-this IP to be nated to 192.168.169.2. I have everything working, except
-that ICMP is broken: incoming ping requests are properly natted and
-arrive at 192.168.169.2, but I see ICMP replies on eth0 that aren't
-unnated.
 
-The iptables command I use is
 
-iptables -t nat -A PREROUTING -d ISP_IP -j DNAT --to 192.168.169.2
-
-Look at what I see on eth0 when I ping the machine from the outside
-(from my office machine, OFF_IP):
-
-13:21:14.303528 OFF_IP > ISP_IP: icmp: echo request (DF)
-13:21:14.306158 192.168.169.2 > OFF_IP: icmp: echo reply
-13:21:15.319962 OFF_IP > ISP_IP: icmp: echo request (DF)
-13:21:15.321757 192.168.169.2 > OFF_IP: icmp: echo reply
-13:21:16.319127 OFF_IP > ISP_IP: icmp: echo request (DF)
-13:21:16.320931 192.168.169.2 > OFF_IP: icmp: echo reply
-
-Other connections work fine, just ICMP seems broken. Any help would
-really be appreciated, I've played with it for a while and cannot seem
-to get it right.
-
-Regards,
-Christian.
+-----------------------------------------
+     Everton Family History Network
+         http://www.everton.com/
 
 
 
