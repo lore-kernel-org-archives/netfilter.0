@@ -1,38 +1,34 @@
-From: Benoit Panizzon <panizzon@woody.ch>
-Subject: Re: Preventing to bind an interface (or solving that problem with
-Date: Thu, 10 Mar 2005 22:39:53 +0100
-Message-ID: <200503102239.54233.panizzon@woody.ch>
-References: <1110442915@ksbase>
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Subject: Netfilter ipt_hashlimit
+Date: Thu, 10 Mar 2005 22:29:34 +0000
+Message-ID: <20050310222934.C1044@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1110442915@ksbase>
 Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Linux Kernel List <linux-kernel@vger.kernel.org>, netfilter@lists.netfilter.org
 
-Am Donnerstag, 10. M=E4rz 2005 14.20 schrieb Not Here:
-> Thursday March 10 2005 11:33, Benoit Panizzon wrote to All:
->
->
->  eth0 =3D>> $IP from Cable ISP.
->  eth1 =3D>> x.y.z.1 (my own IP with correct PTR Entries etc.) on LAN.
->
->  BP> Now unfortunately bind, sendmail and everything binds on both
->  BP> IP-Addresses.
->
-> Set gateways for both networks.
+With current-ish Linus 2.6 BK, I'm seeing this:
 
-There can only be one active default route, or what do you mean by gateways?
+net/ipv4/netfilter/ipt_hashlimit.c:96: warning: type defaults to `int' in declaration of `DECLARE_LOCK'
+net/ipv4/netfilter/ipt_hashlimit.c:96: warning: parameter names (without types) in function declaration
+net/ipv4/netfilter/ipt_hashlimit.c: In function `htable_create':
+net/ipv4/netfilter/ipt_hashlimit.c:237: warning: implicit declaration of function `LOCK_BH'
+net/ipv4/netfilter/ipt_hashlimit.c:237: error: `hashlimit_lock' undeclared (first use in this function)
+net/ipv4/netfilter/ipt_hashlimit.c:237: error: (Each undeclared identifier is reported only once/home/rmk/bk/linux-2.6-rmk/net/ipv4/netfilter/ipt_hashlimit.c:237: error: for each function it appears in.)
+net/ipv4/netfilter/ipt_hashlimit.c:239: warning: implicit declaration of function `UNLOCK_BH'
+net/ipv4/netfilter/ipt_hashlimit.c: In function `htable_find_get':
+net/ipv4/netfilter/ipt_hashlimit.c:305: error: `hashlimit_lock' undeclared (first use in this function)
+net/ipv4/netfilter/ipt_hashlimit.c: In function `htable_put':
+net/ipv4/netfilter/ipt_hashlimit.c:321: error: `hashlimit_lock' undeclared (first use in this function)
+net/ipv4/netfilter/ipt_hashlimit.c: At top level:
+net/ipv4/netfilter/ipt_hashlimit.c:96: warning: `DECLARE_LOCK' declared `static' but never defined
 
-=2DBenoit-
+Looks like ipt_hashlimit.c is missing an include?
 
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 Serial core
