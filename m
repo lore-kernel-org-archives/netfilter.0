@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables doesn't stop connection
-Date: Sat, 1 May 2004 09:17:50 +0100
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: Re: active connections
+Date: Sat, 1 May 2004 10:02:50 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405010917.50334.Antony@Soft-Solutions.co.uk>
-References: <200405010958.47237.philipp@offermann.tk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <005801c42f7c$9c35acb0$0200000a@heretic>
+References: <BAY15-F34bqJGNzscE8000002f5@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405010958.47237.philipp@offermann.tk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,59 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Saturday 01 May 2004 8:58 am, Philipp Offermann wrote:
+and they will, this is conntrack :)
+try unload the module and thats it
 
-> Hi,
+
+
+----- Original Message ----- 
+From: "azeem ahmad" <azeem484@hotmail.com>
+To: <netfilter@lists.netfilter.org>;
+<netfilter-failover@lists.netfilter.org>
+Sent: Friday, April 30, 2004 9:43 PM
+Subject: active connections
+
+
+> hi all
+> i m having a problem that i m using MASQUERADING on a redhat 8.0 box with
+> iptables. the problem is that when i want the users to be disconnected i
+> flush iptables; the new connections dont get established but the current
+> active connections dont break. like if a user is downloading msn messenger
+> for example and i flush iptables, this user's connection dont break. so
+what
+> i can do to break the active connection
+> please help me out
+> Regards
+> Azeem
 >
-> I'm using iptables to firewall my system but it doesn't seem to work. For
-> example I have a cvs-server running (port 2401) that shoud not be
-> accessible from the outside. Still when I'm trying to connect with "telnet
-> mymachine 2401" I get a connection, if not on the first try then on the
-> second.
-
-That final phrase should ring some bells - why is the behaviour not identical 
-on different connection attempts?
-
-> You find my iptables configuration at the end of the message. Does anyone
-> know why I can connect to my cvs server?
-
-Just for info, if you need to post your ruleset again, please send the output 
-of "iptables -L -nvx" instead of just "iptables -L" - the extra options tell 
-us which interfaces your rules apply to (and also show us the packet & byte 
-counts), which can be quiet important in debugging problems.
-
-> Chain INPUT (policy ACCEPT)
-
-Tut tut tut - a default ACCEPT policy on INPUT :(
-
-> target     prot opt source               destination
-
-> log_drop   all  --  0.0.0.0/0            0.0.0.0/0          limit: avg
-> 3/min burst 3
-
-So, you are LOGging and DROPping with a rate limit?   What happens to packets 
-which are more frequent than this, I wonder?
-
-Oh yes, they get ACCEPTed by your default policy :)
-
-> Chain FORWARD (policy ACCEPT)
-
-Ugh.   Another default ACCEPT policy :((
-
-Regards,
-
-Antony.
-
--- 
-"The problem with television is that the people must sit and keep their eyes 
-glued on a screen; the average American family hasn't time for it."
-
- - Report in the New York Times, following a demonstration at the 1939 World's 
-Fair.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> _________________________________________________________________
+> Help STOP SPAM with the new MSN 8 and get 2 months FREE*
+> http://join.msn.com/?page=features/junkmail
+>
+>
+>
 
 
