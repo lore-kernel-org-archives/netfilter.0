@@ -1,13 +1,16 @@
 From: Francois Chenais <francois@chenais.net>
-Subject: Re: redirect input SYN before forward to QUEUE
-Date: Mon, 10 Jun 2002 18:45:36 +0200
+Subject: Re: Masquerade (Newbie)
+Date: Mon, 10 Jun 2002 18:54:52 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020610184536.354c2fac.francois@chenais.net>
-References: <20020610181923.2a0030a3.francois@chenais.net>
+Message-ID: <20020610185452.515736e4.francois@chenais.net>
+References: <200206091647.32562.richard.downing@bcs.org.uk>
+	<200206092118.53543.richard.downing@bcs.org.uk>
+	<200206092126.g59LQEA23512@Networker.rockstone.co.uk>
+	<200206101222.28237.richard.downing@bcs.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020610181923.2a0030a3.francois@chenais.net>
+In-Reply-To: <200206101222.28237.richard.downing@bcs.org.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,108 +21,51 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.samba.org
+To: richard.downing@bcs.org.uk
+Cc: netfilter@lists.samba.org
 
-Now I have put the good rule
-      iptables -A FORWARD -d 192.168.0.0/255.255.255.0 -p tcp --tcp-flags S=
-YN SYN -j QUEUE
+Have you=20
 
-A is connected on B but with his own ip addr instead of the GW_Netfilter ad=
-dr.
-the iptables -t nat -A POSTROUTING -j MASQUERADE seems to be ignored.
+    modprobe iptable_nat
 
-Just another (important) information
+	Fran=E7ois
 
-I use GW_netfilter eth0:0 device to go on network 192.168.0.0
-           and the eth0:0 device on B so that=20
 
-A, GW and B are all on the 192.168 network but only GW and B are on the 192=
-.168 one !
 
+On Mon, 10 Jun 2002 17:44:57 +0100
+Richard A Downing <richard.downing@bcs.org.uk> wrote:
+
+  | Antony,
+  |=20
+  | I was helped by email from another list member.  The error below goes a=
+way if=20
+  | the kernel modules are compiled in (I.E. NOT modules).  Perhaps there i=
+s a=20
+  | kernel bug here.
+  |=20
+  | I am pleased to say that I now have Masquerade running fine, and my LAN=
 =20
-         192.168.76
-   .______________.___________________________.
-   |              |                           |
-   |              |                           |
-   |             eth0                        eth0=20
-   |              |                           |
-   A             GW                           B
-                  |                           |
-              eth0:0------192.168.0----------eth0:0
-
-
-
-   is a better schema !
-
-
-		Fran=E7ois
-
-
-    =20
-
-
-
-On Mon, 10 Jun 2002 18:19:23 +0200
-Francois Chenais <francois@chenais.net> wrote:
-
-  | Hello,=20
-  |        =20
+  | machines happily soaking my bandwidth ;-)
+  |=20
+  | Thanks for your help,
+  | Richard.
   |=20
   |=20
-  |              192.168.76.0                   192.168.0.0
-  | 	A  -------------->  GW_Netfilter --------------------> B
-  |                               \      /
-  |                                 QUEUE
-  |                                   \
-  |                                 user APP
+  | On Sunday 09 June 2002 22:26, Antony Stone wrote:
+  | On Sunday 09 June 2002 9:18 pm, Richard A Downing wrote:
   |=20
+  | > root:/usr/lib/iptables$: iptables -t nat -A POSTROUTING -o ppp0 -j
+  | > MASQUERADE
+  | > iptables: No chain/target/match by that name
   |=20
+  | Okay.   I still do not know why you cannot use the MASQUERADE target, b=
+ut I
+  | do not use modules - I have everything compiled-in to the kernel, so I =
+don't
+  | know what you need to look for to find out why that command isn't worki=
+ng.
+  | Hopefully someone else can help on that one ?
   |=20
-  |   In fact, I would like to redirect all SYN packet comming from A to B
-  |   in target QUEUE for a user space check.
-  |=20
-  |   Here what I've done but doesn't work !:-|
-  |=20
-  |   on A=20
-  |   -----
-  |       route add -net 192.168.0.0 gw GW_Netfilter netmask 255.255.255.0 =
-
-  |=20
-  |=20
-  |   on GW_Netfilter
-  |   ---------------
-  |       echo 1 > /proc/sys/net/ipv4/ip_forward
-  |       iptables -t nat -A POSTROUTING -j MASQUERADE
-  |       iptables -A FORWARD -d 192.160.0.0/255.255.255.0 -p tcp --tcp-fla=
-gs SYN SYN -j QUEUE
-  |       iptables -A INPUT -d 192.160.0.0/255.255.255.0 -p tcp --tcp-flags=
- SYN SYN -j QUEUE
-  |  =20
-  |=20
-  |  user APP connected on hook 1 on the ip_queue
-  |  ---------------------------------------------
-  |=20
-  |=20
-  | 	What's wrong ?
-  |=20
-  | 	Thanks a lot
-  |=20
-  | 		Fran=E7ois
-  |=20
-  | --=20
-  | Woody 3.0
-  | Linux tanna 2.4.14 #3 SMP Thu Dec 6 14:04:03 CET 2001 i686 unknown
-  |=20
-  | PGP fingerprint : 9AFA 15EC 96C9 F607 EBC1  DD41 70C5 F0E0 25A5 105B
-  |=20
-  |=20
-  |=20
-  |=20
-  |=20
-  |=20
-  |  =20
-  |=20
-  | 	=20
   |=20
   |=20
 
