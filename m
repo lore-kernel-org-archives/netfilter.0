@@ -1,88 +1,66 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Using -m limit to stop outbound portscanning viruses
-Date: Sat, 5 Feb 2005 18:51:18 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10502051828070.352-100000@darkstar.sysinfo.com>
-References: <42055159.6000102@tiedyenetworks.com>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: Usage of CONNMARK
+Date: Sun, 6 Feb 2005 01:51:38 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0502060136540.22104@filer.marasystems.com>
+References: <42032EC5.4090303@multitech.co.in>
+	<Pine.LNX.4.61.0502041515360.10050@filer.marasystems.com>
+	<42047777.3030102@multitech.co.in>
 Mime-Version: 1.0
-In-Reply-To: <42055159.6000102@tiedyenetworks.com>
+In-Reply-To: <42047777.3030102@multitech.co.in>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Mike Ireton <mike-netfilter@tiedyenetworks.com>
-Cc: netfilter@lists.netfilter.org
+To: Vinod Chandran <vinod_chandran@multitech.co.in>
+Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+
+On Sat, 5 Feb 2005, Vinod Chandran wrote:
+
+> Currently, from the FTP helper if DROP is given, the packets are not getting 
+> dropped since the conntrack entry exists and also since from where the helper 
+> routine is called, there is no check for return value of NF_DROP. Hence when 
+> NF_DROP is returned, inside ip_conntrack_in, I set the conntrack value
+>      ct->mark = 1
+> However this CONNMARK value is getting applicable only from the next packet 
+> ownwards.
+
+I do not follow. Conntract helpers can return NF_DROP to drop the packets, 
+and this will cause the packet to be dropped. This is actively used today 
+by the FTP helper when an partial request is received.
+
+From ip_conntrack_in:
+
+         if (ret != NF_DROP && ct->helper) {
+                 ret = ct->helper->help(*pskb, ct, ctinfo);
+ 	[...]
+
+ 	return ret;
+}
+
+> If on the other hand, say I try to change the mark value, (*pskb)->nfmark ( I 
+> assume it contains the MARK indicator), and put a rule in the 
+> KEEP_STATE_FORWARD chain to drop packets with the specific mark value, the 
+> kernel is panicing , with a BUG in sched.c. I also get panic if I call 
+> nf_conntrack_put.
+
+Setting the nfmark like this (MARK) should work, and should not panic your 
+system.
+
+In addition, setting the connection mark from helpers called in 
+ip_conntrack_in should be available in all iptables chains.
 
 
-Then you would likely be better off putting in a rules to drop traffic in
-the forward, input and output chains for those port/protocol combos that
-should not be passing the perimiter.  The reason for the input rules is
-there are tons of sites that filter egress poorly and tons of totally
-unfiltered machines on the net, so there's no reason to have the firewall
-even look at such traffic besides just dropping it outright as it's
-forward rules <inside going out, and outside coming in>.  For the most
-part, traffic I'm not allowing to pass I tend to not log as well, why
-clutter the logs with what is effective, the interesting stuff is in what
-is allowed to pass afterall.
+All three of your problems makes no sense to me. All should work (return 
+NF_DROP from helpers, setting the connection mark, setting the nfmark).
 
-All the rate-limiting things folks are putting into some of the posted
-firewall scripts on the netfilter and realted sites are interesting to
-look at, but add to the complexity, and in many cases processing latencies
-of traffic traversal of the  firewall.  Afterall, it's job is to limit.
-Too often we tend to gorfet the fundmentals, like KISS...
-It's often much more effective and processing sweet to just be broad and
-bold with traffic at the perimiter then try to get fancy and 'play' with
-offenders on either side of the perimiter.  AS I mentioned in
-the previous, if these nasties need to be passed, then a VPN, preferably
-through an intelligent proxy, rather then a mere plug is the way to go
-<most proxies tend to be mere plugs we;ve found>. The only place I'd look
-at rate limiting in this contaxt might be  a '*routing* firewall' in front
-of a honey pot setup for trickery, fun and analysis.  Of course YMMV...
-
-
-Thanks,
-
-Ron DuFresne
-
-On Sat, 5 Feb 2005, Mike Ireton wrote:
-
-> 
-> I'm not, and that's the point. I aim to put a condom on the customer 
-> side of the link so that they _can't_ engage in this behavior, no matter 
-> what virus or stealth zombie ddos tool they have been infected with. 
-> This gets me out of having to play traffic cop and is one more way I 
-> ensure that the service can't be (easilly) abused.
-> 
-> R. DuFresne wrote:
-> 
-> >Why are you letting this traffic traverse your perimiters in the first
-> >place?  If there is a need to pass windows related problematic protocols
-> >across perimiters, they should be tunnels in a secure connection.
-> >
-> >
-> >  
-> >
-> 
-> 
-
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
-
+Regards
+Henrik
 
