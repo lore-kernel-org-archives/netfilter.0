@@ -1,11 +1,9 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Bridge with iptables
-Date: Thu, 3 Apr 2003 20:14:26 +0530
+From: "Oscar Garcia" <alcoceba2002@hotmail.com>
+Subject: packet mark
+Date: Thu, 03 Apr 2003 17:07:33 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <071f01c2f9ef$86489980$13fcc5cb@Housecall>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <F636hdO9JZtD9SWLYaI00012e47@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,29 +14,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
-Hi
-
-iam trying to setup a bridge with iptable
-i have setup the transparent bridge,
-
-and iam try to mark the http packets for QOS
-iam not able to see the packets
-
-i was going through the Lartc.org
-some where i read at this stage ( kernel 2.4.18-27 Redhat iam using) bridge
-will not support iptables.
-it will support only on kernel 2.5, is this true
-
-if false, where can i get the right documentation which help me to setup
-bridge with packet filtering
-
-thanks in advance for the help
-
-hare
+I'm interested on marking a packet as do the option :
+iptables -A OUTPUT -t mangle -jMARK --set-mark 1
+but doing it in a program , there is any API to mark the packet ,without=20
+having to execute an script with this instrucion.
+Can I mark the buffer that holds the packet?
+I know that iptables works in this way
 
 
+
+
+
+_________________________________________________________________
+Charla con tus amigos en l=EDnea mediante MSN Messenger: =20
+http://messenger.microsoft.com/es
 
 
