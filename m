@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: how to use ipt_limit.o?
-Date: 09 Dec 2002 11:05:29 +0100
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+Subject: RE: how to use ipt_limit.o?
+Date: Mon, 9 Dec 2002 11:29:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039428329.8888.14.camel@elendil.intranet.cartel-securite.net>
-References: <000d01c29f26$0c4f9170$9801010a@winxp>
-	 <1039427039.8900.11.camel@elendil.intranet.cartel-securite.net>
-	 <007e01c29f69$5b3c82f0$9801010a@winxp>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019A36@hslex01.hslbz.local>
+References: <007e01c29f69$5b3c82f0$9801010a@winxp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <007e01c29f69$5b3c82f0$9801010a@winxp>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -19,29 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Peter <chenlf@cibn.com>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Peter' <chenlf@cibn.com>, Cedric Blancher <blancher@cartel-securite.fr>
 Cc: netfilter@lists.netfilter.org
 
-Le lun 09/12/2002 =E0 10:57, Peter a =E9crit :
 > iptables -A INPUT -p tcp --syn --dport http -j USER_CHAIN
-> iptables v1.2.7a: Couldn't load target `USER_CHAIN':/usr/local/lib/ipta=
-bles/libipt_USER_CHAIN.so: cannot open shared object file: No such file o=
-r directory
+> iptables v1.2.7a: Couldn't load target
+> `USER_CHAIN':/usr/local/lib/iptables/libipt_USER_CHAIN.so:
+> cannot open shared object file: No such file or directory
 > why?
 
-USER_CHAIN is a user chain... You have to create it before you can send
-packets to it...
+As the name implies, USER_CHAIN is a user defined chain which is not
+available if you didn't define it.
 
-# iptables -N USER_CHAIN
+iptables -N USER_CHAIN
+iptables -A USER_CHAIN -j REJECT (or something more useful)
+Might help.
 
-This is basic iptables stuff, so you really should read basic iptables
-documentation, as it seems quite obvious to me you did not.
+There is a nice iptables tutorial which explains a whole lot at :
+http://iptables-tutorial.frozentux.net
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+
+Rob
+
 
