@@ -1,12 +1,10 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: REDIRECT to localhost
-Date: Mon, 16 Aug 2004 10:17:12 -0400
+From: "dravya" <dravya@magma.ca>
+Subject: RE: Masqureading issues... packets go over wrong link
+Date: Mon, 16 Aug 2004 17:05:36 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051285@asimail2.alphanumeric.com>
+Message-ID: <200408162105.i7GL5aYn014153@webmail2.magma.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +15,110 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Daniel Chemko <dchemko@smgtec.com>, Netfilter mailing list <netfilter@lists.netfilter.org>
 
-> iptables -t nat -A PREROUTING -i "name of interface" -p tcp -m tcp --
-> dport 80 -j REDIRECT --to-ports 3129
+
+
+
+Thanx again Daniel,
+ 
+Sorry, but I am a little confused as to which rules to use. You had provided two sets of
+rules.
+
+1st:
+-----------------------------------------------------------------------------------
+        MY_POLICY_ETH0=1
+	MY_POLICY_ETH1=2
+	MY_POLICY_DEFAULT=2
+	
+	iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+	iptables -t mangle -A PREROUTING -i ${INET1} -m mark ! --mark 0
+-j ACCEPT
+	iptables -t mangle -A PREROUTING -i ${INET1} -m mark --mark 0 -j
+MARK ${MY_POLICY_ETH0}
+	iptables -t mangle -A PREROUTING -i ${INET2} -m mark --mark 0 -j
+MARK ${MY_POLICY_ETH1}
+	iptables -t mangle -A PREROUTING -i ${INET3} -m nth --every 2
+--packet 0 -m mark --mark 0 -j MARK ${MY_POLICY_ETH0}
+	iptables -t mangle -A PREROUTING -i ${INET3} -m nth --every 2
+--packet 1 -m mark --mark 0 -j MARK ${MY_POLICY_ETH1}
+	iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
+	
+	iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+	iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+-----------------------------------------------------------------------------------
+
+
+and 2nd:
+-----------------------------------------------------------------------------------
+IP1=1.1.1.1
+IP2=2.2.2.2
+
+	iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark
+	iptables -t mangle -A OUTPUT -m mark ! --mark 0 -j ACCEPT
+	iptables -t mangle -A OUTPUT --source ${IP1} -m mark --mark 0 -j
+MARK ${MY_POLICY_ETH0}
+	iptables -t mangle -A OUTPUT --source ${IP2} -m mark --mark 0 -j
+MARK ${MY_POLICY_ETH1}
+	iptables -t mangle -A OUTPUT -m mark --mark 0 -j MARK
+${MY_POLICY_DEFAULT}
+	iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
+
+-----------------------------------------------------------------------------------
+
+If I am using the 1st: 
+
+> MY_POLICY_ETH0=1
+> MY_POLICY_ETH1=2
+> MY_POLICY_DEFAULT=2
+
+Where exactly do I define the above policies?
+
+and 
+
+> ...
+> iptables -t mangle -A PREROUTING -j CONNMARK --save-mark
+
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+
+and even though we are marking the packets, we need to MASQUERADE it? Wasn't the original
+problem with Masquerading? How does this solve the problem of packets going on the wrong
+link? I thought marking the packets was a substitute for Masquerading. Is my thinking all
+wrong???
+
+
+
+Lastly, What is the difference between having two routing tables, each with a default via
+an eth0/ppp
+
+> # ip route list table 1
+> ..
+> default via <ext_gw_eth0> dev eth0  src <ext_ip_eth0>
 >
-> If your default policy is to DROP all INPUT/FORWARD as is it should =
-be.
->
->
-> iptables -A INPUT -i "name of interface" -p tcp -m tcp --dport 80 -j
-> ACCEPT
+> # ip route list table 2
+> ..
+> default via <ext_gw_eth1> dev eth1  src <ext_ip_eth1>
 
-in this case--where you have ppp[0-9], you can also use the "+" notation =
-to avoid having 10 rules that do the same thing; i.e.,=20
+and only one routing table with two default routes??
 
-  iptables -t nat -A PREROUTING -i ppp+ -p tcp -m tcp --dport 80 -j =
-REDIRECT --to-ports 3129
+>  206.47.201.1 dev ppp1  proto kernel  scope link  src 204.101.96.143
+>  204.101.237.225 dev ppp0  proto kernel  scope link  src 69.158.211.67
+>  169.254.0.0/16 dev eth0  scope link
+>  192.168.0.0/16 dev eth0  scope link
+>  127.0.0.0/8 dev lo  scope link
+>  default equalize
+>       nexthop via 204.101.237.225  dev ppp0 weight 1
+>       nexthop via 206.47.201.1  dev ppp1 weight 1
 
-will match any ppp interface.
+???
 
-> You can also use -s "ip address" instead of -i  "name of interface".
+Thanks a million. I really appreciate your response.
 
-or both...
+cheers
+Dravya
 
--j
+
+
 
