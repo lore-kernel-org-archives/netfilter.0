@@ -1,13 +1,13 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Fw: DROP All MACs
-Date: Mon, 17 Nov 2003 13:38:40 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: irc
+Date: Mon, 17 Nov 2003 17:33:38 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031117183840.GB15103@cannon.eng.us.uu.net>
-References: <002901c3ad2d$9229c390$0d1ea8c0@win2000adv>
+Message-ID: <200311171733.hAHHXgj22323@agate.rockstone.co.uk>
+References: <20031117161039.97875.qmail@web40203.mail.yahoo.com> <200311171618.hAHGIAj22261@agate.rockstone.co.uk> <3FB8F8C7.8090104@Loudoun-Fairfax.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <002901c3ad2d$9229c390$0d1ea8c0@win2000adv>
+In-Reply-To: <3FB8F8C7.8090104@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: curlybraces <curlybraces@dialogsl.net>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Mon, Nov 17, 2003 at 11:09:33PM +0600, curlybraces wrote:
+On Monday 17 November 2003 4:35 pm, Jeffrey Laramie wrote:
 
-> > Oh , i'm sorry
-> >
-> > i will explain , but i need good solution for this matter today itself
-> > ...............pls
-> >
-> > let me to explain ,
-> >
-> > in my lan has 5 windpows 2000 pcs. and one Red Hat Linux 8 box .This linux
-> > box has 2 ethernet - eth0 , eth1 .
-> > DHCP , Firewall ( iptables ) running in the Linux box .Normally without
-> > implemention g firewall dhcp server works fine . why i'm try to install a
-> > firewall for the dhcp server  is i want block some machines which r
-> strainge
-> > to the network .
-> > using MACs we can restric such unknown users .
-> > so what i'm trying to do is
-> > as default policies input , forward, output drop .
-> > as a next step i sugest to do drop all macs which r in the network .
-> > as a next step i willing to do accept one by one which r known as trusted
-> > users .
-> >
-> > so my . Antony this is the i want to implemet for the LAN . If I
-> > successfully implemented for the LAN , next step is implement this
-> firewall
-> > for the Cable modem for the public users.
-> >
-> > so now i think what am i expecting u ....................!!!!!!!
-> > pls reply me soon...........now can u tell me ur any contact no : ?
+> Just out of curiosity, what exactly is the difference between an IRC
+> server and an IRC proxy?
+>
+> Client connects to server
+> Client connects to proxy
+>
+> Server relays
+> Proxy relays
+>
+> Hmmm.
 
-What you can/should do is to setup your DHCP server to assign IP's to only
-those five MS machines (based on their MAC). Although, this does not prevent
-any other machine to assign itself a valid IP statically. To solve this
-problem is to only allow the traffic of the MAC's you know and drop any other.
-An example has been given to you by Antony in a previous email.
+In that case I simply don't know enough about the IRC protocol (which is 
+true).
 
-This is a frequent problem of the wireless LAN's... The answer is "know your
-trusted MAC's". Or let them authenticate before any "session" (with some
-well-defined definition of a session).
+It sounds like SMTP to me - there's no such thing as an SMTP proxy, because 
+that is what an SMTP server is.   Perhaps this is the ideal answer to the 
+original question :) ?
 
-Ramin
+Antony.
+
+-- 
+
+It's vital to remember who you really are.   It's very important.   It isn't 
+a good idea to rely on other people or things to do it for, you see.   They 
+always get it wrong.
+
+ - Terry Pratchett, Sourcery
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
