@@ -1,8 +1,8 @@
-From: Joel Newkirk <netfilter@newkirk.us>
+From: Anders Fugmann <afu@fugmann.dhs.org>
 Subject: Re: NAT + NFS
-Date: 12 Apr 2003 19:13:08 -0400
+Date: Sun, 13 Apr 2003 01:27:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1050189188.17682.23.camel@alpha.newkirk.us>
+Message-ID: <3E98A0D3.7050209@fugmann.dhs.org>
 References: <200304111215.h3BCF0q18594@mailgate5.cinetic.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -17,11 +17,11 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: doedelberlin@web.de
 Cc: netfilter@lists.netfilter.org
 
-On Fri, 2003-04-11 at 08:15, doedelberlin@web.de wrote:
+doedelberlin@web.de wrote:
 > i have a Linux gateway performing NAT (SNAT and DNAT) with iptables_1.2.7a
 > 
 > on both sides there are UNIX machines (SOLARIS) 
@@ -31,19 +31,27 @@ On Fri, 2003-04-11 at 08:15, doedelberlin@web.de wrote:
 > 
 > it starts with "normal speed" but it gets worse and worse.
 > after reboot of this gateway it is ok but then again the same game.
+Assuming that the gateway running iptables is the root to the problem,
+have you tried to make a minimal working set of rules that exposes the 
+problem? If yes then please state them.
+
+Also, what is the load on the gateway when degradation occurs and is the 
+degradation still present if you reboot one of the clients?
+
 > 
 > does anybody have experiences with this problem ?
+No - but I have a few clues :-)
+
 > (best would be also a solution ... ;-)
-
-Is the slowdown just of the NFS traffic, or everything?
-
-j
-
+> 
 > thank you
-> ______________________________________________________________________________
-> UNICEF bittet um Spenden fur die Kinder im Irak! Hier online an
-> UNICEF spenden: https://spenden.web.de/unicef/special/?mc=021101
-> 
-> 
+
+Regards
+Anders Fugmann
+
+--
+Author of FIAIF
+FIAIF is an intelligent firewall
+http://www.fiaif.net
 
 
