@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
-Subject: RE: hostname forwarding
-Date: Wed, 11 Dec 2002 16:43:50 +0100
+From: Patrick Maartense <patrick@patrick.at>
+Subject: Re: hostname forwarding
+Date: Wed, 11 Dec 2002 16:06:53 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019A45@hslex01.hslbz.local>
-References: <FD8F124A387AD6119F7900A0D218B3215619EA@hslex01.hslbz.local>
+Message-ID: <Pine.LNX.4.33.0212111606240.17876-100000@www.csbenter.at>
+References: <p04330105ba1cf39a28eb@[80.9.157.3]>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FD8F124A387AD6119F7900A0D218B3215619EA@hslex01.hslbz.local>
+In-Reply-To: <p04330105ba1cf39a28eb@[80.9.157.3]>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,9 +16,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'bernard' <bernard@gers.net>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: bernard <bernard@gers.net>
+Cc: netfilter@lists.netfilter.org
 
+this is not possible using ipotables
+
+Apache however can very well handle this ..
+
+
+On Wed, 11 Dec 2002, bernard wrote:
+
+> I'm using iptables to redirect external requests depending on their 
+> port/protocol like this :
+> 
+> 	hostname A:80 -> public ip -> iptables -> 192.168.1.1:80
+> 	hostname B:80 -> public ip -> iptables -> 192.168.1.1:80
+> 
+> It works pretty well, thanks to iptables :-)
+> 
 > Now I want to redirect on a hostname basis on different private ip's 
 > like this :
 > 
@@ -27,15 +43,16 @@ To: 'bernard' <bernard@gers.net>, netfilter@lists.netfilter.org
 > 	hostname B:80 -> public ip -> iptables -> 192.168.1.2:80
 > 
 > Does anyone know a solution ?
+> 
+> Thanks for your help.
+> 
+> Bernard
+> 
 
-Iptables will only forward (resolved) IP adresses (and/or ports).
-If Host-A has the same IP address as Host-B, then packets will be
-forwarded to one and the same internet IP address.
-You could accept http traffic on, let's say, port 81 and redirect
-traffic for Host-B:81 to 192.168.1.2:80, but I don't think that's what
-you want : people would have to type http://Host-B:81 to enter the site.
+-- 
+---
+Kind Regards
+Patrick Maartense (using Pine on a Text Console)
 
-
-Rob
 
 
