@@ -1,8 +1,9 @@
-From: "Saeed Zamani" <szamani@concept.ae>
-Subject: Need urgent help on NAT/load sharing
-Date: Thu, 5 Feb 2004 20:54:44 +0330
+From: Daniel Miller <dmiller@amfes.com>
+Subject: Forwarding DNS
+Date: Thu, 05 Feb 2004 10:27:26 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003701c3ec0c$f8cc09f0$6329d9d5@Zamani>
+Message-ID: <40228B0E.3080906@amfes.com>
+Reply-To: dmiller@amfes.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,22 +16,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-   I am new to list and have a basic nat question on Redhat Linux 9. I
-have to translate my local IP ( 192.168.1.0/24 ) to two different public
-IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
-example for every 4 received packet, one have to translate to IPE1 and
-other three to IPE2. I need this for load balacing the internet traffic
-between two isp. At the end, it is excellent if there is an option that
-If one the ISP gateway is dead, all packets have to translate to other
-public IP. Please help me. 
-Thanks, 
-Saeed Zamani, 
-Technical Manager, 
-Concept FZ LLC. 
+Can I setup a DNS forward for my LAN to point to my ISP's DNS servers 
+for internet name resolution?  As I'm on a high-speed connection, and my 
+provider has already implemented their own caching DNS servers, it seems 
+(at least on the surface) silly for me to implement my own caching-only 
+server.  This way, I can choose to implement direct forwarding to my 
+ISP's servers, or use an internal caching-only server, and have it 
+transparent to the LAN.
 
-
+Daniel
 
