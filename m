@@ -1,9 +1,9 @@
 From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Loose source routed IP packets.
-Date: Tue, 23 Sep 2003 09:22:26 -0400
+Subject: Re: active firewall
+Date: Tue, 23 Sep 2003 09:32:26 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F704912.6010800@chrisbrenton.org>
-References: <200309231347.57709.carles@unlimitedmail.org>	 <Pine.LNX.4.51.0309231409290.14794@dns.toxicfilms.tv> <1064320275.31340.104.camel@raylinux.internal>
+Message-ID: <3F704B6A.7010905@chrisbrenton.org>
+References: <03092320103102.01185@slinky.exmosys.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,40 +17,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ray Leach <raymondl@knowledgefactory.co.za>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Nik Trevallyn-Jones <nik@designer.com.au>
+Cc: netfilter@lists.netfilter.org
 
-Ray Leach wrote:
+Nik Trevallyn-Jones wrote:
 > 
-> How about :
-> ### don't accept source routed packets
-> /bin/echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route
+>    As a result of experiences deploying PortSentry behind an ipchains 
+> firewall recently, I started considering how iptables could be used to deploy 
+> a dynamic firewall which would be able to modify itself in response to 
+> predefined events.
 
-I keep meaning to do some testing with this but have not had the 
-bandwidth. Just wondering if anyone else actually has.
+Be very careful with this. I've seen savvy attackers spoof attacks from 
+the root name servers in order to make the firewall DoS the local 
+environment. :(
 
-I would expect the above would work fine with strict source routing, but 
-I'm not so sure about loose source routing unless the firewall was one 
-of the defined jump points.
+> Q: Has anyone considered or suggested this before?
 
-For example, let's say I know you "trust" some IP address on the 
-Internet and permit a greater level of access from it to one of your 
-internal systems. I craft the following packet:
+Yup, and the feature is built into many commercial firewalls (FW-1, PIX, 
+etc.). I know Bill Stearns was working on this at one point. You might 
+be able to find more info at:
+http://www.stearns.org
 
-source IP = mine
-Dest IP = "trusted" Internet host
-First byte of IP options = 83
-IP in options field = your internal server
+> 1  two new targets: ENLIST, DELIST
+> These targets effectively cause one or more new rules to be automatically 
+> added/removed to/from the firewall in response to matching the associated 
+> rule.
 
-In this case none of the IPs are the firewalls so I'm not so sure 
-accept_source_route would even be referenced. Does the kernel check the 
-size of all IP headers and process the included options even if its not 
-the destination IP? I would think it would not for efficiency, but then 
-again it might to deal with things like option 7 (record route).
+Depending on your IDS, you can script this as well. I seem to remember a 
+paper floating around at one point that shows how to set this up with 
+Snort and iptables.
 
-Has anyone tested this either way?
+> I would like to write a rule which asserts: "BLACKLIST any host that sends a 
+> SYN packet to any ports between 1025-50000 unless there is a socket listening 
+> to the port at the time the packet arrives".
 
-Thanks in advance!
-Chris
+Hummm, so if I back door your system the firewall will happily update 
+the ruleset to permit me access to that port. That's very polite of it. ;-)
+
+HTH,
+C
 
 
