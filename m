@@ -1,11 +1,11 @@
-From: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solucoesip.net>
-Subject: blocking MSN Messenger: my experiences ( almost long )
-Date: Thu, 17 Jul 2003 10:41:28 -0300
+From: "marekjs" <slackware9@tlen.pl>
+Subject: problem with p-o-m...
+Date: Thu, 17 Jul 2003 16:35:51 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b101c34c69$1fc83f40$3200a8c0@ESTACAO>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A15BF2B@wardrive.citadelcomputer.com.au>
+Message-ID: <001e01c34c70$b8f4b980$1a00a8c0@mj>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001B_01C34C81.7C18D440"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,106 +16,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
-    I've tried for a long time block MSN Messenger using only iptables
-rules. I couldnt get that working. I've seen some 'crazy' rules blocking
-lots of IP blocks which, teorically, are the MSN Servers, but I really dont
-like this kind of rules.
+------=_NextPart_000_001B_01C34C81.7C18D440
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
-    I could successfully block MSN Messenger using the following approach:
-    - all ports in my firewall are blocked, expect those I really want (
-specified one by one ) which are allowed in FORWARD and POSTROUTING;
-    - even with this approach, MSN works because of the HTTP tunneling
-stuff;
-    - for blocking the HTTP tunneling stuff, I've configured squid ( which
-works in transparent proxy mode, which means ALL 80/tcp traffic goes there )
-to block the expression 'gateway.dll'. Seems that all access done by MSN
-Messenger using HTTP protocol uses this file.
+Hi.
+I use tke kernel 2.4.21 and I need to build a firewall.
+I tried to patch my kernel by patch-o-matic in order:
+-fresh kernel into /usr/src/linux
+-make menuconfig
+-./runme extra (sometimes base)
+Everytime I've an error from patches like:
+-/submitted/61-arptables_magle
+-/pending/40_nf-log (ipv4 and ipv6 too)
+-/extra/connmark
+-/extra/pptp-conntrack-nat.
+When I skip those patches, the kernel compiles OK.
 
-( squid.conf relevant entries )
+Do you know any tricks how to remove this problem :) ?
+Maybe it's not the problem. I'm not sure ;).
 
-acl msnmessenger url_regex -i gateway.dll
-http_access deny msnmessenger ( and this deny should be placed BEFORE your
-ALLOW rules, are they're parsed linearly )
+---------
+All the best from:
 
+marekjs
+slackware9@tlen.pl
+------=_NextPart_000_001B_01C34C81.7C18D440
+Content-Type: text/html;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
-    Here are some squid log entries that 'proves' my theory about
-'gateway.dll'. In this firewall access to MSN Messenger is DENIED in squid,
-so we'll see only DENYs here .... This DENYed entries represents MSN
-Messenger trying to login ........
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-2">
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I use tke kernel 2.4.21 and I need to =
+build a=20
+firewall.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I tried to patch my kernel by =
+patch-o-matic in=20
+order:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>-fresh kernel into =
+/usr/src/linux</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>-make menuconfig</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>-./runme extra (sometimes =
+base)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Everytime I've an error from patches=20
+like:</FONT></DIV>
+<DIV><FONT face=3DArial =
+size=3D2>-/submitted/61-arptables_magle</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>-/pending/40_nf-log (ipv4 and ipv6=20
+too)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>-/extra/connmark</FONT></DIV>
+<DIV><FONT face=3DArial =
+size=3D2>-/extra/pptp-conntrack-nat.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>When I skip those patches, the kernel =
+compiles=20
+OK.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Do you know any tricks how to remove =
+this problem=20
+:) ?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Maybe it's not the problem. I'm not =
+sure=20
+;).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>---------<BR>All the best =
+from:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>marekjs<BR><A=20
+href=3D"mailto:slackware9@tlen.pl">slackware9@tlen.pl</A></FONT></DIV></B=
+ODY></HTML>
 
-[root@correio squid]# cat /var/log/squid/access.log | grep gateway.dll
-1058182392.455    147 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058182397.640      1 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058194534.786     29 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058206234.395      1 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058206492.547      4 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058206498.132      4 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058268737.709      1 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058268744.993      4 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058296167.865      1 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058297215.332      4 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058304370.039      1 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058355175.908      7 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058361247.628      1 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058362187.640      4 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058364639.802      1 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com - NONE/- text/html
-1058440598.704      1 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-1058440604.017      4 10.0.1.25 TCP_DENIED/407 2070 POST
-http://gateway.messenger.hotmail.com/gateway/gateway.dll?Action=open&Server=NS&IP=messenger.hotmail.com -
-NONE/- text/html
-[root@correio squid]#
-
-
-
-
-    In my case, access using 'random' ports wont happen, because I allow
-only ports I want. And HTTP traffic is controled by squid which blocks
-'gateway.dll' URLs. Using this, I could successfully block MSN Messenger
-usage.
-
-    This is not a squid mailing list, I know. But i've tried for several
-weeks block MSN Messenger using only iptables but I couldnt. I found
-interesting to share my experiences in this subject with the list because I
-know that a lot of people that are using iptables are also using squid, so I
-think these comments and this 'solution' is relevant.
-
-
-    Sincerily,
-    Leonardo Rodrigues
+------=_NextPart_000_001B_01C34C81.7C18D440--
 
 
