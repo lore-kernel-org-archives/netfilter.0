@@ -1,73 +1,78 @@
-From: David Ford <david+challenge-response@blue-labs.org>
-Subject: Re: Iptables-1.2.9/10 compile failure with linux 2.6.7 headers
-Date: Fri, 18 Jun 2004 12:10:04 -0400
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <40D313DC.7000202@blue-labs.org>
-References: <200406181611.37890.andrew@walrond.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: DNAT problem /  question
+Date: Fri, 18 Jun 2004 17:14:41 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200406181714.41952.Antony@Soft-Solutions.co.uk>
+References: <519AD2BA94FC6E4DB5DE078B2E37CB10A76BA5@PDBEX01E.pdb.fsc.net> <20040618180601.7488d0b0.leslie.polzer@gmx.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000907000009020702060906"
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S265481AbUFRQNA@vger.kernel.org>
-In-Reply-To: <200406181611.37890.andrew@walrond.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040618180601.7488d0b0.leslie.polzer@gmx.net>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-To: Andrew Walrond <andrew@walrond.org>
-Cc: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------000907000009020702060906
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+On Friday 18 June 2004 5:06 pm, Patrick Leslie Polzer wrote:
 
-Iptables should be using linux-libc-headers headers instead of kernel 
-headers.
-
-Remove -I$(KERNEL_DIR)/include from your makefile, see this patch here: 
-http://ep09.pld-linux.org/~mmazur/linux-libc-headers/patches/iptables.patch 
-<http://ep09.pld-linux.org/%7Emmazur/linux-libc-headers/patches/iptables.patch>
-
-David
-
-Andrew Walrond wrote:
-
->The addition of a
->	__user
->attribute to a line in
->	linux-2.6.7/include/linux/netfilter_ipv4/ip_tables.h
->causes iptables build to fail unless I export
->	CC="gcc -D__user= "
+> On Fri, 18 Jun 2004 17:45:20 +0200
 >
->Presumably ip_tables.h should include a header defining __user, or iptables 
->should include the relevant header before ip_tables.h ?
+> "Arnauts, Bert" <Bert.Arnauts@fujitsu-siemens.com> wrote:
+> > Could you please check my config, if I execute this I can not ping my
+> > internal lan ip of this host 172.25.239.208 any more. I think this is
+> > really wierd.
 >
->Sorry if this has already been reported; Archive search found nothing on 
->either ML.
+> Why? These lines:
+> > $IPTABLES -t nat -A PREROUTING -d 172.25.239.220/27 -j DNAT
+> > --to-destination 11.0.0.16
+> > $IPTABLES -t nat -A OUTPUT -d
+> > 172.25.239.220/27 -j DNAT --to-destination 11.0.0.16
 >
->Andrew Walrond
->-
->To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
->the body of a message to majordomo@vger.kernel.org
->More majordomo info at  http://vger.kernel.org/majordomo-info.html
->Please read the FAQ at  http://www.tux.org/lkml/
->  
->
+> are doing everything to keep ALL packets away from you ;)
+> All outgoing packets (statement 2) are redirected to 11.0.0.16
+> and all incoming are as well (statement 1)!
+> How do you expect ping to work with that? :-O
 
---------------000907000009020702060906
-Content-Type: text/x-vcard; charset=utf-8;
- name="david+challenge-response.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="david+challenge-response.vcf"
+Good point, but surely a ping packet sent to 172.25.239.220 (let's overlook 
+the netmask for the time being...) would get redirected to 11.0.0.16, and 
+provided that machine responds to the ping (and the reply goes back through 
+netfilter's NAT table) the origianting client might see the reply?
 
-begin:vcard
-fn:David Ford
-n:Ford;David
-email;internet:david@blue-labs.org
-title:Industrial Geek
-tel;home:Ask please
-tel;cell:(203) 650-3611
-x-mozilla-html:TRUE
-version:2.1
-end:vcard
+However, I am certainly highly confused by what Bert is trying achieve here - 
+perhaps the answers to a few questions would help:
+
+1. How many interfaces does the netfilter machine have?   What are their IP 
+addresses?
+
+2. Where is machine 11.0.0.16?   How are packets routed to that frm the 
+netfiler machine?
+
+3. What address are you sending the ping packets from (and to)?   How is that 
+client routed to the netfilter box?
+
+4. What, in simple terms, are you trying to achieve with the two rules which 
+Patrick has queried above?
+
+Regards,
+
+Antony.
+
+-- 
+"It would appear we have reached the limits of what it is possible to achieve 
+with computer technology, although one should be careful with such 
+statements; they tend to sound pretty silly in five years."
+
+ - John von Neumann (1949)
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
---------------000907000009020702060906--
