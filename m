@@ -1,11 +1,10 @@
-From: =?GB2312?Q?=B2=CC=D6=BE=B7=E5?= <zhfcai@scut.edu.cn>
-Subject: How to change the log file?
-Date: Tue, 5 Sep 2000 16:51:55 +0800
+From: =?iso-8859-1?Q?Lu=EDs_Fernando_C._Talora?= <talora@4networks.com.br>
+Subject: -m limit
+Date: Thu, 5 Sep 2002 16:28:00 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209050852.g858qoL9024510@letterbox.scut.edu.cn>
+Message-ID: <014501c25512$5932a9e0$0101a8c0@osbourn>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-      boundary="=====002_Dragon237327143326_====="
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,53 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter.org" <netfilter@lists.netfilter.org>
 
+Fellows,
 
-This is a multi-part message in MIME format.
+I'd like some help using ntefilter "limit" module.
 
---=====002_Dragon237327143326_=====
-Content-Type: text/plain;
-      charset="GB2312"
-Content-Transfer-Encoding: base64
+If I put something like the following in a firewall script (to limit tcp syn
+packets):
 
-SSB3YW50IHRvIGxvZyBhbGwgbWVzc2FnZXMgaW4gYSBzcGVjaWFsIGZpbGUgLHN1Y2ggYXMgdGhl
-IGZpbGUgL3Zhci9sb2cvaXB0YWJsZSxub3QgaW4gZGVmYXVsdCBmaWxlLA0KSSBoYXZlIHJlYWQg
-SXB0YWJsZXMndHV0b3JpYWwgLGl0IHNheXMgdGhhdCJBbGwgbWVzc2FnZXMgYXJlIGxvZ2dlZCB0
-aHJvdWdoIHRoZSBrZXJuZWwgZmFjaWxpdHkuIEluIG90aGVyIHdvcmRzLCBzZXR0aW5nIGtlcm4u
-PWluZm8gL3Zhci9sb2cvaXB0YWJsZXMgaW4geW91ciBzeXNsb2cuY29uZiBmaWxlIGFuZCB0aGVu
-IGxldHRpbmcgYWxsIHlvdXIgTE9HIG1lc3NhZ2VzIGluIGlwdGFibGVzIHVzZSBsb2cgbGV2ZWwg
-aW5mbywgd291bGQgbWFrZSBhbGwgbWVzc2FnZXMgYXBwZWFyIGluIHRoZSAvdmFyL2xvZy9pcHRh
-YmxlcyBmaWxlLiIsYnV0IGF0IHRoZSBzYW1lIHRpbWUsIHRoZXJlIG1heSBiZSBvdGhlciBtZXNz
-YWdlcyBoZXJlIGFzIHdlbGwgZnJvbSBvdGhlciBwYXJ0cyBvZiB0aGUga2VybmVsIHRoYXQgdXNl
-cyB0aGUgaW5mbyBwcmlvcml0eS4NCmhvdyBjYW4gSSBvbmx5IGxvZyBhbGwgaXB0YWJsZXMgbWVz
-c2FnZSBpbiBteSBzcGVjaWFsIGZpbGU/DQo=
+# Block tcp syn floods
+     $IPTABLES -A FORWARD -p tcp --syn -m limit --limit 1/s -j ACCEPT
 
---=====002_Dragon237327143326_=====
-Content-Type: text/html;
-      charset="GB2312"
-Content-Transfer-Encoding: base64
+        (and then, latter, I put the following)
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
-MC4yNjAwLjAiIG5hbWU9R0VORVJBVE9SPjwvSEVBRD4NCjxCT0RZPg0KPFA+SSB3YW50IHRvIGxv
-ZyBhbGwgbWVzc2FnZXMgaW4gYSBzcGVjaWFsIGZpbGUgLHN1Y2ggYXMgdGhlIGZpbGUgDQovdmFy
-L2xvZy9pcHRhYmxlLG5vdCBpbiBkZWZhdWx0IGZpbGUsPC9QPg0KPFA+SSBoYXZlIHJlYWQgSXB0
-YWJsZXMndHV0b3JpYWwgLGl0IHNheXMgdGhhdCJBbGwgbWVzc2FnZXMgYXJlIGxvZ2dlZCB0aHJv
-dWdoIA0KdGhlIGtlcm5lbCBmYWNpbGl0eS4gSW4gb3RoZXIgd29yZHMsIHNldHRpbmcga2Vybi49
-aW5mbyA8VFQgDQpjbGFzcz1GSUxFTkFNRT4vdmFyL2xvZy9pcHRhYmxlczwvVFQ+IGluIHlvdXIg
-c3lzbG9nLmNvbmYgZmlsZSBhbmQgdGhlbiBsZXR0aW5nIA0KYWxsIHlvdXIgPEIgY2xhc3M9Q09N
-TUFORD5MT0c8L0I+IG1lc3NhZ2VzIGluIGlwdGFibGVzIHVzZSBsb2cgbGV2ZWwgaW5mbywgd291
-bGQgDQptYWtlIGFsbCBtZXNzYWdlcyBhcHBlYXIgaW4gdGhlIDxUVCBjbGFzcz1GSUxFTkFNRT4v
-dmFyL2xvZy9pcHRhYmxlczwvVFQ+IA0KZmlsZS4iLGJ1dCBhdCB0aGUgc2FtZSB0aW1lLCB0aGVy
-ZSBtYXkgYmUgb3RoZXIgbWVzc2FnZXMgaGVyZSBhcyB3ZWxsIGZyb20gb3RoZXIgDQpwYXJ0cyBv
-ZiB0aGUga2VybmVsIHRoYXQgdXNlcyB0aGUgaW5mbyBwcmlvcml0eS48L1A+DQo8UD5ob3cgY2Fu
-IEkgb25seSBsb2cgYWxsIGlwdGFibGVzIG1lc3NhZ2UgaW4gbXkgc3BlY2lhbCBmaWxlPzwvUD48
-L0JPRFk+PC9IVE1MPg0K
+# Access to my web server
+     $IPTABLES -A FORWARD -p tcp -d $MY_WEB_SERVER --dport 80 -j ACCEPT
 
---=====002_Dragon237327143326_=====--
+In this example, will a tcp syn flood be barred by the first line? Is it the
+second line allowing more than 1 packet per second? Do I have to use "-m
+limit --limit 1/s" on the second line too (and all lines that allow incoming
+packets)?
 
+Thank you all!
+
+Regards,
+
+Lu=EDs Fernando C. Talora
 
 
 
