@@ -1,13 +1,13 @@
-From: Rainer Ellinger <rainer@ellinger.de>
-Subject: Re: "unclean" ?bug? with dell dns
-Date: Mon, 9 Sep 2002 20:27:10 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: i386 or i686.. which one?
+Date: Mon, 9 Sep 2002 21:09:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209091948.1734@ellinger.de>
-References: <20020827025542.A15684@yannick.lesaint> <20020828132419.GC21410@morinfr.org>
+Message-ID: <20020909200927.VEAS292.mta01-svc.ntlworld.com@there>
+References: <A758C299015FD411887B0000E2131186C213E6@TRUVA> <3D7CDEAC.8010905@myrealbox.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020828132419.GC21410@morinfr.org>
+In-Reply-To: <3D7CDEAC.8010905@myrealbox.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Guillaume Morin <guillaume@morinfr.org>, Yannick Le Saint <y.lesaint@free.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Guillaume Morin wrote:
-> >  When i "dig www.euro.dell.com", i get in syslog :
-> I'd say that unclean matches the packet because of a checksum
-> mismatch. There must be a buggy router between you and the server.
+On Monday 09 September 2002 6:47 pm, Manikandan.P wrote:
 
-I ran into the same problem and can also confirm that this is a problem=20
-with dell's nameserver or a system on dell's side. Further=20
-investigation with ethereal showed that matching pakets had their udp=20
-crc set to 0x0000. My questions are:=20
+> =DDhsan Turkmen wrote:
 
-Should this condition really considered harmful and matched by unclean?
-Why is there no corresponding log message from the unclean module?
+> > This is not the right place of asking that question, but i hope nobody
+> > minds my asking:
+> >
+> > ----"How to understand if my kernel source is RedHat  i386 or i686. Is
+> > there a shoert way of undersatnding it...?"
+
+> uname -a
+> will tell you
+
+No, uname -a will tell you the type of processor fitted in your machine.   =
+It=20
+will not tell you which processor your kernel was compiled for.
+
+eg you can compile a kernel for a 386 so it runs on anything, install it on=
+=20
+an AMD Athlon, and uname -a will tell you it's an i686.
+
+Antony.
 
 --=20
-rainer@ellinger.de
+
+The first ninety percent of an engineering project takes ninety percent
+of the time, and the last ten percent takes the remaining ninety percent.
 
