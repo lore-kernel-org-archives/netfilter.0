@@ -1,9 +1,10 @@
-From: "Michael Klinteberg" <michael@klintan.cjb.net>
-Subject: Re: Proxy Chaining
-Date: Wed, 24 Sep 2003 14:38:27 +0200
+From: "Nikolai Dahlem" <Nikolai.Dahlem@epygi.de>
+Subject: (no subject)
+Date: Wed, 24 Sep 2003 15:53:07 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <008201c38298$c0e4dd10$c800a8c0@klintan.local>
-References: <200309191536.h8JFaV48002076@webmail2.magma.ca>
+Message-ID: <DAELKAPIKOFAFFKELNHOAEADCAAA.Nikolai.Dahlem@epygi.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,54 +15,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+
+Hi,
+
+I'm trying to conntrack/nat a udp-based protocol with a server listening on
+port x. My problem is, that the conntrack-helper sees all incoming and
+outgoing packets of the control connection, while the nat-helper is only
+called for outgoing packets. Due to the nature of the protocol I need
+IP_NAT_HELPER_F_ALWAYS to mangle the contents of both outgoing and incoming
+packets (even when there are no expected connections).
+
+The scenario is the following:
+
+PC1 -> MASQ -> server
+
+The conntrack module gets a packet from PC1 (src port x, dst port x) and
+parses the protocol.
+The nat_module mangles the packet content and the packet is send of to the
+server with the source address of MASQ (src port x, dst port x).
+The conntrack_module receives a packet from Server (src port: high, dst port
+x) and parses the protocol.
+The nat_module isn't called.
+
+I reqister my modules with the following tuples:
+
+nat_module:
+hlpr->tuple.dst.protonum = IPPROTO_UDP;
+hlpr->tuple.src.u.udp.port = port x;
+hlpr->mask.src.u.udp.port = 0xFFFF;
+hlpr->mask.dst.protonum = 0xFFFF;
+hlpr->flags = IP_NAT_HELPER_F_ALWAYS;
+
+conntrack_module:
+hlpr->tuple.src.u.udp.port = port x;
+hlpr->tuple.dst.protonum = IPPROTO_UDP;
+hlpr->mask.src.u.udp.port = 0xFFFF;
+hlpr->mask.dst.protonum = 0xFFFF;
 
 
------ Original Message ----- 
-From: "Javier Govea" <jgovea@magma.ca>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, September 19, 2003 5:36 PM
-Subject: Proxy Chaining
+/proc/net/ip_conntrack lists both connections (answer&reply) as unreplied.
+Can someone explain to me why the reply is seen as a new connection ?
 
 
-> Hi to all,
->
-> I want to setup a chain of proxies and I was wondering if this could be
-done with
-> iptables. Any advice is very welcome. Here is more in detail what I
-want:
->
-> Host A needs to forward all traffic (http, ftp, icmp, ...) to Host B,
-which in turns
-> forwards all traffic to Host C, which in turns forawards everything to
-its default
-> gateway. The hosts do not belong to a LAN only A and B are in the same
-LAN.
->
-> Is it possible to setup this kind of proxy chaining with iptables?? if
-so, any
-> suggestions on how to do it?? if iptables is not the right tool to solve
-this problem,
-> any suggestions on what can i use???
->
-> thanx to all in advance..
-> Xavier
+regards
 
-I have no idea if this works and if it doesn't please someone on this list
-tell me why.
-
-On Host A
-iptables -t nat -A PREROUTING -j DNAT --to ip.to.host.B
-
-On Host B
-iptables -t nat -A PREROUTING -j DNAT --to ip.to.host.C
-
-On Host C
-iptables -t nat -A PREROUTING -j DNAT --to default.gateway.ip
-
-
+Nikolai Dahlem
 
 
