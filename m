@@ -1,11 +1,13 @@
-From: Rakotomandimby Mihamina <rktmb.list@wanadoo.fr>
-Subject: I submit you my rules, to have your opinions.
-Date: Fri, 12 Mar 2004 13:36:18 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: I submit you my rules, to have your opinions.
+Date: Fri, 12 Mar 2004 12:52:40 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4051AEC2.30100@wanadoo.fr>
+Message-ID: <200403121252.40589.Antony@Soft-Solutions.co.uk>
+References: <4051AEC2.30100@wanadoo.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <4051AEC2.30100@wanadoo.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,29 +17,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hi everybody.
-I made several searches over the internet to build my firewall rules.
-Here they are :
-http://stko.dyndns.info/scripts/ipt
-My configuration is ( for the moment )
-a single box i use as Personnal web server, FTP server and Icecast 
-stream server.
-I also have a sendmail server running on it (needed by the portal of my 
-site to notify members ... )
-I try to "sort" the different kinds of attacks (i dont know if 'im doing 
-it right .. ) and DROP everything that would "eat" the bandwidth.
-I dont IRC nor P2P.
+On Friday 12 March 2004 12:36 pm, Rakotomandimby Mihamina wrote:
 
-I would like you , if you would too :-) , to tell me if my set of rules 
-is OK , if i should change something, or if there is a dumbass mistake 
-on it. The goal is of course getting the _closest_ to the 100% secure ...
+> Hi everybody.
+> I made several searches over the internet to build my firewall rules.
+> Here they are :
+> http://stko.dyndns.info/scripts/ipt
 
-Thank you in advance.
+I really think you should restrict the rules:
+
+> # My ISP DNS's ... is it correct to put this like that ?
+> iptables -A INPUT -s 193.252.19.3 -j ACCEPT
+> iptables -A INPUT -s 193.252.19.4 -j ACCEPT
+
+so that they only allow DNS packets (TCP + UDP, both port 53).   There's no 
+reason to give your ISPs DNS servers free access to everything on your 
+Firewall.
+
+You don't actually need:
+
+> iptables -A INPUT -p tcp --dport 20 -j ACCEPT
+
+because you already have:
+
+> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+This rule will allow FTP data connections on port 20 as being RELATED to the 
+control connection on port 21.
+
+SSH doesn't use UDP, so no need for this rule:
+
+> iptables -A INPUT -p udp --dport 22 -j ACCEPT
+
+Same for HTTP, FTP, NNTP and POP3 - they don't use UDP, so remove these rules:
+
+> iptables -A OUTPUT -p udp --dport 80 -j ACCEPT
+> iptables -A OUTPUT -p udp --dport 21 -j ACCEPT
+> iptables -A OUTPUT -p udp --dport 119 -j ACCEPT
+> iptables -A OUTPUT -p udp --dport 110 -j ACCEPT
+
+Regards,
+
+Antony.
+
 -- 
-Rakotomandimby Mihamina Andrianifaharana
-Tel : +33 2 38 76 43 65
-http://stko.dyndns.info/site_principal/Members/mihamina
+There's no such thing as bad weather - only the wrong clothes.
+
+ - Billy Connolly
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
