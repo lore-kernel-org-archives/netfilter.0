@@ -1,13 +1,14 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: INCOMPLETE [ 8bytes] with two src addresses!
-Date: Fri, 27 Feb 2004 19:15:41 +0100
+Date: Fri, 27 Feb 2004 19:22:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1077905740.2526.41.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <1077906138.2526.48.camel@anduril.intranet.cartel-securite.net>
 References: <20040227175608.666a0e38.Information-Cascade@ntlworld.com>
+	 <1077905409.1644.5.camel@pepelui.baicom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040227175608.666a0e38.Information-Cascade@ntlworld.com>
+In-Reply-To: <1077905409.1644.5.camel@pepelui.baicom>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +19,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Graham Swallow <Information-Cascade@ntlworld.com>
-Cc: netfilter@lists.netfilter.org
+To: Alexis <alexis@attla.net.ar>
+Cc: Graham Swallow <Information-Cascade@ntlworld.com>, Netfilter <netfilter@lists.netfilter.org>
 
-Le ven 27/02/2004 =E0 18:56, Graham Swallow a =E9crit :
-> I've never seen this log before (split lines).
-> Is it simply someones modem noise
-> How can it have two SRC addresses?
+Le ven 27/02/2004 =E0 19:10, Alexis a =E9crit :
+> at first sight its the first step of a traceroute
 
-This log is an ICMP error. And, as such, it contains a citation from the
-IP packet that have raised it.
+I don't think so.
+When you traceroute, your first step is your default gateway that sends
+you ICMP TTL exceeded back with an IP within your network. We can see :
 
-> Feb 27 17:50:37 sky1 kernel: fw-drop IN=3Deth1
-> OUT=3D MAC=3D....
 > SRC=3D216.200.115.66
-
-ICMP error source : level3-mfn.fra1.de.mfnx.net
-
 > DST=3D80.5.144.39
 
-Destination : probably you  :)
+As they do not belong to the same network, it's not the first step, but
+can be a further one.
 
-> LEN=3D56
-> TOS=3D0x00
-> PREC=3D0x00
-> TTL=3D247
-> ID=3D0
-> PROTO=3DICMP
-> TYPE=3D11
-> CODE=3D0
-
-Type 11, code 0 is TTL exceeded in transit.
-
-> [SRC=3D80.5.144.39 DST=3D200.179.192.14 LEN=3D40 TOS=3D0x00 PREC=3D0x00=
- TTL=3D1
-> ID=3D12701 PROTO=3DTCP INCOMPLETE [8 bytes] ]
-
-This is original packet citation so your kernel can associate the error
-to the right sent IP packet.
-
-The source is 80.5.144.39 (normal) and the destination 200.179.192.14
-(dns1.rjo.virtua.com.br). As you can see, packet was received with
-TTL=3D1. That's why the error was raised. Then we know the payload was TC=
-P
-but the citation was truncated at 8 bytes although we need 20 to analyse
-TCP header (RFC says at least IP header + 8 bytes). By the way, it could
-have been cool if theses 8 bytes were shown ;)
-
-For more information on Netfilter logging, you can see :
-
-	http://logi.cc/linux/netfilter-log-format.php3
-
-You can also paste your trace in the online analyser :
-
-	http://logi.cc/linux/NetfilterLogAnalyzer.php3
+Moreover, usual traceroute tools uses ICMP echo (Windows) or UDP (Unix)
+probes. We have TCP here. BTW, TCP is damn cool to traceroute when you
+target a host with a known opened port (e.g. www.microsoft.com) :)))
 
 --=20
 http://www.netexit.com/~sid/
