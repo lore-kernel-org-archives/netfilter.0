@@ -1,13 +1,11 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Snuffing out hackers
-Date: Wed, 16 Jul 2003 15:47:31 -0400
+From: Graham Swallow <Information-Cascade@ntlworld.com>
+Subject: DNAT udp 192.163.1.2:514 -> 127.0.0.1:1514 -- from local box
+Date: Wed, 16 Jul 2003 20:58:50 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030716194731.GC27608@cannon.eng.us.uu.net>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DF6@alderaan.smgtec.com>
+Message-ID: <20030716205850.0b55f8b5.Information-Cascade@ntlworld.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122DF6@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +16,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Daniel Chemko <dchemko@smgtec.com>
-Cc: netfilter@lists.netfilter.org
-
-This is an icmp(3:3) which means port unreachable. This is an innocent
-icmp. However, the question is as to why you receive it on your router
-if 24.57.108.11 has nothing to do with you... If it's a correct statement
-that it's coming from outside and you don't have anything to do with
-24.57.108.11, then the only way it could come to you is by source-routing
-which should have been turned off by your ISP in the first place...
-
-Ramin
+To: LIST-netfilter <netfilter@lists.netfilter.org>
 
 
+VERSION: uptables-1.2.1.a
 
-On Wed, Jul 16, 2003 at 11:58:28AM -0700, Daniel Chemko wrote:
+I Type:
+	iptables
+		-t nat -A OUTPUT
+		-p udp -d 192.168.1.2 --dport 514
+		-j DNAT --to 127.0.0.1:1514
+It replies:
+	iptables: Invalid argument
 
-> I am getting some disturbing packet traffic hitting my firewall. Here
-> goes:
-> 
->  
-> 
-> IN=eth4 OUT=eth5 SRC=24.87.243.251 DST=24.57.108.11 LEN=76 TOS=0x00
-> PREC=0xC0 TTL=25
-> 
-> 4 ID=17431 PROTO=ICMP TYPE=3 CODE=3 [SRC=24.57.108.11 DST=24.87.243.251
-> LEN=48 TOS=0x00 PREC=0x00 TTL=117 ID=15860 DF PROTO=TCP SPT=
-> 
-> 3161 DPT=80 WINDOW=16384 RES=0x00 SYN URGP=0 ]
-> 
->  
-> 
-> None of the addresses listed in the packets are from my networks, but
-> what is more disturbing is that eth4 is my internal network interface.
-> Can anyone see (baring an internal intrusion has occurred) how this can
-> happen?
-> 
->  
-> 
-> It definitely appears to be an exploit on my configuration or something.
-> 
->  
-> 
->  
-> 
+
+The traffic is to ORIGINATE from a local process (this is 192.168.1.46),
+heading out to a ficticious 192.168.1.2, and DNAT'd to localport 1514
+
+syslogd reuses to log to a port other than 514, but using DNAT as a
+kludge should work. I've tried a range of options, and got REDIRECT
+to almost work, but after the first packet it gave connection refused.
+NAT-HOWTO.txt 6.3.7 says must be OUTPUT and 127  
+
+I am using socat  http://www.dest-unreach.org/socat/  to test
+
+	socat UDP4-LISTEN:1514 -	# server
+
+	socat -  UDP4:127.0.0.1:1514	# client
+
+
+   regards
+--
+   Graham
+   Information-Cascade -at- ntlworld.com
 
