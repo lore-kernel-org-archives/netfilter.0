@@ -1,9 +1,9 @@
-From: "Leonardo Rodrigues ( listas )" <leolistas@solucoesip.net>
-Subject: Re: problem with "-m owner" in kernel 2.4.20
-Date: Thu, 5 Dec 2002 17:24:37 -0300
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Re: Secuirty sites
+Date: Thu, 05 Dec 2002 19:41:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001401c29c9c$55990c80$3201a8c0@leonardo>
-References: <7a7vuu078d02e40u64231r4vpfgrvespap@4ax.com>
+Message-ID: <3DEF9DD2.6060000@gmx.de>
+References: <004a01c29c6d$3466b5f0$e6353fc1@nexor.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,36 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 
-    I got similar problems with several targets, including DNAT and SNAT !!!
-How do I solve the problem ? Simply recompiling iptables with the newer
-kernel running !!
+Hello Wasim,
 
-    And, as usual, you should check if your kernel is really compiled with
-ipt_owner support. You can do that with the command 'modinfo ipt_owner'. If
-it shows ipt_owner module informations, that's fine. If it shows 'no module
-by that name found', your kernel wasnt compiled with that iptables module
-option.
+If you're looking for something like a online port scanner then have a
+look at
+http://scan.sygate.com/ . Makes TCP-, UDP-Scan and a few more.
 
-    Sincerily,
-    Leonardo Rodrigues
+Regards
+Sven
 
------ Original Message -----
-From: "Torben Nielsen" <m@l4l.dk>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, December 05, 2002 3:45 PM
-Subject: problem with "-m owner" in kernel 2.4.20
+Wasim Bashir wrote:
+
+ >Hi,
+ >
+ >Which security sites do you recommend to check the security of a 
+firewall ?
+ >
+ >Thanks
+ >
+ >Wasim
+ >
+ >
+ >
+ >
+ >
 
 
-Can anyone tell why the below shown line fails when running kernel version
-2.4.20 but not when
-running  kernel 2.4.19.
 
-/usr/local/sbin/iptables -A OUTPUT -o eth0 -m owner --uid-owner root -j
-ACCEPT
-iptables: Invalid argument
 
 
