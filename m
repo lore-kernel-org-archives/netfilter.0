@@ -1,13 +1,13 @@
-From: "Glover George" <dime@gulfsales.com>
-Subject: RE: Redhat 7.2 Kernel
-Date: Tue, 9 Jul 2002 14:12:26 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Speed Issues through NAT Firewall
+Date: Tue, 9 Jul 2002 20:32:30 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000001c2277c$93210d40$7200a8c0@blue>
-References: <839BF5387528D311AD5D00902751CFC301B041A2@HAVASSMX>
+Message-ID: <20020709193231.DGDB19225.mta07-svc.ntlworld.com@there>
+References: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com> <200207091808.g69I8R810149@vulcan.rissington.net> <1026239145.804.56.camel@tux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <839BF5387528D311AD5D00902751CFC301B041A2@HAVASSMX>
+In-Reply-To: <1026239145.804.56.camel@tux>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,61 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: 'Denis JULIEN' <denis.julien@vupublishing.net>, "'Mike G. Hammonds'" <mhammonds@knowledgeinenergy.com>
-Cc: "'Iptables-User-list (E-mail)'" <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@lists.samba.org>
 
-If you install redhat with no firewall (i.e, when it asks for medium,
-high, or no firewall), these scripts will exist but will not run.  Then
-the common practice around here is to just create your script in
-/etc/sysconfig/network-scripts/rc.firewall.  And have that run in
-/etc/rc.d/init.d/rc.local (although I believe local is run after all
-scripts, so this may not be the most secure for a highly secure
-solution).
+On Tuesday 09 July 2002 7:25 pm, Martin Josefsson wrote:
 
-Glover George
-Systems/Networks Administrator
-Gulf Sales & Supply, Inc.
-dime@gulfsales.com
-(228)-762-0268
+> On Tue, 2002-07-09 at 20:08, Antony Stone wrote:
+> > On Tuesday 09 July 2002 6:57 pm, Travis Crook wrote:
 
+> > > The firewall on the DSL is an Athlon XP 1500+.  The firewall on the ISP
+> > > line is a PII 333.  I will check on the full/half duplex issue.
+> >
+> > That's a hell of a difference, and could conceivably account for the
+> > bandwidth.   I'd say it depends on how much RAM you have in the PII/333
+> > and how many connections you're trying to support.
+>
+> No way a pII 333 is to slow to handle 2Mbit/s, my old 486 can handle
+> that easily. You would have to trash the conntrack hashtable with
+> multiple attacks to even have a chance of getting it that slow.
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org [mailto:netfilter-
-> admin@lists.samba.org] On Behalf Of Denis JULIEN
-> Sent: Tuesday, July 09, 2002 1:13 PM
-> To: 'Mike G. Hammonds'
-> Cc: Iptables-User-list (E-mail)
-> Subject: RE: Redhat 7.2 Kernel
->=20
-> I suggest that you read this very good documentation:
-> http://www.netfilter.org/documentation/tutorials/blueflux/iptables-
-> tutorial.
-> html#INSTALLRH71
-> I'm using also red hat 7.2 and this was able to solve the same problem
-> like
-> you
-> rg
-> Denis
->=20
-> -----Message d'origine-----
-> De : Mike G. Hammonds [mailto:mhammonds@knowledgeinenergy.com]
-> Envoy=E9 : mardi 9 juillet 2002 16:17
-> =C0 : Iptables-User-list (E-mail)
-> Objet : Redhat 7.2 Kernel
->=20
->=20
-> Does the default install kernel of RH7.2 have iptable support already
-> compiled in it?
->=20
-> Mike Hammonds
-> Fellon-McCord & Associates, Inc.
-> Information Services Manager
-> Voice (502) 214-6324 Fax (502)426-8800
-> mhammonds@knowledgeinenergy.com
-<mailto:mhammonds@knowledgeinenergy.com >
->=20
+I only said it could *conceivably* account for the bandwidth limit - I didn't 
+say it was likely.   I agree with you that a 486 can easily exceed this 
+performance, but it depends what Travis is doing with the system - last 
+summer I saw netfilter boxes reduced to tens of kbits/sec bandwidth by Nimda 
+and Code Red saturating the conntracking tables with half-open links.
 
+I agree with several people here that Travis should check the hardware first, 
+and I would also recommend testing the bandwidth by doing several downloads 
+simultaneously from sites with high-bandwidth links, as close (in hops) to 
+his machine as possible.
 
+ 
 
+Antony.
 
