@@ -1,13 +1,11 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Upper limit of users for iptables firewall
-Date: 14 Oct 2004 23:39:31 +0200
+From: <menonrr@adelphia.net>
+Subject: Forward state
+Date: Thu, 14 Oct 2004 21:48:13 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097778582.21962.11.camel@nostromo.bgsecm.com>
-References: <20041014074601.27218.qmail@web60406.mail.yahoo.com>
+Message-ID: <20041015014814.LWKR15118.mta13.adelphia.net@mail.adelphia.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041014074601.27218.qmail@web60406.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +15,31 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El jue, 14 de 10 de 2004 a las 09:46, ads nat escribi=C3=B3:
-> Hi,
-> My Redhat linux 9.0 gateway server is with iptables
-> firewall. I am defining security rules based on mac
-> address of 400 users.
-> My server configure is=20
-> 1) Intel Pentium IV 2.4 Ghz processor.
-> 2) 512 MB DD RAM
-> 3) 40 GB hard disc.
->=20
-> Will it be able to server request of 400 users?
-> I am doubtfull about performance of iptables firewall
-> for this load but want to avoid commercial firewall.
->=20
-> Has anybody used Iptables firewall for this user
-> traffic or more than this.
-> Please guide me for same.
->=20
-> Thanks for support.
->=20
->=20
-> slow fireawll Can someone give ideaWhat=20
 
-With that kind of machine in my opinion you shouldn't have
-any problems to serve 400 users, but it depends on the
-bandwidth they are using.
+10/14
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+Hello,
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+I am a new user of IPtables.
+
+I have a Redhat 9 gateway that masquerades traffic between private network and the internet that are directly connectecd to it. The gateway also forwards traffic between another #internal# network (not directly connected) and the internet.
+
+The input chain has rule that allows only ESTABLISHED and RELATED connections to the external interface from internet. 
+
+The Output chain has rule allowing NEW, ESTABLISHED, and RELATED connections from inside.
+
+The FORWARD chain allows all connections from inside and outside. (NEW,ESTABLISHED or RELATED *not* specified)
+
+The Queries:
+
+1) Does the state in INPUT cause NEW connections not be forwarded (as specified in Forward Chain)? I have no state in Forward chain. I want free flow of traffic between the internet and the #internal# network.
+
+2) To allow all connections IN and OUT to be forwarded, should I explicitly say NEW in Forward chain?
+
+Thank You.
+Menon
 
 
