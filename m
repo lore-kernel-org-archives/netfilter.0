@@ -1,7 +1,7 @@
-From: Alireza Yazdani <yazdani1193@yahoo.com>
-Subject: configure firewall & NAT & cache with each other
-Date: Sat, 29 Jan 2005 20:15:39 -0800 (PST)
-Message-ID: <20050130041539.25496.qmail@web51905.mail.yahoo.com>
+From: Kamen TOMOV <kamen@cybuild.com>
+Subject: connlimit against flashget
+Date: 30 Jan 2005 11:20:19 +0200
+Message-ID: <87vf9fz31o.fsf@c3po.zlatenlist.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,58 +18,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-Hello all,
+I am running a small LAN and my Internet provider has limited the
+number of my outgoing web connections. My clients use programs like
+Flashget that spawn multiple connections to the server when
+downloading big files from web sites and it is very likely that the
+limit will be reached.
 
-I have 2 box for cache, bandwidth manager, firewall, NAT .
+That is why I would like to ask you if it is a good idea to use the
+connlimit match with iptables to restrict the number of parallel TCP
+connections to a server per client IP address.
 
-one box is cache server(squid) only. and another box is bandwidth manager, firewall, NAT server.
+I plan to do something like that:
 
-I haven't any rule on my squid box. the default gateway of my users is my firewall box. my firewall box has 2 ethernet(user side and internet side).
+iptables -p tcp --syn --dport 80 --dst www.warez.net -m connlimit \
+         --connlimit-above 2 -j REJECT
 
-ip of firewall box is :
+If you think that it is not a good idea could you please recommend a
+solution? Changing the provider is not an option :-)
 
-iptables_box_ILAN=172.16.5.5 (user side)(eth0)
-
-iptables_box_WLAN=212.213.38.100 (internet side)(eth1)
-
-ip of cache box is :
-
-squid_box=172.16.5.6
-
-the default gateway of cache box is firewall box
-
-I use of this rule for NAT :
-
-iptables -t nat -A POSTROUTING -s 172.16.5.0/24 -o eth1 -j SNAT --to 212.213.38.100
-
-now I want redirect the request on port 80 to cache box :
-
-local_network=172.16.5.0/24
-
-iptables_box_ILAN=172.16.5.5
-
-iptables_box_WLAN=212.213.38.100
-
-iptables -t nat -A PREROUTING -i eth0 -s ! $squid_box -p tcp --dport 80 -j DNAT --to $squid_box:3128
-
-iptables -t nat -A POSTROUTING -s $local_network -d $squid_box -o eth0 -j SNAT --to $iptables_box_ILAN
-
-iptables -A FORWARD -s $local_network -d $squid_box -i eth0 -o eth0 -p tcp --dport 3128 -j ACCEPT
-
-when I don't use of NAT it is correct. and when I set all on one ethernet it is correct.
-
-but when I have two ethernet and I NAT on firewall box it's not work correct.
-
-Please help me.
-
-Thanks.
-
- 
+Thanks in advance,
+-- 
+Kamen TOMOV
 
 
-
-		
----------------------------------
-Do you Yahoo!?
- Yahoo! Search presents - Jib Jab's 'Second Term'
