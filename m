@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: question regarding netfilter usage
-Date: Sat, 6 Mar 2004 09:09:51 +0000
+From: "T. Take" <t_takejp@hotmail.com>
+Subject: Re: ULOG: invalid argument
+Date: Sat, 06 Mar 2004 19:25:21 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403060909.51699.Antony@Soft-Solutions.co.uk>
-References: <40E631F174C41E4DBE52727E137AF92785BBDA@EXCHVS1.cs.cornell.edu>
+Message-ID: <BAY15-F33RUm6ttWN6G000566da@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40E631F174C41E4DBE52727E137AF92785BBDA@EXCHVS1.cs.cornell.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +14,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Saturday 06 March 2004 4:11 am, Hitesh Ballani wrote:
+Hi. Thank you for your answers.
 
-> I want to process incoming packets to one of my addresses and my ports to
-> be forwarded to some other destination .. the complication arises due to
-> the fact that the destination will be determined dynamically i.e based on
-> the port on which the packet arrived, I need to communicate with some other
-> machine using udp and determine the destination to which this is to be
-> forwarded, this destination also needs to be cached so that any future
-> packets on this port can directly be sent to the destination...
+On Fri, 5 Mar 2004, Michelle Konzack wrote:
+>
+> > Am 2004-03-05 18:51:06, schrieb Jozsef Kadlecsik:
+> > >On Fri, 5 Mar 2004, Michelle Konzack wrote:
+> > >
+> > >> >> # iptables: Invalid argment (the same error)
+> > >> >
+> > >> >Please make sure there is no iptables binary from your distribution 
+which
+> > >> >precedes in PATH the iptables binary installed from source.
+> > >                        ^^^^^^^^^^^^^^^
+> > >> This is not possibel, because he use the Debian nativ-system.
+> > >> ...he has not written that he has used
+> > >> apt-get install ulogd
+> > >                  ^^^^^
+> >
+> > False, you have overread the line above...
+> > He has done an
+> >
+> > apt-get build-dep ulogd
+> > apt-get -b source ulogd
+> >
+> > which I was talking about. The 'iptables' from WOODY are working fine
+>
+>Please, an error message returned by iptables has nothing to do with the
+>ulog daemon, let it run on the system at all or not.
+>
+>Best regards,
+>Jozsef
 
-You might want to look into the way Linux Virtual Server works - this sounds 
-something like what that does.
+I didn't write about installing ulogd, but I have done it.
 
-http://www.linuxvirtualserver.org
+#apt-get build-dep ulogd
+#apt-get -b source ulogd
+#dpkg -i ulogd-1.0.2.deb
+(sometimes i used "-f" option.)
 
-Antony
+And then, I have installed iptable-1.2.9 in the same way.
+(I checked the messages by "#iptables -V" and "#ulogd -V", and they are 
+1.2.9 and 1.0.2)
 
--- 
-Documentation is like sex.
-When it's good, it's very very good.
-When it's bad, it's still better than nothing.
+In other words, maybe i succeded the version up of ulogd and iptables. But 
+I cannot use ULOG
+target.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Best regards,
+T.Take
+
+_________________________________________________________________
+友達と24時間ホットライン「MSN メッセンジャー」、今すぐダウンロード！  
+http://messenger.msn.co.jp 
 
 
