@@ -1,13 +1,14 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: udp port 135
-Date: Thu, 14 Aug 2003 10:38:53 +0200 (CEST)
+From: "Vishwanatn T. K." <tkvishy@yahoo.com>
+Subject: Re: iptables+ulogd+mysql
+Date: 14 Aug 2003 15:31:15 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0308141031330.12085@dns.toxicfilms.tv>
-References: <001201c36225$e166d270$0401000a@sterenborg.info>
- <3F3B404A.7060400@belfordhk.com>
+Message-ID: <1060855275.10220.2.camel@risingsun.penguindia.com>
+References: <00a301c361a8$042772c0$c2bf09ca@Housecall>
+Reply-To: tkvishy@yahoo.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F3B404A.7060400@belfordhk.com>
+In-Reply-To: <00a301c361a8$042772c0$c2bf09ca@Housecall>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +18,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: cc <cc@belfordhk.com>
-Cc: Rob Sterenborg <rob@sterenborg.info>, 'Netfilter Group' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: hare ram <hareram@sol.net.in>
+Cc: netfilter@lists.samba.org
 
-> > No. I am interested too in why udp shows "open" from a foreign host,
-Because it received no response.
-> > while tcp shows filtered.
-Because it received no response.
+On Wed, 2003-08-13 at 20:04, hare ram wrote:
+> Hi all
+> 
+> iam working with iptables + ulogd sending data to mysql
+> 
+> i have  RH 9.0
+> iptables 1.2.8
+> mysql 3.23
+> 
+> and install ulogd-1.00
+> 
+> iam able to compile and run the the ulogd deamon, but could not able to log
+> any data to mysql
 
-> > How can I check if an udp port is really closed/filtered or opened ?
-For UDP, remotely you can only find out if it is closed (ICMP response
-for close port) or filtered/open (No response at all)
+can you provide the ulog config details with the iptables rule syntax
+used by you.
 
-> I'm completely stumped on this issue.
-To completely graps it, you would have to make tests with tcpdump while
-scanning your host with different decisions: REJECT, DROP , --reject-with
-tcp-reset, etc...
-
-I did it once, and I know exactly what will nmap say for what it receives.
-
-Regards,
-Maciej
+vishwanath
 
 
