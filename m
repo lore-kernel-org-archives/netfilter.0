@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FTP/auth problems (slooow links)
-Date: Mon, 14 Oct 2002 00:50:19 +0100
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Portscan logging?
+Date: Mon, 14 Oct 2002 02:03:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021013235022.ZXXG27697.mta05-svc.ntlworld.com@there>
-References: <3DA97045.2040803@solidas.com>
+Message-ID: <3DAA09B7.9040305@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DA97045.2040803@solidas.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +15,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sunday 13 October 2002 2:08 pm, Svein E. Seldal wrote:
+Hello everybody,
 
-> I have a linux (2.4.18) running iptables. It is a router and FW, and is
-> NAT'ing the internal address range (192.168.0.x) to the external range
-> (1.2.3.x). ip_conntrack, ip_conntrack_ftp and ip_nat_ftp are all loaded
-> in the router. It is a 266 PII with 128Mb memory.
->
-> For any machine that are placed on the inside, there are two methods of
-> getting to another machine on the inside: either using the direct
-> internal address 192.168.0.x or by using the external address 1.2.3.x.
+I'm currently using iptables v1.2.5 on a redhat linux 7.3 machine to 
+block new incoming requests on my internet router (dial on demand via 
+ISDN). TCP requests are answered with a ICMP-Port-Unreachable, and all 
+the rest is DROPPED by the default policy.
+The thing is, I'd like to log all portscans from the "outer world", just 
+to know who's interested in my system :-) I got scanlogd, compiled and 
+installed it, and it really works fine, as long as the iptables rules 
+are down and the default policy is ACCEPT. But when I put in all my 
+rules, the scanlogd doesn't log any portscans from the internet. I think 
+that is because the packets are already dropped in the kernel by the 
+iptables module, am I right??
 
-Without seeing your ruleset I cannot be certain, but I would not expect the 
-latter situation to work properly, for reasons explained below...
+And know my question is if there's a chance to log portscans (maybe also 
+the different kinds??) via some iptables-rules, an extra iptables-module 
+or any other tool?? I hope that somebody knows something about it, 
+because I think it's very nice to see how much people try to find holes 
+in any system...it's already quite interesting to review the Apache-Logs 
+everyday, with peoples thinking there's an IIS running on my system :-)))
 
-> Now, the problem is this: I open two FTP connections from the client
-> machine 192.168.0.10 to a server, the first to 192.168.0.5 and the other
-> connection to 1.2.3.5.
+Thanks in advance for your tips!!!
 
-> The connection going via. the router is slow, very slow. The problem is
-> that is does not matter if I DROP, REJECT or ACCEPT the auth (ident)
-> port. It still is as extremely slow -- direct connection takes 20 mins,
-> while the routed version takes 2-3 hours!!.
+Greetings
+Sven
 
-I think you need to think about the route of packets and their replies.
 
-Consider machine 192.168.0.10 connecting to 192.168.0.5.   Both are on the 
-same subnet, therefore client sends packets to server and server sends 
-packets to client - all works well.
-
-Now consider 192.168.0.10 sending packets to 1.2.3.5.   These go via your 
-router, which translates 1.2.3.5 to 192.168.0.5, and returns them to the 
-subnet where they originated.   Now where is the server going to reply to ?   
-192.168.0.10, because that is the address which sent the original packet...
-
-Therefore 192.168.0.10 sends a packet to 1.2.3.5 and gets a reply from 
-192.168.0.5 (the reply goes directly from server to client, not through the 
-NAT router, because both addresses are on the same subnet), therefore 
-192.168.0.10 gets confused and unhappy.
-
-To be honest I'm not entirely sure why this setup is working at all - maybe 
-you should run ethereal on the local network and see what source / 
-destination addresses you have on the packets flying around when you try to 
-contact 1.2.3.5 from 192.168.0.10 ?
-
-Basically if you are doing destination NAT then you should not expect it to 
-work sensibly if you try to contact the NAT address from a machine on the 
-same subnet as the "real" address.
-
-Antony.
-
--- 
-
-Success is a lousy teacher.   It seduces smart people into thinking they 
-can't lose.
-
- - William H Gates III
 
