@@ -1,8 +1,8 @@
 From: Xinwen Fu <xinwenfu@cs.tamu.edu>
 Subject: missed packets
-Date: Tue, 2 Mar 2004 23:26:53 -0600 (CST)
+Date: Tue, 2 Mar 2004 23:17:05 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSO.4.58.0403022326400.27317@unix.cs.tamu.edu>
+Message-ID: <Pine.GSO.4.58.0403022300510.22208@unix.cs.tamu.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
