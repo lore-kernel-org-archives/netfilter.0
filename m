@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NAT and DNS
-Date: Wed, 11 Sep 2002 14:10:39 +0100
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: Re: Is DIVERT w/o forwarding feasible?
+Date: Wed, 11 Sep 2002 16:08:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209111310.g8BDAjv08554@vulcan.rissington.net>
-References: <20020829192902.29524.97535.Mailman@kashyyyk> <001301c2598c$351f9170$65ba030a@cecierj.adm>
+Message-ID: <3D7F4E44.70905@fugmann.dhs.org>
+References: <Pine.LNX.4.33.0209111953130.19450-100000@panda.center-f1.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001301c2598c$351f9170$65ba030a@cecierj.adm>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +16,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Yury Bokhoncovich <byg@center-f1.ru>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 11 September 2002 1:10 pm, Mauricio Gouvea wrote:
+Yury Bokhoncovich wrote:
+>>Err, please explain why you do not want forwarding enabled. If this is
+> Because rule #1: "People makes mistakes". Disabled forwarding gives more
+> strict and reliable control under possible traffic. There are a few books
+> where this topic discussed (including O'Reilly's).
+Rephrase - You make mistakes. Thats ok, but the system was designed to 
+forward packets. If you dont want it, then live without it. And please 
+dont refer to opinions stated in books. If you really want a "good ol'e 
+classic", then Bjarne Stroustrup once said that one should never put a 
+computer on the net - Not a vailable solution is it?
 
-> Hi, is it possible to put a DNS server behind a firewall (iptables) doi=
-ng
-> NAT ?
+Compared to cars - You are saying that its dangerous to drive, and the 
+only way to control this is to ban them - Don't go to the carmakers 
+(this list) to ask for other solutions, when you already stated that you 
+do not trust the cars.
 
-Yes.
+-- 
+Neo: 'Can you fly that thing?'
+Trinity: 'Not yet'.
+$ apt-get install pilot-prg-v212helicopter.
 
-> If I set the FORWARD rules for a valid ip alias 0n my firewall and
-> the POSTROUTING for an inside IP address this DNS SErver will answer to
-> external world with no problems ???
-
-Not quite.   You need the DNAT rule in the PREROUTING chain, and the rule=
-=20
-inthe FORWARD rule has to be for the internal (ie private) address, becau=
-se=20
-by the time the packets get to the FORWARD chain, they've already been=20
-DNATted.
-
-> I=B4ve never tested this.
-
-Remember that DNS uses both UDP and TCP (both on port 53), remember also =
-that=20
-depending on what sort of DNS server it is (forwarding, authoritative,=20
-primary, secondary, caching...) you may want to allow outgoing requests f=
-rom=20
-it as well as incoming ones.
-
-Antony.
-
---=20
-
-How I want a drink, alcoholic of course, after the heavy chapters
-involving quantum mechanics.
-
- - 3.14159265358979
 
