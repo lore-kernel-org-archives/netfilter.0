@@ -1,9 +1,11 @@
-From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: ip_forward file
-Date: Fri, 5 Jul 2002 08:12:20 +1000
+From: Michael <mutk@ozemail.com.au>
+Subject: Re: Fwd: RE: MSN Messanger through a iptables firewall.
+Date: Fri, 05 Jul 2002 09:32:55 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA22B@JUPITER>
+Message-ID: <3D24DB27.9070706@ozemail.com.au>
+References: <200207041424.g64EOwU31986@vulcan.rissington.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -14,47 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, iptables <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.samba.org>
 
-Redhat uses it's /etc/sysconfig/network file to save that stuff.. 
+Antony Stone wrote:
 
-IE..
-
-FORWARD_IPV4=yes
+>Someone just posted this to me instead of the list.
+>
 
 
-thanks,
-George Vieira
-Systems Manager
-Citadel Computer Systems P/L
-http://www.citadelcomputer.com.au
+Thanks Antony....
 
+>
+>
+>Antony.
+>
+>----------  Forwarded Message  ----------
+>
+>Subject: RE: MSM Mesanger through a iptables firewall.
+>Date: Thu, 4 Jul 2002 15:27:56 +0100
+>From: <aaa.coms.sec@btclick.com>
+>To: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+>
+>might be me but what about the irc modules ? i.e.
+>
+You mean
+modprobe ip_conntrack_ftp
+modprobe ip_conntrack_irc
 
+The modules below, as far as I can recall are for IPCHAINS, not iptables.
+I could be wrong... my version of iptables does no have the modules 
+listed below.
 
------Original Message-----
-From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-Sent: Thursday, 04 July 2002 11:17 PM
-To: iptables
-Subject: Re: ip_forward file
+>
+>
+>/sbin/depmod -a
+>/sbin/modprobe ip_masq_ftp
+>/sbin/modprobe ip_masq_raudio
+>/sbin/modprobe ip_masq_autofw
+>/sbin/modprobe ip_masq_cuseeme
+>/sbin/modprobe ip_masq_mfw
+>/sbin/modprobe ip_masq_portw
+>/sbin/modprobe ip_masq_quake
+>/sbin/modprobe ip_masq_user
+>/sbin/modprobe ip_masq_vdolive
+>/sbin/modprobe ip_masq_irc
+>
+Cheers,
+Michael
 
-
-On Thursday 04 July 2002 2:16 pm, Denis JULIEN wrote:
-
-> Hi,
-> In order to validate the routing of my Red hat linux (7.2) I have to do an
-> echo "1" > /proc/sys/net/ipv4/ip_forward.
-> But every time that I restart the network service the ip_forward file
-> returns to the "0" value and my server does not route any more.
-> How can I do to keep the ip_forward set to "1"?
-
-Put the command:
-echo "1" > /proc/sys/net/ipv4/ip_forward
-into one of your startup scripts (preferably after setting the firewall 
-rules).
-
- 
-
-Antony.
 
