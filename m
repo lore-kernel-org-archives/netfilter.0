@@ -1,12 +1,12 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: protocol 50 unreachable
-Date: Thu, 02 Dec 2004 00:15:47 -0500
-Message-ID: <1101964546.2025.149.camel@localhost>
-References: <Pine.LNX.4.44.0412012017260.22471-100000@gollum.grajagan.net>
+From: "Shawn Wright" <swright@sls.bc.ca>
+Subject: Performance problems 2.4.x kernel
+Date: Wed, 01 Dec 2004 21:34:25 -0800
+Message-ID: <41AE38E1.6107.ABD312CB@localhost>
+Reply-To: swright@sls.bc.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0412012017260.22471-100000@gollum.grajagan.net>
+Content-description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,102 +18,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Helge Weissig <helgew@grajagan.org>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wed, 2004-12-01 at 23:53, Helge Weissig wrote:
-> On Wed, 1 Dec 2004 at 23:12 -0500, Jason Opperisano wrote:
-<snip>
-> JO> state tracking.  in a VPN client -> VPN server scenario the esp packets
-> JO> are *always* initiated from the client side:
-I don't believe that is true.  The tunnel is always initiated from the
-client side but the traffic in the tunnel can be initiated from the
-remote side.
-> 
-<snip>
-> JO> > let's leave the VPN client/server out of the picture to simplify. If I 
-> JO> > send an ESP packet from somewhere to my external IP address I get the 
-> JO> > "protocol 50 unreachable" ICMP response. The underlying problem seems to 
-> JO> > be the primary cause of my troubles, no?
-> JO> 
-> JO> um--no.  i have run pretty much every single VPN client/server
-> JO> combination in existence, and have never even thought of testing it by
-> JO> sending unsolicited IP Protocol 50 packets through a firewall to the VPN
-> JO> client behind it.  it's the most flawed troubleshooting technique i've
-> JO> heard in quite some time...save yourself some time and give up on it.
-Why? Helge's methodology is simplifying matters.  He's not testing end
-to end connectivity.  He's testing only one small part, viz., will the
-NAT gateway properly forward the packet.  It doesn't matter if the
-client won't accept it at this stage of testing.
-> 
-> can you be more specific about why you would not expect ESP forwarding to 
-> work without an IPsec tunnel in place? I am really trying to understand 
-> this since most suggestions (including the ipchains rules in the netfilter 
-> documentation) include some FORWARD rules for ip/50.
-It should work.  It won't be a tunnel but you should see the esp packet
-pass through the gateway.
-> 
-<snip>
-> I changed my iptables script to the following now to get some logging 
-> information, but I think I may need help with it:
-> 
-> $IPTABLES -P INPUT ACCEPT
-> $IPTABLES -F INPUT
-> $IPTABLES -P OUTPUT ACCEPT
-> $IPTABLES -F OUTPUT
-> $IPTABLES -P FORWARD DROP
-> $IPTABLES -F FORWARD
-> $IPTABLES -t nat -F
-> 
-> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p 50 -j LOG --log-level info \
->   --log-prefix 'esp fwd: '
-> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p 50 -j ACCEPT
-> $IPTABLES -A PREROUTING -t nat -p 50 -i $EXTIF -j LOG --log-level info \
->   --log-prefix 'esp route: '
-> $IPTABLES -A PREROUTING -t nat -p 50 -i $EXTIF -j DNAT \
->   --to-destination $VPN_CLIENT
-> 
-> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state \
->   --state ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-> $IPTABLES -A FORWARD -j LOG --log-level info --log-prefix 'dropped: '
-> $IPTABLES -A FORWARD -j DROP
-> 
-> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j LOG --log-level info \
->   --log-prefix 'masq: '
-> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-> 
-> Basically, I only ever see log entries from the postrouting chain. I also 
-> do not see ESP packets going from INTIF to EXTIF contrary to what I 
-> thought. So with the VPN "up" (how do I check for encryption for example) 
-> and packets coming in from the server, they don't get to INTIF. Pinging a 
-> host on VPN shows ESP packets getting to INTIF but no further. If I ping 
-> the server itself from the VPN client, i.e. not through the tunnel, all 
-> three interfaces report outgoing and incoming traffic.
-<snip>
-Interesting.  You've showed us what you think you have.  Would you
-kindly show us what you do have.
-Do a 
-iptables -v -n -t nat -L
-iptables -v -n -L FORWARD
-iptables -v -n -L INPUT
+I'm not sure what information is most relevant, so I will try to 
+describe our problem, and the conditions that produce it:
 
-If I'm following this correctly, the esp packets should hit your NAT
-rule and have the destination changed.  It should then hit the routing
-table which will determine that the packet is not local and send it to
-the FORWARD chain.  If you are not logging packets on the FORWARD chain,
-perhaps the match is wrong.  Try a generic log rule for all packets and
-see what the packets look like on the FORWARD chain.  Do they match the
-rules dumped in the above list? - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+Linux firewall for approx 500 clients, 10Mb internet connection, 
+most traffic from squid proxy inside firewall, routed through to 
+internet. (not NATed, although some NAT is used for other 
+hosts).
+Several weeks ago, web response slowed down, with frequent 
+delays on initial connections to sites, occasional timeouts. In 
+each case, repeat visits were usually quick. DNS issues ruled 
+out after checking. Assumed problem was overloaded squid 
+proxy. Replaced with dual load balanced proxies, no help. 
+Bypassed proxy for testing, and used NAT only, still had 
+problems. 
+Finally, replaced firewall with a different box, experienced 
+lockups with 2 SMP boxes using 2.4.22-37mdk kernel. 
+Switched to UP kernel and lockups went away, performance 
+improved, on new firewall box.
+
+So now we have a new firewall box as follows that runs well:
+P3/667, 768Mb
+Mandrake 9.2, 2.4.22-37-mdk kernel
+Shorewall 2.0.10 with iptables 1.2.8
+Intel E100B using EEPro100 driver, 10FD mode
+DLink DFE500TX using Tulip driver, 100FD mode
+Peak load is 98% use of 10Mb line, typical avg 30%
+Peak ip_conntrack count ~3-4000
+CPU load <10% peak
+
+Original box was then reconfigured to match above as closely 
+as possible, except:
+PPro 200, 256Mb
+
+Immediately, intermittent web delays were evident after 
+browsing sites at random. Speedtests still gave 1000kB/s+ 
+speeds from test site, same as with "good" firewall above, so 
+throughput is not a problem once connection is established.
+
+I tried this in /etc/modules.conf, after reading an article on 
+hashsize vs ip_conntrack entries on dedicated firewalls:
+options ip_conntrack hashsize=65536
+It made no difference.
+
+Tried e100 driver instead of eepro100. No difference.
+Tried 2x tulip cards, no difference.
+Tried vanilla 2.4.28 kernel, 2 tulip cards, latest iptables, still no 
+difference.
+
+CPU load while loading the connection to 1000kB/s+ was 
+never over 15% system, usually around 5-6% for the PPro200 
+CPU. The load can be very light (<10% util on link) when 
+problems occur, so load doesn't seem to be a factor.
+
+I'd appreciate any advice on what to look into further to get to 
+the bottom of this. 
+
+Thanks.
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Shawn Wright, I.T. Manager
+Shawnigan Lake School
+http://www.sls.bc.ca
+swright@sls.bc.ca
+
 
 
