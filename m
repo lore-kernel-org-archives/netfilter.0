@@ -1,15 +1,15 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: ip_nat_ftp on debian 2.4.20
-Date: Tue, 15 Jul 2003 17:23:54 +0200
+Subject: Re: IPV6 and NetFilter
+Date: Tue, 15 Jul 2003 17:22:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030715152354.GM7198@naboo>
-References: <00f901c349bb$a8722230$1304a8c0@morggin>
+Message-ID: <20030715152255.GL7198@naboo>
+References: <008301c34a04$58d3b560$7dadfea9@win981>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qDymnuGqqhW10CwH"
+	protocol="application/pgp-signature"; boundary="6J7GEvtanOfV9oXA"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <00f901c349bb$a8722230$1304a8c0@morggin>
+In-Reply-To: <008301c34a04$58d3b560$7dadfea9@win981>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +19,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Bill Jameson <bjameson1@qwest.net>
-Cc: netfilter@lists.netfilter.org
+To: Carlos Delfino Carvalho Pinheiro <suporte@carlosdelfino.eti.br>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
 
---qDymnuGqqhW10CwH
+--6J7GEvtanOfV9oXA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 13, 2003 at 08:54:42PM -0700, Bill Jameson wrote:
-> Im using Kernel-Souce 2.4.20.deb ... have loaded modules ip_tables
-> ip_conntrack iptable_nat ip_conntrack_ftp ... when i try to insmod
-> ip_nat_ftp i get kernel error ASSERT ip_conntrack_core.c:625
-> &ip_conntrack_lock not readlocked ... any idea how i can fix this ?
+On Mon, Jul 14, 2003 at 09:28:08AM -0300, Carlos Delfino Carvalho Pinheiro =
+wrote:
+> Hi Netfilters!!!
+>=20
+> I want use IPV6 in my lab, but I dont know like make this with
+> IPTables!
 
-I don't know the debian source, but the official 2.4.20 linux kernel
-source is broken with regard to connection tracking. please use 2.4.19
-or (better) 2.4.21
+Sure, ip6tables handles IPv6 packet filtering:
+
+See the 'man ip6tables' manpage.
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -48,17 +49,17 @@ or (better) 2.4.21
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---qDymnuGqqhW10CwH
+--6J7GEvtanOfV9oXA
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQE/FByJXaXGVTD0i/8RAvNfAJ9nmJ5R+jim1bImdi3oSotPQXtUBQCgs/LC
-O/xzo1ANG7NySny4wKaEm5U=
-=sm84
+iD8DBQE/FBxPXaXGVTD0i/8RAipGAKCjEEI2gEcGY+TaiX5tjpQy1EwVAgCeK3zl
+2g26O/z2qiqvEoLQHRFV2VM=
+=7Y+J
 -----END PGP SIGNATURE-----
 
---qDymnuGqqhW10CwH--
+--6J7GEvtanOfV9oXA--
 
