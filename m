@@ -1,8 +1,8 @@
 From: Joachim.Reik@esip.de
 Subject: Joachim Reik ist =?iso-8859-1?q?au=DFer_Haus=2E?=
-Date: Tue, 3 Aug 2004 13:25:12 +0200
+Date: Tue, 3 Aug 2004 13:28:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFDBA81A35.50C7A949-ONC1256EE5.003EBBA8-C1256EE5.003EBBA8@esip.de>
+Message-ID: <OF291132F0.81680104-ONC1256EE5.003F018D-C1256EE5.003F018D@esip.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
