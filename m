@@ -1,14 +1,11 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: Skipping connection tracking for certain traffic types?
-Date: Sat, 31 May 2003 15:18:43 +0800
+From: "Kevin Smith" <starwatcher22@earthlink.net>
+Subject: KAZAA
+Date: Sat, 31 May 2003 03:35:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030531071843.GA1765@floyd>
-References: <20030527192155.V20519@poliisi.iki.fi>
-Reply-To: kluivert@tm.net.my
+Message-ID: <001301c32747$3b9e57a0$0200000a@workgroup.kev>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030527192155.V20519@poliisi.iki.fi>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,20 +16,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, wjdeypalan@ictuscomm.net
 
-On Tue, May 27, 2003 at 10:49:56PM +0300, Ville Mattila spoke thusly:
->Correct me on this if I'm wrong: It is a feature of Netfilter that
->whenever conntrack is registered in kernel, then for example any UDP
->packet passing through the firewall causes the state table to be consulted
->resulting in either update of an old state entry if found or creation of a
->new state.
+Now I am no expert and this is just a random thought. But if Kazaa looks for
+other ports to connect, is there a way to send it a fake connect signal so
+it THINKS its connected? Or what someone suggested to block everything. and
+allow only the ports you know.
+As I said its just a thought...you decide whether its viable, since I dont
+use Kazaa anymore.
+Kev
 
-I think there is a NOTRACK patch in p-o-m, but haven't checked really. I
-kind of remember Henrik Nordstrom talking about it before, but a quick
-websearch only turns up this.
 
-http://lists.netfilter.org/pipermail/netfilter-devel/2001-September/
-005541.html
+
+
+
+Message: 1
+Date: Thu, 24 Apr 2003 19:28:52 +0800 (PHT)
+Subject: block kazaa using iptables
+From: "Wesley Jay Deypalan" <wjdeypalan@ictuscomm.net>
+To: <netfilter@lists.netfilter.org>
+Reply-To: wjdeypalan@ictuscomm.net
+
+Hi,
+
+Is there a way to block kazaa using iptables?Already tried blocking port
+1214 but to no avail, I heard that kazaa change ports if it cannot connect
+using 1214.
+TIA,
+
+wesley
+
+
+
+
+--__--__--
+
 
