@@ -1,62 +1,36 @@
-From: travis@visionsbeyond.com
-Subject: ftp: masqued AND forwarded
-Date: Wed, 26 Jan 2005 15:44:01 -0700 (MST)
-Message-ID: <36512.192.168.2.125.1106779441.squirrel@mail2.visionsbeyond.com>
+From: "Michael Varga" <mike.varga@cavium.com>
+Subject: ip_rcv() crashes kernel with netfilter hook
+Date: Wed, 26 Jan 2005 15:37:46 -0800
+Message-ID: <0cde01c50400$0f01e260$a610a8c0@niche>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi all,
-     I have spent several hours scouring the
-archives trying to find out how to send external ftp requests to an
-internal server while at the same time allowing clients behind the
-firewall to access external ftp servers.  (currently requests from
-internal clients to external ftp servers time out).
+Hello:
 
-Any suggestions would be greatly appreciated!
+I have set up a NF_IP_PRE_ROUTING hook to capture packets.
 
-Here are the rules that I have in place:
+Specifically I am using netfilter for an IPSec implimentation I have=20
+written.
 
-#Load Modules
-/sbin/modprobe ip_tables
-/sbin/modprobe iptable_filter
-/sbin/modprobe ip_conntrack
-/sbin/modprobe ip_conntrack_ftp
-/sbin/modprobe ip_nat_ftp
+When I recieve an increased amount of icmp echos, decapsulate
+them from IPSec and pass them on by calling ip_rcv() the kernel crashes.
 
-#Send ftp to an internal machine
-$IPTABLES -A PREROUTING -t nat -i $EXTERNALIF -p tcp -d $MYADDR --dport 20
--j DNAT --to 192.168.2.5:20
-$IPTABLES -A FORWARD -i $EXTERNALIF -p tcp -d 192.168.2.5 --dport 20 -j
-ACCEPT
-$IPTABLES -A PREROUTING -t nat -i $EXTERNALIF -p tcp -d $MYADDR --dport 21
--j DNAT --to 192.168.2.5:21
-$IPTABLES -A FORWARD -i $EXTERNALIF -p tcp -d 192.168.2.5 --dport 21 -j
-ACCEPT
+It only crashes when the icmp echos are addressed locally.
 
-#Masquerade internal connections going out.
-$IPTABLES -A POSTROUTING -t nat -o $EXTERNALIF -j MASQUERADE
+Has anyone ever experienced this? Suggestions on how to fix?
 
-
-$MYADDR is the firewall external address
-$EXTERNALIF is the external interface (eth0)
-$INTERNALIF is the internal interface (eth1)
-
-My apologies if this question has already been answered (probable) and ask
-forgiveness for my lack of being able to find it.
-
-Travis Crook
-Visions Beyond
+Mike
 
