@@ -1,11 +1,13 @@
-From: "Simon Lodal" <simonl@mirrormind.com>
-Subject: Automatic forwarding to own interfaces
-Date: Tue, 23 Sep 2003 07:14:12 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Automatic forwarding to own interfaces
+Date: Tue, 23 Sep 2003 07:51:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309230714.AA48627750@mirrormind.com>
-Reply-To: <simonl@mirrormind.com>
+Message-ID: <1064296309.828.91.camel@elendil.intranet.cartel-securite.net>
+References: <200309230714.AA48627750@mirrormind.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200309230714.AA48627750@mirrormind.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,42 +17,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: simonl@mirrormind.com
+Cc: netfilter@lists.netfilter.org
 
+Le mar 23/09/2003 =E0 07:14, Simon Lodal a =E9crit :
+> Another host "evil" is on the 10.0.1.0/24 subnet, and has no way to
+> reach the 192.168.1.0/24 subnet. It then configures itself to use
+> victim as gateway to the 192.168.1.0/24 subnet. But since victim has
+> disabled all forwarding, evil can still not reach any 192.168.1.0/24
+> hosts. Except...
+> The strange thing is that when evil does 'ping 192.168.1.5' it
+> succeeds. It pings victim's eth1 through eth0.
 
-Hello
+That's a "normal" Linux behaviour. Linux answers packets destined to any
+of its own IPs own any interface, as long as your INPUT filtering rules
+allows it. You can set something like :
 
-I am seeing strange behaviour, wonder if anyone can confirm this, or else tell me that I have completely screwed my boxes.
+	iptables -A INPUT -d 192.168.1.5 -i ! eth1 -j DROP
+	iptables -A OUTPUT -s 192.168.1.5 -o ! eth1 -j DROP
 
-My Linux box seems to automatically forward between it's own interfaces, effectively treating them all as one. Traffic coming in on one interface, destined for another interface, should in my mind pass through the FORWARD chain. Instead, it goes through INPUT/OUTPUT. Effectively then any local address can be accessed on any local interface.
+> The really strange thing is that victim does not treat the traffic as
+> forwarding, but as locally destined traffic, going through INPUT and
+> OUTPUT chains.
 
+Yes, for the packets are destined to the box itself, they don't get
+routed.
 
-Details:
+> Is all this really intentional? It makes no sense to me. Can anyone
+> confirm this behaviour?
 
-The "victim" box is a Debian-3.0r1 with the default 2.4.18-bf2.4 kernel and iptables-1.2.6a. My other boxes with other 2.4.1[89] kernels behave the same.
+You can even see that eth0 will answer ARP requests on eth1's IP...
+That's one of the reasons for arptables. There was a patch to change
+this behaviour too.
 
-Victim has two interfaces, eth0 (10.0.1.2/24) and eth1 (192.168.1.5/24).
+A behaviour a bit like this one is when you set DNAT up (rules are quick
+ones) :
 
-Victim's /proc config:
-/proc/sys/net/ipv4/ip_forward=0
-/proc/sys/net/ipv4/rp_filter=1
-/proc/sys/net/ipv4/conf/*/accept_source_route=0
+	iptables -t nat -A PREROUTING -i eth0 -d 10.0.1.2 -j DNAT \
+		--to 192.168.1.10
+	iptables -A FORWARD -i eth0 -o eth1 -d 192.168.1.10 -j ACCEPT
+	iptables -A FORWARD -i eth1 -o eth0 -s 192.168.1.10 -j ACCEPT
 
-Another host "evil" is on the 10.0.1.0/24 subnet, and has no way to reach the 192.168.1.0/24 subnet. It then configures itself to use victim as gateway to the 192.168.1.0/24 subnet. But since victim has disabled all forwarding, evil can still not reach any 192.168.1.0/24 hosts. Except...
+A box on 10.0.1.2/24 will be able to reach 192.168.1.10 directly, as
+long as it defines your box as router for this destination, for the
+FORWARD rules allows it.
 
-The strange thing is that when evil does 'ping 192.168.1.5' it succeeds. It pings victim's eth1 through eth0.
-
-The really strange thing is that victim does not treat the traffic as forwarding, but as locally destined traffic, going through INPUT and OUTPUT chains.
-
-Log rules in INPUT, FORWARD and OUTPUT chains on victim show that a ping packet with dest=192.168.1.5 comes in through eth0, and a pong packet with src=192.168.1.5 is sent back through eth0. Packets go through INPUT and OUTPUT chains, not FORWARD. Effectively, it is as if eth0 was configured with 192.168.1.5.
-
-Now ping is handled by kernel, so I tried with userspace, and got same result: An apache listening only on 192.168.1.5:80 will happily respond to requests from the 10.0.1.0/24 subnet, coming in on eth0.
-
-Is all this really intentional? It makes no sense to me. Can anyone confirm this behaviour?
-
-Simon
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
