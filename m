@@ -1,12 +1,10 @@
-From: James Marcinek <james_marcinek@yahoo.com>
-Subject: Re: Allow incoming https traffic on INPUT filter
-Date: Sun, 4 May 2003 07:37:23 -0700 (PDT)
+From: Reuven Kohanim <rkohanim@yahoo.com>
+Subject: iptable/netfilter and X protocol
+Date: Sun, 4 May 2003 08:24:48 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030504143723.61134.qmail@web40201.mail.yahoo.com>
-References: <200305040815080121.00F15483@smtp.nikonbw.com>
+Message-ID: <20030504152448.36968.qmail@web41703.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200305040815080121.00F15483@smtp.nikonbw.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +16,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: wijayaj@gmx.net, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I had used the netstat -a command prior to my email;
-however, the nmap seemed to show me with a lot less
-mess. My ports and listening, open and I've been able
-to access the site properly from within my intranet. I
-tried to get somebody to check after I had modified my
-INPUT chain. He was unable to display the page, which
-leads me to believe that I might not have the rule
-defined properly. Can someone give me some examples
-and what ports (eg are there any corresponding UDP
-ports that need to be open)...
+I have been successfully using X protocol across an
+ipchain gateway. I am trying to move to iptables.
+Everything is finally working smoothly except for X. I
+am bypassing masquerading when my source/destination
+are the X client/server so that I can use my
+non-masqed ip address for the 'display' parameter of
+say xterm application.Could anyone tell me if iptables
+supports X and if so how.
+One more general question: Is there a way to trace
+packets to see what goes in and out of the
+iptable/netfilter gateway?
 
-Thanks,
-
-James
+Thank you in advance
 
 __________________________________
 Do you Yahoo!?
