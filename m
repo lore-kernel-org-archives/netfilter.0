@@ -1,13 +1,14 @@
-From: Tobias DiPasquale <cbcgtt@gmail.com>
-Subject: Re: FIB LPM algorithm
-Date: Mon, 7 Jun 2004 08:11:00 -0400
+From: Sheldon Hearn <sheldonh@starjuice.net>
+Subject: Re: Iptables Make Rules On Different Interface? "iptables - L"
+	shows no difference!
+Date: Mon, 07 Jun 2004 14:20:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9e3aacf4040607051129edfb01@mail.gmail.com>
-References: <9e3aacf40406070423583216f@mail.gmail.com> <200406071302.15598.Antony@Soft-Solutions.co.uk>
+Message-ID: <1086610811.17769.59.camel@axl.seasidesoftware.co.za>
+References: <20040606205759.47086.qmail@web41703.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406071302.15598.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040606205759.47086.qmail@web41703.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +19,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: ke chen <linux_kurt@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 7 Jun 2004 13:02:15 +0100, Antony Stone
-<antony@soft-solutions.co.uk> wrote:
-> Er, what do LPM and FIB mean please?   I think I know netfilter quite well,
-> and I've not come across these abbreviations so far...
+On Sun, 2004-06-06 at 22:57, ke chen wrote:
 
-LPM = Longest Prefix Match, the algorithm used to match an IP to a
-particular route based on the route's destination network spefication.
+> I want to make iptables impose different rules on two ethernet
+> interfaces.
 
-FIB = Forwarding Information Base, the data structure used by the
-kernel to hold packet routing information.
+[...]
 
-There are 3 or 4 files in net/ipv4/ devoted entirely to the FIB (which
-are called in route.c in the same subdir). Thinking more about this,
-though, it was probably a mistake posting this to the netfilter
-list... it seems more of a question that should be asked of the
-linux-net list.
+> when applying these rules, iptables -L
+> it shows 
+> Chain INPUT (policy DROP)
+> target prot opt source destionation
+> Accept all -- anywhere anywhere
 
-As well, I just found a small section on the FIB in Chapter 18 of
-Understanding the Linux Kernel (2nd Edition) but its not really as
-specific as I would like with respect to the exact LPM algorithm used.
+You need to use the -v option, which causes iptables to show you the
+interface associated with a rule.
 
-I will repost my original message to linux-net but will also be
-amenable to any direction that may come from this list, as well.
-Thanks again :)
+Ciao,
+Sheldon.
 
---
-Tobias DiPasquale
-[ 0x63626367545440676d61696c2e636f6d ]
+
 
