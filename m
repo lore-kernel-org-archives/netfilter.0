@@ -1,13 +1,16 @@
-From: "Warren P" <warren-cpt@webmail.co.za>
-Subject: Re: ip_conntrack
-Date: Mon, 27 Oct 2003 21:23:48 +0200
+From: NightHawk <nighthawk@easyservermanagement.com>
+Subject: Re: HELP!!! (ip_conntrack: table full)
+Date: Mon, 27 Oct 2003 16:09:14 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <web-13621304@mail03.infosat.net>
-References: <001501c37bf1$bab38d90$0f640a0a@acamarpeng>
+Message-ID: <200310271509.16011.nighthawk@easyservermanagement.com>
+References: <web-171329066@mail01.infosat.net>
+Reply-To: nighthawk@ezsm.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001501c37bf1$bab38d90$0f640a0a@acamarpeng>
+In-Reply-To: <web-171329066@mail01.infosat.net>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,57 +20,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: pengjie <bill.peng@ocamar.com>, Warren P <weatherman@webmail.co.za>, netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: Warren P <warrenp@websurfer.co.za>, netfilter@lists.netfilter.org
 
-hi
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I've upgraded the server to Redhat 8 ... I seem to be worst
-off now ... I'm getting the error "kernel: ip_conntrack:
-table full, dropping packet." every few days now instead of
-every few months as with Rehar 7.3
+Warren,
+   I would only raise the value in /proc/net/ip_conntrack a little bit at a=
+=20
+time till you find the lowest number that works for your situation.  Once y=
+ou=20
+have everything under control, the number shouldn't have to be too high, at=
+=20
+least this has been my experience.  I only raise the number when having a=20
+"situation", and then lower it back down once things are calmed down.
 
-Question1: What are the dangers of increasing
-/proc/sys/net/ipv4/ip_conntrack_max (I've currently got
-1gig of RAM in my server and the current value of
-ip_conntrack_max is 65528).
+And yes, I did mean to rmmod ip_conntack, when I mentioned dropping=20
+ip_conntrack.  Although, this tends to require dropping a few other modules=
+=20
+as well, and also tends to require stopping iptables while you do so. (due =
+to=20
+some of the modules that you have to remove.)  Which is why it is not the=20
+best solution for all situations....
 
-Question2: Do i really need ip_conntrack? Since I'm only
-using it for my transparent proxy.
+NH
 
-Question3: If i don't need it in order to user IP Tables,
-how do i get rid of it safely? Will rmmod ip_conntrack.o be
-sufficient and save?
+On Monday 27 October 2003 2:52 pm, Warren P wrote:
+> hi
+>
+> WRT echo ## > /proc/net/ip_conntrack
+>
+> Considering i've got 1gig of RAM ... what is a safe value i
+> can set ip_conntrack_max to? The current value is 65528
+>
+> Also when you refer to dropping ip_conntrack ... do mean
+> like rmmod ip_conntrack.o?
+>
+> Regards,
+> Warren P
+>
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-Regards,
-Warren P
-
-------------------------------------------------------------
-
-
-On Tue, 16 Sep 2003 09:27:44 +0800
- "pengjie" <bill.peng@ocamar.com> wrote:
-> try the 2.4.21.
->   ----- Original Message ----- 
->   From: Warren P 
->   To: netfilter@lists.netfilter.org 
->   Sent: Friday, September 12, 2003 4:19 AM
->   Subject: ip_conntrack
-> 
-> 
->   hi
-> 
->   does anyone know how to clear/flush the ip_conntrack
-> table. Every 4 to 6 months i need to reboot my server
-> because it drops packets and complains that the table is
-> full ...
-> 
->   Regards,
->   Warren P
-
-Regards,
-Warren P
-___________________________________________
- Look Good, Feel Good www.healthiest.co.za
+iD8DBQE/nXtqb58ZIoF+byQRAgbWAKCOgeguwsDsDnvsH/8MHx5BTwKuSQCffJ+t
+fcgUdKA6Npi/VyhejhJegOE=3D
+=3DTh5c
+=2D----END PGP SIGNATURE-----
 
 
