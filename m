@@ -1,67 +1,137 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [PATCH-2.4-POM] sessions stuck in CLOSE_WAIT state
-Date: Thu, 9 Oct 2003 09:01:35 +0200 (CEST)
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0310090854360.22077-100000@blackhole.kfki.hu>
-References: <20031008094447.GL25743@sunbeam.de.gnumonks.org>
+From: Emilio Casbas <ecasbas@unav.es>
+Subject: no log various hosts
+Date: Thu, 09 Oct 2003 13:19:59 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <3F85445F.8090307@unav.es>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-In-Reply-To: <20031008094447.GL25743@sunbeam.de.gnumonks.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms080406090703000900010607"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: netfilter@lists.netfilter.org
+
+This is a cryptographically signed message in MIME format.
+
+--------------ms080406090703000900010607
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-To: Harald Welte <laforge@netfilter.org>
-Cc: Willy Tarreau <willy@w.ods.org>, netfilter@lists.netfilter.org, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-On Wed, 8 Oct 2003, Harald Welte wrote:
+I'm trying add a iptables rules and not to log various hosts of the form:
 
-> On Wed, Oct 08, 2003 at 12:18:17AM +0200, Willy Tarreau wrote:
-> > Fortunately, tcpdump showed to me that all stuck sessions had in common the
-> > fact that the server aborted them with an RST after the first FIN+ACK, so
-> > in CLOSE_WAIT. Others which were aborted with an RST just before or just after
-> > were destroyed without any problem.
->
-> Ok, this sounds like a pretty clear case than.  This bug has not been
-> found because replying with RST afer FIN+ACK seems a quite unusual
-> pattern.
->
-> > /*rst*/ {sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sLA, sLI },
-> >
-> > But the tcp_window_tracking patch changes this behaviour, I think because of
-> > a typo, since I see no other reason not to terminate a session upon RST :
-> >
-> > /*          sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sLI   */
-> > /*rst*/   { sIV, sCL, sCL, sCL, sCL, sIV, sCL, sCL, sCL, sIV },
->
-> yes, I totally agree with you.  I'll apply your proposed patch to
-> patch-o-matic.  If Jozsef disagrees, he can revert that change.
+        $IPTABLES -A INPUT -p tcp --src ! 127.0.0.1/32  -m limit --limit 
+100/minute -j LOG --log-level debug
+        $IPTABLES -A INPUT -p tcp --src ! myred/24  -m limit --limit 
+100/minute -j LOG --log-level debug
 
-I agree completely.
+and I see with iptables -vnL this
 
-> > BTW, is it normal that an RST received in TIME_WAIT state terminates the
-> > session ? I would have thought that we should keep it in TIME_WAIT anyway.
->
-> again agreed.  Jozsef, what do you think?
+134  121K LOG        tcp  --  *      *      !127.0.0.1/32            
+0.0.0.0/0          limit: avg 100/min burst 5 LOG flags 0 level 7
+   87  7268 LOG        tcp  --  *      *      !myred/24                 
+0.0.0.0/0          limit: avg 100/min burst 5 LOG flags 0 level 7
 
-It's normal, but highly unusual I think. (Were it an "optimization" of TCP?)
+but it continue logging 127.0.0.0 and all myred,
 
-Thank you very much the nice analysis and report.
+however, if i have only a rule:
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+    $IPTABLES -A INPUT -p tcp --src ! myred/24  -m limit --limit 
+100/minute -j LOG --log-level debug
 
+works fine!,
+
+How I can to put two o more hosts in a rule for not log ?
+
+
+Thanks.
+
+
+--------------ms080406090703000900010607
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIL5zCC
+A6swggMUoAMCAQICAQIwDQYJKoZIhvcNAQEEBQAwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQI
+EwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUg
+TmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAwDgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkB
+FgtjdGlAdW5hdi5lczAeFw0wMDEyMDcxODM0NTlaFw0xMDEyMDUxODM0NTlaMIGSMQswCQYD
+VQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoT
+FlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1D
+QS0xMTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXMwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
+MIGJAoGBAMnPtNu0DY74Cy8ADkGWQ+P+o0tADrVZ4Lcp7XrTO/DBsviqY2K90SPnjTq4iaHq
+nPR3NtP5NITlgeOriB6Qz0rP2cIyPbvj+omMNcjLNMKwjzN/Xlz/PQHtc7uB475qcRI2Upf0
+efcCuZ+2c9Bh8whAR6yBPMZYBOf/CnTOGhiXAgMBAAGjggEQMIIBDDAdBgNVHQ4EFgQU5IiI
+QsdSywUHw6MhYN5TwgPUKoIwgbwGA1UdIwSBtDCBsYAULcM6eDF7f4FPgfZNagFP7vaHJMqh
+gZWkgZIwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1w
+bG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAw
+DgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkBFgtjdGlAdW5hdi5lc4IBADAMBgNVHRME
+BTADAQH/MAsGA1UdDwQEAwIBBjARBglghkgBhvhCAQEEBAMCAQYwDQYJKoZIhvcNAQEEBQAD
+gYEAX1CIwLZPpFS3JvoHEHZ5Ot5NnfQfQP7P8c0obKsenSVSD5ikiif1FTpZV71IhMBA+CIp
+I5yGHD2lJhRmU8mxydPc4Duc8Vq5yw5TEtbgFamszQDaloFLKVqgsizZ6ljB0X2N/oGKOr70
+BNaayTRZuGaqBRwL9rOtQAPuUVWvvOAwggQYMIIDgaADAgECAgIDSTANBgkqhkiG9w0BAQQF
+ADCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25h
+MR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxEzARBgNV
+BAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0aUB1bmF2LmVzMB4XDTAyMTEwNDEy
+MDc1MVoXDTA0MTEwMzEyMDc1MVowgaYxCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJh
+MREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEM
+MAoGA1UECxMDQ1RJMSMwIQYDVQQDExplbWlsaW8gam9zZSBjYXNiYXMgamltZW5lejEeMBwG
+CSqGSIb3DQEJARYPZWNhc2Jhc0B1bmF2LmVzMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
+gQCjUTWXn5KebVC7S9O1gDRZP3Rk7RhmhfDAwwiGdl762ICY8DhMAkQ8bmhCy/Xka1sNiFQA
+Mgoj0UfVZTX221BWOzHZdaPimyxBTO42jsnvU9D+Q9BAIzRwI/FrBLw4LGngPgGaifQtAdet
+hRiHHCQGj63Ra53JNc1IOFqJo0qdxwIDAQABo4IBZTCCAWEwCQYDVR0TBAIwADARBglghkgB
+hvhCAQEEBAMCBaAwLAYJYIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmlj
+YXRlMB0GA1UdDgQWBBQ1ww0xtTIZCwn1KzaqzfR0rRxjpTCBvAYDVR0jBIG0MIGxgBTkiIhC
+x1LLBQfDoyFg3lPCA9QqgqGBlaSBkjCBjzELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
+cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
+MQwwCgYDVQQLEwNDVEkxEDAOBgNVBAMTB1VOQVYtQ0ExGjAYBgkqhkiG9w0BCQEWC2N0aUB1
+bmF2LmVzggECMDUGA1UdHwQuMCwwKqAooCaGJGh0dHBzOi8vZ2FuZGFsZi5jdGkudW5hdi5l
+cy91bmF2LmNybDANBgkqhkiG9w0BAQQFAAOBgQC8A7UirMJ77vP8eGoeFXCNMV20V+0uWzqs
+Kuu8UqsAbYF3t32SLFO4eQdJILSHIafDqj+L5Qy53UzXgBY0Hu3MheLf6V5U4nwd03ukBGXg
+1Zs9vBqMzGria1D0YjBTYqip7TQTT6mPFMb/Loek0/pmn/q/r45z0w8Cs6ljMKM51zCCBBgw
+ggOBoAMCAQICAgNJMA0GCSqGSIb3DQEBBAUAMIGSMQswCQYDVQQGEwJFUzEQMA4GA1UECBMH
+TmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoTFlVuaXZlcnNpZGFkIGRlIE5h
+dmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1DQS0xMTEaMBgGCSqGSIb3DQEJ
+ARYLY3RpQHVuYXYuZXMwHhcNMDIxMTA0MTIwNzUxWhcNMDQxMTAzMTIwNzUxWjCBpjELMAkG
+A1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQK
+ExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxIzAhBgNVBAMTGmVtaWxp
+byBqb3NlIGNhc2JhcyBqaW1lbmV6MR4wHAYJKoZIhvcNAQkBFg9lY2FzYmFzQHVuYXYuZXMw
+gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKNRNZefkp5tULtL07WANFk/dGTtGGaF8MDD
+CIZ2XvrYgJjwOEwCRDxuaELL9eRrWw2IVAAyCiPRR9VlNfbbUFY7Mdl1o+KbLEFM7jaOye9T
+0P5D0EAjNHAj8WsEvDgsaeA+AZqJ9C0B162FGIccJAaPrdFrnck1zUg4WomjSp3HAgMBAAGj
+ggFlMIIBYTAJBgNVHRMEAjAAMBEGCWCGSAGG+EIBAQQEAwIFoDAsBglghkgBhvhCAQ0EHxYd
+T3BlblNTTCBHZW5lcmF0ZWQgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFDXDDTG1MhkLCfUrNqrN
+9HStHGOlMIG8BgNVHSMEgbQwgbGAFOSIiELHUssFB8OjIWDeU8ID1CqCoYGVpIGSMIGPMQsw
+CQYDVQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNV
+BAoTFlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTEQMA4GA1UEAxMHVU5B
+Vi1DQTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXOCAQIwNQYDVR0fBC4wLDAqoCigJoYk
+aHR0cHM6Ly9nYW5kYWxmLmN0aS51bmF2LmVzL3VuYXYuY3JsMA0GCSqGSIb3DQEBBAUAA4GB
+ALwDtSKswnvu8/x4ah4VcI0xXbRX7S5bOqwq67xSqwBtgXe3fZIsU7h5B0kgtIchp8OqP4vl
+DLndTNeAFjQe7cyF4t/pXlTifB3Te6QEZeDVmz28GozMauJrUPRiMFNiqKntNBNPqY8Uxv8u
+h6TT+maf+r+vjnPTDwKzqWMwoznXMYIDUTCCA00CAQEwgZkwgZIxCzAJBgNVBAYTAkVTMRAw
+DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
+YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
+KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwCQYFKw4DAhoFAKCCAg0wGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDMxMDA5MTExOTU5WjAjBgkqhkiG9w0B
+CQQxFgQUJGA+ilHTefMi+9FT2qshlr3KvSowUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0D
+BzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwIC
+ASgwgaoGCSsGAQQBgjcQBDGBnDCBmTCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
+cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
+MQwwCgYDVQQLEwNDVEkxEzARBgNVBAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0
+aUB1bmF2LmVzAgIDSTCBrAYLKoZIhvcNAQkQAgsxgZyggZkwgZIxCzAJBgNVBAYTAkVTMRAw
+DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
+YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
+KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwDQYJKoZIhvcNAQEBBQAEgYCYjlsntASzlKJz
+S9U+PFfWH739pWRH6Z6B8DWXSSJDFvdq36HH2N613x0gKgthwAGee4T1ACi16XN1DpsJ4Eda
+bb1nF0cSw9Xvypbb776V/bB1p+7qL/z8MLCUyeZWQpdrTuBjmxXOFbX05Wd0zLhmWsUOe7cR
+W/lPRczqNnoIWQAAAAAAAA==
+--------------ms080406090703000900010607--
 
 
