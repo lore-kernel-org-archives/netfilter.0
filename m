@@ -1,9 +1,11 @@
-From: "dravya" <dravya@magma.ca>
-Subject: icmp packets going over wrong link for Local traffic!!!
-Date: Wed, 27 Oct 2004 16:51:25 -0400 (EDT)
+From: Mike <oziemike@yahoo.com>
+Subject: Port forwarding
+Date: Thu, 28 Oct 2004 14:00:31 +0930
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200410272051.i9RKpPoW018624@webmail2.magma.ca>
+Message-ID: <1098937823.3566.15.camel@WS4>
+Reply-To: oziemike@yahoo.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,28 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter mailing list <netfilter@lists.netfilter.org>, netfilter-devel@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Hi All
 
-Hi all,
+I bet this has been asked many times before but I have searched and
+searched trying to find the answer.
 
-I have applied the Masquerade patch suggested by Rusty (and now Herbert) and everything
-works just fine. All packets are masqueraded correctly even when there are multiple
-interfaces.
+Is it possible to port forward one port from the outside world to many
+clients inside the LAN. I have it working fine for single addresses and
+it seems I can list each IP forward individually so that
+narc-forward.conf ends up huge as each line goes in for each IP address
+on the network with the same port.
 
-However, there are icmp dest unreachable messages that still go over the wrong link. i.e.
-source addr of the wrong link. Since it is local traffic, it will not go through the
-masquerading code as the socket would exist ( (*pskb)->sk ) will exist, thereby returning
-with NF_ACCEPT and bypassing the masquerade code. 
+The question basically is to find out if there is anyway that a range of
+IP addresses can be stipulated easily in narc-forward.conf???
 
-Therefore the problem lies someplace else.... has anyone encountered this problem
-before??? I know there was a similar issue with arp requests but don't know what came out
-of that.
-
-Any tips or suggestions are welcome.
-
-Thanks
-
-Dravya
-
+Mike
