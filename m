@@ -1,13 +1,10 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: bandwidth monitoring
-Date: 26 Jan 2005 21:00:42 +0100
-Message-ID: <1106769641.8524.4.camel@nostromo.bgsecm.com>
-References: <200501061128.04741.patrick.leduc@novipro.com>
-	<20050126183331.GA25316@ranjeet-pc2.zultys.com>
+From: Jose Horacio Mello de Jesus <jose.jesus@inteli.com.br>
+Subject: open port for external connections
+Date: Wed, 26 Jan 2005 18:31:50 +0000
+Message-ID: <41F7E216.5090505@inteli.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050126183331.GA25316@ranjeet-pc2.zultys.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,51 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-El mi=C3=A9, 26 de 01 de 2005 a las 19:33, Ranjeet Shetye escribi=C3=B3:
-> * patrick.leduc@novipro.com (patrick.leduc@novipro.com) wrote:
-> > Hello
-> >=20
-> > Does somebody know a program for monitoring bandwidth by ip? I have o=
-ne=20
-> > internet interface and I must monitor many ips adresses on this inter=
-face. I=20
-> > tried Ipac-ng and, I worked a lot to do this config but it seems not =
-working=20
-> > this way.
-> >=20
-> > thanx
-> >=20
->=20
-> Long term bandwidth usage can be tracked using MRTG. (stored data +
-> daemon + http server + web based gui)
->=20
-> Instantaneous bandwidth usage can be tracked using iftop. (ncurses)
+    I have a following network environment:
 
-You can try our bastion-firewall-stats-addon, it's GPL and it uses
-rrdtool to do the graphical stats. It's very easy to use, but you
-have to use bastion-firewall to use it.
+             DSL                                                       =20
+GW                               SERVER=20
+1                                                         SERVER 2
 
-Another good option it's using something like Cacti to have an
-interface to Rrdtool. It has scripts to monitor interfaces and
-can do all kind of graphs.
+    xxx.xxx.xxx.xxx:8080 eth0 <-----------> 192.168.1.25 eth0
+                                                                 =20
+192.1.1.1 eth1 < ---------- > 192.1.2.1 eth0
+                                                                           =
+             =20
+                      192.1.3.1 eth1
+                                                                           =
+                      =20
+             192.1.4.1 eth2 <----------> HUB <----------> =20
+192.1.4.100:5000 eth0
+                                                                         =20
+    I need open 5000 port to external intranet access on 8080 port.
 
-Regards.
+    Thank's,                    =20
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+            Jos=E9 Hor=E1cio.                               =20
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+INTELI Tecnologia em Alta Seguran=E7a
+Fone/Fax: +55-51-3019-8388
+*** Importante ***
+Esta mensagem, incluindo seus eventuais anexos, tem car=E1ter confidencial e
+seu conte=FAdo =E9 restrito ao(s) destinat=E1rio(s) da mensagem. A INTELI n=
+=E3o =E9
+respons=E1vel pelo conte=FAdo ou a veracidade desta informa=E7=E3o. Caso vo=
+c=EA
+tenha recebido esta mensagem por engano, queira por favor imediatamente
+retorn=E1-la ao emissor e apag=E1-la sem a leitura de seus arquivos. Qualqu=
+er uso,
+replica=E7=E3o ou dissemina=E7=E3o desta mensagem ou parte dela =E9 proibid=
+o.
+
 
 
