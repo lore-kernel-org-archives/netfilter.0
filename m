@@ -1,14 +1,10 @@
-From: George Alexandru Dragoi <waruiinu@gmail.com>
-Subject: Re: ARP Reply with wrong MAC
-Date: Tue, 14 Dec 2004 14:36:25 +0200
-Message-ID: <3063e50412140436673b0619@mail.gmail.com>
-References: <twig.1103020049.65314@basti79.de>
-	<200412141100.iBEB05up006964@eden.inf.ed.ac.uk>
-Reply-To: George Alexandru Dragoi <waruiinu@gmail.com>
+From: Paul Willard <paulw@monarch.co.nz>
+Subject: What's my src?
+Date: Tue, 14 Dec 2004 14:55:28 +1300
+Message-ID: <41BE4810.9080105@monarch.co.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200412141100.iBEB05up006964@eden.inf.ed.ac.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,38 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: George Ross <gdmr@inf.ed.ac.uk>
-Cc: Sebastian <netfilter@basti79.de>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Netfilter Users (List)" <netfilter@lists.netfilter.org>, Shorewall List <shorewall-users@lists.shorewall.net>
 
-That's nothing, I have similar with 4 ether cards in same switch (port
-trunking). Seems to be ok, even i get 4 answer to an arp request to
-that box :)
+What is my source?
+tail /var/log/messages
+Dec 14 14:53:14 rama-kandra kernel: Shorewall:all2all:REJECT:IN= 
+OUT=eth3 SRC=203.96.213.73 DST=203.152.118.23 LEN=288 TOS=0x00 PREC=0x00 
+TTL=64 ID=73 DF PROTO=UDP SPT=500 DPT=500 LEN=268
 
+doesn't match tcrules
+4       202.37.230.93   0.0.0.0/0       udp     500
 
-On Tue, 14 Dec 2004 11:00:05 +0000, George Ross <gdmr@inf.ed.ac.uk> wrote:
-> > A Linux box (kernel 2.4.24) with 2 ethernet interfaces connected to the same
-> > physical backbone. eth0 (public IP) and eth1 (10.0.0.1).
-> 
-> It might be easier just to give one of those interfaces two addresses.
-> 
-> > Sometime it ocures that an arp-request for 10.0.0.1 is answered with the
-> > mac-address of eth0. (proxy_arp on all interfaces is off)
-> >
-> > Did anybody got a same problem and/or a solution?
-> 
-> http://www.austintek.com/LVS/LVS-HOWTO/HOWTO/LVS-HOWTO.arp_problem.html
-> has a useful discussion of some arp problems.
-> --
-> Dr George D M Ross, School of Informatics, University of Edinburgh
->     Kings Buildings, Mayfield Road, Edinburgh, Scotland, EH9 3JZ
-> Mail: gdmr@inf.ed.ac.uk   Voice: +44 131 650 5147   Fax: +44 131 667 7209
->  PGP: 1024D/AD758CC5  B91E D430 1E0D 5883 EF6A  426C B676 5C2B AD75 8CC5
-> 
-> 
-> 
+how does the kernel decide which src to use?
 
+Ultimately I want all UDP 500 to use src 202.37.230.93
 
--- 
-Bla bla
+P.
+
 
