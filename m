@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Where's the website gone?
-Date: 21 Jan 2003 11:36:31 +0100
+From: "Lionel Duboeuf" <lionel.duboeuf@adpsa12.org>
+Subject: UDP port closed in an http request
+Date: Tue, 21 Jan 2003 16:04:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043145391.7967.41.camel@elendil.intranet.cartel-securite.net>
-References: <200301201047.46660.mark@ifl.net>
+Message-ID: <002101c2c15e$5bb17bc0$0c1ca8c0@LionelDuboeuf>
+Reply-To: "Lionel Duboeuf" <lionel.duboeuf@adpsa12.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200301201047.46660.mark@ifl.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,22 +16,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: mark@ifl.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le lun 20/01/2003 =E0 11:47, Mark Vevers a =E9crit :
-> I'm getting an http redirect from www.netfilter.org to lists.netfilter.=
-org -=20
-> where's the website gone?
+Dear all,
 
-I reach the site through http://netfilter.gnumonks.org/.
+Trying to explain my problem:
+I've Linux Mandrake 8.0
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+I use iptables for filtering but this problem still exist with transforming
+my linux box in a client of a network:
+
+i can ping 193.252.19.189 but not www.wanadoo.fr
+i can dig or nslookup www.wanadoo.fr which reports me 193.252.19.189
+of course while i'm doing http://193.252.19.189 everythings works fine but
+http://www.wanadoo.fr not.
+
+my nameservers are OK ( 193.252.19.3 and .4 in resolv.conf)
+
+I dumped the tcpdump result which give me a udp port unreachable:
+(FJT hostname of my linuxbox, 192.168.01 is my gateway)
+
+09:59:18.882158 FJT.32859 > 193.252.19.3.domain: 32456+ A? www.wanadoo.fr.
+(32) (DF)
+
+09:59:18.883391 FJT.32860 > 193.252.19.3.domain: 30805+ PTR?
+3.19.252.193.in-addr.arpa. (43) (DF)
+
+09:59:18.945537 192.168.0.1.domain > FJT.32859: 32456* 1/2/2 A
+193.252.19.189 (115) (DF)
+
+09:59:18.945582 FJT > 192.168.0.1: icmp: FJT udp port 32859 unreachable (DF)
+[tos 0xc0]
+
+09:59:18.949660 192.168.0.1.domain > FJT.32860: 30805* 1/2/2 (138) (DF)
+
+09:59:18.949678 FJT > 192.168.0.1: icmp: FJT udp port 32860 unreachable (DF)
+[tos 0xc0]
+
+09:59:23.878466 arp who-has 192.168.0.1 tell FJT
+
+09:59:23.878693 arp reply 192.168.0.1 is-at 0:a0:65:b5:71:5e
+
+
+any help would be very nice.
+Thanks a lot
+
+Lionel Duboeuf
+
+
+
 
 
