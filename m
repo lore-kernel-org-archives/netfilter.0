@@ -1,11 +1,14 @@
-From: "Carlo Florendo" <carlo@astra.ph>
-Subject: DNAT from an IP address that does not exist to another that exists
-Date: Wed, 30 Jul 2003 11:09:16 +0800
+From: Andreas Jellinghaus <aj@dungeon.inka.de>
+Subject: Re: port-based filtering of ESP packets with in-kernel IPsec?
+Date: 30 Jul 2003 16:51:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <018f01c35647$f68f9ea0$200aa8c0@thorin>
+Message-ID: <1059576701.4586.20.camel__1372.17247761345$1059748465@simulacron>
+References: <1059540296.16545.305.camel@k7.localnet>
+	 <20030730142411.GD4553@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030730142411.GD4553@sunbeam.de.gnumonks.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,68 +19,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Harald Welte <laforge@netfilter.org>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, netdev@oss.sgi.com
 
-Hello iptables gurus,
+Hi,
 
-How do I setup iptables such that connections to a certain non-existent IP address is DNAT to another IP address within the
-network?
+if you are using ipsec from kernel 2.6.* there is no "ipsec0"
+interface, and thus using netfilter isn't as easy as it was with
+freeswan.
 
-Here's an explanation of the problem.  Sorry for the verbosity.  It's my first time to post in this list. :-)
+three ways to solve the problem, only tried the first one so far:
+1.) configure ipsec in tunnel mode, add your tunnel ip to 
+    the outgoing interface, change the default route to
+    set the source ip to the tunnel ip.
+note: there is no routing step after encapsulating a packet
+with ipsec, there was one with freeswan, so this is different.
 
-I have several machines on my network and one gateway machine.
-I've setup the gateway to do IP masquerading and everything's fine (i.e. any machine from the local network can acces the  internet
-flawlessly).
+2.) set a fwmark on an esp packet, it should be there after
+    unpacking/decryption. didn't try this one.
 
-The gateway  runs services such as ssh and http.  Other machines on the local network run their respective services as well.
+3.) do not use the build in tunneling. use an explicit ipip tunnel.
+	that way you have the interface, can use it in netfilter,
+	can route into it, and the interface will set the right
+	source address.
 
-I want to achieve a setup such that connections to a certain non-existent IP address is DNAT to another IP address within the
-network.
+[netfilter]
+incoming encrypted packets are seen as ESP/AH in INPUT
+and then as decrypted packet in INPUT or FORWARD.
 
-The gateway address is 192.168.30.1
-The non-existent address which I want to DNAT to another machine within the network is 192.168.40.40
-The existent IP address where I want 192.168.40.40 to be forwarded to, is 192.168.30.11
+outgoing packets are only seen as ESP in OUTPUT.
 
+> > Since ESP packets that reach the mangle INPUT chain are destined for a
+> > local process, why not unencapsulate them just before that point?  
 
+INPUT only means the ESP will be decrypted/unecapsulated.
+after that the decrypted packet will show up in INPUT or FORWARD.
 
-Here are 2 cases:
+> no. My preferred solution was something like adding a netfilter hook to
+> the xfrm4 engine, exactly after decapsulation / decryption of one layer,
+> i.e.  after xfrm_type.input was called. 
+>
+> iptables could then register the INPUT chain (or probably even a
+> seperate POSTXFRM chain) in order to filter on the respective packets.
 
-case 1).  The non-existent IP address is DNAT to the the gateway (i.e. the accepting machine itself).
+you can already filter incoming packets. The problem is you
+don't know if they came in that way they look now, or if they
+came in via ESP packets and got decrypted.
 
-When I do this, everything works fine.  (i.e. I get to access 192.168.40.40 as if it really existed although what I'm really
-accessing is the gateway machine 192.168.30.1).
+maybe decryption/unencapsulating could leave a mark on the
+packet, so we know packets without that mark came in without
+ipsec and are bad / attempts to access resources without ipsec?
+(maybe fwmark works on that. or an explicit ipip tunnel, so you
+have "ipip0" or something as incoming interface).
 
-Here is how the configuration worked:
+> Any comments are appreciated.
 
-iptables -t nat -D PREROUTING -d 192.168.40.40 -j DNAT --to 192.168.30.1
-
-case 2).  The non-existent IP address is DNAT to another machine within the network (not the gateway).
-
-Here's what I think is the solution but it does not work.
-
-iptables -t nat -D PREROUTING -d 192.168.40.40 -j DNAT --to 192.168.30.11
-
-I wanted to force our users to access 192.168.40.40 since it is *NOT* in the same network.  Thus, all connections to it pass through
-the gateway.
-
-The solution does not work.  Are there any pointers on how to make this possible?
-
-A link to the network diagram is here:  http://210.23.193.154/zxff/qsz.html
-
-Thanks a lot!
-
-Best Regards,
-
-Carlo
-------
-Carlo Florendo
-Astra Philippines Inc.
-URL: http://www.hq.astra.ph/resources
-
-
-
-
-
-
+Regards, Andreas
 
 
