@@ -1,11 +1,10 @@
-From: Jay Levitt <lists-netfilter@shopwatch.org>
-Subject: Re: Wayward RST packets - what's the right answer?
-Date: Mon, 29 Mar 2004 14:11:53 -0500
+From: Karol Tomala <ktomala@tgc.pl>
+Subject: Serious NAT problem
+Date: Mon, 29 Mar 2004 21:51:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <058701c415c1$b20fae20$9701a8c0@office>
+Message-ID: <1080589869.2754.152.camel@wolverine.waw.tgc.pl>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0584_01C41597.C9290450"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,175 +15,85 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hello!
+I have a question regarding netfilter. I have been looking for an answer
+for two days and I'm hopeless. That's why I have decided to ask for help
+here.
 
-------=_NextPart_000_0584_01C41597.C9290450
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have a Mandrake Linux 9.2.1 internal router acting as a
+natbox/firewall. It has three NIC's:
+eth0 -> x.y.z.x (DMZ interface) [Doesn't matter for this issue]
+eth1 -> 172.18.12.0/255.255.252.0 (LAN interface)
+eth2 -> 10.128.2.64/255.255.255.224 (Client network)
 
-Chris Brenton wrote:
+Here's a liitle graph showing the connections:
 
+[ Cisco 1700 ]        [ NATBOX/FIREWALL ]  
+[ 10.128.2.65 ] <---> { eth2 }   { eth1 } <---> { LAN: 172.18.12.0 }
 
-> On Thu, 2004-03-25 at 23:29, Jay Levitt wrote:
-> >
-> > Fairly often - as in a few times an hour on a very, very underused
-> > server - I get repeated RST packets from hosts I've recently been
-> > talking to, but that conntrack thinks aren't part of a connection.  =
-My
-> > rule:
-> >
-> > iptables -A INPUT -p tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state
-> > --state NEW -j LOG --log-prefix "Stealth scan attempt"
-> > iptables -A INPUT -p tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state
-> > --state NEW -j DROP
->
-> Maybe I'm reading this wrong, but I would expect you would only get a
-> match with this rule if SYN was set. I'm surprised your grabbing RST
-> packets. Perhaps another rule that uses the same prefix?
+Eth2 interface has IP number 10.128.2.66.
+Eth1 interface has IP number 172.18.15.125.
 
-Nope, it's the other way around - this rule matches any packet that is =
-in a
-NEW state but has flags other than SYN-and-only-SYN.
+I want to connect client's Cisco 1700 router via eth2 network. However I
+don't want a 1:1 NAT. I would like to NAT a few hosts from 172.18.
+network to 10.128.2. so client could easily connect to some of our
+servers without having access to the rest of our LAN. 
 
-> Also, not so sure you can consider RST's a "stealth scan" as a =
-receiving
-> host is just going to ignore bogus RST's and not reply, regardless of
-> whether the port is open or not. Best an attacker could hope to =
-receive
-> is a host unreachable.
+I have a host 172.18.5.2 that should be NAT'ed to 10.128.2.70. All
+traffic going to 10.128.2.70 should reach 172.18.5.2 transparently.
 
-OK, so it'd be perfectly safe to add this?
+I have been trying to configure NAT without much success. 
 
-iptables -A INPUT -p -tcp --tcp-flags FIN,SYN,RST,ACK RST -m state =
---state
-NEW -j ACCEPT
+This is a part of my configuration:
 
-One problem is that although I can read about the TCP protocol and valid
-states, I don't know what failure/DOS/etc modes I'm protecting against, =
-and
-therefore I'm not sure what invalid-yet-possible states I should be =
-letting
-through.
+### Netfilter
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_all
 
-> > Mar 25 23:19:05 linux kernel: Stealth scan attemptIN=3Deth0 OUT=3D
-> > MAC=3D00:50:2c:01:62:8e:00:20:78:d0:44:8f:08:00 SRC=3D208.185.179.12
-> > DST=3D192.168.1.150 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D47 =
-ID=3D6376 PROTO=3DTCP
-> > SPT=3D2046 DPT=3D25 WINDOW=3D0 RES=3D0x00 RST URGP=3D0
->
-> What's the time stamp on the accepted packet? If you are
-> logging/dropping RST packets prior to processing ESTABLISHED that =
-would
-> explain this entry. I very rarely see legit RST packets get dropped so
-> if you are seeing them fairly often I would guess a config problem as
-> RSTs are a last resort.
+# Add route to 172.18.5.0/29 network
+ip route add 172.18.5.0/29 gw 172.18.15.254 dev eth1
 
-Not sure what you're asking about the timestamp... the rule does =
-log/drop
-RST packets in a NEW state (or, more likely, after a connection has been
-"closed" in conntrack).  I see them a few times an hour; any idea what =
-sort
-of config problem I'd be looking for?
+# Only for testing, will be changed when NAT works
+iptables -t filter -P INPUT ACCEPT
+iptables -t filter -P OUTPUT ACCEPT
+iptables -t filter -P FORWARD ACCEPT
 
-> The other time I've seen it is when there is an IDS on the wire =
-kicking
-> out RST packets when a suspect packet is seen, but the IDS does not =
-get
-> the sequence numbers right in the RST.
+# NAT
+iptables -t nat -A POSTROUTING -o eth2 -s 172.18.5.2 -j SNAT --to-source
+10.128.2.70
+iptables -t nat -A PREROUTING -i eth2 -d 10.128.2.70 -j DNAT
+--to-destination 172.18.5.2
 
-What's an IDS?
+[cut]
 
-Jay Levitt
+Unfortunatelly it's not working. I have lost two days on it, browsing
+through google and found nothing much helpful.
 
-------=_NextPart_000_0584_01C41597.C9290450
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I would like to achieve exactly the same as you can do in Cisco IOS with
+issuing command:
+ip nat inside static host 172.18.5.2 host 10.128.2.70
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Chris Brenton wrote:<BR><BR><BR>&gt; On Thu, 2004-03-25 at 23:29, =
-Jay=20
-Levitt wrote:<BR>&gt; &gt;<BR>&gt; &gt; Fairly often - as in a few times =
-an hour=20
-on a very, very underused<BR>&gt; &gt; server - I get repeated RST =
-packets from=20
-hosts I've recently been<BR>&gt; &gt; talking to, but that conntrack =
-thinks=20
-aren't part of a connection.&nbsp; My<BR>&gt; &gt; rule:<BR>&gt; =
-&gt;<BR>&gt;=20
-&gt; iptables -A INPUT -p tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m =
-state<BR>&gt;=20
-&gt; --state NEW -j LOG --log-prefix "Stealth scan attempt"<BR>&gt; &gt; =
+I don't want to assign VLAN on my eth2 NIC with IP 10.128.2.70. (Reason
+for this is that NATBOX is acting as a firewall/natbox/vpn router and I
+would have to assign thousands of VLANs on my NICs). I would like the
+host 172.18.5.2 to be seen as 10.128.2.70 in the client's network. 
 
-iptables -A INPUT -p tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m =
-state<BR>&gt; &gt;=20
---state NEW -j DROP<BR>&gt;<BR>&gt; Maybe I'm reading this wrong, but I =
-would=20
-expect you would only get a<BR>&gt; match with this rule if SYN was set. =
-I'm=20
-surprised your grabbing RST<BR>&gt; packets. Perhaps another rule that =
-uses the=20
-same prefix?<BR><BR>Nope, it's the other way around - this rule matches =
-any=20
-packet that is in a<BR>NEW state but has flags other than=20
-SYN-and-only-SYN.<BR><BR>&gt; Also, not so sure you can consider RST's a =
+I can ping the Cisco router on 10.128.2.65 from 10.128.2.66 via eth2. I
+can ping 172.18.5.2 from 172.18.15.125 via eth1. Unfortunatelly NAT is
+not working. Pinging 10.128.2.70 from eth2 gives Destination Host
+Unreachable. tcpdump -i eth2 gives "arp who-has 10.128.2.70 tell
+10.128.2.66". Nothing else happens. I cannot telnet to 10.128.2.70, but
+I can telnet to it by 172.18.5.2 IP number. 
 
-"stealth scan" as a receiving<BR>&gt; host is just going to ignore bogus =
-RST's=20
-and not reply, regardless of<BR>&gt; whether the port is open or not. =
-Best an=20
-attacker could hope to receive<BR>&gt; is a host unreachable.<BR><BR>OK, =
-so it'd=20
-be perfectly safe to add this?<BR><BR>iptables -A INPUT -p -tcp =
---tcp-flags=20
-FIN,SYN,RST,ACK RST -m state --state<BR>NEW -j ACCEPT<BR><BR>One problem =
-is that=20
-although I can read about the TCP protocol and valid<BR>states, I don't =
-know=20
-what failure/DOS/etc modes I'm protecting against, and<BR>therefore I'm =
-not sure=20
-what invalid-yet-possible states I should be =
-letting<BR>through.<BR><BR>&gt;=20
-&gt; Mar 25 23:19:05 linux kernel: Stealth scan attemptIN=3Deth0 =
-OUT=3D<BR>&gt; &gt;=20
-MAC=3D00:50:2c:01:62:8e:00:20:78:d0:44:8f:08:00 =
-SRC=3D208.185.179.12<BR>&gt; &gt;=20
-DST=3D192.168.1.150 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D47 ID=3D6376 =
-PROTO=3DTCP<BR>&gt;=20
-&gt; SPT=3D2046 DPT=3D25 WINDOW=3D0 RES=3D0x00 RST =
-URGP=3D0<BR>&gt;<BR>&gt; What's the=20
-time stamp on the accepted packet? If you are<BR>&gt; logging/dropping =
-RST=20
-packets prior to processing ESTABLISHED that would<BR>&gt; explain this =
-entry. I=20
-very rarely see legit RST packets get dropped so<BR>&gt; if you are =
-seeing them=20
-fairly often I would guess a config problem as<BR>&gt; RSTs are a last=20
-resort.<BR><BR>Not sure what you're asking about the timestamp... the =
-rule does=20
-log/drop<BR>RST packets in a NEW state (or, more likely, after a =
-connection has=20
-been<BR>"closed" in conntrack).&nbsp; I see them a few times an hour; =
-any idea=20
-what sort<BR>of config problem I'd be looking for?<BR><BR>&gt; The other =
-time=20
-I've seen it is when there is an IDS on the wire kicking<BR>&gt; out RST =
-packets=20
-when a suspect packet is seen, but the IDS does not get<BR>&gt; the =
-sequence=20
-numbers right in the RST.<BR><BR>What's an IDS?<BR><BR>Jay=20
-Levitt<BR></DIV></BODY></HTML>
+What am I doing wrong? Please help me. I'm hopeless and don't know what
+to do. :(
 
-------=_NextPart_000_0584_01C41597.C9290450--
+Greetings
+-- 
+Karol Tomala
+
 
 
