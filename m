@@ -1,15 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: michael@floog.net
 Subject: Re: How to drop/reject packets amongst LAN clients?
-Date: Mon, 10 May 2004 19:46:25 +0200
+Date: Mon, 10 May 2004 11:26:17 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084211184.1804.20.camel@anduril.intranet.cartel-securite.net>
-References: <1084206191.409fac6f1176a@webmail.floog.net>
-	 <1084209288.1804.13.camel@anduril.intranet.cartel-securite.net>
-	 <200405101834.13336.Antony@Soft-Solutions.co.uk>
+Message-ID: <1084213577.409fc949e1db4@webmail.floog.net>
+References: <1084206191.409fac6f1176a@webmail.floog.net> <409FB903.1090005@pbl.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405101834.13336.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <409FB903.1090005@pbl.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,20 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Cc: netfilter@lists.netfilter.org
 
-Le lun 10/05/2004 =E0 19:34, Antony Stone a =E9crit :
-> [ Note to self: I must remember that people use things other than Linux=
- on=20
-> their networks :)  ]
+Aleksandar,
 
-True.
-But, if they don't, they still can use pf ;)))
+Thanks for your guidance.
+It looks like I've got a fair amount of new reading to do after
+receiving Antony, Cedric, and your suggestion.  I think I'll want to
+install the 3rd NIC, and do some more NAT'ing and/or Bridge'ing.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+First stop, www.tldp.org for review of documentation there.
+Second stop, man route and/or routed.
+
+I appreciate your help.
+
+Mike
+
+
+
+Quoting Aleksandar Milivojevic <amilivojevic@pbl.ca>:
+
+> Second solution would be to put new server onto separate LAN. 
+> 192.168.1.9 will become 192.168.2.9 (or whatever).  Than clients on
+> your 
+> first LAN (192.168.1.0/24) will have to talk to your firewall/router
+> to 
+> get to the server on your second LAN (192.168.2.0/24).
+> 
+> You will need one more ethernet card for second solution.  If
+> additional 
+> server is going to be the only host in second LAN, you can connect it
+> 
+> directly with cross over cable.  If you are going to add more servers
+> to 
+> second LAN, you will also need additional hub or switch (do not
+> connect 
+> two LANs into same hub).
+> 
+> -- 
+> Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote
+
+
+
 
