@@ -1,14 +1,14 @@
-From: "Sven Bolt" <sven_bolt@fastmail.fm>
-Subject: Re: Some webpages inaccessible through IPTables
-Date: Sat, 08 Feb 2003 07:34:56 -0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: problem with ip tables help required
+Date: Sat, 8 Feb 2003 11:38:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030208153456.424A223F1C@www.fastmail.fm>
-References: <20030207191535.84360.qmail@web40309.mail.yahoo.com>
+Message-ID: <200302081138.08120.netfilter@newkirk.us>
+References: <OF56582234.0D18279E-ON65256CC6.00202B97-65256CC6.00203F99@diamond.philips.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030207191535.84360.qmail@web40309.mail.yahoo.com>
+In-Reply-To: <OF56582234.0D18279E-ON65256CC6.00202B97-65256CC6.00203F99@diamond.philips.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +19,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Kevin McConnell <kevymac@yahoo.com>, netfilter@lists.netfilter.org
+To: purushotham.krishnappa@philips.com, netfilter@lists.netfilter.org
 
-No ECN is not enabled in the kernel. The sites are accessible from the
-gateway itself so it's not an MTU issue. What else could it be?
+On Friday 07 February 2003 12:56 am, purushotham.krishnappa@philips.com=20
+wrote:
+> Hi
+>
+>
+> The requirement is like this
+>
+>
+>               WebServer-------------------- -
+> ----Router/Firewall---------------------------------------client
+> 10.60.90.7/8            eth1                  eth0                   =20
+>                     192.168.10.15 10.60.90.5/8               =20
+> 192.168.10.5/24
 
+> i am not able to connect to webserver from 192.168.10.5  to 10.60.90.7
+>    BUT i can ping 10.60.90.5 I need clients to connect from
+> 192.168.10.0/24  to able to connect to only port 80 on 10.161.90.7.8
 
-On Fri, 7 Feb 2003 11:15:35 -0800 (PST), "Kevin McConnell"
-<kevymac@yahoo.com> said:
-> 
-> --- Sven Bolt <sven_bolt@fastmail.fm> wrote:
-> > Hello,
-> > I saw the problem already on the list, but ther was
-> > no solution to it:
-> > I use an iptables-gateway 1.2.6a on debian with
-> > kernel 2.4.18 with just 
-> > 
-> > echo 1 > /proc/.../ip_forward
-> > and iptables --table at -A POSTROUTING -j MASQUERADE
-> > 
-> > I can access through this gateway most webpages, but
-> > for example
-> > www.ebay.com among several others I can't access.
-> > What could the problem be?
-> 
-> Perhaps the kernel is compiled with ECN, and that
-> particular sites firewall is "ECN braindead". Just one
-> of many possibilites.
-> 
-> 
-> =====
-> Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
-> 
-> __________________________________________________
-> Do you Yahoo!?
-> Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-> http://mailplus.yahoo.com
-> 
--- 
-  Sven Bolt
-  sven_bolt@fastmail.fm
+> # (4) FORWARD chain rules
+> # Accept the packets we want to forward
+> iptables -A FORWARD -i eth1 -j ACCEPT
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
--- 
-http://fastmail.fm - Send your email first class
+Unless I read your situation wrong, the connections from 192.168.10.x=20
+will be coming in eth0, not eth1.  These rules allow any traffic from=20
+10.60.x.y coming in eth1 through, and any EST/REL traffic through either=20
+way  You also need:
+
+iptables -A FORWARD -i eth0 -p tcp --dport 80 -d 10.60.90.5 -j ACCEPT
+
+to allow the DNATted connections through.
+
+j
+
 
