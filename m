@@ -1,13 +1,11 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: Last patch-o-matic have wrong ROUTE.patch
-Date: 04 Jul 2003 17:57:31 +0200
+From: =?iso-8859-1?q?Bissio?= <bissio2000@yahoo.it>
+Subject: Source IP ADDRESS
+Date: Fri, 4 Jul 2003 18:28:14 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1057334251.12433.53.camel@tux.rsn.bth.se>
-References: <3F05A1D1.9030205@uganet.com.br>
+Message-ID: <20030704162814.28056.qmail@web41504.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F05A1D1.9030205@uganet.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Carlo Pires <carlo@uganet.com.br>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Fri, 2003-07-04 at 17:48, Carlo Pires wrote:
-> Hi,
-> 
-> After test the last patch-o-matic available at www.netfilter.org I 
-> discovered the route.patch is broken to compile with last iptables.
+Hi all,
 
-Use patch-o-matic from cvs.
+I've a problem with masq... sometimes when i connect
+to pubblic chat or other web services from my lan, i
+see my source ip address (private network) listed. I
+would see my pubblic ip address listed... i use this
+rule:
 
-I really should make a new patch-o-matic release soon...
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o
+eth1 -j SNAT --to public.ip.address
 
--- 
-/Martin
+and in FORWARD rule:
+
+iptables -A FORWARD -p tcp -i eth0 -o eth1 -s
+192.168.0.0/24 --dport 1:1023 -j ACCEPT
+
+iptables -A FORWARD -p tcp -i eth1 -o eth0 -d
+192.168.0.0/24 --dport 1024:65535 ! --syn -j ACCEPT
+
+Why my private ip addres (192.168.0.10) is listed
+instead my public address???
+
+Thanks
+Bissio
+
+
+______________________________________________________________________
+Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus, il filtro Anti-spam
+http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/
 
