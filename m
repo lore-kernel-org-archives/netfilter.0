@@ -1,8 +1,8 @@
-From: Antonio Alvarez <aramirez@teneinformatica.com>
-Subject: iptables and iproute
-Date: Mon, 26 Apr 2004 08:20:13 +0100
+From: Saifuddin <saif@odysseytec.com>
+Subject: how to export a symbol from kernel to be accessible in module.
+Date: Mon, 26 Apr 2004 12:53:13 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1082964013.1772.14.camel@Toshiba.Toshiba>
+Message-ID: <20040426125313.3e52dfd9.saif@odysseytec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,34 +16,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
-
-Hello every body!
-
-I have a machine with 4 ethernet interfaces, 3 directly connected to
-ADSL lines a the another one to a LAN.
-
-I have 3 routing tables with iproute ( each one with his default gw for
-each ADSL line )
-
-I don't have problems with packet traversing my linux machine ( mangle
-the packet in the PREROUTING chain ) to routing.
-
-The problem is how can i control the packet localy generated( ip and
-port )???  
-i can't mangle this packet before routing :-/
-
-for example a need to use ssh server in the linux machine using ADSL 1 
-but when the machime aswer me use the ADSL 3 ( because this is the
-default gw in the main routing table :-( ... 
-
-In sumarize it's possible to use different routing tables with packet
-generated localy??
+To: netfilter@lists.netfilter.org
 
 
-Thanks in advance ...
+Hello everyone,
+	
+Linux kernel version 2.4.24
 
-Antonio Alvarez
+	ipc/shm.c
+		
+	static struct ipc_ids shm_ids; 
 
+		I want to access this variable in other kernel modules.
+	for this a macro is defined in ipc/shm.c
 
+	#define shm_get(id)     ((struct shmid_kernel *)ipc_get(&shm_ids,id));
+
+	
+	for this I have written a function in ipc/shm.c as below: -
+
+	void *sys_getshmhandler(int id){
+ 	       return (void *)shm_get(id);
+	}
+
+	EXPORT_SYMBOL(sys_getshmhandler);
+
+	ipc/Makefile
+
+	export-objs := shm.o.
+
+	The kernel compiles successfully, but when I boot the fresh kernel, I do not get the exported symbol in /proc/ksysm.
+
+	What am I missing?
+	Can anybody figure out?
+
+	Thanks in advance.
+
+-- 
+Regards,
+Saifuddin,
+saif@odysseytec.com.
+saifuddin_it@yahoo.co.in.
 
