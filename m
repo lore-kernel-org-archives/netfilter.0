@@ -1,13 +1,11 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
-Subject: RE: using heartbeat for high availability of NETFILTER Firewall
-Date: Wed, 5 Feb 2003 20:51:55 +0100
+From: Khanh Tran <khanh@slc.edu>
+Subject: RE: Measuring traffic that goes thrugh a specific IP
+Date: Wed, 5 Feb 2003 15:49:27 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608FD77811@w2ks-e2k.iconos.be>
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB580@EXCHANGE>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2CD50.0972FF37"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,103 +15,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Chip Upsal <chip@cyberwolf.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: gummi7@simnet.is, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Assuming I'm understanding everything you are saying,=20
 
-------_=_NextPart_001_01C2CD50.0972FF37
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+You'd probably want to set up an interface on your local linux router =
+that
+will be used when routing traffic to this specified IP that is =
+elsewhere.
+Of course you'll next want to set a route to route all traffic to this
+specific IP on this new interface.  This will isolate the traffic =
+between
+your local network and this specific IP to only that interface.  You =
+could
+then either use ifconfig, or cat /proc/net/dev to calculate the number =
+of
+packets, bytes, etc that traverse that interface.  I've even seen Perl
+scripts that will take that data and send it to MRTG for some nice =
+graphs.
+I use that on my network to get stats from our campus routers.
 
-Chip Upsal [mailto:chip@cyberwolf.com] wrote:
->I am trying to use heartbeat to give us fallover on our =
-netfilter/iptables
->firewall..
->
->However, I am not having any luck getting things to work consistently. =
-Am I
->barking up the wrong tree...is it possible to use heartbeat to achieve =
-these
->goals? Should I be looking at something else?
->
+Khanh Tran
+Network Operations
+Sarah Lawrence College
 
-Chip,
 
-Could you elaborate a little on what is going wrong ? Are you =
-experiencing
-problems with the heartbeat software, like resources/IP addresses not
-failing over or appearing on both nodes ?
 
-It's certainly possible to set up a poor man's failover firewall
-with netfilter and heartbeat.=20
-There's no state replication of the connection tracking information,
-although, depending on the way your firewall rules are set up,
-"transparent" failover should be possible. Problem areas I can think of,
-due to lack of conntrack info replication between the nodes, are
-RELATED connections of conntrack helpers, and NAT/MASQUEARDE issues
-when a node fails over. But those issues have a fairly low impact
-in most setups.
+-----Original Message-----
+From: gummi7@simnet.is [mailto:gummi7@simnet.is]
+Sent: Sunday, February 02, 2003 5:11 PM
+To: netfilter@lists.netfilter.org
+Subject: Measuring traffic that goes thrugh a specific IP
 
-Regards,
-Filip
 
-------_=_NextPart_001_01C2CD50.0972FF37
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Hello
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: using heartbeat for high availability of NETFILTER =
-Firewall</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
+I'm a linux/iptables/netfilter newbie, but I want to ask you a simple
+question.
+It's a long story and unrellevant to tell you why I want to do it so =
+i'll
+just get straigt to the point.
 
-<P><FONT SIZE=3D2>Chip Upsal [<A =
-HREF=3D"mailto:chip@cyberwolf.com">mailto:chip@cyberwolf.com</A>] =
-wrote:<BR>
-&gt;I am trying to use heartbeat to give us fallover on our =
-netfilter/iptables<BR>
-&gt;firewall..<BR>
-&gt;<BR>
-&gt;However, I am not having any luck getting things to work =
-consistently. Am I<BR>
-&gt;barking up the wrong tree...is it possible to use heartbeat to =
-achieve these<BR>
-&gt;goals? Should I be looking at something else?<BR>
-&gt;<BR>
-<BR>
-Chip,<BR>
-<BR>
-Could you elaborate a little on what is going wrong ? Are you =
-experiencing<BR>
-problems with the heartbeat software, like resources/IP addresses =
-not<BR>
-failing over or appearing on both nodes ?<BR>
-<BR>
-It's certainly possible to set up a poor man's failover firewall<BR>
-with netfilter and heartbeat.<BR>
-There's no state replication of the connection tracking information,<BR>
-although, depending on the way your firewall rules are set up,<BR>
-&quot;transparent&quot; failover should be possible. Problem areas I can =
-think of,<BR>
-due to lack of conntrack info replication between the nodes, are<BR>
-RELATED connections of conntrack helpers, and NAT/MASQUEARDE issues<BR>
-when a node fails over. But those issues have a fairly low impact<BR>
-in most setups.<BR>
-<BR>
-Regards,<BR>
-Filip</FONT>
-</P>
+I want to be able to measure(with my linux router) all the traffic from =
+the
+computers on my network that go thrugh a specifc IP number wich is =
+located
+in another place in my country. That is, if a computer on my network
+accesses a website and goes trough a specifed IP number to get that =
+website,
+I want to be able to measure the amount of data that goes trough that
+specified IP number, but only the data on my behalf. Note that I do not =
+have
+phisical(nor telnet or ssh) access to the router with the specifed IP =
+number
+that I want to measure.
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C2CD50.0972FF37--
+Can I do that with iptables and/or ipfilter? A yes is all I have to =
+hear if
+that is possible but an example or a little help wouldn't hurt :)
+
+With reagards, Gu=F0mundur Viktorsson
+
+ps. Please say so if I don't make myself clear enough.
+
+
 
