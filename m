@@ -1,9 +1,14 @@
-From: Nilesh <niluforalways@yahoo.com>
-Subject: Nat Rule ( Req help ASAP)
-Date: Mon, 8 Nov 2004 23:04:56 -0800 (PST)
-Message-ID: <20041109070456.3723.qmail@web50506.mail.yahoo.com>
+From: Primero <primero@fastwebnet.it>
+Subject: Re: Redirection using DNAT on transparent bridge.
+Date: Tue, 09 Nov 2004 10:11:07 +0100
+Message-ID: <419089AB.3060509@fastwebnet.it>
+References: <4f3930a704110819232a7f8a76@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig6D6B021F64E7859E2F8A7BFA"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4f3930a704110819232a7f8a76@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,39 +19,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+To: Josh Nerius <jnerius@gmail.com>
+Cc: netfilter@lists.netfilter.org
+
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig6D6B021F64E7859E2F8A7BFA
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
 
-Hello All, 
+Josh Nerius wrote:
 
-I am using Squid proxy and IPtables Firewall 
-through squid I am able to block Messenger and other
-sites but If I put this in firewall I couldnt able to
-block messenger 
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to
-$EXTIP 
-In connection settings If I choose no proxies the
-Yahoo messenger easily get connected.
+>Hello,
+>...
+>
+>iptables -t nat -A PREROUTING -m physdev --physdev-in eth0 -s
+>192.168.150.222 -p tcp --dport 80 -j DNAT --to
+>destination.ip.address.here
+>
+>  
+>
+where this "destination ip address" is? i mean, is it another network on 
+the same firewall/router, is it an host somewhere out there on the net?
 
-also we use CISCO VPN client to connect Outside VPN
-server If I want to connect VPN I need to put that
-rules otherwise I wont connect.
+I use some rules like this one on my Bridged Firewall to DNAT some 
+connection on a 3rd network i have on this firewall and, with the add of 
+some rules in FORWARD chain, it works fine.
 
-Could any one please tell How to solve my problem
-I want to block messengers also want to connect VPN
-server though client 
+Do u ACCEPT traffic for "destination.ip.address.here" ?
 
-Thanks 
-Nilesh.
+maybe a little bit more rules would help :)
+
+-- 
+---------------------------------------
+#######################################
+
+"Linux, the choice of a GNU generation"
+     ==Micro$oft - just say NO== 
+
+#######################################
+---------------------------------------
 
 
+--------------enig6D6B021F64E7859E2F8A7BFA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-		
-__________________________________ 
-Do you Yahoo!? 
-Check out the new Yahoo! Front Page. 
-www.yahoo.com 
- 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
+iD8DBQFBkImvOGoQ6Fir3nYRAo/mAJ445LcK7zeaKYarvMfMDLoYoD0JBQCfSYlA
+PVLOpMn819Ozz/dsifeFBOc=
+=SKXV
+-----END PGP SIGNATURE-----
+
+--------------enig6D6B021F64E7859E2F8A7BFA--
 
