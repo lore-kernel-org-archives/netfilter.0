@@ -1,10 +1,12 @@
-From: =?iso-8859-1?q?Bissio?= <bissio2000@yahoo.it>
-Subject: Source IP ADDRESS
-Date: Fri, 4 Jul 2003 18:28:14 +0200 (CEST)
+From: "David Busby" <busby@pnts.com>
+Subject: Re: Forwarding HTTP question
+Date: Fri, 4 Jul 2003 10:32:58 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030704162814.28056.qmail@web41504.mail.yahoo.com>
+Message-ID: <09d701c34252$578325b0$1100000a@busbydev>
+References: <004f01c34231$f1d429f0$6800817d@TESTE>
+Reply-To: "David Busby" <busby@pnts.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,35 +18,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Guilherme Viebig <guilherme@plannercorretora.com.br>, *netfilter <netfilter@lists.netfilter.org>
 
-Hi all,
-
-I've a problem with masq... sometimes when i connect
-to pubblic chat or other web services from my lan, i
-see my source ip address (private network) listed. I
-would see my pubblic ip address listed... i use this
-rule:
-
-iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o
-eth1 -j SNAT --to public.ip.address
-
-and in FORWARD rule:
-
-iptables -A FORWARD -p tcp -i eth0 -o eth1 -s
-192.168.0.0/24 --dport 1:1023 -j ACCEPT
-
-iptables -A FORWARD -p tcp -i eth1 -o eth0 -d
-192.168.0.0/24 --dport 1024:65535 ! --syn -j ACCEPT
-
-Why my private ip addres (192.168.0.10) is listed
-instead my public address???
-
-Thanks
-Bissio
+Yes, it's in section 6 - 10 of the howto.
+Start here: http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-6.html
 
 
-______________________________________________________________________
-Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus, il filtro Anti-spam
-http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/
+/B
+----- Original Message ----- 
+From: "Guilherme Viebig" <guilherme@plannercorretora.com.br>
+To: "*netfilter" <netfilter@lists.netfilter.org>
+Sent: Friday, July 04, 2003 06:41
+Subject: Forwarding HTTP question
+
+
+> My Firewall has two interfaces
+>
+> eth0 200.123.234.111
+> eth1 192.168.0.1
+>
+> I have an internal webserver on 192.168.0.33
+>
+> How can I setup iptables to forward incoming traffic by eth0 to port 80 go
+> to 192.168.0.33:80 ?
+>
+> Thanks
+>
+>
+> Guilherme B. Viebig
+>
+>
+>
+
 
