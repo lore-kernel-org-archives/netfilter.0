@@ -1,10 +1,14 @@
-From: "Rodre Ghorashi-Zadeh" <rodrico7@hotmail.com>
-Subject: ip_conntrack and ipt_conntrack
-Date: Fri, 23 Jan 2004 18:14:41 +0000
+From: Rodrigo Severo <rodrigo.lists@fabricadeideias.com>
+Subject: Re: Problem using fwmarks as routing key: "MASQUERADE: Route sent
+ us somewhere else."
+Date: Fri, 23 Jan 2004 17:13:07 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY10-F46m2m2XkO28Q0000cf3b@hotmail.com>
+Message-ID: <40117243.4090606@fabricadeideias.com>
+References: <001c01c3e043$93583cd0$1684188d@Kiste> <20040123160603.GA7516@cannon.eng.us.uu.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040123160603.GA7516@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,66 +18,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Friday 23 January 2004 2:22 am, Rodre Ghorashi-Zadeh wrote:
+Thhoep,
 
->Hello,
+>On Wed, Jan 21, 2004 at 06:25:22PM +0100, Thhoep wrote:
+>  
 >
->I was hoping that someone could tell me the difference between these two
->modules and what they are each used for. Thanks in advance.
+>>-----------
+>>kernel: request_module: failed /sbin/modprobe -- net-pf-10. error =3D =
+256
+>>kernel: MASQUERADE: Route sent us somewhere else.
+>>    
+>>
+I think you can easily solve your problem substituting MASQUERADE with 
+SNAT. There is one upside and one downside to this solution.
 
-ip_conntrack does connection tracking for various protocols, placing entries
-in the conntrack table and recognising "related" packets etc.
+The downside is the extra work you will have setting a create/delete 
+updated SNAT each time an ADSL goes up/down.
 
-ipt_conntrack is the connection tracking state match, which allows you to
-write rules matching the state of a connection, eg:
+The upside is that it actually works :)
 
-iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-Regards,
-
-Antony.
-
---
-Anything that improbable is effectively impossible.
-
-- Murray Gell-Mann, Novel Prizewinner in Physics
-
-                                                     Please reply to the=20
-list;
-                                                           please don't CC =
-
-me.
+I say so because I have a working 2 ADSL connections + 1 fixed 
+connection setup working fine with the MARK + ip rule + SNAT mix.
 
 
-Hello Anthony,
+I hope it helps you,
 
-Thanks for your response.
+Rodrigo Severo
 
-If ipt_conntrack does the state matching then what does the ipt_state modul=
-e=20
-do? All of the rules I have for my firewalls track state, so the ipt_state =
-
-module gets loaded automatically with the firewall startup script, but=20
-ipt_conntrack doesn't, I would have to load it manually if I needed it (or =
-
-write rules that use it perhaps?). As far as I can tell the state matching =
-
-is working on my firewall. I really need to get to the bottom of this so I =
-
-can rule it out on my=20
-https://lists.netfilter.org/pipermail/netfilter/2004-January/050005.html=20
-problem. Also is the source file for the ip_conntrack module named=20
-ip_conntrack_core.c? Thanks again for all your help.
-
-=AEodre
-
-_________________________________________________________________
-Add photos to your messages with MSN 8. Get 2 months FREE*. =20
-http://join.msn.com/?page=3Ddept/features&pgmarket=3Den-ca&RU=3Dhttp%3a%2f%=
-2fjoin.msn.com%2f%3fpage%3dmisc%2fspecialoffers%26pgmarket%3den-ca
+-- 
+----------------------------------------------------
+Rodrigo Severo
+F=E1brica de Id=E9ias
+Fone: +55(61)321 1357
+Fax: +55(61)223 1712
+SBS - Quadra 2 - Ed. Empire Center - Sala 1301
+Bras=EDlia/DF - Brasil
+CEP: 70.070-904
+----------------------------------------------------
 
 
