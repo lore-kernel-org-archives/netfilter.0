@@ -1,7 +1,7 @@
 From: =?iso-8859-1?Q?Herv=E9?= <herve@lucidia.net>
 Subject: RE: Two NICS with same IP and same client IP
-Date: Wed, 2 Feb 2005 16:57:12 -0000 (GMT)
-Message-ID: <56034.57.66.65.39.1107363432.squirrel@57.66.65.39>
+Date: Wed, 2 Feb 2005 16:57:11 -0000 (GMT)
+Message-ID: <56024.57.66.65.39.1107363431.squirrel@57.66.65.39>
 References: <27594E8BA9D5CA458F5EF87D88B6B48F019948@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
