@@ -1,10 +1,9 @@
-From: "HareRam" <hareram@sol.net.in>
-Subject: How to remove Established Connection
-Date: Wed, 9 Oct 2002 21:43:44 +0530
+From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
+Subject: Re: blocking Emails using ip address or domain name
+Date: Wed, 9 Oct 2002 19:15:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000c01c26fae$d77a3be0$7cfcc5cb@humanpc>
-References: <F10E4DFowMtNi2yWkF10000655d@hotmail.com>
-Reply-To: "HareRam" <hareram@sol.net.in>
+Message-ID: <001501c26fb7$6f0a75d0$026410ac@honor>
+References: <OE33K5uA7liRtUvh18c00008bd4@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,14 +17,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Sundaram Ramasamy <rsundaram@hotmail.com>, netfilter@lists.netfilter.org
 
-Hi all Guru
+From: Sundaram Ramasamy 
 
-how can i remove Dynamically ESTABLISHED connection
-for the perticular IP address or MAC address, on fly
-thanks for the advanced help
+> Hi,
+> 
+> We are getting lot of porn Email from mailme.dk, kiwwi.cz domain
+> address. I have NATed mail server. Is it possible to block all incoming
+> mails from these domains.
 
-hare
+yes, tell your smtpd to reject them... this isnt a netfilter problem.
 
 
