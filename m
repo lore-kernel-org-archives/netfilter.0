@@ -1,12 +1,13 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: unexpected behaviour...?
-Date: Tue, 02 Sep 2003 15:59:35 -0400
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: maybe out of topic
+Date: 31 Aug 2003 12:42:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F54F6A7.8020004@chrisbrenton.org>
-References: <20030828113329.32071.qmail@web21404.mail.yahoo.com>
+Message-ID: <1062326520.1607.10.camel@kermit>
+References: <3F4EA5D3.1010504@skyinet.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F4EA5D3.1010504@skyinet.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Christof Nyffenegger <cnyf@yahoo.de>
-Cc: Jim Carter <jimc@math.ucla.edu>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: jaws <jaws@skyinet.net>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Christof Nyffenegger wrote:
-> 
->>Oh, I didn't understand the configuration.  Hmmm again.  I would really
->>expect the http and ssh connections to behave the same.
-> 
-> Yep, thats the point. but they don't.
+Am Fre, 2003-08-29 um 03.01 schrieb jaws:
+> I'm just wondering why im getting this error:
+>=20
+> [root@tracker root]#/usr/sbin/tcpdump -i eth0
+> Couldn't find user 'pcap'
+You need the following entry in your /etc/passwd file:
+pcap:x:77:77::/var/arpwatch:/bin/nologin
 
-I have not followed this whole thread, so if this idea has been 
-suggested already please feel free to /dev/null this.
+This was taken from a stock RH9 machine.
 
-My experience has been that most SSH clients issue a keep alive while 
-HTTP does not. If your accept rule is based on IP and port number only 
-(in other words, you are not doing a --tcp-flags ALL SYN), its possible 
-that the outbound ACK from the client is recreating the session in the 
-state table.
+Cheers,
 
-Easy way to check this would be to write your SSH rule with the above 
-switch. If SSH starts acting like HTTP (no longer re-creates the state 
-table entry) then you know this is it.
+Ralf
+--=20
+Ralf Spenneberg
+RHCE, RHCX
 
-HTH,
-C
-
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
