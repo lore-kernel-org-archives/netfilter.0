@@ -1,14 +1,12 @@
-From: Alex Satrapa <alex@lintelsys.com.au>
-Subject: Re: could someone translate these rules inot plain english
-Date: Fri, 23 Jan 2004 08:40:40 +1100
+From: "Nicolas" <nmeillet@wanadoo.Fr>
+Subject: RTSP and NAT
+Date: Thu, 22 Jan 2004 22:49:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40104358.2050908@lintelsys.com.au>
-References: <33682.66.65.52.125.1074751856.squirrel@sojourn.dyndns.org>      <400F6EF4.2060608@lintelsys.com.au> <34137.66.65.52.125.1074768489.squirrel@sojourn.dyndns.org>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040122215001.73D07100038F@mwinf0504.wanadoo.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00BE_01C3E13A.080390B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <34137.66.65.52.125.1074768489.squirrel@sojourn.dyndns.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +16,150 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Technical wrote:
-> If the default is that iptables to reject all packets that cannot not be
-> deall with any of the previous rules, why would somemone use the last
-> rule??  am I missing something??
+This is a multi-part message in MIME format.
 
-It explicitly tells the remote computer that they're not *allowed* to 
-communicate with that host - as opposed to just dropping the packets 
-(pretending you're a black hole), or rejecting the packets with "host 
-unreachable" or "port unreachable".  These two options imply that the 
-remote host is *allowed* to try connecting, but there's just nothing there.
+------=_NextPart_000_00BE_01C3E13A.080390B0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-The administrator at the other end would likely act different ways in 
-these circumstances. Upon noticing that there are many "host 
-unreachable" messages coming through, the administrator would take the, 
-"leave it alone and try again" stance - since the assumption would be 
-that something is broken. "host prohibited" messages explicitly state to 
-the administrator that everything is working just as it should be, and 
-that communication with that host is simply not allowed.
+Hello all,
+
+ 
+
+I sent a first post last week describing my problem. It can be summarized
+like this : I want to let through RTSP (well, in fact, RTP packets) but my
+firewall is doing NAT.
+
+ 
+
+I installed Linux Redhat on a new computer and I installed the
+RTSP_conntrack module. Kernel compilation went OK. I've tried to stream but,
+again, I don't see any RTP packets. Only RTSP and RTCP packets can go
+through my firewall.
+
+ 
+
+Just wanted to know : who had a similar experience and did you succeed to
+allow the RTP packets ? If yes, could you please tell me which Linux distrib
+you used + kernel ?
+
+ 
+
+Thanks for your help.
+
+Nicolas
+
+
+------=_NextPart_000_00BE_01C3E13A.080390B0
+Content-Type: text/html;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DFR link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hello all,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>I sent a first post last week describing my =
+problem. It
+can be summarized like this : I want to let through RTSP (well, in fact, =
+RTP
+packets) but my firewall is doing NAT.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>I installed Linux Redhat on a new computer and =
+I
+installed the RTSP_conntrack module. Kernel compilation went OK. =
+I&#8217;ve
+tried to stream but, again, I don&#8217;t see any RTP packets. Only RTSP =
+and
+RTCP packets can go through my firewall.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>Just wanted to know : who had a similar =
+experience
+and did you succeed to allow the RTP packets ? If yes, could you please =
+tell me
+which Linux distrib you used + kernel ?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>Thanks for your =
+help.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
+style=3D'font-size:
+10.0pt;font-family:Arial'>Nicolas<o:p></o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_00BE_01C3E13A.080390B0--
 
 
 
