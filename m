@@ -1,13 +1,11 @@
-From: "J. Nerius" <jnerius@gmail.com>
-Subject: Re: bandwidth monitoring
-Date: Thu, 06 Jan 2005 14:19:44 -0600
-Message-ID: <1105042784.27950.12.camel@josh-desk>
-References: <200501061128.04741.patrick.leduc@novipro.com>
-	<41DD9AE3.4060207@utilitran.com>
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: bandwidth monitoring
+Date: Thu, 6 Jan 2005 12:28:20 -0800
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E3AB@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41DD9AE3.4060207@utilitran.com>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,41 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Michael Gale <michael.gale@utilitran.com>
+To: "J. Nerius" <jnerius@gmail.com>, Michael Gale <michael.gale@utilitran.com>
 Cc: netfilter@lists.netfilter.org
 
-How many hosts and how much traffic are you running through it? I've
-wanted to come up with a solution similar to the one you've described to
-replace my current bandwidthd setup but I'm thinking that my network may
-be too large with too much traffic to support something like that
-without building a monster box just to capture the stats. 
+J. Nerius wrote:
+> How many hosts and how much traffic are you running through it? I've
+> wanted to come up with a solution similar to the one you've described
+> to replace my current bandwidthd setup but I'm thinking that my
+> network may be too large with too much traffic to support something
+> like that without building a monster box just to capture the stats.
+>=20
 
-J.N.
+If you have a small static number of hosts in/out of your system, you
+may want to use netfilter blank rule counters since the penalty of
+passing each counter is very very low (entirely kernel side).
 
-On Thu, 2005-01-06 at 13:09 -0700, Michael Gale wrote:
-> Hello,
-> 
-> 	To run NTOP permanitly you just have to clear the stats nightly. I have 
-> a php script that makes a HTTP connection, downloads the stats from NTOP 
-> and saves them in a mysql database. It then makes another connection and 
-> tells NTOP to reset the stats.
-> 
-> That keeps the memory and CPU usage low ... so you could run it 
-> continuously.
-> 
-> Michael.
-> 
-> 
-> patrick.leduc@novipro.com wrote:
-> > Hello
-> > 
-> > Does somebody know a program for monitoring bandwidth by ip? I have one 
-> > internet interface and I must monitor many ips adresses on this interface. I 
-> > tried Ipac-ng and, I worked a lot to do this config but it seems not working 
-> > this way.
-> > 
-> > thanx
-> > 
-> 
+To put this in perspective, there've been a lot of performance issues
+with people running 10000+ rule sites with adverse effects on their
+network setup. Lower than that, and the impact is pretty low. Plus,
+blank rules don't do anything but increment the counter, so the actual
+CPU utilization of these rules are even lower. This is to give maxumum
+accounting of an existing kernel. I'm sure there have been a few
+in-kernel accounting packages made, but I can't recall any at the
+moment. Maybe someone here can refresh our memory.
+
+Of course the problem with this approach is that you have to know what
+IP's that are generating traffic before setting this thing up since the
+iptables rules are static. Its good if you want to monitor internal
+user's traffic to the net and the amount of traffic a server is getting,
+but to actually track the internet endpoints, you're better off using a
+dynamic traffic tracking tools like ntop or bandwidthd.
 
 
