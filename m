@@ -1,15 +1,13 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Creating rules without the /sbin/iptables command?
-Date: Thu, 18 Mar 2004 09:56:16 +0100
+Subject: Re: Re: Configure my firewall
+Date: Thu, 18 Mar 2004 09:57:56 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1079600176.1445.1.camel@anduril.intranet.cartel-securite.net>
-References: <40589CF8.8010007@nk.nl>
-	 <1079551538.1424.23.camel@anduril.intranet.cartel-securite.net>
-	 <4058BC41.3040702@nk.nl>
+Message-ID: <1079600276.1445.4.camel@anduril.intranet.cartel-securite.net>
+References: <20040318074052.C8ED4C165@postfix3-2.free.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <4058BC41.3040702@nk.nl>
+In-Reply-To: <20040318074052.C8ED4C165@postfix3-2.free.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,23 +18,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Victor Julien <victor@nk.nl>
-Cc: Netfilter List <netfilter@lists.netfilter.org>
+To: nicolas boussekeyt <nicolas.boussekeyt@free.fr>
+Cc: Nick Taylor <nickt@lightlink.com>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Le mer 17/03/2004 =E0 21:59, Victor Julien a =E9crit :
-> Okay, thanx i will do that. I thought that netfilter-devel was only for=
-=20
-> development of netfilter itself. My bad ;)
+Le jeu 18/03/2004 =E0 08:42, nicolas boussekeyt a =E9crit :
+> > Well, I don't know how this worm spreads, so I can't help with
+> > firewall design, but it seems to me that you might want the LOG
+> > rules before the DROP rules, no?
+> Yes, it's a problem ?
 
-No, you can discuss third party tools development around iptables stuff
-also.
-
-> By the way, are the iptables libs in /usr/lib/iptables meant for use by=
-=20
-> third party tools, or is this considered a dirty hack?
-
-They are meant to be used by iptables itself. But you can use them with
-your own soft. That's no dirty hack.
+No, but your script DROP first, and then tries to LOG. So there's
+nothing left to log...
 
 --=20
 http://www.netexit.com/~sid/
