@@ -1,13 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: tcpdump and netfilter
-Date: Fri, 14 Jun 2002 17:54:25 +0100
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: TCP delay, solved
+Date: 14 Jun 2002 19:28:04 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206141654.RAA13159@slate.rockstone.co.uk>
-References: <y9sbsadzuai.fsf@pc-024.diku.dk>
+Message-ID: <1024075684.1625.125.camel@billy.demon.nl>
+References: <002101c2137b$e44d6de0$638317d2@pacific.net.au> 
+	<200206140919.KAA11256@slate.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-YF+3wp4ri8F3RURbrgM/"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <y9sbsadzuai.fsf@pc-024.diku.dk>
+In-Reply-To: <200206140919.KAA11256@slate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,27 +19,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-On Friday 14 June 2002 5:42 pm, Jacob Hansen wrote:
 
-> I am writing a packet mangling kernel module and tcpdump reports very
-> odd-looking IP packets, that i cannot seem to pinpoint at any nf_hook.
+--=-YF+3wp4ri8F3RURbrgM/
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Yes - I've come across this before as well.   I'm not sure there's a singel 
-reliable solution to combine these two applications.
+fre, 2002-06-14 kl. 11:16 skrev Antony Stone:
 
-> Any suggestions as to a debugging approach?
+> Yes, that's the "hole in my firewall" I referred to.   By sending back RS=
+T to=20
+> packets coming in on TCP port 113, I'm telling people there's a firewall=20
+> there.   All other ports send back nothing, and I don't want this one to=20
+> stand out as being different....
 
-1. Use netfilter LOGging to output packets you want to monitor.
+They know anyway.
 
-2. Run tcpdump / ethereal etc on another machine to show you what comes out 
-of the network interface onto the wire.
+216.167.114.177
 
-Can anyone else suggest a way to do it reliably on one machine ?
+Best,
 
- 
+Tony
 
-Antony.
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
+
+
+
+--=-YF+3wp4ri8F3RURbrgM/
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9Ciek99dgUTvnuYERAvtxAJ9jsKlIqL222bxgsZBNERJPLUEsnwCfR8Nd
+z6pKYxet98x3Z/NCm2JHwuY=
+=TCWT
+-----END PGP SIGNATURE-----
+
+--=-YF+3wp4ri8F3RURbrgM/--
+
 
