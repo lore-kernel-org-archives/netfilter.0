@@ -1,10 +1,12 @@
-From: Les Mikesell <les@futuresource.com>
-Subject: GRE over IPSec?
-Date: Thu, 06 Jan 2005 10:51:58 -0600
-Message-ID: <1105030318.14796.9.camel@moola.futuresource.com>
+From: "J. Nerius" <jnerius@gmail.com>
+Subject: Re: bandwidth monitoring
+Date: Thu, 06 Jan 2005 11:09:31 -0600
+Message-ID: <1105031371.27950.3.camel@josh-desk>
+References: <200501061128.04741.patrick.leduc@novipro.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200501061128.04741.patrick.leduc@novipro.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,22 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: patrick.leduc@novipro.com
+Cc: netfilter@lists.netfilter.org
 
-This may be off-topic for this list but perhaps someone could at least
-point me to a better source...  When doing IPSec tunnels between Cisco
-routers it works nicely to first make a GRE tunnel which gives you
-a fairly normal interface that can run routing protocols, etc., then
-use 'crypto map' to push the GRE packets through IPSec encryption.
+Hello,
 
-Are there any examples available that would match this setup with
-Linux on one end, Cisco on the other?  A Linux<->Cisco GRE is easy
-enough and zebra/quagga should run rip or ospf over that, but then
-I'd like to pass the GRE packets though IPSec before sending.
+I have had good luck with a program called bandwidthd, available at
+http://bandwidthd.sourceforge.net/
 
--- 
-  Les Mikesell
-   les@futuresource.com
+I know it's not netfilter related specifically but I found it met my
+needs where others failed. 
 
+J.N.
+
+On Thu, 2005-01-06 at 11:28 -0500, patrick.leduc@novipro.com wrote:
+> Hello
+> 
+> Does somebody know a program for monitoring bandwidth by ip? I have one 
+> internet interface and I must monitor many ips adresses on this interface. I 
+> tried Ipac-ng and, I worked a lot to do this config but it seems not working 
+> this way.
+> 
+> thanx
+> 
 
 
