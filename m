@@ -1,12 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ARP Reply with wrong MAC
-Date: Tue, 14 Dec 2004 11:35:01 +0100
-Message-ID: <1103020501.4557.13.camel@anduril.intranet.cartel-securite.net>
-References: <twig.1103020049.65314@basti79.de>
+From: Craig Nellist <nellistc@gmail.com>
+Subject: multiple nat'd clients to poptop
+Date: Tue, 14 Dec 2004 22:42:48 +1100
+Message-ID: <eec8890104121403425019cf9c@mail.gmail.com>
+Reply-To: Craig Nellist <nellistc@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <twig.1103020049.65314@basti79.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +16,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Sebastian <netfilter@basti79.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mardi 14 d=E9cembre 2004 =E0 10:27 +0000, Sebastian a =E9crit :
-> A Linux box (kernel 2.4.24) with 2 ethernet interfaces connected to the s=
-ame
-> physical backbone. eth0 (public IP) and eth1 (10.0.0.1).
-> Sometime it ocures that an arp-request for 10.0.0.1 is answered with the
-> mac-address of eth0. (proxy_arp on all interfaces is off)
+Hi,
 
-One which interface this request is received ? If it's eth0, then it's
-normal.
+I've searched the archives for this subject and found plenty of
+documentation, but nothing that's worked so far.
 
-BTW, what's the connection with Netfilter ?
+I have a number of clients behind a router using NAT trying to connect
+to a server which is itself behind a router and NAT'd. First client
+can connect no problem, any additional clients generate "GRE:
+Discarding out of order packet" messages on the server. (The first
+client stays connected.)
 
+I'm using the pptp conntrack patch from pom20031219 with 2.4.24.
+ip_nat_proto_gre, ip_nat_pptp, ip_conntrack_proto_gre and
+ip_conntrack_pptp are loaded. iptables has been recompiled and I am
+able to create rules in the nat table.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+The server only has one interface and it's IP is 10.10.10.99. The
+clients connect to 61.61.61.163 -- the NAT for this address is
+performed on a router at the server end; the server has no visibility
+of the external address.
+
+The local IP range for poptop is 192.168.0.0/24, the remote is
+10.10.10.50-10.10.10.60.
+
+Should this config be possible and if so, can anyone provide the
+iptables rules necessary to get it up and running?
+
+thanks in advance,
+ Craig
 
