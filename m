@@ -1,8 +1,8 @@
 From: "j davis" <davis_compz@hotmail.com>
-Subject: Re: [NMLUG] System Safety.
-Date: Tue, 09 Jul 2002 23:55:26 +0000
+Subject: Re: satellite users can't connect to port forwarded services
+Date: Wed, 10 Jul 2002 00:00:25 +0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <F159N68c098V4p7Jl3O0000be65@hotmail.com>
+Message-ID: <F2178nzRC1uQdfNPqvW0000bba8@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
@@ -19,54 +19,837 @@ Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
 
-you said earlier that you only have apache and other stuff running for fun 
-in the office. I say shut the services down. And if he can just blast 
-through your updated firewall you need to get a newfirewall. Maybe put a 
-linux
-firewall behind the netopia and do nat twice. Also I hope you are using 
-tcpwrappers. Iptables and firewalls can block ports and ips. Tcpwrappers
-can block service accsess based on ips. So you could set it so only allow
-your ip could connect to the web-server or inetd. Can you get a new block of 
-IP's?
-Let me help build you a IPtables firewall with Snort and Tcpwrappers. How
-generic is your ruleset on the netopia? You need to be really specifc with 
-your
-ruleset considering you are being targetted. And upgrade that rh6.2 box.
+Starband satallites claim they dont support real-time protocalls
+like telnet,ssh,ftp and so on. And absolutley do not allow incoming
+traffic from the internet thats not requested. except maybe a ping.
 
-random thoughts in no order,
 jd
 http://www.taproot.bz
 
-
->From: wes robbins <dw4pres@yahoo.com>
->To: j davis <davis_compz@hotmail.com>
->Subject: Re: [NMLUG] System Safety.
->Date: Tue, 9 Jul 2002 12:53:48 -0700 (PDT)
+>From: Ramin K <mr_list@netzero.net>
+>To: netfilter@lists.samba.org
+>Subject: satellite users can't connect to port forwarded services
+>Date: Tue, 09 Jul 2002 14:08:10 -0500
 >MIME-Version: 1.0
->Received: from web13305.mail.yahoo.com ([216.136.175.41]) by 
->mc2-f14.law16.hotmail.com with Microsoft SMTPSVC(5.0.2195.4905); Tue, 9 Jul 
->2002 12:52:50 -0700
->Received: from [134.253.26.4] by web13305.mail.yahoo.com via HTTP; Tue, 09 
->Jul 2002 12:53:48 PDT
->Message-ID: <20020709195348.91779.qmail@web13305.mail.yahoo.com>
->In-Reply-To: <F267xTIPOJP1VSN6ywd0000b685@hotmail.com>
->Return-Path: dw4pres@yahoo.com
->X-OriginalArrivalTime: 09 Jul 2002 19:52:50.0967 (UTC) 
->FILETIME=[35162270:01C22782]
+>Received: from mc2-f11.law16.hotmail.com ([65.54.237.18]) by 
+>mc2-s7.law16.hotmail.com with Microsoft SMTPSVC(5.0.2195.4905); Tue, 9 Jul 
+>2002 12:38:08 -0700
+>Received: from lists.samba.org ([198.186.203.85]) by 
+>mc2-f11.law16.hotmail.com with Microsoft SMTPSVC(5.0.2195.4905); Tue, 9 Jul 
+>2002 12:32:17 -0700
+>Received: from va.samba.org (localhost [127.0.0.1])by lists.samba.org 
+>(Postfix) with ESMTPid 6DBC54475; Tue,  9 Jul 2002 12:32:37 -0700 (PDT)
+>Received: from mail.speakeasy.net (mail17.speakeasy.net [216.254.0.217])by 
+>lists.samba.org (Postfix) with ESMTP id D22574A55for 
+><netfilter@lists.samba.org>; Tue,  9 Jul 2002 12:09:22 -0700 (PDT)
+>Received: (qmail 15337 invoked from network); 9 Jul 2002 19:09:09 -0000
+>Received: from unknown (HELO touchandgo.netzero.net) ([12.251.0.250]) 
+>(envelope-sender <mr?list@netzero.net>)          by mail17.speakeasy.net 
+>(qmail-ldap-1.03) with SMTP          for <netfilter@lists.samba.org>; 9 Jul 
+>2002 19:09:09 -0000
+>Delivered-To: netfilter@lists.samba.org
+>Message-Id: <5.1.0.14.2.20020709134840.0447ce80@pop.enteract.com>
+>X-Sender: mr_list@pop.netzero.net
+>X-Mailer: QUALCOMM Windows Eudora Version 5.1
+>Sender: netfilter-admin@lists.samba.org
+>Errors-To: netfilter-admin@lists.samba.org
+>X-BeenThere: netfilter@lists.samba.org
+>X-Mailman-Version: 2.0.8
+>Precedence: bulk
+>List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
+>List-Post: <mailto:netfilter@lists.samba.org>
+>List-Subscribe: 
+><http://lists.samba.org/listinfo/netfilter>,<mailto:netfilter-request@lists.samba.org?subject=subscribe>
+>List-Id: netfilter user discussion list <netfilter.lists.samba.org>
+>List-Unsubscribe: 
+><http://lists.samba.org/listinfo/netfilter>,<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
+>List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+>Return-Path: netfilter-admin@lists.samba.org
+>X-OriginalArrivalTime: 09 Jul 2002 19:32:18.0652 (UTC) 
+>FILETIME=[5691C9C0:01C2277F]
 >
->The router was not set to passive.  I'll double check
->tonight.  but. it totally looks that that he can get
->around the default Mil. Zone on that router.  I would
->like to stop him there.
+>	Installed new firewall using Mandrake 8.2, kernel 2.4.18, netfilter 1.2.5, 
+>and firestarter 0.82 as the front end.
 >
->=====
+>	Running NAT internally and doing port forwarding to an internal machine 
+>for ports 21, 22, 25, and 110. All services work perfectly from just about 
+>anywhere on the net other then the Director of IT's satellite link. :-(
+>
+>	A ping from the firewall to his home IP is averaging 1500ms and it never 
+>less then 700ms. He generally gets TCP reset errors when he tries to 
+>connect to any of the above services.
+>
+>These are in the log files.
+>
+>Jul  8 20:54:56 fw-01 kernel: IN=eth2 OUT=eth0 SRC=148.64.143.224 
+>DST=10.70.70.2 LEN=44 TOS=0x00 PREC=0x00 TTL=184 ID=28803 PROTO=TCP 
+>SPT=1066 DPT=22 WINDOW=8192 RES=0x1c SYN URGP=0
+>
+>Jul  8 20:54:57 fw-01 kernel: IN=eth2 OUT=eth0 SRC=148.64.143.224 
+>DST=10.70.70.2 LEN=44 TOS=0x00 PREC=0x00 TTL=184 ID=31769 PROTO=TCP 
+>SPT=1069 DPT=110 WINDOW=8192 RES=0x04 SYN URGP=0
+>
+>Jul  8 20:59:00 fw-01 kernel: IN=eth2 OUT=eth0 SRC=148.64.143.224 
+>DST=10.70.70.2 LEN=44 TOS=0x00 PREC=0x00 TTL=111 ID=10653 DF PROTO=TCP 
+>SPT=1072 DPT=21 WINDOW=8192 RES=0x10 SYN URGP=0
+>
+>I'm assuming I turned something on that isn't liking the extended delay the 
+>satellite connection has.
+>
+>The iptables setup script is at the bottom.
+>
+>Ramin
+>
+>[root@fw-01 firestarter]# more firewall.sh
+>#!/bin/sh
+># Generated by Firestarter 0.8.2, NETFILTER in use
+>
+># --------( Initial Setup - Variables (required) )--------
+>
+># Type of Service (TOS) parameters
+># 8: Maximum Throughput - Minimum Delay
+># 4: Minimize Delay - Maximize Reliability
+># 16: No Delay - Moderate Throughput - High Reliability
+>
+>TOSOPT=8
+>
+># Default Packet Rejection Type
+># ( do NOT change this here - set it in the GUI instead )
+>
+>STOP=DENY
 >
 >
->__________________________________________________
->Do You Yahoo!?
->Sign up for SBC Yahoo! Dial - First Month Free
->http://sbc.yahoo.com
+># --------( Initial Setup - Network Information (required) )--------
+>
+>IF=eth2
+>INIF=eth0
+>IP=`/sbin/ifconfig $IF | grep inet | cut -d : -f 2 | cut -d \  -f 1`
+>MASK=`/sbin/ifconfig $IF | grep Mas | cut -d : -f 4`
+>NET=$IP/$MASK
+>
+>INIP=`/sbin/ifconfig $INIF | grep inet | cut -d : -f 2 | cut -d \  -f 1`
+>INMASK=`/sbin/ifconfig $INIF | grep Mas | cut -d : -f 4`
+>INNET=$INIP/$INMASK
+># --------( Initial Setup - Firewall Location Check )--------
+>
+>IPT=/sbin/iptables
+>MPB=/sbin/modprobe
+>LSM=/sbin/lsmod
+>RMM=/sbin/rmmod
+>
+># --------( Initial Setup - Firewall Modules Check )--------
+>
+># Some distributions still load ipchains
+>$LSM | grep ipchains -q -s && $RMM ipchains
+>
+># --------( Initial Setup - Firewall Modules Autoloader )--------
+>
+>if ! ( $LSM | /bin/grep ip_conntrack > /dev/null ); then
+>$MPB ip_conntrack
+>fi
+>if ! ( $LSM | /bin/grep ip_conntrack_ftp > /dev/null ); then
+>$MPB ip_conntrack_ftp
+>fi
+>if ! ( $LSM | /bin/grep ip_conntrack_irc > /dev/null ); then
+>$MPB ip_conntrack_irc
+>fi
+>if ! ( $LSM | /bin/grep ipt_REJECT > /dev/null ); then
+>$MPB ipt_REJECT
+>fi
+>if ! ( $LSM | /bin/grep ipt_REDIRECT > /dev/null ); then
+>$MPB ipt_REDIRECT
+>fi
+>if ! ( $LSM | /bin/grep ipt_TOS > /dev/null ); then
+>$MPB ipt_TOS
+>fi
+>if ! ( $LSM | /bin/grep ipt_MASQUERADE > /dev/null ); then
+>$MPB ipt_MASQUERADE
+>fi
+>if ! ( $LSM | /bin/grep ipt_LOG > /dev/null ); then
+>$MPB ipt_LOG
+>fi
+>if ! ( $LSM | /bin/grep iptable_mangle > /dev/null ); then
+>$MPB iptable_mangle
+>fi
+>if ! ( $LSM | /bin/grep iptable_nat > /dev/null ); then
+>$MPB iptable_nat
+>fi
+>
+># --------( Chain Configuration - Flush Existing Chains )--------
+>
+># Delete user made chains. Flush and zero the chains.
+>
+>$IPT -F
+>$IPT -X
+>$IPT -Z
+>
+># --------( Chain Configuration - Delete Extintct Chains )--------
+>
+># Delete `nat' and `mangle' chains.
+>
+>if ( $LSM | /bin/grep iptable_mangle > /dev/null ); then
+>$IPT -t mangle -F
+>fi
+>if ( $LSM | /bin/grep iptable_nat > /dev/null ); then
+>$IPT -t nat -F
+>fi
+>
+># --------( Chain Configuration - Create Default Result Chains )--------
+>
+># Create a new log and drop (LD) convenience chain.
+>$IPT -N LD 2> /dev/null
+>$IPT -F LD
+>$IPT -A LD -j LOG
+>$IPT -A LD -j DROP
+>
+>STOP=LD
+>
+># --------( Chain Configuration - Create Default Traffic Chains )--------
+>
+># Create a new 'unclean module check' (UNCLEAN) convenience chain.
+>$IPT -N UNCLEAN 2> /dev/null
+>$IPT -F UNCLEAN
+>$IPT -A UNCLEAN -j $STOP
+>
+># Create a new 'stateful module check' (STATE) convenience chain.
+>$IPT -N STATE 2> /dev/null
+>$IPT -F STATE
+>$IPT -I STATE -m state --state ESTABLISHED,RELATED -j ACCEPT
+>$IPT -A STATE -m state --state NEW -i ! lo -j ACCEPT
+>$IPT -A STATE -j $STOP
+>
+># Create a new 'sanity (check, mark and fwd) check' (SANITY) convenience 
+>chain.
+>$IPT -N SANITY 2> /dev/null
+>$IPT -F SANITY
+>$IPT -A SANITY -j $STOP
+>
+># --------( Chain Configuration - Set Default Chain Policy )--------
+>
+>$IPT -P INPUT DROP
+>$IPT -P OUTPUT DROP
+>
+>
+># --------( Initial Setup - External Lists )--------
+>
+># Allow all traffic from these machines
+>if [ -e /etc/firestarter/allow-all ]; then
+>source /etc/firestarter/allow-all
+>fi
+>
+># Allow a specific service to a specific machine
+>if [ -e /etc/firestarter/allow-service-machine ]; then
+>source /etc/firestarter/allow-service-machine
+>fi
+>
+># Allow a specific service to everyone
+>if [ -e /etc/firestarter/allow-service-all ]; then
+>source /etc/firestarter/allow-service-all
+>fi
+>
+># Portforwarding rules
+>if [ -e /etc/firestarter/portfw ]; then
+>source /etc/firestarter/portfw
+>fi
+>
+># Deny all traffic from these machines
+>if [ -e /etc/firestarter/deny-all ]; then
+>source /etc/firestarter/deny-all
+>fi
+>
+># Deny all traffic on these ports, without logging
+>if [ -e /etc/firestarter/block-ports ]
+>  then
+>source /etc/firestarter/block-ports
+>fi
+>
+># --------( Sysctl Tuning - Recommended Parameters )--------
+>
+># Turn off IP forwarding by default
+># (this will be enabled if you require masquerading)
+>
+>if [ -e /proc/sys/net/ipv4/ip_forward ]; then
+>   echo 0 > /proc/sys/net/ipv4/ip_forward
+>fi
+>
+># Log 'odd' IP addresses (excludes 0.0.0.0 & 255.255.255.255)
+>
+>if [ -e /proc/sys/net/ipv4/conf/all/log_martians ]; then
+>   echo 1 > /proc/sys/net/ipv4/conf/all/log_martians
+>fi
+>
+># --------( Sysctl Tuning - TCP Parameters )--------
+>
+># Turn off TCP Timestamping in kernel
+>if [ -e /proc/sys/net/ipv4/tcp_timestamps ]; then
+>   echo 0 > /proc/sys/net/ipv4/tcp_timestamps
+>fi
+>
+># Set TCP Re-Ordering value in kernel to '5'
+>if [ -e /proc/sys/net/ipv4/tcp_reordering ]; then
+>   echo 5 > /proc/sys/net/ipv4/tcp_reordering
+>fi
+>
+># Turn off TCP ACK in kernel
+>if [ -e /proc/sys/net/ipv4/tcp_sack ]; then
+>   echo 0 > /proc/sys/net/ipv4/tcp_sack
+>fi
+>
+>#Turn off TCP Window Scaling in kernel
+>if [ -e /proc/sys/net/ipv4/tcp_window_scaling ]; then
+>   echo 0 > /proc/sys/net/ipv4/tcp_window_scaling
+>fi
+>
+>#Set Keepalive timeout to 30 seconds
+>if [ -e /proc/sys/net/ipv4/tcp_keepalive_time ]; then
+>   echo 1800 > /proc/sys/net/ipv4/tcp_keepalive_time
+>fi
+>
+>#Set FIN timeout to 30 seconds
+>if [ -e /proc/sys/net/ipv4/tcp_fin_timeout ]; then
+>   echo 1800 > /proc/sys/net/ipv4/tcp_fin_timeout
+>fi
+>
+># Set TCP retry count to 3
+>if [ -e /proc/sys/net/ipv4/tcp_retries1 ]; then
+>   echo 3 > /proc/sys/net/ipv4/tcp_retries1
+>fi
+>
+>#Turn off ECN notification in kernel
+>if [ -e /proc/sys/net/ipv4/tcp_ecn ]; then
+>   echo 0 > /proc/sys/net/ipv4/tcp_ecn
+>fi
+>
+># --------( Sysctl Tuning - SYN Parameters )--------
+>
+># Turn on SYN cookies protection in kernel
+>if [ -e /proc/sys/net/ipv4/tcp_syncookies ]; then
+>   echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+>fi
+>
+># Set SYN ACK retry attempts to '3'
+>if [ -e /proc/sys/net/ipv4/tcp_synack_retries ]; then
+>   echo 3 > /proc/sys/net/ipv4/tcp_synack_retries
+>fi
+>
+># Set SYN backlog buffer to '64'
+>if [ -e /proc/sys/net/ipv4/tcp_max_syn_backlog ]; then
+>   echo 64 > /proc/sys/net/ipv4/tcp_max_syn_backlog
+>fi
+>
+># Set SYN retry attempts to '6'
+>if [ -e /proc/sys/net/ipv4/tcp_syn_retries ]; then
+>   echo 6 > /proc/sys/net/ipv4/tcp_syn_retries
+>fi
+>
+># --------( Sysctl Tuning - Routing / Redirection Parameters )--------
+>
+># Turn on source address verification in kernel
+>if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]; then
+>   for f in /proc/sys/net/ipv4/conf/*/rp_filter
+>   do
+>    echo 1 > $f
+>   done
+>fi
+>
+># Turn off source routes in kernel
+>if [ -e /proc/sys/net/ipv4/conf/all/accept_source_route ]; then
+>   for f in /proc/sys/net/ipv4/conf/*/accept_source_route
+>   do
+>    echo 0 > $f
+>   done
+>fi
+>
+># Do not respond to 'redirected' packets
+>if [ -e /proc/sys/net/ipv4/secure_redirects ]; then
+>   echo 0 > /proc/sys/net/ipv4/secure_redirects
+>fi
+>
+># Do not reply to 'redirected' packets if requested
+>if [ -e /proc/sys/net/ipv4/send_redirects ]; then
+>   echo 0 > /proc/sys/net/ipv4/send_redirects
+>fi
+>
+># Do not reply to 'proxyarp' packets
+>if [ -e /proc/sys/net/ipv4/proxy_arp ]; then
+>   echo 0 > /proc/sys/net/ipv4/proxy_arp
+>fi
+>
+># Set FIB model to be RFC1812 Compliant
+># (certain policy based routers may break with this - if you find
+>#  that you can't access certain hosts on your network - please set
+>#  this option to '0' - which is the default)
+>
+>if [ -e /proc/sys/net/ipv4/ip_fib_model ]; then
+>   echo 2 > /proc/sys/net/ipv4/ip_fib_model
+>fi
+>
+># --------( Sysctl Tuning - ICMP/IGMP Parameters )--------
+>
+># ICMP Dead Error Messages protection
+>if [ -e /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses ]; then
+>   echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
+>fi
+>
+># ICMP Broadcasting protection
+>if [ -e /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts ]; then
+>   echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+>fi
+>
+># IGMP Membership 'overflow' protection
+># (if you are planning on running your box as a router - you should either
+>#  set this option to a number greater than 5, or disable this protection
+>#  altogether by commenting out this option)
+>
+>if [ -e /proc/sys/net/ipv4/igmp_max_memberships ]; then
+>   echo 1 > /proc/sys/net/ipv4/igmp_max_memberships
+>fi
+>
+># --------( Sysctl Tuning - Miscellanous Parameters )--------
+>
+># Set TTL to '64' hops
+># (If you are running a masqueraded network, or use policy-based
+>#  routing - you may want to increase this value depending on the load
+>#  on your link.)
+>
+>if [ -e /proc/sys/net/ipv4/conf/all/ip_default_ttl ]; then
+>   for f in /proc/sys/net/ipv4/conf/*/ip_default_ttl
+>   do
+>    echo 64 > $f
+>   done
+>fi
+>
+># Always defragment incoming packets
+># (Some cable modems [ Optus @home ] will suffer intermittent connection
+>#  droputs with this setting. If you experience problems, set this to '0')
+>
+>if [ -e /proc/sys/net/ipv4/ip_always_defrag ]; then
+>   echo 1 > /proc/sys/net/ipv4/ip_always_defrag
+>fi
+>
+># Keep packet fragments in memory for 8 seconds
+># (Note - this option has no affect if you turn packet defragmentation
+>#  (above) off!)
+>
+>if [ -e /proc/sys/net/ipv4/ipfrag_time ]; then
+>   echo 8 > /proc/sys/net/ipv4/ipfrag_time
+>fi
+>
+># Do not reply to Address Mask Notification Warnings
+># (If you are using your machine as a DMZ router or a PPP dialin server
+>#  that relies on proxy_arp requests to provide addresses to it's clients
+>#  you may wish to disable this option by setting the value to '1'
+>
+>if [ -e /proc/sys/net/ipv4/ip_addrmask_agent ]; then
+>   echo 0 > /proc/sys/net/ipv4/ip_addrmask_agent
+>fi
+>
+># Turn off dynamic TCP/IP address hacking
+># (Some broken PPPoE clients have issues when this is disabled
+>#  If you experience problems with DSL or Cable providers, set this to '1')
+>
+>if [ -e /proc/sys/net/ipv4/ip_dynaddr ]; then
+>   echo 0 > /proc/sys/net/ipv4/ip_dynaddr
+>fi
+>
+>
+># --------( Sysctl Tuning - IPTables Specific Parameters )--------
+>
+># Doubling current limit for ip_conntrack
+>if [ -e /proc/sys/net/ipv4/ip_conntrack_max ]; then
+>   echo 16384 > /proc/sys/net/ipv4/ip_conntrack_max
+>fi
+>
+># --------( Rules Configuration - Specific Rule - Loopback Interfaces 
+>)--------
+>
+># Allow all traffic on the loopback interface
+>$IPT -t filter -A INPUT -i lo -s 0/0 -d 0/0 -j ACCEPT
+>$IPT -t filter -A OUTPUT -o lo -s 0/0 -d 0/0 -j ACCEPT
+>
+>
+># --------( Rules Configuration - ICMP - Default Ruleset )--------
+>
+># Allowing all ICMP
+>$IPT -t filter -A INPUT -p icmp -s 0/0 -d $NET -m limit --limit 1/s -j 
+>ACCEPT
+>
+>
+># --------( Rules Configuration - Masquerading )--------
+>
+># --------( Rules Configuration - Masquerading - Firewall Modules 
+>Autoloader )--------
+>
+>if ! ( $LSM | /bin/grep ip_nat_ftp > /dev/null ); then
+>$MPB ip_nat_ftp
+>fi
+>
+>if ! ( $LSM | /bin/grep ip_nat_irc > /dev/null ); then
+>$MPB ip_nat_irc
+>fi
+>
+># --------( Rules Configuration - Masquerading - Sysctl Modifications 
+>)--------
+>
+>#Turn on IP forwarding
+>if [ -e /proc/sys/net/ipv4/ip_forward ]
+>  then
+>   echo 1 > /proc/sys/net/ipv4/ip_forward
+>fi
+>
+># --------( Rules Configuration - Masquerading - Default Policy )--------
+>
+>#Setting forward (masquerading) policy to DENY
+>$IPT -t filter -P FORWARD DROP
+>
+># --------( Rules Configuration - Masquerading - Default Ruleset )--------
+>
+>#TCPMSS Fix - Needed for *many* broken PPPO{A/E} clients$IPT -I FORWARD -p 
+>tcp --tcp-flags SYN,RST S
+>YN -j TCPMSS --clamp-mss-to-pmtu
+>
+># --------( Rules Configuration - Forwarded Traffic - Block Traffic w/ 
+>Incorrect Flags )--------
+>
+>$IPT -t filter -I FORWARD -m unclean -j UNCLEAN
+>
+># --------( Rules Configuration - Forwarded Traffic - Block Traffic w/ 
+>Invalid Flags )--------
+>
+>$IPT -t filter -A INPUT -m state --state INVALID -j $STOP
+>
+># --------( Rules Configuration - Forwarded Traffic - Block Traffic w/ 
+>Excessive Fragmented Packets
+>)--------
+>
+>$IPT -t filter -A INPUT -f -m limit --limit 10/minute -j $STOP
+>
+>#Forward Int/Ext & Ext/Int Traffic before Masquerading
+>$IPT -t filter -A FORWARD -d 0/0 -s $INNET -o $IF -j ACCEPT
+>$IPT -t filter -A FORWARD -d $INNET -j ACCEPT
+>#Masquerade outgoing traffic
+>$IPT -t nat -A POSTROUTING -o $IF -j MASQUERADE
+>
+>#Don't masq external interface traffic
+>$IPT -t nat -A POSTROUTING -s $NET -d 0/0 -j ACCEPT
+>
+>#Allow traffic from internal network going anywhere
+>$IPT -t filter -A INPUT -s $INNET -d 0/0 -j ACCEPT
+>$IPT -t filter -A OUTPUT -s $INNET -d 0/0 -j ACCEPT
+>$IPT -t filter -A OUTPUT -p icmp -s $INNET -d 0/0 -j ACCEPT
+>
+># --------( Rules Configuration - Inbound Traffic - Block Traffic w/ 
+>Incorrect Flags )--------
+>
+>$IPT -t filter -I INPUT -i $IF -m unclean -j UNCLEAN
+>
+>
+># --------( Rules Configuration - Inbound Traffic - Block nonroutable IP 
+>Addresses )--------
+>
+>#Block nonroutable IPs
+>$IPT -t filter -A INPUT -s 1.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 2.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 5.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 7.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 23.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 27.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 31.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 36.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 37.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 39.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 41.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 42.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 58.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 59.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 60.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 69.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 70.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 71.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 72.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 73.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 74.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 75.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 76.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 77.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 78.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 79.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 82.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 83.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 84.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 85.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 86.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 87.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 88.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 89.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 90.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 91.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 92.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 93.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 94.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 95.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 96.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 97.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 98.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 99.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 100.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 101.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 102.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 103.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 104.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 105.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 106.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 107.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 108.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 109.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 110.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 111.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 112.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 113.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 114.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 115.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 116.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 117.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 118.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 119.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 120.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 121.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 122.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 123.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 124.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 125.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 126.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 128.66.0.0/16 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 172.16.0.0/12 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 197.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 221.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 222.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 223.0.0.0/8 -d $NET -i $IF -j $STOP
+>$IPT -t filter -A INPUT -s 240.0.0.0/4 -d $NET -i $IF -j $STOP
+>
+># --------( Rules Configuration - Inbound Traffic - Block known Trojan 
+>Ports )--------
+>
+>#Block Back Orifice
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 31337 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d $NET --dport 31337 -m limit 
+>--limit 2/minute -j $STOP
+>
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 31337 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A OUTPUT -p udp -s $NET -d 0/0 --dport 31337 -m limit 
+>--limit 2/minute -j $STOP
+>
+>#Block Trinity v3
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 33270 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d $NET --dport 33270 -m limit 
+>--limit 2/minute -j $STOP
+>
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 33270 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A OUTPUT -p udp -s $NET -d 0/0 --dport 33270 -m limit 
+>--limit 2/minute -j $STOP
+>
+>#Block Subseven (1.7/1.9)
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 1234 -m limit --limit 
+>2/minute -j $STOP
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 6711 -m limit --limit 
+>2/minute -j $STOP
+>
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 1234 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 6711 -m limit 
+>--limit 2/minute -j $STOP
+>
+>#Block Stacheldraht
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 16660 --syn -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 60001 --syn -m limit 
+>--limit 2/minute -j $STOP
+>
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 16660 --syn -m limit 
+>--limit 2/minute -j $STO
+>P
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 60001 --syn -m limit 
+>--limit 2/minute -j $STO
+>P
+>
+>#Block NetBus
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 12345:12346 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d $NET --dport 12345:12346 -m limit 
+>--limit 2/minute -j $STOP
+>
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 12345:12346 -m limit 
+>--limit 2/minute -j $STO
+>P
+>$IPT -t filter -A OUTPUT -p udp -s $NET -d 0/0 --dport 12345:12346 -m limit 
+>--limit 2/minute -j $STO
+>P
+>
+>#Block MS-RPC (dce)
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 135 -m limit --limit 
+>2/minute -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d $NET --dport 135 -m limit --limit 
+>2/minute -j $STOP
+>
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 135 -m limit --limit 
+>2/minute -j $STOP
+>$IPT -t filter -A OUTPUT -p udp -s $NET -d 0/0 --dport 135 -m limit --limit 
+>2/minute -j $STOP
+>
+>#Block Trin00
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 1524 -m limit --limit 
+>2/minute -j $STOP
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 27665 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d $NET --dport 27444 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d $NET --dport 31335 -m limit 
+>--limit 2/minute -j $STOP
+>
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 1524 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A OUTPUT -p tcp -s $NET -d 0/0 --dport 27665 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A OUTPUT -p udp -s $NET -d 0/0 --dport 27444 -m limit 
+>--limit 2/minute -j $STOP
+>$IPT -t filter -A OUTPUT -p udp -s $NET -d 0/0 --dport 31335 -m limit 
+>--limit 2/minute -j $STOP
+>
+>
+># --------( Rules Configuration - Inbound Traffic - Block Multicast Traffic 
+>)--------
+>
+># (some cable/DSL providers require their clients to accept multicast 
+>transmissions
+>#  you should remove the following four rules if you are affected by 
+>multicasting
+>$IPT -t filter -A INPUT -s 224.0.0.0/8 -d 0/0 -j $STOP
+>$IPT -t filter -A INPUT -s 0/0 -d 224.0.0.0/8 -j $STOP
+>$IPT -t filter -A OUTPUT -s 224.0.0.0/8 -d 0/0 -j $STOP
+>$IPT -t filter -A OUTPUT -s 0/0 -d 224.0.0.0/8 -j $STOP
+>
+>
+># --------( Rules Configuration - Inbound Traffic - Block Traffic w/ 
+>Stuffed Routing )--------
+>
+># (early versions of PUMP - (the DHCP client application included in RH / 
+>Mandrake) require
+>#  inbound packets to be accepted from a source address of 255.255.255.255. 
+>  If you have issues
+>#  with DHCP clients on your local LAN - either update PUMP, or remove the 
+>first rule below)
+>$IPT -t filter -A INPUT -s 255.255.255.255 -j $STOP
+>$IPT -t filter -A INPUT -d 0.0.0.0 -j $STOP
+>$IPT -t filter -A OUTPUT -s 255.255.255.255 -j $STOP
+>$IPT -t filter -A OUTPUT -d 0.0.0.0 -j $STOP
+>
+>
+># --------( Rules Configuration - Inbound Traffic - Block Traffic w/ 
+>Invalid Flags )--------
+>
+>$IPT -t filter -A INPUT -m state --state INVALID -j $STOP
+>
+>
+># --------( Rules Configuration - Inbound Traffic - Block Traffic w/ 
+>Excessive Fragmented Packets )-
+>-------
+>
+>$IPT -t filter -A INPUT -f -m limit --limit 10/minute -j $STOP
+>
+>
+># --------( Rules Configuration - Inbound Traffic - Ruleset Filtered by GUI 
+>)--------
+>
+>#DHCP
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 67:68 -i $IF -j ACCEPT
+>
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d 0/0 --dport 67:68 -i $IF -j ACCEPT
+>
+>#SSH
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d $NET --dport 22 -j ACCEPT
+>
+>#Block SAMBA
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 137:139 -i $IF -j 
+>$STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d 0/0 --dport 137:139 -i $IF -j 
+>$STOP
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 445 -i $IF -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d 0/0 --dport 445 -i $IF -j $STOP
+>
+>#Block NFS
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 2049 -i $IF -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d 0/0 --dport 2049 -i $IF -j $STOP
+>
+>#Block Xwindows
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 6000:6015 -i $IF -j 
+>$STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d 0/0 --dport 6000:6015 -i $IF -j 
+>$STOP
+>
+>#Block DHCP
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 67:68 -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d 0/0 --dport 67:68 -j $STOP
+>
+>#Block uPNP
+>$IPT -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 5000 -i $IF -j $STOP
+>$IPT -t filter -A INPUT -p udp -s 0/0 -d 0/0 --dport 5000 -i $IF -j $STOP
+>
+>
+># --------( Rules Configuration - Inbound Traffic - Highport Connection 
+>Fixes )--------
+>
+>$IPT -A INPUT -p tcp ! --syn -m state --state NEW -j $STOP
+>
+>#SSH fix
+>$IPT  -A INPUT -p tcp --sport 22 --dport 513:65535 ! --syn -m state --state 
+>RELATED -j ACCEPT
+>
+>
+># --------( Rules Configuration - Inbound Traffic - Highport Connections 
+>)--------
+>
+>$IPT  -A INPUT -p tcp -s 0/0 -d $NET --dport 1024:65535 -j STATE
+>$IPT  -A INPUT -p udp -s 0/0 -d $NET --dport 1023:65535 -j ACCEPT
+>
+>
+># --------( Rules Configuration - Outbound Traffic - Highport Connection 
+>Fixes )--------
+>
+>$IPT -A OUTPUT -p tcp ! --syn -m state --state NEW -j DROP
+>
+>
+># --------( Rules Configuration - Outbound Traffic - TTL Mangling )--------
+>
+>$IPT -A OUTPUT -m ttl --ttl 64
+>
+># --------( Rules Configuration - Outbound Traffic - Block Traffic w/ 
+>Incorrect Flags )--------
+>
+>$IPT -t filter -I OUTPUT -o $IF -m unclean -j UNCLEAN
+>
+>
+># --------( Rules Configuration - Outbound Traffic - Default Ruleset 
+>)--------
+>
+>$IPT -A OUTPUT -p icmp -s $NET -d 0/0 -o $IF -j ACCEPT
+>$IPT -A OUTPUT -j ACCEPT
+>
+>
+># --------( Catch all Rules (required) )--------
+>
+># Deny everything not let through earlier
+>$IPT -A INPUT -j $STOP
 
+
+thanks,
+jd
+
+jd@taproot.bz
+http://www.taproot.bz
 
 thanks,
 jd
