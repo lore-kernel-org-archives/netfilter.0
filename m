@@ -1,14 +1,14 @@
 From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: sendto: Operation not permitted
-Date: Fri, 31 May 2002 00:58:32 +0100
+Subject: Re: Loose Packets
+Date: Fri, 31 May 2002 01:11:26 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020531005832.K27307@funkyjesus.org>
-References: <Pine.LNX.4.44.0205301011270.31451-100000@paix.pilosoft.com> <200205301955.g4UJtIA17159@Networker.rockstone.co.uk>
+Message-ID: <20020531011126.L27307@funkyjesus.org>
+References: <002301c207df$9486aa30$1700a8c0@asm.org.uk>
 Reply-To: Nick Drage <nickd@funkyjesus.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <200205301955.g4UJtIA17159@Networker.rockstone.co.uk>; from Antony@Soft-Solutions.co.uk on Thu, May 30, 2002 at 08:55:17PM +0100
+In-Reply-To: <002301c207df$9486aa30$1700a8c0@asm.org.uk>; from starkeyr@asm.org.uk on Thu, May 30, 2002 at 02:40:36PM +0100
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -22,21 +22,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Thu, May 30, 2002 at 08:55:17PM +0100, Antony Stone wrote:
-> On Thursday 30 May 2002 3:13 pm, alex@pilosoft.com wrote:
+On Thu, May 30, 2002 at 02:40:36PM +0100, Ross Starkey wrote:
 
-> > > This type of ICMP message will be RELATED to an existing TCP
-> > > connection, therefore it will be allowed through the firewall by the
-> > > sort of rulset Claudio was using - if you recall, this was:
-> >
-> > Ah, I didn't know iptables are smart enough to realize that!
-> 
-> Yes, this is one of the beautiful things about netfilter / iptables - ICMP 
-> packets are automatically recognised as being RELATED to the TCP packets 
-> which they're, well, related to.
+> I have recently built a firewall for my home office. All seems well, it's
+> fairly secure. One problem though, every time my Windows client sends a
+> packet destined for my Linux box that is not destined for the Internet
+> (say for example when I use PUTTY over SSH) PPPD dials up. I am pretty
+> sure I need to set up a firewall rule to stop this, but I have tried
+> several iptables rules all to no avail.
 
-How does netfilter determine if the ICMP packet is RELATED to anything in
-the state table?  Anyone suggest documentation that details this?
+I'd guess that your Linux box is checking the DNS entries related to the
+connecting host, and the DNS servers its trying to contact are out on the
+Internet.
+
+Not sure how you solve this, depends on the exact details of your setup.
 
 -- 
 FunkyJesus System Administration Team
