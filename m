@@ -1,10 +1,14 @@
-From: Mikhail Zotov <e-boogie@yandex.ru>
-Subject: Dropping network "noise"
-Date: Sun, 13 Feb 2005 09:28:41 +0300
-Message-ID: <200502130928.41225.e-boogie@yandex.ru>
+From: spdesai@gnvfc.net
+Subject: Re: Allow particular website/port
+Date: Sun, 13 Feb 2005 12:23:58 +0530
+Message-ID: <1108277638.420ef986ae964@mail.gnvfc.net>
+References: <1108064090.420bb75ac0009@mail.gnvfc.net>
+	<1108065714.8043.0.camel@porky>
+	<1108081685.420bfc1516440@mail.gnvfc.net>
+	<a0f69e5050210211124a0269@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a0f69e5050210211124a0269@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +21,114 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: eleblond@inl.fr, askarali@gmail.com
 
-Hello everybody,
 
-I have a Linux machine (with a static routable IP address)
-connected to a windoops LAN.  As is known, there is certain
-"noise" in windoops networks, which can be silently dropped
-by a rule like this:
+Hi all...particularly Askar,Eric Leblond,Jason Opperisano (which help me)
 
-iptables -A INPUT -p udp --dport 135:139 -j DROP
+I have tried to restrict particular website through IPTABLE and its working 
+file .i have use below rules for that..
 
-I have found that this "noise" can also be effectively blocked
-by the following rule:
+Suppose we want to open only www.ndtv.com,www.cnn.com ....then i gave rules as 
+per below order only...
 
-iptables -A INPUT -d ! $IP.ADDRESS.OF.MY_BOX -j DROP
+iptables -A FORWARD -s 192.168.1.2 -d www.ndtv.com -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -s 192.168.1.2 -d www.cnn.com -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 80 -j DROP
 
-I haven't noticed anything going wrong yet, still I'd like to
-know: Does this rule have a (potential) drawback?  Can it break
-anything in case I have NFS or obtain IP address via DHCP or
-in any other situation?
+and my LAN machine(192.168.1.2) can open only www.ndtv.com,www.cnn.com 
+websites ..not any other..
 
-A similar question goes for the case of a Linux router/gateway
-protecting a LAN (with machines with routable IP addresses).
-Can the following rules do any harm?
+pl. give yr comments about my rules....is it correct/valid/reliable ..and pl 
+let me know why u not prefer to use IPTABLES for Allow particular websites.
 
-iptables -A FORWARD -i $EXTERIOR_INTERFACE -d $LAN.BROADCAST -j DROP
-iptables -A FORWARD -i $EXTERIOR_INTERFACE -d ! $LAN.IP.ADDRESSES.RANGE -j DROP
+Waiting for yr replyyyyy..
 
-Thanks in advance!
+Thanks 
+SUhag.
 
---
-Mikhail
 
+
+Quoting Askar <askarali@gmail.com>:
+
+> The task of blocking certain sites is definitly suited for "squid" as
+> jason suggest and pls don't *insists* :)
+> you can block messengers via iptables if you know which ports they are
+> using for example
+> 
+> ## blocking MSN
+> iptables -A FORWARD -p tcp --dport 1863 -j DROP
+> ##block yahoo
+> iptables -A FORWARD -p tcp --dport 5050 -j DROP
+> 
+> regards
+> 
+> 
+> On Fri, 11 Feb 2005 05:58:05 +0530, spdesai@gnvfc.net <spdesai@gnvfc.net>
+> wrote:
+> > I want to use Netfilter only instead of squid....pl. give me solution
+> through
+> > netfilter
+> > 
+> > Quoting Eric Leblond <eleblond@inl.fr>:
+> > 
+> > > use a proxy (squid trasnparent if you want) ... netfilter can not
+> > > cleanly filter at level.
+> > >
+> > > On Fri, 2005-02-11 at 01:04 +0530, spdesai@gnvfc.net wrote:
+> > > > Hi
+> > > >
+> > > > I have one linux machine with two NIC cards. One is connected to
+> internet
+> > > and
+> > > > one is private PC. Below is my IP configuration
+> > > >
+> > > > I have enable ip_forward to 1 in linux machine as well as donw masqared
+> in
+> > >
+> > > > linux.
+> > > >
+> > > > I can browse the internet as well from window machine.
+> > > >
+> > > > Now I want to allow/restricted my window machine to access/deny
+> particular
+> > >
+> > > > site/block/messanger ...
+> > > >
+> > > > i have tried with FORWARD chain but..it restricted all HTTP traffic
+> which i
+> > >
+> > > > dont want.
+> > > >
+> > > > So pl.  give me the solution.
+> > > >
+> > > > Thanks in advance
+> > > >
+> > > > Suhag
+> > > >
+> > > > -------------------------------------------------
+> > > > This mail sent through IMP: http://horde.org/imp/
+> > > >
+> > > >
+> > >
+> > >
+> > 
+> > -------------------------------------------------
+> > This mail sent through IMP: http://horde.org/imp/
+> > 
+> > 
+> 
+> 
+> -- 
+> (after bouncing head on desk for days trying to get mine working, I'll make
+> your life a little easier)
+> 
+> 
+
+
+
+
+-------------------------------------------------
+This mail sent through IMP: http://horde.org/imp/
 
 
