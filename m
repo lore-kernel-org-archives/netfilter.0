@@ -1,11 +1,12 @@
-From: Patrick Mauritz  <oxygene@studentenbude.ath.cx>
-Subject: pptp patch
-Date: Wed, 15 Oct 2003 13:29:34 +0200
+From: "Andrzej Kozak" <a.kozak@dolnoslaski.ruch.com.pl>
+Subject: trouble with pptp
+Date: Thu, 16 Oct 2003 17:26:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031015112934.GA7317@t-stueck>
+Message-ID: <003201c393f9$db9b3e70$dc00140a@AndrzejXP>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_002F_01C3940A.9DCF05C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,31 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hello,
+This is a multi-part message in MIME format.
 
-I have a problem with the pptp patch from latest p-o-m, trying to
-forward external pptp clients to a firewalled pptp server (win2k server).
+------=_NextPart_000_002F_01C3940A.9DCF05C0
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
-clients <-> router <-> win2k server
+Hello!
+When I patched my 2.4.22 kernel with pptp-conntrack-nat -DNAT and -SNAT =
+is broken if I use iptables with -t nat
+I get message: iptables: Invalid argument
+Iptables v. 1.2.8
+I need establish connect from my security network to outside VPN server.
 
+best regards
+Andrew Kozak
+------=_NextPart_000_002F_01C3940A.9DCF05C0
+Content-Type: text/html;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
-iptables setup on router:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-2">
+<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello!<BR>When I patched my 2.4.22 =
+kernel with=20
+pptp-conntrack-nat -DNAT and -SNAT is broken if I use iptables with -t =
+nat<BR>I=20
+get message: iptables: Invalid argument<BR>Iptables v. 1.2.8<BR>I need =
+establish=20
+connect from my security network to outside VPN server.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>best regards<BR>Andrew=20
+Kozak</FONT></DIV></BODY></HTML>
 
-ip_{nat,conntrack}_{proto_gre,pptp} are loaded,
-1723 is DNATed from external to the server
-MASQUERADE is any to any
+------=_NextPart_000_002F_01C3940A.9DCF05C0--
 
-when trying to connect to the server, the connection is dropped after 115 to 119 seconds.
-
-the connection lasts longer when I DNAT GRE protocol manually (and withou the pptp helpers), though that obviously only works for one user at a time.
-
-
-I have no idea what further information I could provide, but I'll provide everything asked for. please Cc: as I'm not on the list.
-
-TIA,
-patrick mauritz
 
