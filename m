@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Trigger firewall Script on IP Change:
-Date: Sat, 5 Oct 2002 23:38:50 +0100
+From: Krishna <Krishna_shekhar@vsnl.net>
+Subject: Re: How to block Yahoo Messenger through IP Tables
+Date: 05 Oct 2002 05:00:31 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021005223853.YOAC27697.mta05-svc.ntlworld.com@there>
-References: <FLEKIPPLAEDMJMOOBBDPKEHBDBAA.stewart.thompson@shaw.ca>
+Message-ID: <1033808433.2973.4.camel@localhost.localdomain>
+References: <20021005155955.65569.qmail@web40205.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FLEKIPPLAEDMJMOOBBDPKEHBDBAA.stewart.thompson@shaw.ca>
+In-Reply-To: <20021005155955.65569.qmail@web40205.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,26 +20,42 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 05 October 2002 11:03 pm, Stewart Thompson wrote:
+Hi,
 
-> Hi All:
->
->         Can anyone tell me how to automatically trigger
-> my firewall script to execute when the IP on the External
-> Interface changes. Thanks.
+    But why do you want to do that? If you want to block a particular
+port then either disable it in inetd or xinetd. Or make rules 
+for that destination port to DROP packets.
 
-If your external IP address is changing, you must be using DHCP...
 
-If you're using ISCs dhcpcd, you can create scripts called 
-/etc/dhcpc/dhcpcd-<ifname>.exe where <ifname> is eth0, eth1, eth2 etc which 
-will get called whenever there's a new address on the interface.
+regards
+Krishna
 
-man dhcpcd for a bit more info.
+Krishna Shekhar
+Network Administrator
+Wiplash Wireless
 
-Antony.
+On Sat, 2002-10-05 at 11:59, Alok Shukla wrote:
+> Hi ,
+> 
+> Sorry for asking this newbie question first.
+> 
+> I am running a network with a Linux Server as a
+> gateway. I am using IPtables as to masquerade internal
+> IPs for Internet usage. I want to block the uses of my
+> intranet for using yahoo messenger. I needed help for
+> this. In general i wanted to know how to block a
+> particular port.
+> 
+> Thanks in Advance
+> 
+> Alok Shukla
+> 
+> __________________________________________________
+> Do you Yahoo!?
+> Faith Hill - Exclusive Performances, Videos & More
+> http://faith.yahoo.com
+> 
 
--- 
 
-I vote "no" to this proposal to form a committee to investigate whether we 
-should or should not hold a ballot on whether to vote yet.
+
 
