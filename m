@@ -1,12 +1,12 @@
-From: "Stephen J. McCracken" <sjmccracky@myrealbox.com>
-Subject: Re: 26sec problems
-Date: Wed, 06 Apr 2005 08:42:42 -0500
-Message-ID: <4253E752.6050607@myrealbox.com>
-References: <42539B3D.2090407@century.cz> <20050406120540.GC12451@nlb0>
+From: Daniel Lopes <lopsch@lopsch.com>
+Subject: Re: Iptables, nat, and IPSec
+Date: Wed, 06 Apr 2005 19:03:12 +0200
+Message-ID: <42541650.1080206@lopsch.com>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4wwL6DwAQAAAA+1cYJf7sR0Sh2A7HkLkwFgEAAAAA@rogers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050406120540.GC12451@nlb0>
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4wwL6DwAQAAAA+1cYJf7sR0Sh2A7HkLkwFgEAAAAA@rogers.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,65 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> Quoting Petr Titera <P.Titera@century.cz>:
-[snip]
->         BUT on FWA:eth1 I see packets from other direction as going from another 
->         port than I have connected:
->         
->         This is communication as I see it on FWA:eth1 port. Note change from 
->         http port to tcpmux port.
-[snip]
->         09:23:52.171022 IP 192.168.1.200.tcpmux > 192.168.17.200.60424: F 0:0(0) 
->         ack 1 win 65535 <nop,nop,timestamp 10752656 3092379283>
->         
->         Any idea what is wrong?
+dave beach schrieb:
+>  > It=B4s an IPSec problem. I don=B4t want to go into detail but you pr=
+obably
+> should try NAT-Traversal.
+>  > For the theory http://www.ipsec-howto.org/x180.html
+>=20
+> Okay, I've read the reference. If I understand correctly, I need to use=
+ a
+> NAT methodology that implements "NAT Traversal" (the reference is a lit=
+tle
+> vague on this; in fairness, it does say "There are no RFCs at the momen=
+t").
+> It might be therefore fair to say that the Linksys implementation inclu=
+des
+> NAT Traversal, enabling it to handle multiple IPSec passthrough connect=
+ions.
+>=20
+> Which leads me to what I suppose was the original question, now slightl=
+y
+> modified: does iptables support NAT Traversal?
+>=20
+>=20
+from the webpage:
+"What does NAT traversal do to help? NAT-traversal again encapsulates=20
+the ESP packets in UDP packets. These can easily be handled by a NAT=20
+device since they provide ports."
 
-I just worked through this same problem and posted the solution on the 
-OpenSWAN mailing list.  It is a nat problem.  Here is my post from the 
-OpenSWAN list:
+So you have to activate on your clients the NAT-T "feature" and be sure=20
+the other side supports it too.
 
-> This is just to get this in the archives as it is solved. (It's a NAT
-> problem.)
-> 
-> I was having trouble with ports being rewritten to port 1.  Example:
-> 
-> BoxA --- GwA ====== GwB --- BoxB
-> 
-> GwA running OpenSWAN (openswan-2.1.5-2 Fedora RPM) and GwB a Multitech
-> RoutFinder 550 (MT550VPN).
-> 
-> I would try to ssh from BoxA to BoxB and get this:
-> 
-> 15:22:35.859664 IP BoxA.38537 > BoxB.22: S 51958428:51958428(0) win 5840
-> <mss 1460,sackOK,timestamp 257583923 0,nop,wscale 2>
-> 15:22:35.863491 IP BoxB.22 > BoxA.38537: S 3558425983:3558425983(0) ack
-> 51958429 win 5792 <mss 1336,sackOK,timestamp 12106235
-> 257583923,nop,wscale 2>
-> 15:22:35.863555 IP BoxA.38537 > BoxB.22: . ack 1 win 1460
-> <nop,nop,timestamp 257583927 12106235>
-> 15:22:35.890997 IP BoxB.1 > BoxA.38537: P 3558425984:3558426007(23) ack
-> 51958429 win 1448 <nop,nop,timestamp 12106262 257583927>
-> 15:22:36.093361 IP BoxB.1 > BoxA.38537: P 0:23(23) ack 1 win 1448
-> <nop,nop,timestamp 12106465 257583927>
-> 15:22:36.499231 IP BoxB.1 > BoxA.38537: P 0:23(23) ack 1 win 1448
-> <nop,nop,timestamp 12106871 257583927>
-> 
-> I noticed others were having similar problems:
-> 
-> http://lists.virus.org/users-openswan-0502/msg00239.html
-> 
-> And found the answer through this post:
-> 
-> http://lists.virus.org/users-openswan-0407/msg00002.html
-> 
-> That references this post:
-> 
-> http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=215980
-> 
-> I had to add in the following to solve the port 1 problem:
-> iptables -A POSTROUTING 1 -p esp -j ACCEPT -t nat 
-
+And to answer your question, yes every NAT device should be able to=20
+handle multiple IPSec NAT-Ted connections because they are wrapped=20
+within UDP packets and so every connection can be tracked. Essentially=20
+is that both sides which use IPSec are aware of NAT-T and it is=20
+correctly configured.
 
