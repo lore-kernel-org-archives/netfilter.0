@@ -1,13 +1,10 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: Re: Shaping ingress traffic
-Date: Fri, 18 Jun 2004 01:47:58 +0100
+From: Andrew McRory <amcrory@linuxsys.com>
+Subject: SNAT Problem / Question
+Date: Thu, 17 Jun 2004 23:24:47 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40D23BBE.7060404@dsl.pipex.com>
-References: <20040614180844.392a2608.leslie.polzer@gmx.net>
+Message-ID: <Pine.LNX.4.44.0406172259260.15532-100000@weta.lselinux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040614180844.392a2608.leslie.polzer@gmx.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +14,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Patrick Leslie Polzer <leslie.polzer@gmx.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Patrick Leslie Polzer wrote:
-> Hello,
-> 
-> I know that policing ingress traffic can not be as effective as shaping
-> egress traffic, but I would still like to know your opinions on the
-> best thing I could do with my setup:
-> 
-> I have a total asymmetric bandwidth of 768kBit/128kBit.
-> 
-> Three hosts are masqueraded via this interface (ppp0),
-> with two on the interface 'vortex' and one on 'dec'.
-> Each one should get at least about one third of the
-> available downstream, and more if there's more available.
-> 
-> How is this most effectively achieved?
 
-You could use IMQ(+NAT patch) on ppp0 then shape using HTB etc.
+I am having problem getting SNAT to work with tn3270 clients. My network 
+is using private IP address and is connected via freeswan ipsec to the 
+remote server. Since a large number of clients connect to the server they 
+require that all incoming connections be from our public IP. I setup this 
+rule:
 
-www.linuximq.net
-www.lartc.org
+  $IPT -t nat -A POSTROUTING -o ipsec0 -j SNAT -d <REMOTE_IP> \
+    --to <OUR_PUBLIC_IP>
 
-The lartc list may help with details.
+and verified with tcpdump that the packets going out on the ipsec0 
+interface have been SNAT'ed properly. With a single client connection 
+everything operates beautifully however when a second client connects the 
+first client session breaks and the server responds with 
 
-Andy.
+	"Please close your telnet session. A connection establishment 
+	error has been detected."
 
+I am guessing that this is having to do with connection tracking but I am 
+not sure. Any help is greatly appreciated as I have not found anything in 
+hours of searching!!
+
+Regards,
+
+-- 
+Andrew McRory - President
+Linux Systems Engineers, Inc.
+PO BOX 3791
+Tallahassee, FL 32315
+Office	850-224-5737
+Office	850-575-7213
+Mobile	850-294-7567
 
 
 
