@@ -1,11 +1,13 @@
-From: "GBV" <guilherme@plannercorretora.com.br>
-Subject: IRCd and HTTPd under Iptables
-Date: Fri, 21 Mar 2003 11:58:23 -0300
+From: =?iso-8859-1?q?realsite=20internetcafe?= <realsiteinternetcafe@yahoo.com>
+Subject: internet gateway bandwidth control
+Date: Fri, 21 Mar 2003 16:18:29 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b001c2efba$51a81280$6800817d@guilherme>
+Message-ID: <20030321161829.9918.qmail@web80402.mail.yahoo.com>
+References: <018c01c2edd9$d95074d0$0464a8c0@bmcmnl.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <018c01c2edd9$d95074d0$0464a8c0@bmcmnl.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,51 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: *netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi all,
+hi all.
 
-I=B4m using Debian 3.0r1 with kernel 2.4.19 as a iptables firewall
+need help in formulating an iptables rule.
 
-I have internal webservers that I need to publish as Internet Sites For this
-manipulation I=B4m using Apache ProxyPass. The site works perfectly under
-apache.. even when the internal host is an ISS.
+i need suggestion on a gnu/linux solution for my
+internet gateway server sharing a adsl connection via
+iptables_nat.
 
-1. How can I do it without apache proxypass, using iptables?
+i got client that uses kazaa too much, but i dont want
+to block kazaa i only need to retune it and give him
+slow connection. problem is, i dont want to limit his
+connection to the server coz the server is a samba
+server also. only need to limit his kazaa connection.
 
-2. This internal webserver also have a IRC server... how can I manipulating
-iptables, to the external hosts use this internal IRC server, since i=B4m o=
-nly
-"sharing" the httpd via apache proxypass?
+heres the design:
 
-3. Since I=B4m using apache proxypass I defined in virtualhosts that
-'/internalhost' leads to http://192.168.0.69:8080 , and I need to mantain
-that www.foo.com/internalhost , but using iptables someway. And I need the
-ircd of this internal server, responds via the same host. I=B4d like to
-mantain my apache since it=B4s in use... Is it possible? OR I=B4ll have to =
-put
-this apache in another internal host, and them using iptables for
-manipulating?
+if client bandwidth > 35kbps 
+then limit only to 35kbps
+where kazaa dport and sport are 80 and 1214.
+where -s 192.168.0.0/255.255.255.255.0 except
+192.168.0.1 and 192.168.0.15 (.1 is the server and .15
+is my box in my room, i believe i would be needing the
+"!", but how do i make it for two ip address?)
+where eth0 is 192.168.0.1 (LAN)
+and
+eth1 is 203.204.250.206 (DSL)
 
-4. I=B4ve create in my DNS an internalhost.foo.com that leads to
-www.foo.com/internalhost this must be manteined too.
+of course i know thats not the rule. but im having a
+hard time formulating it. ive read all the netfilet
+how-to's but i need to incorporate and thats the
+problem.
 
-I have something like:
+or i need better suggestion.
 
-Internet -> Firewall(Debian) -> Internal httpd and ircd server
-external           foo.com
-internal         192.168.0.1                      192.168.0.69
-
-
-Thanks all.
-
-Debian... because codes mather more than commercials
-
-
-
-
-
-
-
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
