@@ -1,39 +1,31 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: MSN file transfer block in iptables ?
-Date: Mon, 14 Mar 2005 19:09:37 -0500
-Message-ID: <1110845376.4516.1.camel@hubcap.ljm.dom>
-References: <000d01c5281c$8bb2bfb0$0300000a@onur>
+From: "David S. Miller" <davem@davemloft.net>
+Subject: Re: Netfilter ipt_hashlimit
+Date: Mon, 14 Mar 2005 21:41:38 -0800
+Message-ID: <20050314214138.025b2e43.davem@davemloft.net>
+References: <20050310222934.C1044@flint.arm.linux.org.uk>
+	<E1D9itD-00039G-00@gondolin.me.apana.org.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <000d01c5281c$8bb2bfb0$0300000a@onur>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <E1D9itD-00039G-00@gondolin.me.apana.org.au>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: rmk+lkml@arm.linux.org.uk, linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
 
-On Sun, 2005-03-13 at 17:32, Onur ARABACI wrote:
-> How can i disable msn file transfer ?
+On Fri, 11 Mar 2005 23:05:11 +1100
+Herbert Xu <herbert@gondor.apana.org.au> wrote:
 
-according to:
+> Russell King <rmk+lkml@arm.linux.org.uk> wrote:
+> > With current-ish Linus 2.6 BK, I'm seeing this:
+> > 
+> > net/ipv4/netfilter/ipt_hashlimit.c:96: warning: type defaults to `int' in declaration of `DECLARE_LOCK'
+> > net/ipv4/netfilter/ipt_hashlimit.c:96: warning: parameter names (without types) in function declaration
+> > 
+> > Looks like ipt_hashlimit.c is missing an include?
+> 
+> Indeed.  It should include lockhelp.h directly.
+> 
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-http://www.microsoft.com/technet/prodtechnol/winxppro/deploy/worki01.mspx
-
-msn file transfers use TCP 6891=E2=80=936900.
-
-i'd start by blocking those.
-
--j
-
---
-"Please do not offer my god a peanut"
-	--The Simpsons
-
-
+Applied, thanks Herbert.
