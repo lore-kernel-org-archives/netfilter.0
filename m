@@ -1,12 +1,12 @@
-From: xmaillist <xmaillist@skynet.be>
-Subject: Re: block nmap info
-Date: Thu, 27 Jan 2005 21:07:17 -0100
-Message-ID: <41F96615.9010701@skynet.be>
-References: <20050127200622.GA23921@omega.lacnic.net.uy>
+From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+Subject: Re: make: *** [../ipset/libipt_set.h] Error 1
+Date: Thu, 27 Jan 2005 15:27:34 -0500 (EST)
+Message-ID: <9011.142.169.215.10.1106857654.squirrel@142.169.215.10>
+References: <41F94138.6050207@arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050127200622.GA23921@omega.lacnic.net.uy>
+In-Reply-To: <41F94138.6050207@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +17,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Allietti <pablo@lacnic.net>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Samuel =?iso-8859-1?Q?D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
-nmap man page:
-[...]
--sT
-TCP connect() scan: This is the most basic form of TCP scanning. The 
-connect() system call provided  by  your operating system is used to 
-open a connection to every interesting port on the machine. If the port 
-is listening, connect() will succeed, otherwise the port isn't 
-reachable. One strong advantage to this technique is that you don't need 
-any special privileges. Any user on most UNIX boxes is free to use this 
-call. This sort of scan is easily detectable as target host logs will 
-show a bunch of connection and  error messages for the services which 
-accept() the connection just to have it immediately shutdown.  This is 
-the default scan type for unprivileged users.
-[...]
+On Thu, January 27, 2005 2:30 pm, Samuel D=EDaz Garc=EDa said:
+>[...]
+> I think I need the 'ipset' sources, where are them?
+> where do I need copy them to make iptables (and modules) sucessfully?
+>
 
--sT scan is a full TCP handshake (SYN -> SYN/ACK -> ACK), so you just 
-have to forbid TCP connection on open ports...
-But, if you block tcp accesses for anybody, nobody could connect to the 
-  service associate with the corresponding port.
-So, you have to use rules that grant access for allow machine, and drop 
-it for the others.
-Nevertheless, other scans like -sS, -sF, -sX, -sN can still work...
+All is well documented there :
+http://people.netfilter.org/kadlec/ipset/
 
+> Thanks
+>
+> (sorry for my english)
+>
+> --
+>     Samuel D=EDaz Garc=EDa
+>      Director Gerente
+> ArcosCom Wireless, S.L.L.
 
-Pablo Allietti wrote:
-> hi all (again), how can i made a rules for block nmap information?
-> 
-> if i do nmap -sT myhost.com from a cybercafe for example,   nmap display
-> all ports open. exist any way to block this? something like block
-> scanports?
+HTH,
+
+Samuel
 
 
