@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: active connections
-Date: Mon, 3 May 2004 17:11:49 +0100
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: active connections
+Date: Mon, 3 May 2004 10:19:34 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405031711.49579.Antony@Soft-Solutions.co.uk>
-References: <BAY15-F25y82gv5Gmz800010514@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5679314@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F25y82gv5Gmz800010514@hotmail.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,48 +19,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 03 May 2004 4:43 pm, azeem ahmad wrote:
+>> thanks
+>> but i m a student so i want to caputure the concept also. so please
+>> tell me the mystery or tell me about any tutorial about it.
 
+Just an extra step, if you flush your rules and established connections
+still work, this could be because you are using SNAT to connec tto the
+internet, no?
 
-> > > hi all
-> > > i m having a problem that i m using MASQUERADING on a redhat 8.0 box
-> > > with iptables. the problem is that when i want the users to be
-> > > disconnected i flush iptables; the new connections dont get established
-> > > but the current active connections dont break. like if a user is
-> > > downloading msn messenger for example and i flush iptables, this user's
-> > > connection dont break. so what i can do to break the active connection
-> > > please help me out
-> >
-> > From: "Alexis" <alexis@tpys.com.ar>
-> >
-> > and they will, this is conntrack :)
-> > try unload the module and thats it
->
-> thanks
-> but i m a student so i want to caputure the concept also. so please tell me
-> the mystery or tell me about any tutorial about it.
+Conntrack saved entries know how to NAT to and from the source to the
+destination because it is stored inside the conntrack table entry.
+/proc/net/ip_conntrack is a list of the active sessions.
 
-Current connections ("ESTABLISHED" in connection tracking terms) are 
-handled in the background, and not by your ruleset (your rules only deal with 
-the first packet of a connection).   Therefore changing the ruleset makes no 
-difference to connections which are already established.
+When you flush the NAT table, any new connections won't NAT properly
+because you have removed the rule. Existing connections will already
+know how to NAT the connection because its stored elsewhere.
 
-For more info on how netfilter's connection tracking works:
-
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#STATEMACHINE
-http://www.sns.ias.edu/~jns/security/iptables/iptables_conntrack.html
-
-Regards,
-
-Antony.
-
--- 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
-
- - William Gibson, Neuromancer (1984)
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+This is the wrong way to deal with dynamic table closures. What you want
+is a filter chain that explicitly drops unwanted sessions. Eventually
+the sessions will timeout on their own. I haven't used them, but there
+are also tools which can generate FIN/RST's on TCP connections which
+basically causes a graceful shutdown of the line.
 
 
