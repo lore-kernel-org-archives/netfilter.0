@@ -1,13 +1,12 @@
-From: Askar Ali Khan <askarali@gmail.com>
-Subject: Re: redirecting
-Date: Thu, 1 Jul 2004 21:58:45 +0600
+From: Nick Taylor <nickt@lightlink.com>
+Subject: Re: NETMAP nat target and strange traceroutes
+Date: Thu, 1 Jul 2004 12:04:29 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <a0f69e504070108587ccbc380@mail.gmail.com>
-References: <a0f69e50407010452713ae264@mail.gmail.com> <200407011305.17055.Antony@Soft-Solutions.co.uk> <a0f69e50407010836467d308a@mail.gmail.com> <200407011646.14683.Antony@Soft-Solutions.co.uk>
+Message-ID: <Pine.GSU.4.58.0407011123550.17661@adore.lightlink.com>
+References: <Pine.LNX.4.33.0407011144170.29404-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407011646.14683.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <Pine.LNX.4.33.0407011144170.29404-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +16,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, 1 Jul 2004 16:46:14 +0100, Antony Stone
-<antony@soft-solutions.co.uk> wrote:
-> 
-> On Thursday 01 July 2004 4:36 pm, Askar Ali Khan wrote:
-> 
-> > On Thu, 1 Jul 2004 13:05:17 +0100, Antony Stone
-> >
-> > > I would *really* recommend that you do this sort of thing with Squid
-> > > instead of netfilter, espcially since you have selected www.microsoft.com
-> > > as the address to be redirected.
-> > >
-> > > If you put a redirect rule into Squid, it will use www.microsoft.com
-> > > instead of an IP address, and you will get the result you want.
-> > >
-> > > Also, Squid will help when you want to change things after the first / in
-> >
-> > Thanks Antony for y0ou fast reply, actaully im practing on my own box
-> > not on company cache server "squid"
-> 
-> Doesn't matter - install Squid at home too - there's no reason why not.
-> 
-> If you put it on the same machine as netfilter, you can play with transparent
-> proxying mode as well :)
-i will , but right now im learning netfilter thingy :) 
-
-> 
-> Regards,
-> 
-> Antony.
-> 
-> --
-> Late in 1972 President Richard Nixon announced that the rate of increase of
-> inflation was decreasing.   This was the first time a sitting president used
-> a third derivative to advance his case for re-election.
-> 
->  - Hugo Rossi, Notices of the American Mathematical Society
-> 
-> 
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
+> > Thank you for responding.  I don't think that we've communicated the
+> > problem clearly, though.
 >
+> OK, could you add the IP addresses of the interfaces to the ASCII chart?
+>
+I've updated to ASCII chart to show the four DSL modems in use (fvrp*), as
+well as the 3 linux boxes (bond0* and rp2), and the cisco router (t3).  In
+order to distinguish the lines indicating network topology from the lines
+connecting the lables, I've used hash marks (#) to indicate a network
+connection.  I hope this is more clear.
+
+The IPs are as follows:
+
+
+207.127.235.1
+|        10.42.0.1
+|        |    10.42.0.2
+|        |    |     10.42.1.1
+|        |    |     |   10.42.1.2
+|        |    |     |   |     10.42.2.2      207.127.233.35
+|        |    |     |   |     |    10.42.2.1 |
+|        |    |     |   |     |    |         |
+T3###bond0####fvrp0fv###fvrp0rp####bond0rp###rp2###customer
+     |     #                    #        |
+     |     #                    #        |
+     |     ###fvrp1fv###fvrp1rp##        207.127.233.33
+     |        |     |   |     |
+     |        |     |   |     10.42.2.3
+     |        |     |   10.42.1.4
+     |        |     10.42.1.3
+     |        10.42.0.3
+     207.127.235.40
+
+
+T3 has IP 207.127.235.1 (among others)
+bond0:eth0 is 207.127.235.40, and 207.127.235.28
+bond0:eth1 is 10.42.0.1
+
+there are four DSL modems not shown in the original diagram, they are
+numbered as follows:
+
+10.42.0.2, and 10.42.0.3 plug into eth1 of bond0
+the "wan" side of these modems are 10.42.1.1 and 10.42.1.3, respectively.
+
+another set of modems attaches to the other end of the BANA circuits,
+"wan" addresses are 10.42.1.2, and 10.42.1.4.  The ethernet ports of these
+modems plug into bond0rp:eth0, and they have addresses 10.42.2.2, and
+10.42.2.3.
+
+bond0rp:eth0 is 10.42.2.1
+bond0rp:eth1 is 207.127.233.33
+
+There is however a NETMAP nat rule in place for the 207.127.233.32/28
+network, mapping it to 10.23.23.0/28, so the machine knows itself as
+207.127.233.33, and machines in the "outside world" should know it by that
+address, but while local packets traverse the DSL links, they'll be
+10.23.23.1.
+
+rp2:eth0 is 207.127.233.35 (natted to 10.23.23.3) and
+rp2:eth1 has many aliases, too many to list.
 
