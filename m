@@ -1,49 +1,55 @@
-From: Tobias DiPasquale <cbcgtt@gmail.com>
-Subject: ip_conntrack memory leak?
-Date: Fri, 28 May 2004 18:38:01 -0400
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <9e3aacf404052815384498ae20@mail.gmail.com>
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Destination Nat
+Date: Fri, 28 May 2004 21:56:08 -0400
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1085795768.14775.2.camel@localhost>
+References: <40b74a21.49.47a3.1468065555@arbbs.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40b74a21.49.47a3.1468065555@arbbs.net>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: linux-net <linux-net@vger.kernel.org>, netfilter <netfilter@lists.netfilter.org>, nf-devel <netfilter-devel@lists.netfilter.org>
+To: black@arbbs.net
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
+If I understand you correctly and remember your original rule, then I
+think you have it backward.  If you are changing the destination, you
+probably want to change it from the public address to the private
+address:
 
-I am noticing what appears to be a memory leak in conntrack on one of
-my boxes. The machine is a single 2.4GHz P4 1U rackmount with software
-RAID 1 on 2 40GB IDE HDDs and an onboard e1000 (eth0) and e100 (eth1).
-The kernel is 2.4.26 from kernel.org with ip_conntrack compiled
-statically into the kernel.
+iptables -t nat -A PREROUTING -d 5.6.7.8 -p 6 --dport 8080 -j DNAT
+--to-destination 192.168.x.x:80
 
-The conntrack slab (/proc/slabinfo) grows without bound and the
-machine needs to be rebooted every few days in order to prevent it
-from running out of memory. This machine is the most heavily loaded
-box I have; it is a stateful firewall and pseudo-bridge for a
-high-traffic subnet. The important thing to note here is that the
-number of active objects reported by /proc/slabinfo is far below the
-number that is reported by a cat /proc/net/ip_conntrack. There are
-~70K entries in /proc/net/ip_conntrack, whereas /proc/slabinfo reports
-several times that many active objects in the slab. As well, the
-number of active objects keeps going up over time while the number of
-objects reported by /proc/net/ip_conntrack stays relatively the same.
+Remember to ensure that traffic to 192.168.x.x:80 is allowed on the
+FORWARD chain and that the NAT gateway responds to ARPs for 5.6.7.8 -
+John
 
-Has anyone experienced a similar memory leak in this area?
+On Fri, 2004-05-28 at 10:18, black@arbbs.net wrote:
+> would it be 8080 or 80? the web server has a static ip
+> address
+> on the inside 192.168.x.x
+> 
+> > That will direct all 80 /tcp packets for all addresses the
+> > station listens on to 5.6.7.8:8080? Is that what you want
+> > or do you want to redirect packets with a specific
+> > destination address? If the public Internet address is not
+> > an IP address bound to the NAT gateway, then you will need
+> > to add it, typically: ip address add 1.1.1.2/24 dev eth0
+> > brd + 
+> 
+> john
+-- 
+Open Source Development Corporation
+Financially Sustainable open source development
+http://www.opensourcedevelopmentcorp.com
 
-P.S. No need to reply to me personally; I am on all the lists I
-submitted this message to.
-
---
-Tobias DiPasquale
-[ 0x63626367545440676d61696c2e636f6d ]
 
