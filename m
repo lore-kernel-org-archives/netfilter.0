@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: POM
-Date: Fri, 26 Mar 2004 16:02:40 +0000
+From: "Steve Jones" <sjones@ftdata.com>
+Subject: RE: General denial question (tarpitting)
+Date: Fri, 26 Mar 2004 12:05:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403261602.40530.Antony@Soft-Solutions.co.uk>
-References: <40644FAF.8080807@wanadoo.fr>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <79C037414A4B604CA73F5222570C6DFC8049@e2k3.ftdata.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40644FAF.8080807@wanadoo.fr>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,39 +19,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 26 March 2004 3:43 pm, Rakotomandimby Mihamina wrote:
+Anyone got TARPIT working on Kernel 2.6.x?  POM says it's only for 2.4.x
+Kernels (and I can't seem to get it working on my stock RH9 machine)
 
-> Hi ,
-> I'm sorry to ask such a dumb question but what is Patch-O-Matic ?
-> What is it ? the netfilter website gives me no clear information enough
-> , and i dont know if i should use it or not ...
+I'd be grateful for any info on this!
 
-Patch-O-Matic is a way to add other features to netfilter which are not part 
-of the mainstream distribution.
+Thanks!
+-Steve
 
-Regard it as a series of patches, each of which adds something different to 
-the standard netfilter, which happen to have been collected all in one place.
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Daniel Chemko
+Sent: Thursday, March 25, 2004 11:41 PM
+To: David Nicol
+Cc: Charlie Brady; qpsmtpd ML; netfilter@lists.netfilter.org
+Subject: Re: General denial question (tarpitting)
 
-Whether or not you want to use it depends on whether you want netfilter to do 
-any of the more unusual or exotic things which people have written the 
-extensions for.
+Check out the Patch-o-matic enhancements to netfilter.
+TARPIT? Check.
 
-Take a look at the lists on the website and see if any seem useful.
+David Nicol wrote:
 
-http://www.netfilter.org/patch-o-matic/pom-base.html
-http://www.netfilter.org/patch-o-matic/pom-extra.html
+>
+>
+> Charlie Braddy wrote, on the qpsmtpd list, which is about
+> a perl drop-in replacement for qmail-smtpd:
+>
+>> If you are going to undertake the noble task of sucking up their=20
+>> bandwidth, then I'd suggest that you do the job thoroughly, and make=20
+>> sure that their TCP stack decides to retransmit as many packets as=20
+>> possible. Use iptables (for instance) to selectively/randomly drop=20
+>> packets.
+>
+>
+> That's brilliant!  does iptables have a TARPIT target that causes
+> the peer to retransmit as much as possible? Can we add one?
+>
+> CC to netfilter@lists.netfilter.org, the iptables discussion list.
+>
 
-Regards,
 
-Antony.
-
--- 
-It is also possible that putting the birds in a laboratory setting 
-inadvertently renders them relatively incompetent.
-
- - Daniel C Dennet
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
