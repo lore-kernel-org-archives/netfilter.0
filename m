@@ -1,11 +1,13 @@
-From: Dobersberger Dieter <dieter@dobersberger.at>
-Subject: kernel 2.6 IPsec and netfilter
-Date: Wed, 14 Jan 2004 19:51:24 +0100
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: multicast over firewall linux
+Date: Wed, 14 Jan 2004 15:33:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <912065890.20040114195124@redbox.org>
+Message-ID: <20040114203316.GA11981@cannon.eng.us.uu.net>
+References: <20040113063633.93629.qmail@web40107.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20040113063633.93629.qmail@web40107.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,53 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: duong hung <duong.vn@rocketmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi All !
+On Mon, Jan 12, 2004 at 10:36:33PM -0800, duong hung wrote:
 
-I have set up an in-kernel IPsec Tunnel with Linux 2.6.0 and want to
-filter traffic going through this tunnel.
+> Hi ,
+> 
+> My network have config as : 
+> 
+>   Cisco -------------- linux box ----------- Cisco
+>  203.168.3.1   203.168.3.2   192.168.0.1  192.168.0.2
+> 
+> I want multicast packets to flow between two router
+> cisco . Multicast routing use PIMv2. Any people help
+> me this problem
 
-Before I upgraded to 2.6 I used FreeS/WAN on Linux 2.4 which provided
-a virtual interface called ipsec0 which I could use to apply rules
-after the IPsec packet has been decrypted. Now with kernel 2.6 ipsec0
-is gone and the incoming interface is the same as the physical (eth0).
-So the machine on the other end of the IPsec tunnel has unlimted
-access to my server.
+If the linux box is not multicast aware and not a part of
+PIMv2 cloud, then you have to set up a GRE tunnel between the
+two cisco's. Unless you run something like pimd on the
+linux box. But again because you're using private IP's
+on one of the cisco's, I don't exactly know what the
+implications would be on natting the pim control packets.
 
-I used these rules for FreeS/WAN:
+Ramin
 
-# $WWW .. ip address of the webserver
-# $DB ... ip address of the database server
-# both are linked with an IPsec tunnel
-
-# allow IKE and IPsec (AH and ESP)
-iptables -A INPUT -s $WWW -d $DB -p udp --dport 500 -j ACCEPT
-iptables -A INPUT -s $WWW -d $DB -p 50 -j ACCEPT
-iptables -A INPUT -s $WWW -d $DB -p 51 -j ACCEPT
-
-# allow mysql via IPsec
-iptables -A INPUT -i ipsec0 -p tcp -s $WWW -d $DB \
-   --dport 3306 -j ACCEPT
-
-# drop everything else
-iptables -A INPUT -j DROP
-
-The above rules don't work for in-kernel IPsec. The www server has
-unlimited access to the db server because the decrypted packets are
-not processed by iptables.
-
-All I found on the net is a link to an older thread discussing the
-same problem but they didn't find a solution:
-http://www.spinics.net/lists/netfilter/msg18030.html
-
-Anyone got an idea how to limit the traffic coming in via IPsec to
-certain ports and block all other traffic ? Can someone please post
-iptables rules that do the same filtering for in-kernel IPsec as mine
-did in FreeS/WAN ?
-
-Thanks for reading this far.
-best regards,
-Dieter
-
+> 
+> Thanks
 
