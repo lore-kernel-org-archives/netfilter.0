@@ -1,9 +1,11 @@
-From: "Andrej Ricnik" <lemmetink@hotmail.com>
-Subject: Re: Questions - Urgent
-Date: Wed, 23 Apr 2003 00:46:59 +0000
+From: "Philip Villamin" <philipv@digitelone.com>
+Subject: DNS problems
+Date: Wed, 23 Apr 2003 09:08:03 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Sea2-F50GzGqiuLeHTg0001b627@hotmail.com>
+Message-ID: <001201c309b2$890f0f00$4f00a8c0@tmik>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000F_01C30977.D8A11760"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,57 +16,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
->Hi,
->I have following questions regarding Netfilter/Iptables.
->I would ge glad if you could answer then ASAP
-First of all, as a rule of thumb, things like
-urgent and/or ASAP will make you quite unpopular
-in open source communities...
+------=_NextPart_000_000F_01C30977.D8A11760
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
->1. What Attacks does it protect against?
-Any an IP Filter can protect you from. Read the FAQ.
+Hi guys,
 
->2. What are the Compatibility Issuses?
-Compatibility with what?
+My iptables firewall blocks the dns requests. What I do is flush the =
+iptables properties so that dns server can work. What iptables command =
+can I issue to ensure that the dns server to grant requests?
 
->3. Dow do we implement this technology?
-Read the FAQ.
+Thanks,
 
->4. How commonly is this used?
-Let's just say that a vast majority of
-Linux users out there (in particular the ones
-with a Linux-Kernel 2.4.x or higher) are using it.
+Philip V.
+Manila, PH=20
 
->5. when do you think one should use it?
-Whenever one thinks one needs a firewall.
+------=_NextPart_000_000F_01C30977.D8A11760
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Maybe you want to go to http://linuxsecurity.com
-and learn something about TCP/IP networking in
-general before asking questions like these.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4134.600" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi guys,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>My iptables firewall blocks the dns =
+requests. What=20
+I do is flush the iptables properties so that dns server&nbsp;can=20
+work.&nbsp;What iptables command can I&nbsp;issue&nbsp;to ensure =
+that&nbsp;the=20
+dns&nbsp;server to grant requests?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Philip V.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Manila, =
+PH</FONT>&nbsp;</DIV></BODY></HTML>
 
-
->Tankx for all the help.
->waiting for your reply.
->Regards
->Jitin Sahni
-Cheers,
-Tink
-
------BEGIN GEEK CODE BLOCK-----
-Version: 3.12
-GCM/IT/O d-(++)@ a C+(+++)@ UL++>+++ P+>+++ L++ E+@ W+@ N+ o? K? w---@(+) 
-O+++(+)@ M-@ V? PS+ PE- Y+ PGP++ t- 5- X- R-(*) tv-@ b+ DI++ D-- G++ !e* 
-h--- r++ z?
-------END GEEK CODE BLOCK------
-
-
-_________________________________________________________________
-STOP MORE SPAM with the new MSN 8 and get 2 months FREE* 
-http://join.msn.com/?page=features/junkmail
+------=_NextPart_000_000F_01C30977.D8A11760--
 
 
