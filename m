@@ -1,12 +1,14 @@
-From: "Manikandan" <mani@manikandan.org>
-Subject: FW: Multiple PPTP clients behind iptables.
-Date: Sat, 10 Apr 2004 10:48:34 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: FW: Multiple PPTP clients behind iptables.
+Date: Sat, 10 Apr 2004 09:17:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GHEILNONPACCGBGKBEKKOEBKCFAA.mani@manikandan.org>
-Reply-To: <manikandan@manikandan.org>
+Message-ID: <200404100917.29039.Antony@Soft-Solutions.co.uk>
+References: <GHEILNONPACCGBGKBEKKOEBKCFAA.mani@manikandan.org>
+Reply-To: "Netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <GHEILNONPACCGBGKBEKKOEBKCFAA.mani@manikandan.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,93 +21,32 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter <netfilter@lists.netfilter.org>
 
-When I try to apply the patch, using netfilter CVS I am getting an error
-like
+On Saturday 10 April 2004 6:18 am, Manikandan wrote:
 
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
-Testing patch submitted/03_2.4.21.patch...
-Failed to patch copy of /usr/src/linux-2.4.20-8/
-TEST FAILED: patch NOT applied.
+> When I try to apply the patch, using netfilter CVS I am getting an error
+> like
+>
+> Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
+> Testing patch submitted/03_2.4.21.patch...
+> Failed to patch copy of /usr/src/linux-2.4.20-8/
+> TEST FAILED: patch NOT applied.
+>
+> [Press enter to continue]
+> What could be wrong?
 
-[Press enter to continue]
-What could be wrong?
+It could be that the patch is for kernel 2.4.21 (or later, perhaps, I'm not 
+sure...), and you're trying to apply it to kernel 2.4.20?
+
 Regards,
-Manikandan
------Original Message-----
-From:	Luke Deryckx [mailto:luke@westaironline.com]
-Sent:	Friday, April 09, 2004 9:38 PM
-To:	manikandan@manikandan.org
-Cc:	Netfilter list
-Subject:	Re: Multiple PPTP clients behind iptables.
 
-This patch worked very nicely for me as well. Keep in mind you also need to
-recompile iptables after you've patched your kernel.
-Cheers
+Antony.
 
+-- 
+Having been asked for a reference for this man,
+I can confirm that you will be very lucky indeed if you can get him to work 
+for you.
 
-
-On 4/9/04 8:55 AM, "Alexis" <alexis@tpys.com.ar> wrote:
-> yes, you need the pptp patch
->
-> ive been in the same situation, and applying the patch made it work just
-> fine.-
->
-> see
->
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-5.h
-tm
-> l#ss5.6
->
-> ----- Original Message -----
-> From:	"Manikandan" <mani@manikandan.org>
-> To:	"Netfilter" <netfilter@lists.netfilter.org>
-> Sent:	Friday, April 09, 2004 12:08 PM
-> Subject:	Multiple PPTP clients behind iptables.
->
->
->> Dear friends,
->>
->> As I am getting more confused about VPN masq., request your help on
->> this.
->>
->> My local LAN is 10.35.0.0/24
->> My Linux box running red hat linux 9.0 with kernel 2.4.20-8. acting as
-the
->> gateway for my LAN to Internet.
->>
->> I need to allow my LAN clients to access Microsoft windows VPN (Windows
-> 2000
->> Adv. Server) using PPTP over Internet.
->> I am not able to make more than one connection to the VPN server as my
-LAN
->> outgoing traffic to Internet is getting SNAT to single public IP.
->>
->>
->> I read few guides and howtos to configure my firewall to allow multiple
-> PPTP
->> sessions. But still I couldn't get through.
->>
->> Do I need to patch my kernel? What support do I need to enable this
-> multiple
->> PPTP traffic.
->>
->> Request your views and help on this.
->>
->>
->> Have a nice day
->>
->> Regards,
->> Manikandan.
->>
->>
->>
->>
->>
->>
->>
->>
->
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
