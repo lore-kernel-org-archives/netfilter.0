@@ -1,10 +1,9 @@
-From: - = k o l i s k o = - <kolisko@penguin.cz>
-Subject: h323 compilation error
-Date: 18 Feb 2003 22:15:03 +0100
+From: "Andrej Ricnik" <lemmetink@hotmail.com>
+Subject: iptables 1.2.7a install
+Date: Tue, 18 Feb 2003 21:35:16 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045602903.1536.13.camel@kolisko>
+Message-ID: <F16RFQoB0rtrgxO3JNg00018cb7@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,55 +14,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, kadlec@blackhole.kfki.hu
-
-Hi all,
-
-i have a linux 2.4.21-pre4 patched by h323-conntrack-nat.patch and set
-Makefile, Configure.help, Configure.in and when i compile kernel i get
-this error message:
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
-gcc -D__KERNEL__ -I/usr/src/linux-2.4.21-pre4/include -Wall
--Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--fomit-frame-pointer -pipe -mpreferred-stack-boundary=3D2 -march=3Di686 =20
--nostdinc -iwithprefix include -DKBUILD_BASENAME=3Dip_conntrack_h323  -c
--o ip_conntrack_h323.o ip_conntrack_h323.c
-ip_conntrack_h323.c: In function `h245_help':
-ip_conntrack_h323.c:49: union has no member named `ct_h225_info'
-ip_conntrack_h323.c:51: union has no member named `exp_h225_info'
-ip_conntrack_h323.c: In function `h225_help':
-ip_conntrack_h323.c:166: union has no member named `ct_h225_info'
-ip_conntrack_h323.c:168: union has no member named `exp_h225_info'
-make[3]: *** [ip_conntrack_h323.o] Error 1
-make[3]: Leaving directory
-`/usr/src/linux-2.4.21-pre4/net/ipv4/netfilter'
-make[2]: *** [first_rule] Error 2
-make[2]: Leaving directory
-`/usr/src/linux-2.4.21-pre4/net/ipv4/netfilter'
-make[1]: *** [_subdir_ipv4/netfilter] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.4.21-pre4/net'
-make: *** [_dir_net] Error 2
-
-What is wrong?
-
-Thank You.
-kolisko
 
 
---=20
 
----
-Michal Koles=E1r
-kolisko@penguin.cz
-http://kolisko.penguin.cz
-+420.777.225.297
+Hi Guys!
+
+I was just upgrading (trying to upgrade) from
+1.2.6 to 1.27a...
+
+However, when I
+--------8<--------8<--------8<--------8<--------8<--------8<--------
+root@diggn:/usr/src/iptables-1.2.7a# make KERNEL_SOURCE=/usr/src/linux
+Extensions found:
+root@diggn:/usr/src/iptables-1.2.7a#
+--------8<--------8<--------8<--------8<--------8<--------8<--------
+nothing but that Extensions found happens ... is that
+working as designed? And if not, what am I doing wrong?
+
+Cheers,
+Tink
+
+-----BEGIN GEEK CODE BLOCK-----
+Version: 3.12
+GCM/IT/O d-(++)@ a C+(+++)@ UL++>+++ P+>+++ L++ E+@ W+@ N+ o? K? w---@(+) 
+O+++(+)@ M-@ V? PS+ PE- Y+ PGP++ t- 5- X- R-(*) tv-@ b+ DI++ D-- G++ !e* 
+h--- r++ z?
+------END GEEK CODE BLOCK------
 
 
-Don't send me any attachment in Micro$oft (.DOC, .PPT) format please
-Read http://www.fsf.org/philosophy/no-word-attachments.html
-Preferable attachments: .PDF, .HTML, .TXT
-Thanx for adding this text to Your signature
+_________________________________________________________________
+Protect your PC - get McAfee.com VirusScan Online 
+http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
 
 
