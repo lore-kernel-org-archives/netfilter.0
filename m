@@ -1,9 +1,10 @@
-From: "Bob Avery-Babel" <Bob@yellowbugcomputers.com>
-Subject: Re: any good books for an iptables/netfilter newbie ?
-Date: Tue, 28 Jan 2003 07:51:45 -0600
+From: Shawn Duffy <pakkit@codepiranha.org>
+Subject: Messaging Protocols... newbie
+Date: 28 Jan 2003 08:30:13 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000d01c2c6d4$655aefa0$8f8aa0cf@um.umsystem.edu>
-References: <Pine.LNX.4.44.0301280742480.5606-100000@dell> <003801c2c6cd$01a374c0$2b00a8c0@dharmu>
+Message-ID: <1043760613.21035.3.camel@pitbull>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-MfVfzKrJA54XHOqBx8jr"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,57 +15,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-The link is:
 
-http://iptables-tutorial.frozentux.net
+--=-MfVfzKrJA54XHOqBx8jr
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Very good tutorial...
+Hey all...=20
+I am finally buckling down and getting a grasp on netfilter after being
+a long time OpenBSD/ipf/pf user...
+My base ruleset is just about ready to go but I am having a hard time
+finding comprehensive rules that allow the following messaging
+protocols:
 
-Bob
+AIM, Yahoo, ICQ, MSN, IRC
 
+Also, doesn anyone have any rulesets that allow gtk-gnutella?=20
+I am more interested in the messaging rulesets since I don't use
+gnutella that often but it would be helpful...
 
------ Original Message -----
-From: "Dharmendra.T" <dharmu@nsecure.net>
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: "zenn" <zenn@optushome.com.au>; <netfilter@lists.netfilter.org>
-Sent: Tuesday, January 28, 2003 6:58 AM
-Subject: Re: any good books for an iptables/netfilter newbie ?
+If someone could show me what they use or perhaps point me in the
+direction of some docs that I may have missed online...
 
+Thanks!
+Shawn
+--=20
+email: pakkit at codepiranha dot org
+web: http://codepiranha.org/~pakkit
+gpg key: http://codepiranha.org/~pakkit/pakkit.asc
+gpg fpr: 8988 6FB6 3CFE FE6D 548E  98FB CCE9 6CA9 98FC 665A
+having problems reading email from me? http://codepiranha.org/~pakkit/pgp-t=
+rouble.html
 
-> I tried to find out the online tutorial. But could not. Could you send us
-> the link! Cause the info you have given is not sufficient.
-> Regards
-> Dharmendra.T
-> ----- Original Message -----
-> From: "Robert P. J. Day" <rpjday@mindspring.com>
-> To: "Dharmendra.T" <dharmu@nsecure.net>
-> Cc: "zenn" <zenn@optushome.com.au>; <netfilter@lists.netfilter.org>
-> Sent: Tuesday, January 28, 2003 6:14 PM
-> Subject: Re: any good books for an iptables/netfilter newbie ?
->
->
-> > On Tue, 28 Jan 2003, Dharmendra.T wrote:
-> >
-> > > Linux Firewall I guess from orielly is a good one.
-> >
-> > for rapidly-improving software like iptables, it's sort of
-> > pointless to buy a real book, since those books are almost
-> > invariably out of date by the time they hit the shelves.
-> >
-> > i'd look for online docs, like oskar's online tutorial,
-> > rather than shell out $$$ for something guaranteed to be
-> > just a touch obsolete already.
-> >
-> > rday
-> >
->
->
->
+--=-MfVfzKrJA54XHOqBx8jr
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
+iD8DBQA+NoXlzOlsqZj8ZloRArz+AJ4zjDDcAEFB4MvvB81jisHwg9u/0wCfQw1V
+NpriSntNbNWKBdWwMPyRGh8=
+=koyP
+-----END PGP SIGNATURE-----
+
+--=-MfVfzKrJA54XHOqBx8jr--
 
