@@ -1,13 +1,12 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: strange phenomena about ip_conntrack
-Date: 24 May 2003 00:54:03 +0200
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: NetFilter DMZ question...
+Date: Sat, 24 May 2003 11:22:33 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053730443.713.167.camel@tux.rsn.bth.se>
-References: <004401c31f72$57415ca0$02020a0a@acamarpeng>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CC5@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004401c31f72$57415ca0$02020a0a@acamarpeng>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +17,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: pengjie <bill@acamar.com.cn>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: Richard Whittaker <RWHITTAKER@nwtel.ca>, netfilter@lists.netfilter.org
 
-On Wed, 2003-05-21 at 10:24, pengjie wrote:
- 
-> After 2 days, the conntrack table is full, /var/log/messages display
-> the ip_conntrack_count is 167, and /proc/net/ip_conntrack is empty. 
->  
-> Why?!, Why the ip_conntrack_count is bigger than ip_conntrack_max?
-> Why is /proc/net/ip_conntrack is empty?
-> how can this occurs?
->  
-> who can help me?
+This is not right, DNAT only changes the Destination (Address =
+Translation) of the packet.
+The source is left the same unless you have a rule in your POSTROUTING =
+on the DMZ nic which changes it's source to the firewall which is =
+usually required when the NAT webserver is on the same network as a =
+workstation (ie. workstation on DMZ trying to browse webserver on =
+external address) which then you must NAT the source.
 
-Can you try a newer kernel? (I'd recommend 2.4.21-rc3)
+can you provide all the rules for the NIC and EXTERNAL NIC? change the =
+Ext addy if you should.
 
-And if you still have the same problem, try enabling netfilter debugging
-in the kernel configuration (or at least enable the IP_NF_ASSERT macro
-in include/linux/netfilter_ipv4/ip_conntrack.h)
- 
--- 
-/Martin
+-----Original Message-----
+From: Richard Whittaker [mailto:RWHITTAKER@nwtel.ca]
+Sent: Saturday, May 24, 2003 6:29 AM
+To: netfilter@lists.netfilter.org
+Subject: NetFilter DMZ question...
+
+
+Greetings:
+
+We have a webserver living in a DMZ, and I have the following rule
+setup to allow this:
+
+/usr/sbin/iptables -A PREROUTING -t nat -i eth1 -p tcp -d 199.85.228.1
+--dport 80 -j DNAT --to 192.168.70.3:80
+
+Unfortunately, the web server only sees the IP address of the
+interface, not the source IP address, which kinda messes with our
+statistical programs, since the only address the web server "sees" is
+the same one over, and over... Is there any way to present the web
+server with the "real" address, or should it be be already?....
+
+Thanks,
+Richard...
+
+
+Richard Whittaker, CISSP
+System Manager
+NorthwesTel Inc.
+Whitehorse, YK
+(867) 393-7756
+
+
 
