@@ -1,12 +1,11 @@
-From: "Mark C. Casey" <markcc@jadepress.co.uk>
-Subject: Redirecting from one ip to another problem
-Date: Fri, 25 Jun 2004 09:31:07 +0100
+From: iptables-ml@xy1.org
+Subject: Is "no route to host" fake possible?
+Date: Fri, 25 Jun 2004 10:53:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <627ED3D5182532448B61510FFAB3D37F10A940@srvdc01.jade.local>
+Message-ID: <20040625085336.GA1094@xy1.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +16,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have something of a conumdrum.
+Hello,
 
-I'm in the process of replacing the current firewall with an IPCop =
-machine, however i'm needing to replicate one rule that is causing me =
-something of a headache.
-On eth0 is the router (connected to the net), on eth1 is a webserver on =
-eth2 is a switch which is connected upto the lan.
+I know the rules REJECT, DENY or DROP, but is it possible to return to 
+the client the error message "no route to host" ?
 
-The ip address of the webserver is 172.16.0.1.
+I saw that it's possible to configure this on CISCO routers, and I would 
+like to know it it's possible?
 
-On eth2 is a sql server with the ip address of 192.168.0.1.
+Best regards,
+saf
+-- 
+xy1.org
 
-The current firewall has it setup so that when connecting to 172.16.0.2 =
-redirects the traffic to 192.168.0.1 and so the webserver is able to =
-access the sql server without ever knowing its real ip address.
-
-How can this be replicated using IPTables?  All my attempts thus far =
-have failed miserably to replicate this.
-
-Thanks
-
-Mark
 
