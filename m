@@ -1,7 +1,7 @@
 From: <hamals@infinito.it>
 Subject: security rules
-Date: Tue, 23 Nov 2004 15:16:50 +0100
-Message-ID: <web-23197902@infinito.it>
+Date: Tue, 23 Nov 2004 15:23:39 +0100
+Message-ID: <web-23201268@infinito.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,10 +19,11 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 
-someone could indicate where I could find some security 
-rules from internet attack... for example from DoS attack?
 
-thanks
+someone could indicate me where I could find rules for 
+security purpose from internet attack...DoS..etc..
+
+Thanks
 _______________________________________
 Connessione ed e-mail gratuita da 10 mb
 consultabile tramite web e tramite pop.
