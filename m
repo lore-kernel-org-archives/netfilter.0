@@ -1,13 +1,13 @@
-From: Peter Surda <shurdeek@panorama.sth.ac.at>
-Subject: SNAT "accounting"
-Date: Tue, 17 Sep 2002 19:11:02 +0200
+From: "Riho Randla" <riho@hot.ee>
+Subject: Patch-o-matic newnat question
+Date: Thu, 19 Sep 2002 11:54:39 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020917171102.GE2829@noir.cb.ac.at>
+Message-ID: <00e401c25fba$30214e00$6300a8c0@VAIO>
+References: <001501c25f64$0da54b20$4be8f70c@attbi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pY3vCvL1qV+PayAL"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00E1_01C25FD3.552CC210"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +19,88 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---pY3vCvL1qV+PayAL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+------=_NextPart_000_00E1_01C25FD3.552CC210
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hi,
 
-I seem to have a problem I don't know how to solve.
+I have to get to work pptp masquerading for multiple simultaneous vpn =
+connections for w2k clients behind the iptables-firewall to a vpn server =
+on the Internet. The latest patch allowing vpn connections from behind a =
+nated firewall at all is netfilter_pptp_patch_2.4.19_rev1 by Brian =
+Kuschak, and it works great but only for one connection at the same time =
+to the same server (because of lack of the pptp Call ID support?). As I =
+understood, the z-newnat16.patch would solve the problem, but I have not =
+been able to apply this patch. Someone wrote in the list he could not do =
+it neither. Is the problem related to the kernel version (the status =
+says it's submitted for 2.4.20-pre1 but I use 2.4.19)? I have heard that =
+someone tried to appliy the patch to the 2.4.20-pre7 had no success, =
+too. How it could be done, and would it solve my problem at all?
 
-Intro: it is pretty easy to do accounting of various types by creating an
-iptables rule without a target.
+Another question: I cannot supply some patches I could with an older =
+kernel (2.4.18-3), ip_conntrack_protocol_destroy.patch and =
+config-cleanup.patch
+for example. Have someone met the same behavior? Without the =
+ip_conntrack-staff  the nat-pptp would not work as module, would it?
 
-What I am trying to do is to write rules that match the source IP of a SNAT
-with multiple sources. Example:
+Riho
 
-iptables -t nat -A masquerade -s local_subnet -j SNAT --to-source source_ip1 --to-source source_range1
+------=_NextPart_000_00E1_01C25FD3.552CC210
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This should, according to docs, "loadbalance" the source IPs and I would like
-to do accounting for each of them. However, I don't know what rule to write.
-In the POSTROUTING chain in nat table, the original one is used even after the
-SNAT rule, as well as in the whole filter chain.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have to get to work pptp masquerading =
+for=20
+multiple simultaneous vpn connections for w2k clients behind the=20
+iptables-firewall to a vpn server on the Internet. The latest patch =
+allowing vpn=20
+connections from behind a nated firewall at all is=20
+netfilter_pptp_patch_2.4.19_rev1 by <FONT face=3D"Times New Roman" =
+size=3D3>Brian=20
+Kuschak, and it works great but only for one connection at the same time =
+to the=20
+same server (because of lack of the pptp Call ID support?). As I =
+understood, the=20
+z-newnat16.patch would solve the problem, but I have not been able to =
+apply this=20
+patch. Someone wrote in the list he could not do it neither. Is the =
+problem=20
+related to the kernel version (the status says it's submitted for =
+2.4.20-pre1=20
+but I use 2.4.19)? I have heard that someone tried to appliy the patch =
+to the=20
+2.4.20-pre7 had no success, too. How it could be done, and would it =
+solve my=20
+problem at all?</FONT></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Another question: I cannot supply some =
+patches I=20
+could with&nbsp;an older kernel (2.4.18-3), <FONT face=3D"Times New =
+Roman"=20
+size=3D3>ip_conntrack_protocol_destroy.patch and =
+config-cleanup.patch<BR><FONT=20
+face=3DArial size=3D2>for example. Have someone met the same behavior? =
+Without the=20
+ip_conntrack-staff&nbsp; the nat-pptp would not work as module, would=20
+it?</FONT></FONT></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Riho</FONT></DIV></BODY></HTML>
 
-I'm using iptables-cvs from july 30th and kernel 2.4.19-rc3-ac3.
+------=_NextPart_000_00E1_01C25FD3.552CC210--
 
-If possible please cc, I'm not on the list.
-
-Bye,
-
-Peter Surda (Shurdeek) <shurdeek@panorama.sth.ac.at>, ICQ 10236103, +436505122023
-
---
-                           Reboot America.
-
---pY3vCvL1qV+PayAL
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE9h2ImzogxsPZwLzcRAt+KAJ96VrBUvonOozUpXS00doeTtSo0tQCfakrx
-RsXTpuQwCG+QWPntPacULRc=
-=pVkr
------END PGP SIGNATURE-----
-
---pY3vCvL1qV+PayAL--
 
