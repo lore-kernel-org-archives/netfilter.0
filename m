@@ -1,11 +1,11 @@
-From: =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@ncparty.dk>
-Subject: Yet Another Kazaa Issue
-Date: Tue, 19 Nov 2002 21:55:22 +0100
+From: "AJ Mayor" <AJ@comspeco.net>
+Subject: DNAT & Redirects
+Date: Tue, 19 Nov 2002 16:40:21 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001101c2900e$055b0bf0$0200000a@parseerror.dk>
+Message-ID: <000f01c29014$430b39b0$8bb5a8c0@ajbox>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000D_01C29016.5C1649C0"
+	boundary="----=_NextPart_000_000C_01C28FEA.5A0F0C10"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,54 +20,34 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000D_01C29016.5C1649C0
+------=_NextPart_000_000C_01C28FEA.5A0F0C10
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hey
+Hello All,
 
-Im trying like hell to get Kazaa to stop connect successfully... =
-Whatever i do, blocking port 1214 in ANY possible way, it still resist =
-and connect sucessfully, even with thoes firewall rules
+Im trying (unsuccessfully thus far) to do the following.
 
-iptables -A FORWARD -m string --string "X-Kazaa-Username:" -j DROP
-iptables -A FORWARD -m string --string "X-Kazaa-Network:" -j DROP
-iptables -A FORWARD -m string --string "X-Kazaa-IP:" -j DROP
-iptables -A FORWARD -m string --string "X-Kazaa-SupernodeIP" -j DROP
-iptables -A FORWARD -m string --string "Kazaa" -j DROP
+Redirect all port 80 http traffic coming from subnet 172.16.100.0/24 to =
+172.16.200.5:80
 
-Chain FORWARD (policy DROP)
-target     prot opt source               destination
-DROP       all  --  anywhere             anywhere           STRING match =
-X-Kazaa-Username:
-DROP       all  --  anywhere             anywhere           STRING match =
-X-Kazaa-Network:
-DROP       all  --  anywhere             anywhere           STRING match =
-X-Kazaa-IP:
-DROP       all  --  anywhere             anywhere           STRING match =
-X-Kazaa-SupernodeIP
-DROP       all  --  anywhere             anywhere           STRING match =
-Kazaa
-LOG        all  --  anywhere             anywhere           STRING match =
-User  LOG level warning
-DROP       all  --  anywhere             anywhere           STRING match =
-User
-state_chk  all  --  anywhere             anywhere
+The idea being that all people on the 172.16.100.0 subnet are suspended =
+from surfing the net and that any http request they make will bring them =
+to a default webpage on the server saying something to the effect of pls =
+call our office to activate your account blah blah blah
 
+here is what I have tried and failed with so far;
 
-It catch the "kazaa" thingie on the homepage... But.. anyhow it somehow =
-seem to connect to the supernode outside... Im getting nuts.. Why can't =
-i stop it?.. What am i doing wrong.. I tried to ages now.. and it dont =
-work :(
+iptables -t nat -A PREROUTING -p tcp -s 172.16.100.0/24 -d 0/0 -dport 80 =
+-j DNAT --to 172.16.200.5:80
 
-Any help will be appreciated :D
+i know im overlooking something but what i dont know, any idea on this =
+one??
 
-Thanks
+AJ
 
-- SilverWolf
-
-------=_NextPart_000_000D_01C29016.5C1649C0
+------=_NextPart_000_000C_01C28FEA.5A0F0C10
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -80,93 +60,41 @@ charset=3Diso-8859-1">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hey</FONT></DIV>
+<DIV>Hello All,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Im trying (unsuccessfully thus far) to =
+do the=20
+following.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Im trying like hell to get Kazaa to =
-stop connect=20
-successfully... Whatever i do, blocking port 1214 in ANY possible way, =
-it still=20
-resist and connect sucessfully, even with thoes firewall =
-rules</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Redirect all port 80 http traffic =
+coming from=20
+subnet 172.16.100.0/24 to 172.16.200.5:80</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -m string --string=20
-"X-Kazaa-Username:" -j DROP<BR>iptables -A FORWARD -m string --string=20
-"X-Kazaa-Network:" -j DROP<BR>iptables -A FORWARD -m string --string=20
-"X-Kazaa-IP:" -j DROP<BR>iptables -A FORWARD -m string --string=20
-"X-Kazaa-SupernodeIP" -j DROP<BR>iptables -A FORWARD -m string --string =
-"Kazaa"=20
--j DROP</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV><FONT face=3DArial =
-size=3D2>Chain=20
-FORWARD (policy DROP)<BR>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt=20
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;=20
-destination<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
---&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-STRING=20
-match X-Kazaa-Username:<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-all&nbsp;=20
---&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-STRING=20
-match X-Kazaa-Network:<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-all&nbsp;=20
---&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-STRING=20
-match X-Kazaa-IP:<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
---&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-STRING=20
-match X-Kazaa-SupernodeIP<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-all&nbsp;=20
---&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-STRING=20
-match Kazaa<BR>LOG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
---&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-STRING=20
-match User&nbsp; LOG level =
-warning<BR>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-all&nbsp; --&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-STRING=20
-match User<BR>state_chk&nbsp; all&nbsp; --&nbsp;=20
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;=20
-anywhere<BR></FONT>
+<DIV><FONT face=3DArial size=3D2>The idea being that all people on the =
+172.16.100.0=20
+subnet are suspended from surfing the net and that any http request they =
+make=20
+will bring them to a default webpage on the server saying something to =
+the=20
+effect of pls call our office to activate your account blah blah=20
+blah</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>It catch the "kazaa" thingie on the =
-homepage...=20
-But.. anyhow it somehow seem to connect to the supernode outside... Im =
-getting=20
-nuts.. Why can't i stop it?.. What am i doing wrong.. I tried to ages =
-now.. and=20
-it dont work :(</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>here is what I have tried and failed =
+with so=20
+far;</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Any help will be appreciated =
-:D</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>- SilverWolf</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>iptables -t nat -A PREROUTING -p tcp -s =
 
-------=_NextPart_000_000D_01C29016.5C1649C0--
+172.16.100.0/24 -d 0/0 -dport 80 -j DNAT --to =
+172.16.200.5:80</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>i know im overlooking something but =
+what i dont=20
+know, any idea on this one??</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>AJ</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000C_01C28FEA.5A0F0C10--
+
 
 
