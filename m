@@ -1,11 +1,14 @@
-From: "Rob" <rwideman@austin.rr.com>
-Subject: default policy
-Date: Thu, 31 Oct 2002 21:58:25 -0600
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: DNAT, SNAT, Portforward
+Date: Fri, 1 Nov 2002 09:45:42 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NEENJAPFEAIEMGMNIGFLGEABCEAA.rwideman@austin.rr.com>
+Message-ID: <200211010945.42719.netfilter@newkirk.us>
+References: <34BE59D9.590F1486.03240133@netscape.net> <200211010108.18555.netfilter@newkirk.us> <20021101085825.SDDP292.mta03-svc.ntlworld.com@there>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021101085825.SDDP292.mta03-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +19,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I have been looking at several scripts checking the default policies on
-them.
-Some include items that others don't.  Oscars tutorial doesn't cover all of
-these compared to Ziegler's book.  I have been wondering if the following
-covers ALL built-in chains?
-iptables -P INPUT   DROP
-iptables -P OUTPUT  DROP
-iptables -P FORWARD DROP
+On Friday 01 November 2002 03:58 am, Antony Stone wrote:
+> On Friday 01 November 2002 6:08 am, Joel Newkirk wrote:
+> > Question to list:  At what point in its own travels does the returnin=
+g
+> > packet get automatically un-DNATed?  Prerouting again?
+>
+> No, it happens in POSTROUTING - because it is then a SNAT operation.
+>
+> Useful rule of thumb - in the FORWARD chain, all packets have their "re=
+al"
+> IP addresses.
+>
+> That's because DNAT rules have already happened in PREROUTING, so packe=
+ts
+> now have the destination address of the machine they're really being se=
+nt
+> on to, and SNAT rules have not yet happened in POSTROUTING, so packets
+> still have the source address of the machine they really came in from.
 
-Ziegler's book states that it should be this (it was never put in these
-words but this is what I am gathering from my reading):
-iptables -t nat    -P PREROUTING  DROP
-iptables -t nat    -P OUTPUT      DROP
-iptables -t nat    -P POSTROUTING DROP
-iptables -t mangle -P PREROUTING  DROP
-iptables -t mangle -P OUTPUT      DROP
-iptables -t filter -P INPUT       DROP
-iptables -t filter -P OUTPUT      DROP
-iptables -t filter -P FORWARD     DROP
+Is there any chance then of interference from a masquerade rule in postro=
+uting?
+Or do the automatic reversals take precedence?
 
-The last seems to be the most thorough but i cant find anywhere that covers
-this in detail.
-Are these all of the built-in chains?
-
-
-Robert Wideman
-
+j
 
