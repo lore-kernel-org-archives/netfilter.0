@@ -1,15 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Authentication in a Firewall Question
-Date: Wed, 25 Aug 2004 18:50:46 +0200
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: qos tc mark bridge
+Date: Wed, 25 Aug 2004 13:11:29 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093452646.2391.9.camel@anduril.intranet.cartel-securite.net>
-References: <BE7EC6C7A6F0E74AAB1E7E36BF5E9EB72F7D50@colms1.co.corp.verintsys
-	tems.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512DA@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BE7EC6C7A6F0E74AAB1E7E36BF5E9EB72F7D50@colms1.co.corp.verintsys
-	tems.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +16,45 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Hihn, Jason" <Jason.Hihn@verint.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mer 25/08/2004 =E0 18:46, Hihn, Jason a =E9crit :
-> I have devised the following acceptable scheme:
-> A firewall that rejects all traffic to everyone, except for one port.
-> This one port is used to authenticate an IP address through a
-> challenge/response algorithm.
-> If successful, the IP is then allowed through the firewall.
+> I can do both, but not at the same time. My idea was:
+> 1. Sort the traffic by (LAN, Company, WWW)
+> 2. LAN, Company forward without shaping, put no mark on this packets.
+> 3. Sort WWW-traffic by application into three buckets (chains...)
+> 3.1 SSH, SSL connections to bucket 1, mark this packets with 1.
+> 3.2 HTTP, SMTP, FTP connections to bucket 2, mark this packets with 2
+> 3.3 the rest to bucket 3, mark this packtets with 3.
 
-Si NuFW at http://www.nufw.org/. Theses guys have achieved quite
-impressive work. You definitly must try this.
+i *think* this was the part of your message that contained your actual =
+question.  you're correct that "-j MARK" only works in MANGLE, and =
+MANGLE doesn't allow jumping to custom chains; however, i don't see how =
+what you want to do is impossible:
 
+# don't mark packets from the LAN
+iptables -t mangle -A PREROUTING -i $INT_IF -s $LAN -j ACCEPT
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+# SSH, SSL get mark 1
+iptables -t mangle -A PREROUTING -i $INT_IF -p tcp --dport 22 -j MARK =
+--set-mark 1
+iptables -t mangle -A PREROUTING -i $INT_IF -p tcp --dport 443 -j MARK =
+--set-mark 1
+
+# HTTP, SMTP, FTP get mark 2
+iptables -t mangle -A PREROUTING -i $INT_IF -p tcp --dport 80 -j MARK =
+--set-mark 2
+iptables -t mangle -A PREROUTING -i $INT_IF -p tcp --dport 25 -j MARK =
+--set-mark 2
+iptables -t mangle -A PREROUTING -i $INT_IF -p tcp --dport 21 -j MARK =
+--set-mark 2
+
+# anything else gets mark 3
+iptables -t mangle -A PREROUTING -i $INT_IF -j MARK --set-mark 3
+
+i venture to guess that i'm completely missing your point, as this =
+doesn't seem that complicated.  maybe you need to re-phrase what your =
+actual question is?
+
+-j
 
