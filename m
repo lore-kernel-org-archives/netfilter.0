@@ -1,15 +1,12 @@
-From: "Rio Martin" <rio@martin.mu>
-Subject: Re: Blocking Streaming Media (Was: Re: (no subject)..)
-Date: Tue, 1 Jun 2004 22:59:02 +0700 (WIT)
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: to snat or to dnat .. that is the question
+Date: Tue, 1 Jun 2004 13:27:19 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3798.202.154.30.27.1086105542.squirrel@webmail.itenas.ac.id>
-References: <200406010943.02317.rio@martin.mu><20040601053750.50670.qmail@web61008.mail.yahoo.com>
-    <20040601085000.3dcaae24@mgalepc.utilitran.com>
-Reply-To: rio@martin.mu
+Message-ID: <147b01c447f5$4f44b900$49caa8c0@caris.priv>
+References: <5D3C2276FD64424297729EB733ED1F76062433BA@email1.mitretek.org> <146b01c447e7$db846180$49caa8c0@caris.priv> <200406011116.55391.Alistair@nerdnet.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040601085000.3dcaae24@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,162 +17,116 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Alistair Tonner <Alistair@nerdnet.ca>, netfilter@lists.netfilter.org
 
-> Squid -- can block this no problem.
-> Michael.
+So ... for every nat I have going from my internal network on a specific
+port, destined to an external IP on a different port I need to have
+something like this ?
+
+  $IPT -t nat -A PREROUTING -d <firewall_ip> --dport 15000 -p tcp -i eth0 \
+       -j DNAT --to-destination <some_internet_ip> --dport 2000
+
+  $IPT -t nat -A POSTROUTING -d <some_internet_ip> --dport 2000  -p tcp -o
+eth0 \
+       -j SNAT --to-source <firewall_ip>
+
+Is there a better way ???  I have about 20 routes to add .....
+
+Thank you for your help.
+
+Peter
+
+
+----- Original Message ----- 
+From: "Alistair Tonner" <Alistair@nerdnet.ca>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, June 01, 2004 12:16 PM
+Subject: Re: to snat or to dnat .. that is the question
+
+
+On June 1, 2004 10:51 am, Peter Marshall wrote:
+> yes, my firewall is the default route on all internal boxes
 >
-
-Only Squid? Any document or howto to read about it?
-Thanks..
-
--Rio.Martin -
-
-
-
-
-> On Mon, 31 May 2004 22:37:50 -0700 (PDT)
-> SBlaze <dagent.geo@yahoo.com> wrote:
->
->>
->> --- Rio Martin <rio@martin.mu> wrote:
->> > On Monday 31 May 2004 18:18, Ivan wrote:
->> > > Hi,
->> > > I am looking for a solution to block streaming media using iptable=
-s.
->> > > I have found that some of my users are listening to radio stations
->> using
->> > > internet, which has pumped up the
->> > > internet bill significantly, and of course put a choke on my
->> internet
->> > > links. Does anyone know of a solution for blocking just the
->> streaming
->> > > media traffic from any web site, while still allowing
->> > > the access to the website it self?
->> > > Thanks,
->> > > Ivan
->> >
->> >
->> > Hiye Ivan,
->> > The problem you faced was users connecting to Internet Radio Station=
-s
->> using
->> > web port (port 80) isnt it ? I give u an example like LaunchCast fro=
-m
->> Yahoo
->> > or other stations using port 80 as their service port.
->> >
->> > This is become a serious problem when bandwidth allocated not so wid=
-e.
->> The
->> > only thing in my mind, try to apply the magic of patch-o-matic STRIN=
-G.
->> > Examine correctly what packets arrived or what kind of streaming
->> packets
->> > sent
->> >
->> > by server. Block using those STRING.
->> >
->> > Regards,
->> > Rio Martin.
->> >
->>
->> STRING matching is at best a primative method of any kind of filtratio=
-n.
->> It
->> has been demonstrated and documented many times here that it's simply
->> not an
->> efficent option. However I do think I might can help with this. First
->> you need
->> to identify what and where the radio stations are coming from. If they
->> are
->> from the new Yahoo LAUNCHcast...stoping them should be fairly
->> easy...with some
->> work.
->>
->> First this is good info to know...
->> http://search1.cc.dcn.yahoo.com/cct_search.php?ui_mode=3Danswer&prior_=
-transaction_id=3D248668163&action_code=3D5&answer_id=3D14755094#__highlig=
-ht
->>
->> It contains info for firewalls and LAUNCHcast.
->>
->> Assuming you are NATing your internal machines.... set up rules to blo=
-ck
->> certain hosts at yahoo.
->>
->> From personal experience I connect to this one
->> re2wmcontent24.bcst.re2.yahoo.com (at least at this time I'm connected
->> to it)
->>
->> By doing some DNS snooping... It apears that there are 43 of these wit=
-h
->> this
->> being the first...
->>
->> hogwarts:~# nslookup -silent re2wmcontent01.bcst.re2.yahoo.com
->> Server:         66.190.172.252
->> Address:        66.190.172.252#53
->>
->> Name:   re2wmcontent01.bcst.re2.yahoo.com
->> Address: 206.190.44.76
->>
->> and this being the last...
->>
->> hogwarts:~# nslookup -silent re2wmcontent43.bcst.re2.yahoo.com
->> Server:         66.190.172.252
->> Address:        66.190.172.252#53
->>
->> Non-authoritative answer:
->> Name:   re2wmcontent43.bcst.re2.yahoo.com
->> Address: 206.190.44.118
->>
->> with 44 returning this...
->>
->> hogwarts:~# nslookup -silent re2wmcontent44.bcst.re2.yahoo.com
->> Server:         66.190.172.252
->> Address:        66.190.172.252#53
->>
->> ** server can't find re2wmcontent44.bcst.re2.yahoo.com: NXDOMAIN
->>
->> So we can reasonably assume that if we block 206.190.44.76 thorugh
->> 206.190.44.118 we could stop the LAUNCHcast broadcasts.... Dealing wit=
-h
->> NAT is
->> a tad tricky though... since we need to stop it before it gets "NATED"=
-.
->>
->>
->> With My setup my eth0 is the "wire" and my eht1 is LAN... so if I drop
->> these
->> on my LAN device(eth1)..theoretically I would stop the broadcast. If I
->> wanted
->> to stop it this would be the approach I would use. I hope it helps....
->> keep me
->> posted if you try it.
->>
->> =3D=3D=3D=3D=3D
->> In the absence of order there will be chaos.
->>
->>
->>
->>
->> __________________________________
->> Do you Yahoo!?
->> Friends.  Fun.  Try the all-new Yahoo! Messenger.
->> http://messenger.yahoo.com/
->>
->>
->>
->>
->>
+> ----- Original Message -----
+> From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+> To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
+> <netfilter@lists.netfilter.org>
+> Sent: Tuesday, June 01, 2004 11:42 AM
+> Subject: RE: to snat or to dnat .. that is the question
 >
 >
-> --
-> Michael Gale
-> Network Administrator
-> Utilitran Corporation
+> If the box 192.168.0.20 does not have the firewall's IP as its default
+> route, then it will not work correctly (DNAT), I am not sure about SNAT.
 >
 >
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peter Marshall
+> Sent: Tuesday, June 01, 2004 10:30 AM
+> To: netfilter
+> Subject: to snat or to dnat .. that is the question
+>
+> Hi again.
+>
+> I am at a bit of a quandary, and am not sure what to do.
+>
+> Let the external interface on my firewall be 100.100.100.100
+> I have an internal box; 192.168.0.20 that needs to connect to an
+> external
+> box 200.200.200.200 on port 2000.
+>
+> I want the internal box to connect to hit my firewall on a different
+> port ..
+> say 15000
+>
+> so basically
+>
+> start: .... -s 192.168.0.20 -d 200.200.200.200 --dport 15000
+> after firewall -s 100.100.100.100 -d 200.200.200.200 --dport 2000
+>
+> How can I do this ?
+>
+> I started out with:
+>
+> $IPT -t nat -A POSTROUTING -d 200.200.200.200 --dport 15000 -p tcp -i
+> eth0 \
+>        -j SNAT --to-source 100.100.100.100
+>
+> But this does not change the destination port (obviously). I thought
+> about
+> doing the following
+>
+> $IPT -t nat -A PREROUTING -d 100.100.100.100 --dport 15000 -p tcp -i
+> eth0 \
+>          -j DNAT --to-destination 200.200.200.200 --dport 2000
+
+> However, I don't think that this will change my source address.  Also,
+> will
+> this even forwarded the packets ?  They would be coming on the input
+> chain
+> would they not ?
+
+Since you've done this in PREROUTING no, they wont hit the INPUT chain.
+This is where to start.
+>
+>
+
+You need then to have a FORWARD rule to allow the packets, and
+ESTABLISHED,RELATED, and then in POSTROUTING add a rule to SNAT those
+packets
+destined to 200.200.200.200:2000 ( you could, if need be, add the source to
+the rule as well)
+> Thank you for the help.
+> Peter Marshall
+>
+>
+> Peter Marshall, BCS
+> Network Administrator, CARIS
+> 115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+
+
+Alistair Tonner
+-- from slightly west of there, on the last lake
+T.O.
 
 
