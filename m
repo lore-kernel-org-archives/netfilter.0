@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: How to Uninstall iptables?
-Date: Fri, 12 Sep 2003 11:40:11 +0200
+From: Payal Rathod <payal-iptables@staticky.com>
+Subject: Re: FORWARD rules
+Date: Fri, 12 Sep 2003 15:39:57 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063359611.889.21.camel@elendil.intranet.cartel-securite.net>
-References: <20030912090600.50450.qmail@web20701.mail.yahoo.com>
+Message-ID: <20030912100957.GA3360@linux.local>
+References: <20030910175253.GA2752@linux.local> <1063260568.26703.1.camel@risingsun.penguindia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030912090600.50450.qmail@web20701.mail.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <1063260568.26703.1.camel@risingsun.penguindia.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: ads nat <adsnat@yahoo.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Vishwanatn T. K." <tkvishy@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-Le ven 12/09/2003 =E0 11:06, ads nat a =E9crit :
-> I want to uninstall existing iptables 1.2.6a and install 1.2.8 fresh.
-> Guide me how to uninstall iptables 1.2.6a.
+On Thu, Sep 11, 2003 at 06:09:29AM +0000, Vishwanatn T. K. wrote:
+> > $IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 110 -j ACCEPT
+> > $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > 
+> > What more do I add to allow natting as well as a secure FORWARD policy?
+> > Is the position of ESTABLISHED rule ok?
+> > 
+> 
+> You need to add NEW state in the above FORWARD rule for this to work.
+> 
+> $IPTABLES -A FORWARD -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
-It depends on how you installed iptables 1.2.6a.
+Just confirming this from all. Please check whether this is ok.
 
-If you installed it from your distribution package, then you have to use
-the package mangement tool to remove the iptables package :
 
-	apt-get remove iptables (Debian)
-	rpm -e iptables (Red Hat)
-	etc.
+$IPTABLES -I PREROUTING -t nat -p tcp -d 202.x.x.x -j DNAT --to 125.125.125.2
 
-Hence, you can keep this package if dependencies want it. As an example,
-on Debian distros, a packet filter is required, ipchains or iptables.
-You can still install iptables 1.2.8 from source in /usr/local then set
-your PATH such as /usr/local/sbin is searched before /sbin. Finally, you
-can upgrade this package to the latest version :
+$IPTABLES -A INPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p udp -m tcp --dport 53 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 80 -j ACCEPT
+$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 110 -j ACCEPT
 
-	apt-get install iptables (Debian)
+echo "1" > /proc/sys/net/ipv4/ip_forward
 
-If you installed iptables from source, then a new iptables installation
-from sources will overwrite the old one. However, files should be :
+$IPTABLES -P FORWARD ACCEPT
+		     ^^^^^^
+$IPTABLES -A INPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
-	in /usr/local/sbin for binaries (iptables*, ip6tables*)
-	in /usr/local/lib/iptables for extensions
-	in /usr/local/man/man8 for manpages (iptables*.8, ipt6tables*.8)
+Can I now change the ACCEPT statement to DROP without any fear?
+Thanks a lot in advance and bye.
+With warm regards,
+-Payal
 
-Just delete all of them, if you want to be sure.
 
-Afaik, there's also a "make uninstall" available.
-
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+-- 
+"Visit GNU/Linux Success Stories"
+http://payal.staticky.com
+Guest-Book Section Updated.
 
