@@ -1,12 +1,11 @@
-From: "emiliano" <emiliano@amc.com.ar>
-Subject: question
-Date: Thu, 25 Sep 2003 11:04:24 -0300
+From: "Venkatesh. K" <venkatesh@cbayscribe.com>
+Subject: Generate a unified patch for source RPM
+Date: Thu, 25 Sep 2003 21:42:48 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c3836d$ed89f0a0$191d29c8@soporte>
-Reply-To: emiliano@amc.com.ar
+Message-ID: <003a01c3837f$e482d2d0$2800a8c0@karu>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C38354.C83E3F40"
+	boundary="----=_NextPart_000_0037_01C383AD.F652D3B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -21,153 +20,42 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C38354.C83E3F40
+------=_NextPart_000_0037_01C383AD.F652D3B0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hi, could you give me some help about the question below?
+Hi,
 
-=20
+I want to patch the RedHat Kernel RPM.
 
-I have  a Total Control with a private pool of IPs. I=92m using IPTables =
-with
-NAT and HT23 modules. My trouble is that while I get a perfect video =
-stream,
-I=92m unable to transmitt/receive audio (through the instant Messenger =
-from
-Microsoft, MSN Messenger ).=20
+How do I generate a single patch file from patch-o-matic which can be =
+applied to an src.rpm ?
 
-=20
-
-Some sugesti=F3n about? I really will be greateful with you if you can =
-give me
-some idea =85
-
-=20
-
-Thanks!!=20
-
-=20
-
-Best regards
-
-=20
-
-Emiliano Barbat
-
-Argentina
-
-
-------=_NextPart_000_0001_01C38354.C83E3F40
+Venkatesh K
+------=_NextPart_000_0037_01C383AD.F652D3B0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<html>
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>Hi,</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>I want to patch the RedHat Kernel RPM.</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>How do I generate a single patch file from =
+patch-o-matic which=20
+can be applied to an src.rpm ?</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>Venkatesh K</FONT></DIV></BODY></HTML>
 
-
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EstiloCorreo17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:70.85pt 3.0cm 70.85pt 3.0cm;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DES link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hi, could you give me some help about the question =
-below?</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I have=A0 a Total Control with a private pool of IPs. =
-I&#8217;m
-using IPTables with NAT and HT23 modules. My trouble is that while I get =
-a perfect
-video stream, I&#8217;m unable to transmitt/receive audio (through the =
-instant Messenger
-from Microsoft, MSN Messenger ). </span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Some sugesti=F3n about? I really will be greateful =
-with you if
-you can give me some idea &#8230;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks!! </span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Best regards</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Emiliano Barbat</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Argentina</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0001_01C38354.C83E3F40--
-
+------=_NextPart_000_0037_01C383AD.F652D3B0--
 
 
