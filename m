@@ -1,11 +1,10 @@
-From: "dizma" <nick@riskeng.bg>
-Subject: Re: Strange problem with iptables IP Masq
-Date: Mon, 16 Sep 2002 14:25:11 +0300
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: adding counters
+Date: Mon, 16 Sep 2002 14:49:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007e01c25d73$b8cb0410$37d2a8c0@nikodimov>
-References: <002001c25dc4$69549800$6400a8c0@hammer1>
+Message-ID: <200209161449.58221.roy@karlsbakk.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,36 +16,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-I think that the problem should be in the DNS resolving not in the iptables
-rules.
+hi
 
-NN
+I've created a new table with the following lines, and inserted a -j coun=
+ters=20
+on top of INPUT. Wouldn't this allow me to count packets per port? All I =
+get=20
+is the -j counters line increasing it's byte count, but none of the below=
+=20
+does...
 
------ Original Message -----
-From: "Lior Hammer" <lior@typo.co.il>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, September 17, 2002 12:02 AM
-Subject: Strange problem with iptables IP Masq
+roy
 
+Chain counters (1 references)
+target     prot opt source               destination
+RETURN     tcp  --  anywhere             anywhere           tcp dpt:pop3s
+RETURN     tcp  --  anywhere             anywhere           tcp dpt:ircs
+RETURN     tcp  --  anywhere             anywhere           tcp dpt:https
+RETURN     tcp  --  anywhere             anywhere           tcp dpt:imap
+RETURN     tcp  --  anywhere             anywhere           tcp dpt:pop3
+RETURN     tcp  --  anywhere             anywhere           tcp dpt:http
+RETURN     tcp  --  anywhere             anywhere           tcp dpt:smtp
 
-> Hello,
-> I'm using the IP Masq script from the IP masq howto from TLDP.
-> The connection sharing is fine except for one thing:
-> in some of the sites (for example: http://httpd.apache.org or DynDNS.org
-> members area) my browser keep's searching and searching without any result
-> (or other response) or it just print few lines and that's it.
-> I thought it's a problem with my browser, so i tryed to get the page
-> directly with telnet.
-> i got the HTTP Headers, and the first lines, and that's it, it didn't
-> disconnect or somthing, just waited.
-> Everything is ok when i'm trying to get this page directrly with lynx from
-> the computer that shares the conection.
->
-> Thank you very much for your help,
-> Lior.
->
->
+and=20
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
+
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
