@@ -1,12 +1,12 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Routing Public IPs over NAT Address Space
-Date: Mon, 14 Jul 2003 17:23:48 -0700
+From: "Ilo" <sneak@gmsg.co.za>
+Subject: Portfowarding not working while SNATing,
+Date: Tue, 15 Jul 2003 08:33:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DF2@alderaan.smgtec.com>
+Message-ID: <006501c34a9a$efc8d040$4c00000a@sneak>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0062_01C34AAB.B34A7450"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +16,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "A. Clausen" <techlists@alberni.net>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0062_01C34AAB.B34A7450
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+If have the following set for some port forwarding that I need done, =
+which works well...
+
+/sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 -d 196.11.11.11 =
+--dport 80 -j DNAT --to 10.0.0.2:80
+/sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 -d 196.11.11.11 =
+--dport 389 -j DNAT --to 10.0.0.2:389
+
+then once I set the following for SNAT so my local machines can get =
+internet access my port forwarding=20
+stops working.
+
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 196.11.11.11
 
 
->However, we've had some inquiries about a few businesses who want
-actual
->subnets (for mail servers, web servers, or whatever).  The problem with
-NAT
->is that I can't guarantee there will be a helper for every protocol.
-What I
->was wondering was whether I could allocate a subnet and get it across
-the
->private (NAT) network to their router.  I have my doubts as to whether
-this
->is possible, but not being an expert I thought I'd ask.
+Is there something im not doing right? can someone point me in the right =
+direction.
 
+tx.
 
-1. Add the ip address block to the internet interface, and make sure
-that the internet routes to your firewall/gateway for those IP's in the
-netblock given to your customer.
+------=_NextPart_000_0062_01C34AAB.B34A7450
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-2. Add a route that allows the firewall to find your customer's network.
-This can look something like:
-route add <business_net> mask <business_msk> <gw to business customer>
--i <iface to business customer>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>If have the following set for some port =
+forwarding=20
+that I need done, which works well...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><EM>/sbin/iptables -t nat -A PREROUTING =
+-p tcp -i=20
+eth0 -d 196.11.11.11 --dport 80 -j DNAT --to =
+10.0.0.2:80<BR>/sbin/iptables -t=20
+nat -A PREROUTING -p tcp -i eth0 -d 196.11.11.11 --dport 389 -j DNAT =
+--to=20
+10.0.0.2:389</EM><BR></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>then once I set the following for SNAT =
+so my local=20
+machines can get internet access my port forwarding </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>stops working.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2><EM>/sbin/iptables -t nat -A =
+POSTROUTING -o eth0 -j=20
+SNAT --to 196.11.11.11</EM></FONT></DIV>
+<DIV><EM></EM>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Is there something im not doing right? can someone point me in the =
+right=20
+direction.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>tx.</DIV></DIV></FONT></FONT></DIV></BODY></HTML>
 
-3. Add passthrough-non-nat rules to allow the traffic through to the
-customer's machines with no NAT enabled. This could look like:
-
-iptables -A FORWARD --source 0.0.0.0/0
---destination <business_net>/<business_msk> -j ACCEPT
-
-iptables -A FORWARD --source <business_net>/<business_msk>
---destination 0.0.0.0/0 -j ACCEPT
-
-4. Their subnet has to have this firewall as their default router or the
-system will break
-
-5. This limited set of rules gives no protection for your customers. Any
-filtering is turned off. If you would like that type of service, then
-just change the -j ACCEPT to -j INETTOBUSINESSABC or something then
-write a filter list in the INETTOBUSINESSABC chain. It is very easy to
-keep track of everything this way.
-
-6. Just make sure that the net/mask is just assigned to your customer.
-Otherwise, the system could bleed into existing systems.
-
-7. This system forces you to give the public IP addresses to your
-customer. You may or may not like this. It is probably the easiest way
-for you though. If you give them private IP's, you are pretty much
-enslaved with the NAT/Helper mentality, which I can imagine would bring
-much of the hurt you have considered.
-
-
-PS: I don't think this is a normal iptables function. Yeah, some people
-ask newbie questions, but since this IS the frontline iptables group, we
-should be the ones taking this on the chin. If there was an ipt-newbs
-mailing list then maybe you should put them in their place (that ml),
-but since there ARE many people that ask redundant questions please just
-live with it, or better, politely send a form letter response of common
-howtos and FAQ's.
-
+------=_NextPart_000_0062_01C34AAB.B34A7450--
 
 
