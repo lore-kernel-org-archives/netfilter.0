@@ -1,10 +1,9 @@
-From: "Dharmendra T." <dharmu@nsecure.net>
-Subject: (no subject)
-Date: 23 Jun 2004 10:29:41 +0530
+From: Gavin Hill <gavin@beerygaz.com>
+Subject: iptables & TFTP
+Date: Wed, 23 Jun 2004 08:44:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087966805.2320.14.camel@dharmu.nsecure.net>
+Message-ID: <6.1.0.6.2.20040623084404.021d9a00@lucy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,68 +14,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: manikandan@manikandan.org
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+I'm trying to get a device to TFTP to a server through my iptables firewall 
+configured to perform NAT masquerading.
 
+The firewall itself can TFTP without a problem, but any of the machines on 
+the inside cannot.
 
-Hi Mani,
- 
- Hope some Messaging and Conferencing tool is running! You have to check
-on your machine is there anything running on that port, It is very
-dangerous if some process opening a port and you are unaware of it.
+After much reading I see that there was a POM patch available to fix a TFTP 
+issues in iptables 
+(http://www.stearns.org/pomlist/20030101-output/pom-oldnat.html#tftp)  I've 
+read as much documentation as I can on POM and its use, but the latest POM 
+patches I downloaded don't seem to have anything on the TFTP patch 
+(patch-o-matic-20031219.tar.bz2).  Can you help shed some light on my 
+problem please?  I'm pretty new to iptables, so please be gentle.
 
- Make sure everything in your system is ok.
+Fedora Core 2 2.6.6-1.435 on Intel hardware
+iptables-1.2.9-2.3.1
 
-        I did not see any error in ifconfig.
-
-
-Regards
-Dharmendra T.
-
-
-On Mon, 2004-06-21 at 11:58, Manikandan wrote:
-> Hi friends,
-> 
->         I am running RedHat linux 9 with iptables 1.2.7a. This box
-acts as a
-> gateway/firewall for my network. I am seeing lots of packets getting
-dropped
-> as well as ifconfig reports error.
-> 
-> [root@javagreen RPMS]# tail /var/log/messages/
-> 
-> Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
-> MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
-> DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=17638
-PROTO=ICMP
-> TYPE=8 CODE=0 ID=20225 SEQ=61833
-> Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
-> MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=64.0.96.12
-> DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=45 ID=17638
-PROTO=ICMP
-> TYPE=8 CODE=0 ID=20225 SEQ=61833
-> Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
-> MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
-> DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF
-PROTO=ICMP
-> TYPE=8 CODE=0 ID=52234 SEQ=19095
-> Jun 21 11:50:50 javagreen kernel: IN=eth0 OUT=
-> MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=210.224.186.4
-> DST=202.138.202.218 LEN=84 TOS=0x00 PREC=0x00 TTL=42 ID=0 DF
-PROTO=ICMP
-> TYPE=8 CODE=0 ID=52234 SEQ=19095
-> Jun 21 11:50:54 javagreen named[3251]: client 1
--- 
-Dharmendra T.
-Linux Security and Admin,
-www.nsecure.net
-
-This message is intended for the addressee only. It may contain
-privileged or confidential information. If you have received
- this message in error, please notify the sender and destroy the message
-immediately. Unauthorised use or reproduction of 
-this message is strictly prohibited.
+Thanks,
+Gavin 
 
 
