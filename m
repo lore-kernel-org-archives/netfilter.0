@@ -1,15 +1,14 @@
 From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: tracking usage by mac address
-Date: 31 Aug 2004 21:52:27 +0200
+Subject: Re: Hogwash Vs snort-inline Vs Iptables
+Date: 31 Aug 2004 21:52:23 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093975734.10779.57.camel@nostromo.bgsecm.com>
-References: <41329413.3080407@shaw.ca>
-	<1093887545.23659.47.camel@nostromo.bgsecm.com>
-	<3063e504083013374bd2a909@mail.gmail.com>  <4133C792.9050909@shaw.ca>
+Message-ID: <1093974928.9232.47.camel@nostromo.bgsecm.com>
+References: <a05ad87504083106581832c864@mail.gmail.com>
+	<1093961312.2281.105.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4133C792.9050909@shaw.ca>
+In-Reply-To: <1093961312.2281.105.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,46 +19,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: Henry Baxter <henrybaxter@shaw.ca>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>, Murugavel Thiruvengadam <tmurugavel@gmail.com>
 
-El mar, 31 de 08 de 2004 a las 02:34, Henry Baxter escribió:
-> Thank you Jose, I'm going to go with parsing the log with C code which I 
-> wouldn't mind writing - but if you could point me to your source, that 
-> would be very helpful. From the sounds of your setup George it should 
-> work great for us here (a tenth of your bandwidth usage!).
+El mar, 31 de 08 de 2004 a las 16:08, Cedric Blancher escribió:
+> Le mar 31/08/2004 à 15:58, Murugavel Thiruvengadam a écrit :
+> > Iptables will work in kernel level . What about the others. 
 > 
-> This mailing list rocks
+> Snort Inline relies on Netfilter as it gets packets using iptables QUEUE
+> target. This means you have total control of traffic being filtered by
+> Netfilter and traffic being filtered by Snort Inline. That's why I do
+> prefer Snort Inline to Hogwash.
+> 
+> Speaking of string match in iptables, forget it. One basic  able thing
+> an IPS/IPS has to implement is fragmentation resistance. String match
+> will not work against TCP fragmentation, as it is a per packet match, so
+> it will not detect an attack payload split on two TCP packets.
 
-You can find the source code at our downloads web page:
+And besides this snort-inline is actively being developed and I have
+read in the snort.org web site that it will be integrated in the
+plain snort, in the other side you have an almost dead project like
+hogwash that it's still alpha code and not being so actively developed.
+Hogwash it's also too heavy at using resources like memory.
 
-http://www.bgsec.com/downloads.html
-
-or at the sourceforge web site:
-
-http://bastionfirewall.sourceforge.net
-
-the module you could use it's named
-bastion-firewall-stats-1.0.src.tar.bz2
-
-But it's you can also look at google for the Querying
-Libiptc HOWTO, that was the document we used to write
-our code. Just have in mind that it has a big bug, because
-it allocates memory when it open the chain to read the
-counters but it doesn't free the memory. If you use the
-code in the examples you must do this after you read the
-counters:
-
-iptc_free(&h);
-
-If you don't do it your program starts to eat memory and
-grows and grows and grows until it uses all the memory in
-the system.
-
-We have sent an email to the author of the Howto, but we have
-not received any response yet. Hope he reads it's mail and
-the new version of the HOWTO adds this code.
-
+First option should be snort-inline. It's my opinion.
 
 -- 
 Jose Maria Lopez Hernandez
