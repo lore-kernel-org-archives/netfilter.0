@@ -1,11 +1,11 @@
-From: "Kent Wang" <kwang@kwang.org>
-Subject: IP forwarding on port 80
-Date: Thu, 12 Jun 2003 02:17:09 -0500
+From: "Bo Jacobsen" <subs@systemhouse.dk>
+Subject: Is content filtering appropriate for netfilter
+Date: Thu, 12 Jun 2003 11:07:52 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000301c330b2$a68c7280$0300a8c0@eclipse>
+Message-ID: <002001c330c2$1becd380$6307a8c0@net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0004_01C33088.BDB66A80"
+	boundary="----=_NextPart_000_001D_01C330D2.DDFCBF20"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,320 +20,42 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0004_01C33088.BDB66A80
+------=_NextPart_000_001D_01C330D2.DDFCBF20
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-Firewall, called dscp, has these iptables settings:
- 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     tcp  --  localhost.localdomain  anywhere
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-ACCEPT     icmp --  anywhere             anywhere
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:sftp
-DROP       all  --  anywhere             anywhere
- 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
- 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
- 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       tcp  --  anywhere             dscp.nur.utexas.edutcp dpt:http
-to:192.168.0.2
- 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
- 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
- 
-HTTP server has these settings:
- 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     tcp  --  localhost.localdomain  anywhere
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-ACCEPT     icmp --  anywhere             anywhere
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:sftp
-DROP       all  --  anywhere             anywhere
- 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
- 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
- 
-Firewall connects to the world via eth1 and to the HTTP server on eth0.
-HTTP
-server connects to the firewall on eth0 and to another machine on eth1.
- 
-I can access the HTTP server from the firewall just fine but not from
-the
-Internet (times out). Any clues?
-
- 
-
-
-------=_NextPart_000_0004_01C33088.BDB66A80
-Content-Type: text/html;
-	charset="us-ascii"
+	charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
-<html>
+I wonder if content filtering is appropriate for iptable. If so, is =
+anybody aware of
+any links to discussion forums etc. about this topic.
 
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
+=20
+Bo Jacobsen
 
 
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+------=_NextPart_000_001D_01C330D2.DDFCBF20
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-pre
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Courier New";}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dwindows-1252">
+<META content=3D"MSHTML 6.00.2715.400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>I wonder if content filtering is appropriate for =
+iptable. If=20
+so, is anybody aware of</FONT></DIV>
+<DIV><FONT size=3D2>any links to discussion forums etc. about this=20
+topic.</FONT></DIV><FONT size=3D2>
+<DIV><BR>&nbsp;</DIV>
+<DIV>Bo Jacobsen</DIV>
+<DIV></FONT>&nbsp;</DIV></BODY></HTML>
 
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1><pre><font size=3D2 face=3D"Courier New"><span
-style=3D'font-size:10.0pt'>Firewall, called dscp, has these iptables =
-settings:</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-INPUT (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; =
---&nbsp; localhost.localdomain&nbsp; =
-anywhere</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
---&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-state</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>RELATED,ESTABLISHED</span></font></pre><pre><f=
-ont
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; icmp --&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; anywhere</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; =
---&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp =
-dpt:http</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; =
---&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp =
-dpt:ssh</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; =
---&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp =
-dpt:sftp</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-all&nbsp; --&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; anywhere</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-FORWARD (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-OUTPUT (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-PREROUTING (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>DNAT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-tcp&nbsp; --&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; dscp.nur.utexas.edutcp dpt:http</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>to:192.168.0.2</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-POSTROUTING (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-OUTPUT (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>HTTP =
-server has these settings:</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-INPUT (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; =
---&nbsp; localhost.localdomain&nbsp; =
-anywhere</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; all&nbsp; =
---&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-state</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>RELATED,ESTABLISHED</span></font></pre><pre><f=
-ont
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; icmp --&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; anywhere</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; =
---&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp =
-dpt:http</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; =
---&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; anywhere&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tcp =
-dpt:ssh</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; =
---&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp =
-dpt:sftp</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>DROP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-all&nbsp; --&nbsp; =
-anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp; anywhere</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-FORWARD (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Chain =
-OUTPUT (policy ACCEPT)</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
-source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; destination</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Firewall =
-connects to the world via eth1 and to the HTTP server on eth0. =
-HTTP</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>server =
-connects to the firewall on eth0 and to another machine on =
-eth1.</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt'>&nbsp;</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>I can =
-access the HTTP server from the firewall just fine but not from =
-the</span></font></pre><pre><font
-size=3D2 face=3D"Courier New"><span style=3D'font-size:10.0pt'>Internet =
-(times out). Any clues?</span></font></pre>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0004_01C33088.BDB66A80--
+------=_NextPart_000_001D_01C330D2.DDFCBF20--
 
 
 
