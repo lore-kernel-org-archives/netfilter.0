@@ -1,13 +1,12 @@
-From: Andrea Rossato <mailing_list@istitutocolli.org>
-Subject: Re: QoS using HTB and SFQ ...
-Date: Thu, 12 Dec 2002 11:58:37 +0100
+From: netfilter <netfilter@end.yorks.com>
+Subject: service meter port
+Date: Thu, 12 Dec 2002 09:11:33 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DF86BDD.2090505@istitutocolli.org>
-References: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za>
+Message-ID: <002901c2a1be$776fd0b0$e6353fc1@nexor.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+              boundary="----=_NextPart_000_0026_01C2A1BE.77405C40"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1039684623.4085.47.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +16,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-you need a patch for iproute2/tc or a patched tc binary, both 
-distributed with htb3.
+This is a multi-part message in MIME format.
 
-here you'll find patch or binary:
-http://luxik.cdi.cz/~devik/qos/htb/v3/htb3.6-020525.tgz
+------=_NextPart_000_0026_01C2A1BE.77405C40
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-my experience with htb is very positive: i'm shaping a poor adsl 
-connection (128/256). with heavy loads (220kbit download with a 120kbit 
-upload) latency dropped from 3000ms to 300ms!
+Hi,
 
-andrea
+I've noticed a few attempted connections to port 2603 (servicemeter), =
+what is this port for and what does it do ?
 
-Raymond Leach wrote:
-> Hi
-> 
-> Does anyone have any experience (good or bad) with using htb and sfq to
-> do QoS using 2.4.20 kernels?
-> 
-> I compiled the kernel, installed the image, but tc tells me that htb is
-> an unknown qdisc. I checked that I did select htb in the QoS section.
-> 
-> Any ideas?
-> 
-> Ray
+Thanks
+
+Wasim
+
+
+------=_NextPart_000_0026_01C2A1BE.77405C40
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I've noticed a few attempted =
+connections to port=20
+2603 (servicemeter), what is this port for and what does it do =
+?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Wasim</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0026_01C2A1BE.77405C40--
 
 
