@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: problem with ip tables help required
-Date: Sat, 8 Feb 2003 11:38:08 -0500
+From: "Franck ZOCCOLO" <franck@zoccolo.com>
+Subject: RE : Some webpages inaccessible through IPTables
+Date: Sat, 8 Feb 2003 16:58:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302081138.08120.netfilter@newkirk.us>
-References: <OF56582234.0D18279E-ON65256CC6.00202B97-65256CC6.00203F99@diamond.philips.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <001401c2cf8a$fb5bf760$fd42a8c0@zoccolo.com>
+References: <20030208153456.424A223F1C@www.fastmail.fm>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OF56582234.0D18279E-ON65256CC6.00202B97-65256CC6.00203F99@diamond.philips.com>
+In-Reply-To: <20030208153456.424A223F1C@www.fastmail.fm>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +17,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: purushotham.krishnappa@philips.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Friday 07 February 2003 12:56 am, purushotham.krishnappa@philips.com=20
-wrote:
-> Hi
->
->
-> The requirement is like this
->
->
->               WebServer-------------------- -
-> ----Router/Firewall---------------------------------------client
-> 10.60.90.7/8            eth1                  eth0                   =20
->                     192.168.10.15 10.60.90.5/8               =20
-> 192.168.10.5/24
+> -----Message d'origine-----
+> De : netfilter-admin@lists.netfilter.org=20
+> [mailto:netfilter-admin@lists.netfilter.org] De la part de Sven Bolt
+> Envoy=E9 : samedi 8 f=E9vrier 2003 16:35
+> =C0 : Kevin McConnell; netfilter@lists.netfilter.org
+> Objet : Re: Some webpages inaccessible through IPTables
+>=20
+>=20
+> No ECN is not enabled in the kernel. The sites are accessible from the
+> gateway itself so it's not an MTU issue. What else could it be?
+You're wrong... THIS is an MTU issue... I bet you're using PPPoE to
+connect to the internet. This problem should be handled by MTU path
+discovery, but some stupid network administrators are blocking all ICMP
+packets, and MTU path discovery uses ICMP to do its job.
 
-> i am not able to connect to webserver from 192.168.10.5  to 10.60.90.7
->    BUT i can ping 10.60.90.5 I need clients to connect from
-> 192.168.10.0/24  to able to connect to only port 80 on 10.161.90.7.8
-
-> # (4) FORWARD chain rules
-> # Accept the packets we want to forward
-> iptables -A FORWARD -i eth1 -j ACCEPT
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-Unless I read your situation wrong, the connections from 192.168.10.x=20
-will be coming in eth0, not eth1.  These rules allow any traffic from=20
-10.60.x.y coming in eth1 through, and any EST/REL traffic through either=20
-way  You also need:
-
-iptables -A FORWARD -i eth0 -p tcp --dport 80 -d 10.60.90.5 -j ACCEPT
-
-to allow the DNATted connections through.
-
-j
+Try lowering the MTU of your client hosts to 1492, and you'll be able to
+browse the sites you cannot access for now.
 
 
