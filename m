@@ -1,13 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: connection and bandwidth monitoring program
-Date: Sat, 2 Aug 2003 15:02:47 +1000
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: Netfilter - High Availability/Redundancy
+Date: 02 Aug 2003 12:44:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FDEMKKNJDLAJDPNDPCDDKEDGNFAA.georgev@citadelcomputer.com.au>
-References: <5.2.0.9.0.20030801215222.02d60e30@198.52.32.246>
+Message-ID: <1059821084.962.1.camel@elendil.intranet.cartel-securite.net>
+References: <200308011504.h71F4KjX032096@discmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.2.0.9.0.20030801215222.02d60e30@198.52.32.246>
+In-Reply-To: <200308011504.h71F4KjX032096@discmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Aldo S. Lagana" <alagana@discmail.com>
+Cc: 'Jason Yap' <jason@baycom.com.my>, netfilter@lists.netfilter.org
 
-I use MRTG though it's not realtime but at least I can map rules to graphs.
-I record everything to MySQL incase of reboots etc which lose the byte
-counts on rules so it gets rid of that problem..
+Le ven 01/08/2003 =E0 17:02, Aldo S. Lagana a =E9crit :
+> Stateful connection tracking is the one part that is not HA ready...som=
+e
+> have built and attempted to have HA Netfilter, you may want to google o=
+r
+> search through archives...
 
-realtime would have to be ntop or packet sniffing use ethereal or something.
+Can have a look at LVS failover modules for redirector.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Tomasz Korycki
-Sent: Saturday, August 02, 2003 11:53 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: connection and bandwidth monitoring program
+	http://www.linuxvirtualserver.org/
 
-
-At 05:45 2003-08-01, you wrote:
->Hello,
->I looking for a connection and bandwidth monitoring program. I found one at
->http://www.student.lu.se/~nbi98oli/connmon.html but there are no new
->developements. It isn't possible for each nat computer to see the total
->in/out curent traffic.
->I would like to find a client-server program, with a win32 or java or
-applet
->client.
->does someone know an alternative?
->sincerly yours
->Olivier
-
-Maybe try ntop (ntop.org)? It does a lot of other things, but that too.
-
-
-
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
