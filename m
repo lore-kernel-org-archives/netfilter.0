@@ -1,13 +1,13 @@
-From: "Udo A. Steinberg" <us15@os.inf.tu-dresden.de>
-Subject: ipt_hook: happy cracking with 2.6.0-test9-bk7
-Date: Wed, 5 Nov 2003 08:30:15 +0100
+From: "Patrick Ahler" <pmahler@vikus.com>
+Subject: Masquerading with optional external ip
+Date: Wed, 5 Nov 2003 16:25:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031105083015.57e2dff1.us15@os.inf.tu-dresden.de>
+Message-ID: <810BC538117E9F4E9BB152E0C100DF1F061713@farmer.vikus.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="pgp-sha1";
- boundary="Signature=_Wed__5_Nov_2003_08_30_15_+0100_jm7GW6ITz6c/j5Tw"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3A3E3.57FCADA3"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,94 +19,186 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
---Signature=_Wed__5_Nov_2003_08_30_15_+0100_jm7GW6ITz6c/j5Tw
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C3A3E3.57FCADA3
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+I currently have a working masquerade rule for my firewall :=20
+=20
+iptables -t nat -A POSTROUTING -s 192.168.1.192/25 -o eth1 -j MASQUERADE
+=20
+Any IP in the 192.168.1.192/25 range masquerades as the firewall's
+external IP (a.b.c.d). I would like to specify that it runs on another
+ip (a.b.c.x), is this possible? If so how must I change my current rule?
+=20
+Thanks,
+Patrick Ahler
+Systems Administrator
+Vikus Corporation
+
+------_=_NextPart_001_01C3A3E3.57FCADA3
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
 
 
-[ please CC: me on replies because I'm not subscribed to the netfilter list ]
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C3A3B9.6EE8BE90">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:EnvelopeVis/>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
 
-Hi,
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:.5in'>
 
-I'm currently running Linux-2.6.0-test9-bk7 compiled with gcc-3.3.2.
-After upgrading from -test9 to -test9-bk7 I'm getting a lot of
+<div class=3DSection1>
 
-ipt_hook: happy cracking.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I currently have a working masquerade rule for my =
+<span
+class=3DGramE>firewall :</span> <o:p></o:p></span></font></p>
 
-messages. Google search revealed that this indicates broken packets being
-sent out from the machine - and this is indeed so.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-The problem goes away, if I remove all my firewall rules, which looks to me
-as if netfilter's --reject-with is the culprit.
-Below is my netfilter configuration (not wrapped for readability reasons).
+<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
+size=3D2
+face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></span=
+></span><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'> -t <span
+class=3DSpellE>nat</span> -A POSTROUTING -s 192.168.1.192/25 -o eth1 -j
+MASQUERADE<o:p></o:p></span></font></p>
 
-Can anyone comment on what might be going wrong here?
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
--Udo.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Any IP in the 192.168.1.192/25 range masquerades as =
+the
+firewall&#8217;s external IP (<span class=3DSpellE>a.b.c.d</span>). I =
+would like
+to specify that it runs on another <span class=3DSpellE>ip</span> (<span
+class=3DSpellE>a.b.c.x</span>), is this possible? If so how must I =
+change my
+current rule?<o:p></o:p></span></font></p>
 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-Chain INPUT (policy DROP)
-target     prot opt source               destination         
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          state RELATED,ESTABLISHED 
-TCP        tcp  --  0.0.0.0/0            0.0.0.0/0          
-UDP        udp  --  0.0.0.0/0            0.0.0.0/0          
-ICMP       icmp --  0.0.0.0/0            0.0.0.0/0          
-IGMP       2    --  0.0.0.0/0            0.0.0.0/0          
-IPV6       41   --  0.0.0.0/0            0.0.0.0/0          
-ACCEPT     esp  --  0.0.0.0/0            0.0.0.0/0          
-ACCEPT     ah   --  0.0.0.0/0            0.0.0.0/0          
-LOG        all  --  0.0.0.0/0            0.0.0.0/0          limit: avg 3/min burst 3 LOG flags 0 level 6 prefix `IP Drop: ' 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks,<o:p></o:p></span></font></p>
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination         
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Patrick Ahler<o:p></o:p></span></font></p>
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Systems Administrator<o:p></o:p></span></font></p>
 
-Chain ICMP (1 references)
-target     prot opt source               destination         
-ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0          icmp type 8 
-LOG        icmp --  0.0.0.0/0            0.0.0.0/0          limit: avg 3/min burst 3 LOG flags 0 level 6 prefix `ICMP Drop: ' 
-REJECT     icmp --  0.0.0.0/0            0.0.0.0/0          reject-with icmp-port-unreachable 
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Vikus Corporation<o:p></o:p></span></font></p>
 
-Chain IGMP (1 references)
-target     prot opt source               destination         
-ACCEPT     2    --  0.0.0.0/0            0.0.0.0/0          
+</div>
 
-Chain IPV6 (1 references)
-target     prot opt source               destination         
-ACCEPT     41   --  0.0.0.0/0            0.0.0.0/0          
+</body>
 
-Chain TCP (1 references)
-target     prot opt source               destination         
-ACCEPT     tcp  --  141.30.0.0/16        0.0.0.0/0          state NEW multiport dports 22,111,137,138,139 tcp flags:0x16/0x02 
-ACCEPT     tcp  --  141.76.0.0/16        0.0.0.0/0          state NEW multiport dports 22,111,137,138,139 tcp flags:0x16/0x02 
-ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          state NEW multiport dports 113,522 tcp flags:0x16/0x02 
-ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0          state NEW tcp dpts:1024:65535 flags:0x16/0x02 
-LOG        tcp  --  0.0.0.0/0            0.0.0.0/0          limit: avg 3/min burst 3 LOG flags 0 level 6 prefix `TCP Drop: ' 
-REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0          reject-with tcp-reset 
+</html>
 
-Chain UDP (1 references)
-target     prot opt source               destination         
-ACCEPT     udp  --  141.30.0.0/16        0.0.0.0/0          state NEW multiport dports 111,137,138,139 
-ACCEPT     udp  --  141.76.0.0/16        0.0.0.0/0          state NEW multiport dports 111,137,138,139 
-ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0          state NEW multiport dports 123,517,518 
-ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0          state NEW udp dpts:1024:65535 
-LOG        udp  --  0.0.0.0/0            0.0.0.0/0          limit: avg 3/min burst 3 LOG flags 0 level 6 prefix `UDP Drop: ' 
-REJECT     udp  --  0.0.0.0/0            0.0.0.0/0          reject-with icmp-port-unreachable 
-
---Signature=_Wed__5_Nov_2003_08_30_15_+0100_jm7GW6ITz6c/j5Tw
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/qKcHnhRzXSM7nSkRAr4fAJ9fZ5R0ronDXzkRmhpjmVIJJfuQ7gCfe6gK
-YpIUsSVu8lS1AsBPJr9S+hU=
-=dJbC
------END PGP SIGNATURE-----
-
---Signature=_Wed__5_Nov_2003_08_30_15_+0100_jm7GW6ITz6c/j5Tw--
+------_=_NextPart_001_01C3A3E3.57FCADA3--
 
