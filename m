@@ -1,13 +1,12 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: Connection Tracking
-Date: Wed, 8 Oct 2003 11:09:40 -0700 (PDT)
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Iptables HowTo ?
+Date: Thu, 9 Oct 2003 08:42:34 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0310081100450.18217@simba.math.ucla.edu>
-References: <3F81AA62.7050404@stimulustech.com>
- <Pine.LNX.4.53.0310080929350.18217@simba.math.ucla.edu> <3F844C62.5080804@stimulustech.com>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C469@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F844C62.5080804@stimulustech.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +16,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nathan Whittacre <nathan@stimulustech.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 8 Oct 2003, Nathan Whittacre wrote:
-> We do have control over the Nat box.  It is a custom Linux router that
-> we put in for these clients.  The biggest problem with the DNATing to a
-> specific internat IP is that several client computers will want to use
-> it at different times.  So, I don't want to have to change the DNATing
-> every time a different computer wants to connect.
-
-Bummer.  You might plagarize the code from the FTP helper module,
-designating the return connection to the NAT box's port 1066 as "related",
-which you would then allow through the firewall and which would be
-de-NATted so it went to whichever client the original connection belonged
-to.  It would be a whole lot easier if the client would accept the return
-connection from an arbitrary source port (not just the mainframe's 1066),
-so you won't have to think about conntracks hanging around, if a connection
-shuts down uncleanly -- as far as the helper module is concerned,
-arbitrarily many clients can use the service at once, with different source
-ports, even if there's a limit at the mainframe.
-
-But I've never actually tried doing this kind of thing.  Other people on
-the list, however, do seem to successfully make special modules.  "Let's
-you and him fight" :-)
-
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  90095-1555
-Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQZXRlciBNYXJzaGFsbCBbbWFp
+bHRvOnBldGVyLm1hcnNoYWxsQGNhcmlzLmNvbV0NCj4gU2VudDogV2VkbmVzZGF5LCA4IE9jdG9i
+ZXIgMjAwMyA5OjQ5IFBNDQo+IFRvOiBHZW9yZ2UgVmllaXJhOyBab3VwOyBuZXRmaWx0ZXJAbGlz
+dHMubmV0ZmlsdGVyLm9yZw0KPiBTdWJqZWN0OiBSZTogSXB0YWJsZXMgSG93VG8gPw0KPiANCj4g
+DQo+IGh0dHA6Ly93d3cubGludXhzZWN1cml0eS5jb20vcmVzb3VyY2VfZmlsZXMvZmlyZXdhbGxz
+L0lQVGFibGVzLVR1dG9yaWFsL2lwdGFibGVzLXR1dG9yaWFsLmh0bWwNCj4gVGhpcyBpcyB0aGUg
+YmVzdCBpcHRhYmxlcyB0dXRvcmlhbCBJIGF2ZSBzZWVuIG91dCB0aGVyZS4NCg0KVGhhdCdzIGFu
+b3RoZXIgdGhpbmcsIFRoYXQgdHV0b3JpYWwgKGN1cnJlbnRseSAxLjEuMTkgYW5kIFlFUywgaXQn
+cyB2ZXJ5IHZlcnkgZ29vZCBwbGFjZSBmb3IgcmVmZXJlbmNlIGFuZCBsZWFybmluZykgaXMgd2hl
+cmUgSSByZWFsbHkgZ290IGlwdGFibGVzIHdvcmtpbmcgZm9yIG1lIHRoZSBiZXN0LiBJdCByZWFs
+bHkgb3BlbmVkIG15IGV5ZXMgdG8gaG93IGl0IHdvcmtzIGFuZCBob3cgdXNpbmcgLS1zdGF0ZSBF
+U1RBQkxJU0hFRCBjaGFuZ2VzIHRoZSB3YXkgcGFja2V0cyB0cmF2ZXJzZSB0aGUgY2hhaW5zIGFu
+ZCBob3cgaXQgZGlmZmVycyBmcm9tIGlwY2hhaW5zIChlZWVlaWtrayEhISkgYW5kIHNvIG9uLi4N
+Cg0KDQpUaGFua3MsDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xw0KR2VvcmdlIFZpZWlyYQ0KU3lzdGVtcyBNYW5hZ2VyDQpnZW9yZ2V2QGNpdGFkZWxjb21wdXRl
+ci5jb20uYXUNCg0KQ2l0YWRlbCBDb21wdXRlciBTeXN0ZW1zIFB0eSBMdGQNCmh0dHA6Ly93d3cu
+Y2l0YWRlbGNvbXB1dGVyLmNvbS5hdQ0K
 
