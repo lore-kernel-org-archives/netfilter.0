@@ -1,11 +1,11 @@
-From: "WT" <wtangcc@hotmail.com>
-Subject: UDP forwarding and IPIP forwarding problem
-Date: Sat, 30 Nov 2002 00:06:24 +0800
+From: "Monkey" <Monkey@allthingsbyte.com>
+Subject: Forward UDP Broadcasts?
+Date: Sun, 1 Dec 2002 20:21:03 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OE29sSmz6UuEhjJ8uT600006c0a@hotmail.com>
+Message-ID: <000001c299a9$76e7ca20$6400000a@hnic>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000B_01C29804.526A6230"
+	boundary="----=_NextPart_000_0001_01C29977.2C4D5A20"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,208 +20,115 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000B_01C29804.526A6230
+------=_NextPart_000_0001_01C29977.2C4D5A20
 Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Hi guys,
+Hi, I'm looking to figure out how to forward UDP Broadcasts from PPP#
+interfaces to ETH# interfaces and vice versa. I have searched the net
+with not much luck, I don't understand the man pages much but I do
+understand some basics about IPTables, just not enough to figure this
+out.
+ 
+My Setup is as follows:
+ 
+Red Hat Linux 8
+IPV4 Forwarding Enabled
+One NIC (ETH0)
+PoPToP VPN Server (PPP0, PPP1, etc)  using only TCP/IP (No IPX, etc)
+ 
+IPTables have no rules set currently:
+ 
+Chain INPUT (policy ACCEPT 4039K packets, 1573M bytes)
+ pkts bytes target     prot opt in     out     source
+destination         
+ 
+Chain FORWARD (policy ACCEPT 89199 packets, 3128K bytes)
+ pkts bytes target     prot opt in     out     source
+destination         
+ 
+Chain OUTPUT (policy ACCEPT 3827K packets, 4349M bytes)
+ pkts bytes target     prot opt in     out     source
+destination 
 
-I am trying to set up 2 IPtables based Firewall/NAT with UDP and IPIP =
-forwarding function as listed below:
-
-1) Forward UDP (port 434) package to an internal host;
-2) Forward IPIP package to a host in the same subnet as the Firewall's, =
-where the outer IP head of the IPIP package has a destination to a =
-special IP address.=20
-
-Here is an illustration of the scenario:
-
-   package from 192.168.0.1
-                 to 192.168.0.10 (UDP 434)
-                        |=20
-                        v
---------------192.168.0.10-----------------=20
-               10.3.10.10
-                        | forward to 10.3.10.201
-                        v
---------------10.3.10.201---------------------------------------- =
-10.3.10.13----------------
-                                    to 172.3.10.5 (IPIP)        =
-172.3.10.13
-                                    from 10.3.10.201                  |
-                                                                         =
-     | forward to 172.3.10.5
-                                                                         =
-     v
-                                                                        =
-172.3.10.5 (get IPIP package and reply to 192.168.0.1)
-                                                                         =
-           =20
-
-The IPIP reply from 172.3.10.5 to 192.168.0.1 needs to be forwarded by =
-10.3.10.13 to 10.3.10.201.
-
-I used IPtable and Linux 8 on 192.168.0.10 and 10.3.10.13 and =
-encountered both problems:
-1) Only one UDP package (the 1st one?) is forwarded to 10.3.10.201, =
-others are dropped. And once a while (every 12 minutes), there is one =
-package forwarded. That's it.
-2) I can Ping the 10.3.10.201 in the Firewall's subnet, but IPIP package =
-is not forwarded at all. They are still sent to 192.168.0.1 and =
-dropped...
-
-Can any expert give me some idea what may be wrong? I followed the =
-instruction of the IPtables. But it just doesn't work well. Please help.
-
-Thanks!
-
-Wey
-------=_NextPart_000_000B_01C29804.526A6230
+------=_NextPart_000_0001_01C29977.2C4D5A20
 Content-Type: text/html;
-	charset="gb2312"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dgb2312">
-<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi guys,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am trying to set up&nbsp;2 IPtables =
-based=20
-Firewall/NAT with UDP and IPIP forwarding function as listed =
-below:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>1) Forward UDP (port 434) package to an =
-internal=20
-host;<BR>2) Forward IPIP package to a host in the same subnet as the =
-Firewall's,=20
-where the outer IP head of the IPIP package has a destination to a =
-special IP=20
-address. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Here is an illustration of the=20
-scenario:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;package from=20
-192.168.0.1</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to=20
-192.168.0.10 (UDP 434)</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;|=20
-</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;=20
-v</FONT></DIV>
-<DIV><FONT face=3DArial =
-size=3D2>--------------192.168.0.10-----------------=20
-</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;=20
-10.3.10.10</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;=20
-| forward to 10.3.10.201</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;v</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>--------------10.3.10.201---------------------------------------=
--=20
-10.3.10.13----------------</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;to&nbsp;172.3.10.5=20
-(IPIP)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-172.3.10.13</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;from=20
-10.3.10.201&nbsp;&nbsp;&nbsp;&nbsp;=20
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
 
-|</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|=20
-forward to 172.3.10.5</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-v</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;172.3.10.5=20
-(get IPIP package and reply to 192.168.0.1)</FONT></DIV>
-<DIV><FONT face=3DArial=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;=20
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>The IPIP&nbsp;reply from 172.3.10.5 to =
-192.168.0.1=20
-needs to be forwarded by 10.3.10.13 to 10.3.10.201.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I used IPtable&nbsp;and Linux 8 on =
-192.168.0.10 and=20
-10.3.10.13 and encountered both problems:<BR>1) Only one UDP package =
-(the 1st=20
-one?) is forwarded to 10.3.10.201, others are dropped. And once a while =
-(every=20
-12 minutes), there is one package forwarded. That's it.<BR>2) I can Ping =
+<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>Hi, =
+I'm looking to=20
+figure out how to forward UDP Broadcasts from PPP# interfaces to ETH# =
+interfaces=20
+and vice versa. I have searched the net with not much luck, I don't =
+understand=20
+the man pages much&nbsp;but I do&nbsp;understand some basics about=20
+IPTables,&nbsp;just not enough to figure this out.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>My =
+Setup is as=20
+follows:</FONT></SPAN></DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>Red =
+Hat Linux=20
+8</FONT></SPAN></DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>IPV4 =
+Forwarding=20
+Enabled</FONT></SPAN></DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana size=3D2>One =
+NIC=20
+(ETH0)</FONT></SPAN></DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
+size=3D2>PoPToP VPN Server=20
+(PPP0, PPP1, etc)&nbsp; using only TCP/IP (No IPX, =
+etc)</FONT></SPAN></DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
+size=3D2>IPTables have no=20
+rules set currently:</FONT></SPAN></DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
+size=3D2>Chain INPUT=20
+(policy ACCEPT 4039K packets, 1573M bytes)<BR>&nbsp;pkts bytes=20
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt in&nbsp;&nbsp;&nbsp;&nbsp;=20
+out&nbsp;&nbsp;&nbsp;&nbsp;=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+</FONT></SPAN></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
+size=3D2>Chain FORWARD=20
+(policy ACCEPT 89199 packets, 3128K bytes)<BR>&nbsp;pkts bytes=20
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt in&nbsp;&nbsp;&nbsp;&nbsp;=20
+out&nbsp;&nbsp;&nbsp;&nbsp;=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+</FONT></SPAN></DIV>
+<DIV><FONT face=3DVerdana size=3D2></FONT>&nbsp;</DIV>
+<DIV><SPAN class=3D483010902-02122002><FONT face=3DVerdana =
+size=3D2>Chain OUTPUT=20
+(policy ACCEPT 3827K packets, 4349M bytes)<BR>&nbsp;pkts bytes=20
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt in&nbsp;&nbsp;&nbsp;&nbsp;=20
+out&nbsp;&nbsp;&nbsp;&nbsp;=20
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;=20
+destination </FONT></SPAN></DIV></BODY></HTML>
 
-the&nbsp;10.3.10.201 in the Firewall's subnet, but IPIP package is not =
-forwarded=20
-at all. They are still sent to 192.168.0.1 and dropped...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Can any expert give me some idea what =
-may be wrong?=20
-I followed the instruction of the IPtables. But it just doesn't work =
-well.=20
-Please help.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks!</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Wey</FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C29977.2C4D5A20--
 
-------=_NextPart_000_000B_01C29804.526A6230--
 
