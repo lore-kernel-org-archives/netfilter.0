@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Ruleset
-Date: Tue, 10 Aug 2004 09:27:22 +0100
+Subject: Re: firewall problem continued
+Date: Tue, 10 Aug 2004 09:26:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408100927.22281.Antony@Soft-Solutions.co.uk>
-References: <HAEOIFPIBBBLGLHOMLLIIEPPCGAA.bclark@eccotours.biz>
-Reply-To: "iptables" <netfilter@lists.netfilter.org>
+Message-ID: <200408100926.33589.Antony@Soft-Solutions.co.uk>
+References: <20040809081216.GA12643@tranquility.scriptkitchen.com> <200408091231.33128.Antony@Soft-Solutions.co.uk> <20040810081418.GA22730@tranquility.scriptkitchen.com>
+Reply-To: Netfilter ML <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HAEOIFPIBBBLGLHOMLLIIEPPCGAA.bclark@eccotours.biz>
+In-Reply-To: <20040810081418.GA22730@tranquility.scriptkitchen.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,52 +19,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: iptables <netfilter@lists.netfilter.org>
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Tuesday 10 August 2004 8:22 am, Brent Clark wrote:
+On Tuesday 10 August 2004 9:14 am, Payal Rathod wrote:
 
-> Hi all
+> On Mon, Aug 09, 2004 at 12:31:33PM +0100, Antony Stone wrote:
+> > Exactly the same as your extisting PREROUTING rule, but you put it in the
+> > OUTPUT chain instead (still in the nat table):
+> >
+> > iptables -A OUTPUT -t nat -d 1.2.3.4 -p tcp --dport 25 -j DNAT --to
+> > 10.10.10.2
 >
-> If possible would someone be so kind as to have a look at my ruleset and if
-> possible, share some pointers.  I have another linux box (Ip address
-> 192.168.3.3, connected to eth1 on the FW)  I have a lan (192.168.2.0/24)
-> connected to eth0 For my internet handling I have a ppp connection.  Im also
-> currently toying with dyndns (ez-ipupdate).
+> As I said earlier that now I can access the mail server at 10.10.10.2
+> from the firewall machine using its external IP. But now I need to access
+> the mailserver from the same machine itself using the external IP.
 
-1. For efficiency I would put the ESTABLISHED,RELATED rule first in your INPUT 
-chain.
+Why does the mail server need to refer to itself using the public IP?
 
-2. I do not entirely approve of running a DNS server on the firewall.   Since 
-you have another box availabel on 192.168.3.3 I would suggest running DNS on 
-that and redirecting requests (or configuring clients to know what's where to 
-find it).
+Why can't it know its own private IP?
 
-3. I do not think you will see any packets addressed to 192.168.2.255 in the 
-FORWARD chain - they would appear in the INPUT chain.   I also think they 
-should be logged as "BROADCAST", not as "INVALID".
+As an additional comment, you appear to be digging yourself further and 
+further into a situation of "I wouldn't do it like that, but if you really 
+need to...."
 
-4. Do you *really* want to allow *all* NEW packets from the Internet to the 
-DMZ, no matter what protocol they are?   You might as well simply stick your 
-192.168.3.3 machine on a public IP address with no firewall....
-
-5. For efficiency I would put the ESTABLISHED,RELATED rule first in your 
-OUTPUT chain.
-
-6. The default DROP policy on OUTPUT is rather misleading (and may give you a 
-false sense of security), since the ruleset allows all NEW, ESTABLISHED, and 
-RELATED packets.   That means everything which can be part of a connection.
+You should be cautious about doing too many things one after another which are 
+simply needed as workarounds for a strange network setup, or a non-ideal DNS 
+setup, and sooner or later you need to stop adding workarounds and change the 
+underlying design.
 
 Regards,
 
 Antony.
 
 -- 
-The idea that Bill Gates appeared like a knight in shining armour to lead all 
-customers out of a mire of technological chaos neatly ignores the fact that 
-it was he who, by peddling second-rate technology, led them into it in the 
-first place.
+It is also possible that putting the birds in a laboratory setting 
+inadvertently renders them relatively incompetent.
 
- - Douglas Adams in The Guardian, 25th August 1995
+ - Daniel C Dennett
 
                                                      Please reply to the list;
                                                            please don't CC me.
