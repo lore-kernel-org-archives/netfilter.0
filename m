@@ -1,14 +1,11 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: ICMP Rule Problem
-Date: Mon, 2 Feb 2004 14:38:24 -0500
+From: "Jambunathan Jambunathan" <kjambunathan@novell.com>
+Subject: iptc_* implementation queries
+Date: Mon, 02 Feb 2004 14:28:55 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <41699.272968299$1075750895@news.gmane.org>
-References: <1075741362.3714.25.camel@dchws.TQMcube.com> <>> <1075742174.3721.28.camel@dchws.TQMcube.com>
+Message-ID: <s01e5eb1.078@prv-mail25.provo.novell.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <1075742174.3721.28.camel@dchws.TQMcube.com>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,32 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "David C. Hart" <dch@TQMcube.com>, Iptables Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On February 2, 2004 12:16 pm, David C. Hart wrote:
-> On Mon, 2004-02-02 at 12:11, an unknown sender wrote:
-> > On February 2, 2004 12:02 pm, David C. Hart wrote:
-> > > -A INPUT -p icmp -m icmp --icmp-type 0 -j REJECT --reject-with
-> > > icmp-net-prohibited
-> > >
-> > > It doesn't seem to work.
-> >
-> > 	Please see Maicej's reply to a similar thread ...
-> > 	you need kernel > 2.4.21 and iptables > 1.2.8
->
-> Kernel = 2.4.24 IPTables = 1.2.9
+I am interested in knowing the netfilter infrastructure and I would
+like to know how iptables communicates with netfilter ( user to
+kernel space communication ) I understand that it happens through
+raw sockets through setsockot and getsockopt. Also there are a
+good number of iptc_* calls that are declared in libiptc.h which
+are used by the iptables user space tool. I would like to know 
+where I can see the implementations for these iptc_* calls. 
+I am unable to see this either in the kernel code nor in the
+iptables bz2 package. I am looking at 2.4.18 code of linux
+kernel fyi.
 
-
-	*urmp*
-	Prowled the source -- linux default icmp headers don't seem to include
-	"prohibited" -- appears to come from iptables and is 
-	network-prohibited (there doesn't seem to be a short match function there) 
-	is func 3 code 9  from what I can tell....
-	(but heck -- I could be wrong)
+I will appreciate a mini code walk through or example.
 
 
-	Alistair.
-
->                                ---------
->             Quality Management - A Commitment to Excellence
+Regards,
+Jambunathan K.
 
