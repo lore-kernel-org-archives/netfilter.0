@@ -1,12 +1,13 @@
-From: laurent@riviere.nom.fr
-Subject: ip range
-Date: Fri, 01 Aug 2003 14:11:58 +0200
+From: Felix Bauer <felixathome@gmx.net>
+Subject: Re: firewall startup script
+Date: Fri, 01 Aug 2003 14:24:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F2A752E.20273.B96A60@localhost>
+Message-ID: <3F2A5C09.7040602@gmx.net>
+References: <3F2A46F4.9070001@gmx.net> <1059738996.8263.4.camel@linux.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-description: Mail message body
+In-Reply-To: <1059738996.8263.4.camel@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,27 +17,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: rhelms@mayn.de
+Cc: netfilter@lists.netfilter.org
 
-i set up a firewall with iptables
-the firewall has three interface :
-eth0 (192.168.1.1) connecting the lan with a server and three workstations 
-(192.168.1.xxx)
-eth1 (192.168.2.1) connecting the dmz with a webserver (192.168.2.xxx)
-eth2 (192.168.4.1) connected to the internet via a cable router
+There is a internetconnection of course and ppp0 uses that ip-adress.
 
-the webserver (apache 2.0) on the dmz has three interface : eth0 (192.168.2.2), eth1 
-(192.168.2.3) and eth2 (192.168.2.4) for SSL purpose that not support virtualhost 
-directive
-I use dyndns service with three dynamic hosts, one for each interface
-My problem is that I don't know how to foward port 80 requests to all ip addresses.
-I just succeeded to foward one by one but apache serves the same site for each 
-dynamic host
+cheers
+fe
 
-I had read the DNAT howto but I not sure it's what I need to do ?
-any idea please ?
+Ruprecht Helms wrote:
 
-Laurent
+>On Fri, 2003-08-01 at 12:54, Felix Bauer wrote:
+>  
+>
+>>Hi,
+>>
+>>if got a question about my script for my router-configuration. It should 
+>>enable ip4warding, masquerade my local hosts,
+>>allow my local hosts everything and open some ports which should be 
+>>external available but if I run this script
+>>it kinda stops after masquerading (I can read the output on the console 
+>>but then everything is freezed since the local
+>>ports aren't open anymore and not reopend by the script). Is there any 
+>>logical error I missed?
+>>    
+>>
+>
+>
+>  
+>
+>>...
+>>    
+>>
+>
+>  
+>
+>>     #** setup Masquerading
+>>      echo "Creating rule for Masquerading"
+>>      $iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+>>    
+>>
+>
+>  
+>
+>>...
+>>    
+>>
+>
+>You have to open a internetconnection and than pick up the ip-adress for
+>ppp0 from ifconfig and use it for ppp0. After this act you can start
+>your firewall.
+>
+>Regards,
+>Ruprecht
+>
+>
+>-----------------------------------------------
+>Ruprecht Helms IT-Service & Softwareentwicklung
+>
+>Tel./Fax  +49[0]7621 16 99 16
+>Homepage: http://www.rheyn.de
+>email:    info@rheyn.de
+>------------------------------------------------
+>
+>
+>
+>  
+>
+
 
 
