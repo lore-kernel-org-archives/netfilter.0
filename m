@@ -1,13 +1,18 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Forwarding traffic destined to local machine
-Date: Sat, 8 Nov 2003 17:26:10 +0000
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: Re: IP Spoofing
+Date: Sat, 08 Nov 2003 13:06:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311081726.hA8HQCj15653@agate.rockstone.co.uk>
-References: <Pine.SOL.4.20.0311081206340.22835-100000@csa.bu.edu>
+Message-ID: <1068314779.12569.30.camel@tarkus>
+References: <60197.200.180.160.84.1068060676.squirrel@www.alcidesmaya.com.br>
+ <200311051951.hA5Jpdr13332@agate.rockstone.co.uk>
+ <60250.200.180.160.130.1068063541.squirrel@www.alcidesmaya.com.br>
+ <200311052039.hA5KdYr13351@agate.rockstone.co.uk>
+ <1068208010.29753.10.camel@tarkus> <1068212092.1438.8.camel@main.tqmcube.com>
+Reply-To: tedkaz@optonline.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.SOL.4.20.0311081206340.22835-100000@csa.bu.edu>
+In-reply-to: <1068212092.1438.8.camel@main.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +23,97 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: IPTables Mailing List <netfilter@lists.netfilter.org>
+Cc: "David C. Hart" <DCH@TQMcube.com>
 
-On Saturday 08 November 2003 5:08 pm, Leonid Veytser wrote:
+It will allow sessions initiated from the host running iptables to allow
+for connections to come back in that are in response to the packet the
+host sends out.
 
-> How can I forward traffic(to some different machine) that is destined to
-> the local machine using netfilter?
->
-> Changing destination address at the prerouting hook doesn't seem to work.
+If you don't allow the established related packets, you would have to
+create a separate rule for each and every IP/Port pair you connect to,
+that would allow those packets back in.
 
-Tell us what you did and how you know it didn't work and we may be able to 
-help.
+The tutorial's at http://iptables-tutorial.frozentux.net/ are some of
+the best I have seen, you should add them to your list of reading along
+with the other good links you have received.
 
-Antony
+Unfortunately explaining firewalls in simple terms is not possible.
+If you really want to learn, some good materials would be Richard
+Stephen TCP/IP Illustrated, you really need to know the protocol itself
+before all the firewall technology will make sense.
 
--- 
+Also keep in mind that a firewall running on a gateway device  is very
+different than on a host.
 
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
-                                                     Please reply to the list;
-                                                           please don't CC me.
+As always, google is your friend.
+
+Ted
+
+
+
+
+On Fri, 2003-11-07 at 08:34, David C. Hart wrote:
+> On Fri, 2003-11-07 at 07:26, Ted Kaczmarek wrote:
+> > I would add an input established on that as well, makes it easier to do
+> > upgrades.
+> > 
+> > iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> Hi Ted:
+> 
+> If you have a moment, could you please explain (for the comparative IPT
+> nitwits - including me) what that does?
+> > 
+> > I wish everyone did implicit DROP's, it would make the web a safer
+> > place.
+> 
+> IBID
+> 
+> Thanks
+> > 
+> > :-)
+> > 
+> > 
+> > 
+> > Ted
+> > 
+> > 
+> > On Wed, 2003-11-05 at 15:39, Antony Stone wrote:
+> > > On Wednesday 05 November 2003 8:19 pm, Leandro Takashi Hirano wrote:
+> > > 
+> > > > Thanks Antony...
+> > > >
+> > > > Do you have a script or something where I can find protection rules?
+> > > 
+> > > You tell us what protection you want and we can suggest some rules to do it.
+> > > 
+> > > There's no single "magic ruleset" for netfilter / iptables which "protects 
+> > > your network", otherwise every distribution would include it as standard.
+> > > 
+> > > It depends what you want to do.
+> > > 
+> > > A good starting point is:
+> > > 
+> > > iptables -P INPUT DROP
+> > > iptables -P OUTPUT DROP
+> > > iptables -P FORWARD DROP
+> > > iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > > iptables -A FORWARD -i $intIF -o $extIF -j ACCEPT
+> > > 
+> > > That will allow nothing in or out of the firewall machine itself, and will 
+> > > allow all access from your internal network to the Internet, blocking 
+> > > everything except reply packets from the Internet to your network.
+> > > 
+> > > I do not recommend that you simply implement the above rules before you 
+> > > understand what they are designed to do.
+> > > 
+> > > Check Oskar Andreasson's excellent tutorial for more information about this 
+> > > sort of configuration, or any of the other documentation at 
+> > > http://www.netfilter.org
+> > > 
+> > > Antony.
+> > 
+> > 
+
 
