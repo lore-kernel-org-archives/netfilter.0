@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Inbound port mapping blocks outbound connection?
-Date: Mon, 20 Dec 2004 08:22:14 -0500
-Message-ID: <1103548934.3264.6.camel@hubcap.ljm.dom>
-References: <4CE68372-5207-11D9-BA43-000A95CFE5AA@latencyzero.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: INPUT or FORWARD;;
+Date: Mon, 20 Dec 2004 14:24:42 +0100
+Message-ID: <20041220132421.DAE032F42A@kshira.sterenborg.info>
+References: <1103547524.2932.6.camel@hubcap.ljm.dom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4CE68372-5207-11D9-BA43-000A95CFE5AA@latencyzero.com>
+In-Reply-To: <1103547524.2932.6.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,27 +20,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, 2004-12-19 at 16:45, Rick Mann wrote:
-> As I was writing this email about a problem connecting outbound, I 
-> discovered what my problem was. Now I have a  new problem: Why would an 
-> inbound port mapping prevent an outbound connection on one of those 
-> ports, as described below? TIA!
+netfilter-bounces@lists.netfilter.org wrote:
+>> A multi-homed firewall having at least two interfaces, is known, at
+>> least to itself by those IP/hostnames combos assinged to its
+>> interfaces.  <i.e. ppp0 and eth0>  So say rules coming from the ppp0
+>> interface into the firewall <INPUT rules> are directed to it's other
+>> name/interface 
+>> 
+>> -i /dev/ppp0 -d /dev/eth0
+> 
+> well--those values make no sense whatsoever, but if you're
+> asking if the following is valid:
+> 
+>   iptables -A INPUT -i ppp0 -d $IP_OF_ETH0 -j ACCEPT
+> 
+> then yes.  the INPUT chain is traversed by packets destined
+> for a local process (IP addresses).  the input interface is
+> just a tag attached to the packet.
 
-well--you provide pretty much zero detail, so i'm going to have to put
-my funny-looking kreskin hat on...
+I'm not sure I understand this :
+I agree it's a valid rule (syntax), but I don't think it will ever match
+a packet.
 
-the powers-that-be are telling me that you (like many other people that
-as this question), did not specify "-i $OUTSIDE_IF" in your PREROUTING
-nat rule, and therefore packets that arrive inbound on the inside
-interface match and disappear into the ether.
+If -i and -d are specified, they both have to match to accept a packet,
+right ?
+Because <ip_eth0> is not assigned to ppp0, how can -i ppp0 -d <ip_eth0>
+ever match for the INPUT chain ?
 
-  iptables -t nat -A PREROUTING -i $OUTSIDE_IF -p tcp \
-    -d $OUTSIDE_IP --dport 6969 -j DNAT --to-destination $INSIDE_HOST
 
--j
-
---
-"I'm a well-wisher, in that I don't wish you any specific harm."
-	--The Simpsons
+Gr,
+Rob
 
 
