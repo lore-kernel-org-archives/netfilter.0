@@ -1,8 +1,8 @@
-From: Damien Mason <kinetic@suse.net.au>
-Subject: VLANs and DNAT
-Date: Fri, 25 Jul 2003 09:40:02 +1000
+From: jen@saturn5.com
+Subject: ssl forward / proxy question
+Date: Thu, 24 Jul 103 17:12:49 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F206E52.2090307@suse.net.au>
+Message-ID: <20030725001249.9399.qmail@saturn5.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,62 +15,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Everyone,
 
-    I have two interfaces, eth1 and eth2
+hi, 
 
-    I have multiple vlans on a eth1, that is, eth1.1 and eth1.2, eth1.3
+i have a NAT set up via an iptables firewall on RHAS. i have various webservers 
+behind it (and other stuff), but now i'm required by marketing (sigh) to set 
+up loads of SSL certificates. since apache/apache2 still requires one ip 
+address per SSL certificate, and they mean to do lots of these, i'm wondering
+how to set it up in such a way that all DNS points to one external IP address
+such as 234.56.78.90. when the packet hits the firewall, something proxies it 
+so that it will see the *name* address, and forward it on to a virtual IP. for
+example:
 
-    Eth2 is the external interface to the internet.
+there are 3 domains all belonging to the same "real" IP address. 
 
-    Vlan1 uses the following network address:    192.168.50.0/24
-    Vlan2 uses the following network address:    192.168.50.0/24 also
+234.56.78.90 -> www.guinness.com
+234.56.78.90 -> www.kicks.com
+234.56.78.90 -> www.butt.com
 
-    Vlan3 uses the following network address: 192.168.10.0/24
+so a user wants to go to www.guinness.com, the IP takes the packet to the fire
+wall/proxy/whatever, notices that it's "www.guinness.com" and and will forward t
+he packet on to the internal address of 10.31.1.44
 
-I have NAT working for the vlans, that is, clients are able to access 
-the external internet using nat.
+user goes to www.kicks.com, and the packet goes to 10.31.1.45
 
-    However, there are servers on Vlan2 which I would like to forward 
-traffic to from the external interface, I would imagine that I could do 
-something like:
+www.butt.com will get forwarded to 10.31.1.46
 
-iptables -A PREROUTING -t nat -p tcp -d 203.221.181.27 --dport 80 -j 
-DNAT --to 192.168.50.10:80
+is there something like this that is possible? 
 
-But I cannot specify an interface -i eth1.2 in the prerouting, because 
-it occurs pre-routing?
+thanks!!
 
-    How can I forward traffic to a host on a vlan when the vlans don't 
-use unique addressing schemes?.. I was thinking I may have to -j 
-REDIRECT the traffic to another chain, and forward it from there?
-
-    Any Ideas or solutions would be most appreciated :)
-
-Thanks in advance,
-    Damien Mason
-
-
-
--- 
-
-
-Best Regards,
-
-Damien Mason
-SuSE Systems Specialist
-
-SuSE Linux Asia-Pacific
-2-6 Waltham Street
-Artarmon, NSW 2064, Australia
-
-Telephone: (612) 943 943 94 ext 246
-Facsimile: (612) 9437 3839
-Email: kinetic@suse.net.au 
-<mailto:kinetic@suse.net.au?subject=Reply%20Email>
-Web: http://www.suse.net.au./
-
+-\jen
 
