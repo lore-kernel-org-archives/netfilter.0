@@ -1,11 +1,14 @@
-From: "Red Hat" <lilo123456@hotmail.com>
-Subject: What to do to protet our send from the attacks which is caused by
-	worms?
-Date: Fri, 17 Sep 2004 19:10:50 +0000
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: What to do to protet our send from the attacks which is caused
+ by	worms?
+Date: Fri, 17 Sep 2004 14:20:57 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <BAY12-F11jlA733LJa500009c09@hotmail.com>
+Message-ID: <414B3919.90503@pbl.ca>
+References: <BAY12-F11jlA733LJa500009c09@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY12-F11jlA733LJa500009c09@hotmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,33 +18,27 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Red Hat wrote:
+> Hi,
+> 
+> What to do to protet our send from the attacks which is caused by worms in
+> Microsoft XP OS of our users? Our user may have worms in their system & it
+> causes that our send go up & up that our send is going upper than which we
+> have to use.
 
-What to do to protet our send from the attacks which is caused by worms in
-Microsoft XP OS of our users? Our user may have worms in their system & it
-causes that our send go up & up that our send is going upper than which we
-have to use. for example if we can send 64Kb/s their worm cause our send go
-upper than this. These worms would cause our network work too bad. I mean
-the other user which doesn't have worm, can't work properly.
-Hope you understand our problem. Now I want to use a software or command in
-my Linux server which contain squid to protect our send not to go up because
-  of the worm of our users.
-I think we can protect it by iptables but I don't know how should I do this?
-So wanted to intall smoothwall to help me. Now I understand that it can't
-help me.
-what's you opinion & how should I do that?
+How about installing all updates from MS, and putting some anti-virus on 
+your mail server, so that your users don't get infected in the first place?
 
-Thanks in advance.
+Other than that, on the firewall close everything down, and allow only 
+what you need (no direct outgoing connections from user's computers, no 
+direct incoming connections to user's computers, only incomming/outgoing 
+to/from servers in DMZ).
 
-Best Regards,
-Mehdi
-
-_________________________________________________________________
-Tired of spam? Get advanced junk mail protection with MSN 8. 
-http://join.msn.com/?page=features/junkmail
-
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
