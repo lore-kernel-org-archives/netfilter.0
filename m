@@ -1,10 +1,10 @@
-From: "csm" <csm@ms14.url.com.tw>
-Subject: Can't set MASQUERADE after apply p-o-m20030107
-Date: Tue, 29 Jul 2003 19:04:29 +0800
+From: gabriel smolar <jarod125@ipipi.com>
+Subject: unexplained conntrack entries
+Date: Sat, 26 Jul 2003 12:14:58 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c355c2$4ca95cd0$3e00a8c0@grace>
+Message-ID: <24027487.1059246902125.JavaMail.operator_neoplanta1@neoplanta1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,16 +17,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: csm@ms14.url.com.tw
 
-SGksDQoNCkknbSBoYXZpbmcgcHJvYmxlbXMgd2l0aCBwYXRjaGluZyBwYXRjaC1vLW1hdGljLTIw
-MDMwMTA3IHRvIGlwdGFibGVzIDEuMi44IHdpdGgga2VybmVsIDIuNC4yMS4NCg0KQmVmb3JlIEkg
-ZGlkIHBhdGNoZWQsIEljYW4gY29uZmlndXJlIG15IGlwdGFibGVzIHN1Y2ggYXM6DQppcHRhYmxl
-cyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAtaiBNQVNRVUVSQURFDQoNCkJ1dCwgYWZ0
-ZXIgSSBhcHBsaWVkIHAtby1tIGFuZCByZS1pbnN0YWxsIHRoZSBuZXcga2VybmVsLiBJIGNhbid0
-IHNldCB0aGUgY29uZmlndXJhdGlvbiBzdWNoIGFzOg0KIGlwdGFibGVzIC10IG5hdCAtQSBQT1NU
-Uk9VVElORyAtbyBldGgwIC1qIE1BU1FVRVJBREUNCg0KQW55dGhpbmcgSSBuZWVkdG8gZG8/DQoN
-ClRoYW5rcyBpbiBhZHZhbmNlLCBZb3VyIGhlbHAgaXMgdmVyeSBhcHByZWNpYXRlZC4NCg0KQmVz
-dCByZWdhcmRzLA0KY3NtDQo=
-
+when i do cat /proc/net/ip_conntrack i get o lot of entries like:
+---------
+tcp 6 359867 ESTABLISHED src=192.168.1.1 dst=192.168.1.184 sport=59975 dport=80 [UNREPLIED]
+src=192.168.1.184 dst=192.168.1.1 sport=80 dport=59975 use=1
+tcp 6 359867 ESTABLISHED src=192.168.1.1 dst=192.168.1.185 sport=59974 dport=80 [UNREPLIED]
+src=192.168.1.185 dst=192.168.1.1 sport=80 dport=59974 use=1
+tcp 6 359867 ESTABLISHED src=192.168.1.1 dst=192.168.1.185 sport=59975 dport=80 [UNREPLIED]
+src=192.168.1.185 dst=192.168.1.1 sport=80 dport=59975 use=1
+tcp 6 359867 ESTABLISHED src=192.168.1.1 dst=192.168.1.186 sport=59974 dport=80 [UNREPLIED]
+src=192.168.1.186 dst=192.168.1.1 sport=80 dport=59974 use=1
+tcp 6 359867 ESTABLISHED src=192.168.1.1 dst=192.168.1.186 sport=59975 dport=80 [UNREPLIED]
+src=192.168.1.186 dst=192.168.1.1 sport=80 dport=59975 use=1
+tcp 6 359867 ESTABLISHED src=192.168.1.1 dst=192.168.1.187 sport=59974 dport=80 [UNREPLIED]
+src=192.168.1.187 dst=192.168.1.1 sport=80 dport=59974 use=1
+tcp 6 359867 ESTABLISHED src=192.168.1.1 dst=192.168.1.187 sport=59975 dport=80 [UNREPLIED]
+src=192.168.1.187 dst=192.168.1.1 sport=80 dport=59975 use=1
+tcp 6 359867 ESTABLISHED src=192.168.1.1 dst=192.168.1.188 sport=59974 dport=80 [UNREPLIED]
+src=192.168.1.188 dst=192.168.1.1 sport=80 dport=59974 use=1
+---------
+The sport is in the 56000 range and the dst is in the 192.168.1.* range. 192.168.1.1 is a slack 8.1 router with only sshd running, the rest of the lan are win boxes.
+i can't figure it out what's generating these requests...
+They don't show up when i monitor the traffic with iptraf.
 
