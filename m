@@ -1,9 +1,8 @@
 From: Oumer Teyeb <oumer@kom.auc.dk>
 Subject: libipq
-Date: Wed, 17 Dec 2003 15:49:57 +0100
+Date: Wed, 17 Dec 2003 15:57:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FE06D15.1040602@kom.auc.dk>
-References: <010d01c3c3d0$0541fb50$63ea38c3@hewlett7k6i3ca>
+Message-ID: <3FE06EEC.2010701@kom.auc.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -32,5 +31,7 @@ mess the iptables that is already working.
 
 Thanks in advance,
 Oumer
+
+
 
 
