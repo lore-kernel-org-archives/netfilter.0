@@ -1,11 +1,9 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: Log rules
-Date: Wed, 16 Oct 2002 17:23:19 -0400
+From: "hallian hallian" <hallian@hotmail.com>
+Subject: ip_conntrack_lock not readlocked? anyone?
+Date: Wed, 16 Oct 2002 16:18:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003d01c2755a$3f9067d0$8c01a8c0@sundaram>
-References: <B9D38D9C.45F%george@mattandgeorge.com>
+Message-ID: <F2421sZV4CllPF6p0V700001255@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,26 +14,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: George Agnelli <george@mattandgeorge.com>, netfilter@lists.netfilter.org
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
-Hi,
-
-I have following rules in my firewall script. It's dumping lot of error
-message. I want to capture all incoming outgoing packet on the external
-interface. How will I change this rules.
-
-# Log the packet
-for chain in INPUT OUTPUT FORWARD PREROUTING POSTROUTING
-do
-  for table in filter mangle nat
-  do
-    $IPT -I $chain -t $table -j LOG --log-prefix="$chain $table "
-  done
-done
-
-Is there any log analyzing tools for iptables log.
-Thanks
-SR
-
+<html><div style=3D'background-color:'><DIV>
+<DIV><FONT face=3DArial size=3D2>hello -</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I was wondering if anyone has seen this er=
+ror/warning message before? What does it mean?&nbsp; Any idea? </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>regards,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>hallian</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>=3D=3D=3D</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Oct 13 11:50:18 f kernel: ASSERT ip_nat_co=
+re.c:739 &amp;ip_conntrack_lock_Rsmp_4193d6ac readlocked<BR>Oct 13 11:50:18=
+ f kernel: ASSERT ip_conntrack_core.c:91 &amp;ip_conntrack_lock_Rsmp_4193d6=
+ac readlocked<BR>Oct 13 11:50:18 f kernel: ASSERT: ip_nat_core.c:743 &amp;i=
+p_conntrack_lock not readlocked<BR>Oct 13 11:50:18 f kernel: ASSERT ip_conn=
+track_core.c:977 &amp;ip_conntrack_lock not readlocked<BR>Oct 13 11:50:18 f=
+ kernel: ASSERT: ip_nat_core.c:840 &amp;ip_conntrack_lock not readlocked<BR=
+>Oct 13 11:50:18 f kernel: ASSERT ip_nat_core.c:739 &amp;ip_conntrack_lock_=
+Rsmp_4193d6ac readlocked<BR>Oct 13 11:50:18 f kernel: ASSERT ip_conntrack_c=
+ore.c:91 &amp;ip_conntrack_lock_Rsmp_4193d6ac readlocked<BR>Oct 13 11:50:18=
+ f kernel: ASSERT: ip_nat_core.c:743 &amp;ip_conntrack_lock not readlocked<=
+BR>Oct 13 11:50:18 f kernel: ASSERT: ip_nat_core.c:840 &amp;ip_conntrack_lo=
+ck not readlocked</FONT></DIV></DIV></div><br clear=3Dall><hr>Broadband?=A0=
+Dial-up? Get reliable M
+ SN Internet Access. <a href=3D"http://g.msn.com/8HMAEN/2016">Click Here</a=
+> </html>
 
