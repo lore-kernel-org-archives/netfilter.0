@@ -1,13 +1,13 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Configure to Full Cone
-Date: Tue, 1 Feb 2005 15:11:45 +0100
-Message-ID: <20050201141145.GT6878@sunbeam.de.gnumonks.org>
-References: <I92QAA$38252CB0CA3DB7D37ACA5591C593A0E1@bol.com.br>
+Subject: Re: iptables and SMP performance
+Date: Tue, 1 Feb 2005 15:17:32 +0100
+Message-ID: <20050201141732.GU6878@sunbeam.de.gnumonks.org>
+References: <1106588554.8961.41.camel@d-phiggins-lnx.rovingplanet.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0tLsAbKYoZ7gVvm3"
+	protocol="application/pgp-signature"; boundary="DS29MnVNPmky9ZU5"
 Content-Disposition: inline
-In-Reply-To: <I92QAA$38252CB0CA3DB7D37ACA5591C593A0E1@bol.com.br>
+In-Reply-To: <1106588554.8961.41.camel@d-phiggins-lnx.rovingplanet.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: fernandonach <fernandonach@bol.com.br>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: Patrick Higgins <phiggins@rovingplanet.com>
+Cc: netfilter@lists.netfilter.org
 
 
---0tLsAbKYoZ7gVvm3
+--DS29MnVNPmky9ZU5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 21, 2004 at 11:18:10AM -0200, fernandonach wrote:
+On Mon, Jan 24, 2005 at 10:42:33AM -0700, Patrick Higgins wrote:
 
-> How can I configure IPtables to be Full Cone?
+> The rules are being applied to eth0 in our simplified test, and it
+> looks like the interrupts are only being serviced by CPU0. It appears
+> the iptables rules are also being tested on CPU0.
 
-You cannot. iptable_nat only implements the most sophisticated version
-of NAT: fully symmetric.
+Yes, the whole network stack is traversed on the CPU that has received
+the innterrupt from the nic.
 
-> Fernando
+> Could we get better performance by balancing the eth0 interrupts
+> across CPUs? If not, how about balancing the testing of iptables
+> rules?
+
+You should set irq affinity so that e.g. eth0->cpu0, eth1->cpu1, etc.
 
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
@@ -46,7 +52,7 @@ of NAT: fully symmetric.
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---0tLsAbKYoZ7gVvm3
+--DS29MnVNPmky9ZU5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -54,10 +60,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.5 (GNU/Linux)
 
-iD8DBQFB/44hXaXGVTD0i/8RAiDJAKCxyezcKOyER0GYp05t7T2KLuqdQQCeKVkd
-FEXx9VKcI1gUWF8MdwMPehk=
-=4Ydd
+iD8DBQFB/498XaXGVTD0i/8RAklhAJ4nQFUrvZ1LGWtSVi4hQZNLbi2pBACfU1We
+qqV6Hh6mE/evWjSMApBk+7A=
+=i9wp
 -----END PGP SIGNATURE-----
 
---0tLsAbKYoZ7gVvm3--
+--DS29MnVNPmky9ZU5--
 
