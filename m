@@ -1,10 +1,13 @@
 From: "D. Prima Prayudi" <prima@arc.itb.ac.id>
-Subject: How do you think about this....
-Date: Tue, 6 Apr 2004 18:20:59 +0700 (WIT)
+Subject: Re: How do you think about this....
+Date: Tue, 6 Apr 2004 18:23:16 +0700 (WIT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.BSF.4.50L0.0404061817150.4748-100000@arc.itb.ac.id>
+Message-ID: <Pine.BSF.4.50L0.0404061821300.4748-200000@arc.itb.ac.id>
+References: <Pine.BSF.4.50L0.0404061817150.4748-100000@arc.itb.ac.id>
 Mime-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-2027159-1081250596=:4748"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.BSF.4.50L0.0404061817150.4748-100000@arc.itb.ac.id>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,35 +17,136 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-The iptables rule at the attachment... (almost forgot this) :-)
+--0-2027159-1081250596=:4748
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-I have a gateway with the firewall function, it has 4 interfaces
 
-			OUTSIDE NETWORK
-			     ||
-			    eth0
-			167.205.30.75
-	_____________________||________________________
-    eth1		     eth2			eth3
-167.205.102.0/26	167.205.102.64/27	167.205.102.128/27
+Sorry I forgot the attachment (again) :-)
 
-the gateway just running SMTP and ssh, i want to log and prevent (as I
-can) the port scan from the outside. I was able to slow down the nmap
-from about 50 seconds to about 250 seconds from other host (from the
-outside network) to my internal box (167.205.102.2)
-Does somebody can tell me how to increase this (slow down the nmap), some
-suggest will be good too...
+>
+> The iptables rule at the attachment... (almost forgot this) :-)
+>
+> I have a gateway with the firewall function, it has 4 interfaces
+>
+> 			OUTSIDE NETWORK
+> 			     ||
+> 			    eth0
+> 			167.205.30.75
+> 	_____________________||________________________
+>     eth1		     eth2			eth3
+> 167.205.102.0/26	167.205.102.64/27	167.205.102.128/27
+>
+> the gateway just running SMTP and ssh, i want to log and prevent (as I
+> can) the port scan from the outside. I was able to slow down the nmap
+> from about 50 seconds to about 250 seconds from other host (from the
+> outside network) to my internal box (167.205.102.2)
+> Does somebody can tell me how to increase this (slow down the nmap), some
+> suggest will be good too...
+>
+> Sorry for my english....
+>
+> Regards, D. Prima Prayudi
+>
+> IPv6-enabled
+> ARC-ITB 2001:d30:3:160::2/64
+>
+>
+--0-2027159-1081250596=:4748
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name=firewall
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.BSF.4.50L0.0404061823160.4748@arc.itb.ac.id>
+Content-Description: rules
+Content-Disposition: attachment; filename=firewall
 
-Sorry for my english....
-
-Regards, D. Prima Prayudi
-
-IPv6-enabled
-ARC-ITB 2001:d30:3:160::2/64
-
+IyEvYmluL2Jhc2gNCiMgTG9hZGluZyByZXF1aXJlZCBrZXJuZWwtbW9kdWxl
+cw0KbW9kcHJvYmUgaXBfY29ubnRyYWNrX2Z0cA0KbW9kcHJvYmUgaXBfY29u
+bnRyYWNrX2lyYw0KIyByZXNldCBhbGwgcnVsZXMNCmlwdGFibGVzIC1GDQpp
+cHRhYmxlcyAtWA0KaXB0YWJsZXMgLVoNCg0KDQojIFRIRSBVRFAtSU5QVVQg
+UlVMRVMNCiMgYWNjZXB0IGFsbCB1ZHAgaW5wdXQNCmlwdGFibGVzIC1OIHVk
+cF9pbnB1dA0KaXB0YWJsZXMgLUEgdWRwX2lucHV0IC1qIEFDQ0VQVA0KDQoN
+CiMgVEhFIElOVkFMSUQtVENQIFJVTEVTDQojIGxvZyBhbmQgZHJvcCBhbGwg
+c3RyYW5nZSAvIGludmFsaWQgcGFja2V0DQppcHRhYmxlcyAtTiBpbnZhbGlk
+X3RjcA0KaXB0YWJsZXMgLUEgaW52YWxpZF90Y3AgLXAgdGNwICEgLS1zeW4g
+LW0gc3RhdGUgLS1zdGF0ZSBORVcgLWogVUxPRyBcDQoJLS11bG9nLXByZWZp
+eCAiISFfTkVXX05PVF9TWU5fISEgIg0KaXB0YWJsZXMgLUEgaW52YWxpZF90
+Y3AgLXAgdGNwICEgLS1zeW4gLW0gc3RhdGUgLS1zdGF0ZSBORVcgLWogRFJP
+UA0KaXB0YWJsZXMgLUEgaW52YWxpZF90Y3AgLXAgdGNwIC0tdGNwLWZsYWdz
+IFNZTixBQ0sgU1lOLEFDSyAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtaiBVTE9H
+IFwNCgktLXVsb2ctcHJlZml4ICIhIV9TUE9PRkVEX1RDUF8hISAiIA0KaXB0
+YWJsZXMgLUEgaW52YWxpZF90Y3AgLXAgdGNwIC0tdGNwLWZsYWdzIFNZTixB
+Q0sgU1lOLEFDSyAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtaiBEUk9QDQppcHRh
+YmxlcyAtQSBpbnZhbGlkX3RjcCAtcCB0Y3AgLW0gc3RhdGUgLS1zdGF0ZSBJ
+TlZBTElEIC1qIFVMT0cgXA0KCS0tdWxvZy1wcmVmaXggIiEhX0lOVkFMSURf
+VENQXyEhICINCmlwdGFibGVzIC1BIGludmFsaWRfdGNwIC1wIHRjcCAtbSBz
+dGF0ZSAtLXN0YXRlIElOVkFMSUQgLWogRFJPUA0KaXB0YWJsZXMgLUEgaW52
+YWxpZF90Y3AgLXAgdGNwIC0tdGNwLWZsYWdzIFNZTixBQ0ssRklOLFJTVCBO
+T05FIC1qIFVMT0cgXA0KCS0tdWxvZy1wcmVmaXggIiEhX1RDUF9OVUxMXyEh
+Ig0KaXB0YWJsZXMgLUEgaW52YWxpZF90Y3AgLXAgdGNwIC0tdGNwLWZsYWdz
+IFNZTixBQ0ssRklOLFJTVCBOT05FIC1qIERST1ANCg0KDQojIFRIRSBUQ1At
+SU5QVVQgUlVMRVMNCiMgb25seSBhY2NlcHQgdGNwIHRvIHRoaXMgcG9ydA0K
+aXB0YWJsZXMgLU4gdGNwX2lucHV0DQppcHRhYmxlcyAtQSB0Y3BfaW5wdXQg
+LXAgdGNwIC0tc3luIC0tZHBvcnQgMjIgLWogQUNDRVBUDQppcHRhYmxlcyAt
+QSB0Y3BfaW5wdXQgLXAgdGNwIC0tc3luIC0tZHBvcnQgMjUgLWogQUNDRVBU
+DQppcHRhYmxlcyAtQSB0Y3BfaW5wdXQgLXAgdGNwIC0tc3luIC0tZHBvcnQg
+MTEzIC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgdGNwX2lucHV0IC1wIHRjcCAt
+bSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBU
+DQppcHRhYmxlcyAtQSB0Y3BfaW5wdXQgLXAgdGNwIC1tIGNvbm50cmFjayAt
+LWN0c3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBBQ0NFUFQNCiMgdHJh
+cCBwb3J0LXNjYW4gdG8gdGhpcyBwb3J0DQppcHRhYmxlcyAtQSB0Y3BfaW5w
+dXQgLXAgdGNwIC1tIG11bHRpcG9ydCAtLWRwb3J0cyA3OSwxMDIzIC1qIFVM
+T0cgXA0KCS0tdWxvZy1wcmVmaXggIiEhX1BPUlRfU0NBTl8hISAiDQojIGZp
+bmFsbHkgZHJvcCBvdGhlciB0Y3AgcGFja2V0DQppcHRhYmxlcyAtQSB0Y3Bf
+aW5wdXQgLWogRFJPUA0KDQoNCiMgVEhFIFRDUC1XV1cgUlVMRVMgDQojIGFj
+Y2VwdCB0Y3Agb25seSB0byB0aGlzIHBvcnQNCmlwdGFibGVzIC1OIHRjcF93
+d3cNCmlwdGFibGVzIC1BIHRjcF93d3cgLXAgdGNwIC1qIGludmFsaWRfdGNw
+DQppcHRhYmxlcyAtQSB0Y3Bfd3d3IC1wIHRjcCAtLXN5biAtLWRwb3J0IDIx
+IC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgdGNwX3d3dyAtcCB0Y3AgLS1zeW4g
+LS1kcG9ydCAyMiAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIHRjcF93d3cgLXAg
+dGNwIC0tc3luIC0tZHBvcnQgMjUgLWogQUNDRVBUDQppcHRhYmxlcyAtQSB0
+Y3Bfd3d3IC1wIHRjcCAtLXN5biAtLWRwb3J0IDgwIC1qIEFDQ0VQVA0KaXB0
+YWJsZXMgLUEgdGNwX3d3dyAtcCB0Y3AgLS1zeW4gLS1kcG9ydCAxMTAgLWog
+QUNDRVBUDQppcHRhYmxlcyAtQSB0Y3Bfd3d3IC1wIHRjcCAtLXN5biAtLWRw
+b3J0IDExMyAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIHRjcF93d3cgLXAgdGNw
+IC0tc3luIC0tZHBvcnQgMTQzIC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgdGNw
+X3d3dyAtcCB0Y3AgLS1zeW4gLS1kcG9ydCAzMTMwIC1qIEFDQ0VQVA0KaXB0
+YWJsZXMgLUEgdGNwX3d3dyAtcCB0Y3AgLS1zeW4gLS1kcG9ydCA4MDgwIC1q
+IEFDQ0VQVA0KaXB0YWJsZXMgLUEgdGNwX3d3dyAtcCB0Y3AgLW0gc3RhdGUg
+LS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KaXB0YWJs
+ZXMgLUEgdGNwX3d3dyAtcCB0Y3AgLW0gY29ubnRyYWNrIC0tY3RzdGF0ZSBF
+U1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KIyB0byB0cmFwIHBvcnQg
+c2NhbiANCmlwdGFibGVzIC1BIHRjcF93d3cgLXAgdGNwIC1tIG11bHRpcG9y
+dCAtLWRwb3J0cyA3OSwxMDIzIC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgdGNw
+X3d3dyAtaiBEUk9QDQoNCg0KIyBUSEUgV1dXLVJVTEVTIA0KaXB0YWJsZXMg
+LU4gd3d3X3J1bGVzDQppcHRhYmxlcyAtQSB3d3dfcnVsZXMgLXAgdGNwIC1q
+IHRjcF93d3cNCmlwdGFibGVzIC1BIHd3d19ydWxlcyAtaiBBQ0NFUFQNCg0K
+Iw0KIyBUSEUgUkVBTCBSVUxFUw0KIyBCZWdpbiBoZXJlDQojIFRIRSBJTlBV
+VCBSVUxFUw0KaXB0YWJsZXMgLUEgSU5QVVQgLXMgMTkyLjE2OC4wLjAvMjQg
+LWogRFJPUA0KaXB0YWJsZXMgLUEgSU5QVVQgLXMgMTAuMC4wLjAvOCAtaiBE
+Uk9QDQppcHRhYmxlcyAtQSBJTlBVVCAtcCB1ZHAgLWogdWRwX2lucHV0DQpp
+cHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgLWogaW52YWxpZF90Y3ANCmlwdGFi
+bGVzIC1BIElOUFVUIC1wIHRjcCAtaiB0Y3BfaW5wdXQNCg0KIyBUSEUgRk9S
+V0FSRCBSVUxFUw0KaXB0YWJsZXMgLUEgRk9SV0FSRCAtcyAxOTIuMTY4LjAu
+MC8yNCAtaiBEUk9QDQppcHRhYmxlcyAtQSBGT1JXQVJEIC1zIDEwLjAuMC4w
+LzggLWogRFJPUA0KaXB0YWJsZXMgLUEgRk9SV0FSRCAtZCAxNjcuMjA1LjEw
+Mi4wLzI0IC1qIGludmFsaWRfdGNwDQojIGFsbG93IGZvcndhcmQgdG8gb3du
+IGludGVyZmFjZSAoZ2F0ZS5mc3JkKQ0KaXB0YWJsZXMgLUEgRk9SV0FSRCAt
+ZCAxNjcuMjA1LjMwLjc1IC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgRk9SV0FS
+RCAtZCAxNjcuMjA1LjEwMi4xIC1qIEFDQ0VQVA0KaXB0YWJsZXMgLUEgRk9S
+V0FSRCAtZCAxNjcuMjA1LjEwMi42NSAtaiBBQ0NFUFQNCmlwdGFibGVzIC1B
+IEZPUldBUkQgLWQgMTY3LjIwNS4xMDIuMTMwIC1qIEFDQ0VQVA0KIyBGU1JE
+IFNFUlZFUiwgUk9VVEVSLCBBUlQsIERLVg0KaXB0YWJsZXMgLUEgRk9SV0FS
+RCAtZCAxNjcuMjA1LjEwMi4yIC1qIHd3d19ydWxlcw0KaXB0YWJsZXMgLUEg
+Rk9SV0FSRCAtZCAxNjcuMjA1LjEwMi4zIC1qIEFDQ0VQVA0KaXB0YWJsZXMg
+LUEgRk9SV0FSRCAtZCAxNjcuMjA1LjEwMi42NiAtaiBBQ0NFUFQNCmlwdGFi
+bGVzIC1BIEZPUldBUkQgLWQgMTY3LjIwNS4xMDIuMTMwIC1qIEFDQ0VQVA0K
+IyBvbmx5IGFjY2VwdCBub24tcHJpdmlsZWdlcyBwb3J0IHRvIGNsaWVudA0K
+aXB0YWJsZXMgLUEgRk9SV0FSRCAtZCAxNjcuMjA1LjEwMi4wLzI0IC1wIHRj
+cCAtLWRwb3J0IDE6MTAyMyAtaiBSRUpFQ1QNCg0KDQoNCg==
+--0-2027159-1081250596=:4748--
 
