@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: MASQUERADE for 2 Internet connections
-Date: Mon, 9 Sep 2002 13:16:03 +0100
+Subject: Re: Can't use hostname instead of ip address in the nat table
+Date: Mon, 9 Sep 2002 13:10:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209091216.g89CG9v05332@vulcan.rissington.net>
-References: <005a01c257f7$e2e51dc0$6e69690a@rimas>
+Message-ID: <200209091211.g89CB4v05311@vulcan.rissington.net>
+References: <NJEIKNJBEABDOAFIFLOOOEBFCBAA.wualvin@eternalit.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005a01c257f7$e2e51dc0$6e69690a@rimas>
+In-Reply-To: <NJEIKNJBEABDOAFIFLOOOEBFCBAA.wualvin@eternalit.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +20,49 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 09 September 2002 12:56 pm, Rimas wrote:
+On Saturday 07 September 2002 6:40 pm, Alvin Wu wrote:
 
-> Hi folks,
+> My problem is:
 >
-> I have configured NAT for 1 Inet connection :
-> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE - working solution
+> I try to nat incoming HTTP requests to be re-directed to internal addresses
+> like 192.168.1.2; but fail by capturing destination HOSTNAME (from the
+> internet interface eth0) instead of ip address. The command I use for this
+> purpose is:
 >
-> I use 10.105.105.x internal IP addresing
+> iptables ?t nat ?A PREROUTING -i eth0 ?d www.mydomain.com
+> <http://www.mydomain.com/>  -p ?tcp - -dport 80 ?j DNAT  - - to 192.168.1.2
 >
-> Now I have a second one Inet connection (eth2).
+> {please ignore the syntax since my email auto-correct software may make it
+> somehow differently.}
 >
-> How to make MASQUERADE like this:
-> 1st Inet - MASQUERADE for 10.105.105.100-105
-> 2nd Inet - MASQUERADE for 10.105.105.xx for all except 100-105
+> I have test with different parameters such as interface, chains..etc and
+> found that I cannot match a packet by using destination HOSTNAME.
+>
+> If I use IP address nat, then it works fine.
+>
+> Can anyone help me what would be the problem is? Can iptables identify
+> HOSTNAME in such environment? Is there any critical pre-requisite for this
+> to work in a single server box?
 
-MASQUERADING is not your problem.   All you need to do is have two rules:
+iptables can indeed accept a rule with a hostname instead of an IP address 
+(although that's not necessarily the recommended way to do things...), the 
+only requirement is that the machine has to be able to perform a DNS lookup 
+at the time the rule is being entered into the netfilter ruleset.
 
-iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
-iptables -A POSTROUTING -t nat -o eth2 -j MASQUERADE
+So, at the time your script is running, do you:
+1. have a functioning network connection ?
+2. have INPUT and OUTPUT rules which allow DNS to work ?
+3. have a DNS resolv.conf file configured ?
 
-That will masquerade all packets going out of the two external interfaces.
-
-The tricky bit is to get your routing to direct packets from 
-10.105.105.100-105 via eth0 and to direct packets from the rest of 
-10.105.105.0/24 via eth2.
-
-To do this you need to investigate iproute2 
-http://defiant.coinet.com/iproute2
-
-It's not difficult - but it's not netfilter.
+Hope this helps,
 
 Antony.
 
 -- 
 
-If you want to be happy for an hour, get drunk.
-If you want to be happy for a year, get married.
-If you want to be happy for a lifetime, get a garden.
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
+
+ - Frank Skinner
 
