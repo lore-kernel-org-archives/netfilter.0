@@ -1,11 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: multiple pptp clients behind one machine
-Date: Wed, 9 Mar 2005 13:50:53 +0100 (CET)
-Message-ID: <18086.212.238.226.227.1110372653.squirrel@212.238.226.227>
-References: <Pine.LNX.4.58.0503081436210.29834@sloth.wcug.wwu.edu>
+From: Pablo Neira <pablo@eurodev.net>
+Subject: Re: iptables-restore: commit not at end of table
+Date: Wed, 09 Mar 2005 14:45:20 +0100
+Message-ID: <422EFDF0.7000302@eurodev.net>
+References: <422EE146.1070808@geert.triple-it.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <Pine.LNX.4.58.0503081436210.29834@sloth.wcug.wwu.edu>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <422EE146.1070808@geert.triple-it.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,43 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Geert van der Ploeg <netfilter@geert.triple-it.nl>
+Cc: netfilter@lists.netfilter.org
 
-> I have compiled a 2.6.9 kernel with the pptp patches.  When I try out t=
-he
-> new modules GRE is blocked on the firewall.
->
-> Shorewall:net2all:DROP:IN=3Deth0 OUT=3D
-> MAC=3D00:a0:cc:56:b8:5c:00:10:67:00:1f:04:08:00 SRC=3Dx.x.48.2
-> DST=3Dx.x.116.164 LEN=3D61 TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D36900 D=
-F PROTO=3D47
->
-> I'm running debian unstable.  I patched and installed the new version o=
-f
-> iptables.  I'm using the patch-o-matic-ng-20050307.tar.bz2 and most rec=
-ent
-> iptables source.
->
-> The modules load OK:
-> root@router-jl:~# lsmod
-> Module                  Size  Used by
-> ip_nat_proto_gre        3264  0
-> ip_nat_pptp             4512  0
-> ip_conntrack_pptp       6336  1 ip_nat_pptp
-> ip_conntrack_proto_gre     5632  2 ip_nat_pptp,ip_conntrack_pptp
->
->
-> Do you have any ideas, or need more information that I can provide?
-
-You are not telling anything about your ruleset.
-Do you have a rule that allows the gre protocol to be forwarded ?
-
-$IPT -A FORWARD -p gre [...] -j ACCEPT
+Geert van der Ploeg wrote:
+> Hi all,
+> 
+> After updating a firewall from iptables 1.2.7a to a later version, my
+> ruleset doesn't work anymore.
+> It fails on COMMIT-lines that are not at the end of a table definition.
+> I used commits for cutting my (sometimes quite large) rulesets into
+> smaller parts and make sure I always keep a working configuration, even
+> if some rules fail.
+> 
+> For example:
+>  - define management-access definitions (allow SSH from
+> management-stations, etc)
+>  - COMMIT
+>  - define other rules that get changed a lot and thus have a larger
+> chance of containing errors.
+> 
+> 
+> Having looked at the source-code, I discovered that it is caused by some
+> extra checks on 'in_table' (in iptables-restore.c), which got inserted
+> between 1.2.7a and 1.2.8. The changelog doesn't say why.
 
 
-Gr,
-Rob
+Could you try to reproduce such error with lastest iptables 1.3.1? If 
+so, please post the complaining section of rules, it could be useful for 
+debugging.
 
-
+--
+Pablo
 
