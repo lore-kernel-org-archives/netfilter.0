@@ -1,13 +1,13 @@
 From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Do I need a firewall rule for RST ?
-Date: Tue, 9 Jul 2002 13:35:35 -0400
+Subject: Re: Speed Issues through NAT Firewall
+Date: Tue, 9 Jul 2002 13:38:58 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020709173535.GX25368@cannon.eng.us.uu.net>
-References: <02070918501400.02824@Lms>
+Message-ID: <20020709173858.GY25368@cannon.eng.us.uu.net>
+References: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <02070918501400.02824@Lms>
+In-Reply-To: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,33 +19,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Humme <jan.humme@xs4all.nl>
+To: Travis Crook <travis@visionsbeyond.com>
 Cc: netfilter@lists.samba.org
 
-On Tue, Jul 09, 2002 at 06:50:13PM +0200, Jan Humme wrote:
+On Tue, Jul 09, 2002 at 11:29:49AM -0600, Travis Crook wrote:
 
-> Questions:
-> 
-> 1) AFAIK these packets are harmless, correct? Or could some of them be used 
-> in attacks?
+> Hello,
+>     I currently have two firewalls running.  Both on Mandrake 8.1 running iptables.  I currently have two internet connections (one is a DSL line at 1Mb, the other is straight from an ISP at 2.5 Mb).  I can get 700Kb speeds through the firewall on the DSL line (which is about as fast as it ever is) but I only get about 500Kb speeds through the firewall on the ISP line.  Shouldn't I be able to get at least 2Mb speeds through this firewall? 
 
-Someone can send you these packets to tear down your established
-tcp sessions. Not that it's easy to do but feasible.
-
-> 
-> 2) (Assuming they are harmless:) is it safe then to add a rule:
-> 
-> $IPTABLES -A FORWARD -m multiport -p tcp -i ppp0 --sports $TCPOUT\
-> 	-j ACCEPT --tcp-flags RST RST
->  
-> 3) Is there perhaps a better way to deal with these kinds of packets? 
-> Perhaps i should better use "state" and forget about the flags?
-
-Yes. I'd do this. However it doesn't protect you from the case mentioned
-above. The only solution for that is using IPsec. But then again you
-cannot run IPsec for all your traffic...
+How do you measure the throughput?
 
 Ramin
+PS. Line breaks are good things.
 
-> Jan Humme.
+
+> 
+> Thanks
+> 
+> Travis Crook
+> Visions Beyond
 
