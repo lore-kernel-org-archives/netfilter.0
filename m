@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Anyone using DNAT on the OUTPUT chain?
-Date: Mon, 10 Jun 2002 13:57:54 +0100
+From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
+Subject: RE: tftp conntrack
+Date: Mon, 10 Jun 2002 15:22:35 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206101258.g5ACvxU08297@vulcan.rissington.net>
-References: <BC6421B0F2CC4C43897842092E0E00A94C149E@TX1EX1NT.dyncorp.com>
+Message-ID: <E131E9F1848D0148813EAF06A846608F615DA7@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C21081.E282C620"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <BC6421B0F2CC4C43897842092E0E00A94C149E@TX1EX1NT.dyncorp.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,25 +17,87 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+To: Skull <skull@skullkrusher.net>, netfilter@lists.samba.org
 
-On Monday 10 June 2002 1:45 pm, Kellogg, Chris wrote:
+This is a multi-part message in MIME format.
 
-> iptables -A OUTPUT -s 192.168.0.0/24 -p tcp --dport 80 -t nat -j DNAT
-> --to-destination 192.168.4.4:80
->
-> When I attempt to put this rule in, I get the error message "iptables:
-> Invalid argument".
+------_=_NextPart_001_01C21081.E282C620
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-I should think it's the -s argument which netfilter is complaining about - it 
-makes (almost) no sense to include this in a rule which only applies to 
-packets coming from the local machine.
+Skull [mailto:skull@skullkrusher.net] wrote:
 
-I assume you really are trying to DNAT packets originating from the netfilter 
-box, and not ones which are being routed by it (which you would do in the 
-POSTROUTING chain) ?
+>Hi all,
+>I've just downloaded the tftp-conntrack patch, but seems i'm not good=20
+>enough to let it patch correctly for me... :-)
+>Is there anybody who already correctly applied it and could tell me =
+what=20
+>to put care on?
+
+Hi Emanuele,
+
+the tftp conntracker, like all conntrackers nowadays requires that
+the kernel is patched for newnat support.
+
+Did you apply the necessary patch(es) for newnat before applying the
+tftp connectrack helper ?
+
+Kind regards,
+Filip
 
 
-Antony.
+
+
+
+
+------_=_NextPart_001_01C21081.E282C620
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3DWindows-1252">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.5762.3">
+<TITLE>RE: tftp conntrack</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+
+<P><FONT SIZE=3D2>Skull [<A =
+HREF=3D"mailto:skull@skullkrusher.net">mailto:skull@skullkrusher.net</A>]=
+ wrote:<BR>
+<BR>
+&gt;Hi all,<BR>
+&gt;I've just downloaded the tftp-conntrack patch, but seems i'm not =
+good<BR>
+&gt;enough to let it patch correctly for me... :-)<BR>
+&gt;Is there anybody who already correctly applied it and could tell me =
+what<BR>
+&gt;to put care on?<BR>
+<BR>
+Hi Emanuele,<BR>
+<BR>
+the tftp conntracker, like all conntrackers nowadays requires that<BR>
+the kernel is patched for newnat support.<BR>
+<BR>
+Did you apply the necessary patch(es) for newnat before applying the<BR>
+tftp connectrack helper ?<BR>
+<BR>
+Kind regards,<BR>
+Filip<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C21081.E282C620--
 
