@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ftp connection tracking
-Date: 29 Jul 2003 13:41:40 +0200
+From: "George" <george@xorgate.com>
+Subject: set RELATED?
+Date: Fri, 25 Jul 2003 20:21:21 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1059478900.844.18.camel@elendil.intranet.cartel-securite.net>
-References: <200307291322.04698.heinrici76@gmx.de>
+Message-ID: <000801c3531c$9b1fad40$3eac18ac@geosxp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C352EA.502C95F0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307291322.04698.heinrici76@gmx.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +16,65 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Axel Heinrici <heinrici76@gmx.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Le mar 29/07/2003 =E0 13:22, Axel Heinrici a =E9crit :
-> I have problem connecting to a ftp-server on a non-standard port.
-[...]
-> What options do I have to aply when inserting the modules?
+This is a multi-part message in MIME format.
 
-As far as I can remember :
+------=_NextPart_000_0005_01C352EA.502C95F0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-	modprobe ip_conntrack_ftp port=3D21,2121
+Is there currently a way for iptables to force another packet stream =
+conntrack entry to be RELATED without having to look inside of the =
+packet data?
 
-You can track 8 ports this way.
+For example:  If a 10.0.0.2 client behind an iptables firewall were to =
+send an IMCP echo to 10.20.30.1, could a rule be set up so that after =
+the firewall see this packet, all udp packets sent to dport=3D45678 =
+would be DNATed to 10.0.0.2?
 
-As a more general way to get modules options, use modinfo command.
-Unfortunately, I do not have ip_conntrack_ftp built as module, but this
-what you can get :
+The designated RELATED stream would in general then be just like any =
+other conntrack entry.
 
-cbr@elendil:~$ modinfo bonding
-filename:    /lib/modules/2.4.20/kernel/drivers/net/bonding.o
-description: <none>
-author:      <none>
-license:     "GPL"
-parm:        max_bonds int, description "Max number of bonded devices"
-parm:        miimon int, description "Link check interval in
-milliseconds"
-parm:        mode int, description "Mode of operation : 0 for round
-robin, 1 for active-backup, 2 for xor"
-parm:        arp_interval int, description "arp interval in
-milliseconds"
-parm:        arp_ip_target string, description "arp target in n.n.n.n
-form"
-parm:        updelay int, description "Delay before considering link up,
-in milliseconds"
-parm:        downdelay int, description "Delay before considering link
-down, in milliseconds"
+My guess is that this would require a generic force-related module.
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+------=_NextPart_000_0005_01C352EA.502C95F0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Is there currently a way&nbsp;for =
+iptables to force=20
+another packet stream&nbsp;conntrack entry&nbsp;to be RELATED without =
+having to=20
+look inside of the packet data?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>For example:&nbsp; If a 10.0.0.2 client =
+behind an=20
+iptables firewall were to send an IMCP echo to 10.20.30.1, could a rule =
+be set=20
+up so that after the firewall see this packet, all udp packets sent to=20
+dport=3D45678&nbsp;would =
+be&nbsp;DNATed&nbsp;to&nbsp;10.0.0.2?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>The designated RELATED stream would in =
+general then=20
+be&nbsp;just like any other conntrack entry.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>My guess is that this would require a =
+generic=20
+force-related module.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0005_01C352EA.502C95F0--
+
 
