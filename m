@@ -1,11 +1,12 @@
-From: "Sean E. Covel" <seanecovel@comcast.net>
-Subject: FTP/SSL
-Date: Thu, 16 Oct 2003 13:31:18 -0400
+From: "Gaby Schilders" <G.Schilders@ibfd.org>
+Subject: DNAT +2 uplinks +route=GO
+Date: Thu, 16 Oct 2003 19:30:43 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1066325478.22244.15.camel@localhost>
+Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E129603A@ibfdmail.ibfd.oin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,29 +17,63 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter-List <netfilter@lists.netfilter.org>
+To: netfilter list <netfilter@lists.netfilter.org>
 
-Is there any way to do connection tracking for incoming connections to
-an FTP/SSL server?  I'm using a Bering (leaf.sourceforge.net)
-mini-distro that uses the Shorewall firewall (www.shorewall.net).  
+The lowdown:
 
-My firewall has both ip_net_ftp and ip_conntack_ftp, but as we all know,
-these don't work for FTP/SSL.
+Repeat situation description:
+- 2 uplinks with own public address space
+- 1 internal network with private address space
 
-I am attempting to port-forward the FTP/SSL connection from the firewall
-machine to a server in a service network.  The "command" connection on
-port 21 works just great, but when I try to GET, PUT, or LS a file,
-basically anything that uses the data connection, the firewall blocks
-the connection.  It appears that FTP/SSL uses a high port -> high port
-connection for the data connection.
+Goal: do DNAT through address in both public ranges, converging on =
+internal hosts:
+ExtIP1 > IntIP1
+ExtIP2 > IntIP1
 
-One possible solution (which I don't like!) is to open a large range of
-high ports in the firewall.  This seems a bit primitive.  There must be
-a way to associate the initial port 21 connection with the subsequent
-high-port connection.
+Everything is done in iptables, nothing was changed in the standard =
+route/rules setup.
 
-Thanks for your help,
+Trick used:
+iptables -t nat -A PREROUTING -i $ExtNet1 -p tcp -d =
+$ExtAddress1InternalHost \
+-j DNAT --to-destination $IntAddressInternalHost
 
-Sean
+iptables -t nat -A PREROUTING -i $ExtNet2 -p tcp -d =
+$ExtAddress2InternalHost \
+-j DNAT --to-destination $IntAddressInternalHost
 
+This part is easy and works. The return path is the problem.
+
+Solution:
+
+iptables -t mangel -A POSTROUTING -s $IntNet/IntMask -m conntrack \
+--ctorigdst $ExtAddressRange1/ExtAddressRange1Mask \
+--ctstate ESTABLISHED,RELATED
+-j ROUTE --gw GWExtNet1 --oif IFExtNet1 --continue
+
+iptables -t mangel -A POSTROUTING -s $IntNet/IntMask -m conntrack \
+--ctorigdst $ExtAddressRange2/ExtAddressRange2Mask \
+--ctstate ESTABLISHED,RELATED
+-j ROUTE --gw GWExtNet2 --oif IFExtNet2 --continue
+
+Caveats:
+To get routing working, you _must_ have Equal-cost-multipath routing =
+enabled in the kernel and you must set up a multipath route over both =
+links. If someone can explain to me why I would be very thankfull. =
+Simply adding another default route with different metric won't work.
+
+You need a recent p-o-m and iptables to use the --continue. You _need_ =
+the --continue or UnDNATting will not be performed (you jump out on the =
+-j ROUTE).
+
+If you want even more flexibility, you can use the other suggested =
+route: instead of -j ROUTE, use -j MARK x where x is different for each =
+uplink to match. You can then proceed to use iproute2+tc and 'rules' =
+based on fwmark to do even more funky stuff.
+
+Thanks for all the help and suggestions, I hope this helps some other =
+poor schmuck who is at a loss.
+
+Gaby Schilders
+IBFD network admin
 
