@@ -1,12 +1,13 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: iptables, voip, mac match
-Date: Fri, 11 Oct 2002 05:49:40 -0400 (EDT)
+From: "HareRam" <hareram@sol.net.in>
+Subject: Re: Fw: How to remove Established Connection
+Date: Fri, 11 Oct 2002 15:32:12 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210110549010.29137-100000@localhost.localdomain>
-References: <065501c270fc$e3f10c10$583a29c4@ghome>
+Message-ID: <006301c2710d$4511c060$7cfcc5cb@humanpc>
+References: <00e301c270e7$09c5a7e0$7cfcc5cb@humanpc> <20021011074918.SGVP459.mta02-svc.ntlworld.com@there> <002d01c270fe$86ca3c80$7cfcc5cb@humanpc> <3DA696C3.5000508@iprimus.com.au>
+Reply-To: "HareRam" <hareram@sol.net.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <065501c270fc$e3f10c10$583a29c4@ghome>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Gavin <gavin@raha.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Michael <mutk@iprimus.com.au>, netfilter@lists.samba.org
 
-On Fri, 11 Oct 2002, Gavin wrote:
+thanks
 
-> hello,
-> 
-> just reporting a funny one:
-> 
-> One of our clients was trying to use a VOIP application through a linux
-> gateway (iptables-1.2.3). The client had a MAC address of a:b:c:d:e:f and an
-> IP address of 1.2.3.4
-> 
-> When I used this rule on the gateway (FORWARD policy DROP):
-> iptables -A INPUT -i eth1 -m mac --mac a:b:c:d:e:f -j ACCEPT
+let me try and get back to you
+any more help required
+iam doing now
+thanks to you and Antony also
 
-                                   --mac-source ???
-
->      -     the client could not establish an audio channel to his VOIP
-> server
+hare
+----- Original Message -----
+From: "Michael" <mutk@iprimus.com.au>
+To: <netfilter@lists.samba.org>
+Sent: Friday, October 11, 2002 2:45 PM
+Subject: Re: Fw: How to remove Established Connection
 
 
-rday
+> HareRam wrote:
+>
+> >then ? how do i remove my establish client, when we do some accounting
+> >when he logged out, he should not get any browsing, as well as he should
+be
+> >removed from internet
+> >how can i achieve
+> >
+> >please guide me alternative method to achieve this
+> >
+>
+> You remove the rule that accepts the established connection.
+>
+> I have a specific rule for each host that is forwarded through firewall.
+> If I want to allow the host, I add the rule in FORWARD chain:
+>
+> ACCEPT     all  --  *      eth0    <ip_of_host>
+> 0.0.0.0/0          state RELATED,ESTABLISHED
+>
+> When I want to stop them I just remove the rule. Even if the established
+> entry appears and lingers in /proc/net/ip_conntrack, it can't go anywhere.
+> At least that's how it seems to work for me... Am I wrong??
+>
+> Cheers,
+> Michael
+>
+>
+>
 
 
