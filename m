@@ -1,8 +1,8 @@
 From: "kaiwen" <cal_kaiwen@hotmail.com>
 Subject: Re: Match packet mark with --set-mark to ip rule fwmark
-Date: Wed, 7 Jan 2004 13:03:43 +0800
+Date: Wed, 7 Jan 2004 13:35:38 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law11-OE73k4PTBOXcs00005136@hotmail.com>
+Message-ID: <LAW11-OE14FjwUbowDp0001e8e9@hotmail.com>
 References: <Law11-OE68Dt3HvoFOA00000021@hotmail.com> <3FFB927B.4010208@snapgear.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -22,10 +22,75 @@ Cc: netfilter@lists.netfilter.org
 
 Hi,
 
-Yes, I just wish to do testing, to see if fwmark works with --set-mark.
-I will try on your advice now. Thank you and get back to List soon :)
+My new configurations:-
 
-kaiwen
+Network Diagram:
+--- 192.168.250.197 (eth0) Linux Box (eth1)
+192.168.8.88 -------------192.168.8.122 (eth0) Windows XP Client
+
+Configuration A
+(1) [root@g root]# ip ru
+0:      from all lookup local
+32765:  from all fwmark        5 lookup test2
+32766:  from all lookup main
+32767:  from all lookup 253
+
+(2)[root@g root]# ip ro show table test2
+prohibit 192.168.8.88
+prohibit 192.168.250.197
+
+(3) [root@g root]# iptables -t mangle -L
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+MARK       all  --  anywhere             anywhere           MARK set 0x5
+
+(4) [root@g root]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use
+Iface
+192.168.250.0   0.0.0.0         255.255.255.0   U     0      0        0 eth0
+192.168.8.0     0.0.0.0         255.255.255.0   U     0      0        0 br0
+127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
+0.0.0.0         192.168.250.254 0.0.0.0         UG    0      0        0 eth0
+
+Ping from 192.168.8.122 to 192.168.250.197 is still successful. :|
+
+Take a look at ip rule, the first rule route all packet to table local,
+which has a route for 192.168.8.0/24. Is it true that once there is one rule
+which match for the packet, it will route according to it. If so, I remove
+the route from table local and put it at table test2, which is
+Configurations B.
+
+Configurations B
+
+(1) [root@g root]# ip ru
+0:      from all lookup local
+32765:  from all fwmark        5 lookup test2
+32766:  from all lookup main
+32767:  from all lookup 253
+
+(2) [root@g root]# ip ro show table test2
+prohibit 192.168.8.88
+prohibit 192.168.250.197
+192.168.8.0/24 via 192.168.8.88 dev br0
+
+(3) [root@g root]# iptables -t mangle -L
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+MARK       all  --  anywhere             anywhere           MARK set 0x5
+
+(4) [root@g root]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use
+Iface
+192.168.250.0   0.0.0.0         255.255.255.0   U     0      0        0 eth0
+127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
+0.0.0.0         192.168.250.254 0.0.0.0         UG    0      0        0 eth0
+
+Yet, Ping from 192.168.8.122 to 192.168.250.197 is still successful.
+
+Please advice :)
+
 
 ----- Original Message -----
 From: "Philip Craig" <philipc@snapgear.com>
