@@ -1,13 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Re(4): Need for GLIBC 2.3?
-Date: Fri, 18 Apr 2003 19:59:23 +0200
+From: John Mathey <jmathey@attbi.com>
+Subject: Re: Can iptables manager source mac address?
+Date: Fri, 18 Apr 2003 12:29:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030418195923.10177608.arnt@c2i.net>
-References: <OF671ACFC7.AC7798C4-ON88256D0C.005AE508-88256D0C.005B95F5@deepwoods.com>
+Message-ID: <5.2.0.9.2.20030418122555.00b09310@mail.attbi.com>
+References: <1050747660.10928.6.camel@ntc9.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OF671ACFC7.AC7798C4-ON88256D0C.005AE508-88256D0C.005B95F5@deepwoods.com>
+In-Reply-To: <1050747660.10928.6.camel@ntc9.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +16,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: NetSnake <netsnake@963.net>, netfilter@lists.netfilter.org
 
-On Fri, 18 Apr 2003 09:40:21 -0700, 
-Carol Anne Ogdin <caogdin@deepwoods.com> wrote in message 
-<OF671ACFC7.AC7798C4-ON88256D0C.005AE508-88256D0C.005B95F5@deepwoods.co
-m>:
+Yes, you can use iptables to validate the mac address, try this:
 
-> 
-> On 04/18 @ 09:05 AM, Arnt Karlsen wrote:
-> >On Fri, 18 Apr 2003 07:37:47 -0700,
-> >Carol Anne Ogdin <caogdin@deepwoods.com> wrote in message
-> ><OFFF8865C2.2434357B-ON88256D0C.004E3CB8-88256D0C.00505D66@deepwoods
-> >.co m>:
-> >
-> >> <snip>
-> >>
-> >> Thanks, Arnt, but that doesn't seem to get me where I need to go.
-> >> when I run the command you recommend, I get
-> >>       error: Name field must be present in package: (main package)
-> <snip>
-> >
-> >..no .spec file in the tarball???  Which tarball? (url?)
-> 
-> I downloaded it directly from the link to the *.bz2 at
-> http://www.netfilter.org/downloads.html#1.2.8.
-> And the md5sum of the downloaded file is identical to that given at
-> that site.
-> Using rpmbuild v4.0.4
+iptables -A INPUT -m mac --mac-source 00:05:69:00:04:BA  -j ACCEPT
 
-..you're right, no .spec in there, I'll mail you off list the  
-.spec from the RH9 iptables-1.2.7a-2.src.rpm, it should make 
-a workable starting point for 1.2.7a|8 for your RH-7.3.
+or
 
-..you 'rpmbuild -ba ' from the specfile, see the docs.
+iptables -A INPUT -m mac --mac-source ! 00:05:69:00:04:BA -j DROP
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+you get the idea
+Hope this helps
+John
 
+
+At 06:21 PM 4/19/2003 +0800, NetSnake wrote:
+>   I use iptables to nat to internet, but I found some user use a proxy
+>on intranet, like, 192.168.0.5 can access to internet, 192.168.0.10 can
+>not access to internet, now 10 access a proxy on 192.168.0.5, then he
+>can access now, I thought in package from 192.168.0.5 must contant some
+>information about proxy, like source mac address, this can help me to
+>identified users, can iptables do this?
+>
+>   Thanks.
 
 
