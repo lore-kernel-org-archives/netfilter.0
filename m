@@ -1,14 +1,14 @@
 From: Nick Drage <nickd@funkyjesus.org>
-Subject: Re: conntrack problems
-Date: Wed, 5 Jun 2002 22:19:30 +0100
+Subject: Re: sendto: Operation not permitted
+Date: Wed, 5 Jun 2002 22:25:50 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020605221930.E2090@funkyjesus.org>
-References: <20020604122434.A667@rainbow>
+Message-ID: <20020605222550.F2090@funkyjesus.org>
+References: <20020531005832.K27307@funkyjesus.org> <NJEFLNJDIFFNMHDEBKMJGEDLDOAA.jpatterson@asgardgroup.com>
 Reply-To: Nick Drage <nickd@funkyjesus.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <20020604122434.A667@rainbow>; from g_cardone@libero.it on Tue, Jun 04, 2002 at 12:24:34PM +0200
+In-Reply-To: <NJEFLNJDIFFNMHDEBKMJGEDLDOAA.jpatterson@asgardgroup.com>; from jpatterson@asgardgroup.com on Thu, May 30, 2002 at 09:01:32PM -0400
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -22,41 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Tue, Jun 04, 2002 at 12:24:34PM +0200, Giovanni Cardone wrote:
-> Hi, on a dial-up(56k) machine I'm looking at iptables 1.2.6a with both kernel
-> 2.4.13 and 2.4.18. It's 1 months that I'm having troubles with the conntrack.
-> I have a lot of packets like 'new not syn'(you know what I'm talking about..)
-> with some combos of flags on them:
-> 
-> ACK FIN
-> ACK PSH FIN
-> ACK RST
-> ACK only
+On Thu, May 30, 2002 at 09:01:32PM -0400, Joe Patterson wrote:
+> kind of the same way that a system determines what an ICMP message relates
+> to.  For example, the format of an ICMP unreachable message, which includes
+> such messages as the fragmentation needed and all the network/host/port
+> unreachables, is:
 
 <snip>
 
-> Then I looked into the kernel source for a timeout that match my(stupid)
-> thought. I've found TCP_CONNTRACK_CLOSE with 10 SECS, and I changed this
-> to 2 MINS. Initially it seems(yep, <cite>I have a dream...</cite> :) to me
-> that the losed packets decrements, but these days I receive costantly a
-> lot of them. With no other ideas, I've played a little with the timeouts,
-> increasing them like this
-> 
-> 5 MINS,     /*      TCP_CONNTRACK_CLOSE_WAIT	*/,
-> 1 MINS,     /*      TCP_CONNTRACK_LAST_ACK, */
-> 
-> because I was thinking that maybe the 56k goes really slow some times but
-> I can't see good results :(
-> So I tried with this stupid methods, have you any advice at this? What it
-> could be? And then, I tried to add the tcp-window-tracking patch(the one
-> in iptables-1.2.6a) by Jozsef Kadlecsik on both 2.4.13 and 2.4.18 but it
-> fails to apply :( What version of iptables(maybe 1.2.7 ???) is known to
-> work properly with 2.4.18 at this time? Maybe a new kernel? What I've to
-> download?
+Thank you very much for this detailed explanation, much appreciated.
 
-Hi.  Sorry, I don't have much to add, except to reassure you that I've seen
-similar in my logs.  I hope you will keep the mailing list informed on any
-progress you make, I hope I can add to your research at some point.
+> Excellent documentation on all of this is in "TCP/IP Illustrated, Volume
+> 1: The Protocols" by W. Richard Stevens.  If you really want to know
+> everything about IP and don't care that your brain might explode, read it
+> cover to cover.  :)
+
+Heh, I have two copies of this around, one at work and one at home.  I've
+yet to read it all the way through, but it's at the top of the "to read"
+pile.
+
+Actually I know this book has been mentioned before - I commute by train a
+lot, is it a good book to read on the train, or best to read while I'm sat
+online so I can watch "live" what it describes?
+
+Thank you.
 
 -- 
 FunkyJesus System Administration Team
