@@ -1,10 +1,10 @@
-From: alexander.swann@synetics.fr
-Subject: =?iso-8859-1?Q?R=E9f=2E_=3A_Re=3A_Logging_-_where_does_it_go=3F=3F?=
-Date: Wed, 3 Jul 2002 20:41:27 +0200
+From: Karina =?iso-8859-1?Q?G=F3mez?= Salgado <kgs@acabtu.com.mx>
+Subject: Slow performance - Trouble with IPtables rules
+Date: Wed, 03 Jul 2002 13:41:09 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <OF502635B7.8CB56F79-ONC1256BEB.00668D27-C1256BEB.0066E13F@synetics.fr>
+Message-ID: <3D234545.D34413B9@acabtu.com.mx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,84 +15,71 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
+Hi,
 
-File exist :-))
-but anyway, it should log in /var/log/messages because it logs everythi=
-ng
-from info to crit
-.... Hummmm I just do not understand :((
+    I'm trying to setting up a Linux Computer as my LAN gateway to
+Internet. Later, i will use this computer like a squid-proxy, but by
+now, it should only forward packets in and out of my LAN without
+masquerading (i will use my class C segment), and that's it.
 
+I took the rc.firewalls rules as a base for create gateway and it works,
 
+but even if i only have one computer connected to the gateway the
+internet access is a little slow . The internet access in the linux pc
+is fast but in the other one(s) connected is not that fast, when i try
+to check a web page it takes a moment to process and later when it
+displays the website, and the images can take long time to show.
 
-
-|---------+------------------------------->
-|         |           "riffraff"          |
-|         |           <riffraff@mail.ev1.n|
-|         |           et>                 |
-|         |           Envoy=E9 par :        |
-|         |           netfilter-admin@list|
-|         |           s.samba.org         |
-|         |                               |
-|         |                               |
-|         |           03/07/2002 20:30    |
-|         |           Veuillez r=E9pondre =E0 |
-|         |           riffraff            |
-|         |                               |
-|---------+------------------------------->
-  >--------------------------------------------------------------------=
------------------------------------------------------------------------=
------|
-  |                                                                    =
-                                                                       =
-     |
-  |       Pour :    <netfilter@lists.samba.org>                        =
-                                                                       =
-     |
-  |       cc :                                                         =
-                                                                       =
-     |
-  |       Objet :   Re: Logging - where does it go??                   =
-                                                                       =
-     |
-  >--------------------------------------------------------------------=
------------------------------------------------------------------------=
------|
+The rules i'm using are these:
+--------------------------------
 
 
+#!/bin/sh
+#
+echo -e "\n Loading Firewalling Rules \n"
+
+IPTABLES=/sbin/iptables
+UNIVERSE="0.0.0.0/0"
+
+INTIF="eth1"
+EXTIF="eth0"
+
+echo " Enabling forwarding.. "
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+echo " Clearing existing rules... "
+
+$IPTABLES -P INPUT DROP
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT DROP
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -F -t nat
+$IPTABLES -X
+$IPTABLES -Z
 
 
----------- Original Message ----------------------------------
-From: alexander.swann@synetics.fr
-Date: Wed, 3 Jul 2002 20:24:03 +0200
+$IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j ACCEPT -v
 
->I tested to add these 2 ones (as suggested by GeorgeV)... but without =
-any
->result ...
->
->*.*                                       /var/log/test
->*.=3Ddebug                                  /var/log/debugF
->
->(I restarted the syslogd also)
->
->So my stupid question is :
->What did I miss so that all logs goes in a file ? /var/log/messages or=
- an
->other one ...
->
->Help ;-))
->
-I believe syslog also requires the file to exist before it can log to i=
-t,
-so do a touch /var/log/test /var/log/debugF, then restart syslod.
+$IPTABLES -A OUTPUT -s $UNIVERSE -d $UNIVERSE -j ACCEPT -v
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT -v
+
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT -v
 
 
+This settings are enough ? Do i need somethig more ?
+
+I'll appreciate a lot any help,
 
 
+Karina
 
-=
 
 
 
