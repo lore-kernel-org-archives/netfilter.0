@@ -1,13 +1,14 @@
-From: netfilter@lists.netfilter.org
-Subject: Re: FORWARD rules
-Date: Thu, 11 Sep 2003 07:45:38 +0530
+From: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?=<varyag18@mail.ru>
+Subject: Re[2]: iptables ceases to work after night
+Date: Thu, 11 Sep 2003 14:28:18 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030911021538.GA2104@linux.local>
-References: <20030910175253.GA2752@linux.local> <20030910184430.GB24654@cannon.eng.us.uu.net>
+Message-ID: <E19xOgU-000D0o-00.varyag18-mail-ru@f17.mail.ru>
+References: <16770b1670ae.1670ae16770b@tm.net.my>
+Reply-To: =?koi8-r?Q?=22?=Vladimir Potapov=?koi8-r?Q?=22=20?=<varyag18@mail.ru>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030910184430.GB24654@cannon.eng.us.uu.net>
+In-Reply-To: <16770b1670ae.1670ae16770b@tm.net.my>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +19,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+To: kluivert@tm.net.my
 Cc: netfilter@lists.netfilter.org
 
-On Wed, Sep 10, 2003 at 02:44:30PM -0400, Ramin Dousti wrote:
-> On Wed, Sep 10, 2003 at 11:22:53PM +0530, Payal Rathod wrote:
+
+It's interesting idea.What can be still problems?
+
+-----Original Message-----
+From: kluivert@tm.net.my
+To: varyag18@mail.ru
+Date: Thu, 11 Sep 2003 15:46:56 +0800
+Subject: Re: iptables ceases to work after night
+
 > 
-> Keep the default "DROP" policy and just open whatever is needed
-> including the DNAT'ed packets coming in.
-
-Please explain in a bit more detail relating to my data. Will keeping
-the ESTABLISHED,RELATED rule at top and putting default DROP policy set
-it right?
-
-Thanks a lot and waiting for the reply.
-With warm regards,
--Payal
-
-> The place of the ESTABLISHED,RELATED rule should be at the top of
-> your rule set.
+> > Yesterday at evening my packet filter with iptables worked 
+> > fine.Today at morning , I see that he don't forwarding packet from 
+> > DMZ to local and back.And this thing I see every morning.After I 
+> > reboot my machine it's work fine.I think that my 3com cards have 
+> > some bugs.In log there no entries about this . My rules is:
 > 
-> Ramin
+> Check your cron jobs, maybe something is resetting some parameters back 
+> to the defaults in the early hours of the morning.
 > 
-
--- 
-"Visit GNU/Linux Success Stories"
-http://payal.staticky.com
-Guest-Book Section Updated.
+> 
 
