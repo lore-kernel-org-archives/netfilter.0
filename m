@@ -1,15 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Redhat linux disconnecting telnet session
-Date: Thu, 14 Nov 2002 18:11:43 +0100
+From: "Luis Fernando Barrera" <luba@assist.com.gt>
+Subject: ICMP question
+Date: Thu, 14 Nov 2002 12:28:29 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021114181143.5d3812fe.arnt@c2i.net>
-References: <000e01c28b5c$29656c40$8c01a8c0@sundaram>
-	<200211141040.30235.dharmu@nsecure.net>
-	<008a01c28be9$7f19bff0$8c01a8c0@sundaram>
+Message-ID: <NABBIDJPNCAGKGOFGHBFOELFPIAA.luba@assist.com.gt>
+References: <1037211234.2257.14.camel@mentor>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <008a01c28be9$7f19bff0$8c01a8c0@sundaram>
+In-Reply-To: <1037211234.2257.14.camel@mentor>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,20 +20,49 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 14 Nov 2002 09:24:09 -0500, 
-"Sundaram Ramasamy" <sun@percipia.com> wrote in message 
-<008a01c28be9$7f19bff0$8c01a8c0@sundaram>:
+Hi all,
 
-> Red Hat Linux release 7.1 (Seawolf)
-> Kernel 2.4.2-2 on an i686
+I have a RedHat 7.3 box which I use as a dual homed firewall.
 
-..you _really_ wanna 'rpm -Fvh ftp://your.favorite.site/updates/*.rpm'.
+One of the rules is that I allow all the ICMP traffic from one
+PC in the protected LAN to the Internet.
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Here it is one set of rules
+
+iptables -A FORWARD -p ICMP -s 192.168.1.37 -m state --state
+NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p ICMP -d 192.168.1.37 -m state --state ESTABLISHED -j
+ACCEPT
+
+I've been experiencing the problem that with this set of rules, suddenly,
+the PC in the LAN cannot "ping" any hosts in the Internet. To solve the
+problem
+I delete all my user's chains and flush them, and I worked again.
+I already asked if there is a buffer or counter that gets filled, and
+someone
+told me to watch the number of connections being tracked. I did that and it
+seems
+that the number of connections being tracked is very low (about 160).
+
+Since the problem was a "mistery", I changed the rules to this:
+
+iptables -A FORWARD -p ICMP -s 192.168.1.37 -j ACCEPT
+iptables -A FORWARD -p ICMP -d 192.168.1.37 -j ACCEPT
+
+These are the same rules, except that don't track the state of the
+connections...
+
+Could someone tell me what is the risk asociated to NOT to track the
+connections?
+
+One more question... Is it true that when you specify the ICMP protocol,
+iptables only
+applies the rule to the type 0?
+
+thanks in advance
+
+Luis Fernando Barrera
+luba@assist.com.gt
 
 
 
