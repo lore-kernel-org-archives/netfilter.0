@@ -1,12 +1,13 @@
-From: "Thomas Hilgert" <Thomas.Hilgert@hilgert.de>
-Subject: snat dnat question
-Date: Sat, 6 Jul 2002 00:57:26 +0200
+From: Wayne Topa <brittman@capital.net>
+Subject: Re: I need help , please
+Date: Fri, 5 Jul 2002 18:55:32 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <8C14C590A51EB74285ADCA3DAD1A9DD705C282@hilgert-srv1.internal.hilgert.de>
+Message-ID: <20020705225532.GA7089@dmcom.net>
+References: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com> <20020705191417.UWDG4119.mta06-svc.ntlworld.com@there> <020c01c2242b$8c9565b0$8703000a@aid.inf.cu> <20020705201118.DFBE4626.mta02-svc.ntlworld.com@there> <024901c22432$8885a5a0$8703000a@aid.inf.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <024901c22432$8885a5a0$8703000a@aid.inf.cu>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,54 +18,34 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Hi guys,
+david(david@aid.inf.cu) is reported to have said:
+> Tony:
+> 
+> When I write these rules in the command line all is OK and  the rules works
+> fine.
+> But if I put the same rules in a script :
+> 
+> #!/bin/bash
+Add
+IPTABLES=/sbin/iptables  #(Or where your iptables binary is)
+> # Standard default policies
 
-I have some question regarding snat / dnat witch iptables. Here is what
-I do
-1. setup a packetfilter linuxbox with 3 interfaces.
-   ETH0: Connected to the internet (public ip)
-   ETH1: DMZ with stmp server 10.2.0.0/24
-   ETH2: Internal LAN with ip address 10.1.0.0/24
+Change iptables to $IPTABLES
 
-   Snat all to the official ip address
-   Dnat all incoming to the smtp server
-See the and of mail for a iptables -t nat -L
-And now the question :-)=20
-If I do a telnet to mail.mailwatch.com 25 (simulating smtp) is all I get
-SYN_SENT and that is no connection from the DMZ. The packet filter has
-no problem to establish a connection.=20
-PLEASE explain me why
+$IPTABLES -P FORWARD ACCEPT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -P INPUT DROP
 
-Thanks in advance
-
-Thomas Hilgert
------------------
-Here are the rules to play:=20
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       all  --  anywhere             anywhere           to:10.2.0.2
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT       all  --  anywhere             anywhere
-to:212.23.129.186
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-[root@gw1 iproute2]# iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       all  --  anywhere             anywhere           to:10.2.0.2
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT       all  --  anywhere             anywhere
-to:212.23.129.186
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-
+> iptables -P INPUT DROP
+> 
+> 
+> iptables -P FORWARD DROP
+> iptables -P OUTPUT DROP
+> 
+-- 
+I haven't lost my mind; it's backed up on tape somewhere.
+_______________________________________________________
 
