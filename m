@@ -1,11 +1,13 @@
-From: Shane Hickey <shane@howsyournetwork.com>
-Subject: Need help with rate-limiting NTTP traffic
-Date: Wed, 31 Mar 2004 16:54:09 -0700
+From: Fajar Priyanto <fajarpri@arinet.org>
+Subject: I thought ssh is port #22 ?!!
+Date: Thu, 1 Apr 2004 08:32:06 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040331165409.0d498074@daneel.volumen.net>
+Message-ID: <200404010832.10293.fajarpri@arinet.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,52 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Howdy all,
-	Recently, with the help of this list, I migrated my firewall from a
-FreeBSD box running ipfilter, ipnat and dummynet to a Gentoo Linux box
-running netfilter and tc.  I have to admit that I'm having problems
-visualizing tc in my head.  So, I was wondering if I could get an
-assist.	
-	Basically, I have a fat upstream pipe and I can use it basically
-all I want, except that my NNTP traffic seems to really clobber
-everything else.  Also, since my NNTP traffic is pretty much constantly
-ongoing, I'd like to limit it to 800kbit.  This was a breeze with
-dummynet, but I'm not getting how to do it correctly with netfilter.  
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Here's what I tried:
+Hi guys,
+I'm not really sure about this. I thought ssh is made in port #22?
+When I made a ssh session into my server, /var/log/messages showed this:
+Apr  1 09:20:20 server2 sshd[2711]: Accepted password for root from=20
+192.168.0.234 port 32873 ssh2
 
-$IPT -t mangle -N SHAPE-NNTP
-$IPT -t mangle -I PREROUTING -i $WANIFACE -j SHAPE-NNTP
-$IPT -t mangle -A SHAPE-NNTP -p tcp --sport 119 -j MARK --set-mark 119
+Why did it use port #32873?
+Is there something wrong with my ssh or firewall?
+TIA,
+=2D --=20
+=46ajar Priyanto | Reg'd Linux User #327841 | http://linux.arinet.org
+08:31:42 up 36 min, Mandrake Linux release 9.2 (FiveStar) for i586=20
+public key: https://www.arinet.org/fajar-pub.key
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-My thoughts on placing it in PREROUTING is that I'd like to shape the
-traffic as soon as possible so that my firewall gets the benefit of
-dealing with the reduced load as soon as possible.  But, maybe that's
-just foolishness?
+iD8DBQFAa3EYkp5CsIXuxqURAluBAKCNiyg8+KXYDu/JuZghSVMXvfrjMgCdG7O2
+Bb4SQcbOiAqALl1o9yQ5H1k=3D
+=3D4uUZ
+=2D----END PGP SIGNATURE-----
 
-Here's the tc rules I tried.
-
-tc qdisc add dev $WANIFACE root handle 1: htb default 60
-tc class add dev $WANIFACE parent 1: classid 1:1 htb rate 10Mbit
-tc class add dev $WANIFACE parent 1:1 classid 1:119 htb rate 800kbit
-tc filter add dev $WANIFACE parent 1:1 protocol ip handle 119 fw flowid
-1:119
-
-The one weird thing is that when I do a 'tc filter show dev $WANIFACE'
-nothing comes back.  But 'tc class show dev $WANIFACE' and 'tc qdisc
-show dev $WANIFACE" return useful information.
-
-Thanks,
-
-Shane
-
-
--- 
-Shane Hickey <shane@howsyournetwork.com>: Network/System Consultant
-GPG KeyID: 777CBF3F
-Key fingerprint: 254F B2AC 9939 C715 278C  DA95 4109 9F69 777C BF3F
-Listening to: american analog set - you own me
 
