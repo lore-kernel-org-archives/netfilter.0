@@ -1,15 +1,12 @@
-From: Eric Leblond <eric@inl.fr>
+From: "Daniel Chemko" <dchemko@smgtec.com>
 Subject: RE: Change of ip addresses continues.... :(
-Date: Thu, 26 Aug 2004 23:33:12 +0200
+Date: Thu, 26 Aug 2004 14:36:14 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093555992.4293.37.camel@porky>
-References: <D5C9032B2B09C64EA2409D6214E91AC90512EE@asimail2.alphanumeric.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E360@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-EbjOIvR9SbR8+9QEGN0s"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512EE@asimail2.alphanumeric.com>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +16,68 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
-Cc: dravya@magma.ca
+Content-Type: text/plain; charset="us-ascii"
+To: dravya <dravya@magma.ca>, Netfilter mailing list <netfilter@lists.netfilter.org>
+
+First, you must understand that PREROUTING will only handle policy
+routing FORWARDED traffic, and will not properly deal with traffic from
+the firewall itself. Please make sure to duplicate the rules with:
+"iptables -t mangle -A OUTPUT". That means, if the firewall gets an
+invalid TCP connection attempt, it will send the ICMP reply out the
+correct interface.=20
+
+Ok, to make your routes, here's a pre-canned function:
+
+You'll have to fix up the following function to create the default route
+the way that ppp assigns them. What I'd do is add this to ppp's ip-up
+script so that as soon as you know your new ppp address, you change the
+table to reflect the new value.=20
 
 
---=-EbjOIvR9SbR8+9QEGN0s
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Here 'might' be a way to do it. I don't have ppp lines so I couldn't say
+if its right or not.
 
-On Thu, 2004-08-26 at 23:26, Jason Opperisano wrote:
-> > I have been trying various set of rules in various table in order to ha=
-ve packets go over
-> > the right link. ie. packet's src add should match outgoing link's ip ad=
-dress.YET, there
-> > iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
-> > iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j ACCEPT
-> > iptables -t mangle -A PREROUTING -m mark ! --mark 0 -p icmp -j MARK --s=
-et-mark 1
-> > iptables -t mangle -A PREROUTING -m mark ! --mark 0 -j MARK --set-mark =
-2
+_mark=3D"$((`echo "${1}" | sed s/ppp//`+1))"
+_ext_gw=3D"${5}";
+_local_ip=3D"${4}";
 
-There's something weird here :=20
--m mark ! --mark 0=20
-at each line you should better do=20
--m mark --mark 0
-at the two last lines.
+route_builder "${_mark}" "${_ext_gw}" "${_local_ip}"
 
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL
 
---=-EbjOIvR9SbR8+9QEGN0s
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQBBLlcYnxA7CdMWjzIRAtuGAJ0UADoZkkN2NzCeUyJkNDqNw0ld6wCeOu7r
-FSQzGMp07R118Ta0G8CQf0Y=
-=DUze
------END PGP SIGNATURE-----
-
---=-EbjOIvR9SbR8+9QEGN0s--
-
+The following IS what I use to build routes. I'm pretty sure it'll work
+as advertised.
+#
+# Notes:
+#    This function generates a new routing table based on the currect
+main
+#    routing table. The difference is that the default route is user
+specified.
+#=20
+# Arguments:
+#    1 - Table ID to create
+#    2 - IP Address, Gateway Address=20
+#    3 - IP Address, Local Source
+#
+IP=3Dip
+function route_builder
+{
+   _table_id=3D${1}
+   _table_gateway=3D${2}
+   _table_source=3D${3}
+   if [ "${1}" !=3D "" -a "${2}" !=3D "" ]; then
+      ${IP} rule del fwmark ${_table_id} table ${_table_id}
+      ${IP} rule add fwmark ${_table_id} table ${_table_id}
+      ${IP} route flush table ${_table_id}
+      ${IP} route show table main | grep -Ev ^default
+\
+      | while read ROUTE ; do  =20
+         ${IP} route add table ${_table_id} $ROUTE
+      done
+      ${IP} route add table ${_table_id} default via ${_table_gateway}
+\
+         src ${_table_source}
+   else
+      echo "route_builder: Invalid arguments specified."
+   fi
+}
 
