@@ -1,7 +1,7 @@
-From: Jason Opperisano <opie@817west.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
 Subject: Re: One Nic; Multiple Subnets
-Date: Mon, 27 Dec 2004 11:52:42 -0500
-Message-ID: <1104166362.6322.26.camel@hubcap.ljm.dom>
+Date: Mon, 27 Dec 2004 12:01:42 -0500
+Message-ID: <1104166901.2008.51.camel@localhost>
 References: <41CC19DF.2766.F2FCB6D@localhost>
 	<8ca4228204122708388845e28@mail.gmail.com>
 Mime-Version: 1.0
@@ -19,7 +19,11 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Mike <1100100@gmail.com>
+Cc: Netfilter users list <netfilter@lists.netfilter.org>
+
+I'm afraid I do not have time to answer in depth today but I'll try to
+point you in the right direction.
 
 On Mon, 2004-12-27 at 11:38, Mike wrote:
 > I've been looking through the monthly archives of this list, but I
@@ -42,6 +46,8 @@ On Mon, 2004-12-27 at 11:38, Mike wrote:
 > range.
 > 
 > How do I create the multiple subnets?
+You can break them into distinct subnets with subnet masking and bind
+multiple addresses to the same NIC using iproute2 (the "ip" command).
 > Do I need to use route command or ipsec.?
 > And what would the iptables rule look like, where Subnet "B" rejects
 > all packets coming from Subnet "A"?
@@ -49,25 +55,22 @@ On Mon, 2004-12-27 at 11:38, Mike wrote:
 > Is this even close? ---
 > $IPTABLES -t filter FORWARD -A -i eth1 -s 192.168.1.2/150
 > --to-destination 192.168.1.151/253 -j DENY
-> 
-> Thank you for your time and help.
-> 
-> Mike
+You've got the basic idea but both your syntax and your grasp of some
+fundamental issues seems weak.  I would suggest a tour of Oskar
+Andreasson's iptables tutorial (you can find the link on the netfilter
+web site (http://www.netfilter.org).  You can also find some slide shows
+on using iptables and iproute2 in the training section of the ISCS
+network security management project page at http://iscs.sourceforge.net
+You may also want to brush up on subnet masking.
 
-without physical separation--you have no security.
-
-this may be a stretch, but if the internal switch supports VLANs--you
-could VLAN the switch, and create a trunk on eth1 of the linux router. 
-that would give some semblance of separation between the two subnets,
-but it's still only virtual.  but it's better than plugging all your
-machines into that same layer 2 broadcast domain and thinking you can
-segment machines from each other.
-
--j
-
---
-"Here we have an ordinary square.
- Whoa! Slow down egghead!"
-	--The Simpsons
+I apologize that this isn't a cook book solution but it sounds like you
+might be benefited by a little more information besides just the
+recipe.  Good luck - John
+<snip>
+-- 
+John A. Sullivan III
+Open Source Development Corporation
+Financially sustainable open source development
+http://www.opensourcedevel.com
 
 
