@@ -1,13 +1,11 @@
-From: Juan Hernandez <alucard@kanux.com>
-Subject: Re: forwarding
-Date: Tue, 18 May 2004 21:56:46 -0700
+From: Mark <mark@shadowpuppets.net>
+Subject: how do I port forward through loopback?
+Date: Tue, 18 May 2004 15:59:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40AAE90E.7020509@kanux.com>
-References: <33934.200.44.170.105.1084890127.squirrel@200.44.170.105> <1084899777.7261.17.camel@localhost> <4290.192.168.74.21.1084904497.squirrel@192.168.74.21> <200405182233.34800.Antony@Soft-Solutions.co.uk>
+Message-ID: <40AA16A7.1010706@shadowpuppets.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405182233.34800.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,14 +18,17 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Everybody...
+Hello,
+I need to port forward all traffic locally going to port 80 to port 
+8040.  For the external interface eth0 this works, I thought it would 
+work for the internal/loopback as well. Nothing else is turned on
+, all other settings are open.
 
-   Thanks a lot for all your great help, now it's fully working and the 
-problem was -as I said, it HAS to be something stupid- that port 8080 
-didn't allow me to forward packets, I changed de port and it's fully 
-working. Please dont hate me, hehehe... BTW, I learned a lot from this 
-huge discussion. This list is simply great.
+/sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT 
+--to-port 8040
 
-Juan
-Programmin' Python is like sugar... sweet ;)
+this doesn't work for the internal network, 127.0.0.1 lo, not sure why
+System info: Redhat7.3, 2.4.20 kernel, iptables-1.2.8-8.72.3
+Thanks
+
 
