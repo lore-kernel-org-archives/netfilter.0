@@ -1,14 +1,14 @@
 From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Set NAT to Full Cone
-Date: Tue, 4 Jan 2005 11:37:43 +0100
-Message-ID: <20050104103742.GT11370@sunbeam.de.gnumonks.org>
-References: <I9690Z$CF67F2C818604363F16F9093A1422E17@bol.com.br>
+Subject: Re: string patch for 2.6
+Date: Tue, 4 Jan 2005 11:59:30 +0100
+Message-ID: <20050104105930.GV11370@sunbeam.de.gnumonks.org>
+References: <41D3BB89.6040609@pwn.emphyrio.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L1jMvVksOaqpmjJm"
+	protocol="application/pgp-signature"; boundary="eG64T7htjB593fMc"
 Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <I9690Z$CF67F2C818604363F16F9093A1422E17@bol.com.br>
+In-Reply-To: <41D3BB89.6040609@pwn.emphyrio.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +19,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-devel-bounces@lists.netfilter.org
 Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: fernandonach <fernandonach@bol.com.br>
-Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: Dimitris Kotsonis <jnk@pwn.emphyrio.org>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
 
---L1jMvVksOaqpmjJm
+--eG64T7htjB593fMc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 23, 2004 at 08:55:47AM -0200, fernandonach wrote:
+On Thu, Dec 30, 2004 at 10:25:45AM +0200, Dimitris Kotsonis wrote:
+> This is a patch against pong-20041229 that will add string support for=20
+> kernel 2.6
 
-> I need to set IPtables to work on Full Cone mode. If possible, how can
-> I do that!?!?
+sorry if I'm sounding rude, but it has been discussed on this list _OVER
+AND OVER AGAIN_.  And patches like yours can be found alrady in the archive.
 
-no way, it is impossible.  iptable_nat is a fully symmetric nat
-implementation, the most perfect variant of NAT ;)
+still it is broken.  think of non-linear skbs.
 
-> Fernando
-
+> Dimitris
 --=20
 - Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
@@ -48,7 +48,7 @@ implementation, the most perfect variant of NAT ;)
    architectural error that shows how much experimentation was going
    on while IP was being designed."                    -- Paul Vixie
 
---L1jMvVksOaqpmjJm
+--eG64T7htjB593fMc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -56,10 +56,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.5 (GNU/Linux)
 
-iD8DBQFB2nH2XaXGVTD0i/8RAlgQAKCE4l45VV+KHzraY3osSja7zpNd8ACcCyrl
-lW5foB7yL0mGRvDWtideW4U=
-=kwY5
+iD8DBQFB2ncSXaXGVTD0i/8RAscyAKCMNJ1bmL0l9D+9UTZiBfD2J3gZlgCgr+qH
+hz661f0mBG/J8v9BZL/k1iI=
+=1hFe
 -----END PGP SIGNATURE-----
 
---L1jMvVksOaqpmjJm--
+--eG64T7htjB593fMc--
 
