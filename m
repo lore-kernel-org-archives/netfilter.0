@@ -1,11 +1,11 @@
-From: Toby <tobia.conforto@linux.it>
-Subject: Re: -m iplimit
-Date: Thu, 24 Mar 2005 15:24:43 +0100
-Message-ID: <20050324142443.GA15012@ikkoku.ath.cx>
-References: <7866.1111612597@www37.gmx.net>
+From: Jared Cook <jared@vsahost.com>
+Subject: Re: Using NAT to relay traffic
+Date: Thu, 24 Mar 2005 08:26:09 -0600
+Message-ID: <4242CE01.5090105@vsahost.com>
+References: <42420275.7030909@vsahost.com> <42420BC0.6030700@riverviewtech.net>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7866.1111612597@www37.gmx.net>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <42420BC0.6030700@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,27 +16,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Manuel Schmitz wrote:
-> I can't load the module iplimit:
-> # modprobe ipt_iplimit
-> modprobe: Can't locate module ipt_iplimit
-> 
-> I found the libipt_iplimit.so module in the same place as lipipt_limit.so.
-> So, why doesn't it work? 
-
-/lib/iptables/libipt_iplimit.so is a module for /sbin/iptables
-
-/lib/modules/.../ipt_iplimit.* are modules for netfilter itself.
-
-Thus my impression is that your /sbin/iptables supports this extension
-while your kernel does not. 
-
-Make sure you have applied the patch correctly.
+Thanks.  The SNAT piece indeed was the part I was missing.  It all works 
+great now.
 
 
-Toby
+Grant Taylor wrote:
+
+> The problem that you are having when you port forward traffic from Box 
+> A to Box B is that the returning traffic comes directly from Box B to 
+> the client that sent the traffic in the first place thus you have an 
+> incorrect communications path.  Ironically I just had to work on a 
+> situation sort of similar to this one.  What I did in my situation to 
+> accomplish this was to DNAT the traffic destined to Box A over to Box 
+> B, like you have done.  You also need to SNAT the traffic leaving Box 
+> A on it's way Box B to be from Box A's IP so that when Box B replies 
+> it will reply back to Box A which will in turn reply back to the 
+> client system.  Thus you no longer have a triangle of client to Box a 
+> to Box B to client but rather client to Box A to Box B to Box A to 
+> client.  Let me know what your network config looks like if you would 
+> like me to come up with some iptables rules for you.
+>
+> Reference my replies to "HELP! Transparent Proxy using bridging 2.6.9 
+> and REDIRECT on    different subnet" thread for an example or email me 
+> and I'll try to provide more help.
+>
+>
+>
+> Grant. . . .
+>
+> Jared Cook wrote:
+>
+>> I have two servers on two different networks.  I am running a service 
+>> on box A that I am transitioning to box B.  While I wait on DNS to 
+>> propagate, I would like to do some iptables magic to send traffic 
+>> from box A to box B using NAT.  For instance, when pop3 email users 
+>> connect to box A, I would like box A to send the request to box B 
+>> transparantly.  Is this possible?  I have had success doing port 
+>> forwarding to the local machine, but when I specify box B as the 
+>> "--to", it doesn't work.  Any help would be greatly appreciated.
+>>
+>> Thanks,
+>> Jared
+>>
+
 
