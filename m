@@ -1,14 +1,12 @@
-From: Steve W <stevew@bandwidtharbitrator.com>
-Subject: RE: Allowing only a certain source IP range back out through the
-	bridge
-Date: 19 Jun 2003 20:14:04 -0700
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Is this correct?
+Date: Fri, 20 Jun 2003 13:37:18 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1056078844.25728.61.camel@negun.uis.net>
-References: <KAEOKILOFJNGKODBFBLJMEEMCIAA.jeremy@slicenet.net>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6F1B@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <KAEOKILOFJNGKODBFBLJMEEMCIAA.jeremy@slicenet.net>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +17,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: Shawn <core@enodev.com>, Daniel Chemko <dchemko@smgtec.com>
+Cc: netfilter@lists.netfilter.org
 
-Right but does the rest of my rule below work to do what I want? I was
-just guessing at what it would look like :)
+If it had a route then it would throw it if it had no DNAT rule, but you =
+do so it'll translate the DEST IP to 192.168.0.1 before it dropped it. =
+And if you had a route then you wouldn't require the "ip addr add" =
+command either..
 
-Steve...
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
 
-On Thu, 2003-06-19 at 20:09, Jeremy Davis wrote:
-> Specify a range like this 192.168.1.0/32 or whatever the subnet that you
-> would like to permit through.
-> 
-> Jeremy
-> 
-> 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Steve W
-> Sent: Thursday, June 19, 2003 9:26 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Allowing only a certain source IP range back out through the
-> bridge
-> 
-> 
-> I am wanting to stop such things as fake packets going out our network.
-> 
-> Some of the new worms send out bogus packets claiming to come from IP's
-> that are not legit would be one case where this may be helpful.
-> 
-> I have a bridge with firewall capabilities setup and it is doing fine
-> with what it is doing so now I would like to know if there is a way to
-> say something like:
-> 
-> If the source is between 192.168.0.20 and 192.168.0.30 and the direction
-> it is going is from eth1 to eth0 then it is okay, let it go through.
-> 
-> something like:
-> iptables -A FORWARD --in-interface eth1 --out-interface eth0 -s \
->  192.168.1.20 -j ACCEPT
-> 
-> Would this work and how do you allow a range of IP's or would I have to
-> add a rule for each IP I want to allow out.
-> 
-> Thanks.
-> 
-> 
-> 
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
 
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+-----Original Message-----
+From: Shawn [mailto:core@enodev.com]
+Sent: Friday, June 20, 2003 12:30 PM
+To: Daniel Chemko
+Cc: netfilter@lists.netfilter.org
+Subject: RE: Is this correct?
+
+
+It wouldn't throw it away if it had a route for it, would it?
+
+Since linux-router/eth1 has 10.0.0.250/24 assigned, wouldn't it forward
+out that one?
 
