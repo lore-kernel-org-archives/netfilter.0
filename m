@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Log files for iptables
-Date: Thu, 13 May 2004 11:17:47 +0100
+From: "Markus Zeilinger" <mz@sea.uni-linz.ac.at>
+Subject: ip_send() function
+Date: Thu, 13 May 2004 13:56:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405131117.47320.Antony@Soft-Solutions.co.uk>
-References: <20040513092802.71510.qmail@web8302.mail.in.yahoo.com> <40A347C4.3030802@riafinancial.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <ASERV1QzBxhJTANZwwP000003e2@aserv1.sea.uni-linz.ac.at>
+Reply-To: <mz@sea.uni-linz.ac.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40A347C4.3030802@riafinancial.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,36 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 13 May 2004 11:02 am, Oscar Arranz wrote:
+Dear all,
 
-> Sameer Gurung wrote:
-> >Hi,
-> >  Can anybody tell me where are the log files for
-> >iptables ....cant seem to find them on /var/log. Do I
-> >have to configure / change /tweak somthing to enable
-> >loging???
-> >
-> Look into /var/log/kernel .
+I am currently writing a paper for my studies about netfilter and Linux
+Firewalling. In this case I also write a chapter about packet handling
+through the Linux network stack.
+Several papers and also in Harald Welte's "The journey of a packet through
+the linux 2.4 network stack" mention a function ip_send() in the process of
+packet forwarding. According to Harald this function is defined in
+/include/net/ip.h. But I cannot find a definition there, and surprisingly I
+was not able to find the ip_send() function anywhere in the kernel source. I
+searched through Kernel 2.6.6, 2.4.6 and 2.4.0 but did not find any tracks
+of a ip_send() function!?!
 
-What distribution/s do you find that on, and what goes into it?   It doesn't 
-exist in Slackware, for example.
+Can you help me with this problem? Sorry if this is a stupid question, but I
+am a newbie in Linux networking. ;-)
 
-Regards,
+Thx a lot for your assistence!
 
-Antony.
+best regards,
+Markus
 
--- 
-"Reports that say that something hasn't happened are always interesting to me, 
-because as we know, there are known knowns; there are things we know we know. 
-We also know there are known unknowns; that is to say we know there are some 
-things we do not know. But there are also unknown unknowns - the ones we 
-don't know we don't know."
+------------------------------------------------
+Markus Zeilinger
+Institute for Systems Engineering and Automation 
+University of Linz 
+Altenberger Strasse 69 
+A-4040 Linz, AUSTRIA
 
- - Donald Rumsfeld, US Secretary of Defence
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Tel.: +43-(0)732-2468-8869
+Fax:  +43-(0)732-2468-8878
+Mail: mz@sea.uni-linz.ac.at 
 
 
