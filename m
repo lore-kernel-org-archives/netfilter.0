@@ -1,12 +1,12 @@
-From: "Omar Castaneda Acosta" <omar@idea.com.mx>
-Subject: URGENT: Some TCP connection halting at SYN
-Date: Tue, 11 Jun 2002 12:57:37 -0600
+From: "Hard__warE" <hard__ware@hotmail.com>
+Subject: RE: Two Interfaces Same Network / Netmask
+Date: Wed, 12 Jun 2002 05:05:41 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3A5DC36EC1506C40825C05BE65E62AEF0E79FE@neptuno.idea.com.mx>
+Message-ID: <000501c2117a$fae21cc0$7b0010ac@dynamicaccess.lan>
+Reply-To: "Hard__warE" <hard__ware@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,17 +18,42 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
+Cc: jpappas@sharemedia.com
 
-Hello, I've been running a iptables + NAT firewall for some time now,
-suddenly, some of my most common e-mail destinations are not working, I
-go and check on another host I have directly on the internet and I can
-connect with no trouble at all to those sites, if I check on my netstat
--at (on the firewall) the connections stay at SYN State all the time.
+Re:  Two Interfaces Same Network / Netmask..
 
-Anybody experienced anything like this before?
 
-Thanks in advance for any help or suggestions.
+yer thats my Problem the kenel selects the path, then from there you have no
+control of packets on which adapetr they leave ect ...
 
-Regards,
-Omar
+yes both Adapters will be on the same Physical Network / Ethernet
+
+and about my IPROUTE question i belive what is going to be alot better for
+me ... :D
+
+im going to use either Zebra or Gated as BGP / RiP and OSPF Router that will
+notify
+
+all its peer Routers (eg my ISP's Router) that it is the gateway to access
+that Entire Class C
+
+Network i own ... :D
+
+then i can have a IPTABLES box /w Bridgeing,  that will allow me to Drop
+packets
+
+Redirect / LOG  Packets ,  while still acting as the Bridge from my Local
+Lan to my BGP Router which
+
+will be my Deafult Gateway to the net ...
+
+
+thanks for ya Help eveyone on reminding me what a BGP  Router does / is ....
+lol
+
+damm brain has had to much lack of Rest while ive been working on this
+Project  ... lol .. :D
+
+catch yas ..
+
 
