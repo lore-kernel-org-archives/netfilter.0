@@ -1,13 +1,12 @@
-From: Linux mailbox Openware <linux@openware.nl>
-Subject: Re: Log every package incoming and outcoming.
-Date: Fri, 20 Aug 2004 14:18:27 +0200
+From: "Yannick Koehler" <yannick.koehler@colubris.com>
+Subject: connection missing from ip_conntrack when redirected
+Date: Fri, 20 Aug 2004 08:18:22 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2004820141827.291870@icarus>
-References: <49885.80.164.248.134.1093000650.squirrel@krank.darknet.dk>
+Message-ID: <36DE81D1ABB46D44B54245FFB5F5F16001A27B83@exchange.colubris.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <49885.80.164.248.134.1093000650.squirrel@krank.darknet.dk>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +17,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Hyper@ubn.dk, netfilter@lists.netfilter.org
-
-Op %verzonden%, schreef %afzender%:
-> Oki cool. Is it possible to specife the location of the log files?
-> and how?
-
-Example:
-
-echo "Logging..."
-iptables -t filter -A INPUT -j LOG --log-prefix "fw input: "
-iptables -t filter -A OUTPUT -j LOG --log-prefix "fw output: "
-iptables -t filter -A FORWARD -j LOG --log-prefix "fw forward: "
-
-Logging can be monitored in /var/log/messages with fw input, fw output and=
- fw forward as
-a marker
-
-Greetings,
-
-Jan Rozema
+To: netfilter@lists.netfilter.org
 
 
->
->
->> On Fri, Aug 20, 2004 at 12:32:24PM +0200, Thomas Kristensen wrote:
->>
->>
->>> i dont want a full system setup, i just need somekind og modul
->>> for iptables, or a conf for iptables to log every thing. The
->>> problem is if i set a rule, iptables will stop at a matching
->>> rule, and therefor i cant set a log rule in the end for alle
->>> chains.
->>>
->>>
->>> Any ideas?
->>>
->>
->> Start all your chains with a LOG rule.  Netfilter logs the packet
->> and then passes it on to the next rule, so you'll get your
->> matches, but the packet will continue to be processed.
->>
->> Why do you have to check every packet though?  If this is just to
->> see who is using your servers the daemons themselves probably
->> keep adequate logs.
->>
->>
->> --
->> "I think a church with a lightning rod shows a decided lack of
->> confidence"
->
->
-> ----------------------------------------------
-> DarkNet Webmail -http://webmail.darknet.dk
+Hi,
 
+  I wrote an HTTP proxy.  I used the iptables REDIRECT functionality to
+get all my connection hi-jacked by the proxy.  I then also use iptables
+for accounting and for this; I need to know the original destination
+port of the connection.  That was easily done with kernel2.2 ipchains
+using getpeername() function.
+
+  Now inside the kernel2.4 I parse the /proc/net/ip_conntrack file.  But
+what I have found is that sometimes, quite often actually, the entry for
+the existing connection that the proxy is dealing with, there's no entry
+inside the ip_conntrack file.
+
+  Because I did receive HTTP data over that connection, I would have
+assumed to have an entry with [ASSURED] and use=3D1 inside the
+ip_conntrack but that is not the case.  I did a print of the whole file
+when my code doesn't find an entry in order to have parse the file
+myself and see if the code was or not problem but the entry was not
+there either.
+
+  As anyone have seen such behavior while using REDIRECT and attempting
+to retrieve the original destination port?
+
+  My test setup is running over kernel 2.4.26
+
+--
+Yannick Koehler
 
 
