@@ -1,13 +1,12 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: DROP or REJECT
-Date: Tue, 11 May 2004 13:16:03 -0400
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: forwarding on the same NIC
+Date: Tue, 11 May 2004 10:30:10 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084295762.1965.8.camel@grendel>
-References: <163801c4375e$49bb6d50$49caa8c0@caris.priv>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF567932E@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <163801c4375e$49bb6d50$49caa8c0@caris.priv>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,36 +17,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: alucard@kanux.com
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 2004-05-11 at 09:45, Peter Marshall wrote:
-> Which is better (to drop or reject packets)?  I am asking more
-> specifically for connections from the internet to my external
-> firewall.
+Have you tried something like:
 
-Depends. I like rejecting with host-unreachables as it makes it look
-like you do not have a firewall. It also has the ability to shut down
-certain scanning tools before they can find exposed ports.
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD --destination 10.73.219.156 -p tcp --dport 80 -j
+ACCEPT
+iptables -t nat -A PREROUTING --destination 10.73.219.156 -p tcp --dport
+8080 -j DNAT --to-destination 10.73.219.77:80
+iptables -t nat -A POSTROUTING --destination 10.73.219.77 -p tcp --dport
+80 -j SNAT --to-source 10.73.219.156
 
-Some worry this could be a potential DoS situation. If you are worried
-about this you can combine it with rate limiting.
-
-> My second question is if I have a DNS in my DMZ (contains only ip's in
-> my dmz.  internal boxes use this as their DNS.  This DNS falls back to
-> my ISP), do I have to allow both TCP and UDP connections on port 53 ? 
-> Can I not just have UDP, or does it use both ? 
-
-Again, it depends. Queries use UDP/53 _unless_ the answer exceeds a 512
-byte packet size. If it does, the connection can switch over to TCP/53. 
-
-So, outbound you need TCP and UDP. Inbound to your DNS server, it
-depends if you answers will exceed this maximum. If not, you only need
-to permit UDP/53 from the Internet in general, and TCP/53 only from
-servers (if any) that are acting as secondaries.
-
-HTH,
-Chris
-
+Remember, if the default router of the web server isn't your firewall
+box, the packet will exit the router, but when the next packet destined
+for the web server is senty by the client, the linux box doesn't think
+its valid. This is because the conntrack missed the obligatory SYNACK.
+The subsequent ACK to the firewall would mean nothing. I could be wrong
+about the internal logic, but it'd make sense.
 
 
