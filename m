@@ -1,17 +1,14 @@
-From: Rodrigo Senra <rodsenra@gpr.com.br>
-Subject: Re: Completely NAT an ISP: A practical possibility?
-Date: Tue, 18 Jun 2002 17:22:03 -0300
+From: Tony Earnshaw <tonni@billy.demon.nl>
+Subject: Re: Requestion for help with GRE tunnel
+Date: 18 Jun 2002 22:55:43 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020618202115.32CD7C94DF@srv11-sao.terra.com.br>
-References: <3D0BBC45.5000807@palaver.net>
-	<200206152233.g5FMXPA27757@Networker.rockstone.co.uk>
-	<20020616001745.N2090@funkyjesus.org>
-	<20020618171543.919DF681A5@engenho.terra.com.br>
-	<20020618185005.GC26150@cannon.eng.us.uu.net>
+Message-ID: <1024433743.2763.141.camel@billy.demon.nl>
+References: <20020618063945.A2662@inxservices.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-dgZiL6Kt+8huUYaeGRBE"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020618185005.GC26150@cannon.eng.us.uu.net>
+In-Reply-To: <20020618063945.A2662@inxservices.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -21,40 +18,92 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ramin Alidousti <ramin@cannon.eng.us.uu.net>, netfilter@lists.samba.org
+To: George Garvey <tmwg-netfilter@inxservices.com>
+Cc: netfilter@lists.samba.org
 
-|On Tue, 18 Jun 2002 14:50:05 -0400
-|Ramin Alidousti <ramin@cannon.eng.us.uu.net> wrote
-| about Re: Completely NAT an ISP: A practical possibility?:
 
-> >  The NAT solution is often used to allow multiple ISP access though the 
-> >  same media provider (probably ADSL).
-> 
-> Doesn't bridged context DSLAM eliminate the need for the NAT?
+--=-dgZiL6Kt+8huUYaeGRBE
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I humbly confess that I do not know what DSLAM is ;o)
+tir, 2002-06-18 kl. 15:39 skrev George Garvey:
+> I'm trying to make a tunnel between 2 LANs, 192.168.1 and 192.168.2.
+> Eventually over the internet, right now between 2 computers. Both
+> 2.4.19.
 
-> This would break lots of protocols. How would the clients put up with
-> this broken functionality?
+> Everything is hooked up to a gigE switch right now. I've set the
+> tunnel's IPs to LAN addresses for testing.
 
-Good observation. Yes it breaks some (all not NAT-able), and when this is used
-clients have to live up with the limitations. But as I said, for the time being 
-this is used to accomodate a multiple-ISP cenario where clients need basically
-HTTP, FTP, and less percentage of H.323.  
+[Off list, because off topic]
 
-Take notice that NAT takes place before the packets reach their service providers.
-So maybe, I couldn't call it properly  "NAT an ISP" as the title suggests.
- 
-> Or maybe they tunnel on top of this IP network
+To my mind everything's horribly complicated here. Begin with an easy
+one. The point about this approach is, that you begin with something
+simple that you know works and you can take one step at a time.
 
-Not that I know of.
-Thank you for your observations.
+Connect 2 Linux routers/GRE gateways (2 NICs each, eth0 and eth1) with a
+crossover cable on NIC eth0.
 
-regards,
-Senra
--- 
-Rodrigo Senra         
-MSc Computer Engineer   (GPr Sistemas Ltda)     rodsenra@gpr.com.br 
-http://www.ic.unicamp.br/~921234  (LinUxer 217.243) (ICQ 114477550)
+Make a lan each side of each route, left and right (enough with one
+single machine and one crossover cable for each LAN). So that's 4
+machines and 3 crossover cables.
+
+Left hand LAN is 192.168.1., right hand LAN is 192.168.2.
+
+Each eth0 (the NICs connecting the routers) on each router can/must have
+a completely different IP number from the 2 LAN IP numbers. It doesn't
+matter what, as long as the eth0s are on the same physical network.
+
+There's no natting in any of this! You're dealing with *pure routers*.
+Even when you get to the internet stage, it's still pure routing with no
+natting, in principle. Nothing's got anything to do with IP tables!
+
+Make your tunnel, set it up and ping the right hand machine on
+192.168.2. from the left hand machine on 192.168.1.
+
+When that works, optional step (since you'll have to have it on the
+Internet later): stick another Linux router in the middle  and do the
+same. Obviously all the IP numbers on the routers should be changed to
+suit. So that's one extra machine, 2 extra NICs and 2 extra crossover
+cables.
+
+When that works, substitute your switch for the router in the middle, if
+you really want it.
+
+I've done this with FreeS/WAN x509 VPN tunnels - though never with GRE -
+so I know it works :-)
+
+Best,
+
+Tony
+
+--=20
+
+Tony Earnshaw
+
+e-post:		tonni@billy.demon.nl
+www:		http://www.billy.demon.nl
+gpg public key:	http://www.billy.demon.nl/tonni.armor
+
+Telefoon:	(+31) (0)172 530428
+Mobiel:		(+31) (0)6 51153356
+
+GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
+3BE7B981
+
+
+
+--=-dgZiL6Kt+8huUYaeGRBE
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dette er en digitalt signert meldingsdel
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9D55P99dgUTvnuYERAnNLAJ9759fbeSD/942s96EfIE6TRzitjQCfWwm6
+Q79tKydYFArmLDZM4MbgCgo=
+=lyrq
+-----END PGP SIGNATURE-----
+
+--=-dgZiL6Kt+8huUYaeGRBE--
+
 
