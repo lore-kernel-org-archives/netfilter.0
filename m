@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: FORWARDING and NAT chains
-Date: Fri, 30 Jan 2004 12:36:31 +0000
+From: Andy Furniss <andy.furniss@dsl.pipex.com>
+Subject: Re: mms and rtsp patches = make modules fail
+Date: Fri, 30 Jan 2004 12:44:41 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401301236.31350.Antony@Soft-Solutions.co.uk>
-References: <001901c3e670$a4bd2250$3d40000a@wisdom> <200401301025.17981.Antony@Soft-Solutions.co.uk> <1075465401.1860.4.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <401A51B9.6090800@dsl.pipex.com>
+References: <4017BB98.7090203@dsl.pipex.com>	<1075368500.18100.7.camel@exile>  <40190E1F.6090700@dsl.pipex.com> <1075422674.17013.8.camel@exile>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1075465401.1860.4.camel@jasiiitosh.nexusmgmt.com>
+In-Reply-To: <1075422674.17013.8.camel@exile>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Filip Sneppe <filip.sneppe@uptime.be>
+Cc: netfilter@lists.netfilter.org
 
-On Friday 30 January 2004 12:23 pm, John A. Sullivan III wrote:
+Filip Sneppe wrote:
+> Hi,
+> 
+> On Thu, 2004-01-29 at 14:43, Andy Furniss wrote:
+> 
+>>I just tested on a different machine, same old distro, though.
+>>
+>>vanilla 2.4.24(I didn't patch this time) same POM (3 days old now) did 
+>>./runme extra (last time I did make dep first)
+>>
+>>and said y to connlimit nth quota u32 connbytes mms-conntrack-nat
+>>rtsp-conntrack string and it said this -
+> 
+> 
+> With these patches, my 2.4.24 compiles fine when doing a 
+> "make SUBDIRS=net/ipv4/netfilter modules"
+>  
+> 
+>>Already applied: connlimit nth quota u32 connbytes conntrack-seqfile 
+>>conntrack_arefcount conntrack_locking conntrack_nonat mms-conntrack-nat 
+>>netfilter-docbook owner-socketlookup owner-supgids ownercmd 
+>>rtsp-conntrack string
+> 
+> 
+> Where do conntrack-seqfile, conntrack_arefcount, and these other
+> patches come from ? You must have selected them at one point in
+> time during a POM run, as they don't get applied automatically.
 
-> On Fri, 2004-01-30 at 05:25, Antony Stone wrote:
-> >
-> > Place the destination address in the nat rule, eg:
-> >
-> > iptables -A PREROUTING -t nat -d ! my.ip.add.ress -j DNAT --to a.b.c.d
-> >
-> > This means "destination nat all packets which are not addressed to
-> > my.ip.add.ress and send them to a.b.c.d".
->
-> This is true but she went on to state in a later e-mail that she has
-> many interfaces and needs to exclude two.  That's a knarly problem I've
-> run into many times with the limitation of only being able to specify a
-> single address/subnet (or a contiguous range with iprange) in
-> destination and source.
->
-> I suggested using a RETURN target to bypass processing for the two
-> excluded interfaces although I was surprised to not find RETURN in my
-> man page. I hope I wasn't having a premature senior moment when I
-> recalled the RETURN target! Thanks - John
+I've just retested with a new cvs pulled iptables and patch-o-matic-ng.
 
-Oh, okay - try using ACCEPT in the nat table to stop packets continuing to 
-later rules..
+They appear up to conntrack_nonat when I ./runme extra and select just 
+connbytes, netfilter-docbook appears after mms-conntrack-nat and the 
+others appear after saying n to the next option.
+In fact if I do it again with a fresh kernel tree they appear even if I 
+get no for everything.
 
-RETURN is only valid for user-defined chains (I think).
+I still get the error from fresh cvs and kernel tree, I do -
 
-Regards,
+make mrproper
+make dep
+./runme extra in patch-o-matic-ng enter kernel dir (also tried export first)
+just say y to connbytes mms rtsp.
+make mrproper
+make menuconfig y to network packet filtering
+say m/y to everything except last two in netfilter options.
+make dep
+make SUBDIRS=net/ipv4/netfilter modules
+error
 
-Antony.
+Andy.
 
--- 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
-
- - William Gibson, Neuromancer (1984)
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
