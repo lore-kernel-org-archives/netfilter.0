@@ -1,7 +1,7 @@
 From: Jeff Simmons <jsimmons@goblin.punk.net>
-Subject: Questions on state
-Date: Sun, 13 Mar 2005 16:23:42 -0800
-Message-ID: <200503131623.42711.jsimmons@goblin.punk.net>
+Subject: Questions on VPNs
+Date: Sun, 13 Mar 2005 16:26:43 -0800
+Message-ID: <200503131626.43314.jsimmons@goblin.punk.net>
 Reply-To: jsimmons@goblin.punk.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -19,20 +19,9 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Sorry to bother anyone, but I'm new to iptables, and I'm debugging a working 
-production machine, so I can't really test things too much. :-(
-
-Is a connection ONLY added to the state table when the first packet matches a 
-rule that contains the --state NEW directive, or can it happen in some other 
-way?
-
-When --state INVALID is matched, is it done only on the source and destination 
-addresses and ports, or is something else also involved?
-
-Are NAT 'states' available for examination anywhere, like 
-/proc/net/ip_conntrack?
-
-Thanks for any assistance.
+Using the native IPSEC code in kernel 2.6, when a tunneled ESP packet is 
+passed by the INPUT chain and then decoded on a VPN gateway, is it then 
+processed by any other chain?
 
 -- 
 Jeff Simmons                                   jsimmons@goblin.punk.net
