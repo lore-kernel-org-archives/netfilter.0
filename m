@@ -1,12 +1,10 @@
-From: Samuel Jean <sj-netfilter@cookinglinux.org>
-Subject: Re: Customizing LOG output
-Date: Mon, 24 Jan 2005 21:03:01 -0500
-Message-ID: <41F5A8D5.7010608@cookinglinux.org>
-References: <20050125013235.210362000C@ws1-1a.us4.outblaze.com>
+From: "Michael Varga" <mike.varga@cavium.com>
+Subject: crash using netfilter for ipsec when processing icmp packets
+Date: Mon, 24 Jan 2005 20:10:15 -0800
+Message-ID: <09a101c50293$ca7ced00$a610a8c0@niche>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050125013235.210362000C@ws1-1a.us4.outblaze.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,24 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Josh Larocque <joshlarocque@technologist.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Josh Larocque wrote:
-> Is there a way to change the data the the LOG module outputs?  As it stands right now it's printing IN, OUT, MAC, SRC, DST, LEN, TOS, PREC, TTL, ID, PROTO, SPT, DPT WINDOW, RES and UGRP... all taking up about 2 and a half lines on the screen for each entry. I'd like to get it down to a one-liner if possible.
-> 
+Hello:
 
-Yes, hack at net/ipv4/netfilter/ipt_LOG.c by editing those printk's.
+I have written an LKM module that uses netfilter to capture packets. =
+These packets
+are then sent to a hardware crypto device which after finishing, it's =
+driver calls a callback, which
+then calls either an ip_rcv (inbound/decrypt) or an ip_send =
+(outbound/encrypt) to deliver the
+packet.
 
-Don't forget to recompile this module and also rmmod ipt_LOG.
+When netfilter captures icmp packets which are destined to the machine =
+for=20
+which the Ipsec module is running on, I get kernel crashes.=20
 
-> Thanks,
-> 
-> Josh
-> 
+It only crashes when the icmp traffic is >=3D 10Mbits/sec.
 
-HTH,
+Are there some unpublished rules when processing icmp with Netfilter?
+Does anyone have some suggestions/recommendations?
 
-Samuel
-
+thanks
+Mike
