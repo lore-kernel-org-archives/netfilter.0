@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: VPN PPTP
-Date: Wed, 16 Jun 2004 21:39:09 +0100
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: icq
+Date: Wed, 16 Jun 2004 22:42:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406162139.09672.Antony@Soft-Solutions.co.uk>
-References: <20040616195731.93519.qmail@web50204.mail.yahoo.com> <200406162119.07631.Antony@Soft-Solutions.co.uk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040616204222.883C51558@sterenborg.info>
+References: <17e501c453c9$a9b83490$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406162119.07631.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <17e501c453c9$a9b83490$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,44 +18,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'netfilter' <netfilter@lists.netfilter.org>
 
-On Wednesday 16 June 2004 9:19 pm, Antony Stone wrote:
+> what do I need to do to allow ICQ to work through my firewall
 
-> On Wednesday 16 June 2004 8:57 pm, Luis GUSTAVO wrote:
-> > yes.. i use NAT.
-> >
-> > but i download patch-o-matic, and apply pptp-nat.
-> >
-> > which rules i use now ?
->
-> The ones I suggested earlier (with the addition, of course, of the
-> appropriate NAT rules, which presumably need to go in your PREROUTING chain
-> (if you're doing destination NAT?).
+(Other answers already given..)
 
-Just in case your next posting was going to be something like "I have those 
-rules, but it doesn't work", here is a suggestion for how to find out what's 
-not working.
+Not sure about recent versions, but with old versions you could only do
+simple things like messaging when using NAT only.
+If you wanted to do things like chat and/or filetransfer, you needed a
+socks server. I guess this still holds.
+NEC had a free socks5 server for *nix once, but stopped providing it.
+It's now Permeo's (www.permeo.com) but AFAIK not free any more. If you
+need it ; there's a source version on rpmfind.net.
 
-Add two LOGging rules to the end of your FORWARD chain, one specifying at 
-least one of (a) the source address of the remote client, and/or (b) the 
-destination address of the server on your network, and the other specifying 
-at least one of (a) the source address of your local server, and/or (b) the 
-destination address of the remote client.
 
-Then the LOG output will show you any packets going between the two machines 
-which are not being properly processed by the ACCEPT rules I suggested 
-earlier, and you can see what sort of packets they are, and add appropriate 
-rules to let them through.
 
-Regards,
-
-Antony.
-
--- 
-The lottery is a tax for people who can't do maths.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Gr,
+Rob
 
 
