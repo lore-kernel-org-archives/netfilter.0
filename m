@@ -1,9 +1,9 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: mail relay
-Date: Thu, 20 Mar 2003 17:00:36 +0100
+From: netfilter-maillist <vlad@fakt.tazovsky.ru>
+Subject: Re-re Modules "time"
+Date: Wed, 19 Mar 2003 09:08:35 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E79E5A4.50701@gmx.de>
-References: <OFF04453C4.ECF4132D-ONC1256CEF.00548382-C1256CEF.00543F77@LocalDomain>
+Message-ID: <12986944437.20030319090835@fakt.tazovsky.ru>
+Reply-To: netfilter-maillist <vlad@fakt.tazovsky.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,31 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-Cc: david@atd.es
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-david@atd.es wrote:
+Hello, netfilter.
 
->
-> Hi everybody,
-> I would like to know how can I filter the mail relay received in my 
-> port 25 with the firewall,..  I want only accept the packets from only 
-> one ip, my ISP.
-> This is possible this rule with iptables ??
+>iptables -I INPUT 1 -p tcp -s 192.168.1.2/32 -m time --timestart \
+>11:00 --timestop 17:00 --days Sun,Mon,Tue,Wed,Thu,Fri,Sat \
+>-d 192.168.1.1/32 --j DROP
+>Defaul policy in INPUT chain - DROP
+>But... packets allows to 192.168.1.240 (server) in this
+>time --> 11:00-17:00.
+>>
+>>If you use SNAT (masquerade) then it may be bypassing the input chain
+>>because of a prerouting rule ...
+>>
 
+Why then in general operates the rule?
+If there is SNAT, that what build the rules with module "time"?
+The Rule operates, but can not understand, as it considers time.
 
-If your mailserver is on the firewall itself, you should give this one a 
-try (this is very
-basic, one would usually add some more rules, set default policy to 
-drop, then even
-this rule wouldn't be right anymore):
-
-iptables -A INPUT -p tcp --dport 25 -s ! 1.2.3.4 -j REJECT --reject-with 
-tcp-reset
-
-
-Sven
-
+-- 
+With best wishes,
+ netfilter-maillist                          mailto:vlad@fakt.tazovsky.ru
 
 
