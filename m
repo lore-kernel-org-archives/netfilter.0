@@ -1,14 +1,11 @@
-From: Andreas Kretschmer <andreas_kretschmer@despammed.com>
-Subject: Re: [despammed] -i and -o options for iptables FORWARD chain
-Date: Fri, 2 Jan 2004 14:30:02 +0100
+From: "Slawomir Orlowski" <orlowscy@hotpop.com>
+Subject: help needed: clogged console
+Date: Tue, 23 Dec 2003 13:31:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040102133002.GA6057@kaufbach.delug.de>
-References: <009a01c3cff6$ee23bd90$a5bbd00c@issaquah>
+Message-ID: <00ea01c3c982$fe3196a0$4900a8c0@cympak.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <009a01c3cff6$ee23bd90$a5bbd00c@issaquah>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +15,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: shrike-list@redhat.com, redhat-list@redhat.com
+Cc: netfilter@lists.netfilter.org
 
-am  Wed, dem 31.12.2003, um 15:36:34 -0800 mailte Gongya Yu folgendes:
-> Hi, I just updated Linux kernel to 2.6.0 with iptables and ebtables enabl=
-ed.
+Hello,
 
-I'm using iptables on 2.4.x, possible there are differences with 2.6.x.
+I have Linux RH 9.0 configured as filtering firewall, and getting a lot of
+(kernel, iptables) messages on active consoles.
+I have thought that putting in /etc/syslog.conf:
 
-> =20
-> But iptables ignores -i and -o options for FORWARD chain. Wheneneve I use
-> something like -i eth0 or -o eth0, the rule is just ignored.
+# *.kern /dev/console
+kern.* /var/log/kernel
+kern.* /dev/tty8
 
-RTFM!
+would free me from this, but it did not.
+How can I force kernel message to appear only in /var/log/kernel log and on
+tty8 only?
 
--i is only for INPUT, FORWARD and PREROUTING
--o is only for FORWARD, OUTPUT and POSTROUTING
+Best Regards
+I hope that somebody will be able to help me.
+When  I'm getting a lot of dropped packages it is not possible even to log.
 
-You can use -s and -d (Source and Destination-IP).
+Slawomir Orlowski
 
-
-Andreas
---=20
-Diese Message wurde erstellt mit freundlicher Unterst=FCtzung eines freilau-
-fenden Pinguins aus artgerechter Freilandhaltung.   Er ist garantiert frei
-von Micro$oft'schen Viren. (#97922 http://counter.li.org)     GPG 7F4584DA
-Was, Sie wissen nicht, wo Kaufbach ist? Hier: N 51.05082=B0, E 13.56889=B0 =
-;-)
 
