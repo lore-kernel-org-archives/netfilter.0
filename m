@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: LOG Rate Limit Problem
-Date: Mon, 04 Oct 2004 21:15:29 -0400
+Subject: Re: snooping port 25 packets
+Date: Mon, 04 Oct 2004 21:21:48 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096938929.1787.13.camel@wolfpack.ljm.dom>
-References: <Pine.LNX.4.58.0410042052580.10057@ris713.UniXpress.com>
+Message-ID: <1096939308.1787.20.camel@wolfpack.ljm.dom>
+References: <4161C991.1070705@mortonfarms.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0410042052580.10057@ris713.UniXpress.com>
+In-Reply-To: <4161C991.1070705@mortonfarms.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,54 +20,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 2004-10-04 at 21:04, Lucky Leavell wrote:
-> iptables v1.2.8
-> OS: SuSE 9.1
-> 
-> After reading several references here on rate limiting logging I tried the 
-> following short chain which was intended to log a packet subject to the 
-> rate limit and then drop it unconditionally:
-> 
-> -A LogDrop  -m limit --limit 2/s -j LOG --log-prefix "ICMP:Drop "
-> -A LogDrop -physdev --physdev-in eth0 -j DROP
-> -A LogDrop -physdev --physdev-in eth1 -j DROP
+On Mon, 2004-10-04 at 18:07, Doug Yeager wrote:
+> i would like to use netfilter to snoop SMTP packets on my firewall.
+> has anybody done this?  is it possible?
+> i was leaning in the direction of trying to use the QUEUE target for 
+> user space processing.....but i'm not sure if that is the way to go.
 
-the 2nd and 3rd rules are not syntactically correct.  proper syntax:
+the QUEUE target is the way to go if you need to do custom processing to
+make the accept/drop decision; or if you want to modify & reinsert the
+packet into the stream.
 
-  iptables -A LogDrop -m physdev --physdev-in eth0 -j DROP
-  iptables -A LogDrop -m physdev --physdev-in eth1 -j DROP
+> once i send the packet to the QUEUE target, how do i put it back on the 
+> wire?
+> what i really want is a copy of each packet to port 25 sent to a user 
+> space program.
 
-is this a bridging firewall?  the physdev match is for bridged
-interfaces.  if this is a routing firewall, this should suffice:
+if you just need to capture packets, you can use any bpf reader to do it
+(tcpdump, snort, ethereal).
 
-  iptables -A LogDrop -i eth0 -j DROP
-  iptables -A LogDrop -i eth1 -j DROP
-
-> However, the first statement not only logged the packets subject to the 
-> rate limit but also acted as an implicit ACCEPT.  
-
-nope.  "-j LOG" is a non-terminating match.  it won't drop or accept the
-packet, just log it.
-
-> My understanding was 
-> that the logging should take place but then the packets should be dropped 
-> unconditionally by one of the following DROPs. When the LOG statement was 
-> commented out, the packets were dropped as desired.
-
-there's something else going on.  and "unconditionally" is a bit
-strong--you've certainly placed a condition on the inbound interface. 
-an "unconditional" drop would be:
-
-  iptables -A LogDrop -j DROP
-
-> I have reread my documentation and still do not see where my mistake is.
-> Could someone please enlighten my understanding>
-
-post your rules[1] and explain your testing methodology.
+not 100% sure what you looking to do, but snort inline
+(http://snort-inline.sourceforge.net/) may be of some use to you as
+well.
 
 -j
-
-[1] iptables -t mangle -vxnL && iptables -t nat -vxnL && iptables -vxnL
 
 -- 
 Jason Opperisano <opie@817west.com>
