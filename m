@@ -1,15 +1,11 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: port 8080 and zope woes...
-Date: Thu, 11 Sep 2003 13:58:12 -0400
+From: Claus Regelmann <claus.regelmann@inka.de>
+Subject: Filter in POSTROUTING
+Date: Thu, 11 Sep 2003 23:03:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309111358.12794.Alistair@nerdnet.ca>
-References: <000301c37879$5f93e610$0401000a@tanjian>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <3F60E30A.F61FD84F@inka.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000301c37879$5f93e610$0401000a@tanjian>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,40 +16,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, blueflux@koffein.net
 
-On September 11, 2003 11:28 am, Rob Sterenborg wrote:
-> > I have zope server running on port 8080
-> > and have enabled its access in IPTables
-> > however it fails to open up.
-> > any reason why??
-> >
-> >  -A INPUT -d <dest-ip> -p tcp -m tcp --dport 8080 -j ACCEPT
-> >
-> > -A OUTPUT -s <dest-ip> -p tcp -m tcp --sport 8080 -j ACCEPT
->
-> Have you set the default policy of the INPUT chain set to DROP ?
-> Then do you also have :
->
-> -A INPUT -m state --state RELATED,ESTABLISED -j ACCEPT
-> -A OUTPUT -m state --state RELATED,ESTABLISED -j ACCEPT (if OUTPUT
-> default policy is DROP)
->
-	Minor spelling error above ESTABLISHED not ESTABLISED
-	(I know just a typo .. .but for the archives.)
+Hello,
 
+There is a figure Oskar Andreassoons IPTABLES TUTORIAL (V1.1.19, chap.
+3.1, pg.19)
+where both, the forwarded and the local output, join the postrouting
+chain.
 
->
->
-> Gr,
-> Rob
+Why shoudnt it be possible to filter all outgoing e.g. smb traffic from
+a local
+network at that place with a command like
+>iptables -t nat -A POSTROUTING -o ppp0 -p tcp --dport 137:139 -j DROP
+>iptables -t nat -A POSTROUTING -o ppp0 -p udp --dport 137:139 -j DROP
+
+The same question applies to the PREROUTING chain for input
+>iptables -t nat -A PREROUTING -i ppp0 -p tcp --dport 137:139 -j DROP
+>iptables -t nat -A PREROUTING -i ppp0 -p udp --dport 137:139 -j DROP
 
--- 
-
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+Thanks
+Claus
 
