@@ -1,14 +1,13 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: Is there way to bypass conntrack?
-Date: Fri, 5 Sep 2003 01:52:25 +0800
+From: "Kevin Smith" <ksmith@perfht.com>
+Subject: Re: ip_conntrack vs netstat
+Date: Thu, 4 Sep 2003 14:07:34 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030904175225.GA2269@propaganda.localdomain>
-References: <3F56291A.90003@tigry.net>
-Reply-To: kluivert@tm.net.my
+Message-ID: <NGBBLGFEALDADHNDAAFFGEOHDKAA.ksmith@perfht.com>
+Reply-To: <ksmith@perfht.com>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0001_01C372ED.E3D664C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3F56291A.90003@tigry.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,22 +17,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Sep 03, 2003 at 10:47:06AM -0700, Andrey Tverdokhleb spoke thusly:
+This is a multi-part message in MIME format.
 
->I'd really like to have some way to bypass ip_conntrack for some 
->packets. Basically I need to run very intensive port scanning through my 
->firewall and as soon as ip_conntrack loaded it dies within seconds from 
->syn flood. Increase limit doesnt work becuase I need about  127000 
->packets to be sent from different source ports. So far I just keep 
->contrack unloaded and firewall works fine as pure stateless filter. But 
->now I need statefull inspection on this machine for some IPs. So the 
->question - is it possible to avoid connection tracking for some specific 
->IPs?
+------=_NextPart_000_0001_01C372ED.E3D664C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-I think there is a NOTRACK patch somewhere (p-o-m / archives) ? Try looking
-for it, from memory I think that is what you need.
+No, we won't let you. So there. 
+
+--
+
+Message: 3
+From: "Eric Constantineau" <mekanik@nerim.net>
+To: "Jonas Lindborg" <jools@apollo.nu>,
+	<netfilter@lists.netfilter.org>
+Subject: 
+Date: Tue, 2 Sep 2003 22:04:53 +0200
+
+I want to unsubscribe !
+thanks
+
+
+
+------=_NextPart_000_0001_01C372ED.E3D664C0
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+eJ8+IiMSAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
+b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEGgAMADgAAANMHCQAEAA4ABwAAAAQAAAEB
+A5AGAMwFAAAlAAAACwACAAEAAAALACMAAAAAAAMAJgAAAAAACwApAAAAAAADADYAAAAAAB4AcAAB
+AAAAHAAAAFJlOiBpcF9jb25udHJhY2sgdnMgbmV0c3RhdAACAXEAAQAAABYAAAABw3MPalrEweFX
+3uAR17ZlAKDJ2dlLAAACAR0MAQAAABcAAABTTVRQOktTTUlUSEBQRVJGSFQuQ09NAAALAAEOAAAA
+AEAABg4A+u9VD3PDAQIBCg4BAAAAGAAAAAAAAAALkP4K2R7WEbZUAKDJ2dlLwoAAAAsAHw4BAAAA
+AgEJEAEAAAB2AQAAcgEAAOcBAABMWkZ1K7erAwMACgByY3BnMTI1FjIA+Atgbg4QMDMzTwH3AqQE
+ZAIAY2gKwHPwZXQwIAhVB7ICgwBQrwPUENkHEwKAfQqBdgiQpHdrC4BkNAxgYwBQBwsDC7UHsG8s
+IHdlKxZAAiAnBUBsEUAgeYUIYC4GAG8gdGgEkJ5lF1AKogqECoAtLRgaAk0HkHNhZ2U6IJozGBRG
+A2EaICJFBRA+YxFxAIABkAIwC4BlYVB1IiA8B4BrAHBpTGtAHAAFEG0uHAB0Uj4YFFRvGvFKAiBh
+TQQgTBSxBuByZxxBasJvBvBzQGFwBvAJAPEdQHU+LBgVAZEcUB1RSmYDEHQEkEBsBAB0NnMdQiFU
+Lh7xHYVTdTRiagWQdBogGBREYVshgBogVApQFjAyBlFwDSTwMA9QJPAyOjA0ZDo1JZArMCVhGBpJ
+7xZAG8EXkBeAdQCAI3AE8rpiFmAhGBQXoABwaxLwXxgpFTUVIwqAFCEAK2AAAAsAAYAIIAYAAAAA
+AMAAAAAAAABGAAAAAAOFAAAAAAAAAwADgAggBgAAAAAAwAAAAAAAAEYAAAAAEIUAAAAAAAADAAeA
+CCAGAAAAAADAAAAAAAAARgAAAABShQAAJ2oBAB4ACYAIIAYAAAAAAMAAAAAAAABGAAAAAFSFAAAB
+AAAABAAAADkuMAAeAAqACCAGAAAAAADAAAAAAAAARgAAAAA2hQAAAQAAAAEAAAAAAAAAHgALgAgg
+BgAAAAAAwAAAAAAAAEYAAAAAN4UAAAEAAAABAAAAAAAAAB4ADIAIIAYAAAAAAMAAAAAAAABGAAAA
+ADiFAAABAAAAAQAAAAAAAAALAA2ACCAGAAAAAADAAAAAAAAARgAAAACChQAAAQAAAAsAOoAIIAYA
+AAAAAMAAAAAAAABGAAAAAA6FAAAAAAAAAwA8gAggBgAAAAAAwAAAAAAAAEYAAAAAEYUAAAAAAAAD
+AD2ACCAGAAAAAADAAAAAAAAARgAAAAAYhQAAAAAAAAsAUoAIIAYAAAAAAMAAAAAAAABGAAAAAAaF
+AAAAAAAAAwBTgAggBgAAAAAAwAAAAAAAAEYAAAAAAYUAAAAAAAACAfgPAQAAABAAAAALkP4K2R7W
+EbZUAKDJ2dlLAgH6DwEAAAAQAAAAC5D+Ctke1hG2VACgydnZSwIB+w8BAAAAggAAAAAAAAA4obsQ
+BeUQGqG7CAArKlbCAABQU1RQUlguRExMAAAAAAAAAABOSVRB+b+4AQCqADfZbgAAAEM6XFdJTkRP
+V1NcTG9jYWwgU2V0dGluZ3NcQXBwbGljYXRpb24gRGF0YVxNaWNyb3NvZnRcT3V0bG9va1xvdXRs
+b29rLnBzdAAAAAMA/g8FAAAAAwANNP03AAACAX8AAQAAADEAAAA8TkdCQkxHRkVBTERBREhOREFB
+RkZHRU9IREtBQS5rc21pdGhAcGVyZmh0LmNvbT4AAAAAAwAGENxy63UDAAcQxgAAAAMAEBAAAAAA
+AwAREAAAAAAeAAgQAQAAAGUAAABOTyxXRVdPTlRMRVRZT1VTT1RIRVJFLS1NRVNTQUdFOjNGUk9N
+OiJFUklDQ09OU1RBTlRJTkVBVSI8TUVLQU5JS0BORVJJTU5FVFRPOiJKT05BU0xJTkRCT1JHIjxK
+T09MU0BBAAAAANUl
+
+------=_NextPart_000_0001_01C372ED.E3D664C0--
+
 
