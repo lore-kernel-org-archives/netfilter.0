@@ -1,9 +1,9 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Iptables command failed
-Date: Thu, 8 Apr 2004 10:29:24 +0200
+From: Devaraj Das <ddas@india.hp.com>
+Subject: libipq
+Date: Thu, 08 Apr 2004 14:02:45 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001801c41d43$99a8b000$1202a8c0@admin>
-References: <20040408071811.94845.qmail@web61010.mail.yahoo.com>
+Message-ID: <40750E2D.2E4DA20@india.hp.com>
+References: <9723.1081409292@zworg.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,24 +19,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> I have downloaded iptables-1.2.9 from netfilter.org and
-> installed using  make and make install commands after
-> compiling the kernel with network packet filtering
-> (replaces ipchains) option having value yes
+Hi all,
+If I have an application (using libipq) that's waiting for packets, and I
+want to inspect the payload, will the payload be encrypted in case I use
+esp/transport with kernel 2.6 (with built-in ipsec)?
+Thanks,
+Devaraj.
 
-Did you patch the kernel with a new Patch-O-Matic (also from the Netfilter
-website) before you configured/compiled it ?
-I suppose iptables-1.2.9 requires symbols not yet in an unpatched kernel.
+__ Radien__ wrote:
 
-> > iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP
-> >
-> > i got the following error
-> >
-> > /lib/modules/2.4.22/kernel/net/ipv4/netfilter/ip_tables.o:
-> > unresolved symbol nf_register_sockopt_Rsmp_f5985dce
-
-
-Gr,
-Rob
+> Dear All
+>
+>    I have read some about ISA server from it's documentation. There were
+> listed some facilities for example Circuit Level and App Level
+> filtering and gateway.
+>
+>    Circuit level filtering and gateway were strange for me. What are
+> they?
+>    How can I see such capabilities in iptables? How they get mapped in
+> iptables?
+>
+>    Is iptables sth other than what ip_conntrack_ftp.o mudule do in
+> Application Layer?
+>
+> Regards
+> __Radien__
 
 
