@@ -1,14 +1,13 @@
-From: Kai Weber <kai.weber@glorybox.de>
-Subject: Re: What is missed for port forwarding
-Date: Sun, 7 Mar 2004 10:40:13 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: problem with forward/nat
+Date: Sun, 7 Mar 2004 09:46:05 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040307094013.GA3156@glorybox.de>
-References: <20040306183657.GB836@glorybox.de> <200403061847.28569.Antony@Soft-Solutions.co.uk>
+Message-ID: <200403070946.05288.Antony@Soft-Solutions.co.uk>
+References: <BAY1-F168WzqJX7rVGS00004a39@hotmail.com> <200403070926.05098.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200403061847.28569.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <200403070926.05098.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-* Antony Stone <Antony@Soft-Solutions.co.uk>:
+On Sunday 07 March 2004 9:26 am, Antony Stone wrote:
 
-> Which machine is that (192.168.1.2)?   Is it the machine running the abov=
-e=20
-> rules, or another machine on yur internal LAN, with packets being routed =
-by=20
-> the netfilter box?
+> I would recommend also that you change all your INPUT rules:
+>
+> For a single rule instead:
+> > iptables -A INPUT -m state --state RELATED,ESTABLISHED,NEW -j ACCEPT
 
-The router has 192.168.1.250, 192.168.1.2 is the box the packets should
-be forwarded to.
+Sorry!   I did *not* mean to leave the "NEW" in that rule!!
 
-> Do you have a FORWARD rule allowing traffic to 192.168.1.2:80?
-> Do you have a rule allowing the reply packets (probably an ESTABLISHED,RE=
-LATED=20
-> rule)?
+It should read:
 
-The 3 rules from my first mail are the only rules I have. All chain
-policies are set to ACCEPT.
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-> What happens if you telnet to port 80 on 192.168.1.2?   Is there a servic=
-e=20
-> listening on that port?
+It's too early in the morning for me - I shouldn't be answering technical 
+questions yet :-)
 
-Of course there is a running Apache on that port. I have no firewall on
-192.168.1.2.
+Antony.
 
-The strange thing: the rule for portforwarding for SSH works. The
-package counter for that rules is increasing when I try to connect to
-that port. But there is now response.
+-- 
+There are two possible outcomes:
 
--- =20
-  Kai Weber
-=BB kai.weber@glorybox.de   http://www.glorybox.de   gpg-key: 0x594D4132
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
