@@ -1,12 +1,14 @@
-From: =?ISO-8859-1?Q?Fr=E9d=E9ric_Gonzatti?= <fred99@libertysurf.fr>
-Subject: How to Forward a port (DNAT) ?
-Date: Sat, 10 Jul 2004 23:39:59 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: How to Forward a port (DNAT) ?
+Date: Sat, 10 Jul 2004 22:54:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40F0622F.6090500@libertysurf.fr>
-Reply-To: fred99@libertysurf.fr
+Message-ID: <200407102254.29715.Antony@Soft-Solutions.co.uk>
+References: <40F0622F.6090500@libertysurf.fr>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40F0622F.6090500@libertysurf.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,58 +18,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+On Saturday 10 July 2004 10:39 pm, Fr=E9d=E9ric Gonzatti wrote:
 
-Actually I'm using a routeur which is forwarding some ports on my DMZ 
-(25,110 etc...). My firewall just allow or some some ports to pass or not.
-In few days my Firewall (iptables 1.2.9) which have actually a private 
-IP (192.168.3.1) will have a public IP.
-So my firewall will have to replace my routeur and to forward ports 25 
-and 110 to my DMZ.
-To test I've done this  (this configuration is not connected to the 
-internet)
+> My iptables rules are :
+> ##########################################"
+> iptables -F
+> iptables -X
+>
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+>
+> iptables -P INPUT DROP
+> iptables -P FORWARD DROP
+> iptables -P OUTPUT DROP
+>
+> iptables -t filter -A INPUT -i lo -j ACCEPT
+> iptables -t filter -A OUTPUT -o lo -j ACCEPT
+>
+> iptables -t nat -A PREROUTING -p tcp --dport 25 -i eth2 -j DNAT --to
+> 192.168.2.151:25
+>
+> #################################################"
+>
+> It's a very simple test. But unfortunately it doesn't work.
 
-                      62.160.1.2 eth2 (WAN Firewall)
-                                          |
-192.168.2.151                - | 192.168.2.1 eth1(DMZ firewall)
-    (with port 25 open)         |
-                                           |
-                                     172.16.2.1 (eth0) LAN Firewall
-I've configured a computer with IP 62.160.1.3 (to simultate an internet 
-connection).
-I try to make a telnet 62.160.1.2 25 on this computer but it doesn't work.
-If I make a telnet on the public IP of my firewall (port 25)  I must see 
-the sendmail on my 192.168.2.151 server.
+You need a FORWARD rule to allow the packets through the firewall after b=
+eing=20
+DNATted - you also need to allow the reply packets.
 
-My iptables rules are :
-##########################################"
-iptables -F
-iptables -X
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p tcp --dport 25 -d 192.168.2.251 -j ACCEPT
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
+I recommend Oskar Andreasson's tutorial http://iptables-tutorial.frozentu=
+x.net=20
+to you.
 
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT DROP
+Regards,
 
-iptables -t filter -A INPUT -i lo -j ACCEPT
-iptables -t filter -A OUTPUT -o lo -j ACCEPT
+Antony.
 
-iptables -t nat -A PREROUTING -p tcp --dport 25 -i eth2 -j DNAT --to 
-192.168.2.151:25
+--=20
+The lottery is a tax for people who can't do maths.
 
-#################################################"
-
-It's a very simple test. But unfortunately it doesn't work.
-
-Thanks for your help
-
-Frederic
-
-
-
+                                                     Please reply to the =
+list;
+                                                           please don't C=
+C me.
 
 
