@@ -1,13 +1,11 @@
-From: ro0ot <ro0ot@phreaker.net>
-Subject: Re: newbie question
-Date: Thu, 08 Apr 2004 20:43:58 +0800
+From: Gianni Pucciani <gp.puccio@tin.it>
+Subject: opening connection for Tomcat
+Date: Thu, 08 Apr 2004 17:13:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4075490E.4090406@phreaker.net>
-References: <004601c41d60$9bf1af70$aa47aacb@hacker> <200404081302.49038.Antony@Soft-Solutions.co.uk> <000501c41d65$86446c30$aa47aacb@hacker>
+Message-ID: <40756C19.3010606@tin.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000501c41d65$86446c30$aa47aacb@hacker>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,81 +16,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "M. Ahmad Ijaz" <ahmad@netlogicbroadband.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-iptables -t nat -A PREROUTING -s xxx.xxx.xxx.xxx/yyy.yyy.yyy.yyy -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+Hi all,
+I was in trouble opening a port for services with tomcat:
+Is this rule right? I'm behind an adsl router that forward every 
+connection on port 8080 to <myprivateip>.
 
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD DROP
 
-M. Ahmad Ijaz wrote:
-
->do i know where to put that "-t nat"
-> iptables -A PREROUTING -s xxx.xxx.xxx.xxx/yyy.yyy.yyy.yyy -p tcp -m
->tcp --dport 80 -j REDIRECT --to-ports 8080
->
->----- Original Message ----- 
->From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
->To: <netfilter@lists.netfilter.org>
->Sent: Thursday, April 08, 2004 5:02 PM
->Subject: Re: newbie question
->
->
->  
->
->>On Thursday 08 April 2004 12:57 pm, M. Ahmad Ijaz wrote:
->>
->>    
->>
->>>when i try to use this command
->>>
->>>iptables -A PREROUTING -s xxx.xxx.xxx.xxx/yyy.yyy.yyy.yyy -p tcp -m tcp
->>>--dport 80 -j REDIRECT --to-ports 8080
->>>
->>>where xxx is any IP and yyy is the subnet mask, it returns me the same
->>>message i.e. iptables: No chain/target/match by that name
->>>
->>>So it also give the same message with POSTROUTING.
->>>      
->>>
->>You need a "-t nat" in there, to tell it the rule is going into the nat
->>    
->>
->table
->  
->
->>of the PREROUTING chain, not the filter table (which is the default, but
->>    
->>
->does
->  
->
->>not exist in PREROUTING).
->>
->>Regards,
->>
->>Antony.
->>
->>-- 
->>People who use Microsoft software should be certified.
->>
->>                                                     Please reply to the
->>    
->>
->list;
->  
->
->>                                                           please don't CC
->>    
->>
->me.
->  
->
->
->
->
->  
->
-
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p tcp -d <myprivateip> --dport 8080 -s 0.0.0.0 -m 
+state --state NEW -j ACCEPT
 
 
 
