@@ -1,13 +1,13 @@
-From: "yomega" <yomega@wahooo.net>
-Subject: AW: AW: IP Traffic Accounting / Own Chains
-Date: Sat, 22 Jun 2002 17:35:12 +0200
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Question
+Date: Sat, 22 Jun 2002 11:42:48 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NFBBLDBMIDIOFPBNLEAJAEJDCHAA.yomega@wahooo.net>
-References: <20020622151809.UBP2755.mta05-svc.ntlworld.com@there>
+Message-ID: <20020622154248.GA8126@cannon.eng.us.uu.net>
+References: <000401c21951$dcd11310$8147370a@washingtghv9lt> <20020621231230.XKAD19225.mta07-svc.ntlworld.com@there> <0GY3001U64R6B2@l-daemon> <20020622152548.GQ9519@ns>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020622151809.UBP2755.mta05-svc.ntlworld.com@there>
+Content-Disposition: inline
+In-Reply-To: <20020622152548.GQ9519@ns>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,52 +17,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jack Bowling <jbinpg@shaw.ca>, netfilter@lists.samba.org
 
-Hi PPL,
+On Sat, Jun 22, 2002 at 11:25:48AM -0400, Stephen Frost wrote:
 
-WAHOOOOOoo *startsdancing*
+> > > I'm not aware of anything based on IPtables which makes an effective (OSI 
+> > > layer 7) IDS - it's just not designed for it, being a packet filter.....
+> > 
+> > There is the psd module. Check it out.
+> 
+> There's also my recent module, just to throw it in there. :)
 
-now its doin fine :)
+Which IMHO is much _more_ powerful :-)
 
-THX THX THX THX THX :)
+Ramin
 
-Greetz,
-stephan
+> 	Stephen
 
-> -----Urspr=FCngliche Nachricht-----
-> Von: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]Im Auftrag von Antony Stone
-> Gesendet: Samstag, 22. Juni 2002 17:18
-> An: netfilter@lists.samba.org
-> Betreff: Re: AW: IP Traffic Accounting / Own Chains
->
->
-> On Saturday 22 June 2002 4:18 pm, yomega wrote:
->
-> > OK so i do:
-> > iptables -N [CHAIN NAME]
-> > and then add rules for example this one:
-> > iptables -A [CHAIN NAME] -p tcp --dport 80 -j ACCEPT
-> > so now i've made some traffic on my webbie and typed in that:
-> >
-> > iptables -L -n -v -x
-> >
-> > now the list is printed :) INPUT and the other Chains are
-> correct but this
-> > chain (my own one) didn count anything.
->
-> Did you put a rule anywhere which says
->
-> iptables -A FORWARD ....... -j [CHAIN NAME]
->
-> so that packets get fed into your new chain ?
->
->
->
-> Antony.
->
->
 
 
