@@ -1,11 +1,13 @@
-From: Michael Gale <mgale@utilitran.com>
-Subject: Hello -- kind of of topic -- but still related
-Date: Wed, 3 Dec 2003 15:10:30 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Hello -- kind of of topic -- but still related
+Date: Wed, 3 Dec 2003 22:34:22 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031203151030.31eaeacd.mgale@utilitran.com>
+Message-ID: <200312032234.22291.Antony@Soft-Solutions.co.uk>
+References: <20031203151030.31eaeacd.mgale@utilitran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031203151030.31eaeacd.mgale@utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +20,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Wednesday 03 December 2003 10:10 pm, Michael Gale wrote:
 
-	I am wondering if any one can help me out with this. On our production FTP server and have setup of the firewall rules to allow FTP traffic.
+> In my log I am seeing the following -- but our production FTP server is
+> currently out side of our network so we can connecting to it through a
+> Cisco router. Not my doing :( Dec  3 15:00:57 lightning kernel:
+> Firewall:IN=eth0 OUT= MAC=X.X.X.X SRC=CISCO_ROUTER DST=FTP_SERVER LEN=40
+> TOS=0x00 PREC=0x00 TTL=255 ID=16538 PROTO=TCP SPT=5 DPT=35607 WINDOW=0
+> RES=0x00 ACK RST URGP=0
+>
+> There are a large number of these packets -- at first it thought maybe it
+> was the Cisco router doing something funny when a FTP connect closed and it
+> was trying to close or reset the data channel.
+>
+> Any ideas ?
 
-$IPT -A INPUT -i $EXT -p tcp -d $EXT_IP --destination-port ftp -j ACCEPT
-$IPT -A INPUT -i $EXT -d $EXT_IP -m state --state RELATED -j ACCEPT
-$IPT -A INPUT -i $EXT -d $EXT_IP -m state --state ESTABLISHED -j ACCEPT
+The packet in the log above has ACK and RST set - that suggests that the 
+remote end has rather abruptly decided to terminate the connection (ACK and 
+FIN would be used for a polite termination).
 
-Above these rules I have the following:
-$IPT -A INPUT -i $EXT -f -j firewall 
-$IPT -A INPUT -i $EXT -d $EXT_IP -m unclean -j firewall
-$IPT -A INPUT -i $EXT -d $EXT_IP -p tcp ! --syn -m state --state NEW -j firewall
+However - Source Port 5???  Remote Job Entry???   That seems so unlikely...
 
-The firewall target logs the info and then drops the packet.
+Frankly I can't see that it has anything to do with FTP service at all.
 
-In my log I am seeing the following -- but our production FTP server is currently out side of our network so we can connecting to it through a Cisco router. Not my doing :(
-Dec  3 15:00:57 lightning kernel: Firewall:IN=eth0 OUT= MAC=X.X.X.X SRC=CISCO_ROUTER DST=FTP_SERVER LEN=40 TOS=0x00 PREC=0x00 TTL=255 ID=16538 PROTO=TCP SPT=5 DPT=35607 WINDOW=0 RES=0x00 ACK RST URGP=0 
+It would be useful to know what network activity preceded this log entry - 
+what was someone trying to do (almost certainly starting from the FTP server, 
+sending to the router)?
 
-There are a large number of these packets -- at first it thought maybe it was the Cisco router doing something funny when a FTP connect closed and it was trying to close or reset the data channel. 
-
-Any ideas ?
+Antony.
 
 -- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
+
+ - Frank Skinner
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
