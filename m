@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Very newB questions
-Date: Thu, 24 Jun 2004 14:31:49 +0100
+Subject: Re: ACK,RST getting dropped in the firewall.
+Date: Thu, 24 Jun 2004 14:54:28 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406241431.49138.Antony@Soft-Solutions.co.uk>
-References: <40DACA0E.7050808@4Dllc.com>
+Message-ID: <200406241454.28088.Antony@Soft-Solutions.co.uk>
+References: <GHEILNONPACCGBGKBEKKKEAMCHAA.manikandan@manikandan.org> <200406241144.10450.Antony@Soft-Solutions.co.uk> <1088084177.2029.8.camel@grendel>
 Reply-To: netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40DACA0E.7050808@4Dllc.com>
+In-Reply-To: <1088084177.2029.8.camel@grendel>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,82 +21,67 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 24 June 2004 1:33 pm, Steve Comfort wrote:
+On Thursday 24 June 2004 2:36 pm, Chris Brenton wrote:
 
-> Hi gents,
+> On Thu, 2004-06-24 at 06:44, Antony Stone wrote:
+> > The other thing you see logged quite often for similar reasons is FIN-ACK
+> > packets - the reply FIN-ACK is regarded as optional by many systems, so
+> > netfilter often ends up logging (and dropping) the second one to come
+> > along.
 >
-> About all I've done so far is cross-compile iptables for an XScale ARM
-> based system.
+> IMHO this is completely non-RFC. It is clearly defined (RFC 793 page 22)
+> that both sides must issue a FIN/ACK and receive an ACK before the
+> connection is closed.
 
-That sounds like a pretty advanced place to start...?
+Oh, I agree it's RFC incompliant.   I didn't say it was official behaviour - 
+just something you see happening :(
 
-> iptables v1.2.: can't initialize iptables table `ACC': Table does not
-> exist (do you need to run insmod. Perhaps iptables or your kernel needs
-> to be upgraded.
-> iptables v1.2.: can't initialize iptables table `ACC': Table does not exist
-> iptables v1.2.: can't initialize iptables table `ACC': Table does not
-> exist .
-> iptables v1.2.: Can't use -N with -A
+> What OS does not issue the reciprocating FIN/ACK?
+
+Don't know off the top of my head - will let you know if I can find out.
+
+> > No harm done though, because the first one has done the job.
 >
-> Question 1:  What is table ACC? Perhaps ACCEPT truncated (for some
-> unknown reason) ?
+> Actually not quite true as both sides will enter a fin-wait state (RFC
+> 793 page 20) till the second FIN/ACK-ACK exchange takes place.
 
-The correct table names are "filter", "nat" and "mangle" (newer systems also 
-have a "raw" table).
+Depends what you mean by "done the job".   I meant the phrase in the sense of 
+"no more data is going to pass across the connection".
 
-The chain names into which you place rules are "INPUT", "OUTPUT", "FORWARD", 
-"PREROUTING" and "POSTROUTING".
+> This chews up a session on both ends till their timers expire. Add up enough
+> of them and it can kill a busy server (seen it happen and have had to
+> stop state tracking to fix it).
 
-Not all combinations of tables and chains are valid - basically every chain 
-has a mangle table, INPUT, OUTPUT and FORWARD have a filter table, and 
-PREROUTING and POSTROUTING have a nat table.
+Indeed.   Not necessarily as bad as a SYN flood attack, but similar in nature 
+and consequences.
 
-ACCEPT is the name of a "target" (other examples are DROP, LOG, REJECT).
-
-> Question 2: If I want to start off by writing my own extremely simple
-> tables, where should these be stored, or is there a way to tell iptables
-> where to look for them?
-
-I suggest a few simple rules, stored in a file in your startup scripts 
-directory, so you can play with them and then get them loaded automatically 
-on startup once they do what you want.
-
-For a routing firewall, I would suggest the following as a starting ruleset:
-
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
-iptables -A FORWARD -p udp --dport 53 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -j ACCEPT
-
-The first rule allows reply packets through the machine (first rule for 
-efficiency), the next three allow ssh, dns and http packets through the 
-system, and the last one allows everything else as well.   No, it's not at 
-all secure, but you can extend the idea, having started from something 
-simple, and once you think you have all the services you need listed in the 
-ruleset, you can abolish the final -j ACCEPT (everything) rule, and you will 
-have a firewall.
-
-> Running iptables -L -v, produces the following :
+> Also, if you check the log entry that was posted:
+> > Jun 23 16:42:43 javagreen kernel: New not syn:IN=eth0 OUT=
+> > MAC=00:09:6b:19:b4:24:00:0e:83:f6:19:9f:08:00 SRC=202.138.101.5
+> > DST=202.138.22.218 LEN=1500 TOS=0x00 PREC=0x00 TTL=122 ID=51601 DF
+> > PROTO=TCP SPT=80 DPT=2162 WINDOW=64574 RES=0x00 ACK URGP=0
 >
-> Chain INPU (policy DROP 0 packets, 0 bytes
->  pkts  byte targ       prot opt                sour                
-> destinat
+> Its a 1500 byte ACK packet. So iptables is not just blocking the FIN/ACK
+> exchange, it can sometimes end up blocking data transfer as well. :(
 
-There is clearly something very strange going on with your installation, 
-indicated by these truncated names - this should not happen.
+Oh - I didn't see that posting - I was replying to a question apparently about 
+RST-ACK packets getting logged (and dropped).
 
-I suspect it's something to do with the cross-compilation, about which I can 
-offer no advice at all :(
+Dropping a normal ACK packet is another matter altogether, and clearly a Bad 
+Thing (or at least, Highly Undesirable).
 
 Regards,
 
 Antony.
 
 -- 
-The difference between theory and practice is that in theory there is no 
-difference, whereas in practice there is.
+"Reports that say that something hasn't happened are always interesting to me, 
+because as we know, there are known knowns; there are things we know we know. 
+We also know there are known unknowns; that is to say we know there are some 
+things we do not know. But there are also unknown unknowns - the ones we 
+don't know we don't know."
+
+ - Donald Rumsfeld, US Secretary of Defence
 
                                                      Please reply to the list;
                                                            please don't CC me.
