@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Firewall structure and more (Newbie)
-Date: Thu, 8 Jul 2004 18:28:49 +0100
+Subject: Re: ip_conntrack_max
+Date: Thu, 8 Jul 2004 18:42:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407081828.49545.Antony@Soft-Solutions.co.uk>
-References: <20040708171016.GA16115@itstud.chalmers.se>
+Message-ID: <200407081842.18007.Antony@Soft-Solutions.co.uk>
+References: <40ED161F.5070804@cisbic.com> <200407081429.24492.Antony@Soft-Solutions.co.uk> <40ED8294.4060103@cisbic.com>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040708171016.GA16115@itstud.chalmers.se>
+In-Reply-To: <40ED8294.4060103@cisbic.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,86 +18,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 08 July 2004 6:10 pm, Erik Wikstr=F6m wrote:
+On Thursday 08 July 2004 6:21 pm, Fallucchi Antonio wrote:
 
-> But what I do lack is a guide on how to structure your firewall, what
-> chains to create and what to put in them. So far the best structure I'v=
-e
-> come up with considers 3 (or 5) senarios. The first being packets arive
-> from the net with the firewall as destination. Second being packets fro=
-m
-> the firewall, then you have to consider different rules depending on th=
-e
-> destination (LAN or not). And the third scenario, of course, is packets
-> passing through on their way to or from the LAN, again different rules
-> depending on destination.
+> > Why do you want to limit connections per machine? What are you
+> > trying to achieve?
 >
-> My idea is to create 3 chains for each scenario, one for tcp, one for
-> udp and one for icmp. And maybe some more like one for port forwarding
-> or so. But that's an awful lot of rules and some of them might contain
-> only one or two rules
->
-> Which leads to my questions: What do you think of this structure? What
-> would you do?
+> The problem are the P2P software that create any connection on the
+> conntrack..
+> Because filter all p2p port is very difficult, I thought that to limit
+> the number of simultaneous connection is a good idea..
 
-I think this structure is more complex than needed, and the complexity wo=
-n't=20
-make it easier to understand.
+I think the right solution for this problem is to connect your internal users 
+through proxy machines, so they can't do direct P2P connections at all.
 
-What would I do?   I would put the rules for packets entering the firewal=
-l=20
-into the INPUT chain, I'd put the rules for packets leaving the firewall =
-in=20
-the OUTPUT chain, and I'd put rules for packets going through the firewal=
-l=20
-into the FORWARD chain :)
+What network connections do your users need?   Email is SMTP / POP3 / IMAP to 
+a local server (or a single specified server at your ISP).   HTTP / HTTPS / 
+FTP you can proxy very simply through Squid.   DNS should be to a local 
+caching server only (on the same machine as Squid for good Squid 
+performance).   If you need to allow SSH, then only allow it from one 
+specific machine on your network, which people have to connect through (and 
+disable port forwarding).
 
-I know that may sound trite, but that is what I would do.   If one or mor=
-e of=20
-the chains then ended up looking overly-complicated, I would consider=20
-breaking out some of the rules into user-defined chains, but I would base=
-=20
-those chains on the source or destination of the packets, not on whether =
-they=20
-were TCP, UDP, ICMP or something else.
+I can't think of any other protocols you're likely to need, and this should 
+stop all P2P activity as well as enhance the performance of your network by 
+using a caching proxy server for the website which can be cached.
 
-I would turn the question around to you: why do you think it is better to=
- have=20
-the rules arranged into different chains as you have suggested?   Do you=20
-think that is easier to understand?   (If you *do* find it easier to=20
-understand, then go ahead and do it, don't do what *I* find easy to work=20
-with.)
+> ps: it's ok the signature now?
 
-> I'm also open to suggestions for things to block, and maybe suggestions
-> on rules to do so, like ping of death and other known problems.
+---------------------------------------------------------------
+| |||||||    ||    |  Fallucchi Antonio Giuseppe  mat. 2282     |
+| ||        ||||    |      --> Live free() of die() <--         |
+| ||||     ||  ||    |        OpenSource philosophy             |
+| ||      ||||||||    |  Universita' di Bologna sede di Cesena  |
+| ||     ||      ||    |    Cdl di Scienze dell'Informazione    |
+---------------------------------------------------------------
 
-What to block?   Everything you don't know you want to allow.   That is=20
-standard security practice - don't think about what to DROP in the firewa=
-ll;=20
-DROP everything (default policy) and then ACCEPT what you want (with the=20
-rules).
+No, I don't quite think so - I think your want "or" instead of "of" in "Live 
+free() or die()"?
 
-Ping of death?   Well, why allow ping packets at all?   Why should anyone=
- out=20
-on the Internet be able to ping your firewall or your internal machines? =
- =20
-The same principle applies to many vulnerabilities - if a service isn't=20
-needed, just block it completely.
-
-Hope this helps,
+Regards,
 
 Antony.
 
---=20
-The difference between theory and practice is that in theory there is no=20
-difference, whereas in practice there is.
+-- 
+"When you talk about Linux versus Windows, you're talking about which 
+operating system is the best value for money and fit for purpose. That's a 
+very basic decision customers can make if they have the information available 
+to them. Quite frankly if we lose to Linux because our customers say it's 
+better value for money, tough luck for us."
 
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+ - Steve Vamos, MD of Microsoft Australia
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
