@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Gavin Hamill <gdh@acentral.co.uk>
 Subject: Re: Blocking programs with IPtables
-Date: Fri, 30 Jul 2004 16:12:38 +0100
+Date: Fri, 30 Jul 2004 16:18:07 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407301612.38554.Antony@Soft-Solutions.co.uk>
+Message-ID: <200407301618.07389.gdh@acentral.co.uk>
 References: <267354A234DF4D46AA6AE56E1240BEF004A3C4@wcsls03.wcslnet.net>
-Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <267354A234DF4D46AA6AE56E1240BEF004A3C4@wcsls03.wcslnet.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,69 +18,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 30 July 2004 4:04 pm, Steve Wakelin wrote:
-
-> Easiest way is to setup your IMAP server on a different port other than=
- 143
+On Friday 30 July 2004 16:04, Steve Wakelin wrote:
+> Easiest way is to setup your IMAP server on a different port other than 143
 > and then configure Thunderbird to use that port.  Disable access to 143.
 
-Except that Leonardo obviously doesn't trust his users not to surreptitio=
-usly=20
-continue using Outlook when they've been told to use Thunderbird - so he=20
-doesn't trust them not to configure Outlook to connect to the same port t=
-hat=20
-Thunderbird connects to.
+My own thoughts revolved around finding some combination of SSL options / 
+authentication mechanisms that Thunderbird supports, which Outlook does not, 
+thereby disabling Outlook from accessing the server..
 
-Antony.
+Anyway, this is wildly off-topic - sorry :)
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-> Sent: 30 July 2004 15:48
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Blocking programs with IPtables
->
-> On Friday 30 July 2004 3:38 pm, Leonardo Teves wrote:
-> > Hi,
-> > I=B4m new in this forum, and i have a little question.
-> > Is there a way to block some programs with Iptables?
-> > I want to block Microsoft Outlook recovering mail from Imap server.
-> > I want to force all users to use Thunderbird as mail client without
-> > deinstalling Outlook from every workstation.
-> > Is my question clear?
-> > Any ideas?
->
-> Your question is clear.
->
-> This cannot be done with netfilter (because all imap connections look t=
-he
-> same to netfilter, no matter what client or server software is being us=
-ed)
->
-> I cannot think of another way to do it either, because I would be surpr=
-ised
-> if Outlook sent anything in its connect message to identify itself as
-> Outlook (the server end of a connection often does, but the client end
-> usually doesn't, except for web browsers).
->
-> Sorry - but perhaps someone else here can prove me wrong?
->
-> Regards,
->
-> Antony.
-
---=20
-"Linux is going to be part of the future. It's going to be like Unix was.=
-"
-
- - Peter Moore, Asia-Pacific general manager, Microsoft
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
-
+gdh
 
