@@ -1,11 +1,15 @@
-From: "William Beattie" <williambeattie@msn.com>
-Subject: (no subject)
-Date: Mon, 10 Mar 2003 14:33:26 -0800
+From: Athan <netfilter@miggy.org>
+Subject: Re: sniffing the forwarded packets
+Date: Mon, 10 Mar 2003 22:49:43 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000401c2e755$11080590$5efffacc@fntax.com>
+Message-ID: <20030310224943.GK1025@miggy.org>
+References: <ABEKJILKOKKGGDJKHKDFMECCCAAA.patrick@vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5VuzLDXibKSJvVYD"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <ABEKJILKOKKGGDJKHKDFMECCCAAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,64 +19,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hello,
-
-I have a fairly complicated network which I have to maintain =
-connectivity
-with 20 different customers over private line or frame relay and 14 =
-remote
-offices using frame relay.  Most of the customers use 10.x.x.x or
-192.168.x.x subnets.  In order to not conflict with the customer =
-networks I
-am using all public IP addresses locally and at my remotes. (Ya, Ya, I =
-know)
-
-Now I have a mandate from our corporate IT to migrate/RE-IP my entire
-network to 10.x.x.x. =20
-
-Right away with the 10.x.x.x subnets I have been assigned for this =
-office I
-immediately conflict with at least one customer circuit.
-
-IPTABLES looks like the way to go but I need some helpful suggestions. =20
-
-I need to do source and destination nat because we connect to machines =
-on
-their side and they connect to machines on our side. =20
-
-I need to restrict incoming internet traffic on this firewall to =
-basically 5
-IP addresses or so and restrict outgoing internet access to a list of =
-sites
-for my general population and full internet ports 80, 443, 20:21, 23 for =
-a
-select group.
+To: Patrick Ahler <patrick@vikus.com>
+Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
 
 
-I am looking for suggestions, sample scripts and anything else you have.
+--5VuzLDXibKSJvVYD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I know RTFM, I did and it just doesn't look like the out of the box
-configuration will do.
+On Mon, Mar 10, 2003 at 04:05:28PM -0500, Patrick Ahler wrote:
+> What can I use to view the packets passing through my router/firewall? I'=
+ve
+> tried tethereal but that only seems to be able to capture on the specific
+> devices (eth1 or eth2) not the packets being forwarded, can anyone help?
 
-Please send files or attachments to wbeattie@fnis.com
+  Unfortunately that's just how it works.  Any packet sniffer attaches
+to a device and only sees the packets that go through that specific
+device.
 
+  The best you can do is run multiple sniffers, one per interface.
+*Possibly* you might be able to use tcpdump for this and then write
+something to interleave the packets from the timestamps.
 
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
 
+--5VuzLDXibKSJvVYD
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Sincerely,
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-William Beattie -- Network Engineer
-Microsoft Certified Systems Engineer
+iEYEARECAAYFAj5tFocACgkQzbc+I5XfxKc0NwCgmReMrrIdqUosyNJS0RtG/1Lq
+ZIEAnRvCyMtXxEILitqDy6/97EWYiYaE
+=MTqh
+-----END PGP SIGNATURE-----
 
-FNIS Real Estate Tax Service, Monrovia, CA
-(626) 351-5060 ext 214  Fax: 626-351-6181
-Cell Phone (626) 625-4973 DC # 124*27588*1
-Text Message 6266254973@messaging.nextel.com
-
-MSN IM: williambeattie@msn.com
-
-PS Please only send me PLAIN TEXT EMAIL
+--5VuzLDXibKSJvVYD--
 
