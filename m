@@ -1,13 +1,14 @@
-From: "Donovan J. Edye" <donovan@edye.wattle.id.au>
-Subject: [Q] Some newbie questions.....
-Date: Fri, 9 Apr 2004 14:31:59 +1000
+From: Rio Martin <rio@martin.mu>
+Subject: Re: Official IMQ support
+Date: Fri, 9 Apr 2004 13:01:41 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <052501c41deb$9c6dd420$3228a8c0@homer>
-Reply-To: <donovan@edye.wattle.id.au>
+Message-ID: <200404091301.41822.rio@martin.mu>
+References: <000601c41d93$1ee998c0$0464a8c0@stu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0526_01C41E3F.6E19E420"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000601c41d93$1ee998c0$0464a8c0@stu>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,159 +18,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+On Friday 09 April 2004 00:58, Stuart Lamble wrote:
+> Sounds good, will check this out.
+> I really need QoS, have you looked at wondershaper?
 
-------=_NextPart_000_0526_01C41E3F.6E19E420
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+What is special with wondershaper, Stuart ?
+I only knew IMQ is good shaping different devices into one queue disc.
+So we can set devices to gather all into the same burstable class.
 
-G'Day,
-
-I have the following setup: CAPS = Device / Machine
-
--	ROUTER: WAN Address: xxxxxxxxx LAN Address: 192.168.40.1
--	IPTABLES: 1 LAN Interface 192.168.40.5 (Gateway: 192.168.40.1)
--	PROXY: 1 LAN Interface 192.168.40.10 (Gateway: 192.168.40.5)
-
-I have a number of other machines also on the 192.168.40/24 network who all
-have their GW set to 192.168.40.5. What I want NETFILTER to do is the
-following:
-
--	Have a transparent proxy such that any port 80 connections from
-these machines get processed by PROXY on port 3128
--	Allow all established connections from these machines to be allowed
-out via 192.168.40.1 otherwise disallowed
--	IPTABLES to do no NAT as that is already being done by ROUTER
-
-Can anyone help me with some sample rules to get going?
-
-TIA
-
---Donovan 
-Web: http://www.edye.wattle.id.au <http://www.edye.wattle.id.au/> 
-----------------------------------------------------------------------
-SetiStats - Get your SETI statistics delivered to your mailbox daily.
-http://www.edye.wattle.id.au/p.php?page=/delphi/setistats
----------------------------------------------------------------------- 
-
-
-
-------=_NextPart_000_0526_01C41E3F.6E19E420
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
-
-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
-OjE5MjE2ODQwMS1JUFRBAAAAAIOO
-
-------=_NextPart_000_0526_01C41E3F.6E19E420--
-
+- Rio.Martin -
 
 
