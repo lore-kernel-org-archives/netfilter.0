@@ -1,10 +1,13 @@
-From: "Vijay Saha, Noida" <vsaha@noida.hcltech.com>
-Subject: queries
-Date: Mon, 2 Jun 2003 11:11:59 +0530
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: KAZAA
+Date: 02 Jun 2003 08:09:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E04CF3F88ACBD5119EFE00508BBB212109A2CCC8@exch-01.noida.hcltech.com>
+Message-ID: <1054534192.13177.112.camel@raylinux.internal>
+References: <001301c32747$3b9e57a0$0200000a@workgroup.kev>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-jzcrzagqp3puQFXC6fsD"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001301c32747$3b9e57a0$0200000a@workgroup.kev>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,45 +17,84 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+
+--=-jzcrzagqp3puQFXC6fsD
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
 Hi
-I have got few querries related to my project.
-I have got a Linux m/c with two network interfaces...wireless LAN (Aironet)
-as "eth0" and GPRS PC card as "ppp0" .
-I have to implement seamless roaming, so what I want to achieve is that by
-default I would be connected to wireless LAN interface and as soon as Access
-Point signal strength weakens, I have to switch dynamically to "ppp"
-interface.The "ppp" interface accepts the AT command sets for connecting to
-GPRS network.
-I have two approaches:-
 
-1) An alternative is using bridge as a virtual interface which enslaves
-"eth0" and "ppp0" ...where the logic of bridging will be modified. We shall
-continuosly check the "eth0" signal strength and if it weakens switch to the
-"ppp0" within the bridge module logic. The advantage here is that the
-application layer always bind with the same virtual bridge device "br0".
-The disadvantage,probably, would be to translate between the Ethernet and
-PPP frames within bridging module..??
+Kazaa (at least the latest clients) also try and connect via http to the
+kazaa servers, basically they tunnel the kazaa traffic in http.
 
-2) How do I get switch to the ppp0 interface dynamically??
-Can I accomplish my goal just by modifying the Kernel FIB default interface
-dynamically and flushing the routing cache table of Linux as per the
-connectivity??? Will the previous session be maintained after I increase the
-kernel TCP/UDP Timeout values ..??
-I am using the SIOCADDRT/SIOCDELRT to modify the default route in IP routing
-table dynamically.'
-But this approach has got some issues while handover... will the session be
-maintained??
-"qdisc" related problems???
+So use your proxy to deny access to *.kazaa.com.
 
-netfilters can help in solving the problesm related to second approach...
-Can you help me..??
+Or, use the iptables string match to drop all packets with 'kazaa' in
+them.
 
-Any suggestions are welcome.
-Anticipating a reply
-thanks and regards
-Vijay
+Ray
+
+On Sat, 2003-05-31 at 09:35, Kevin Smith wrote:
+> Now I am no expert and this is just a random thought. But if Kazaa looks =
+for
+> other ports to connect, is there a way to send it a fake connect signal s=
+o
+> it THINKS its connected? Or what someone suggested to block everything. a=
+nd
+> allow only the ports you know.
+> As I said its just a thought...you decide whether its viable, since I don=
+t
+> use Kazaa anymore.
+> Kev
+>=20
+>=20
+>=20
+>=20
+>=20
+> Message: 1
+> Date: Thu, 24 Apr 2003 19:28:52 +0800 (PHT)
+> Subject: block kazaa using iptables
+> From: "Wesley Jay Deypalan" <wjdeypalan@ictuscomm.net>
+> To: <netfilter@lists.netfilter.org>
+> Reply-To: wjdeypalan@ictuscomm.net
+>=20
+> Hi,
+>=20
+> Is there a way to block kazaa using iptables?Already tried blocking port
+> 1214 but to no avail, I heard that kazaa change ports if it cannot connec=
+t
+> using 1214.
+> TIA,
+>=20
+> wesley
+>=20
+>=20
+>=20
+>=20
+> --__--__--
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
+
+--=-jzcrzagqp3puQFXC6fsD
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+2uowh1fuR/Bv+ygRAlzGAJ9dvFXNTHmV4o52ZIWeI5E9gZKmNACdHQ+e
+K+IYjrm8jDcJxwy1BajiV0Q=
+=xSmP
+-----END PGP SIGNATURE-----
+
+--=-jzcrzagqp3puQFXC6fsD--
+
 
