@@ -1,10 +1,11 @@
-From: Nick <fenderflames@yahoo.com>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: FORWARD question
-Date: Fri, 21 Nov 2003 06:06:23 -0800 (PST)
+Date: Fri, 21 Nov 2003 14:11:20 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031121140623.49496.qmail@web40802.mail.yahoo.com>
-References: <3FBE183F.6030109@Loudoun-Fairfax.com>
+Message-ID: <200311211411.hALEBN725115@onyx.rockstone.co.uk>
+References: <20031121132405.56143.qmail@web40812.mail.yahoo.com> <3FBE183F.6030109@Loudoun-Fairfax.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <3FBE183F.6030109@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,17 +18,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Thanks, Jeff. I have been using one of Oskar's scripts
-with some changes in it for quite a while now. 
+On Friday 21 November 2003 1:50 pm, Jeffrey Laramie wrote:
 
-I got confused when I started using the LAN FTP, but
-now I gradually start getting back on track :-)
+> Indeed.  Antony, screw up like that again and I'll have to fire you!!  ;-)
 
-__________________________________
-Do you Yahoo!?
-Free Pop-Up Blocker - Get it now
-http://companion.yahoo.com/
+Indeed.   I think you'll find I've already done it myself by then though :)
+
+Antony.
+
+-- 
+
+Most people are aware that the Universe is big.
+
+ - Paul Davies, Professor of Theoretical Physics
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
