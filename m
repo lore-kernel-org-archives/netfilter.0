@@ -1,12 +1,12 @@
 From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: why must linux for halted firewall?
-Date: Tue, 16 Sep 2003 10:46:25 -0700 (PDT)
+Subject: Re: destinations interface must be eth0?
+Date: Tue, 16 Sep 2003 11:10:41 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309161040220.4397@xena.cft.ca.us>
-References: <BAY8-F93kuutSgcOrBL0000ec1b@hotmail.com>
+Message-ID: <Pine.LNX.4.53.0309161049310.4397@xena.cft.ca.us>
+References: <1063637259.2318.3.camel@dod-secure.e-masi.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY8-F93kuutSgcOrBL0000ec1b@hotmail.com>
+In-Reply-To: <1063637259.2318.3.camel@dod-secure.e-masi.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Chua Boon Ping <nitb@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: Jim Burnett <jburnett@e-masi.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Mon, 15 Sep 2003, Chua Boon Ping wrote:
-> concerning "why opts for Linux(netfilter/iptables) rather than OpenBSD to
-> implement a Halted Firewall". actually, can OpenBSD be halted just like
-> Linux kernel do?
+On Mon, 15 Sep 2003, Jim Burnett wrote:
+> I have found that my destination IP in my rules MUST be bound on eth0
+> what is this? I thought I could use any working IP on my internal
+> network as the --to-destination IP...??
+>
+> Example:
+> internal machine:
+> eth0:192.168.1.55
+> eth1:192.168.1.56
 
-I'm not sure what you mean by a "halted firewall".  Do you mean that the
-kernel uses the "halt" instruction when there is no work to do?  Actually,
-if you have APM or ACPI BIOS (all recent machines do), the kernel will use
-them to conserve power if the machine has been halted for a while, and if
-the BIOS has that capability.
+Maybe it would help if you could explain what you were trying to accomplish
+here.  I wouldn't be surprised if the web server's answers were getting
+lost, or subsequent packets in the connection were getting lost, because of
+switching to the other interface.
 
-I like Linux iptables because it's flexible and semi-comprehensible, and it
-can do (almost) everything I want to, and it uses relatively little CPU per
-packet.  But what you really need is a reply from someone who knows both
-NetBSD and Linux, and can say what's good about NetBSD firewall code.
+Have you used tcpdump or ethereal or snort to make sure which packets are
+vanishing?  Also, when tcpdump puts one of the interfaces into promiscuous
+mode, it might start accepting packets for the other interface and your
+setup might start working.  That would be an important clue (but definitely
+not the way to run a production server).
+
+To save a round of back-and forth, let me make a guess...  You have two
+independent web sites and each is assigned a different IP address.
+Perhaps you even have two independent instances of Apache, each listening
+to its own interface.  This is kind of overkill.  If I were setting it up,
+I would have DNS CNAMEs mapping both alphabetic names to the same IP
+address, and just one interface on the box, and just one instance of
+Apache.  Then I would set up a virtual host for each client site (the main
+instance would be just for administration).  Apache distinguishes the sites
+by the name in the URL, not the IP address.  This is the preferred method
+for commercial web hosting companies.  I use it for my HTTPS service.
+
+Hope this helps!
 
 James F. Carter          Voice 310 825 2897    FAX 310 206 6673
 UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
