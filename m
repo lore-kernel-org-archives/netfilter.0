@@ -1,14 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: firewall bridge , Vlan ?
-Date: 09 Jun 2003 12:08:26 +0200
+From: "Willem-Jan Meijer" <meyer3@chello.nl>
+Subject: RE: Firewall won't let win98 in ???
+Date: Mon, 9 Jun 2003 12:59:15 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055153305.648.12.camel@elendil.intranet.cartel-securite.net>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A019266@wardrive.citadelcomputer.com.au>
-	 <005c01c32e38$380565f0$1500a8c0@expi> <039a01c32e39$ce5ab310$b401a8c0@ows5>
+Message-ID: <005a01c32e76$2dddb8f0$0500a8c0@m28721.findquick.com>
+References: <20030608211659.A14869@jmhowell.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <039a01c32e39$ce5ab310$b401a8c0@ows5>
+In-Reply-To: <20030608211659.A14869@jmhowell.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,84 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: loong <loong@eads.com.my>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "'Jerry M. Howell II'" <jmhowell@jmhowell.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Le lun 09/06/2003 =E0 05:46, loong a =E9crit :
-> is there anywhere install bridge firewall and install vlan
-> http://www.candelatech.com/~greear/vlan.html
+netfilter-admin@lists.netfilter.org
+<mailto:netfilter-admin@lists.netfilter.org> schreef op maandag 9 juni 2003
+5:17:
 
-This works very well.
-=20
-> so that my firewall can run like netscreen without using  hug or
-> switch to my webserver.
+> I know this might sound a bit strange but has anyone ever had the
+> problem were the firewall will let linux, freebsd, win2k, and winxp
+> by but noone that seems to run win98 can access my webserver at all.
+> My clients that run it can't pull in e-mail, nor ssl, or even a
+> simple webpage. All other O/S'es seem to access it just fine. Anyone
+> have any clues as to what I need to do to allow win98 and possably
+> win95 past the firewall besides putting DNS on a seperate server?    
 
-You'll still have to use at leat one switch.
-=20
-> currently is
-> internet -- > eth0 firewall   eth1 -- >   hub ------> webserver 1
->                                                      ------> webserver
-> 2
-> =20
-> is that anywhere i install few network card in my firewall then
-> =20
-> internet --->    eth0    firewall   eth1 ---->    webserver 1
->                                                      eth2 -----> =20
-> webserver 2
->                                                      eth3 ----->=20
-> webserver 3
+I think this has to do with your webserver. Try this at an apache mailing 
+List.
 
-Your physical setup will be like this :
+HTH,
 
-	Internet -> eth0/Firewall/eth1 -> switch -> Web1
-						 -> Web2
+-WJ
 
-You can also have :
+Windows: Where do you want to go today?
+MacOS:   Where do you want to be tomorrow?
+Linux:   Are you coming or what?
 
-	Firewall/eth0 -> switch -> Internet
-				-> Web1
-				-> Web2
 
-But I don't recommand this setup as it relies too much on switch
-security features.
-
-So, you connect eth1 to your switch. This switch must support VLAN and
-802.1q frame tagging. On the switch, configure the port connected to
-eth0 as a 802.1q port (called trunk on Cisco). Now, affect one VLAN to
-Web1 port, and another one to Web2 port, etc... Eth0's port will carry
-all affected VLANs (see you switch documentation).
-
-Now, on your firewall, use vconfig to create virtual interfaces
-associated to each VLAN you want to see through the 802.1q link.
-
-Suppose Web1 is on VLAN1, Web2 on VLAN2 :
-
-	vconfig add eth0 1
-	vconfig add eth0 2
-
-This will create vlan0001 and vlan0002 interfaces trhough which you'll
-see respectively Web1's traffic and Web2's traffic.
-
-See vconfig man page for further information.
-
-Now, this solution is very scalable as you can add as many VLAN as you
-want on your switch. You just have to add them to the 802.1q link and
-create proper interface on the firewall. Then you configure your routing
-and filtering between those vlan* interfaces just you way you're use to
-between physical ones (eth*). Note that eth1 will see 802.1q tagged
-frames.
-
-But beware to the fact that this kind of network separation directly
-depends on your switch security. If one is able to gain access to the
-switch or find a way to bypass it, you loose everything relying on
-VLANs. See :
-
-	http://www.arp-sk.org/doc/bh-us-02-convrey-switches.pdf
-
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
