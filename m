@@ -1,11 +1,9 @@
-From: "Svein E. Seldal" <Svein.Seldal@solidas.com>
-Subject: Re: Connection opening problem (prev: FTP/auth problems (slooow links))
-Date: Tue, 15 Oct 2002 23:21:17 +0200
+From: Chris Born <ragable@attbi.com>
+Subject: (no subject)
+Date: Tue, 15 Oct 2002 17:12:21 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DAC86CD.9030506@solidas.com>
-References: <3DA97045.2040803@solidas.com> <20021013235022.ZXXG27697.mta05-svc.ntlworld.com@there> <3DAA80EA.7070106@solidas.com>
+Message-ID: <5.1.1.6.0.20021015165737.00ba9370@mail.attbi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,24 +15,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hello,
+I'm trying to setup a Hotline server on an internal NATed machine and I'm 
+having problems with getting clients to download. Here's what I have so far:
 
-The root of my problem was this:
+$EXTIF = "eth1"
+$INTIF = "eth0"
+$IPTABLES = /sbin/iptables
+$EXTIP = 12.252.56.159
 
- > [0:0] -A SYNFLOOD -m limit --limit 1/s --limit-burst 4 -j RETURN
- > [0:0] -A SYNFLOOD -j DROP
- > [0:0] -A CHECK -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j SYNFLOOD
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 5500:5503 -m state 
+--state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF --dport 5549 -m state --state 
+NEW,ESTABLISHED,RELATED
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 5500:5003 -j DNAT 
+--to $RAGABLE:5500:5503
+$IPTABLES -A PREROUTING -t nat --dport 5549 -j SNAT --to $EXTIP
 
-When the HTTP/FTP-clients etc. spawned several connections (in this case 
- >4) to download files, the router blocked them.
+According to the Hotline server documentation, incoming connection requests 
+come in on ports 5500 - 5503 while outgoing download connections are on 
+port 5549. People are able to connect to the server just fine, but are 
+unable to download so I'm wondering what rules I need to let the download 
+through.
 
-I guess that it adds protection to keep the SYNFLOOD check there. What 
-are sensible values to use on -m limit, making it work for flooding, yet 
-not stopping normal clients?
+-Chris Born
 
-Thanks guys,
-Svein
 
 
