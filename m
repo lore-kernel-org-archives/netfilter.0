@@ -1,12 +1,13 @@
-From: "Shazad Malik" <smalik@vistawiz.com>
-Subject: My findings on H323 ..... feedback welcome
-Date: Fri, 7 Jun 2002 19:01:46 -0400 (EDT)
+From: Patrick Conlin <patrick@wechsler.com>
+Subject: mixing static and dynamic mappings
+Date: Fri, 07 Jun 2002 21:38:54 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1608.24.168.132.35.1023490906.squirrel@mail.vistawiz.com>
-Reply-To: smalik@vistawiz.com
+Message-ID: <a7d60cd.60cda7d@wechsler.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
+Content-language: en
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,78 +20,32 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-everyone,
+seeking advice...
 
-I have working my ass on trying to get this thing working....... and this
-is what I have conculded.
+i have a /29 range of public ips from my isp. all but one of the ip
+addresses are taken up by static mappings (servers of various
+functions/domains) to addresses on my 10.1.1.0/24 internal network. what
+i'd like to do with the remaining public ip address is use it as a sort
+of MASQUERADE ip address for all remaining non-server machines on the
+network (so the machines on the network that aren't servers can all
+share an ip for internet access). i've got a dhcp server set up that's
+dishing out internal ips in the 10.1.1.200-240 range only, so i'm
+wondering if i could so something like:
 
-Scenario 1:
-kernel: 2.4.18, iptables: 1.2.6a:
+iptables -t nat -A POSTROUTING -s 10.1.1.200-10.1.1.240 -j SNAT
+--to-source 207.224.76.205
 
-H323 will not work.  I installed a new kernel and a good .config file and
-selected the patches but the nat, h323 does not work. NO MATTER WHAT YOU DO
-IT WILL NOT WORK!
+and combine it with state ESTABLISHED
 
-Scenario 2:
-kernel: 2.4.18, iptables: iptables--20020605 (latest snapshot) I felt there
-is no harm!
+somehow so that just that range of ips gets a pnat-style translation for
+basic browsing, etc.
 
-Well, I had huge success with it!  When I added the patched and checked
-my .config file, all the entries were present as I expected. I thought I
-was done till I had to to a "make  KERNEL=/usr/src/linux"
+unfortunately the basic iptables command above just gives an error, as
+it should. i'm pretty sure i'm going about this the wrong way, so would
+greatly appreciate anyone's suggestions!
 
-This is the error message I'm getting:
+thanks a lot,
 
-========================================
-Extensions found: IPv4:connmark IPv4:CONNMARK IPv4:ipv4options
-IPv4:IPV4OPTSSTRIP IPv4:mport IPv4:nth IPv4:quota IPv4:random IPv4:time
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -
-DIPTABLES_VERSION=\"1.2.7\"  -fPIC -o extensions/libipt_conntrack_sh.o -c
-extensions/libipt_conntrack.c
-ld -shared -o extensions/libipt_conntrack.so
-extensions/libipt_conntrack_sh.o
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -
-DIPTABLES_VERSION=\"1.2.7\"  -fPIC -o extensions/libipt_mark_sh.o -c
-extensions/libipt_mark.c
-extensions/libipt_mark.c: In function `parse':
-extensions/libipt_mark.c:67: structure has no member named `bit_op'
-extensions/libipt_mark.c:67: `IPT_MARK_BIT_OP_NONE' undeclared (first use
-in this function)
-extensions/libipt_mark.c:67: (Each undeclared identifier is reported only
-once
-extensions/libipt_mark.c:67: for each function it appears in.)
-extensions/libipt_mark.c:77: structure has no member named `bit_op'
-extensions/libipt_mark.c:77: `IPT_MARK_BIT_OP_OR' undeclared (first use in
-this function)
-extensions/libipt_mark.c:86: structure has no member named `bit_op'
-extensions/libipt_mark.c:86: `IPT_MARK_BIT_OP_AND' undeclared (first use in
-this function)
-extensions/libipt_mark.c: In function `print':
-extensions/libipt_mark.c:113: structure has no member named `bit_op'
-extensions/libipt_mark.c:113: `IPT_MARK_BIT_OP_AND' undeclared (first use
-in this function)
-extensions/libipt_mark.c:116: structure has no member named `bit_op'
-extensions/libipt_mark.c:116: `IPT_MARK_BIT_OP_OR' undeclared (first use in
-this function)
-extensions/libipt_mark.c: In function `save':
-extensions/libipt_mark.c:131: structure has no member named `bit_op'
-extensions/libipt_mark.c:133: `IPT_MARK_BIT_OP_AND' undeclared (first use
-in this function)
-extensions/libipt_mark.c:135: break statement not within loop or switch
-extensions/libipt_mark.c:136: `IPT_MARK_BIT_OP_OR' undeclared (first use in
-this function)
-extensions/libipt_mark.c:138: break statement not within loop or switch
-extensions/libipt_mark.c:139: `IPT_MARK_BIT_OP_NONE' undeclared (first use
-in this function)
-extensions/libipt_mark.c:141: break statement not within loop or switch
-make: *** [extensions/libipt_mark_sh.o] Error 1
-
-
-
--- 
-Shazad Malik
-work: (845)623-2161
-fax: (845) 623-1154
-
+-=p=-
 
 
