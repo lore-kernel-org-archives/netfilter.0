@@ -1,11 +1,13 @@
-From: "Mark Weaver" <mark@npsl.co.uk>
-Subject: 2.6 native ipsec and MASQUERADE target interaction - bug?
-Date: Tue, 16 Dec 2003 15:06:08 -0000
+From: Colin Viebrock <colin@easydns.com>
+Subject: Two ulogd (maybe?) problems
+Date: Fri, 12 Dec 2003 18:58:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GFEPJIHHFOJDOFDMNAJDCEPHEJAA.mark@npsl.co.uk>
-Mime-Version: 1.0
+Message-ID: <10B939A3-2FDA-11D8-A2B7-000A957B8770@easydns.com>
+Mime-Version: 1.0 (Apple Message framework v606)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Resent-To: netfilter@lists.netfilter.org
+Resent-Message-Id: <0DB6EAA4-2CFF-11D8-B7A3-000A957B8770@easydns.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,57 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Firstly, apologies if this isn't the right list and please redirect me if
-so.
+I'm using Shorewall (www.shorewall.net) on both of these servers.
 
-There seems to be a bug in the MASQUERADE target when using 2.6.0-test11 and
-ipsec.  I could reproduce the problem with:
+1) I am getting entries like this in my log:
 
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+Dec  2 12:00:42 malakili Shorewall:net2fw:ACCEPT: IN=ppp0 OUT=
+MAC=c0:29:c0:00:00:00:00:11:00:00:00:00:00:00:00:00:00:00:00:01:00:00:00
+:00:00:00:00:30:18:00:00:00:00:00:00:01:15:00:00:30:18:00:00:00:00:00:00
+:00:20:10:c1:00:20:10:c1:00:00:00:00:00:00:00:00:00:00:00:00:a8:40:7e:c1
+:a8:40:7e:c1:00:00:00:00:80:45:00:00:3c:47:a9:40:00:38:06:63:da:42:cf:c7
+:22:40:e7:4c:60:f7:14:03:78:92:08:9e:a8:00:00:00:00:a0:02:80:00:54:d0:00
+:00:02:04:05:ac:01:03:03:00:01:01:08:0a:f2:a8:c1:1f:00:00:00:00:40:7e:c1
+:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+:00:00:00:00:00:00:00:00:00  SRC=66.207.199.34 DST=64.231.76.96 LEN=60
+TOS=00 PREC=0x00 TTL=56 ID=18345 DF PROTO=TCP SPT=63252 DPT=888
+SEQ=2450038440 ACK=0 WINDOW=32768 SYN URGP=0
 
-Now what that's _supposed_ to do with ipsec packets I'm not sure, but to be
-really certain i also did:
+What's with the huge MAC address?  This seems to have started when I 
+switched to using ulogd (version 1.02).  Shorewall is version 1.4.7c 
+(from Debian package), BTW.
 
-iptables -t nat -I POSTROUTING -s 10.0.0.0/8 -d 10.0.0.0/8 -j ACCEPT
+The author of Shorewall says "That's clearly a bug (and not a Shorewall 
+bug) -- I suggest searching the netfilter mailing list archives as I'm 
+sure that I saw this problem mentioned there."
 
-which should prevent all VPN traffic from being mangled.
+I searched and couldn't find anything, so does anyone know what's up?  
+Someone suggested it might be a ppp issue?
 
-Let's say we have a tunnel from 10.0.1.0/24<->10.0.2.0/24 with gateways
-10.0.1.1/24 and 10.0.2.1/24 where 10.0.2.1 is the v2.6 host and 10.0.1.1 is
-a v2.4+freeswan.  Connectivity is up and working and from from 10.0.2.1, all
-hosts are accessible via ping and telnet.  But for all clients in the
-10.0.2.0/24 subnet for which forwarding should be active on the VPN, ping
-works ok across both subnets, but telnet produces packets which are
-unmasqueraded as having come from port 1, sample tcpdump:
 
-What I saw was ping working fine through the tunnel, but telnet had some
-very strange results.
+2) On a different machine also running Shorewall 1.4.7c and ulogd 1.02 
+from Debian, I sometimes get logs with what must be zero timestamps:
 
-10.0.2.1:~# tcpdump -n -i any host 10.0.1.6
-tcpdump: listening on any
-15:00:56.655700 10.0.2.48.47016 > 10.0.1.6.25: S 3043083403:3043083403(0)
-win 16384 <mss 1460,nop,nop,sackOK> (DF)
-15:00:56.667549 10.0.1.6.25 > 10.0.2.48.47016: S 2614137956:2614137956(0)
-ack 3043083404 win 65535 <mss 1460,nop,nop,sackOK> (DF)
-15:00:56.667728 10.0.1.6.1 > 10.0.2.48.47016: S 2614137956:2614137956(0) ack
-3043083404 win 65535 <mss 1460,nop,nop,sackOK> (DF)
-15:00:56.669454 10.0.2.48.47016 > 10.0.1.6.1: R 3043083404:3043083404(0) win
-0
-15:00:56.669558 EXTERNAL-IP > 10.80.80.6: ESP(spi=0x69d1ec0e,seq=0x4c4)
+Dec 31 19:00:00 firewall Shorewall:fw2dmz:ACCEPT: IN= OUT=eth2 MAC= 
+SRC=192.168.11.1 DST=192.168.11.10 LEN=60 TOS=00 PREC=0x00 TTL=64 
+ID=5680 DF PROTO=TCP SPT=1036 DPT=22 SEQ=2745000454 ACK=0 WINDOW=5840 
+SYN URGP=0
 
-It seems that the packet comes back in fine but is then unwrapped
-(erroneously) by the MASQUERADE rule, which doesn't quite know how to
-rewrite the port and somewhere shoves in a default value of 1.  I'm happy to
-dig around in the code if someone gives me a place to start!
+What would cause that?  It doesn't seem to happen consistently (i.e., 
+tailing the log right now I see normal timestamps).
 
-Finally, this does not affect SNAT:
-iptables -t nat -I POSTROUTING -s 10.0.0.0/8 -d 10.0.0.0/8 -j ACCEPT
-iptables -t nat -A POSTROUTING -s 10.0.2.0/24 -d 0/0 -j
-SNAT --to-source=$EXTIP
-
-works fine.
+- Colin
 
 
