@@ -1,10 +1,14 @@
-From: Juerg.Oehler@idzedi.admin.ch
-Subject: filter rpc pgm#
-Date: Mon, 14 Jun 2004 08:36:37 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables for backup connection
+Date: Mon, 14 Jun 2004 09:05:53 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <516423986E18D511B0A700508BB85789027F2A83@edi002ex.idzedi.admin.ch>
+Message-ID: <200406140905.53992.Antony@Soft-Solutions.co.uk>
+References: <1171.172.16.128.100.1087207004.squirrel@mail.suarapembaruan.co.id>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1171.172.16.128.100.1087207004.squirrel@mail.suarapembaruan.co.id>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,22 +19,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi,
+On Monday 14 June 2004 10:56 am, david@suarapembaruan.co.id wrote:
 
-we are working with some tools based on rpc (such as nfs, legato, stornext
-....). the authorisation based on ports forces us to open the firewall for
-huge port-ranges. but there are only a few known rpc programnumbers, which
-are linked to the right rpc-servers.
+> Dear all,
+> In my office i using 2 connection (Wireless connection direct to ISP "A"
+> and backup connection to ISP "B" with ADSL Modem), how to configure Linux
+> iptables (gateway) so when connection to ISP "A" down client can still
+> work with ISP "B" without reconfiguration at client computer.
 
-i am wondering if i could configure netfilter using these programnumbers?
-are there already features in the core or extensions? 
+This is not a firewalling question; this is a routing question.
 
-could look like <iptables -A INPUT -p rpc --pgmnum 1073741827 -j ACCEPT>
+The tool you need to set this up is iproute2.   See http://lartc.org for 
+details.
 
-thanks
-have fun
-juerg
+Regards,
+
+Antony.
+
+-- 
+Most people are aware that the Universe is big.
+
+ - Paul Davies, Professor of Theoretical Physics
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
