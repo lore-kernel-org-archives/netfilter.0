@@ -1,13 +1,11 @@
-From: "Stuart J. Browne" <stuart@promed.com.au>
-Subject: RE: Multihomed firewall/router
-Date: Sat, 31 Jan 2004 12:02:16 +1100
+From: "Dhyanesh Ramaiya" <dhyanesh@intafrica.com>
+Subject: iplimit
+Date: Sat, 31 Jan 2004 07:17:32 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c3e795$dea933c0$2288e7c0@promed.com.au>
-References: <20040130142117.66050.qmail@web41209.mail.yahoo.com>
+Message-ID: <MDBBKGIIDBFKOMNNKBCDIEOCCAAA.dhyanesh@intafrica.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040130142117.66050.qmail@web41209.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,73 +16,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: seldeterre@yahoo.com, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Dear all,
 
+I am having difficulties in getting iplimit to work. I have iptables 1.2.7a
+and kernel 2.4.20. iplimit is compiled in the kernel. However, whenever I
+try to run the rule below it gives the error "iptables: No
+chain/target/match by that name":
 
->-----Original Message-----
->From: netfilter-admin@lists.netfilter.org 
->[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
->seldeterre@yahoo.com
->Sent: Saturday, 31 January 2004 00:21
->To: netfilter@lists.netfilter.org
->Subject: Multihomed firewall/router
->
->
->I have a firewall/router performing snat.  This is its
->configuration.
->
->                        eth1-192.168.1.0/24
->                       /
->Internet--eth0-firewall-eth2-192.168.2.0/24
->                       \
->                        eth3-192.168.3.0/24
->
->My iptables setup is successfully blocking connections
->from eth0.  However, I need to segregate the internal
->subnets from each other because the belong to
->different organizations.  No matter what I try I can't
->seem to block pings from one subnet to another.  I can
->lock it down to only allow input access to the
->interface the subnet is directly connected to, but I
->need to provide dns access to eth1 and this breaks
->when I do this.
+iptables -A INPUT -p tcp --syn --destination 1.2.3.4 --dport 80 -j DROP -m
+iplimit --iplimit-above 4
 
-It should be pretty simple.  Basically, you want to stop forwarding:
+Please advise off the mailing list as temporarily I have disabled to receive
+Netfilter's member posts.
 
-iptables -t filter -P FORWARD DROP
+Thank you very much.
 
-Then you want to only allow forwarding out eth0 for external 'net
-traffic:
+Dhyanesh Ramaiya
+dhyanesh@intafrica.com
 
-iptables -t filter -j ACCEPT -o eth0 -m state --satte NEW
-iptables -t filter -j ACCEPT -m state --state ESTABLISHED,RELATED
-
-Translation:
-
-Only allow 'new' to be forwarded to the real world, only allow existing
-or related back in.
-
-eth[1-3] won't be able to talk to each other because of the Policy on
-the Forward chain.
-
-The INPUT and OUTPUT chains don't really need any changing, as they
-aren't touched for talking between interfaces.
-
->The firewall is running a caching dns server(djbdns)
->on eth1.  It also provides dhcp leases, and ntp
->services on eth1-3.
->
->I have also noticed that when I flush the tables and
->delete the chains.  Nat is still provided, i.e. I can
->still connect to the internet.
-
-This is because the NAT rules are in the 'nat' table, not in the
-'filter' table.
-
->Any pointers or help would be greatly appreciated.
-
-
-Hope this helps some..
 
 
