@@ -1,13 +1,13 @@
-From: "James Williams" <james@ikennect.com>
-Subject: LKM unresolved symbol nf_register_hook..
-Date: Thu, 10 Jul 2003 14:28:23 -0800
+From: "Gary Cote" <gcote@transat-tech.com>
+Subject: RE: invalid argument / 2.4.21 kernel / iptables 1.2.6a (help please!)
+Date: Sat, 12 Jul 2003 08:18:52 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007a01c34732$94a7aee0$6401a8c0@williams>
-Reply-To: "James Williams" <james@ikennect.com>
+Message-ID: <OKEKIACJCGNKMLKPKIIKEEANDBAA.gcote@transat-tech.com>
+References: <024901c34598$4d6e84e0$3964a8c0@comsol.co.nz>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0077_01C346EF.84AAA5D0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <024901c34598$4d6e84e0$3964a8c0@comsol.co.nz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jeremy <jeremy@paradise.net.nz>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0077_01C346EF.84AAA5D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-All-
+> 
+> I run a debian box with the kernel/iptables version as per the subject, I
+> have also applied P-O-M patch pptp-conntrack-nat and re-compiled
+> succesfully.
+> 
+> Just wondering if anyone knows why, when I try and execute the 
+> following, I
+> get an invalid argument from iptables.
+> 
+> IPTABLES -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 202.0.35.*
+> (inet_ip)
+> 
+> is this in incompatability thing, i.e. i need to upgrade iptables 
+> to 1.2.7a
 
-I am building an LMK. The module compiles and links with no problem. =
-When I use insmod, i.e /sbin/insmod iroute.o, I get an error "unresolved =
-symbol nf_register_hook". Any thoughts?
+It's an incompatability thing. The patch modifies some kernel
+structures, and your iptables version is out of date. I'm not
+familiar with iptables 1.2.7a, but 1.2.8 worked fine for me.
+You can pull it off www.netfilter.org
 
-I am using Kernel 2.4.20.
-
-James
-------=_NextPart_000_0077_01C346EF.84AAA5D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>All-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am building an LMK. The module =
-compiles and links=20
-with no problem. When I use insmod, i.e /sbin/insmod iroute.o, I get an =
-error=20
-"unresolved symbol nf_register_hook". Any thoughts?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am using Kernel 2.4.20.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>James</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0077_01C346EF.84AAA5D0--
 
 
 
