@@ -1,12 +1,13 @@
-From: Vicky Shrestha <mail@vickysh.wlink.com.np>
-Subject: ip_conntrack: table full, dropping packet.
-Date: Wed, 30 Oct 2002 19:28:42 +0545
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: Re: test firewall with nmap
+Date: Wed, 30 Oct 2002 14:53:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210301928.42300.mail@vickysh.wlink.com.np>
-Reply-To: mail@vickysh.wlink.com.np
+Message-ID: <200210301453.24586.roy@karlsbakk.net>
+References: <006f01c28000$6eba65a0$1801010a@demo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <006f01c28000$6eba65a0$1801010a@demo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: Ben Tan <linuxnewbie74@hotmail.com>, netfilter@lists.netfilter.org
 
-I have built a firewall on 2.4.8-17 kernel which has 2 Mb of traffic going in 
-an out of it. 
+On Wednesday 30 October 2002 11:38, Ben Tan wrote:
+> hi,
+>     I used nmap -v -sS -O xxx.xxx.xxx.xxx to check for any open ports, =
+it
+> it enough?
+>
+>     Any tool to recommend?
 
-I recently added a line :
-iptables -A FORWARD -m state --state ESTABLISED,RELATED -J ACCEPT
+that only scans for open TCP ports
+you should probably do -sU (udp), -sA (ack) scans (to bypass some bad=20
+filters), and perhaps -sO (protocol scans)
 
-Now I can see the lines "ip_conntrack : table full, dropping packet" in my 
-kern.log.
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
 
-Does dropping packets means that it is actually dropping the packets or just 
-truncating the file /proc/net/ip_conntrack , does this affect my client's  
-connections???
-
--- 
-Best regards,
-
-
-Vicky Shrestha
-System Administrator
-WorldLink Communications Pvt.Ltd
-Jawalakhel, Kathmandu, Nepal.
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
