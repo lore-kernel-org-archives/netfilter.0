@@ -1,11 +1,14 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: how to block udp frag?
-Date: Mon, 3 Jan 2005 08:10:16 -0500
-Message-ID: <2E314DE03538984BA5634F12115B3A4E01BC4203@email1.mitretek.org>
+From: Stephen Frost <sfrost@snowman.net>
+Subject: Re: Matching 10000's of IP ranges
+Date: Mon, 3 Jan 2005 09:34:30 -0500
+Message-ID: <20050103143430.GP10437@ns.snowman.net>
+References: <20050102225028.83118.qmail@web41504.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4GAATbDXHfbycz3H"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20050102225028.83118.qmail@web41504.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,80 +19,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Bruno Wallace <bruno.wallace@gmail.com>, Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
-
-Yes, if you use NAT, you cannot block fragmented packets.
+To: Brian Gunlogson <bmg300@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Bruno =
-Wallace
-Sent: Monday, January 03, 2005 7:39 AM
-To: Jason Opperisano; netfilter@lists.netfilter.org
-Subject: Re: how to block udp frag?
+--4GAATbDXHfbycz3H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-the iptables dont see this traffic..
+* Brian Gunlogson (bmg300@yahoo.com) wrote:
+> What is a reasonable way to match around 80000 IP ranges with iptables?
 
+If there aren't too many actual *IP*s then you might look into
+ipt_recent.  It does more than you actually need but I've put 1.5M IP
+addresses in an ipt_recent hash before.  Many more than that and
+ipt_recent runs into problems because it can't allocate enough memory w/
+the default kernel memory setup.
 
-On Sat, 1 Jan 2005 19:08:45 -0500, Jason Opperisano <opie@817west.com> =
-wrote:
-> On Sat, Jan 01, 2005 at 09:58:41PM -0200, Bruno Wallace wrote:
-> > hello,
-> > how to block this?????
-> >
-> > 20:53:44.628586 83.102.166.15 > xxx.xxx.151.35: udp (frag =
-1720:25@512)
-> > (ttl 53, len 45)
-> > 0x0000   4500 002d 06b8 0040 3511 2599 5366 a60f        =
-E..-...@5.%.Sf..
-> > 0x0010   c896 9723 11ef 0035 0019 1e70 71f7 0100        =
-...#...5...pq...
-> > 0x0020   0001 0000 0000 0000 0000 0200 0100             =
-..............
-> > 20:53:47.197264 83.102.166.24 > xxx.xxx.151.34: udp (frag
-> > 48577:25@512) (ttl 53, len 45)
-> > 0x0000   4500 002d bdc1 0040 3511 6e87 5366 a618        =
-E..-...@5.n.Sf..
-> > 0x0010   c896 9722 11ef 0035 0019 1e68 71f7 0100        =
-..."...5...hq...
-> > 0x0020   0001 0000 0000 0000 0000 0200 0100             =
-..............
-> > 20:53:49.306206 83.102.166.76 > xxx.xxx.145.115: udp (frag
-> > 21990:25@512) (ttl 53, len 45)
-> > 0x0000   4500 002d 55e6 0040 3511 dbdd 5366 a64c        =
-E..-U..@5...Sf.L
-> > 0x0010   c896 9173 11ef 0035 0019 23e3 71f7 0100        =
-...s...5..#.q...
-> > 0x0020   0001 0000 0000 0000 0000 0200 0100             =
-..............
-> > 20:53:49.529603 83.102.166.7 > xxx.xxx.146.119: udp (frag
-> > 26427:25@512) (ttl 53, len 45)
-> > 0x0000   4500 002d 673b 0040 3511 c9c9 5366 a607        =
-E..-g;.@5...Sf..
-> > 0x0010   c896 9277 11ef 0035 0019 2324 71f7 0100        =
-...w...5..#$q...
-> > 0x0020   0001 0000 0000 0000 0000 0200 0100
-> >
-> > thanks
-> > Bruno Wallace
->=20
-> either (a) use a default deny policy that doesn't allow UDP traffic or
-> (b) in your rules where you accept UDP traffic, specify "! -f" which,
-> according to the man page:
->=20
->   When the "!" argument precedes the "-f" flag, the rule will only =
-match
->   head  fragments, or unfragmented packets.
->=20
-> -j
->=20
->=20
+	Stephen
 
+--4GAATbDXHfbycz3H
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
---=20
-abra=E7o,
-Bruno Wallace
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
+iD8DBQFB2Vf2rzgMPqB3kigRArYEAKCFuu/caKKoO8vjkvQ9cOGuCJY0KQCdE4io
+zjaryqd/Cd6cbd0S2sFTc8o=
+=szEw
+-----END PGP SIGNATURE-----
+
+--4GAATbDXHfbycz3H--
 
