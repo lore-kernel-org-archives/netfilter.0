@@ -1,15 +1,12 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
-Date: Sat, 10 Jan 2004 00:26:01 -0500
+From: "Thhoep" <thhoep@gmx.de>
+Subject: Re: Performance Monitoring
+Date: Sat, 10 Jan 2004 09:54:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <37726.7711716287$1073712562@news.gmane.org>
-References: <F41C404D-4311-11D8-AFEE-000393677A36@porchlight.ca>
+Message-ID: <000901c3d757$4d37e060$1684188d@Kiste>
+References: <004401c3d17c$4baa7cc0$0a01000a@xcom1> <3FF9E4B7.8010109@lintelsys.com.au> <011001c3d3f8$6a6a7e20$7700000a@lawrencewin2k> <3FFA33C7.9010806@lintelsys.com.au> <20040106033802.30955.qmail@paus.pesat.net.id> <20040105230233.27d84a49.michael@bluesuperman.com> <20040110000419.GA25191@cannon.eng.us.uu.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <F41C404D-4311-11D8-AFEE-000393677A36@porchlight.ca>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,56 +17,14 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Schobel <pschobel@porchlight.ca>, netfilter@lists.netfilter.org
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>, Michael Gale <michael@bluesuperman.com>
+Cc: netfilter@lists.netfilter.org
 
-On January 9, 2004 09:08 pm, Peter Schobel wrote:
-> ok, I removed the error line and the cat autoconf line from the
-> config.h and got iptables 1.2.9 to compile against my kernel source and
-> headers and reinstalled
->
-> if i turn on ip_forward and try to access external sites, i get
-> forwarded through to the external page without problem
->
-> if i enable the iptables rule
->
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
-> --to-port 3128
->
-> my pages just time out when i try to access external sites
->
-> but if i try to access the proxyhost directly using http, it redirects
-> me to the proxy site without problem
->
-> i get exactly the same results using this rule
->
-> iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT
-> --to-destination $LOCALHOST:3128
->
-> does anyone have any idea why traffic destined for external sites will
-> not transparently redirect to squid for me?
->
-> does anyone have any idea as to what further steps I can take to
-> troubleshoot this problem?
->
+> One can come up with a btree which should reduce the worst case lookup to
+a max
+> of 8 lookups for a /24.
 
-	Have you tried LOGging the INPUT chain for both 80 and 3128?
-	Or, perhaps more thorough, put a LOG rule in PREROUTING
-	before the REDIRECT/DNAT rule to log what you will change,
-	and since your destination is local, a LOG rule at the top of INPUT
-	to catch *everything* for the interim? -- then see at what point 
-	the packets are actually disappearing.
-	
-	I'm not sure I understand why this should be a problem... 
-	FWIW -- when I rebuilt iptables (1.2.9) against kernel 2.6.0 my 
-	/usr/include/linux contained the headers from a 2.4.19 kernel .. .and
-	this is what my gcc was built against.  I believe that you need to have 
-	the /usr/include/linux that existed when gcc was built in there ... but 
-	someone who knows more about compilers than I might thump me on the
-	skull for that ... I'm *NOT* 100% sure about the interdependencies... 
+  i did this once with a traffic counting system. works nice, still not
+perfect, but nice.
 
-
-	Alistair Tonner ... 
-
-
-	
 
