@@ -1,8 +1,9 @@
-From: sandra hernandez <sandra@fib.upc.es>
-Subject: problem with VPN and iptables redirect
-Date: Wed, 16 Jun 2004 10:10:37 +0200
+From: "david" <david@suarapembaruan.co.id>
+Subject: blocking all traffic in port 137/137
+Date: Wed, 16 Jun 2004 15:47:19 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1087373437.1085.1.camel@akasha.fib.upc.es>
+Message-ID: <011701c4537e$891361b0$858310ac@suarapembaruan.com>
+References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108> <1087322336.2054.12.camel@localhost> <1846.64.2.245.108.1087324894.squirrel@64.2.245.108> <200406152004.45544.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,22 +19,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi there!
+Dear all,
+When i look at "IPTRAF", i see lot of broadcast traffic that using port 137
+and 138, how to make rules that can block all traffic in port 137 and 138, i
+already try to use this rules but its no works...
 
-I've been doing some research on using VPN (kernel 2.6.x) with iptables
-and I'm having trouble with both of them:
-Having two PCs, one Windows XP and another with linux, IPsec seems to
-work fine on both and all comunications between them are encrypted.
+iptables -A INPUT -p tcp --dport 137 DROP
+iptables -A OUTPUT -p tcp --dport 137 DROP
+iptables -A INPUT -p udp --dport 137 DROP
+iptables -A OUTPUT -p udp --dport 137 DROP
+iptables -A INPUT -p tcp --dport 138 DROP
+iptables -A OUTPUT -p tcp --dport 138 DROP
+iptables -A INPUT -p udp --dport 138 DROP
+iptables -A OUTPUT -p udp --dport 138 DROP
+iptables -A INPUT -p icmp DROP
 
-The problem is when I execute this command with iptables in linux box:
-  iptables -t nat -I PREROUTING 1 -d x.x.x.x -j REDIRECT --to-port 80
-   (and all the policies are to ALLOW)
-The redirection fails...
-If I deactivate VPN, the redirection works ok.
-
-What problem could be between VPN and iptables redirections?
-Any suggestions would be very appreciated.
-
-Sandra
+Thank's
+David Kandou
 
 
