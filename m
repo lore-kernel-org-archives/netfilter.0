@@ -1,13 +1,11 @@
-From: "William Olbrys" <william_olbrys@student.uml.edu>
-Subject: ip range generic matches
-Date: Wed, 26 Feb 2003 01:23:43 -0500
+From: Daniel Wittenberg <daniel-wittenberg@starken.com>
+Subject: authenticated network access ?
+Date: 25 Feb 2003 23:36:45 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7dfe27f780.7f7807dfe2@student.uml.edu>
+Message-ID: <1046237805.1352.20.camel@runabout.noc.starken.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Language: en
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,19 +18,15 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-is there a syntax to to create a generic match for a range of ips
-instead of the whole thing? 
+Is there a way (didn't see anything in archives or patch-o-matic) that
+you can make people authenticate to the firewall (iptables/other?)
+before they can gain any type of internet connection?  I recently had a
+client put in a MS ISA server because we couldn't control access to all
+ports like ISA can (or so I hear, I don't know much at all about ISA).
 
-ex.: $IPTABLES -t filter -A FORWARD -s 10.1.2.0-10.1.5.255 -j ACCEPT
+Thoughts?  Any way to use Radius/AD/LEAP technology for this?
 
-i tried to do this and it gave me an error about not being able to find
-the host. is there a workaround?
-
-will olbrys
-
-
-
- E2-O: The presence of this footer indicates the message has been scanned for viruses by the WebShield e500.
-
+Thanks!
+Dan
 
 
