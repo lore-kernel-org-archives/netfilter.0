@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Anders Fugmann <afu@fugmann.dhs.org>
 Subject: Re: Multiple conditions for logging packets
-Date: Mon, 23 Sep 2002 13:15:24 +0100
+Date: Mon, 23 Sep 2002 14:33:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209231215.g8NCFbv24344@vulcan.rissington.net>
+Message-ID: <3D8F0A31.9010005@fugmann.dhs.org>
 References: <09d001c262f1$50f418d0$0200a8c0@bart>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09d001c262f1$50f418d0$0200a8c0@bart>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +16,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Matt Parlane <matt@zevi.net>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 23 September 2002 12:06 pm, Matt Parlane wrote:
-
+Matt Parlane wrote:
 > Hi list...
->
+> 
 > I have a simple linux machine acting as a firewall/gateway, and I'm after a
 > way to specify multiple conditions for rules.  Basically I want to create a
-> rule for packets which are either coming from or going to the internet -
-> not packets which are both sourced and destined for the local network.
->
-> I haven't been able to do this so far using iptables rules.  Does anyone
-> have any ideas about how this might be achieved?
+> rule for packets which are either coming from or going to the internet - not
+> packets which are both sourced and destined for the local network.  The
+Create a new chain for this: e.g.
+iptables -N INTERNET_LOG
+iptables -A INTERNET_LOG -i eth0 -j ULOG
+iptables -A INTERNET_LOG -o eth0 -j ULOG
 
-Intriguing question.
+#Forward to the logging:
+iptables -A INPUT -j INTERNET_LOG
+iptables -A OUTPUT -j INTERNET_LOG
+iptables -A FORWARD -j INTERNET_LOG
 
-1. Why would you have packets both sourced from and destined to the local 
-network going through your firewall anyway (maybe you have multiple internal 
-networks) ?
+Remember that all boolean operations can be created in netfilter:
+(a and b are packet conditions and C is either a chain or target)
+if a      then C ->  iptables (a)  -J C
+if !a     then C ->  iptables (!a) -J C
+if a && b then C ->  new chain: iptables (!a) -J return,
+                                 iptables (!b) -J return,
+                                 iptables -J C
+if a || b then C ->  iptables (a) -J C, iptables (b) -J C
 
-2. What's the problem with simply having two rules one after another, the 
-first of which logs packets coming in from the Internet, the second of which 
-logs packets going to the Internet ?   Both rules together end up doing the 
-job you want, and no packet is ever going to match both rules.
+And that all  conditions in a rule are logical AND e.g.:
+iptables -A input -p tcp --dport 25, means that the packet must be a tcp 
+protocol type _and_ must have destination port 25. It is not possible to 
+create logical OR in a single rule. (Well in some rare cases it is, but 
+I leave that out for now.)
 
-3. Depending on what you want to do, can you handle the problem by first 
-getting rid of packets both from & to the internal network, then logging 
-what's left ?
-eg:
-iptables -N log-stuff-to-or-from-internet
-iptables -A log-stuff-to-or-from-internet -i $intIF -o $intIF -j RETURN
-any packets which get this far are not local-to-local
-iptables -A FORWARD -j log-stuff-to-or-from-internet
+The problem is usually to create the AND operator. This is easily done 
+by creating a new chaing, and returning from this if any of the 
+conditions are false.
 
-alternatively if you have one external interface and more than one internal 
-interface, then you can identify local packets by the fact they do not go 
-through the external internface, instead of by the fact that they do go 
-through the internal interface:
+In your case, you need the OR operator, which is somewhat simple to create.
 
-iptables -N log-stuff-to-or-from-internet
-iptables -A log-stuff-to-or-from-internet -i ! $extIF -o ! $extIF -j RETURN
-any packets which get this far must have either -i or -o = $extIF
+Hope it helps
+Anders Fugmann
 
-Does this help ?
 
-Antony.
+
+
+
 
 -- 
+Neo: 'Can you fly that thing?'
+Trinity: 'Not yet'.
+$ apt-get install pilot-prg-v212helicopter.
 
-The first ninety percent of an engineering project takes ninety percent
-of the time, and the last ten percent takes the remaining ninety percent.
 
