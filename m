@@ -1,10 +1,14 @@
-From: "Mark Alzino" <tirixil@hotmail.com>
-Subject: How to change DNS with iptables rules ?
-Date: Tue, 25 May 2004 13:23:53 +0000
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: [OT] Hello?
+Date: Wed, 26 May 2004 19:50:05 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY16-F67ZBNCogiwHs000430ac@hotmail.com>
+Message-ID: <200405270249.i4R2ntou029825@server5.bandwidthco.com>
+References: <200405242218.46212.Antony@Soft-Solutions.co.uk>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200405242218.46212.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,52 +18,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+Sent: Monday, May 24, 2004 2:19 PM
 To: netfilter@lists.netfilter.org
+Subject: [OT] Hello?
 
-Hello,
+Hi.
 
-I have two DNS server : one at 10.0.0.254 and one at 192.168.10.254.
-I just want to dynamically change the DNS for a user (at 10.0.0.1 for 
-example), but there is a time for the iptables rules to be activate.
-Here is more explanation.
+Just checking the list - seems to be unusually quiet for a couple of
+days....?
 
+Antony.
 
-I use two DNS servers (bind 9), in the same host, with two interfaces. Each 
-one ONLY listens on one interface (So, must not answer to a request related 
-to an other one !).
+--
+Behind the counter a boy with a shaven head stared vacantly into space, a
+dozen spikes of microsoft protruding from the socket behind his ear.
 
-At the begining, the user has the 10.0.0.254 server. Then I add rules in 
-order to change the DNS for 192.168.10.254.
-I use this the following rules :
-iptables -A PREROUTING -s 10.0.0.1 -d 10.0.0.254 -t nat -p UDP --dport 53 -j 
-DNAT --to-destination 192.168.10.254
-iptables -A PREROUTING -s 10.0.0.1 -d 10.0.0.254 -t nat -p UDP --sport 53 -j 
-DNAT --to-destination 192.168.10.254
+ - William Gibson, Neuromancer (1984)
 
-** BUT **  : during a period (between 0 and 3 minutes), the user is ALWAYS 
-CONNECTED TO the
-10.0.0.254 server !!
-In others words, I always have what I should have, but I have to wait for a 
-minute to have this...
-
-How it is possible ??
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
 
 
-- Are the rules rights ??
-- Is there really a time for the PREROUTING target to be activate (Is that 
-it seem to be, but generally speaking rules are immediate...) ?
-- DNS (bind) listen at the begining only on one interface and listen on all 
-interface if it recognize a user he has served ? (!!!)
-- Anyone has the answer ? :-)
+I noticed the same thing myself. In fact yesterday I went as far to make
+sure I hadn't inadvertently been removed from the list. But Nope - all is OK
+- just quiet. 
 
-Thanks 4 you help,
 
--- Mark
 
-_________________________________________________________________
-Dialoguez en direct et gratuitement avec vos amis sur 
-http://g.msn.fr/FR1001/866 MSN Messenger !
+-- 
+This message has been scanned for viruses and dangerous 
+content by MailScanner, and is believed to be clean.
+postmaster@bandwidthco.com
+MailScanner at bandwidthco.com is for your absolute protection.
 
 
