@@ -1,9 +1,11 @@
-From: Rob <netfilter@cloudtown.com>
-Subject: IPTABLES trouble
-Date: Sun, 01 Dec 2002 23:11:15 -0600
+From: "hard__ware" <hard__ware@hotmail.com>
+Subject: Re: Load Balance using SNAT or nth?
+Date: Mon, 2 Dec 2002 15:52:42 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.0.9.2.20021201230632.009f1bf0@64.83.193.200>
+Message-ID: <OE40Y5TetpIuPHDXE2s00004844@hotmail.com>
+Reply-To: "hard__ware" <hard__ware@hotmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,29 +16,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: ricp@ricp.net
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Attempting to adjust my firewall to allow me to run a
+Indeed,
 
-IRC server    and
-Counter-Strike server.
+ i have found to use load balanceing you will need to use the Nth and maybee
+the Random patch togeather to give a sudo type soloution ..
 
+Also have you considered using the TC (Traffic Control Tool) for linux and
+also have you read the
+excellent documentation @ http://lartc.org/ ..
 
-Using a premade firewall script called;  rc.firewall-2.4-stronger
-line I tried is the following.
+anyway good luck its not as easy as it seems ..
 
-UNIVERSE="0.0.0.0/0"
-EXTIP="my ip"
-EXTIF="eth0"
-
-$IPTABLES -A INPUT -i $EXTIF -m state --state NEW,ESTABLISHED,RELATED \
-  -p tcp -s $UNIVERSE -d $EXTIP --dport 6667 -j ACCEPT
-
-or is an IRC server and Counter Strike game server using UDP ?? not tcp?
-
-Thanks,
-Rob
-
+Hard__warE
 
