@@ -1,11 +1,14 @@
-From: Nathan Whittacre <nathan@stimulustech.com>
-Subject: Connection Tracking
-Date: Mon, 06 Oct 2003 10:46:10 -0700
+From: Joel Newkirk <firewalldude@newkirk.us>
+Subject: Re: NAT problem
+Date: Mon, 06 Oct 2003 16:38:50 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F81AA62.7050404@stimulustech.com>
+Message-ID: <1065472730.12495.194.camel@alpha.newkirk.us>
+References: <000001c38c05$923fb680$0f01a8c0@raul02>
+Reply-To: firewalldude@newkirk.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000001c38c05$923fb680$0f01a8c0@raul02>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,29 +18,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jose Pascual <jose.pascual@optivamedia.com>
+Cc: netfilter@lists.netfilter.org
 
-I have the following situation:
+Your SNAT rule should be matching dport, not sport.
 
-A server for what is called directed host sits behind a NAT'd firewall
-with a local IP.  I have port 1066 forwarded to that server(10.2.0.1).
-The way this protocol works is that the remote computer connects to it
-on port 1066, exchanges some data over the existing connection and then
-the server initiates a connection back to the client on the client's
-port 1066.  This is fine as long as the client has a static, un-NAT'd
-internet IP, but the connection is dropped by the server if it does not
-get a reply from port 1066.  I have a few client machines on a NAT'd
-network that need to connect to this remote server, but with only one
-gateway internet IP.  They do not necessarily need to connect at the
-same time.  Is there any way to write a connection tracking script that
-senses the outbound connection to port 1066 on the remote side and then
-DNATs the inbound 1066 to the local IP once the connection is established?
+Do you have a rule in FORWARD table on 192.168.1.2 that ACCEPTs this
+traffic?  And is 192.168.1.2 configured to even allow forwarding?
 
-I have a tcpdump of the connection avaiable if that would be of any help.
+j
 
-Thank you,
-Nathan Whittacre
+On Mon, 2003-10-06 at 08:30, Jose Pascual wrote:
+> Hi all,
+> I am new using iptables and surelly  this wil be an easy and stupid question
+> but perhaps you can help me. I want to understand NAT so I am trying to do
+> the following:
+> 
+> I have three computers in my LAN (192.168.1.1; 192.168.1.2 and 192.168.1.3).
+> 192.168.1.1 has a web server and I would like to access it through
+> 192.168.1.2 with NAT. For example openning my browser in 192.168.1.3 and
+> connecting to 192.168.1.2   I  should see the same as if I connected to
+> 192.168.1.1 web server directly, so I have done the following in
+> 192.168.1.2:
+> 
+>  iptables -t nat -A PREROUTING -p tcp --dport 80 -j
+> DNAT --to-destination 192.168.1.1
+> 
+> 
+>  iptables -t nat -A POSTROUTING -p tcp --sport 80 -j SNAT
+> --to-source 192.168.1.2
+> 
+> However it doesn't work. Anyone can help me?
+> 
+> Thanks
+> 
+> Regards
+> Jose Pascual
+> 
 
 
 
