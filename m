@@ -1,12 +1,13 @@
-From: Alexey Toptygin <alexeyt@freeshell.org>
-Subject: Re: Log with log amount
-Date: Thu, 28 Oct 2004 11:59:23 +0000 (UTC)
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: ftp connection tracking on multiple ports
+Date: Thu, 28 Oct 2004 08:41:29 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <Pine.NEB.4.61.0410281155230.20388@xm.freeshell.org>
-References: <02b201c4bcd8$b5dd17e0$3a00200a@ThaiAn>
+Message-ID: <1098967289.3029.3.camel@hubcap.ljm.dom>
+References: <1403218a0410280318a6ed55b@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02b201c4bcd8$b5dd17e0$3a00200a@ThaiAn>
+In-Reply-To: <1403218a0410280318a6ed55b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +17,29 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: thaian <thaian@6wind.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Thu, 28 Oct 2004, thaian wrote:
+On Thu, 2004-10-28 at 06:18, Mohamed Eldesoky wrote:
+> Dear all,
+> 
+> I have a server that runs FTP on two ports, port 21 and port 45 (for
+> strange reasons)
+> Now, i want conntrack to track the connections of both ports and their
+> data ports !!
+> 
+> I did that in my firewall script
+> /sbin/modprobe ip_conntrack_ftp ports=21,45
+> $IPTABLES -A linweb_chain -p tcp -m multiport --destination-port
+> 80,21,45 -j ACCEPT
+> 
+> Is that all I need ??
 
-> Hi All
->
-> In FreeBSD, ipfw uitiliy can log with amount of packet: ipfw add 1200 
-> deny log tcp from any to any log-amount 100
->
-> But with netfilter, I do not see any option for setting amount of packet 
-> I want to log iptables -A INPUT -j LOG ...................????
+iptables -A linweb_chain -m helper --helper ftp -j ACCEPT
 
-Umm, is
+-j
 
-iptables -A INPUT -m limit --limit 100/day -j LOG
+-- 
+Jason Opperisano <opie@817west.com>
 
-what you want? Or are you trying to limit to 100 packets ever?
-
- 			Alexey
 
