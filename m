@@ -1,12 +1,13 @@
-From: "Matthew Hellman" <mhellman@raccoon.com>
-Subject: Re: Lowest spec processor that netfilter will run on
-Date: Thu, 6 Jun 2002 22:45:49 -0500
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: HELP SSL-problem
+Date: Fri, 7 Jun 2002 00:16:14 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <001801c20dd5$d0d3c5d0$020aa8c0@matttm9svd8lrh>
-References: <1102.158.152.36.235.1023407271.squirrel@www.fyremoon.net> <001201c20dd0$314a3260$020aa8c0@matttm9svd8lrh> <3D004E88.3760FABE@storm.ca>
+Message-ID: <20020607041614.GA2731@cannon.eng.us.uu.net>
+References: <GGECKAHHDGDOOLALHDJFCEIKCAAA.sinaasappelsap@planet.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <GGECKAHHDGDOOLALHDJFCEIKCAAA.sinaasappelsap@planet.nl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,39 +18,49 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sandy Harris <sandy@storm.ca>, netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: AB <sinaasappelsap@planet.nl>
+Cc: netfilter@lists.samba.org
 
-ipchains isn't iptables...and you were probably also running a much
-different (older) kernel...so we're talking apples and oranges here. I'm not
-saying it woudn't work mind you...it probably would.  I sure wouldn't
-recommend it to anyone though and I personally wouldn't think of going with
-anything less that a P60 and 64MB ram.  If that's all you've got lying
-around though...it's worth a shot.
+On Thu, Jun 06, 2002 at 09:05:25PM +0200, AB wrote:
 
-Matt
+> Hello everybody, I hope someone out there can help me with a problem I have
+> :-)
+> 
+> Recently I compiled the 2.4.18 version of the Linux kernel. I am using
 
------ Original Message -----
-From: "Sandy Harris" <sandy@storm.ca>
-To: <netfilter@lists.samba.org>
-Sent: Friday, June 07, 2002 1:11 AM
-Subject: Re: Lowest spec processor that netfilter will run on
+Has this ever worked with any other masquerading setup?
 
+> IPtables with one rule in it:
+> 
+> 	iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+> 
+> Internet works fine but I bump into trouble trying to reach an internet
+> banking site.
+> It uses https. The first few pages work well but when I have authenticated
+> and
+> want to see my account it seems to timeout.
+> The same problem occurred when I tried to subscribe to a hotmail account.
+> 
+> I've tried other https pages and they work just fine.
+> I've tried to pinpoint the problem with tcpdump and with ethereal but I
+> can't find it.
+> I know now that ssl3 is used and that it DOES work when I establish a direct
+> connection
+> (not through the Linux router)....
+> 
+> PLEASE anyone HELP ME... Tell my I'm stupid and please tell me what I'm
+> doing wrong.
 
-> Matthew Hellman wrote:
-> >
-> > I can't speak for non x86 processors, but I have mine running on a
-Pentium
-> > 60 mhz with 64MB ram....runs pretty well although I personally wouldn't
-> > consider going with anything less.
->
-> I ran a firewall for a year or two using a 486/66
-> with 24 megs, using ipchains, on a 2.2 Mbps ADSL
-> link. The only problem was keeping log size under
-> control on a 170 meg drive.
->
-> There are some numbers for related things at:
-> http://www.freeswan.org/freeswan_snaps/NEW-SNAP/doc/performance.html
->
+I'm not sure about the internals of SSL but I don't think the SSL communication
+can get disrupted by masquerading. Are you sure there is no other things like
+ident holding you up? Just a guess...
 
+Ramin
 
+> If there's any config or log or whatever file you want to see, let me know
+> :-)
+> 
+> Thank you, for reading this. Arjan.
+> 
 
