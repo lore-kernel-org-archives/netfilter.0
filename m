@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Port forwarding.
-Date: Mon, 28 Jun 2004 13:52:20 +0100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ip_conntrack_tcp Errors
+Date: Mon, 28 Jun 2004 14:55:03 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406281352.20521.Antony@Soft-Solutions.co.uk>
-References: <001301c45cf0$9f7cf710$6600a8c0@simba> <200406281134.37964.Antony@Soft-Solutions.co.uk> <001b01c45d0a$5529b7b0$6600a8c0@simba>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <Pine.LNX.4.33.0406281449260.20141-100000@blackhole.kfki.hu>
+References: <40E00F6A.2010604@bofh.bg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001b01c45d0a$5529b7b0$6600a8c0@simba>
+In-Reply-To: <40E00F6A.2010604@bofh.bg>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,63 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Dimitar Katerinski <train@bofh.bg>
+Cc: netfilter@lists.netfilter.org
 
-On Monday 28 June 2004 1:20 pm, Gunnar Fr=F6din wrote:
+On Mon, 28 Jun 2004, Dimitar Katerinski wrote:
 
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->     pkts      bytes target     prot opt in     out     source
-> destination
->        6      360 ACCEPT     tcp  --  eth0   eth1    0.0.0.0/0
-> 192.168.0.100      tcp dpt:25 state NEW,RELATED,ESTABLISHED
+> > Is that a problem with conntrack and its tunning or I am missing some
+> > patch? ...Or perhaps it is some other problem with other parts of the
+> > kernel?
+> It seems to me that you have applied the tcp window tracking patch from pom-ng.
+> The problem is that the client and the server have done the first step of the
+> three way handshake, and are in sync, but the firewall for some reason is not.
 
-Okay, so we *are* seeing packets to the mail server being forwarded throu=
-gh=20
-the firewall.
+Sorry, but I have to contradict: there must be a connection in conntrack
+which overlaps with the SYN/ACK packet detected. But why the connection
+initiating SYN was not detected the same way? That is the question which
+should be answered somehow.
 
->        0        0 ACCEPT     tcp  --  eth1   eth0    192.168.0.100
-> 0.0.0.0/0          tcp spt:25 state NEW,RELATED,ESTABLISHED
+> So it drops the SYN/ACK, and thus forcing the client to retransmit its SYN and
+> initiate a new session (as descibed in the source code of the patch)
 
-But we are not seeing any replies coming back.
+No, it does not drop the packet but ignores it as the log says. Look at
+the lines in the source code a few lines below.
 
-> Chain PREROUTING (policy ACCEPT 20 packets, 2796 bytes)
->     pkts      bytes target     prot opt in     out     source
-> destination
->        1       60 DNAT       tcp  --  *      *       0.0.0.0/0
-> 10.20.30.40        tcp dpt:25 to:192.168.0.100:25
+> My advice is if you have applied this patch, to remove it, and test the load on the
+> firewall again.
 
-And, indeed, the DNAT is working (not surprising, since we saw forwarded=20
-packets).
+Yep, that's a solution. And there won't be an answer explaining the case
+then.
 
-> I tryed to telnet in, witch times-out after 6 attempts
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
-The 6 packets we can see in the FORWARD rule above :)
-
-Okay, three more questions:
-
-1. Is a mail server running on 192.168.0.100 (!) ?   Can you telnet to it=
- on=20
-the real 192.168.0.100 address from a local client?
-
-2. Are there any access controls on the mail server, restricting the IPs =
-from=20
-which it will accept connections?
-
-3. Does the default route of the mail server point back to the firewall?
-
-Regards,
-
-Antony
-
---=20
-Software development can be quick, high quality, or low cost.
-
-The customer gets to pick any two out of three.
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
 
 
