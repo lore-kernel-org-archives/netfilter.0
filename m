@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: redirection in local private network problem
-Date: Wed, 11 Feb 2004 00:15:00 +0000
+From: "Yuta Kawamoto" <sceotjp@ybb.ne.jp>
+Subject: Internet Servers behind firewall (traffic passthrough)
+Date: Wed, 11 Feb 2004 10:42:09 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402110015.00714.Antony@Soft-Solutions.co.uk>
-References: <1076375425.40282f8119f37@archi.szn.pl>
+Message-ID: <E1AqjOK-000520-BC@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1076375425.40282f8119f37@archi.szn.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +18,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 10 February 2004 1:10 am, archi@archi.szn.pl wrote:
+Hi, I am not a very netfilter savvy person. (beginner)
+I apologize if this email was posted twice, as there was something wrong
+with my email account.
+My problem is this:
 
-> hi,
->
-> configuration first:
->
-> router eth0 (192.168.1.1), eth1 (x.x.x.x public ip)
-> www host (192.168.1.100)
-> clients (192.168.1.0/24)
->
-> I want to connect by 192.168.1.1 on port e.g. 1025 to local host at
-> 192.168.1.100:80 but it doesn't work from local network.
+I have 10 public(internet) IP addresses, each for a server.
+These servers run a variety of OS-es, from RedHat Linux to MaxOSX
+the only path for them to the internet, is a single network cable(a "red"
+colored wire).
+Right now, I have a RedHat Linux 9 machine connected to this red wire.
+I have installed IPTABLES, but do not really know how to configure rules.
 
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
+I would like this Linux "routing machine" to take all traffic to the 10
+internet IP's
+and pass them straight on to the servers connected on the other side of this
+machine.
 
-Antony.
 
--- 
-In science, one tries to tell people
-in such a way as to be understood by everyone
-something that no-one ever knew before.
+Internet(red wire) -> [eth0]Linux Routing PC[eth1] -> Switch/Hub -> 10
+servers
 
-In poetry, it is the exact opposite.
+I would need all ports on each of the machines,
+as they would be serving all forms of traffic.
 
- - Paul Dirac
+I have asked some friends who know more about Linux than I do, to no avail.
+I would really appreciate any and all help in this matter.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Yuta Kawamoto
+
 
 
