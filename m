@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SSH Connections Lost After 1 minute idle
-Date: Tue, 13 Jul 2004 23:58:26 +0100
+From: Nick Taylor <nickt@lightlink.com>
+Subject: Re: nat problem
+Date: Tue, 13 Jul 2004 19:11:13 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407132358.26419.Antony@Soft-Solutions.co.uk>
-References: <7EACCDBB65D37443912D80713CC1245D02382A35@fsnsab20.losangeles.af.mil>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <Pine.GSU.4.58.0407131904390.14186@adore.lightlink.com>
+References: <40F448B2.AF1E21@knoware.nl> <200407132206.08404.Antony@Soft-Solutions.co.uk>
+ <40F4607B.60B1E512@knoware.nl> <200407132353.57143.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7EACCDBB65D37443912D80713CC1245D02382A35@fsnsab20.losangeles.af.mil>
+In-Reply-To: <200407132353.57143.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tuesday 13 July 2004 11:28 pm, Hudson Delbert J Contr 61 CS/SCBN wrote:
-
-> dick,
+> > > > I have a little problem, which might be a bug. I have an 3COM
+> > > > ISDN-router. It broadcasts every 10 seconds its connectionstatus to the
+> > > > internal net. Now I want to forward those broadcasts to another
+> > > > network.
+> > >
+> > > > What do you mean by "broadcasts"?   What protocol is being used?   What
+> > > > address are the packets sent to?
+> >
+> > These are real broadcasts to 192.168.1.255. The protocol is UDP, the source
+> > port is 1025 and the destination port is 2071.Isn't it weird, that at the
+> > nat-table, when I add a rule for logging, I can't see the above meant
+> > packets, but at the filter- and the mangle-table those packets are logged?
 >
-> i beg to differ.
+> No, I don't think so.   Broadcast packets are not supposed to cross routers
+> (they will enter the router as a machine on the local subnet, but they will
+> not be routed anywhere else, because they already come from the subnet they
+> are addressed to)
 >
-> i must concur strongly with antony.
->
-> if you cripple icmp, your networks will break...
-
-Maybe not immediately :)
-
-Maybe only when something else start to go awry...?
-
-Antony.
-
-PS: Did you ever expand on your reasons for saying "do not i repeat...do not 
-allow inbound ntp with a source port above the root ports"?   Several people 
-here (including myself) were interested to know more about this...
-
--- 
-Programming is a Dark Art, and it will always be. The programmer is
-fighting against the two most destructive forces in the universe:
-entropy and human stupidity. They're not things you can always
-overcome with a "methodology" or on a schedule.
-
- - Damian Conway, Perl God
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Not to be contrary, and *NOT* to suggest that this is correct behaviour,
+but...  The company I used to work for uses a lot of LinkSys gear for CPE,
+including their NAT routers and their VPN routers, and we've had bizarre
+problems with these products.  The VPN router, in particular *will*
+forward a packet with the destination address set to the IP broadcast
+address!  Then, they run NAT rules beyond the VPN server at the other
+side, so you get:
+192.168.1.43 -> 192.168.1.255, which getts natted to:
+real_ip -> 192.168.1.255, but of course, that's behind the VPN tunnel, so,
+the box routes it back through the VPN, where it gets spit out on the
+customer's lan, (thankfully NOT forwarded back again) but this confuses
+Windoze something aweful, and causes it to refuse to use windows
+networking, because it thinks there's another machine on the network with
+it's name registered. DOH!  Anyway, the point is that while it may or may
+not be correct, many products do it, and there must be some (twisted)
+reason that the hardware vendors chose to enhance (read break) their
+products in this way, ie, some application may depend on this (braindead)
+behaviour.
 
