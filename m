@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Fw: I think iptables is not alowing me to connect
-Date: Sat, 21 Sep 2002 18:49:28 +0100
+From: "Bo Jacobsen" <subs@systemhouse.dk>
+Subject: Iptables, what to upgrade
+Date: Sat, 21 Sep 2002 21:43:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020921174936.JRUS13996.mta05-svc.ntlworld.com@there>
-References: <000901c26194$5c7068c0$2101a8c0@aerowillys>
+Message-ID: <006101c261a7$279f9e00$6307a8c0@net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_005E_01C261B7.E8FE8920"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000901c26194$5c7068c0$2101a8c0@aerowillys>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,97 +16,82 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Saturday 21 September 2002 6:28 pm, AndreLSM wrote:
+This is a multi-part message in MIME format.
 
-> > > > Sorry I was not very clear,
-> > > >
-> > > > Actualy I removed all iptables rules with:
-> > > > iptables -F
-> > > > iptables -X
-> > > > iptables -Z
-> > >
-> > > Have you removed your nat rules (eg SNAT in the POSTROUTING chain) as
-> > > well ?
->
-> Since a changed all rules and had set the policy to ACCEPT for input,
-> output and forward I did not know I had to make any changes to SNAT.
-> My rule was:
-> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to eth1
+------=_NextPart_000_005E_01C261B7.E8FE8920
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-Well first of all this rule looks wrong to me.   You shouold have an IP=20
-address after the --to, not an interface name.   If you want the address to=
-=20
-be detected automatically you should be using the MASQUERADE target instead=
-=20
-of the SNAT target:
+Hi,
+I have a number of 7.3 and 8.0 SuSE machines (running 2.4.16, 2.4.19-6 =
+and 2.4.19-19 kernels) and would=20
+like to upgrade iptables on all of them, to the newest version.
 
-iptables -A POSTROUTING -t nat -o eth1 -j MASQUERADE
+I understand that iptables consists of the part in the kernel, and the =
+user space tools.
+I trust that one has to make sure that the version of the user space =
+tools and the part of iptables
+located in the kernel, somehow ?.
 
-You should be aware that the command iptables -F will only flush the rules =
+How do I display the version of iptables located in the kernel.
 
-from the default 'filter' tables - it will not flush any rules you may have=
-=20
-in your nat or mangle tables.
+I would like to upgrade iptables on all machines to the newest versions. =
+Is that possible on all the
+machines with the above kernel versions ?.
 
-To find out whether you still have any rules operating on your system, type:
 
-iptables -L -n -v -t filter
-iptables -L -n -v -t nat
-iptables -L -n -v -t mangle
+Thanks in advance
+Bo Jacobsen
 
-(That last one may result in an error saying the 'mangle' table is not=20
-recognised if you did compile kernel support for it.   Don't worry about=20
-that.)
 
-To really flush all the rules from your system you should do:
+------=_NextPart_000_005E_01C261B7.E8FE8920
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-iptables -F
-iptables -F -t nat
-and if you have compiled support for the mangle table
-iptables -F -t mangle
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dwindows-1252">
+<META content=3D"MSHTML 6.00.2715.400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>
+<DIV><FONT size=3D2>Hi,</FONT></DIV>
+<DIV><FONT size=3D2>I have a number of 7.3 and 8.0 SuSE machines=20
+(running&nbsp;2.4.16, 2.4.19-6 and&nbsp;2.4.19-19 kernels) and would=20
+</FONT></DIV>
+<DIV><FONT size=3D2>like to upgrade&nbsp;iptables on all of them, to the =
+newest=20
+version.</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>I understand that&nbsp;iptables consists of the part =
+in the=20
+kernel, and the user space tools.</FONT></DIV>
+<DIV><FONT size=3D2>I&nbsp;trust that one has to make sure that the =
+version of the=20
+user space tools and the part of iptables</FONT></DIV>
+<DIV><FONT size=3D2>located in the kernel, somehow ?.</FONT></DIV>
+<DIV><FONT size=3D2></FONT><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>How do I display the version of iptables located in =
+the=20
+kernel.</FONT></DIV>
+<DIV><FONT size=3D2></FONT><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>I would like to upgrade iptables on all machines to =
+the newest=20
+versions. Is that possible on all the</FONT></DIV>
+<DIV><FONT size=3D2>machines with the above kernel versions =
+?.</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>Thanks in advance</FONT></DIV>
+<DIV><FONT size=3D2>Bo Jacobsen</DIV>
+<DIV></FONT>&nbsp;</DIV></DIV></BODY></HTML>
 
-> > > > eth1: connection to the adsl modem. I know that this device can
-> > > > not be initialized on the booting process
-> > >
-> > > What do you mean by this last comment ?
->
->  This last comment I read in the pppoe readme, the device  that connects =
-to
->  the modem can=B4t be configured during boot time.
+------=_NextPart_000_005E_01C261B7.E8FE8920--
 
-Okay, so what do you get in response to the command
-
-ifconfig
-
-on your system ?
-
-> > > > and I thought that maybe iptables was initializing it, but I removed
-> > > > all rules and stopped running the rc.firewall file. This one has
-> > > > dynamic ip.
-
-iptables does not initialise interfaces.   Nor does it create a dial-up=20
-connection (if that is what you are using ?)
-
-iptables is simply a filtering mechanism to block packets which would=20
-otherwise be allowed through, or to change packets which are already going =
-
-through.
-
-If you cannot connect to your ISP when you haveno netfilter rules in place =
-
-then netfilter is not the problem.
-
-Antony.
-
---=20
-
-All matter in the Universe can be placed into one of two categories:
-
-1. things which need to be fixed
-2. things which will need to be fixed once you've had a few minutes to play=
-=20
-with them
 
