@@ -1,12 +1,11 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
-Subject: Re: Matching 10000's of IP ranges
-Date: Mon, 03 Jan 2005 13:17:54 -0500
-Message-ID: <1104776274.3277.22.camel@jasiiitosh.opensourcedevel.com>
-References: <20050102225028.83118.qmail@web41504.mail.yahoo.com>
+From: Jerry2A <jerry2a@gmail.com>
+Subject: Block outbound host to specific port(s) using Masq./NAT?
+Date: Mon, 3 Jan 2005 16:52:32 -0500
+Message-ID: <5dda57be050103135225b4e665@mail.gmail.com>
+Reply-To: Jerry2A <jerry2a@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050102225028.83118.qmail@web41504.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Brian Gunlogson <bmg300@yahoo.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Sun, 2005-01-02 at 14:50 -0800, Brian Gunlogson wrote:
-> Hello list,
-> 
-> What is a reasonable way to match around 80000 IP ranges with iptables?
-> 
-> Thanks,
-> Brian G.
-<snip>
-I'm not entirely sure of what you mean.  Do you mean 80000 distinct IP
-address ranges or 80000 addresses that fall into IP ranges which are not
-on subnet boundaries?
+Hello - this is probably a dumb question....I'm using iptables for my
+home network (DSL) and I have masquerading, some port forwarding,
+etc., etc., and everything works great...EXCEPT....I have a situation
+where I occaisionally want to block outbound traffic from a certain
+host inside to a certain destination IP and/or port.  For example, I'd
+like to block one host from within my network from using Instant
+Messenger but still allow web surfing.  I've been able to dynamically
+block ALL outbound access to the internet but I'm unable to restrict
+access to certain destination ports.
 
-The iprange patch will enable you to define ranges in iptables.  If you
-do not want to patch, you can use SubnetCreator
-(http://subnetcreator.sourceforge.net).  This will take a range and
-break it into subnets.  In fact there are some Qt objects included in
-the application for doing this programmatically although I really need
-to update them as we have made substantial improvements to them lately.
-In fact, we use it as part of the ISCS network security management
-project.  If the chosen gateway has the iprange patch applied, we create
-rules with ranges; if not, we use the subnetcreator routines to create
-rules with subnets that together recreate the range.
+So this works:
+iptables -A INPUT -s 10.1.1.10 -j DROP
+iptables -A OUTPUT -d 10.1.1.10 -j DROP
+iptables -A FORWARD -d 10.1.1.10 -j DROP
 
-You will also want to ensure that you load the rules with iptables-
-restore or iptables-restore -n rather than using a script with lots of
-iptables commands.  At your size, individual iptables commands would
-take forever to load.
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+And I thought I could do something like this:
+iptables -A OUTPUT -s 10.1.1.10 -p tcp -m tcp --dport 5190 -j DROP
+iptables -A FORWARD -d 10.1.1.10 -p tcp -m tcp --dport 5190 -j DROP
+....but it has no effect.
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+I've tried different combinations of "-d and -s" and "--dport and
+--sport" just to see if I was doing something backwards....no dice.  I
+was wondering if I needed to set up some kind of pre or post routing
+because of the masquerading?
 
+Any help would be appreciated.
+
+Thanks!
+
+Jerry A.
 
