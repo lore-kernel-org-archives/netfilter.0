@@ -1,12 +1,11 @@
-From: "Paul Albert" <palbert@rovingplanet.com>
-Subject: Changelist for patch-o-matic 20030107?
-Date: Fri, 14 Feb 2003 13:31:41 -0700
+From: Del Winiecki <delw@wildapache.net>
+Subject: iptables-save display
+Date: 14 Feb 2003 14:41:45 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <661F9268BBA8CB4EB92CC12B8C42F06901F5F6@pluto.rovingplanet.com>
+Message-ID: <1045258905.17449.93.camel@r1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,15 +18,16 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi -=20
+First, Many thanks to Joel Newkirk, much appreciated. it works like a
+champ.
 
-Perhaps it is an end of the week problem, but I'm not able to find the
-changelist for the patch-o-matic 20030107.  Where can I find it?
+I have a concern. When I display using iptables-save I see that though I
+only have one POSTROUTING statement, there are about 22 of them
+displayed, all exactly the same. I've tried all kinds of things, but
+they always come back each load. Is this a bug with iptables-save or
+could all those redundant statements actually be in the kernel tables?
 
-I'm thinking about upgrading my 1.2.7a, but I want to check on the
-features of this patch before applying it.  I didn't see any info on the
-web site or inside of the pom.
+-Del W.
 
-Thanks,
-Paul
+
 
