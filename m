@@ -1,13 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Can't interpret this log entry
-Date: 26 Sep 2004 22:34:28 +0200
+Subject: Re: strange traffic
+Date: 26 Sep 2004 22:34:21 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096228742.7416.36.camel@nostromo.bgsecm.com>
-References: <415442FF.1060304@mail.co.gilchrist.fl.us>
+Message-ID: <1096228503.31631.32.camel@nostromo.bgsecm.com>
+References: <a0f69e504092408533ebc42d7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <415442FF.1060304@mail.co.gilchrist.fl.us>
+In-Reply-To: <a0f69e504092408533ebc42d7@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-El vie, 24 de 09 de 2004 a las 17:53, Eric Ellis escribi=C3=B3:
-> I'm slightly confused about this log entry that I'm seeing pop up in my=
-=20
-> syslog.
+El vie, 24 de 09 de 2004 a las 17:53, Askar escribi=C3=B3:
+> hi all=20
+> can someone tell me  what type of traffic is this....
+> #tcpdump -n port not 22 -c 100 and -t host xxx.xx.xx.xx
 >=20
-> The firewall is 200.21.1.254, on a private net.
+> xx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
+> xxx.xx.xxx.xx.28332 > 217.165.224.42.32706: udp 36
 >=20
-> Sep 24 11:57:03 firewall kernel: IN=3Deth0 OUT=3D=20
-> MAC=3D00:40:05:3d:51:e9:00:50:3e:ed:28:a0:08:00 SRC=3D200.175.75.101 DS=
-T=3D200.2
-> 1.1.254 LEN=3D56 TOS=3D0x00 PREC=3D0x00 TTL=3D43 ID=3D10814 PROTO=3DICM=
-P TYPE=3D3=20
-> CODE=3D3 [SRC=3D200.21.1.254 DST=3D200.175.75.101 LEN=3D48 T
-> OS=3D0x00 PREC=3D0x00 TTL=3D102 ID=3D2554 DF PROTO=3DTCP INCOMPLETE [8 =
-bytes] ]=20
->=20
->=20
-> it *almost* looks like my box is sending an ICMP query, and getting a=20
-> "port closed" response.  The thing that bothers me about this is that I=
-=20
-> don't allow ICMP to talk on the box at all, so I shouldn't be sending=20
-> ICMP, or if the machine tries to, I should be getting it logged, as I'm=
-=20
-> logging all of my drops.
->=20
-> Confused.
+> xxx... is our client IP we are getting lot of like these.. days with
+> different source ip each time.
+> regards
 
-It seems you are getting an ICMP Port Unreachable from the machine
-the firewall is trying to connect. It's not a bad idea to let this
-kind of traffic to go through your firewall, because if the application
-don't get this kind of message it can try again to connect to the
-port. It's a kind of response that use to give other firewall when
-they don't want your traffic to go through them.
-=20
+Port 36 is unnasigned, so it maybe it's a worm or any kind
+of attack. You could stop it in your firewall with no problem.
+
 --=20
 Jose Maria Lopez Hernandez
 Director Tecnico de bgSEC
