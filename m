@@ -1,115 +1,87 @@
-From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-Subject: RE: iptables or routing problem
-Date: Wed, 22 Oct 2003 17:36:32 +0800
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F22386C3FEB012449238672E38ED61E70A8D7E@overlord.overturemedia.com>
+From: Willy Tarreau <willy@w.ods.org>
+Subject: [PATCH-2.4-POM] NF_REPEAT was ignored !
+Date: Wed, 22 Oct 2003 12:25:56 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20031022102556.GA10540@alpha.home.local>
+References: <20031008094447.GL25743@sunbeam.de.gnumonks.org> <Pine.LNX.4.33.0310090854360.22077-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Class: urn:content-classes:message
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.33.0310090854360.22077-100000@blackhole.kfki.hu>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@drbroyles.com
-Cc: "[netfilter] Mailing List" <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: Harald Welte <laforge@netfilter.org>, netfilter@lists.netfilter.org, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+
+Hi,
+
+after updating the production firewalls to handle the CW->CL state, I saw the
+rate of drops decrease, but not as much as I would have expected it to.
+
+I captured lots of data (/p/n/ip_conntrack, logs, tcpdump) and discovered
+another problem with tcp_window_tracking that I could easily reproduce on
+a lab : if a client reused a port too early, then the SYN/ACK from the
+server was dropped, and the client could only connect after the next SYN
+retransmit. I simply checked it with nc -p 1234 server 80. The first one
+succeeds immediately, the second one needs 3 seconds to establish. There
+is a logical explication to this :
+
+The client completes a first connection to server:80 with spt=1234. A few
+seconds later, he reuses the same port to initiate a new connection to the
+server. The firewall still sees the connection in TIME_WAIT state, so its
+state matrix switches it to SYN_SENT  (orig:sTW--(SY)-->sSS).
+
+In ip_conntrack_proto_tcp.c:tcp_packet(), there is a test for this case. The
+existing session is deleted and NF_REPEAT is returned so that the caller tries
+again (here, ip_conntrack_core.c:ip_conntrack_in()). This one simply returns
+the same code NF_REPEAT to its caller which will call it again (nf_iterate()).
+
+The problem is that once ip_conntrack_in() is called again with the same pskb,
+it already has its ->nfct filled, so ip_conntrack_in() immediately returns
+NF_ACCEPT without doing any lookup. The result is that the SYN is passed to
+the server, and the deleted session is not recreated. When the server replies
+with a SYN/ACK, this one has no matching session it is blocked by the firewall
+rules. Then, 3 seconds later, the client retransmits its SYN, which reaches
+the firewall without any matching session, and correctly initiates a new one.
+
+The solution is to correctly clear the ->nfct field in ip_conntrack_in() if
+we return NF_REPEAT. This is what the following patch does. It's to be applied
+to 2.4+POM-20030912, but I'm confident it may be easily applied and/or ported
+to later versions.
+
+I've not checked yet if the mainline conntrack code is also affected, but this
+could be possible.
+
+Regards,
+Willy
 
 
-Thank you so much Brandon!
+--- ./net/ipv4/netfilter/ip_conntrack_core.c.orig	Tue Oct 21 14:21:08 2003
++++ ./net/ipv4/netfilter/ip_conntrack_core.c	Tue Oct 21 16:14:53 2003
+@@ -856,6 +861,14 @@
+ 	IP_NF_ASSERT((*pskb)->nfct);
+ 
+ 	ret = proto->packet(ct, (*pskb)->nh.iph, (*pskb)->len, ctinfo);
++
++	if (ret == NF_REPEAT) {
++		/* we must loop here again */
++		nf_conntrack_put((*pskb)->nfct);
++		(*pskb)->nfct = NULL;
++		return ret;
++	}
++
+ 	if (ret == -1) {
+ 		/* Invalid */
+ 		nf_conntrack_put((*pskb)->nfct);
 
-I'll check on that. I really appreciate your help!
-
-Someday I too will be able to help someone as you have helped me.
-
-
-fritz <www.mesedilla.com>
----
-+ Basta Ikaw Lord
-
-
-
-> -----Original Message-----
-> From: netfilter@drbroyles.com [mailto:netfilter@drbroyles.com]
-> Sent: Wednesday, October 22, 2003 3:50 PM
-> To: Fritz Mesedilla
-> Cc: [netfilter] Mailing List
-> Subject: Re: iptables or routing problem
->=20
->=20
-> Fritz,
->     No that will not work.  The B-class subnet of 192.168.x.x=20
-> is a privately
-> available group of IPs that are not allowed onto the=20
-> Internet.  192.167.8.1
-> is a real-world IP address though.  In fact, the entire 192.167.x.x/16
-> address space are real IPs.
->     Any routers connected to the Internet will not route these private
-> addresses without some sort of NAT or MASQUERADING.  If your=20
-> parent company
-> doesn't own IPs that you can use (which is what I suspect to=20
-> be the case)
-> you'll need to use a different private address space.  If you=20
-> need to use a
-> private IP space, then you have two other choices.
->     You can use 172.16.x.x or you can use some portion of=20
-> 10.x.x.x.  This
-> all depends on the intended use of your router.  How many=20
-> clients will you
-> be servicing?
->     I would suggest you read over the following Howto to get=20
-> a better sense
-> of how you want to structure your network.
-> http://www.tldp.org/HOWTO/IP-Subnetworking.html
->=20
-> Brandon Broyles
->=20
-> ----- Original Message -----
-> From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
-> To: <netfilter@drbroyles.com>
-> Cc: "[netfilter] Mailing List" <netfilter@lists.netfilter.org>
-> Sent: Wednesday, October 22, 2003 2:41 AM
-> Subject: RE: iptables or routing problem
->=20
->=20
->=20
-> Oh I can't change the subnets. Our parent company is using a=20
-> class-b system.
-> 255.255.0.0
->=20
-> Would this be possible in a class-b system?
->=20
-> eth0: 192.167.8.1
-> eth1: 192.168.8.232
->=20
-> Just to make them on different subnets?
->=20
-> fritz <www.mesedilla.com>
->=20
->=20
-
-----------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom they
-are addressed. If you have received this email in error please notify
-the sender immediately by e-mail and delete this e-mail from your
-system. Please note that any views or opinions presented in this
-email are solely those of the author and do not necessarily represent
-those of the company. Finally, the recipient should check this email
-and any attachments for the presence of viruses. The company accepts
-no liability for any damage caused by any virus transmitted by this
-email.=20
-
-Overture Media, Inc.
-Direct Line: (632) 635-4785
-Trunkline:   (632) 631-8971 Local 146
-Fax: (632) 637-2206
-Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
-Quezon City 1100
 
 
