@@ -1,10 +1,8 @@
-From: Paul Flinders <paul.flinders@cdesolutions.com>
-Subject: ip_nat_pptp
-Date: Tue, 21 Jan 2003 21:48:08 +0000
+From: erich@uruk.org
+Subject: Only MASQ/NAT, no FORWARDing?
+Date: Wed, 22 Jan 2003 11:35:58 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E2DC018.1000708@cdesolutions.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18bQfG-0007hN-00@trillium-hollow.org>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,20 +13,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-I'm using a RedHat 8 box as the gateway/firewall on my home network 
-(2.4.20 kernel
-from the phoebe beta plus the 20030119 snapshot of patch-o-matic and 
-iptables-1.2.7a)
 
-It's working fine but one thing is puzzling me. I expected to use the 
-ip_nat_pptp module
-so that I can use the office VPN. However if I load that module I can't 
-connect. If I just
-have ip_conntrack_pptp loaded I can connect with no problems.
+Please respond to my email address "erich@uruk.org", as I'm not on
+the email list...
 
-Can anyone explain what's going on. When is ip_nat_pptp needed?
+Sorry if this is a FAQ, but I couldn't figure this out from the HOWTO,
+FAQs I could find, nor from the experimentation I've done so far (though
+it arguably hasn't been exhaustive).
 
+My question is:  On a Redhat 8.0 machine (most recent patch kernel,
+based on 2.4.18) with 2 ethernet cards "eth0" and "eth1", I want to
+Masquerade/NAT connections originating from the eth1 side going out
+the eth0 side ONLY.
+
+I figured out how to keep masquerading only going one direction, but
+what I can't figure out is how to disable all normal packet forwarding
+other than the masqueraded connections with iptables.  I.e. someone
+on the other side who knows my internal IP addressing can still send
+crafted packets through my firewall.
+
+Telling the "FORWARD" rule to drop all packets blocks the masq/NAT
+connections.  The same thing happens if I only tell it to drop packets
+that come from eth0 and go out eth1.
+
+So, I'm not quite sure how to do this...  can someone help here?
+
+Thanks...
+
+--
+    Erich Stefan Boleyn     <erich@uruk.org>     http://www.uruk.org/
+"Reality is truly stranger than fiction; Probably why fiction is so popular"
 
