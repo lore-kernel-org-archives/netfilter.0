@@ -1,8 +1,8 @@
 From: Jochen Vogel <jvogel@it-sec.de>
-Subject: GRE/PPTP and modules
-Date: Thu, 29 Apr 2004 16:47:01 +0200
+Subject: ipt_tos.ko vs ipt_TOS.ko
+Date: Thu, 29 Apr 2004 16:55:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D3DD55FDB74AD511BA5100500416368053E88A@ORION>
+Message-ID: <D3DD55FDB74AD511BA5100500416368053E88C@ORION>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Received: **stripped**
@@ -17,21 +17,11 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
 Hi,
 
-I did the following
-$IPT -t nat -A PREROUTING -d <firewall> -p tcp --dport 1723 -i $EXT -j DNAT
---to-destination <vpn>:1723
-$IPT -t nat -A PREROUTING -d <firewall> -p gre              -i $EXT -j DNAT
---to-destination <vpn>
-$IPT -A FORWARD -i $EXT -o $RAS -d <vpn> -p TCP --dport 1723 -m state
---state NEW -j ACCEPT
-$IPT -A FORWARD -i $EXT -o $RAS -d <vpn> -p GRE              -m state
---state NEW -j ACCEPT
-
-Do i need any modules?
+Whats the differents between ipt_tos.ko and ipt_TOS.ko?
 
 Thx for infos
 jo
