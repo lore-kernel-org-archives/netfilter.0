@@ -1,13 +1,13 @@
-From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
-Subject: RE: netfilter and IIS5
-Date: Mon, 7 Oct 2002 14:41:34 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Iptables tutorial
+Date: Mon, 7 Oct 2002 20:30:19 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IMEDICLPAGAOCBLCCKLPKEGPECAA.netfilter@darrelldieringer.com>
-References: <AF435BB1224A4C4888B58C546728EE3229AA@s2.valiant.com>
+Message-ID: <20021007193024.IDMQ28874.mta06-svc.ntlworld.com@there>
+References: <001201c26e28$be880e50$3dd6a483@CBOOK> <20021007191229.HKAQ28874.mta06-svc.ntlworld.com@there> <001101c26e36$d017b860$b6a97942@pacbell>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <AF435BB1224A4C4888B58C546728EE3229AA@s2.valiant.com>
+In-Reply-To: <001101c26e36$d017b860$b6a97942@pacbell>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +18,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Keith R. Weiner" <keith@valiant.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Awhile ago I was dealing with what amounted to be an IIS issue.
+On Monday 07 October 2002 8:22 pm, Bishop wrote:
 
-First, are you doing any NAT?  Specifically, are you NAT-ing any
-ports?
-
-In my network setup (cable ISP, single real IP address, LAN plus
-separate DMZ - all NAT-ed to the Internet with some services being
-forwared to the DMZ), where my ISP blocked incomming port 80 requests
-somewhere upstream from me, I had the following problem:
-
-If I forwarded w.x.y.z:3080 to dmz.a:80 (where IIS was listening), the
-first thing IIS did was issue a redirect.  Check your IIS logs for
-HTTP code 302 (IIRC) - redirect - that tells the requesting client
-"Reach me on port 80 instead".  Since my port 80 was blocked upstream
-by the ISP, the new request from the client never got to me.
-
-But it worked fine inside my LAN since I didn't block port 80 to the
-DMZ.
-
-Since at the time I was a newbie to netfilter, I naturally assumed it
-was a problem with my rules / setup.  Instead, it was a feature of IIS
-(in my case IIS 4), combined with my ISP blocking port 80.
-
-I changed IIS4 to listen on 3080 and changed my NAT to forward
-w.x.y.z:3080 -> dmz.a:3080.  IIS no longer issued the redirect to the
-blocked port, and everything worked fine.
-
-This may not be your situation, but lacking most specifics about your
-network, I'm taking a guess.  Hope it helps.
-
-Darrell
-
-
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
-> Keith R. Weiner
-> Sent: Monday, October 07, 2002 11:21 AM
-> To: netfilter@lists.netfilter.org
-> Subject: netfilter and IIS5
+> Hello all,
 >
->
-> Excuse me if this is a newbie question.
->
-> I am running IIS on Windows 2000 behind the DMZ.  The first
-> linux box is using the old ipchains.  The second box is
-> using netfilter.  From within the DMZ, I can access it.
-> From the outside world, it is not accessible.  Other
-> services are, but not IIS.
->
-> Any help would be greatly appreciated.  Thanks.
->
->
+>         I'm a newbie to the linux world. I download red hat 8.. I notice to
+> setup a firewall you have to use iptables. Does anyone know a good site or
+> url that I may take a look at. I need something simple that I could
+> understand, since I'm a newbie , something like "firewall for dums" ....
 
+I recommend Oskar Andreason's tutorial at:
+
+http://iptables-tutorial.frozentux.net
+
+Antony.
+
+-- 
+
+Software development can be quick, high-quality, or low-cost.
+
+The customer gets to pick any two out of three.
 
