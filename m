@@ -1,13 +1,13 @@
-From: Les Mikesell <les@futuresource.com>
-Subject: Re: GRE over IPSec?
-Date: Thu, 06 Jan 2005 11:59:42 -0600
-Message-ID: <1105034382.14796.26.camel@moola.futuresource.com>
-References: <1105030318.14796.9.camel@moola.futuresource.com>
-	<41DD7B1C.404@hdr-roma.it>
+From: "J. Nerius" <jnerius@gmail.com>
+Subject: Re: bandwidth monitoring
+Date: Thu, 06 Jan 2005 11:56:17 -0600
+Message-ID: <1105034177.27950.7.camel@josh-desk>
+References: <200501061128.04741.patrick.leduc@novipro.com>
+	<1105033328.14796.18.camel@moola.futuresource.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41DD7B1C.404@hdr-roma.it>
+In-Reply-To: <1105033328.14796.18.camel@moola.futuresource.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,45 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "primero@hdr-roma.it" <primero@fastwebnet.it>
+To: Les Mikesell <les@futuresource.com>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, 2005-01-06 at 11:53, primero@hdr-roma.it wrote:
+ntop is great for *short term* monitoring. Generally it will become
+unmanageable if run for too long. If you want to monitor and keep stats
+over a longer period of time, bandwidthd will probably work better for
+you.
 
-> >This may be off-topic for this list but perhaps someone could at least
-> >point me to a better source...  When doing IPSec tunnels between Cisco
-> >routers it works nicely to first make a GRE tunnel which gives you
-> >a fairly normal interface that can run routing protocols, etc., then
-> >use 'crypto map' to push the GRE packets through IPSec encryption.
-> >
-> >Are there any examples available that would match this setup with
-> >Linux on one end, Cisco on the other?  A Linux<->Cisco GRE is easy
-> >enough and zebra/quagga should run rip or ospf over that, but then
-> >I'd like to pass the GRE packets though IPSec before sending.
-> >
-> >  
-> >
-> would not be better to have a GRE Tunnel Secured with ipsec?
-> i mean creating the normale tunnel
+J.N.
+
+On Thu, 2005-01-06 at 11:42 -0600, Les Mikesell wrote:
+> On Thu, 2005-01-06 at 10:28, patrick.leduc@novipro.com wrote:
 > 
-> interface tunnel 1
-> etc ....
+> > Does somebody know a program for monitoring bandwidth by ip? I have one 
+> > internet interface and I must monitor many ips adresses on this interface. I 
+> > tried Ipac-ng and, I worked a lot to do this config but it seems not working 
+> > this way.
 > 
-> then apply the crypto map to make a transport ipsec point 2 point 
-> connecttion beetween the REAL interface ip address of both end of the 
-> tunnel matching GRE packets.
+> Ntop might do what you need.  http://www.ntop.org.  It can summarize and
+> sort traffic by address/port/protocol, etc.  I don't use it continuously
+> but fire it up for a while if I think something is hogging the network.
 > 
-> This way you'll have a logical interface Tunnel on both routers with an 
-> IPSEC encryption for all GRE packets beetween this 2 interfaces.
-
-I thought that was what I said... Regardless, what I want is the
-Linux-side setup to match.  On the Ciscos, the GRE is configured
-to work without IPSec, then the IPSec tunnel is established and
-an access list blocks unencrypted GRE packets. 
-
--- 
-  Les Mikesell
-    les@futuresource.com
-
 
 
