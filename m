@@ -1,11 +1,13 @@
-From: Andy Walden <andy@tigerteam.net>
-Subject: libipt_drop.so: cannot open shared object file
-Date: Tue, 29 Jun 2004 01:37:10 -0400
+From: "Mayank Kumar" <mayank_kumar@intersolutions.stpn.soft.net>
+Subject: RE: injecting new packets into the netfilter
+Date: Tue, 29 Jun 2004 11:15:52 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E10006.3060805@tigerteam.net>
+Message-ID: <BNELKLECKCDLOPNOBHFHMEBFJEAA.mayank_kumar@intersolutions.stpn.soft.net>
+References: <OF320C2260.F50A62E7-ON65256EC2.001D032A@hss.hns.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <OF320C2260.F50A62E7-ON65256EC2.001D032A@hss.hns.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,21 +17,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: aksingh@hss.hns.com
+Cc: netfilter@lists.netfilter.org
+
+Hi Akash
+i know of this library.
+But i want to inject packets at precise hooks
+in the netfilter. for e.g. i want to inject packets whenever
+the need arises ,at the fwding hook or the post routing hook. Will the
+raw packets i send using the libnet get caught at hooks inserted using
+netfilter at various points.
+
+regds
+Mayank
+
+-----Original Message-----
+From: aksingh@hss.hns.com [mailto:aksingh@hss.hns.com]
+Sent: Tuesday, June 29, 2004 10:49 AM
+To: Mayank Kumar
+Cc: netfilter@lists.netfilter.org
+Subject: Re: injecting new packets into the netfilter
 
 
-# ./iptables -I INPUT -s 217.238.177.2 -j drop
-iptables v1.2.11: Couldn't load target 
-`drop':/usr/local/lib/iptables/libipt_drop.so: cannot open shared object 
-file: No such file or directory
 
-I just started getting this one day. Searches show only three hits for 
-that file and there is no sign of it in my distrobution or the source 
-package. Any ideas as to what I'm seeing here? Thanks for the time.
 
--- 
-Best Regards,
-Andy Walden
+
+
+Hi,
+
+  Try libnet for injecting new packets, you can use raw packets(u inject
+from userland), libnet provides you with a better interface, but you wld
+need root permission to use raw sockets. you can get libnet library from
+packetfactory.net
+
+HTH
+Amit
+
+
+
+
+"Mayank Kumar"
+<mayank_kumar@intersolutions.stpn.soft.net>@lists.netfilter.org on
+06/29/2004 10:17:16 AM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    <netfilter@lists.netfilter.org>
+cc:
+
+Subject:    injecting new packets into the netfilter
+
+
+Hi all,
+I want to know how can we inject absolutely new packets at
+various hook points in netfilter. I have already seen
+some questions posted on this earlier too but no replies
+as such. I am very eager to know about this because using
+this we can construct some really cool stuff. Currently we
+are undergoing a project on this and it would be of greate
+help if somebody can find a solution to this.
+
+Thanks in advance for any help on this.
+regds
+Mayank
+
+
+
 
 
