@@ -1,13 +1,14 @@
-From: "Waldecir Loureiro dos Santos Filho" <psycoman@pop.com.br>
-Subject: RE: SNAT hangs system in SMP mode (kernel 2.4.21)
-Date: Mon, 21 Jul 2003 09:38:40 -0300
+From: "Juliano Murlick" <jmurlick@sicredi.com.br>
+Subject: RE: Please ... how can i log all packets dropped ?
+Date: Mon, 21 Jul 2003 09:44:49 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IIEKKHFJALFLMOPAIGGIOEIICAAA.psycoman@pop.com.br>
-References: <Pine.LNX.4.44.0307211003330.5246-100000@jedi.van-dijk.net>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAArnhC4pMfykCnPZlPMhHrI8KAAAAQAAAAw3Gt95C4mUyYMRlu4U9EgwEAAAAA@sicredi.com.br>
+References: <20030719220531.GA3868@cannon.eng.us.uu.net>
+Reply-To: <jmurlick@sicredi.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0307211003330.5246-100000@jedi.van-dijk.net>
+In-Reply-To: <20030719220531.GA3868@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +18,98 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Diederick van Dijk <diedvdyk@jedi.van-dijk.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="windows-1252"
+To: 'Ramin Dousti' <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
+
+=20
+Maybe I did my question wrong ... Sorry.
+I wanna LOG all packet dropped, but I don=92t wanna do one rule for each =
+port
+or kind of packet, my rule's script is like this:
+
+##########################################################
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+iptables -P FORWARD -p tcp -s $REDELOCAL -d 200.228.185.225 --dport 25 -
+ACCEPT
+iptables -P FORWARD -p tcp -s $REDELOCAL -d 200.228.185.225 --dport 110 =
+-
+ACCEPT
+##########################################################
+
+Now, i wanna LOG all dropped packets, everyone that try to access other =
+ip
+address or port must be log, how can i get it ?
 
 
-I get this problem too, with Kernel-2.4.21, now I back to orignal kernel of
-RH and no more problems
-
-Some budy know if 2.4.21 have a problem with iptables ? ? ?
+ATs,
+Juliano Murlick
+SICREDI Servi=E7os - Tecnologia
+jmurlick@sicredi.com.br
+(51) 3358-4977 / (51) 9951-3888
 
 
 
 -----Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Diederick van Dijk
-Sent: segunda-feira, 21 de julho de 2003 05:19
-To: netfilter@lists.netfilter.org
-Subject: SNAT hangs system in SMP mode (kernel 2.4.21)
+From: Ramin Dousti [mailto:ramin@cannon.eng.us.uu.net]=20
+Sent: s=E1bado, 19 de julho de 2003 19:06
+To: Juliano Murlick
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Sat, Jul 19, 2003 at 02:38:01PM -0300, Juliano Murlick wrote:
 
-Yesterday I upgraded my system from one Pentium III 450Mhz processor to
-two Pentium III 450 processors. This system is my gateway to the internet.
-After upgrading I recompiled the kernel (2.4.21) into SMP mode.
-Unfortunately this wasn't a success. After a few minutes my system hung.
-After some searching I'm realy sure that my SNAT rules are the problem. If
-I get my email on an other PC with no other IP activity on my network my
-gateway immediately hung. Retrieving email uses a SNAT rule.
-So I recompiled my kernel uni-processor and the problem was over.
-Is this a known problem ? How do I fix this (MASQ rules are not the
-solution) ? If someone needs additional information please ask.
+> Hello ALL,
+> I need log all packet dropped on my firewall, how can i get it ? I=20
+> know how log all that i accept, like this:
 
-System specs :
+If I understand your question correctly:
+If you want to log the dropped packets only then you must allow the ones =
+you
+want in the beginning of your rule set and the very last rule (right =
+before
+the default DROP policy) must be LOG.
 
-- 2 x Pentium 450 Mhz
-- 256 MB SDRAM
-- kernel 2.4.21 (not the stock Mandrake kernel)
-- iptables 1.2.7a
-- Mandrake 9.1
-- 9x SNAT rules
+Ramin
 
-Thanks in advance,
+> =20
+> iptables -A FORWARD -p tcp -s $REDELOCAL --sport 1024:65535 -d $SSHSRV =
 
-Diederick
+> --sport 22 -j LOG iptables -A FORWARD -p tcp -s $REDELOCAL --sport=20
+> 1024:65535 -d $SSHSRV --sport 22 -j ACCEPT
+> =20
+> i will LOG all packet from ssh connection, but i don't  to log all=20
+> packet dropped, my default policy is DROP:
+> =20
+> iptables -P FORWARD DROP
+> =20
+> please, if anyone knows it ? tell me ....
+> =20
+> =20
+> Thanks in advance!
+>=20
+> Att,
+> Juliano Murlick
+>=20
+>=20
+> =20
+>=20
+> ---
+> Outgoing mail is certified Virus Free.
+> Checked by AVG anti-virus system (http://www.grisoft.com).
+> Version: 6.0.500 / Virus Database: 298 - Release Date: 10/7/2003
+> =20
+---
+Incoming mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.500 / Virus Database: 298 - Release Date: 10/7/2003
+=20
 
-
-
-********Confidencialidade do Correio do Eletr=F4nico***************
-Informa=E7=F5es confidenciais podem estar contidas nesta mensagem. Se voc=
-=EA n=E3o
-se encontra na lista de destinat=E1rios ou n=E3o =E9 o remetente da mesma, =
-voc=EA
-n=E3o deve copiar ou enviar esta mensagem para ningu=E9m. Neste caso, voc=
-=EA deve
-destruir e notificar o remetente da mesma. A empresa considera opini=F5es,
-conclus=F5es e outras informa=E7=F5es que n=E3o se relacionam com o neg=F3c=
-io oficial
-da corpora=E7=E3o de responsabilidade do usu=E1rio do servi=E7o.
-
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.500 / Virus Database: 298 - Release Date: 10/7/2003
+=20
 
 
