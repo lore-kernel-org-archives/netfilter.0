@@ -1,13 +1,11 @@
-From: "Filip Sneppe (Cronos)" <filip.sneppe@cronos.be>
-Subject: Re: cuseeme-nat
-Date: 15 Apr 2003 22:46:25 +0200
+From: "Ashley M. Kirchner" <ashley@pcraft.com>
+Subject: Help cofiguring new (private) subnet
+Date: Tue, 15 Apr 2003 15:54:09 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1050439585.647.11.camel@exile>
-References: <NGBBLGFEALDADHNDAAFFEEHFDJAA.ksmith@perfht.com>
+Message-ID: <3E9C7F81.7020301@pcraft.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NGBBLGFEALDADHNDAAFFEEHFDJAA.ksmith@perfht.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +15,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Kevin Smith <ksmith@perfht.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Net Filter Mailing List <netfilter@lists.netfilter.org>
 
-On Tue, 2003-04-15 at 17:59, Kevin Smith wrote:
->
->Greetings Listers, 
->
->Im curious about any info, good or bad about this patch. Mostly how
->well it works. 
->
->
 
-Hi Kevin,
+    I'm needing some help on configuring of my current iptables script 
+to expand onto a second subnet.  But before I posted the whole script 
+(from iptables-save) and a map layout of the network, I thought I'd ask 
+if there's anyone in specific that would like to help me out, or whether 
+I should just go ahead and post the whole shebang.
 
-You've already contacted me in private mail about this, and asked
-this list the same question twice.
+    The short gist of it is this:  I've used Oskar Andreasson's 
+rc.firewall script at http://iptables-tutorial.frozentux.net/ (linked 
+from www.iptables.com) to generate my initial firewall script between 
+our public internet address and the internal network.  However, I've now 
+added a third nic to the machine and configured it with a different 
+(private) network.  With the current firewall rules, I can not see 
+anyone on that new subnet...only those on the old one.  That's what I 
+need fixing.  That new subnet does NOT need forwarding like the first 
+one does, so I'm not worried about it...I do however need to see the 
+other systems on that subnet.
 
-How about giving it a try for yourself and reporting back to the author
-and the netfilter-devel list (or possibly this list) if things don't
-work ? 
+    There you go.  Anyone willing to help?
 
-The patch is supposed to work on x86 architectures and I don't know
-of anyone (including people who beta tested) experiencing problems.
-There is an issue on some architectures - this is noted in the
-patch desciption, but I haven't gotten around to looking at that
-yet (and fixing it).
 
-Regards,
-Filip
 
 
