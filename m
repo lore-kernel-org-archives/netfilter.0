@@ -1,14 +1,12 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Re[2]: efficient source address filtering and logging?
-Date: 02 Nov 2003 06:45:14 -0500
+From: Carles Xavier Munyoz =?iso-8859-15?q?Bald=F3?= <carles@unlimitedmail.org>
+Subject: TCP/UDP accounting data.
+Date: Mon, 27 Oct 2003 13:31:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067773514.1562.26.camel@valhalla>
-References: <Pine.LNX.4.44.0310280949080.22878-100000@localhost.localdomain>
-	 <1067358369.1700.11.camel@valhalla>  <191594195858.20031102122904@lf.lv>
+Message-ID: <200310271331.12496.carles@unlimitedmail.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <191594195858.20031102122904@lf.lv>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,52 +16,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Peteris Krumins <newsgroups@lf.lv>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter list <netfilter@lists.netfilter.org>
 
-On Sun, 2003-11-02 at 05:29, Peteris Krumins wrote:
->
-> CB> Here is what I do in my script to specify my rules:
-> 
-> CB> while read SPOOFED ; do
-> CB> iptables -A FORWARD -s $SPOOFED -j LOG --log-prefix " SPOOFING "
-> CB> iptables -A FORWARD -s $SPOOFED -j DROP
-> CB> done < spoofed_ips.txt
-> 
-> This is wrong,
+Hi,
+I have created, using the iptables command, a set of chains for accounting=
+=20
+purpouses only.
+=46or example, I have created a chain for account the TCP incomming traffic=
+ and=20
+another one for account UDP incomming traffic.
 
-I'm not sure what you mean by "wrong" as this works just fine.
+I'm programming a C daemon that periodically takes the amount of bytes=20
+accounted by every chain and stores it in a database.
 
->  to log/drop a single ip 2 lookups on the src addr have to be
-> performed.
+At this moment I'm running the command iptables from inside my C program to=
+=20
+store the chain information in a file, and then parse this file to get the=
+=20
+data.
+Is there any iptables C library I can use to get this accounting informatio=
+n=20
+directly, without having to run the iptables command ?
+Is this information stored in a /proc file ?
 
-LOL! If you are worried about performing one extra file read when
-loading your rules, I think its time to upgrade your hard drive. ;-)
-
-> Instead a single chain should be created which all the spoofed packets
-> would jump. The single chain logs and drops.
-> 
-> i=iptables
-> $i -N LOG_DROP
-> $i -A LOG_DROP -j LOG --log-prefix " SPOOFING "
-> $i -A LOG_DROP -j DROP
-> 
-> while read SPOOFED;
->   do
->     $i -A FORWARD --src $SPOOFED -j LOG_DROP
-> done < spoofed_ips.txt
-
-Yup, this would work as well. I _personally_ like my way a little better
-because this way requires the traversal of of an additional rule for
-every IP packet that matches the ban list. This is going to have a
-greater performance impact than the additional file read mention above.
-Probably not a big deal if you are talking a home firewall, but it can
-make a difference if you have big pipes and/or large ban lists.
-
-HTH,
-C
-
-
+Greetings.
+=2D--
+Carles Xavier Munyoz Bald=F3
+carles@unlimitedmail.org
+http://www.unlimitedmail.net/
+=2D--
 
 
