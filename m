@@ -1,11 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
 Subject: Re: QOS
-Date: 19 Dec 2002 09:38:15 +0100
+Date: Thu, 19 Dec 2002 11:02:10 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040287095.1784.16.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <Pine.LNX.4.44.0212191059090.19676-100000@dns.toxicfilms.tv>
 References: <1040280504.11113.140.camel@bigblue>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <1040280504.11113.140.camel@bigblue>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,24 +16,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Paulo Andre <pandre@darkstar.nom.za>
 Cc: netfilter <netfilter@lists.netfilter.org>
 
-Le jeu 19/12/2002 =E0 07:48, Paulo Andre a =E9crit :
 > Which is the better package to use for QOS??
 > HTB or CBQ..???
+Well, some say that CBQ is very inacurate, but very often is sufficient,
+which i know from experience. HTB is said to be a bit easier and more
+acurate.
 
-Aren't we discussing Netfilter in this list ?
+Please read about it on www.lartc.org
 
-You should consider STFW and see http://lartc.org/howto/...
+Regards,
+Maciej
 
-"As your HTB configuration gets more complex, your configuration scales
- well. With CBQ it is already complex even in simple cases!"
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
