@@ -1,12 +1,16 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: DOS/Crikey attacks, and ip_conntrack (retry)
-Date: Mon, 20 Jan 2003 18:17:01 +0100 (CET)
+From: Evan Borgstrom <evan@unixpimps.org>
+Subject: Re: Strange setup
+Date: 20 Jan 2003 09:49:12 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0301201806250.18382@dns.toxicfilms.tv>
-References: <61535048953.20030119135255@dslr.net> <311608578750.20030120101825@dslr.net>
+Message-ID: <1043074151.1391.39.camel@venom.int.unixpimps.org>
+References: <1648.10.35.120.83.1043012159.squirrel@mail.unixpimps.org>
+	 <1043015513.24583.16.camel@wizardslair>
+	 <1084.10.35.120.83.1043023502.squirrel@mail.unixpimps.org>
+	 <1043049030.24581.76.camel@wizardslair>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <311608578750.20030120101825@dslr.net>
+In-Reply-To: <1043049030.24581.76.camel@wizardslair>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +20,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: justin <cmbb@dslr.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfiler E-Mail List <netfilter@lists.netfilter.org>
 
-> 2. When the ip_conntrack table is full, are old UNREPLIED
-> connections dropped to make room for new entries? (this,
-> the DOS attack will not succeed), or, are random UNREPLIED
-> entries removed, or, are packets just dropped?
-AFAIK FAQ 3.16 says that UNREPLIED entries are stored just to keep
-information, they are replaced if necesary with new conntrack entries,
-then if we run out of entries, the packets are indeed dropped. This is
-accompanied by a kernel syslog message: conntrack full, dropping packet.
+Thanks for the reply Peter,
 
+That's the sortta setup I was playing with yesterday. Kindda kludgey but
+it would work.
 
-> 4. Using the patch for NOTRACK, that provides a path that
-> does not add an entry to the session table, does this mean
-> the only thing that will break is any ESTABLISHED tests
-> elsewhere in the rules? or does it break NAT completely
-> and thus can only be used for packets coming in for services
-> on the local box, not any hidden NAT'd services?
-I have not seen or read about this patch, but without conntrack, NAT can
-not work. The NAT box would not know to whom should the returning packets
-be sent.
+What would be nice is if connection tracking would log the source
+interface of the last packet. That way in the PREROUTING table I could
+check that and change the mark on the packet so that it would pick a
+different routing table. Perhaps I should look at implementing that on
+my setup to see how it works...
 
-Regards,
-Maciej
+The only other way I thought of doing it was using TOS bits inside the
+network (say give an 8 to anything coming over the WAN and a 16 to
+anything coming over the WLAN), but I can't find a way to make my sun
+boxes set the same TOS for related pakets...
+
+If anyone else has ideas, comments, etc... on this I'm always up to
+listen.
+
+-Evan
+
+On Mon, 2003-01-20 at 02:50, Peter Johnson wrote:
+> Ok, gotcha now...
+> 
+> Still do 
+> ip rule add from $WAN_IP table $WAN_TABLE
+> ip rule add from $WLAN_IP table $WLAN_TABLE
+> and 
+> ip route add default via $WAN_PEER_IP dev $WAN_IF table $WAN_TABLE
+> ip route add default via $WLAN_PEER_IP dev $WAN_IF table $WLAN_TABLE
+> 
+> Add iptables rules approximately as follows:
+> 
+> $IPTABLES -t nat -A PREROUTING -i $WAN_IF -j DNAT $DMZ_IP_0-16
+> $IPTABLES -t nat -A PREROUTING -i $WLAN_IF -j DNAT $DMZ_IP_17-32
+> 
+> $IPTABLES -t nat -A POSTROUTING -o $WAN_IF -j SNAT $WAN_IP
+> $IPTABLES -t nat -A POSTROUTING -o $WLAN_IF -j SNAT $WLAN_IP
+> 
+> $IPTABLES -t filter -A FORWARD -i $WAN_IF -o $DMZ_IF -j ACCEPT
+> $IPTABLES -t filter -A FORWARD -i $WLAN_IF -o $DMZ_IF -j ACCEPT
+> 
+> That takes care of the initial connection i.e. SYN packets. The IPTables
+> nat table is only used on the initial packet on each connection.
+> 
+> For the actual routing, the only thing that I can think of is assigning
+> two IPs (aliases) to each server in the DMZ say .0-16 for WAN and 17-32
+> for WLAN then using
+> 
+> $IPTABLES -t mangle -A PREROUTING -s $DMZ_IP_0-16 -j MARK --set-mark 1
+> and
+> $IPTABLES -t mangle -A PREROUTING -s $DMZ_IP_17-32 -j MARK --set-mark 2
+> 
+> then add
+> 
+> ip rule add fwmark 1 table $WAN_TABLE
+> and
+> ip rule add fwmark 2 table $WLAN_TABLE
+> 
+> 
+> Sorry but that is all I can come up with at the moment.
+> 
+> PJ
+-- 
+Evan Borgstrom <evan@unixpimps.org>
+http://www.unixpimps.org
+http://www.ragga-jungle.com
 
 
