@@ -1,9 +1,9 @@
 From: "Sascha Reissner" <sascha.reissner@toxicnet.de>
 Subject: Re: Hoax..
-Date: Wed, 23 Apr 2003 21:43:18 +0200
+Date: Wed, 23 Apr 2003 21:51:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <013101c309d0$976f57d0$026410ac@honor>
-References: <20030423021401.26417.52880.Mailman@kashyyyk>      <NGBBLGFEALDADHNDAAFFCEIKDJAA.ksmith@perfht.com>      <20030423182602.24b0d726.arnt@c2i.net>      <1051117353.25368.12.camel@alpha.newkirk.us> <4770.212.242.51.102.1051121232.squirrel@www.ramstedt.dk>
+Message-ID: <013c01c309d1$b02119c0$026410ac@honor>
+References: <1051117353.25368.12.camel@alpha.newkirk.us> <3EA6AA92.15646.15BBD6C@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,32 +17,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jesper Lund <jesper@ballbreaker.dk>, Joel Newkirk <netfilter@newkirk.us>
-Cc: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+To: cbaker@bbbscentralohio.org, netfilter@lists.netfilter.org
 
-From: "Jesper Lund" <jesper@ballbreaker.dk>
+From: <cbaker@bbbscentralohio.org>
 
-> > My latest was two days ago:
-> >
-> >> From: SAMSON GUEI <samsonguei@redffmail.com>
-> >> To: netfilter@newkirk.us
-> >> Subject: CONFIDENTIAL & URGENT
-> >> Date: 22 Apr 2003 12:06:48 +0200
-> >>
-> >> FROM:MR,Samson Guei.
-> >>
-> >> DEAR SIR, ATTN:THE PRESIDENT/CEO.
-> >>
-> >> I AM MR,Samson GUEI, THE SON OF LATE GENERAL ROBERT GUEI
-> >> EX-MILITARY HEAD OF STATE OF IVORY COAST, WHO WAS MURDERED ALONG
-> >> WITH THE INTERIOR MINISTER ON THE 19th OF SEPTEMBER 2002
-> 
-> I am pretty sure that my spamfilter throwes those mail away at my setup.
-> 
-> //Jesper
-> 
-> 
 
-Yepp ;) X_Spam_Flag: Yes ...
+> Hopefully, most people here already knew that this was a hoax. It
+> obviously wasn't confidential. I have been forwarding all such spams
+> to Spamcop. I actually saw a decrease for a while. Go to
+> <www.spamcop.net>.
+>
+> What is the Secret Service address? And does that accomplish
+> anything?
+>
+
+if you get bored.. someone seemed bored and collected all those nigeria
+emails at http://www.nigeria-connection.de/inhalt_a_z.html
+
+totaly offtopic.. but.. that thread already is ;)
+
 
 
