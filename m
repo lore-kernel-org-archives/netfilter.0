@@ -1,11 +1,10 @@
-From: "Bill Brennick" <bill@brennick.com>
-Subject: NetFilter log-parser
-Date: Wed, 10 Jul 2002 12:14:16 -0400
+From: "Mark Ayad" <mark@javamark.com>
+Subject: Destination Nat Loopback Clarified !
+Date: Wed, 10 Jul 2002 18:29:06 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <00ed01c2282c$d8cada00$0200a8c0@motherfucker2>
+Message-ID: <00e201c2282e$e9e12bd0$0300a8c0@W2KP01>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00EA_01C2280B.4F8D0B30"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,128 +15,83 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
+I though I'd try and clarify the problem.
 
-------=_NextPart_000_00EA_01C2280B.4F8D0B30
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+----------------------
+[A]
+ IP    192.168.0.3
+ MASK: 255.255.255.0
+ GATE: 192.168.0.1
 
-Hi All,
+HTTP Server
+192.168.0.3 :80
+---------------------
+        | 192.168.0.3 [mask 255.255.255.0]
+        |
+        |
+        |
+        | eth1 192.168.0.1 [mask 255.255.255.0]
+----------------------
+[B]
+  MASQ Gateway
+  Firewall
+----------------------
+  |eth0 A.B.D.C DHCP
+  |
+  |
+  |
+  Internet
 
-I just upgraded to 2.4.18 kernel w/IPTABLES.
+#######################################################
+#Working MASQ Gateway + Port Forwarding on 80 to 192.168.0.3
 
-(Previously, I was using 2.4.4 kernel, w/IPCHAINS...)
+EXTIF="eth0"
+INTIF="eth1"
 
-I used to use "PMFirewall" and parsed my firewall-log
-with "FwLogWatch" to have a web-reporting page.
+$IPTABLES -A INPUT -p tcp --syn --destination-port 80 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --syn -j DROP
 
-NOW, since I've upgraded, I don't have anything that
-parses my netfilter log...  Any suggestions for a
-parser?
-
-ALSO,  since I've upgraded, I now get a message
-EVERY 4 seconds in my firewall log...=20
-(My internal interface on my firewall, eth1, is 192.168.0.1,
-is this coming from my firewall itself??):
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $INTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
 
 
-Jul 10 12:12:42 firewall-host kernel: martian source 255.255.255.255 =
-from 192.168.0.1, on dev eth0
-Jul 10 12:12:42 firewall-host kernel: ll header: =
-ff:ff:ff:ff:ff:ff:00:40:05:6c:e1:85:08:00
+$IPTABLES -t nat -A PREROUTING -p tcp -i eth0 --dport \
+80 -j DNAT --to-destination 192.168.0.3:80
+
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+#######################################################
+
+What I can't do and I've tried all your suggestions which on the face of it
+might actually be more complex than it first seems:
+
+[A] both the HTTP server 192.168.0.3:80 and a Client that connects to the
+gateway via eth1 192.168.0.1 [B] which is a MASQ gateway that routes
+everything to the DHCP assigned IP A.B.D.C on eth0.
+
+The DHCP public IP A.B.C.D can be reached via a Public name. So back to my
+original problem [that ain't going away] Host [A] in a web browser whishes
+to connect to itself but it uses the public IP address a.k.a A.B.D.C which
+is prerouted to 192.168.0.3:80.
+
+So Infact we have a glorfied LOOP-BACK-ADAPTER do we not ? Futile I know,
+but the only other option to test that the HTTP server 192.168.0.3:80  on A
+can be reached by some one on the internet using the DHCP assigned IP
+A.B.D.C on eth0 is to use a anonymous web proxy to simulate a true ouside
+request.
+
+This has nearly go me licked, and so far there is no answer ?
 
 
-TIA,
-- Bill
 
 
 
-=3D------------------------------------------------------------=3D
-Bill Brennick         -         'Builder of networks...'
-bill at brennick dot com
-brennick at keepandbeararms dot com
-=3D------------------------------------------------------------=3D
 
-"I don't have to take this abuse from you!
-I've got hundreds of people waiting to abuse me."
 
-=3D------------------------------------------------------------=3D
 
-------=_NextPart_000_00EA_01C2280B.4F8D0B30
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4916.2300" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>Hi All,</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I just upgraded to 2.4.18 kernel =
-w/IPTABLES.</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>(Previously, I was using 2.4.4 kernel,=20
-w/IPCHAINS...)</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I used to use "PMFirewall" and parsed my=20
-firewall-log</FONT></DIV>
-<DIV><FONT size=3D2>with "FwLogWatch" to have a web-reporting =
-page.</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>NOW, since I've upgraded, I don't have anything=20
-that</FONT></DIV>
-<DIV><FONT size=3D2>parses my netfilter log...&nbsp; Any suggestions for =
-
-a</FONT></DIV>
-<DIV><FONT size=3D2>parser?</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>ALSO,&nbsp; since I've upgraded, I now get a=20
-message</FONT></DIV>
-<DIV><FONT size=3D2>EVERY 4 seconds in my firewall log... </FONT></DIV>
-<DIV><FONT size=3D2>(My internal interface on my firewall, eth1, is=20
-192.168.0.1,</FONT></DIV>
-<DIV><FONT size=3D2>is this coming from my firewall =
-itself??):</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>Jul 10 12:12:42&nbsp;firewall-host kernel: martian =
-source=20
-255.255.255.255 from 192.168.0.1, on dev eth0<BR>Jul 10=20
-12:12:42&nbsp;firewall-host kernel: ll header:=20
-ff:ff:ff:ff:ff:ff:00:40:05:6c:e1:85:08:00</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>TIA,</FONT></DIV>
-<DIV><FONT size=3D2>- Bill</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT=20
-size=3D2>=3D------------------------------------------------------------=3D=
-<BR>Bill=20
-Brennick&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Builder of=20
-networks...'<BR>bill at brennick dot com<BR>brennick at keepandbeararms =
-dot=20
-com<BR>=3D------------------------------------------------------------=3D=
-</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>"I don't have to take this abuse from you!<BR>I've =
-got=20
-hundreds of people waiting to abuse me."</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT=20
-size=3D2>=3D------------------------------------------------------------=3D=
-<BR></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_00EA_01C2280B.4F8D0B30--
 
 
