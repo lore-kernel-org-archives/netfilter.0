@@ -1,8 +1,8 @@
-From: persaie persaie <persaie77@yahoo.com>
-Subject: Status of the patch.
-Date: Mon, 14 Jun 2004 23:36:16 -0700 (PDT)
+From: chin chin <cool_talk_cafe@yahoo.com>
+Subject: Status of the patch
+Date: Tue, 15 Jun 2004 21:36:18 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040615063616.13078.qmail@web61307.mail.yahoo.com>
+Message-ID: <20040616043618.20673.qmail@web20703.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -53,11 +53,9 @@ Rohit.
 
 
 
-
-	
 		
 __________________________________
 Do you Yahoo!?
-Friends.  Fun.  Try the all-new Yahoo! Messenger.
-http://messenger.yahoo.com/ 
+New and Improved Yahoo! Mail - Send 10MB messages!
+http://promotions.yahoo.com/new_mail 
 
