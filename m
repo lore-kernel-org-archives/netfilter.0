@@ -1,13 +1,12 @@
-From: Derrik Pates <dpates@dsdk12.net>
-Subject: Re: [Iptperl-general] Is IPTables::IPv4 Perl module trustable?
-Date: Fri, 23 Jul 2004 20:35:45 -0400
+From: =?UTF-8?B?0JLQsNGB0LjQu9C40Lkg0KHQstC40YDQuNC00L7Qsg==?=
+ <netspider@mail.ru>
+Subject: Fedora Core 2. Port Forwarding Problems
+Date: Fri, 23 Jul 2004 20:25:49 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4101AEE1.3050107@dsdk12.net>
-References: <01d101c4710d$8c3c4490$5100a8c0@egp>
+Message-ID: <4101D6BD.8040904@mail.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <01d101c4710d$8c3c4490$5100a8c0@egp>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +16,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?Bruno_Negr=E3o?= <vpopmail@engepel.com.br>
-Cc: netfilter@lists.netfilter.org, iptperl-general@lists.sourceforge.net
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Bruno Negr=E3o wrote:
-> My question is exactly the one in the e-mail subject: Is IPTables::IPv4
-> Perl module trustable?
->=20
-> This module is a perl interface to the 'libiptc' library, written by,
-> Derrik Pates. I'd like to use it in an application.
-> But I read in netfilter's FAQ the following:
->=20
-> "4.5 Is there an C/C++ API for adding/removing rules?
-> The answer unfortunately is: No.
-> Now you might think 'but what about libiptc?'. As has been pointed out
-> numerous times on the mailinglist(s), libiptc was _NEVER_ meant to be used
-> as a public interface. We don't guarantee a stable interface, and it is
-> planned to remove it in the next incarnation of linux packet filtering.
-> libiptc is way too low-layer to be used reasonably anyway.
-> We are well aware that there is a fundamental lack for such an API, and we
-> are working on improving that situation. Until then, it is recommended to
-> either use system() or open a pipe into stdin of iptables-restore. The
-> latter will give you a way better performance."
+Hello all.
 
-The ways they suggest will work, but not very well, and they're really=20
-quite ugly. Yes, a whole new userspace tool for managing netfilter rules=20
-will eventually be written - but that's still a ways off, and until the=20
-kernel side interface changes, the libiptc code which I'm using from the=20
-iptables codebase will continue to work just fine, thank you.
+I had to upgrade my border machine because previous installation had 
+failed for some reason. Any attempt to modprobe any netfilter related 
+modules returned "Floating point exception"
 
-> Does someone else already tested it before? Does someone else there knows
-> its internals?
+I've installed fedora core 2 and tried to reuse my old settings i 
+retained from redhat9 system.
 
-I don't really know what you're saying here. But really, you can test it=20
-any way you need to, or have whoever you want test it for you - the=20
-source is there for your (or anybody's) perusal. It incorporates a fair=20
-amount of code on top of libiptc so that you don't have to know the raw=20
-data structures, and generally makes things a good bit nicer than=20
-calling libiptc directly, and way cleaner than assembling command lines=20
-and using system() to call out to iptables (I've tried that before, long=20
-ago, and it caused me great pain. Or maybe that was just lunch one=20
-day... I forget now.)
+Masqeurading works fine, but when i try to do port forwarding like this
+iptables -t nat -A PREROUTING -p tcp -d <domainname.com> --dport 80 -j 
+DNAT --to 192.168.20.40:80
+rule adds itself fine, but port 80 is not accessible from outside.
 
---=20
-Derrik Pates
-dpates@dsdk12.net
+when i try to connect from outside it doesn't say connection refused, it 
+dies after a timeout.
+/proc/net/ip_conntrack doesn't show any presence of connection, I tried 
+to send it to -j LOG & ULOG but both end up empty.
+
+I have to restore the firewall asap. Help me figure this one out. (I 
+still have the option to rollback to rh9)
+
+p.s.
+sys.net.ipv4.ip_forwarding is 1
 
