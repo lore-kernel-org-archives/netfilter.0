@@ -1,16 +1,10 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Some go through, some don't...
-Date: Tue, 26 Nov 2002 00:44:15 +0100
+From: "Joel Linuxdude" <linuxlists@hotmail.com>
+Subject: DCC receive works fine but not SEND
+Date: Mon, 25 Nov 2002 18:51:16 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021126004415.507a55e2.arnt@c2i.net>
-References: <5.1.0.14.0.20021115001532.00a071f0@mail.flow.north.net>
-	<000d01c28c0a$473ff290$057ba8c0@wxcsmtp450>
-	<5.1.0.14.0.20021115001532.00a071f0@mail.flow.north.net>
-	<5.1.0.14.0.20021125145506.00a77ec0@mail.flow.north.net>
+Message-ID: <F433eruQsLbtbS8oLhW00000e17@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.1.0.14.0.20021125145506.00a77ec0@mail.flow.north.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,35 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Tomasz Korycki <engine2@flow.mine.nu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Mon, 25 Nov 2002 14:57:43 -0500, 
-Tomasz Korycki <engine2@flow.mine.nu> wrote in message 
-<5.1.0.14.0.20021125145506.00a77ec0@mail.flow.north.net>:
+I can not send files over IRC using DCC but I can receive
+them just fine. I played with the firewall script and didnt
+have any luck. Maybe its the ISP, but what can I do to ensure
+that it will work?
 
-> At 08:55 2002-11-15, Arnt Karlsen wrote:
-> >On Fri, 15 Nov 2002 00:34:05 -0500,
-> >Tomasz Korycki <engine2@flow.mine.nu> wrote in message
-> ><5.1.0.14.0.20021115001532.00a071f0@mail.flow.north.net>:
-> > >
-> > > I was going to put the -L -n output here, but considering the size
-> > > I will not, unless asked...
-> > >
-> >
-> >..put it on your web site and post the url here.
-> 
-> 
-> Sorry, did not get a permission to post the listing, 
+eth0 = cable modem
+eth1 = LAN
 
-..I asked you _not_ to, see above.
+I make sure to do this;
+$IPT -t nat -A POSTROUTING -o eth0 -j SNAT --to-source x.x.x.x
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+For ports that seem to not get forwarded right I do this;
+$IPT -t nat -A PREROUTING -i eth0 -p tcp --dport 6699 -j DNAT --to 
+192.168.0.9-192.168.0.20  (WinMX stuff)
 
+I can not find any specs to tell me what IRC DCC is all about!
+Is it TCP or UDP? What port?
+
+Thanks!!
+
+Joel
+
+
+
+
+_________________________________________________________________
+Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
 
 
