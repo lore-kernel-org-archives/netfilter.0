@@ -1,10 +1,13 @@
-From: x xb <master_compiler@yahoo.com>
-Subject: Strange thing
-Date: Wed, 18 Jun 2003 14:42:11 -0700 (PDT)
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: IPv6 Router and NAT/connection tracking
+Date: 18 Jun 2003 18:28:57 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030618214211.26492.qmail@web80507.mail.yahoo.com>
+Message-ID: <1055975337.28452.96.camel@alpha.newkirk.us>
+References: <133738195.1055970330343.JavaMail.Administrator@pumbaa>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <133738195.1055970330343.JavaMail.Administrator@pumbaa>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,92 +18,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Internet Protocol version Six <inet6@mail.be>
+Cc: netfilter@lists.netfilter.org
 
-I am using Red Hat 8 (2.4.18-14) with Iptable
-(V1.2.6.a) , the layout of my net is:
- 
-               Host A  ----------  Firewall ------
-Host B
-              (Outside)                           
-(My_WS) 
+On Wed, 2003-06-18 at 17:05, Internet Protocol version Six wrote:
+> Hello all, I have a box that's configured as a firewall 
+> and router for IPv6, which is doing it's job fine, well, 
+> fine.., IPv6 connections keep timing out, they work for 
+> a second or 30 and then it timesout -> connections, 
+> ping6, traceroutes, ... from the Internet to the IPv6 
+> address behind the router don't work anymore. Also if I 
+> do a ping6 or make a connection to a remote IPv6 host 
+> on the Internet it doesn't work, however if I ping6 the 
+> router from the network, everything works again...for 
+> about 30 seconds again, and then the problem begins 
+> again...
+> 
+> I was told that this is caused by NAT/connection 
+> tracking. Is there *any* solution to this? This is 
+> really annoying as I *need* NAT, but also want to give 
+> IPv6 connectivity to other machines on the LAN.
 
- Net A: 	172.19.100.0 - 172.19.100.31 
- Netmask : 	255.255.255.224
- IP A: 		172.19.100.28
- GW:		172.19.100.30
+Are you directly connected to an IPv6 router, or are you 
+connecting via an ipv6_over_ipv4 tunnel of some sort?
 
- Net B: 	172.19.100.32 - 172.19.100.63
- Netmask: 	255.255.255.224
- IP B: 		172.19.100.50
- GW: 		172.19.100.33
+If you are direct, then I think all you need to do is work
+with ip6tables.  (not sure, not done this)
 
- And for the Firewall: 
- Eth0:	172.19.100.30
- Eth1:	172.19.100.33
- Both with netmask 255.255.255.224
+If you are using a tunnel, then that tunnel will either be
+using a specific protocol or port number, which you could
+explicitly ACCEPT in all directions to avoid conntrack
+interference.  For example, tspc (freenet6.net) uses 
+TCP 4343 to talk to the server to create the tunnel, and
+the tunnel itself is protocol 41.
 
- The rules for the Firewall are:
+j
 
-Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
-num   pkts bytes target     prot opt in     out    
-source               destination         
-1        0     0 ACCEPT     all  --  lo     *      
-0.0.0.0/0            0.0.0.0/0 
 
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
-num   pkts bytes target     prot opt in     out    
-source               destination         
-1        0     0 ACCEPT     all  --  *      lo     
-0.0.0.0/0            0.0.0.0/0
-
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
-num   pkts bytes target     prot opt in     out    
-source               destination         
-1        0     0 ACCEPT     tcp  --  eth0   eth1   
-0.0.0.0/0            172.19.100.50       tcp dpt:80 
-2        0     0 ACCEPT     all  --  eth0   eth1   
-0.0.0.0/0            0.0.0.0/0          state
-RELATED,ESTABLISHED 
-3        0     0 ACCEPT     all  --  eth1   eth0   
-0.0.0.0/0            0.0.0.0/0  
-
-The forward is enable in the FW (echo "1" >
-/proc/sys/net/ipv4/ip_forward)and the routing table
-is:
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags
-Metric Ref    Use Iface
-172.19.100.32   *               255.255.255.224 U    
-0      0        0 eth1
-172.19.100.0    *               255.255.255.224 U    
-0      0        0 eth0
-127.0.0.0       *               255.0.0.0       U    
-0      0        0 lo
-default         172.19.100.1    0.0.0.0         UG   
-0      0        0 eth0
-
-I want that everything from Net B can go out, but from
-Net A only to host B is allow.
-
-Ok, where we go, if I tray to the webserver on host B
-from host A everything is OK, then I make a ping form
-host B to host A and also work. But if I down the
-interface on host B and then bring it up again, when I
-ping host A from host B doesn't work. I tray with
-another hosts on LAN B (say 172.19.100.54) and it's
-the same, all the packets are lost.
-The only way I found to work is first make a ping to
-the FW from host B and then retry 
-to host A.
-
-Thanks for your help.
-
-Sorry, about my english.
-
-__________________________________
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month!
-http://sbc.yahoo.com
 
