@@ -1,12 +1,12 @@
-From: "khalifa Ally" <khalifa.ally@intafrica.com>
-Subject: connect me to the list
-Date: Sat, 31 May 2003 11:31:14 +0300
+From: "Voltaire Pascual" <voltaire@voltaire.servebeer.com>
+Subject: Re: Static compile issues - same problem.
+Date: Sat, 31 May 2003 20:50:51 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00a501c3274e$ffdd9570$1523a8c0@satcom>
-Reply-To: "khalifa Ally" <khalifa.ally@intafrica.com>
+Message-ID: <001901c32773$44f90a80$6400a8c0@homes>
+References: <Pine.LNX.4.30.0305270725050.7597-100000@phear.lwz.org>
+Reply-To: "Voltaire Pascual" <voltaire@voltaire.servebeer.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00A2_01C32768.25261280"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,35 +17,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter and Ipt <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Cory Visi <merlin@phear.lwz.org>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Anyone have solution to this problem yet? I have patched 2.4.20 with
+ipt_pptp_conntrack successfully (static/module) but i cant use NAT in the
+firewall after.
 
-------=_NextPart_000_00A2_01C32768.25261280
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+# iptables -t nat -A POSTROUTING -o $EXTERNAL -s $INTERNAL_NETWORK -j SNAT
+--to-source $EXTERNAL_IP
+Invalid argument
 
-dear Admin,
-add me to the list
+Appreciate your help.
 
-------=_NextPart_000_00A2_01C32768.25261280
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.3516.2800" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>dear Admin,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>add me to the =
-list</FONT></DIV></BODY></HTML>
+----- Original Message -----
+From: "Cory Visi" <merlin@phear.lwz.org>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, May 27, 2003 7:42 PM
+Subject: Static compile issues
 
-------=_NextPart_000_00A2_01C32768.25261280--
+
+> I am using a 2.4.20 kernel with pom-20030107 and iptables v1.2.7a. From
+> pom-20030107, I have installed all the pending patches and all the base
+> patches. In addition, I have installed the following extra patches:
+>
+> ipt-amanda-conntrack-nat
+> ipt-eggdrop-conntrack-nat
+> ipt-proc
+> ipt-mms-conntrack-net
+> ipt-pptp-conntrack-net
+> ipt-quake3-conntrack-net
+> ipt-rsh-conntrack-net
+> ipt-tftp-conntrack-net
+>
+> The patch names are not official or anything. I just split them up and
+> called them that. Hopefully, the name is clear enough to you to recognize
+> an "extra" patch. Please let me know if this is confusing.
+>
+> The problem is, when I compile the kernel statically and enable all the
+> iptables options, I cannot do NAT. Any iptables line that specifies a
+> chain in the nat table causes an Invalid Argument:
+>
+> # iptables -t nat -A POSTROUTING -o $EXTERNAL -s $INTERNAL_NETWORK -j SNAT
+> --to-source $EXTERNAL_IP
+> Invalid argument
+>
+> Another interesting thing to point out, is that I also compiled this
+> kernel with modules and experienced the same problem. I was, however, able
+> to fix it by disabling the IPv4 netfilter option for "NAT of local
+> connections". For the module kernel, disabling this option fixes the
+> problem. For the staticly compiled kernel, disabling this option has no
+> effect-- the error persists.
+>
+> Anyone have any ideas?
+> Please CC me directly if you respond to the list, since I am not
+> subscribed (yet).
+>
+> Thank you,
+> Cory Visi
+>
+>
 
 
