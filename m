@@ -1,8 +1,9 @@
-From: "Philipp Stader" <me@ph1l.de>
-Subject: pptp_conntrack_nat - patch-o-matic-ng-20040409 - kernel 2.4.25
-Date: Sun, 11 Apr 2004 02:44:14 +0200 (CEST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Packet sniffing... sort of
+Date: Sun, 11 Apr 2004 01:54:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3340.217.83.169.111.1081644254.squirrel@217.83.169.111>
+Message-ID: <200404110154.39209.Antony@Soft-Solutions.co.uk>
+Reply-To: Netfilter <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,40 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hello list,
+Hi people.
 
-i downloaded linux 2.4.25 from kernel.org, patch-o-matic-ng-20040409 and
-iptables 1.2.9. Unpacked all in /usr/src/ created links linux and iptables
-then applied the pptp_conntrack_nat patch which applied without errors.
-When  i try to compile the kernel i get the following errors.
+This is not strictly a netfilter question, but I'm wondering if maybe someone 
+can help or make a suggestion?
 
-net/network.o: In function `pptp_expectfn':
-net/network.o(.text+0x3e899): undefined reference to
-`ip_ct_gre_keymap_destroy'
-net/network.o: In function `pptp_timeout_related':
-net/network.o(.text+0x3e8cc): undefined reference to
-`ip_ct_gre_keymap_destroy'
-net/network.o: In function `conntrack_pptp_help':
-net/network.o(.text+0x3ed09): undefined reference to `ip_ct_gre_keymap_add'
-net/network.o(.text+0x3ed2e): undefined reference to `ip_ct_gre_keymap_add'
-net/network.o(.text+0x3ed96): undefined reference to `ip_ct_gre_keymap_add'
-net/network.o(.text+0x3edaa): undefined reference to `ip_ct_gre_keymap_add'
-net/network.o(.text+0x3edc8): undefined reference to
-`ip_ct_gre_keymap_destroy'
-net/network.o: In function `tcp_help':
-net/network.o(.text+0x3fd66): undefined reference to
-`ip_ct_gre_keymap_change'
-net/network.o(.text+0x3fd73): undefined reference to
-`ip_ct_gre_keymap_change'
+I want to pick up a packet stream, but for an HTTPS connection, and using a 
+standard packet sniffer like ethereal just gives me the encrypted SSLv3 
+stuff, not the plaintext data which I need to see.
 
-I'd be happy for any suggestions. If you need any more information please
-let me know.
+Can anyone think how I can see the content of packets from a browser running 
+on my machine, which is posting a form back to a remote server somewhere, 
+using HTTPS?
 
-Thank you very much in advance,
+I can do anything I want on the client machine (and I can see the source code 
+of the form page too), however when I try sending what I think is the same 
+data back to the server from a Perl program instead of from my browser, the 
+remote server complains at me (and not in a helpful way, either - it says 
+"500 Internal Server Error").
 
-Kind regards
+Any suggestions gratefully received :)
 
-Phil
+Regards,
+
+Antony.
+
+-- 
+The difference between theory and practice is that in theory there is no 
+difference, whereas in practice there is.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
