@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Help needed understanding what I am doing wrong.
-Date: Mon, 3 Jun 2002 23:38:29 +0100
+Subject: Re: alias
+Date: Mon, 3 Jun 2002 23:44:53 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206032238.g53McUA26957@Networker.rockstone.co.uk>
-References: <002b01c20b49$cbb0e080$6301a8c0@JJONES1>
+Message-ID: <200206032244.g53MitA27298@Networker.rockstone.co.uk>
+References: <20020603221558.71090.qmail@web9907.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <002b01c20b49$cbb0e080$6301a8c0@JJONES1>
+In-Reply-To: <20020603221558.71090.qmail@web9907.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,66 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Iptables <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.samba.org
 
-On Monday 03 June 2002 10:58 pm, John Jones wrote:
+On Monday 03 June 2002 11:15 pm, "J=F6rgen" Danielsson wrote:
 
-> > (By the way, you should change that --sport in the last rule
-> > to --dport.)
->
-> Okay, sorry I typoed.  I fixed the typo, however, and that doesn't solve
-> it.
+> The problem is that on 2 of the nics have to have 2
+> ip's each, and the only way to have more than one ip
+> on a nic is by using alias, as far as i know, and then
+> they get names like eth1:0 and so on. I have not seen
+> any other possibility for names in slack.
 
-No, I didn't think it would solve the whole problem, but it's a step closer...
+Actually, it is not the only way, the preferred method these days is to use=
+=20
+the iproute2 functions, which will add another address to your interface=20
+without giving the alias a new name:
 
-> We have two firewalls, one for the LAN and one for the DMZ. 
+ip addr add w.x.y.z/bits dev eth0
 
-Whoa !!!   That's significant !   There's all sorts of complicated routing 
-issues which come in now :-)
+(unless you use the 'label' option which Alin Nastac suggested earlier:
 
-Let's see if I've got this understood now:
+ip addr add w.x.y.z/bits dev eth0 label eth00)
 
-You have some sort of router connected to the Internet; there's a hub or 
-switch on the inside of that router, and you have two firewalls both with 
-publicly-routable external addresses on them connected to that hub.
+And no, this is not ifconfig, this is newer and more powerful.
 
-Both firewalls have exactly two interfaces.
+> But would it work if i specify it as eth1 in the rule
+> and use the ip aswell, sounds weird if that would
+> work.
 
-One firewall has a LAN on its internal interface; the other firewall has a 
-DMZ, with a DNS server on its internal interface (the address of this DNS 
-server is 10.0.0.10)
+Yes, that is what I am saying - if you want to specify the interface, call =
+it=20
+eth1; if you want to specify the destination address, then use that.   Use =
 
-You are trying to redirect all DNS requests from machines on the LAN (ie 
-inside one firewall) to the DNS server on your DMZ (ie inside the other 
-firewall).
+both together if you want.
 
-Is that correct ?
+eg:
 
-If so, then I have got confused with the last ruleset you posted - was that 
-for the LAN firewall or the DMZ firewall - they're both important, and they 
-need to be different, so I think now you've said you have two, it's important 
-to be clear which one we're discussing at a given time.
+ifconfig eth1 192.168.1.5
+ifconfig eth1:1 192.168.1.9
 
-Briefly, you need to do this on your LAN firewall:
+iptables -i eth1 -d 192.168.1.9 -j ACCEPT
 
-PREROUTING translate all TCP and UDP packets from the internal interface 
-destined for port 53 to the external address of your DMZ firewall
-FORWARD packets to TCP and UDP ports 53
-FORWARD all ESTABLISHED and RELATED packets
-
-Plus anything else you want your LAN firewall to do...
-
-Then, on your DMZ firewall:
-
-PREROUTING translate all TCP and UDP packets addressed to the firewall itself 
-for port 53, to 10.0.0.10
-FORWARD packets to TCP and UDP ports 53
-FORWARD all ESTABLISHED and RELATED packets
-POSTROUTING translate all outgoing packets to have a source address of the 
-DMZ firewall
-
-See if that helps ?
+or whatever.....
 
 
 Antony.
