@@ -1,14 +1,12 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: ECN problem?
-Date: Mon, 21 Jun 2004 19:16:33 -0700
+From: Sagara Wijetunga <sagaralists@yahoo.com>
+Subject: RE: Allow active and passive FTP connections
+Date: Mon, 21 Jun 2004 20:10:15 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406220216.i5M2GXh6002287@server5.bandwidthco.com>
-References: <20040621085901.47720.qmail@web13422.mail.yahoo.com>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <20040622031015.82208.qmail@web14712.mail.yahoo.com>
+References: <2E314DE03538984BA5634F12115B3A4E8956F2@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040621085901.47720.qmail@web13422.mail.yahoo.com>
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E8956F2@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,80 +17,77 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Pawel Pilat' <poster_pl@yahoo.com>, netfilter@lists.netfilter.org
-
- 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Pawel Pilat
-Sent: Monday, June 21, 2004 1:59 AM
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Subject: ECN problem?
+Cc: kadlec@blackhole.kfki.hu
 
-Hello everyone,
-it's my first post on this list so plese understanding ...
-I think that i have problem with ECN , this is my
-situation:
+--- "Piszcz, Justin Michael"
+<justin.piszcz@mitretek.org> wrote:
+> If you find one (that works with TLS/SSL), please
+> let me know :)
+> Sorry I have not seen one as of yet.
+> 
+I wonder is it an issue with the conntrack module or
+the FTP server. May be Jozsef Kadlecsik could shed
+some light on this. 
 
-IN--->R--->ISP
+If the FTP server side has to be fixed, I could take
+it up with the FTP server folks.
 
-where:
-IN - my internal net
-R - my linux router (2.4.25, ipt-1.2.9)
-ISP - my ISP
+kind regards
+Sagara
 
-so when i trying to connect from internal net to Internet i expirencing very
-slow transfers (500 - 700
-bps) but from router everything is ok (transfer rate 50 - 60 kbps) when i
-used tcpdump on external interfece on router i realized that my ISP sends to
-me in every TCP packet TOS field set to 0x03 (ECN-CT + ECN-CE) i think that
-is the problem
-
-i tried using:
-
-iptables -t mangle -A PREROUTING -i $EXTIF -j TOS --set-tos 0x00 but without
-any result
-
-my question is:
-1.it is possible to set linux box to ignore this fields in packets?
-2. there is another way to solve the problem?
-
-thank for advices
-best regards
-
-POSTER PL
+> 
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On
+> Behalf Of Sagara
+> Wijetunga
+> Sent: Monday, June 21, 2004 11:43 AM
+> To: netfilter@lists.netfilter.org
+> Subject: RE: Allow active and passive FTP
+> connections
+> 
+> --- "Piszcz, Justin Michael"
+> <justin.piszcz@mitretek.org> wrote:
+> > You are *NOT* running an (SSL) FTP daemon,
+> correct?
+> > (The current
+> > conntrack module for FTP does _NOT_ support this).
+> > 
+> You are right! I disabled SSL from the FTP server.
+> Now
+> the RELATED rule *works* as I expected for both
+> active
+> and passive FTP connections.
+> 
+> Thank you very much to highlight it to me. Is there
+> a
+> workaround for this?
+> 
+> kind regards
+> Sagara
+> 
+> 
+> 
+> 
+> 	
+> 		
+> __________________________________
+> Do you Yahoo!?
+> New and Improved Yahoo! Mail - 100MB free storage!
+> http://promotions.yahoo.com/new_mail 
+> 
+> 
+> 
+> 
+> 
 
 
 
 		
 __________________________________
 Do you Yahoo!?
-Take Yahoo! Mail with you! Get it on your mobile phone.
-http://mobile.yahoo.com/maildemo 
-
-Most ISP have ECN enabled on their routers today, so this is not unusual. If
-the packets you are receiving from your ISP have Cx=1 (0x03) then this means
-it is indeed experiencing congestion, and if your box is also ECN enabled,
-then the congestion windows on both devices are probably being cut in half.
-This needs to be confirmed before you do anything. To confirm this, I would
-suggest that you first check and see if you box is ECN enabled by checking
-your kernel config for CONFIG_INET_ECN=y. If it is, check the two high-order
-bits of bite 13 of the suspect TCP packet headers to see if the congestion
-windows are being cut. If so, then this is probably a correct assumption on
-your part. If so, the easiest solution would be to disable ECN on your box.
-You would need to recompile the kernel to that of course. However, it would
-seem as though ECN is only doing its job and you may want to explore that
-avenue.
-
-
-
-########################################################
-This message has been scanned for viruses and dangerous 
-content by MailScanner, and is believed to be clean.
-
-postmaster@bandwidthco.com
-MailScanner at bandwidthco.com is for your absolute protection.
-########################################################
-
+Yahoo! Mail - 50x more storage than other providers!
+http://promotions.yahoo.com/new_mail
 
