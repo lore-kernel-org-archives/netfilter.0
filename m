@@ -1,12 +1,13 @@
-From: Chris Wilson <chris@netservers.co.uk>
-Subject: Re: SSL Question
-Date: Fri, 1 Aug 2003 15:58:39 +0100 (BST)
+From: "Aldo S. Lagana" <alagana@discmail.com>
+Subject: RE: connection and bandwidth monitoring program
+Date: Fri, 1 Aug 2003 11:00:29 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0308011555120.31382-100000@localhost>
-References: <20030729224958.57764.qmail@web41303.mail.yahoo.com>
+Message-ID: <200308011502.h71F2AjX031255@discmail.com>
+References: <200308011145.02224.Olivier.Mayeres@ulg.ac.be>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030729224958.57764.qmail@web41303.mail.yahoo.com>
+In-Reply-To: <200308011145.02224.Olivier.Mayeres@ulg.ac.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: nakisawame <nakisawame@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Olivier Mayeres' <Olivier.Mayeres@ulg.ac.be>, netfilter@lists.netfilter.org
 
-Hi Nakisawame,
+/proc/net/ip_conntrack  --- connections (plus a whole lot more)
 
-> Can I do something like this:
-> 
-> iptables -t nat -A PREROUTING -p tcp -d 55.55.55.56
-> --dport https -j DNAT --to 192.168.0.14:443
-> iptables -t nat -A PREROUTING -p tcp -d 55.55.55.57
-> --dport https -j DNAT --to 192.168.0.15:443
-> 
-> Does this work? If it doesn't, how do I do this? This
-> is driving me nuts!
+Iptraf ...bandwidth monitoring.
 
-This should definitely work. If it doesn't, it's probably because either 
-you forgot to turn on IP forwarding
-(echo 1 > /proc/sys/net/ipv4/ip_forward), or you haven't added a 
-corresponding filter rule to allow the traffic through:
+NO WIN32 for you!=20
+=20
+Unless you are using SNMP you can only really do connection and =
+bandwidth
+monitoring on the actual server...with SNMP there is mrtg which =
+generates
+nice HTML graphs.
 
-  iptables -t filter -I FORWARD -d 192.168.0.14 -p tcp --dport 443 \
-	-j ACCEPT
-  iptables -t filter -I FORWARD -d 192.168.0.15 -p tcp --dport 443 \
-        -j ACCEPT
+This would be one great open source application: monitoring Linux
+firewall/gateway from remote windows/Linux PC.
 
-Cheers, Chris.
--- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Olivier =
+Mayeres
+Sent: Friday, August 01, 2003 5:45 AM
+To: netfilter@lists.netfilter.org
+
+Hello,
+I looking for a connection and bandwidth monitoring program. I found one =
+at
+
+http://www.student.lu.se/~nbi98oli/connmon.html but there are no new=20
+developements. It isn't possible for each nat computer to see the total=20
+in/out curent traffic.
+I would like to find a client-server program, with a win32 or java or =
+applet
+
+client.
+does someone know an alternative?
+sincerly yours
+Olivier
+
 
 
