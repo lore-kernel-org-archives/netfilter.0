@@ -1,13 +1,13 @@
-From: "Nathan Cassano" <nathan@cjhunter.com>
-Subject: RE: HTTP Port forwarding issues
-Date: Mon, 8 Jul 2002 13:25:47 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Bad Argument error
+Date: Mon, 8 Jul 2002 21:38:24 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <40c701c226bd$a51c87a0$2901a8c0@amos>
-References: <001f01c226b6$eb0a4f60$6702a8c0@internal.monstersolutions.net>
+Message-ID: <20020708203826.DOJQ4119.mta06-svc.ntlworld.com@there>
+References: <956DDDA708487D498B43C36EA4DEA4050B5C4D@SFEXCH01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001f01c226b6$eb0a4f60$6702a8c0@internal.monstersolutions.net>
+In-Reply-To: <956DDDA708487D498B43C36EA4DEA4050B5C4D@SFEXCH01>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,16 +18,46 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter <netfilter@lists.samba.org>
 
+On Monday 08 July 2002 9:29 pm, Mike G. Hammonds wrote:
 
-Remember HTTP runs over UDP protocol also. So for every HTTP TCP rule
-add a UDP copy ( -p udp ).
+> Thanks
+> I'm also getting this error
+> Bad Argument 'LOOPBACK="lo"
 
-> iptables -A FORWARD -p tcp -i eth0 -d $int_ip -p tcp --dport http -m
-state --state NEW -j ACCEPT
+If the script you are running is reasonably short, post it here and we'll try 
+and tell you why this error occurs.
+
+However, you should be able to find the problem for yourself by doing a grep 
+on the script for LOOPBACK and spot the line with the mistake ?
+
+Antony.
+
+> -----Original Message-----
+> From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
+> Sent: Monday, July 08, 2002 4:18 PM
+> To: netfilter
+> Subject: Re: Bad Argument error
 >
-> iptables -t nat -A PREROUTING -d $ext_ip -p tcp --dport http -j DNAT
---to-destination $int_http:80
-
+> On Monday 08 July 2002 9:00 pm, Mike G. Hammonds wrote:
+> > I'm running RH7.2 with iptables1.2.4-2
+> > every time I start iptables I get the following error
+> > Bad Argument 'LOG_LEVEL="notice" [FAILED]
+> >
+> > any ideas on how to fix this?
+>
+> Use a numeric argument to --log-level instead
+>
+> "notice"=5
+>
+> So you would use
+>
+> iptables -A FORWARD -s 192.168.1.0/24 -j LOG --log-level=5
+>
+> or whatever....
+>
+>
+>
+> Antony.
 
