@@ -1,44 +1,48 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: icmp packets going over wrong link for Local traffic!!!
-Date: Thu, 04 Nov 2004 03:02:13 +0100
-Message-ID: <41898DA5.4000700@trash.net>
-References: <200410272051.i9RKpPoW018624@webmail2.magma.ca>
+From: Jan Du Caju <Jan.DuCaju@kuleuven.net>
+Subject: Re: connection limit for UDP
+Date: Thu, 4 Nov 2004 09:12:26 +0100
+Message-ID: <20041104081226.GA16468@kuleuven.net>
+References: <4187E5DF.6040509@o2.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <200410272051.i9RKpPoW018624@webmail2.magma.ca>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <4187E5DF.6040509@o2.pl>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: dravya <dravya@magma.ca>
-Cc: netfilter-devel@lists.netfilter.org, Netfilter mailing list <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Krystian <optimusprime@o2.pl>
+Cc: Netfilter ML <netfilter@lists.netfilter.org>
 
-dravya wrote:
+On Tue, Nov 02, 2004 at 08:54:07PM +0100, Krystian wrote:
+> Hi
+> 
+> I there a way to limit connections one host can make to another host 
+> ("dstlimit" like), but for UDP?
+> 
+> I know UDP doesnt have FIN... but I thought since do connection can be 
+> assumed closed after some time of innactivity i ...
+> 
+> is there a way? :)
 
->Hi all,
->
->I have applied the Masquerade patch suggested by Rusty (and now Herbert) and everything
->works just fine. All packets are masqueraded correctly even when there are multiple
->interfaces.
->
->However, there are icmp dest unreachable messages that still go over the wrong link. i.e.
->source addr of the wrong link. Since it is local traffic, it will not go through the
->masquerading code as the socket would exist ( (*pskb)->sk ) will exist, thereby returning
->with NF_ACCEPT and bypassing the masquerade code. 
->
+I once posted (february 2003 ) udplimit (a shameless copy of iplimit of 
+Gerd Knorr ;-) I never got any reaction except from the people who also 
+needed it at that time. By the way iplimit 's current name is connlimit. 
+If you can't find it in the archives I can mail it.
 
-Please describe your setup in more detail and show some examples
-of the packets with wrong address.
-
-Regards
-Patrick
-
+Greetz,
+Jan.
+------------------------------------------------------ KULeuvenNet ----
+Jan.DuCaju@kuleuven.net			        http://www.KULeuven.Net
+Katholieke Universiteit Leuven               http://kuleuven.be/english
+LUDIT - KULeuvenNet				    http://www.ludit.be
+-----------------------------------------------------------------------
 
