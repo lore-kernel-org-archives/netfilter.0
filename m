@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: nat problem
-Date: Wed, 14 Jul 2004 09:53:50 +0100
+Subject: Re: forward udp broadcast packets on same subnet /interface with diff source
+Date: Wed, 14 Jul 2004 10:01:27 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407140953.50466.Antony@Soft-Solutions.co.uk>
-References: <40F448B2.AF1E21@knoware.nl> <200407132353.57143.Antony@Soft-Solutions.co.uk> <40F48611.67902349@knoware.nl>
+Message-ID: <200407141001.27652.Antony@Soft-Solutions.co.uk>
+References: <20040714050247.94067.qmail@web90110.mail.scd.yahoo.com>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40F48611.67902349@knoware.nl>
+In-Reply-To: <20040714050247.94067.qmail@web90110.mail.scd.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,62 +21,48 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 14 July 2004 2:02 am, Frans Luteijn wrote:
+On Wednesday 14 July 2004 6:02 am, Tom Thumb wrote:
 
-> Antony Stone schreef:
-> >
-> > No, I don't think so.   Broadcast packets are not supposed to cross
-> > routers (they will enter the router as a machine on the local subnet, but
-> > they will not be routed anywhere else, because they already come from the
-> > subnet they are addressed to)
+> Hi,
 >
-> I have been doing some testing:I have a machine, which broadcasts to
-> 192.168.1.255 prot.: udp sport/dport: 138/138
-> I typed in:
->
-> iptables -t nat -A PREROUTING -i eth0 -d 192.168.1.255 -p udp --sport 138
-> -j LOG iptables -t nat -A PREROUTING -i eth0 -d 192.168.1.255 -p udp
-> --sport 138 -j DNAT 192.168.2.255
->
-> Then I saw in my log:
-> Jul 14 02:34:16 firewall kernel: IN=eth0 OUT=
-> MAC=ff:ff:ff:ff:ff:ff:00:50:04:0e:d9:00:08:00 SRC=192.168.1.3
-> DST=192.168.1.255 LEN=240 TOS=0x00 PREC=0x00 TTL=32 ID=60162 PROTO=UDP
-> SPT=138 DPT=138 LEN=220
->
-> and I saw trafic on my other network.
-> When I type:
->
-> cat /proc/net/ip_conntrack
->
-> I see:
-> udp      17 17 src=192.168.1.3 dst=192.168.1.255 sport=138 dport=138
-> [UNREPLIED] src=192.168.2.255 dst=192.168.1.3 sport=138 dport=138 use=1
->
-> This means to me, that those packets are forwarded. So why can't I forward
-> the other packets (192.168.1.255, prot.: udp, sport/dport: 1025/2071)?
+> Can I use iptables to forward UDP broadcast packets on the same subnet and
+> interface but just change the source IP?
 
-What happens if you try the same test as above, but with the port numbers you 
-are interested in?   Do the connection tracking table and the log file 
-suggest that packets are being forwarded?   If you can get it to "work" on 
-port 138, I don't see why it shouldn't "work" on port 2071.
+These broadcast packet questions are starting to get weird now :)
 
-BTW: I put "work" in quotes there because although you see the packets going 
-through the firewall, does the actual NetBios service allow you to browse 
-Windows shares on machines on the other subnet?   My expectation is not, 
-because there have been many questions on this list previously about share 
-browsing across routers (Windows does network browsing using broadcast 
-packets), the solution to which has always been a PDC on the source network, 
-with knowledge of the second subnet.
+> That is, the forwarding machine is 192.168.1.5, with mask 255.255.255.0 and
+> has a single NIC.
+>
+> A machine with IP 192.168.1.6 with the same mask sends a UDP broadcast to
+> 192.168.1.255.
+>
+> The forwarding machine receives this packet. Can it be configured to resend
+> it out on the same interface that it received it on (its only interface) and
+> just change the source IP to be a 3rd address, like 192.168.1.7, but also as
+> a UDP broadcast to 192.168.1.255?
 
-Regards,
+I don't see how you could, because as you're not changing the destination 
+address, there's no way to get the pack forwarded through the netfilter 
+machine, and it needs to get forwarded so that it can reach the POSTROUTING 
+nat table, where you could do the SNAT and change the source address.
+
+Why, please, do you want to do this???
+
+> Is there any way to do this without adding a physical NIC?  Do I need to add
+> a "virtual" NIC to do it? How?
+
+My recommendation would be to write a simple program (Perl would do the job if 
+you don't like C etc) which listens for UDP broadcasts and then generates a 
+new packet with the destination IP = local subnet broadcast address, and a 
+faked source IP (192.168.1.7, even though the machine it's running on is 
+192.168.1.5).
+
+Why do you want to do this?
 
 Antony.
 
 -- 
-I think, therefore I am.
-I'm pink, therefore I'm Spam.
-I drink, therefore I think I am.
+If at first you don't succeed, destroy all the evidence that you tried.
 
                                                      Please reply to the list;
                                                            please don't CC me.
