@@ -1,14 +1,13 @@
-From: Sam Halliday <fommil@yahoo.ie>
-Subject: Re: firewall bother
-Date: Sat, 22 Feb 2003 21:41:07 +0000
+From: Bjorn Ruberg <bjorn@ruberg.no>
+Subject: RE: Ip Forwarding
+Date: 23 Feb 2003 04:43:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030222214107.66acc315.fommil@yahoo.ie>
-References: <20030222202147.196de8dc.fommil@yahoo.ie>
-	<20030222204627.GC16712@miggy.org>
+Message-ID: <1045971783.7040.16.camel@mikke>
+References: <000501c2da82$bc93ed50$0200a8c0@grandaddy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030222204627.GC16712@miggy.org>
+In-Reply-To: <000501c2da82$bc93ed50$0200a8c0@grandaddy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +17,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Athan wrote:
-> > i am having trouble viewing one particular website under my current
-> > firewall setup... (www.talk21.com)
->    My first thought would be this is an ECN problem.  Indeed, without
-> changes I get connection refused as well.  With this rule it works:
-<snip>
+On Sat, 2003-02-22 at 15:57, William Olbrys wrote:
+> Was this too complicated? Heh that's why I wrote such a generic
+> questions
+>=20
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of William Olbrys
+> Sent: Friday, February 21, 2003 7:48 PM
+> To: netfilter@lists.netfilter.org
+> Subject: RE: Ip Forwarding
+>=20
+> Well I want to put a windows 2000 domain controller behind my
+> iptables-enabled redhat 8 box. The domain controller had a static ip
+> before it went behind the firewall and for Active Directory to work
+> correctly it HAS to stay that way. I spent days and days trying
+> otherwise but windows is far too stubborn. AD plus legacy support for
+> WINS makes nat translation a living hell. So I simply set up all my
+> rules as default accept and let it fly, hoping that the forwarding would
+> take care of itself. Essentially it did! I could perform simple function
+> like connecting to the internet but I couldn't do more important
+> functions like cruise the windows network or have things join/leave/see
+> the domain behind this iptables enabled box.  I thought it had something
+> to do with routers not seeing the right ip address as it leaves the
+> iptables box or the routers not being able to find its way back to this
+> box behind the firewall.
+>=20
+> It struck that while I wrote this complicated email I may have come up
+> with a solution. Since the static IP of the win2k box is the same and
+> only the gateway has changed, then the data it sends will be legitimate
+> concerning it's IP address(not an internal IP). Could I create an alias
+> at the outbound NIC level for the win2k's IP address and SNAT packets
+> leaving the outbound NIC that originated from the win2k box?
 
-thankyou so much! now THAT is more support than any commerical firewall
-product i have ever heard about! this webpage is now working for me :-D
+Generic questions get generic answers, and that is not what you need.
 
-> Be aware that current released kernel don't have this working.  You'll
-> need a patch:
-thanks, applied with fuzz (as always!)
-at least it made me do a long-overdue kernel recompile with FreeBSD
-partition support :-/
+Your questions are not complicated (and the email is definitely not),
+just obscure.
 
-one small problem with these ECN modules however... i cannot unload
-them! even when i have cleared my iptables chain list and all other
-clean-able modules, i am unable to unload these kernel modules (which in
-turn blocks me from unloading mangle, etc etc). On the same lines i have
-always had trouble unloading the modules ipt_state and ip_conntrack.
-ipt_state does not work with 'modprobe -r', but is OK with rmmod,
-ip_conntrack however i have never been able to unload. the only other
-network modules i ever have loaded are: af_packet, 8139too and mii.
+To cut to the chase:
 
-thankyou again so much!
-Sam
--- 
-The fashionable drawing rooms of London have always been happy to accept
-outsiders -- if only on their own, albeit undemanding terms.  That is to
-say, artists, so long as they are not too talented, men of humble
-birth,so long as they have since amassed several million pounds, and
-socialists so long as they are Tories.
--- Christopher Booker
+You do not say anything about what kind of network you use behind your
+Linux firewall.
+
+If we assume you use a private network (192.168.*.*, 172.16.*.*,
+10.*.*.* or similar) of course nothing on the outside will be able to
+connect to your Windows server - simply because they don't know they
+need to connect to it through your Linux server. This is a routing
+issue. A significant fact about NATed networks is that there are no way
+anything on the outside will know that given resources are behind the
+NATing firewall.
+
+If you are still using an IP dedicated to your Windows server but on
+another IP network, consider it pure luck that anything works at all.
+
+If you want to get serious answers from this list, you need to distinct
+between what matters (e.g. your IP network and your routing tables) and
+what does not matter at all (e.g. how many days you tried beating sense
+into Microsoft products). Provide a network diagram explaining your
+configuration and any problems related to it. Trying to parse your
+message, however, makes me think that you need to read up on IP routing
+before you try anything more complicated.
+
+And, by the way, please read the netfilter documentation. It's available
+on http://www.netfilter.org/documentation/.
+
+Bj=F8rn
+
 
