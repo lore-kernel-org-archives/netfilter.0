@@ -1,14 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
 Subject: Re: Group on Iptables
-Date: Thu, 28 Aug 2003 09:37:27 +0100
+Date: Thu, 28 Aug 2003 05:59:50 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200308280937.27909.gdh@acentral.co.uk>
+Message-ID: <3F4DD296.7040403@chrisbrenton.org>
 References: <E9C5F057A783F94E9868010ACFDB3AA454A2E6@srvpadovaad.cerved.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <E9C5F057A783F94E9868010ACFDB3AA454A2E6@srvpadovaad.cerved.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Masiero Giorgio, PD" <gmasiero@cerved.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 27 August 2003 3:44 pm, Masiero Giorgio, PD wrote:
-> 	Is it possible to use objects like Checkpoint Groups (that is a set of
-> host and/or networks) into an Iptables rule.
+Masiero Giorgio, PD wrote:
+>
+> Hy my name is Giorgio,
 
-You can achieve a 'groups' functionality by defining new tables, e.g.
+Greetings Giorgio,
 
-$IPTABLES -N UNIXSERVERS
-$IPTABLES -N WINSERVERS
+> 	Is it possible to use objects like Checkpoint Groups (that is a set of host and/or networks) into an Iptables rule.
+> 	It seems to me that iptables accept souce/destination that are only one host/network.
 
-$IPTABLES -A FORWARD -p tcp -d 11.22.33.44 -j UNIXSERVERS
-$IPTABLES -A FORWARD -p tcp -d 11.22.33.45 -j UNIXSERVERS
-$IPTABLES -A FORWARD -p tcp -d 11.22.33.46 -j UNIXSERVERS
 
-$IPTABLES -A FORWARD -p tcp -d 11.22.33.54 -j WINSERVERS
-$IPTABLES -A FORWARD -p tcp -d 11.22.33.55 -j WINSERVERS
-$IPTABLES -A FORWARD -p tcp -d 11.22.33.56 -j WINSERVERS
+First off, you really want to write your rules based on IP address 
+rather than host or domain names, it makes processing the rules go much 
+quicker and speeds up the firewall.
 
-Now any traffic for the UNIX servers with IP addresses 44, 45, 46 will go to 
-the UNIXSERVERS table, and likewise any traffic for the Windows servers with 
-IPs 54. 55, 56 will go to the WINSERVERS table.
+Second, try doing something like this in your initialization script:
 
-You can now apply 'group policy' by doing
+# Known Spammers
+while read SPAMMER ; do
+iptables -A FORWARD -i eth0 -p tcp -s $SPAMMER -d 0/0 --dport 25 -j LOG 
+--log-prefix " SPAMMER  "
+iptables -A FORWARD -i eth0 -p tcp -s $SPAMMER -d 0/0 --dport 25 -j 
+REJECT --reject-with icmp-host-unreachable
+done < /etc/spammers-list.txt
 
-$IPTABLES -A WINSERVERS -p tcp --dport 135:139 -j DROP
-$IPTABLES -A WINSERVERS -p tcp --dport 445 -j DROP
+# Hostile addresses
+while read BLACKHAT ; do
+iptables -A FORWARD -i eth0 -s $BLACKHAT -d 0/0 -j LOG --log-prefix " 
+BLACKHAT  "
+iptables -A FORWARD -i eth0 -s $BLACKHAT -d 0/0 --dport 25 -j REJECT 
+--reject-with icmp-host-unreachable
+done < /etc/blackhat-list.txt
 
-$IPTABLES -A UNIXSERVERS -p tcp --dport 5900 -j DROP
+The *.txt file indicated on the "done" line is simply a plain text file 
+that lists each IP address or subnet to process, one per line. Something 
+like this:
 
-etc.
+211.99.204.0/23
+211.99.206.0/24
+210.77.157.40/32
+210.77.157.0/24
 
-Cheers,
-Gavin.
+So now your "groups" are the lists of addresses in each file. If you 
+need to make a change just edit the group and reload your rules. Note 
+that doing a:
+
+iptables -L -n
+
+will allow you to verify that all the addresses were loaded.
+
+HTH,
+C
 
 
