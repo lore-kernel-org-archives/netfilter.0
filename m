@@ -1,13 +1,11 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ADMIN] netfilter.org CVS now converted to subversion
-Date: Thu, 7 Oct 2004 18:46:28 +0200
+From: zakinthinos@freemail.gr
+Subject: script for home dialup / ppp0 link
+Date: Thu, 7 Oct 2004 09:35:39 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041007164628.GN13901@sunbeam.de.gnumonks.org>
+Message-ID: <4164e3bbe289b5.57642435@freemail.gr>
+Reply-To: zakinthinos@freemail.gr
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0kRkyLZR5zsR9u2P"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,68 +15,120 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter-devel@lists.netfilter.org
-Cc: netfilter@lists.netfilter.org, netfilter-announce@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
---0kRkyLZR5zsR9u2P
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+to keep it simple it mainly works with tha input chain
 
-Important Announcement!
 
-The netfilter.org CVS server (pserver.netfilter.org) has been deprecated
-by the new subversion repository at svn.netfilter.org.  More information
-about the subversion revision control system can be found at
-http://subversion.tigris.org/.
+it does not have the -f flag to handle fragments
+because i want only 1 rule to handle all
+fragmants that match and not only head fragment
+(or only fragments 2-3)
 
-Everybody has read-only access to the new subversion tree using either
-svn+http or svn+https. We do not provide the native svn protocol.
 
-The respective URL's for the root of the tree are:
+in one point it uses both conntrack and -m state
+(in similar rules)
+for testing/illustration purposes
 
-	https://svn.netfilter.org/netfilter
-	http://svn.netfilter.org/netfilter
 
-The CVSweb/ViewCVS interface at http://cvs.netfilter.org/ now points to
-the subversion tree, as does the http://svn.netfilter.org/ URL.
+i hope that wrapping is not too bad
 
-The old CVS tree will be available for 30 days, so people can still
-create patches from their changes by using 'cvs diff'.  Startin from
-November 7, 2004 the CVS pserver service will be deactivated.
+any comments welcome
 
-The CVS changelog mailinglist and the snapshot scripts for providing
-iptables and patch-o-matic snapshots have not yet been converted to
-subversion.  They are expected to come back until Sunday, 10 Oct 2004.
 
-In case you experience any problems, feel free to contact me.
+# echo 1 >/proc/sys/net/ipv4/conf/ppp0/rp_filter
+# bad fragments can (?) pass through
+# spoofed still pass through
 
-Happy Hacking,
-	Harald Welte, for the Netfilter Core Team.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+#assymetrical attack on interfaces
+#spooffed with localhost from ppp0 dropped
+-A INPUT -i ppp0 -s 127.0.0.1 -j DROP
+#whatever come to lo must be from localhost or DROP
+-A INPUT -i lo -s ! 127.0.0.1 -j DROP
+-A INPUT -i lo -s 127.0.0.1 -j ACCEPT
+#DROP others that try reach loopback
+-A INPUT -i lo -j DROP
 
---0kRkyLZR5zsR9u2P
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+#put a limit for DoS on ppp0
+#  possibly limits speed too much  -A INPUT -m limit -i ppp0 -j DROP
 
-iD8DBQFBZXLkXaXGVTD0i/8RAuCiAJ0ZHVw+MiHu4z7OETg6wWhMdCFq7wCfZKg9
-v/wuns7QaOQudKSWZL7LbY8=
-=DDPE
------END PGP SIGNATURE-----
+#no accept icmp 
+-A INPUT -p icmp --icmp-type any -j LOG --log-prefix "ICMP  " --log-level debug
+-A INPUT -p icmp --icmp-type any -j DROP
 
---0kRkyLZR5zsR9u2P--
+
+
+
+#only ACK flag  == stealth portscanner --- TOO MANY BROKEN HTTPD
+#-A INPUT -p tcp --tcp-flags ALL SYN,ACK -j LOG --log-prefix "port scan  " --log-level debug
+#-A INPUT -p tcp --tcp-flags ALL ACK -j LOG --log-prefix "port scan  " --log-level debug
+
+
+#-A INPUT -p tcp --tcp-flags ALL SYN,ACK -j DROP
+#-A INPUT -p tcp --tcp-flags ALL ACK -j DROP
+
+
+
+
+# only rst flag , DROP
+-A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -j LOG --log-prefix "port scan  " --log-level debug
+-A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -j DROP
+
+
+#no accept NEW for tcp
+-A INPUT -p tcp --syn -j LOG --log-prefix "bad tcp pakt  " --log-level debug
+-A INPUT -p tcp --syn -j DROP
+
+#match unclean 
+-A INPUT -m unclean -j LOG --log-prefix "unclean found   " --log-level debug
+-A INPUT -m unclean -j DROP
+
+
+
+
+
+
+#no accept new connections
+-A INPUT -m state --state NEW,INVALID -j LOG --log-prefix "NEW at input " --log-level debug
+-A INPUT -m state --state NEW,INVALID -j DROP
+
+
+#no accept new connections, use CONNTRACK
+-A INPUT -m conntrack --ctstate NEW,INVALID -j LOG --log-prefix "NEW conn at input  " --log-level debug
+-A INPUT -m conntrack --ctstate NEW,INVALID -j DROP
+
+
+#accept tcp on ports>1024, only established conns
+-A INPUT -m state --state ESTABLISHED,RELATED -p tcp -j ACCEPT --dport 1025:
+-A INPUT -m state --state ESTABLISHED,RELATED -p udp -j ACCEPT --dport 1025:
+
+#drop all that did not match
+-A INPUT -j DROP
+
+#disallow X win traffic to go through OUTPUT
+#someone to start a bad xterm = no
+-A OUTPUT -p tcp -j DROP --dport 6000:6010 
+-A OUTPUT -p udp -j DROP --dport 6000:6010 
+
+
+
+
+#set policy , accept all in output, dissallow others
+-P OUTPUT ACCEPT
+-P INPUT DROP
+-P FORWARD DROP
+
+
+COMMIT
+
+
 
