@@ -1,72 +1,99 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: netfilter scoreboard deactivated
-Date: Fri, 10 Jan 2003 12:02:51 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030110110251.GC9467@sunbeam.de.gnumonks.org>
-Reply-To: coreteam@netfilter.org
+From: "Max ZAUNER" <maxy7505@yahoo.de>
+Subject: urgent question!
+Date: Thu, 9 Jan 2003 14:23:39 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <000801c2b7e2$52bcec00$f7ef6c50@dom.local>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jvwwc3lboJHenLjr"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C2B7EA.B45980B0"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---jvwwc3lboJHenLjr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+------=_NextPart_000_0005_01C2B7EA.B45980B0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+hi,
 
-The netfilter coreteam has decided to deactivate the scoreboard and
-remove it until further notice.
+i am rookie in linux. anyway, during my firewall setup everything =
+installed properly. after starting my firewall a message pops up saying:
 
-The reason for this step is that the scoreboard has become out of date
-since it was too much hazzle to maintain it manually.  We think it's
-unfair and discouraging for new contributors if the scoreboard shows
-only old contributions.=20
+cannot load module: libipt_-j.so
 
-There might be something similar to the scoreboard in the near future,
-once our bugtracking system is up and running.  The bugtracking system
-could maintain the scores in an automatic fashion, without any manual
-invervention needed.
+i already had a look in www, but didn't find !
 
-Thanks for your understanding,
+so, i was hoping that you can tell me what i did incorrect as well as =
+sending me the following file:
 
-	Harald (for the netfilter core team)
+libipt_-j.so (which is located in /usr/local/lib/iptables)=20
 
---=20
-- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-"If this were a dictatorship, it'd be a heck of a lot easier, just so long
- as I'm the dictator."  --  George W. Bush Dec 18, 2000
+i thank you very much in advance for your prompt reply
 
---jvwwc3lboJHenLjr
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+regards,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+max Z.
 
-iD8DBQE+HqhbNfqJzMqajVsRAiarAJ9QRr+0Ra0sOIMnPOZ+Wnip1yo/cgCeNIYJ
-k+FZkHfEvEGar2x1gS6caXI=
-=1iKK
------END PGP SIGNATURE-----
+P.S. my email address: maddivemax at yahoo.de
 
---jvwwc3lboJHenLjr--
+------=_NextPart_000_0005_01C2B7EA.B45980B0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3510.1100" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>hi,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>i am rookie in linux. anyway, during my =
+firewall=20
+setup everything installed properly. after starting my firewall a =
+message pops=20
+up saying:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>cannot load module: =
+libipt_-j.so</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>i already had a look in www, but didn't =
+find=20
+!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>so, i was hoping that you can tell me =
+what&nbsp;i=20
+did incorrect as well as sending me the following file:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>libipt_-j.so (which is located in=20
+/usr/local/lib/iptables)</FONT>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>i thank you very much in advance for =
+your prompt=20
+reply</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>regards,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>max Z.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>P.S. my email address: maddivemax at=20
+yahoo.de</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0005_01C2B7EA.B45980B0--
+
+
 
