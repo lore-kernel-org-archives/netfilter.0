@@ -1,11 +1,10 @@
-From: "Carlo Florendo" <carlo@hq.astra.ph>
-Subject: Re: Help Required
-Date: Thu, 31 Jul 2003 08:34:07 +0800
+From: Jason <arnjuka@optonline.net>
+Subject: help with wireless routing
+Date: Wed, 30 Jul 2003 21:25:21 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00c001c356fb$73d64c70$200aa8c0@thorin>
-References: <20030730093120.M51327@vfmindia.biz>
+Message-ID: <3F287001.6E47AC4B@optonline.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,45 +16,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sridhar Murthy <sridhar@vfmindia.biz>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hello,
+I'm setting up a wireless access point for my local community.  I have
+an external cantenna that I'm building for it. It's running redhat9 and
+a netgear card that has the prism2 chipset and the hostap driver
+installed.
 
-> From: "Sridhar Murthy" 
-> Hi Team,
-> 
-> I require help to my following setup:
-> 
-> I have a Redhat 8 Server with squid,smtp & pop3 with iptables running.
-> 
-> My requirement is we have a citrix server with local LAN ipaddress. People 
-> from Internet will have to access this server from outside(my firewall is 
-> having a public ipaddress which is dynamic assigned). I want to know what is 
-> the rules that i have to add to allow the traffic which uses port number 
-> 1494, to get into my network and access my citrix server which is having LAN 
-> ip. Should any nat be added.
-> 
+The box has 3 network connections:
 
-Yes.  You need to do a DNAT.  
+eth0 - dsl
+eth1 - wired network
+wlan0 - wifi network
 
-iptables -t nat --insert PREROUTING -i <external_interface> -p tcp --dport  1494 -j DNAT --to  <citrix_ip_address>
-iptables --insert FORWARD -p tcp -i <external_interface> -d <citrix_ip_address> --dport 1494 -j ACCEPT
+I need to route traffic between the three connections.  The internet
+iface will have a dynamic ip address from a dsl provider.  The other two
+will only have private ips.  I was reading the Linux Wifi Access Point
+howto and they say to setup zebra and ospfd.  I've tried this and it
+desn't seem to work.
 
-> Thanks in advance.
-> 
-> Regards,
-> 
-> Sridhar
-> 
+Whats the best way to route traffic between these all 3 ifaces.  What
+should I use for security.
 
+If anyone has an examples, or good docs for me to read, please point me
+in the right direction.
 
-Best Regards,
-
-Carlo
-------
-Carlo Florendo
-Astra Philippines Inc.
-URL: http://www.hq.astra.ph/resources
+- jason
 
 
 
