@@ -1,9 +1,13 @@
-From: dan+dated+1058668604.792ecd@shortcircuit.dyndns.org
-Subject: iptables 1.2.8, patch-o-matic's string, custom table, & DNAT
-Date: Thu, 19 Jun 2003 20:38:41 -0600
+From: JOSE MIGUEL MARTINEZ <txemi2@clientes.euskaltel.es>
+Subject: netfilter promiscuous and connection tracking for IDS
+Date: Fri, 20 Jun 2003 11:35:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E19TBmY-0000RR-MH@shortcircuit.dyndns.org>
+Message-ID: <5c69c60fab.60fab5c69c@euskaltel.es>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Language: es
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -13,20 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Ok folks. I'm hopefull someone here can help me out. Here's my situation:
-I have a single IP from my internet provider (any more and they want to charge
-me $5/mo/IP!!), but I have multiple domain names that need servicing. Now if
-it was just HTTP then fine. I could use the name based virtual hosting. But,
-I need to be able to make forwarding decisions based on the domain name in
-the packet. I.e. if the packet is destined for mydomain1.com port 25, pass it
-through to the SMTP server running here. But if it's destined for mydomain2.com, then forward it to 192.168.0.10:8025. Now I had the idea of using a custom chain for things that would match the string, but you cann't do DNAT on a custom chain. I also tried using the string matching on the PREROUTING chain, but the -string module doesn't recognise --dport :<
+Hi, I am working on IDS and I am trying to use netfilter 
+conntrack on promiscuous mode. I want to track status of connections 
+not intended for localhost. I have been using Sebastian Zander's patch 
+ 
+web:http://www.fokus.gmd.de/research/cc/glone/employees/sebastian.zander/private/ne 
+tfilter.html 
+patch:netfilter-prom-patch.tgz 
+Sebastian's mail:zander@fokus.gmd.de 
+ 
+It adds a new table called meter that handle promiscuous packages. It 
+works, but I was not able to track connection status using conntrack. 
+ 
+Could anybody advise me on this? I need to make a decission, keep 
+trying or 
+go to user space to mangle all this through libpcap as snort or ntop. 
+ 
+thanks, 
+txemi. 
+ 
+email: txemi2@euskalnet.net 
+web: http://txemi.webhop.org 
+ 
 
-I'm open to suggestions. I'm going to keep hacking at it also, but in the mean time.... Help!?
-
-Thanks!
---- Dan
 
