@@ -1,9 +1,11 @@
-From: "SB CH" <chulmin2@hotmail.com>
-Subject: iptables performance test tool?
-Date: Sat, 12 Oct 2002 02:15:24 +0000
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: How will stop follwoing service
+Date: Sat, 12 Oct 2002 11:57:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F6zRqxh1YqFd6Gqy1Jk0000d3d0@hotmail.com>
+Message-ID: <004601c27208$0ca5ea20$8c01a8c0@sundaram>
+References: <3DA57D10.8040904@bol.com.br> <1034257577.1589.2.camel@tech004> <003001c2706b$20982a50$3201a8c0@leonardo> <20021011175456.C3805@funkyjesus.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,17 +16,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"; format="flowed"
-Content-Transfer-Encoding: base64
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Nick Drage <nickd@funkyjesus.org>, netfilter@lists.netfilter.org
 
-CkhlbGxvIGFsbCwKCkFzIHlvdSBrbm93LCB3ZSBjYW4gc2VlIGF2YWlsYWJsZSBjb25jdXJyZW50
-IGNvbm5lY3Rpb24gbnVtYmVycyBhdCAKY29tbWVyY2lhbCBmaXJld2FsbCBzb2x1dGlvbnMgbGlr
-aWUgY2lzY28gcGl4LCB0aGF0IGVhY2ggZmlyZXdhbGwgY2FuIApwcm92aWRlLgpTbyBJIHdvdWxk
-IGxpa2UgdG8gbWVhc3VyZSBteSBpcHRhYmxlcyBmaXJld2FsbCBwZXJmb3JtYW5jZSB0ZXN0LgpE
-byB5b3Uga25vdyBhbnkgdG9vbCBvciBtZXRob2QgdGhhdCBJIGNhbiBkbyB0aGlzIHRlc3Q/CgpU
-aGFua3MgaW4gYWR2YW5jZSBhbmQgc29ycnkgZm9yIHBvb3IgZW5nbGlzaC4KCgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-wPwgvLyw6CC+7rXwvK2zqiC48LXnIFBDv6G8rSCzuyBQQ8Ozt7Mgu+e/68fSILz2IMDWtMIgv8K2
-88DOu/PAxyDHz7XlLCBNU04gCsClx8+15bimIMWsuK/Hz7y8v+QuIGh0dHA6Ly9tc24ud2ViaGFy
-ZC5jby5rcgoKCg==
+
+Hi,
+
+I am running Redhat Linux, How will I stop following process. I checked in
+chkconfig and /etc/xinetd. directory, I don't get any information.
+
+111/tcp    open        sunrpc
+1024/tcp   open        kdm
+1025/tcp   open        listen
+
+Thanks
+Sundaram
+
+
