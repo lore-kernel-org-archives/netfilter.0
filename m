@@ -1,10 +1,13 @@
-From: Bob Hillegas <bobhillegas@houston.rr.com>
-Subject: Everyone having problems with -j DNAT...
-Date: Thu, 27 Jun 2002 19:41:35 -0500 (CDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: detection of the third tcp packet in a tcp connection setup
+Date: Thu, 27 Jun 2002 19:36:08 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0206271928120.1824-100000@east.rosestar.lan>
+Message-ID: <20020627183611.FWPM16050.mta01-svc.ntlworld.com@there>
+References: <20020627182753.GS31466@cannon.eng.us.uu.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <20020627182753.GS31466@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -14,53 +17,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Please, keep in mind, once you change the destination port with REDIRECT
-(doesn't affect IP address) or DNAT which allows you to alter both address and 
-port....
+On Thursday 27 June 2002 7:27 pm, Ramin Alidousti wrote:
 
-The next step for this packet is to enter the INPUT chain of the FORWARD table. 
+> Hi,
+>
+> Does anyone have a good solution to catch the third (ACK) packet
+> in a tcp connection setup?
 
-If you don't give a rule to ACCEPT the packet, it gets whatever is your default 
-policy for the FORWARD table.
+What do you mean by 'catch' it ?
 
-Try this for seeing what goes on.
+I mean, I could say "wait till you see a SYN/ACK, and then grab the next 
+one", or "look for a SYN, and then take the next one in the same direction", 
+but I'm thinking that neither of those is probably the answer you want ?
 
-#---------------------------------------------------------------------------
-# Test logging statements
+Tell us what you want to do with the packet and it might make the question a 
+little easier.
 
-if [ "$TEST_LOGGING" = "1" ]; then
+ 
 
-$IPT -I INPUT  -j LOG --log-level INFO --log-prefix 'filter INPUT: '
-$IPT -I OUTPUT  -j LOG --log-level INFO --log-prefix 'filter OUTPUT: '
-$IPT -I FORWARD  -j LOG --log-level INFO --log-prefix 'filter FWD: '
-$IPT -t nat -I PREROUTING  -j LOG --log-level INFO --log-prefix 'nat PRE: '
-$IPT -t nat -I POSTROUTING  -j LOG --log-level INFO --log-prefix 'nat POST: '
-$IPT -t nat -I OUTPUT  -j LOG --log-level INFO --log-prefix 'nat OUTPUT: '
-
-for i in $USER_CHAINS; do
-    PREFIX="${i}: "
-    $IPT -I $i  -j LOG --log-level INFO --log-prefix $PREFIX
-done
-
-fi
-
-#---------------------------------------------------------------------------
-
-With this in your script you can turn on logging as the FIRST statement (-I) in
-every chain. Gets voluminous, but can teach you what happens in your chains.
-NOTE: USER_CHAINS="local-tcp-query remote-tcp-response...  etc" whatever you use
-as user defined chains.
-
-
-Good luck
--- 
-----------------------------------
-Bob Hillegas
-bobhillegas@houston.rr.com
-
-
+Antony.
 
