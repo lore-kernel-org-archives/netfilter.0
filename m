@@ -1,12 +1,12 @@
 From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: make: *** [../ipset/libipt_set.h] Error 1
-Date: Thu, 27 Jan 2005 15:27:34 -0500 (EST)
-Message-ID: <9011.142.169.215.10.1106857654.squirrel@142.169.215.10>
-References: <41F94138.6050207@arcoscom.com>
+Subject: Re: -j ULOG
+Date: Thu, 27 Jan 2005 15:29:11 -0500 (EST)
+Message-ID: <9326.142.169.215.10.1106857751.squirrel@142.169.215.10>
+References: <1106856472.14748.10.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41F94138.6050207@arcoscom.com>
+In-Reply-To: <1106856472.14748.10.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Samuel =?iso-8859-1?Q?D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Mohammad Khan <mkhan@lextranet.com>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, January 27, 2005 2:30 pm, Samuel D=EDaz Garc=EDa said:
->[...]
-> I think I need the 'ipset' sources, where are them?
-> where do I need copy them to make iptables (and modules) sucessfully?
+On Thu, January 27, 2005 3:07 pm, Mohammad Khan said:
+> Hello list:
 >
+> For -j ULOG, where the logs output to, by default.
+> Where can I read more documentation to configure ULOG.
 
-All is well documented there :
-http://people.netfilter.org/kadlec/ipset/
+http://gnumonks.org/projects/project_details?p_id=3D1
 
+>
 > Thanks
+> Mohammad
 >
-> (sorry for my english)
->
-> --
->     Samuel D=EDaz Garc=EDa
->      Director Gerente
-> ArcosCom Wireless, S.L.L.
 
-HTH,
+Cheers,
 
 Samuel
 
