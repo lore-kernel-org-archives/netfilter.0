@@ -1,13 +1,10 @@
 From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: Re: vpn problem again
-Date: Fri, 7 Jan 2005 10:59:33 -0500
-Message-ID: <20050107155933.GA10925@tranquility.scriptkitchen.com>
-References: <20050107153626.GB10484@tranquility.scriptkitchen.com>
-	<20050107153600.GA133@bender.817west.com>
+Subject: vpn problem again
+Date: Fri, 7 Jan 2005 10:36:26 -0500
+Message-ID: <20050107153626.GB10484@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20050107153600.GA133@bender.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,15 +19,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Fri, Jan 07, 2005 at 10:36:00AM -0500, Jason Opperisano wrote:
-> you're using PPTP as your "VPN."  you probably should've specified 
-> that,
-> as it's pertinent information.
+Hi,
+I have a Mandrake 10.0 gateway. Now I need to tranfer designs to my
+clients machine in Europe through VPN. When I dial the VPN through a 
+dialer he sent to me from a windows machine I get connected
+to his machine and can do my transactions. But when I try it from a
+other machine it does not work, gets connection failed. If I restart the
+machines then it works from second but it will not work from the first.
+In short, it will not from 2 or more machines simeltaneously but only from
+one machine and that which is connected first.
 
-Ahh! the same old kernel 2.6 problem. What do I tell my boss? What is
-broken MS VPN or kernel 2.6? Why does this problem exactly arise with
-multiple clients connecting at same time.
-
+What must be the reason?
 With warm regards,
 -Payal
+
 
