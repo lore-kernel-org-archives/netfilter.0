@@ -1,12 +1,13 @@
-From: "Ian Hunter" <ihunter@hunterweb.net>
-Subject: Re: help...
-Date: Wed, 17 Dec 2003 13:09:34 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: How to configure NAT with dynamic ip
+Date: Wed, 17 Dec 2003 18:13:50 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00df01c3c4c8$ed220980$7000a80a@melita.com>
-References: <000801c3c291$db2de390$6400a8c0@stillnickcomp1>
+Message-ID: <200312171813.50788.Antony@Soft-Solutions.co.uk>
+References: <000001c3c312$06330360$05000a0a@bharatplanet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000001c3c312$06330360$05000a0a@bharatplanet.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +19,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: Cristiano Soares <stillnick@terra.com.br>
 
-Start off by giving us your existing rules?
------ Original Message ----- 
-From: "Cristiano Soares" <stillnick@terra.com.br>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, December 14, 2003 5:30 PM
-Subject: help...
+On Monday 15 December 2003 1:47 pm, prasanna wrote:
+
+> Dear friends,
+>     please guide how to configure NAT with dynamic ip.
+>
+> My plan is give intrenet address to my clients thro iptables. I had
+> dynamic ip connection
+
+For outgoing connections, do the NAT using the MASQUERADE target instead of 
+SNAT:
+
+iptables -A POSTROUTING -t nat -o $EXTIF -j MASQUERADE
 
 
-Hi, i would like to know if u guys could help me with a simple problem that
-im having trying to set up a network server. I have DSL conection and im
-sharing it with a network. I had set up the DHCPD server, all the DHCP
-clients in my network can receive an IP from the server, but they cant
-browse. I know that there as some lines that i have to set up to make de
-server allow the clients to browser normaly. and i also know that it has
-something to do with iptables, and maskarading. Please, i need help doing
-this. I have MSN and ICQ if anyone would like to help me. I have SSH server
-running also. please, please, i need help. Thanks a lot.
+For any incoming connections you want to forward, use the interface name 
+instead of trying to use an IP address:
 
-MSN: stillnick@hotmail.com
-ICQ #: 3794264
+iptables -A PREROUTING -t nat -i $EXTIF -p tcp --dport 22 -j DNAT --to 
+192.168.192.168
 
-Ass.: Cristian Soares
+as an example to forward SSH connections to an internal machine.
+
+Antony.
+
+-- 
+In Heaven, the police are British, the chefs are Italian, the beer is Belgian, 
+the mechanics are German, the lovers are French, the entertainment is 
+American, and everything is organised by the Swiss.
+
+In Hell, the police are German, the chefs are British, the beer is American, 
+the mechanics are French, the lovers are Swiss, the entertainment is Belgian, 
+and everything is organised by the Italians.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
