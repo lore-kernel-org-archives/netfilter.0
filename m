@@ -1,13 +1,13 @@
-From: "Gerry Weaver" <gerryw@objectivedomain.com>
-Subject: RE: iptables bridge filter question
-Date: Thu, 18 Mar 2004 17:09:32 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables bridge filter question
+Date: Thu, 18 Mar 2004 23:16:47 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ILECICAFAJIIMPBBLMEAGELNCPAA.gerryw@objectivedomain.com>
-References: <200403182040.03659.Antony@Soft-Solutions.co.uk>
+Message-ID: <200403182316.47015.Antony@Soft-Solutions.co.uk>
+References: <ILECICAFAJIIMPBBLMEAGELNCPAA.gerryw@objectivedomain.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403182040.03659.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <ILECICAFAJIIMPBBLMEAGELNCPAA.gerryw@objectivedomain.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,83 +18,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hi,
-
-I understand what your suggesting. Perhaps I still didn't explain well
-enough. Here's an example:
-
-[NodeA 10.10.10.1]<==>[Firewall 10.10.10.2]<==>[Router 10.10.10.254]
-
-If the router is setup as the default gateway for NodeA then wouldn't it be
-sending packets with a source address on the 10.10.10.0 network through the
-external interface of the bridge. If I created a rule which dropped any
-packets that arrived at the external Firewall interface, with a source
-address on the 10.10.10.0 network, would that be a problem? I'm not saying
-your wrong. I'm just trying to understand my misunderstanding.
-
-Thanks,
-Gerry
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: Thursday, March 18, 2004 2:40 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: iptables bridge filter question
-
-
-On Thursday 18 March 2004 8:12 pm, Gerry Weaver wrote:
+On Thursday 18 March 2004 11:09 pm, Gerry Weaver wrote:
 
 > Hi,
 >
-> Firstly, thanks for the suggestions. Please let me explain further. I want
-> to setup an anti-spoofing rule that will block packets coming in on the
-> external interface, which have a source address of my internal net. The
-> problem is that I have a router that sits in the external side of the
-> bridge. I need to stop spoofed packets while still allowing my router.
+> I understand what your suggesting. Perhaps I still didn't explain well
+> enough. Here's an example:
+>
+> [NodeA 10.10.10.1]<==>[Firewall 10.10.10.2]<==>[Router 10.10.10.254]
+>
+> If the router is setup as the default gateway for NodeA then wouldn't it be
+> sending packets with a source address on the 10.10.10.0 network through the
+> external interface of the bridge.
 
-Question:
+No, I don't think so.
 
-Why are you expecting to see packets coming from your router which have the
-source address of the router's internal interface?
+I assume three things here (please let me know if I'm wrong):
 
-I agree that any packets *originating* from the router (including replies to
-any packets you send to it) will have this address, but are you really
-expecting such traffic?
+1. The router IS performing source nat on outbound packets (so that packets 
+which end up on the Internet have a public routable source address rather 
+than something within 10.10.10.0/24).
 
-Most of the packets you see coming from your router will have source
-addresses
-out on the Internet (that, after all, is what the router is for), so it may
-be that you don't have the "unique address" problem after all?
+2. The router is NOT performing source nat on inbound packets coming from the 
+Internet (so that packets arriving on your local network have the correct 
+source address of the machine they came from, out in the Big Wide World).
+
+3. You have no great interest in talking to your router from local network 
+machines - they want to talk to the Rest Of The World, which is on the other 
+side of the router.
+
+Now, if all the above assumptions are true, then valid packets arriving at 
+your network through the router from the Internet will have the source 
+addresses of the machines they came from, not the internal address of the 
+router.
+
+If, for some rather obscure reason, your router is performing source nat on 
+incoming packets, then yes, they will have 10.10.10.254 as their source 
+address, but I really can't think why this would be the case.
 
 Regards,
 
 Antony.
 
---
-The first fifty percent of an engineering project takes ninety percent of
-the
-time, and the remaining fifty percent takes another ninety percent of the
-time.
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-
-
----
-Incoming mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.576 / Virus Database: 365 - Release Date: 1/30/2004
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.576 / Virus Database: 365 - Release Date: 1/30/2004
+-- 
+One good tern deserves another.
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
