@@ -1,11 +1,10 @@
-From: "giannhsp" <giannhsp@oslab.teipir.gr>
-Subject: Drop firstly? Drop at the end of the Script? Or it doesn't matter?
-Date: Fri, 21 Mar 2003 05:42:25 +0200
+From: david <dlm4444@bigzoo.net>
+Subject: Why want my iptables scripts run in cron
+Date: Tue, 18 Mar 2003 22:01:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c2ef5b$e3e3ba50$0400000b@laptopbak1>
+Message-ID: <200303182201.19202.dlm4444@bigzoo.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C2EF6C.A6FCFFA0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,43 +15,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+I have a simple script called routup.sh to start the routing at a certain=
+=20
+time, it is excutable. It runs fine at the command line but not cron. her=
+e is=20
+what my cron entry looks like:                0 9 * * * root   /etc/routu=
+p.sh
+#routup.sh
+#!/bin/bash
 
-------=_NextPart_000_0005_01C2EF6C.A6FCFFA0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE=20
 
-Is it better to put the command tha sets the default policy (DROP in my =
-case) to the beginning of the script and then writing the ACCEPT section =
-or the opposite?
+I even went as far to add a path to the crontab file like this:
+vi crontab  =20
+
+/sbin/iptables. =20
+where am i going wrong.=20
+The o.s. is linux mandrake 9.0
+
+thanks for any help,
+
+david=20
 
 
-
-------=_NextPart_000_0005_01C2EF6C.A6FCFFA0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.3315.2870" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT><FONT face=3DArial size=3D2>Is =
-it better to put=20
-the command tha sets the default policy (DROP in my case) to the =
-beginning of=20
-the script and then writing the ACCEPT section or the =
-opposite?</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0005_01C2EF6C.A6FCFFA0--
 
 
