@@ -1,13 +1,13 @@
 From: "Franco Antonio Catena" <facatena@surson.com.br>
-Subject: IPTABLES so estrange
-Date: Sat, 8 Mar 2003 19:37:01 -0300
+Subject: IPTABLES SO ESTRANGE
+Date: Sun, 9 Mar 2003 00:02:03 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAA39YtK9808U22uRmIJg/plAEAAAAA@surson.com.br>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAAf4ZC/qaxCUWa8XKwAM+cHAEAAAAA@surson.com.br>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAAuC4RbOFB7kqjxlbChBdS5QEAAAAA@surson.com.br>
+References: <20030308132643.611e6f0a.arnt@c2i.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAtFtUV6DRYkmMbGSF92ZpwsKAAAAQAAAAf4ZC/qaxCUWa8XKwAM+cHAEAAAAA@surson.com.br>
+In-Reply-To: <20030308132643.611e6f0a.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,7 +18,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Franco Antonio Catena' <facatena@surson.com.br>, 'Netfilter' <netfilter@lists.netfilter.org>
+To: 'Arnt Karlsen' <arnt@c2i.net>, netfilter@lists.netfilter.org
 
 Hi,
 
@@ -30,8 +30,7 @@ dont know why I cant telnet 192.168.1.1 81?
  
 
 for i in `ls /lib/modules/2.4.18-2cl/kernel/net/ipv4/netfilter/ip*|cut
--f \
-3 -d "."|cut -f 6 -d "/"|grep -v ipchains`;do  modprobe $i;done
+-f \ 3 -d "."|cut -f 6 -d "/"|grep -v ipchains`;do  modprobe $i;done
 
 #modprobe ip_tables
 #insmod ip_conntrack
@@ -55,27 +54,24 @@ iptables -P FORWARD ACCEPT
 
 
 iptables -A INPUT -i eth0 --fragment -p icmp -j LOG --log-prefix
-"Fragmented ICMP: "
-iptables -A INPUT -i eth0 --fragment -p icmp -j DROP 
+"Fragmented ICMP: " iptables -A INPUT -i eth0 --fragment -p icmp -j DROP
+
 
 
 iptables -A INPUT -i eth0 -p tcp --dport 3128 -j LOG --log-prefix "USO
 DO  SQUID "
 
 iptables -A INPUT -s 192.168.1.0/255.255.255.0 -p tcp --dport 81 -j LOG
---log-prefix "WEB INTERNA "
-iptables -A INPUT -i eth0 -m multiport -p tcp --dport
-21,22,25,53,80,81,110,500,3128 -j ACCEPT
-iptables -A INPUT -s 192.168.1.0/255.255.255.0  -m multiport -p tcp -d
-192.168.1.1 --dport 21,22,25,53,80,81,110,500,3128 -j ACCEPT
-iptables -A INPUT -i eth0 -m multiport -p udp --dport
-21,25,53,80,110,500 -j ACCEPT
+--log-prefix "WEB INTERNA " iptables -A INPUT -i eth0 -m multiport -p
+tcp --dport 21,22,25,53,80,81,110,500,3128 -j ACCEPT iptables -A INPUT
+-s 192.168.1.0/255.255.255.0  -m multiport -p tcp -d 192.168.1.1 --dport
+21,22,25,53,80,81,110,500,3128 -j ACCEPT iptables -A INPUT -i eth0 -m
+multiport -p udp --dport 21,25,53,80,110,500 -j ACCEPT
 
 
 iptables -A INPUT -s 192.168.1.0/255.255.255.0 -p  tcp --dport 22 -j
-ACCEPT
-iptables -A INPUT -s 192.168.1.0/255.255.255.0 -p  tcp --dport 81 -j
-ACCEPT
+ACCEPT iptables -A INPUT -s 192.168.1.0/255.255.255.0 -p  tcp --dport 81
+-j ACCEPT
 
 iptables -A INPUT -j ACCEPT -m state --state RELATED,ESTABLISHED
 
@@ -95,9 +91,8 @@ iptables -A OUTPUT -o eth0 -p tcp -m state --state NEW --dport 443
 
 #Bloqueando saida NETbios
 iptables -A OUTPUT -o eth0 -m multiport -p tcp --dport 135,137,138,139
--j DROP
-iptables -A OUTPUT -o eth0 -m multiport -p udp --dport 135,137,138,139
--j DROP
+-j DROP iptables -A OUTPUT -o eth0 -m multiport -p udp --dport
+135,137,138,139 -j DROP
 
 
 iptables -A OUTPUT -o eth0 -j ACCEPT
@@ -106,9 +101,9 @@ iptables -A OUTPUT -o eth0 -j ACCEPT
 #iptables -t nat -A PREROUTING -j NAT --to-dest 192.168.1.1 -d
 apache.surson.com.br -p tvp 
 iptables -t nat -A PREROUTING -j DNAT --to-dest 192.168.1.2 -i eth0 -p
-tcp -m multiport --dport 21,25,80,110,3389,137,50,51,1723
-#iptables -t nat -A PREROUTING --dst apache.surson.com.br -p TCP --dport
-80  -j DNAT --to-destination 192.168.1.1
+tcp -m multiport --dport 21,25,80,110,3389,137,50,51,1723 #iptables -t
+nat -A PREROUTING --dst apache.surson.com.br -p TCP --dport 80  -j DNAT
+--to-destination 192.168.1.1
 
 # Masquerade
 #iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
@@ -120,15 +115,13 @@ iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/255.255.0.0 -d \!
 192.168.0.0/255.255.0.0 -j MASQUERADE
 
 
-# Bloqueio de saida de pacotes do tipo Windows Networking
-iptables -A FORWARD -i eth0 -m multiport -p tcp --dport 135,137,138,139
--j LOG --log-prefix " Fire BLOQ TCP NETBIOS " 
+# Bloqueio de saida de pacotes do tipo Windows Networking iptables -A
+FORWARD -i eth0 -m multiport -p tcp --dport 135,137,138,139 -j LOG
+--log-prefix " Fire BLOQ TCP NETBIOS " 
 iptables -A FORWARD -i eth0 -m multiport -p udp --dport 135,137,138,139
--j LOG --log-prefix " Fire BLOQ UDP NETBIOS "
-iptables -A FORWARD -i eth0 -m multiport -p tcp --dport 135,137,138,139
--j DROP
-iptables -A FORWARD -i eth0 -m multiport -p udp --dport 135,137,138,139
--j DROP
+-j LOG --log-prefix " Fire BLOQ UDP NETBIOS " iptables -A FORWARD -i
+eth0 -m multiport -p tcp --dport 135,137,138,139 -j DROP iptables -A
+FORWARD -i eth0 -m multiport -p udp --dport 135,137,138,139 -j DROP
 
 # Forwarding para saida
 iptables -A FORWARD -i eth0 -m state --state ESTABLISHED,RELATED -j
@@ -137,10 +130,8 @@ ACCEPT
 
 
 iptables -A FORWARD -s 192.168.1.1/24 -d ! 192.168.1.1 -p tcp  --dport
-3128  -j DROP
-iptables -A FORWARD -s 192.168.1.1/24 -d ! 192.168.1.1 -p tcp --dport
-8080 -j DROP
-iptables -A FORWARD -i eth1 -j ACCEPT
+3128  -j DROP iptables -A FORWARD -s 192.168.1.1/24 -d ! 192.168.1.1 -p
+tcp --dport 8080 -j DROP iptables -A FORWARD -i eth1 -j ACCEPT
 
 
 # Kernel Level
