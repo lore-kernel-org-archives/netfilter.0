@@ -1,14 +1,15 @@
 From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: Hogwash Vs snort-inline Vs Iptables
-Date: 31 Aug 2004 21:52:23 +0200
+Subject: Re: tracking usage by mac address
+Date: 31 Aug 2004 21:52:29 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093974928.9232.47.camel@nostromo.bgsecm.com>
-References: <a05ad87504083106581832c864@mail.gmail.com>
-	<1093961312.2281.105.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <1093975858.9232.61.camel@nostromo.bgsecm.com>
+References: <41329413.3080407@shaw.ca>
+	<1093887545.23659.47.camel@nostromo.bgsecm.com>
+	<3063e504083013374bd2a909@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1093961312.2281.105.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <3063e504083013374bd2a909@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,30 +20,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>, Murugavel Thiruvengadam <tmurugavel@gmail.com>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mar, 31 de 08 de 2004 a las 16:08, Cedric Blancher escribió:
-> Le mar 31/08/2004 à 15:58, Murugavel Thiruvengadam a écrit :
-> > Iptables will work in kernel level . What about the others. 
+El lun, 30 de 08 de 2004 a las 22:37, George Alexandru Dragoi escribió:
+> Well, i don't know if you want to log EVERYTHING.
+> Remember ip_conntrackworkson streams, so you can log only NEW packets.
+> I have like 90 rules with -m mac like those i said before + several
+> port forwarding, on a P2 450Mhz, 100mbit internet connections, used a
+> lot, almoust all the time at 11MB/s at upload (exactly where those
+> rules aremostly hitted), and top says the sys load is arround 40% at
+> most when i have full bandwith in use, but i think it is not because
+> of the netfilter, but the PCI usage. Traffic at 50% usually needs much
+> less CPU, like 5-10%. I also have many other rules for SYN scan
+> limiting, bandwith counting, and so on.
 > 
-> Snort Inline relies on Netfilter as it gets packets using iptables QUEUE
-> target. This means you have total control of traffic being filtered by
-> Netfilter and traffic being filtered by Snort Inline. That's why I do
-> prefer Snort Inline to Hogwash.
-> 
-> Speaking of string match in iptables, forget it. One basic  able thing
-> an IPS/IPS has to implement is fragmentation resistance. String match
-> will not work against TCP fragmentation, as it is a per packet match, so
-> it will not detect an attack payload split on two TCP packets.
 
-And besides this snort-inline is actively being developed and I have
-read in the snort.org web site that it will be integrated in the
-plain snort, in the other side you have an almost dead project like
-hogwash that it's still alpha code and not being so actively developed.
-Hogwash it's also too heavy at using resources like memory.
-
-First option should be snort-inline. It's my opinion.
+Obviously our system it's useful for a not huge set of
+rules, we use it for a per service basis, not per IP or MAC.
+We have been using it with a big number of rules (services)
+and it works like a charm, without slowing the system, but
+if you have a lot of MACs our system can be surely a bad
+idea.
 
 -- 
 Jose Maria Lopez Hernandez
