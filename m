@@ -1,13 +1,13 @@
 From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: blocking servers
-Date: Thu, 6 Mar 2003 09:51:10 +0100
+Subject: RE: close port 80 but allow some IPs to use port 80
+Date: Thu, 6 Mar 2003 09:43:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FD8F124A387AD6119F7900A0D218B321019C1F@hslex01.hslbz.local>
-References: <1046924708.1182.6.camel@nirvana.flat>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019C1E@hslex01.hslbz.local>
+References: <F10E4LiCtjFEDeYOS2C000398f0@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1046924708.1182.6.camel@nirvana.flat>
+In-Reply-To: <F10E4LiCtjFEDeYOS2C000398f0@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'mdew' <mdew@mdew.dyndns.org>, mldonkey-users@nongnu.org
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> Ive been messing with iptables, trying to block the connection o 
-> certain mldonkey general servers.
-> 
-> On my firewall, i used these lines...
-> 
-> iptables -A FORWARD -s 10.0.0.3 -d 148.216.18.89 -j DROP
-> iptables -A FORWARD -s 10.0.0.3 -d 24.128.236.196 -j DROP
-> iptables -A FORWARD -s 10.0.0.3 -d 24.132.124.37 -j DROP
-> 
-> but I still managed to connect to the servers
+> how do i close port 80 to all users except for a few ips ? 
+> the generic match 
+> of --dport doesn't work for me.
 
-Did you check on the edonkey-client-box with netstat -an to which
-server(s) the clients connect to(and while you're at it what ports they
-use) when you can still connect ?
+Why not ?
+Are these users on your LAN or on the internet ?
+Do these users have a fixed IP ?
 
-I did something like this once for Yahoo Messenger and it came up with
-(I think 3) different ports and *a lot* of servers (someone posted a
-nice list of them).
+iptables -P INPUT DROP
+iptables -A INPUT -s <src_ip> -p tcp --dport 80 -j ACCEPT
+...
+iptables -A INPUT -s <src_ip> -p tcp --dport 80 -j ACCEPT
+
+
+Or maybe you can use the MAC address match.
+
+iptables -P INPUT DROP
+iptables -A INPUT -m mac --mac-source <src_mac> -p tcp --dport 80 -j
+ACCEPT
+...
+iptables -A INPUT -m mac --mac-source <src_mac> -p tcp --dport 80 -j
+ACCEPT
 
 
 Rob
