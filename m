@@ -1,12 +1,14 @@
-From: Carles Xavier Munyoz =?iso-8859-1?q?Bald=F3?= <carles@descom.es>
-Subject: H323 NAT.
-Date: Tue, 15 Oct 2002 18:06:01 +0200
+From: Nick Drage <nickd@funkyjesus.org>
+Subject: Re: Tightening up outgoing traffic
+Date: Tue, 15 Oct 2002 15:31:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210151806.05183.carles@descom.es>
-Reply-To: carles@descom.es
+Message-ID: <20021015153147.E3805@funkyjesus.org>
+References: <1034686034.15446.38.camel@localhost.localdomain> <1034687894.8681.53.camel@Wiggum>
+Reply-To: Nick Drage <nickd@funkyjesus.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1034687894.8681.53.camel@Wiggum>; from list@laasby.com on Tue, Oct 15, 2002 at 03:18:14PM +0200
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,62 +18,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Tue, Oct 15, 2002 at 03:18:14PM +0200, Kjetil Andreas Laasby wrote:
+> Problably because yahoo.com lies in your local DNS cache or on an cache
+> server behind your firewall.
+> 
+> add
+> iptables -A OUTPUT -p tcp --destination-port domain -j ACCEPT
+> iptables -A OUTPUT -p udp --destination-port domain -j ACCEPT
 
-Hi,
-I'm having lot of problems with the ip_nat_h323 and ip_conntrack_h323=20
-netfilter modules.
+Note the rules for tcp and udp here, it's worth opening both up in case your
+DNS query needs a large reply.
 
-I have applied the patch-o-matic to the 2.4.19 kernel source and compile =
-it in=20
-my firewall.
-I can load the modules with:
-# modprobe ip_nat_h323
+> You should also open up RELATED ICMP to minimize delay for errors.
 
-I have a h323 VoIP device behind my firewall and another one in the inter=
-net.=20
-When I call from the device behind the NAT-firewall, I can reach the devi=
-ce=20
-in the Internet. All VoIP data from the device behind the firewall arrive=
-s to=20
-the device in the internet, but all de VoIP data from the device in the=20
-internet is sent to the private addres of the device behind the firewall,=
- and=20
-never arrives to it.
+Seconded.
 
-It seems that the ip_nat_h323 module is not making its work. It is not=20
-changing the source IP at the h323 aplication level.
-
-I have seen the next logs in the /var/log/messages file:
-Oct 15 17:47:47 fwtemplate kernel: ASSERT: ip_nat_core.c:838=20
-&ip_conntrack_lock not readlocked
-Oct 15 17:47:47 fwtemplate kernel: ASSERT ip_conntrack_core.c:93=20
-&ip_conntrack_lock_R71150de5 readlocked
-
-I'm using the last iptables version (1.2.7a).
-
-May anyone help me with this ?
-Any suggestions ?
-
-Greetings.
-- ---
-Carles Xavier Munyoz Bald=F3
-carles@descom.es
-Descom Consulting
-Telf: +34 965861024
-Fax: +34 965861024
-http://www.descom.es/
-- ---
------BEGIN PGP SIGNATURE-----
-Version: PGP 6.5.8
-
-iQA/AwUBPaw86jvYAf7VZNaaEQLZNACgn3lsxB5m17khtlSzfRd+OUpMy4gAn0E+
-Or8bWYQESsQnb1QK8EFyaGB9
-=3Dyrw1
------END PGP SIGNATURE-----
+-- 
+FunkyJesus System Administration Team
 
 
