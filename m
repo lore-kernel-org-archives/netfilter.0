@@ -1,12 +1,13 @@
-From: "Narendra Prabhu. B" <naren@deeproot.co.in>
-Subject: Re: Link time problems with libipq example code
-Date: Sat, 21 Dec 2002 10:59:43 +0530 (IST)
+From: Andrea Rossato <mailing_list@istitutocolli.org>
+Subject: Re: Best vpn w/ iptables.
+Date: Sat, 21 Dec 2002 10:58:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.43.0212211048490.286-100000@abodh.pesit.deeproot.co.in>
-References: <20021220224405.GB28191@securityfocus.com>
+Message-ID: <3E043B2B.70306@istitutocolli.org>
+References: <001201c2a84c$7ec0a350$6601a8c0@s3ac>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021220224405.GB28191@securityfocus.com>
+In-Reply-To: <001201c2a84c$7ec0a350$6601a8c0@s3ac>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,71 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Craig Davison <cd@securityfocus.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi,
+Starting from kernel 2.5.49 IPSec went into the tree: if you need 
+encryption and authentication that could be a solution (probably better 
+than freeswan, since the later was not considered for inclusion into the 
+kernel). I don't need them, so I'm sticking with plain gre tunnels and 
+linux-2.4.20
 
-Yes, even I have come across such problems.... I just complied it using
-the following command.
+for more information on tunnels and vpn you may have a look at 
+http://lartc.org (linux advanced routing and traffic control) and ask in 
+their meailing list.
+The howto explains in details how to setup a secure vpn using the kernel 
+support.
+hope this can help.
 
-$gcc -I/usr/local/include -L/usr/local/lib -o ipqtst ipqtst.c -lipq
+andrea
 
-Just notice that I have put "-lipq" in the end... Well, I have not been
-able to reason, why it works this way. Its probably the gcc issue.
-
-Hope this helps.
-
-Bye,
-Narendra.
-
-
-On Fri, 20 Dec 2002, Craig Davison wrote:
-> Hello,
-> I've been trying to compile the libipq example code in the libipq man page.
->
-> My kernel is 2.4.18, distributed by RedHat as 2.4.18-14. I made a symlink to the kernel source at /usr/src/linux.
-> I built ipchains 1.2.7a as follows:
-> make
-> su
-> make install-devel
->
-> I copied the code from the man page into a file called ipqtst.c and compiled:
-> gcc -I/usr/local/include -L/usr/local/lib -lipq -o ipqtst ipqtst.c
-> /tmp/ccGDqSOi.o: In function `die':
-> /tmp/ccGDqSOi.o(.text+0xf): undefined reference to `ipq_perror'
-> /tmp/ccGDqSOi.o(.text+0x1d): undefined reference to `ipq_destroy_handle'
-> /tmp/ccGDqSOi.o: In function `main':
-> /tmp/ccGDqSOi.o(.text+0x49): undefined reference to `ipq_create_handle'
-> /tmp/ccGDqSOi.o(.text+0x81): undefined reference to `ipq_set_mode'
-> /tmp/ccGDqSOi.o(.text+0xb8): undefined reference to `ipq_read'
-> /tmp/ccGDqSOi.o(.text+0xe4): undefined reference to `ipq_message_type'
-> /tmp/ccGDqSOi.o(.text+0x116): undefined reference to `ipq_get_msgerr'
-> /tmp/ccGDqSOi.o(.text+0x141): undefined reference to `ipq_get_packet'
-> /tmp/ccGDqSOi.o(.text+0x166): undefined reference to `ipq_set_verdict'
-> collect2: ld returned 1 exit status
->
-> I get the same errors when I compile statically:
-> gcc -static -I/usr/local/include -L/usr/local/lib -lipq -o ipqtst ipqtst.c
->
-> Is libipq not the right thing to link against? Am I doing something else wrong (did I build ipchains incorrectly?)
->
-> --
-> Craig Davison
-> Symantec Corporation
-> +1 (403) 213-3939 ext. 228
->
->
-
-In the middle of difficulty..... lies Opportunity. (Albert Einstein)
---------------------------------------------------------------------
-Narendra Prabhu. B             Free Software at its product-ive best.
-DeepRoot Linux                             http://www.deeproot.co.in
-                ---- Server Appliances ----
-             ---- Linux Support and Services ----
--------------------------------------------------------------------
-
+Rowan Reid wrote:
+> 
+> I'm gonna be implimenting a VPN between two offices. Both gateways being
+> the Firewall also. Which uses Netfilter I'm looking for secure straight
+> forward routable setup and 100% compatability with netfilter ie not
+> pptp. It also has to be open source. I know this isn't a vpn group but I
+> figured you would have valuable input. Thanks Right now I'm looking at
+> freeswan
+> 
+> 
+>  
+> Rowan Reid
+> Job Captain, 
+> Systems Administrator
+> STUDIO 3 ARCHITECTS
+> 909  982  1717
+> 
+> 
+> 
+> 
 
 
