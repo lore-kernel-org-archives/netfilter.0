@@ -1,13 +1,11 @@
-From: Rob Verduijn <rverduij@dds.nl>
-Subject: Re: iptables and the  RELATED option
-Date: Tue, 12 Aug 2003 23:29:10 +0200
+From: "Michael K" <micke@klintan.se>
+Subject: Planning a firewall
+Date: Wed, 13 Aug 2003 00:39:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060723749.3781.77.camel@vimes.localdomain>
-References: <01f801c36103$00a67150$49caa8c0@caris.priv>
+Message-ID: <001b01c36122$a2baa870$c800a8c0@klintan.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <01f801c36103$00a67150$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,140 +17,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: peter.marshall@caris.com
 
-Hi there,
+Hi
 
-The description is a bit vague...
+I'm planning a new firewall. Today I use no extra chains and was
+thinking if there was an easier way to administrate the firewall.
 
-But I assume you have a machine with more than 1 network card
-Let's say you got 2
+Okay, here is the network:
+One private lan: 10.10.0.0/16 on eth3
+One DMZ with public ip x.y.z.0/26. The DMZ network is use ports tcp-21,
+tcp-25, udp-53, tcp-53, tcp-80, tcp-110, tcp-443, tcp-3389, tcp-8383
+depending on its ip.
+The DMZ is on eth1
+Collocation use the same ports as DMZ except one addition tcp-22.
+Collocation use public ip x.y.z.64/28.  Collocation is on eth2
+Connection to the internet is on eth0 and have ip x.y.z.125/29.
 
-You need the established and the related for ip connection tracking
-If you would use a script like the one below asuming eth2 is the
-external ontrusted network card
+So; the LAN, DMZ and COLLOCATION is on different networks and different
+interfaces.
 
-Have a look at this example using connection tracking
+Today the all the rules are on the forward chain. I was thinking of
+moving some of the rules to a custom chain. Like DMZ and COLLOCATION. Is
+this a good approach?
+Also, using the "iptables -L -nvx" option, I wish too have some
+traffic-reporting. With this in mind should I add every ip to the
+mangle/prerouting chain without the --jump target?
 
+The rules today are. 
+Public can access the DMZ on its selective ports and ips.
+Lan can access DMZ on all ports.
+Lan can access Collocation on all ports.
+Public can access Collocation on all ports
+Collocation can access public on all ports
+Lan can access public on all ports
+Some ips on collocation have the same restrictive rules as the DMZ.
 
-modprobe ip_conntrack_ftp	# load ftp conntracking module
-IPTABLES="/path/to/iptables"
-INTERNAL_INT="eth?"		# your thrusted network interface
-INTERNAL_IPADDR="1.2.3.4"	# internal network card ip
-INTERNAL_NETWORK="10.0.0.0/255.0.0.0 #your internal thrusted network
-EXTERNAL_INT="eth?"		# untrusted network card
-EXTERNAL_IPADDR="1.2.3.4"	# untrusted network card ip
+Thank you
 
-UNPRIVPORTS="1024:65535"                # unprivileged port range
+/Michael 
 
-# wipe old chains and erase personal created chains
-CHAINS=`cat /proc/net/ip_tables_names 2>/dev/null`
-for I in $CHAINS; do $IPTABLES -t $I -F; done
-for I in $CHAINS; do $IPTABLES -t $I -X; done
-
-# set policy to drop
-$IPTABLES -t filter -P INPUT DROP
-$IPTABLES -t filter -P OUTPUT DROP
-$IPTABLES -t filter -P FORWARD DROP
-
-# accept local traffic 
-$IPTABLES -A INPUT -i lo -d 127.0.0.1 -j ACCEPT
-$IPTABLES -A OUTPUT -o lo -d 127.0.0.1 -j ACCEPT
-
-# turn on connection tracking and some logging
-$IPTABLES -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A INPUT -m state --state INVALID -j LOG \
-        --log-prefix "INVALID input: "
-$IPTABLES -A INPUT -m state --state INVALID -j DROP
-$IPTABLES -A OUTPUT -m state --state INVALID -j LOG \
-        --log-prefix "INVALID ouput: "
-$IPTABLES -A FORWARD -i $INTERNAL_INT -m state --state INVALID -j DROP
-$IPTABLES -A FORWARD -i $INTERNAL_INT -m state --state INVALID -j LOG \
-        --log-prefix "INVALID ouput: "
-
-# allow all traffice from internal over internal interface
-# to external interface
-$IPTABLES -A FORWARD -i $INTERNAL_INT -s $INTERNAL_NETWORK \
-        -m state --state NEW -j ACCEPT
-
-# above script allows all traffic from internal network to the
-# external network and answers to that traffic
-# including ftp
-# no traffic is allowed from the external network to the gateway
-# no traffic is allowed from the external network to the internal 
-# network
-# no traffic is allowed from the internal network to the gateway
-# no traffic is allowed from the gateway to the internal network
-# no traffic is allowed from the gateway to the internet
-# in other words a pretty restricted ruleset
-
-# if you want traffic from and to the gateway a examples (ssh) below
-
-# allow ssh traffic from thrusted network towards gateway
-# you can even be more restrictive by replacing the network with
-# a single ip address.
-$IPTABLES -A INPUT -i $INTERNAL_INT -p tcp \
-        -s $INTERNAL_NETWORK --sport $UNPRIVPORTS \
-        -d $INTERNAL_IPADDR --dport 22 \
-        -m state --state NEW -j ACCEPT
-
-# or an ftp (client) example :-P
-# gateway is the ftp client here
-# remember ftp == very unsecure protocol
-$IPTABLES -A OUTPUT -0 $EXTERNAL_INT -p tcp \
-	--sport $UNPRIVPORTS \
-	-d $EXTERNAL_IPADDR -dport 21 \
-	-m state --state NEW -j ACCEPT
-
-
-# or an ftp (server) example :-P
-# gateway is the server here
-# remember ftp == very unsecure protocol
-# consider sftp uses the same ruleset as ssh (yup same port number)
-# or else try scp , comes free with openssh as does sftp
-$IPTABLES -A INPUT -i $EXTERNAL_INT -p tcp \
-	--sport $UNPRIVPORTS \
-	-d $EXTERNAL_IPADDR -dport 21 \
-	-m state --state NEW -j ACCEPT
-
-# compare the client and server examples ....see something 
-# oddly repetetive  ;)
-
-# end script
-
-Well that's it,nothing fancy no special things no tricks against
-portscanners.
-Just something that keeps out most basic bad things from the internet.
-
-Regards
-Rob
-
-
-
-On Tue, 2003-08-12 at 20:53, Peter Marshall wrote:
-> Hi, My name is Peter Marshall.  I am having some problems letting ftp
-> through my firewall without opening all of the ports.  I was trying to get
-> RELATED to work, but for some reason it will not.  Here is an example of
-> what my file looks like
-> 
-> $TABLENAME -A FORWARD -d x.x.x.x -o eth2 -j mychain
-> 
-> $TABLENAME -A mychain -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $TABLENAME -A mychain -j DROP
-> 
-> I don't think I need the ESTABLISHED, but I put it in anyways.
-> 
-> If anyone could help it would be greatly appriciated.
-> 
-> Thanks
-> 
-> 
-> Peter Marshall
-> PS.  Sorry if te message appears twice.  I sent it the first tiem before I
-> became a member
-> 
-> 
 
 
