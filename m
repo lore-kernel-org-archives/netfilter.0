@@ -1,12 +1,11 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: A question and a little ascii art
-Date: Thu, 16 Oct 2003 18:47:23 +0200 (CEST)
+From: "Sean E. Covel" <seanecovel@comcast.net>
+Subject: FTP/SSL
+Date: Thu, 16 Oct 2003 13:31:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0310161843410.2162@dns.toxicfilms.tv>
-References: <000e01c39402$49e648e0$1900a8c0@celletech.com.ar>
+Message-ID: <1066325478.22244.15.camel@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000e01c39402$49e648e0$1900a8c0@celletech.com.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +15,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Leonardo Santagostini <lsantagostini@celletech.com.ar>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: NetFilter-List <netfilter@lists.netfilter.org>
 
-> But on the LAN side (162.168.0.0) i cant see the app pointing to
-> 200.68.69.xxx:15000
-Not :15000, follow this:
+Is there any way to do connection tracking for incoming connections to
+an FTP/SSL server?  I'm using a Bering (leaf.sourceforge.net)
+mini-distro that uses the Shorewall firewall (www.shorewall.net).  
 
-Some host A(a.b.c.d) asks 200.68.69.1 asks for a connection, we see this:
+My firewall has both ip_net_ftp and ip_conntack_ftp, but as we all know,
+these don't work for FTP/SSL.
 
-1. Start connection:
-	a.b.c.d:1025 -> 200.68.69.1:15000
+I am attempting to port-forward the FTP/SSL connection from the firewall
+machine to a server in a service network.  The "command" connection on
+port 21 works just great, but when I try to GET, PUT, or LS a file,
+basically anything that uses the data connection, the firewall blocks
+the connection.  It appears that FTP/SSL uses a high port -> high port
+connection for the data connection.
 
-2. Do NAT:
-	200.68.69.1:15000 -> 192.168.0.1:80
+One possible solution (which I don't like!) is to open a large range of
+high ports in the firewall.  This seems a bit primitive.  There must be
+a way to associate the initial port 21 connection with the subsequent
+high-port connection.
 
-3. 192.168.0.1 sends the reply, you should see:
-	192.168.0.1:80 -> a.b.c.d:1025
+Thanks for your help,
 
-So you won't see packets destined for the firewall with port 15000,
-but you'd rather see packets that are destined for a.b.c.d:1025
-
-By 1025 I mean a random high port that will be the clientside port
-for that particular connection.
-
-Regards,
-Maciej
+Sean
 
 
