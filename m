@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: (no subject)
-Date: Sat, 8 Jun 2002 10:48:34 +0100
+From: Nick Drage <nickd@funkyjesus.org>
+Subject: Re: dns server
+Date: Sat, 8 Jun 2002 10:58:57 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206080948.g589maA32732@Networker.rockstone.co.uk>
-References: <1023528718.3d01cf0e162e2@mail.rdsbv.ro>
+Message-ID: <20020608105857.I2090@funkyjesus.org>
+References: <1420507267.20020606152231@gmx.de> <1023372279.8475.27.camel@billy.demon.nl>
+Reply-To: Nick Drage <nickd@funkyjesus.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1023528718.3d01cf0e162e2@mail.rdsbv.ro>
+Content-Disposition: inline
+In-Reply-To: <1023372279.8475.27.camel@billy.demon.nl>; from tonni@billy.demon.nl on Thu, Jun 06, 2002 at 04:04:38PM +0200
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,44 +19,31 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: I <netfilter@lists.samba.org>
 
-On Saturday 08 June 2002 1:01 pm, g38@rdsbv.ro wrote:
+On Thu, Jun 06, 2002 at 04:04:38PM +0200, Tony Earnshaw wrote:
+> tor, 2002-06-06 kl. 15:22 skrev Corin Langosch:
 
-> echo "Cleaning ..."
-> for i in filter nat mangle
-> do
-> $IPT -t $i -F
-> $IPT -t $i -X
-> done
+<snip>
 
--F is a good idea, but you can't do -X (delete chain) on the built-in chains; 
-only user-defined ones.
+> It depends what you want to do with it. And what DNS software you're
+> running. I.e., if it's BIND, you can do more with BIND 9 than you can
+> with BIND 8, more with BIND 8 than with BIND4.
+> 
+> Many security people might say that if you're running BIND 4 or 8, then
+> you shouldn't be. Some of them again might say that you should be
+> running BIND 9.2.
 
-> echo "Initial rules ..."
-> $IPT -P INPUT ACCEPT
-> $IPT -P OUTPUT ACCEPT
-> $IPT -P FORWARD DROP
+I believe that the latest BIND 8.something is still OK, and version 8 is
+being maintained as far as security patches go.
 
-I would recommend setting default policy on your INPUT chain to DROP as well, 
-and then allow in only what you want...
-
-> $IPT -t nat -A POSTROUTING -s  192.168.20.0/24 -o eth1 -j MASQUERADE
-> $IPT -t nat -A POSTROUTING -d  192.168.20.0/24 -o eth1 -j MASQUERADE
-
-No, you only want the first one of these rules.    I'm assuming that eth1 is 
-your external interface.
-
-> echo -e "- Enabling SNAT (MASQUERADE) funtionality on eth0"
-> $IPT -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-Maybe I'm wrong in thinking that eth1 is your external interface ?   Please 
-can you tell us what eth0and eth1 are connected to (and where networks 
-192.168.20.0 and 192.168.10.0 are connected ?
+As for the rest of the thread, you're best restricting that kind of access
+using named.conf as the problem is at layer 7 - the BIND application, not
+layer 3 - where netfilter mostly lives.
 
 
-The rest looks pretty good to me.
+-- 
+FunkyJesus System Administration Team
 
-
-Antony.
 
