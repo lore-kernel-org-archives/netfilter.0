@@ -1,11 +1,11 @@
-From: "George" <george@xorgate.com>
-Subject: set RELATED?
-Date: Fri, 25 Jul 2003 20:21:21 -0600
+From: Bill Chappell <bill.chappell@critical.com>
+Subject: Re: kazaa rulset
+Date: Mon, 28 Jul 2003 21:16:38 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c3531c$9b1fad40$3eac18ac@geosxp>
+Message-ID: <3F25CAF6.EBC4BEA4@borg.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C352EA.502C95F0"
+ boundary="------------C21345CC950957B59FF0CB2C"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,63 +18,78 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0005_01C352EA.502C95F0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+--------------C21345CC950957B59FF0CB2C
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Is there currently a way for iptables to force another packet stream =
-conntrack entry to be RELATED without having to look inside of the =
-packet data?
+replying to juanca:
 
-For example:  If a 10.0.0.2 client behind an iptables firewall were to =
-send an IMCP echo to 10.20.30.1, could a rule be set up so that after =
-the firewall see this packet, all udp packets sent to dport=3D45678 =
-would be DNATed to 10.0.0.2?
 
-The designated RELATED stream would in general then be just like any =
-other conntrack entry.
+I expect that these rules resulted in the error messages I moved up
+below them.
 
-My guess is that this would require a generic force-related module.
 
-------=_NextPart_000_0005_01C352EA.502C95F0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+>
+> iptables -A FORWARD -d a342.g.akamai.net -p tcp tcp -j DROP
+> iptables -A FORWARD -d a342.g.akamai.net -p tcp udp -j DROP
+> Bad argument `tcp'
+> Try `iptables -h' or 'iptables --help' for more information.
+> Bad argument `udp'
+> Try `iptables -h' or 'iptables --help' for more information.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Is there currently a way&nbsp;for =
-iptables to force=20
-another packet stream&nbsp;conntrack entry&nbsp;to be RELATED without =
-having to=20
-look inside of the packet data?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>For example:&nbsp; If a 10.0.0.2 client =
-behind an=20
-iptables firewall were to send an IMCP echo to 10.20.30.1, could a rule =
-be set=20
-up so that after the firewall see this packet, all udp packets sent to=20
-dport=3D45678&nbsp;would =
-be&nbsp;DNATed&nbsp;to&nbsp;10.0.0.2?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>The designated RELATED stream would in =
-general then=20
-be&nbsp;just like any other conntrack entry.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>My guess is that this would require a =
-generic=20
-force-related module.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+For the other error messages, I would try commenting out
+all the rules (except one for the first try) and run the script that
+loads them un-commenting one at a time.
 
-------=_NextPart_000_0005_01C352EA.502C95F0--
+For an exercise like that, script flushall is helpful between
+runs:
+iptables -t filter -F
+iptables -t mangle -F
+iptables -t nat -F
+
+
+--
+William Chappell,     Software Engineer,     Critical Technologies, Inc.
+Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica, NY 13501
+315-793-0248  x148  < bill.chappell@critical.com >  www.critical.com
+
+
+
+--------------C21345CC950957B59FF0CB2C
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+replying to juanca:
+<br>&nbsp;
+<p>I expect that these rules resulted in the error messages I moved up
+<br>below them.
+<br>&nbsp;
+<blockquote TYPE=CITE>&nbsp;
+<br>iptables -A FORWARD -d a342.g.akamai.net -p tcp tcp -j DROP
+<br>iptables -A FORWARD -d a342.g.akamai.net -p tcp udp -j DROP
+<br>Bad argument `tcp'
+<br>Try `iptables -h' or 'iptables --help' for more information.
+<br>Bad argument `udp'
+<br>Try `iptables -h' or 'iptables --help' for more information.</blockquote>
+
+<p><br>For the other error messages, I would try commenting out
+<br>all the rules (except one for the first try) and run the script that
+<br>loads them un-commenting one at a time.
+<p>For an exercise like that, script flushall is helpful between
+<br>runs:
+<br>iptables -t filter -F
+<br>iptables -t mangle -F
+<br>iptables -t nat -F
+<br>&nbsp;
+<pre>--&nbsp;
+William Chappell,&nbsp;&nbsp;&nbsp;&nbsp; Software Engineer,&nbsp;&nbsp;&nbsp;&nbsp; Critical Technologies, Inc.
+Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica, NY 13501
+315-793-0248&nbsp; x148&nbsp; &lt; bill.chappell@critical.com >&nbsp; www.critical.com</pre>
+&nbsp;</html>
+
+--------------C21345CC950957B59FF0CB2C--
 
 
