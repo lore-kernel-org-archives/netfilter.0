@@ -1,12 +1,14 @@
-From: Igor Tsinman <igort@go-wlan.com>
-Subject: Re: NAT FROM public ip TO public ip
-Date: Thu, 06 Jan 2005 09:23:43 +0200
-Message-ID: <41DCE77F.4020503@go-wlan.com>
-References: <10459.1105072608@www72.gmx.net>
+From: ASHISH <ashishis@gmail.com>
+Subject: Re: Limit Virus Effects on Web Server
+Date: Fri, 7 Jan 2005 15:17:21 +0530
+Message-ID: <558224e3050107014741bb9a26@mail.gmail.com>
+References: <20050105144413.15525.qmail@webmail02.mesa1.secureserver.net>
+	<1105023418.20638.15.camel@nostromo.bgsecm.com>
+Reply-To: ASHISH <ashishis@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <10459.1105072608@www72.gmx.net>
+In-Reply-To: <1105023418.20638.15.camel@nostromo.bgsecm.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,60 +19,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mario Ohnewald <mario.Ohnewald@gmx.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Mario Ohnewald wrote:
+If you are aware of the Ip's from which viral traffic is bombarding
+requests, then you can tighten the limit match for those IP's. But if
+it is a DDos attack, then netfilter cannot do much.
 
->Hello List!
->
->This is a real easy question, but i will explain it in detail so that you
->know what i am on about ;)
->
->I have two internet boxes, both have only one nic.
->Box A is my root box.
->Box B is a ftp server (where i am not admin, but i have an ftp account).
->
->Both, Box A and B have a public ip address.
->You can NOT access the ftp server from the outside.
->ONLY Box A can connect to that ftp server (Box B).
->
->So i though i could simply nat a connection through my Box A, to Box B.
->If i connect from the real bad world, to my Box A, port 2121. Box A could
->forward/NAT that to the internal ftp box.
->
->I have tried it with this rule:
->$IPT -t nat -A PREROUTING -i eth0 -p tcp -d 123.123.123.123 -m helper
->--helper ftp-2121 -j DNAT --to-destination 123.123.123.111
->
->and
->
->modprobe ip_conntrack_ftp ports=21,2121
->
->
->But it looks like its not working.
->I did a tcpdump -i eth0 -n host 123.123.123.111
->
->
->And no packages where transfered to the ftp box (123.123.123.111).
->Any idea why? Am i going the right way at all?
->
->Thanks, Mario
->
->  
->
-You have to add an additional rule:
-$IPT -A FORWARD -p tcp -i eth1 -d 23.123.123.123 --dport 2121 -j ACCEPT
+We are experimenting netfilter along with scripting over inhouse built
+algorithms. Like we analyse internet traffic periodically, and the
+scripts inserts and remove rules into netfilter generally once a day.
 
-For this example, eth0 is external and eth1 is internal.
+On 07 Jan 2005 00:48:49 +0100, Jose Maria Lopez <jkerouac@bgsec.com> wrote:
+> El mi=E9, 05 de 01 de 2005 a las 15:44, Benjamin Bostow escribi=F3:
+> > I have a gateway that directs all internal web traffic to my website.
+> > The site makes use of extensive DB calls. When someone with a virus
+> > that connects to port 80 plugs in behind the gateway the DB goes to
+> > 100% CPU usage. I am trying to limit this and try to filter out virus
+> > traffic from browser/user traffic. I was thinking I could use kinda the
+> > same rule as I have for preventing ping attacks but it doesn't seem to
+> > work. I have tried using "iptables -t nat -I PREROUTING 1 -p tcp -m tcp
+> > --dport 80 -m limit --limit 5/s --limit-burst 10 -j redirection_chain".
+> > It seems that all traffic no matter how great still goes to my
+> > webserver. Also, is there a way to drop packets over a certain amount
+> > per time from one user?
+> >
+> > Benjamin
+>=20
+> Maybe an IPS like snort with the bleeding-rules can be useful to
+> drop some of this traffic.
+>=20
+> --
+> Jose Maria Lopez Hernandez
+> Director Tecnico de bgSEC
+> jkerouac@bgsec.com
+> bgSEC Seguridad y Consultoria de Sistemas Informaticos
+> http://www.bgsec.com
+> ESPA=D1A
+>=20
+> The only people for me are the mad ones -- the ones who are mad to live,
+> mad to talk, mad to be saved, desirous of everything at the same time,
+> the ones who never yawn or say a commonplace thing, but burn, burn, burn
+> like fabulous yellow Roman candles.
+>                 -- Jack Kerouac, "On the Road"
+>=20
+>=20
 
 
-
-Cheers,
-Igor Tsinman
-
-igort@gonetworks.com
-
-
+--=20
+cheers
+Ashish
 
