@@ -1,13 +1,14 @@
 From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Port Forwarding Problem
-Date: Wed, 26 Feb 2003 04:20:38 +0100
+Subject: Re: linux-2.4.20 iptables-1.2.7a  DHCP on EXTIF
+Date: Wed, 26 Feb 2003 04:31:32 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030226042038.75c8a032.arnt@c2i.net>
-References: <3E5BB0BF.2070401@openadventures.org>
+Message-ID: <20030226043132.6564b53b.arnt@c2i.net>
+References: <20030221081303.15658.76956.Mailman@kashyyyk>
+	<LKEMIKEDGPBEAFDKINCGIEJCEDAA.stormp@telus.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E5BB0BF.2070401@openadventures.org>
+In-Reply-To: <LKEMIKEDGPBEAFDKINCGIEJCEDAA.stormp@telus.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,16 +19,116 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: stormp@telus.net
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 25 Feb 2003 11:06:55 -0700, 
-Tom Smith <tom@openadventures.org> wrote in message 
-<3E5BB0BF.2070401@openadventures.org>:
+On Tue, 25 Feb 2003 17:01:15 -0800, 
+"Storm D. J. Petersen" <stormp@telus.net> wrote in message 
+<LKEMIKEDGPBEAFDKINCGIEJCEDAA.stormp@telus.net>:
 
-> RedHat 7.3 w/ Kernel 2.4.9-13
+> I have solved my own problem!
+> 
+> I am posting it because I've received a few private messages with
+> people suffering from the same symptoms.
+> 
+> I have Redhat7.3 base install and the default location of iptables is
+> /sbin/iptables*  and /lib/iptables/*
+> 
+> The default for iptables Makefile is to install to
+> /usr/local/sbin/iptables* and /usr/local/lib/iptables/*
+> 
+> Originally I had compensated for the executable path but not for the
+> library path.  As a result, I am assuming that iptables was using my
+> old iptables*.so's.
+> 
+> 
+> QUICK FIX:
+> 
+> #  cp /usr/local/sbin/iptables*  /sbin
+> 
+> #  cp /usr/local/lib/iptables/*    /lib/iptables
+> 
+> # iptables -version
+> iptables v1.2.7a
+> 
+> #  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> 
+> WORKS
+> 
+> Hope that helps anyone with the same problem.
+> 
 
-..you want 2.4.18-24.7.x, _several_ errata fixes.
+..the _appropriate_ way is 'rpm -e iptables', and leave the tarballs
+in /usr/local/sbin/* and /usr/local/lib/iptables/* instead of screwing
+up your rpm database.  'rpm -q iptables' and 'iptables -V' says?  ;-)
 
+
+> -----Original Message-----
+> Message: 3
+> Reply-To: <stormp@telus.net>
+> From: "Storm D. J. Petersen" <stormp@telus.net>
+> To: <netfilter@lists.netfilter.org>
+> Subject: linux-2.4.20 iptables-1.2.7a  DHCP on EXTIF
+> Date: Thu, 20 Feb 2003 19:48:09 -0800
+> 
+> 
+> Hi,
+> 
+> I am still confused. ;-)
+> 
+> I upgraded my kernel to 2.4.20 and now  # iptables -t nat -A
+> POSTROUTING -o eth0 -j MASQUERADE  doesn't work.
+> 
+> However,  # iptables -t nat -A POSTROUTING -j SNAT -to $EXTIP   
+> works!
+> 
+> My problem is that I am behind a cable modem that changes my IP
+> address daily.  So, what does one do if their eternal interface uses
+> DHCP? Thanks.
+> S.
+> 
+> 
+> 
+> 
+> --__--__--
+> 
+> Message: 4
+> Reply-To: <stormp@telus.net>
+> From: "Storm D. J. Petersen" <stormp@telus.net>
+> To: <netfilter@lists.netfilter.org>
+> Subject: linux-2.4.20 iptables-1.2.7a  DHCP on EXTIF
+> Date: Thu, 20 Feb 2003 20:05:03 -0800
+> 
+> Whoops should read:
+> 
+> However,  # iptables -t nat -A POSTROUTING -o eth1 -j SNAT -to $EXTIP
+> works!
+> 
+> 
+> 
+> -----Original Message-----
+> From: Storm D. J. Petersen [mailto:stormp@telus.net]
+> Sent: Thursday, February 20, 2003 7:48 PM
+> To: netfilter@lists.netfilter.org
+> Subject: linux-2.4.20 iptables-1.2.7a DHCP on EXTIF
+> Importance: High
+> 
+> 
+> Hi,
+> 
+> I am still confused. ;-)
+> 
+> I upgraded my kernel to 2.4.20 and now  # iptables -t nat -A
+> POSTROUTING -o eth0 -j MASQUERADE  doesn't work.
+> 
+> However,  # iptables -t nat -A POSTROUTING -j SNAT -to $EXTIP   
+> works!
+> 
+> My problem is that I am behind a cable modem that changes my IP
+> address daily.  So, what does one do if their eternal interface uses
+> DHCP? Thanks.
+> S.
+> 
 -- 
 ..med vennlig hilsen = with Kind Regards from Arnt... ;-)
 ...with a number of polar bear hunters in his ancestry...
