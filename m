@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Redirect to same LAN and preserve source IP
-Date: Mon, 12 Jul 2004 16:31:56 +0100
+From: "Mark C. Casey" <markcc@jadepress.co.uk>
+Subject: MIRROR.. would this work?
+Date: Mon, 12 Jul 2004 16:34:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407121631.56183.Antony@Soft-Solutions.co.uk>
-References: <200407121419.40110.gdh@acentral.co.uk> <200407121438.59254.Antony@Soft-Solutions.co.uk> <200407121612.27437.gdh@acentral.co.uk>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <627ED3D5182532448B61510FFAB3D37F10A94F@srvdc01.jade.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407121612.27437.gdh@acentral.co.uk>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,33 +19,17 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 12 July 2004 4:12 pm, Gavin Hamill wrote:
+Would the following work in trying to access 172.16.0.1 but seeing the =
+address of 123.123.123.123. (say 123.123.123.123 is an external address =
+and when 172.16.0.1 tries accessing 123.123.123.123 it accesses itself? =
+it's a long story, I just need to be able to access 172.16.0.1 from =
+172.16.0.1 but using the external address of 123.123.123.123 from =
+172.16.0.1)
 
-> On Monday 12 July 2004 14:38, Antony Stone wrote:
-> > Yes.   Just use DNAT, and make sure the Squid box is not on the same
-> > subnet as the clients (so that it has to send the replies back through
-> > the firewall).
->
-> Ah OK, I was hoping to avoid that since the machine that runs Squid is also
-> an NFS server and various other things...
+iptables -A FORWARD -p tcp -s 172.16.0.1/32 -d 123.123.123.123/32 -j =
+MIRROR
 
-How about *configuring* the clients so they use the proxy "properly" instead 
-of doing transparent redirection?   Then you can keep the Squid box on the 
-same subnet as the clients, and still block people trying to do TCP port 80 
-straight through the firewall (only one source IP is allowed - the Squid 
-box).   You also get the benefit that they can do FTP over HTTP proxying too, 
-which you can't do transparently...
+Thanks
 
-Regards,
-
-Antony.
-
--- 
-The truth is rarely pure, and never simple.
-
- - Oscar Wilde
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Mark
 
