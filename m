@@ -1,12 +1,14 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: traceroute
-Date: Wed, 30 Jun 2004 10:52:52 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: traceroute
+Date: Wed, 30 Jun 2004 15:57:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62E808@email1.mitretek.org>
+Message-ID: <200406301557.58665.Antony@Soft-Solutions.co.uk>
+References: <2E314DE03538984BA5634F12115B3A4E62E806@email1.mitretek.org>
+Reply-To: "netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62E806@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,168 +19,58 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hrm, perhaps..
+On Wednesday 30 June 2004 3:34 pm, Piszcz, Justin Michael wrote:
 
-Maybe showing a diagram of your network might help?
-
-It sounds like you have two firewalls then?
-If so, I still believe you would be using INPUT.., have you tried it,
-default POLICY for FORWARD to ACCEPT and enable the INPUT rule?
-
-Traceroute:
-
-[yourbox (iptables firewall)] ---------> [nat+firewall] -------> host?
-
------Original Message-----
-From: Peter Marshall [mailto:peter.marshall@caris.com]=20
-Sent: Wednesday, June 30, 2004 10:50 AM
-To: Piszcz, Justin Michael; netfilter
-Subject: Re: traceroute
-
-Why would I use the INPUT chain .. I am doing a trace route from an
-internal
-box to an internet box ... on the other side of my firewall ... I am
-pretty
-sure that is a forwared rule ... is it not ?
-
-Peter
-
------ Original Message -----=20
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
-<netfilter@lists.netfilter.org>
-Sent: Wednesday, June 30, 2004 11:34 AM
-Subject: RE: traceroute
-
-
-Is there a reason why you are doing stuff with the FORWARD chain?
-Have you tried enabling ACCEPT for the FORWARD chain and seeing if it
-works?
-
-Generally, with the FORWARD chain, over all other chains you need to be
-careful on how you use it. If used improperly, you could screw a lot of
-things up on the network.
-
-I would recommend trying it without any forward options.
-Ie: iptables -P FORWARD ACCEPT
-
-You need the ESTABLISHED,RELATED option for the INPUT chain.
-
-# STEP 9 - ALLOW IN WHAT WE SEND OUT
-####################################### $IPTABLES -A INPUT -m state
---state ESTABLISHED,RELATED -j ACCEPT
-
------Original Message-----
-From: Peter Marshall [mailto:peter.marshall@caris.com]
-Sent: Wednesday, June 30, 2004 10:25 AM
-To: Piszcz, Justin Michael; netfilter
-Subject: Re: traceroute
-
-I don't get anything (except the name lookup) from traceroute.
-
-When I run a packet sniffer, I see the following (when doing a
-traceroute on
-www.google.com)
-
-source     destination                 Proto
-me           216.239.41.99          UDP            sourceport 1059
-destination port 33435
-3com       3com                         ARP            who has
-<gatewayip>
-tell <my ip>
-3com        3com                        ARP            <gateway ip> is
-at
-<mac address>
-me           216.239.41.99           UDP          soutceport: 1059
-Destination port 33437
-......
-
-traceroute to www.google.akadns.net (216.239.39.147), 30 hops max, 38
-byte
-packets
- 1  * * *
- 2  * * *
-
-Below are the relavant rules .... tracert is the ip of the box I am
-trying
-to traceroute form.
-The Ip of that box is an internet routable ip addess.
-
-$IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPT -A FORWARD -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-$IPT -A FORWARD -s <tracert box> -o eth1 -j rh-net
-$IPT -A FORWARD -d <tracert box -i eth1 -j net-rh
-
-$IPT -A rh-net -s <tracert box> -j ACCEPT
-$IPT -A net-rh -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-
-Thank you again,
-Peter.
-
------ Original Message -----=20
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-To: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Wednesday, June 30, 2004 10:47 AM
-Subject: RE: traceroute
-
-
-Can you show me your firewall?
-Can you paste the blocks you are seeing?
-It does not get past the 1st hop, or?
-Post an example traceroute?
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: Wednesday, June 30, 2004 9:29 AM
-To: netfilter
-Subject: Re: traceroute
-
-On Wednesday 30 June 2004 2:05 pm, Peter Marshall wrote:
-
-> Hi.  I was wondering what I would need for rules to have traceroute
-work
-> through my firewall.  (I have a box behind the firewall trying to get
-out
-> using traceroute).
+> -----Original Message-----
+> From: Peter Marshall [mailto:peter.marshall@caris.com]
+> Sent: Wednesday, June 30, 2004 10:25 AM
+> To: Piszcz, Justin Michael; netfilter
+> Subject: Re: traceroute
 >
-> I have an allow established connections on my forwared chain, and I am
-> allowing anything from the source IP of the box in question to leave
-... It
-> appears that the problem is on the packets comming back in .. but I am
-not
-> sure what I have to do to fix it ....
+> I don't get anything (except the name lookup) from traceroute.
+>
+> Below are the relavant rules .... tracert is the ip of the box I am
+> trying to traceroute form.
+> The Ip of that box is an internet routable ip addess.
+>
+> $IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPT -A FORWARD -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+> $IPT -A FORWARD -s <tracert box> -o eth1 -j rh-net
+> $IPT -A FORWARD -d <tracert box -i eth1 -j net-rh
+>
+> $IPT -A rh-net -s <tracert box> -j ACCEPT
+> $IPT -A net-rh -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Allow RELATED packets as well as ESTABLISHED.
+You should allow ICMP packets through your system.
+
+You should certainly allow ICMP through if you want traceroute to work, and 
+you should generally allow ICMP if you want many other things to work.   If 
+you want to block certain types of ICMP, that's fine (many people do), but 
+don't block all ICMP.
+
+Traceroute works by sending either ICMP "ping" (echo request) packets, or UDP 
+packets to high port numbers (which are assumed not to be listening), 
+depending on the Operating System of the client doing the traceroute.   In 
+both cases the important response is an ICMP TTL exceeded packet, which 
+contains the IP address of the router where TTL became == 0.
+
+Remember that firewalling can be a dangerous topic - if you block things you 
+don't understand, and therefore don't know that you should allow, some things 
+will break.
 
 Regards,
 
 Antony.
 
---=20
-"It is easy to be blinded to the essential uselessness of them by the
-sense of
-achievement you get from getting them to work at all. In other words -
-and
-this is the rock solid principle on which the whole of the Corporation's
+-- 
+Anything that improbable is effectively impossible.
 
-Galaxy-wide success is founded - their fundamental design flaws are
-completely hidden by their superficial design flaws."
+ - Murray Gell-Mann, Nobel Prizewinner in Physics
 
- - Douglas Noel Adams
-
-                                                     Please reply to the
-list;
-                                                           please don't
-CC me.
-
-
-
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
