@@ -1,13 +1,13 @@
-From: Brent Gregersen <gregerse@chemsun.chem.umn.edu>
-Subject: RE: work ip address at home
-Date: Wed, 22 Oct 2003 22:20:25 -0500 (CDT)
+From: "Gaby Schilders" <G.Schilders@ibfd.org>
+Subject: RE: TARPIT Redhat 9 error
+Date: Thu, 23 Oct 2003 11:21:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031022220332.U2796@chemsun.chem.umn.edu>
-References: <7C9884991ADAE0479C14F10C858BCDF5122E78@alderaan.smgtec.com>
- <20031022125857.K34090@chemsun.chem.umn.edu> <Pine.LNX.4.53.0310221918430.4648@xena.cft.ca.us>
+Message-ID: <DAAAFFB7B8C62F40BC87BF3E729F79E10119909C@ibfdmail.ibfd.oin>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C39947.11A924B2"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.53.0310221918430.4648@xena.cft.ca.us>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +17,99 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jim Carter <jimc@math.ucla.edu>
-Cc: Daniel Chemko <dchemko@smgtec.com>, netfilter@lists.netfilter.org
+To: netfilter list <netfilter@lists.netfilter.org>
 
-> If it's anything like flexlm, there's a license file on the local machine
-> which tells it the host name and port number of the server.  Flexlm
-> actually doesn't care which of our various subnets the client is on, only
-> how many licenses it's passed out, though our firewall rules DO care :-)
-> In any case, it would be worth the effort to try to fake it out using ssh.
-> Here's a sample command line for forwarding SMTP (port 25) that I (used to)
-> use for sending mail as if local, to bypass our anti-relaying rules (look
-> at the headers of this message, for the current solution :-)
->
-> /usr/bin/ssh -q -x -f -N -L 20025:julia.math.ucla.edu:25 julia.math.ucla.edu
->
-> (-q - quiet, -x = omit X-windows, -f = drop into background, -N = omit
-> shell command, -L = port forwarding.)  I test by doing...
->
-> telnet localhost 20025
->
-> To my HELO, it responds:
->
-> 250 julia.math.ucla.edu Hello julia.math.ucla.edu [128.97.4.254], pleased
-> to meet you
->
-> The packets appear to come from Julia, the host listed in the -L parameter.
-> It might be a good idea to turn on keepalives, so a forgotten connection
-> automatically exits when the net connection goes down.
-> >
+This is a multi-part message in MIME format.
 
-Yes, like flexlm there is an enviroment variable TLMHOST that is set to
-the name of the license server.
+------_=_NextPart_001_01C39947.11A924B2
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I had actually just tried the ssh tunnel, only to find out the the license
-request goes out over udp, and dosent get forwarded.
+Perhaps I'm being too simplistic, but is that '-m tcp' ok?
+=20
+Gaby
 
-I now however have pptp(d) set up on my home and work machines.
-Communication between home and work over point-to-point link is verified
-and I added a route on the home machine 'route add -host $TLMHOST ppp0' so
-that requests to the license server will be carried over the ptp
-connection.
-
-however, when I ping $TLMHOST, the packets are getting swallowed by my
-machine at work. (ifconfig at work shows arriving packets on ppp0 and the
-pptp-php-gtk.php status window at home shows outgoing packets on ptp
-connection.)
-
-Im sure I just dont have the firewall/routing rules configured on my work
-machine to properly route the ppp0 connection (to/from home) onto eth0 (public ip
-subnet at work). Im fairly certain that if the routing/forwarding/nat is
-set up correctly, I could obtain a key over the point-to-point link.
-
-Any suggestions on a 'proper' iptables configuration to do the above?
-(pass ppp0 packets from home onto eth0 at work so that replies will come
-back through ppp0 to my home machine)
+-----Original Message-----
+From: Regalado, Ron [mailto:Ron.Regalado@mci.com]
+Sent: woensdag 22 oktober 2003 19:54
+To: netfilter@lists.netfilter.org
+Subject: TARPIT Redhat 9 error
 
 
-Thanks again for all the suggestions...
+I have upgraded to iptables 1.2.8, installed the patch-o-matic extra for =
+tarpit, recompiled the kernel.  I am getting the error=20
+=20
+iptables -A INPUT -p tcp -m tcp --dport 135 -j TARPIT
+iptables: No chain/target/match by that name
+=20
+Will tarpit work with redhat's rpm package?
+Or do I need to download and install the package from the netfilter =
+site?
+=20
+Thanks,
+=20
+Ron
+
+
+------_=_NextPart_001_01C39947.11A924B2
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+
+
+<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D383442009-23102003>Perhaps I'm being too simplistic, but is that =
+'-m tcp'=20
+ok?</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D383442009-23102003></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D383442009-23102003>Gaby</SPAN></FONT></DIV>
+<BLOCKQUOTE dir=3Dltr style=3D"MARGIN-RIGHT: 0px">
+  <DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
+face=3DTahoma=20
+  size=3D2>-----Original Message-----<BR><B>From:</B> Regalado, Ron=20
+  [mailto:Ron.Regalado@mci.com]<BR><B>Sent:</B> woensdag 22 oktober 2003 =
+
+  19:54<BR><B>To:</B> netfilter@lists.netfilter.org<BR><B>Subject:</B> =
+TARPIT=20
+  Redhat 9 error<BR><BR></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2><SPAN class=3D438185017-22102003>I =
+have upgraded to=20
+  iptables 1.2.8, installed the patch-o-matic extra for tarpit, =
+recompiled the=20
+  kernel.&nbsp; I am getting the error </SPAN></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2>iptables -A INPUT -p tcp -m tcp =
+--dport 135 -j=20
+  TARPIT</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2>iptables: No chain/target/match by =
+that=20
+  name</FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2><SPAN class=3D438185017-22102003>Will =
+tarpit work=20
+  with redhat's rpm package?</SPAN></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2><SPAN class=3D438185017-22102003>Or =
+do I need to=20
+  download and install the package from the netfilter =
+site?</SPAN></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2><SPAN=20
+  class=3D438185017-22102003></SPAN></FONT>&nbsp;</DIV>
+  <DIV><FONT face=3DArial size=3D2><SPAN=20
+  class=3D438185017-22102003>Thanks,</SPAN></FONT></DIV>
+  <DIV><FONT face=3DArial size=3D2><SPAN=20
+  class=3D438185017-22102003></SPAN></FONT>&nbsp;</DIV>
+  <DIV><SPAN class=3D438185017-22102003><FONT face=3DArial=20
+  size=3D2>Ron</FONT></SPAN></DIV></BLOCKQUOTE></BODY></HTML>
+
+------_=_NextPart_001_01C39947.11A924B2--
 
