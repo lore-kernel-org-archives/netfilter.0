@@ -1,9 +1,10 @@
-From: Guillermo Chui Lau <memochui@gtp.com.pe>
-Subject: RULE TRASLATION
-Date: Thu, 27 Feb 2003 18:59:52 -0500
+From: nedco <nedco@unacs.bg>
+Subject: Iptables slow rules loading/inserting
+Date: Fri, 28 Feb 2003 13:55:33 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6B4345976F8D444ABCFEF8B628BAC1A0059E14@APPSRV>
+Message-ID: <3E5F6A55.6060501@unacs.bg>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,19 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I HAVE A LINUX BOX WITH SQUID AND IPCHAINS
-I WANT TO MIGRATE TO IP TABLES , I HAVE THE THING WORKING BUT I NEED TO
-TRANSLATE ONE MORE RULE
 
-/SBIN/IPCHAINS -M -S 7200 10 60
 
-CAN SOMEBODY HELP ME ????
 
-THANKS
+Hi, i have posted before question to this group and get some hints
+so i like to share with you.
 
-GUILLERMO CHUI LAU
+How to insert fast about 20000 rules in iptables for accounting traffic
+
+*on PIII - 1200Mhz 512SDRAM
+
+iptables*-restore 22 min loding rules
+NF-HIPAC can't be used for accounting for the moment http://www.hipac.org
+loding with standard iptables -A   belive me you can't wait so long :))
+
+
+
+
 
