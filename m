@@ -1,10 +1,12 @@
-From: "Yaniv Fine" <yanivf@fwgate.dyndns.org>
-Subject: Dynamically deleting  a rule upon end of session
-Date: Wed, 5 Mar 2003 23:40:40 +0200
+From: =?iso-8859-1?Q?Rosenda_Elisa_Zald=EDvar_Pupo?= <elisa@virtus.co.cu>
+Subject: Internet access
+Date: Wed, 5 Mar 2003 13:31:41 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <MGEAKEOIFLHPHMKGGAJBOEPBCAAA.yanivf@fwgate.dyndns.org>
+Message-ID: <000e01c2e345$7747fbd0$0702a8c0@virtus.co.cu>
+Reply-To: =?iso-8859-1?Q?Rosenda_Elisa_Zald=EDvar_Pupo?= <elisa@virtus.co.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000B_01C2E31B.8E643830"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,32 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi list.
-I am running iptables v1.2.7a on my debian box that acts as a firewall and a
-port-forwarder to my WebMail on my LAN.
-For this senario a remote user connected to the internet connect from his
-laptop using an ssh client to the firewall-box (I know its weird but.. it
-not a production machine) .
-My questions are.
-1. Is there a way to capture his current IP address and dynamically add a
-rule the will forward any requests to the firewall on port 80 to my Web-Mail
-on my LAN?.
-2. Is the a way after the user closes his http connection to dynamically
-delete this specific rule to prevent packet impersonating/hijacking?
+This is a multi-part message in MIME format.
 
-   P.S the default rules in the Linux box is only to allow ssh connections.
-And only upon user ssh login, a dynamic rule      will be added / deleted
+------=_NextPart_000_000B_01C2E31B.8E643830
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Thank you.
+Hy:
 
+I need to granted internet access (ex: any IP) using java classes, does =
+anyone help me?
 
+Greetings,
 
-*********************
-Yaniv Fine
-*********************
+Elisa.
 
+------=_NextPart_000_000B_01C2E31B.8E643830
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hy:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I need to granted internet access =
+(ex:&nbsp;any IP)=20
+using java classes, does anyone help me?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Greetings,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Elisa.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000B_01C2E31B.8E643830--
 
 
