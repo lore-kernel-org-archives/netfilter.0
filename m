@@ -1,14 +1,13 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Any holes in this firewall script?
-Date: 04 Jun 2003 11:12:37 +0530
+From: "wayne" <deathship_newsletters@ntlworld.com>
+Subject: RE: A Good Question about log
+Date: Wed, 4 Jun 2003 06:41:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054705385.3434.0.camel@india>
-References: <20030603180849.B2402@gateway.junsun.net>
-	<1054702862.2273.6.camel@india>  <20030603220551.A2672@gateway.junsun.net>
+Message-ID: <000501c32a5b$fb190fa0$0200a8c0@zoom>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA3@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-Y+mgLKnbMUCVAQi+laMR"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030603220551.A2672@gateway.junsun.net>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DA3@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,89 +17,100 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Jun Sun <jsun@junsun.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+What about
+
+   cat /proc/net/ip_conntrack
+
+Does that help?
+
+: -----Original Message-----
+: From: netfilter-admin@lists.netfilter.org 
+: [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
+: George Vieira
+: Sent: 03 June 2003 23:25
+: To: Blesson Paul; Allan Kissack; netfilter@lists.netfilter.org
+: Subject: RE: A Good Question about log
+: 
+: 
+: That does display it. I think you need to be more specific or 
+: give some simple example of what kind of output do you want 
+: or expect so we know what you need..
+: 
+: Thanks,
+: ____________________________________________
+: George Vieira
+: Systems Manager
+: georgev@citadelcomputer.com.au
+: 
+: Citadel Computer Systems Pty Ltd http://www.citadelcomputer.com.au
+: 
+: 
+: 
+: -----Original Message-----
+: From: Blesson Paul [mailto:blessonpaul@softhome.net]
+: Sent: Tuesday, June 03, 2003 6:47 PM
+: To: Allan Kissack; netfilter@lists.netfilter.org
+: Subject: Re: A Good Question about log
+: 
+: 
+: No  I need to know the address translation table. I need to 
+: display it At 07:24 AM 6/2/03 +0000, Allan Kissack wrote:
+: 
+: >From: "Blesson Paul" <blessonpaul@softhome.net>
+: >To: <netfilter@lists.netfilter.org>
+: >Sent: Monday, June 02, 2003 6:01 AM
+: >Subject: A Good Question about log
+: >
+: >
+: ><snip>
+: >I need to know more information
+: > > about the droped packets. The important information I 
+: need to know 
+: > > to
+: >which
+: > > computer in the intranet the src is intended to sent. I 
+: also like to 
+: > > know the internal table which contains the NAT 
+: information. regards
+: > > Blesson Paul
+: > >
+: > >
+: > > Blesson Paul,
+: >
+: >Paul,
+: >
+: >do you mean "iptables -t nat -L" ?
+: >http://www.arin.net/whois/
+: >http://www.ripe.net/perl/whois 
+: http://www.apnic.net/apnic-bin/whois.pl
+: 
+>http://www.nic.ad.jp/cgi-bin/whois_gw
+>These urls should help find some information on the source ip's
+>
+>--
+>Allan
+>
+>
+>
+>
+>---
+>Incoming mail is certified Virus Free.
+>Checked by AVG anti-virus system (http://www.grisoft.com).
+>Version: 6.0.483 / Virus Database: 279 - Release Date: 5/19/03
+
+Blesson Paul,
+Software Engineer,
+Integrated Computing Environments Ltd,
+Cochin Special Economic Zone,
+Cochin - 682 030, India.
+Tel: +91-94473 70103(M)
+       +91-484-2413 083(O),  +91-484-2413 096(O)
+       +91-481-2380 893(R)
 
 
---=-Y+mgLKnbMUCVAQi+laMR
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
 
-Yes, but after that you are allowing everything from all the
-interfaces.  Which is not recommended to do so.
-
-Dharmu
-On Wed, 2003-06-04 at 10:35, Jun Sun wrote:
-
-    On Wed, Jun 04, 2003 at 10:30:31AM +0530, Dharmendra.T wrote:
-    > hi,
-    > 
-    >  I just don't see any firewalling (blocking) in the script. You are
-    > simply allowing everything. Define clear rule like block all and allow
-    > only wanted ports.
-    >
-    
-    The default policy is set to "DROP" for the filter table.
-    
-    Jun
-
--- 
-Regards
-Dharmendra.T
-
-
-This message is intended for the addressee only. It may contain
-privileged or Confidential information. If you have received this
-message in error,please notify the sender and destroy the message
-immediately.Unauthorised use or reproduction of this message is strictly
-prohibited.
-
---=-Y+mgLKnbMUCVAQi+laMR
-Content-Type: text/html; charset=utf-8
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
-</HEAD>
-<BODY>
-Yes, but after that you are allowing everything from all the interfaces.&nbsp; Which is not recommended to do so.
-<BR>
-
-<BR>
-Dharmu
-<BR>
-On Wed, 2003-06-04 at 10:35, Jun Sun wrote:
-    <BLOCKQUOTE>
-<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>On Wed, Jun 04, 2003 at 10:30:31AM +0530, Dharmendra.T wrote:</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; hi,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt;  I just don't see any firewalling (blocking) in the script. You are</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; simply allowing everything. Define clear rule like block all and allow</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; only wanted ports.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt;</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>The default policy is set to &quot;DROP&quot; for the filter table.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Jun</FONT></FONT></I></PRE>
-    </BLOCKQUOTE>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
-Regards
-Dharmendra.T
-
-
-This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
-</TD>
-</TR>
-</TABLE>
-
-</BODY>
-</HTML>
-
---=-Y+mgLKnbMUCVAQi+laMR--
 
 
