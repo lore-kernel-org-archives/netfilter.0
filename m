@@ -1,14 +1,14 @@
-From: Cody Harris <hchs@ns.sympatico.ca>
+From: David Cannings <lists@edeca.net>
 Subject: Re: Not forwarding?
-Date: Sun, 28 Mar 2004 17:15:48 -0400
+Date: Sun, 28 Mar 2004 22:15:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040328171548.72cbcdd6@darna.vectec.net>
-References: <20040328155231.32b07799@darna.vectec.net>
-	<200403282148.46815.Antony@Soft-Solutions.co.uk>
+Message-ID: <200403282215.59200.lists@edeca.net>
+References: <20040328155231.32b07799@darna.vectec.net> <200403282154.17071.Antony@Soft-Solutions.co.uk> <20040328170733.23247779@darna.vectec.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403282148.46815.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040328170733.23247779@darna.vectec.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,38 +21,14 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, 28 Mar 2004 21:48:46 +0100,
-Someone named Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-> 4. Sorry for the way my mailer has mangled your rules, however please post the 
-> output from "iptables -L FORWARD -nvx" (the v is important as it shows the 
-> interface data which is not in the standard listing output).
+On Sunday 28 March 2004 22:07, Cody Harris wrote:
+> I rewrote the rules following your suggestions. It still doesn't work:
+> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+> any    any     anywhere             192.168.0.2        tcp dpt:ssh
+> state RELATED,ESTABLISHED
 
-I did that. Check the other thread. Unless you want me to repost.
+What I meant want a separate rule in FORWARD for established or related 
+packets.  However, please see the other mail I have just sent.
 
-> 
-> 5. How are you testing the setup?
-
-I created 2 unique usernames. And tested both. I got a freiend to try both. Phoneyuser on the firewall and night on the box i wanted. night didn't work but phoneyuser logged in ok
-
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> If at first you don't succeed, destroy all the evidence that you tried.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
-
-
--- 
-+------------------+-----------------------------+
-| Cody Harris      | --------------------------- |
-| ---------------- | --------------------------- |
-+------------------+-------+---------------------+---+
-| *Sigh*. No key.                                    |
-+----------------------------------------------------+
+David
 
