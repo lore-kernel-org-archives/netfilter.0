@@ -1,12 +1,13 @@
-From: Chris <mlists@aon.at>
-Subject: Allowing limited broadcasts between LAN <-> DMZ?
-Date: Tue, 25 Jun 2002 11:27:56 +0200
+From: Giovanni Cardone <g_cardone@libero.it>
+Subject: Re: ip_conntrack_ftp doesn't work
+Date: Tue, 25 Jun 2002 11:31:46 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D18379C.B101AA83@aon.at>
-References: <Pine.LNX.4.33.0206251044140.4927-100000@blackhole.kfki.hu>
+Message-ID: <20020625113146.B255@rainbow>
+References: <20020614194204.A232@rainbow> <Pine.LNX.4.33.0206251044140.4927-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.33.0206251044140.4927-100000@blackhole.kfki.hu>; from kadlec@blackhole.kfki.hu on Tue, Jun 25, 2002 at 10:52:12AM +0200
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,35 +18,33 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Hello,
+On Tue, Jun 25, 2002 at 10:52:12AM +0200, you wrote:
+> What is the MTU on your PPP link? Don't you see log entries from the
+> ip_conntrack_ftp module like
+> 
+> conntrack_ftp: partial PORT nnnnnnn...
+> 
+> I suspect that your link has a very low MTU size and the FTP conntrack
+> module don't have a chance to get the whole command pattern in one packet.
+> 
+> [The module usage counter of the ip_conntrack_ftp module has nothing to do
+> with the number of the handled FTP session. It says "No other module
+> depends on me"].
+I can't understand so well what you are saying... I'm not yet so smart like 
+you :) 
+Anyway, I tried this(give me some hints, if I'm wrong) :
 
+darkstar\$ /sbin/ifconfig | egrep 'MTU'
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+	  UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
 
-i am wondering if it would be a security risk to generally allow ALL
-limited broadcasts (255.255.255.255)?!
+So, it looks like 1500. Is it so small? Are you right, then? 
+		    
+> If your MTU is really small and must be kept small, then the case cannot
+> be handled by the netfilter conntrack subsystem :-(.
 
-We have a heterogenous network with Linux (Firewalls, Mail/Proxy/Time/
-etc-server), WinNT/W2k Clients & Servers and one AS/400 as server.
-Now there is our internal firewall between the LANs and the DMZ.
-At the moment i am blocking limited broadcasts, which breaks the 
-functionality of some windows stuff (SQL-Server, NetBIOS, SMB, ...).
-So i allow this traffic "manually" with adding according rules to the
-internal firewall.
-
-Why am i blocking the limited broadcast? Because i was sniffing around
-and found several "example scripts" which do this. The question is
-if this is REALLY necessary and if someone could exploit a not blocked,
-limited broadcast?
-
-Just yesterday we connected a printer to our LAN, and now it is sending
-limited broadcasts to UDP port 123?!? (it want's to know the time?? :))
-However, it's kind of annoying to see those entries in the logfile now
-every five minutes.. sure i could allow/drop this without logging,
-but the question is - again :) - can't i just allow ALL limited broad-
-casts on the internal firewall?
-
-	
-		regards, Chris
-
+I hope that's not my case(I know, I always have the passive type then...) :(
 
