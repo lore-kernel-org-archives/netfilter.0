@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DHCRELAY through IPTABLES Firewall
-Date: Tue, 29 Oct 2002 13:03:17 +0000
+From: Julio Cesar Ody <julioody@bol.com.br>
+Subject: sendmail redirect
+Date: Tue, 29 Oct 2002 09:47:05 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210291303.g9TD3Ne10065@vulcan.rissington.net>
-References: <001001c27d72$1352c350$8f33e40f@lsmith5953> <20021029091525.CVFB9836.mta01-svc.ntlworld.com@there> <004201c27f3d$20c88520$8f33e40f@lsmith5953>
+Message-ID: <3DBE7539.9020002@bol.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004201c27f3d$20c88520$8f33e40f@lsmith5953>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +15,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 29 October 2002 11:20 am, bigman@monster-solutions.net wrote:
+Hello. I need to redirect all mail trafic that enters a gateway to an 
+email server inside the same LAN. Here's the scenario:
 
-> below is what gets logged when using DHCRELAY. It looks like it will work
-> but then I never see the request from the 192.168.2.69 (firewall) hit the
-> DHCP server which I am running a sniffer on. I must be making this harder
-> then it should be. Can you provide me with the steps to get DHCRELAY
-> working across different subnets. I really appreciate all of the help.
->
-> Oct 29 07:13:12 firewall kernel: IN=eth2 OUT=
-> MAC=ff:ff:ff:ff:ff:ff:08:00:09:f1:b2:ba:08:00 SRC=0.0.0.0
-> DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=128 ID=8523 PROTO=UDP
-> SPT=68 DPT=67 LEN=308
 
-Packet comes in on eth2 with broadcast destination IP and MAC adresses, 
-source IP address = 0.0.0.0
+                 |----------------|          |----------------------|
+internet <--->  | gate(10.0.0.1) |  ------  | mailserver(10.0.0.2) |
+                 |----------------|          |----------------------|
 
-> Oct 29 07:13:12 firewall kernel: IN= OUT=eth2 SRC=192.168.2.69
-> DST=192.168.1.70 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=67
-> DPT=67 LEN=308
+"gate" is the only machine with a real ip, so, from outside this LAN, 
+people will refer to it in order to fetch their email. So my question 
+is: What rules do I need to use in order to make "gate" pass the mail 
+tasks to "mailserver" (receive smtp/pop requests) ?  Thanks in advance.
 
-The the firewall sends a packet from its own IP address 192.168.2.69 to the 
-DHCP server 192.168.1.70 on *eth2* !!!
 
-Why ?
+Julio Cesar Ody
 
-> Oct 29 07:13:27 firewall kernel: IN=eth2 OUT=
-> MAC=ff:ff:ff:ff:ff:ff:08:00:09:f1:b2:ba:08:00 SRC=0.0.0.0
-> DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=128 ID=8537 PROTO=UDP
-> SPT=68 DPT=67 LEN=308
-
-DHCP client hasn't had an answer within 15 seconds so it asks again.
-
-> Oct 29 07:13:27 firewall kernel: IN= OUT=eth2 SRC=192.168.2.69
-> DST=192.168.1.70 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=67
-> DPT=67 LEN=308
-
-Firewall sends the request to 192.168.1.70 out of the wrong interface again.
-
-Antony.
-
--- 
-
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
 
