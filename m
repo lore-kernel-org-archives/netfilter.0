@@ -1,13 +1,13 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: Re: AW: a NAT question
-Date: Fri, 16 Jul 2004 13:55:37 -0400
+From: "Victor Wren" <vwren_netfilter@timension.com>
+Subject: OT: Logs on console
+Date: Fri, 16 Jul 2004 11:25:56 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040716175537.GA19206@tranquility.scriptkitchen.com>
-References: <7A89E0296B649C4AAFD251222B1492906C4FD8@dmsbsrv1.intranet.dmsb.de> <40F7972A.9060306@arava.co.il>
+Message-ID: <40F7BB44.24155.3BC614@localhost>
+Reply-To: vwren_netfilter@timension.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <40F7972A.9060306@arava.co.il>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,15 +18,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Fri, Jul 16, 2004 at 11:51:54AM +0300, Micha Silver wrote:
-> Have you tried Shorewall? http://www.shorewall.net
-> You can do it with either DNAT or proxy arp.
+This is off-topic, but IPTABLES is the only place I have this problem.  I've 
+tried several different configurations to try to stop it from logging dropped 
+packets to my monitor.  I've put "kern.none /dev/console" in my syslog.conf, 
+and it is STILL throwing the logs entries to the monitor, even when nobody is 
+logged in!  I've got all my log entries set to --log-level info, and they're 
+getting properly logged to an iptables logfile, but they are still showing up 
+on the screen (the tutorials say this isn't an iptables issue, but ONLY the 
+iptables logs are showing up on the screen).  I've been searching the 
+internet for days trying to STOP THE MADNESS!
 
-Ok. I will try it. But I am not too fond of using tools for firewall.
-Thanks.
--Payal
+Anybody got any suggestions?
 
+Victor
+sysadmin, Timension Inc.
 
