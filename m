@@ -1,13 +1,12 @@
-From: Axel Heinrici <heinrici76@gmx.de>
-Subject: Re: block ports
-Date: Mon, 16 Sep 2002 09:53:50 +0200
+From: "Didier Hung Wan Luk" <DidierH@frci.net>
+Subject: Upgrade Iptables...
+Date: Mon, 16 Sep 2002 13:12:08 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209160953.50974.heinrici76@gmx.de>
-References: <200209161226.11945@.>
+Message-ID: <39778BFB9C25BA429794B15B50AEC781045434@server-dcms>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200209161226.11945@.>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Hi
-on 16. September 2002 09:02 PayalR wrote:
-> Hi all,
-> I have a stupid question. I want to have incoming internet access for
-> only port 22, 25, 80 and 110. How do I go abut it?
-> I thought of this rule first,
->
-> #iptables -A INPUT -i eth0 -p tcp --dport ! 22 -j DROP
->
-> and go for the other ports as well. But my problem is that if a
-> packet arrives from port 110, it will be checked for rule 1 above and
-> since it is not for port 22 it will be dropped disregarding the next
-> rules. Right?
->
-> What can I do about this? How do I exactly frame the rules?
-> Thanks a lot and bye.
+Hi All,
 
- #iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
- #iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
- #iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
- #iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
-=20
- And at the end of the Chain
-#iptables -A INPUT -i eth0 -p tcp --dport 1:1024 -j DROP
-to drop all other priviledged ports or =20
-#iptables -P INPUT DROP
-to drop all other traffic (use when you know you want to drop all=20
-including ICMP and UDP)
+I have redhat 7.3 with kernel linux-2.4.18-10 and I want to use iptables =
+1.2.7a.
 
-You know that this is not the right way if you want to "surf", send=20
-email and use ssh. This is the server-side setup for this.
+When I compile iptables do I need to recompile my kernel to use the =
+1.2.7a version of iptables?
 
-greetings=20
-=09Axel
+Didier Hung Wan Luk
+FRCI, Sibotie House
+L'Anse Courtois
+Pailles
+Tel: 230-2869636
+Fax: 230-2869629
+
 
 
