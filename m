@@ -1,11 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ARP traffic on a large-ish network
-Date: Tue, 15 Mar 2005 15:00:08 -0500
-Message-ID: <1110916807.4666.12.camel@hubcap.ljm.dom>
-References: <42B3C34A03A8FC4BB0A80082CE8993F31C1C25@onstopnt.onestop.com>
+From: Francesco Ciocchetti <primero@fastwebnet.it>
+Subject: Re: Private traffic seen on public NATed interface - Linux 2.6.10-11
+ tested
+Date: Tue, 15 Mar 2005 21:27:51 +0100
+Message-ID: <42374547.7030204@fastwebnet.it>
+References: <423737E2.4050201@ednet.ns.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42B3C34A03A8FC4BB0A80082CE8993F31C1C25@onstopnt.onestop.com>
+In-Reply-To: <423737E2.4050201@ednet.ns.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,49 +17,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: James MacLean <macleajb@ednet.ns.ca>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 2005-03-15 at 11:24, Travis Bell wrote:
-> I wasn't clear on my question yesterday.  Here's what I'm trying to do:
-> 
-> We've got a /19 block of public IPs from our provider to give to
-> customers.
-> Because we want customers to have a public IP, as opposed to NATing a
-> private IP, they are essentially just plugged into my switch just on the
-> other side of the Cisco router from our T1s.
-> 
-> Our Cisco router is ARP who-has'ing for the entire block of IPs (as it
-> should).
-> 
-> I'd like to stick something between the Cisco router and the customers
-> that keeps them from getting so much ARP traffic.  It seems like it's a
-> lot of traffic going through.  Ethereal captured 1260 ARP packets in 10
-> seconds.
-> 
-> So is there anything I can do?  Or is that much ARP traffic reasonable?
+James MacLean wrote:
 
-to reduce the amount of ARP traffic, you'll have to segment the network
-into more than a single layer 2 broadcast domain.  this means creating
-layer 2 VLANs.  in order to maintain full connectivity, you'll normally
-want to divide your /19 to match up your layer 3 subnets to your layer 2
-VLANs.
+> Hi Folks,
+>
+> Today we noticed that some traffic appears to be getting by netfilter 
+> unNATed. The computers use typical SNATing such as :
+>
+> iptables -t nat -I POSTROUTING -j SNAT -s <private ip space> -o eth0 
+> --to <IP of eth0>
+>
+a full , or almost full, iptables rules dump would be better.
 
-a /19 is 8190 hosts on a single segment--which is not what i would call
-an efficient network design (as it leads to the exact problem you're
-seeing).  normally, i won't create a layer 2 broadcast domain with more
-than 1024 hosts (/22 subnets at layer 3), even that could be pushing it
-(when they're all windows boxes).
+> While we were dumping traffic on the public interface, we noticed 
+> private IPs showing up in our dumps.
+>
+> We verified that there existed sessions between private IPs and public 
+> Internet sites where some of the private traffic was returning to the 
+> Internet site not NATed.
+>
+I hope that my "English knowledge' is joking me here ... how can be 
+established session beetween you 'private IPs ' and Internet Server??
+This is really impossible ... your packets, with private ip source, 
+would never reach any internet server cause at least your ISP routers 
+will surely filter on RFC 1918 addresses.
 
-stick a robust layer 3 switch between the customers and the cisco
-router, create VLAN interfaces on the layer 3 switch for the customers
-to use as their default gateways, and use the cisco router as the
-default gateway for the layer 3 switch.
+> We started watching, and saw this occur on servers with 2.6.11 and 
+> 2.6.10 kernels which are all we have to test with.
+>
+> These kernels were compiled locally.
+>
+> For example, tcpdumping on a public interface where no private IPs 
+> should live :
+>
+> 15:19:22.066190 IP 10.0.7.100.2640 > 142.176.33.171.http: R 
+> 2946695981:2946695981(0) ack 4138631275 win 0
+> 15:19:22.066516 IP 10.0.7.100.2641 > 142.176.33.170.http: R 
+> 818314876:818314876(0) ack 4144245614 win 0
+> 15:19:22.066684 IP 10.0.7.100.2638 > 142.176.33.170.http: R 
+> 3381617258:3381617258(0) ack 4136231656 win 0
+> 15:19:22.067353 IP 10.0.7.100.2639 > 142.176.33.170.http: R 
+> 3920569986:3920569986(0) ack 4133397861 win 0
+> 15:19:22.068045 IP 10.0.7.100.2642 > 142.176.33.170.http: R 
+> 3340982500:3340982500(0) ack 4135371285 win 0
+> 15:19:24.001820 IP 10.0.5.13.2023 > 65.54.194.118.http: F 0:0(0) ack 1 
+> win 64790
+>
+>
+this dump is really weird ... here we see packets from your private IP 
+to public IP with RST and FIN flags ... how can you rst or fin a 
+connection if you never established it? i would expect some SYN that 
+never would get any ACK ... but RST and FIN are really really weird.
 
--j
+are you sure you have run tcpdump on public interface?
 
---
-"It takes two to lie. One to lie and one to listen."
-	--The Simpsons
+> Is there something we may have been setting up incorrectly?
+> JES
 
+i really think so :)
+
+bye
+P.
 
