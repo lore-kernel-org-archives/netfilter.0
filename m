@@ -1,15 +1,16 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Is this correct?
-Date: Thu, 19 Jun 2003 18:06:33 -0400
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: Ip handling
+Date: Fri, 20 Jun 2003 01:06:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306191806.33601.Alistair@nerdnet.ca>
-References: <1056056839.18406.21.camel@localhost>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <20030620010609.19929062.arnt@c2i.net>
+References: <7C9884991ADAE0479C14F10C858BCDF5122DDB@alderaan.smgtec.com>
+	<20030619130221.GA1373@floyd>
+	<20030619135924.GC7161@cannon.eng.us.uu.net>
+	<200306191916.29001.pc-secure@home.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1056056839.18406.21.camel@localhost>
-Content-Disposition: inline
+In-Reply-To: <200306191916.29001.pc-secure@home.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +21,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Shawn <core@enodev.com>, "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On June 19, 2003 05:07 pm, Shawn wrote:
-> I have a, iptables statement I would just like someone to say if I have
-> it right.
->
-> Let's say I have a linux box with eth0=10.0.0.250 and
-> eth1=192.168.0.250, and there's a host (192.168.0.1) connected to eth1.
-> I want to route connections from hosts in 10.0.0.0/24 land to 10.0.0.1
-> onto the linux box's eth0, and have them NATed to 192.168.0.1
->
-> Will the following statement do that?
->
-> iptables -t nat -I PREROUTING -i eth0 -d 10.0.0.1 -J DNAT \
-> 	--to 192.168.0.1
+On Thu, 19 Jun 2003 19:16:28 +0200, 
+Pascal Italiaander <pc-secure@home.nl> wrote in message 
+<200306191916.29001.pc-secure@home.nl>:
 
-	Ummm .
-             Where is 10.0.0.1? (since the network is /24)
-	   If eth0's ip is 10.0.0.250 why would any packets for 10.0.0.1 end up 
-there?  Unless there is an *external* routing reference that puts 10.0.0.1 
-through 10.0.0.250 this cannot work.  If there is such a routing, the rule 
-should work.
-	
+> Op donderdag 19 juni 2003 15:59, schreef Ramin Dousti:
+> > Thanks, Julian, for the complement.
+
+> 
+> All we need to know is what spoofing is about ( not how it is done),
+> for iptables to make rules against spoofing.
+
+..the how is useful when testing your (clients etc) boxes, myself, I
+portscanned my isp's poptop server this afternoon, yes, I was asked to,
+and yes, I charge for such wee stunts.
+
+ 
+> Julian,
+> 
+> No offend Julian, but by vieuwing someones e-mail , you can tell if
+> someone is not a script-kiddy ?
+> Whauw, how do you do that, teach me . :-)
+
+..http://www.catb.org/~esr/faqs/hacker-howto.html
 
 -- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+
 
