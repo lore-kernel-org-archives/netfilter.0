@@ -1,10 +1,10 @@
-From: Venkatesh Prasad Ranganath <vranganath@cox.net>
-Subject: ACCEPT/DROP
-Date: Fri, 20 Dec 2002 04:42:54 -0600
+From: Rocco Stanzione <grasshopper@linuxkungfu.org>
+Subject: iptables help on IRC
+Date: Fri, 20 Dec 2002 22:11:46 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E02F42E.3080306@cox.net>
+Message-ID: <200212202211.46828.grasshopper@linuxkungfu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,40 +15,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-Cc: nf@hipac.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter ML <netfilter@lists.samba.org>
 
-Hi,
+All,
 
-I was looking into the iptables implementation and was intrigued about 
-how iptables would handle a situation in which we have identical rules 
-except for their targets which are contradicting, say ACCEPT and DROP. 
- By looking at ipt_do_table() function it seems that the first 
-non-IPT_RETURN  verdict from any standard target will end the traversal 
-of a chain of a table, which seems to be a bit odd.  First, such 
-conflicting rules must not be allowed.  Even beyond, this fails in the 
-situation where you have a dropping rule added after an accepting rule.
+There was an #iptables channel on freenode for a long time that was=20
+invite-only.  Long-story-short, I got the freenode folks to let me reregi=
+ster=20
+it since it wasn't even being used.  Freenode is, I think, the appropriat=
+e=20
+place for such a channel.  If there is already an 'official' iptables sup=
+port=20
+channel, please let me know.  Else, let me invite you all to #iptables on=
+=20
+irc.freenode.net.  People pop in all the time, and pop back out because I=
+'m=20
+usually the only one there.  Hopefully it will become a useful forum if=20
+people join and stay a while.
 
-For example, a packet from m.n.o.p to a.b.c.d would be accepted at 
-a.b.c.d because of the first rule, although it had to be dropped 
-according to the second rule.   And this would result because of the 
-order in which the rules are added to the table.
+Again, please inform me and disregard if there is already such a channel.
 
-iptables -A INPUT -d a.b.c.d -j ACCEPT
-iptables -A INPUT -s m.n.o.p -j DROP
+Thanks,
 
-Is my understanding correct?  If so, I am curious to know how nf-hipac 
-behaves in such situations?
+Rocco
 
-waiting for reply,
-
--- 
-
-Venkatesh Prasad Ranganath,
-Dept. Computing and Information Science,
-Kansas State University, US.
-web: http://www.cis.ksu.edu/~rvprasad
-
-
+ps.  If anyone involved with iptables or netfilter would like to claim=20
+ownership of the channel, just let me know.  Freenode will give it to you=
+=20
+anyway, but it might be smoother if we do it this way.
 
