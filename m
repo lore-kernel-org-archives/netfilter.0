@@ -1,9 +1,9 @@
 From: "hare ram" <hareram@sol.net.in>
 Subject: Re: MSN Voice chat with Iptables
-Date: Tue, 3 Jun 2003 12:06:38 +0530
+Date: Tue, 3 Jun 2003 12:40:55 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <099e01c3299a$7c98d8c0$c2bf09ca@Housecall>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A01925D@wardrive.citadelcomputer.com.au>
+Message-ID: <0c5f01c3299f$46b4d1a0$c2bf09ca@Housecall>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D9C@wardrive.citadelcomputer.com.au>
 Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -19,6 +19,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: George Vieira <georgev@citadelcomputer.com.au>, Cornu Nicolas <n.cornu@ifrance.com>, netfilter@lists.samba.org
+
+So
+
+there is no solution for people can chat MSN to MSN Voice chat, more than
+one
+
+hare
+----- Original Message -----
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+To: "hare ram" <hareram@sol.net.in>; "Cornu Nicolas" <n.cornu@ifrance.com>;
+<netfilter@lists.samba.org>
+Sent: Tuesday, June 03, 2003 12:09 PM
+Subject: RE: MSN Voice chat with Iptables
+
+
+I think they can make outgoing calls but it's the incomming that's the
+problem.. i'm mena think about it.. the poor firewall gets a incomming call,
+it doesn't know who to put it through the poort damn blonde receiptionist...
+;)
+
+If someone wrote some sort of H323 version of the old ICQ module for
+ipchains that would be great because it could track MSN user logins and know
+where they are, possibly some sort of connection tracking RELATED
+connections and redirect to te right user.... yeah admin heaven I'm in at
+the mo'... ;P he he
+
+it's too complicated for incoming calls...
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+
+-----Original Message-----
+From: hare ram [mailto:hareram@sol.net.in]
+Sent: Tuesday, June 03, 2003 4:37 PM
+To: George Vieira; Cornu Nicolas; netfilter@lists.samba.org
+Subject: Re: MSN Voice chat with Iptables
+
 
 Hi
 
@@ -163,6 +207,9 @@ http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de France
 _____________________________________________________________________
 Envie de discuter en "live" avec vos amis ? T=E9l=E9charger MSN Messenger
 http://www.ifrance.com/_reloc/m la 1=E8re messagerie instantan=E9e de France
+
+
+
 
 
 
