@@ -1,13 +1,11 @@
-From: Michal Kepien <lordpopcorn@poczta.onet.pl>
-Subject: Re: Firewall setup at boot - trouble with setting up the LOG target
-Date: Fri, 04 Jul 2003 09:39:23 +0200
+From: =?iso-8859-1?q?Bissio?= <bissio2000@yahoo.it>
+Subject: Source IP address
+Date: Fri, 4 Jul 2003 09:48:32 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <chbagvsp3mcblk39e4n5u9od1ntja2ksb1@4ax.com>
-References: <7C9884991ADAE0479C14F10C858BCDF52E3554@alderaan.smgtec.com> <tcp8gvc03vldjthtabk4s3ii2pv96a7is9@4ax.com> <20030704024217.5e231e71.arnt@c2i.net>
+Message-ID: <20030704074832.35646.qmail@web41504.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030704024217.5e231e71.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,19 +16,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
->>I've searched Google but found nothing worth interest.
->..not even in http://tldp.org/ ???
+Hi all,
 
-Of course, I'm sorry... Looks like I'm an amateur in searching the
-Web, too. Well, this:
+I've a problem with masq... sometimes when i connect
+to pubblic chat or other web services from my lan, i
+see my source ip address (private network) listed. I
+would see my pubblic ip address listed... i use this
+rule:
 
-http://tldp.org/LDP/intro-linux/html/sect_04_02.html
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o
+eth1 -j SNAT --to public.ip.address
 
-helped me a bit (can't forget Jeremy :) however I still don't know
-what can be the cause of my problem (from what I've read, these
-iptables v1.2.3 entries really _shouldn't_ be where they are...)
+and in FORWARD rule:
 
-Michal Kepien
+iptables -A FORWARD -p tcp -i eth0 -o eth1 -s
+192.168.3.0/24 --dport 1:1023 -j ACCEPT
+
+iptables -A FORWARD -p tcp -i eth1 -o eth0 -d
+192.168.3.0/24 --dport 1024:65535 ! --syn -j ACCEPT
+
+Why my private ip addres (192.168.0.10) is listed
+instead my public address???
+
+Thanks
+Bissio
+
+______________________________________________________________________
+Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus, il filtro Anti-spam
+http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/
 
