@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Edgar Estrada Lopez" <estradaedgar@hotmail.com>
 Subject: Re: Selective Masquerading
-Date: Sun, 25 Apr 2004 22:53:13 +0100
+Date: Sun, 25 Apr 2004 20:06:30 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404252253.13553.Antony@Soft-Solutions.co.uk>
-References: <BAY8-F97Fk2H3b98Ktd0002fb6f@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <BAY8-F46ylJc0xvlUQ900035531@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY8-F97Fk2H3b98Ktd0002fb6f@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +14,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-On Saturday 24 April 2004 5:14 pm, Edgar Estrada Lopez wrote:
-
-> HI guys:
+Anthony:
 >
-> I have a DSL @ 1mb, and another one @ 256kbps
-> So I could have fast downloads, and fast web browsing also.
+>On Saturday 24 April 2004 5:14 pm, Edgar Estrada Lopez wrote:
+>
+> > HI guys:
+> >
+> > I have a DSL @ 1mb, and another one @ 256kbps
+> >
+> > While giving a deep thought on why I got the 2 dsl, the answer is=20
+>simple:
+> > So I could have fast downloads, and fast web browsing also.
+> >
+> > So I was thinking: is there a way to masquerade  / direct all web=20
+>browsing
+> > to the 256dsl, and leave the rest of the communications (higher ports) =
 
-Have you thought of using QoS to prioritise HTTP traffic, so you get a fast 
-response on web browsing, whilst allowing downloads to use all the bandwidth 
-when there isn't an HTTP request happening?   That way you might achieve what 
-you want with just the 1Mbps DSL line.
+>to
+> > the 1 mbps line?
+>
+>I'm sure you can do this either with iproute2 on its own, or if not then
+>certainly by routing packets based on a MARK, and MARKing them in netfilter
+>based on destination port number.
+>
 
-Regards,
+I've already read / tried all LARTC split-access howto -- no luck.
 
-Antony.
+I can even have both interfaces up and runninng -- but my default route mus=
+t=20
+point to only one -- the moment I add the equalized route (ip route add=20
+default equalize nexthop xxx.xxx.xxx.xxx via ethx nexthop......) then one o=
+f=20
+the DSL begins an AWFUL ARP flood, and no more communications occur (pingin=
+g=20
+to a know host equals 'destination host unreachable').
 
--- 
-"The problem with television is that the people must sit and keep their eyes 
-glued on a screen; the average American family hasn't time for it."
+I haven't tried the MARKing, though.
 
- - Report in the New York Times, following a demonstration at the 1939 World's 
-Fair.
+>However, I have to ask - what sort of traffic are you generating which can=
+=20
+>use
+>a 1Mbps line for "downloads", which is not HTTP?   I realise that you could
+>be using FTP, or rsync, however I suspect you mean p2p networking, and you
+>should check that this really isn't using TCP port 80 - otherwise there's =
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+>no
+>way of distinguishing the two types of traffic.
+
+Yes, I do mostly FTP - P2P - BT traffic -- all those use differnt ports
+
+>
+>Of course the other way to do it would be to use an HTTP proxy such as=20
+>Squid
+>which has a default route pointing up the 256k DSL, and the default gateway
+>for other machines going up the 1M DSL...
+>
+
+Haven't tried Squid either ....
+
+What do you suggest? MARKing or Squid ?? I think MARKing would be clearer=20
+since it is not a proxy but a routing...
+
+Thank you for your time.
+
+- Ed
+
+_________________________________________________________________
+MSN. M=E1s =DAtil Cada D=EDa  http://www.msn.es/intmap/
 
 
