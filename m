@@ -1,11 +1,12 @@
-From: "Hudson Delbert J Contr 61 CS/SCBN" <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: Redirection question
-Date: Mon, 20 Dec 2004 14:47:23 -0800
-Message-ID: <186AC876521E0F46BDE77079A6567FD05B0058@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
+From: Jason Opperisano <opie@817west.com>
+Subject: RE: INPUT or FORWARD;;
+Date: Mon, 20 Dec 2004 17:48:18 -0500
+Message-ID: <1103582898.13782.1.camel@hubcap.ljm.dom>
+References: <Pine.LNX.4.05.10412201617430.18976-100000@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.05.10412201617430.18976-100000@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Sasa Stupar <sasa@stupar.homelinux.net>, Netfilter ML <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-aSBndWVzcyBpIG5lZWQgdG8gYXNrIHdoYXQgcm9sZSB5b3UgcGxheSBpbiB0aGUgbGFuIGFkbWlu
-Pw0KDQppIHRoaW5rIGl0IG1pZ2h0IGJlIGVhc2llciB0byBtb2RpZnkgbXggdHlwZSBwb2ludGVy
-IG1lY2hhbmlzbXMgb24gdGhlIGNsaWVudHMNCmluc3RlYWQgb2YgaGF2aW5nIHRoZSBmdyBkbyBh
-bGwgdGhpcyB3YXN0ZWZ1bCByZWRpcnMuIHRoZXkgYXJlIHdhc3RlZnVsDQpiZWNhdXNlIHlvdSBu
-b3cgd2hlcmUgeW91IHdhbnQgdGhlIG1haWwgdHJhZmZpYyB0byBnbyAtIHRoaXMgaXNudCBjbGV2
-ZXIuDQppdHMgYSB3YXkgdG8gcGVyZm9ybSB0aGlzIHRhc2sgYnV0IGl0cyBub3QgdmVyeSBlbGVn
-YW50IGFuZCBkb2VzbnQgc2NhbGUgZm9yDQptYW5pbnRlbmFuY2UuDQoNCm91dC4uLg0KDQoNCi0t
-LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItYm91bmNlc0BsaXN0cy5u
-ZXRmaWx0ZXIub3JnDQpbbWFpbHRvOm5ldGZpbHRlci1ib3VuY2VzQGxpc3RzLm5ldGZpbHRlci5v
-cmddT24gQmVoYWxmIE9mIFNhc2EgU3R1cGFyDQpTZW50OiBNb25kYXksIERlY2VtYmVyIDIwLCAy
-MDA0IDE6MzMgUE0NClRvOiBOZXRmaWx0ZXIgTUwNClN1YmplY3Q6IFJlOiBSZWRpcmVjdGlvbiBx
-dWVzdGlvbg0KDQoNClNhc2EgU3R1cGFyIGEgw6ljcml0IDoNCg0KPiBTYXNhIFN0dXBhciBhIMOp
-Y3JpdCA6DQo+IA0KPj4gSGkhDQo+Pg0KPj4gSSBoYXZlIGluc3RhbGxlZCBtYWlsIHNlcnZlciBv
-biBteSBsYW4uIE5vdyBJIHdvdWxkIGxpa2UgdG8gcmVkaXJlY3QgDQo+PiBhbGwgbGFuIHVzZXJz
-IHRvIHVzZSB0aGF0IG1haWwgc2VydmVyIGFzIHNtdHAgKHNpbWlsYXIgYXMgdHJhbnNwYXJlbnQg
-DQo+PiBwcm94eSB3aXRoIHNxdWlkKS4gSG93IGRvIEkgZG8gdGhhdCBzbXRwIHJlZGlyZWN0aW9u
-Pw0KPj4gSSB3YXMgdGhpbmtpbmcgc29tZXRoaW5nIGxpa2U6DQo+PiAtLS0tLS0tLS0tLS0tDQo+
-PiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgwIC1zICEgc210cC1ib3ggLXAg
-dGNwIC0tZHBvcnQgMjUgDQo+PiAtaiBETkFUIC0tdG8gc210cC1ib3g6MjUNCj4+IGlwdGFibGVz
-IC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyBldGgwIC1zIGxvY2FsLW5ldHdvcmsgLWQgc210cC1i
-b3ggLWogDQo+PiBTTkFUIC0tdG8gaXB0YWJsZXMtYm94DQo+PiBpcHRhYmxlcyAtQSBGT1JXQVJE
-IC1zIGxvY2FsLW5ldHdvcmsgLWQgc210cC1ib3ggLWkgZXRoMCAtbyBldGgwIC1wIA0KPj4gdGNw
-IC0tZHBvcnQgMjUgLWogQUNDRVBUDQo+PiAtLS0tLS0tLS0tLS0tLQ0KPj4gSXMgdGhpcyBjb3Jy
-ZWN0Pw0KPj4NCj4+IFJlZ2FyZHMsDQo+PiBTYXNhDQo+Pg0KPiANCj4gSSBmb3Jnb3Qgc29tZSBt
-b3JlIGluZm9zOg0KPiBydW5uaW5nIG9uIEZDMyB3aXRoIHNlbmRtYWlsLiBUaGlzIGlzIGFsc28g
-YSByb3V0ZXIgd2l0aCAyIE5JQw0KPiBpbnN0YWxsZWQ6IG9uZSBmb3IgaW50ZXJuZXQgYW5kIG9u
-ZSBmb3IgTEFOLg0KPiANCj4gU2FzYQ0KDQpTb2x2ZWQuIEl0IGlzIHdvcmtpbmcgYXMgSSBoYXZl
-IG1lbnRpb25lZCBhYm92ZS4NCg0KU2FzYQ0KDQoNCg==
+On Mon, 2004-12-20 at 16:19, R. DuFresne wrote:
+> If I'm reading all this correctly then if set as both INPUT and FORWARD
+> rules the FORWARD rules would become redundant and never be hit as the
+> INPTU rules would be caught first and deal with what becomes of the
+> packets, yes?
+
+the FORWARD rules would never be hit because the packet never traverses
+the FORWARD chain.
+
+-j
+
+--
+"What's the point of going out, we're just going to end up back
+ here anyway?"
+	--The Simpsons
+
 
