@@ -1,14 +1,14 @@
-From: Camilo Echeverry <phantom@colombianet.net>
-Subject: Re: Restrictions + Transparent Proxy
-Date: Mon, 31 Mar 2003 10:21:49 -0500
+From: "Mack" <RAGAN_DAVIS@colstate.edu>
+Subject: Re: need some help solving problem
+Date: Mon, 31 Mar 2003 10:22:34 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <03033110214901.11502@hosting.colombianet.net>
-References: <0FD2E5E35F0C0D41AEA66C9C6F39F30D086ADB@HERMES.pbgnw.com>
-Reply-To: phantom@colombianet.net
+Message-ID: <3E8816E9.23197.30E614@localhost>
+References: <3E859680.19568.5FA7E8@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0FD2E5E35F0C0D41AEA66C9C6F39F30D086ADB@HERMES.pbgnw.com>
+In-reply-to: <200303291355.47578.netfilter@newkirk.us>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,141 +19,71 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Elmshauser, Erik" <erike@pbgnw.com>, phantom@colombianet.net, netfilter@lists.netfilter.org
+To: netfilter@newkirk.us, netfilter@lists.netfilter.org
 
-Sorry .. I was on vacation ;)
+This seems to work great!  Thanks for the advice.  The only weirdness I saw was 
+that if someone requests "www.somewhere.com/subweb", then they get a page not 
+found error.  But, this was the case with my original dnat code, too.  I guess it's 
+looking for the path "/subweb" on the document root of the web site that I'm 
+redirecting them too, and since it's not there, it give an error.  But, using your limit 
+and state match suggestion, this should rarely happen and I doubt I'll have too many 
+complaints about it.  Nevertheless, I am going to look into your web proxy 
+suggestion.  I am currently using Squid for another application, so maybe this will 
+serve the purpose.  Have you ever used Squid, and if so, do you have any 
+suggestions as to how I'd configure Squid to do this?
 
-I have a STATIC Internet address.
+Thanks for the help!
+mack
 
-How should I define the rules ..?
-Thanks.
+On 29 Mar 2003 at 13:55, Joel Newkirk wrote:
 
-Camilo.
-On Monday 17 March 2003 13:20, Elmshauser, Erik wrote:
-> > -----Original Message-----
-> > From: Camilo Echeverry [mailto:phantom@colombianet.net]
-> > Sent: Saturday, March 15, 2003 6:46 AM
-> > To: netfilter@lists.netfilter.org
-> > Subject: Restrictions + Transparent Proxy
+> On Saturday 29 March 2003 12:50 pm, Mack wrote:
+> > Hi!
+> 
+> Hi! :^)
+> 
+> > I currently have a rule in my iptables firewall script like this:
 > >
-> > Hi.
-> > I have an Invalid network which access internet through a linux server
->
-> with
->
-> > iptables, I've tried many times to do this but isnt working:
->
-> <SNIP>
->
-> > But when I activate the transparent Proxy, all the people inside the
->
-> internal
->
-> > network can access internet (via web)
+> > iptables -t nat -A PREROUTING -p tcp -s 1.2.3.4 --dport http -j DNAT
+> > --to 5.6.7.8:80
 > >
-> > What order of ideas must I use ?
-> > I'm using the correct iptables rules ..?
+> > This successfully "redirects" a client trying to go to
+> > www.somewhere.com and sends them to a web site on my webserver, and
+> > displays the default web page for that web site.  This works fine.
+> > However, this happens on every request from the client.  Is there a
+> > way to have the prerouting happen only once, and then not happen
+> > after that?  I'd like to redirect them to a web page that contains
+> > news or important imformation.  Once they've visited this page, I'd
+> > like for them to not see it again until later (if ever).  I was
+> > looking at the "-m recent" extension, but I'm not sure if this will
+> > work.
 > >
-> > something like:
-> >
-> > #Grant complete acces to this IP
-> > /sbin/iptables -A FORWARD --in-interface eth0 -s \
-> > 192.168.3.252/255.255.255.255 -d 0.0.0.0/0.0.0.0 --out-interface eth0
->
-> -j \
->
-> > ACCEPT
-> >
-> > #permit access to all the internal network to only one subnet
-> > sbin/iptables -A FORWARD --in-interface eth0 -s
->
-> \192.168.3.0/255.255.255.0 \
->
-> > -d XX.YY.ZZ.0/255.255.255.0 --out-interface eth0 -j ACCEPT
-> >
-> > #Block the rest
-> > /sbin/iptables -A FORWARD --in-interface eth0 -s
->
-> 192.168.3.0/255.255.255.0  \
->
-> >  -d 0.0.0.0/0.0.0.0 -j REJECT
-> >
-> > #Then Activate Transparent Proxy
-> > /sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
->
-> REDIRECT \
->
-> > --to-port 8080
-> >
-> > #Now masquerade packets
-> > /sbin/iptables --table nat --append POSTROUTING --out-interface eth0
->
-> -j \
->
-> > MASQUERADE
->
-> try this (my shell is rusty, correct for syntax):
->
-> # the whole LAN
-> $LAN='192.168.3.0/24'
->
-> # system(s) that get full internet access
-> $FULL='192.168.3.252'
->
-> # system(s) that get limited access
-> $PART='192.168.3.0/24'
->
-> # the networks that limited access systems can access
-> $PARTOK='XX.YY.ZZ.0/24'
->
-> # where is the iptables program?
-> $IPT='/sbin/iptables'
->
-> # set the default policy on forward table to drop
-> # now we need to explicitly allow packets to be forwarded.
-> $IPT -P FORWARD DROP
->
-> # add a NAT rule to give full access to one system
-> $IPT -t nat -A PREROUTING -i eth0 -s $FULL -j MASQ
->
-> # I'm a little confused, do you want to give one
-> # remote network access to your whole LAN?
-> #  this is *much* harder, and should be avoided anyway.
->
-> # what do you *REALLY* want to accomplish?
-> # do you have a static external(Internet) IP, or do you really use
-> MASQUERADE?
-> #  If you have static IP, use snat not MASQ, then you can use dnat
-> #  to redirect incoming internet traffic on some ports to LAN systems
-> #  that listen on those ports.
->
-> # give whole LAN access to a single network
-> $IPT -t nat -A PREROUTING -I eth0 -s $PART -d $PARTOK -j MASQ
->
-> # Redirect all other web traffic from LAN to a Transparent Proxy
-> $IPT -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
-> --to-port 8080
->
-> # add a rule to forward table to let LAN traffic out.
-> $IPT -A FORWARD -s $LAN -j ACCEPT
->
-> 	--Erik
->
-> Rev. Dr. Erik C Elmshauser D.D.
-> Head of I.T.
-> Pacific Benefits Group NW LLC
-> erike@pbgnw.com
-> Phone  - 800.259.0455
-> Fax    - 800.662.0082
->  There are 10 kinds of people in the world,
-> Those that can do binary arithmetic, and those that can't.
+> > Any ideas/suggestions?
+> 
+> Two ways come to mind.  The first is redirect everything to a proxy,
+> and handle this there.  (that's the better solution.) The second is
+> using the limit match.
+> 
+> iptables -t nat -A PREROUTING -s 1.2.3.4 -p tcp --dport 80 -m limit
+> --limit 2/d --limit-burst 1 -m state --state NEW -j DNAT --to 5.6.7.8
+> 
+> This will redirect them to 5.6.7.8, then not do it again for 12 hours.
+>  You can match 1/d or whatever frequency you want, just make the limit
+> what you need, and keep burst at 1, for this purpose.  (with burst set
+> to 3, for instance, then the first three attempts would match)  The
+> minimum frequency is 1/d.
+> 
+> Be aware that this could also match an attempt to retrieve an image
+> inlined in a web document already loading, or other similarly
+> problematic outcomes...  With a proxy you could set up to do this in a
+> more precise and effective fashion.  (recent match would suffer the
+> same problem as limit)
+> 
+> > many thanks,
+> > mack
+> 
+> j
+> 
 
--- 
 
-_____________________________________________________________________________
-Cuando un Arquero dispara gratuitamente .. 
-Tiene consigo toda su habilidad ...
-
-                          Proverbio Oriental
-_____________________________________________________________________________
 
