@@ -1,22 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: STATELESS
-Date: Tue, 16 Sep 2003 20:37:53 +0200
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: why must linux for halted firewall?
+Date: Tue, 16 Sep 2003 14:55:28 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063737473.786.73.camel@elendil.intranet.cartel-securite.net>
-References: <02ba01c37c46$bb7a5f60$798014ac@matthew>
-	 <200309161256.15286.gdh@acentral.co.uk>
-	 <1063716386.31093.160.camel@raylinux.internal>
-	 <20030916131153.GA16559@cannon.eng.us.uu.net>
-	 <1063720447.31093.166.camel@raylinux.internal>
-	 <20030916141505.GB16559@cannon.eng.us.uu.net>
-	 <plopm3isnshj1n.fsf@drizzt.kilobug.org>
-	 <20030916155001.GE16559@cannon.eng.us.uu.net>
-	 <1063731433.784.25.camel@elendil.intranet.cartel-securite.net>
-	 <1063736564.2429.44.camel@ranjeet-pc2.zultys.com>
+Message-ID: <3F675CA0.9010107@Loudoun-Fairfax.com>
+References: <BAY8-F93kuutSgcOrBL0000ec1b@hotmail.com>	 <Pine.LNX.4.53.0309161040220.4397@xena.cft.ca.us> <1063736809.783.62.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+ boundary="------------050707080307090005030306"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063736564.2429.44.camel@ranjeet-pc2.zultys.com>
+In-Reply-To: <1063736809.783.62.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -26,32 +18,90 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
-Cc: Ramin Dousti <ramin@cannon.eng.us.uu.net>, =?ISO-8859-1?Q?Ga=EBl?= Le Mignot <kilobug@freesurf.fr>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Jim Carter <jimc@math.ucla.edu>, Chua Boon Ping <nitb@hotmail.com>, netfilter@lists.netfilter.org
 
-Le mar 16/09/2003 =E0 20:22, Ranjeet Shetye a =E9crit :
-> I do believe that the 2.4 and 2.6 kernels contain an alternative NAT
-> mechanism associated with the Config variable: CONFIG_IP_ROUTE_NAT
-> This var is tied to CONFIG_NET_FASTROUTE and "Advanced Router" or
-> something similar. Internally the source code uses flags like RTCF_NAT
-> etc.
-> This mechanism is incomptabile with the whole netfilter infrastructure.
-> You MUST enable only ONE of the two mechanisms at any given time.
-> Moreover I have not used this mechanism and dont know if it works and
-> how well it works and what its limitations are.
+This is a multi-part message in MIME format.
+--------------050707080307090005030306
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by NS1.Trans-Star.net id h8GItTc27524
 
-See documentation at :
+Cedric Blancher wrote:
 
-	http://www.suse.de/~mha/linux-ip-nat/diplom/nat.html
+>Le mar 16/09/2003 =E0 19:46, Jim Carter a =E9crit :
+> =20
+>
+>>I'm not sure what you mean by a "halted firewall".  Do you mean that th=
+e
+>>kernel uses the "halt" instruction when there is no work to do?
+>>   =20
+>>
+>
+>Nope.
+>An halted firewall is a firewall that is halted, i.e. you have executed
+>"halt" command. Box is configured not to send halt signal to ATX supply
+>so it is still powered and network stuff is not killed (interfaces up,
+>ruleset not flushed, etc.). As kernel is still alive, your box can
+>continue it's routing/filtering tasks as they're handled within kernel.
+>
+>But, you won't have the ability to log onto the firewall to update rules
+>or have applications running (no logs).
+>
+> =20
+>
 
-With 2.2 kernels, one was able to achieve simple NAT with iproute, but
-it was far from flexible.
+What would be the benefit in configuring a system like this? It seems to=20
+run contrary to the evolution of IT appliances where you can configure=20
+and manage everything usually without restarting (firewalls, switches,=20
+print servers, even ups units). I don't get it ;-)
 
-I must admit that, even if this option is activated into my kernel, I
-don't use it at all.
+--------------050707080307090005030306
+Content-Type: text/html; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by NS1.Trans-Star.net id h8GItTc27524
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv=3D"Content-Type"
+ content=3D"text/html;charset=3DISO-8859-15">
+  <title></title>
+</head>
+<body text=3D"#000000" bgcolor=3D"#ffffff">
+Cedric Blancher wrote:<br>
+<blockquote type=3D"cite"
+ cite=3D"mid1063736809.783.62.camel@elendil.intranet.cartel-securite.net"=
+>
+  <pre wrap=3D"">Le mar 16/09/2003 =E0 19:46, Jim Carter a =E9crit :
+  </pre>
+  <blockquote type=3D"cite">
+    <pre wrap=3D"">I'm not sure what you mean by a "halted firewall".  Do=
+ you mean that the
+kernel uses the "halt" instruction when there is no work to do?
+    </pre>
+  </blockquote>
+  <pre wrap=3D""><!---->
+Nope.
+An halted firewall is a firewall that is halted, i.e. you have executed
+"halt" command. Box is configured not to send halt signal to ATX supply
+so it is still powered and network stuff is not killed (interfaces up,
+ruleset not flushed, etc.). As kernel is still alive, your box can
+continue it's routing/filtering tasks as they're handled within kernel.
+
+But, you won't have the ability to log onto the firewall to update rules
+or have applications running (no logs).
+
+  </pre>
+</blockquote>
+<br>
+What would be the benefit in configuring a system like this? It seems
+to run contrary to the evolution of IT appliances where you can
+configure and manage everything usually without restarting (firewalls,
+switches, print servers, even ups units). I don't get it ;-)<br>
+</body>
+</html>
+
+--------------050707080307090005030306--
+
 
