@@ -1,11 +1,14 @@
-From: xavier renaut <list.netfilter@natch.dyndns.org>
-Subject: ip route + routing ip from one block to another
-Date: Wed, 4 Jun 2003 17:05:38 -0400
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: Question about nfmark
+Date: 05 Jun 2003 00:23:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030604210538.GB14053@natch.8d.com>
+Message-ID: <1054765405.694.79.camel@tux.rsn.bth.se>
+References: <3EDE33EA.6030908@cpsc.ucalgary.ca>
+	 <1054756430.818.32.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1054756430.818.32.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: gupta@cpsc.ucalgary.ca, Netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+On Wed, 2003-06-04 at 21:53, Cedric Blancher wrote:
 
-i saw a strange configuration the other day :
+> An example... Suppose you implement DNAT. This sits in PREROUTING chain.
+> 
+> 	iptables -t nat -A PREROUTING -d $PUB_IP -j DNAT --to $PRIV_IP
+> 
+> How can I filter packets destined to $PUB_IP form those which were
+> destined to $PRIV_IP as they appear the same way into FORWARD chain ?
+> Use mark.
+> 
+> 	iptables -t mangle -A PREROUTING -d $PRIV_IP -j MARK --mark 0x01
+> 
+> Then, in filter table, I do this :
+> 
+> 	iptables -A FORWARD -m mark --mark 0x01 -j DROP
+> 
+> As I don't people access directly my private IP. Doing this, you get in
+> FORWARD chain information that would not be available otherwise.
 
+There are other ways.
 
-
-router 1.2.3.1 ----------- 1.2.3.6 eth0  FW  eth1 10.1.1.1 --- LAN
-                 network					network here:
-                 here :						10.1.1.0/24
-                 1.2.3.1/29
-
-
-until here, nothing strange, juste a FW which nat the lan workstations.
-(with ipchains, nothing fancy :                 
-ipchains -A forward -i eth0 -s 10.1.1.0/24 -j MASQ)
-
-
-Now,
-
-on the firewall, 
-I do :    
-
-ip route add nat 1.2.3.2 via 10.1.1.10
-ip rule add from 10.1.1.10 nat 1.2.3.2
-
-and it does what is expected !
-ie 10.1.1.10 appears as 1.2.3.2,
-everything allowed, ping, services...
-
-ifconfig on the firewall is normal, there is no aliases of 1.2.3.2...
-i don't know how the router knows about it. 
-i expected the router  ask for a arp.
-arp -a does not show 1.2.3.2.
-
-i sniffed the arp traffic, but i only get router and fw arp traffic,
-no mention of 1.2.3.2.
-
-when i tcpdump, it is as if  1.2.3.2 was normaly routed to the lan...
-i don't understand how this could be, since the 1.2.3.1/29
-is supposed to be between the fw and the router, not behind the fw.
-
-when i traceroute, i can traceroute to 1.2.3.2, as if it was 
-behind/after 1.2.3.1.
-
-can anyone explain how this works ?
-
-is there a local route propagated to the router ?
-(if so, how ? what protocol ? what tools to debug/view it ?)
-
-thanks
+iptables -A FORWARD -d $PRIV_IP -m conntrack ! --ctorigdst $PUB_IP -j DROP
 
 -- 
-xavier renaut
+/Martin
 
