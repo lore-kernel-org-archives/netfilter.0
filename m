@@ -1,7 +1,7 @@
 From: Paul <lists@loudas.com>
-Subject: Help with fwmark and shorewall
-Date: Tue, 14 Dec 2004 14:44:05 +1300
-Message-ID: <41BE4565.7090503@loudas.com>
+Subject: What's my src?
+Date: Tue, 14 Dec 2004 14:56:23 +1300
+Message-ID: <41BE4847.4050302@loudas.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,53 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Netfilter Users (List)" <netfilter@lists.netfilter.org>
+To: "Netfilter Users (List)" <netfilter@lists.netfilter.org>, Shorewall List <shorewall-users@lists.shorewall.net>
 
-I'm using shorewall, 2 ISP connections, and I want to force udp 500 
-traffic out one particular interface
+What is my source?
+tail /var/log/messages
+Dec 14 14:53:14 rama-kandra kernel: Shorewall:all2all:REJECT:IN=
+OUT=eth3 SRC=203.96.213.73 DST=203.152.118.23 LEN=288 TOS=0x00 PREC=0x00
+TTL=64 ID=73 DF PROTO=UDP SPT=500 DPT=500 LEN=268
 
-here's what I have so far
-/etc/shorewall/tcrules:
-4       0.0.0.0/0       202.37.230.93   udp     500
+doesn't match tcrules
 4       202.37.230.93   0.0.0.0/0       udp     500
 
+how does the kernel decide which src to use?
 
-shorewall show mangle | grep MARK
-    14  4203 MARK       udp  --  *      *       0.0.0.0/0 
-202.37.230.93       udp dpt:500 MARK set 0x4
-     0     0 MARK       udp  --  *      *       202.37.230.93 
-0.0.0.0/0           udp dpt:500 MARK set 0x4
+Ultimately I want all UDP 500 to use src 202.37.230.93
 
-routing:
-/sbin/ip rule add prio 223 fwmark 4 table 223
-/sbin/ip route add default via 202.37.230.65 dev eth2 \
-          src 202.37.230.93 proto static table 223
+P.
 
-routing rules:
-ip rule show
-0:      from all lookup local
-50:     from all lookup main
-201:    from 202.37.230.64/26 lookup 201
-202:    from 203.96.212.0/23 lookup 202
-222:    from all lookup 222
-223:    from all fwmark 0x4 lookup 223
-32766:  from all lookup main
-32767:  from all lookup default
-
-ip route show table 223
-default via 202.37.230.65 dev eth2  proto static  src 202.37.230.93
-
-the load balancing work flawlessly :)
-however I have racoon (kernel 2.6.8.1) on the firewall, and only 
-sometimes it responds using 202.37.230.93 .. sometimes it uses my other 
-ISP connection .. which is no good :(
-
-I've got to the point where I guess I need to use fwmark before routing, 
-but it doesn't seem to work :(
-
-Any help
-
-Thanks
-Paul.
 
 
