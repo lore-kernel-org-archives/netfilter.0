@@ -1,8 +1,10 @@
-From: "Herbert G. Fischer" <manager@trama.com>
-Subject: External Resolved IPs
-Date: Mon, 16 Jun 2003 18:00:48 -0300
+From: "David Busby" <busby@pnts.com>
+Subject: Re: filter p2p
+Date: Mon, 16 Jun 2003 14:11:51 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003001c3344a$5d220240$093010ac@power>
+Message-ID: <056701c3344b$efeeebf0$1100000a@busbydev>
+References: <E19Ricd-0004kA-00@kashyyyk.netfilter.org>
+Reply-To: "David Busby" <busby@pnts.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,65 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter Users <netfilter@lists.netfilter.org>
+To: gbj <gbj@glc.cn.net>, netfilter@lists.netfilter.org
 
-Hi,
+I'd set my iptables to something like:
 
-I have a problem here, that maybe I can solve using DNS, but this can be
-very bad and ugly
-for me to maintain.
+# Drop _all_ packets
+iptables -t filter -P FORWARD DROP
+# Allow http
+iptables -t filter -A FORWARD -p tcp -m tcp --dport 80 -j ACCEPT
+# Many more rules here to allow all the other s41t.
 
-I have a internal network that uses a external DNS to solve addresses. I
-also have some
-servers in this internal network that can be accessed from outside via
-aliases on NAT/FW
-redirecting some ports to internal servers.
 
-My problem is that, when I try to connect to a internal server, using the
-external and real
-IP, I cannot because my FW/NAT appears to be confused or misconfigured.
 
-For example:
+----- Original Message ----- 
+From: "gbj" <gbj@glc.cn.net>
+To: <netfilter@lists.netfilter.org>
+Sent: Sunday, June 15, 2003 18:16
+Subject: filter p2p
 
-Internal Network: 172.16.48.0/24
 
-My IP: 172.16.48.10
-Server Internal IP: 172.16.48.20
-* Both are on the same network
-
-Server External IP: 200.180.180.20 (IP alias on FW/NAT machine, that
-redirects to 172.16.48.20)
-DNS name of Server: server.domain.com, points to 200.180.180.20
-
-When I try to connect into server.domain.com from internal machines, DNS
-resolves the external
-IP and the connection to the real IP does not complete, since the packet
-goes "out" of my network
-and must "enter" again.
-
-Here is a sample on how my iptables script is configured:
-
-====================================================================
-
-# server
-iptables -t nat -A POSTROUTING -s 172.16.48.20 -j SNAT --to-source
-200.180.180.20
-iptables -t nat -A PREROUTING -s 0/0 -d 200.180.180.20 -j
-DNAT --to-destination 172.16.48.20
-
-# NAT for the rest of the world
-iptables -t nat -A POSTROUTING -o eth1 -s 172.16.48.0/24 -j SNAT --to-source
-200.180.180.22
-
-=====================================================================
-
-I don't know how to better explain my problem... I hope someone understood
-that...
-
-Any idea on this ?
-
-Thanks...
-
-Herbert
+> hello everyone,I have a lan with a gateway iptables firewall,and I don't
+want the user on the lan use P2P software like e-donkey ,because I think
+it's will led to some administration  proplem.but I don't know how to setup
+iptables rules to archieves this goal,does anybody has the same experience?
+>
+>
+>
+>
+>
+>                   sword
+>
+>
+>
 
 
