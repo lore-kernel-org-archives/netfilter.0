@@ -1,10 +1,13 @@
-From: "verito verito" <edhju_21@hotmail.com>
-Subject: help me with firewall+drop by default
-Date: Thu, 04 Mar 2004 20:24:18 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Squid with iptables
+Date: Fri, 5 Mar 2004 01:25:10 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY7-F58zId5qPkIv4d00040d1e@hotmail.com>
+Message-ID: <200403050125.10374.Antony@Soft-Solutions.co.uk>
+References: <20040304095859.4b996ae6@mgalepc.utilitran.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040304095859.4b996ae6@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,38 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Thursday 04 March 2004 4:58 pm, Michael Gale wrote:
 
+> Hello,
+>
+> 	I have recent installed squid on my firewall box to act as a proxy server
+> for HTTP, HTTPS, and considering FTP.
+>
+> I have added in iptable rules for squid redirecting 80 to 3128 and 443 to
+> 3128 but I have a question. My default --policy is DROP ... so in order for
+> squid to work I need to allow outbound 80 traffic and not forwarded 80
+> traffic like before .. but if I want squid to also allow ftp should I not
+> just allow the process ID of squid to make outbound connections ?
 
+If you are running squid in transparent proxying mode (which it sounds as 
+though you are, with the "redirect port 80 to 3128" rule), then you cannot 
+use it to proxy ftp.
 
-Firewall was  denied , Just for default I'm sending,  the (setting up)  tha=
-t=20
-is  able to  access into the web , but  I can't access into the mail server=
-=20
-(POP), and some web pages that requiered the  Ports (443,21,23,25,110), I=20
-hope. I will clear , if there is any question just replying me , Thanks
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-iptables -t nat -A PREROUTING -t tcp --dport 80 -j REDIRECT --to-port 8080
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-echo "1" > /proc/sys/net/ipv4/ip_forward
-iptables -A INPUT -i eth0 -s 0/0 -d 0/0 -j ACCEPT
-iptables -A -i lo -s 0/0 -d 0/0 -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -m state --state ESTABLISHED,RELATED -j=
-=20
-ACCEPT
-iptables -A INPUT -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-iptables -A OUTPUT -j ACCEPT
-https,correo,msn
-USING REDHAT 8
+Squid is not an ftp proxy (read the Squid home page).   However, browsers 
+which are *configured to use an http proxy server* will send their ftp 
+requests over http, and therefore browser ftp requests can be handled by the 
+proxy.
 
-_________________________________________________________________
-Charla con tus amigos en l=EDnea mediante MSN Messenger:=20
-http://messenger.latam.msn.com/
+I know this sounds confusing, but it's a trick of the browser, that if it is 
+configured to use a proxy (ie: the whole setup is not working in transparent 
+mode), it will send ftp requests over http, and the proxy will generate the 
+outgoing ftp request.   If the browser is not specifically configured to use 
+a proxy server, then it sends its ftp requests by ftp, for which you need an 
+ftp proxy (such as frox).
+
+Regards,
+
+Antony.
+
+-- 
+Ramdisk is not an installation procedure.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
