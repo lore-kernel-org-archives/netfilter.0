@@ -1,11 +1,12 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: limit connections to ssh
-Date: Tue, 15 Mar 2005 10:00:29 +0100
-Message-ID: <1110877229.6883.1.camel@nostromo.bgsecm.com>
-References: <20050315000111.GA34990@micron.lacnic.net.uy>
+From: Marcus Mikolaiczyk <marcus.mikolaiczyk@carmedialab.de>
+Subject: Re: 'Cross' Compiling iptables
+Date: Tue, 15 Mar 2005 10:14:00 +0100
+Message-ID: <4236A758.6060306@carmedialab.de>
+References: <42369D6B.7060502@carmedialab.de>
+Reply-To: marcus.mikolaiczyk@carmedialab.de
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20050315000111.GA34990@micron.lacnic.net.uy>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <42369D6B.7060502@carmedialab.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,42 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-El lun, 14-03-2005 a las 21:01 -0300, Pablo Allietti escribi=C3=B3:
-> iptables can limit connections to a a port? for exmaple=20
->=20
-> i need to permit only 3 connections to a ssh in a period of 5 minutes
->=20
-> iptables can do this?
+Ok I found some differences in the ported linux sources.
 
-Of course, do a:
-iptables -m limit --help
+ > I got a problem compiling iptables for an embedded system (kernel
+ > 2.4.19, ported gcc version 2.95.3 ). I use the folowing make command
+ > which stops in compiling extensions/libipt_TCPMSS.o
 
-The rule would be something like:
+linux/netfilter_ipv4/ipt_TCPMSS.h is different to the original one from 
+kernel.org.
+linux/netfilter_ipv4/ipt_TOS.h is missing but there is a 
+linux/netfilter_ipv4/ipt_tos.h
 
-iptables -A INPUT -m state --state NEW -i <extif> -m limit --limit 5/sec
--j ACCEPT
+Can anyone explain the differences between the 'capital'(uppercase) 
+ipt_TCPMSS.h and the lowercase ipt_tcpmss.h ?
 
-with the ESTABLISHED and RELATED rules, before, obviusly.
-
-Regards.
-
---=20
-
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
-
-
+Greetings Marcus
 
