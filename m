@@ -1,11 +1,10 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: SNAT question
-Date: Sun, 14 Nov 2004 14:53:20 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F0197C6@pxtvjoexd01.pxt.primeexalia.com>
+From: Rudi Starcevic <tech@wildcash.com>
+Subject: Policy Accept + Allow Multiple IP's
+Date: Mon, 15 Nov 2004 16:51:57 -0800
+Message-ID: <41994F2D.70105@wildcash.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,61 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I'm having a problem with DNAT/SNAT.
+Hi,
 
-I have this on a couple firewalls at different places and it works
-great.  I'm implementing this on a new firewall based on RHEL3 and it
-seems to work great for everything except local servers with external
-IP's.  Trying to access 206.14.210.52 internally returns me
-192.168.0.52.  If I access it from the firewall it all works fine.  If I
-access from another workstation or the server itself then it returns the
-local IP as part of the ping.
+I have an Iptables firewall with a default policy of accept.
 
-Some time ago on another firewall with multiple segments someone told me
-to put this:
--A POSTROUTING -s 192.168.0.0/255.255.255.0 -d 192.168.0.52 -j SNAT
---to-source 206.17.98.52
+I want to allow only certain IP's ssh access.
 
-On another firewall at another location I found that they had=20
--A POSTROUTING -s 192.168.0.52 -d 192.168.0.52 -j SNAT --to-source
-206.17.98.52
+So far I have this rule which allows 1 ip:
 
-Something to note that this is a custom RHEL3v3 compile with
-pptp-conntrack compiled in.  We also recompiled iptables using the new
-userspace changes.
+iptables -A INPUT -p tcp --dport 22 -s ! xxx.xxx.xxx.xxx -j DROP
 
-The location where I got the information regarding the original
-DNAT/SNAT is:
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#DNATTARGET
+I'm not sure how to list more that 1 allowable IP.
+
+This is a production box I've inherited so I'm hoping to work with I already
+have but may need to look at changing the default policy to drop or 
+something.
+
+Please advise, many thanks.
+Regards Rudi
 
 
-Here is the actual PRE/POST/OUT routing section
-
-[0:0] -A PREROUTING -d 206.14.210.51 -j DNAT --to-destination
-192.168.0.51
-[0:0] -A PREROUTING -d 206.14.210.52 -j DNAT --to-destination
-192.168.0.52
-...
-[0:0] -A PREROUTING -d 206.14.210.62 -j DNAT --to-destination
-192.168.0.62
-
-[0:0] -A POSTROUTING -s 192.168.0.51 -o eth0 -j SNAT --to-source
-206.14.210.51
-[0:0] -A POSTROUTING -s 192.168.0.52 -o eth0 -j SNAT --to-source
-206.14.210.52
-#[0:0] -A POSTROUTING -s 192.168.0.52 -d 192.168.0.52 -j SNAT
---to-source 206.17.98.52
-...
-[0:0] -A POSTROUTING -s 192.168.0.62 -o eth0 -j SNAT --to-source
-206.17.98.62
-[0:0] -A POSTROUTING -o eth0 -j SNAT --to-source 206.17.98.50
-
-[0:0] -A OUTPUT -d 206.17.98.51 -j DNAT --to-destination 192.168.0.51
-[0:0] -A OUTPUT -d 206.17.98.52 -j DNAT --to-destination 192.168.0.52
-...
-[0:0] -A OUTPUT -d 206.17.98.62 -j DNAT --to-destination 192.168.0.62
 
 
