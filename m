@@ -1,10 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Out of window filter catches too much
-Date: Tue, 1 Mar 2005 09:40:17 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503010938320.14280@blackhole.kfki.hu>
-References: <421FBC65.40202@drzeus.cx>
+From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
+Subject: Re: these INPUT and OUTPUT rules blocking more than desired....
+Date: Tue, 01 Mar 2005 10:31:26 +0100
+Message-ID: <1109669487.11189.2.camel@nostromo.bgsecm.com>
+References: <20050301014308.GA18177@spawar.navy.mil>
 Mime-Version: 1.0
-In-Reply-To: <421FBC65.40202@drzeus.cx>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20050301014308.GA18177@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,33 +16,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pierre Ossman <drzeus-list@drzeus.cx>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi,
+El lun, 28-02-2005 a las 17:43 -0800, seberino@spawar.navy.mil escribi=C3=
+=B3:
+> The snippet below was intended to *ONLY* allow types of traffic that
+> I desired in and out of PC.  For example, I tried to only allow DNS, SS=
+H
+> and HTTP.
+>=20
+> These services don't work.  It seems like they need more than /one/
+> port opened.  Or, they need something else I'm forgetting.
+> Any help would be greatly appreciated.....
+>=20
 
-On Sat, 26 Feb 2005, Pierre Ossman wrote:
+You don't post your vars so we don't know what ports you are
+opening...
+But it's just:
+DNS=3D53/tcp 53/udp
+SSH=3D22/tcp
+HTTP=3D80/tcp
 
-> Since there is only linux machines involved here this must be a kernel
-> bug. Either in the TCP layer or in netfilters detection. Here is a dump
-> from the router when it starts throwing away packets:
->
-> ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver)
-> IN= OUT= SRC=10.8.0.24 DST=10.8.5.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=64
-> ID=10234 DF PROTO=TCP SPT=3851 DPT=873 SEQ=2763580423 ACK=299956256
-> WINDOW=95 RES=0x00 ACK URGP=0 OPT (0101080AC4C2FDE77E1D58C1)
-> ip_ct_tcp: SEQ is over the upper bound (over the window of the receiver)
+>       # INPUT
+>=20
+>       $IPTABLES -t filter -A INPUT                      \
+>                 -i $INTERNET_INTERFACE                  \
+>                 -d $INTERNET_ADDRESS                    \
+>                 -m state --state ESTABLISHED,RELATED    \
+>                 -j ACCEPT
+>       for PORT in $OPEN_INCOMING_TCP_PORTS; do
+>          $IPTABLES -t filter -A INPUT                   \
+>                    -i $INTERNET_INTERFACE               \
+>                    -d $INTERNET_ADDRESS                 \
+>                    -p tcp --dport $PORT                 \
+>                    -j ACCEPT
+>       done
+>       for PORT in $OPEN_INCOMING_UDP_PORTS; do
+>          $IPTABLES -t filter -A INPUT                   \
+>                    -i $INTERNET_INTERFACE               \
+>                    -d $INTERNET_ADDRESS                 \
+>                    -p udp --dport $PORT                 \
+>                    -j ACCEPT
+>       done
+>=20
+>       # OUTPUT
+>=20
+>       $IPTABLES -t filter -A OUTPUT                     \
+>                 -o $INTERNET_INTERFACE                  \
+>                 -s $INTERNET_ADDRESS                    \
+>                 -m state --state ESTABLISHED,RELATED    \
+>                 -j ACCEPT
+>       for PORT in $OPEN_OUTGOING_TCP_PORTS; do
+>          $IPTABLES -t filter -A OUTPUT                  \
+>                    -o $INTERNET_INTERFACE               \
+>                    -s $INTERNET_ADDRESS                 \
+>                    -p tcp --dport $PORT                 \
+>                    -j ACCEPT
+>       done
+>       for PORT in $OPEN_OUTGOING_UDP_PORTS; do
+>          $IPTABLES -t filter -A OUTPUT                  \
+>                    -o $INTERNET_INTERFACE               \
+>                    -s $INTERNET_ADDRESS                 \
+>                    -p udp --dport $PORT                 \
+>                    -j ACCEPT
+>       done
 
-On Mon, 21 Feb 2005 I posted a patch to netfilter-devel which addresses
-this and other issues in TCP window tracking. Please try the patch.
+Regards.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+--=20
+
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
+
+
 
