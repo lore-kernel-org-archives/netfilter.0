@@ -1,14 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: ip alias
-Date: 28 Sep 2004 16:27:38 +0200
+Subject: Re: web server in DMZ
+Date: 28 Sep 2004 16:27:41 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096376206.25284.24.camel@nostromo.bgsecm.com>
-References: <20040928051024.692C0BE3@sterenborg.info>
-	<008601c4a553$4cd4ce60$936ffea9@alpha>
+Message-ID: <1096376341.28905.27.camel@nostromo.bgsecm.com>
+References: <web-6416739@infinito.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <008601c4a553$4cd4ce60$936ffea9@alpha>
+In-Reply-To: <web-6416739@infinito.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,21 +20,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mar, 28 de 09 de 2004 a las 14:04, John Black escribi=C3=B3:
-> > You say "it will not let me out". Is that out to the internet ?
-> > I can't see the use for the above :
-> > - You assign an ip alias to eth0:0
-> > - You forward all traffic coming in on eth0 (that is directed to the
-> > aliased ip 192.168.1.23) to 161.31.31.23
-> > By doing this you won't get access to the internet.
+El mar, 28 de 09 de 2004 a las 12:21, hamals@infinito.it escribi=C3=B3:
+> I have a big problem
 >=20
-> but, how would you forward outgoing traffic to this address?  So=20
-> all traffic generated on 192.168.1.23 is see coming from 161.31.31.23?
+> I have a web server in my DMZ, I reach it with his=20
+> internal IP 192.168.1.10 from my internal LAN, but I can't=20
+> reach them with his public IP.
 >=20
-> john
+> I did a DNAT and from internet everythings is ok, my web=20
+> server is working in right by DNAT.
+>=20
+> Where is the problem?
 
-You can use SNAT to do this, just make a rule that does SNAT
-from 192.168.1.23 to 161.31.31.23.
+If you have a public IP in the external NIC of your
+server then it should be working OK. I don't know if
+you want it to respond directly to Internet or via
+DNAT. Anyway it should work as you have it configured.
+Check the IP in the external NIC.
 
 --=20
 Jose Maria Lopez Hernandez
