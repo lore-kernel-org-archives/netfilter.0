@@ -1,11 +1,13 @@
-From: "Preston Wade" <Preston_Wade@hilton.com>
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
 Subject: RE: block yahoo messenger
-Date: Wed, 26 Feb 2003 10:02:27 -0600
+Date: Wed, 26 Feb 2003 17:50:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0B2759D401C1D211ACA500805FFE2C3F0860BEE1@cmxserv3.hilton.com>
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019BE9@hslex01.hslbz.local>
+References: <FD8F124A387AD6119F7900A0D218B3217255BE@hslex01.hslbz.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <FD8F124A387AD6119F7900A0D218B3217255BE@hslex01.hslbz.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +20,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I had this same problem and realized that other servers on those nets
-provided news articles that some of my users wanted to read.  I feel like
-Corp America should ask Yahoo to publish a list of servers used to support
-Instant Messaging.  Actually MSN and AOL should do the same.
+> I had this same problem and realized that other servers on 
+> those nets provided news articles that some of my users 
+> wanted to read.  I feel like Corp America should ask Yahoo to 
+> publish a list of servers used to support Instant Messaging.  
+> Actually MSN and AOL should do the same.
 
-Just my 2 cents.
+But I don't think they'll give that information. (Well, I didn't try so
+I'm not sure..)
+Besides, it should be Corp World since I can not imagine that only Corp
+America is having this problem... But although that would give a lot of
+pressure, it would be even harder to arrange.
 
-Thanks,
-Preston
-
------Original Message-----
-From: Rob Sterenborg [mailto:rsterenborg@xs4all.nl]
-Sent: Wednesday, February 26, 2003 8:50 AM
-To: netfilter@lists.netfilter.org
-Subject: RE: block yahoo messenger
-
-
-> hi all,
-> does anyone have an idea about blocking "yahoo messenger" 
-> using iptables? thanks afshin
-
-Maybe it's quite rude to block 4 /24 nets, but Messenger kept connecting
-in these ranges and on different ports (5050, 23, 80) so I just did this
-:
-
-iptables -A FORWARD -d 216.136.223.0/24 -j REJECT --reject-with
-tcp-reset
-iptables -A FORWARD -d 216.136.224.0/24 -j REJECT --reject-with
-tcp-reset
-iptables -A FORWARD -d 216.136.227.0/24 -j REJECT --reject-with
-tcp-reset
-iptables -A FORWARD -d 216.136.233.0/24 -j REJECT --reject-with
-tcp-reset
-
-Of course you are welcome to find out exactly what servers Messenger
-using to block them individually ; I didn't take the time to do that.
+AFAIK we don't have the problem because here, normal users can only
+browse the web using squid. SNAT is only available for us, admins and
+servers :o).
+They are using OUTPUT and INPUT chains as squid is running locally.
+However, that might go wrong when a messenger is able to use IE's proxy
+settings in which case I'd have to block in the other chains too.
 
 
 Gr,
 Rob
-
-
 
 
