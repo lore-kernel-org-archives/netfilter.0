@@ -1,8 +1,8 @@
 From: Mike Mestnik <cheako911@yahoo.com>
-Subject: Looking for that netfilter filter for regex application identification.
-Date: Mon, 9 Feb 2004 12:44:48 -0800 (PST)
+Subject: I found what I was looking for l7-filter.sf.net.
+Date: Mon, 9 Feb 2004 14:49:43 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040209204448.7192.qmail@web11906.mail.yahoo.com>
+Message-ID: <20040209224943.27665.qmail@web11906.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -16,15 +16,10 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "lists.netfilter.org netfilter" <netfilter@lists.netfilter.org>
 
-A long time agoe I stumbeled on this kernelpatch for content based connection identification.  I
-forget what it was called but it used regexs to filter connections by application protocol and did
-not rely on ports.
-
-Dose any one know what happend to this project?  At the vary least thay implemented regex in
-kernel
-space so I thought for sure thay would make a big deal.
+Are there any plans to add this to the patch-o-matic?  If nothing else could you put a link on
+your links page.
 
 
 __________________________________
