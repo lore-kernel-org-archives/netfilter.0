@@ -1,9 +1,8 @@
-From: "Eric Wood" <eric@interplas.com>
-Subject: Re: listing of NATed connections
-Date: Thu, 12 Feb 2004 16:02:46 -0500
+From: Ray Anderson <rsa@prideindustries.com>
+Subject: Shorewall vs. Iptables
+Date: Thu, 12 Feb 2004 13:32:19 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <029501c3f1ab$9ce598a0$9100000a@intgrp.com>
-References: <402B4592.30104@eformations.net>
+Message-ID: <004201c3f1af$b16d7fa0$2405010a@rsa>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,21 +16,23 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-From: "Osama Abu Elsorour"> Hello there,
-> I was wondering why isnt there a way to list the NATed connection of a 
-> specific NAT rule (SNAT or DNAT)?
+Is any one better than the other?
 
-There is a utility I use called:
-netstat-nat
+I'm currently running a RedHat box that's soon to be replaced with a
+Mandrake machine.  Of course I threw out the Shorewall stuff in favor of
+manually implementing the same Iptables ruleset(s) that I have for the RH
+machine.
 
-check google or freshmeat.net
+Does Shorewall give any more protection or is it a simply complicated
+front-end to iptables?
 
-from the man page it has:
-SEE ALSO
-       http://tweegy.demon.nl/projects/netstat-nat/
+Cheers,
 
--eric wood
+-=Ray
+---------------------------------------
+When reaching a stalemate, win with a technique the enemy does not expect.
+Miyamoto Musashi
 
 
