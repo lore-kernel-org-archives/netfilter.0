@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: 3rd NIC & SNAT Question
-Date: Mon, 5 May 2003 23:02:13 +0200
+From: Emanoil Kotsev <emanuel@abc.at>
+Subject: Re: Can't compile iptables 1.2.8. Please help me!
+Date: Tue, 06 May 2003 01:04:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002501c31349$9a34ae70$0401000a@sterenborg.info>
-References: <200305011113.36865.franco@gasperino.org>
+Message-ID: <3EB6EDF1.687DD2E7@abc.at>
+References: <20030505045757.67027.qmail@web20310.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+ boundary="------------C9DB137C9EFFC37F22B3C331"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200305011113.36865.franco@gasperino.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +17,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: franco@gasperino.org, netfilter@lists.netfilter.org
+To: =?iso-8859-1?Q?=C4=3F=E1=BA=A1i=20Tu=E1=BA=A5n?= <vkdt7799@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-> connections in the /proc/net/ip_conntrack file. How can I 
-> force the last SNAT 
-> rule below to only nat the 10.0.0.0/24 net and not touch the 
-> 100.100.101.0/24 
-> net?
-> 
-> Public External Net: 100.100.100.0/30
-> Public External Address: 100.100.100.2
-> Public External Interface: eth0
-> 
-> Local Private Net: 10.0.0.0/24
-> Local Private Address: 10.0.0.1
-> Local Private Interface: eth1
-> 
-> Local Public Net: 100.100.101.0/24
-> Local Public Address: 100.100.101.1
-> Local Public Interface: eth2
-> 
-> iptables -A INPUT -j ACCEPT
-> iptables -A OUTPUT -j ACCEPT
-> iptables -A FORWARD -j ACCEPT
+
+--------------C9DB137C9EFFC37F22B3C331
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+$ make base pending [etc]
+or in your case just
+$ make pending
+
+is fine
+you are prompted for KERNEL_DIR=3D/usr/src/linux
+
+apply the patches you need
+-----------
+
+"=C4?=E1=BA=A1i Tu=E1=BA=A5n" wrote:
+
+> I tried a lot but I can't compile iptables 1.2.8 for
+> linux-kernel 2.4.5!
 >
-> iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -j SNAT --to-source 
-> 100.100.100.2
+> # make pending-patches KERNEL_DIR=3D/usr/src/linux
+> make: *** No rule to make target `pending-patched`!
+> Stop.
+>
+> Please help me!
+>
+> __________________________________
+> Do you Yahoo!?
+> The New Yahoo! Search - Faster. Easier. Bingo.
+> http://search.yahoo.com
 
-What if you make this :
-
-iptables -P FORWARD DROP
-iptables -A FORWARD -i eth1 -o eth0 -s 10.0.0.0/24 -j ACCEPT
-iptables -A FORWARD -i eth2 -o eth0 -s 100.100.101.0/24 -j ACCEPT
-iptables -t nat -A POSTROUTING -o eth0 -s 10.0.0.0/24 \
- -j SNAT --to-source 100.100.100.2
+--
++ Emanoil Kotsev - - - - -+
+| tel. 0043(1)9253175     |
+| cel. --------------     |
++ E-Mail: emanuel@t2u.com +
 
 
-Rob.
+
+--------------C9DB137C9EFFC37F22B3C331
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+$ make base pending [etc]
+<br>or in your case just
+<br>$ make pending
+<p>is fine
+<br>you are prompted for KERNEL_DIR=/usr/src/linux
+<p>apply the patches you need
+<br>-----------
+<p>"&Auml;?&aacute;&ordm;&iexcl;i Tu&aacute;&ordm;&yen;n" wrote:
+<blockquote TYPE=CITE>I tried a lot but I can't compile iptables 1.2.8
+for
+<br>linux-kernel 2.4.5!
+<p># make pending-patches KERNEL_DIR=/usr/src/linux
+<br>make: *** No rule to make target `pending-patched`!
+<br>Stop.
+<p>Please help me!
+<p>__________________________________
+<br>Do you Yahoo!?
+<br>The New Yahoo! Search - Faster. Easier. Bingo.
+<br><a href="http://search.yahoo.com">http://search.yahoo.com</a></blockquote>
+
+<pre>--&nbsp;
++ Emanoil Kotsev - - - - -+
+| tel. 0043(1)9253175&nbsp;&nbsp;&nbsp;&nbsp; |
+| cel. --------------&nbsp;&nbsp;&nbsp;&nbsp; |
++ E-Mail: emanuel@t2u.com +</pre>
+&nbsp;</html>
+
+--------------C9DB137C9EFFC37F22B3C331--
 
 
