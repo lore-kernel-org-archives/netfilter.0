@@ -1,8 +1,8 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: SNAT
-Date: Thu, 3 Apr 2003 10:34:35 -0800
+From: "Andrew Brink" <abrink@netstandard.net>
+Subject: Traffic Reflecting / Redirecting
+Date: Thu, 3 Apr 2003 15:36:15 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DAF@alderaan.smgtec.com>
+Message-ID: <B45570C481D7904FA8C47E19444BF6CD030B1F@nsimail1.netstandard.inc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,42 +17,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Rio Martin." <rio@martin.mu>, netfilter@lists.netfilter.org
-
-1. You are using aliases, which IPTables does not use. Please use look
-into IPRoute2 on the net on how to setup proper IPRoute2 bindings.
-
-2. Add an SNAT rule on the postrouting -o <internet_iface> pointing to
-64.1.1.2
-
------Original Message-----
-From: Rio Martin. [mailto:rio@martin.mu]=20
-Sent: Thursday, April 03, 2003 2:29 AM
 To: netfilter@lists.netfilter.org
-Subject: SNAT
 
-Dear folks,
-I need help to modify the source ip for every irc connection coming from
-my
-clients.
+All -=20
 
-Eg:
+I am trying to set up a box that can reflect traffic to another box
+transparently.
 
-eth0    =3D 64.1.1.1
-eth0:1 =3D 64.1.1.2
-eth0:2 =3D 192.168.1.1
+An Example would be:  Initiate a ssh connection to 10.1.1.1, 10.1.1.1
+then sends this packet to 192.168.1.1, then the return path must also go
+through 10.1.1.1.
 
+The trick is getting this to work transparently, and over the internet,
+not a local network.
 
-My clients is in 192.168.1.0/24. Right now all connection to irc server
-is
-using ip 64.1.1.1
-I want to modify, so all irc connection is using 64.1.1.2
+Any thoughts or ideas would be helpful.
 
-Thanks for helping me ...
+Thanks.
 
-Regards,
-Rio Martin.
-
-
-
+Andrew Brink, CCNA, WCSP=20
+NetStandard, Inc.=20
+913-262-3888=20
 
