@@ -1,12 +1,13 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: Lan traffic Monitoring tools
-Date: Fri, 7 Feb 2003 09:46:55 -0500
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: Re: SIP connection tracker ?
+Date: Fri, 7 Feb 2003 16:30:44 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003501c2ceb7$c3713af0$8c01a8c0@sundaram>
-References: <E88493086664D511A1E4000103330E82027FE05C@mail.maconomy.dk> <832811662.20030207102832@wp.pl>
+Message-ID: <200302071630.44093.roy@karlsbakk.net>
+References: <059101c27f31$5db6a090$9f24a58b@segi.ulg.ac.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <059101c27f31$5db6a090$9f24a58b@segi.ulg.ac.be>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,20 +18,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Francois Dessart <fd-list@ibelgique.com>, netfilter@lists.netfilter.org
 
-Hi All,
+does anyone know if this exists?
 
-I have firewall based on iptables (Redhat 7.3) Custom build kernel. I want
-to
- monitor the my LAN traffic, basically I need a report
- PC IP Address : web site it accessing, date and time
+On Tuesday 29 October 2002 10:55, Francois Dessart wrote:
+> Hello,
+>
+> Is anyone currently developping a SIP (Session Initiation Protocol) NAT
+> connection tracker?
+>
+> I would be interested in having such a feature on my iptables NAT
+> firewall.
+>
+> If not, I would like to try to develop one. However I have no experienc=
+e
+> at all regarding kernel/netfilter programming.
+> Is it hard?
+> Are there useful document I should read before starting?
+>
+> Thanks for your help.
+>
+> Francois.
 
-I am not using any proxy in my gateway machine.
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
 
- I checked out ntop, mrtg. I would like to know which is best  tool for this
-propose.
-
--RS
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
