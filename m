@@ -1,11 +1,22 @@
-From: Askar <askarali@gmail.com>
-Subject: how to remove rules
-Date: Tue, 23 Nov 2004 14:29:35 +0500
-Message-ID: <a0f69e5041123012925d5cfaf@mail.gmail.com>
-Reply-To: Askar <askarali@gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: state: INVALID
+Date: Tue, 23 Nov 2004 04:31:26 -0500
+Message-ID: <1101202285.3503.5.camel@hubcap.ljm.dom>
+References: <419E75B1.3030406@uni-paderborn.de>
+	<1100990773.3501.9.camel@hubcap.ljm.dom>
+	<419FD0BD.6000906@uni-paderborn.de>
+	<1101061543.3501.18.camel@hubcap.ljm.dom>
+	<41A11AD5.3080401@uni-paderborn.de>
+	<1101131121.13662.17.camel@hubcap.ljm.dom>
+	<41A2010A.9090601@uni-paderborn.de>
+	<20041122175440.GA31032@bender.817west.com>
+	<41A23EE6.4080804@uni-paderborn.de>
+	<20041122213910.GA31537@bender.817west.com>
+	<41A3007B.7090009@uni-paderborn.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <41A3007B.7090009@uni-paderborn.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,54 +27,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
+Cc: bj-schmidt@uni-paderborn.de
 
-hi 
-I have trying to remove the extra rules from my routing tables,
-however with no luck
-Also I want to know these duplicate entries have an effect on packets
-going routed?
-I have this overwhelming rules lists from my predessor who added the
-"ip rule add fwmark" entries in firewall script, and on each run of
-firewall script its creates an extra entry in routing table.
-Now I want to get rid of  an extras "from all fwmark 0x2 lookup
-squid.out" leaving only one that what's I needs.
+On Tue, 2004-11-23 at 04:18, Bj=C3=B6rn Schmidt wrote:
+> Does not work. I only changed "-J LOG -log-prefix" to "-j ULOG -ulog-pr=
+efix"
 
+then either i'm an idiot or there's something horribly wrong with your
+kernel.  both are about equally likely at this point.
 
-here is the output of "ip rule ls"
+-j
 
-0:      from all lookup local
-32742:  from all fwmark 0x2 lookup squid.out
-32743:  from all fwmark 0x2 lookup squid.out
-32744:  from all fwmark 0x2 lookup squid.out
-32745:  from all fwmark 0x2 lookup squid.out
-32746:  from all fwmark 0x2 lookup squid.out
-32747:  from all fwmark 0x2 lookup squid.out
-32748:  from all fwmark 0x2 lookup squid.out
-32749:  from all fwmark 0x2 lookup squid.out
-32750:  from all fwmark 0x2 lookup squid.out
-32751:  from all fwmark 0x2 lookup squid.out
-32752:  from all fwmark 0x2 lookup squid.out
-32753:  from all fwmark 0x2 lookup squid.out
-32754:  from all fwmark 0x2 lookup squid.out
-32755:  from all fwmark 0x2 lookup squid.out
-32756:  from all fwmark 0x2 lookup squid.out
-32757:  from all fwmark 0x2 lookup squid.out
-32758:  from all fwmark 0x2 lookup squid.out
-32759:  from all fwmark 0x2 lookup squid.out
-32760:  from all fwmark 0x2 lookup squid.out
-32761:  from all fwmark 0x2 lookup squid.out
-32762:  from all fwmark 0x2 lookup squid.out
-32763:  from all fwmark 0x2 lookup squid.out
-32764:  from all fwmark 0x2 lookup squid.out
-32765:  from all fwmark 0x2 lookup squid.out
-32766:  from all lookup main
-32767:  from all lookup 253
+--
+"I bent my wookie."
+	--The Simpsons
 
-regards
-
--- 
-(after bouncing head on desk for days trying to get mine working, I'll make
-your life a little easier)
 
