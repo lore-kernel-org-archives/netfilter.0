@@ -1,13 +1,12 @@
 From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Subject: Re: protocol 50 unreachable
-Date: Wed, 01 Dec 2004 23:03:01 -0500
-Message-ID: <1101960180.2025.116.camel@localhost>
-References: <Pine.LNX.4.44.0412011448020.18751-100000@gollum.grajagan.net>
-	<1101947339.22517.9.camel@hubcap.ljm.dom>
+Date: Wed, 01 Dec 2004 23:09:25 -0500
+Message-ID: <1101960564.2032.121.camel@localhost>
+References: <Pine.LNX.4.44.0412011956430.22471-100000@gollum.grajagan.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1101947339.22517.9.camel@hubcap.ljm.dom>
+In-Reply-To: <Pine.LNX.4.44.0412011956430.22471-100000@gollum.grajagan.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,112 +18,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: Helge Weissig <helgew@grajagan.org>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Wed, 2004-12-01 at 19:29, Jason Opperisano wrote:
-> On Wed, 2004-12-01 at 17:51, Helge Weissig wrote: 
-> <snip>
-> > Here is my current iptables configuration
-> > 
-> > $IPTABLES -P INPUT ACCEPT
-> > $IPTABLES -F INPUT 
-> > $IPTABLES -P OUTPUT ACCEPT
-> > $IPTABLES -F OUTPUT 
-> > $IPTABLES -P FORWARD DROP
-> > $IPTABLES -F FORWARD 
-> > $IPTABLES -t nat -F
-> > 
-> > echo "Enabling PORTFW Redirection on the external LAN.."
-> > $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p esp -j ACCEPT
-> > $IPTABLES -A PREROUTING -t nat -d $VPN_SERVER -p esp -j DNAT \
-> >  --to-destination $VPN_CLIENT
+On Wed, 2004-12-01 at 23:00, Helge Weissig wrote:
+> On Wed, 1 Dec 2004 at 22:46 -0500, Jason Opperisano wrote:
 > 
-> what on earth is that rule supposed to accomplish?  it's says "any esp
-> packet destined for $VPN_SERVER should be destination translated to
-> $VPN_CLIENT."
+> JO> > no such luck :(. I should note that the VPN connections works fine when I 
+> JO> > hook the client up directly to my DSL line. btw - it looks like your 
+> JO> > script does not forward anything from one of my interfaces to the other.
+> JO> 
+> JO> yeah--precisely.  you seem obsessed with the desire to "port forward"
+> JO> esp traffic to your VPN client, which is absolutely not necessary.
+> JO> 
+> JO> look into configuring NAT-T with your VPN client, sometimes called "UDP
+> JO> Encapsulation" as your VPN server appears unwilling to accept esp
+> JO> packets that have traversed an intermediate NAT device.
 > 
-> if this is the firewall in front of $VPN_CLIENT (which it sounds like it
-> is), you have created (for lack of a better term) a packet reflector. 
-> any esp packet sent from VPN client to VPN server will be spit back at
-> the VPN client.
+> hmm... how does a packet know it needs to go from my external NIC to my 
+> internal NIC if it comes through ESP? Maybe I am confused here... 
 > 
-> > echo "   FWD: Allow all connections OUT and only existing and related
-> > ones IN"
-> > $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state \
-> >  --state ESTABLISHED,RELATED -j ACCEPT
-> > $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-> > $IPTABLES -A FORWARD -j LOG
-> > 
-> > echo "   Enabling SNAT (MASQUERADE) functionality on $EXTIF"
-> > $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-> > 
-> > here is the tcpdump info I see on $EXTIF:
-> > 
-> > 10:23:09.234937 (vpn server ip) > (my ip): ESP(spi=0x00000000,seq=0x0)
-> > 10:23:09.235055 (my ip) > (vpn server ip): icmp: (my ip) protocol 50
-> > unreachable [tos 0xc0]
-> > 
-> > (these are empty packets sent by nmap but it looks the same for legit
-> > ones coming from the vpn server ip). FWIW, when the ipsec tunnel is
-> > established and I try to ping the a host behind the vpn server, I see
-> > the outgoing packets on all three interfaces, but not response.
-> > 
-> > thanks for any information or pointers in advance!
-> > h.
+> let's leave the VPN client/server out of the picture to simplify. If I 
+> send an ESP packet from somewhere to my external IP address I get the 
+> "protocol 50 unreachable" ICMP response. The underlying problem seems to 
+> be the primary cause of my troubles, no?
 > 
-> simplify:
-> 
->   # start fresh
->   for t in mangle nat filter; do
->     iptables -t $t -F
->     iptables -t $t -X
->     iptables -t $t -Z
->   done
->   for c in INPUT FORWARD OUTPUT; do
->     iptables -P $c ACCEPT
->   done
-> 
->   # hide-nat outbound traffic
->   iptables -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-> 
->   # ip forwarding
->   sysctl -w net.ipv4.ip_forward=1
-> 
-> try and connect with your VPN client to your VPN server with that
-> script.  if you can't connect--it's more likely an IPSec configuration
-> detail that your missing.
-<snip>
-I don't think this is quite right, Jason.  It is possible that the other
-side of the tunnel will need to initiate traffic once the tunnel is
-established.  Thus, there may be inbound packets on ip/50 that are not
-associated with any entry in the connection tracking table.  Thus he
-does need the specific port forwarding DNAT rule.
+> h.
+Yes, you should be able to get this to work as long as there is only one
+station behind the NAT gateway using IPSec.  NAT traversal is a valid
+way to go and the only way to go if you have more than one IPSec client
+using the same public address.  I do assume that the NAT gateway is not
+running IPSec.
 
-I believe you are correct that he does need to qualify the interface,
-i.e., the DNAT rule should only apply to traffic where -i $EXTIF lest he
-have the reflector effect.  In fact, I'm surprised that he saw the ESP
-pings going through.  I would have thought they would have been
-reflected.  Nonetheless, Helge, you should qualify the interface.  See
-if that helps.
+To use NAT traversal, you would forward the appropriate UDP port
+(typically 4500 or 500) rather than ip/50.
 
-If that doesn't work, I would suggest placing log rules at strategic
-points in the rule set to find out what the packet looks like just
-before the -p esp -j ACCEPT rule to find out why it doesn't match.  I
-assume this is not the entire rule set, e.g., somewhere I would imagine
-you change the INPUT and OUTPUT policies to DROP.
-
-Is there any chance that one of the variables is set incorrectly, e.g.,
-$VPN_CLIENT or $VPN_SERVER?
+I do not know why your NAT gateway is refusing to pass the IPSec
+packets.  That's why I suggest logging in my previous e-mail is
+clarifying the DNAT interface does not work.  Good luck - John
 -- 
 John A. Sullivan III
 Chief Technology Officer
 Nexus Management
 +1 207-985-7880
 john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
 
 
