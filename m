@@ -1,13 +1,11 @@
-From: ASHISH <ashishis@gmail.com>
-Subject: Re: ever block *outgoing* packets on your firewall?
-Date: Mon, 17 Jan 2005 09:56:02 +0530
-Message-ID: <558224e3050116202613e66b65@mail.gmail.com>
-References: <27594E8BA9D5CA458F5EF87D88B6B48F0198DD@pxtvjoexd01.pxt.primeexalia.com>
-Reply-To: ASHISH <ashishis@gmail.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: ever block *outgoing* packets on your firewall?
+Date: Sun, 16 Jan 2005 20:52:22 -0800
+Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F0198E3@pxtvjoexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <27594E8BA9D5CA458F5EF87D88B6B48F0198DD@pxtvjoexd01.pxt.primeexalia.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,67 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+To: ASHISH <ashishis@gmail.com>, netfilter@lists.netfilter.org
+
+And the confusion sets in...  If you are blocking UDP and TCP for things
+that shouldn't leave your network then why would that have no effect?
+
+For example, if you want to run a proxy only shop then you might right a
+rule that says no port 80 out traffic is allowed except from host x
+forcing clients to use the proxy.  Same holds true for socks, etc...
+
+It's very practical and used in many places.  My full time job is
+working for a major bank and that's exactly what we do.
+
+Gary Wayne Smith
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of ASHISH
+Sent: Sunday, January 16, 2005 8:26 PM
 To: netfilter@lists.netfilter.org
+Subject: Re: ever block *outgoing* packets on your firewall?
 
 It will have no effect on tcp traffic, but it can be a real mess with
 udp traffic.
 
 
-On Sat, 15 Jan 2005 21:12:04 -0800, Gary W. Smith <gary@primeexalia.com> wr=
-ote:
-> It's also key to stopping many of the code red and sql slammer type virus=
-es.  If SQL outgoing ports would have been closed on most firewalls that wo=
-uld have slowed it down quickly.
->=20
-> Gary
->=20
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-bounces@lis=
-ts.netfilter.org] On Behalf Of Jose Maria Lopez
-> Sent: Saturday, January 15, 2005 2:20 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: ever block *outgoing* packets on your firewall?
->=20
-> El vie, 14 de 01 de 2005 a las 21:02, seberino@spawar.navy.mil escribi=F3=
-:
-> > I'm wondering if it is ever necessary to block
-> > *outgoing* packets at your firewall.
-> >
-> > As long as you block /incoming/ carefully no hacker
-> > on the Internet can send spam through a node on
-> > your network or anything nasty like that right?
-> >
-> > (I'm wondering for a wifi hotspot if any nastiness
-> > will happen if I don't block outgoing.  I block
-> > virtually all incoming except ssh.)
-> >
-> > CS
->=20
-> You *really* need to block outgoing traffic at your firewall.
-> Think about spyware, malware and the like. They can be sending
-> your company data to their owners. And users can use firewall-piercing
-> and proxies to bypass your network rules if you let them do whatever
-> they want.
->=20
-> --
-> Jose Maria Lopez Hernandez
-> Director Tecnico de bgSEC
-> jkerouac@bgsec.com
-> bgSEC Seguridad y Consultoria de Sistemas Informaticos
-> http://www.bgsec.com
-> ESPA=D1A
->=20
-> The only people for me are the mad ones -- the ones who are mad to live,
-> mad to talk, mad to be saved, desirous of everything at the same time,
-> the ones who never yawn or say a commonplace thing, but burn, burn, burn
-> like fabulous yellow Roman candles.
->                 -- Jack Kerouac, "On the Road"
->=20
->=20
-
-
---=20
-cheers
-Ashish
 
