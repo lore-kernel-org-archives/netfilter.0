@@ -1,51 +1,74 @@
-From: "Mike Tubby" <mike.tubby@thorcom.co.uk>
-Subject: Re: sqlnet conntrack/nat modules?
-Date: Sun, 19 Oct 2003 19:01:54 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005b01c3966b$142d3540$0a90a8c0@zen>
-References: <3F92A82D.000013.29759@bj222.163.com> <878ynhus4s.fsf@stark.dyndns.tv>
+From: Harald Welte <laforge@netfilter.org>
+Subject: conntrack state synchronization development
+Date: Sun, 19 Oct 2003 19:51:38 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20031019175138.GT21521@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dBmMfAlnUmK8h9+K"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, Greg Stark <gsstark@mit.edu>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter-failover@lists.netfilter.org, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
->
-> "XX" <zijiepan@163.com> writes:
->
-> >    I want use it to SqlPlus to connect to a Oracle Server behind a linux
-box
-> >    using iptables.Does anyone have the sqlnet conntrack/nat modules?
->
-> I used to forward sqlnet connections via ssh. That would imply that it
-ought
-> to work just fine without using any special nat modules. That was with
-Oracle
-> 8.0.5 so it's possible this has changed since, but I doubt it.
->
-> -- 
-> greg
->
->
+--dBmMfAlnUmK8h9+K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
-We use SQL Relay as an application-layer proxy sat on our main Linux
-firewall box (one leg in the DMZ; one leg on the inside) passing Oracle-8
-queries from our public website back in to our internal server(s). Works
-a treat.
+After some long time of quiescence, there is now some movement in the
+netfilter-failover project.
 
-Have a look at: http://sqlrelay.sourceforge.net
+Kovacs Krisztian has done a proof-of-concept implementation of my
+OLS2002 paper, and this reference implementation has been committed to a
+new CVS repository.   You can find the code at=20
 
-Mike
+cvs -d:pserver:cvs:cvs@pserver.netfilter.org:/cvspublic co netfilter-ha
+(CVSweb at http://cvs.netfilter.org/netfilter-ha/)
 
+Please do _not_ consider this code as production ready or something.
+It's a starting point, from which I will continue the implementation.
+
+However, if you are interested on the architecture, feel free to read
+the code and comment to the netfilter-failover@lists.netfilter.org
+mailinglist.
+
+Thanks to Krisztian for the initial implementation.
+Thanks to Astaro AG for paying me to continue the work on conntrack
+failover.
+
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--dBmMfAlnUmK8h9+K
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/ks8qXaXGVTD0i/8RAhmPAKCRi8BDuuzFj3DaBsmeVChXXMIFigCfR14T
+NBAKjWu7sLrKkpJDVbRydbQ=
+=t0KK
+-----END PGP SIGNATURE-----
+
+--dBmMfAlnUmK8h9+K--
 
