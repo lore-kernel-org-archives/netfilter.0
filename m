@@ -1,13 +1,10 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
-Subject: RE: PPTP and netfilter
-Date: Tue, 29 Oct 2002 21:05:29 +0100
+From: "Kellogg, Chris" <Chris.Kellogg@dyncorp.com>
+Subject: Nested targets
+Date: Tue, 29 Oct 2002 17:08:41 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608FD776A5@w2ks-e2k.iconos.be>
+Message-ID: <BC6421B0F2CC4C43897842092E0E00A94C1906@tx1ex1nt.dyncorptx.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C27F86.87657CDA"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,71 +14,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Thomas Kirk <thomas@arkena.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+Hi, everyone.
 
-------_=_NextPart_001_01C27F86.87657CDA
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+I am encountering a problem where packets are not being handled correctly
+after being passed through several custom chains.
 
-Thomas Kirk [mailto:thomas@arkena.com] wrote:
->
->ive loaded the modules :
->
->ip_conntrack_pptp		2400   0  (unused)
->ip_conntrack_proto_gre		2432   0  [ip_conntrack_pptp]
->
+Each custom chain has error checking and a log/drop rule combo for the last
+two rules.  Here is how a valid packet should traverse my custom chain
+structure.  Example is a packet flowing from a client to a DNS server to
+start a new connection.
 
-Hi Thomas,
+Client -> FORWARD (Builtin) -> SRC -> LANSRC -> DST -> DNSSRVDST -> Server
 
-You will also have to load ip_nat_pptp.o and ip_nat_proto_gre.o
+The client sends the packet, received by the firewall.
+The packet is first handled by the FORWARD Chain, `-j SRC` for source
+handling.
+The SRC chain determines the client is on the LAN and `-j LANSRC`.
+The source IP, port, protocol, options are all verified as acceptable; the
+packet `-j DST`s
+The DST chain determines the protocol is destined for DNS, `-j DNSSRVDST`
+The DNSSRVDST chain checks the destination address, port, and protocol, and
+-j ACCEPTs.
 
-Regards,
-Filip
+Instead, the packet does this:
 
+Client -> FORWARD (Builtin) -> SRC -> LANSRC -> DST -> DNSSRVDST -> Default
+Drop
 
-------_=_NextPart_001_01C27F86.87657CDA
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+All is good until the packet enters the DNSSRVDST chain.  The packet is
+dropped with my default log/drop rulepair at the end of the chain:
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: PPTP and netfilter</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
+Oct 23 07:01:41 tx1fw02 kernel: Unmatched DNSSRVDST IN=eth0 OUT=eth3
+SRC=cli.ent.ip.add DST=DNS.SRV.ip.add LEN=62 TOS=0x00 PREC=0x00 TTL=126
+ID=4028 PROTO=UDP SPT=1178 DPT=53 LEN=42
 
-<P><FONT SIZE=3D2>Thomas Kirk [<A =
-HREF=3D"mailto:thomas@arkena.com">mailto:thomas@arkena.com</A>] =
-wrote:<BR>
-&gt;<BR>
-&gt;ive loaded the modules :<BR>
-&gt;<BR>
-&gt;ip_conntrack_pptp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2400&nbsp;&nbsp; 0&nbsp; =
-(unused)<BR>
-&gt;ip_conntrack_proto_gre &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-2432&nbsp;&nbsp; 0&nbsp; [ip_conntrack_pptp]<BR>
-&gt;<BR>
-<BR>
-Hi Thomas,<BR>
-<BR>
-You will also have to load ip_nat_pptp.o and ip_nat_proto_gre.o<BR>
-<BR>
-Regards,<BR>
-Filip<BR>
-</FONT>
-</P>
+The DNSSRVDST Chain:
+$ipt --new DNSSRVDST 2>/dev/null
+$ipt -A DNSSRVDST -p udp --dport 53 -j ACCEPT
+$ipt -A DNSSRVDST -p tcp --dport 53 -j ACCEPT
+*SNIP*...SSH connections for management -J ACCEPTs...*SNIP*
+$ipt -A DNSSRVDST -j LOG --log-level warn --log-prefix "Unmatched DNSSRVDST
+"
+$ipt -A DNSSRVDST -j DROP
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C27F86.87657CDA--
+I'm at a loss why this would occur.  I'm open to ideas on what the cause
+might be, as well as better ways of building my firewall script.  The
+firewall has 4 interfaces, 2 are untrusted (RAS, Wireless), one is secured
+for protected servers, the last is for the general LAN.
+
+I am running iptables v1.2.6a, kernel v2.4.18 w/patches from iptables
+1.2.6a.
+
+Thanks!
+
+Cheers,
+
+Chris.
+
+Christopher M. Kellogg, GCFW
+Infrastructure Administrator, DynCorp IT 
+6500 West Freeway Suite 600, Fort Worth, TX
 
