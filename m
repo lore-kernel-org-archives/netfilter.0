@@ -1,13 +1,14 @@
-From: "Aldo S. Lagana" <alagana@discmail.com>
-Subject: RE: Newbie Question
-Date: Mon, 24 Feb 2003 11:50:07 -0500
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: :INPUT DROP [82:20563]
+Date: Mon, 24 Feb 2003 12:20:08 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003601c2dc24$c9d55550$3864a8c0@discmail.com>
-References: <NGBBJEDAELGDCOJBKMHKEEAOCHAA.jcorbit@cox-internet.com>
+Message-ID: <200302241220.08835.netfilter@newkirk.us>
+References: <001c01c2dc22$60a80ca0$11eb7080@princeton.edu>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NGBBJEDAELGDCOJBKMHKEEAOCHAA.jcorbit@cox-internet.com>
+In-Reply-To: <001c01c2dc22$60a80ca0$11eb7080@princeton.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +19,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Jeffrey Corbit' <jcorbit@cox-internet.com>, netfilter@lists.netfilter.org
+To: Chi <clu@Princeton.EDU>, netfilter@lists.netfilter.org
 
-last time I installed PopTop, I had to install pptp support in netfilter
-through the Patch-o-Matic (not sure it's still valid).  But I only
-needed that to allow multiple outbound PPTP connections from inside a
-NAT'd LAN (that is, I was NATing PPTP connections)
+On Monday 24 February 2003 11:32 am, Chi wrote:
+> I'm new to iptables so ....
 
-To simply connect to PoPToP, you need to make sure your rules are
-correct in netfilter for allowing the protocol 47, port 1723, etc. to be
-forwarded. Remember if you're running poptop on a netfilter server, the
-INPUT and OUTPUT chains are important as is the FORWARD chain (all in
-the Filter table)
+If you haven't already, bookmark and read through the documentation at=20
+http://netfilter.org , and Oskar Andreasson's fantastic tutorial at=20
+http://iptables-tutorial.frozentux.net .
 
 
+> After I use #iptables -P INPUT DROP
+>                 #iptables -P FORWARD DROP
+>                 #iptables -P OUTPUT DROP
+> and # service iptables save
+>
+> I have this in the /etc/sysconfig/iptables:
+> :INPUT DROP [82:20563]
+> :FORWARD DROP [0:0]
+> :OUTPUT DROP [0:0]
+>
+> So what is exactly those numbers for? and can I manually change it?
+> also I have noticed that those numbers changes every time when I
+> changed the rules.
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org 
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of 
-> Jeffrey Corbit
-> Sent: Monday, February 24, 2003 11:23 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Newbie Question
-> 
-> 
-> I'm running POPTOP on a linux 2.4.18 kernel.  Have been 
-> having some connection problems and questions to the poptop 
-> mailing list have suggested that I need to install the 
-> Netfilter Helper PPTP files.  I have successfully downloaded 
-> these files to my linux server and they now reside in 
-> /root/netfilter-extensions... folder.  My question is what do 
-> I do with them now.  I can't find any documentation a to how 
-> to apply these files to my current configuration.
-> 
-> Thanks for any help you can give!
-> 
-> Jeff
-> 
-> 
+The numbers are Packets:Bytes that have matched.  If you have several=20
+rules (instead of simply a DROP policy for the chain) this will show you=20
+how much traffic matched each rule.  You shouldn't manually edit it, but=20
+if you want to reset it use "iptables -Z" (to zero the counts for the=20
+default table, filter) and/or "iptables -t nat -Z". (to zero counts for=20
+the NAT table)  If you list the active rules with "iptables -v -n -L" it=20
+will list all the filter table rules along with packets and bytes that=20
+matched each, and here again "-t nat" will specify the nat table instead=20
+of the default filter table.
+
+j
+
+> Thanks.
+>
+> Chi
 
 
