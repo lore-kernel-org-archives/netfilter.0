@@ -1,7 +1,7 @@
 From: "Maxime Ducharme" <mducharme@cybergeneration.com>
-Subject: Re: Stateful packet inspection
-Date: Fri, 4 Mar 2005 13:52:26 -0500
-Message-ID: <008d01c520eb$4f2ab710$b000a8c0@cybergeneration.com>
+Subject: Stateful packet inspection
+Date: Fri, 4 Mar 2005 10:42:45 -0500
+Message-ID: <0ead01c520d0$cfbc2eb0$b000a8c0@cybergeneration.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
@@ -18,59 +18,20 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
 
-Thanks to all who replied :)
+Hi to the list
 
-Have a nice day
+I have been asked if iptables support
+stateful packet inspection.
 
-Maxime Ducharme
-Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
+i.e. verify if traffic on port 21 is FTP
+and not HTTP (correct me if I'm using the wrong
+term)
 
------ Original Message -----=20
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, March 04, 2005 1:48 PM
-Subject: RE: Stateful packet inspection
+Is there any module or development about this ?
 
-
-Yes,
-
-what you are actually looking for is a filter for applications that send
-packets through your firewall =3D> so called LAYER 7 FILTER! Why layer 7 - =
-see
-OSI Layer model.
-
-Regards,
-
-Edvin Seferovic
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Maxime Ducharme
-Sent: Freitag, 04. M=E4rz 2005 19:45
-To: netfilter@lists.netfilter.org
-Subject: Re: Stateful packet inspection
-
-
-Yes I am not sure of the exact word for
-"Layer 7 filter"
-
-Someone can confirm this ?
-
-TIA
+Thanks in advance
 
 Maxime Ducharme
 Programmeur / Sp=E9cialiste en s=E9curit=E9 r=E9seau
-
------ Original Message -----=20
-From: "Daniel Lopes" <lopsch@lopsch.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Friday, March 04, 2005 11:03 AM
-Subject: Re: Stateful packet inspection
-
-
-> I thought SPI means inspecting packets for their state i.e. NEW or
-> ESTABLISHED. What you mean is a Layer 7 filter, the link to it was
-> posted above ;).
->
 
 
