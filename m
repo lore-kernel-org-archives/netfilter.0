@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: iptables and port mapping
-Date: Mon, 10 Mar 2003 02:57:44 -0500
+From: Jonathan Humphrey <jhumphrey@codemasters.com>
+Subject: Modules
+Date: Mon, 10 Mar 2003 08:23:10 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303100257.44740.netfilter@newkirk.us>
-References: <web-117748330@back2.chartermi.net>
-Reply-To: netfilter@newkirk.us
+Message-ID: <4D613EBFB75BD6118A5B00508BEEC62C0111CB8A@JESS>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative; boundary="----_=_NextPart_001_01C2E6DE.15FFE689"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <web-117748330@back2.chartermi.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +15,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "Mcminn, Matt 8869" <melfinadev@chartermi.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Monday 10 March 2003 01:05 am, Mcminn, Matt 8869 wrote:
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-> What I want to do is map port 80 on the external interface
-> (eth0) to port 80 on my internal (eth1) 192.168.0.2 ip
-> address.  So what I thought would do this is:
->
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-> DNAT --to 192.168.0.2
-> iptables -I INPUT -d 192.168.0.0/32 -j ACCEPT
+------_=_NextPart_001_01C2E6DE.15FFE689
+Content-Type: text/plain; charset="iso-8859-1"
 
-First part is right, second is wrong.  Once you DNAT it, it is no longer=20
-destined for the machine running iptables, so it goes to FORWARD chain,=20
-not INPUT chain.  (also you have problems with that rule's construction:=20
-using "-I" you should specify a rule number to insert before, like "-I=20
-INPUT 4" to make it the 4th rule, plus your /32 mask will only match=20
-that single IP...)  Just change your second rule to:
+I am loading these modules to get FTP working, however they are no auto
+loading so each time i restart the server i havbe to manually reload them
 
-iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
+insmod ip_nat_ftp 
 
-and the request will reach the local server.  Getting the reply traffic=20
-back out is a separate issue in FORWARD.  If you don't already have=20
-outbound traffic ACCEPTed, you'd need something like one of these:
+insmod ip_conntrack_ftp 
 
-iptables -A FORWARD -s 192.168.0.2 -p tcp --sport 80 -j ACCEPT
-or
-iptables -A FORWARD -s 192.168.0.2 -m state --state    \
-ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -d 192.168.0.2 -m state --state    \
-ESTABLISHED,RELATED -j ACCEPT
+Thanks,
 
-The second pair (using the state match) is preferable, since they will=20
-also allow ICMP traffic related to the HTTP connection.  If you already=20
-have connectivity from the local machines through this box to the=20
-internet then you probably don't need anything for outbound replies. =20
-Also, the state pair is subsumed in the more general rule:
+ 
+Jonathan Humphrey
+IT Services Manager
+www.codemasters.com <http://www.codemasters.com/> 
+ 
+ 
 
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-which is commonly used to allow those two states to pass the FORWARD=20
-chain in any direction.
+**********************************************************************
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the system manager.
 
-j
+This footnote also confirms that this email message has been swept by
+MIMEsweeper for the presence of computer viruses.
 
+**********************************************************************
+
+
+------_=_NextPart_001_01C2E6DE.15FFE689
+Content-Type: text/html; charset="iso-8859-1"
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+
+<META content="MSHTML 6.00.2800.1041" name=GENERATOR></HEAD>
+<BODY>
+<DIV>
+<P><SPAN class=671162108-10032003><FONT face=Arial size=2>I am loading these 
+modules to get FTP working, however they are no auto loading so each time i 
+restart the server i havbe to manually reload them</FONT></SPAN></P>
+<P><FONT face=Arial size=2>insmod ip_nat_ftp </FONT></P>
+<P><FONT face=Arial size=2>insmod ip_conntrack_ftp </FONT></P>
+<P><FONT face=Arial size=2>Thanks,</FONT></P></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Jonathan Humphrey</FONT></DIV>
+<DIV><FONT face=Arial size=2>IT Services Manager</FONT></DIV>
+<DIV><FONT face=Arial size=2><A 
+href="http://www.codemasters.com/">www.codemasters.com</A></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV><CODE><FONT SIZE=3><BR>
+<BR>
+**********************************************************************<BR>
+This email and any files transmitted with it are confidential and<BR>
+intended solely for the use of the individual or entity to whom they<BR>
+are addressed. If you have received this email in error please notify<BR>
+the system manager.<BR>
+<BR>
+This footnote also confirms that this email message has been swept by<BR>
+MIMEsweeper for the presence of computer viruses.<BR>
+<BR>
+**********************************************************************<BR>
+</FONT></CODE>
+</BODY></HTML>
+
+------_=_NextPart_001_01C2E6DE.15FFE689--
 
