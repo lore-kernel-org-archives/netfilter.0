@@ -1,12 +1,12 @@
-From: "John Black" <black@arbbs.net>
-Subject: Re: (No subject header)
-Date: Thu, 29 Jul 2004 22:09:08 -0500
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: (No subject header)
+Date: Thu, 29 Jul 2004 23:33:10 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007801c475e2$9532a740$f82ffea9@black>
-References: <4107cdbf.195.321c.246791223@arbbs.net> <200407282252.25325.Antony@Soft-Solutions.co.uk>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051210@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +17,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: John Black <black@arbbs.net>, netfilter@lists.netfilter.org
 
+> iptables -t nat -A PREROUTING -d X.X.X.X -p tcp --dport 22 -j DNAT \
+> -- to 192.168.1.89:2222 (ares)
+>
+> iptables -t nat -A PREROUTING -d X.X.X.X -p tcp --dport 22 -j DNAT \
+> -- to 192.168.1.90:22222 (zeus)
 
-> Okay, so you have one public IP address, and all your internal machines
-are
-> masqueraded behind that one address for outbound connections; also your
-> firewall runs DNS (although it's not clear whether you mean it runs
-caching
-> DNS for internal clients, or also authoritative DNS for external queries
-> about your domain).
+If X.X.X.X in that first rule =3D=3D X.X.X.X in that second rule--the =
+second rule will never be matched.
 
-i have a caching dns sserver for the inside of the lan, but external queries
-are
-handled by the companies dns server
+You're giving netfilter 3 pieces of information to use to decide whether =
+you have a match:
 
-> What is "the first rule"?
-iptables -t nat -A PREROUTING -d X.X.X.X -p tcp --dport 22 -j DNAT \
--- to 192.168.1.89:2222 (ares)
+Protocol =3D TCP
+Dest IP =3D X.X.X.X
+Dest Port =3D 22
 
-iptables -t nat -A PREROUTING -d X.X.X.X -p tcp --dport 22 -j DNAT \
--- to 192.168.1.90:22222 (zeus)
+Given those conditions, how will it skip the first rule and make it to =
+the second?
 
-i asigned that workstation to listen to that port.
+I would reverse your theory.  Let the hosts on the inside listen on the =
+standard SSH port (TCP 22), and use different ports on the external =
+side:
 
-when i ssh into zeus from the outside world it says connecting to zeus, but
-at the bash prompt it is ares
+iptables -t nat -A PREROUTING -d X.X.X.X -p tcp --dport 2222 -j DNAT \
+ --to 192.168.1.89:22 (ares)
 
-im running BIND 9 on red hat 9
+iptables -t nat -A PREROUTING -d X.X.X.X -p tcp --dport 2223 -j DNAT \
+ --to 192.168.1.90:22 (zeus)
 
-thanks
-john
+And then use:	ssh -p 2222 X.X.X.X to connect to ares
+And:			ssh -p 2223 X.X.X.X to connect to zeus
 
+-j
 
