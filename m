@@ -1,14 +1,15 @@
-From: Pascal Italiaander <pc-secure@home.nl>
-Subject: Re: lots of ACK/FIN filtering (DPT=80) at web server.
-Date: Thu, 29 May 2003 12:11:01 +0200
+From: David T-G <davidtg-netfilter@justpickone.org>
+Subject: Re: SOLVED : Re: where is libipt_match.so?
+Date: Thu, 29 May 2003 06:51:14 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305291211.01431.pc-secure@home.nl>
-References: <Sea1-F98nnh99RhOQmI000379a3@hotmail.com> <1054185938.13730.183.camel@raylinux.internal>
+Message-ID: <20030529105114.GA65109@justpickone.org>
+References: <20030529045612.GJ33081@justpickone.org> <09B04A55822EFF4DA48D2E0BB2941D4A0D6D48@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1054185938.13730.183.camel@raylinux.internal>
 Content-Disposition: inline
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D48@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,80 +19,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
-
-Op donderdag 29 mei 2003 07:25, schreef Ray Leach:
-> Hi there
->
-> On Wed, 2003-05-28 at 10:46, SB CH wrote:
-> > Hello, all.
-> >
-> > I have operated linux web server and executed iptables 1.2.8.
-> >
-> > and I have found so lots of logs like this ACK,FIN filtering.
-> > Surely, ACK-FIN is a connection closing step, so there is no problem for
-> > customers but I would like to know why this happens!!
-> > I guess that the timeout of the connection tracking related.
->
-> Those are 'broken' browsers that do not follow the http standard
-> properly.
->
-> > May 25 12:33:05 www kernel: IN=3Deth0 OUT=3D SRC=3D210.126.xxx.xx
-> > DST=3D211.10.xx.xx LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D118 ID=3D3376 =
-DF PROTO=3DTCP
-> > SPT=3D3608 DPT=3D80 WINDOW=3D63520 RES=3D0x00 ACK FIN URGP=3D0
-> >
-> > Do you have any problems like me?
->
-> Yes
->
-> > and what's the problem and how can I solve this problem?
->
-> Stop using non-standards complient browsers. Sometimes changes to
-> standards are not 'enhancements'.
->
-> > Thanks in advance for your kind opinios!!
-> >
-> > _________________________________________________________________
-> > =ED=99=95=EC=9D=B8=ED=95=98=EC=9E=90. =EC=98=A4=EB=8A=98=EC=9D=98 =EC=
-=9A=B4=EC=84=B8 =EB=AC=B4=EB=A3=8C =EC=82=AC=EC=A3=BC, =EA=B6=81=ED=95=A9, =
-=EC=9E=91=EB=AA=85, =EC=A0=84=EC=83=9D =EA=B0=80=EC=9D=B4=EB=93=9C
-> > http://www.msn.co.kr/fortune/default.asp
-
-This is correct , mostly this happens when you have the rule like this:
-iptables -A OUTPUT -p tcp ! --syn -m state --state NEW -j DROP
-and you have a workstation inside your network , you browse with.
-The most logging wil be done if you run a Windows-client      :-)
-
-BUT you run a webserver,  and in your log-file says IN=3Deth0 and not OUT=
-=3Deth0.
-
-I run a webserver in Holland also , and it may happens sometimes ,that some=
-one=20
-keeps the website open , but does nothing. So a connection_time_out=20
-acurse,and the ACK,FIN will be dropped, when the client closes the browser =
-or=20
-page.
-
-But NO heavy logging of that may happen.
-
-So  I asume there is something else...
-
-maybe a faulty rule ? like this ?:
-
-iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
-
-send us your ruleset . If you only run a public-webserver (and ftp or ssh )=
-=20
-you don't need a heavy ruleset. ( keep it plain and simple)
-
-Pascal
+To: NetFilter Users' List <netfilter@lists.netfilter.org>
+Cc: George Vieira <georgev@citadelcomputer.com.au>
 
 
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+George --
+
+=2E..and then George Vieira said...
+%=20
+% no no no.. you've forgotten also the --state before mentioning the
+% states your checking..
+
+Ahhh...
 
 
+%=20
+%=20
+% *george searches his scripts*
+%=20
+% See.... as below..
+% $IPTABLES -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+Well, this seems to work and not cause any errors, so it's good enough
+for me :-)
 
 
+%=20
+% Thanks,
 
+
+Thank *you*!
+
+:-D
+--=20
+David T-G                      * There is too much animal courage in=20
+(play) davidtg@justpickone.org * society and not sufficient moral courage.
+(work) davidtgwork@justpickone.org  -- Mary Baker Eddy, "Science and Health"
+http://justpickone.org/davidtg/      Shpx gur Pbzzhavpngvbaf Qrprapl Npg!
+
+
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (FreeBSD)
+
+iD8DBQE+1eYiGb7uCXufRwARAm0LAJ95A/sk6Bed+zpI+ZnC5ERizBz38wCglhlT
+6FmuQGNE9b9PSLTAL3p7mX0=
+=Mb8g
+-----END PGP SIGNATURE-----
+
+--FCuugMFkClbJLl1L--
 
