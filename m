@@ -1,14 +1,14 @@
-From: "Alex Bennee" <alex@bennee.com>
-Subject: Re: Should forwarded packets ever hit the OUTPUT chain?
-Date: Fri, 8 Nov 2002 09:53:42 -0000 (GMT)
+From: "Eugenio" <eugenio@imidianet.com.br>
+Subject: RE: DNAT - TCP_MISS/503
+Date: Fri, 8 Nov 2002 07:52:48 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <37149.217.42.120.194.1036749222.squirrel@www.bennee.com>
-References: <20021108092009.TZSK3711.mta02-svc.ntlworld.com@there>
-Reply-To: alex@bennee.com
+Message-ID: <NGBBJHGGHKMOJBIADANIEEMPEFAA.eugenio@imidianet.com.br>
+References: <FD8F124A387AD6119F7900A0D218B321019974@hslex01.hsl-brabantzuid.nl>
+Reply-To: <eugenio@imidianet.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021108092009.TZSK3711.mta02-svc.ntlworld.com@there>
+In-Reply-To: <FD8F124A387AD6119F7900A0D218B321019974@hslex01.hsl-brabantzuid.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,81 +19,169 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony@Soft-Solutions.co.uk
-Cc: netfilter@lists.netfilter.org
+To: Rob Sterenborg <rsterenborg@xs4all.nl>, netfilter@lists.netfilter.org
 
-Antony Stone said:
-> On Friday 08 November 2002 8:31 am, alex wrote:
-> <snip>
->> In trying to debug my firewall (see earlier message on the user list)
->> I can see the final rule of my to-lan chain (attached to output)
->> dropping packets when the incomming web connection hangs.
->
-> What are your FORWARDing rules ?
+Hi,
 
-    # FORWARD is used for NAT/MASQ stuff - anything thats not destined for
-this machine
-    /sbin/iptables -P FORWARD DROP
+| What webserver did you test ; http://localhost or http://123.0.0.18 ?
+| We don't know anything about your setup so it's quite difficult if not
+| impossible to answer your question.
+| Could you post your iptables rules so that we might be able help you (and
+| please, not the output of : iptables -L, but the actual commands) ?
 
-    # Now create some forwarding chains
-    /sbin/iptables -N fw-to-lan
-    /sbin/iptables -N fw-to-inet
 
-    # Forwarding rules. Allow our external services access but not much else
-    # Allow access to web/secure web/smtp/ssh on zheer (remember the
-destination is now translated)
-    /sbin/iptables -A fw-to-lan -d $ZHEER -p tcp --dport 22 -j ACCEPT
-    /sbin/iptables -A fw-to-lan -d $ZHEER -p tcp --dport 25 -j ACCEPT
-    /sbin/iptables -A fw-to-lan -d $ZHEER -p tcp --dport 80 -j ACCEPT
-    /sbin/iptables -A fw-to-lan -d $ZHEER -p tcp --dport 443 -j ACCEPT
-    /sbin/iptables -A fw-to-lan -d $ZHEER -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-    # and stuff on TRENT (ssh:22, fileshare:6346, freenet:7000)
-    /sbin/iptables -A fw-to-lan -d $TRENT -p tcp --dport 22 -j ACCEPT
-    /sbin/iptables -A fw-to-lan -d $TRENT -p tcp --dport 6346 -j ACCEPT
-    /sbin/iptables -A fw-to-lan -d $TRENT -p tcp --dport 7000 -j ACCEPT
-    /sbin/iptables -A fw-to-lan -d $TRENT -m state --state
-ESTABLISHED,RELATED -j ACCEPT
+I did test http://123.0.0.18 and it's Okay! but, http://www.dominio.com.br
+is not okay.
 
-    # ESTABLISHED and RELATED connections allowed through as well
-    /sbin/iptables -A fw-to-lan -d $INTNET -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-    # Log any spoofed packets
-    /sbin/iptables -A fw-to-lan -s $INTNET -m limit -j LOG --log-prefix
-"[Spoofed packets from $EXTIF]"
-    # and anything INVALID should get dropped
-    /sbin/iptables -A fw-to-lan -d $INTNET -m state --state INVALID -j DROP
+ERROR
 
-    # Dump everything else
-    /sbin/iptables -A fw-to-lan -j DROP
-    # enable
-    /sbin/iptables -A FORWARD -o $INTIF -j fw-to-lan
+The requested URL could not be retrieved
+-------------------------------------------------------------
+While trying to retrieve the URL: http://www.dominio.com.br
 
-    # Forwarding rules for outgoing connections - split to make debugging
-easier for now
-    /sbin/iptables -A fw-to-inet -s $ZHEER -p tcp --sport 22 -j ACCEPT
-    /sbin/iptables -A fw-to-inet -s $ZHEER -p tcp --sport 25 -j ACCEPT
-    /sbin/iptables -A fw-to-inet -s $ZHEER -p tcp --sport 80 -j ACCEPT
-    /sbin/iptables -A fw-to-inet -s $ZHEER -p tcp --sport 443 -j ACCEPT
-    /sbin/iptables -A fw-to-inet -s $ZHEER -j ACCEPT
-    # and TRENT
-    /sbin/iptables -A fw-to-inet -s $TRENT -p tcp --sport 6436 -j ACCEPT
-    /sbin/iptables -A fw-to-inet -s $TRENT -p tcp --sport 7000 -j ACCEPT
-    /sbin/iptables -A fw-to-inet -s $TRENT -j ACCEPT
-    # and everyone else
-    /sbin/iptables -A fw-to-inet -j ACCEPT
-    # enable
-    /sbin/iptables -A FORWARD -o $EXTIF -j fw-to-inet
+The following error was encountered:
 
-    # Log anything else
-    /sbin/iptables -A FORWARD -m limit -j LOG --log-prefix "[Packet lost
-forwarding]"
+Connection Failed
 
-But I never see the default FORWARD policy exercised (unsuprisingly all
-traffic should end up on the fw-to-inet or fw-to-lan chains)
+The system returned:
 
-Alex
-www.bennee.com/~alex/
+    (111) Connection refused
+
+The remote host or network may be down. Please try the request again.
+Your cache administrator is root.
+
+
+My rules are ;
+
+[root@IMIDIA /root]# cat iptables.txt
+# Generated by iptables-save v1.2.1a on Fri Sep 13 12:35:05 2002
+*mangle
+:PREROUTING ACCEPT [26633:4815741]
+:OUTPUT ACCEPT [625:95729]
+COMMIT
+# Completed on Fri Sep 13 12:35:05 2002
+# Generated by iptables-save v1.2.1a on Fri Sep 13 12:35:05 2002
+*filter
+:INPUT DROP [55:8112]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+
+-A INPUT -i lo -j ACCEPT
+-A INPUT -s 127.0.0.1 -i lo -j ACCEPT
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+-A INPUT -s 0/0 -p tcp -m tcp --dport 80 -j ACCEPT
+-A INPUT -s 0/0 -p tcp -m tcp --sport 80 -j ACCEPT
+
+-A INPUT -s 0/0 -p tcp -m tcp --dport 53 -j ACCEPT
+-A INPUT -s 0/0 -p tcp -m tcp --sport 53 -j ACCEPT
+
+-A INPUT -s 0/0 -p udp -m udp --dport 53 -j ACCEPT
+-A INPUT -s 0/0 -p udp -m udp --sport 53 -j ACCEPT
+
+-A FORWARD -m unclean -j LOG
+-A FORWARD -m unclean -j DROP
+
+-A FORWARD -p icmp -m icmp --icmp-type 8 -j LOG
+-A FORWARD -p icmp -m icmp --icmp-type 8 -j DROP
+
+-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -p icmp -m icmp --icmp-type 8 -m limit --limit 1/sec -j ACCEPT
+-A FORWARD -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -m state --state NEW -j
+ACCEPT
+
+-A FORWARD -p tcp -m tcp --dport 80 -j ACCEPT
+-A FORWARD -p tcp -m tcp --sport 80 -j ACCEPT
+
+-A FORWARD -p tcp -m tcp --dport rsync -j ACCEPT
+-A FORWARD -p tcp -m tcp --sport rsync -j ACCEPT
+
+-A FORWARD -p tcp -m tcp --dport 25 -j ACCEPT
+-A FORWARD -p tcp -m tcp --sport 25 -j ACCEPT
+
+-A FORWARD  -p tcp -m tcp --dport 110 -j ACCEPT
+-A FORWARD  -p tcp -m tcp --sport 110 -j ACCEPT
+
+-A FORWARD -p tcp -m tcp --dport 443 -j ACCEPT
+-A FORWARD -p tcp -m tcp --sport 443 -j ACCEPT
+
+-A FORWARD -p tcp -m tcp --dport 21 -j ACCEPT
+-A FORWARD -p tcp -m tcp --sport 21 -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport 20 -j ACCEPT
+-A FORWARD -p tcp -m tcp --sport 20 -j ACCEPT
+
+-A FORWARD -p tcp -m tcp --dport 53 -j ACCEPT
+-A FORWARD -p tcp -m tcp --sport 53 -j ACCEPT
+-A FORWARD -p udp -m udp --dport 53 -j ACCEPT
+-A FORWARD -p udp -m udp --sport 53 -j ACCEPT
+
+-A FORWARD -p tcp -m tcp --dport 22 -j ACCEPT
+-A FORWARD -p tcp -m tcp --sport 22 -j ACCEPT
+
+# saida
+-A OUTPUT -s 127.0.0.1 -j ACCEPT
+-A OUTPUT -s 123.0.0.10 -j ACCEPT
+-A OUTPUT -s 200.0.2.190 -j ACCEPT
+-A OUTPUT -d 0/0 -p tcp -m tcp --dport 53 -j ACCEPT
+-A OUTPUT -d 0/0 -p tcp -m tcp --dport 80 -j ACCEPT
+-A OUTPUT -p icmp -m state --state INVALID -j LOG
+-A OUTPUT -p icmp -m state --state INVALID -j DROP
+
+COMMIT
+# Completed on Fri Sep 13 12:35:05 2002
+# Generated by iptables-save v1.2.1a on Fri Sep 13 12:35:05 2002
+*nat
+:PREROUTING ACCEPT [1192:75377]
+:POSTROUTING ACCEPT [17:863]
+:OUTPUT ACCEPT [2:136]
+
+# Redirecionamento do trafego local para o servidor squid, controle do
+conteudo.
+-A PREROUTING -s 123.0.0.10 -p tcp -m tcp --dport 80 -j
+DNAT --to-destination 123.0.0.11:3128
+
+# Redirecionamento do Trafego web da Internet para o servidor web.
+-A PREROUTING -d 200.0.2.190 -i eth0 -p tcp -m tcp --dport 80 -j
+DNAT --to-destination 123.0.0.18
+
+# Criando uma rota de ENTRADA para os e-mails.
+-A PREROUTING -d 200.0.2.190 -i eth0 -p tcp -m tcp --dport 25 -j
+DNAT --to-destination 123.0.0.11
+
+# Criando uma rota de ENTRADA para DNS
+-A PREROUTING -d 200.0.2.190 -i eth0 -p tcp -m tcp --dport 53 -j
+DNAT --to-destination 123.0.0.11
+
+# Criando uma rota de ENTRADA para DNS
+-A PREROUTING -d 200.0.2.190 -i eth0 -p udp -m udp --dport 53 -j
+DNAT --to-destination 123.0.0.11
+
+# Criando uma rota de ENTRADA para o acesso FTP.
+# -A PREROUTING -d 200.0.2.190 -i eth0 -p tcp -m tcp --dport 21 -j
+DNAT --to-destination 123.0.0.18
+
+# Criando uma rota de SAIDA para os e-mails. Atencao, essa rota pode
+permitir
+# acao de SPAMMERS, acaso o sendmail nao estiver corretamente fechado.
+-A PREROUTING -d 200.0.2.190 -i eth0 -p tcp -m tcp --dport 110 -j
+DNAT --to-destination 123.0.0.11
+
+# Trafego de LOCAL de saida para INTERNET via SQUID.
+-A POSTROUTING -s 123.0.0.11 -o eth0 -j MASQUERADE
+
+# Trafego de saida para INTERNET de todos os protocolos exceto o Tcp/IP 80
+rede LOCAL.
+-A POSTROUTING -s 123.0.0.0/255.255.255.0 -o eth0 -p tcp -m tcp ! --dport
+80 -j MASQUERADE
+
+COMMIT
+# Completed on Fri Sep 13 12:35:05 2002
+
+Thank in advanced
+
+Eugenio
+
+
 
 
 
