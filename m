@@ -1,80 +1,55 @@
-From: "RRuegner" <robert@ruegner.org>
-Subject: Re: [ANNOUNCE] call for testing of patch-o-matic-ng
-Date: Thu, 26 Feb 2004 21:31:32 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <001501c3fca7$85542c90$32640a0a@robopc>
-References: <Pine.LNX.4.44.0402262109050.12492-100000@filer.marasystems.com>
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: [OT] Re: advantage and disadvantage between iptables and
+ ISAServer?
+Date: Fri, 27 Feb 2004 01:35:28 +0000
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040227013528.78a45664.arnt@c2i.net>
+References: <Sea1-F121KV8iOFQeYm0000bd96@hotmail.com>
+	<200402251607.58278.Antony@Soft-Solutions.co.uk>
+	<20040225161837.M90192@tkevans.com>
+	<200402251624.45744.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200402251624.45744.Antony@Soft-Solutions.co.uk>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: Harald Welte <laforge@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi Henrik thx for statement
-i looking more clear now.
-Best Regards
------ Original Message ----- 
-From: "Henrik Nordstrom" <hno@marasystems.com>
-To: "RRuegner" <robert@ruegner.org>
-Cc: "Harald Welte" <laforge@netfilter.org>; "rruegner" <robowarp@gmx.de>;
-"Netfilter Development Mailinglist" <netfilter-devel@lists.netfilter.org>;
-"Netfilter Mailinglist" <netfilter@lists.netfilter.org>
-Sent: Thursday, February 26, 2004 9:24 PM
-Subject: Re: [ANNOUNCE] call for testing of patch-o-matic-ng
+On Wed, 25 Feb 2004 16:24:45 +0000, 
+Antony Stone <Antony@Soft-Solutions.co.uk> wrote in message 
+<200402251624.45744.Antony@Soft-Solutions.co.uk>:
 
+> On Wednesday 25 February 2004 4:18 pm, Tim Evans wrote:
+> 
+> > On Wed, 25 Feb 2004 16:07:58 +0000, Antony Stone wrote
+> >
+> > > On Wednesday 25 February 2004 3:49 pm, Michael Gale wrote:
+> > > > I will give Microsoft this ... they make a nice user friendly
+> > > > desktop OS that my mom can use.
+> > >
+> > > Apple arguably do a better one.
+> >
+> > But does Mom want to build a firewall?
+> 
+> If she does, she can use Linux like the rest of us, and not have to
+> deal with corporates like Apple and Microsoft....
 
-> On Thu, 26 Feb 2004, RRuegner wrote:
->
-> > i know your question, but where is the list which modules will fit to
-kernel
-> > 2.6.3, i have to setup a firewall machine and i wanna use 2.6.3 and want
-to
-> > know which newnat will compile clean at now.
->
-> The goal is to have most modules ported to 2.6 when pom-ng is released I
-> think. The current state is not yet ready for public consumtion on 2.6 as
-> a lot porting efforts of the various extensions still remains.
->
-> > It would be nice to see a small info at the netfilter page about that.
->
-> Until it is ready for public consumtion there is little point in having
-> such page I think.
->
-> And with pom-ng properly including dependency and kernel revision checks I
-> am not realy convinced such page is required. If you ask it will apply
-> what can be applied to your kernel and tell what could not.
->
-> > Alltough i understood pom ng as a special redesign for the new kernel
-> > now i understand that this is only a redesign of pom.
->
-> Correct.
->
-> pom-ng is not a redesign for the new kernel, it is primary a redesign for
-> easier model of development and version management and at the same time
-> throwing in the ability to support multiple versions of the same extension
-> for different kernel versions.
->
-> The primary goal right now is to get pom-ng up to at least the same level
-> as pom is to make sure there is a stable foundation to work from allowing
-> the developers to forget about pom.
->
-> Secondary goal is to port as many extensions as possible to also support
-> 2.6 but this is actually a separate project, only made practically
-> possible by the introduction of pom-ng. So for the 2.6 porting activity to
-> get up to speed the pom-ng framework must first be verified.
->
-> Regards
-> Henrik
->
+.."If".   ;-)   She has to get one somehow, no?  ;-)
+
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
 
