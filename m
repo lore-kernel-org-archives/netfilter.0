@@ -1,11 +1,12 @@
-From: "Mike" <mikeeo@msn.com>
-Subject: sub interface filtering
-Date: Wed, 2 Apr 2003 13:45:11 -0500
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: sub interface filtering
+Date: Wed, 2 Apr 2003 11:53:29 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000b01c2f947$feb84a80$8b01a8c0@win2k.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF50C6FEE@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,88 +17,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
+
+Correct. Aliases are obsolete from what I can see. IProute2 adds IP
+addresses directly to interfaces, so eth0 could have 10 IP addresses
+instead of the awkward eth0:0 eth0:1, etc. mechanism. In this system,
+you filter based on IP address instead of interface alias.
+
+-----Original Message-----
+From: Rob Sterenborg [mailto:rob@sterenborg.info]=20
+Sent: Wednesday, April 02, 2003 11:39 AM
 To: netfilter@lists.netfilter.org
+Subject: RE: sub interface filtering
 
-Hi guys I have the following setup and rules. And I cant seem to get the
-filtering to work.
+> Hi guys I have the following setup and rules. And I cant seem to get
+the filtering to work.
+> eth2:0
+>=20
+> <routeable internetIP/28>
+>=20
+> eth2:1
+>=20
+> <routeable internetIP/28>
 
-
-
-Interfaces:
-
-
-
-eth0
-
-<internetIP>
-
-eth1
-
-<privateIP>
-
-eth2
-
-<routeable internetIP/28>
-
-eth2:0
-
-<routeable internetIP/28>
-
-eth2:1
-
-<routeable internetIP/28>
+AFAIK it is because you cannot filter eth<x>:y (but you can filter the
+IP address of course).
 
 
-
-I have the following rules
-
-
-
-iptables -P FORWARD DROP
-
-iptables -I FORWARD -i eth0 -o eth2 -p tcp -m state --state
-NEW,ESTABLISHED,RELATED --dport 80 -j ACCEPT
-
-iptables -I FORWARD -i eth0 -o eth2 -p tcp -m state --state
-NEW,ESTABLISHED,RELATED --dport 443 -j ACCEPT
-
-iptables -A FORWARD -i eth0 -o eth2 -p tcp -m state --state
-NEW,ESTABLISHED,RELATED,INVALID -j DROP
-
-
-
-iptables -t nat -A PREROUTING -p tcp <routeable internetIP/28> --dport 80 -j
-DNAT --to 192.168.1.197
-
-iptables -t nat -A PREROUTING -p tcp <routeable internetIP/28> --dport
-443 -j DNAT --to 192.168.1.197
-iptables -t nat -A POSTROUTING -o eth2 -s 192.168.1.197 -j SNAT --to
-<routeable internetIP/28
-
-ifconfig eth2:0 <routeable internetIP/28> broadcast <routeable
-internetIP/28> netmask 255.255.255.240
-
-
-iptables -t nat -A PREROUTING -p tcp -d <routeable internetIP/28 --dport
-80 -j DNAT --to 192.168.1.198
-
-iptables -t nat -A PREROUTING -p tcp <routeable internetIP/28> --dport
-443 -j DNAT --to 192.168.1.198
-iptables -t nat -A POSTROUTING -o eth2 -s 192.168.1.198 -j SNAT --to
-<routeable internetIP/28
-
-ifconfig eth2:1 <routeable internetIP/28> broadcast <routeable
-internetIP/28> netmask 255.255.255.240
-
-
-
-
-
-
-but when I scan eth2:1 or eth2:2 from an outside machine I can see ALL the
-local services (ssh, ptptp,dns etc..) Is connection not passing the
-forwading chain?
-
+Rob
 
 
 
