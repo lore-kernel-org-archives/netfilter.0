@@ -1,13 +1,11 @@
-From: Alexis <alexis@attla.net.ar>
-Subject: Re: Rules for DNS
-Date: Thu, 29 Jan 2004 12:47:13 -0300
+From: Madison Kelly <linux@alteeve.com>
+Subject: Looking for an editable script
+Date: Thu, 29 Jan 2004 12:02:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1075391233.10439.14.camel@noc2tuh.dcn>
-References: <1075389910.2794.6.camel@dchws.TQMcube.com>
+Message-ID: <40193C8B.1030900@alteeve.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1075389910.2794.6.camel@dchws.TQMcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +15,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-DNS's uses udp/53 for querys and tcp/53 for zone transfers
-tcp/53 is used for querys too if it exceeds 512 bytes.
+Hi all,
 
-M$ Windows uses tcp and udp for querys, without look the size, so for
-mswin to work, you need to open both ports.
+   I am trying to build a script to serve my office network. To date I 
+have used Monmotha's Firewall script but I need more than it provides. I 
+have been trying to hack his excellent script to fit my needs but a 
+programmer I am not! :)
 
-be extremely carefull if you are natting the dns server.
+   I need something I can work into doing the following;
 
+- Allow limited TCP/UDP ports into the firewall/router (easy enough)
+- Allow limited TCP/UDP ports into LAN clients (common list for all LAN 
+clients)
+- NAT clients that will be public and for each client allow a specific 
+list of inbound TCP/UDP ports and where the clients will, internally, 
+have their own subnet seperate from the LAN clients.
 
+   I am not asking anyone to do my work, but a head start would be 
+greatly appreciated! In the meantime, back to trying to bang Monmotha's 
+script to suite (please save me!) ;)
 
-On Thu, 2004-01-29 at 12:25, David C. Hart wrote:
-> I am terribly confused about what I need to accept and reject and the
-> associated IPTables rules for Bind to work properly without exposing our
-> server to exploits. Right now, I'm pretty much accepting all traffic to
-> and from port 53 and that's "probably" not a good thing. I'm running
-> IPtables on the same machine running Bind.
-> 
-> Can someone point me in the right direction?
-> 
-> Thanks.
->                                ---------
->             Quality Management - A Commitment to Excellence
--- 
-Alexis <alexis@attla.net.ar>
+Madison
 
 
