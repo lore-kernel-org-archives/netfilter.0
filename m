@@ -1,15 +1,13 @@
-From: cbaker@bbbscentralohio.org
-Subject: DirecPC on Linux
-Date: Mon, 24 Feb 2003 08:50:39 -0500
+From: "John Davey" <list@davey.net.au>
+Subject: RE: Forwarding problem, :( port redirection!
+Date: Mon, 24 Feb 2003 23:53:27 +1030
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E59DCDF.28271.D25FF@localhost>
-References: <004e01c2dbee$71539e40$13fcc5cb@Housecall>
-Reply-To: cbaker@bbbscentralohio.org
+Message-ID: <GNECLCLHIFNNAHMOKHDPEEEODFAA.list@davey.net.au>
+References: <04a401c2dbdf$61d69d00$0b00000a@nocpc3>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <004e01c2dbee$71539e40$13fcc5cb@Housecall>
-Content-description: Mail message body
+In-Reply-To: <04a401c2dbdf$61d69d00$0b00000a@nocpc3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,24 +17,92 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: louie miranda <lmiranda@chikka.com>, netfilter@lists.samba.org
+Cc: =?iso-8859-1?Q?Rasmus_B=F8g_Hansen?= <moffelist@amagerkollegiet.dk>
 
-I'm just wondering if anyone here has any experience with DirecPC on 
-Linux. We are unable to get any connection to the Internet at one of 
-our locations, with the exception of satellite and dial-up. Everyone at 
-DirecPC claims their satellite modems have to connected to a 
-Windows machine. I am now getting the impression from some Linux 
-people that DirecPC on Linux is possible, however.
+Your FORWARD rule is still wrong. It's already been DNAT'd so forward it
+to the IP thats on the box..ie 10.0.0.11
 
-Chris
+panic:/# iptables -A FORWARD -i eth0 -o eth1 -p tcp -d \
+	10.0.0.11 --dport 21 -j ACCEPT
 
-========================================
-Chris Baker -- technical specialist
-614-839-2447x108
-cbaker@bbbscentralohio.org
-Big Brothers Big Sisters
-Association of Central Ohio
-www.bbbscentralohio.org
+Also your firewall is on panic so NONE of the rules you have listed are even
+used. When you telnet from panic to 10.0.0.11.
+
+http://www.netfilter.org/documentation/index.html#HOWTO
+
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of louie miranda
+Sent: Monday, 24 February 2003 7:02 PM
+To: netfilter@lists.samba.org
+Cc: Rasmus B=F8g Hansen
+Subject: Re: Forwarding problem, :( port redirection!
+
+
+panic:/# iptables -t nat -A PREROUTING -i eth0 -p tcp -d
+203.190.72.108 --dport 21 -j DNAT --to 10.0.0.11:21
+panic:/# iptables -A FORWARD -i eth0 -o eth1 -p tcp -d
+203.190.72.108 --dport 21 -j ACCEPT
+panic:/# telnet 203.190.72.108 21
+Trying 203.190.72.108...
+telnet: Unable to connect to remote host: Connection refused
+panic:/# telnet 10.0.0.11 21
+Trying 10.0.0.11...
+Connected to 10.0.0.11.
+Escape character is '^]'.
+220 Dynu FTP Server (Version 1.13)
+^]
+telnet> q
+Connection closed.
+panic:/# telnet 203.190.72.108 21
+Trying 203.190.72.108...
+telnet: Unable to connect to remote host: Connection refused
+panic:/#
+
+Still no success! :(
+
+
+
+--
+thanks,
+louie miranda
+
+
+----- Original Message -----
+From: "Rasmus B=F8g Hansen" <moffelist@amagerkollegiet.dk>
+To: "louie miranda" <lmiranda@chikka.com>
+Cc: <netfilter@lists.samba.org>
+Sent: Monday, February 24, 2003 4:25 PM
+Subject: Re: Forwarding problem, :( port redirection!
+
+
+On Mon, 24 Feb 2003, louie miranda wrote:
+
+> Im trying just to forward simple ftp, 21 request into my internal machine.
+> Im typing this but it does not work..
+
+> iptables -t nat -A PREROUTING -i eth0 -p tcp -d 10.0.0.11 --dport 21 -j
+> DNAT --to 203.190.72.108:21
+> iptables -A FORWARD -i eth0 -o eth1 -p tcp -d 203.190.72.108 --dport 21 -j
+> ACCEPT
+
+Are you *sure* of those IP's? 10.0.0.11 is a private IP and is unusable
+on the internet - however your rules state that 10.0.0.11 is located on
+the internet. I'm pretty sure, you need to exchange the global and local
+IP.
+
+/Rasmus
+
+--
+-- [ Rasmus "M=F8ffe" B=F8g Hansen ] ---------------------------------------
+Drink wet cement: Get Stoned.
+----------------------------------[ moffe at amagerkollegiet dot dk ] --
+
+
+
 
 
