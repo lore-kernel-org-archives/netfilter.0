@@ -1,13 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: ipconntrack
-Date: Sun, 03 Oct 2004 17:22:27 -0400
+From: Dataforce <Dataforce@Home.dataforce.org.uk>
+Subject: Possible Simple Configuration gone wrong
+Date: Sun, 03 Oct 2004 23:12:21 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096838547.22962.72.camel@wolfpack.ljm.dom>
-References: <e73cec800410030141797418ff@mail.gmail.com>
+Message-ID: <41607945.8040802@Home.dataforce.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e73cec800410030141797418ff@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +15,62 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Sun, 2004-10-03 at 04:41, www.piratehosting.net wrote:
-> i run 2 irc servers for a small hosting company.
-> ip contrack gets full all the time no matter what limits i set 
-> echo 40192 > /proc/sys/net/ipv4/ip_conntrack_max
-> 
-> My question is:
-> can i safely remove ip conntrack all together?
-> rmmod ip_conntrack
-> rmmod ip_conntrack_ftp
-> rmmod ip_conntrack_irc
-> rmmod ip_conntrack
-> rmmod ipt_state
-> 
-> I dont really understand what it does but the table keep filling up im
-> sure its some kinda attact on my servers.
-> does it do anything at all i use a simple firewall (apf) and only these rules.
-> in
-> /etc/sysctl.conf
-> net.ipv4.icmp_echo_ignore_broadcasts = 1
-> net.ipv4.icmp_echo_ignore_all = 1
-> net.ipv4.tcp_max_syn_backlog = 1024
-> net.ipv4.icmp_ignore_bogus_error_responses = 1
-> net.ipv4.tcp_syncookies = 1
+I was just wondering, how would i go about setting up iptables rules as 
+follows:
 
-i'm beginning to think that you have a horribly misconfigured irc
-server.  do you really have 40,000 simultaneous IRC connections?
+Here is my network setup
 
--j
+the iptables machine has the ip 82.133.x.x on eth1, and 192.168.0.5 on eth0
 
--- 
-Jason Opperisano <opie@817west.com>
+(82.133.x.x) [Internet]----[iptables]----[Machine 1] (192.168.0.6)
+                                 |--------[Machine 2] (192.168.0.2)
+                                 `--------[Other Machines]
 
+I setup a port forward as follows:
+iptables -A PREROUTING -t nat -i eth0 -p tcp --dst 82.133.x.x --dport 
+3389 -j DNAT --to 192.168.0.6:3389
+
+iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 3389 -j DNAT --to 
+192.168.0.6:3389
+
+iptables -t nat -A POSTROUTING --dst 192.168.0.6 -p tcp --dport 3389 -j 
+SNAT --to-source 82.133.x.x
+
+iptables -A POSTROUTING -t nat -j MASQUERADE
+
+now, this allows machine2 AND internet clients to connect to port 3389 
+on 82.133.x.x and get to machine1
+
+however, according to machine1, all clients appear to have come from 
+192.168.0.5
+
+I would like it setup so that lan clients appear to come from 
+192.168.0.5 (so that packets get routed correctly 
+[machine1]--[iptables]--[machine2] not [machine1]--[machine2]) where as 
+packets from the internet appear to come from the correct ip.
+
+i have tried replacing
+iptables -A POSTROUTING -t nat -j MASQUERADE
+
+with
+
+iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j SNAT --to-source 
+82.133.x.x
+
+iptables -t nat -A POSTROUTING -s ! 192.168.0.0/16 -j MASQUERADE
+
+(suggested by a friend)
+
+and vice versa (swapping the !) however it either prevents external 
+connections compeltey or gives the same effect as before.
+
+is what i would like possible with iptables? or will i jsut have to live 
+with all clients appearing as 192.168.0.5
+
+thanks
+
+-DF
 
