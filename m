@@ -1,86 +1,143 @@
-From: "Gilmore, Eric" <egilmore@exchange.vt.edu>
-Subject: firewall help..
-Date: Tue, 2 Mar 2004 11:05:56 -0500
-Message-ID: <F79E26BFE28DBF438188F34397CD0FED07D88496@fangorn.cc.vt.edu>
+From: egilmore <egilmore@vt.edu>
+Subject: again, firewall help....
+Date: Tue, 2 Mar 2004 11:13:22 -0500
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <407075C6@zathras>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <suse-security-return-21844-suse-security=quimby.gnus.org@suse.com>
-List-Post: <mailto:suse-security@suse.com>
-List-Help: <mailto:suse-security-help@suse.com>
-List-Unsubscribe: <mailto:suse-security-unsubscribe-suse-security=quimby.gnus.org@suse.com>
-List-Subscribe: <mailto:suse-security-subscribe@suse.com>
-Content-class: urn:content-classes:message
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: suse-security@suse.com, suse-security-announce@suse.com
 
-Q2FuIGFueW9uZSBnaXZlIG1lIGEgY2x1ZT8gIFRoZSBiYXNpY3MgYXJlOg0KMSBtYWNoaW5lOiBT
-dVNFIDguMg0KMyBuaWNzDQoyIGludGVybmFsIG5ldHdvcmtzIChleGFtcGxlcyk6DQokSU5UTEFO
-MTo+IDE5Mi4wLjAuMiAgICRJTlRMQU4yOj4gMTkyLjAuNS4yDQogDQozIGdvb2QgaXAncyAoZXhh
-bXBsZXMpOg0KZXRoMD4gMTI4LjAuMC4xICAgZXRoMDoxPiAxMjguMC4wLjIgICBldGgwOjI+IDEy
-OC4wLjAuMw0KIA0KMiBzcG9vZmVkIGlwJ3M6DQokSU5USUYxPiAxOTIuMC41LjIgICRJTlRJRjI+
-IDE5Mi4wLjQ4LjMNCiANCndvcmtzOg0KLWNvbm5lY3RpbmcgZnJvbSB0aGUgaW50ZXJuZXQvZXh0
-ZXJuYWwgTEFOIHRvIGFsbCBtYWNoaW5lcyB2aWEgKHNzaCwgRlRQLCBIVFRQKQ0KIA0Kbm90Og0K
-LWNvbm5lY3RpbmcgYmV0d2VlbiAkSU5UTEFOMSAmICRJTlRMQU4yIA0KLXNhbWJhIGNvbm5lY3Rp
-b25zIGZyb20gYW55d2hlcmUNCi1hZnAgKGFwcGxlKSBjb25uZWN0aW9ucyBmcm9tIGFueXdoZXJl
-DQogDQotVGhhbmtzIGluIGFkdmFuY2UuLi4uDQogDQoNClBBVEg9IiRQQVRIOi91c3IvYmluLzov
-dXNyL3NiaW4iDQpERVBNT0Q9L3NiaW4vZGVwbW9kDQpJTlNNT0Q9L3NiaW4vaW5zbW9kDQpFWFRJ
-Rj1ldGgwDQpJTlRJRjE9ZXRoMQ0KSU5USUYyPWV0aDINCmNhc2UgIiQxIiBpbg0KJ3N0YXJ0JykN
-CiAgICAgICAgZWNobyAiQ2xlYXJpbmcgYW55IGV4aXN0aW5nIHJ1bGVzIGFuZCBzZXR0aW5nIGRl
-ZmF1bHQgcG9saWN5Li4iDQogaXB0YWJsZXMgLVAgSU5QVVQgQUNDRVBUDQogaXB0YWJsZXMgLVAg
-T1VUUFVUIEFDQ0VQVA0KIGlwdGFibGVzIC1QIEZPUldBUkQgQUNDRVBUDQogaXB0YWJsZXMgLUYN
-CiBpcHRhYmxlcyAtRiBJTlBVVA0KIGlwdGFibGVzIC1GIE9VVFBVVA0KIGlwdGFibGVzIC1GIEZP
-UldBUkQNCiBpcHRhYmxlcyAtWA0KIGlwdGFibGVzIC10IG5hdCAtRg0KIyBsb29wYmFjayBydWxl
-cw0KIGlwdGFibGVzIC1BIElOUFVUIC1pIGxvIC1qIEFDQ0VQVA0KIGlwdGFibGVzIC1BIE9VVFBV
-VCAtbyBsbyAtaiBBQ0NFUFQNCiBpcHRhYmxlcyAtQSBJTlBVVCAtaSAkRVhUSUYgLW0gc3RhdGUg
-LS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KIGlwdGFibGVzIC1BIE9VVFBV
-VCAtbyAkRVhUSUYgLW0gc3RhdGUgLS1zdGF0ZSBORVcsRVNUQUJMSVNIRUQsUkVMQVRFRCAgLWog
-QUNDRVBUDQogaXB0YWJsZXMgLUEgSU5QVVQgLWkgJEVYVElGIC1qIEFDQ0VQVA0KZWNobyAiQWRk
-aW5nIE1hc3F1ZXJhZGUgc3VwcG9ydCBmb3IgMTkyLjAuMC4wIHN1Ym5ldC4uLiINCiBpcHRhYmxl
-cyAtQSBGT1JXQVJEIC1pICRFWFRJRiAtbyAkSU5USUYxIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJM
-SVNIRUQsUkVMQVRFRCAtaiBBQ0NFUFQNCiBpcHRhYmxlcyAtQSBGT1JXQVJEIC1pICRJTlRJRjEg
-LW8gJEVYVElGIC1qIEFDQ0VQVA0KICAgICAgIGVjaG8gIkFkZGluZyBNYXNxdWVyYWRlIHN1cHBv
-cnQgZm9yIDE5Mi4wLjUuMCBzdWJuZXQuLi4iDQogaXB0YWJsZXMgLUEgRk9SV0FSRCAtaSAkRVhU
-SUYgLW8gJElOVElGMiAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElTSEVELFJFTEFURUQgLWogQUND
-RVBUDQogaXB0YWJsZXMgLUEgRk9SV0FSRCAtaSAkSU5USUYyIC1vICRFWFRJRiAtaiBBQ0NFUFQN
-CmVjaG8gIkFsbG93aW5nIHRyYWZmaWMgYmV0d2VlbiBpbnRlcm5hbCBuZXR3b3Jrcy4uLiINCiBp
-cHRhYmxlcyAtQSBGT1JXQVJEIC1pICRJTlRJRjEgLW8gJElOVElGMiAtbSBzdGF0ZSAtLXN0YXRl
-IEVTVEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUDQogaXB0YWJsZXMgLUEgRk9SV0FSRCAtaSAk
-SU5USUYyIC1vICRJTlRJRjEgLWogQUNDRVBUDQogaXB0YWJsZXMgLUEgRk9SV0FSRCAtaSAkSU5U
-SUYyIC1vICRJTlRJRjEgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFD
-Q0VQVA0KIGlwdGFibGVzIC1BIEZPUldBUkQgLWkgJElOVElGMSAtbyAkSU5USUYyIC1qIEFDQ0VQ
-VA0KIGlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyAkRVhUSUYgLWogTUFTUVVFUkFE
-RQ0KZWNobyAiQXNzb2NpYXRpbmcgaW50ZXJuYWwgYWRkcmVzcyAxOTIuMC4wLjIgd2l0aCBleHRl
-cm5hbCBhZGRyZXNzIDEyOC4wLjAuMiINCiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAt
-cCB0Y3AgLS1kc3QgMTI4LjAuMC4yIC1qIEROQVQgLS10by1kZXN0aW5hdGlvbiAxOTIuMC4wLjIN
-CiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtcCB1ZHAgLS1kc3QgMTI4LjAuMC4yIC1q
-IEROQVQgLS10by1kZXN0aW5hdGlvbiAxOTIuMC4wLjINCiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJF
-Uk9VVElORyAtcCBpY21wIC0tZHN0IDEyOC4wLjAuMiAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24g
-MTkyLjAuMC4yDQogaXB0YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1wIHRjcCAtLWRzdCAx
-MjguMC4wLjIgLWogU05BVCAtLXRvLXNvdXJjZSAxOTIuMC4wLjINCiBpcHRhYmxlcyAtdCBuYXQg
-LUEgUE9TVFJPVVRJTkcgLXAgdWRwIC0tZHN0IDEyOC4wLjAuMiAtaiBTTkFUIC0tdG8tc291cmNl
-IDE5Mi4wLjAuMg0KIGlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtcCBpY21wIC0tZHN0
-IDEyOC4wLjAuMiAtaiBTTkFUIC0tdG8tc291cmNlIDE5Mi4wLjAuMg0KZWNobyAiQXNzb2NpYXRp
-bmcgaW50ZXJuYWwgYWRkcmVzcyAxOTIuMC41LjIgd2l0aCBleHRlcm5hbCBhZGRyZXNzIDEyOC4w
-LjAuMyINCiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtcCB0Y3AgLS1kc3QgMTI4LjAu
-MC4zIC1qIEROQVQgLS10by1kZXN0aW5hdGlvbiAxOTIuMC41LjINCiBpcHRhYmxlcyAtdCBuYXQg
-LUEgUFJFUk9VVElORyAtcCB1ZHAgLS1kc3QgMTI4LjAuMC4zIC1qIEROQVQgLS10by1kZXN0aW5h
-dGlvbiAxOTIuMC41LjINCiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtcCBpY21wIC0t
-ZHN0IDEyOC4wLjAuMyAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24gMTkyLjAuNS4yDQogaXB0YWJs
-ZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1wIHRjcCAtLWRzdCAxMjguMC4wLjMgLWogU05BVCAt
-LXRvLXNvdXJjZSAxOTIuMC41LjINCiBpcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLXAg
-dWRwIC0tZHN0IDEyOC4wLjAuMyAtaiBTTkFUIC0tdG8tc291cmNlIDE5Mi4wLjUuMg0KIGlwdGFi
-bGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtcCBpY21wIC0tZHN0IDEyOC4wLjAuMyAtaiBTTkFU
-IC0tdG8tc291cmNlIDE5Mi4wLjUuMg0KIyBhZGQgbG9nZ2luZw0KIGlwdGFibGVzIC1BIElOUFVU
-IC1qIExPRw0KICNpcHRhYmxlcyAtQSBGT1JXQVJEIC1qIExPRw0KICNpcHRhYmxlcyAtdCBuYXQg
-LUEgUFJFUk9VVElORyAtaiBMT0cNCiAjaXB0YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1q
-IExPRw0KICNpcHRhYmxlcyAtQSBPVVRQVVQgLWogTE9HDQogI2lwdGFibGVzIC1BIGJsb2NrIC1q
-IExPRw0KOzsNCidzdG9wJykNCiBlY2hvICJGbHVzaGluZyBpcHRhYmxlcyBmaXJld2FsbC4uLiIN
-CiBpcHRhYmxlcyAtUCBJTlBVVCBBQ0NFUFQNCiBpcHRhYmxlcyAtRiBJTlBVVA0KIGlwdGFibGVz
-IC1QIE9VVFBVVCBBQ0NFUFQNCiBpcHRhYmxlcyAtRiBPVVRQVVQNCiBpcHRhYmxlcyAtUCBGT1JX
-QVJEIERST1ANCiBpcHRhYmxlcyAtRiBGT1JXQVJEDQogI2lwdGFibGVzIC1GIGJsb2NrDQogaXB0
-YWJsZXMgLXQgbmF0IC1GDQo7Ow0KJ3Jlc3RhcnQnKQ0KICAgICAgICAkMCBzdG9wDQogJDAgc3Rh
-cnQNCjs7DQoqKQ0KIGVjaG8gIiQwIHtzdGFydHxzdG9wfSINCiBleGl0IDENCjs7DQplc2FjDQpl
-eGl0IDANCg0K
+Can anyone give me a clue?  The basics are:
+1 machine: SuSE 8.2
+3 nics
+2 internal networks (examples):
+$INTLAN1:> 192.0.0.2   $INTLAN2:> 192.0.5.2
+ 
+3 good ip's (examples):
+eth0> 128.0.0.1   eth0:1> 128.0.0.2   eth0:2> 128.0.0.3
+ 
+2 spoofed ip's:
+$INTIF1> 192.0.5.2  $INTIF2> 192.0.48.3
+ 
+works:
+-connecting from the internet/external LAN to all machines via (ssh, FTP, 
+HTTP)
+ 
+not:
+-connecting between $INTLAN1 & $INTLAN2 
+-samba connections from anywhere
+-afp (apple) connections from anywhere
+ 
+-Thanks in advance....
+
+#!/bin/sh
+PATH="$PATH:/usr/bin/:/usr/sbin"
+DEPMOD=/sbin/depmod
+INSMOD=/sbin/insmod
+EXTIF=eth0
+INTIF1=eth1
+INTIF2=eth2
+
+case "$1" in
+'start')
+        echo "Clearing any existing rules and setting default policy.."
+	iptables -P INPUT ACCEPT
+	iptables -P OUTPUT ACCEPT
+	iptables -P FORWARD ACCEPT
+	iptables -F
+	iptables -F INPUT
+	iptables -F OUTPUT
+	iptables -F FORWARD
+	iptables -X
+	iptables -t nat -F
+# loopback rules
+	iptables -A INPUT -i lo -j ACCEPT
+	iptables -A OUTPUT -o lo -j ACCEPT
+	iptables -A INPUT -i $EXTIF -m state --state ESTABLISHED,RELATED -j ACCEPT
+	iptables -A OUTPUT -o $EXTIF -m state --state NEW,ESTABLISHED,RELATED  -j 
+ACCEPT
+	iptables -A INPUT -i $EXTIF -j ACCEPT
+echo "Adding Masquerade support for 192.0.0.0 subnet..."
+	iptables -A FORWARD -i $EXTIF -o $INTIF1 -m state --state ESTABLISHED,RELATED 
+-j ACCEPT
+	iptables -A FORWARD -i $INTIF1 -o $EXTIF -j ACCEPT
+       echo "Adding Masquerade support for 192.0.5.0 subnet..."
+	iptables -A FORWARD -i $EXTIF -o $INTIF2 -m state --state ESTABLISHED,RELATED 
+-j ACCEPT
+	iptables -A FORWARD -i $INTIF2 -o $EXTIF -j ACCEPT
+echo "Allowing traffic between internal networks..."
+	iptables -A FORWARD -i $INTIF1 -o $INTIF2 -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+	iptables -A FORWARD -i $INTIF2 -o $INTIF1 -j ACCEPT
+	iptables -A FORWARD -i $INTIF2 -o $INTIF1 -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+	iptables -A FORWARD -i $INTIF1 -o $INTIF2 -j ACCEPT
+	iptables -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+echo "Associating internal address 192.0.0.2 with external address 128.0.0.2"
+	iptables -t nat -A PREROUTING -p tcp --dst 128.0.0.2 -j DNAT --to-destination 
+192.0.0.2
+	iptables -t nat -A PREROUTING -p udp --dst 128.0.0.2 -j DNAT --to-destination 
+192.0.0.2
+	iptables -t nat -A PREROUTING -p icmp --dst 128.0.0.2 -j DNAT 
+--to-destination 192.0.0.2
+	iptables -t nat -A POSTROUTING -p tcp --dst 128.0.0.2 -j SNAT --to-source 
+192.0.0.2
+	iptables -t nat -A POSTROUTING -p udp --dst 128.0.0.2 -j SNAT --to-source 
+192.0.0.2
+	iptables -t nat -A POSTROUTING -p icmp --dst 128.0.0.2 -j SNAT --to-source 
+192.0.0.2
+echo "Associating internal address 192.0.5.2 with external address 128.0.0.3"
+	iptables -t nat -A PREROUTING -p tcp --dst 128.0.0.3 -j DNAT --to-destination 
+192.0.5.2
+	iptables -t nat -A PREROUTING -p udp --dst 128.0.0.3 -j DNAT --to-destination 
+192.0.5.2
+	iptables -t nat -A PREROUTING -p icmp --dst 128.0.0.3 -j DNAT 
+--to-destination 192.0.5.2
+	iptables -t nat -A POSTROUTING -p tcp --dst 128.0.0.3 -j SNAT --to-source 
+192.0.5.2
+	iptables -t nat -A POSTROUTING -p udp --dst 128.0.0.3 -j SNAT --to-source 
+192.0.5.2
+	iptables -t nat -A POSTROUTING -p icmp --dst 128.0.0.3 -j SNAT --to-source 
+192.0.5.2
+# add logging
+	iptables -A INPUT -j LOG
+	#iptables -A FORWARD -j LOG
+	#iptables -t nat -A PREROUTING -j LOG
+	#iptables -t nat -A POSTROUTING -j LOG
+	#iptables -A OUTPUT -j LOG
+	#iptables -A block -j LOG
+;;
+'stop')
+	echo "Flushing iptables firewall..."
+	iptables -P INPUT ACCEPT
+	iptables -F INPUT
+	iptables -P OUTPUT ACCEPT
+	iptables -F OUTPUT
+	iptables -P FORWARD DROP
+	iptables -F FORWARD
+	#iptables -F block
+	iptables -t nat -F
+;;
+'restart')
+        $0 stop
+	$0 start
+;;
+*)
+	echo "$0 {start|stop}"
+	exit 1
+;;
+esac
+exit 0
+
 
