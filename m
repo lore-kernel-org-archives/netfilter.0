@@ -1,11 +1,11 @@
 From: Ray Leach <raymondl@knowledgefactory.co.za>
 Subject: Re: how do I port forward through loopback?
-Date: Wed, 19 May 2004 07:31:13 +0200
+Date: Wed, 19 May 2004 07:31:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1084944672.19380.6.camel@raylinux.internal>
+Message-ID: <1084944673.19268.7.camel@raylinux.internal>
 References: <40AA16A7.1010706@shadowpuppets.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-m4+QoOLnCoHmAI4n+JZM"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-+KRGPJtYF3Yz0ycySM4K"
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <40AA16A7.1010706@shadowpuppets.net>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -20,7 +20,7 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-m4+QoOLnCoHmAI4n+JZM
+--=-+KRGPJtYF3Yz0ycySM4K
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
@@ -50,18 +50,18 @@ http://www.knowledgefactory.co.za
 Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
 --
 
---=-m4+QoOLnCoHmAI4n+JZM
+--=-+KRGPJtYF3Yz0ycySM4K
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQBAqvEgh1fuR/Bv+ygRAutmAJ9A/FtkE4qGdI5C368Rb0ni8OgzvACfQu1u
-/b4fj6vbsS9WEoacj9ulsM4=
-=p/CV
+iD8DBQBAqvEhh1fuR/Bv+ygRAvdfAJ0Q+s+M/tGY1gcvoTpOBeetgPONAgCghae5
+V2kuujCXT/nHU7Ge4q6xVds=
+=78gh
 -----END PGP SIGNATURE-----
 
---=-m4+QoOLnCoHmAI4n+JZM--
+--=-+KRGPJtYF3Yz0ycySM4K--
 
 
