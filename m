@@ -1,8 +1,9 @@
-From: Jean-Marie <jm.nfilter@laposte.net>
-Subject: mangle + TCP Flags
-Date: Wed, 10 Dec 2003 15:19:34 +0100
+From: "Maciej Soltysiak" <solt@dns.toxicfilms.tv>
+Subject: Re: mangle + TCP Flags
+Date: Wed, 10 Dec 2003 17:31:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031210151934.65780e26.jm.nfilter@laposte.net>
+Message-ID: <001d01c3bf3b$7d4c8b90$0e25fe0a@southpark.ae.poznan.pl>
+References: <20031210151934.65780e26.jm.nfilter@laposte.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,10 +17,15 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jean-Marie <jm.nfilter@laposte.net>, netfilter@lists.netfilter.org
 
-Hello, can someone tell me if it is possible, thanks to the mangle table, to modify the flags of a TCP packet before it is routed.
-I think to something like that:
-iptables -t mangle -A INPUT -j TCPFLAG --set-flags FIN,URG
-Thank you.
+Hi,
+
+> I think to something like that:
+> iptables -t mangle -A INPUT -j TCPFLAG --set-flags FIN,URG
+There is no such module. It would be possible to do that.
+If a module like this existed it would be a 
+> Thank you.
+> 
+> 
 
