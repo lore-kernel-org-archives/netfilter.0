@@ -1,8 +1,10 @@
-From: "Rio Martin." <rio@martin.mu>
+From: "Anthony M. Rasat" <a.m.rasat@palangkaraya.speed.net.id>
 Subject: Re: Traffic Reflecting / Redirecting
-Date: Fri, 4 Apr 2003 10:48:26 +0700
+Date: Fri, 4 Apr 2003 12:13:48 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004001c2fa5d$146c2750$6401a8c0@server>
+Message-ID: <003e01c2fa68$f9f8cc50$7e00a8c0@speednet6>
+References: <B45570C481D7904FA8C47E19444BF6CD030B1F@nsimail1.netstandard.inc>
+Reply-To: "Anthony M. Rasat" <a.m.rasat@palangkaraya.speed.net.id>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,77 +20,48 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Are u sure ?
-> I tried just as Daniel said, and it work.
-> Perhaps u should check, is there any firewall in both servers blocking
-your
-> packet to port 22 ?
->
-> Regards,
-> Rio Martin.
->
->
-> ----- Original Message -----
-> From: "Andrew Brink" <abrink@netstandard.net>
-> To: "Daniel Chemko" <dchemko@smgtec.com>; <netfilter@lists.netfilter.org>
-> Sent: Friday, April 04, 2003 8:31 AM
-> Subject: RE: Traffic Reflecting / Redirecting
->
->
-> I tried this, but for some reason it did not work, I was unable to ssh
-> in...
->
-> -----Original Message-----
-> From: Daniel Chemko [mailto:dchemko@smgtec.com]
-> Sent: Thursday, April 03, 2003 4:48 PM
-> To: Andrew Brink; netfilter@lists.netfilter.org
-> Subject: RE: Traffic Reflecting / Redirecting
->
->
-> If you have a single entry point and a single IP address, this is a
-> non-issue.
->
-> iptables -A PREROUTING -j DNAT -p tcp --destination-port 22
-> --destination 10.1.1.1 --to-destination 192.168.1.1
->
-> If you have multiple gateways that a PC can use to get out of a network,
-> there is no guarantee that the return packet will take the correct path
-> back through 10.1.1.1. In this case I don't believe there is a way to
-> accomplish this with total transparency.
->
-> You can use an SNAT rule to make 192.168.1.1 see the middle party, but
-> the originating host would still be unknowing of any NAT occurrences.
->
-> Hope this helps.
->
-> -----Original Message-----
-> From: Andrew Brink [mailto:abrink@netstandard.net]
-> Sent: Thursday, April 03, 2003 1:36 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Traffic Reflecting / Redirecting
->
-> All -
->
-> I am trying to set up a box that can reflect traffic to another box
-> transparently.
->
-> An Example would be:  Initiate a ssh connection to 10.1.1.1, 10.1.1.1
-> then sends this packet to 192.168.1.1, then the return path must also go
-> through 10.1.1.1.
->
-> The trick is getting this to work transparently, and over the internet,
-> not a local network.
->
-> Any thoughts or ideas would be helpful.
->
-> Thanks.
->
-> Andrew Brink, CCNA, WCSP
-> NetStandard, Inc.
-> 913-262-3888
->
->
->
->
+Hi Andrew,
+
+I'm not an expert but I think what you need is called port forwarding. You
+can look for an example - if you want to experiment yourself creating chains
+which generated automatically - in http://www.morizot.net/firewall/gen and
+costumize it for your need.
+
+Regards,
+
+Anthony M. Rasat.-
+
+
+
+----- Original Message -----
+From: "Andrew Brink" <abrink@netstandard.net>
+To: <netfilter@lists.netfilter.org>
+Sent: Friday, April 04, 2003 4:36 AM
+Subject: Traffic Reflecting / Redirecting
+
+
+All -
+
+I am trying to set up a box that can reflect traffic to another box
+transparently.
+
+An Example would be:  Initiate a ssh connection to 10.1.1.1, 10.1.1.1
+then sends this packet to 192.168.1.1, then the return path must also go
+through 10.1.1.1.
+
+The trick is getting this to work transparently, and over the internet,
+not a local network.
+
+Any thoughts or ideas would be helpful.
+
+Thanks.
+
+Andrew Brink, CCNA, WCSP
+NetStandard, Inc.
+913-262-3888
+
+
+
+
 
 
