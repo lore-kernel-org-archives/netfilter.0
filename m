@@ -1,14 +1,12 @@
-From: "Mitesh P Choksi" <murli@icafe.co.tz>
-Subject: RE: are these enough now?
-Date: Fri, 4 Oct 2002 21:34:26 +0300 (EAT)
+From: <achats.cdecrozant@club-internet.fr>
+Subject: allowing incoming RTMP (macromedia flash communication server) connections
+Date: Thu, 3 Oct 2002 22:08:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <51370.64.86.49.17.1033756466.squirrel@www.icafe.co.tz>
-References: <000101c26bbf$f205b0e0$731010ac@motion>
-Reply-To: murli@icafe.co.tz
+Message-ID: <006301c26b18$b626f9f0$0200a8c0@work.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0060_01C26B29.79496700"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000101c26bbf$f205b0e0$731010ac@motion>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,134 +16,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: ctodish@crayon.com
-Cc: netfilter@lists.netfilter.org, payal@hotpop.com
+To: netfilter@lists.samba.org
 
-I recovered and found another way out.
+This is a multi-part message in MIME format.
 
-Do a
-lsattr /bin/netstat
-lsattr /bin/ps
-lsattr /sbin/ifconfig
+------=_NextPart_000_0060_01C26B29.79496700
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-If you find any of the attributes set, unset it using
-chattr -i /bin/netstat
-chattr -i /bin/ps
-chattr -i /sbin/ifconfig
+hi,
 
-Then installing the rpm's net-tools and procps and psmisc using --force, it
-worked out and I could see the process as well as the
+I'd like to know how to set up netfilter to allow incoming connections =
+to my Macromedia Flash Communication Server MX.
+(RTMP protocol).
 
-Tripwire reports the differnce very efficiently, lsattr reports the change
-and chattr + rpm --force fixes it.
+My setup :
 
-What a major problem to people like me using space segment to connect to hte
-internet is the packets keep coming in and you need to ask your provider
-stop it on the other side of the satellite link. The ports don't just stay
-at 2002, I have seen 3 different ports. You will find processes like xntps,
-cinik, etc. running as well.
-
-If re-installation is not possible instantly, like in my case, tripwire
-reports really help.
-
-Regards,
-
-Mitesh
-
-Clint Todish said:
->
-> '/usr/sbin/lsof -i udp:2002' - sorry - M$OUTLOOK wants to cap that -i
-> for some reason.
->
-> -C
->
->
-> -----Original Message-----
-> From: Clint Todish [mailto:ctodish@crayon.com]
-> Sent: Friday, October 04, 2002 10:59 AM
-> To: 'netfilter@lists.netfilter.org'
-> Cc: 'PayalR'
-> Subject: RE: are these enough now?
->
->
-> More than likely, someone pushed over a root kit to cover their
-> tracks...if netstat -an doesn't show 2002 open, then you can be sure of
-> it. Chances are, they've also replaced ps as well to hide the
-> process...try: '/usr/sbin/lsof -I udp:2002' to get the PID. If you are
-> running a RedHat install - 'rpm -Va' and look for a '5' in the 3rd
-> position as that indicates a MD5 checksum difference from the binary on
-> your machine and the original package.
->
-> Personally, I would recommend a reinstall as you never know for sure
-> what may be left lurking around.
->
-> -C
->
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-> Sent: Friday, October 04, 2002 8:09 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: are these enough now?
->
->
-> On Friday 04 October 2002 12:25 pm, PayalR wrote:
->
->> Hi all,
->> Thanks a lot for the mails.
->>
->> > 161 - snmp - are you managing this system from elsewhere, or is this
->> > machine the snmp monitor ?   UDP 161 only needs to be inbound if
-> this
->> > machine is being monitored from elsewhere
->>
->> Well, I don't know anyting about SNMP thing. But the guys at the
->> server farm suggested I make some changes as told by them in my
->> snmpd.conf, so that they say I there will be able to monitor my
->> machine. I guess so I am just a client SNMP. So, which ports to keep
->> open?
->
-> UDP 161 inbound - to listen for SNMP commands
-> UDP 162 outbound - to generate SNMP traps
->
->> > > Also, nmap shows that 2002/udp globe is open. Shall I close it?
->> >
->> > machine already has the Slapper worm on it, since that opens UDP
->> > port 2002
->>
->> well, my machine had a slapper worm. I removed the .bugtraq file from
->> /tmp. Now still the port is open. This is very important to me. How do
->
->> I close the port???? nmap report says,
->> 2002/udp   open        globe
->> How do I know where and what is globe? How do I shut it?
->
-> Sorry - don't know - never had Slapper :-)   Anyone else here got any
-> experience or pointers ?
->
->> > I would recommend setting your OUTPUT chain to ESTABLISHED,RELATED
->>
->> do you mean similar to INPUT rule i.e using -m and all?
->
-> Yes.
->
-> Antony.
->
-> --
->
-> Behind the counter a boy with a shaven head stared vacantly into space,
-> a dozen spikes of microsoft protruding from the socket behind his ear.
->
-> - William Gibson, Neuromancer (1984)
+INTERNET ------- Netfilter Box ----------- LAN --------- IIS and Flash =
+Com Server (RTMP)
 
 
 
+thanx.
+     =20
 
-Regards,
+------=_NextPart_000_0060_01C26B29.79496700
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Cyberdude Murli
-The Earth
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I'd like to know how to set up =
+netfilter to allow=20
+incoming connections to my Macromedia Flash Communication Server=20
+MX.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>(RTMP protocol).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>My setup :</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>INTERNET ------- Netfilter Box =
+----------- LAN=20
+--------- IIS&nbsp;and Flash Com Server (RTMP)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>thanx.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+</FONT></DIV></BODY></HTML>
 
+------=_NextPart_000_0060_01C26B29.79496700--
 
 
