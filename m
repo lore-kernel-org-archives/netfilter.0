@@ -1,14 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: dhcrelay-*-*-*-*-*-*-*-
-Date: Sat, 29 Nov 2003 21:40:11 -0500
+Date: Sat, 29 Nov 2003 23:04:40 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311292140.11754.Alistair@nerdnet.ca>
-References: <1070150706.3fc93432d9526@paris-hme1>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <200311292304.40538.JALaramie@Loudoun-Fairfax.com>
+References: <1070150706.3fc93432d9526@paris-hme1> <200311292140.11754.Alistair@nerdnet.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1070150706.3fc93432d9526@paris-hme1>
+In-Reply-To: <200311292140.11754.Alistair@nerdnet.ca>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,34 +19,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: zynkx <skydive@megamail.pt>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On November 29, 2003 07:05 pm, zynkx wrote:
-> dhcrelay howto is no big deal you know... ;)
+On Saturday 29 November 2003 21:40, Alistair Tonner wrote:
+> On November 29, 2003 07:05 pm, zynkx wrote:
+> > dhcrelay howto is no big deal you know... ;)
+> >
+> > gonna put it all to accept to see how it goes and i'll
+> > let you all know ;)))
 >
-> gonna put it all to accept to see how it goes and i'll
-> let you all know ;)))
-	
-	ummm.. 
-	dhcp uses tcp/udp 67 + 68 does it not folks?
-	and somethling like 547 for ipv6?
-	
-	iptables -A INPUT -p tcp  -s ${client ip range} -d 255.255.255.255 -m 
-multiport --dport 67:68 -j ACCEPT
+> 	ummm..
+> 	dhcp uses tcp/udp 67 + 68 does it not folks?
+> 	and somethling like 547 for ipv6?
 
-	iptables -A INPUT -p udp  -s ${client ip range} -d 255.255.255.255 -m 
-multiport --dport 67:68 -j ACCEPT
+Hmm, bootstrap=dhcp=tcp/udp 67:68 ? I thought dhcp ran on a lower protocol  
+level than tcp/ip, but if this is true then this should work.
 
-        and appropriate equivalient rules on the OUTPUT chain should make this 
-work shouldn't it?
+>
+> 	iptables -A INPUT -p tcp  -s ${client ip range} -d 255.255.255.255 -m
+> multiport --dport 67:68 -j ACCEPT
+>
+> 	iptables -A INPUT -p udp  -s ${client ip range} -d 255.255.255.255 -m
+> multiport --dport 67:68 -j ACCEPT
+>
+>         and appropriate equivalient rules on the OUTPUT chain should make
+> this work shouldn't it?
 
+Sounds like a winner to me! synkx: Does it work?
 
--- 
-
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+Jeff
 
