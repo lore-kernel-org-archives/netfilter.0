@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+From: "Luis Fernando Barrera" <luba@assist.com.gt>
 Subject: RE: SNAT
-Date: Tue, 12 Nov 2002 22:01:00 +0100
+Date: Tue, 12 Nov 2002 15:47:59 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001a01c28a8e$9af7b7b0$0401000a@robbysan.org>
-References: <003201c28a85$304077d0$2c00a8c0@PERUCCHI>
+Message-ID: <NABBIDJPNCAGKGOFGHBFKEKAPIAA.luba@assist.com.gt>
+References: <20021112212916.OYRS3711.mta02-svc.ntlworld.com@there>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003201c28a85$304077d0$2c00a8c0@PERUCCHI>
+In-Reply-To: <20021112212916.OYRS3711.mta02-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,24 +20,47 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> I want when to request internal 192.168.0.1:53 he leaves how
-> ip external
-> 200.200.200.1:53
-> I tried to do that. But no this working
-> iptables -t nat -I POSTROUTING -p udp -s 192.168.0.1 --sport 53 -j
-> SNAT --to-source 200.200.200.1:53
 
-I don't know if dns traffic is always sent *from* 53/udp, but I do
-know it is always sent *to* 53/udp.
+I think that the DNS traffic goes only on 53/tcp when transfering
+zones, and it uses the 53/udp for the queries.
 
-Do you have a default policy set to DROP in the FORWARD chain ?
-Something like this should do the trick I think :
-# iptables -A FORWARD -s 192.168.0.1 -p udp --dport 53 -o <eth-out> -j
-ACCEPT
-# iptables -t nat -A PREROUTING -s 192.168.0.1 -p tcp --dport 53 -j
-SNAT --to-source 200.200.200.1
+Also, if you use the BIND implementation of the DNS server, you
+can specify the source port, so the traffic can go from 53/udp to 53/udp
+
+Luis Fernando Barrera 
+luba@assist.com.gt
 
 
-Rob
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+Sent: Tuesday, November 12, 2002 15:29
+To: netfilter@lists.netfilter.org
+Subject: Re: SNAT
+
+
+On Tuesday 12 November 2002 9:01 pm, Rob Sterenborg wrote:
+
+> > I want when to request internal 192.168.0.1:53 he leaves how
+> > ip external
+> > 200.200.200.1:53
+> > I tried to do that. But no this working
+> > iptables -t nat -I POSTROUTING -p udp -s 192.168.0.1 --sport 53 -j
+> > SNAT --to-source 200.200.200.1:53
+>
+> I don't know if dns traffic is always sent *from* 53/udp, but I do
+> know it is always sent *to* 53/udp.
+
+Not *always* :-)   Sometimes it goes to 53/tcp...
+
+Antony
+
+-- 
+
+With thanks to God,
+For all that's come before,
+For all that will come after,
+But most of all, for this bit right here now.
+
 
 
