@@ -1,11 +1,11 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Dynamic DNS
-Date: Wed, 9 Mar 2005 17:51:08 -0500 (EST)
-Message-ID: <Pine.LNX.4.60.0503091748430.11874@darkstar.sysinfo.com>
-References: <20050309062542.GA27660@gw.home.tux-labor.de>
-	<422F5F90.6080005@SCampbell.net>
+From: "it clown" <suse@mailbox.co.za>
+Subject: Re: Problem with Forward
+Date: Tue, 08 Mar 2005 20:42:32 +0200
+Message-ID: <web-666527855@mail01.infosat.net>
+References: <8568e72d050308103614b8fa93@mail.gmail.com>
 Mime-Version: 1.0
-In-Reply-To: <422F5F90.6080005@SCampbell.net>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8568e72d050308103614b8fa93@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,64 +16,248 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Steven M Campbell <Netfilter@SCampbell.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+i can not see that you are allowing port:
 
-On Wed, 9 Mar 2005, Steven M Campbell wrote:
+-p tcp 53
+-p udp 53
 
-> Sebastian Docktor wrote:
+for dns.
+
+On Tue, 8 Mar 2005 18:36:19 +0000
+ Sebastian Rodriguez <sniper.mdr@gmail.com> wrote:
+> First of all, little description of my situation.
+> I am in a Hight school room, where we acces to the lan
+> via a proxy.
+> I have also behind the school connection and adsl
+> connection (ppp0)
+> I am using a Server (connected to the school lan, to the
+> adsl and to
+> my computer) to determine the connection I use. I 've set
+> up iptables
+> rules who works fine for me.
+> I wanted also to share my connection with a friend.=20
+> The problem is that I dont want to give him ful acces to
+> the adsl
+> connection (don't want him to use emule or Bittorrent,
+> for eg)
+> If I give him full acces to my connection, everything is
+> all right,
+> but if I put my restrictions, he can't even go to IRC.
+> His configuration is: he puted my server as a gateway,
+> and he put the
+> official internal ip and dns.
+> the strange part its that if I give him full rigths,
+> establish
+> conection and after put therestrictions on (commenting
+> the general
+> forward line) the connection works (he can only use bnet
+> and irc as i
+> wanted, but not BT)
+> Maybe it's just a stupid errr, but i don't understand
+> what is wrong :'(
+> here is my "little" script:
+>=20
+>=20
+> -- #!/bin/sh
+>=20
+> #-------------------------------------------------
+> #eth0--> 00:0C:6E:2B:CF:94   Internal LAN (my Pc to
+> server) IP fixe
+> #eth1--> 00:02:44:29:C7:45    School LAN DHCPD
+> #eth2--> 00:26:54:0C:04:18    ADSL
+> #-------------------------------------------------
+>=20
+> # Configuration des routes
+> route del default gw 10.133.15.254
+> route add -host 10.133.15.254 dev eth1
+> route add -net 10.0.0.0/8 gw 10.133.15.254
+> route add -net 192.168.2.0/24 gw 10.133.15.254
+> route add default gw 84.97.32.1
+>=20
+> # On efface tout
+> iptables -F
+> iptables -t nat -F
+> # Regles pour le NAT
+> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -d
+> 10.0.0.0/8 -o eth1
+> -j MASQUERADE
+> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -d
+> 192.168.2.0/24 -o
+> eth1 -j MASQUERADE
+> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o ppp0
+> -j MASQUERADE
+>=20
+> # Anti Ping OF Death
+> iptables -A INPUT -p icmp --icmp-type echo-request -m
+> limit --limit
+> 1/s -j ACCEPT
+> #---------------------------
+> # ETH1
+> #--------------------------
+> # Refuser les ports sur eth1
+> iptables -A INPUT -i eth1 -m state --state NEW,INVALID -j
+> REJECT
+> iptables -A FORWARD -i eth1 -m state --state NEW,INVALID
+> -j REJECT
+>=20
+> #Ouverture de ports
+> iptables -I INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
+> iptables -I INPUT -i eth1 -p udp --dport 80 -j ACCEPT
+> iptables -I INPUT -i eth1 -p tcp --dport 20:21 -j ACCEPT
+> iptables -I INPUT -i eth1 -p udp --dport 20:21 -j ACCEPT
+> iptables -I INPUT -i eth1 -p tcp --dport 6666:6670 -j
+> ACCEPT
+> iptables -I INPUT -i eth1 -p tcp --dport 7000 -j ACCEPT
+>=20
+> #---------------------------
+> # PPP0
+> #--------------------------
+>=20
+> # Refuser les ports sur ppp0
+> iptables -A INPUT -i ppp0 -m state --state NEW,INVALID -j
+> DROP
+> iptables -A FORWARD -i ppp0 -m state --state NEW,INVALID
+> -j DROP
+>=20
+> #Ouverture de ports
+> iptables -I INPUT -i ppp0 -p tcp --dport 80 -j ACCEPT
+> iptables -I INPUT -i ppp0 -p udp --dport 80 -j ACCEPT
+> iptables -I INPUT -i ppp0 -p tcp --dport 20:21 -j ACCEPT
+> iptables -I INPUT -i ppp0 -p udp --dport 20:21 -j ACCEPT
+> iptables -I INPUT -i eth1 -p tcp --dport 6666:6670 -j
+> ACCEPT
+> iptables -I INPUT -i eth1 -p tcp --dport 7000 -j ACCEPT
+> iptables -I INPUT -i eth1 -p tcp --dport 4000 -j ACCEPT
+> iptables -I INPUT -i eth1 -p tcp --dport 6112:6119 -j
+> ACCEPT
+> iptables -I INPUT -i eth1 -p udp --dport 4000 -j ACCEPT
+> iptables -I INPUT -i eth1 -p udp --dport 6112:6119 -j
+> ACCEPT
+>=20
+> #-------------------------
+> # Routage Programmes
+> #------------------------
+> # Partage Direct Connect
+> iptables -I FORWARD -i eth1 -p tcp --dport 4120:4121 -j
+> ACCEPT
+> iptables -I FORWARD -i eth1 -p udp --dport 4120:4121 -j
+> ACCEPT
+> iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 4120
+> -j DNAT --to
+> 192.168.1.111:4120
+> iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 4121
+> -j DNAT --to
+> 192.168.1.111:4121
+> iptables -A PREROUTING -t nat -i eth1 -p udp --dport 4120
+> -j DNAT --to
+> 192.168.1.111:4120
+> iptables -A PREROUTING -t nat -i eth1 -p udp --dport 4121
+> -j DNAT --to
+> 192.168.1.111:4121
+>=20
+> # Routage Emule
+> iptables -I FORWARD -i ppp0 -p tcp --dport 4662 -j ACCEPT
+> iptables -I FORWARD -i ppp0 -p udp --dport 4672 -j ACCEPT
+> iptables -I FORWARD -i ppp0 -p udp --dport 4665 -j ACCEPT
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 4662
+> -j DNAT --to
+> 192.168.1.111:4662
+> iptables -A PREROUTING -t nat -i ppp0 -p udp --dport 4672
+> -j DNAT --to
+> 192.168.1.111:4672
+> iptables -A PREROUTING -t nat -i ppp0 -p udp --dport 4665
+> -j DNAT --to
+> 192.168.1.111:4665
+>=20
+> # Routage BitTorrent
+> iptables -I FORWARD -i ppp0 -p tcp --dport 6881:6889 -j
+> ACCEPT
+> iptables -I FORWARD -i ppp0 -p udp --dport 6881:6889 -j
+> ACCEPT
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6881
+> -j DNAT --to
+> 192.168.1.111:6881
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6882
+> -j DNAT --to
+> 192.168.1.111:6882
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6883
+> -j DNAT --to
+> 192.168.1.111:6883
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6884
+> -j DNAT --to
+> 192.168.1.111:6884
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6885
+> -j DNAT --to
+> 192.168.1.111:6885
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6886
+> -j DNAT --to
+> 192.168.1.111:6886
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6887
+> -j DNAT --to
+> 192.168.1.111:6887
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6888
+> -j DNAT --to
+> 192.168.1.111:6888
+> iptables -A PREROUTING -t nat -i ppp0 -p tcp --dport 6889
+> -j DNAT --to
+> 192.168.1.111:6889
+>=20
+> #-----------------------------------
+> #Partage nk IP:10.133.8.1
 >
->> Hi,
->> 
->> I want to allow a Dynamic DNS Client to Access the SSH-Server on my 
->> Firewall. But I don't want to open SSH for all IPs,
->> Is it possible that iptables always looks up the ip address from the 
->> hostname, so that only the ip has access which is registrated under
->> the dyndns?
->> 
->> 
->
-> IMO, it's a very bad idea to lower the security of iptables firewall by 
-> making it dependent on DNS for any portion of authorization certification. 
-> DNS isn't exactly known for it's stellar security :)   Allow me to suggest an 
-> alternate path.  Use RSA keyfiles and disallow ssh password authentication, 
-> this way you can leave the port open but user's without public keys installed 
-> on the server cannot gain access.  Generally speaking DNS should have nothing 
-> to do with anyone's firewall because DNS would then become the weak link in 
-> the security chain and SSH has methods that are better applied to these 
-> needs.
->
+#------------------------#-----------------------------------
+> #Partage nk IP:10.133.8.1
+> #----------------------------------
+> #Regles Generales
+> iptables -I INPUT -i eth1 -s 10.133.8.1 -j ACCEPT
+> #iptables -t nat -A POSTROUTING -s 10.133.8.1/32 -d
+> 192.168.2.0/24 -o
+> eth1 -j MASQUERADE
+> iptables -t nat -A POSTROUTING -s 10.133.8.1 -o ppp0 -j
+> MASQUERADE
+> #iptables -I FORWARD -i eth1 -s 10.133.8.1 -j ACCEPT
+>=20
+> #IRC
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p tcp --dport
+>  6666:6670 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p tcp --dport
+>  7000 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p udp --dport
+>  6666:6670 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p udp --dport
+>  7000 -j ACCEPT
+>=20
+> #Battle.net
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p tcp --dport
+>  4000 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p udp --dport
+>  4000 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p tcp --dport
+>  6112:6119 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p udp --dport
+>  6112:6119 -j ACCEPT
+>=20
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p tcp --dport
+>  20:21 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p udp --dport
+>  20:21 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p tcp --dport
+>  80 -j ACCEPT
+> iptables -I FORWARD -i eth1 -s 10.133.8.1 -p udp --dport
+>  80 -j ACCEPT
+>=20
+>=20
+> Thxs for your answers :D
+>=20
+>=20
+> ----------
+>=20
+> S=E9bastien Rodriguez
+>=20
 
-Ahh, but this closes one sec loophole and pens another, sshd, which has 
-gotten hit with quite a few sec issues.  Keeping the sshd port closed to 
-the outside except a few 'special' systems makes the likelyhood of a 
-system compromise due to sshd extremely unlikely.
-
-Thanks,
-
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                         -Tom Robins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFCL33gst+vzJSwZikRAtEuAJ4gVtsQ/B9jJ0XQx9QDxiuC9uZKZgCdFT6z
-+lEHGPgPPq0GcxqMu7Da/f0=
-=8naU
------END PGP SIGNATURE-----
+______________________________________________________________
+http://www.webmail.co.za the South African FREE email service
 
