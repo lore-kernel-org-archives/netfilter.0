@@ -1,11 +1,13 @@
 From: ads nat <adsnat@yahoo.com>
-Subject: iptables newbie
-Date: Thu, 11 Sep 2003 06:41:33 -0700 (PDT)
+Subject: Re: iptables installation problem.
+Date: Thu, 11 Sep 2003 06:55:22 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030911134133.91316.qmail@web20711.mail.yahoo.com>
+Message-ID: <20030911135522.4422.qmail@web20704.mail.yahoo.com>
+References: <3F607ABB.7040002@Loudoun-Fairfax.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-2016306992-1063287693=:90793"
+Content-Type: multipart/alternative; boundary="0-1758022958-1063288522=:4135"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F607ABB.7040002@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,67 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Cc: netfilter@lists.netfilter.org
 
---0-2016306992-1063287693=:90793
+--0-1758022958-1063288522=:4135
 Content-Type: text/plain; charset=us-ascii
 
-Hi,
-I have Linux REDHAT 8.0 server. Iptables are installed while installing Linux 8.0. version 1.2.6a
- 
-I am getting following error.
- 
-[root@xyz root]# /etc/init.d/iptables restart
-Flushing all current rules and user defined chains:        [  OK  ]
-Clearing all current rules and user defined chains:        [  OK  ]
-Applying iptables firewall rules: iptables-restore v1.2.6a: Unknown arg `--dport'
-Try `iptables-restore -h' or 'iptables-restore --help' for more information.
-                                                           [FAILED]
- 
-In iptables file i have used  :
-*filter
--A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 0:1023 --syn -j REJECT
--A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 2049 --syn -j REJECT
--A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 0:1023 -j REJECT
--A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 2049 -j REJECT
--A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 6000:6009 --syn -j REJECT
--A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 7100 --syn -j REJECT
-COMMIT
-*nat 
--A PREROUTING -p TCP --dport 80 -j REDIRECT --to-port 3128
-COMMIT
- 
-Do i have to install any additional module.
+I have downloaded from netfilter.org and built. If rpm upgrade is easy please guide me and i will do it.
 Thanks
 
- 
+Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
+
+
+ads nat wrote:
+Hi,
+I have Linux server REDHAT 8.0 installed with iptables v1.2.6a. I have upgrade it to 
+v 1.2.8 by installing 1.2.8. But when I check iptables -V. It shows 1.2.6a version. Do i have to delete iptable file before installing 1.2.8?
+Thanks.
+Did you install a Redhat iptables update by rpm or did you download and build your own? Normally a Redhat rpm automatically restarts a service after it updates it, but if it didn't
+
+/etc/rc.d/init.d/iptables restart
+
+will do the job. If you installed someone else's rpm or built your own binary from source, make sure that your startup script path points to the new version. I'm not aware of any reason you should have to delete the old version, although it's generally good practice to remove any unused software from a firewall box.
+
+Jeff
+
 
 
 ---------------------------------
 Do you Yahoo!?
 Yahoo! SiteBuilder - Free, easy-to-use web site design software
---0-2016306992-1063287693=:90793
+--0-1758022958-1063288522=:4135
 Content-Type: text/html; charset=us-ascii
 
-<DIV>Hi,</DIV>
-<DIV>I have Linux REDHAT 8.0 server. Iptables are installed while installing Linux 8.0. version 1.2.6a</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I am getting following error.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>[root@xyz root]# /etc/init.d/iptables restart<BR>Flushing all current rules and user defined chains:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp; OK&nbsp; ]<BR>Clearing all current rules and user defined chains:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [&nbsp; OK&nbsp; ]<BR>Applying iptables firewall rules: iptables-restore v1.2.6a: Unknown arg `--dport'<BR>Try `iptables-restore -h' or 'iptables-restore --help' for more information.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [FAILED]</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>In iptables file i have used&nbsp; :</DIV>
-<DIV>*filter</DIV>
-<DIV>-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 0:1023 --syn -j REJECT<BR>-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 2049 --syn -j REJECT<BR>-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 0:1023 -j REJECT<BR>-A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 2049 -j REJECT<BR>-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 6000:6009 --syn -j REJECT<BR>-A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 7100 --syn -j REJECT</DIV>
-<DIV>COMMIT</DIV>
-<DIV>*nat </DIV>
-<DIV>-A PREROUTING -p TCP --dport 80 -j REDIRECT --to-port 3128</DIV>
-<DIV>COMMIT</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Do i have to install any additional module.</DIV>
+<DIV>I have downloaded from netfilter.org and built. If rpm upgrade is easy please guide me and i will do it.</DIV>
 <DIV>Thanks</DIV>
-<DIV><BR>&nbsp;</DIV><p><hr SIZE=1>
+<DIV><BR><B><I>Jeffrey Laramie &lt;JALaramie@Loudoun-Fairfax.com&gt;</I></B> wrote:</DIV>
+<BLOCKQUOTE class=replbq style="BORDER-LEFT: #1010ff 2px solid; MARGIN-LEFT: 5px; PADDING-LEFT: 5px"><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><BR><BR>ads nat wrote:<BR>
+<BLOCKQUOTE cite="mid20030911130528.41619.qmail@web20709.mail.yahoo.com" type="cite">
+<DIV>Hi,</DIV>
+<DIV>I have Linux server REDHAT 8.0 installed with iptables v1.2.6a. I have upgrade it to&nbsp;</DIV>
+<DIV>v 1.2.8 by installing 1.2.8. But when I check iptables -V. It shows 1.2.6a version. Do i have to delete iptable file before installing 1.2.8?</DIV>
+<DIV>Thanks.</DIV></BLOCKQUOTE>Did you install a Redhat iptables update by rpm or did you download and build your own? Normally a Redhat rpm automatically restarts a service after it updates it, but if it didn't<BR><BR>/etc/rc.d/init.d/iptables restart<BR><BR>will do the job. If you installed someone else's rpm or built your own binary from source, make sure that your startup script path points to the new version. I'm not aware of any reason you should have to delete the old version, although it's generally good practice to remove any unused software from a firewall box.<BR><BR>Jeff<BR><BR></BLOCKQUOTE><p><hr SIZE=1>
 Do you Yahoo!?<br>
 <a href="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com">Yahoo! SiteBuilder</a> - Free, easy-to-use web site design software
---0-2016306992-1063287693=:90793--
+--0-1758022958-1063288522=:4135--
 
