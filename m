@@ -1,14 +1,22 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: I have to become a bandwidth Nazi , Netfilter useable.
-Date: Sat, 1 Mar 2003 10:19:00 -0500
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: chance to impress the suits
+Date: Sat, 1 Mar 2003 18:39:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303011019.00158.netfilter@newkirk.us>
-References: <000201c2dffa$8ad18480$0c05a8c0@Sherby>
-Reply-To: netfilter@newkirk.us
+Message-ID: <20030301183929.5a56ee54.arnt@c2i.net>
+References: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
+	<200302270201.04762.netfilter@newkirk.us>
+	<20030227134810.7728c8d5.arnt@c2i.net>
+	<Pine.LNX.4.50.0302270811550.19694-100000@alfred.home.cyborgworkshop.com>
+	<20030228014041.7394bcfa.arnt@c2i.net>
+	<Pine.LNX.4.50.0302271518100.19962-100000@alfred.home.cyborgworkshop.com>
+	<20030228173420.1a1bdc11.arnt@c2i.net>
+	<Pine.LNX.4.50.0302280652440.20514-100000@alfred.home.cyborgworkshop.com>
+	<20030228202435.62be6828.arnt@c2i.net>
+	<Pine.LNX.4.50.0302282003460.20817-100000@alfred.home.cyborgworkshop.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000201c2dffa$8ad18480$0c05a8c0@Sherby>
+In-Reply-To: <Pine.LNX.4.50.0302282003460.20817-100000@alfred.home.cyborgworkshop.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +27,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: George Peverill <gpeverill@ns.sympatico.ca>, netfilter@lists.netfilter.org
+To: Jason <baker@cyborgworkshop.com>
+Cc: netfilter@lists.netfilter.org
 
-On Saturday 01 March 2003 08:57 am, George Peverill wrote:
-> I am running a small network (about 10-12 machines) with a linux
-> gateway machine providing http/ssh/vpn(pptp)/firewalling/NAT
-> Recently we've had someone that loves to hog bandwidth a tad (ie:
-> downloading movies at 150-200k/s) while we slave away
-> with the remaining 50k/s or so of bandwidth.  I was wondering and I
-> think its possible) if I could remedy this without resorting
-> to compilicated QoS / CBQ crap.  Basically is it possible to write a
-> rule that'd say drop 25% or maybe 50% of all packets going to his
-> machine from the gateway? (nasty yes agreed)
->
-> -internal interface is eth0 (192.168.0.x)
-> -external interface is eth1
->
-> Is it possible to do it based on his IP (which is known lets say
-> 192.168.0.55 for example sake) or his MAC address which is known.
+On Fri, 28 Feb 2003 20:04:44 -0600 (CST), 
+Jason <baker@cyborgworkshop.com> wrote in message 
+<Pine.LNX.4.50.0302282003460.20817-100000@alfred.home.cyborgworkshop.co
+m>:
 
-Match in FORWARD chain (BEFORE any ACCEPT rules) with "-d 192.168.0.55",=20
-and also possibly with "-p tcp --dport <portnumber>" with the port that=20
-the traffic goes to, or "--sport" with the port the traffic comes from. =20
-(this depends on the p2p app he's using)  You can use the limit match to=20
-specify a fixed number of packets in a specified period of time, but not=20
-a percentage.  You'd need to figure out how many packets per second to=20
-set as a maximum.
+> > ..an idea: limit the number of connections to a level the authorized
+> > dos attack app _can_ handle, and to reject or reset rather than
+> > dropping connections?
+> 
+> That is what I hope to do with the iptables box running iplimit. 
+> Except instead of rejecting the connections Im going to redirect users
+> to a static page that just pretty much says "we're busy try again"
+> 
 
-You may find that DROP doesn't help much, though, as it's likely his p2p=20
-client will just keep requesting data, and the source will just keep=20
-pumping it through as fast as it's able to.  You might be better served=20
-by Arnt Karlsen's favored approach - the TARPIT target from=20
-patch-o-matic, or my favorite - whack him on the head with a keyboard.
+..can the authorized dos attack application use this to back off?
+Failing that, try kill off its old no-longer-used connections.
 
-It also might help to use the similar dport/sport+sourceIP+limit approach=
-=20
-to restrict how many requests his p2p client can send out in a given=20
-timeframe, as well as upload traffic.  (many p2p clients force, or=20
-strongly encourage [IE by limiting download to 4x upload] allowing=20
-uploads from the client)
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-> Any help would be greatly appreciated.  I dunno how this can be done
-> but im sure someone might be able to figure it out , would have to be
-> done in the PREROUTING where SNAT is done wouldnt it ?
-
-No, this is filtering and should be done in the filter table, in this=20
-case the FORWARD chain.
-
-j
 
 
