@@ -1,11 +1,10 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: ftp behind the firewall
-Date: Mon, 14 Feb 2005 10:14:41 -0700
-Message-ID: <4210DC81.40106@utilitran.com>
-References: <1108400909.4852.6925.camel@Linsaidin>
+From: "Hudson Delbert J Contr 61 CS/SCBN" <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: block ssh and ping
+Date: Mon, 14 Feb 2005 09:18:54 -0800
+Message-ID: <186AC876521E0F46BDE77079A6567FD0F0DDC2@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108400909.4852.6925.camel@Linsaidin>
+Content-Transfer-Encoding: quoted-printable
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,51 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Travis Crook <travis@visionsbeyond.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Nick Drage <nickd@metastasis.org.uk>, netfilter@lists.netfilter.org
 
-Hello,
+Nick,
 
-	Well to start you should find out the difference between the 
-connections. For example the standard "ftp" command in Linux will use 
-ACTIVE mode by default, were in windows Internet Explorer (if that is 
-what you are using) may be using PASSIVE mode.
+its obvious. he wants to block ping and ssh.
+that means he doesnt want those services
+accessed. how hard is that. just cause you know how
+means that you are allowed.=20
 
-Or if you are using LFTP in Linux, it usually uses PASSIVE mode by 
-default, and the command line FTP client in Windows would most likely 
-use ACTIVE mode by default.
-
-You need to narrow down the problem, try issuing the command "passive" 
-to the Linux "ftp" command and see if that solves the problem. If so, 
-then your active mode connections are not working.
-
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Nick Drage
+Sent: Monday, February 14, 2005 1:11 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: block ssh and ping
 
 
-Michael.
+On Tue, Feb 08, 2005 at 04:52:53PM +0500, varun_saa@vsnl.net wrote:
+> Hello,
+>       My server is Mandrake 10.1
+> eth0 is WAN with static IP connected to 512k DSL
+> eth1 is LAN.
+>=20
+> 1. I would like to block ping to my external static IP
+>=20
+> 2. I would like to block ssh to my external static IP
+>=20
+> Howto to do that ?
 
+Out of interest - why do you specifically want to block those protocols?
+It's a good idea to block everything inbound and only permit what's
+required so I'm wondering why you want to block these two.
 
-Travis Crook wrote:
-> Hi all,
-> 	I would like to ask a question just for clarification.  I have a
-> firewall up and running just fine.  My problem is that I cannot ftp
-> through the firewall on a linux machine.  My windows machines don't seem
-> to have this problem.  Am I missing something?  Or is it a local linux
-> computer configuration issue.  I'll gladly provide any necessary
-> information.
-> 
-> Thanks!
-> 
-> 
+--=20
+Where are we going and what's with the hand basket?
 
--- 
-Michael Gale
-Lan Administrator
-Utilitran Corp.
-
-Hey, let me file that under important .... > /dev/null
-...
-"Hey did you read my e-mail"
-"Let my check"
-^From:.* > /dev/null
-"Nope, I missed it, send it again"
 
