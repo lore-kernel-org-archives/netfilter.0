@@ -1,11 +1,11 @@
-From: Arthur Meyer <arthur.meyer@tbz.ch>
+From: Philip Craig <philipc@snapgear.com>
 Subject: Re: Transparent proxying using REDIRECT
-Date: Thu, 17 Jul 2003 07:28:24 +0200
+Date: Thu, 17 Jul 2003 17:35:49 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307170728.24666.arthur.meyer@tbz.ch>
+Message-ID: <3F1651D5.5060708@snapgear.com>
 References: <4.2.2.20030717085400.00cb6ac0@vttmail.vtt.fi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <4.2.2.20030717085400.00cb6ac0@vttmail.vtt.fi>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,48 +17,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mikko Alutoin <mikko.alutoin@vtt.fi>
+Cc: netfilter@lists.netfilter.org
 
-Hello Mikko
-
-You need to change/add three statements in the squid.conf file:
-HTTP-Accel-Host virtual
-HTTP-Accel with proxy ON
-HTTP-Accel uses Host-Header ON
-
-That should do it
-Plus Squid has to be compiled with the directive --enable-linux-netfilter=
- (if=20
-you use Linux)
-
-Arthur
-
-On Thursday 17 July 2003 08:24, Mikko Alutoin wrote:
-> Hi,
->
-> I have a question about transparent proxying. Suppose I have the follow=
-ing
-> rule in my kernel:
->
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT
-> --to-port 3128
->
-> The purpose of the rule is that all web traffic is captured by a proxy
-> listening to a local port. Now the question:
->
-> How does the proxy get to know the original destination IP address and
-> port? By looking into the HTTP-request, perhaps? If so, what if the
-> application protocol (some other than HTTP) does not contain the
+Mikko Alutoin wrote:
+> How does the proxy get to know the original destination IP address and 
+> port? By looking into the HTTP-request, perhaps? If so, what if the 
+> application protocol (some other than HTTP) does not contain the 
 > destination URL?
->
-> Cheers,
-> Mikko
 
---=20
+Use SO_ORIGINAL_DST, for example:
 
+getsockopt(fd, SOL_IP, SO_ORIGINAL_DST, &dst_addr, &addrlen);
 
-
-
+-- 
+Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
+SnapGear - Custom Embedded Solutions and Security Appliances
 
 
