@@ -1,12 +1,10 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: Re: Port-forwarding Perfomance
-Date: Tue, 08 Mar 2005 11:12:48 +0000
-Message-ID: <422D88B0.9070905@dsl.pipex.com>
-References: <421D2F04.8090100@wildcash.com>	<1109156169.11713.2.camel@nostromo.bgsecm.com>	<421DE4AF.6040702@wildcash.com>	<20050223211053.GA12107@bender.817west.com>
-	<421E6E14.5020905@wildcash.com>
+From: richard hauswald <staenker@rhcs.de>
+Subject: dhcp server is working but there are no rules allowing it using a
+ drop policy
+Date: Tue, 08 Mar 2005 12:40:46 +0100
+Message-ID: <422D8F3E.9000806@rhcs.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <421E6E14.5020905@wildcash.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +16,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Rudi Starcevic <tech@wildcash.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Rudi Starcevic wrote:
-> Hi,
-> 
-> 
-> I'm still seeing slow performance with my port-forwarding but
-> have found something interesting that may be problematic.
-> 
-> Just to re-cap:
-> 
-> I have one Linux 66.283.12.21 box and one Windows box 192.168.0.10
-> I can download a file of the linux box at around 140K/s
-> That very same file download on the Windows machine is around 15K/s 
-> using DNAT and Masq/Forwarding.
-> 
-> However we can upload to the Windows box at 140k/s.
-> 
-> So it is only slow, 15K/s, when the data is coming from Windows then 
-> through the Linux Iptables Masq/Forwarding Firewall.
-> 
-> I contacted an earlier Admin for the Windows machine and was informed 
-> the TCP window size has been manually increased.
-> 
-> Could this affect Forwarding in Iptables ?
-> 
-> The default maximum TCP window size in Win2000 is 17520 bytes (12 
-> segments).
-> The current value is set at 131400.
+Hi all,
+my problem is a verry strange one, so i think i did a configuration 
+failure. But i can't find him.
+i made a listung of my iptables rules using the -L parameter and finaly 
+a tcpdump wich should show you, that dhcp is working - well i couldnt 
+post hte windowsxp bubble wich says that i got a wunderfull wlan 
+connection...
 
-Max window size is 64k without scaling - so I assume they have turned 
-scaling on aswell - there have been problems with scaling, one of the 
-linux kernel releases set it to 7 which confused buggy peers. AIUI they 
-turned it back down to workaround.
+-------------------------------------
 
-You could tcpdump so you can can see what's going on.
+Antifreeze:~# date;iptables -L;date;iptables -t nat -L;date;iptables -t mangle -L;date;tcpdump -i eth0 udp
+Mon Mar  7 14:50:57 CET 2005
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:64385 state NEW,ESTABLISHED
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     tcp  --  anywhere             anywhere            tcp spt:64385 state ESTABLISHED
+Mon Mar  7 14:50:57 CET 2005
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+Mon Mar  7 14:50:57 CET 2005
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+Mon Mar  7 14:50:57 CET 2005
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
+14:51:10.965603 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, Request from 00:0f:cb:ad:75:a8, length: 300
+14:51:10.966600 IP Antifreeze.lan.bootps > 192.168.0.19.bootpc: BOOTP/DHCP, Reply, length: 300
+14:51:10.975221 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP, Request from 00:0f:cb:ad:75:a8, length: 322
+14:51:10.978049 IP Antifreeze.lan.bootps > 192.168.0.19.bootpc: BOOTP/DHCP, Reply, length: 300
+
+4 packets captured
+4 packets received by filter
+0 packets dropped by kernel
+------------------------------------------------
 
 
-> 
-> 90% of the traffic being port-forwarded are Digital video files.
-> These range in size from 2MB to 200MB.
-> 
-> So I assume with large files like these Windows would opt for it's 
-> largest TCP window size.
-> 
-> I guess the next step is to lower these to their default values and see 
-> if it affect bandwidth.
-> 
-> Your thoughts on that would be much appreciated.
-> 
-> Thanks.
-> Regards,
-> Rudi
-> 
-> 
-> 
-> 
+Ok, i would be verry happy if anyone could help me blocking the dhcp server that i can trust iptables again. 
+regards
+richard hauswald
+
 
 
