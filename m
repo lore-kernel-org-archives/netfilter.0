@@ -1,12 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Block proxy use.
-Date: Mon, 22 Nov 2004 11:01:26 -0500
-Message-ID: <20041122160126.GA30757@bender.817west.com>
-References: <1101131370.16509.24.camel@tux.it-akademiet.no>
+From: Askar <askarali@gmail.com>
+Subject: Re: yahoo webcam
+Date: Mon, 22 Nov 2004 22:38:02 +0500
+Message-ID: <a0f69e504112209384401445d@mail.gmail.com>
+References: <006401c4d0d9$04ef2a80$6339a8c0@amidala>
+Reply-To: Askar <askarali@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1101131370.16509.24.camel@tux.it-akademiet.no>
+In-Reply-To: <006401c4d0d9$04ef2a80$6339a8c0@amidala>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +19,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: "Sandy T. Santos" <sandy@bulacan.gov.ph>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, Nov 22, 2004 at 02:49:30PM +0100, Stian B. Barmen wrote:
-> Is there som kind of filter for netfilter that can block access to
-> anonymous proxies? The problem I often face is that the most advanced
-> users always can work around the firewall by using proxies. 
+try this rule
+
+$iptables -A FORWARD -o ppp0 -p tcp -m multiport --dport
+5000,5001,5100,5050,11999 -m state --state NEW -j ACCEPT
+
+its for yahoo yahoo service chat, cam, voice, games
+
+regards
+
+On Tue, 23 Nov 2004 05:19:57 +0800, Sandy T. Santos
+<sandy@bulacan.gov.ph> wrote:
+> i have a problem enabling yahoo webcam on a NAT'ed
+> drop-all-unless-specified firewalled box. currently the ym clients (all on
+> win32's) can only access yahoo messenger via squid transparent proxy but
+> this does not allow webcam to work. the requirements for yahoo webcam is
+> that you have to open up TCP port 5100, i have done that but i still can't
+> established a connection with the ym server. i was wondering if anyone here
+> knows the complete rule for making this work.
 > 
-> I know that I could run a proxy myself but this is not exactly what I
-> want. The best would be if there could be a filter similar to ipp2p
-> which would check for a "proxy signature" and block those
-> communications. 
+> thanks.
+> 
+> ``
+> Sandy T. Santos
+> Provincial Information Technology Office
+> Provincial Government of Bulacan | http://www.bulacan.gov.ph
+> Malolos, Bulacan
+> Registered Linux User #345287
+> 
+> 
 
-best option:  run squid, transparently proxy connections to it, block
-access to remote proxies by category with squidGuard and a decent
-blacklist; or, by restricting HTTP CONNECT method.
 
-sub-optimal options:
-
-create a list of known remote proxies and block access to them via IP
-address in netfilter or by black-holing the domains in your DNS server.
-
-use something like l7filter (which i have zero experience with) to block
-HTTP CONNECT requests.  note that this method is powerless against
-remote proxies that use SSL.
-
--j
-
---
-"Lisa, Vampires are make-believe, like elves, gremlins, and Eskimos."
-        --The Simpsons
+-- 
+(after bouncing head on desk for days trying to get mine working, I'll make
+your life a little easier)
 
