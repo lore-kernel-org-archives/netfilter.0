@@ -1,13 +1,11 @@
-From: LunarFox <lunar@comcast.net>
-Subject: RE: block Kazaa download
-Date: Mon, 03 Jun 2002 23:41:47 -0400
+From: =?gb2312?q?wain=20wen?= <wain_wen@yahoo.com.cn>
+Subject: Why the http response is so slow with Total Control
+Date: Tue, 4 Jun 2002 11:46:44 +0800 (CST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000301c20b79$c12c00b0$0200a8c0@JEFF>
-References: <Pine.LNX.4.30.0206041107060.9441-100000@atlas.iloilo.fapenet.org>
+Message-ID: <20020604034644.36656.qmail@web21408.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.30.0206041107060.9441-100000@atlas.iloilo.fapenet.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,46 +15,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="gb2312"
+To: netfilter@lists.samba.org
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org 
-> [mailto:netfilter-admin@lists.samba.org] On Behalf Of Allan Parreno
-> Sent: Tuesday, June 04, 2002 11:08 AM
-> To: netfilter
-> Subject: block Kazaa download
-> 
-> anybody has a sample how to block Kazaa download?
-
-KaZaA appears to listen on port 1214.  So if you block that port
-*inbound* to your machine, in theory no one should be able to download
-FROM you.  Of course, you can also just tell the program not to share
-files.
-
-If you block *outbound* connections to 1214, your users should be not
-able to download from anyone ELSE.  At least, that's my limited
-understanding of it, I could be completely wrong.  ;)
-
-Shouldn't hurt to try one of these rules, depending on which way you're
-trying to block:
-
-$IPT -A INPUT -p tcp --dport 1214 -j DROP   # Avoid people downloading
-from you, and/or
-$IPT -A OUTPUT -p tcp --dport 1214 -j DROP  # Block your users from
-downloading via KaZaA
-
-I use the first rule above, because I was sick and tired of seeing
-logged packets being dropped when I wasn't even running the client.
-
-The usual caveat:  people are often able to get around fixed port
-assignments and your blocking of same.  I don't know if the main KaZaA
-client can do this, but I suspect it wouldn't be too hard to hack it
-(consider what's been done with KaZaA Lite).
-
-HTH,
-
-Jeff Bonner
-
-
-
+IApIaToKIApCZWxvdyBpcyBteSBuZXR3b3JrIHRvcG9sb2d5ICggbiA9IDYwICk6CiAKCmludGVy
+bmV0IC0tLS0tLS0tLS0tIGxpbnV4IGJveCAtLS0tLS0tLS0gUEMxCiAgICAgICAgIEFEU0woMTAy
+NGspICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8LS0tLS0tLS0g
+UEMyCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB8LS0tLS0tLS0gUENuCiAKSWYgdGhlIGxpbnV4IGJveCBvbmx5IHNlcnZlcnMg
+YXMgZ2F0ZXdheSwgZXZlcnl0aGluZwppcyBvay5Ib3dldmVyLCBib3NzIHdhbnRzIHRvIGNvbnRy
+b2wgdGhlIGZsb3cgb2YgZXZlcnkKUEMsIG15IGNvbmZpZ3VyYXRpb24gaXMgOgogCiMgdGMgcWRp
+c2MgbGlzdCBkZXYgZXRoMSAgIC8vIGV0aDEgaXMgdGhlIGludGVybmFsCmludGVyZmFjZSBvZiBs
+aW51eCBib3ggd2hpY2ggaXAgaXMgMTkyLjE2OC4wLjEKIAogcWRpc2Mgc2ZxIDgwMTI6IHF1YW50
+dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAKIHFkaXNjIHNmcSA4MDExOiBxdWFudHVtIDE1MTRiIHBl
+cnR1cmIgMTVzZWMgCiBxZGlzYyBzZnEgODAxMDogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2Vj
+IAogcWRpc2Mgc2ZxIDgwMGY6IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAKIHFkaXNjIHNm
+cSA4MDBlOiBxdWFudHVtIDE1MTRiIHBlcnR1cmIgMTVzZWMgCiBxZGlzYyBzZnEgODAwZDogcXVh
+bnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAogcWRpc2Mgc2ZxIDgwMGM6IHF1YW50dW0gMTUxNGIg
+cGVydHVyYiAxNXNlYyAKIHFkaXNjIHNmcSA4MDBiOiBxdWFudHVtIDE1MTRiIHBlcnR1cmIgMTVz
+ZWMgCiBxZGlzYyBzZnEgODAwYTogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAogcWRpc2Mg
+Y2JxIDEwOiByYXRlIDEwME1iaXQgKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8Kbm8tdHJhbnNtaXQK
+IAogI3RjIGNsYXNzIGxpc3QgZGV2IGV0aDEKIAogY2xhc3MgY2JxIDEwOjExIHBhcmVudCAxMDox
+IGxlYWYgODAxMjogcmF0ZSAxME1iaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNt
+aXQKIGNsYXNzIGNicSAxMDogcm9vdCByYXRlIDEwME1iaXQgKGJvdW5kZWQsaXNvbGF0ZWQpCnBy
+aW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNicSAxMDoyNTYgcGFyZW50IDEwOjEgbGVhZiA4MDBjOiBy
+YXRlIDI1NktiaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNi
+cSAxMDoxIHBhcmVudCAxMDogcmF0ZSAxMDBNYml0IHByaW8gNQogY2xhc3MgY2JxIDEwOjgxOTIg
+cGFyZW50IDEwOjEgbGVhZiA4MDExOiByYXRlIDhNYml0Cihib3VuZGVkLGlzb2xhdGVkKSBwcmlv
+IG5vLXRyYW5zbWl0CiBjbGFzcyBjYnEgMTA6NjQgcGFyZW50IDEwOjEgbGVhZiA4MDBhOiByYXRl
+IDY0S2JpdAooYm91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdAogY2xhc3MgY2JxIDEw
+OjUxMiBwYXJlbnQgMTA6MSBsZWFmIDgwMGQ6IHJhdGUgNTEyS2JpdAooYm91bmRlZCxpc29sYXRl
+ZCkgcHJpbyBuby10cmFuc21pdAogY2xhc3MgY2JxIDEwOjEwMjQgcGFyZW50IDEwOjEgbGVhZiA4
+MDBlOiByYXRlIDFNYml0Cihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRyYW5zbWl0CiBjbGFz
+cyBjYnEgMTA6NDA5NiBwYXJlbnQgMTA6MSBsZWFmIDgwMTA6IHJhdGUgNE1iaXQKKGJvdW5kZWQs
+aXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKIGNsYXNzIGNicSAxMDoxMjggcGFyZW50IDEwOjEg
+bGVhZiA4MDBiOiByYXRlIDEyOEtiaXQKKGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNt
+aXQKIGNsYXNzIGNicSAxMDoyMDQ4IHBhcmVudCAxMDoxIGxlYWYgODAwZjogcmF0ZSAyTWJpdAoo
+Ym91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdCAgICAgIAogCiMgdGMgZmlsdGVyIGxp
+c3QgZGV2IGV0aDEKIAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMy
+IAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoIDgwMDogaHQK
+ZGl2aXNvciAxIAogZmlsdGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZo
+CjgwMDo6ODAwIG9yZGVyIDIwNDgga2V5IGh0IDgwMCBia3QgMCBmbG93aWQgMTA6MTI4Cm1hdGNo
+IGMwYTgwMDNmL2ZmZmZmZmZmIGF0IDE2CiBmaWx0ZXIgcGFyZW50IDEwOiBwcm90b2NvbCBpcCBw
+cmVmIDEwMCB1MzIgZmgKODAwOjo4MDEgb3JkZXIgMjA0OSBrZXkgaHQgODAwIGJrdCAwIGZsb3dp
+ZCAxMDoxMjgKbWF0Y2ggYzBhODAwM2UvZmZmZmZmZmYgYXQgMTYKIGZpbHRlciBwYXJlbnQgMTA6
+IHByb3RvY29sIGlwIHByZWYgMTAwIHUzMiBmaAo4MDA6OjgwMiBvcmRlciAyMDUwIGtleSBodCA4
+MDAgYmt0IDAgZmxvd2lkIDEwOjEyOAptYXRjaCBjMGE4MDAwZi9mZmZmZmZmZiBhdCAxNgogZmls
+dGVyIHBhcmVudCAxMDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoCjgwMDo6ODAzIG9yZGVy
+IDIwNTEga2V5IGh0IDgwMCBia3QgMCBmbG93aWQgMTA6MTI4Cm1hdGNoIGMwYTgwMDExL2ZmZmZm
+ZmZmIGF0IDE2CiAuLi4uICAgIAogCkluIG15IG9waW5pb24sIGV2ZXJ5IElQIHNob3VsZCBoYXZl
+IG9ubHkgMTI4a2JpdHMuSXQKaXMgdHJ1ZSB3aGVuIEkgZG93bmxvYWQgZmlsZXMgd2l0aCBmdHAu
+QnV0IHRoZSBodHRwCnJlc3BvbnNlIGlzIHZlcnkgdmVyeSBzbG93LGV2ZW4gaWYKdGhlcmUgaXMg
+b25seSBvbmUgcGVyc29uIG9ubGluZS4gV2hlbiBQQzEgZG93bmxvYWQKZmlsZXMgLCBvdGhlciBQ
+QyBwaW5nIHRoZSBnYXRld2F5IHNob3VsZCB0YWtlIG1vcmUKdGhhbiAzMDAgbXMgLlNvbWV0aGlu
+ZyBtdXN0IGJlIHdyb25nIHdpdGggbXkKY29uZmlndXJhdGlvbi4gCklzIHRoZSBwZXJmb3JtYW5j
+ZSBwcm9ibGVtID8gSG93ZXZlciwgdGhlIGlkbGUgaXMKYWJvdXQgOTAlLkJ5IHRoZSB3YXkgSSBi
+b3VuZGxlZCB0aGUgSVAgYW5kIHRoZSBNQUMKYWRkcmVzcyB3aXRoIGFycC4gCiAKVGh4LgogCgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkRvIFlvdSBZYWhvbyE/IAoyMDAyxOrKwL3nsa3IutDb9+nVvSDRxbui1tC5+r7bvbnI1bqrCmh0
+dHA6Ly9jbi5maWZhd29ybGRjdXAueWFob28uY29tLwoK
