@@ -1,13 +1,13 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Problems with NAT - it worked !
-Date: Fri, 06 Jun 2003 19:00:05 +1000
+From: Matthew Pocock <matthew.pocock@ncl.ac.uk>
+Subject: Re: bootpc
+Date: Fri, 06 Jun 2003 10:26:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EE05815.1060701@snapgear.com>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D73@wardrive.citadelcomputer.com.au>
+Message-ID: <3EE05E4B.7040007@ncl.ac.uk>
+References: <3EDF2F41.8080505@ncl.ac.uk> <200306052135.55070.pc-secure@home.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D73@wardrive.citadelcomputer.com.au>
+In-Reply-To: <200306052135.55070.pc-secure@home.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +18,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Pascal Italiaander <pc-secure@home.nl>
+Cc: netfilter@lists.netfilter.org
 
-George Vieira wrote:
-> What I read was that MASQUERADE should be used for changing IP machines like dialup or DHCP lan workstations etc.. SNAT/DNAT was more for servers with static IPs.
-> 
-> It didn't say why and what things could happen, just that it was good networking to do it that way...
+Thanks Pascal,
 
-The reason why is that when an interface goes down or changes address,
-the connection tracking entries for MASQUERADE targets are flushed,
-whereas the connection tracking entries for SNAT targets remain.
+I think the PCs here 'discover' the DNS servers. This makes it tricky to 
+have a DHCP_SERVER variable in the iptables script. I'm wondering if on 
+boot, the pc sends out a broadcast for DHCP servers, and one (or more) 
+responds on port 68:69, but that the STATE module doesn't associate the 
+response with the broadcast.
 
-So if you have a dynamic IP address, use MASQUERADE, so that the NAT
-mappings will be invalidated when the address changes.
+Time to read more about dhcp.
 
-But if you have a static IP address, then use SNAT, so that the NAT
-mappings remain and the connections are not broken, even if the
-interface temporarily goes down.
+Matthew
 
--- 
-Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
-SnapGear - Custom Embedded Solutions and Security Appliances
+>I'ts possible ,but a connection orriginating from the outside to boot internal 
+>your PC , no way. ??  Request for a DHCP should be orriginating from the 
+>inside. (your win95 +98). and reply should come from the outside.
+>
+>No, you don't have to load a module.
+>
+>but your very warm, there should be a rule to track these connections.
+>example:
+>
+>DHCP_SERVER"211.124.45.2"
+>
+>${IPTABLES} -A OUTPUT  -p udp -s 0/0 -d ${DHCP_SERVER} --sport 68 --dport 67 \ 
+>-m state --state NEW -j ACCEPT
+>
+>${IPTABLES} -A INPUT  -p udp -s 0/0 -s ${DHCP_SERVER} --sport 67 --dport 68  \ 
+>-m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+>hmm.. silly NO , silly are the people who don't ask , but just do.
+>
+>Pascal
+>
+>
+>
+>
+>
+>
+>  
+>
+
 
 
