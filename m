@@ -1,19 +1,22 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Routing decision?
-Date: 15 Sep 2003 17:03:11 +0200
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: FORWARD rules
+Date: Mon, 15 Sep 2003 18:32:05 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063638190.31314.118.camel@raylinux.internal>
-References: <3F657D37.1010000@able.be>
-	 <1063616905.31092.78.camel@raylinux.internal>  <3F65981D.1060700@able.be>
-	 <1063628083.31092.82.camel@raylinux.internal>  <3F65B63E.7030203@able.be>
-	 <1063631398.31092.91.camel@raylinux.internal>
-	 <1063632718.932.71.camel@elendil.intranet.cartel-securite.net>
-	 <1063633591.31093.99.camel@raylinux.internal>
-	 <1063634445.930.102.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <20030915183205.2f109f6f.arnt@c2i.net>
+References: <20030910175253.GA2752@linux.local>
+	<1063260568.26703.1.camel@risingsun.penguindia.com>
+	<20030912100957.GA3360@linux.local>
+	<1063363533.879.52.camel@elendil.intranet.cartel-securite.net>
+	<20030912163656.19b9fb66.arnt@c2i.net>
+	<1063378301.888.66.camel@elendil.intranet.cartel-securite.net>
+	<20030912201425.25ca0ab4.arnt@c2i.net>
+	<20030913022658.GD1667@linux.local>
+	<20030913084256.73dc4a3d.arnt@c2i.net>
+	<1063612582.928.17.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-YLfCTH0RhiFmypiCP1/q"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1063634445.930.102.camel@elendil.intranet.cartel-securite.net>
+In-Reply-To: <1063612582.928.17.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,84 +26,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
 To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Wim Ceulemans <wim.ceulemans@able.be>, Netfilter Mailing List <netfilter@lists.netfilter.org>, pieter@able.be
+Cc: netfilter@lists.netfilter.org
 
+On Mon, 15 Sep 2003 09:56:22 +0200,=20
+Cedric Blancher <blancher@cartel-securite.fr> wrote in message=20
+<1063612582.928.17.camel@elendil.intranet.cartel-securite.net>:
 
---=-YLfCTH0RhiFmypiCP1/q
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2003-09-15 at 16:00, Cedric Blancher wrote:
-> Le lun 15/09/2003 =E0 15:46, Ray Leach a =E9crit :
-> > My firewall machine currently has 5 NICs, each with their own ip (one
-> > has a public ip - eth0)
-> > eth0 has the public ip. It also has 10 alias ips.
-> > eth1 has a private ip of 192.168.1.1.
-> > eth1 network is my dmz with all the web servers from 192.168.1.165 to
-> > 192.168.1.173.
-> > If I want to DNAT incoming traffic destined to on of the aliases bound
-> > to interface eth0 to a server in the dmz - eth1 192.168.1.165 (for
-> > example), then I need :
-> >  - a PREROUTING DNAT rule
-> >  - a FORWAORD rule for each direction (eth0 -> eth1 and eth1 -> eth0)
-> >  - and an INPUT rule for eth0 alias ip.
-> > Does that make sense?
+> Le sam 13/09/2003 =E0 08:42, Arnt Karlsen a =E9crit :
+> > ..wrong snippet.  ;-)  Reread the thread, and you'll see both I=20
+> > and Cedric weren't to clear on that we meant to say, we _implied_=20
+> > things instead of actually _saying_ them
 >=20
-> Not to me. Supposing alias i set up (using iproute or ifconfig) I would
-> do this (and I think you did this) :
+> So, for the things to get clear, the whole script should be[1] :
 >=20
-> 	iptables -t nat -A PREROUTING -d $ALIAS -i eth0 -j DNAT \
-> 		--to 192.168.1.165
-> 	iptables -A FORWARD -d 192.168.1.165 -i eth0 -o eth1 -j ACCEPT
-> 	iptables -A FORWARD -s 192.168.1.165 -i eth1 -o eth0 -j ACCEPT
 >=20
-> And that's all to set a DNAT for incoming packets.
+> $IPTABLES -P FORWARD DROP
+> $IPTABLES -P INPUT DROP
 >=20
-> > If I remove the INPUT rule, my DNAT does not work, the packets get sent
-> > to the OUTPUT chain ...
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state NEW -s 125.125.125.0/32 -p tcp \
+>         -m tcp --dport 53 -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state NEW -s 125.125.125.0/32 -p udp \
+>         -m tcp --dport 53 -j ACCEPT
+> $IPTABLES -A FORWARD  -m state --state NEW -s 125.125.125.0/32 -p tcp
+> \        -m tcp --dport 80 -j ACCEPT
+> $IPTABLES -A FORWARD  -m state --state NEW -s 125.125.125.0/32 -p tcp
+> \        -m tcp --dport 110 -j ACCEPT
 >=20
-> What is the INPUT rule ? Once your packet gets DNATed in PREROUTING, it
-> is not sent to NF_IP_LOCAL_IN, but to NF_IP_FORWARD. Thus, it does not
-> cross filter table INPUT chain. If packets go through INPUT chain, that
-> means they're still destined to the alias IP, so that the DNAT rule did
-> not match them.
-> And I do not see how packets could go to OUTPUT chain as they're
-> supposed to get routed, not locally generated... The only case I see is
-> REDIRECT target use on a local proxy, so packets go through INPUT, then
-> proxy reply sent through OUTPUT chain.
-Now that's a possibility! I didn't even think of that. I do have a
-transparent squid proxy running on that machine.
+> $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>=20
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+>=20
+>=20
+> A -m state --state NEW,ESTABLISHED,RELATED _should not_ be used, as
+> it's an quasi-generic full match (i.e. nearly matches all packets).
+>=20
+>=20
+> [1] Note I did a typo in my
+> <1063363533.879.52.camel@elendil.intranet.cartel-securite.net> post,
+> it's FORWARD, not INPUT...
 
-I suppose I was watching the traffic going through the proxy (probably
-because I was testing from a local machine).
+..me too, ;-)  I ofcourse meant we "weren't too clear on what=20
+we meant to say"...  ;-)
 
-Thanks
-
-
->=20
-> I'm a bit lost on this one.
 --=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-YLfCTH0RhiFmypiCP1/q
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2-rc1-SuSE (GNU/Linux)
-
-iD8DBQA/ZdSuh1fuR/Bv+ygRAoL3AJ41vpNCoP+zin4K2P46xRp1WejaGQCfQhQt
-ilWm6b9md/5kQnLThhaIoXQ=
-=s17S
------END PGP SIGNATURE-----
-
---=-YLfCTH0RhiFmypiCP1/q--
+..med vennlig hilsen =3D with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three:=20
+  best case, worst case, and just in case.
 
 
