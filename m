@@ -1,8 +1,8 @@
 From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: traceroute
-Date: Wed, 30 Jun 2004 10:05:47 -0300
+Subject: track bandwith used
+Date: Wed, 30 Jun 2004 10:07:13 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00df01c45ea2$f5dc1290$49caa8c0@caris.priv>
+Message-ID: <00e501c45ea3$28e2d110$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,17 +18,14 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Hi.  I was wondering what I would need for rules to have traceroute work
-through my firewall.  (I have a box behind the firewall trying to get out
-using traceroute).
+Hi again,
 
-I have an allow established connections on my forwared chain, and I am
-allowing anything from the source IP of the box in question to leave ... It
-appears that the problem is on the packets comming back in .. but I am not
-sure what I have to do to fix it ....
+I was also wondering if anyone knows a way to track bandwith being used
+through the firewall .......
+I use squid as a proxy behind the firewall if that helps at all ...
 
-Thanks
-
+Thank you again,
 Peter
+
 
 
