@@ -1,17 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: transparent bridge troubles?
-Date: Fri, 07 Jan 2005 23:15:48 -0500
-Message-ID: <1105157748.3501.7.camel@hubcap.ljm.dom>
-References: <7C9884991ADAE0479C14F10C858BCDF591E3AC@alderaan.smgtec.com>
-	<005101c4f504$7be50f20$3e0010ac@esonet18>
-	<20050107221822.GA1569@bender.817west.com>
-	<006901c4f51a$b259a230$3e0010ac@esonet18>
-	<1105149657.3501.2.camel@hubcap.ljm.dom>
-	<00a701c4f535$a9415740$3e0010ac@esonet18>
+From: edwardspl@ita.org.mo
+Subject: Re: [Fwd: Server machines behind Firewall]
+Date: Sat, 08 Jan 2005 12:39:58 +0800
+Message-ID: <41DF641E.962D1780@ita.org.mo>
+References: <Pine.LNX.4.05.10501071608200.16399-100000@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00a701c4f535$a9415740$3e0010ac@esonet18>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,28 +16,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "R. DuFresne" <dufresne@sysinfo.com>
+Cc: netfilter@lists.netfilter.org
 
-On Fri, 2005-01-07 at 22:53, mdpeters wrote:
-> Yes it did. Packets are flowing through with ACCEPT. So it is a problem with 
-> QUEUE or something wrong with Snort-inline right?
-> 
-> Snort-inline runs, and logs packets coming into the box but obviously the 
-> packets are not making it through.
+"R. DuFresne" wrote:
 
-since snort-inline is seeing the packets--i would say that the QUEUE
-part is working.  the fact the the packets don't make it out of the box
-would point the finger towards a snort-inline problem.
+> On Fri, 7 Jan 2005 edwardspl@ita.org.mo wrote:
+>
+> > Jason Opperisano wrote:
+> >
+> > > > Sorry, what useful about the following function ( command line ) =
+?
+> > > >
+> > > > > iptables -A FORWARD -i $EXT_IF -o $INT_IF -p tcp --syn -d $SRV1=
+ \
+> > > > > ? --dport 80 -j ACCEPT
+> > >
+> > > um--it allows the packet through the FORWARD chain of the filter ta=
+ble.
+> > > remember--you're trying to build a firewall here.
+> >
+> > So, must I enable this kind of function for using the Firewall ?
+> >
+>
+> unless the firewall(ed) system is a stand alone <no other ststems on th=
+e
+> network> then yes, if you wish to forward or pass traffic to the intern=
+et
+> and the other systems.=A0 A stand alone box with a firewall can get by =
+with
+> just input and output rules.
 
-unfortunately--i don't know a thing about snort-inline; so i'm not of
-much use anymore.
+Actually, there is only one machine for me to setup a system ( network ) =
+for
+Internet...
+So, I'm planning the following functions with a single machine :
+Firewall + Internet Server ( eg : DNS, WWW, Mail , FTP behind Firewall ) =
++ NAT
+( for other PCs / Clients connect to Internet ).
 
--j
+PS : There are TWO Network Interface with the single machine ( I think on=
+e port
+connect with leased line / boardband, another one port with HUB to other
+Clients )
 
---
-"Call this an unfair generalization if you must, but old people are
- no good at everything."
-	--The Simpsons
+Is there a sample nat scripts for using the multi-functions ?
+
+Edward.
+
+
 
 
