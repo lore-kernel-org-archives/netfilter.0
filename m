@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Carlos Fernandez Sanz" <cfs-netfilter@nisupu.com>
 Subject: Re: Strange logs...
-Date: Sun, 11 Jan 2004 12:02:40 +0000
+Date: Sun, 11 Jan 2004 13:41:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401111202.40264.Antony@Soft-Solutions.co.uk>
-References: <002201c3d837$a6c70e90$1530a8c0@HUSH>
+Message-ID: <003001c3d840$2c775330$1530a8c0@HUSH>
+References: <002201c3d837$a6c70e90$1530a8c0@HUSH> <200401111202.40264.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002201c3d837$a6c70e90$1530a8c0@HUSH>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,53 +19,76 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Sunday 11 January 2004 11:40 am, Carlos Fernandez Sanz wrote:
+> The fact that the MAC address is correct means that the packet has surely
+come
+> from the Windows machine, and has not come through any other router
+(because
+> if it had, it would have the IP address of the Windows box and the MAC
+> address of the router).
 
-> Jan 11 11:52:12 fulanito kernel: [IPTABLES DROP NAT] : IN=eth1 OUT=
-> MAC=00:01:03:27:83:4c:00:0c:6e:77:a9:92:08:00 SRC=192.168.20.5
-> DST=192.168.20.1 LEN=78 TOS=0x00 PREC=0x00 TTL=128 ID=13013 PROTO=UDP
-> SPT=137 DPT=137 LEN=58
+Yes. I'm playing a bit more with this, and after adding a "--match
+mac --mac-source" rule, I started seeing the packets being dropped by the
+input policy (which is obviously drop). Once I added the same "saving by
+MAC" rule, everything works fine (except my conscience).
 >
-> eth1 is my external (connected to the internet router) interface,
-> 192.168.20.5 is one of my window boxes, 192.168.20.1 is my linux box. These
-> two boxes are connected via a switch (which has nothing else connected to
-> it), and the interface is eth0.
+> Tell us more about your network connections - you say you have a switch on
+> eth0 connected to the Windows box and nothing else; how is eth1 connected
+to
+> your Internet router?   Crossover cable?   Switch/hub?   What?
+
+I'll explain and check cables at the same time.
+
+The linux box has two ethernet interfaces.
+
+eth0 is the internal LAN interface. 192.168.20.1, and it's connected to a
+10/100 switch to which other computers go (192.168.20.5 which is the window
+box, for example. there's others but not important here)
+eth1 is the external interface, and it's is connected to my ADSL router
+directly.
 >
-> What could cause that the packet appears in eth1 instead of eth0? Of course
-> that explains that it's being dropped, as I have a rule that drops
-> everything coming in the external interface with private addresses....
+> Also, do you have a nice simple, clean subnet arrangement - something like
+a
+> single public IP on eth1, and a private class C on eth0, nothing fancy?
+
+Yes.
 >
-> I know the obvious answer would be "someone special made that packet and
-> sent it", but the packet does come from the LAN. The MAC matches the IP
-> it's supposes to come from (i.e. belongs to the NIC in my windows card),
+> It would be good to try running tcpdump or ethereal on the netfilter
+machine,
+> so that when a log entry such as this appears, you can check the tcpdump
+or
+> ethereal log and see if it agrees that the packet really did only come in
+on
+> eth1.
 
-The fact that the MAC address is correct means that the packet has surely come 
-from the Windows machine, and has not come through any other router (because 
-if it had, it would have the IP address of the Windows box and the MAC 
-address of the router).
+How reliable is ethereal? I mean, does it see packets as they come from the
+wire or after they have been touched by netfilter?
 
-Tell us more about your network connections - you say you have a switch on 
-eth0 connected to the Windows box and nothing else; how is eth1 connected to 
-your Internet router?   Crossover cable?   Switch/hub?   What?
+Anyway, I've added this now to the firewall:
 
-Also, do you have a nice simple, clean subnet arrangement - something like a 
-single public IP on eth1, and a private class C on eth0, nothing fancy?
+iptables -A INPUT --match mac --mac-source 00:0c:6e:77:a9:92 -j
+LOG --log-tcp-options --log-ip-options --log-prefix '[IPTABLES MAC INPUT] :
+'
+iptables -A INPUT --match mac --mac-source 00:0c:6e:77:a9:92 -j ACCEPT
 
-It would be good to try running tcpdump or ethereal on the netfilter machine, 
-so that when a log entry such as this appears, you can check the tcpdump or 
-ethereal log and see if it agrees that the packet really did only come in on 
-eth1.
+So all packets that are saved by that rule are logged.
 
-Not a solution to your probloem, I know, but maybe a help along the way?
+I've seen some packets already:
 
-Antony.
+Jan 11 13:28:53 fulanito kernel: [IPTABLES MAC INPUT] : IN=eth1 OUT=
+MAC=ff:ff:ff:ff:ff:ff:00:0c:6e:77:a9:92:08:00 SRC=192.168.20.5
+DST=192.168.20.255 LEN=78 TOS=0x00 PREC=0x00 TTL=128 ID=16661 PROTO=UDP
+SPT=137 DPT=137 LEN=58
 
--- 
-Software development can be quick, high quality, or low cost.
+That packet shows up in ethereal as well (everything matches). However all
+packets seen so far in both ethereal and the logs (4) are for broadcasts
+(still, is that possible? How could a packet generated by the windows box,
+which isn't connected to eth1, end up there?). I haven't seen anything else
+yet.
 
-The customer gets to pick any two out of three.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> Not a solution to your probloem, I know, but maybe a help along the way?
+
+Anything that makes me think of trying something else is a help somehow :-)
+Thanks.
 
 
