@@ -1,14 +1,11 @@
-From: Julian Gomez <kluivert@tm.net.my>
-Subject: Re: iptables 'make' killed my box
-Date: Tue, 26 Aug 2003 13:17:47 +0800
+From: Payal Rathod <payal-iptables@staticky.com>
+Subject: resolving ftp servers
+Date: Tue, 26 Aug 2003 09:14:21 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030826051747.GB2558@propaganda.localdomain>
-References: <812338CA-D728-11D7-B488-000393DB0944@caffeinemediainc.com> <20030825225128.006e9bc6.arnt@c2i.net>
-Reply-To: kluivert@tm.net.my
+Message-ID: <20030826091421.GB10217@staticky.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20030825225128.006e9bc6.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,26 +17,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Mon, Aug 25, 2003 at 10:51:28PM +0200, Arnt Karlsen spoke thusly:
->On Mon, 25 Aug 2003 14:18:19 -0400, 
->Scott Gaertner <scott@caffeinemediainc.com> wrote in message 
-><812338CA-D728-11D7-B488-000393DB0944@caffeinemediainc.com>:
->
->.kernel panic hint;  toss in an "append="panic 20" or somesuch, to 
->your boot loader and cli and (which file?) in /proc, to avoid further 
->such embarrasment, "panic 20" reboots the box in 20 secs on a panic.
+Hi,
+I have installed Linux on RH 7.3 with iptables v 1.2.3
+But when I try to connect to a Microsoft FTP Service (Version 5.0) it
+hangs up afrter,
+220 erecording Microsoft FTP Service (Version 5.0).
+Name (208.253.196.145:root): administrator
 
-/proc/sys/kernel/panic btw.
+It does not prompt for password. What must be the problem?
+On some servers I it hangs when given ls command on remote hosts (Linux
+machine, proftpd servers).
+My lsmod gives,
 
->> I downloaded the package, entered the directory, typed "make
->> KERNEL_DIR=/usr/src/kernel-source-2.4.18/", and after a listing of found
->> extensions, I lost connection to the box.  (Complete transcript 
->> at end of message).  I can no longer even ping any address on that 
->> network. (The machine was acting as a router as well).
+# lsmod
+Module                  Size  Used by
+ipt_state               1152   4  (autoclean)
+ipt_MASQUERADE          1824   1  (autoclean)
+iptable_filter          2256   0  (autoclean) (unused)
+ip_nat_ftp              3680   0  (unused)
+ip_conntrack_ftp        4080   0  (unused)
+iptable_nat            18224   1  [ipt_MASQUERADE ip_nat_ftp]
+ip_conntrack           16944   3  [ipt_state ipt_MASQUERADE ip_nat_ftp
+ip_conntrack_ftp iptable_nat]
+ip_tables              11392   6  [ipt_state ipt_MASQUERADE
+iptable_filter iptable_nat]
+autofs                 11520   0  (autoclean) (unused)
+8139too                12832   1
+eepro100               17664   1
+usb-ohci               18544   0  (unused)
+usbcore                51712   1  [usb-ohci]
+ext3                   64624   6
+jbd                    40992   6  [ext3]
+aic7xxx               114544   7
+sd_mod                 11584   7
+scsi_mod               95664   2  [aic7xxx sd_mod]
 
-I've found an odd way to Oops my desktop, by copying Maildir files from a
-flash disk (vfat) to an ext3 fs. Copied, copied, copied - and *wham* kernel
-oops.
+Thanks a lot and eagerly waiting for the reply.
+With warm regards,
+-Payal
+
+-- 
+For GNU/Linux Success Stories and Articles visit:
+          http://payal.staticky.com
 
