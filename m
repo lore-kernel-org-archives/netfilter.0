@@ -1,10 +1,14 @@
-From: <abcabc@home.nl>
-Subject: iptables match owner not 'matching' anything?
-Date: Mon, 3 Jan 2005 10:55:07 +0100
-Message-ID: <00ec01c4f17a$4ef8f860$0a01a8c0@cc8273a>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: After 14 hours of brainpain...
+Date: Mon, 03 Jan 2005 06:52:29 -0500
+Message-ID: <1104753148.6489.0.camel@hubcap.ljm.dom>
+References: <E6A0AAEA-5D1F-11D9-83E1-000A95B981B6@knoxville.se>
+	<1104716217.6477.7.camel@hubcap.ljm.dom>
+	<46D3EF59-5D62-11D9-B917-000A95B981B6@knoxville.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <46D3EF59-5D62-11D9-B917-000A95B981B6@knoxville.se>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +22,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am running iptables v1.2.11 with kernel 2.4.28 on a RH 7.3. server and =
-I can't get the match owner option to actually 'match' anything.
+On Mon, 2005-01-03 at 03:34, Andreas Pettersson wrote:
+> So it should look like something like this instead.. ?
+> What does the -I do? and why is the order so important (just curious 
+> and wants to learn).
+> 
+> -- CUT HERE --
+> 
+> iptables -t nat -A POSTROUTING -o eth1 -d ! $INET_IP -j SNAT --to 
+> $INET_IP
+> 
+> iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS 
+> --clamp-mss-to-pmtu
+> 
+> ## WWW Forwarding ...
+> iptables -A FORWARD -i eth1 -o eth0 -p tcp -d 192.168.1.30 --dport 80 
+> -j ACCEPT
+> iptables -t nat -A PREROUTING -i eth1 -p tcp -d $INET_IP --dport 80 -j 
+> DNAT --to 192.168.1.30:80
+> 
+> -- CUT HERE --
 
-For example, I add the following rule to iptables.
-iptables -A OUTPUT -p tcp --match owner --uid-owner 503 --dport 80 -j =
-DROP=20
-=20
-It is added to iptables without an error:
-root@host [/]# iptables -L | grep dynax
-DROP       tcp  --  anywhere             anywhere            OWNER UID =
-match dynax tcp dpt:http
+yup.
 
-But I can still wget http://www.domain.com with this user , nothing is =
-being blocked.
-I did also try it as the only rule (after flushing iptables), still =
-nothing.=20
+-j
 
-I tried it with user nobody (--uid-owner 99) and have a php script =
-retrieve http://www.domain.com. This wasn't blocked either.
-So somehow match owner doesn't match anything it seems.
+--
+"When will I learn? The answer to life's problems aren't at the bottom
+ of a bottle, they're on TV!"
+	--The Simpsons
 
-root@host [/]# iptables -V
-iptables v1.2.11
-
-root@host [/]# uname -r
-2.4.28
-
-root@host [/]# lsmod
-Module                  Size  Used by    Not tainted
-ipt_owner               2040   1  (autoclean)
-ipt_mark                1016   0  (autoclean)
-ipt_MARK                1368   0  (autoclean)
-ipt_TOS                 1720   7  (autoclean)
-iptable_mangle          2840   1
-ip_conntrack_ftp        5008   0  (unused)
-ip_conntrack_irc        3760   0  (unused)
-ipt_unclean             7448   0
-ipt_REJECT              4184   5
-ipt_LOG                 4216  12
-ipt_limit               1592  10
-iptable_filter          2444   1
-ipt_multiport           1304   4
-ipt_state               1080  19
-ip_conntrack           27080   2  [ip_conntrack_ftp ip_conntrack_irc =
-ipt_state]
-ip_tables              15232  12  [ipt_owner ipt_mark ipt_MARK ipt_TOS =
-iptable_mangle ipt_unclean ipt_REJECT ipt_LOG ipt_limit iptable_filter =
-ipt_multiport ipt_state]
-ehci-hcd               21516   0  (unused)
-usb-uhci               26032   0  (unused)
-usbcore                77164   1  [ehci-hcd usb-uhci]
-raid1                  14608   6
-
-Does anyone know what I'm doing wrong?
 
