@@ -1,12 +1,13 @@
-From: Marco Colombo <netfilter@esiway.net>
-Subject: Re: how to automate ip_forward
-Date: Thu, 8 Jul 2004 14:54:10 +0200 (CEST)
+From: Fallucchi Antonio <fallucch@cisbic.com>
+Subject: Re: ip_conntrack_max
+Date: Thu, 08 Jul 2004 15:13:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0407081443070.3962-100000@Megathlon.ESI>
-References: <16ac01c464e3$1af42c20$49caa8c0@caris.priv>
+Message-ID: <40ED4865.7020208@cisbic.com>
+References: <40ED161F.5070804@cisbic.com> <200407081056.14826.Antony@Soft-Solutions.co.uk> <40ED226E.8070808@cisbic.com> <200407081152.42618.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <16ac01c464e3$1af42c20$49caa8c0@caris.priv>
+In-Reply-To: <200407081152.42618.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +17,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Peter Marshall <peter.marshall@caris.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, 8 Jul 2004, Peter Marshall wrote:
+Antony Stone wrote:
 
-> Hey guys, I know this sounds stupid, but I can not seem to get the value of
-> /proc/sys/net/ipv4/ip_forward to be 1 after boot.  I tried putting the echo
-> 1 > /pro...../ip_forward in my iptables script .... (BTW, I have a bash
-> script with my rules in it and a startup script in rc2.d that calls it)
-> 
-> I also tried making a separate starup script just for the ip_forward and set
-> it to run in as the last thing in rc2,d .....
-> 
-> If anyone has any suggestions, I would greatly appreciate it.
-> 
-> Thanks.
-> Peter
 
-That depends on the distro you're running. On Red Hat / Fedora distros,
-add (or change) the following line to /etc/sysctl.conf:
+oh!, excuse me for the html!
 
-net.ipv4.ip_forward = 1
+>128Mbytes should be enough for a few thousand connections.   As for how many 
+>do you need, a starting point is:
+>
+>1. How any client computers do you have in your LAN accessing the Internet 
+>through the firewall? (allow a maximum of 10 connections per PC at any given 
+>time - this will be an overestimate, but not by a ridiculous factor).
+>
+>2. Do you run any servers on your DMZ accessible from the Internet?   Mail 
+>servers, web servers, and name servers will all generate different volumes of 
+>connections, but if you allow 50-100 connections per server, again that 
+>should be a worthwhile estimate.
+>
+>  
+>
+very well, thancks.  I have 20 computer in the lan and 5 server.
 
-The echo you're using should work, just make sure nothing else
-(i.e. sysctl) resets it to 0 later at boot time (but on RH and
-Fedora, sysctl -p occurs in rc.sysinit, so before any rc.[2345]
-script).
+Another questions: how I can limit the number of connection for every 
+computer?
 
-As an alternative to the echo approach, you can use the sysctl
-command directly in your script. My iptables scripts start with:
+>In that case something is wrong with your system.   626 connections is hardly 
+>anything - I do not see how you can be running out of conntrack table entries 
+>with only 626 current connections.
+>
+>What is the value in /proc/sys/net/ipv4/ip_conntrack_max ?
+>
+>  
+>
+ip_conntrack_max now is 10240.
 
-  sysctl -w net.ipv4.ip_forward=0
 
-and end with:
-
-  sysctl -w net.ipv4.ip_forward=1
-
-so that forwarding is disabled while the scripts are messing with rules:
-I tend to use the scripts at runtime now and then, disabling forwarding
-is just safer.
-
-.TM.
--- 
-      ____/  ____/   /
-     /      /       /			Marco Colombo
-    ___/  ___  /   /		      Technical Manager
-   /          /   /			 ESI s.r.l.
- _____/ _____/  _/		       Colombo@ESI.it
-
+bye
+Antonio!
 
