@@ -1,11 +1,11 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Dropping network "noise"
-Date: Tue, 15 Feb 2005 11:15:20 -0500
-Message-ID: <20050215161520.GA19496@bender.817west.com>
-References: <200502130928.41225.e-boogie@yandex.ru>
+Subject: Re: trying to tweek FW and / or ruleset
+Date: Tue, 15 Feb 2005 11:27:02 -0500
+Message-ID: <20050215162702.GA19547@bender.817west.com>
+References: <420F4A83.7020504@eccotours.dyndns.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200502130928.41225.e-boogie@yandex.ru>
+In-Reply-To: <420F4A83.7020504@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,44 +20,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sun, Feb 13, 2005 at 09:28:41AM +0300, Mikhail Zotov wrote:
-> Hello everybody,
-> 
-> I have a Linux machine (with a static routable IP address)
-> connected to a windoops LAN.  As is known, there is certain
-> "noise" in windoops networks, which can be silently dropped
-> by a rule like this:
-> 
-> iptables -A INPUT -p udp --dport 135:139 -j DROP
-> 
-> I have found that this "noise" can also be effectively blocked
-> by the following rule:
-> 
-> iptables -A INPUT -d ! $IP.ADDRESS.OF.MY_BOX -j DROP
-> 
-> I haven't noticed anything going wrong yet, still I'd like to
-> know: Does this rule have a (potential) drawback?  Can it break
-> anything in case I have NFS or obtain IP address via DHCP or
-> in any other situation?
-> 
-> A similar question goes for the case of a Linux router/gateway
-> protecting a LAN (with machines with routable IP addresses).
-> Can the following rules do any harm?
-> 
-> iptables -A FORWARD -i $EXTERIOR_INTERFACE -d $LAN.BROADCAST -j DROP
-> iptables -A FORWARD -i $EXTERIOR_INTERFACE -d ! $LAN.IP.ADDRESSES.RANGE -j DROP
+On Sun, Feb 13, 2005 at 02:39:31PM +0200, Brent Clark wrote:
+> echo 1 > /proc/sys/net/ipv4/ip_dynaddr  #This may help if you have a 
+> dynamic IP address \(e.g. slip, ppp, dhcp\)
+> echo 1 > /proc/sys/net/ipv4/conf/all/log_martians       #Enable logging 
+> for malformed Ip Address
 
-you can also use the pkttype match to drop broadcast/multicast traffic,
-without having to calculate the broadcast address for every interface,
-and having another rule for the all-ones broadcast:
+"malformed IP Address" seems like an odd way to describe that.  the IP
+address isn't malformed, it's not considered to be a valid source
+address on the inbound interface; i.e., it's "alien."
 
-  -m pkttype --pkt-type broadcast -j DROP
-  -m pkttype --pkt-type multicast -j DROP
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> echo 1 > /proc/sys/net/ipv4/conf/all/proxy_arp
+
+i would be surprised if you want proxy_arp set to 1, unless you're
+trying to do something semi-strange.  i could be mistaken...
+
+> echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
+
+since you're enabling martian logging above, why are you disabling the
+feature that detects martians?  "normally" you'd want rp_filter set to 1
+on all interfaces, unless you know you're doing something intentionally
+that won't work with it enabled.
+
+> echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+> echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
+> echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
 
 -j
 
 --
-"Boy, if you want anything in this life, you have to work for it. Now
- be quiet while I listen for these lottery numbers."
+"Shut up brain or I'll stab you with a Q-Tip."
         --The Simpsons
 
