@@ -1,11 +1,13 @@
-From: Rodrigo Senra <rodsenra@gpr.com.br>
-Subject: Path to configure stateless DNAT with iptables ?
-Date: Wed, 2 Oct 2002 17:34:45 -0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Path to configure stateless DNAT with iptables ?
+Date: Wed, 2 Oct 2002 22:10:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021002203429.512C2681B4@engenho.terra.com.br>
+Message-ID: <20021002211008.SCLE28874.mta06-svc.ntlworld.com@there>
+References: <20021002203429.512C2681B4@engenho.terra.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021002203429.512C2681B4@engenho.terra.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +20,46 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
- Hi,
+On Wednesday 02 October 2002 9:34 pm, Rodrigo Senra wrote:
 
- I humbly ask your advice on this one:
+>  I need to do DNAT changing destination to a single
+>  ip-address for every non-marked packet.
 
- I need to do DNAT changing destination to a single 
- ip-address for every non-marked packet.
+Sounds easy enough...
 
- I mark the packets in mangle table, I DNAT in nat table...
- that would suffice but I need it to be stateless instead of 
- stateful! Tolerating conntrack overhead (in my case) is too
- expensive.
+>  I mark the packets in mangle table, I DNAT in nat table...
+>  that would suffice but I need it to be stateless instead of
+>  stateful! Tolerating conntrack overhead (in my case) is too
+>  expensive.
 
- The question is...how can I disable conntrack for DNAT ?
+Why do you say that ?
 
- (a) there is a secret switch ? (not very likely ;o)
- (b) there is a patch ?
- (c) should I make such patch ? ( then touch what piece
-     of code: conntrack, ip_tables module,?)
- (d) forget about it because...
+1. What overhead is connection tracking adding to simple stateless DNAT ?
 
- TIA
- 
- Senra
- 
+2. How do you propose to handle SNAT of reply packets if you turn off 
+connection tracking (is the overhead of this acceptable) ?
+
+3. What sort of machine do you have and what volume of packets are you trying 
+to shovel through it ?
+
+>  The question is...how can I disable conntrack for DNAT ?
+
+Well, you can simply disable connection tracking, but that will affect more 
+than just DNAT...
+
+>  (a) there is a secret switch ? (not very likely ;o)
+
+Yes - the switch is whether you say Yes or No to the question "Connection 
+Tracking ?" when you comple your kernel :-)
+
+I'm intrigued as to what you are doing and why you think connection tracking 
+is generating too much overhead on your machine to be acceptable.
+
+Antony.
+
 -- 
-Rodrigo Senra         
-MSc Computer Engineer   (GPr Sistemas Ltda)     rodsenra@gpr.com.br 
-http://www.ic.unicamp.br/~921234  (LinUxer 217.243) (ICQ 114477550)
+
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
