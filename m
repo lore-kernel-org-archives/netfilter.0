@@ -1,15 +1,14 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: about the iptables tutorial and the state of documentation
-Date: Tue, 15 Jul 2003 18:09:06 +0200
+From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
+Subject: Re: PREROUTING with ULOG in what order: conn, mangle, imq, nat
+Date: 15 Jul 2003 18:43:05 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030715160906.GO7198@naboo>
-References: <87znjjp8u2.fsf@tapsellferrier.co.uk>
+Message-ID: <1058287385.1488.2.camel@drs0.manchotnetworks.net>
+References: <1058281866.21853.66.camel@drs0.manchotnetworks.net> 
+	<20030715154000.GC24604@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FxlYARId5dseejUu"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <87znjjp8u2.fsf@tapsellferrier.co.uk>
+In-Reply-To: <20030715154000.GC24604@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,62 +18,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Nic <nferrier@tapsellferrier.co.uk>
-Cc: djTremors@newjackswing.dyndns.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
+
+Hi Ramin,
+
+Thanks for the clarification -- I had thought that it was done in "nat"
+
+Cheers
+
+Charles
 
 
---FxlYARId5dseejUu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2003-07-15 at 17:40, Ramin Dousti wrote:
+> On Tue, Jul 15, 2003 at 05:11:05PM +0200, lartc@manchotnetworks.net wrote:
+> 
+> [snip...]
+> 
+> > where does de-natting occur?
+> > 
+> > i thought it was: 
+> 
+> Your thought is correct. ULOG sees the packets after the conntrack.
+> tcpdump sees the packets before the conntrack.
+> And de-natting occurs at the conntrack:
+> 
+> > WIRE -- > PREROUTING [ conntrack --> mangle --> imq --> nat ] ...
+>   ^^^^                    ^^^^^^^      ^^^^^^
+> tcpdump                  de-natting     ULOG
+> 
+> 
+> Take a look at "Table 3-3. Forwarded packets" in Oscar's tutorial.
+> The order of mangle/nat is reverse for incoming and outgoing...
+> 
+> Ramin
+> 
+> > if i am capturing at mangle, should not the snat address be there?
+> > 
+> > Many Many Many Thanks!!
+> > 
+> > Charles
+> > 
+> > 
+> > 
+> > 
 
-On Sun, Jul 13, 2003 at 01:29:57AM +0100, Nic wrote:
-> After much searching around for info about the state of netfilter I
-> found your reference to the tutorial.
->=20
-> Thanks for mailing that to the list, without it I would never have
-> found out exactly what the situation is.
->=20
-> This is due to the awful state of the netfilter documentation. The
-> kernel documentation says that netfilter modules are no longer
-> included (it certainly doesn't seem possible to turn them on with
-> menuconfig) but the current netfilter documentation makes no mention
-> of that at all.
 
-? Where did you read that the netfilter modules are no longer included?
-
-What kernel version are you referring to?
-Please include your .config in the next posting, so we can analyze where
-your problem is.  It is most likely a usage problem.
-
-And, in general, I don't think that the netfilter/iptables
-[user] documentation is in an awful state.  The developer documentation
-is out of date, however
-
-> Nic Ferrier
-> http://www.tapsellferrier.co.uk
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---FxlYARId5dseejUu
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE/FCchXaXGVTD0i/8RAiSoAJ9+p83SdA7N2WdF1fW/YA6+giWIJgCfXpAa
-1eriPPmKyqquQ0nz4yL7D7o=
-=XWlD
------END PGP SIGNATURE-----
-
---FxlYARId5dseejUu--
 
