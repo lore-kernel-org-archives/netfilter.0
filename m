@@ -1,10 +1,10 @@
-From: Luke Deryckx <luke@westaironline.com>
-Subject: Compiling new iptables after kernel patch (compilation errors)
-Date: Wed, 31 Mar 2004 14:57:52 -0800
+From: Shane Hickey <shane@howsyournetwork.com>
+Subject: Need help with rate-limiting NTTP traffic
+Date: Wed, 31 Mar 2004 16:54:09 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BC908CF0.6B5A%luke@westaironline.com>
+Message-ID: <20040331165409.0d498074@daneel.volumen.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="B_3163589872_26484192"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,106 +15,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Howdy all,
+	Recently, with the help of this list, I migrated my firewall from a
+FreeBSD box running ipfilter, ipnat and dummynet to a Gentoo Linux box
+running netfilter and tc.  I have to admit that I'm having problems
+visualizing tc in my head.  So, I was wondering if I could get an
+assist.	
+	Basically, I have a fat upstream pipe and I can use it basically
+all I want, except that my NNTP traffic seems to really clobber
+everything else.  Also, since my NNTP traffic is pretty much constantly
+ongoing, I'd like to limit it to 800kbit.  This was a breeze with
+dummynet, but I'm not getting how to do it correctly with netfilter.  
 
---B_3163589872_26484192
-Content-type: text/plain; charset="ISO-8859-1"
-Content-transfer-encoding: quoted-printable
+Here's what I tried:
 
-I=B9ve patched my kernel (2.4.22) using the ip_conntrack_pptp patch in the
-latest patch-o-matic which I downloaded from the netfilter.org website.
-Everything went very smoothly patching, building installing and booting my
-kernel. However when I try to compile (or re-compile) any version of
-iptables so that it will work with my new kernel the make fails almost
-immediately yielding the a few different errors.
+$IPT -t mangle -N SHAPE-NNTP
+$IPT -t mangle -I PREROUTING -i $WANIFACE -j SHAPE-NNTP
+$IPT -t mangle -A SHAPE-NNTP -p tcp --sport 119 -j MARK --set-mark 119
 
-If I attempt to compile a fresh version of iptables 1.2.6a which is what I
-had been runing on before I get:
- >> make: *** No rule to make target `extensions/libipt_dscp.o', needed by
-`extensions/libext.a'.  Stop.
-If I try any other version it seems (I=B9ve tried 1.2.7a and 1.2.9) I get:
- >>make: *** No rule to make target `extensions/libipt_dscp.o', needed by
-`extensions/libext.a'.  Stop.
-Or
- >> make: *** No rule to make target `extensions/libip6t_mark.c', needed by
-`extensions/libip6t_mark.d'.  Stop.
+My thoughts on placing it in PREROUTING is that I'd like to shape the
+traffic as soon as possible so that my firewall gets the benefit of
+dealing with the reduced load as soon as possible.  But, maybe that's
+just foolishness?
 
-Depending on if I=B9ve fooled around with the Make file at all (which I did t=
-o
-try to overcome these errors)
+Here's the tc rules I tried.
 
-I=B9m using a debian based linux called Pebble (www.nycwireless.org/pebble)
-with the 2.4.22 kernel (which I have recompiled and reinstalled).
+tc qdisc add dev $WANIFACE root handle 1: htb default 60
+tc class add dev $WANIFACE parent 1: classid 1:1 htb rate 10Mbit
+tc class add dev $WANIFACE parent 1:1 classid 1:119 htb rate 800kbit
+tc filter add dev $WANIFACE parent 1:1 protocol ip handle 119 fw flowid
+1:119
 
-I=B9ve tried compiling with and without the NO_SHARED_LIBS value set in
-Makefile (changing this seems to change the error, but there is still and
-error) and I=B9ve also made extra sure that I have the correct KERNEL_DIR set
-(/usr/src/linux-2.4.22 in my case).
+The one weird thing is that when I do a 'tc filter show dev $WANIFACE'
+nothing comes back.  But 'tc class show dev $WANIFACE' and 'tc qdisc
+show dev $WANIFACE" return useful information.
 
-Any advice would be most appreciated.
+Thanks,
 
- Thanks
-
- Luke Deryckx
+Shane
 
 
-
-
---B_3163589872_26484192
-Content-type: text/html; charset="ISO-8859-1"
-Content-transfer-encoding: quoted-printable
-
-<HTML>
-<HEAD>
-<TITLE>Compiling new iptables after kernel patch (compilation errors)</TITL=
-E>
-</HEAD>
-<BODY>
-<FONT FACE=3D"Verdana">I&#8217;ve patched my kernel (2.4.22) using the ip_con=
-ntrack_pptp patch in the latest patch-o-matic which I downloaded from the ne=
-tfilter.org website. Everything went very smoothly patching, building instal=
-ling and booting my kernel. However when I try to compile (or re-compile) an=
-y version of iptables so that it will work with my new kernel the make fails=
- almost immediately yielding the a few different errors. <BR>
-<BR>
-If I attempt to compile a fresh version of iptables 1.2.6a which is what I =
-had been runing on before I get:<BR>
-&nbsp;&gt;&gt; make: *** No rule to make target `extensions/libipt_dscp.o',=
- needed by `extensions/libext.a'. &nbsp;Stop.<BR>
-If I try any other version it seems (I&#8217;ve tried 1.2.7a and 1.2.9) I g=
-et: <BR>
-&nbsp;&gt;&gt;make: *** No rule to make target `extensions/libipt_dscp.o', =
-needed by `extensions/libext.a'. &nbsp;Stop.<BR>
-Or<BR>
-&nbsp;&gt;&gt; make: *** No rule to make target `extensions/libip6t_mark.c'=
-, needed by `extensions/libip6t_mark.d'. &nbsp;Stop.<BR>
-<BR>
-Depending on if I&#8217;ve fooled around with the Make file at all (which I=
- did to try to overcome these errors)<BR>
-<BR>
-I&#8217;m using a debian based linux called Pebble (www.nycwireless.org/peb=
-ble) with the 2.4.22 kernel (which I have recompiled and reinstalled). <BR>
-<BR>
-I&#8217;ve tried compiling with and without the NO_SHARED_LIBS value set in=
- Makefile (changing this seems to change the error, but there is still and e=
-rror) and I&#8217;ve also made extra sure that I have the correct KERNEL_DIR=
- set (/usr/src/linux-2.4.22 in my case). <BR>
-<BR>
-Any advice would be most appreciated. <BR>
-<BR>
-&nbsp;Thanks<BR>
-<BR>
-&nbsp;Luke Deryckx<BR>
-<BR>
-<BR>
-</FONT>
-</BODY>
-</HTML>
-
-
---B_3163589872_26484192--
-
+-- 
+Shane Hickey <shane@howsyournetwork.com>: Network/System Consultant
+GPG KeyID: 777CBF3F
+Key fingerprint: 254F B2AC 9939 C715 278C  DA95 4109 9F69 777C BF3F
+Listening to: american analog set - you own me
 
