@@ -1,11 +1,11 @@
-From: "R. Sterenborg" <rsterenborg@xs4all.nl>
-Subject: Re: Masquerading problems
-Date: Wed, 3 Jul 2002 10:24:58 +0200
+From: David Gaston Rodriguez <davidgr@interlap.com.ar>
+Subject: Masquerading problems (fix)
+Date: Wed, 3 Jul 2002 06:13:59 +0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <00b201c2226b$1e8c6e40$153fa8c0@hslbrabantzuid.nl>
-References: <200207030507.58215.davidgr@interlap.com.ar>
+Message-ID: <200207030613.59855.davidgr@interlap.com.ar>
+Reply-To: davidgr@interlap.com.ar
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -19,20 +19,15 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
------ Original Message -----
-From: "David Gaston Rodriguez" <davidgr@interlap.com.ar>
-
-> to make the masquerading, but now there are web pages which i can enter
-from
-> workstations, like for example www.mixmail.com or www.yahoo.com, and from
-the server
-> i can enter to this pages. I using 2 interfaces, eth0: external, eth1:
-internal, the
-
-So you can access pages from workstations. And also from the server.
-What *is* the problem ?
-
-Rob
-
+Sorry! i wrote bad. here is the correction:
+Hi!, i am new in the list, i am from argentina, this is mi problem:
+I have a small LAN with a server doing masquerading, I used the kernel 2.2.20 and
+did not have any problem, now i decided to use the kernel 2.4.18, i set iptables 
+to make the masquerading, but now there are web pages which i can NOT enter from 
+workstations, like for example www.mixmail.com or www.yahoo.com, and from the server
+i can enter to this pages. I using 2 interfaces, eth0: external, eth1: internal, the
+external interface is connect to ADSL Modem (PPPoE).
+Some idea on as could be mi problem?
+Thanks!!
 
 
