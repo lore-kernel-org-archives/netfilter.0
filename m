@@ -1,13 +1,11 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Iptables
-Date: Wed, 28 Jan 2004 08:25:24 -0500
+From: Andy Furniss <andy.furniss@dsl.pipex.com>
+Subject: mms and rtsp patches = make modules fail
+Date: Wed, 28 Jan 2004 13:39:36 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4017B844.8090901@Loudoun-Fairfax.com>
-References: <Sea2-F29KdVVDMCcltD00014e88@hotmail.com>
+Message-ID: <4017BB98.7090203@dsl.pipex.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Sea2-F29KdVVDMCcltD00014e88@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,45 +18,23 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-jean-francois fleury wrote:
+I don't really need them but I pressed Y :-) looks like some headers are 
+missing from POM cvs of a couple of days old. mms and rtsp, unless my 
+gcc 2.95.3 is being over pedantic. Vanilla 2.4.24 apart from 2IMQ IMQ 
+nat and ESFQ patches.
 
->
-> Im new with Iptables but iv been working on it since the last month to 
-> built up rule set.
-> I have a linux box with 3 int
->
-> Eth0 = $EXT (connected to ppp0, ADSL provider)
->
-> Eth1 = $DMZ (only a web server for now)
-> Eth2 = $INT (my main computer(net surf) and one for IDS, 
-> tcpdumb,backup, etc)
->
-> Basicly, i know im not the only one with this kind of setup, im sure 
-> ;) . First i want
-> to access my web server from the $INT to $DMZ to manage it, i want to 
-> access
-> internet $INT to $EXT (it can be $PPP0) and few other thing such as 
-> SSH from
-> inside and outside, give full access inside ($INT and in my $DMZ) to my
-> IDS. and like everyone else, good rules. What i would like its a setup 
-> rules
-> already made for this kind of network, that work but i can personolize 
-> it. Is
-> there someone with this kind of rules so i can start with something ?
->
+In file included from ip_conntrack_standalone.c:28:
+/home/andy/Sources/kernels/2.4.24/linux-2.4.24/include/linux/netfilter_ipv4/ip_conntrack.h:74: 
+field `ct_rtsp_info' has incomplete type
+/home/andy/Sources/kernels/2.4.24/linux-2.4.24/include/linux/netfilter_ipv4/ip_conntrack.h:89: 
+field `ct_mms_info' has incomplete type
+make[2]: *** [ip_conntrack_standalone.o] Error 1
+make[2]: Leaving directory 
+`/home/andy/Sources/kernels/2.4.24/linux-2.4.24/net/ipv4/netfilter'
+make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory 
+`/home/andy/Sources/kernels/2.4.24/linux-2.4.24/net
 
-Take a look here:  http://iptables-tutorial.frozentux.net/
-
-This is an excellent tutorial and has several examples including one 
-similar to your configuration.
-
-> If you want my actual rules i can send it. Thanks
->
-> PS : sorry for my english but i write basicly in french.
->
-
-Your English is better than my French :-)
-
-Jeff
+Andy.
 
 
