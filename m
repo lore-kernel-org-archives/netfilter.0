@@ -1,9 +1,9 @@
-From: spdesai@gnvfc.net
-Subject: Linux Router
-Date: Sun,  6 Feb 2005 23:06:59 +0530
-Message-ID: <1107711419.420655bbc259e@mail.gnvfc.net>
+From: Ted Gervais <ve1drg@av.eastlink.ca>
+Subject: Port 25
+Date: Sun, 06 Feb 2005 14:51:52 -0400 (AST)
+Message-ID: <Pine.LNX.4.58.0502061446150.1174@linux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,44 +14,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
+I have a problem getting mail packets to go out with my present firewall
+setup.
 
-Hi
+What I have is a firewall that blocks/drops everything at the start and
+then it goes on to allow access through specific ports. For Port 25 or
+smtp to work, I have the following line which I was hoping to have mail
+coming and going with this statement. However, outgoing mail can go, but
+incoming has a problem:
 
-I have one linux machine with two NIC cards. One is connected to internet and 
-one is private PC. Below is my IP configuration
+/usr/sbin/iptables -A INPUT -p tcp --destination-port 25 -j ACCEPT
 
-eth0: Valid IP: xxx.xxx.xxx.68
-      Mask: 255.255.255.192
-      Gateway: xxx.xxx.xxx.65  
+I also tried the following two lines to see if things would work but to no
+avail..:
 
-eth1: Invalid IP: 192.168.1.1
-       Mask : 255.255.255.0
-      Gateway: xxx.xxx.xxx.65 
+iptables -A OUTPUT -o $INTERNET -p tcp -s $IPADDR --sport $UNPRIVPORTS \
+--dport 25 -j ACCEPT
+iptables -A INPUT -i $INTERNET -p tcp ! --syn --sport 25 -d $IPADDR \
+--dport $UNPRIVPORTS -j ACCEPT
 
-
-Now when i connect eth1 to window machine. i can ping up to eth0 valid ip i.e 
-xxx.xxx.xxx.68 but could not ping xxx.xxx.xxx.65 which is gateway ip of linux.
-
-I have enable ip_forward to 1 in linux machine.
-
-My window machine ip is: 
-IP: 192.168.1.2
-Mask:255.255.255.0
-GW: 192.168.1.1
-
-Pl. give me the solution so i can ping xxx.xxx.xxx.65 from my window machine.
-
-Thanks in advance
-
-suhag.
+So, if I take the firewall down, mail comes and goes just great..
+What am I not seeing here??
 
 
+---
+The big cities of America are becoming Third World countries.
+                -- Nora Ephron
 
--------------------------------------------------
-This mail sent through IMP: http://horde.org/imp/
 
+Ted Gervais
+Coldbrook Nova Scotia
+Canada B4R1A7
 
