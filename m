@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: detection of the third tcp packet in a tcp connection setup
-Date: Thu, 27 Jun 2002 21:06:54 +0100
+From: Tony Zafiropoulos <tonyz@ctitek.com>
+Subject: Re: Examples
+Date: Thu, 27 Jun 2002 15:09:14 -0500 (CDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020627200655.VZLE19225.mta07-svc.ntlworld.com@there>
-References: <NJEFLNJDIFFNMHDEBKMJCEJADOAA.jpatterson@asgardgroup.com> <20020627194405.GLHF295.mta03-svc.ntlworld.com@there> <20020627195742.GA31466@cannon.eng.us.uu.net>
+Message-ID: <Pine.LNX.4.21.0206271505580.24066-100000@jagd.ctitek.com>
+References: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020627195742.GA31466@cannon.eng.us.uu.net>
+In-Reply-To: <731E36372B5FD248AF790189519A32C19E4F8B@mailhub.cgtime.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,26 +16,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
 
-On Thursday 27 June 2002 8:57 pm, Ramin Alidousti wrote:
 
-> If I'm not wrong you can always send data even in SYN and SYN/ACK.
-> Like Patrick said the default options in the socket interface might
-> not do it but I thought I saw some tweaking in one of Richard Steven's
-> (god bless his soul) books to push traffic in SYN packets.
+I have found www.linuxguruz.org/iptables very helpful
 
-Is that an interesting way to get round packet filtering firewalls ?
+The Monmotha is an extremely well done script
 
-Send enough data (eg an http request) in a SYN packet so that the application 
-does the dirty work for you, even if the packet filter isn't going to allow 
-the connection to get ESTABLISHED ?
+http://monmotha.mplug.org/firewall/firewall/2.3/rc.firewall-2.3.8-pre6
 
-Or do you have to fiddle with the receiving socket too in order for it to 
-cope with this ?
+(I have no relation to either website, I just use the schtuff)
 
- 
 
-Antony.
+GO GERMANY!!
+WC2002
+
+
+Tony
+
+
+
+
+On Thu, 27 Jun 2002, Daniel Curry wrote:
+
+> I was just at the netfilter.org web site, looking for some example
+> IPTables scripts for various solutions.  Does anyone have any
+> suggestions on where I might find some well documented examples to
+> satisfy a server with an internal and external network connection,
+> sendmail, apache, DHCP (internal only), MySQL, IPSEC/PPTP services
+> (hosted and pass through), inbound POP/IMAP?
+> 
+> Thanks
+> 
+> Daniel Curry
+> IT Manager
+> Cariocas
+> 625 Second Street 
+> Suite 201
+> San Francisco, CA 94107 
+> ph: 415-348-6516
+> fx: 415-348-6505 
+> cell: 510-579-6680
+> 
+> "If A equals success, then the formula is: A = X + Y + Z, 
+> X is work. Y is play. Z is keep your mouth shut." 
+>   - Albert Einstein
+> 
+> 
+
+-- 
+Tony Zafiropoulos
+FixMyVirus.com
+Cel: 314-504-3974
+tonyz@fixmyvirus.com
+Best way to reduce your virus exposure?
+Run Linux - Replace Windows one system at a time.
+
 
