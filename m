@@ -1,16 +1,13 @@
-From: netfilter_user <netfilter_user@o2.pl>
-Subject: Re[4]: access to server
-Date: Wed, 30 Apr 2003 15:32:17 +0200
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Netfilter and SCTP
+Date: 30 Apr 2003 16:04:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <211627560.20030430153217@o2.pl>
-References: <5436369716.20030430004931@o2.pl>
- <20030430031030.50b8d13b.arnt@c2i.net> <1246491441.20030430033812@o2.pl>
- <20030430044745.621e715a.arnt@c2i.net>
-Reply-To: netfilter_user <netfilter_user@o2.pl>
+Message-ID: <1051711484.1690.121.camel@raylinux.internal>
+References: <Law8-F94rhYQYx3G5aY000150f0@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-rcXp5Tul1uIxCFf9/787"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030430044745.621e715a.arnt@c2i.net>
+In-Reply-To: <Law8-F94rhYQYx3G5aY000150f0@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,70 +17,73 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org
-
-Hello Arnt,
-
-Wednesday, April 30, 2003, 4:47:45 AM, you wrote:
-
-AK> On Wed, 30 Apr 2003 03:38:12 +0200, 
-AK> netfilter_user <netfilter_user@o2.pl> wrote in message 
-AK> <1246491441.20030430033812@o2.pl>:
-
->> Hello Arnt,
->> 
->> Wednesday, April 30, 2003, 3:10:30 AM, you wrote:
->> 
->> AK> On Wed, 30 Apr 2003 00:49:31 +0200, 
->> AK> netfilter_user <netfilter_user@o2.pl> wrote in message 
->> AK> <5436369716.20030430004931@o2.pl>:
->> 
->> >> Rule: "iptables -A FORWARD -i eth1 -p udp -m --multioport --dport 
->> AK>                                                      /\
->> AK> ..is " -m --multioport " a valid match in iptables, or a correct 
->> AK> quote of your attempt to write  ' -m --multiport ' ?
->> 
->> damn my wrong...it should looks like this:
->> iptables -A FORWARD -i eth1 -p udp -m --multioport --dport 23073,23083
->> -j ACCEPT                                   /\
-AK>                                               ||
-AK> ..lets try again: I don't find "-m --multioport" _anywhere_ 
-AK> in the docs, so, if you _actually_ try '-m --multioport' in
-AK> your rule set, it _should_ fail, then you'll wanna try 
-AK> '-m --multiport', without your extra "o".  ;-)
-
-Oh yes, now i got, i was too sleepy yestorday to understand. Actualy
-this rule looks like this:
-
-iptables -A FORWARD -i eth1 -p udp -m --multiport --dport 23073,23083 -j ACCEPT
-
-and after run, shows no error msg. Thats mean it works but it wont
-helps me to achive this what i want.
-
-I repeat my msg here again:
-
-In my network, Linux machine connect Local net (eth1) with internet
-(ppp0). As a default all INCOMING traffic is deny. I made some rules
-to access SMTP, HTTP etc. but its not important now.
-It is necessery for nodes from local net to access server that is in Internet. The
-address of this server is 62.233.202.165 and listen on port 23073 and
-23083.
-
-Rule: "iptables -A FORWARD -i eth1 -p udp -m --multiport --dport
-23073,23083 -j ACCEPT"
-wont helps and i have received msg in log like this:
-
-Apr 30 02:28:41 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.2 DST=62.233.202.165 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=23780 PROTO=UDP
-SPT=1552 DPT=13073 LEN=16
-
-Im newbe at iptables and cant resolve that problem alone. Maybe anyone
-of You have got idea how to force that to work.
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
--- 
-Best regards,
- mailto:netfilter_user@o2.pl
+--=-rcXp5Tul1uIxCFf9/787
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Isn't SCTP just a sub-protocol of TCP/IP?
+
+If it is then you can use rules like this:
+
+iptables -A FORWARD -i eth0 -p 132 -s 1.2.3.4 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+
+
+This is what I do for protocol 47 which is used by MS VPN connections.
+
+Ray
+
+On Wed, 2003-04-30 at 14:50, Cyrille Colin wrote:
+> Hi,
+>=20
+> I would like to know how Netfilter's translator deals with SCTP / IP pack=
+ets=20
+> (Stream Control Transmission Protocol, IP protocol 132).
+>=20
+> similarly to UDP, it should be able to translate the source adress in the=
+ IP=20
+> header, and the source port in the SCTP common header, if needed. And=20
+> recompute SCTP and IP headers checksums.
+>=20
+> is this currently supported ? if not how Netfilter behave when receiving=20
+> such a packet ??
+>=20
+> any help on this would be very much appreciated... seems that NAT boxes d=
+o=20
+> not like SCTP very much...
+>=20
+>=20
+> Thanks
+>=20
+> Cyrille
+>=20
+>=20
+>=20
+>=20
+>=20
+> _________________________________________________________________
+> MSN Messenger : discutez en direct avec vos amis !=20
+> http://www.msn.fr/msger/default.asp
+>=20
+>=20
+
+--=-rcXp5Tul1uIxCFf9/787
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+r9f8h1fuR/Bv+ygRAhwdAJ40oe8ze8V8Gfi4ACTT+Cq1WZufEwCdGfuv
+n8Dguke/fxRXoofIWuWjqEc=
+=bgxG
+-----END PGP SIGNATURE-----
+
+--=-rcXp5Tul1uIxCFf9/787--
 
 
