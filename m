@@ -1,11 +1,14 @@
-From: "Gary Smith" <gary@primeexalia.com>
-Subject: RE: iptables not responding to packets destined for subinterface
-Date: Sat, 30 Oct 2004 22:23:53 -0700
-Message-ID: <21245695958BF041875A6C39D08F9EBA0232CD@vjo-mails-03.primeexalia.com>
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: ftp connection tracking on multiple ports
+Date: Sun, 31 Oct 2004 09:34:49 +0200
+Message-ID: <1403218a041031003423417908@mail.gmail.com>
+References: <1403218a0410280318a6ed55b@mail.gmail.com>
+	<1098967289.3029.3.camel@hubcap.ljm.dom>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <1098967289.3029.3.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,52 +20,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Support Team <support@precisenetworksinc.com>, netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-I don't think that you can.  I think that you also answered your own
-question being that you must use the primary interface and use the
-target destination IP address.  This is what we currently do on our
-firewall with 126 IP's (125 are aliases).  All of the firewall traffic
-is answered by the firewall and then NAT'd in/out using iptables. =20
-
-Gary Wayne Smith
+Well, I did that before posting to the list.
+Now I doubt it is a networking problem !!! there are reasons to doubt.
 
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Support Team
-Sent: Saturday, October 30, 2004 10:13 PM
-To: netfilter@lists.netfilter.org
-Subject: iptables not responding to packets destined for subinterface
-
-My public interface has serveral IP address aliases.  Only the primary
-IP
-address responds to traffic (ip, imcp, et al).  I inserted a log
-statement
-at the top of each table and found that the packets destined for the
-virtual
-addresses never made it to any table.  However, according to tcpdump, I
-confirmed that the packets did get picked up by the kernel on the
-secondary
-address.  I guess they are just not passed to iptables.  Obviously, the
-packet was never replied to (icmp) or acknowledged (ip) by the process.
-
-How can I get iptables to respond to the packets on the secondary
-interfaces?  Or, how can I get the kernel to pass the packets to
-iptables?
-
-I understand that when the packet hits the chain, all I have to do is
-create
-a rule with the primary interface and use the IP address to distinguish
-the
-packets of different virtual addresses.
-
-If you are looking for more detail, see the email I sent on Sun, 24 Oct,
-at
-9:28 p.m. (GMT -6).
-
-Thanks for your help!
+On Thu, 28 Oct 2004 08:41:29 -0400, Jason Opperisano <opie@817west.com> wrote:
+> On Thu, 2004-10-28 at 06:18, Mohamed Eldesoky wrote:
+> 
+> 
+> > Dear all,
+> >
+> > I have a server that runs FTP on two ports, port 21 and port 45 (for
+> > strange reasons)
+> > Now, i want conntrack to track the connections of both ports and their
+> > data ports !!
+> >
+> > I did that in my firewall script
+> > /sbin/modprobe ip_conntrack_ftp ports=21,45
+> > $IPTABLES -A linweb_chain -p tcp -m multiport --destination-port
+> > 80,21,45 -j ACCEPT
+> >
+> > Is that all I need ??
+> 
+> iptables -A linweb_chain -m helper --helper ftp -j ACCEPT
+> 
+> -j
+> 
+> --
+> Jason Opperisano <opie@817west.com>
+> 
+> 
 
 
-
+-- 
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
