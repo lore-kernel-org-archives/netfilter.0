@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Redhat Linux 8.0 IPtables help
-Date: Fri, 6 Jun 2003 08:20:05 +1000
+Subject: RE: silly question, how to block all outgoing traffic?
+Date: Fri, 6 Jun 2003 08:16:19 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DDC@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6DDB@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,20 +17,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sundaram Ramasamy <sun@percipia.com>, netfilter@lists.netfilter.org
+To: calvin <calvinproject@ihug.com.au>, netfilter@lists.netfilter.org
 
-"What port should I block for icmp protocol?"
-Errrr??... your blocking them already??? Or did you mean, which icmp =
-should you ACCEPT?
+Please refer to the iptables tutorials to get a better idea of the =
+chains and how a packet traverses it.
 
--------------------------
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT DROP
-$IPTABLES -P FORWARD DROP
--------------------------
+INPUT and OUTPUT are only used by the firewall and not for forwarding =
+packets. So in other words, if C1 or C2 sends a packet through G1 or G2, =
+both G1 and G2 packets will not pass through those 2 chains.
 
-BTW, why are you allowing UDP 22,23,80??? It's not used for ssh,telnet =
-and http and whatever 24 is.. (can't be bothered). he he ;P
+What you want is FORWARD.
+
+ie.(rule below drops everything C1 is trying to get out via eth1.
+--G1--
+iptables -A FORWARD -i eth0 -o eth1 -s 137.112.220.166 -j DROP
+
 
 Thanks,
 ____________________________________________
@@ -41,49 +42,19 @@ georgev@citadelcomputer.com.au
 Citadel Computer Systems Pty Ltd
 http://www.citadelcomputer.com.au
 
+
 -----Original Message-----
-From: Sundaram Ramasamy [mailto:sun@percipia.com]
-Sent: Friday, June 06, 2003 5:33 AM
+From: calvin [mailto:calvinproject@ihug.com.au]
+Sent: Thursday, June 05, 2003 6:28 PM
 To: netfilter@lists.netfilter.org
-Subject: Redhat Linux 8.0 IPtables help
-
-
-Hi,
+Subject: silly question, how to block all outgoing traffic?
 
 
 
-I have Linux machine with single Network interface. I want to block all =
-the
-tcp,udp and icmp port's other then 22,23,24 and 80.
+case2:   iptables -A output -s 137.112.220.165 -j DROP
 
+case3:   iptables -A input -i 137.112.220.165 -s 137.112.220.165 -j DROP
 
-
-Can you verify the following script?
-
-IPTABLES=3D/sbin/iptables
-
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT DROP
-$IPTABLES -P FORWARD DROP
-
-$IPTABLES -A INPUT -p tcp -m multiport --destination-port 22,23,24,80 -j
-ACCEPT
-
-
-
-$IPTABLES -A INPUT -p udp -m multiport --destination-port 22,23,24,80 -j
-ACCEPT
-
-
-
-
-
-What port should I block for icmp protocol?
-
-
-
--SR
-
-
+case4: iptables -A output -s ! 137.112.220.165 -j ACCEPT
 
 
