@@ -1,16 +1,14 @@
-From: Alexey Talikov <alexey_talikov@texlab.com.uz>
-Subject: Re[2]: [LARTC] Egress shaping over multiple interfaces?
-Date: Fri, 1 Nov 2002 08:52:10 +0500
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: DNAT, SNAT, Portforward
+Date: Fri, 1 Nov 2002 01:08:18 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <9587912972.20021101085210@texlab.com.uz>
-References: <200210311520.58059.mklingens@ism.nl>
- <200210311733.12958.mklingens@ism.nl> <200210311800.52588.stef.coene@docum.org>
- <200210311945.05157.hasso@linux.ee>
-Reply-To: Alexey Talikov <alexey_talikov@texlab.com.uz>
+Message-ID: <200211010108.18555.netfilter@newkirk.us>
+References: <34BE59D9.590F1486.03240133@netscape.net>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210311945.05157.hasso@linux.ee>
+In-Reply-To: <34BE59D9.590F1486.03240133@netscape.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +19,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Hasso Tepper <hasso@linux.ee>
-Cc: netfilter@lists, netfilter@lists.netfilter.org
+To: Thomas Meindl <methodaut@netscape.net>, netfilter@lists.netfilter.org
 
-Hello Hasso,
+On Thursday 31 October 2002 08:33 pm, Thomas Meindl wrote:
+> okey, let's start again for the correct guys out there
+> here's my original script which i have testet since two days
+> doing all kinds of variations and combinations anyone could think of
+> my problem is situated at the PREROUTING chain with DNAT
+> I simply want a portforward
 
-Thursday, October 31, 2002, 10:45:05 PM, you wrote:
+{Snip a few dozen lines :^}
 
-HT> IMQ? I'm using it in the production. 100 IMQ devices 10 - 50 of them 
-HT> in use. Number of devices in use is changing in boxes and I had to 
-HT> create just enough IMQ devices. I'm using IMQ in combination with TBF 
-HT> to get bidirectional shaping. No problems at all.
+> echo "forwarding port 1234 to 192.168.0.2:80.."
+> $IPTABLES -t nat -A PREROUTING -p tcp -i $EXTIF -d www.xxx.yyy.zzz  \
+> --dport 1234 -j DNAT --to 192.168.0.2:80=20
+> $IPTABLES -A FORWARD -p tcp -i $EXTIF -o $INTIF -d 192.168.0.2     \
+> --dport 80 -j ACCEPT=20
+> $IPTABLES -t nat -A POSTROUTING -p tcp -o $EXTIF -s 192.168.0.2  \
+>  --sport 80 -j SNAT --to www.xxx.yyy.zzz:1234
 
-As I know max number of imq devices 16
-i.e.
-modprobe imq numdevs=16
-Do you change this line in inclue/linux/imq.h
+umm.  Have you tried this with "-j DNAT --to-destination"? =20
+Also, I think the third rule should go.  In the situation you've outlined=
+,=20
+Netfilter should handle the reversal of your DNAT operation automatically=
+=2E
+Wouldn't "$IPTABLES -A FORWARD -p tcp -d 192.168.0.2 --dport 80 -j ACCEPT=
+" be=20
+sufficient for forwarding?
 
-#define IMQ_MAX_DEVS   16
+> echo "allow all connections out and only existing and related ones in..=
+"
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state  \
+> --state ESTABLISHED,RELATED -j ACCEPT=20
+> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -j LOG --log-prefix "FIREWALL (FORWARD Chain): "
+>
+> echo "enabling snat (masquerade) functionality on $EXTIF.."
+> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
 
------------------------------------
-mailto:alexey_talikov@texlab.com.uz
-BR
-Alexey Talikov
-FORTEK
------------------------------------
+Question to list:  At what point in its own travels does the returning pa=
+cket=20
+get automatically un-DNATed?  Prerouting again?
 
+j
 
