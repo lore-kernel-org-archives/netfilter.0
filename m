@@ -1,8 +1,8 @@
 From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: FTP/SSL
-Date: Thu, 16 Oct 2003 11:40:40 -0700
+Subject: RE: UnhandledForward
+Date: Thu, 16 Oct 2003 11:45:28 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E6A@alderaan.smgtec.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E3741@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,26 +17,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Sean E. Covel" <seanecovel@comcast.net>
-Cc: NetFilter-List <netfilter@lists.netfilter.org>
+To: Czezz <czezz@o2.pl>, netfilter@lists.netfilter.org
 
-SSL based protocols are designed to be resilient against
-man-in-the-middle attacks. The firewall would be that man in the middle.
+Seems to be for a game called soldat (http://www.soldat.prv.pl/)
+Reference: =
+http://www.udpsoft.com/forum/printpage.cgi?forum=3D1&topic=3D840
 
-The only ways to solve your problems that I can see are:
 
-1. Bite the bullet, open the ports
-2. Force users to use Active mode FTP, so they open all those ports
-instead of you
-3. See if your SFTP server has an option to force users to use specific
-ports. This may make opening the interfaces a little easier.
-4. Put the SFTP server on your firewall. This is hardly ideal, but
-better than the alternatives?
-5. Offer regular FTP-through-VPN instead of SFTP
+-----Original Message-----
+From: Czezz [mailto:czezz@o2.pl]=20
+Sent: Thursday, October 16, 2003 11:41 AM
+To: netfilter@lists.netfilter.org
+Subject: UnhandledForward
 
->So am I correct that the only option is to open a large chunk of ports
->so that the data connection can be established?  This seems like 2
-steps
->forward and 1 step back!
+Hello everyone,
+
+here is my question:
+I added this  line to my rc.firewall
+
+   iptables -A FORWARD -i eth1 -j LOG --log-prefix
+"IPT:UnhandledForward:"
+
+to check why I cant connect to some server...and in syslog it received
+me this:
+   Oct 16 19:05:59 slack kernel: IPT:UnhandledForward:IN=3Deth1 =
+OUT=3Dppp0
+SRC=3D192.168.1.251 DST=3D62.111.129.3 LEN=3D36 TOS=3D0x00 PREC=3D0x00 =
+TTL=3D127
+ID=3D17885 PROTO=3DUDP SPT=3D23083 DPT=3D13073 LEN=3D16
+   Oct 16 19:07:44 slack kernel: IPT:UnhandledForward:IN=3Deth1 =
+OUT=3Dppp0
+SRC=3D192.168.1.251 DST=3D62.111.129.3 LEN=3D36 TOS=3D0x00 PREC=3D0x00 =
+TTL=3D127
+ID=3D18107 PROTO=3DUDP SPT=3D23083 DPT=3D13073 LEN=3D16
+   Oct 16 19:10:27 slack kernel: IPT:UnhandledForward:IN=3Deth1 =
+OUT=3Dppp0
+SRC=3D192.168.1.251 DST=3D62.111.129.3 LEN=3D36 TOS=3D0x00 PREC=3D0x00 =
+TTL=3D127
+ID=3D18888 PROTO=3DUDP SPT=3D23083 DPT=3D13073 LEN=3D16
+   Oct 16 19:11:08 slack kernel: IPT:UnhandledForward:IN=3Deth1 =
+OUT=3Dppp0
+SRC=3D192.168.1.251 DST=3D62.111.129.3 LEN=3D36 TOS=3D0x00 PREC=3D0x00 =
+TTL=3D127
+ID=3D19078 PROTO=3DUDP SPT=3D23083 DPT=3D13073 LEN=3D16
+
+Does anyone can help my to analize this lines above and maybe give my
+some hint?
+  =20
+ --
+Best regards,
+
 
 
