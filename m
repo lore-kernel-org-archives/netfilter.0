@@ -1,10 +1,12 @@
-From: Jorge Enrique <nunezj@ucbcba.edu.bo>
-Subject: Problemas REDIRECT
-Date: Tue, 29 Mar 2005 18:08:14 -0400
-Message-ID: <1112134095.8721.76.camel@admin.ucbcba.edu.bo>
+From: "Jorge Agrelo" <jagrelo@novadevices.com>
+Subject: IPSET issue ???
+Date: Tue, 29 Mar 2005 19:10:41 -0500
+Message-ID: <4249A831.26741.68F66E4C@localhost>
+Reply-To: jagrelo@novadevices.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Description: Mail message body
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +20,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hola a todos, una pregunta se me presento problemas con mis reglas de mi
-firewall.
+Hi friends
 
-Estado probando los redireccionamientos la idea es la siguiente:
+I want to block the offensive network list supplied by dshield
+(http://feeds.dshield.org/block.txt) using IPSET match, anybody tell me if the 
+following stuff is correct.  
 
+ipset -N bogons-nets nethash
+ipset -A bogons-nets 81.208.28.0/24
+ipset -A bogons-nets 141.50.163.0/24 ..........
+iptables -N blocklist
+iptables -A bogons-nets -m set --set bogons-nets scr,dst -j drop
+iptables -A INPUT -i ! lo -m state ! --state ESTABLISHED -j blocklist
+iptables -A FORWARD -m state ! --state ESTABLISHED -j blocklist
+iptables -A OUTPUT -o ! lo -m state ! --state ESTABLISHED -j blocklist
 
-              Internet
-                 |
-		 |
-		 V
+I want to block the source and destination traffic from/to this networks, I'm not sure 
+regarding how to use the tokens src and dst and the set type (nethash) in IPSET???
 
- 		Firewall  ----> Server web
-			    |
-			    |-> Usuario1
+Thanks in advanced
 
- Configure primero para q desde internet lo vean a mi server web
-
- iptables -A PREROUTING -s 0/0 -d IP_PUBLICA -j DNAT -to IP_SERVER_WEB
-
- Esto funciona bien pero los usuarios de mi red privada no la pueden
-acceder a mi sito en mi server web, pero desde afuera si..
-
- estado viendo lo siguiente pero no me esta funcionando
-
- iptables -A PREROUTING -s RED_PRIVADA -d IP_PUBLICA -p tcp --dport 443
--j REDIRECT -to-ports 443
-
-  Cual puede ser el problema o donde me estoy equivocando, ayuda????
-
-
-
-
-
-
-
+**********************************
+CTO: Eng. Jorge Agrelo O.
+WEb: www.novadevices.com
+E-Mail: jagrelo@novadevices.com
+Phone: (593-2) 225-7711 ext. 105
+Av. Brasil N44-12 y Condor, Quito-Ecuador
+**********************************
