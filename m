@@ -1,8 +1,8 @@
-From: b22@softlinx.com
-Subject: How to deny private net accessing each other by private net ip
-Date: Sun, 25 May 2003 16:36:58 -0400
+From: Anders Fugmann <afu@fugmann.dhs.org>
+Subject: traceroute:
+Date: Sun, 25 May 2003 22:45:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <16081.10602.461664.908656@joker.softlinx.com>
+Message-ID: <3ED12B67.3030104@fugmann.dhs.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,40 +15,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-Hi
+I'm having problems doing traceroute through my firewall.
 
-I have following firewall setup
-eth0  internet (1.1.x.x, 1.2.x.x, 1.3.x.x)
-eth1  private lan 10.1.x.x snat/dnat 1.1.x.x.x
-eth2  private lan 10.2.x.x snat/dnat 1.2.x.x.x
-eth3  private lan 10.3.x.x snat/dnat 1.3.x.x.x
+It seems that the rule:
+iptables -A OUTPUT -m state --state INVALID -j DROP
+catches the ICMP error messages that is returned when TTL=0, and hence 
+traceoute comes out showing "* * *" instead of the name of my firewall.
 
-I am trying to restrict machines on ethA from accessing machines on ethB (A = 1,2,3, B=1,2,3)
-by its reserved IP (10.B.x.x) and only allow access by its public (1.B.x.x) IP.
+When logging the INVALID packets, this is entered in the system log:
 
-I can do it using PREROUTING chain in nat/mangle
-  iptable -t nat    -A PREROUTING -i eth2 -d 10.0.0.0/8 -j DROP # or 
-  iptable -t mangle -A PREROUTING -i eth2 -d 10.0.0.0/8 -j DROP
+May 25 22:38:42 debian kernel: INVALID:IN= OUT=eth1 SRC=10.0.0.254 
+DST=10.0.0.2 LEN=66 TOS=0x00 PREC=0xC0 TTL=64 ID=52226 PROTO=ICMP 
+TYPE=11 CODE=0 [SRC=10.0.0.2 DST=130.225.76.31 LEN=38 TOS=0x00 PREC=0x00 
+TTL=1 ID=46519 PROTO=UDP SPT=46518 DPT=33435 LEN=18 ]
 
-but I read a tutorial (from www.netfilter.org) saying not to do any filtering in nat/mangle tables because not all packages traverse these tables. (http://iptables-tutorial.frozentux.net/)
+Is this a known problem, or is blocking outgoing invalid packets not 
+recommended?
 
-I cannot do it in FORWARD chain because by the time packet reaches FORWARD chain
-in may have already been already DNAT-ed (I cannot tell if it was w/o marking it in mangle/nat tables)
+Regards
+Anders Fugmann
 
-That is in the FORWARD chain I cannot distinguish between packets 
-- from eth1 d=10.2.x.x 
-- from eth1 d=1.2.x.x (in FORWARD chain this packet will have d=10.2.x.x set by DNAT target)
 
-If I need to mark package in mangle, and later drop in in FORWARD then why not drop it right in the mangle table ?
-But that would be filtering in nat/mangle tables which is suppose to be a no no.
 
-I would appreciate any help/advice
 
-thanks
-Bog
+
+
+
+
+
+
 
 
