@@ -1,9 +1,8 @@
-From: Axel Christiansen <axel@zedx.org>
-Subject: Re: Problem with bridge+iptables+ulog
-Date: Thu, 13 Mar 2003 22:51:28 +0100
+From: "Patrick Ahler" <patrick@vikus.com>
+Subject: Masquerade and NAT
+Date: Thu, 13 Mar 2003 16:20:47 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E70FD60.2070009@zedx.org>
-References: <078601c2e886$039a49e0$13fcc5cb@Housecall>
+Message-ID: <ABEKJILKOKKGGDJKHKDFEEDGCAAA.patrick@vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,46 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: hare ram <hareram@sol.net.in>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
-Hello,
-hare ram wrote:
-> Hi all
-> 
-> some one can help i have the following setup
-> 
-> x.x.x.1/24            x.x.x.2/24
->    +------+                               +------+
->   | Router A |------+ +---------| PC B |
->    +------+              | |              +------+
->                               | |
->                         eth0| | eth1
->                           +-----+
->                             | qos | (br0 =3D x.x.x.3/24)
->                           +-----+
-> 
-> 
-> how can i get the logs from eth0 and eth1
-> 
+Hi,
+I am hoping to be able to run IP Masquerade and NAT on the same
+firewall/router. ie 192.168.1.1-61 use NAT to translate their internal IP's
+to external IP's (a.b.c.1-61), and have a variety of internal hosts on the
+same subnet(as the other machines using NAT) using IP masquerading to pass
+through the firewall.. ie 192.168.1.62-140 use IPMASQUERADE to translate
+their internal ip's to a.b.c.62
+
+Is this possible? If so how? I've found that in order to use IP MASQUERADE
+you have to specify a subnet of internal ip's that will use IP MASQUERADE,
+but what if I only want to select specific internal ip's that will use it?
+Help? Thanks!
 
 
-As fare as i know you have to use the FORWARD chain and
-will only get passing packet on the bridge interface. The
-real interfaces (eth0 ...) only gets hit wehn it has an
-ip-address asigned and the packets destination is the
-bridge.
+Patrick
 
-You allso need 2 more patche from the bridge project at
-sourceforge.
-
-For me the ulog works fine on the bridge. What i never
-cared about was in with direction the packets walk through.
-
-Axel
-
--- 
-public key: http://knex.ath.cx:8013/keys/pup_key.txt
 
 
