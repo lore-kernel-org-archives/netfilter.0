@@ -1,13 +1,11 @@
-From: "Michael R. Schwarzbach" <spg@fs.tum.de>
-Subject: Re: Netfilter and Linux bridge
-Date: Mon, 24 Jun 2002 14:14:30 +0200
+From: "Daniel Sercaianu" <sdan@p16.pub.ro>
+Subject: ssh
+Date: Mon, 24 Jun 2002 15:23:46 +0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D170D26.70308@fs.tum.de>
-References: <OF1937A5BF.D92E37F1-ONC1256BD7.003E8CC7@diamond.philips.com>
+Message-ID: <001101c21b79$fcb15cb0$0803020a@daniel>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig4662A4D06490C1BD126CC243"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000E_01C21B93.21F545E0"
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -18,56 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: fabrizio.gennari@philips.com
-Cc: netfilter@lists.samba.org
+To: netfilter@lists.samba.org
 
-The following is an OpenPGP/MIME signed message
-created by Enigmail/Mozilla, following RFC 2440 and RFC 2015
---------------enig4662A4D06490C1BD126CC243
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-
-Hi,
-
-there is a sourceforge project called bridge, that might interrest you. 
-It has a development branch called bridge-nf working on iptables-support 
-for bridges. Have a look at: http://bridge.sourceforge.net/devel/bridge-nf/
-
-Regards
-Michael
-
-fabrizio.gennari@philips.com wrote:
-> I was wondering whether Netfilter can filter away packets handled by Linux 
-> bridge. If the bridge forwards the packet to another port, the packet 
-> never goes through IP routing, so Netfilter should handle it inside the 
-> bridge.
-> 
-> Also, is it possible to apply rules to packets according to the protocol 
-> type in Ethernet header (h_proto in struct ethhdr)? The man page says it 
-> is possible to apply rules according to source MAC, but says nothing about 
-> Ethernet protocol type.
-> 
-> Fabrizio Gennari
-> Philips Research Monza
-> via G.Casati 23, 20052 Monza (MI), Italy
-> tel. +39 039 2037816, fax +39 039 2037800
-> 
+------=_NextPart_000_000E_01C21B93.21F545E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 
+Hello,
 
---------------enig4662A4D06490C1BD126CC243
-Content-Type: application/pgp-signature
+How can I drop ssh packets for destination hosts to which destination =
+port is unknown and different from 22/tc?.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7a-cvs (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQE9Fw0qBSpWS08ZgdgRArV0AKDWv5ThgzOTiPwLaWTuS6OUXp2ZewCgjJVN
-O4F/JqpdVp59VqUWaiHiNio=
-=ewbS
------END PGP SIGNATURE-----
+Daniel
 
---------------enig4662A4D06490C1BD126CC243--
+------=_NextPart_000_000E_01C21B93.21F545E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>How can&nbsp;I drop ssh packets for =
+destination=20
+hosts to which destination port is unknown and different from=20
+22/tc?.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Daniel</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000E_01C21B93.21F545E0--
 
 
