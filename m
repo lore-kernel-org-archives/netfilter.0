@@ -1,10 +1,12 @@
-From: CJ East <bec365195104@geckomail.org>
-Subject: Multiple routes by uid-owner
-Date: 10 Jul 2003 17:44:33 +1000
+From: "James Williams" <james@ikennect.com>
+Subject: LKM unresolved symbol nf_register_hook..
+Date: Thu, 10 Jul 2003 14:28:23 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1057822815.558.50.camel@broken>
+Message-ID: <007a01c34732$94a7aee0$6401a8c0@williams>
+Reply-To: "James Williams" <james@ikennect.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0077_01C346EF.84AAA5D0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,74 +17,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, 
+This is a multi-part message in MIME format.
 
-I'm currently trying to test several independent internet links. 
+------=_NextPart_000_0077_01C346EF.84AAA5D0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-To do this, I instantiate two or more interfaces, which I aim to allow
-to route packets as though two separate machines were each independently
-connected to the internet, and independently downloading some file using
-http. 
+All-
 
-- I run wget http://www.google.com with uid=500
-- I run wget http://www.google.com with uid=501 
+I am building an LMK. The module compiles and links with no problem. =
+When I use insmod, i.e /sbin/insmod iroute.o, I get an error "unresolved =
+symbol nf_register_hook". Any thoughts?
 
-- I set up using iptables; 
-chain OUTPUT
- MARK all -- anywhere    anywhere  OWNER UID match 500 MARK set 0x1
- MARK all -- anywhere    anywhere  OWNER UID match 501 MARK set 0x2
+I am using Kernel 2.4.20.
 
+James
+------=_NextPart_000_0077_01C346EF.84AAA5D0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-- I set up using ip; 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>All-</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I am building an LMK. The module =
+compiles and links=20
+with no problem. When I use insmod, i.e /sbin/insmod iroute.o, I get an =
+error=20
+"unresolved symbol nf_register_hook". Any thoughts?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I am using Kernel 2.4.20.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>James</FONT></DIV></BODY></HTML>
 
-ip rule add fwmark 1 table link1
-ip rule add fwmark 2 table link2 
-ip route add default dev ppp0 table link1
-ip route add default dev ppp1 table link2
-
-- This all works more-or-less correctly.  
-Now, running wget and tcpdump reveals a DNS lookup going out on the
-correct interface, depending of course which userid is running. 
-
-Notably, the SOURCE address isn't that of the PPP interface, it's of
-another (ethernet) interface in the machine.  Now, for profiling the
-connection, this is clearly unacceptable (Packets need to come back on
-the interface they were sent!)  Now, IIUC, an application can bind to
-any given source address-- but this is a bad idea in my case, since it
-requires each application be aware of its environment-- fine if my test
-is ALWAYS wget (since I have the source), but bad generally. 
-
-So, I've turned to SNAT, which I'm abusing to switch the source IP
-address to that of the ppp interface on the way out.  
-
-A la, 
-
-iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source x.x.x.x 
-
-This certainly fixes the issue of errant source address, but now, a
-totally different problem..... Packets coming IN off the ppp interface
-(now bearing the correct address) don't appear to make it to the
-application! :( 
-
-I had no idea what was going on, but suffice to say started messing
-around with the PREROUTING table enough to notice that these returning
-packets don't seem to traverse that hook either; they must be dropped
-somewhere in the kernel, however I'm not sure where or why.  I had been
-thinking that a corresponding DNAT rule (as crude as it must sound)
-would be a quick-and-dirty solution, but since the packets don't enter
-that chain.. Well, it's a non-starter :( 
-
-Why are the packets dropped?   The requests are sent out over the same
-interface on which they are received (Which is a noted caveat for
-netfilter).  
-
-
-
-
-
+------=_NextPart_000_0077_01C346EF.84AAA5D0--
 
 
 
