@@ -1,14 +1,10 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Filter all but 1 calss c
-Date: Thu, 13 May 2004 00:48:15 -0400
+From: aksingh@hss.hns.com
+Subject: RE: libipq -- 90 mbps
+Date: Thu, 13 May 2004 10:51:34 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405130048.15177.Alistair@nerdnet.ca>
-References: <W123333069650381084412429@webmail2> <200405122300.57052.Alistair@nerdnet.ca> <003f01c4389a$b98310b0$3a7b1c0a@Gail>
+Message-ID: <OF4E812F4D.3FF6EA33-ON65256E93.001D2456@hss.hns.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <003f01c4389a$b98310b0$3a7b1c0a@Gail>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,74 +15,143 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Paul Albert <palbert@rovingplanet.com>
+Cc: netfilter@lists.netfilter.org
+
+
+
+
+
+Thanks Paul
+
+ Thats really encouraging to know ;-) ... well I can tweak ip_queue_maxlen
+using sysctl, but is there any upper limit allowed there ?
+I have no idea bout rmem_default, whats that ?. Userland process refers to
+the user space process that was using libipq , right ?.
+
+good words to begin my day
+Amit
+
+
+
+
+"Paul Albert" <palbert@rovingplanet.com>@lists.netfilter.org on 05/13/2004
+12:10:56 AM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    <netfilter@lists.netfilter.org>
+cc:
+
+Subject:    RE: libipq -- 90 mbps
+
+
+Amit -
+
+I've gotten upwards of 250 Mbps using libipq and the QUEUE target with
+gig interfaces.
+
+We tweeked both ip_queue_maxlen and rmem_default and nice'ed the
+userland process that was reading from the netlink to get those values.
+
+Good luck!
+
+Paul
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of
+aksingh@hss.hns.com
+Sent: Wednesday, May 12, 2004 4:01 AM
 To: netfilter@lists.netfilter.org
-
-On May 12, 2004 11:31 pm, Scott Miller wrote:
-> Yep, sorry, IPTables - like I said, newbie.
->
-> I'll check out the reference below.
->
-> Thanks!
-> Scott
->
-
-	Okay then --- 
-
-	This will allow the box to talk ONLY to the network specified.
-	Keep in mind that this might well break all SORTS of things.
-	There is no port level filtering, no tcp/udp variation etc .. .but:
-	it serves your request.
-
-	You could get more elegant with interface names etc.
-	(read Oskar's wonderful tutorials)
-
-	notation -->  10.1.100.0/24	
-	(or whathaveyou)
-
-	iptables -I INPUT -s {class c address with netmask} -j ACCEPT
-	iptables -I INPUT -m state -state RELATED,ESTABLISHED -j ACCEPT	
-	iptables -I OUTPUT -d {class c address with netmask} -j ACCEPT
-	iptables -I OUTPUT -m state -state RELATED,ESTABLISHED -j ACCEPT
-	iptables -P OUTPUT DROP
-	iptables -P INPUT DROP 
-	iptables -P FORWARD DROP
-	
-	
+Subject: libipq -- 90 mbps
 
 
 
-> ----- Original Message -----
-> From: "Alistair Tonner" <Alistair@nerdnet.ca>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Wednesday, May 12, 2004 9:00 PM
-> Subject: Re: Filter all but 1 calss c
->
-> > On May 12, 2004 10:01 pm, Scott Miller wrote:
-> > > Hello all,
-> > >
-> > >    I'm failry new to IPChains, and am attempting to block ALL traffic,
-> >
-> > I hope you mean iptables.   Ipchains is a different creature
-> >
-> > > except that traffic from my one class c address space.  Everything I've
-> > > attempted so far has basically locked me out of the box, and had to
-> > > physically go to it and remove the changes.
-> > >
-> > >    Is there a down-and-dirty way to block all traffic except from one
->
-> class
->
-> > > c address space (or even just a group of IP's?)
-> >
-> > sure -- several different ways to do it ...
-> > http://iptables-tutorial.frozentux.net/
-> >
-> > contains several excellent tutuorials on iptables.
-> >
-> > Won't do you much good for ipchains tho ....
-> >
-> > Alistair
-> >
-> > > Thanks,
-> > > Scott
+
+
+Hi
+
+  can libipq support traffic at the rate of say 90 mbps/sec ?
+
+    we can increase the ipq_queue_maxlen using sysctl system call, but
+is
+   there any upper limit on this queue size ? or can we give it any
+value
+   till sizeof(int)
+   has anybody here ever tried this much traffic while using ip_queue
+and
+   libipq ?
+
+
+TIA
+Amit
+
+
+
+
+
+"Daniel Chemko" <dchemko@smgtec.com>@lists.netfilter.org on 05/12/2004
+03:48:57 AM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    <alucard@kanux.com>, <netfilter@lists.netfilter.org>
+cc:
+
+Subject:    RE: forwarding on the same NIC
+
+
+> To make matters worse, the second webserver is IIS and I have no idea
+> how to use IP Multiplexing on Win2k, I could do it in linux but
+> Windows systems are not my expertise. What I'm going to do -if I get
+> the permission- is this: Install a 2nd nic on the 2nd webserver so
+> the IP address that is being used doesn't get affected and I will
+> configure it's router to the linux box so it can redirect packets
+> where they should go...
+
+You are either not grasping how difficult what your trying to do, or you
+haven't used proper the wording. Source Routing from windows == blah! If
+you're relying on windows to do routing, I pity thou.
+
+
+To the best of my knowledge, you have:
+x.x.x.254 ROUTER
+   |--x.x.x.1 Linux Server 1  (default route x.x.x.254)
+   |--x.x.x.2 Windows IIS (default route x.x.x.254)
+
+You have the router forwarding a public IP address and PATing it to
+x.x.x.1. You want x.x.x.1:8080 to go to x.x.x.2:80
+
+To get this to work, use:
+
+# Allow any established traffic to traverse the machine
+iptables -A FORWARD -m state ESTABLISHED,RELATED -j ACCEPT
+# Forward the packet destined for 8080 to the windows machine on port 80
+iptables -t nat -A PREROUTING --destination x.x.x.1 -p tcp --dport 8080
+-j DNAT --to x.x.x.2:80
+# Allow new web traffic into the network
+iptables -A FORWARD --destination x.x.x.2 -p tcp --dport 80 -j ACCEPT
+# Forces the windows box to route back to you before leaving the network
+iptables -t nat -A POSTROUTING --destination x.x.x.2 -p tcp --dport 80
+-j SNAT --to x.x.x.1
+
+The order of traversal becomes:
+
+Router->Firewall->Windows->Firewall->Router
+Instead of
+Router->Firewall->Windows->Router
+The later breaks as I've described earlier.
+
+
+
+
+
+
+
+
 
