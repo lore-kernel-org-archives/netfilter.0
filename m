@@ -1,14 +1,13 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: intrusion detection
-Date: Mon, 19 Apr 2004 07:43:42 -0600
+From: Geffrey Velasquez <g_netfilter@netfids.com>
+Subject: Pom-NG + Kernel 2.4.25
+Date: Mon, 19 Apr 2004 08:44:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040419074342.11f47e2b@mgalepc.utilitran.com>
-References: <web-288458957@mail01.infosat.net>
-	<200404181849.29570.lists@edeca.net>
+Message-ID: <4083D7D0.7030905@netfids.com>
+References: <OF631E6CC8.C8BB8FBC-ON65256E7B.00474A37@hss.hns.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200404181849.29570.lists@edeca.net>
+In-Reply-To: <OF631E6CC8.C8BB8FBC-ON65256E7B.00474A37@hss.hns.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +17,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi friends, I applied pomng-20040302 to 2.4.25, but when I run ./runme 
+extra dont appear the h323, rtsp, cuseeme, mms patches, then I applied 
+one by one, ./runme h323-xxx  it seems to be ok but it do not add in the 
+kernel config file their information... how could I apply this patches? 
+... and is safe to use the last pom that is published as daily snapshot?
 
-	Is portsentry not just more of a port monitor -- to let you know who is
-"knocking" at your door. Where snort will monitor the actual traffic on the
-pipe.
+Regards,
+Geffrey
+<http://www.netfilter.org/downloads.html#pomng-20040302>
 
-Michael.
-
-
-
-
-On Sun, 18 Apr 2004 18:49:29 +0100
-David Cannings <lists@edeca.net> wrote:
-
-> On Sunday 18 April 2004 18:29, IT Clown wrote:
-> > What intrusion detection software would you guys
-> > recommend?Is psad or portsentry any good?
-> 
-> Personally I use Snort (http://www.snort.org) which I find to be easy to 
-> configure and fairly flexible.  The default rulesets are quite concise 
-> and daily reports give a good summary of what is happening.  
-> 
-> However, I haven't used either psad or portsentry so couldn't compare.
-> 
-> David
-> 
-> 
-> 
-> 
-> 
-
-
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
 
