@@ -1,10 +1,12 @@
-From: "J and T" <j_and_t@hotmail.com>
-Subject: How to block the real IP rather than an entire proxy?
-Date: Tue, 13 May 2003 18:42:12 -0700
+From: Myles Uyema <mlists@uyema.net>
+Subject: Re: How to block the real IP rather than an entire proxy?
+Date: Tue, 13 May 2003 20:05:45 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law15-F579atA2PrCsP0001d012@hotmail.com>
+Message-ID: <Pine.LNX.4.44.0305132003290.13227-100000@marx.gruntwerk.net>
+References: <Law15-F579atA2PrCsP0001d012@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Law15-F579atA2PrCsP0001d012@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,9 +16,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: J and T <j_and_t@hotmail.com>
+Cc: netfilter@lists.netfilter.org
+
+It's the job of the proxy to block out the offender.  There's nothing you 
+can do with netfilter to prevent him from accessing your website through 
+other proxies.
+
+On Tue, 13 May 2003, J and T wrote:
 
 My question is about blocking IPs from my network. It's a piece of cake to 
 block static IPs. But there are times when someone sitting behind a proxy 
@@ -48,5 +57,7 @@ John
 _________________________________________________________________
 STOP MORE SPAM with the new MSN 8 and get 2 months FREE*  
 http://join.msn.com/?page=features/junkmail
+
+
 
 
