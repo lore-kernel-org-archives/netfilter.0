@@ -1,13 +1,12 @@
-From: Carlo Pires <carlo@uganet.com.br>
-Subject: Re: Multiple routes by uid-owner
-Date: Tue, 15 Jul 2003 18:24:11 -0300
+From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
+Subject: Re: logging mac address
+Date: Tue, 15 Jul 2003 18:25:20 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F1470FB.2020604@uganet.com.br>
-References: <1058159480.621.5.camel@broken>
+Message-ID: <OFF04A0FDF.DA349A37-ON83256D64.007510CB-83256D64.0075AD29@LocalDomain>
+References: <20030715205936.GO24604@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1058159480.621.5.camel@broken>
+In-Reply-To: <20030715205936.GO24604@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,153 +16,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: CJ East <bec365195104@geckomail.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-CJ East wrote:
 
->>-----Original Message-----
->>From: " George Vieira " (via GeckoMail)
->>[mailto:return-bec365195104-georgev-.-citadelcomputer.com.au@g
->>eckomail.o
->>rg]
->>Sent: Monday, 14 July 2003 7:54 AM
->>Subject: RE: Multiple routes by uid-owner
->>
->>
->>--------------------------------------------------------------
->>------------
->>This mail was received via GeckoMail.org alias 
->>bec365195104@geckomail.org
->>--------------------------------------------------------------
->>------------
->>
->>Can you LOG all dropped packets, are you setting DROP as the 
->>default for INPUT?
->>    
->>
->
->INPUT's policy is ACCEPT. 
->Adding a LOG target to this chain does not shed any light- incoming
->packets visible to tcpdump on the ppp interface *do not* enter the INPUT
->chain. 
->
->But it was a good thing to check, so thanks :D 
->
->Yeah, owner id info is only available on the machine itself; but that's
->all i need (I'm not forwarding packets or anything) 
->
->The problem still stands-- why are correctly addressed incoming packets
->visible to tcpdump but not to netfilter?  
->
->
->
->
->  
->
->>Thanks,
->>____________________________________________
->>George Vieira
->>Systems Manager
->>georgev@citadelcomputer.com.au
->>
->>Citadel Computer Systems Pty Ltd
->>http://www.citadelcomputer.com.au
->>
->>Phone   : +61 2 9955 2644
->>HelpDesk: +61 2 9955 2698
->> 
->>
->>-----Original Message-----
->>From: CJ East [mailto:bec365195104@geckomail.org]
->>Sent: Thursday, July 10, 2003 5:45 PM
->>To: netfilter@lists.netfilter.org
->>Subject: Multiple routes by uid-owner
->>
->>
->>Hi, 
->>
->>I'm currently trying to test several independent internet links. 
->>
->>To do this, I instantiate two or more interfaces, which I aim to allow
->>to route packets as though two separate machines were each 
->>independently
->>connected to the internet, and independently downloading some 
->>file using
->>http. 
->>
->>- I run wget http://www.google.com with uid=500
->>- I run wget http://www.google.com with uid=501 
->>
->>- I set up using iptables; 
->>chain OUTPUT
->> MARK all -- anywhere    anywhere  OWNER UID match 500 MARK set 0x1
->> MARK all -- anywhere    anywhere  OWNER UID match 501 MARK set 0x2
->>
->>
->>- I set up using ip; 
->>
->>ip rule add fwmark 1 table link1
->>ip rule add fwmark 2 table link2 
->>ip route add default dev ppp0 table link1
->>ip route add default dev ppp1 table link2
->>
->>- This all works more-or-less correctly.  
->>Now, running wget and tcpdump reveals a DNS lookup going out on the
->>correct interface, depending of course which userid is running. 
->>
->>Notably, the SOURCE address isn't that of the PPP interface, it's of
->>another (ethernet) interface in the machine.  Now, for profiling the
->>connection, this is clearly unacceptable (Packets need to come back on
->>the interface they were sent!)  Now, IIUC, an application can bind to
->>any given source address-- but this is a bad idea in my case, since it
->>requires each application be aware of its environment-- fine 
->>if my test
->>is ALWAYS wget (since I have the source), but bad generally. 
->>
->>So, I've turned to SNAT, which I'm abusing to switch the source IP
->>address to that of the ppp interface on the way out.  
->>
->>A la, 
->>
->>iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source x.x.x.x 
->>
->>This certainly fixes the issue of errant source address, but now, a
->>totally different problem..... Packets coming IN off the ppp interface
->>(now bearing the correct address) don't appear to make it to the
->>application! :( 
->>
->>I had no idea what was going on, but suffice to say started messing
->>around with the PREROUTING table enough to notice that these returning
->>packets don't seem to traverse that hook either; they must be dropped
->>somewhere in the kernel, however I'm not sure where or why.  
->>I had been
->>thinking that a corresponding DNAT rule (as crude as it must sound)
->>would be a quick-and-dirty solution, but since the packets don't enter
->>that chain.. Well, it's a non-starter :( 
->>
->>Why are the packets dropped?   The requests are sent out over the same
->>interface on which they are received (Which is a noted caveat for
->>netfilter).  
->>
->>
->>
->>
->>
->>
->>
->>
->>
->>    
->>
->
->
->  
->
-I only get to do something like that with CONNMARK patch. With this 
-patch the packet returns through the right route.
+Hi Ramin,
 
--Carlo
+      Thanks for the response.  I'm using the same rule for logging on the
+input and forward  CHAINS ;-) but the behavior of the rule is different
+depending on what chain it's in.. for input, by default it shows the MAC
+addresses, but for forward, no MAC address is shown.
+
+      For instance:
+
+iptables -A INPUT -j LOG --log-level notice --log-prefix " INPUT BLOCK: "
+iptables -A FORWARD -j LOG --log-level info --log-prefix " FORWARD BLOCK: "
+
+
+Jul 15 17:51:25 fw kernel:  INPUT BLOCK: IN=eth0 OUT=
+MAC=00:xx:xx:xx:xx:xx:00:yy:yy:yy:yy:yy:yy:00 SRC=t.t.t.t DST=r.r.r.r
+LEN=64 TOS=0x00 PREC=0x00 TTL=128 ID=57828 PROTO=UDP SPT=1756 DPT=53 LEN=44
+
+Jul 15 18:22:31 fw kernel:  FORWARD BLOCK: IN=eth0 OUT=eth1 SRC=x.x.x.x
+DST=y.y.y.y LEN=1492 TOS=0x00 PREC=0x00 TTL=253 ID=37603 DF PROTO=ICMP
+TYPE=8 CODE=0 ID=0 SEQ=2
+
+Any hints? Thanks
+
+Forster
+
+
+
+
+Ramin Dousti <ramin@cannon.eng.us.uu.net>@lists.netfilter.org on 07/15/2003
+05:59:36 PM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    aforster@br.ibm.com
+cc:    netfilter@lists.netfilter.org
+Subject:    Re: logging mac address
+
+
+
+On Tue, Jul 15, 2003 at 05:06:04PM -0300, Antonio Paulo Salgado Forster
+wrote:
+
+>
+>
+> Hello all,
+>
+>       Is there any known way to log the mac address for packets blocked
+on
+> the forward table just like in the input table? I've been searching the
+> archives and documentations but found nothing so far.
+
+forward and input are chains and not tables. nat, mangle and filter are
+tables. But anyhow, you just use the same rule for logging that you
+used for INPUT logging and replace INPUT with FORWARD. You also need
+to make sure what and where you're logging so that you don't DoS yourself.
+
+Ramin
+
+>
+> Thanks in advance.
+>
+> Forster
+>
+>
+
+
 
 
