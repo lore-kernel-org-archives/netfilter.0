@@ -1,10 +1,14 @@
-From: d l <popgojp@yahoo.co.jp>
-Subject: Cannot use iptable extensions
-Date: Mon, 20 Sep 2004 17:20:59 +0900 (JST)
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: udp port 1025
+Date: Mon, 20 Sep 2004 11:37:45 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040920082059.57559.qmail@web805.mail.yahoo.co.jp>
+Message-ID: <1403218a04092001376308ea4a@mail.gmail.com>
+References: <a0f69e5040920004411e0eeb6@mail.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <a0f69e5040920004411e0eeb6@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,55 +19,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi,
-I am using vanilla Fedora Core 2, without configuring
-firewall in anaconda during initial install.
+Search in google, and feel lucky
 
-Simple rules seems to works with built in modules. e.g. 
-iptables -A INPUT -p ICMP -j DROP
+http://www.linklogger.com/TCP1025.htm
 
-However when I tried to use extension modules like
-<connlimit> and <owner>, iptables always gives me error.
+On Mon, 20 Sep 2004 13:44:18 +0600, Askar <askarali@gmail.com> wrote:
+> hi all
+> 
+> Im taking care of a fw machine that is configured by my predecsssor,
+> firewall being configure by default policies to ACCEPT for all chain
+> (coz he thinks its difficult of an ISP to run firewall as default set
+> to DROP)
+> however for the time being this is not my concern but here are few
+> lines from script that confusing for me
+> 
+> iptables -A INPUT -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+> iptables -A FORWARD -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+> iptables -A OUTPUT -p TCP -s 0/0 -d 0/0 --dport 1025 -j DROP
+> 
+> when I do "tail -f /var/log/messages", I found lot of below messages
+> 
+> Sep 20 12:26:35 guru named[12308]: client xxx.xx.xxx.xx#1025: error
+> sending response: host unreachable
+> Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xxx#1025: error
+> sending response: host unreachable
+> Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xx#1025: error
+> sending response: host unreachable
+> Sep 20 12:26:37 guru named[12308]: client xxx.xx.xxx.xx#1025: error
+> sending response: host unreachable
+> Sep 20 12:26:38 guru named[12308]: client xxx.xx.xxx.xx#1025: error
+> sending response: host unreachable
+> Sep 20 12:26:39 guru named[12308]: client xxx.xx.xxx.xxx#1025: error
+> sending response: host unreachable
+> 
+> what mean by all this, can someone care to explain/clear things to me? :)
+> may I remove the above iptables rules?
+> 
+> regards
+> Askar
+> --
+> (after bouncing head on desk for days trying to get mine working, I'll make
+> yer life a little easier)
+> 
+> 
 
-For <owner>:
-iptables -m owner --help
-.......
-OWNER match v1.2.9 options:
-[!] --uid-owner userid     Match local uid
-[!] --gid-owner groupid    Match local gid
-[!] --pid-owner processid  Match local pid
-[!] --sid-owner sessionid  Match local sid
-[!] --cmd-owner name       Match local command name
 
-# iptables -A INPUT -m owner --cmd-owner mlnet -j test
-iptables: Invalid argument
 
-# iptables -m owner --cmd-owner
-iptables v1.2.9: Unknown arg `--cmd-owner'
-Try `iptables -h' or 'iptables --help' for more
-information.
-
-And similar results with <connlimit> extension.
-
-There are corresponding so files in /lib/iptables for that
-2 extensions.
-/lib/iptables/libipt_connlimit.so
-/lib/iptables/libipt_owner.so
-
-So what is wrong with my iptables? It looks like that it
-didn't load the extensions properly to me.
-
-Any help is appreciated.
-
-Regards,
-Dil Lee
-
-__________________________________
-TSUKAME EIKOU! KAGAYAKE EGAO!
-Yahoo! JAPAN JPC OFFICIAL INTERNET PORTAL SITE
-http://pr.mail.yahoo.co.jp/para/
-
+-- 
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
