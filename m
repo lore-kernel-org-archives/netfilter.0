@@ -1,14 +1,12 @@
-From: Pascal Italiaander <pc-secure@home.nl>
-Subject: Re: Ip handling
-Date: Thu, 19 Jun 2003 19:16:28 +0200
+From: "Juan Torres" <islero77@telefonica.net>
+Subject: Problems installing Netfilter extensions
+Date: Thu, 19 Jun 2003 21:04:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306191916.29001.pc-secure@home.nl>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DDB@alderaan.smgtec.com> <20030619130221.GA1373@floyd> <20030619135924.GC7161@cannon.eng.us.uu.net>
+Message-ID: <000301c33695$b3582070$0300000a@juan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0004_01C336A6.76E0F070"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030619135924.GC7161@cannon.eng.us.uu.net>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,73 +16,210 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter-users <netfilter@lists.netfilter.org>
 
-Op donderdag 19 juni 2003 15:59, schreef Ramin Dousti:
-> Thanks, Julian, for the complement.
->
-> Now back to Mr arrogant: what the original poster was asking was
-> how to "spoof" back to his own network, which sounded illogical;
-> hence my question. Although, George Vieira sent a very nice
-> application for this in a private email to me. Now, as a general
-> rule, you either know the answer to a question (even a wrong one
-> will be tolerated) or just shutup.
->
-> Ramin
+This is a multi-part message in MIME format.
 
-Mr arrogant ?, cause i feel this question is way of toppic ? it is.
-If it wasn't, wy did you receive a private mail ,and not through 
-netfilter-list ? That software is no Netfilter-topic, so "Spoofing HowTo" is 
-also no Netfilter-topic.
+------=_NextPart_000_0004_01C336A6.76E0F070
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-AND:
 
-1) The linux-kernel is protected for it (spoofing) by default.
-2) iptables can block spoofing as well.
-3) It works great. 
+	Hi!!
 
-There are several options to stop spoofing, that are functioning great, so 
-what more do you need to know ? 
+	I'm trying to install a Netfilter extension, mport, but it
+doesn't work
 
-The exploits where i was talking about ,have nothing to do with iptables 
-directly.
+	I make all the steps that comes on the Netfilter Extensions
+HOWTO, but, when I try to use the new match, it appears an error saying
+that it doesn't exists the libipt_mport.so file, I have observed that
+there are the ipt_mport.c and ipt_mport.h files, but no this other file.
 
-All we need to know is what spoofing is about ( not how it is done), for 
-iptables to make rules against spoofing.
+	I think that the problem is because I can't make the last step
+explained in the documentation, where is written:
 
-> On Thu, Jun 19, 2003 at 09:02:21PM +0800, Julian Gomez wrote:
-> > >> > Does anyone know of a way to make say all connections from the
-> > >> > outside going to my outside IP address Appear to be coming from my
-> > >> > local lan of 192.168.0.1
-> > >>
-> > >> Just out of curiosity: what is the application of such a setup?
-> > >>
-> > >> Ramin
-> > >
-> > >Find it out yourself , it's not even apropriate to ask such a thing.
-> > >
-> > >Since this is a netfilter mailing-list no hackers-chat page.
-> > >
-> > >but nice try
-> >
-> > I've seen Ramin post to this list a long time already, though he's been
-> > quite for the past 6-8 months at least I think :-) So, if by the above
-> > you are sorta implying he's some sort of script kiddie; you've probably
-> > got the wrong person targetted.
-> >
-> > A number of times, knowing the problem in full can lead to better ways of
-> > handling the problem, with better tools - rather than a kludged solution.
-> > Oh,.. before I forget, a number of his posts have been nothing short of
-> > extremely informative -- so the hostile behaviour is not really required.
+		Once your new kernel is installed, you can go ahead and
+compile and install the "iptables" package, from the "userspace/"
+directory as follows:
+			# make all install
 
-Julian,
+	This last step doesn't work!! When I execute this command in the
+userspace/ subdirectory inside the patch-o-matic directory, It appears
+an error saying that It can't find the "all" option (or something
+similar)
 
-No offend Julian, but by vieuwing someones e-mail , you can tell if someone is 
-not a script-kiddy ?
-Whauw, how do you do that, teach me . :-)
 
-> > USG && George Bush : Rot in hell.
+	What I'm not doing properly??
 
-Pascal
+
+	Than you very much
+
+
+
+------=_NextPart_000_0004_01C336A6.76E0F070
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.4630.0">
+<TITLE>Problems installing Netfilter extensions</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+<BR>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">Hi</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"><FONT SIZE=3D2 =
+FACE=3D"Arial">!!</FONT></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"es">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">I</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">m =
+trying to install a Netfilter extension, mport, but it =
+doesn</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">t =
+work</FONT></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">I make all the steps that come</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">s on the Netfilter Extensions HOWTO, but, when =
+I</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"> <FONT SIZE=3D2 FACE=3D"Arial">try to use the new match, =
+it appears an error sayi</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">ng =
+that it doesn</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">t =
+exists the libipt_mport.so file, I have</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">observed that there are the ipt_mport.c =
+and</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> ipt_mport.h files, but no =
+this other file.</FONT></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">I think that the problem is because I =
+can</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">t</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT SIZE=3D2 =
+FACE=3D"Arial">make</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+the last step explained in the documentation</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">,</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT SIZE=3D2 =
+FACE=3D"Arial">where is written:</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">Once your new kernel is installed, you can go =
+ahead and compile and install the</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">&#8220;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">iptables</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">&#8221;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial"> package, from the</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">&#8220;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">userspace/</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">&#8221;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial"> directory as follows:</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial"># make all install</FONT></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">Thi</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">s =
+last step doesn</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">t =
+work!!</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT SIZE=3D2 =
+FACE=3D"Arial">When I execute this command in the userspace/ =
+subdirectory inside the p</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">atch</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">-o-m</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">atic directory, It appears an error saying that =
+I</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">t</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial"> can</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">t</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT SIZE=3D2 =
+FACE=3D"Arial">find the</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT SIZE=3D2 =
+FACE=3D"Arial">&#8220;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">all</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8221;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+option (or something similar)</FONT></SPAN></P>
+<BR>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">What I</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">m =
+not doing properly??</FONT></SPAN></P>
+<BR>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">Than you very much</FONT></SPAN></P>
+<BR>
+
+</BODY>
+</HTML>
+------=_NextPart_000_0004_01C336A6.76E0F070--
+
 
