@@ -1,14 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: sub interface filtering
-Date: 03 Apr 2003 09:10:28 +0200
+From: "Allan de Borde" <Allan@southport-college.ac.uk>
+Subject: Re: Load Balancing
+Date: Thu, 03 Apr 2003 08:40:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049353828.1889.6.camel@kermit.spenneberg.de>
-References: <7C9884991ADAE0479C14F10C858BCDF50C6FEE@alderaan.smgtec.com> 
-	<000b01c2f957$388bc430$8b01a8c0@win2k.com>
+Message-ID: <se8bf384.070@hera>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000b01c2f957$388bc430$8b01a8c0@win2k.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,66 +17,73 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: mgm@paktronix.com
+Cc: netfilter@lists.netfilter.org
 
-Am Mit, 2003-04-02 um 22.34 schrieb Mike:
-> I hate to ask but do you have and example of using iproute2 for IP address
-> aliases?
-ip addr add 192.168.7.55 dev eth0
-ip addr add 192.168.7.56 dev eth0
+Thanks,
 
-But these are no aliases anymore. The notion of aliases has been
-dropped. But both addresses are bound to the interface.
+I didn't have the Kernel Development installed so installed it and then I =
+could compile the latest iproute.
+With this version of iproute the ip route list command has lost the dead =
+onlink pervasive message
+and it all looks ok. I will have to test further but it's looking good.
 
 Cheers,
+Allan=20
 
-Ralf
-> 
-> Thanks,
-> Mike
-> ----- Original Message -----
-> From: "Daniel Chemko" <dchemko@smgtec.com>
-> To: "Rob Sterenborg" <rob@sterenborg.info>; <netfilter@lists.netfilter.org>
-> Sent: Wednesday, April 02, 2003 2:53 PM
-> Subject: RE: sub interface filtering
-> 
-> 
-> Correct. Aliases are obsolete from what I can see. IProute2 adds IP
-> addresses directly to interfaces, so eth0 could have 10 IP addresses
-> instead of the awkward eth0:0 eth0:1, etc. mechanism. In this system,
-> you filter based on IP address instead of interface alias.
-> 
-> -----Original Message-----
-> From: Rob Sterenborg [mailto:rob@sterenborg.info]
-> Sent: Wednesday, April 02, 2003 11:39 AM
-> To: netfilter@lists.netfilter.org
-> Subject: RE: sub interface filtering
-> 
-> > Hi guys I have the following setup and rules. And I cant seem to get
-> the filtering to work.
-> > eth2:0
-> >
-> > <routeable internetIP/28>
-> >
-> > eth2:1
-> >
-> > <routeable internetIP/28>
-> 
-> AFAIK it is because you cannot filter eth<x>:y (but you can filter the
-> IP address of course).
-> 
-> 
-> Rob
-> 
-> 
-> 
-> 
--- 
-Ralf Spenneberg
-RHCE, RHCX
+>>> "Matthew G. Marsh" <mgm@paktronix.com> 04/02/03 05:43pm >>>
+On Wed, 2 Apr 2003, Allan de Borde wrote:
 
-IPsec/PPTP Kernels for Red Hat Linux:  
-http://www.spenneberg.com/.net/.org/.de
-Honeynet Project Mirror:                http://honeynet.spenneberg.org
-Snort Mirror:                           http://snort.spenneberg.org
+> I am trying to test the load balancing on a test machine with 2 external
+> 2Mb Internet links and it doesn't appear to be working. I am using
+> RedHat 8.0 and get this message when doing ip route list:
+>
+> default equalize
+>         nexthop via xxx.xxx.xxx.xxx  dev eth1 weight 1 dead onlink =
+pervasive
+>         nexthop via xxx.xxx.xxx.xxx  dev eth0 weight 1 onlink
+>
+> I have read a similar problem from this list and it appears that the
+> RedHat RPM of iproute2 (iproute-2.4.7-5) is broken and this was resolved
+> by installing a newer version of iproute.
+>
+> As I am very new to some aspects of Linux could someone inform me of how
+> to compile and install iproute as it asks for you to change the
+> KERNEL_INCLUDE directory in the Makefile and I have no idea where the
+> Kernel include directory is. I can't get it to make.
+
+KERNEL_INCLUDE=3D/usr/src/linux
+
+Even RH symlinks /usr/src/linux to the appropriate version of kernel
+installed. Make sure that you have installed the kernel development RPM as
+that has the actual include files. Not installed by default unless you
+installed the Developer workstation.
+
+> I have downloaded and installed iproute-2.4.7-7.rpm but this also has =
+the same problems.
+>
+> Cheers
+> Allan
+>
+>
+>
+>
+>
+>
+
+--------------------------------------------------
+Matthew G. Marsh,  President
+Paktronix Systems LLC
+1506 North 59th Street
+Omaha  NE  68104
+Phone: (402) 553-2288
+Email: mgm@paktronix.com=20
+WWW:  http://www.paktronix.com=20
+--------------------------------------------------
+
+
+
+
+                                        
+
 
