@@ -1,13 +1,13 @@
 From: "Josh Berry" <josh.berry@linknet-solutions.com>
-Subject: Re: Iptables not working with RH9
-Date: Thu, 20 Nov 2003 19:47:02 -0600 (CST)
+Subject: Re: http acces
+Date: Thu, 20 Nov 2003 20:02:05 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3882.192.168.111.202.1069379222.squirrel@mail.linknet-solutions.com>
-References: <sfbca583.011@pf.ueo.ohio-state.edu>
+Message-ID: <4006.192.168.111.202.1069380125.squirrel@mail.linknet-solutions.com>
+References: <1069364822.3fbd3656723b4@roma-hme1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <sfbca583.011@pf.ueo.ohio-state.edu>
+In-Reply-To: <1069364822.3fbd3656723b4@roma-hme1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,88 +17,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Derek Storvik <dstorvik@pf.ueo.ohio-state.edu>
-Cc: netfilter@lists.netfilter.org, scottmackay@yahoo.com
+Content-Type: text/plain; charset="iso-8859-1"
+To: skydive <skydive@megamail.pt>
+Cc: netfilter@lists.netfilter.org
 
-The bridge-nf code does not come enabled by default with rh7.3.  I don't
-think that it comes enabled by default on any kernels.
+DNAT will not work in this method.  You should either be using internal
+DNS or I believe that you could use the Redirect target to send and
+information coming from your internal lan with a destination of
+www.example.org and redirect it to your server.
 
-> I have not custom compiled the kernel. I was first using rh7.3 and it
-> works straight out of the box.   I assumed that they would not have taken
-> that code back out of the precompiled kernel but i suppose they could have
+> hi all
 >
-> Derek
+> i have been experienced a problem since i'm trying to
+> access my web server from my lan through my internet ip.
 >
->>>> Scott MacKay <scottmackay@yahoo.com> 11/20/03 11:17AM >>>
-> Did you add on the iptables hook for bridging and
-> activate all the proper configuration settings?
-> I has a similar problem with 2.4.22 (under RH9)
-> because I forgot to  menuconfig and add in the proper
-> settings.
+> i have no problems doing DNAT, from those who access my
+> web page form the outside:
 >
-> --- Derek Storvik <dstorvik@pf.ueo.ohio-state.edu>
-> wrote:
->> Hello all
->>   Hopefully someone can see my error.
->> I have been running RH7.3 with it's standard kernal
->> version 2.4.18-3 for several months configured as a
->> transparent bridging firewall. We recently purchased
->> a new machine and wanted to install RH9 with its
->> standard kernal 2.4.20( i think)I followed the same
->> steps installed with iptables and bridging utils and
->> used my same script file to setup the bridge with
->> two nics and fill in all my rules. This didn't seem
->> to work right and on further testing realized
->> NOTHING was being filtered. I then rebooted and
->> manualy set up the bridge and cleared all the tables
->> and set the default policy to drop. SO at this point
->> nothing should get through. Well it bridges
->> everything, and the counters in iptables do not
->> increment. The system acts as if it is not there
->> what so ever.
->>
->> here is the setup after the basic minimal install
->> brctl addbr br0
->> brctl addif br0 eth0
->> brctl addif br0 eth1
->> ifconfig eth1 0.0.0.0 promisc
->> ifconfig eth0 0.0.0.0 promisc
->> #bring up bridge with either of the next two
->> commands
->> ifconfig br0 up
->> ip link set br0 up
->> #both do the same thing  namely nothing
->> iptables -X
->> iptables -F
->> iptables -P FORWARD DROP
->> iptables -P INPUT DROP
->> iptables -P OUTPUT DROP
->>
->> This setup happily bridges packets right on through
->> with no updates to the iptables counters.
->>
->> I have been experimenting with devil linux as well
->> recently and it exhibits the same problem.
->>
->> ip_forwarding is set to   as it has been on my
->> working rh7.3 machine I tried setting it to 1 but
->> that didn't help the problems. Im not 100% sure what
->> exactl the ip_forwarding property corresponds to
->> anyway.
->>
->> any help would be greatly appreciated!
->>    Thanks
->>          Derek
->>
->>
+> iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80
+> -j DNAT --to 192.168.0.1:80
 >
+> this is solving the problem
 >
-> __________________________________
-> Do you Yahoo!?
-> Free Pop-Up Blocker - Get it now
-> http://companion.yahoo.com/
+> let's say my web page has the following address
+> www.example.org, and that it is host  [like it is ;)) ]
+> in one machine on my lan with the following IP:
 >
+> 192.168.0.1
+>
+> when i write www.example.org on my web browser, it just
+>  hits eth1 on my gateway/firewall and stucks there.
+> maybe i'm missing something on my prerouting rules, or
+> maybe my small brain just can't reach it :)
+>
+> the way i see it, when i put www.example.org on my web
+> browser, i send i request to my gateway, and it was
+> supposed to take it back to my lan, where the site is
+> hosted.
+>
+> not working though...
+>
+> can somebody please help with these missing rules?! or
+> is it just something else i'm missing?
+>
+> thanks to those who took the time to ride all this
+> garbage and i'm greatfull even if you are not able to
+> help whatever your reason is ;)))
+>
+> [][] * * *
+> skydive!
+>
+> -------------------------------------------------
+> Email Enviado utilizando o servi=E7o MegaMail
 >
 >
 >
