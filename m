@@ -1,14 +1,14 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: traceroute
-Date: Thu, 01 Jul 2004 02:16:40 +0200
+From: Ian Holsman <kryton@gmail.com>
+Subject: Re: how to redirect certain IPs to specific url
+Date: Thu, 1 Jul 2004 11:11:31 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1088641000.1755.66.camel@anduril.intranet.cartel-securite.net>
-References: <00df01c45ea2$f5dc1290$49caa8c0@caris.priv>
-	 <200406301429.14248.Antony@Soft-Solutions.co.uk>  <40E334EC.1080606@web.de>
+Message-ID: <2a627cd2040630181121a67ba6@mail.gmail.com>
+References: <a0f69e504063000446f514e22@mail.gmail.com>
+Reply-To: ian@holsman.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40E334EC.1080606@web.de>
+In-Reply-To: <a0f69e504063000446f514e22@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +18,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Florian Boelstler <euphoria@web.de>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Askar Ali Khan <askarali@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Le mer 30/06/2004 =E0 23:47, Florian Boelstler a =E9crit :
-> My traceroute says:
-> traceroute to www.google.akadns.net (66.102.11.99), 30 hops max, 38 byt=
-e
-> packets
-> traceroute: sendto: Operation not permitted
->  1 traceroute: wrote www.google.akadns.net 38 chars, ret=3D-1
-> [ ... ]
+Hi.
+If your running a apache webserver you can do this via re-write rules
 
-You must have an OUTPUT rule that forbid UDP to high ports, thus
-traceroute cannot send its packets.
+check out http://httpd.apache.org/docs-2.0/mod/mod_rewrite.html
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+something like
+rewriteengine on
+RewriteCond %{REMOTE_HOST}  ^host1.*  [OR]
+RewriteCond %{REMOTE_HOST}  ^host2.*  [OR]
+RewriteCond %{REMOTE_HOST}  ^host3.*
+RewriteRule ...some special stuff for any of these hosts...
+
+On Wed, 30 Jun 2004 12:44:09 +0500, Askar Ali Khan <askarali@gmail.com> wrote:
+> 
+> hi
+> got a very simple question, i want to redirect certain IPs(clients)
+> request to a specific URL (ip)?
+> and also later on how to Flush the specific rule from the the chain as
+> -A will append it on the bottom, how  i will delete it ?
+> 
+> thanks
+> 
+>
 
