@@ -1,13 +1,12 @@
-From: "Raj Wurttemberg" <rajw@c64.us>
-Subject: RE: DirectX 8.1 and NAT
-Date: Tue, 3 Dec 2002 21:56:37 -0500
+From: "Don Woodruff" <donw@minglewood.net>
+Subject: Cisco Logging THOUGH iptables firewall to seperate syslog machine
+Date: Wed, 4 Dec 2002 03:28:53 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c29b40$c4277e50$d201a8c0@hornet>
-References: <000201c29b1d$424a07e0$6601a8c0@s3ac>
+Message-ID: <6BED17A9718E204F812CBBAF3B102E2A01C140@babylon.metropolis.minglewood.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000201c29b1d$424a07e0$6601a8c0@s3ac>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,51 +19,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> standard. So either way this claim is bogus as is any claim without
-> reasonable proof.
+I guess this is more of a syslogd question, but iptables is part of the
+issue, so it's not too far off topic:
 
-Well to be honest and from my experience (or inexperience) with
-Micro$oft's MechWarrior 4 game it IS possible for ONE computer to play
-behind an iptables firewall. I do not know that much about iptables and
-I am learning gradually from this mailing list... but here is what I
-have on my firewall so I can play MechWarrior 4 (Please don't beat me up
-to badly... I'm an iptables noob!): 
+I have a Cisco Router on my ISDN connection, and behind the Router sits
+an iptables firewall (RedHat 8.0). Behind the firewall is, among other
+things, my loghost (RedHat 8.0 as well). I got syslogd running with "-r
+-x", and it would accept redirected kernel messages from the firewall,
+but would not register anything from the Cisco. I could see the packets
+in the log being DNAT'ed, but I suspect syslogd rejected them as not
+being from a local machine.
 
-IPTABLES="/sbin/iptables"
-STATIC_IP="My IP address from the ISP"
-INTERNAL="My game systems's internal ip address"
-$IPTABLES -t nat -A PREROUTING -p udp -d $STATIC_IP --dport 6073 -j DNAT
---to $INTERNAL:6073
-$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 6667 -j DNAT
---to $INTERNAL:6667
-$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 9999 -j DNAT
---to $INTERNAL:9999
-$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 2200:2400 -j
-DNAT --to $INTERNAL:2200-2400
-$IPTABLES -t nat -A PREROUTING -p udp -d $STATIC_IP --dport 2200:2400 -j
-DNAT --to $INTERNAL:2200-2400
-$IPTABLES -t nat -A PREROUTING -p udp -d $STATIC_IP --dport 27999:29000
--j DNAT --to $INTERNAL:27999-29000
-$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 27999:29000
--j DNAT --to $INTERNAL:27999-29000
-$IPTABLES -t nat -A PREROUTING -p tcp -d $STATIC_IP --dport 47624 -j
-DNAT --to $INTERNAL:47624
-$IPTABLES -t nat -A PREROUTING -p udp -d $STATIC_IP --dport 47624 -j
-DNAT --to $INTERNAL:47624
+Instead, I started up syslogd on my firewall with "-r -x -h" and am
+accepting the Cisco messages (coming from a local host in this case),
+and forwarding them to the loghost (which seems to work). It took just a
+little bit of rule-mashing to get things running smooth.
 
-$IPTABLES -A FORWARD -p udp -d $INTERNAL --dport 6073 -j ACCEPT
-$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 6667 -j ACCEPT
-$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 9999 -j ACCEPT
-$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 2200:2400 -j ACCEPT
-$IPTABLES -A FORWARD -p udp -d $INTERNAL --dport 2200:2400 -j ACCEPT
-$IPTABLES -A FORWARD -p udp -d $INTERNAL --dport 27999:29000 -j ACCEPT
-$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 27999:29000 -j ACCEPT
-$IPTABLES -A FORWARD -p tcp -d $INTERNAL --dport 47624 -j ACCEPT
-$IPTABLES -A FORWARD -p udp -d $INTERNAL --dport 47624 -j ACCEPT
+My question: this can't really be the best way to do this? Am I missing
+something (or perhaps I just need a different syslog daemon)?
 
-Comments, corrections, and advice are welcome.
-
-Thanks,
-/*Raj*/
-
+Don
 
