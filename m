@@ -1,12 +1,14 @@
-From: lukasz <kukems@pf.pl>
-Subject: problem with marks in filter table
-Date: Fri, 21 May 2004 10:20:14 +0000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Can reach some websites, can't reach others
+Date: Sat, 22 May 2004 13:28:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405211020.15279.kukems@pf.pl>
+Message-ID: <200405221328.33189.Antony@Soft-Solutions.co.uk>
+References: <20040522115927.GA18767@localnet>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20040522115927.GA18767@localnet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +21,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-iptables -t mangle -A PREROUTING -p tcp -j CONNMARK --restore-mark
+On Saturday 22 May 2004 12:59 pm, Sven Riedel wrote:
 
-iptables -t mangle -A PREROUTING -p tcp -m mark ! --mark 0 -j ACCEPT
+> Hi,
+> I'm using a Linux 2.6.6 box as a masquerading firewall via dialup for a
+> local network. From the internal network I can reach some websites (e.g.
+> www.debian.org) but can't reach others (e.g. www.freshmeat.net). The
+> unreachable sites _can_ be reached from the firewall-box itself though.
 
-iptables -t mangle -A PREROUTING -p tcp -m ipp2p --ipp2p -j MARK \
- --set-mark 1
+This sounds like an MSS / MTU mismatch poblem.   Try doing a Google search for 
+"clamp MSS to MTU" - that should give you some pointers.
 
-iptables -t mangle -A PREROUTING -p tcp -m mark ! --mark 0 -j CONNMARK\ 
---save-mark
+Can't offer specific advice myself since I've never experienced the problem, 
+but I've seen it here from others several times before.
 
-Hi i`m using above configuration to mark my ipp2p traffic. and it works fine.
+Regards,
 
-iptables -t mangle -L -v
+Antony.
 
-Chain PREROUTING (policy ACCEPT 641K packets, 450M bytes)
- pkts bytes target     prot opt in     out     source               
-destination
-  549  141K CONNMARK   tcp  --  any    any     anywhere             anywhere            
-CONNMARK restore
-   68  8351 ACCEPT     tcp  --  any    any     anywhere             anywhere            
-MARK match !0x0
-   19  9409 MARK       tcp  --  any    any     anywhere             anywhere            
-ipp2p v0.5c --ipp2p MARK set 0x1
-   19  9409 CONNMARK   tcp  --  any    any     anywhere             anywhere            
-MARK match !0x0 CONNMARK save
+-- 
+Most people are aware that the Universe is big.
 
- Up to here everything is ok.
-But i want to accept marked packages trough filter table matching marked 
-packages, and it does`nt work:
+ - Paul Davies, Professor of Theoretical Physics
 
-iptables -A FORWARD -p tcp -j ACCEPT -m mark --mark 1
-
-iptables -A FORWARD -j DROP -s 192.168.9.0/24 -d 0/0
-iptables -A FORWARD -j DROP -d 192.168.9.0/24 -s 0/0
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
