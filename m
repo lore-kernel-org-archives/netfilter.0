@@ -1,13 +1,11 @@
-From: <Josh.Berry@compucom.com>
-Subject: RE: Broken ftp through iptables
-Date: Tue, 26 Aug 2003 21:43:54 -0500
+From: "Jason S. Friedman" <jason@powerpull.net>
+Subject: Re: RedHat 8.0 upgrade problem 1.2.8
+Date: Wed, 27 Aug 2003 03:14:48 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <0C7C6E1720E8D74FB52EBEF93649730A0119A501@2k099exm01.compucom.local>
+Message-ID: <20030827031448.GB31134@charles>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C36C45.0E5DBC25"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,61 +15,13 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: landonc@starrobbins.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+My problem is mostly solved, and I wanted to post the resolution for the benefit of others who might troll the archives someday.
 
-------_=_NextPart_001_01C36C45.0E5DBC25
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+Something about the "service iptables restart" command tripped up the modules.  I re-installed the old 1.2.6a version using rpm --oldpackage -Uvh <rpm file here> and rebooted and I was back in business.  I suppose that someone more familiar with kernel modules could have avoided a reboot.
 
-VGhlIGxzIGNvbW1hbmQgaXMgdXN1YWxseSB0aGUgZGF0YSBwb3J0aW9uIG9mIHRoZSBGVFAgY29u
-bmVjdGlvbi4gIEhhdmUgeW91IHRyaWVkIGNoYW5naW5nIHRoZSBtb2RlIHRvIHBhc3NpdmUgKG9y
-IHRvIGFjdGl2ZSBpZiB5b3UgYXJlIGFscmVhZHkgdXNpbmcgcGFzc2l2ZSk/DQoNCgktLS0tLU9y
-aWdpbmFsIE1lc3NhZ2UtLS0tLSANCglGcm9tOiBMYW5kb24gQ2hlbGYgW21haWx0bzpsYW5kb25j
-QHN0YXJyb2JiaW5zLmNvbV0gDQoJU2VudDogVHVlIDgvMjYvMjAwMyAxMDoyMSBBTSANCglUbzog
-bmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmcgDQoJQ2M6IA0KCVN1YmplY3Q6IEJyb2tlbiBm
-dHAgdGhyb3VnaCBpcHRhYmxlcw0KCQ0KCQ0KDQoJSGVsbG8sDQoJDQoJSSd2ZSByYW4gaW50byBh
-IHJlY2VudCBwcm9ibGVtIGJvdGggb24gcmg4IGFuZCByaDkgdXNpbmcgaXB0YWJsZXMuICBJJ3Zl
-DQoJc2V0dXAgbXkgZmlyZXdhbGwgdG8gZHJvcCBldmVyeXRoaW5nIGluY29tbWluZyBhbmQgZm9y
-d2FyZCBhbmQgYW0gb25seQ0KCWFsbG93aW5nIGNlcnRhaW4gcG9ydHMgdG8gYmUgb3Blbi4gIEkn
-dmUgb3BlbmVkIGZ0cCAocG9ydCAyMSB0Y3ApIGFuZCBJDQoJY2FuIGNvbm5lY3QgdmlhIEZUUCBm
-cm9tIG9uZSBtYWNoaW5lIGFuZCBhdXRoZW50aWNhdGUsIGJ1dCB3aGVuIEkgaXNzdWUNCglteSBm
-aXJzdCBjb21tYW5kIGxpa2UgImxzIiBmb3IgaW5zdGFuY2UgdGhlIGNvbm5lY3Rpb24gbG9ja3Mg
-dXAgYW5kDQoJd29uJ3QgZG8gYW55dGhpbmcuICBJcyB0aGVyZSBhIHdheSB0byBmaXggdGhpcz8N
-CgkNCglMYW5kb24NCgkNCgkNCgkNCg0K
-
-------_=_NextPart_001_01C36C45.0E5DBC25
-Content-Type: text/html;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-
-PE1FVEEgSFRUUC1FUVVJVj0iQ29udGVudC1UeXBlIiBDT05URU5UPSJ0ZXh0L2h0bWw7IGNoYXJz
-ZXQ9dXRmLTgiPgo8IURPQ1RZUEUgSFRNTCBQVUJMSUMgIi0vL1czQy8vRFREIEhUTUwgMy4yLy9F
-TiI+CjxIVE1MPgo8SEVBRD4KCjxNRVRBIE5BTUU9IkdlbmVyYXRvciIgQ09OVEVOVD0iTVMgRXhj
-aGFuZ2UgU2VydmVyIHZlcnNpb24gNi4wLjYzODkuMCI+CjxUSVRMRT5Ccm9rZW4gZnRwIHRocm91
-Z2ggaXB0YWJsZXM8L1RJVExFPgo8L0hFQUQ+CjxCT0RZIGRpcj1sdHI+CjxESVY+VGhlIGxzIGNv
-bW1hbmQgaXMgdXN1YWxseSB0aGUgZGF0YSBwb3J0aW9uIG9mIHRoZSBGVFAgY29ubmVjdGlvbi4m
-bmJzcDsgCkhhdmUgeW91IHRyaWVkIGNoYW5naW5nIHRoZSBtb2RlIHRvIHBhc3NpdmUgKG9yIHRv
-IGFjdGl2ZSBpZiB5b3UgYXJlIGFscmVhZHkgCnVzaW5nIHBhc3NpdmUpPzwvRElWPgo8QkxPQ0tR
-VU9URSBkaXI9bHRyIHN0eWxlPSJNQVJHSU4tUklHSFQ6IDBweCI+CiAgPERJVj48Rk9OVCBzaXpl
-PTI+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0gPEJSPjxCPkZyb206PC9CPiBMYW5kb24gQ2hl
-bGYgCiAgW21haWx0bzpsYW5kb25jQHN0YXJyb2JiaW5zLmNvbV0gPEJSPjxCPlNlbnQ6PC9CPiBU
-dWUgOC8yNi8yMDAzIDEwOjIxIEFNIAogIDxCUj48Qj5Ubzo8L0I+IG5ldGZpbHRlckBsaXN0cy5u
-ZXRmaWx0ZXIub3JnIDxCUj48Qj5DYzo8L0I+IAogIDxCUj48Qj5TdWJqZWN0OjwvQj4gQnJva2Vu
-IGZ0cCB0aHJvdWdoIGlwdGFibGVzPEJSPjxCUj48L0ZPTlQ+PC9ESVY+CiAgPFA+PEZPTlQgc2l6
-ZT0yPkhlbGxvLDxCUj48QlI+SSd2ZSByYW4gaW50byBhIHJlY2VudCBwcm9ibGVtIGJvdGggb24g
-cmg4IGFuZCAKICByaDkgdXNpbmcgaXB0YWJsZXMuJm5ic3A7IEkndmU8QlI+c2V0dXAgbXkgZmly
-ZXdhbGwgdG8gZHJvcCBldmVyeXRoaW5nIAogIGluY29tbWluZyBhbmQgZm9yd2FyZCBhbmQgYW0g
-b25seTxCUj5hbGxvd2luZyBjZXJ0YWluIHBvcnRzIHRvIGJlIG9wZW4uJm5ic3A7IAogIEkndmUg
-b3BlbmVkIGZ0cCAocG9ydCAyMSB0Y3ApIGFuZCBJPEJSPmNhbiBjb25uZWN0IHZpYSBGVFAgZnJv
-bSBvbmUgbWFjaGluZSAKICBhbmQgYXV0aGVudGljYXRlLCBidXQgd2hlbiBJIGlzc3VlPEJSPm15
-IGZpcnN0IGNvbW1hbmQgbGlrZSAibHMiIGZvciBpbnN0YW5jZSAKICB0aGUgY29ubmVjdGlvbiBs
-b2NrcyB1cCBhbmQ8QlI+d29uJ3QgZG8gYW55dGhpbmcuJm5ic3A7IElzIHRoZXJlIGEgd2F5IHRv
-IGZpeCAKICB0aGlzPzxCUj48QlI+TGFuZG9uPEJSPjxCUj48QlI+PC9GT05UPjwvUD48L0JMT0NL
-UVVPVEU+Cgo8L0JPRFk+CjwvSFRNTD4=
-
-------_=_NextPart_001_01C36C45.0E5DBC25--
+My next step is to re-upgrade using the RPM, but I won't enter "service iptables restart".  Instead, I'll just run my standard firewall shell script.
 
