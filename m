@@ -1,11 +1,13 @@
-From: mick <mick@mohawkplastics.com>
-Subject: Ip handling
-Date: 18 Jun 2003 09:53:46 -0700
+From: "Darrell Dieringer" <netfilter@darrelldieringer.com>
+Subject: RE: streaming audio ports
+Date: Wed, 18 Jun 2003 12:22:38 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055955226.5963.66.camel@plant1>
+Message-ID: <IMEDICLPAGAOCBLCCKLPOEEFFKAA.netfilter@darrelldieringer.com>
+References: <20030618165614.94092.qmail@web9604.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030618165614.94092.qmail@web9604.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Taniform Asongwe <tasongwe@yahoo.co.uk>, netfilter@lists.netfilter.org
 
-I have a delema and i'm not sure how to handle it. 
-I run a login server on port 5999 that does authentication based on IP
-address. So when someone with a dynamic internet connection tries to
-login with a differnt IP then the registered one, The login server
-rejects them.
-I am not good enough with Iptables to know if it is possible or not but
-is there some way to make it so all connections to that PORT(5999)
-appear to come from my Local network 192.168.0
+As with many things, it depends on the server.  "Shoutcast" streaming
+audio servers, for instance, default to port 8000, but can be
+configured to operate on any port.  I don't know about 'RealAudio' or
+others, but I imagine it's a similar story.
 
-The other method i thought about was running my authentication/login
-server on another machien behind the firewall. but i think i would have
-to make all packets coming from the inter net to that port appear to
-come from the local network prior to forwarding them to the Other
-server. both of which i am unsure how to accomplish. 
+You could block everything by default, and only permit the ports
+corresponding to services you want to allow people to use.
 
-The Authentication server is a binary that is not linux/unix nativly so
-at this time i can not recode it and remove the IP matching function.
-Any help with this problem is greatly appreciated.
-Mick
+Darrell Dieringer - Madison, WI
 
-
-Does anyone know of a way to make say all connections from the outside
-going to my outside IP address Appear to be coming from my local lan of
-192.168.0.1  
-
-
-
-
-
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Taniform
+> Asongwe
+> Sent: Wednesday, June 18, 2003 11:56 AM
+> To: netfilter@lists.netfilter.org
+> Subject: streaming audio ports
+>
+>
+> Hi there,
+>
+> could someone tell me how I can block streaming audio
+> from running into my network? My users are listening
+> onto internet radio stations and consuming a lot of
+> bandwidth, a practice I wish to stop. I have blocked
+> port 554 with iptables but it is not enough.
+>
+> Thanks in advance
+>
+> Taniform
+>
+> ____________________________________________________________
+> ____________
+> Want to chat instantly with your online friends?  Get the
+> FREE Yahoo!
+> Messenger http://uk.messenger.yahoo.com/
+>
+>
+>
 
 
