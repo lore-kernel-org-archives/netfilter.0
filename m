@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Cant find definitions
-Date: Fri, 16 Jan 2004 19:36:15 +0000
+From: Bill Davidsen <davidsen@tmr.com>
+Subject: Re: port translation
+Date: Fri, 16 Jan 2004 17:32:10 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401161936.15567.Antony@Soft-Solutions.co.uk>
-References: <20040116192930.10566.qmail@web40312.mail.yahoo.com>
+Message-ID: <bu9oqk$e1j$1@gatekeeper.tmr.com>
+References: <4001239D.7010904@yahoo.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040116192930.10566.qmail@web40312.mail.yahoo.com>
+In-Reply-To: <4001239D.7010904@yahoo.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Friday 16 January 2004 7:29 pm, kernel_learner wrote:
+Romain Moyne wrote:
+> Hello,
+> 
+> I'm French and my english is bad ;)
+> 
+> I have a http server (debian 3.0) behind a router (debian 3.0). I have a 
+> problem when I want to log the visitor's IP of my website with PHP or 
+> Perl or all language. I have always the IP of my router ! Somebody tell 
+> me that I must do port translation but I have searched and I haven't 
+> fand anything.
+> Can you help me ?
+> This is the rules of my router :
+> 
+> iptables -t nat -A PREROUTING -d MyIP -p tcp --dport 80 -j DNAT 
+> --to-destination 192.168.0.3:80
 
-> Looking for the following structures but was unable to
-> track down their definitions in the source code..can
-> someone point me to those please?
->
-> 1. STRUCT_ENTRY_TARGET defined as struct
-> ipt_entry_target
-> 2. STRUCT_ENTRY defined as struct ipt_entry
-> and
-> 3. STRUCT_ENTRY_MATCH defined as struct
-> ipt_entry_match
+Something wrong here... you would see the IP of the router if you were 
+doing MASQUERADE, but not with DNAT. I have a similar setup, and my mail 
+server filters LOTS of addresses by IP.
 
-This looks to me like a question for the developers' list, not the users' 
-list.   You'll likely have much more luck there finding someone who knows.
-
-Antony.
+You should be sure you don't have a leftover MASQUERADE (or SNAT) rule 
+which is being used, then run tcpdump on the internal NIC of the router 
+and catch the packets as they leave. DNAT does just what you want, and I 
+have a fair number of machines running as routers which don't have this 
+problem.
 
 -- 
-This is not a rehearsal.
-This is Real Life.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+bill davidsen <davidsen@tmr.com>
+   CTO TMR Associates, Inc
+   Doing interesting things with small computers since 1979
 
