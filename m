@@ -1,11 +1,12 @@
-From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Is "no route to host" fake possible?
-Date: Fri, 25 Jun 2004 11:24:08 +0200
+Date: Fri, 25 Jun 2004 10:15:25 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040625112408.39783568.leslie.polzer@gmx.net>
+Message-ID: <200406251015.25940.Antony@Soft-Solutions.co.uk>
 References: <20040625085336.GA1094@xy1.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20040625085336.GA1094@xy1.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -20,25 +21,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 25 Jun 2004 10:53:36 +0200
-iptables-ml@xy1.org wrote:
+On Friday 25 June 2004 9:53 am, iptables-ml@xy1.org wrote:
 
 > Hello,
-> 
-> I know the rules REJECT, DENY or DROP, but is it possible to return to 
+>
+> I know the rules REJECT, DENY or DROP, but is it possible to return to
 > the client the error message "no route to host" ?
-> 
-> I saw that it's possible to configure this on CISCO routers, and I would 
-> like to know it it's possible?
-Hmmm, if it's not possible with some patched kernel you can surely either
 
-- write a module doing this (shouldn't be too hard)
-- write a userspace daemon accepting those packets and crafting appropriate
-response packets
+iptables -A FORWARD etc -j REJECT --reject-with icmp-host-unreachable
 
-The last one might give a little bit of a speed penalty.
+If that's not the icmp error message you meant, try "man iptables" and look at 
+the REJECT target for more ideas.
 
 Regards,
 
-Leslie
+Antony.
+
+-- 
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
