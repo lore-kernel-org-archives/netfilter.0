@@ -1,12 +1,11 @@
-From: Kevin McConnell <kevymac@yahoo.com>
-Subject: Re: lifecycle of a packet (OT)
-Date: Wed, 22 Jan 2003 08:29:47 -0800 (PST)
+From: Lars Brinkhoff <lars.spam@nocrew.org>
+Subject: Re: Translating between local and global IP address
+Date: 22 Jan 2003 17:45:24 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030122162947.54542.qmail@web40305.mail.yahoo.com>
-References: <Pine.LNX.4.44.0301221647450.12962-100000@laptop1.agatha>
+Message-ID: <853cnlb0bf.fsf@junk.nocrew.org>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0301221647450.12962-100000@laptop1.agatha>
+Sender: lars.spam@junk.nocrew.org
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +17,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Oskar Andreasson <blueflux@koffein.net>, Anders Fugmann <afu@fugmann.dhs.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Rob Sterenborg wrote:
+> >                     internet
+> >                        |
+> >                       eth0
+> >                   GATEWAY (Linux)
+> >                       eth1
+> >                        |
+> >                  COMPUTER (Windows)
+> > 
+> > COMPUTER has a local IP address ($IN), but I'd like to mangle
+> > packets going through GATEWAY so COMPUTER appears to have another
+> > IP address ($OUT) on the internet.
 
---- Oskar Andreasson <blueflux@koffein.net> wrote:
- 
-> Definitely agreed, the only problem is that some
-> people just throw the 
-> tutorial up on a page, and don't tell me about it.
-> And others again simply 
-> ignore it when I try to contact them. For example,
-> I've tried making 
-> netfilter.org changing their links for the last 3-4
-> months without any 
-> replies. It's very unfortunate:/. 
+Let me add to this that the internet IP of the gateway is not $OUT,
+and connections initiated from a machine on the internet (to $OUT)
+should reach COMPUTER.
 
-How about filing it in bugzilla? Have you tried that
-yet?
+> You should probably do this :
+> 
+> # Close your gateway.
+> iptables -P INPUT DROP
+> iptables -P FORWARD DROP
+> 
+> # Accept forwarding and related.
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -i eth1 -o eth0 -s $IN -j ACCEPT
+> iptables -t nat -A POSTROUTING -o eth0 -s $IN -j SNAT --to-source $OUT
 
-> Ah.. no problem really, just trying to do my part
-> for the greater good:)
+Thank you.
 
-Yes, thank you for putting all this stuff into terms
-that the rest of us can read.
+> And maybe you need a helper for your network game. You didn't mention
+> "the name of the game".
 
+The game is Age of Mythology.
 
-=====
-Kevin C. McConnell --RHCE-- <Red Hat Certified Engineer>
+> I don't know what you are trying to achieve with "ifconfig eth0:1
+> $OUT" ?
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+I want packets originating from internet to $OUT to be accepted by the
+gateway and redirected to $IN.  Without the ifconfig, the gateway
+appears to accept only packets to itself.
+
+> When SNAT-ing, the packets will appear to be coming from eth0 on the
+> gateway with IP address $OUT which is your internet IP address. $OUT
+> must be your internet IP address otherwise the reply packet will not
+> be sent back to you.
+
+I want the gateway to have an IP address of its own, distinct from
+$OUT.
 
