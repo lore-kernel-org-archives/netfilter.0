@@ -1,12 +1,15 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: Iptables problem
-Date: Thu, 13 Mar 2003 11:16:23 +0100 (CET)
+From: Luis Miguel Cruz Miranda <luismi@b2bi.es>
+Subject: RE: iptables2.spec
+Date: Thu, 13 Mar 2003 11:06:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0303131110400.30819@dns.toxicfilms.tv>
-References: <009401c2e946$eb346fe0$0700a8c0@dale>
+Message-ID: <5.2.0.9.2.20030313110550.01f8d908@172.26.0.8>
+References: <7F9067FBD7B14F4387EA63434CE260033F844C@hyd-mdp-msg.wipro.c
+ om>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <009401c2e946$eb346fe0$0700a8c0@dale>
+In-Reply-To: <7F9067FBD7B14F4387EA63434CE260033F844C@hyd-mdp-msg.wipro.c
+ om>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +19,102 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: De Jager Laubscher <dejager@think.co.za>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Prasanta kumar Panda <prasanta.kumar@wipro.com>, netfilter@lists.netfilter.org
 
-> Can anyonne please tell me how to open port 1500 to 1511 on my NAT box
-> using iptable on slackeware ??
-You have not written what do you want precisely, so i will give a few
-examples. But PLEASE READ THE HOWTO, it is very informative. It is vital
-to know how it all works.
-I will assume TCP.
-If you want to open these ports _to_ the NAT box use:
-# iptables -A INPUT -p tcp --dport 1500:1511 -j ACCEPT
+Same problem here :(
 
-If you want to NAT these ports do:
-# iptables -t nat -A PREROUTING -i $EXT -p tcp --dport 1500 -j DNAT \
-	--to x.y.z.a
+[root@luismi iptables2]# make
+Making all in .
+make[1]: Cambiando a directorio `/root/temp/netfilter/iptables2'
+make[1]: No se hace nada para `all-am'.
+make[1]: Saliendo directorio `/root/temp/netfilter/iptables2'
+Making all in include
+make[1]: Cambiando a directorio `/root/temp/netfilter/iptables2/include'
+cd .. && autoheader
+cd .. \
+   && CONFIG_FILES=3D CONFIG_HEADERS=3Dinclude/config.h \
+      /bin/sh ./config.status
+creating include/config.h
+make[1]: Saliendo directorio `/root/temp/netfilter/iptables2/include'
+Making all in libnfnetlink
+make[1]: Cambiando a directorio `/root/temp/netfilter/iptables2/libnfnetl=
+ink'
+cd . && aclocal
+/bin/sh ./config.status --recheck
+./config.status: ./config.status: No existe el fichero o el directorio
+make[1]: *** [config.status] Error 127
+make[1]: Saliendo directorio `/root/temp/netfilter/iptables2/libnfnetlink=
+'
+make: *** [all-recursive] Error 1
 
-Remember that if doing 1:1 NAT requiers a similar rule for SNAT on
-POSTROUTING.
+Did you report it to bugzilla.netfilter.org?
 
-If you want to NAT and change the ports do:
-# iptables -t nat -A PREROUTING -i $EXT -p tcp --dport 1500 -j DNAT \
-	--to x.y.z.a:other_port
+At 23:40 12/03/2003 +0530, Prasanta kumar Panda wrote:
 
-of course read also:
-# iptables -j DNAT --help
-# iptables -j SNAT --help
-# iptables -p tcp --help
+>Hi Luis
+>
+>But before that you should be able to build it manually. When I run make=
+=20
+>after a normal configure got this error
+>
+>
+>make[1]: Entering directory=20
+>`/usr/src/redhat/BUILD/iptables2-pra1/libnfnetlink'
+>cd . && aclocal
+>/bin/sh ./config.status --recheck
+>./config.status: ./config.status: No such file or directory
+>make[1]: *** [config.status] Error 127
+>make[1]: Leaving directory `/usr/src/redhat/BUILD/iptables2-pra1/libnfne=
+tlink'
+>make: *** [all-recursive] Error 1
+>
+>
+>Other wise this is the way to make the rpm
+>
+>Move the iptables2 directory to iptables2-VERSION directory and put to=20
+>tar+gzip as iptables2-VERSION.tar.gz
+>Next
+>rpmbuild -tb iptables2-VERSION.tar.gz
+>Or
+>rpmbuild -ts iptables2-VERSION.tar.gz to get a srpm package which you ca=
+n=20
+>compile later on with rpmbuild --rebuild command.
+>
+>Reg.
+>Prasanta
+>
+>
+>
+>
+>-----Original Message-----
+>From: Luis Miguel Cruz Miranda [mailto:luismi@b2bi.es]
+>Sent: Wednesday, March 12, 2003 10:26 PM
+>To: netfilter@lists.netfilter.org
+>Subject: iptables2.spec
+>
+>
+>I downloaded netfilter code from cvs.
+>I discover it cames with a iptables2.spec.
+>I tried to use it in order to create an iptables rpm, but I couldn't!!.=20
+>How can I use it? rpm -ba iptables2.spec doesn't run for me.
+>
+>Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+>CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+>                                          |       C/A - Parcela 86-C
+>Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+>Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN=
+)
+>
+>
+>
+>
 
-Regards,
-Maciej Soltysiak
+Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+                                         |       C/A - Parcela 86-C
+Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
+
 
 
