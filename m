@@ -1,11 +1,12 @@
-From: Bryan McAninch <bmcaninch@penson.com>
-Subject: NAT'ed Domain Authentication
-Date: Wed, 13 Oct 2004 12:40:00 -0500
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: NAT'ed Domain Authentication
+Date: Wed, 13 Oct 2004 10:53:10 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097689200.14334.176.camel@wslinux-fractal.penson.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E386@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Bryan McAninch <bmcaninch@penson.com>, netfilter@lists.netfilter.org
 
-Hi all,
+Bryan McAninch wrote:
+> Hi all,
+>=20
+> I am attempting to setup remote access domain login over an IPSec
+> tunnel. The tunnel is between a Linux firewall with iptables &
+> openswan, and a windows xp laptop; the internal domain controllers
+> are 2003 servers. For routing purposes, I need to SNAT the laptop to
+> one of our internal rfc 1918 addresses on the internal interface of
+> the firewall. The problem I am encountering is getting the laptop to=20
+> successfully log on to the domain, and I'm certain it has something
+> to do with the SNAT.=20
 
-I am attempting to setup remote access domain login over an IPSec
-tunnel. The tunnel is between a Linux firewall with iptables & openswan,
-and a windows xp laptop; the internal domain controllers are 2003
-servers. For routing purposes, I need to SNAT the laptop to one of our
-internal rfc 1918 addresses on the internal interface of the firewall.
-The problem I am encountering is getting the laptop to  successfully log
-on to the domain, and I'm certain it has something to do with the SNAT. 
+You should be logging in using Windows LDAP. If you aren't giving the
+Laptop a valid internal IP, I suppose you'd have to SNAT the incoming
+traffic to the Linux firewall. Questions:
 
-I have found a few posts on the mailing lists discussing the development
-of a netfilter module which rewrites the NetBIOS headers accordingly:
+What can't you give the incoming host an internal IP?
+Do you have two nested networks inside NAT'ed or do you not control the
+allocation of IP's, or some other reason (no ProxyARP?)?
 
-http://lists.netfilter.org/pipermail/netfilter-devel/2001-October/005793.html
-http://lists.netfilter.org/pipermail/netfilter-devel/2002-April/007535.html
+Why can't you login using LDAP or Kerberos? It shouldn't matter if
+you're snated or not.
 
-Does anyone know if such a module has been developed or if one will be
-in the future, or perhaps a workaround to this?
+Can you access ANY service behind the firewall?
 
-Thanks.
+Do you log all soon to be dropped packets & do you see in the logs any
+packets getting dropped when trying to login?
 
-
--- 
-Bryan McAninch
-Network Security Engineer
-Penson Financial Services, Inc.
-214.765.1366
 
