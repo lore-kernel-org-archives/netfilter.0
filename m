@@ -1,8 +1,9 @@
-From: cc <cc@kdtc.net>
-Subject: icmp echo requests
-Date: Mon, 29 Sep 2003 14:15:51 +0800
+From: "Louie Miranda" <louie@axishift.ath.cx>
+Subject: Re: icmp echo requests
+Date: Mon, 29 Sep 2003 14:55:04 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F77CE17.30605@kdtc.net>
+Message-ID: <004d01c38656$9f663190$020119ac@admwebdevws>
+References: <3F77CE17.30605@kdtc.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,38 +17,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Group <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
+Yes, i believe thats correct.
+I have this working example. Their are also some more reject examples, i
+used to have a copy but i lost it. Try google for more icmp reject types.
 
-I've been monitoring the NAT router with pktstat and am a little
-perturbed to see quite a lot of icmp echo requests.  Now I've
-setup my Linux firewall to reject icmp echo requests.
-
-Is this the right(?)/correct/valid/appropriate thing to do?
-
-Furthermore (just for clarification) using tcpdump, I get incoming
-icmp echo requests, but no response from my firewall(good thing
-right?.  This means the firewall is dropping/rejecting the
-echo requests?
+-- snip from 72.creon, haha ----
+$IPTABLES -A INPUT -p icmp --icmp-type 8 -d $MYIP -s 0/0 -j
+REJECT --reject-with icmp-net-unreachable
+-- snip from 72.creon, haha ----
 
 
-Here is the line from the firewall script:
+-- -
+Louie Miranda
+http://www.axishift.com
 
 
-iptables -A INPUT -i eth0 -p icmp --icmp-type 8 \
-        -j REJECT --reject-with icmp-host-unreachable
-
-
-
-Btw, I'm quite bothered about the pings.  It doesn't
-look right.
-
--- 
-
-
-
-
-
+----- Original Message -----
+From: "cc" <cc@kdtc.net>
+To: "Netfilter Group" <netfilter@lists.netfilter.org>
+Sent: Monday, September 29, 2003 2:15 PM
+Subject: icmp echo requests
 
 
