@@ -1,15 +1,13 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: Major NAT Problem
-Date: Tue, 10 Feb 2004 19:56:39 -0500
+From: Alex Satrapa <alex@lintelsys.com.au>
+Subject: Re: Apply rules to 1 UDP port but port used as a socket: possible?
+Date: Wed, 11 Feb 2004 14:00:16 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <12771.4804759764$1076465359@news.gmane.org>
-References: <Sea2-F19kyCKDkb9pPF00000901@hotmail.com> <008c01c3f036$90067b70$0200000a@heretic>
+Message-ID: <40299AC0.80104@lintelsys.com.au>
+References: <D4EF10CCEB2CE742BEEA9838C590B0E80113FA41@ftrdmel2.rd.francetelecom.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <008c01c3f036$90067b70$0200000a@heretic>
-Content-Disposition: inline
+In-Reply-To: <D4EF10CCEB2CE742BEEA9838C590B0E80113FA41@ftrdmel2.rd.francetelecom.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,52 +17,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Alexis <alexis@attla.net.ar>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: zze-Proxy GRALL O ext FTRD/SVA/LAN <ograll.ext@rd.francetelecom.com>
+Cc: netfilter@lists.netfilter.org
 
-> From: "Ted Erickson" <tederickson7582@hotmail.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Thursday, February 05, 2004 11:54 PM
-> Subject: Major NAT Problem
->
-> > I am somewhat new to IPTables but not to linux.  I have a major problem.
-> > Some background first... I have a PPoA SDSL connection with Qwest running
->
-> at
->
-> > 640k/up/down.  I have a static block of 8 addresses.....I have a
->
-> connection
->
-> > from the DSL modem to eth0 on my Redhat 9.0 box and I have my local
->
-> network
->
-> > pluged into eth1.  The only thing running on the linux box is IPTables
-> > nothing else.  I turned on echo 1 > /proc/sys/net/ipv4/ip_forward and
-> > enabled MASQ in several different ways..... no problem.  I can surf the
-> > internet just fine on my local network machine but I have ONE BIG
->
-> PROBLEM!!!
->
-> >   I can't view a handfull of websites.  If I take the linux box out of
-> > the picture and throw a cheap Linksys Router on the same DSL connection I
-> > can see all the web sites i want.  IPTables is blocking something but I
-> > don't know what? I can't find any info on the web with this problem.  I
-> > need to fix this ASAP or I will have to go with something else, but I
-> > want to stay with linux.
-> >
-> > theo
-> >
+zze-Proxy GRALL O ext FTRD/SVA/LAN wrote:
+> I'm trying to use a socket (on port 1727) to decode some proprietary UDP =
 
-	This could convievably also be TCP ECN active on the linux box ... it has been known
-	to cause problesms with certain firewall configurations.  Although TCP ECN is a wonderful
-	concept the standard has yet to completely catch on and can cause problems .. 
-	you might try 
+> packets. When I've decoded them I want to apply a DNAT rule (and then a=20
+> SNAT  too) to this port using a filter on @IP:port source for all=20
+> following packets=85
 
-	echo "0" > /proc/sys/net/ipv4/tcp_ecn
-	which will turn it off ... (i rebuilt my second kernel with tcp_ecn on, since it sounded like such
-	a wonderful idea ... had to turn if off when the other half couldn't get to two of her fav websites.)
+So do you have Machine F which is the firewall, and machines A, B and C whi=
+ch are the ultimate destinations, and you want to have UDP packets from mac=
+hine X (elsewhere) being sent to A, B or C  by F based on some information =
+in the first packet F receives from a new host X? You could write your "mon=
+itor" to set up new rules based on the first packets that arrive, with the =
+remainder being "deflected" by the firewall rules.
 
-	Alistair
+
 
