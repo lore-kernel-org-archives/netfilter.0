@@ -1,9 +1,11 @@
-From: "Heupink, Mourik Jan C." <Heupink@INTECH.UNU.EDU>
-Subject: RE: measure traffic
-Date: Wed, 9 Oct 2002 12:39:27 +0200
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: Re: messages in /var/log/message file
+Date: Wed, 09 Oct 2002 16:58:15 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1100D69203AAD2118E3C00508B8B9E8A67F04E@mailhost.intech.unu.edu>
+Message-ID: <3DA412CF.5010107@inbox.lv>
+References: <Pine.LNX.4.44.0210091216330.29480-100000@dns.toxicfilms.tv>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,42 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Payal' <payal@hotpop.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-this is slightly off topic, but i'm asking anyway :)
+hi
+thanx for responding. some info to you all...
+the linux box with 2.4.19 kernel & iptables 1.2.7a has 768mb ram its 
+ip_conntrack_max shows 48632.
+moreover the ip(=>> ipA) in the message file is a valid ip and not a 
+private one & its going to a valid ip in internet.
+the very interesting & confusing part for me(& hope for others?? ) is 
+why a day ago with iptables 1.2.6a there was no error message ???.. as i 
+mentioned in last mail the only difference is that i have as module--> 
+ip_nat_h323.o & also ipt_helper.o
+one last info to add here---why only this message for >>ipA<< when the 
+box is handling more than 500 valid ip & above 200 private ip( of 10 
+series),..slabinfo shows...
+ip_conntrack        5150   6660    320  490  555  1
 
-when taking a look at the byte counters with ifconfig, i get the following
-results:
+pls i need help to know where things went wrong for me.. if someone else 
+have experienced the same can they give their experience/suggestions ??
+thanx in anticipation...
+A.H
 
-eth0      Link encap:Ethernet  HWaddr 00:60:08:6B:A2:FE
-          UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1500  Metric:1
-          RX packets:16181723 errors:4 dropped:0 overruns:0 frame:0
-          TX packets:17970946 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:581668 txqueuelen:100
-          RX bytes:3686193757 (3515.4 Mb)  TX bytes:1361276683 (1298.2 Mb)
-          Interrupt:11 Base address:0x6000
+Maciej Soltysiak wrote:
+ >>Oct  9 12:25:24 ICG kernel: NET: 5 messages suppressed.
+ >>Oct  9 12:26:31 ICG kernel: NET: 1 messages suppressed.
+ >>Oct  9 12:26:31 ICG kernel: ip_conntrack: max number of expected 
+ >>connections 1 of ftp reached for <ipA> -> <ipB>, reusing
+ >>Oct  9 12:27:12 ICG kernel: ip_conntrack: max number of expected 
+ >>connections 1 of ftp reached for <ipA> -> <ipB>, reusing
+>>these messages are piling the message file.
+>>am cusrious now why so ?.. what does this message signify ?
+> 
+> Read the FAQ, and then increase your /proc/net/ip_conntrack_max
+> 
+> Best Regards,
+> Maciej Soltysiak
+> 
 
-intech007:~ # ifconfig eth1
-eth1      Link encap:Ethernet  HWaddr 00:60:08:6B:A2:1A
-          UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1500  Metric:1
-          RX packets:18559613 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:16380728 errors:0 dropped:0 overruns:0 carrier:388
-          collisions:184706 txqueuelen:100
-          RX bytes:2205111742 (2102.9 Mb)  TX bytes:3719071392 (3546.7 Mb)
-          Interrupt:9 Base address:0x6100
-
-This machine is a bridging transparant firewall. eth1 is internet side, and
-eth0 is lan side. 
-
-Is it correct to assume, that the firewall rules in use reduced the incoming
-traffic from 2102.9 MB to 1298.2 MB?
-
-Isn't that too big a reduction..? Am i making a thinking error here..?
-
-Thanks for any replies.
-
-Yours,
-Mourik Jan
 
