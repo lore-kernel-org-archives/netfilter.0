@@ -1,10 +1,14 @@
-From: roberti@walla.co.il
-Subject: Bad file in your sources dir
-Date: Thu, 8 Apr 2004 14:28:39 +0300
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: newbie question
+Date: Thu, 8 Apr 2004 13:02:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404081128.i38BSdG20380@omail1.walla.co.il>
+Message-ID: <200404081302.49038.Antony@Soft-Solutions.co.uk>
+References: <004601c41d60$9bf1af70$aa47aacb@hacker>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <004601c41d60$9bf1af70$aa47aacb@hacker>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,27 +19,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: support@allnet.de
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi alls in Allnet,
+On Thursday 08 April 2004 12:57 pm, M. Ahmad Ijaz wrote:
 
-The archive file ALL0277_1.02.7_ETSI_1014_code.tgz from your
-www.allnet.de/sources directory is not possible to open by any standard
-means (hope not deliberately). You can try yourself and look what happens.
+> when i try to use this command
+>
+> iptables -A PREROUTING -s xxx.xxx.xxx.xxx/yyy.yyy.yyy.yyy -p tcp -m tcp
+> --dport 80 -j REDIRECT --to-ports 8080
+>
+> where xxx is any IP and yyy is the subnet mask, it returns me the same
+> message i.e. iptables: No chain/target/match by that name
+>
+> So it also give the same message with POSTROUTING.
 
-Could you please substitute the bad archive by a correct one? Thank you.
+You need a "-t nat" in there, to tell it the rule is going into the nat table 
+of the PREROUTING chain, not the filter table (which is the default, but does 
+not exist in PREROUTING).
 
-Note, that other archives in the directory are OK.
+Regards,
 
-Sincerely,
-Robert
+Antony.
 
------------------------------------------------------------------------
-Walla! Mail, Get Your Private, Free E-mail from Walla! at:
-http://mail.walla.co.il
+-- 
+People who use Microsoft software should be certified.
 
-
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
