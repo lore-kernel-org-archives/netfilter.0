@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: DNAT Problem
-Date: Thu, 22 Apr 2004 13:47:13 +0100
+Subject: Re: Is this possible?
+Date: Thu, 22 Apr 2004 14:03:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404221347.13412.Antony@Soft-Solutions.co.uk>
-References: <1611.80.0.0.23.1082351242.squirrel@80.0.0.175> <200404221207.12965.Antony@Soft-Solutions.co.uk> <1589.80.0.0.23.1082637754.squirrel@80.0.0.175>
+Message-ID: <200404221403.05058.Antony@Soft-Solutions.co.uk>
+References: <4087BC5F.5010806@uk.thalesgroup.com>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1589.80.0.0.23.1082637754.squirrel@80.0.0.175>
+In-Reply-To: <4087BC5F.5010806@uk.thalesgroup.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,30 +21,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 22 April 2004 1:42 pm, test@seaconindia.com wrote:
+On Thursday 22 April 2004 1:36 pm, Fisher Alex wrote:
 
-> Hi Antony
+> > However, if someone is adamant that you need to set up network
 >
-> Thanks for your reply, but my problem is as follows
+> connectivity
 >
-> I have email server running behind my firewall. Now all request coming
-> from internet are logged as if coming from my firewall. I want the request
-> to be logged with source ip and not with firewall ip.
+> > between machines with such an unfriendly combination of IP addresses, I
+> > suggest you simply set up multiple host-specific routes on the netflter
+> > machine, telling it where to find each different 192.168.0.* destination
+> > address, and don't have a standard 192.168.0.0/24 route on that system.
+>
+> Unfortunately, this is exactly what I can't do :(  This is because there
+> are two of each 192.168.0.* IP address.  The original destination IP
+> address has to taken into account when determining whether packets route
+> through eth1 or eth2.
 
-I know that is your problem.
-
-I believe the change to your MASQUERADE / SNAT rule which I posted is a 
-solution to that problem.
-
-If it is not a solution, then post your current ruleset so that we can think 
-about it further.
+Have you considered using two netfilter boxes, one DNATting from 
+172.26.158.1-30 to 192.168.0.1-30 (network A), and the other DNATting from 
+172.26.158.31-60 to 192.168.0.1-30 (network B)?
 
 Regards,
 
-Antony.
+Antony
 
 -- 
-This email was created using 100% recycled electrons.
+What is this talk of "software release"?
+Our software evolves and matures until it is capable of escape, leaving a 
+bloody trail of designers and quality assurance people in its wake.
 
                                                      Please reply to the list;
                                                            please don't CC me.
