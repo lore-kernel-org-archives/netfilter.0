@@ -1,11 +1,9 @@
-From: "Guilherme Cox" <cox@sinistro.net>
-Subject: Multicast routing question...
-Date: Thu, 28 Aug 2003 22:36:19 -0300
+From: Vilmos Branyik <vbranyik@piopc.com>
+Subject: NAT everything
+Date: Thu, 28 Aug 2003 19:21:21 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <MCEJJKCAIMHFOKODABEIGEDCHNAA.cox@sinistro.net>
-Reply-To: <cox@ieee.org>
+Message-ID: <30E7B49F378ED711AC0F00E02917CD8B08B324@POLLY>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,46 +15,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'd like to know if I can use iptables to solve one problem.
+I can't seem to get this right and I'm hoping someone has the right answer.
 
-My network is:
-<----Local Network/NAT (192.168.7.x)              -- eth0
-<----Internet link/Cisco router                   -- eth1
-<----ViaSat router/A Satelite link(10.254.103.x)  -- eth2
+I have 10 computers on a public network. They all need to connect to an NT
+server (cringe) off that block of addresses and use all the services on it.
+But everyone else needs to be blocked.
 
-My default gateway is the Cisco router IP.
-I have static routes to networks connected using eth2.
+The NT server runs Exchange, Norton Anti Virus (Corp Edition), and has file
+sharing turned on.
 
-My /sbin/route  is:
-cox@earth:~$ /sbin/route -n
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use
-Iface
-xxx.xxx.xxx.128  0.0.0.0         255.255.255.192 U     0      0        0
-eth1
-192.168.7.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
-192.168.149.0   10.254.103.1    255.255.255.0   UG    0      0        0 eth2
-yyy.yyy.yyy.0   10.254.103.1    255.255.255.0   UG    0      0        0 eth2
-10.254.103.0    0.0.0.0         255.255.255.0   U     0      0        0 eth2
-127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
-224.0.0.0       0.0.0.0         240.0.0.0       U     0      0        0 eth0
-0.0.0.0         xxx.xxx.xx.129  0.0.0.0         UG    1      0        0 eth1
+I've tried several different commands but no luck. Could everyone give me
+the an IPTABLES command that redirects every port to another address but
+only allows that from the local subnet.
 
---x--
-Using this model the Multicast packets came from eth2 aren't routed to my
-Local Network (eth0).
-If I connect the VaiSat router on my switch and use ip-aliases, I can
-receive the IGMP. However, it is unsafe. I need to mantain my network but
-the multicast packets must be routed to eth0.
+Here are the ip addresses:
 
-Do you know how can I do? Any ideias? Did anybody have the same problem?
+Public network - 200.1.17.0/27
+Firewall/Router address:
+200.1.17.10 eth0 external
+192.168.1.1 eth1 internal net
 
-If you want more information about my network, please contact me.
+Internal NT server - 192.168.1.254
 
-Thanks and sorry my english mistakes.
+Thanks for any help
 
-cox
-
+Vilmos
 
