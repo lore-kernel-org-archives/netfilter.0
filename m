@@ -1,10 +1,11 @@
-From: Chip Upsal <chip@cyberwolf.com>
-Subject: RE: Update httpd.conf file:  Apache virtualhost not working behin
-	d firewall.
-Date: Fri, 20 Dec 2002 14:36:29 -0700
+From: "David Boone" <netfilter@wizdom.net>
+Subject: netfilter and multiple virtual interfaces
+Date: Fri, 20 Dec 2002 17:21:58 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3019863CF306D211BA4500A0CC30812DB4C250@exchange.cyberwolf.com>
+Message-ID: <7ED10BBB6654124E9AFFF27155322BBBB74E@corp03.nc.ehomecare.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000E_01C2A84C.4CFA2D00"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,187 +16,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: 'Justin Kay' <jkay@nwrecc.org>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
-
-names...
-
-I doubt it is strictly an apache problem as if we remove the firewall and
-assign the external ip address to the server it all works well.
-
------Original Message-----
-From: Justin Kay [mailto:jkay@nwrecc.org]
-Sent: Friday, December 20, 2002 2:23 PM
-To: 'Chip Upsal'
-Subject: RE: Update httpd.conf file: Apache virtualhost not working
-behin d fi rewall.
-
-
-Does the server rely on ipaddresses or names for the virtual hosts?  Sounds
-more like an apache configuration issue than a firewall issue to me...
-
-jk
-
-
------Original Message-----
-From: Chip Upsal [mailto:chip@cyberwolf.com]
-Sent: Friday, December 20, 2002 12:43 PM
-To: 'netfilter@lists.netfilter.org'
-Subject: Update httpd.conf file: Apache virtualhost not working behind
-fi rewall.
-
-
-Update: 
-
-The format of the conf file has much to do with how the server responds.
-
-specifically the virtual host directives:
-for example:
-
-<VirtualHost 192.168.0.2>
-   ServerName site4.company.com
-   ServerAlias site4*
-   ServerAdmin admin@company.com
-   DocumentRoot D:/web_root/foo4
-   ErrorLog logs/site4.cyberwolf.com-error_log
-   CustomLog logs/site4.cyberwolf.com-access_log common
-</VirtualHost>
-
-192.168.0.2 is the internal address of the server; this will make all
-request to this server go to the first virtual root defined in the conf
-file.
-
-While if the directives look like:
-
-<VirtualHost *>
-   ServerName site4.company.com
-   ServerAlias site4*
-   ServerAdmin admin@company.com
-   DocumentRoot D:/web_root/foo4
-   ErrorLog logs/site4.cyberwolf.com-error_log
-   CustomLog logs/site4.cyberwolf.com-access_log common
-</VirtualHost>
-
-or:
-
-<VirtualHost site4.company.com>
-   ServerName site4.company.com
-   ServerAlias site4*
-   ServerAdmin admin@company.com
-   DocumentRoot D:/web_root/foo4
-   ErrorLog logs/site4.cyberwolf.com-error_log
-   CustomLog logs/site4.cyberwolf.com-access_log common
-</VirtualHost>
-
-Then all request to the server go the default DocumentRoot.
-
-Any ideas what the NATing in NETFILTER could be doing to the host header?
-
-I updated my iptables to version 1.2.6a with no help.
-
-
-Chip
-
-
-
------Original Message-----
-From: Chip Upsal 
-Sent: Thursday, December 19, 2002 6:39 PM
 To: netfilter@lists.netfilter.org
-Subject: Apache virtualhost not working behind firewall.
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_000E_01C2A84C.4CFA2D00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Hi,
+ 
+I know you can apply a + (plus sign) to adapters in the form eth+ or
+ppp+, but I'm setting up a firewall that will have several web servers
+behind it and I would like to do something like eth0+ and/or eth0:+ in
+the rules.  Does anyone know if this will work or do I have to enter
+every single virtual adapter by hand?
+
+Thanks, 
+Dave Boone 
 
 
-I have a windows 2000 server running apache 2.0.43 with virtual hosts 
-behind an iptables firewall doing NAT.
-I am running iptables v1.2.5 on a redhat 7.3 server.
 
-My nat and fowarding rules look like:
+------=_NextPart_000_000E_01C2A84C.4CFA2D00
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-INET_IP="216.184.9.5"
-#HTTP_IP="216.184.9.6"
-PWWEB_IP="216.184.9.30"
-PWODBC_IP="216.184.9.29"
-INET_IFACE="eth2"
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Message</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1126" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D807171922-20122002><FONT face=3D"Comic Sans MS"=20
+size=3D2>Hi,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D807171922-20122002><FONT face=3D"Comic Sans MS"=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D807171922-20122002><FONT face=3D"Comic Sans MS" =
+size=3D2>I know you=20
+can apply a + (plus sign) to adapters in the form eth+ or ppp+, but I'm =
+setting=20
+up a firewall that will have several web servers behind it and I would =
+like to=20
+do something like eth0+ and/or eth0:+ in the rules.&nbsp; Does anyone =
+know if=20
+this will work or do I have to enter every single virtual adapter by=20
+hand?</FONT></SPAN></DIV>
+<P><FONT face=3DArial size=3D2>Thanks,</FONT> <BR><FONT face=3DArial =
+size=3D2>Dav<SPAN=20
+class=3D807171922-20122002>e</SPAN> Boone</FONT> <BR></P></BODY></HTML>
 
-LAN_IP="192.168.1.15"
-LAN_IP_RANGE="192.168.1.0/24"
-LAN_BCAST_ADRESS="192.168.1.255"
-LAN_IFACE="eth0"
+------=_NextPart_000_000E_01C2A84C.4CFA2D00--
 
-
-DMZ_PWWEB_IP="192.168.0.2"
-DMZ_PWSQL_IP="192.168.0.3"
-DMZ_PWODBC_IP="192.168.0.4"
-DMZ_IP="192.168.0.1"
-DMZ_IFACE="eth1"
-
-
-$IPTABLES -A FORWARD -i $DMZ_IFACE -o $INET_IFACE -j ACCEPT
-$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -m state \
---state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i $LAN_IFACE -o $DMZ_IFACE -j ACCEPT
-$IPTABLES -A FORWARD -i $DMZ_IFACE -o $LAN_IFACE -j ACCEPT
-
-#
-# PWWEB
-#
-
-$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWWEB_IP \
---dport 80 -j allowed
-$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWWEB_IP \
--j icmp_packets
-
-#
-# PWODBC
-#
-
-$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWODBC_IP \
---dport 80 -j allowed
-$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d 
-$DMZ_PWODBC_IP \
--j icmp_packets
-
-#
-# PWWEB
-#
-$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $PWWEB_IP 
---dport 80 \
--j DNAT --to-destination $DMZ_PWWEB_IP
-
-$IPTABLES -t nat -A PREROUTING -p ICMP -i $INET_IFACE -d $PWWEB_IP \
--j DNAT --to-destination $DMZ_PWWEB_IP
-
-#
-# PWODBC
-#
-$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $PWODBC_IP 
---dport 80 \
--j DNAT --to-destination $DMZ_PWODBC_IP
-
-$IPTABLES -t nat -A PREROUTING -p ICMP -i $INET_IFACE -d $PWODBC_IP \
--j DNAT --to-destination $DMZ_PWOBDC_IP
-
-
-The problem....
-When the server is connected directly to the internet all works well. 
-However, when it is behind the firewall the virtualhost are not working 
-(you can only access the default web site.
-
-Furthermore i am getting the following errors when starting iptables;
-
-[root@iptables init.d]# ./iptables restart
-Flushing all current rules and user defined chains:        [  OK  ]
-Clearing all current rules and user defined chains:        [  OK  ]
-Applying iptables firewall rules:                          [  OK  ]
-iptables v1.2.5: Unknown arg `--to-destination'
-Try `iptables -h' or 'iptables --help' for more information.
-                                                            [  OK  ]
-
-
-Any ideas on a solution would be most appriciated.
-
-
-Chip
 
