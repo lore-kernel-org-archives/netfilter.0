@@ -1,10 +1,10 @@
-From: Dan Egli <dan@shortcircuit.dyndns.org>
-Subject: log EVERYTHING
-Date: Tue, 25 Mar 2003 23:05:57 -0700
+From: Mohammad Shakir <shakirz1@yahoo.com>
+Subject: Multi Link Dailup
+Date: Tue, 25 Mar 2003 23:33:43 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E814345.5060508@shortcircuit.dyndns.org>
+Message-ID: <20030326073343.84029.qmail@web40709.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-1553738321-1048664023=:83997"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,26 +15,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, valhalla-list@redhat.com
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+--0-1553738321-1048664023=:83997
+Content-Type: text/plain; charset=us-ascii
 
-I was wondering if there was a way I could setup my rules to log
-EVERYTHING, THEN process normally. I.e. if it's an allowed port, log the
-connection, then pass it through, and if it is a disallowed port, log
-the intrusion and then reject the packet.
 
-Is this possible?
+Is this possible to Multi LInk Dailup in Red Hat Linux 7.3 or in any new verion? 
 
-Thanks!
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+This option in available in Windows 2000 but I could not find it in Red Hat Linux.
 
-iD8DBQE+gUNExQEzeXtVwzoRAgUqAJ9U48nvbRqC7++B4HlY2YhhAn0QygCfcK3E
-7zS4cnq63yJTxgNfTRFMc+g=
-=dntV
------END PGP SIGNATURE-----
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! Platinum - Watch CBS' NCAA March Madness, live on your desktop!
+--0-1553738321-1048664023=:83997
+Content-Type: text/html; charset=us-ascii
+
+<P>Is this possible to Multi LInk Dailup in Red Hat Linux 7.3 or in any new verion? </P>
+<P>This option in available in Windows 2000 but I could not find it in Red Hat Linux.</P><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://rd.yahoo.com/platinum/evt=8162/*http://platinum.yahoo.com/splash.html">Yahoo! Platinum</a> - Watch CBS' NCAA March Madness, <a href="http://rd.yahoo.com/platinum/evt=8162/*http://platinum.yahoo.com/splash.html">live on your desktop</a>!
+--0-1553738321-1048664023=:83997--
 
