@@ -1,14 +1,12 @@
-From: "Bob Hockney" <zeus@ix.netcom.com>
-Subject: Re: IRC DCC between 2 clients on the same net.
-Date: Thu, 21 Nov 2002 19:52:39 -0800
+From: =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@ncparty.dk>
+Subject: Can i reply with a text when packet dropped :)
+Date: Fri, 22 Nov 2002 06:50:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DDD3987.28137.1A389300@localhost>
-References: <20021118035555.GA5525@sexycoder.com>
+Message-ID: <002201c291eb$18f533a0$0200000a@parseerror.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001F_01C291F3.7A91C850"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20021118035555.GA5525@sexycoder.com>
-Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Jihoon Chung <difro@sexycoder.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> I have 2 clients behind a masquerading gateway.
-> 
-> When one of them DCC SEND to the outside world, everything's fine.
-> (Thanks
-> to ip_conntrack_irc/ip_nat_irc)
-> 
-> But when I DCC-SEND from one client to the other client on the same
-> network, it doesn't work.  The sending side fails almost immediately.
-> 
-> Is this normal?
-> I'm using kernel 2.4.17.
+This is a multi-part message in MIME format.
 
-DCC is a passive protocol so sending a file means an inbound tcp connection, why 
-you need the irc modules in the first place.  What is happening is that 
-ip_nat_irc has little choice but to substitute the external ip of your gateway 
-for your LAN ip in the DCC SEND request, thus making the other client think it 
-should connect to your gateway instead of the LAN address of the client machine 
-to get the file -- what you want if the other client is outside your firewall.  
-ip_nat_irc then intercepts this and forwards the connection to the LAN ip making 
-to DCC SEND request.
+------=_NextPart_000_001F_01C291F3.7A91C850
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Try unloading the two irc modules and attempting a SEND, which should work if 
-the two LAN computers can connect to each other.  Also, make sure the rules in 
-the FORWARD chain of the gateway box allow connections to the external ip from 
-you LAN.
+Hey :)
 
--Bob
+I would like to know if there exist a module where i can customize a =
+reply when it get hitted by a packet..
+
+like
+
+iptables -A FORWARD -p tcp -m string --string "foo" -j REPLY "bar"
+
+Are there a module there support it? :) I would be cool=20
+
+- Matias Bj=F8rling
+
+------=_NextPart_000_001F_01C291F3.7A91C850
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hey :)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I would like to know if there exist a =
+module where=20
+i can customize a reply when it get hitted by a packet..</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>like</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -p tcp -m string =
+--string "foo"=20
+-j REPLY "bar"</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Are there a module there support it? :) =
+I would be=20
+cool </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>- Matias =
+Bj=F8rling</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_001F_01C291F3.7A91C850--
+
 
