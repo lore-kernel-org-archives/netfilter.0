@@ -1,8 +1,8 @@
-From: MOUDARIR Mohamed <moudarir@Richbond.ma>
-Subject: don't want to use netfilter at msn session
-Date: Wed, 24 Sep 2003 15:01:09 -0000
+From: Carlos Santos <csantos@csantos.net>
+Subject: H323 gateway? HELP
+Date: Wed, 24 Sep 2003 16:09:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <14C5057BC852D611BAC400E0299AA10F02041F@MAILSERV>
+Message-ID: <5.2.0.9.0.20030924160315.00bb9008@mail.network.com.pt>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,24 +14,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello
-We have our private lan behind a linux firewall, with iptables 1.2.3 (
-Redhat 7.2 ).
-We use the kernel patch and patch-omatic to solve the H323 problem without
-success.
-So i want when some user try to use MSN messenger (Audio conversation) the
-linux firewall flush it's rule and become like a simple gateway to route or
-Nat packet to the internet for this particular user.
-So the rest of rules for other ip adress become intact.
-The idea is that the packet from this particular ip adress go throught the
-firewall whithout being checked with iptables rules.
-If anyone have solution.
-Or can i use another script or utilities like H323 proxy or gatekeper
-parallel with iptables runing
-Thank you .
+
+Hi,
+
+Can anyone please tell me if there is a difference between the ways that 
+Yahoo Messenger and MSN Messenger handle audio/video connections ? I have a 
+linux box (netfilter/iptables...) handling my connections (from my private 
+network) to the Internet and the kernel supports H323. The problem is that 
+I can connect to anyone using my webcam in Yahoo Messenger with great audio 
+and video but I'm having a hard time with MSN. I though they both used the 
+same method.... Do I have to have a different set of rules for each one ?
+
+Any ideas ?
+
+Thanks,
+Carlos.
+
+
+
+
+*****************************************
+Carlos Santos
+csantos@csantos.net
+***************************************** 
 
 
