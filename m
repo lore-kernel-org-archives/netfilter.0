@@ -1,9 +1,10 @@
-From: Al Sparks <data345@yahoo.com>
-Subject: Changing the desitnation (DNAT) locally
-Date: Thu, 5 Feb 2004 12:14:34 -0800 (PST)
+From: <enosp.netmeeting@onlinehome.de>
+Subject: Packet loss at routing to own machine
+Date: Sat,  7 Feb 2004 18:58:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040205201434.57440.qmail@web9706.mail.yahoo.com>
+Message-ID: <6747028$10761765224025268a71f941.98551008@config19.schlund.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,50 +16,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm new to netfilter.
 
-I've been going through the HOW-TO's on NAT, and I want to change the
-destination on packets based on it's destination.
+Packet loss at routing to own machine!
 
-I set up a test, the idea being, I want to change the destination of a
-packet from 192.168.100.99 to 127.0.0.5.  The packet will be generated
-locally.
+I have following test configuration to measure udp round trip time:
 
-The first thing I did, is I set up my route tables so that
-192.168.100.99  127.0.0.5   255.255.255.255 UGH 0      0        0 lo
-10.254.223.0    *           255.255.255.0   U   0      0        0 eth0
-127.0.0.0       *           255.0.0.0     U     0      0        0 lo
-default         whatever    0.0.0.0       UG    0      0        0 eth0
+                                                     |--------|
+|---------|eth1 (192.168.1.2)<---->(192.168.1.1) eth1|router 1|eth0
+(192.168.3.1)<-
+|Test PC  |               cross cable 1              |--------|         
+          |
+|reflect. |                                                             
+ cross    |
+|         |                                                             
+ cable 3  |
+|send/rec.|                                          |--------|         
+          |
+|---------|eth0 (192.168.2.2)<---->(192.168.2.1) eth1|router 2|eth1
+(192.168.3.2)<-
+                            cross cable 2            |--------|
 
+The linux routers 1 and 2 have activated forwarding.
+On the Test PC is running an udp Sender program, which sends udp packets
+from
+eth0 (192.168.2.2) over the routers 2 and 1 to eth1 (192.168.1.2) on the
+Test PC.
+An udp reflector program receiving the packets on eth1 sends it back
+over both
+routers to eth0 where the packets arrive.
+With etheral it can be seen, that the reflected packets arrive at eth0
+of the
+Test PC, but the receive call of the send/receive program does not get
+the packets.
 
+When the Sender program and the reflector program run on separate
+machines,
+it works fine.
 
-So I have 192.168.100.99 routed to my local interface, "lo".
+To avoid an internal shortcut,
+(udp packets sent from eth0 to eth1 over the loop back interface)
+I shut down the loop back interface with
+ifconfig lo down
 
+Following routing table entries were set:
+route add -host 192.168.1.1 dev eth1
+route add -host 192.168.2.2 gw 192.168.1.1 dev eth1
+route add -host 192.168.2.1 dev eth0
+route add -host 192.168.1.2 gw 192.168.2.1 dev eth0
 
-Here's my NAT listing:
-# iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination         
-DNAT       all  --  anywhere             192.168.100.99     to:127.0.0.5
+All other routing entries were deleted.
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
+Who throws away the received udp packets, when the send/receive program
+and the reflector program runs on the same machine ?
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+Have I to set iptables rules, if so, which rules have I to use ?
 
-
-
-To test it, I telnet to the SSH port with
-   telnet 127.0.0.5 22
-which gets me a connection, but
-   telnet 192.168.100.99 22
-just shows a SYN_SENT when I check with netstat.
-
-So, is what I'm doing doable?  If so, how do I do it?
-   === Al
-
+Thanks in advance for your help....
 
