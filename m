@@ -1,10 +1,9 @@
-From: gofers@poczta.onet.pl
-Subject: ULOG flush timeout problem, please help!
-Date: Mon, 21 Feb 2005 01:41:23 +0100
-Message-ID: <20050221004129Z152219-21852+726@kps1.test.onet.pl>
+From: "=?UTF-8?B?TWljaGFlbCBKw7xyZ2Vucw==?=" <netfilter@juergens.name>
+Subject: providing partial access to iptables for non root user
+Date: Mon, 21 Feb 2005 12:33:05 +0100
+Message-ID: <4219C6F1.2070500@juergens.name>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,24 +14,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 Hi,
 
-I'm developing an application which uses the ULOG target as a manner of copying packets from the FORWARD chain (in filter table) to the userspace . One of the goals of the application is to store received packets as soon as they arrive from the network.  Unfortunately I found annoying problem with the timeout of a netlink queue. I set the ulog-qthreshold parameter of the ULOG target to the lowest possible value (1). When new packets are not arriving, the last received packet is not being passed to the userspace but stays in buffer for about 10 seconds. During this time my application doesn't know anything about it and therefore it doesn't work correctly. It just waits assuming there are no new packets.
+I=C2=B4m looking for a solution to provide a non root user write access =
+to a 
+chain.
 
-The questions are:
- - is there any patch available which corrects this annoying behavior ?
- - how can I change the buffer flush timeout without recompiling kernel or iptables ?
- - what is the lowest possible buffer flush timeout in ULOG ?
+In this special case I have to provide the a mechanism to block some ip 
+adresses to connect to http.
+But this should be done by a non root user. The non root user should not=
+ 
+change any other rule.
 
-I'd like NOT to download and compile any newest kernel source, because I'm using a POTS modem. I would be grateful if anybody can help me. It's urgent, because I have to have my app working till Thursday.
+Any ideas?
 
-I'm using:
- - Linux kernel 2.4.23-bk16
- - iptables 1.2.9
- - libipulog.c 1.11, libipulog.h 1.7
- - glibc 2.2.4
- - gcc 2.95.3 / gcc 3.3.3
+regards,
+Michael
+
 
