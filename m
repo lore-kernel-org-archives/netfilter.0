@@ -1,16 +1,14 @@
-From: CAM IT Solutions <netfilter@lucassen.org>
-Subject: Re: iptables jump to userdefined chain and ESTABLISHED,RELATED
- rules
-Date: Sat, 11 Oct 2003 19:45:27 +0200
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: DNAT iptables :o)
+Date: Sat, 11 Oct 2003 12:52:18 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031011194527.17273de9.netfilter@lucassen.org>
-References: <20031010132641.2591d3b5.netfilter@lucassen.org>
-	<1065889564.1268.11.camel@elendil.intranet.cartel-securite.net>
-Reply-To: reply2@lucassen.org
+Message-ID: <LFEHKEBEBHAFGJBMNKAOOEKKCCAA.markee@bandwidthco.com>
+References: <A59F9B5C2A83424F9A8679E1BAB3E56610DCAB@exchange.zoodomain.org>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1065889564.1268.11.camel@elendil.intranet.cartel-securite.net>
+In-Reply-To: <A59F9B5C2A83424F9A8679E1BAB3E56610DCAB@exchange.zoodomain.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,57 +19,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Slav Rilov <Slav.Rilov@Zoo.org>, netfilter@lists.netfilter.org
+
+Do you have "/proc/sys/net/ipv4/ip_forward" set to 1?
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Slav Rilov
+Sent: Friday, October 10, 2003 4:08 PM
 To: netfilter@lists.netfilter.org
+Subject: DNAT iptables :o)
 
-On Sat, 11 Oct 2003 18:26:04 +0200
-Cedric Blancher <blancher@cartel-securite.fr> wrote:
 
-[snip rules]
+I have Red Hat intalled, with minimum pakets option:
+I am building dual host: eth1 - external, eth0(10.10.1.1 255.255.0.0) -
+internal interface
+I just want the packet to hit eth0 for testing, but it never dose
+I am running the folowing script:
 
-> > Both ways work, but I'd say the second way is the best. Am I right?
-> 
-> I agree.
-> To me, theses two rulesets are equivalent for HTTP packets, but first
-> one implies one more rule evaluation than the second one for
-> ESTABLISHED packets that are destined to TCP/80.
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
 
-I don't know too much about netfilter internals, but I suppose that
-there must be a separate connection table for each chain. I think this
-is because you can't enter:
+iptables -t nat -A PREROUTING -i eth1 -j DNAT --to-destination 10.10.1.1
+iptables -A INPUT -i eth0 -j ACCEPT
+iptables -A INPUT -i eth1 -j ACCEPT
 
-/sbin/iptables -m state --state ESTABLISHED,RELATED -j ACCEPT
+I have log that tracks pakets and I see that packet arrives, then it
+destination addresses changes to 10.10.1.1 and hits eth1 instead of eth0 and
+stops, never gets to eth0
 
-without mentioning the chain. I *have* to enter:
+Please help me
+Slav
 
-/sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-I just wonder if these ESTABLISHED,RELATED packets are handled by 1
-overall connection table, or handled by 2 connection tables, 1 for
-INPUT and 1 for FORWARD.
-
-And what happens if a jump is made from the FORWARD chain to a
-userdefined chain, is the connection table the one of the FORWARD chain?
-And if the answer is "yes", why does iptables accepts the 
-
-/sbin/iptables -A CH_WWW -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-rule then? I haven't found any answer to that question on the net yet :(
-
-> PS : there's no RELATED packets in HTTP ;)
-
-Ok, the CH_WWW was just an example, but you certainly have got a point
-there ;-)
-
-R.
-
-___________________________________________________________________
-Recursion: see recursion
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
- 
 
