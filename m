@@ -1,13 +1,13 @@
 From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: what is conntrack & how ipchains works without it?!?
-Date: Wed, 10 Jul 2002 13:10:55 -0400
+Subject: Re: satellite users can't connect to port forwarded services
+Date: Wed, 10 Jul 2002 13:31:11 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020710171055.GB25368@cannon.eng.us.uu.net>
-References: <20020710095044.A28060@spawar.navy.mil>
+Message-ID: <20020710173110.GC25368@cannon.eng.us.uu.net>
+References: <F2178nzRC1uQdfNPqvW0000bba8@hotmail.com> <5.1.0.14.2.20020710114418.025cd680@pop.netzero.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <20020710095044.A28060@spawar.navy.mil>
+In-Reply-To: <5.1.0.14.2.20020710114418.025cd680@pop.netzero.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,49 +19,42 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Christian Seberino <seberino@spawar.navy.mil>
-Cc: netfilter@lists.samba.org
+To: Ramin K <mr_list@netzero.net>
+Cc: j davis <davis_compz@hotmail.com>, netfilter@lists.samba.org
 
-On Wed, Jul 10, 2002 at 09:50:44AM -0700, Christian Seberino wrote:
+On Wed, Jul 10, 2002 at 11:49:31AM -0500, Ramin K wrote:
 
-> Is conntrack the "memory" of iptables that allows
-> it to make filtering decisions based on history
-> of network traffic in and out of PC???
+> At 12:00 AM 7/10/2002 +0000, j davis wrote:
 > 
-> Imagine a private LAN PC trying to do DNS thru
-> an SSH-only DNAT/SNAT firewall... it is the conntrack
-
-What is a SSH-only firewall?
-
-> that allows ESTABLISHED/RELATED packets to bypass
-> the rules allowing DNS to work right?
+> >Starband satallites claim they dont support real-time protocalls
+> >like telnet,ssh,ftp and so on. And absolutley do not allow incoming
+> >traffic from the internet thats not requested. except maybe a ping.
+> >
+> >jd
+> >http://www.taproot.bz
 > 
-> How can *ipchains* do DNS thru an SSH-only ipchains
-> firewall since it does *not* have conntrack!!!
-> It must have some other mechanism right? What?
+> 
+>         Yes, yes ssh and telnet are going to be slow and "don't call us if 
+> they suck" is the standard satellite provider line. However FTP, POP, SMTP 
+> being unavailable generally qualify you for broken network status whether 
+> they are interactive or not.
+> 
+>         However in this case the satellite user can reach other sites on 
+> the internet via those protocols, just not me and roughly since the 
+> introduction of the new firewall.
 
-In case of ipchains you have to open up the firewall manually for
-the return traffic which usually translates into a much larger hole
-than needed.
+Is it only the director of IT's satellite based host that has problems
+connecting to the internal host?
 
-Again, what is a SSH-only firewall?
+In your original posting you sent the top-level firewall script without
+sending the called scripts like:
+
+/etc/firestarter/allow-all
+/etc/firestarter/allow-service-machine
+/etc/firestarter/allow-service-all
+...
+
+Besides the logs you sent, how have they been logged? By any logging rule?
 
 Ramin
-
-> 
-> Chris
-> -- 
-> _______________________________________
-> 
-> Dr. Christian Seberino
-> SPAWAR Systems Center San Diego
-> Code 2363
-> 53560 Hull Street
-> San Diego, CA 92152-5001
-> U.S.A.
-> 
-> Phone: (619) 553-7940
-> Fax:   (619) 553-2836
-> Email: seberino@spawar.navy.mil
-> _______________________________________
 
