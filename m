@@ -1,14 +1,9 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: tcpwrappers as firewall and/or CL-GW
-Date: Sun, 11 Apr 2004 17:03:44 +0100
+From: "__ Radien__" <radien@zworg.com>
+Subject: Firewall as a part of sec life
+Date: Sun, 11 Apr 2004 09:17:21 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404111703.44379.Antony@Soft-Solutions.co.uk>
-References: <2523.1081698996@zworg.com>
-Reply-To: Netfilter <netfilter@lists.netfilter.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <9761.1081700241@zworg.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2523.1081698996@zworg.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,33 +13,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Sunday 11 April 2004 4:56 pm, __ Radien__ wrote:
+Dear All
+(Here My Idea)
 
-> >No.   TCPwrappers is a response mechanism to see where a connection came
-> > from, not a gateway in the middle of a connection between two machines.
-> >
-> >Regards,
-> >
-> >Antony.
->
-> What about local services? Can't  a tcp wrapper act like a firewall?
+  Configuring a firewall is just a chapter of security life of a
+system(not just a linux box). 
 
-No.   Not using my definition of a firewall, anyway.
+  And two latest chapter is 
 
-Regards,
+. Optimization (in configuration and/or kernel)
+. Testing the security issues(e.g. security assessment tools)
+.  keeping updat2date
 
-Antony.
+  So what is your idea about testing a firewall:
+1. Configuration to satisfy our needs
+2. Keep my things secure
+3. Is this firewall, that I'm using, good enough?( in troughput, etc)
 
--- 
-Your work is both good and original.  Unfortunately the parts that are good 
-aren't original, and the parts that are original aren't good.
-
- - Samuel Johnson
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Regards
+__Radien__
 
