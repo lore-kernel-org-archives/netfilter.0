@@ -1,13 +1,13 @@
-From: =?iso-8859-1?Q?Gunnar_Fr=F6din?= <gunnar68@gunfro.com>
-Subject: Re: Port forwarding.
-Date: Mon, 28 Jun 2004 14:20:43 +0200
+From: Evgeni Vachkov <evgeni.vachkov@investis.com>
+Subject: Re: ip_conntrack_tcp Errors
+Date: 28 Jun 2004 13:29:51 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001b01c45d0a$5529b7b0$6600a8c0@simba>
-References: <001301c45cf0$9f7cf710$6600a8c0@simba> <200406281057.52955.Antony@Soft-Solutions.co.uk> <001301c45cf9$51dbfc00$6600a8c0@simba> <200406281134.37964.Antony@Soft-Solutions.co.uk>
-Reply-To: =?iso-8859-1?Q?Gunnar_Fr=F6din?= <gunnar68@gunfro.com>
+Message-ID: <1088425791.13925.151.camel@spudgun.dhcp.internal>
+References: <Pine.LNX.4.33.0406281356380.20141-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.33.0406281356380.20141-100000@blackhole.kfki.hu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,81 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Lets wait with the dns config for a moment ok?
-
-Answer to question 1: YES
-
-Answer to question 2:
-
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-       6      360 ACCEPT     tcp  --  eth0   eth1    0.0.0.0/0
-192.168.0.100      tcp dpt:25 state NEW,RELATED,ESTABLISHED
-       0        0 ACCEPT     tcp  --  eth1   eth0    192.168.0.100
-0.0.0.0/0          tcp spt:25 state NEW,RELATED,ESTABLISHED
+The test software connects to the web server with 200 connections at a
+time to start with. When it receives the test data, it creates 210
+connections, then 220... ...and so forth until something wrong happens.
 
 
-Chain PREROUTING (policy ACCEPT 20 packets, 2796 bytes)
-    pkts      bytes target     prot opt in     out     source
-destination
-       1       60 DNAT       tcp  --  *      *       0.0.0.0/0
-10.20.30.40        tcp dpt:25 to:192.168.0.100:25
+The interesting fact is that most connections were in  TIME_WAIT from
+(/proc/net/ip_conntrack). 
+Doing a `wc -l /proc/net/ip_conntrack` returns a figure arround 25000,
+which is well below the ip_conntrack_max treshold. 
 
-I tryed to telnet in, witch times-out after 6 attempts
+> Why are there so many SYN/ACK packets sent when there is already a
+> connection established trough the firewall between the same IP addresses
+> and same ports?
+
+I'd love to know this, too. The software Im using is based on ab (apache
+benchmark tool). I beleive ab is creating multiple separate connections,
+over which it is getting data from server and therefore simulating a
+large nimber of users.     
+
+> > Jun 25 16:38:51 myserver kernel: ip_conntrack_tcp: INVALID: invalid SYN
+> > (ignored) SRC=172.30.4.200 DST=192.168.30.3 LEN=60 TOS=0x00 PREC=0x00
+> > TTL=64 ID=0 DF PROTO=TCP SPT=80 DPT=43226 SEQ=461046254 ACK=654564425
+> > WINDOW=5792 RES=0x00 ECE ACK SYN URGP=0 OPT
+> > (020405B40402080A2D5584DD106BFE1501030300)
 
 
-
-
-
-
-On Monday 28 June 2004 11:18 am, Gunnar Fr=F6din wrote:
-
-> Ok about the splitt DNS, i'm new at this(Linux) but I think I know, but if
-> you have the time, some more info would be god, there is a DNS on
-> 192.168.0.100
-
-Is that DNS server providing responses to internal clients only, or to
-external clients as well (in which case, how have you done the DNAT rules
-for
-that one!?)
-
-> The real problem is that the port forwarding dose not work at all !!!
-
-What, not even from the outside?   Hm.   The ruleset you posted looked
-sensible enough.
-
-Two questions then:
-
-1. Is the public address 217.215.x.x which you are using as the original
-destination in your DNAT rule bound to the external interface (eth0) of the
-firewall?
-
-2. What do the packet counts for the appropriate rules show from
-"iptables -L
-FORWARD -nvx; iptables -L PREROUTING -t nat -nvx"?
-
-The packet counts should show us whether packets are:
-a) arriving
-b) getting DNATted
-c) being FORWARDed
-d) getting replies
-
-Regards,
-
-Antony.
-
---
-Ramdisk is not an installation procedure.
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
+Regrads,
+Evgeni Vachkov
 
 
 
