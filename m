@@ -1,10 +1,11 @@
-From: <listuser@sally.epygi.de>
-Subject: Is this conntrack behaviour correct? Aka. Stealing services...
-Date: Fri, 4 Jun 2004 13:44:34 +0200
+From: Aldo Lagana <ALagana@p21.com>
+Subject: RE: NAT and VPN
+Date: Thu, 3 Jun 2004 13:26:22 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BDEHJGPIKNLKJJBCCFPLOEGMCOAA.listuser@sally.epygi.de>
+Message-ID: <0776B9DA384FFB4C94A6B73F7DC87A6003F35CC9@newman.p21.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4498F.E3E56870"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,152 +16,390 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+To: 'Derek Storvik' <dstorvik@consultech.net>, netfilter@lists.netfilter.org
+
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
+
+------_=_NextPart_001_01C4498F.E3E56870
+Content-Type: text/plain;
+	charset="iso-8859-1"
+
+What VPN?  Cisco IPSec client?  other IPSec clients?  PoPToP?.....
+ 
+yes it matters
+ 
+for Poptop - there is a module ip_nat_pptp
+ 
+I think for IPSec there are other netfilter modules to provide VPN over a
+NAT connection.
+ 
+The reason why is that VPN require that the packets are not touched (they
+have a checksum stored within each packet which it checks against) and NAT
+breaks that - it chanegs the packet thus changing the new checksum value
+thus breaking the VPN.  
+ 
+so
+ 
+you need to find out which vpn it is and you need to google if there is a
+Netfilter module available for it.!
+ 
+ 
+
+-----Original Message-----
+From: Derek Storvik [mailto:dstorvik@consultech.net]
+Sent: Thursday, June 03, 2004 12:53 PM
 To: netfilter@lists.netfilter.org
-
-HiHo all!
-
-I have viewed a strange conntrack behaviour.
-Sorry if this mail will be long, but it seems to
-be a quite complicated szenario, nevertheless it
-happens and is bugging me.
-
-=======================
-Short questions for the impatient:
-  - Why is netfilter using a port for NATing,
-    even though the very same port is reserved
-    by the router device though a listening socket,
-    (but "free" from view of conntrack table.)
-  - I need a way to reserve a certain touple in
-    the conntrack table. Or
-  - prevent a fixed touple from being used.
-    (I know, it sounds strange but i need it :)
+Subject: NAT and VPN
 
 
-========================
-Short description:
 
-I have three machines:
-  A = a router 10.20.10.193 which is natting machine B
-  B = 172.30.193.100        being behind A
-  C = 10.20.0.95 a server
+I'm having trouble with NAT and VPN   
 
-In the conntrack i have an entry with:
-  udp 17 0 src=172.30.193.100 dst=10.20.0.95 sport=5060 dport=5060 src=10.20.0.95 dst=10.20.10.193 sport=5060 dport=5060 [ASSURED]
-..
+ 
 
-even though A itself is listening on port 5060.
-   .......  sport=5060 dport=5060 [ASSURED]
-                             ^^^^
-				I don't like this, should not be 5060
+I have a linux server running Fedora core 1   that is a
+NAT/FIREWALL/VLAN/DHCP server for a large client network.
+
+ 
+
+Internet
+
+  |
+
+  |
+
+Linux
+
+  |
+
+  |
+
+Large network with many vlans and 1000 nodes or so.
+
+ 
+
+ 
+
+ The internal network is natted to the 10.0.0.0 network and my clients can
+not VPN out to the internet.   Specifically they get back an error 619
+
+What has to be done to allow VPN to traverse through the firewall and NAT?
+at the moment the firewall rules are wide open to make sure that isn't my
+issue. 
+
+ 
+
+Any help would be appreciated.
+
+----------------------------------
+
+Derek Storvik
+
+Network & Systems Administrator
+
+ConsulTech, LLC
+
+ 
+
+ 
+
+Phone: 812.323.8324
+
+Fax: 812.323.1272
+
+E-mail:  <mailto:dstorvik@consultech.net> dstorvik@consultech.net
+
+ 
+
+1441 Fenbrook Lane
+
+Bloomington, IN 47401
+
+----------------------------------
+
+ 
 
 
-======================================
-Longer Scenario description:
-No let me explain why this is a Problem.
-The setup is the same as above, i just repeat
-the ips for easier understanding.
 
-I have a service running on a linux router A,
-the same service is running behind this router on
-a another machine B. The service is SIP connecting
-to a fixed sip-server C. SIP uses fixed ports for
-src and dst. It can be any port, but after signalling
-it must be fixed and default is 5060.
-
-This is very important, because this will now lead to
-two touples with
-      A:5060 C:5060  for the router
-and   B:5060 C:5060  for the machine behind the router
-			   A does also NAT machine B
-
-Now when the router connects to the sip-server i get
-a correct entry in connection tracking.
-
-A= 10.20.10.193
-C= 10.20.0.97
-udp      17 19 src=10.20.10.193 dst=10.20.0.97 sport=5060 dport=5060 src=10.20.0.97 dst=10.20.10.193 sport=5060 dport=5060 [ASSURED]
-use=
-
-So far ok.
-Note that the service has opened a Socket for 5060 on A, it is listening on 5060.
-Now after this entry expires, let B connect to C
-
-B=172.30.193.100 which is a subnet to router A
-udp      17 0 src=172.30.193.100 dst=10.20.0.95 sport=5060 dport=5060 src=10.20.0.95 dst=10.20.10.193 sport=5060 dport=5060
-[ASSURED] use=1
+Visit our website at http://www.p21.com/visit 
+The information in this e-mail is confidential and may contain legally
+privileged information.  It is intended solely for the person or entity to
+which it is addressed.  Access to this e-mail by anyone else is
+unauthorized. If you are not the intended recipient, any disclosure,
+copying, distribution, action taken, or action omitted to be taken in
+reliance on it, is prohibited and may be unlawful.  If you received this
+e-mail in error, please contact the sender and delete the material from any
+computer. 
 
 
-========================
-Well. I know this behaviour is probably ok, as the old entry
-is expired from conntrack table. So technically it looks ok for now.
-BUT I don't like that the natted dport 5060 is used.
-....5060 dport=5060 [ASSURED] ......
-               ^^^^^-should NOT be 5060.
 
-Yes i know it was free from conntrack view. But A is still
-listening on port 5060 (open socket). Because now we run
-into a problem. The first connect has told the SIP server,
-which ports the router uses (5060). The problem is that once we
-are registered the sip-server can also initiate a connection
-which he does for an incoming call. So now the sip-server
-sends a packet from C:5060 to A:5060 telling A that
-he has a call, which now will be forwarded due to the later
-conntrack entry to the machine B.
-To make things even worse. B (being intelligent) has detected
-via stun that it is behind nat, so it constantly refreshes it's
-connection by sending keep-alive packets to C. So the
-second conntrack-entry will never expire. Which itself is
-also correct.
+------_=_NextPart_001_01C4498F.E3E56870
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The only problem i see is that the natted DPORT in
-the touple is 5060 instead of anything else. If it
-would have been anything but 5060, both machines
-and both services could coexist fine.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML xmlns=3D"http://www.w3.org/TR/REC-html40" xmlns:o =3D=20
+"urn:schemas-microsoft-com:office:office" xmlns:w =3D=20
+"urn:schemas-microsoft-com:office:word" xmlns:st1 =3D=20
+"urn:schemas-microsoft-com:office:smarttags"><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
 
-==============
-So here are the questions:
-    - Anyone out there agree with me that this behaviour is
-      not 100% ok.
-    - How can i "reserve" or fix the first conntrack entry
-      I mean if it wouldn't expire i wouldn't have a problem.
-      And i dont want the server to send a packet every few seconds
-      just to keep it's OWN conntrack entry valid.
-    - Or How can i prevent that NATed entry from being created.
-      I can circumvent the problem with:
-		iptables -I POSTROUTING -p upd -s ! A --sport 5060 -j MASQUERADE --to-ports 32017-32042(anything but 5060)
 
-      actually a ....MASQUERADE --to-ports ! 5060 would do the trick, but is not allowed.
+<META content=3D"MSHTML 6.00.2800.1400" =
+name=3DGENERATOR><o:SmartTagType=20
+name=3D"place"=20
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"></o:SmartTag=
+Type><o:SmartTagType=20
+name=3D"PostalCode"=20
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"></o:SmartTag=
+Type><o:SmartTagType=20
+name=3D"State"=20
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"></o:SmartTag=
+Type><o:SmartTagType=20
+name=3D"City"=20
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"></o:SmartTag=
+Type><o:SmartTagType=20
+name=3D"Street"=20
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"></o:SmartTag=
+Type><o:SmartTagType=20
+name=3D"address"=20
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"></o:SmartTag=
+Type><!--[if !mso]>
+<STYLE>st1\:* {
+	BEHAVIOR: url(#default#ieooui)
+}
+</STYLE>
+<![endif]-->
+<STYLE>@page Section1 {size: 8.5in 11.0in; margin: 1.0in 1.25in 1.0in =
+1.25in; }
+P.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+LI.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+DIV.MsoNormal {
+	FONT-SIZE: 12pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: "Times New Roman"
+}
+A:link {
+	COLOR: blue; TEXT-DECORATION: underline
+}
+SPAN.MsoHyperlink {
+	COLOR: blue; TEXT-DECORATION: underline
+}
+A:visited {
+	COLOR: purple; TEXT-DECORATION: underline
+}
+SPAN.MsoHyperlinkFollowed {
+	COLOR: purple; TEXT-DECORATION: underline
+}
+P {
+	FONT-SIZE: 12pt; MARGIN-LEFT: 0in; MARGIN-RIGHT: 0in; FONT-FAMILY: =
+"Times New Roman"; mso-margin-top-alt: auto; mso-margin-bottom-alt: =
+auto
+}
+SPAN.EmailStyle17 {
+	COLOR: windowtext; FONT-FAMILY: Arial; mso-style-type: =
+personal-compose
+}
+DIV.Section1 {
+	page: Section1
+}
+</STYLE>
+</HEAD>
+<BODY lang=3DEN-US vLink=3Dpurple link=3Dblue>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
+class=3D531552217-03062004>What=20
+VPN?&nbsp; Cisco IPSec client?&nbsp; other IPSec clients?&nbsp;=20
+PoPToP?.....</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
+class=3D531552217-03062004>yes it=20
+matters</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
+class=3D531552217-03062004>for=20
+Poptop - there is a module ip_nat_pptp</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
+class=3D531552217-03062004>I=20
+think for IPSec there are other netfilter modules to provide VPN over a =
+NAT=20
+connection.</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
+class=3D531552217-03062004>The=20
+reason why is that VPN require that the packets are not touched (they =
+have a=20
+checksum stored within each packet which it checks against) and NAT =
+breaks that=20
+- it chanegs the packet thus changing the new checksum value thus =
+breaking the=20
+VPN.&nbsp; </SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004>so</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN =
+class=3D531552217-03062004>you=20
+need to find out which vpn it is and you need to google if there is a =
+Netfilter=20
+module available for it.!</SPAN></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2><SPAN=20
+class=3D531552217-03062004></SPAN></FONT>&nbsp;</DIV>
+<BLOCKQUOTE dir=3Dltr style=3D"MARGIN-RIGHT: 0px">
+  <DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
+face=3DTahoma=20
+  size=3D2>-----Original Message-----<BR><B>From:</B> Derek Storvik=20
+  [mailto:dstorvik@consultech.net]<BR><B>Sent:</B> Thursday, June 03, =
+2004 12:53=20
+  PM<BR><B>To:</B> netfilter@lists.netfilter.org<BR><B>Subject:</B> NAT =
+and=20
+  VPN<BR><BR></FONT></DIV>
+  <DIV class=3DSection1>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">I'm having trouble with =
+NAT and=20
+  VPN&nbsp;&nbsp; <o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">I have a linux server =
+running=20
+  Fedora core 1&nbsp;&nbsp; that is a NAT/FIREWALL/VLAN/DHCP server for =
+a large=20
+  client network.<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial">Internet<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">&nbsp;=20
+  |<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">&nbsp;=20
+  |<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial">Linux<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">&nbsp;=20
+  |<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">&nbsp;=20
+  |<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Large network with many =
+vlans and=20
+  1000 nodes or so.<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">&nbsp;The internal =
+network is=20
+  natted to the 10.0.0.0 network and my clients can not VPN out to the=20
+  internet.&nbsp;&nbsp; Specifically they get back an error=20
+  619<o:p></o:p></SPAN></FONT></P>
+  <P><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">What has to be done to =
+allow VPN=20
+  to traverse through the firewall and NAT?&nbsp;&nbsp; at the moment =
+the=20
+  firewall rules are wide open to make sure that isn't my issue.=20
+  <o:p></o:p></SPAN></FONT></P>
+  <P><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Any help would be=20
+  appreciated.<o:p></o:p></SPAN></FONT></P>
+  <P><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial">----------------------------------<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt">Derek Storvik<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt">Network&nbsp;&amp; Systems=20
+  Administrator<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt">ConsulTech, =
+LLC<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt">Phone: =
+812.323.8324<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt">Fax: =
+812.323.1272<o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt">E-mail: <A =
+href=3D"mailto:dstorvik@consultech.net"><FONT=20
+  face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial">dstorvik@consultech.net</SPAN></FONT></A><o:p></o:p></SPAN></FONT=
+></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt"><o:p>&nbsp;</o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><st1:Street w:st=3D"on"><st1:address =
+w:st=3D"on"><FONT=20
+  face=3D"Times New Roman" size=3D3><SPAN style=3D"FONT-SIZE: =
+12pt">1441 Fenbrook=20
+  Lane</SPAN></FONT></st1:address></st1:Street><o:p></o:p></P>
+  <P class=3DMsoNormal><st1:place w:st=3D"on"><st1:City =
+w:st=3D"on"><FONT=20
+  face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: 12pt">Bloomington</SPAN></FONT></st1:City>, =
+<st1:State=20
+  w:st=3D"on">IN</st1:State> <st1:PostalCode=20
+  w:st=3D"on">47401</st1:PostalCode></st1:place><o:p></o:p></P>
+  <P><FONT face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial">----------------------------------</SPAN></FONT><FONT=20
+  face=3DArial size=3D2><SPAN=20
+  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: =
+Arial"><o:p></o:p></SPAN></FONT></P>
+  <P class=3DMsoNormal><FONT face=3D"Times New Roman" size=3D3><SPAN=20
+  style=3D"FONT-SIZE: =
+12pt"><o:p>&nbsp;</o:p></SPAN></FONT></P></DIV></BLOCKQUOTE></BODY></HTM=
+L>
+<BR>
+<BR>
 
-For all the quick schooters out there: Yes I know
-there are different ways of circumventing the problem
- - configure B to not use 5060
- - block lan-sided 5060
- - using fixed Masquerade as described above.
+<P><B><FONT SIZE=3D2 FACE=3D"Arial">Visit our website at =
+http://www.p21.com/visit </FONT></B></P>
 
-And yes i know it is usually not a problem, that's
-why other protocols use high-ports. It's a
-problem of stupid SIP that it is created like this.
-Yet this doesn't help me at all.
+<P><B><FONT SIZE=3D2 FACE=3D"Arial">The information in this e-mail is =
+confidential and may contain legally privileged information.  It is =
+intended solely for the person or entity to which it is addressed.  =
+Access to this e-mail by anyone else is unauthorized. If you are not =
+the intended recipient, any disclosure, copying, distribution, action =
+taken, or action omitted to be taken in reliance on it, is prohibited =
+and may be unlawful.  If you received this e-mail in error, please =
+contact the sender and delete the material from any computer. =
+</FONT></B></P>
+<BR>
+<BR>
 
-I have reasons to use it exactly as discribed above,
-the easiest but most important: B may not be under my
-control. So i definitly don't want B to steal my service,
-yet i also don't want to deny B's service.
-
-phew, that's it. I hope at least one
-has read this far. So my best wishes for
-you and thanxs :)
-
-ciao
-  markus
-
-------------------------------------------------------
-markus schaefer  ---  software engineer
-epygi labs de gmbh
-herrenstrasse 23
-d-76133 karlsruhe, germany
-tel: +49 (721) 205 96 30  -- fax: +49 (721) 205 96 59
-http://www.epygi.de
-
+------_=_NextPart_001_01C4498F.E3E56870--
 
