@@ -1,12 +1,15 @@
-From: Chris Wilson <chris@netservers.co.uk>
+From: Alistair Tonner <Alistair@nerdnet.ca>
 Subject: Re: Masquerade stopped working?!?!
-Date: Sun, 3 Aug 2003 17:42:58 +0100 (BST)
+Date: Sun, 3 Aug 2003 13:32:12 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0308031716270.8771-100000@localhost>
+Message-ID: <200308031332.12304.Alistair@nerdnet.ca>
 References: <1059926792710.ew5.dummy1@gazeta.pl>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <1059926792710.ew5.dummy1@gazeta.pl>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,96 +19,165 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: dummy1@gazeta.pl
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: dummy1@gazeta.pl, netfilter@lists.netfilter.org
 
-Hi Jakub,
+On August 3, 2003 12:06 pm, dummy1@gazeta.pl wrote:
+> > Have you done any logging?
+> > If your linux box can browse then the problem is the linux box.
+> > check that ip forwarding is working and that there's is absolutely
+>
+> no
+>
+> > packets being dropped by mistake and that it's forwarding..
+>
+> I have done logging and everything seems to be ok. Packets are going
+> out FORWARD chain. To be sure I remove all rules which can drop
+> packets and every thing is ok. It looks like ISP is dropping
+> packets.
+>
+> > The only other thing possible is that the MTU could be too high
+>
+> and needs to
+>
+> > be lowered if the workstations are at 1500 and your linux is at
+>
+> 1400 or
+>
+> > there abouts.. try forcing all MTUs to a lower value.. (research
+>
+> it on
+>
+> > google).
+>
+> I have tried diffrent values of MTUs (workstation, box): (1500,1500)
+> , (500,1500), (500,500), (300,500), (575,1500) and still nothing.
+>
+> I have even used a TCPMSS target:
+> iptables -A FORWARD -p TCP --tcp-flags SYN,RST SYN -j TCPMSS
+> --clamp-mss-to-pmtu
+> and still nothing. It looks like all tcp/udp communication from
+> local machine to internet isn't working. Packets are going out linux
+> box. I have done logging:
+> iptables -A FORWARD -o eth0 -j LOG
+> and the results are like this:
+> IN=eth1 OUT=eth0 SRC=10.1.1.14 DST=212.77.100.101 LEN=60 TOS=0x00
+> PREC=0x00 TTL=63 ID=24078 DF PROTO=TCP SPT=32777 DPT=80 WINDOW=2144
+> RES=0x00 SYN URGP=0
+> I have added logging incoming packets:
+> iptables -A INPUT -i eth0 -j LOG
+> and... silence. No packet are coming back.
 
+If the packets LEFT via the FORWARD chain, they should come BACK through the 
+	FORWARD chain (if nat is working).  if you used -A to add the logging rule in 
+the FORWARD chain
+        it is the last rule in the chain.  
+	try 
+        iptables -I FORWARD 1 -o eth0 -j LOG --log-prefix Forward_out:
+	iptables -I FORWARD 1 -i eth0 -j LOG --log-prefix Forward_in:
+
+	(unnnnhhh someone doublecheck the syntax on that for me .. I'm half asleep)
+	
+	to catch packets in BOTH directions on the FORWARD chain.
+
+
+
+>
+> > -----Original Message-----
+> > From: netfilter-admin@lists.netfilter.org
+> > [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of
+>
+> dummy1@gazeta.pl
+>
+> > Sent: Sunday, August 03, 2003 6:41 PM
+> > To: netfilter@lists.netfilter.org
+> > Subject: Masquerade stopped working?!?!
+> >
+> >
+> > I have a standard home network configuration:
+> >
+> > my local network 10.1.1.0/24
+> >
+> >
+> >     eth1 10.1.1.1
+> > +----------------------+
+> >
+> > |my firewall/router box|
+> >
+> > +----------------------+
+> >    eth0 192.168.1.92
+> >
+> >
+> >       192.168.1.1
+> > +----------------------+
+> >
+> > |     foreign ISP      |
+> >
+> > +----------------------+
+> >
+> >
+> >          Internet
+> >
 > > To connect coumputers from my local network to the internet I used
-> > iptables and masquerade (snat was working to). Everything was working
-> > fine since one day. Suddenly, about one week ago, machines from local
-> > network have stopped seeing Internet, but my box is working fine. I
-> > suspect my ISP doing some nasty dirty tricks. Is it possible that ISP
-> > can recognize packets which are coming from my local network and drops
-> > it? And how should I configure my box to go around this problem?
-> > Please help! I spend a couple of days browsing Internet and reading
-> > tons of documention and still know nothing.
+> > iptables and masquerade (snat was working to). Everything was
+> > working fine since one day. Suddenly, about one week ago, machines
+> > from local network have stopped seeing Internet, but my box is
+> > working fine. I suspect my ISP doing some nasty dirty tricks. Is
+>
+> it
+>
+> > possible that ISP can recognize packets which are coming from my
+> > local network and drops it? And how should I configure my box to
+>
+> go
+>
+> > around this problem? Please help! I spend a couple of days
+>
+> browsing
+>
+> > Internet and reading tons of documention and still know nothing.
+> >
+> > I give you some more details what I have tested. Maybe it helps
+>
+> you
+>
+> > to find out what the problem is.
+> >
+> > As I said everything is working fine on my box. Local network is
+> > working fine too. From local machine I can see my box. Problem
+> > starts when I want anything from internet. Nothing was working:
+> > ping, http, dns... So I thought the problem is that local machine
+> > can't see machines from internet because host names are not
+> > resolved. I have installed bind (dns server) on my box. Then dns
+> > starts working. And pings are working to the foreing hosts, but
+> > nothing else. Browser finds host and no data is received, ssh can
+>
+> 't
+>
+> > connect, and so on. What is going on?
+> > I have some firewall rules on my box. To be sure I removed them
+>
+> all
+>
+> > but one:
+> > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> >
+> > Any suggestion? Who can help?
+> >
+> > I know very well iptables and netfiltering. I create many
+>
+> firewalls
+>
+> > with diffrent configurations. In this case I am fool.
+> >
+> > Jakub
 
-It is possible that the ISP can recognise packets coming from machines in
-your network, by looking at the TTL. As a router, your box should
-decrement the TTL of packets which it forwards, and as a result the
-packets which it forwards for the inside machines will have a different
-TTL (one less) than if those boxes were directly connected.
-
-Since Windows and Linux machines have well known "standard" TTLs, it's
-possible to use this to block access from machines behind a router,
-without blocking access for the router itself.
-
-You can try using the TTL target of iptables to re-increment the TTL, so 
-that it appears as though those boxes were directly connected, with such 
-a rule:
-
-  iptables -t mangle -A POSTROUTING -o <external-interface> \
-	-j TTL --ttl-inc 1
-
-But if you have Windows boxes on your network, they will still have a
-different TTL to packets from your Linux box (I think), and once again the
-ISP can be aware that more than one machine is in use. So it might be
-better to use the TTL target to lock the TTL to some fixed value:
-
-  iptables -t mangle -A POSTROUTING -o <external-interface> \
-	-j TTL --ttl-set 64
-
-where 64 appears to be the default for Linux boxes (at least with a 2.4 
-kernel, as mine has).
-
-There is also a possible innocent explanation, in that perhaps your ISP
-has introduced a router with a lower TTL, which would require all packets
-going through it to be fragmented. Windows and Linux do Path MTU Discovery
-by default, which requires the receipt of ICMP fragmentation-needed
-packets.
-
-If these packets are not being forwarded to your inside machines for some
-reason (e.g. a bug in iptables, or you are using an older version, or they
-are blocked by your firewall rules), then you would be able to ping, but
-full-sized packets from a web server page response or an FTP download
-would not make it to your machine. You can test this by using tcpdump to 
-determine whether ICMP fragmentation-needed packets are arriving on your 
-external interface, and whether they are being correctly masqueraded by 
-iptables and forwarded to the relevant machine on your internal interface.
-
-Finally, and this is probably not the cause of your problem, but if your
-ISP cares about people using NAT then you should be aware that they can
-still use a technique devised by Steve Bellovin to monitor IP IDs and
-determine (approximately) how many machines are active behind a NAT
-router:
-
-  [http://www.research.att.com/%7Esmb/papers/fnat.pdf]
-
-This attack has already been implemented in at least one commercial 
-product, sFlow [http://www.sflow.org/]. It is possible that your ISP is 
-using this software to detect users who are running NAT. However, as far 
-as I'm aware there is no simple way to use this attack to actually block 
-the NATted hosts without blocking the router itself. It's more likely 
-that your ISP would send you a nasty letter in this case.
-
-Mr Bellovin proposes that IP IDs should be randomised by NAT gateways to
-prevent this second attack, but as far as I know this cannot be done by 
-iptables (yet) and no free software exists to make a Linux box do it.
-
-Finally, Mr Bellovin points out that other techniques could be used to 
-passively fingerprint the machines in your network, to determine the 
-number of different OSes in use, if not the number of actual machines. I'm 
-not aware of any technique to prevent this other than the enforced use of 
-application-level proxies on the router/firewall box.
-
-Cheers, Chris.
 -- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
