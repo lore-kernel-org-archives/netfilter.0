@@ -1,13 +1,14 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
+From: Ray Leach <raymondl@knowledgefactory.co.za>
 Subject: Re: Two IP add
-Date: 05 Jun 2003 17:08:33 +0530
+Date: 05 Jun 2003 15:29:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054813152.1206.9.camel@india>
+Message-ID: <1054819746.13885.39.camel@raylinux.internal>
 References: <200306051156.45624.pandre@darkstar.nom.za>
+	 <1054813152.1206.9.camel@india>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-3igxPkK4+O2r5JMBd4lC"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-+OcrCJQUEYH9406YT58O"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200306051156.45624.pandre@darkstar.nom.za>
+In-Reply-To: <1054813152.1206.9.camel@india>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,88 +18,78 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Paulo Andre <pandre@darkstar.nom.za>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-3igxPkK4+O2r5JMBd4lC
+--=-+OcrCJQUEYH9406YT58O
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:
+On Thu, 2003-06-05 at 13:38, Dharmendra.T wrote:
+> On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:=20
+>         I would like to do the following:
+>        =20
+>         Stop MASQUESRADING to two servers say. 10.10.10.5 and 10.10.10.8,=
+ how would i=20
+>         do this with a rule.
+>        =20
+>         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip' -j MA=
+SQUERADE=20
+>         now how would i put in two ip address's ?
+>        =20
+>        =20
+>         	Hi
+> iptables -t nat -A POSTROUTING -s 10.10.10.5 -d 'sever ip' -j DROP=20
+> iptables -t nat -A POSTROUTING -s 10.10.10.8 -d 'sever ip' -j DROP=20
+>=20
+> Should work=20
+No, that will drop the packets and they won't traverse any more
+tables/chains.
 
-    I would like to do the following:
-    
-    Stop MASQUESRADING to two servers say. 10.10.10.5 and 10.10.10.8, how would i 
-    do this with a rule.
-    
-    iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip' -j MASQUERADE 
-    now how would i put in two ip address's ?
-    
-    
-    	Hi
+the -j return tells iptables to leave the POSTROUTING chain and
+continue, so no more POSTROUTING rules will be checked for that packet.
 
- iptables -t nat -A POSTROUTING -s 10.10.10.5 -d 'sever ip' -j DROP
- iptables -t nat -A POSTROUTING -s 10.10.10.8 -d 'sever ip' -j DROP
+the nat table has these chains:
 
-Should work
--- 
-Regards
-Dharmendra.T
+PREROUTING
+POSTROUTING
+OUTPUT
 
+A target of -j return means leave this chain and continue to the next.
 
-This message is intended for the addressee only. It may contain
-privileged or Confidential information. If you have received this
-message in error,please notify the sender and destroy the message
-immediately.Unauthorised use or reproduction of this message is strictly
-prohibited.
+Ray
 
---=-3igxPkK4+O2r5JMBd4lC
-Content-Type: text/html; charset=utf-8
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
-</HEAD>
-<BODY>
-On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:
-    <BLOCKQUOTE>
-<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>I would like to do the following:</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Stop MASQUESRADING to two servers say. 10.10.10.5 and 10.10.10.8, how would i </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>do this with a rule.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip' -j MASQUERADE </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>now how would i put in two ip address's ?</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT SIZE="3">	Hi</FONT></PRE>
-    </BLOCKQUOTE>
-<FONT SIZE="3"> iptables -t nat -A POSTROUTING -s 10.10.10.5 -d 'sever ip' -j DROP</FONT>
-<BR>
-<FONT SIZE="3"> iptables -t nat -A POSTROUTING -s 10.10.10.8 -d 'sever ip' -j DROP</FONT>
-<BR>
-<FONT SIZE="3"></FONT>
-<BR>
-<FONT SIZE="3">Should work</FONT>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
-Regards
-Dharmendra.T
+> --=20
+> Regards
+> Dharmendra.T
+>=20
+>=20
+> This message is intended for the addressee only. It may contain privilege=
+d or Confidential information. If you have received this message in error,p=
+lease notify the sender and destroy the message immediately.Unauthorised us=
+e or reproduction of this message is strictly prohibited.
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
 
-This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
-</TD>
-</TR>
-</TABLE>
+--=-+OcrCJQUEYH9406YT58O
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-</BODY>
-</HTML>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
---=-3igxPkK4+O2r5JMBd4lC--
+iD8DBQA+30Wih1fuR/Bv+ygRAniGAKCoyx7UUIRVq8Emh6Wx5R0UH2f16QCfSvN6
+lJZbC7CaFnFCv4oBpK3XBw4=
+=Eo00
+-----END PGP SIGNATURE-----
+
+--=-+OcrCJQUEYH9406YT58O--
 
 
