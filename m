@@ -1,11 +1,13 @@
-From: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
-Subject: PREROUTING with ULOG in what order: conn, mangle, imq, nat
-Date: 15 Jul 2003 17:11:05 +0200
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: PREROUTING with ULOG in what order: conn, mangle, imq, nat
+Date: Tue, 15 Jul 2003 11:40:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058281866.21853.66.camel@drs0.manchotnetworks.net>
+Message-ID: <20030715154000.GC24604@cannon.eng.us.uu.net>
+References: <1058281866.21853.66.camel@drs0.manchotnetworks.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1058281866.21853.66.camel@drs0.manchotnetworks.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,61 +18,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: "lartc@manchotnetworks.net" <lartc@manchotnetworks.net>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hello All, 
+On Tue, Jul 15, 2003 at 05:11:05PM +0200, lartc@manchotnetworks.net wrote:
 
-I used SNAT to change the source address of a packet as it traverses a
-linux router, ingress on eth0, and egress on eth1. simple enough and it
-works. 
+[snip...]
 
-+------------+     +-------------------------------------------+
-| 172.16.3.1 | --- | eth0:172.16.3.254 --- eth1:  192.168.1.1  | 
-|            |     |                       eth1:1 192.168.1.99 |--+
-+------------+     +-------------------------------------------+  |
-                                                                  |
-                                                                  |
-                                                           +------+
-                                                           |
-                                                   +--------------+
-                                                   | 192.168.1.250|
-	                                           +--------------+
+> where does de-natting occur?
+> 
+> i thought it was: 
 
+Your thought is correct. ULOG sees the packets after the conntrack.
+tcpdump sees the packets before the conntrack.
+And de-natting occurs at the conntrack:
 
-iptables --append POSTROUTING --table nat --source 172.16.3.0/24 \ 
-    --jump SNAT --to-source 192.168.1.99 
-
-iptables --append POSTROUTING --table mangle \ 
-    --out-interface eth1 --jump ULOG 
-
-iptables --append PREROUTING --table mangle \ 
-    --in-interface eth1 --jump ULOG 
+> WIRE -- > PREROUTING [ conntrack --> mangle --> imq --> nat ] ...
+  ^^^^                    ^^^^^^^      ^^^^^^
+tcpdump                  de-natting     ULOG
 
 
-ulog is watching all incoming and outgoing packets on eth1
+Take a look at "Table 3-3. Forwarded packets" in Oscar's tutorial.
+The order of mangle/nat is reverse for incoming and outgoing...
 
-both tcpdump & ulog show packets on eth1 egress with src ip of
-192,168.1.99 -- perfect.
+Ramin
 
-ulog shows ingress packets on eth1 with dst address 172.16.3.1--correct
-address after de-natting
-
-tcpdump show ingress packets on eth1 with dst address
-192.168.1.99--address defore denatting.
-
-where does de-natting occur?
-
-i thought it was: 
-
-WIRE -- > PREROUTING [ conntrack --> mangle --> imq --> nat ] ...
-
-if i am capturing at mangle, should not the snat address be there?
-
-Many Many Many Thanks!!
-
-Charles
-
-
-
-
+> if i am capturing at mangle, should not the snat address be there?
+> 
+> Many Many Many Thanks!!
+> 
+> Charles
+> 
+> 
+> 
+> 
 
