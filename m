@@ -1,13 +1,10 @@
-From: "Akos Szalkai" <szalkai@2fkft.com>
-Subject: Re: mangle after nat in the postrouting chain
-Date: Fri, 28 Nov 2003 19:13:58 +0100
+From: mailinglist@plobe.com
+Subject: IPTables routing
+Date: Fri, 28 Nov 2003 13:32:38 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031128181358.GK5232@2fkft.com>
-References: <7C9884991ADAE0479C14F10C858BCDF5122EAA@alderaan.smgtec.com>
+Message-ID: <35733.141.150.249.168.1070044358.squirrel@mail.plobe.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122EAA@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,35 +18,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Nov 28, 2003 at 09:50:46AM -0800, Daniel Chemko wrote:
-> You are off basis. The System already routes twice.
+I have a question, I would like to know the best way to do something with
+IPTables.
 
-Yes, I know that.  This is not my problem.
+I have a network which has a gateway wwith iptables on it.  I want
+iptables to send all data bound for a external server (Ex. server.com or
+20.20.20.20) to a third server (server_mirror.com).  So iptables needs to
+rewrite the header on every packet bound for the intended server
+(server.com) so that the packets get routed to the third server
+(server_mirror.com).  Also, the third server and person making the request
+are making a socket connection that sends data two ways.
 
-> The problem is that it SNAT's after you've already routed the packet.
+--Can I do this with iptables? And if so, how?
 
-This is much closer to my problem, see below.
+--Also, will I have problems with the server responding? And if so, how do
+I fix that?
 
->                 There is also the ROUTE patch, but it doesn't do what I
-> want it to do (change the packet's route!!).
+Thanks a lot for any help.  It is greatly appreciated!
 
-Yes, I am heavily using the ROUTE patch.  It does change the packet's
-route.  I don't think you can live without it in a multiple independent
-internet link environment.  Still, ROUTE targets are in the mangle
-table, so still, it is SNAT-ed after you reroute the packets with a
-ROUTE rule.
-
-I can get around this by making a more complex rulebase, but it would be
-much neater if I could mangle packets after NATing.  (The iproute2
-solution you mentioned is also a possibility, but it has the drawback
-that you have to use something else besides netfilter.  The ROUTE patch
-is very similar but IMHO more manageable.)
-
-Akos
-
--- 
-Akos Szalkai <szalkai@2f.hu>
-IT Consultant, CISA
-2F 2000 Szamitastechnikai es Szolgaltato Kft.
-Tel: (+36-1)-4887700  Fax: (+36-1)-4887709  WWW: http://www.2f.hu/
+Chris
 
