@@ -1,15 +1,14 @@
-From: Athan <netfilter@miggy.org>
-Subject: Re: UDP and ICMP traceroute
-Date: Thu, 13 Mar 2003 00:16:36 +0000
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: blocking ports outbound
+Date: Thu, 13 Mar 2003 01:32:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030313001636.GN1025@miggy.org>
-References: <3E6FB954.8080708@qwest.net>
+Message-ID: <20030313013233.401f20b7.arnt@c2i.net>
+References: <3E6F9569.5030108@connectingyou.com.au>
+	<001a01c2e8db$31a31b50$0401000a@sterenborg.info>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mejza3ZMMA5Za1mX"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3E6FB954.8080708@qwest.net>
+In-Reply-To: <001a01c2e8db$31a31b50$0401000a@sterenborg.info>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,56 +18,158 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Sapient2003 <sapient@qwest.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+On Wed, 12 Mar 2003 22:06:04 +0100, 
+"Rob Sterenborg" <rob@sterenborg.info> wrote in message 
+<001a01c2e8db$31a31b50$0401000a@sterenborg.info>:
+
+> > Maybe I got my question wrong.
+> > 
+> > I'm very new to iptables coming from a ipfilter background. 
+> > In ipfilter I just state block all in and then open the ports 
+> > I wish to allow through. Is there something similiar in iptables.
+> 
+> Yes.
+> 
+> iptables -P INPUT DROP
+> Does just what is says : it droppes all inbound packets where there is
+> no ACCEPT rule for.
+> 
+> I guess you'd want the thing to be stateful :
+> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> 
+> If you want to accept packets on a certain port, you just do :
+> iptables -A INPUT -p <proto> --dport <port> -j ACCEPT
+> Or
+> iptables -A INPUT -i <if_in> -p <proto> --dport <port> -j ACCEPT
+> Or
+> iptables -A INPUT -s <src_ip|net> -p proto --dport <port> -j ACCEPT
+> 
+> There are of course more options that I didn't mention here, some can
+> be used together.
+> In the examples above you could use both -i and -s in one rule to make
+> sure an IP will match on a certain NIC.
+> 
+> > I wish to stop the outside world from seeing the ports upon 
+> > the firewall/proxy and beyond into my internal network.
+> > 
+> > My problem is I cannot join certain irc servers due to there 
+> > open proxy policy.
+> 
+> Actually I'm not quite familiar with irc ; never used it.
+> 
+> > So really how do I block all ports internally while allowing 
+> > a something like a connection internally to go outbound and 
+> > recieve the packets back.
+> 
+> On what port does the irc client connect ? Is it 6667 ?
+> What if you forward port 6667 so it can contact the irc server
+> directly?
+> 
+> > My current iptables config is
+> > 
+> > 
+> > #!/bin/bash
+> > /bin/echo "Firewall rules starting up now..."
+> > /sbin/modprobe ipt_MASQUERADE
+> > /usr/local/sbin/iptables -F
+> 
+> > /usr/local/sbin/iptables -t nat
+>                           ^^^^^^^^
+> What does this do ? On my box it gives an error.
+> You specify what table iptables should use, but you don't give it any
+> "command".
+> 
+> > /usr/local/sbin/iptables -t mangle -F
+> > /usr/local/sbin/iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+> 
+> > /bin/echo 1 > /proc/sys/net/ipv4/ip_forward 
+> > /usr/local/sbin/iptables -A OUTPUT --dport 3128 -j DENY 
+>                                                     ^^^^^^
+> Do you want to DROP or REJECT ?
+> DENY was in ipchains, not in iptables.
+> 
+> > Pl,ease pick apart my rules and tell me what I'm doing wrong.
+> > 
+> > As I stated, I'm a complete newbie to iptables.
+> > 
+> > My system is a firewall/proxy unit with a adsl connection 
+> > running pppoe to the outside world. I recieve a permanent ip 
+> > upon te ppp0 interface.
+> 
+> So eth0 and eth2 are connected to your lan I suppose, and are on
+> different subnets.
+> If I'd have to make it work I'd try this :
+> 
+> # Stop forwarding
+> echo 0 > /proc/sys/net/ipv4/ip_forward
+> 
+> # Load some modules
+> modprobe ipt_MASQUERADE
+> modprobe ip_conntrack_ftp
+> modprobe ip_nat_ftp
+> # You may need ip_conntrack_irc and ip_nat_irc. Do you have these
+> modules ?
+> 
+> # Flush all rules
+> iptables -F
+> iptables -t nat -F
+> iptables -t mangle -F
+> 
+> # Set the default policy
+> iptables -P INPUT DROP
+> iptables -P FORWARD DROP
+> 
+> # Make it stateful
+> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> 
+> # Don't know if you need to access the box itself from your lan ?
+> # If so then you need to do something like this.
+> iptables -A INPUT -i eth0 -j ACCEPT
+> iptables -A INPUT -i eth2 -j ACCEPT
+> 
+> # Forward traffic from eth0 and eth2
+> iptables -A FORWARD -i eth0 -o ppp0 -s <lan_net1> -j ACCEPT
+> iptables -A FORWARD -i eth2 -o ppp0 -s <lan_net2> -j ACCEPT
+> 
+> # Redirect webclients to squid
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
+> --to-port 3128
+> iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 80 -j REDIRECT
+> --to-port 3128
+> 
+> # MASQ traffic from eth0 and eth2 destined for the internet
+> # You're using ppp so I don't think SNAT will work for you (it doesn't
+> for me..)
+> iptables -t nat -A POSTROUTING -o ppp0 -s <lan_net1> -j MASQUERADE
+> iptables -t nat -A POSTROUTING -o ppp0 -s <lan_net2> -j MASQUERADE
+> 
+> # Start forwarding
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+
+..reason to put this echo at the end, is you don't want 
+_any_ traffic, until you have the firewall ready for it.
+ 
+> Again : this may not work for your purpose, but it can be a start.
+> 
+> For more information about iptables there is a nice tutorial from
+> Oskar:
+> http://iptables-tutorial.frozentux.net/
+> You may want to look there for a lot of information.
+> 
+> 
+> Rob
+> 
+> 
 
 
---mejza3ZMMA5Za1mX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-On Wed, Mar 12, 2003 at 05:48:52PM -0500, Sapient2003 wrote:
-> I am trying to have iptables pick out traceroute packets. Windows uses=20
-> ICMP for it's traceroute, so I use this:
->=20
-> iptables -t filter -A INPUT -p icmp -s 0/0 -d 10.0.0.1 --icmp-type=20
-> time-exceeded -j QUEUE
->=20
-> Linux, however, uses both ICMP and UDP... How can I tell iptables to=20
-> look for UDP traceroute packets?
-
-  You can't, without hacking the traceroute client to only use a very
-specific range of ports.  We did this at one place I used to work when
-we had a non-stateful firewall.
-
-  I guess the other possibility is to hack the traceroute client to put
-an actual, unique (enough), payload in the outgoing UDP packet, and then
-have an ipt kernel module looking for that.
-
-  If you must tie down outgoing UDP such that you can't just use the
-statefulness of iptables/netfilter then I'd suggest trying to find a
-linux traceroute that does things the same way as the Windows one.
-
--Ath
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
-
---mejza3ZMMA5Za1mX
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iEYEARECAAYFAj5vzeQACgkQzbc+I5XfxKcfdACeIBVz5udFmRvoLpN/1N/DkVpR
-EFQAn30KBbr79p2ot2n+ibAijZldv2Dv
-=YNrF
------END PGP SIGNATURE-----
-
---mejza3ZMMA5Za1mX--
 
