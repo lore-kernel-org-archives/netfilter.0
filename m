@@ -1,13 +1,12 @@
-From: "William Olbrys" <william_olbrys@student.uml.edu>
-Subject: RE: Ip Forwarding
-Date: Fri, 21 Feb 2003 19:47:32 -0500
+From: Dhirendra Pal Singh <list@actiswitch.com>
+Subject: How to do port forwarding dynamically
+Date: Fri, 21 Feb 2003 16:59:32 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c2da0c$0006e5f0$0200a8c0@grandaddy>
-References: <20030222002813.GG412@tekilla.homeip.net>
+Message-ID: <3E56CB74.4090305@actiswitch.com>
+References: <023001c2daaf$cd19fe80$020010ac@romio>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030222002813.GG412@tekilla.homeip.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,74 +16,109 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Well I want to put a windows 2000 domain controller behind my
-iptables-enabled redhat 8 box. The domain controller had a static ip
-before it went behind the firewall and for Active Directory to work
-correctly it HAS to stay that way. I spent days and days trying
-otherwise but windows is far too stubborn. AD plus legacy support for
-WINS makes nat translation a living hell. So I simply set up all my
-rules as default accept and let it fly, hoping that the forwarding would
-take care of itself. Essentially it did! I could perform simple function
-like connecting to the internet but I couldn't do more important
-functions like cruise the windows network or have things join/leave/see
-the domain behind this iptables enabled box.  I thought it had something
-to do with routers not seeing the right ip address as it leaves the
-iptables box or the routers not being able to find its way back to this
-box behind the firewall.
+>
 
-It struck that while I wrote this complicated email I may have come up
-with a solution. Since the static IP of the win2k box is the same and
-only the gateway has changed, then the data it sends will be legitimate
-concerning it's IP address(not an internal IP). Could I create an alias
-at the outbound NIC level for the win2k's IP address and SNAT packets
-leaving the outbound NIC that originated from the win2k box?
+Hi All,
+I am trying to set up a web server inside my home lan. Firewall is 
+running on the gatewaty.
+Below is the script for the firewall... (its very simple.. I downloaded 
+it from the net)
 
-Thank you for any help.
+*****************************************
+#!/bin/sh
+#
+# rc.firewall-2.4
+FWVER=0.70
 
-P.S. I'm sorry to ask such a complicated question. I am new to Linux for
-the most part and have a very basic understanding of networking. No I am
-not a Hotmail employee :)
- 
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Willi Dyck
-Sent: Friday, February 21, 2003 7:28 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: Ip Forwarding
-
-On Fri, Feb 21, 2003 at 06:46:03PM -0500, William Olbrys wrote:
-> Is it possible to just forward the IP addresses?
-
-Yes.
-
-> That way my iptables/gateway box WONT change the ips and JUST act like
-> a firewall? Using SNAT and DNAT is too complicated with windows.
-
-Please provide more detailed information, so we can help.
-
-Regards
-
--- 
-Willi Dyck
+echo -e "\n\nLoading simple rc.firewall version $FWVER..\n"
+echo -e "\n\nLoading simple rc.firewall version $FWVER..\n"
 
 
+IPTABLES=/sbin/iptables
+DEPMOD=/sbin/depmod
+INSMOD=/sbin/insmod
 
+EXTIF="eth0"
+INTIF1="eth1"
+INTIF2="eth2"
+echo "   External Interface:  $EXTIF"
+echo "   Internal Interface1:  $INTIF1"
+echo "   Internal Interface2:  $INTIF2"
 
+echo -en "   loading modules: "
+echo "  - Verifying that all kernel modules are ok"
+$DEPMOD -a
+echo 
+"----------------------------------------------------------------------"
 
- E2-I: The presence of this footer indicates the message has been
-scanned for viruses by the WebShield e500.
+echo -en "ip_tables, "
+$INSMOD ip_tables
 
+echo -en "ip_conntrack, "
+$INSMOD ip_conntrack
 
+echo -en "ip_conntrack_ftp, "
+$INSMOD ip_conntrack_ftp
 
+echo -en "ip_conntrack_irc, "
+$INSMOD ip_conntrack_irc
 
+echo -en "iptable_nat, "
+$INSMOD iptable_nat
 
+echo -en "ip_nat_ftp, "
+$INSMOD ip_nat_ftp
 
+echo ".  Done loading modules."
 
- E2-O: The presence of this footer indicates the message has been scanned for viruses by the WebShield e500.
+echo "   enabling forwarding.."
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "   enabling DynamicAddr.."
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+echo "   clearing any existing rules and setting default policy.."
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
+
+echo "   FWD: Allow all connections OUT and only existing and related 
+ones IN"
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF1 -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF1 -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF2 -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF2 -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
+
+echo "   Enabling SNAT (MASQUERADE) functionality on $EXTIF"
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+
+echo -e "\nrc.firewall-2.4 v$FWVER done.\n"
+
+**********************************************************************************************
+I have stripped off the comments for simplicity. Now when I want to open 
+a port and forward it I am trying to execute the following 2 commands...
+
+$iptables -A INPUT -j ACCEPT -p tcp --syn --destination-port 5000
+$iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 5000 -j DNAT 
+--to-destination 192.168.1.30:80
+
+Shouldnt this forward port 5000 to the internal box on port 80. But this 
+is not working. Can someone please help me to correct this script.
+Actually I want just 2 lines which I can run for any port and can open 
+and forward it to anymachine of my choice...
+
+Any quick help would be very much appreciated...
+Thanks and advance..
+Dp
 
 
 
