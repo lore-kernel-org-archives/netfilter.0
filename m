@@ -1,9 +1,9 @@
-From: Aurelio Turco <a.turco@bom.gov.au>
-Subject: Re: Matching HTTP/FTP packets
-Date: Wed, 12 Jun 2002 07:34:46 +0000
+From: "Matthew Hellman" <mhellman@raccoon.com>
+Subject: Re: Internal machines can't resolve external addresses
+Date: Wed, 12 Jun 2002 07:30:20 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D06F996.44F5F89D@bom.gov.au>
-References: <001e01c211c1$8f758840$7b0010ac@dynamicaccess.lan>
+Message-ID: <003801c2120c$eb198160$020aa8c0@matttm9svd8lrh>
+References: <001d01c211bd$413cf400$054da8c0@rita>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -17,32 +17,88 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter@lists.samba.org
+To: Michael Hudin <hudin@zoetrope.com>, netfilter@lists.samba.org
 
-I was simply wondering whether it was possible to further restrict
-packets, thinking that one of the "ip_conntrack_ftp" etc modules
-might be able to do this.
+There is potentially another solution if you don't want to run your own bind
+server.  Add a third nic to your firewall and put these boxes in a DMZ.
+Then you can use PREROUTING/DNAT.
 
-PS: Is there any documentation on theses modules?
+Goodluck,
+Matt
 
-Hard__warE wrote:
-> 
-> so what you require is to actually match Layer 7 Data       (on the OSI
-> Layer)
-> 
-> maybee what you want to do can be Piped through a Squid Transparent Proxy
-> 
-> which allows you to match by a HTTP/FTP address and Data so then you can
-> maybee
-> 
-> do something with it ..
-> 
-> help me out here what do you want to do with this data once you have found
-> it ???
+----- Original Message -----
+From: "Michael Hudin" <hudin@zoetrope.com>
+To: <netfilter@lists.samba.org>
+Sent: Tuesday, June 11, 2002 10:00 PM
+Subject: Internal machines can't resolve external addresses
 
-In response to my queries:
->
-> Is it possible, in a rule, to match for HTTP packets?
->
-> Is it possible, in a rule, to match for FTP packets?
+
+Machines in the outside world, can view my websites fine, but whenever I try
+to go to one of them from a machine on my internal network behind the
+firewall, neither the domain name nor the IP will resolve.  I also have the
+same problem with my mail server and have to use the internal address of the
+mail server.  I am going to guess that the best solution to this is to run
+some kind of local DNS server on the inside of the firewall which resolves
+all my sites internally, but since I don't have a server at my disposal for
+it, is there some way around this?  I had the POSTROUTING MASQ line on and
+that did allow the internal machines to resolve, but it also hid the
+originating address for any outside machine, thus creating a security
+disaster.
+
+-michael
+
+*nat
+:PREROUTING ACCEPT [241:88600]
+:POSTROUTING ACCEPT [0:9862]
+:OUTPUT ACCEPT [68:4275]
+-A PREROUTING -d 10.10.10.252 -p tcp -m tcp --dport 110 -j
+DNAT --to-destination 192.168.77.2
+-A PREROUTING -d 10.10.10.252 -p tcp -m tcp --dport 25 -j
+DNAT --to-destination 192.168.77.2
+-A PREROUTING -d 10.10.10.251 -p tcp -m tcp --dport 80 -j
+DNAT --to-destination 192.168.77.2
+-A PREROUTING -d 10.10.10.250 -p tcp -m tcp --dport 80 -j
+DNAT --to-destination 192.168.77.2
+-A PREROUTING -d 10.10.10.250 -p tcp -m tcp --dport 22 -j
+DNAT --to-destination 192.168.77.2
+-A POSTROUTING -o eth0 -j SNAT --to-source 10.10.10.254
+#-A POSTROUTING -o eth1 -j MASQUERADE
+COMMIT
+
+*mangle
+:PREROUTING ACCEPT [18365:3221456]
+:INPUT ACCEPT [10886:760348]
+:FORWARD ACCEPT [7269:2438049]
+:OUTPUT ACCEPT [8009:752540]
+:POSTROUTING ACCEPT [15177:3182145]
+COMMIT
+
+*filter
+:INPUT ACCEPT [0:229546]
+:FORWARD ACCEPT [363:1553786]
+:OUTPUT ACCEPT [2:619341]
+-A INPUT -p udp -m udp --sport 500 --dport 500 -j ACCEPT
+-A INPUT -p tcp -j ACCEPT
+-A INPUT -p esp -j ACCEPT
+-A INPUT -p ah -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A FORWARD -i eth1 -j ACCEPT
+-A FORWARD -i eth0 -o eth1 -p tcp -m tcp --dport 110 -m state --state
+NEW,RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i eth0 -o eth1 -p tcp -m tcp --dport 25 -m state --state
+NEW,RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i eth0 -o eth1 -p tcp -m tcp --dport 80 -m state --state
+NEW,RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i eth0 -o eth1 -p tcp -m tcp --dport 22 -m state --state
+NEW,RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -p udp -m udp --sport 500 --dport 500 -j ACCEPT
+-A OUTPUT -p tcp -j ACCEPT
+-A OUTPUT -p esp -j ACCEPT
+-A OUTPUT -p ah -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+COMMIT
+
+
+
+
 
