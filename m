@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ipfilter vs. netfilter keepalive
-Date: Sat, 31 Jan 2004 08:52:12 +0000
+From: Valentijn Sessink <valentyn+netfilter-users@nospam.openoffice.nl>
+Subject: more IPsec NAT troubles
+Date: Sat, 31 Jan 2004 18:52:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401310852.12573.Antony@Soft-Solutions.co.uk>
-References: <200401302349.i0UNn7u19236@neo1.neolabs.be>
+Message-ID: <20040131175245.GA21239@openoffice.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200401302349.i0UNn7u19236@neo1.neolabs.be>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +16,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Friday 30 January 2004 10:49 pm, jo@neolabs.be wrote:
+Hello list,
 
-> I guess the remote ssh-server is sending keepalive packets, and somehow
-> the ipfilter understands that those packets must be passed to the
-> intranet, eventhough they are OOB to the outgoing TCP connection.
-> Netfilter does not seem to understand this.
->
-> Is this assumption correct? If so, does netfilter have a tuning so it
-> keep ssh connections alive or do I advise to switch back to ipfilter?
+As a side note, but relevant in the light of the recent IPsec/NAT
+interoperability, I found another bug in the IPsec implementation.
 
-Add a LOG rule to your ruleset just before the default DROP policy kicks in 
-(if you want, you can be selective and only LOG packets coming from one of 
-the ssh servers people are connecting to) and see whether you are getting 
-packets of some sort back from the servers, which are out of band and 
-therefore not getting to the clients.
+2.6 + IPsec causes problems for connections that need fragmentation. My
+setup:
 
-In my opinion this is unlilkely - any keepalive packets for an ssh connection 
-would be sent across the ssh link itself, not out of band in some other 
-channel, however this is an easy way in whcih you can identify whether this 
-is what's happening.
+desktop			masq'ing $router
+2.4.24+ipsec	          2.6.1
+10.x.y.25--------10.x.y.1 MASQ a.b.c.d ---> Internet
 
-Put the LOG rule in both your INPUT and FORWARD chains so you catch stuff 
-trying to get to the clients' addresses as well as anything coming in to the 
-firewall itself.
+Now if a packet from the Internet larger than 1444 bytes arrives (which is
+perfectly legal), $router will send the rather odd response "icmp
+a.b.c.d unreachable, need to frag (1444 bytes)". So you get the $router tell
+that $router is unreachable when a packet reaches the $router.
 
-Regards,
+ip_output.c says:
 
-Antony.
+        if (skb->len > mtu) {
+                icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
+                ret = -EMSGSIZE;
 
+So if I understand this correctly, the IPsec tunnel relies on the end to end
+MTU detection and simply drops packets when they're too large to
+encapsulate. However, in a masq'ing/IPsec combination, this won't work, as
+there is no "end to end". The fragmentation is needed for a local process
+(namely after de-masq'ing the packet when the kernel finds out it needs to
+encrypt the packet) and I think the FRAG_NEEDED is illegal here.
+
+I sent this to linux-net where it's probably more appropriate. (I hope my
+e-mail reaches the list, as anti spam measures here and there are starting
+to prevent any communication)
+
+V.
 -- 
-What is this talk of "software release"?
-Our software evolves and matures until it is capable of escape, leaving a 
-bloody trail of designers and quality assurance people in its wake.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+http://www.openoffice.nl/   Open Office - Linux Office Solutions
+Valentijn Sessink  valentyn+sessink@nospam.openoffice.nl
 
