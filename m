@@ -1,14 +1,12 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Iptables and various domains
-Date: 12 Dec 2002 10:14:33 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: non-standard FTP ports and connection tracking (redux)
+Date: Thu, 12 Dec 2002 10:16:00 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1039680872.4125.30.camel@rayw.knowledgefactory.co.za>
-References: <NEBBKLENIBMGHGCLGBPIKEBKCDAA.security@e-gim.es>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <Pine.LNX.4.33.0212121010440.14108-100000@blackhole.kfki.hu>
+References: <200212101118.53239.apapadop@cmu.edu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-neZcmn+qFyimZOzj4Ty9"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NEBBKLENIBMGHGCLGBPIKEBKCDAA.security@e-gim.es>
+In-Reply-To: <200212101118.53239.apapadop@cmu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,93 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: E-GIM Security <security@e-gim.es>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Alexandros Papadopoulos <apapadop@cmu.edu>
+Cc: netfilter@lists.netfilter.org
 
+On Tue, 10 Dec 2002, Alexandros Papadopoulos wrote:
 
---=-neZcmn+qFyimZOzj4Ty9
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+> The default behavior is DROP for all chains, so if these ones don't
+> allow it, then it is blocked. I thought these ones were sufficient. I'm
+> attaching the complete ruleset I'm using.
 
-Hi
+Your ruleset seems to be all right. At some places strange, but seems to
+be OK.
 
-Yes and maybe no. If your domains are virtually hosted (they resolve to
-the same ip numbers) then no. iptables cannot redirect traffic in this
-case - it uses ip numbers. You would need to use something like Apache
-virtual hosting and possibly redirect pages to accomplish your goal in
-this case.
+> > I'd setup logging rules to see where and why the connection gets
+> > blocked.
+>
+> I've monitored the packets with Ethereal and seen that the problem is
+> the one mentioned -- the SYN packet from the client that tries to open
+> the data connection (when in passive mode) never makes it through the
+> firewall.
+>
+> The question is, why doesn't connection tracking pick this up and allow
+> the packet to go through? (since it's a RELATED connection to a
+> preexisting FTP session)
 
-If your domains resolve to different ip numbers, then iptables can be
-your solution:
+I can repeat only myself: I'd setup logging rules to see where and why the
+connection gets blocked.
 
-iptables -t nat -A PREROUTING -d www.dom1.com -p tcp --dport 80 -j
-REDIRECT --to-destination webserver-1:80
-iptables -t nat -A PREROUTING -d www.dom2.com -p tcp --dport 80 -j
-REDIRECT --to-destination webserver-1:80
-iptables -t nat -A PREROUTING -d www.dom3.com -p tcp --dport 80 -j
-REDIRECT --to-destination webserver-2:80
-iptables -t nat -A PREROUTING -d www.dom4.com -p tcp --dport 80 -j
-REDIRECT --to-destination webserver-2:80
-
-Remember, to use iptables like above, www.dom1.com, www.dom2.com,
-www.dom3.com, www.dom4.com must resolve to different ip numbers.
-
-Ray
-
-
-On Thu, 2002-12-12 at 10:58, E-GIM Security wrote:
-> 	Hi,
->=20
-> 	Can Iptables route by domains? For example, I have a webserver and my
-> firewall with iptables route all request on port 80 throw IP webserver. I
-> need add another webserver, and various domains (www.dom1.com, www.dom2.c=
-om)
-> will be redirect to webserver-1 and other domains (www.dom3.com,
-> www.dom4.com) will be redirect to webserver-2. Can IPTables help me? Whic=
-h
-> is the solution)
->=20
-> 	Thanks and sorry ... my english is very poor.
->=20
-> Jos=E9 Antonio Garc=EDa Garc=EDa
-> Technical Internet Solutions
->=20
-> E-GIM 	+34 952700010
-> http://www.e-gim.es
->=20
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
-
---=-neZcmn+qFyimZOzj4Ty9
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA9+EVoh1fuR/Bv+ygRAgy+AJ9wz2Cp1cTDyRs9wQ6/L5MXAEhEAgCeMqs4
-iUl6Sc0UnGk1tLZuNysf2/E=
-=kKUA
------END PGP SIGNATURE-----
-
---=-neZcmn+qFyimZOzj4Ty9--
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
