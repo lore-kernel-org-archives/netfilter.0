@@ -1,10 +1,11 @@
-From: "Fabricio Veloso" <fabricio_veloso@yahoo.com.br>
-Subject: Now, other error - ip_conntrack_egg
-Date: Thu, 14 Nov 2002 11:07:24 -0300
+From: "Sundaram Ramasamy" <sun@percipia.com>
+Subject: Re: Redhat linux disconnecting telnet session
+Date: Thu, 14 Nov 2002 09:24:09 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005a01c28be7$294b6b70$0207a8c0@FVeloso>
+Message-ID: <008a01c28be9$7f19bff0$8c01a8c0@sundaram>
+References: <000e01c28b5c$29656c40$8c01a8c0@sundaram> <200211141040.30235.dharmu@nsecure.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,55 +16,82 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: dharmu@nsecure.net, netfilter@lists.netfilter.org
 
-Hi list. I need your help...
+Hi,
 
-In compilation (make modules):
-
-gcc -D__KERNEL__ -I/usr/src/linux-2.4.19/include -Wall
--Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--fomit-frame-pointer -pipe -mpreferred-stack-boundary=3D3D2 -march=3D3Di686
--DMODULE -DMODVERSIONS -include
-/usr/src/linux-2.4.19/include/linux/modversions.h  -nostdinc -I
-/usr/lib/gcc-lib/i386-redhat-linux/2.96/include
--DKBUILD_BASENAME=3D3Dip_conntrack_egg  -c -o ip_conntrack_egg.o
-ip_conntrack_egg.c
-ip_conntrack_egg.c: In function `help':
-ip_conntrack_egg.c:169: warning: passing arg 2 of
-`ip_conntrack_expect_related_Rsmp_aed0cb12' from incompatible pointer
-type
-ip_conntrack_egg.c:169: too few arguments to function
-`ip_conntrack_expect_related_Rsmp_aed0cb12'
-ip_conntrack_egg.c: In function `init':
-ip_conntrack_egg.c:203: structure has no member named `max_expected'
-ip_conntrack_egg.c:204: structure has no member named `timeout'
-ip_conntrack_egg.c:205: structure has no member named `flags'
-ip_conntrack_egg.c:205: `IP_CT_HELPER_F_REUSE_EXPECT' undeclared (first
-use in this function)
-ip_conntrack_egg.c:205: (Each undeclared identifier is reported only
-once
-ip_conntrack_egg.c:205: for each function it appears in.)
-ip_conntrack_egg.c:206: structure has no member named `me'
-ip_conntrack_egg.c:214: structure has no member named `name'
-make[2]: *** [ip_conntrack_egg.o] Error 1
-make[2]: Leaving directory `/usr/src/linux-2.4.19/net/ipv4/netfilter'
-make[1]: *** [_modsubdir_ipv4/netfilter] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.4.19/net'
-make: *** [_mod_net] Error 2
-
-
-Why occurred this error? What=3DB4s the dependences of ip_conntrack_egg ?
+I am getting the login screen after some time, its closing the telnet
+session.
 
 Thanks
 
-Fabr=3DEDcio Veloso=3D20
-S=3DE3o Paulo - Brazil
+sample steps:
+========
+$ date
+Thu Nov 14 08:37:10  2002
 
-_______________________________________________________________________
-Yahoo! GeoCities
-Tudo para criar o seu site: ferramentas f=E1ceis de usar, espa=E7o de sobra=
- e acess=F3rios.
-http://br.geocities.yahoo.com/
+Administrator@SUNDARAM ~
+$ telnet 192.168.1.180
+Trying 192.168.1.180...
+Connected to 192.168.1.180.
+Escape character is '^]'.
+
+Red Hat Linux release 7.1 (Seawolf)
+Kernel 2.4.2-2 on an i686
+login: ptce
+Password:
+Last login: Thu Nov 14 01:46:31 from 192.168.1.37
+[ptce@ptcedemo ptce]$ ls
+Desktop  nsmail
+[ptce@ptcedemo ptce]$ who
+ptce     pts/0    Nov 14 14:27
+ptce     :0       Nov 11 15:51
+ptce     pts/1    Nov 11 15:52
+ptce     pts/2    Nov 12 21:46
+ptce     pts/3    Nov 12 22:10
+[ptce@ptcedemo ptce]$ ls
+Desktop  nsmail
+[ptce@ptcedemo ptce]$ Connection closed by foreign host.
+
+Administrator@SUNDARAM ~
+$ date
+Thu Nov 14 09:22:10  2002
+
+
+
+----- Original Message -----
+From: "Dharmendra.T" <dharmu@nsecure.net>
+To: "Sundaram Ramasamy" <sun@percipia.com>; <netfilter@lists.netfilter.org>
+Sent: Thursday, November 14, 2002 12:10 AM
+Subject: Re: Redhat linux disconnecting telnet session
+
+
+> Could you say it briefly as the information given by you is not
+sufficient.
+> Like what happen when you enter
+> #telnet host
+>
+> All these information will help us i solving your problem.
+>
+> Regards,
+> Dharmendra.T
+> Linux Security Expert
+> www.nsecure.net
+> dharmu@nsecure.net
+> On Thursday 14 November 2002 03:02, Sundaram Ramasamy wrote:
+> > HI,
+> >
+> > I have redhat Linux 7.1, when ever I do telnet session it disconnecting
+> > after some time ( Even When I was doing something).
+> >
+> > How will I fix this?, What should I look for?
+> >
+> > Thanks
+> > Sundaram
+>
+> --
+>
+>
+
 
