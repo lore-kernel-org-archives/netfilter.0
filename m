@@ -1,15 +1,13 @@
-From: "Tim Evans" <tkevans@tkevans.com>
-Subject: Re: Resend: MASQUERADE: Route sent us somewhere else.
-Date: Tue, 5 Apr 2005 12:12:38 -0400
-Message-ID: <20050405161238.M71851@tkevans.com>
-References: <200504051035.j35AZn2H025714@osprey.tkevans.com>
-	<20050405145028.GA2620@bender.817west.com>
-Reply-To: tkevans@tkevans.com
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: iptables crashes server?
+Date: Tue, 5 Apr 2005 12:34:59 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0504051232040.11158@darkstar.sysinfo.com>
+References: <4250F7E0.3070203@uplink-verein.ch>
+	<1403218a05040404475c810345@mail.gmail.com>
+	<42523486.7000107@uplink-verein.ch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=OPENWEBMAIL_ATT_0.554288688655109"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050405145028.GA2620@bender.817west.com>
+In-Reply-To: <42523486.7000107@uplink-verein.ch>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,215 +18,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Moritz Gartenmeister <moritz@uplink-verein.ch>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-------=OPENWEBMAIL_ATT_0.554288688655109
-Content-Type: text/plain; charset=iso-8859-1
+On Tue, 5 Apr 2005, Moritz Gartenmeister wrote:
 
-On Tue, 5 Apr 2005 10:50:28 -0400, Jason Opperisano wrote
+> i checked the memory usage a little more in detail:
+>
+> the free ram is decreasing.
+> the active use of ram is increasing.
+>
+> ergo, something is filling up my ram. i run apache, irc-proxy, snort and 
+> argus besides iptables.
+>
+> for me, there seems something buggy in the kernelspace of iptables.
+>
+> but, if i am the only one with this problem, it's maybe not.
+>
 
-> the gist of that error message is this:  the output interface for 
-> this packet according to the routing table is different from the 
-> interface we are doing a lookup on for the MASQ IP.  i cannot fathom 
-> how you could get this message with a standard inside/outside 
-> interfaces, single default gateway, firewall machine.
-> 
-> without seeing some rules[1], some routing tables[2], and some addressing
-> info[3], i'm pretty sure no one is going to be able to divine what 
-> the problem is.
-> 
-> the reason you're seeing this after an upgrade is because this bug reared
-> it's head somewhere around 2.4.23 and later kernels (someone else probably
-> has a better memory than me).
-> 
-> -j
-> 
-> [1] iptables -t mangle -vnxL; iptables -t nat -vnxL; iptables -vnxL
-> [2] ip ro sh
-> [3] ip -4 -o addr sh
+There are two things you might do to deal with memory over consumption 
+issues;
 
-Thanks, again.
+Add more RAM to the system
 
-Please see the attached outputs of each of these commands.
-
---
-Tim Evans, TKEvans.com, Inc.    |    5 Chestnut Court
-tkevans@tkevans.com             |    Owings Mills, MD 21117
-http://www.tkevans.com/         |    443-394-3864
-http://www.come-here.com/News/  |    
+or off load some of the services to other systems rather then directly 
+running them all on the firewall server.  And this is likely the better 
+way to deal with the problem in my mind.  firewalls afterall are 
+traditionally a single purpose system.
 
 
-------=OPENWEBMAIL_ATT_0.554288688655109
-Content-Type: application/octet-stream;
-Content-Disposition: attachment; filename="mangle.out"
-Content-Transfer-Encoding: base64
+Thanks,
 
-Q2hhaW4gUFJFUk9VVElORyAocG9saWN5IEFDQ0VQVCAxNDU4ODMgcGFja2V0cywgMzAyOTkwNjEg
-Ynl0ZXMpCiAgICBwa3RzICAgICAgYnl0ZXMgdGFyZ2V0ICAgICBwcm90IG9wdCBpbiAgICAgb3V0
-ICAgICBzb3VyY2UgICAgICAgICAgICAgICBkZXN0aW5hdGlvbiAgICAgICAgIAoKQ2hhaW4gSU5Q
-VVQgKHBvbGljeSBBQ0NFUFQgNDk5MiBwYWNrZXRzLCA4NTQxOTcgYnl0ZXMpCiAgICBwa3RzICAg
-ICAgYnl0ZXMgdGFyZ2V0ICAgICBwcm90IG9wdCBpbiAgICAgb3V0ICAgICBzb3VyY2UgICAgICAg
-ICAgICAgICBkZXN0aW5hdGlvbiAgICAgICAgIAoKQ2hhaW4gRk9SV0FSRCAocG9saWN5IEFDQ0VQ
-VCAxNDA4MzEgcGFja2V0cywgMjk0NDI0NjQgYnl0ZXMpCiAgICBwa3RzICAgICAgYnl0ZXMgdGFy
-Z2V0ICAgICBwcm90IG9wdCBpbiAgICAgb3V0ICAgICBzb3VyY2UgICAgICAgICAgICAgICBkZXN0
-aW5hdGlvbiAgICAgICAgIAoKQ2hhaW4gT1VUUFVUIChwb2xpY3kgQUNDRVBUIDIyMTggcGFja2V0
-cywgMjU2NzcyIGJ5dGVzKQogICAgcGt0cyAgICAgIGJ5dGVzIHRhcmdldCAgICAgcHJvdCBvcHQg
-aW4gICAgIG91dCAgICAgc291cmNlICAgICAgICAgICAgICAgZGVzdGluYXRpb24gICAgICAgICAK
-CkNoYWluIFBPU1RST1VUSU5HIChwb2xpY3kgQUNDRVBUIDE0MzAwMiBwYWNrZXRzLCAyOTY4Nzg5
-MiBieXRlcykKICAgIHBrdHMgICAgICBieXRlcyB0YXJnZXQgICAgIHByb3Qgb3B0IGluICAgICBv
-dXQgICAgIHNvdXJjZSAgICAgICAgICAgICAgIGRlc3RpbmF0aW9uICAgICAgICAgCg==
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
 
-------=OPENWEBMAIL_ATT_0.554288688655109
-Content-Type: application/octet-stream;
-Content-Disposition: attachment; filename="nat.out"
-Content-Transfer-Encoding: base64
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                         -Tom Robins <Still Life With Woodpecker>
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-Q2hhaW4gUFJFUk9VVElORyAocG9saWN5IEFDQ0VQVCAxNDcyOCBwYWNrZXRzLCAxMzExOTExIGJ5
-dGVzKQogICAgcGt0cyAgICAgIGJ5dGVzIHRhcmdldCAgICAgcHJvdCBvcHQgaW4gICAgIG91dCAg
-ICAgc291cmNlICAgICAgICAgICAgICAgZGVzdGluYXRpb24gICAgICAgICAKICAgICAgMTEgICAg
-ICA1MjQgRE5BVCAgICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAg
-ICAgICA2OS4yNTEuNTIuNjQgICAgICAgIHRjcCBkcHQ6MjIgdG86MTkyLjE2OC4yNTIuMyAKCkNo
-YWluIFBPU1RST1VUSU5HIChwb2xpY3kgQUNDRVBUIDcgcGFja2V0cywgMzY0IGJ5dGVzKQogICAg
-cGt0cyAgICAgIGJ5dGVzIHRhcmdldCAgICAgcHJvdCBvcHQgaW4gICAgIG91dCAgICAgc291cmNl
-ICAgICAgICAgICAgICAgZGVzdGluYXRpb24gICAgICAgICAKICAgICAgIDMgICAgICAxNjQgU05B
-VCAgICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAgICAxOTIu
-MTY4LjI1Mi4zICAgICAgIHRjcCBkcHQ6MjIgdG86MTkyLjE2OC4yNTIuNSAKICAgMTI3NDUgICA3
-OTIxMzggTUFTUVVFUkFERSAgYWxsICAtLSAgKiAgICAgIGV0aDEgICAgMC4wLjAuMC8wICAgICAg
-ICAgICAgMC4wLjAuMC8wICAgICAgICAgICAKCkNoYWluIE9VVFBVVCAocG9saWN5IEFDQ0VQVCA3
-MjYgcGFja2V0cywgNTMxNjAgYnl0ZXMpCiAgICBwa3RzICAgICAgYnl0ZXMgdGFyZ2V0ICAgICBw
-cm90IG9wdCBpbiAgICAgb3V0ICAgICBzb3VyY2UgICAgICAgICAgICAgICBkZXN0aW5hdGlvbiAg
-ICAgICAgIAogICAgICAgMCAgICAgICAgMCBETkFUICAgICAgIHRjcCAgLS0gICogICAgICAqICAg
-ICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDY5LjI1MS41Mi42NCAgICAgICAgdGNwIGRwdDoyMiB0
-bzoxOTIuMTY4LjI1Mi4zIAo=
-
-------=OPENWEBMAIL_ATT_0.554288688655109
-Content-Type: application/octet-stream;
-Content-Disposition: attachment; filename="all.out"
-Content-Transfer-Encoding: base64
-
-Q2hhaW4gSU5QVVQgKHBvbGljeSBEUk9QIDExNjQgcGFja2V0cywgMzM5NjExIGJ5dGVzKQogICAg
-cGt0cyAgICAgIGJ5dGVzIHRhcmdldCAgICAgcHJvdCBvcHQgaW4gICAgIG91dCAgICAgc291cmNl
-ICAgICAgICAgICAgICAgZGVzdGluYXRpb24gICAgICAgICAKICAgIDE4OTAgICAyMzEzODMgYmFk
-X3RjcF9wYWNrZXRzICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAg
-ICAwLjAuMC4wLzAgICAgICAgICAgIAogICAgMjgzNSAgIDMyNDIyMyBBQ0NFUFQgICAgIGFsbCAg
-LS0gIGV0aDAgICAqICAgICAgIDE5Mi4xNjguMjUyLjAvMjQgICAgIDAuMC4wLjAvMCAgICAgICAg
-ICAgCiAgICAgIDk2ICAgIDExOTg2IEFDQ0VQVCAgICAgYWxsICAtLSAgbG8gICAgICogICAgICAg
-MC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICAKICAgICAgIDAgICAgICAg
-IDAgQUNDRVBUICAgICBhbGwgIC0tICBldGgwICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAg
-ICAxOTIuMTY4LjI1Mi4yNTUgICAgIAogICAgICAgMCAgICAgICAgMCBBQ0NFUFQgICAgIHVkcCAg
-LS0gIGV0aDAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAg
-ICAgdWRwIHNwdDo2OCBkcHQ6NjcgCiAgICAxMDA4ICAgMTgxNTc5IEFDQ0VQVCAgICAgYWxsICAt
-LSAgZXRoMSAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAg
-ICBzdGF0ZSBSRUxBVEVELEVTVEFCTElTSEVEIAogICAgIDE3MyAgICAgODkzNiB0Y3BfcGFja2V0
-cyAgdGNwICAtLSAgZXRoMSAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8w
-ICAgICAgICAgICAKICAgICA5OTEgICAzMzA2NzUgdWRwaW5jb21pbmdfcGFja2V0cyAgdWRwICAt
-LSAgZXRoMSAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAg
-ICAKICAgICAgMjMgICAgIDM2ODggaWNtcF9wYWNrZXRzICBpY21wIC0tICBldGgxICAgKiAgICAg
-ICAwLjAuMC4wLzAgICAgICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIAogICAgICAgMCAgICAg
-ICAgMCBBQ0NFUFQgICAgIHRjcCAgLS0gICogICAgICAqICAgICAgIDIxNi4xNTguNTYuMTEzICAg
-ICAgIDE5Mi4xNjguMjUyLjMgICAgICAgdGNwIGRwdDoyMiAKICAgICAgIDAgICAgICAgIDAgQUND
-RVBUICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAyMDcuMjQ1Ljg0LjcyICAgICAgICAxOTIu
-MTY4LjI1Mi4zICAgICAgIHRjcCBkcHQ6MjIgCiAgICAgICAwICAgICAgICAwIEFDQ0VQVCAgICAg
-dGNwICAtLSAgKiAgICAgICogICAgICAgMTk5LjE3My4yMjQuMjAgICAgICAgMTkyLjE2OC4yNTIu
-MyAgICAgICB0Y3AgZHB0OjIyIAogICAgICAgMCAgICAgICAgMCBBQ0NFUFQgICAgIHRjcCAgLS0g
-ICogICAgICAqICAgICAgIDE5OS4xNzMuMjI0LjIgICAgICAgIDE5Mi4xNjguMjUyLjMgICAgICAg
-dGNwIGRwdDoyMiAKICAgICAgIDAgICAgICAgIDAgQUNDRVBUICAgICB0Y3AgIC0tICAqICAgICAg
-KiAgICAgICAxOTkuMTczLjIyNS4yMSAgICAgICAxOTIuMTY4LjI1Mi4zICAgICAgIHRjcCBkcHQ6
-MjIgCiAgICAgICAwICAgICAgICAwIEFDQ0VQVCAgICAgdGNwICAtLSAgKiAgICAgICogICAgICAg
-MTQ3LjE0MC4xMi4xMjggICAgICAgMTkyLjE2OC4yNTIuMyAgICAgICB0Y3AgZHB0OjIyIAogICAg
-IDgwMiAgIDIyOTM4MiBMT0cgICAgICAgIGFsbCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAv
-MCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgbGltaXQ6IGF2ZyAzL21pbiBidXJzdCAz
-IExPRyBmbGFncyAwIGxldmVsIDcgcHJlZml4IGBJUFQgSU5QVVQgcGFja2V0IGRpZWQ6ICcgCgpD
-aGFpbiBGT1JXQVJEIChwb2xpY3kgRFJPUCA4IHBhY2tldHMsIDM2MCBieXRlcykKICAgIHBrdHMg
-ICAgICBieXRlcyB0YXJnZXQgICAgIHByb3Qgb3B0IGluICAgICBvdXQgICAgIHNvdXJjZSAgICAg
-ICAgICAgICAgIGRlc3RpbmF0aW9uICAgICAgICAgCiAgMTIzMzk1IDI3ODMwMTgxIGJhZF90Y3Bf
-cGFja2V0cyAgdGNwICAtLSAgKiAgICAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4w
-LjAuMC8wICAgICAgICAgICAKICAgNzYzNzkgIDY2NTc1MjMgQUNDRVBUICAgICBhbGwgIC0tICBl
-dGgwICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIAog
-ICA2NDc5MyAyMjgxNjEyOSBBQ0NFUFQgICAgIGFsbCAgLS0gICogICAgICAqICAgICAgIDAuMC4w
-LjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgc3RhdGUgUkVMQVRFRCxFU1RBQkxJ
-U0hFRCAKICAgICAgIDAgICAgICAgIDAgQUNDRVBUICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAg
-ICAyMTYuMTU4LjU2LjExMyAgICAgICAxOTIuMTY4LjI1Mi4zICAgICAgIHRjcCBkcHQ6MjIgCiAg
-ICAgICAyICAgICAgMTIwIEFDQ0VQVCAgICAgdGNwICAtLSAgKiAgICAgICogICAgICAgMjA3LjI0
-NS44NC43MiAgICAgICAgMTkyLjE2OC4yNTIuMyAgICAgICB0Y3AgZHB0OjIyIAogICAgICAgMCAg
-ICAgICAgMCBBQ0NFUFQgICAgIHRjcCAgLS0gICogICAgICAqICAgICAgIDE0Ny4xNDAuMTIuMTI4
-ICAgICAgIDE5Mi4xNjguMjUyLjMgICAgICAgdGNwIGRwdDoyMiAKICAgICAgIDAgICAgICAgIDAg
-QUNDRVBUICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAxOTkuMTczLjIyNC4yMCAgICAgICAx
-OTIuMTY4LjI1Mi4zICAgICAgIHRjcCBkcHQ6MjIgCiAgICAgICAxICAgICAgIDQ0IEFDQ0VQVCAg
-ICAgdGNwICAtLSAgKiAgICAgICogICAgICAgMTk5LjE3My4yMjQuMiAgICAgICAgMTkyLjE2OC4y
-NTIuMyAgICAgICB0Y3AgZHB0OjIyIAogICAgICAgMCAgICAgICAgMCBBQ0NFUFQgICAgIHRjcCAg
-LS0gICogICAgICAqICAgICAgIDE5OS4xNzMuMjI1LjIxICAgICAgIDE5Mi4xNjguMjUyLjMgICAg
-ICAgdGNwIGRwdDoyMiAKICAgICAgIDAgICAgICAgIDAgQUNDRVBUICAgICB0Y3AgIC0tICAqICAg
-ICAgZXRoMSAgICAxOTIuMTY4LjI1Mi4zICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIHRjcCBz
-cHQ6MjIgCiAgICAgICA4ICAgICAgMzYwIExPRyAgICAgICAgYWxsICAtLSAgKiAgICAgICogICAg
-ICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICBsaW1pdDogYXZnIDMv
-bWluIGJ1cnN0IDMgTE9HIGZsYWdzIDAgbGV2ZWwgNyBwcmVmaXggYElQVCBGT1JXQVJEIHBhY2tl
-dCBkaWVkOiAnIAoKQ2hhaW4gT1VUUFVUIChwb2xpY3kgRFJPUCAxMCBwYWNrZXRzLCA3NjAgYnl0
-ZXMpCiAgICBwa3RzICAgICAgYnl0ZXMgdGFyZ2V0ICAgICBwcm90IG9wdCBpbiAgICAgb3V0ICAg
-ICBzb3VyY2UgICAgICAgICAgICAgICBkZXN0aW5hdGlvbiAgICAgICAgIAogICAgMTQzNSAgIDIw
-ODg5OCBiYWRfdGNwX3BhY2tldHMgIHRjcCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAg
-ICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgCiAgICAgIDk2ICAgIDExOTg2IEFDQ0VQVCAg
-ICAgYWxsICAtLSAgKiAgICAgICogICAgICAgMTI3LjAuMC4xICAgICAgICAgICAgMC4wLjAuMC8w
-ICAgICAgICAgICAKICAgIDExMjEgICAxMjc3NTEgQUNDRVBUICAgICBhbGwgIC0tICAqICAgICAg
-KiAgICAgICAxOTIuMTY4LjI1Mi41ICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIAogICAgMTA3
-NiAgIDExNzg0MyBBQ0NFUFQgICAgIGFsbCAgLS0gICogICAgICBldGgxICAgIDAuMC4wLjAvMCAg
-ICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgCiAgICAgIDEwICAgICAgNzYwIExPRyAgICAg
-ICAgYWxsICAtLSAgKiAgICAgICogICAgICAgMC4wLjAuMC8wICAgICAgICAgICAgMC4wLjAuMC8w
-ICAgICAgICAgICBsaW1pdDogYXZnIDMvbWluIGJ1cnN0IDMgTE9HIGZsYWdzIDAgbGV2ZWwgNyBw
-cmVmaXggYElQVCBPVVRQVVQgcGFja2V0IGRpZWQ6ICcgCgpDaGFpbiBhbGxvd2VkICgwIHJlZmVy
-ZW5jZXMpCiAgICBwa3RzICAgICAgYnl0ZXMgdGFyZ2V0ICAgICBwcm90IG9wdCBpbiAgICAgb3V0
-ICAgICBzb3VyY2UgICAgICAgICAgICAgICBkZXN0aW5hdGlvbiAgICAgICAgIAogICAgICAgMCAg
-ICAgICAgMCBBQ0NFUFQgICAgIHRjcCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAg
-ICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgdGNwIGZsYWdzOjB4MTYvMHgwMiAKICAgICAgIDAg
-ICAgICAgIDAgQUNDRVBUICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAg
-ICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIHN0YXRlIFJFTEFURUQsRVNUQUJMSVNIRUQgCiAg
-ICAgICAwICAgICAgICAwIERST1AgICAgICAgdGNwICAtLSAgKiAgICAgICogICAgICAgMC4wLjAu
-MC8wICAgICAgICAgICAgMC4wLjAuMC8wICAgICAgICAgICAKCkNoYWluIGJhZF90Y3BfcGFja2V0
-cyAoMyByZWZlcmVuY2VzKQogICAgcGt0cyAgICAgIGJ5dGVzIHRhcmdldCAgICAgcHJvdCBvcHQg
-aW4gICAgIG91dCAgICAgc291cmNlICAgICAgICAgICAgICAgZGVzdGluYXRpb24gICAgICAgICAK
-ICAgICAgNjQgICAgMTM4NDQgTE9HICAgICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAwLjAu
-MC4wLzAgICAgICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIHRjcCBmbGFnczohMHgxNi8weDAy
-IHN0YXRlIE5FVyBMT0cgZmxhZ3MgMCBsZXZlbCA0IHByZWZpeCBgTmV3IG5vdCBzeW46JyAKICAg
-ICAgNjQgICAgMTM4NDQgRFJPUCAgICAgICB0Y3AgIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4w
-LzAgICAgICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIHRjcCBmbGFnczohMHgxNi8weDAyIHN0
-YXRlIE5FVyAKCkNoYWluIGljbXBfcGFja2V0cyAoMSByZWZlcmVuY2VzKQogICAgcGt0cyAgICAg
-IGJ5dGVzIHRhcmdldCAgICAgcHJvdCBvcHQgaW4gICAgIG91dCAgICAgc291cmNlICAgICAgICAg
-ICAgICAgZGVzdGluYXRpb24gICAgICAgICAKICAgICAgMjMgICAgIDM2ODggQUNDRVBUICAgICBp
-Y21wIC0tICAqICAgICAgKiAgICAgICAwLjAuMC4wLzAgICAgICAgICAgICAwLjAuMC4wLzAgICAg
-ICAgICAgIGljbXAgdHlwZSA4IAogICAgICAgMCAgICAgICAgMCBBQ0NFUFQgICAgIGljbXAgLS0g
-ICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAg
-aWNtcCB0eXBlIDExIAoKQ2hhaW4gdGNwX3BhY2tldHMgKDEgcmVmZXJlbmNlcykKICAgIHBrdHMg
-ICAgICBieXRlcyB0YXJnZXQgICAgIHByb3Qgb3B0IGluICAgICBvdXQgICAgIHNvdXJjZSAgICAg
-ICAgICAgICAgIGRlc3RpbmF0aW9uICAgICAgICAgCgpDaGFpbiB1ZHBpbmNvbWluZ19wYWNrZXRz
-ICgxIHJlZmVyZW5jZXMpCiAgICBwa3RzICAgICAgYnl0ZXMgdGFyZ2V0ICAgICBwcm90IG9wdCBp
-biAgICAgb3V0ICAgICBzb3VyY2UgICAgICAgICAgICAgICBkZXN0aW5hdGlvbiAgICAgICAgIAog
-ICAgICAgMCAgICAgICAgMCBBQ0NFUFQgICAgIHVkcCAgLS0gICogICAgICAqICAgICAgIDAuMC4w
-LjAvMCAgICAgICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgdWRwIHNwdDo1MyAKICAgICAgIDAg
-ICAgICAgIDAgQUNDRVBUICAgICB1ZHAgIC0tICAqICAgICAgKiAgICAgICAxNzIuMzAuMTIuMzQg
-ICAgICAgICAwLjAuMC4wLzAgICAgICAgICAgIHVkcCBzcHQ6NjcgZHB0OjY4IAo=
-
-------=OPENWEBMAIL_ATT_0.554288688655109
-Content-Type: application/octet-stream;
-Content-Disposition: attachment; filename="route.out"
-Content-Transfer-Encoding: base64
-
-MTkyLjE2OC4yNTIuMC8yNCBkZXYgZXRoMCAgcHJvdG8ga2VybmVsICBzY29wZSBsaW5rICBzcmMg
-MTkyLjE2OC4yNTIuNSAKNjkuMjUxLjQ4LjAvMjEgZGV2IGV0aDEgIHByb3RvIGtlcm5lbCAgc2Nv
-cGUgbGluayAgc3JjIDY5LjI1MS41Mi42NCAKMTY5LjI1NC4wLjAvMTYgZGV2IGV0aDEgIHNjb3Bl
-IGxpbmsgCmRlZmF1bHQgdmlhIDY5LjI1MS40OC4xIGRldiBldGgxIApkZWZhdWx0IHZpYSAxOTIu
-MTY4LjI1Mi4yNTQgZGV2IGV0aDAgCg==
-
-------=OPENWEBMAIL_ATT_0.554288688655109
-Content-Type: application/octet-stream;
-Content-Disposition: attachment; filename="addressing.out"
-Content-Transfer-Encoding: base64
-
-MTogbG8gICAgaW5ldCAxMjcuMC4wLjEvOCBicmQgMTI3LjI1NS4yNTUuMjU1IHNjb3BlIGhvc3Qg
-bG8KMjogZXRoMCAgICBpbmV0IDE5Mi4xNjguMjUyLjUvMjQgYnJkIDE5Mi4xNjguMjUyLjI1NSBz
-Y29wZSBnbG9iYWwgZXRoMAozOiBldGgxICAgIGluZXQgNjkuMjUxLjUyLjY0LzIxIGJyZCA2OS4y
-NTEuNTUuMjU1IHNjb3BlIGdsb2JhbCBldGgxCg==
-
-------=OPENWEBMAIL_ATT_0.554288688655109--
+iD8DBQFCUr43st+vzJSwZikRAhB5AJsFNxy0VUPQDPbgV2g4vS/NWl+mZgCcDUui
+kJNnt/dXPVl48WVqY/4CZP8=
+=hgsV
+-----END PGP SIGNATURE-----
 
