@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPSec Transport Mode
-Date: Wed, 7 Jul 2004 22:42:09 +0100
+From: David Cary Hart <DCH@TQMcube.com>
+Subject: Re: Samba "Leak"
+Date: Wed, 07 Jul 2004 17:52:44 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407072242.09330.Antony@Soft-Solutions.co.uk>
-References: <1089207305.788.14.camel@PCA-ARNSTR.ee-consultants.de> <200407072154.52923.Antony@Soft-Solutions.co.uk> <20040707211122.GA15747@zion.homelinux.com>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <1089237164.30076.23.camel@localhost>
+References: <1089228185.30076.14.camel@localhost>
+	 <200407072035.48484.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040707211122.GA15747@zion.homelinux.com>
+In-Reply-To: <200407072035.48484.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,39 +21,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 07 July 2004 10:11 pm, Sven Schuster wrote:
+On Wed, 2004-07-07 at 15:35, Antony Stone wrote:
+> On Wednesday 07 July 2004 8:23 pm, David Cary Hart wrote:
+> 
 
-> Hi Antony,
->
-> On Wed, Jul 07, 2004 at 09:54:52PM +0100, Antony Stone told us:
-> > ESP is for tunnel mode, and works fine through NAT.
-> >
-> > Transport mode uses AH (protocol 51), and that's the one which breaks
-> > through NAT.
->
-> Isn't using AH or ESP independent from tunnel/transport mode?? AH
-> mode is just authentication, ESP is authentication + encryption. You
-> can use AH with tunnel mode and ESP with transport mode like you
-> wish I think.
+> Here are my comments / thoughts:
+> 
+> 1. Just because you're seeing WAN addresses doesn't mean they aren't spoofed 
+> (they could be packets from the LAN, but with external source addresses?)
+> 
 
-Hm, not sure about this - I've never wanted a VPN without encryption, so I've 
-not experimented with AH tunnels.
+??
 
-Also, if you can do transport mode with ESP, then it should work through NAT 
-without problems, because the original packet gets encapsulated (as per my 
-previous explanation).
+> 2. Do you have any wireless involved anywhere, as a means for unknown clients 
+> to access the network?
+> 
+Yes. Security is through the MAC of the client card. It's hard coded for
+our two cards. Encryption is still a challenge for MadWifi. I assumed
+that only the MAC of the router is sent out with packets.
 
-Regards,
+> 3. A packet sniffer / IDS on the external firewall link + the Samba subnet 
+> (DMZ?) should tell you what is really going on.   Maybe a chance to play with 
+> Snort :)
 
-Antony.
+That's the simplest solution. I never could quite get the hang of The
+Pig but I suppose that Ethereal should get it done.
+> 
+> Regards,
+> 
+> Antony.
 
+Thanks.
 -- 
-"There is no reason for any individual to have a computer in their home."
-
- - Ken Olsen, President of Digital Equipment Corporation (DEC, later consumed 
-by Compaq, later merged with HP)
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+                            David Cary Hart
+Hart's PGP key: http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x58A60BB1
 
 
