@@ -1,14 +1,14 @@
-From: "Stuart Lamble" <stu@gateway10.homeip.net>
-Subject: RE: Logging default drop
-Date: Thu, 8 Apr 2004 19:24:31 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Logging default drop
+Date: Thu, 8 Apr 2004 18:30:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000401c41d8e$5acdba10$0464a8c0@stu>
-References: <20040408170259.GL10272@home.manuelm.org>
-Reply-To: <stu@gateway10.homeip.net>
+Message-ID: <200404081830.59845.Antony@Soft-Solutions.co.uk>
+References: <000401c41d8e$5acdba10$0464a8c0@stu>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040408170259.GL10272@home.manuelm.org>
+In-Reply-To: <000401c41d8e$5acdba10$0464a8c0@stu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,56 +21,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Ok, so what does "toppost" mean?
+On Thursday 08 April 2004 6:24 pm, Stuart Lamble wrote:
 
+> Ok, so what does "toppost" mean?
 
+Regards,
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Frank
-Gruellich
-Sent: Thursday, April 08, 2004 7:03 PM
-To: netfilter@lists.netfilter.org
-Subject: Re: Logging default drop
+Antony.
 
-
-* Stuart Lamble <stu@gateway10.homeip.net>  8. Apr 04:
-> Hi All
-
-Hello,
-
-> iptables -A INPUT -j LOG --log-prefix "IN-DEfault-drop "
-> 
-> I then tail my messages file and get a LOT of the following....
-> 
-> [logged packet]
-> 
-> The SRC address is ofter different.
-
-This is normal.
-
-> What does this mean?
-
-Congratulation, you catched a ping.  For complete description read
-<URL:http://logi.cc/linux/netfilter-log-format.php3>.  And please, don't
-toppost.
-
-HTH,
- regards, Frank.
 -- 
-Sigmentation fault
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing on usenet and in e-mail?
 
-
----
-Incoming mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.654 / Virus Database: 419 - Release Date: 4/6/2004
- 
-
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.654 / Virus Database: 419 - Release Date: 4/6/2004
- 
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
