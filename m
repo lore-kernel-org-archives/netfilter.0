@@ -1,13 +1,13 @@
-From: Alpt <alpt@freaknet.org>
-Subject: Ipv6 array ORDER
-Date: Mon, 19 Jul 2004 16:28:33 +0200
+From: George Alexandru Dragoi <waruiinu@gmail.com>
+Subject: Re: bridge + nat
+Date: Mon, 19 Jul 2004 16:31:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040719142833.GA26461@darkalpt>
+Message-ID: <3063e504071907313a194279@mail.gmail.com>
+References: <3063e5040718224645349687@mail.gmail.com> <200407191025.44076.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <200407191025.44076.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
+That is what i wanted to do, with 2 NICs to make a bridge between
+internet and the LAN, assign the public ip to one of the LAN machine,
+and prite ips to the rest of machines, and to hope it will work, seems
+not, i hoped i could do this. If the voip hardware/software wont work
+in nat with port forward, i wont change there with linux.
+Maybe there is a suggestion for that voip, or if i can do this with 3
+NICs, and 1 single public IP.
 
---cWoXeonUoKmBZSoM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks in advance
 
-Hi there,
-What's the ipv6 array ORDER in the in6_addr struct?
-In other words what's the word order of  "__u32           u6_addr32[4];" ?
-Is it "most significant word first" or "least significant first"?
-
-And each word is in network byte order right?
-
-Thanks ;)
---=20
-:wq!
-"I don't know nothing" The One Who reached the Thinking Matter   '.'
-
-[ Alpt --- Freaknet Medialab ]
-[ GPG Key ID 441CF0EE ]
-[ Key fingerprint =3D 8B02 26E8 831A 7BB9 81A9  5277 BFF8 037E 441C F0EE ]
-
---cWoXeonUoKmBZSoM
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFA+9qRv/gDfkQc8O4RArkQAJ92AcLGknMtKdfnBzNVBc6gw63v6ACeNL2n
-VXd4t3Jqi80Ud2aS4lDOuvU=
-=ro1u
------END PGP SIGNATURE-----
-
---cWoXeonUoKmBZSoM--
+On Mon, 19 Jul 2004 10:25:44 +0100, Antony Stone
+<antony@soft-solutions.co.uk> wrote:
+> On Monday 19 July 2004 6:46 am, George Alexandru Dragoi wrote:
+> 
+> > Hello, i am trying to make a linux machine as both router and bridge.
+> 
+> How many NICs do you have in the machine?
+> 
+> So long as you are bridging between some group of NICs, and then routing
+> between the bridge group and the other NICs, then you should be able to
+> simply set up routing, netfilter etc using device name br0 for the bridge.
+> 
+> You cannot do bridging and routing on the same group of NICs.
+> 
+> Hope this helps,
+> 
+> Regards,
+> 
+> Antony.
+> 
+> --
+> Software development can be quick, high quality, or low cost.
+> 
+> The customer gets to pick any two out of three.
+> 
+>                                                      Please reply to the list;
+>                                                            please don't CC me.
+> 
+>
 
