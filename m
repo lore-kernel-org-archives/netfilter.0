@@ -1,14 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Redirection to local lan, isn't DNAT method unsafe.
-Date: Thu, 1 Apr 2004 23:52:27 +0100
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: Having NAT problems
+Date: Thu, 1 Apr 2004 17:41:26 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404012352.27203.Antony@Soft-Solutions.co.uk>
-References: <40696C1A.5080400@personalsoft.com.br> <200404011055.45703.Antony@Soft-Solutions.co.uk> <200404011720.57604.Alistair Tonner <>>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <19390.0600578219$1080860496@news.gmane.org>
+References: <20040401192505.3100.69461.Mailman@vishnu.netfilter.org> <20040401203013.M36511@niesc.k12.in.us> <200404012145.33403.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <>
+From: Alistair Tonner <>
+In-Reply-To: <200404012145.33403.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,41 +22,50 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 01 April 2004 11:20 pm, Alistair Tonner wrote:
-
-> On April 1, 2004 04:55 am, Antony Stone wrote:
+On April 1, 2004 03:45 pm, Antony Stone wrote:
+> On Thursday 01 April 2004 9:32 pm, Adam Kennedy wrote:
+> > On Thu, 1 Apr 2004 21:19:45 +0100, Antony Stone wrote
+> >
+> > > Okay, how's this then  - please post all the rules which you think
+> > > are needed for this pcAnywhere setup to work (with suitable partial
+> > > obscuring of IPs if you wish).   Then we'll tell you if we can see
+> > > something missing?
+> >
+> > That's actually what I wound up doing in the last post. That's all the
+> > rules on the box save for a few NAT entries which I just commented out.
+> > Commenting them out and re-running the file didn't do anything. I'm at my
+> > wits end.
 >
-> > My expectation is that people "out on the Internet" cannot connect to
-> > your private IPs (because the addresses are non-routable), therefore the
-> > question doesn't arise for them.   People associated with your local
-> > network (ie: inside your connection point to the Internet) surely aren't
-> > a problem even if they do discover the real private IP address?   Or am I
-> > missing something here about what you are trying to secure from whom?
+> In that case let's see if there's something strange about the protocol
+> pcAnywhere uses.   Set up a similar DNAT rule for something we know about,
+> like ssh (or http, or any other service you happen to be running on an
+> internal server), and see if you can connect to that from the outside
+> world.
 >
-> 	Actually I can see one other horrible possibility  --- an ISP with a \28
-> net -- where the internal network of the ISP is by neccesity a non
-> routeable address space, and is natted within the \28 netowork ... or where
-> subscribers are all on non routeable addresses and primary connection
-> services are on the \28 space....
+> If you can, then there's obviously something about pcAnywhere which either
+> doesn't like NAT, or isn't sufficiently simple to work on a single
+> destination port.
+>
+> If you can't connect to ssh (or whatever) either, then there's something
+> weird going on and we really would need to see more about your ruleset to
+> help further.
+>
+> Unless anyone else here can spot something I've missed from what's been
+> posted already....?   Maybe someone else has used pcAnywhere through NAT
+> with netfilter?
+>
+> Regards,
+>
 
-Hm, I see what you're saying (and yes, there are a lot of ISPs who run 
-networks like this), however I still think that if you're making the service 
-available to people on a public IP address (NATted by your firewall to the 
-real private address), then why are you particularly bothered about them 
-accessing the same service, by its private address?
+	I would also suggest some verbose logging on the port, ip address combo.
+	I seem to recall PCAnywhere having been discussed on the list last year 
+	and someone coming to the conclusion that there were ICMP requirements in 
+	the connection ... But don't have the post to hand to put back up... 
 
-Okay, it's the way you wanted them to do it, but they can't do any more with 
-it than they could by using the public IP.
+	One other point to be raised ...  is the server expecting the connection from 
+	the outside world??? I know that we (where I work) use a default config file for 
+	PCAnywhere installs that auto denies any address from routeable address 
+	spaces.  -- 
 
-?
-
-Antony.
-
--- 
-This is not a rehearsal.
-This is Real Life.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+	Alistair
 
