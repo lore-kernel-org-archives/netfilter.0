@@ -1,14 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Counting traffic - another question
-Date: Tue, 27 Jul 2004 13:59:13 +0100
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Questions about the workings of iptables
+Date: Tue, 27 Jul 2004 09:41:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407271359.13020.Antony@Soft-Solutions.co.uk>
-References: <1304297675.20040727143400@op.pl>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <1090935679.25639.78.camel@localhost>
+References: <564DE4477544D411AD2C00508BDF0B6A21C4DABE@usahm018.exmi01.exch.eds.com>
+	 <200407261417.33159.Antony@Soft-Solutions.co.uk>
+	 <opsbsb0q0j2fsc0m@192.168.1.10>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1304297675.20040727143400@op.pl>
+In-Reply-To: <opsbsb0q0j2fsc0m@192.168.1.10>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,57 +20,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Ashutosh <ashutosh@teneoris.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 27 July 2004 1:34 pm, Marcin wrote:
+On Tue, 2004-07-27 at 03:20, Ashutosh wrote:
+> > No.   AFAIK the connection tracking in netfilter checks only src+dst 
+> > IP+port,
+> > nothing else.
+> 
+> .. And the Protocol
 
-> Hi
->
->   I have set of rules that doing upload/download stats for my NATed network
->   (10.0.0.0/8):
->
->   # Marking
->   $IPTABLES -t mangle -A FORWARD -p tcp -j CONNMARK --restore-mark
->   $IPTABLES -t mangle -A FORWARD -p tcp -m mark ! --mark 0 -j ACCEPT
->
->   $IPTABLES -t mangle -A FORWARD -p tcp --dport $SSH_PORT -j MARK --set-mark
-> $SSH
-
-<snip...>
-
->   Rules above (IMO) marks specified trafic traveling through FORWARD
->   chain, and this is only traffic from localnet <-> internet, not from
->   localnet <-> linuxbox.
-
-Correct.   FORWARD chain matches only packets which are routed *through* the 
-machine, not packets going to/from the machine itself.
-
->   Ok, now i make chains for counting uploads/downloads from/to my lan.
-
-Why?   You seem to have one set of rules in the FORWARD mangle table for 
-MARKing packets, and then another set of rules in POSTROUTING looking for 
-MARKs and counting the packets.
-
-Why not simply count all the packets in FORWARD mangle?
-
-For example:
-
-iptables -A FORWARD -t mangle -i eth0 -o ppp0 -p tcp --dport ssh
-
-Will count all packets going from eth0 to ppp0 destination ssh (TCP port 22).
-
-No need to MARK the packets (unless you want the MARKs for something else?), 
-and you can specify input & output interface in the FORWARD table to identify 
-which way through your firewall the packets are going.
-
-Regards,
-
-Antony.
-
+and I would assume there is a timer - John
 -- 
-Most people have more than the average number of legs.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
