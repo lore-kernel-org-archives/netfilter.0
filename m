@@ -1,12 +1,10 @@
-From: Moritz Gartenmeister <moritz.gartenmeister@access.unizh.ch>
-Subject: Re: dummy target?
-Date: Fri, 18 Mar 2005 15:52:25 +0100
-Message-ID: <423AEB29.1070209@access.unizh.ch>
-References: <423ADBAC.4020406@uplink-verein.ch>
-	<20050318144126.GA2604@zion.homelinux.com>
+From: Werner Schalk <werner_schalk@gmx.de>
+Subject: Iptables and vserver
+Date: Sun, 20 Mar 2005 17:10:46 +0100
+Message-ID: <200503201710.46087.werner_schalk@gmx.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050318144126.GA2604@zion.homelinux.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,45 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi all
+Hi,
 
-Thanks for your (Sven and Steven) help!
+I am currently facing a chicken-egg kinda problem and I was wondering whether 
+you guys would be able to help me on that one. My setup is as follows:
 
-regards
-moritz
+Inet -> Host a.b.c.d (providing SSH, HTTP and DNS services) -> several 
+VServers, 10.0.1.x (all providing SSH and HTTP as well)
 
-Sven Schuster wrote:
-> Hi Moritz,
-> 
-> On Fri, Mar 18, 2005 at 02:46:20PM +0100, Moritz Gartenmeister told us:
-> 
->>hi all
->>
->>i want to use the counters for statistic stuff. i already have a working 
->>example. but i want to get numbers for pakets, which i acutally have no 
->>rule for (e.g. all incoming traffic).
->>is there a dummy target? like:
->>$IPTABLES -t mangle -A PREROUTING -m physdev --physdev-in $INET_IF -j DUMMY
->>
->>dummy target: do nothing, do not terminate, do just increment counters.
-> 
-> 
-> just don't provide the '-j TARGET' on the commandline, then you'll
-> have a rule (with its counters) which "does" nothing...
-> 
-> 
-> HTH
-> 
-> Sven
-> 
-> 
->>cheers
->>moritz
->>
->>
-> 
-> 
+So set up PRE- and POSTROUTING rules and I was able to transparently access 
+the 10.0.1.x network. However of course I am not able to access the SSH and 
+HTTP servers on the host itself anymore because iptables can not 
+differentiate between the SSH and HTTP server provided by my host with the 
+(one and only) public IP address and those servers provided by the Vserver 
+the host also acts as a DNS server for. Can anybody point me to feasable 
+solutions to this problem because I don't want (or actually I simply can't) 
+to use more than public IP address on the host. Anyone? Might that be 
+possible with advanced routing maybe?
+
+Thanks a lot.
+
+Bye,
+Werner
 
