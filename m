@@ -1,12 +1,13 @@
-From: "Paul Albert" <palbert@rovingplanet.com>
-Subject: Tcp-window-tracking
-Date: Thu, 27 Feb 2003 15:14:36 -0700
+From: "Filip Sneppe (Cronos)" <filip.sneppe@cronos.be>
+Subject: Re: Conntrack helper problems (patch-o-matic-20030107)
+Date: 27 Feb 2003 23:35:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <661F9268BBA8CB4EB92CC12B8C42F06901F5FA@pluto.rovingplanet.com>
+Message-ID: <1046385336.737.10.camel@exile>
+References: <PIEIIGGHCLEGAPAHFMDOIENNCJAA.Robert.Allmeroth@epygi.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <PIEIIGGHCLEGAPAHFMDOIENNCJAA.Robert.Allmeroth@epygi.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,20 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Robert Allmeroth <Robert.Allmeroth@epygi.de>
+Cc: netfilter@lists.netfilter.org
 
-Hi all -=20
+On Thu, 2003-02-27 at 17:16, Robert Allmeroth wrote:
+> 
+> here is what i have / see:
+> 
+> FTP conntrack problem:
+> bash-2.05# cat /proc/net/ip_conntrack
+> tcp      6 431573 ESTABLISHED src=172.30.255.1 dst=10.20.0.17 sport=1572 dport=21 src=10.20.0.17 dst=10.20.10.197 sport=21
+> dport=1572 [ASSURED] use=1
+> EXPECTING: - use=1 proto=6 src=10.20.0.17 dst=10.20.10.197 sport=0 dport=1573
+> 
+> The sport=0 seems wrong to me..
+> 
+Hi Robert,
 
-I need to examine each of the packets in the HTTP stream in my firewall.
-After checking out the excellent IPTables Tutorial, I'm thinking that I
-need to use the POM to put in tcp-window-tracking.  Currently, just the
-initial socket opens are being checked and correctly sent to the QUEUE
-target.  I would like to have all packets in the TCP stream sent to the
-queue target, and I would like to make sure that this will cause the
-firewall to do just this for traffic between clients and our internal
-web server.  If not, I appologise for the silly post and request a
-pointer in the correct direction.
+It's not necessarily wrong. Basically a conntrack helper 
+will tell connection tracking what connection to expect 
+based on IP/TCP header and packet payload info from the 
+"master" connection.
 
-Cheers,
-Paul
+Often, it will get both IP addresses, plus one port
+(destination port is the obvious candidate). With this
+info, the expectation will be set up. The other port
+is "random" (ie. picked by the client) and can't 
+really be predicted. 
+
+When a conntrack helper sets up an expecation, it
+fills in the necessary values and also uses a mask
+to point out the relevant info.
+
+The sport=0 here basically means "any port" and is
+probably the result of the mask being set to 0 for
+the sport of the expectation.
+
+About your problem, are all relevant conntrack + nat
+modules loaded (check with lsmod) ?
+
+Regards,
+Filip
+
 
