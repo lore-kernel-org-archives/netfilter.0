@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables -t nat -A OUTPUT - j DNAT
-Date: 23 May 2003 17:05:46 +0200
+From: Michael Stilmant <ml-netfilter@adtech.be>
+Subject: transparent tcp proxy
+Date: 23 May 2003 17:06:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053702346.654.87.camel@elendil.intranet.cartel-securite.net>
-References: <MCBBLLHIIODBDKIGDHGAMEJHCCAA.lzur@record.com.pl>
+Message-ID: <1053702396.15028.17.camel@stilmant>
+Reply-To: ml-netfilter@adtech.be
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <MCBBLLHIIODBDKIGDHGAMEJHCCAA.lzur@record.com.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,44 +16,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: Leszek =?iso-8859-2?Q?=AFur?= <lzur@record.com.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le ven 23/05/2003 =C3=A0 16:41, Leszek =C5=BBur a =C3=A9crit :
-> Slackware 9.0
-> kernel 2.4.20
-> iptables 1.2.7a
-> iptables -t nat -A OUTPUT -d 1.1.1.1 -j DNAT --to-destination 2.2.2.2
-> iptables: Invalid argument
+Hello,
 
-Strange, works fine for me :
+First of all, an hello from a new user on this mailing list.
 
-cbr@elendil:~$ sudo iptables --version
-iptables v1.2.7a
-cbr@elendil:~$ sudo iptables -t nat -A OUTPUT -d 1.1.1.1 -j DNAT
-	--to-destination 2.2.2.2
-cbr@elendil:~$ sudo iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-=20
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-=20
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-DNAT       all  --  anywhere             1.1.1.1            to:2.2.2.2
+and finally my actual problem.
 
-Are both kernel and iptables Slackware packages ? Are they built from
-sources ? If so, does patch-o-matic have been applied (pending and
-submitted) ?
+I'm need to make a transparent proxy for an billing application. To to
+that I need to put myself in the middle point of a protocol exchange not
+thinked to be easy done with a proxy.
 
-I got problems like this when I was used to build my own kernel and use
-an iptables package from distro.
+So to do that I've done this installation:
 
---=20
-C=C3=A9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security - Cartel S=C3=A9curit=C3=A9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+I've have a computer where I place transparent proxy via ebtables this
+is B. (no special rules : just ones to activate a transparent proxy:
+                brctl addbr mybridge
+                brctl addif mybridge eth0
+                brctl addif mybridge eth1
+                ifconfig eth0 0.0.0.0
+                ifconfig eth1 0.0.0.0
+                ifconfig mybridge up
+                ifconfig mybridge 10.0.0.225
+                route add default gw 10.0.0.254 )
+
+A and C communicate with all normal exchange
+
+                     10.0.0.225
+                     +--------+
+                     |   B    |
+   +-----+           |        |          +-----+
+   |  A  +-----------[ebtables]----------|  C  |
+   +-----+           +--------+          +-----+
+   10.0.0.3                             10.0.0.32         
+
+I've place this Iptables rules
+
+iptables -t nat -A PREROUTING -i eth1 -d 10.0.0.3 -p tcp --dport 3435 -j
+DNAT --to-destination 10.0.0.225:3625
+
+iptables -t nat -A POSTROUTING -o eth0 -d 10.0.0.3 -p tcp --dport 3435
+-j SNAT --to-source 10.0.0.32
+
+so with that when C want to connect the A:3435 service all traffic is
+oriented to B and when B send traffic to A: A see C ip address. -> full
+transparent.
+
+But there are a big problem:
+
+Address Mac used from B to A is not the MAC address. Not a problem since
+i don't want really be transparent but other traffic form C go to A
+directly with the good MAC and traffic from B to A have an other MAC. so
+switch or other router in the A side see 10.0.0.32 sometime with C Mac
+and other time with B MAC .. gloupspss ?? .. :-D
+
+I need to find a way to read mac address from a connection from C and
+set this MAC when I start a connection to A from B 
+
+have you some clues ? (allready send the same question on the ebtables
+ailin list .. perhaps with a function from there there are a solution
+... )
+
+thanks
+
+
+Michael Stilmant
+
 
