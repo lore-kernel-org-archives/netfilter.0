@@ -1,9 +1,9 @@
-From: "Steven Schmidt" <sschmidt@compass.net.nz>
-Subject: Re: General : delaying IP packets
-Date: Fri, 7 Jun 2002 12:13:51 +1200
+From: "Matthew Hellman" <mhellman@raccoon.com>
+Subject: Re: Lowest spec processor that netfilter will run on
+Date: Thu, 6 Jun 2002 22:05:34 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <011801c20db8$343ad690$0e000064@compass.net.nz>
-References: <5.1.0.14.2.20020606155519.00ab0a78@jittlov.qualcomm.com>
+Message-ID: <001201c20dd0$314a3260$020aa8c0@matttm9svd8lrh>
+References: <1102.158.152.36.235.1023407271.squirrel@www.fyremoon.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
@@ -17,49 +17,32 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org, Arnaud Meylan <ameylan@qualcomm.com>
+To: fyremoon@fyremoon.net, netfilter@lists.samba.org
 
-Hi Arnaud,
+I can't speak for non x86 processors, but I have mine running on a Pentium
+60 mhz with 64MB ram....runs pretty well although I personally wouldn't
+consider going with anything less.
 
-Checkout iptables/netfilter and tc.
-It's quite heavy going to start with, but once you get into it, you can what
-your after plus more.  :-)
-
-http://lartc.org/#download
-http://snafu.freedom.org/linux2.2/iproute-notes.html#syntcqdisc
-
-_______________________________________
-Steven Schmidt
-Compass Communications Ltd
-Ph (09) 3598900
-Fx  (09) 3598919
-
+Matt
 
 ----- Original Message -----
-From: "Arnaud Meylan" <ameylan@qualcomm.com>
+From: "John Crowhurst" <fyremoon@fyremoon.net>
 To: <netfilter@lists.samba.org>
-Sent: Friday, June 07, 2002 10:59 AM
-Subject: General : delaying IP packets
+Sent: Thursday, June 06, 2002 6:47 PM
+Subject: Lowest spec processor that netfilter will run on
 
 
-> First I thought of using divert-sockets. Then I realised I have a kernel
-> 2.4.18 so why not netfilter?
+> This is a question that has been bugging me, what is the lowest spec
+> processor that netfilter can reliably run on?
+> I'm meaning non-x86 type processor.
 >
-> My goal is to delay IP packets routed in a linux box. This task should be
-> pretty simple isn't it ? My first contact with netfilter lets me think it
-> might take a while to get familiar with the thing and get results.
->
-> (Yes I am a basic linux user...)
->
-> I would really appreciate some suggestion / comments
->
-> Arnaud
->
->
+> Thanks in advance.
 >
 > --
-> This message has been scanned for viruses and
-> dangerous content by MailScanner, and is
-> believed to be clean.
+> John
+>
+>
+>
+
 
 
