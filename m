@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: what rules to use
-Date: Wed, 23 Oct 2002 16:23:43 +0100
+Subject: Re: nmap
+Date: Wed, 23 Oct 2002 16:25:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210231523.g9NFNrL02953@vulcan.rissington.net>
-References: <3DB69D6C.9030701@bol.com.br>
+Message-ID: <200210231526.g9NFQ3L02964@vulcan.rissington.net>
+References: <1035264046.15391.85.camel@hyperno> <plopm33cqxs6qt.fsf@drizzt.dyndns.org> <031501c27a8d$f2070940$583a29c4@ghome>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3DB69D6C.9030701@bol.com.br>
+In-Reply-To: <031501c27a8d$f2070940$583a29c4@ghome>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,43 +20,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 23 October 2002 2:00 pm, Julio Cesar Ody wrote:
+On Wednesday 23 October 2002 1:15 pm, Gavin wrote:
 
-> Hello, I have the following scenario:
->
->   --------                       --------
-> |gatebox1|  ----------------   |gatebox2|
->   --------                       --------
->      |      \
->      |        \
->      |          \
->   --------         --------
-> |userbox1|       |userbox2|
->   --------         --------
->
-> gatebox1(10.2.56.5) is the main router in the network. It's a red hat
-> 7.3 box performing NAT, and uses a 802.11b connection to the internet.
->
-> gatebox2(10.2.56.3) is a WinNT 4 machine equipped with a sattellite
-> connection device used to access a private site/intranet (gmconnect
-> domain) that only accepts requests made by that device (or real ip range).
->
-> when the userboxes make any request for the gmconnect domain, I need
-> them to get routed to gatebox2, instead of going straight to the
-> internet via gatebox1, so gatebox2 can make the request and deliver the
-> content to the userboxes (since it's the only way to get it).
+> Would I be right in thinking that the OUTPUT chain only filters traffic
+> originating from the firewall box itself, and that any traffic coming from
+> your clients would fall into the FORWARD chain?  If that is the case, then
+> filtering OUTPUT would have no effect on your users' ability to surf, mail
+> etc, but only on the firewall box's ability to generate traffic.
 
-This is simply a routing question - nothing to do with netfilter really.
+Yes, you are correct in this understanding of what the OUTPUT and FORWARD 
+chains are for, however I believe this thread started by asking about setting 
+up rules in the OUTPUT chain to enable nmap to be used *from the box which 
+the netfilter rules are on*.
 
-All you need to do is set up a route on gatebox1 so that packets for the 
-gmconnect domain are routed via gatebox2.
-
-gatebox2 also needs a route back to your userboxes via gatebox1 of course.
+Therefore the packets being discussed are all locally generated anyway.
 
 Antony.
 
 -- 
 
-This is not a rehearsal.
-This is Real Life.
+All matter in the Universe can be placed into one of two categories:
+
+1. things which need to be fixed
+2. things which will need to be fixed once you've had a few minutes to play 
+with them
 
