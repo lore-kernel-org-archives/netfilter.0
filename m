@@ -1,16 +1,12 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
-Subject: Re: Re[2]: netmeeting ?
-Date: 16 Jun 2002 21:34:06 +0200
+From: "Sathi" <sathiyan@gmx.net>
+Subject: Re: Completely NAT an ISP: A practical possibility?
+Date: Mon, 17 Jun 2002 09:55:08 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1024256047.2736.44.camel@billy.demon.nl>
-References: <17729088316.20020616195415@gmx.de>
-	<200206161807.g5GI7DA29086@Networker.rockstone.co.uk> 
-	<17730668368.20020616202035@gmx.de>
+Message-ID: <030001c215b7$dc4d7f20$870110ac@samsi>
+References: <3D0BBC45.5000807@palaver.net> <200206152233.g5FMXPA27757@Networker.rockstone.co.uk> <20020616001745.N2090@funkyjesus.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-CFh/prLOzdnnMDweIPf1"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <17730668368.20020616202035@gmx.de>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,66 +16,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: Corin Langosch <corinl@gmx.de>
-Cc: IP-Tables Maillingliste <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Nick Drage <nickd@funkyjesus.org>, netfilter@lists.samba.org
 
+Hi,
+I am Sathi from India.
+I have implemented this in my place by providing a connectionn to 100 to 150
+customers.
 
---=-CFh/prLOzdnnMDweIPf1
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+I provide a Local ip address and all will be terminate in a linux box in my
+office which is then nated to public ip.
 
-s=F8n, 2002-06-16 kl. 20:20 skrev Corin Langosch:
+Everything looks fine except MSN voice chat , NETMEETING voice and video and
+some other tools used for phone2pc and pc2phone.
 
-> or does netmeeting use other protocols than tcp or udp which i
-> also have to forward ??
+Regards,
+Sathi
 
-Yes, h323. Do please take what antony said serioulsy.
-
-Look at www.microsoft.com/netmeeting;
-
-Consult "support" there. This is a known problem with all NAT providers,
-not only iptables, but IPFilter (IPF used by old BSD and SCO Open Server
-5.5 and above) and others (new BSD: PF). You are *not* the only person
-in the world wanting this to work :-)
-
-An awful lot has been done trying to make Netmeeting work for the
-Netfilter people who want it, and it is only just beginning to work for
-them!
-
-Do consult the netfilter@lists.samba.org archive.
-
-Best,
-
-Tony
-
---=20
-
-Tony Earnshaw
-
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
-
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
-
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
-
-
-
---=-CFh/prLOzdnnMDweIPf1
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA9DOgt99dgUTvnuYERAnAxAKCSLXN+PFfhDYtiTQP5TZB/T1oqUwCgoD0m
-0L0mltZD6jHRlH+sQFTM1yY=
-=rG9t
------END PGP SIGNATURE-----
-
---=-CFh/prLOzdnnMDweIPf1--
+> On Sat, Jun 15, 2002 at 11:33:23PM +0100, Antony Stone wrote:
+> > On Saturday 15 June 2002 11:14 pm, Brian Capouch wrote:
+>
+> > > I wonder if the sages on this list might share advice as to whether or
+> > > not it might be practical to maintain a working ISP where ALL client
+> > > machines use private IP addresses, which are then NAT-ted to public IP
+> > > space as necessary by iptables.
+> > >
+> > > The biggest drawback that has been voiced so far is that many
+> > > peer-to-peer apps would break, but I'm not so sure right now that is
+bad
+> > > thing.
+> >
+> > Some current ISPs already do this, and I guess the popularity with their
+> > customers varies according to what the customers want to do :-)
+>
+> Can you name any ISPs that do this?  I haven't seen it in my limited
+> experience.
+>
+> <snip>
+>
+> --
+> FunkyJesus System Administration Team
+>
+>
 
 
