@@ -1,13 +1,12 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: [ANNOUNCE] netfilter.org migrated to new server
-Date: Wed, 25 Aug 2004 07:37:40 -0400
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: Multiple IPSEC VPNs through a firewall based on 2.4.2X kernel
+Date: Wed, 25 Aug 2004 07:44:55 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093433860.2032.42.camel@localhost>
-References: <20040825110337.GG5824@sunbeam.de.gnumonks.org>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512C9@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040825110337.GG5824@sunbeam.de.gnumonks.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: coreteam@netfilter.org
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wed, 2004-08-25 at 07:03, Harald Welte wrote:
-> Hi!
-> 
-> For those of who who didn't notice it yet: 
-> 
-> 	{www,ftp,rsync,cvs,lists,people,bugzilla}.netfilter.org
-> 
-> has now been migrated to our new server, a 
-> 
-> 	Apple Dual G5 XServe ClusterNode
-> 
-> <snip>
+> Thanks Jason.
+>
+> > enable IKE over TCP on the clients and UDP encapsulation.
+> > this is not a problem with netfilter, but with multiple
+> >  IPSec clients behind *any* NAT =3D device.
+>
+> Perhaps some additional info needs to be added about my configuration.
+> I need to use standard Cisco Linux clients, as this is for people
+> visiting (with their laptops and standard VPN setup for remote access)
+> and wanting to get to their (Cisco) server.  In fact, it could be more
+> than one ipsec server at some time in the future.  I definitely need =
+to
+> use a Cisco VPN gateway (can't use FreeSwan), I cannot have a single =
+vpn
+> client from the Linux router device as the requirement is for multiple
+> clients behind this device.  The Cisco gateway and Win 2k client can =
+set
+> up a connection through a NAT router, we have tried this with a =
+Netgear
+> device.  So I thought the issue was similar to pptp vpn pass-through =
+for
+> multiple clients (i.e. a patch for the kernel/iptables was the way to
+> go), hence the question.
+>
+> Kind regards, Roksana
 
-> The Netfilter Core Team wants to thank the generous donor Gert Hansen
-> for donating the new machine to the netfilter project.
-<snip>
-If that is the Gert Hansen from Astaro, then triple kudos to them.  They
-have also helped sponsor the ISCS project (http://iscs.sourceforge.net)
-and OpenSWAN (http://www.openswan.org) so add my thanks to Astaro for
-once again helping the open source community.
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+the standard cisco vpn client for linux supports IKE over TCP & UDP/TCP =
+tunneling of IPSec traffic--read the admin guide for details.  the =
+settings are something like:
 
+  EnableNat=3D1
+  TunnelingMode=3D0
+  TcpTunnelingPort=3D10000
+
+the easiest way to do this is just take the .pcf file from a working =
+windows client and copy it to your linux client.  this is getting pretty =
+OT...
+
+-j
 
