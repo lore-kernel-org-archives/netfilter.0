@@ -1,10 +1,9 @@
-From: "Erik Ahlner" <whyz@home.se>
-Subject: Should i be worried?
-Date: Tue, 28 Jan 2003 23:29:36 +0100
+From: "PAUL FABRICIO VILLACRESES LEON" <paulvillacreses@hotmail.com>
+Subject: Can Any DeveloperCould help me please How iptables block port tcp ?
+Date: Tue, 28 Jan 2003 22:50:21 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000c01c2c71c$bd541090$0200a8c0@whyzpc>
+Message-ID: <F124TSrdUWhn65DWG6t000009b6@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,53 +14,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello!
+Hi
+Core developer and all people include in this list.
 
-I just happened to do a dmesg, and got this output:
+I'm Paul Villacreses
+Student University's ESPOL -FIEC- Ecuador
 
-IN=eth0 OUT=eth0 SRC=192.168.0.186 DST=130.236.230.9 LEN=74 TOS=0x00
-PREC=0x00 TTL=127 ID=14459 PROTO=UDP SPT=137 DPT=53 LEN=54
-IN=eth0 OUT=eth0 SRC=192.168.0.186 DST=130.236.230.9 LEN=74 TOS=0x00
-PREC=0x00 TTL=127 ID=14715 PROTO=UDP SPT=137 DPT=53 LEN=54
-IN=eth0 OUT=eth0 SRC=192.168.0.88 DST=217.209.28.135 LEN=48 TOS=0x00
-PREC=0x00 TTL=127 ID=37469 DF PROTO=TCP SPT=2418 DPT=80 WINDOW=16384
-RES=0x00 SYN URGP=0
+Here i have :
+
+LAN ---------- eth1 ------ MyBridge -------eth0 -------- Internet
+
+I have linux Redhat 8.0
+
+I'm developing a software using library libiptc, for put rules programming 
+in the table filter inside chain FORWARD and can block port IP like 
+udp,tcp,icmp etc,
+but ,i want put rules in the table nat for REDIRECT and change NAT some 
+packets.
+with libiptc i cant because it accept this targets 
+ACCEPT,DROP,RETURN,etc.not accept DNAT,SNAT, REDIRECT .
+and furthermore, I want to put all this rules programming, not with script, 
+for block port TCP like DNS,SNMP,HTTP,TELNET etc.
+
+I read inside de iptables and i think(correct me please if i wrong) it 
+charge extended dinamic library(like tcpxxxx.so) for put this rules in the 
+iptables program.
+
+Please can Anybody  explaint me
+How Can i put rules for block ports TCP?
+
+How can i put rules in table nat for REDIRECT or DNAT(PREROUTING) or 
+SNAT(POSTROUTING) ?
+
+thank for the super help
+
+thank so much if you answer this question.
+
+Paul
 
 
-As you can see, i get some message about traffic from 192.168.0.186 and .88
-.. these two computers are NOT in my home network, so i guess that someone
-has named his computers like that on the university network, even though the
-university network has 130.236.x.x.
-Is this a problem for me?
-And what does this output actually mean?
-Has someone used my computer as a router?
-If they have, how is that possible?
-This is what my iptable looks like:
 
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -F INPUT
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -F OUTPUT
-$IPTABLES -P FORWARD DROP
-$IPTABLES -F FORWARD
-$IPTABLES -t nat -F
 
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-$IPTABLES -A FORWARD -j LOG
 
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-$IPTABLES -A INPUT -s 192.168.0.0/24 -i eth0 -j DROP
 
-I thought that the last line was to stop this from happening..
-Or am i just stupid? Did dmesg just show me that some packets have been
-dropped?
 
-Many thanks
 
-Erik Ahlner
+
+
+
+_________________________________________________________________
+Tired of spam? Get advanced junk mail protection with MSN 8. 
+http://join.msn.com/?page=features/junkmail
 
 
