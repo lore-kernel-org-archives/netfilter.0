@@ -1,11 +1,8 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: trying to tweek FW and / or ruleset
-Date: Tue, 15 Feb 2005 11:27:02 -0500
-Message-ID: <20050215162702.GA19547@bender.817west.com>
-References: <420F4A83.7020504@eccotours.dyndns.org>
+From: "Carl Holtje ;021;vcsg6;" <cwh0803@cs.rit.edu>
+Subject: Source/Destination matching question..
+Date: Tue, 15 Feb 2005 11:41:49 -0500 (EST)
+Message-ID: <Pine.GSO.4.58.0502151132360.12207@frazi.cs.rit.edu>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <420F4A83.7020504@eccotours.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +13,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sun, Feb 13, 2005 at 02:39:31PM +0200, Brent Clark wrote:
-> echo 1 > /proc/sys/net/ipv4/ip_dynaddr  #This may help if you have a 
-> dynamic IP address \(e.g. slip, ppp, dhcp\)
-> echo 1 > /proc/sys/net/ipv4/conf/all/log_martians       #Enable logging 
-> for malformed Ip Address
+All-
 
-"malformed IP Address" seems like an odd way to describe that.  the IP
-address isn't malformed, it's not considered to be a valid source
-address on the inbound interface; i.e., it's "alien."
+Is there a way to define a rule to combine the following lines:
+-A INPUT -s xxx.xxx.xxx.xxx -d yyy.yyy.yyy.yyy -j DROP
+-A INPUT -s zzz.zzz.zzz.zzz -d yyy.yyy.yyy.yyy -j DROP
 
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> echo 1 > /proc/sys/net/ipv4/conf/all/proxy_arp
+... something like
+-A INPUT -s xxx.xxx.xxx.xxx -s zzz.zzz.zzz.zzz -d yyy.yyy.yyy.yyy -j DROP
+  or even
+-A INPUT -s xxx.xxx.xxx.xxx -s zzz.zzz.zzz.zzz -j DROP
 
-i would be surprised if you want proxy_arp set to 1, unless you're
-trying to do something semi-strange.  i could be mistaken...
+   which would match a packet from xxx.xxx.xxx.xxx OR zzz.zzz.zzz.zzz to
+yyy.yyy.yyy.yyy...
 
-> echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
+Thanks!
 
-since you're enabling martian logging above, why are you disabling the
-feature that detects martians?  "normally" you'd want rp_filter set to 1
-on all interfaces, unless you know you're doing something intentionally
-that won't work with it enabled.
+Carl
 
-> echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-> echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
-> echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
+- --
 
--j
-
---
-"Shut up brain or I'll stab you with a Q-Tip."
-        --The Simpsons
+"There are 10 types of people in the world: Those who understand binary
+and those that don't."
 
