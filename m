@@ -1,13 +1,15 @@
-From: aksingh@hss.hns.com
+From: Sven Schuster <schuster.sven@gmx.de>
 Subject: Re: ipq_read timeout
-Date: Wed, 19 May 2004 19:24:50 +0530
+Date: Wed, 19 May 2004 17:03:27 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFC79DA874.FBF1FD24-ON65256E99.004B6AA3@hss.hns.com>
+Message-ID: <20040519150327.GA15463@zion.homelinux.com>
+References: <OFC79DA874.FBF1FD24-ON65256E99.004B6AA3@hss.hns.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; 
-	Boundary="0__=EABBE40ADFD8EC338f9e8a93df938690918cEABBE40ADFD8EC33"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <OFC79DA874.FBF1FD24-ON65256E99.004B6AA3@hss.hns.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,88 +19,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Sven Schuster <schuster.sven@gmx.de>
+To: aksingh@hss.hns.com
 Cc: "Jee J.Z." <jz105@york.ac.uk>, netfilter@lists.netfilter.org
 
---0__=EABBE40ADFD8EC338f9e8a93df938690918cEABBE40ADFD8EC33
-Content-type: text/plain; charset=US-ASCII
 
-
-
-
-
-Hi,
-
-     I installed iptables 1.2.9 from source, now if i do an lsmod i get the
-module loaded as ip_tables.o but I suspect this is the ip_tables.o of
-iptables 1.2.7a which I had before(I removed iptables 1.2.7 package using
-rpm -e iptables), I have one iptables.o in the directory in which
-iptables1.2.9 src is installed but when i do insmod iptables.o it says :
-
-iptables.o : can't find the kernel version this module was compiled for.
-
-So what should I do to correct this ?
-
-thanks
-Amit
-
-
-
-
-
-Sven Schuster <schuster.sven@gmx.de>@lists.netfilter.org on 05/19/2004
-05:29:49 PM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    Amit Kumar Singh/HSS@HSS
-cc:    "Jee J.Z." <jz105@york.ac.uk>, netfilter@lists.netfilter.org
-
-Subject:    Re: ipq_read timeout
-
+--BXVAT5kNtrzKuDFl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
 Hi Amit,
 
-On Wed, May 19, 2004 at 04:49:22PM +0530, aksingh@hss.hns.com told us:
->
-> Hi Sven,
->
->    Which version of iptables/libipq do you use. As u said we can define a
-> negative timeout value for ipq_read so that it returns immediately. I
-have
-> iptables-1.2.1a-1.on a system. A man ipq_read there shows me that the
-> timeout parameter for ipq_read has not yet been implemented.
+On Wed, May 19, 2004 at 07:24:50PM +0530, aksingh@hss.hns.com told us:
+>=20
+> Hi,
+>=20
+>      I installed iptables 1.2.9 from source, now if i do an lsmod i get t=
+he
+> module loaded as ip_tables.o but I suspect this is the ip_tables.o of
+> iptables 1.2.7a which I had before(I removed iptables 1.2.7 package using
+> rpm -e iptables), I have one iptables.o in the directory in which
+> iptables1.2.9 src is installed but when i do insmod iptables.o it says :
 
-your version of iptables seems quite a little outdated. I'm using
-version 1.2.9. You really should update your iptables.
+you're confusing two things here: ip_tables.o is the iptables kernel
+module whereas iptables.o is one of the object files created when
+building the new iptables binary which you then execute in user land
+to add/change rules.
+The userspace part should be pretty independent from your kernel version.
+In your last mail you told that you had installed iptables 1.2.1, now
+you're writing your old version 1.2.7a. If your old version really was
+1.2.1 and your kernel is as old as the iptables version, you probably
+want to upgrade your kernel first :)
+
+>=20
+> iptables.o : can't find the kernel version this module was compiled for.
+>=20
+
+This happens when you try to insert an object file used for linking
+your iptables binary into the kernel. Won't work :) the ip_tables.o
+which is shown with lsmod should be quite ok for your running
+kernel.
 
 
 Sven
 
->
+> So what should I do to correct this ?
+>=20
 > thanks
 > Amit
->
+>=20
 
 
---
-Linux zion 2.6.6-tcp #4 Thu May 13 20:39:05 CEST 2004 i686 athlon i386
-GNU/Linux
-  13:57:45  up 5 days, 16:00,  1 user,  load average: 0.02, 0.02, 0.00
 
---0__=EABBE40ADFD8EC338f9e8a93df938690918cEABBE40ADFD8EC33
-Content-type: application/octet-stream; 
-	name="C.DTF"
-Content-Disposition: attachment; filename="C.DTF"
-Content-transfer-encoding: base64
+--=20
+Linux zion 2.6.6-tcp #4 Thu May 13 20:39:05 CEST 2004 i686 athlon i386 GNU/=
+Linux
+ 16:57:13  up 5 days, 18:59,  1 user,  load average: 0.03, 0.11, 0.09
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0NClZlcnNpb246IEdudVBHIHYxLjIuMSAoR05V
-L0xpbnV4KQ0KDQppRDhEQlFGQXEwdzFvNEZBZEIyUG5lUVJBdjNPQUo0a01LQUwrR0hlS2lKOVph
-d1MrNDdpei9jcXFBQ2RGWThyDQpQbnVORU0wR2tmMUl2c082U1l4Z3ZkST0NCj14TE04DQotLS0t
-LUVORCBQR1AgU0lHTkFUVVJFLS0tLS0NCg0K
+--BXVAT5kNtrzKuDFl
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
---0__=EABBE40ADFD8EC338f9e8a93df938690918cEABBE40ADFD8EC33--
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
+iD8DBQFAq3c+o4FAdB2PneQRAiRfAJ43w3MEGFSphCRT2xAdqF/WDYA9HACeN4b5
+/huNPomFRniwd7vKMIFOBkQ=
+=gaT8
+-----END PGP SIGNATURE-----
+
+--BXVAT5kNtrzKuDFl--
 
