@@ -1,12 +1,11 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: Port 25
-Date: 07 Feb 2005 10:17:34 +0100
-Message-ID: <1107767854.10815.3.camel@nostromo.bgsecm.com>
-References: <Pine.LNX.4.05.10502061541590.352-100000@darkstar.sysinfo.com>
-	<1107723808.4679.44.camel@hubcap.ljm.dom>
+From: iansolo <iansolo.netfilter@betisgroup.com>
+Subject: Re: ftp nat  MAX PORTS
+Date: Mon, 07 Feb 2005 12:42:18 +0100
+Message-ID: <4207541A.7030700@betisgroup.com>
+References: <420100AF.1040105@betisgroup.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1107723808.4679.44.camel@hubcap.ljm.dom>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <420100AF.1040105@betisgroup.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +16,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-El dom, 06 de 02 de 2005 a las 22:03, Jason Opperisano escribi=C3=B3:
-> Ron has an excellent point here about IDENT.  a "good Internet citizen"
-> thing to do when running a mail server is to reject ident instead of
-> dropping it:
->=20
->   iptables -A INPUT -p tcp --syn --dport 113 \
->     -j REJECT --reject-with tcp-reset
+Hi,
+somebody have understand my problem?
 
-Isn't it advisable for every tcp port you want to block?
-I have some documentation that says that doing otherwise
-it's even bad for your network communications.
+thanks
 
-Regards.
-
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+iansolo wrote:
+> Hi All,
+> I've a problem with ftpserver behind a NAT.
+> My necessity is to run ftpserver in a different port then 21.
+> This is the situation:
+> 
+> Router
+> |
+> Firewall
+> |
+> Ftpserver
+> 
+> I use this modules ad pass these parameters :
+> 
+> /sbin/modprobe ip_tables
+> /sbin/modprobe ip_conntrack
+> /sbin/modprobe ip_conntrack_ftp ports=21,9000
+> /sbin/modprobe iptable_nat
+> /sbin/modprobe ip_nat_ftp ports=21,9000
+> /sbin/modprobe ipt_MASQUERADE
+> /sbin/modprobe ipt_state
+> 
+> The realtive iptables rules are only these:
+> 
+> $IPTABLES -t nat -A PREROUTING -p tcp -d $EXT_LAN_FW --dport 9000 -j NAT 
+> --to-destination $IP_FTPSERVER:9000
+> $IPTABLES -A FORWARD -i $EXT_IF -p tcp --dport 9000 -j ACCEPT -d 
+> $IP_FTPSERVER
+> 
+> Unfortunately don't work!
+> 
+> 
+> VERY IMPORTANT :
+> 
+> - All work fine is the port is 21!!
+> 
+> - When I try to connect with my ftp-client(with port 9000), at a certain 
+> point I tray to send packets to local IP of firewall ($EXT_LAN_FW).....
+> 
+> Others Questions:
+> 
+> - In the source code of ip_conntrack_ftp there is a variable "MAX_PORTS",
+> but I don't understand what mean...
+> - What is "Patch-O-Matic" ?
+> 
+> 
+> Thanks a lot in advance!
+> iansolo
+> 
+> ps: excuse me, my English is poor
+> 
+> 
+> 
+> 
+> ________ Information from NOD32 ________
+> This message was checked by NOD32 Antivirus System for Linux Mail Server.
+> http://www.nod32.com
 
 
