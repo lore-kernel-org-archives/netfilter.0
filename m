@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Filter out broadcast messages
-Date: Wed, 7 Jan 2004 22:05:29 +0000
+From: "Christian Gmeiner" <christian@visual-page.de>
+Subject: Own logfile
+Date: Wed, 7 Jan 2004 23:22:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401072205.29859.Antony@Soft-Solutions.co.uk>
-References: <BAY10-F77TIFprhMOgR0003cd8a@hotmail.com>
+Message-ID: <001c01c3d56c$d064d840$0600a8c0@blackbox>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0019_01C3D575.2FAA3680"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY10-F77TIFprhMOgR0003cd8a@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +16,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 07 January 2004 9:44 pm, Gabby James wrote:
+This is a multi-part message in MIME format.
 
-> Hi,
->
-> I would like to filter out all broadcast messages.  The packets could come
-> from 255.255.255.255 or multiple other addresses of the form 10.*.*.255.
-> What kind of syntax do I use to DROP these packets?  The line below will
-> filter out packets from 255.255.255.255 but I'm not sure what syntax to use
-> to DROP the other adresses.
+------=_NextPart_000_0019_01C3D575.2FAA3680
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Second idea:
+Hi everybody.
 
-If you mean what you say, and the other broadcasts fit the pattern 10.*.*.255, 
-you could always use the little-known but perfectly valid netmaslk 
-255.0.0.255 in a rule such as:
+I am working to wirte a little firewall. Everything works fine and now i =
+want to use an own log file
+to write down if i got hacked, portscaned,....
+Is this possible with iptables?
 
-iptables -I INPUT -s 10.0.0.255/255.0.0.255 -j DROP
+Thanks,
+Christian Gmeiner
+------=_NextPart_000_0019_01C3D575.2FAA3680
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This will do exactly what you asked - match packets where the source IP's 
-first byte=10 and the last byte=255, with the middle two bytes being 
-anything, and drop them.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi everybody.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I am working to wirte a little =
+firewall. Everything=20
+works fine and now i want to use an own log file</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>to write down if i got hacked,=20
+portscaned,....</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Is this possible with =
+iptables?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Christian =
+Gmeiner</FONT></DIV></BODY></HTML>
 
-Antony.
+------=_NextPart_000_0019_01C3D575.2FAA3680--
 
--- 
-Perfection in design is achieved not when there is nothing left to add, but 
-rather when there is nothing left to take away.
-
- - Antoine de Saint-Exupery
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
