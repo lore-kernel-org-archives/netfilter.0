@@ -1,10 +1,9 @@
-From: Jean Cantarutti <jcantarutti@subtel.cl>
-Subject: Memory leak problem
-Date: Fri, 27 Sep 2002 11:03:32 -0400
+From: <skmail@mcewen.wcnet.org>
+Subject: internal ftp/port forwarding problem (fwd)
+Date: Fri, 27 Sep 2002 12:02:59 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7F2740B50D94FD4B9EAF9AAC33016C3C45382C@lascar>
+Message-ID: <Pine.LNX.4.33.0209271151560.23416-100000@mcewen.wcnet.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,36 +14,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/html; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DUS-ASCII">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>Memory leak problem</TITLE>
-</HEAD>
-<BODY>
+I'm resending because I didn't get any replies before.  Please let me know 
+if anyone has any ideas.  Thanks!
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi, im using iptables 1.2.5 on a HP =
-machine working like firewall, it has 512 MB of RAM and every 30 =
-seconds eats 6 kb of RAM, in 48 hours only left 8300 kb of available =
-RAM.</FONT></P>
+---------- Forwarded message ----------
+Date: Tue, 24 Sep 2002 16:24:36 -0400 (EDT)
+From: skmail@mcewen.wcnet.org
+To: netfilter@lists.netfilter.org
+Subject: internal ftp/port forwarding problem
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">I need help.</FONT>
-</P>
+I am behind a firewall at work, trying to open up a path through a linux
+firewall at a second remote site.  Following are the iptables rules that I
+am trying to use.  I can get logged in, but since firewalls are involved
+it's set for passive ftp and when it opens the data connection for
+directory listing it comes back as this:
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Regards.</FONT>
-</P>
+COMMAND:>	PASV
+227 Entering Passive Mode (10,8,13,16,4,66).
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Jean Cantarutti</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">jcantarutti@subtel.cl</FONT>
-</P>
-<BR>
+Which if I'm correct means try to connect to 10.8.13.16 (ftp server's
+internal address, which is why it doesn't work) for the passive data
+connection.  I can't figure out why iptables isn't nat'ing this to work.  
+All my iptables ftp options are compiled directly into the kernel, 2.4.19
+with V 1.2.7 iptables.  Hopefully somebody out there can help explain to
+my addled brain why this isn't working.  Thanks!
 
-</BODY>
-</HTML>
+------------------------------------------
+
+
+# forward port 2101 to internal for an internal ftp server 
+
+$IPTB -t nat -A PREROUTING -d $EXT_IP -p tcp --dport 2101 -j DNAT --to
+$INT_FTP_SRVR:2101
+
+
+$IPTB -A FORWARD -s ! $INT_NET -d $INT_FTP_SRVR -p tcp --dport 2101 -j
+ACCEPT
+
+
+$IPTB -t nat -A POSTROUTING -s $INT_IP -p tcp --sport 2101 -j SNAT --to
+$EXT_IP:2101
+
+
+$IPTB -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT 
+
+$IPTB -A FORWARD -m state --state NEW -i $INTDEV -s $INT_NET -j ACCEPT
+
+
+
 
