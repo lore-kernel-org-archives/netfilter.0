@@ -1,10 +1,9 @@
-From: Peter <dslt03@pacbell.net>
-Subject: Simple Port Translation...
-Date: Mon, 04 Nov 2002 15:10:11 -0800
+From: =?unknown-8bit?q?J=F6rgen?= Danielsson <jorgen_d@yahoo.com>
+Subject: local redirect
+Date: Mon, 4 Nov 2002 14:51:18 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DC6FE53.6070803@pacbell.net>
+Message-ID: <20021104225118.85776.qmail@web9902.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,30 +14,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-First some explanation, I'm trying to proxy traffic from a linux box 
-behind a very restrictive firewall, the only way to get my traffic 
-through it is on port 9000; A friend with a static ip has agreed to 
-allow me to proxy my traffic through his box, but he is rightly 
-concerned about the security of such a simple proxy.  As you can see, or 
-infer, I've set the rules so that only connections comming from my 
-firewalled box are translated and only new, established and related 
-connections are allowed, but being the noob I am at this I'm not sure if 
-I need anything else.  Another translation to recieve and proxy 
-connections to my firewalled box?  Are there more restrictive rules I 
-can set so my friend doesnt have to worry?  Is there a more ellegant 
-solution that I just don't have the time to persue?  Do I need a routing 
-command on my Linux box?  I just need some help, since I don't have the 
-time at the moment to persue this as fully as I would like to.  Any help 
-would be most appreciated.
+I have a problem that perhaps someone can help me
+with. I need to setup a redirect on a local network,=20
+will try to explain what I mean, it looks like this:
 
-$IPTABLES -t nat -A PREROUTING -s (my ip address) --dport 9000 -j DNAT 
---to-destination (your IP here):81
-$IPTABLES -A FORWARD -i (input interface) --dport 81 -m state --state 
-NEW,ESTABLISHED,RELATED -j ACCEPT
+inet
+  |
+---------
+firewall
 
+eth0  xxx.xxx.xxx.22
+-----------
+   |                     | Server
+   |---------------------| xxx.xxx.xxx.11
+   |                     |
+----------
+Router
+
+xxx.xxx.xxx.2
+-----------
 
 
+What this "picture" is trying to explain is that we
+have incoming traffic over for example a vpn to a
+router. Now I want users coming in that way to be able
+to reach a intranet on the server, but for security
+reason I want a semitransparent relay on the firewall
+pointing to port 80 on the server. Reason for
+semitransparent is that it hides the sites real ip,
+but the server can log from were the connection is
+made (it won't show the fw's ip) xxx.xxx.xxx.*** is
+the same subnet and without nat.
+
+I tried to use forward, but noticed that it requires
+prerouting which then uses -t nat for example, and
+ther eis no nat on the local network.
+
+So I have no idea how to solve this, I can't use a
+third party software like rinetd, since it isn't
+semitransparent.
+
+Anyone that has any ideas ?
+
+/J=F6rgen
+
+__________________________________________________
+Do you Yahoo!?
+HotJobs - Search new jobs daily now
+http://hotjobs.yahoo.com/
 
