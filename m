@@ -1,14 +1,14 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Problems with connection
-Date: Mon, 13 Sep 2004 16:30:29 -0500
+From: "James B. Hiller" <jhiller@visi.net>
+Subject: Re: Port 21, 23, and 80 are open according to Shields Up at grc.com
+Date: Mon, 13 Sep 2004 17:22:01 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41461175.6050602@pbl.ca>
-References: <20040913210115.54459.qmail@web50202.mail.yahoo.com>
-	<1095110328.1899.26.camel@wolfpack.ljm.dom>
+Message-ID: <200409132122.i8DLM1i6001590@bassett.home.org>
+References: <1095079786.1899.8.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1095110328.1899.26.camel@wolfpack.ljm.dom>
+In-Reply-To: <1095079786.1899.8.camel@wolfpack.ljm.dom> from "Jason
+	Opperisano" at Sep 13, 2004 08:53:07 AM
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +18,41 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Jason Opperisano wrote:
-> 2)  try doing a tcpdump on the outside interface and capture the packet
-> data as well:
-> 
->   tcpdump -i $OUTSIDE -s 1500 -w output.cap host $SERVER_MACHINE
-> 
-> then open that capture file (output.cap) in something (ethereal is
-> nice), and if the protocol exchanges data in clear text--you may gain a
-> better grasp of what's going on...
+Hi.
 
-I second that one.  Looking only at the inside interface tells only one 
-half of the story.  Ethereal also have nice feature, if one packet of 
-the connection is selected (say first), and than Analyze -> Follow TCP 
-Stream, you'll get complete data exchange (coloured as input and output).
+> On Sat, 2004-09-11 at 19:09, Mike wrote:
+> > Hi Group:
+> > 
+> > I've tested for open ports from all the LAN clients behind my linux
+> > box router/gateway/firewall and all of them come up with the same
+> > results: port 21, 23, and 80 are open according to the results of the
+> > Steve Gibson Shields Up test.
+> > 
+> > I can't figure out how this can be happening.
+> > I've run a full nmap -P0 (that's a zero) on all my local ip addresses
+> > - 192.168.169.*
+> 
+> you need to keep in mind that if your netfilter box is performing
+> MASQ/SNAT for your LAN machines--the IP being scanned by grc.com is the
+> public IP of the netfilter box.
+> 
+> unless your doing some DNATs to machines on your LAN--you should focus
+> your efforts on the netfilter machine itself.
+> 
+> "netstat -lntu" would be a good place to start.
+> 
+> i've always questioned the output of web-based scanners like grc.com;
+> however, i just went to grc.com and tried it out, and achieved a
+> *perfect* "TruStealth" rating...which must mean i'm super l33t like
+> stevie...  :-P
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+For whatever it may be worth:  I have linux 2.6.0 running on my firewall
+machine, and 2.6.9-rc1 running on a machine behind it, and I get (and
+have always gotten) a *perfect* TruStealth result relative to both
+machines.
+
+jbh
 
