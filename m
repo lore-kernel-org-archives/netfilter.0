@@ -1,8 +1,9 @@
-From: =?iso-8859-1?Q?Herbert_H=F6hlke?= <hhohlke2000@yahoo.com.ar>
-Subject: H.323_NAT: partial packet  0/6 in 0/0
-Date: Mon, 24 Mar 2003 22:00:25 -0300
+From: "Marcelo Moreira" <marcelom@qualitau.com>
+Subject: Re: SSH and NAT
+Date: Mon, 24 Mar 2003 17:08:19 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NHBBJMFAILALELGBFJEJMEBMCKAA.hhohlke2000@yahoo.com.ar>
+Message-ID: <037001c2f26b$05ef5a70$a828a8c0@qualitau.com>
+References: <20030324182922.GF8391@netinertia.co.uk> <NABBJOOEOFODEALNMJAJCEFEHOAA.B-Morgan@concentric.net> <20030324203629.GH8391@netinertia.co.uk> <200303242314.13073.kimj@dawn.dk> <20030324224026.GN8391@netinertia.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,31 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, Leaf User Mail List <leaf-user@lists.sourceforge.net>
+To: James O'Gorman <james@netinertia.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-Hello
+> > The IP packet only contain some primitive information - if you wish to
+deal
+> > with names, then you have to use DNS. You can't store the name
+information in
+> > the packet header.
+>
+> Not quite sure what you mean by this? I've set up the DNS so that box1
+> and box2 both point to an IP (albeit the same one as I only have the
+> one) - an A record on the DNS server.
 
-I have a linux 2.4.20 firewall running iptables 1.2.7a with
-ip_conntrack_h323 and ip_nat_h323 installed and Netmeeting running in both
-ends, inside the LAN and in the Internet. Sometime appears on screen the
-following error six times:
-  H.323_NAT: partial packet 0/6 in 0/0
-  H.323_NAT: partial packet 0/6 in 0/0
-  H.323_NAT: partial packet 0/6 in 0/0
-  H.323_NAT: partial packet 0/6 in 0/0
-  H.323_NAT: partial packet 0/6 in 0/0
-  H.323_NAT: partial packet 0/6 in 0/0
-and in syslog twice:
-  /var/log/syslog:Mar 24 21:32:58 firewall kernel: H.323_NAT: partial packet
-0/6 in 0/0
-  /var/log/syslog:Mar 24 21:36:08 firewall kernel: H.323_NAT: partial packet
-0/6 in 0/0
+Ok. Let me see if I can explain this a little bit better.
+An IP packet has only the numeric address information on it.
+So essentialy, a ssh packet to box1 and another to box2 are
+the same (except for time, sequence, flags, etc).
+The DNS information is not on the IP header at all. It is just
+another protocol that is used to map names to numeric addresses.
 
-I searched in Google but I found only 9 occurences but in italian language.
+> > I can recommend that you read about IP headers if you wish to know more
+about
+> > the construction of these magic little packets :-)
+>
+> I understand bits of it, but obviously not enough. :)
+> Guess I should get reading!
 
-Does someone know, what causes this error?
+Yes, I guess you should also. In fact, get the definitive IP guide:
+TCP/IP Illustrated, Vols I II and III. Author is Stevens.
+Have fun on your reading...
 
-Regards
-Herbert
+Marcelo.
+
 
 
