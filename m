@@ -1,11 +1,10 @@
-From: zito.pol@zipmail.com.br
-Subject: =?iso-8859-1?Q?DDoS=20counter=2Dmeasures=20=28Rules=29?=
-Date: Sat, 5 Apr 2003 02:12:20 -0300
+From: not4u2know <crazyhacker@sympatico.ca>
+Subject: iproute2 and iptables help
+Date: Sat, 05 Apr 2003 01:21:55 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E8DDDF40000140F@www.zipmail.com.br>
+Message-ID: <3E8E7603.4040102@sympatico.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,89 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi folks,
-I am new in list and I am need help with some extra IPTABLES DDoS/DoS rul=
-es.
-
-I am receiving a large volume of packets... in other words... I am been
-dosed. 
-
-The IP_FRAG OUTPUT: 
-[**] MISC Tiny Fragments [**] 
-04/03-03:03:24.131192 < l/l len: 0 l/l type: 0x200 0:0BBBB 
-pkt type:0x0 proto: 0x800 len:0x2C 
-200.182.128.30 -> 200.164.250.204 ICMP TTL:39 TOS:0x0 ID:67 IpLen:20 DgmL=
-en:28
-MF 
-Frag Offset: 0x0680 Frag Size: 0xFFFFF988 
-55 55 55 55 55 55 55 55 UUUUUUUU 
-
-=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D=
-+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D
-
-[**] MISC Tiny Fragments [**] 
-04/03-03:03:27.251702 < l/l len: 0 l/l type: 0x200 0:0BBBB 
-pkt type:0x0 proto: 0x800 len:0x2C 
-200.182.128.30 -> 200.164.250.204 ICMP TTL:39 TOS:0x0 ID:69 IpLen:20 DgmL=
-en:28
-MF 
-Frag Offset: 0x039C Frag Size: 0xFFFFFC6C 
-55 55 55 55 55 55 55 55 UUUUUUUU 
-
-=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D=
-+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D
-
-[**] MISC Tiny Fragments [**] 
-04/03-03:03:37.406839 < l/l len: 0 l/l type: 0x200 0:0BBBB 
-pkt type:0x0 proto: 0x800 len:0x2C 
-200.182.128.30 -> 200.164.250.204 ICMP TTL:39 TOS:0x0 ID:75 IpLen:20 DgmL=
-en:28
-MF 
-Frag Offset: 0x0D01 Frag Size: 0xFFFFF307 
-55 55 55 55 55 55 55 55 UUUUUUUU 
-
-=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D=
-+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D+=3D
----------------------------------------------------------- 
-
-The ICMP_ECHO OUTPUT: 
-[**] ICMP Large ICMP Packet [**] 
-04/03-03:04:07.018622 < l/l len: 0 l/l type: 0x200 0:0BBBB 
-pkt type:0x0 proto: 0x800 len:0x7560 
-200.182.128.30 -> 200.164.250.204 ICMP TTL:39 TOS:0x0 ID:89 IpLen:20 DgmL=
-en:30032
-
-Type:8 Code:0 ID:131 Seq:0 ECHO 
-00 07 2C A6 55 55 55 55 55 55 55 55 55 55 55 55 ..,.UUUUUUUUUUUU 
-55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 UUUUUUUUUUUUUUUU... UUUUU=
-UUUUUUUUUUUU...
-UUUUUUUU... 
-VERY LARGE OUTPUT (2.44 MB) 
----------------------------------------------------------- 
-
-Well, I need help with it... need one counter-measure... this box is one
-old Pentium 2 with 512KB of band (ADSL), serving access to other 2 machin=
-es
-(IPTABLES + NAT). 
-
-Any help is wellcome (some extra iptables rules too). 
-
-Best regards... 
-Joao Carlos
-BOMPRE=C7O SYSTEM ADMINISTRATOR
-
-PS: Sorry to my poor english, I am brazilian and in my country this type
-of information is very hard to obtain.
+hi, my isp issues ip addresses via pppoe. i have the capability to lease 
+multiple ips at once, as i can pass through the pap authentication 
+simultaneously.  i also have a dial up modem to serial line for standard 
+ppp.  i was wondering if anyone had any idea as to how i can do 
+something like this with my nat/packet filter machine....
 
 
+dsl pppoe modem--->eth0--->ppp0--->eth1--->10.0.0.0/16
+                                         \
+                                           \--->ppp1-->eth2--->10.0.0.0/24
+                                            \
+                                             
+\--->ppp2-->eth3-->192.18.0.1/24
 
+the dsl line on rj11 connector connects to the dsl modem, the dsl modem 
+connects to eth0.  when i lease my first external ip, my dialer creates 
+ppp0.  i do snat to allow the network connected to eth1 appear as if its 
+all coming from ppp0.  now, what i want to do is know how i can make the 
+second and third leased ip addresses used by the otherr internal 
+networks. so basically what i want to do is have separate external ip 
+addresses for each of my internal networks.  i tried doing this with 
+snat, but it did not work and i feel i would have to do something with 
+the routing tables.  does anyone know precisely what user space tools to 
+work with? somoene once mentioned to me iproute2, is this the tool i 
+should use?  anyone recommend reading material for doing such things as 
+described further up?
 
-------------------------------------------
-Use o melhor sistema de busca da Internet
-Radar UOL - http://www.radaruol.com.br
-
-
+thanks.
 
 
