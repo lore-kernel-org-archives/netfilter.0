@@ -1,13 +1,12 @@
-From: "Brad Morgan" <B-Morgan@concentric.net>
+From: "Daniel Chemko" <dchemko@smgtec.com>
 Subject: RE: Multiple Source Addresses
-Date: Tue, 15 Apr 2003 11:39:53 -0600
+Date: Tue, 15 Apr 2003 11:07:39 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NABBJOOEOFODEALNMJAJEEJNIAAA.B-Morgan@concentric.net>
-References: <22FCCF057850DB48B98178E1811374830DA6D9@slra07.slb.de>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122DB6@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <22FCCF057850DB48B98178E1811374830DA6D9@slra07.slb.de>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +17,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Keller Nicolas <nicolas.keller@slb.de>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-How about:
+# Create a new table to process traffic you don't like
+iptables -N NORMAL_TRAFFIC
 
-iptables -N good-ips
-iptables -A good-ips -s 192.168.43.1 -j RETURN
-iptables -A good-ips -s 192.168.43.2 -j RETURN
-iptables -A good-ips -j LOG
+# Log unwanted traffic
+iptables -A OTHER _TRAFFIC -j log
+# Do what you want with the packet after being logged
+iptables -A OTHER _TRAFFIC -j ACCEPT, DROP, REJECT, or Whatever
 
-and add:
+# Allow ok traffic through
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-iptables -A INPUT -j good-ips
+# Allow your accepted traffic through
+iptables -A INPUT -s 192.168.43.1 -j ACCEPT
+iptables -A INPUT -s 192.168.43.2 -j ACCEPT
 
-in the appropriate place.
+# Send all unwanted traffic to get logged & ?
+iptables -A INPUT -j OTHER_TRAFFIC
+
 
 -----Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Keller Nicolas
-Sent: Tuesday, April 15, 2003 10:29 AM
+From: Keller Nicolas [mailto:nicolas.keller@slb.de]=20
+Sent: Tuesday, April 15, 2003 9:29 AM
 To: netfilter@lists.netfilter.org
 Subject: Multiple Source Addresses
-
 
 Hi!
 
@@ -56,8 +59,5 @@ Anyone can show me a way to get this to work?
 Thank you very much!
 
 Nicolas Keller
-
-
-
 
 
