@@ -1,13 +1,13 @@
 From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: dhcrelay
-Date: 29 Nov 2003 09:33:16 +0100
+Subject: Re: IPTables routing
+Date: 29 Nov 2003 09:38:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1070094796.1657.12.camel@kermit>
-References: <1070067379.3fc7eeb32a181@paris-hme1>
+Message-ID: <1070095114.1657.17.camel@kermit>
+References: <35733.141.150.249.168.1070044358.squirrel@mail.plobe.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1070067379.3fc7eeb32a181@paris-hme1>
+In-Reply-To: <35733.141.150.249.168.1070044358.squirrel@mail.plobe.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,28 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: zynkx <skydive@megamail.pt>
+To: mailinglist@plobe.com
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Am Sam, 2003-11-29 um 01.56 schrieb zynkx:
-> i'm sure i have ip forward enabled, since gateway 2 is=20
-> working fine and routing packets ok through the lan=20
-> and to gateway 1. if it happened not to have ip=20
-> forward enabled in gateway 2 i could never do=20
-> masquerading from gateway 2 to gateway 1 :)
->=20
-dhcrelay is a local application. It works as a proxy. You have to allow
-incoming packets on broadcast and unicast address in your INPUT chain.
-Again the OUTPUT chain must be open, too. DHCP is not forwarded.
-> i'm gonna test it with no firewalling at all to see=20
-> what happens ;))
-It won't work.
+Am Fre, 2003-11-28 um 19.32 schrieb mailinglist@plobe.com:
+> I have a network which has a gateway wwith iptables on it.  I want
+> iptables to send all data bound for a external server (Ex. server.com or
+> 20.20.20.20) to a third server (server_mirror.com).  So iptables needs to
+> rewrite the header on every packet bound for the intended server
+> (server.com) so that the packets get routed to the third server
+> (server_mirror.com).
+This is easy. You just do DNAT in PREROUTING.
 
+>   Also, the third server and person making the request
+> are making a socket connection that sends data two ways.
+Is this an additional connection? Which end will initiate the
+connection? If it is the client(person) and you know the used ports, it
+is easy (see above).
+If you do not know the ports and the client initiates the connection, it
+is easy but somehow unsafe.
+If the server initiates the connection it becomes even more unsafe.
+If you do not know the server (any server on the internet) it is
+completely unsafe unless you write a conntrack_helper module for
+iptables (C-hacking).
 
 Cheers,
 
 Ralf
-
 --=20
 Ralf Spenneberg
 RHCE, RHCX
