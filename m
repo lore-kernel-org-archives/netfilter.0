@@ -1,12 +1,12 @@
-From: Pascal Italiaander <pc-secure@home.nl>
-Subject: Re: MASQ problem
-Date: Tue, 10 Jun 2003 20:09:49 +0200
+From: "Fernando La Gamba" <fernando.lagamba@fastrack.com.br>
+Subject: How to stop imesh with iptables
+Date: Tue, 10 Jun 2003 14:29:32 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306102009.49102.pc-secure@home.nl>
+Message-ID: <003001c32f75$db1436c0$6200000a@detec10>
+References: <1054757932.9533.29.camel@clueless>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org, coreteam@netfilter.org
 
-Op dinsdag 10 juni 2003 06:30, schreef B H R Balaji:
-> HI
->
-> i have 20 alias interface, iam not able to MASQ using that interface, is
-> this iptables supports this option
->
-> [root@netxpress root]# iptables -I FORWARD -i eth0:1  -s
-> 92.168.100.0/24  -j MASQUERADE
-> Warning: wierd character in interface `eth0:1' (No aliases, :, ! or *).
-> iptables: Target problem
->
->
-> hare
+Hi, How to stop imesh with iptables?
 
-hello
+Thaks!!
 
-first of all:
-Masquerading is done on the POSTROUTING chain.    NOT on the FORWARD chain.
+Fernando La Gamba
 
-interface_alias in that form is not allowed ,however , you could extract the  
-ip_address and use that instead        like;
 
-EXT_IF #external interface
-ETH0_1_IP="`/sbin/ifconfig eth0:1 | grep 'inet addr' | awk '{print $2}' | sed 
--e 's/.*://'`"  
-
- iptables -I POSTROUTING -i eth0:1  -s  92.168.100.0/24  -o $ETH0_1_IP -j 
-MASQUERADE
-
-Watch the syntax 
-I have used " -o OUT ETH0_1_IP " and not  " -i  ETH0_1_IP"  this is relevant.
-
-Pascal
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.487 / Virus Database: 286 - Release Date: 1/6/2003
 
