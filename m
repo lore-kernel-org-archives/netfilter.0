@@ -1,14 +1,14 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: OT: curious about eth0/eth1
-Date: Wed, 8 Jan 2003 09:21:53 +0100
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Redhat 8.0 with Iptables and Cisco 2514
+Date: Wed, 8 Jan 2003 03:31:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030108092153.4afe140c.arnt@c2i.net>
-References: <6620000.1041983993@leverage>
-	<200301072247.24369.netfilter@newkirk.us>
+Message-ID: <200301080331.33543.netfilter@newkirk.us>
+References: <se1b0154.064@butchers.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200301072247.24369.netfilter@newkirk.us>
+In-Reply-To: <se1b0154.064@butchers.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,58 +19,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: JUSTIN GERRY <JGERRY@butchers.com>, netfilter@lists.netfilter.org
 
-On Tue, 7 Jan 2003 22:47:24 -0500, 
-Joel Newkirk <netfilter@newkirk.us> wrote in message 
-<200301072247.24369.netfilter@newkirk.us>:
+On Tuesday 07 January 2003 04:32 pm, JUSTIN GERRY wrote:
+> Trying to figure out why, when I enable the firewall on my cisco
+> (which is a state checking firewall) and I have my iptables (also
+> state checking) firewall enabled on my redhat box I can not establish
+> a connection with with my website (either website one as I have two
+> interfaces and I am using apache to host both)
+>
+> It almost seems as if the cisco is destroying the incoming connection
+> (probably the outgoing response because I can see people connecting to
+> my box) before my box has a chance to send out a response.
+>
+> If I run no firewall on my redhat box and leave the firewall up on my
+> cisco then you can access my website normally.
 
-> On Tuesday 07 January 2003 06:59 pm, Tommy McNeely wrote:
-> > I am curious about why people choose to make a certain interface
-> > internal or external...
-> 
-> > I notice several people pick eth0 as their outside interface, and
-> > sorta "oh yea" the rest of the inside network is on eth1.  I know
-> > the linux kernel could really care less what they are called, its
-> > mostly a"neatness" thing I guess... Also it seems like that leaves
-> > your box open to attack from the time it installs (if you do a NET
-> > based install) till the time you get around to actually putting a
-> > firewall on it.
-> 
-> Why would this in particular leave a box exposed?
-> 
-> I think that the main reason for 'some one way, some the other' is
-> random chance.  However, consider this scenario:
-> 
-> You have two NICs, eth0 and eth1. The connections on one you trust (-i
-> 
-> eth0 -j ACCEPT), the other you don't.  One of them fails, or the board
-> 
-> works loose from it's socket, or something, so that upon booting the 
-> machine you only have one interface.  No matter which board fails, the
-> 
-> remaining board would be eth0.  If eth0 is your 'trusted' internal 
-> network in normal conditions, and it fails, then suddenly the
-> untrusted network is operating under the trusted network's rules. 
-> However, the IP assignment (if static!) would remain that of the
-> trusted network, so as long as eth0 is configured with a static IP
-> this shouldn't present a risk.  If, however, both are dynamic, (say
-> DHCP assigned) then this would qualify as a security hole, possibly a
-> huge one.  To be fair, this is probably a very rare intersection of
-> situations, but if eth0 is the untrusted network, then any failure
-> would be an annoyance, not a risk.
+What about the reverse?  If the cisco's firewalling is disabled, but=20
+iptables in use, can you connect?
 
-..in a hobbyist environment, agreed.  In business, you want to minimize
-the impact of such failures, the easiest way is to use the hardware
-addresses to ID your nics, if one fails, only it fails, without leaving
-the entire box open for outsiders on the "now trusted" nic.  ;-)
+> If anyone has had this problem please let me know.
+>
+> FYI, my simple firewall test:
+>
+> F1=3D"eth0"
+> IF2=3D"eth1"
+> IP2=3D"xxx" #(real ip address hidden)
+> IP1=3D"xxx" #(real ip address hidden)
+> UNPRIVPORTS=3D"1024:65535"
+>
+> iptables -F
+> iptables -P INPUT DROP
+> iptables -P FORWARD DROP
+> iptables -P OUTPUT DROP
+>
+> iptables -A INPUT -p tcp --sport $UNPRIVPORTS \
+> --dport 80 -m state --state NEW -j ACCEPT
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
+If the answer above is "it works", then what if you loosen the NEW rule=20
+in INPUT?  Try:
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 
+with the cisco's firewall enabled.  If this fails, I suspect the cisco's=20
+configuration is blocking outbound replies, so you'd have to dig there.=20
+A quick test with logging in INPUT and OUTPUT chains would tell you if=20
+the request is actually reaching your machine, and being responded to=20
+properly.  Just add a log rule at the start and the end of each of those=20
+two chains, with distinct '--log-prefix' strings, and make sure you log=20
+from the first and ONLY the first one in each chain.  The first log=20
+tells you it hits the chain, the second that it hits the DROP policy.
+
+j
+
+> Many thanks,
+> Justin
 
 
