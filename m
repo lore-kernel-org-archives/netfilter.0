@@ -1,10 +1,8 @@
-From: "David F. Strauch" <dstrauch@cyberlink.com>
-Subject: Re: open ports 25/tcp and 110/tcp
-Date: Wed, 3 Dec 2003 21:46:18 -0600
+From: "Admin" <admin@romexpo.org>
+Subject: Re: Re: selective filter
+Date: Thu, 4 Dec 2003 08:41:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005001c3ba19$2e13bca0$0201a8c0@OurPC>
-References: <002101c3b9ef$53e5d780$0201a8c0@OurPC> <20031203171459.5733d448.mgale@utilitran.com> <200312031928.32914.JALaramie@Loudoun-Fairfax.com> <200312040039.47118.Antony@Soft-Solutions.co.uk>
-Reply-To: "David F. Strauch" <dstrauch@cyberlink.com>
+Message-ID: <002a01c3ba31$9d1a82b0$0501a8ac@Rares>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,75 +18,32 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Antony,
+Yesterday I posted a message regarding a selective filter.
+I was asking for a hands on making a filter which will force only some users
+to use the squid proxy and some not.
+The message can be found in "netfilter digest, Vol 1 #1355" with the subject
+"selective filter".
+First of all I want to thank you to Antony Stone
+<Antony@Soft-Solutions.co.uk> that replyed me on the list with a very
+helpfull instruction.
+And, because his wish was not to reply directly to him, I came with a
+suplementary question related to that message:
+After I do this:
 
-Well I found the answer to the problem ... It's running nmap from the
-windows box.  I have another RHL 9.0 that I'm hardening as well.  I
-installed nmap on the machine and used it to scan my gateway.   Wouldn't you
-know it, all ports scanned are reported as filtered.  There must either be
-something on the windows box interfering with the scan or there is something
-wrong with nmap's port to windows.
+iptables -A FORWARD -s 192.168.1.21 -p tcp --dport 80 -j ACCEPT
+....
+iptables -A FORWARD -p tcp --dport 80 -j REJECT
 
-I guess it's hard test when the tools are broken.
+this mean that all the rules aplies to the running configuration?
+I mean, if I restart the service iptables I will have to write those rules
+again?
+To save the rules and to make them load after a service restart I have to
+type "service iptables save"?
+If the answer to the questions above is negative, I want to know what can I
+do to REMOVE the rules?
+Thank you in advance.
 
-Dave
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, December 03, 2003 6:39 PM
-Subject: Re: open ports 25/tcp and 110/tcp
-
-
->
-> This I can understand, but what puzzles me is that David is saying that
-from
-> the same test machine, doing nmap -sT, and telnet xx.xx.xx.xx 25, are
-giving
-> different results.
->
-> nmap -sT does a TCP connect, and telnet does a TCP connect, so how is it >
-On Thursday 04 December 2003 12:28 am, Jeffrey Laramie wrote:
->
-> > On Wednesday 03 December 2003 19:14, Michael Gale wrote:
-> > > Hello,
-> > >
-> > > Maybe because you are running nmap from a windows box ?
-> > >
-> > > Have you tried a windows machine ?
-> >
-> > Yes, and it tasted like chicken.
-> >
-> >
-> >
-> > Seriously, that may be a good point. Make sure there isn't anything
-running
-> > on the sending box that might interfere with the test. I've had screwed
-up
-> > nmap tests when the sending box filtered certain ports.
-
-> possible for one to say that the port is open, but the other not to show
-the
-> welcome banner?
->
-> Antony.
->
-> -- 
-> In science, one tries to tell people
-> in such a way as to be understood by everyone
-> something that no-one ever knew before.
->
-> In poetry, it is the exact opposite.
->
->  - Paul Dirac
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
->
->
+R.
 
 
 
