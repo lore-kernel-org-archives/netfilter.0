@@ -1,17 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: DNAT-Problem
-Date: Thu, 09 Sep 2004 09:26:54 -0400
+From: =?iso-8859-1?q?Giancarlo=20Boaron?= <gboaron@yahoo.com.br>
+Subject: No internet connection
+Date: Thu, 9 Sep 2004 11:04:59 -0300 (ART)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094736414.2044.22.camel@wolfpack.ljm.dom>
-References: <20040909041047.7f8457cf@nixe>
-	<1094696804.1739.7.camel@wolfpack.ljm.dom>
-	<20040909122931.3e8b4903@nixe>
-	<1094729906.1897.2.camel@wolfpack.ljm.dom>
-	<20040909135819.27094960@nixe>
+Message-ID: <20040909140459.92337.qmail@web50209.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040909135819.27094960@nixe>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,40 +18,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-09-09 at 07:58, Tom Fischer wrote:
-> On Thu, 09 Sep 2004 07:38:26 -0400
-> Jason Opperisano <opie@817west.com> wrote:
-> 
-> > what are the IP addresses of $oldmachine and $newmachine (obfuscate
-> > the first two octets if you must)?
-> 
-> $oldmachine=81.16.97
-> $newmachine=80.190.140
-> 
-> There are a few IP-Adresse which i have to transfer to the newmachine.
-> 
-> > are you trying to DNAT from one machine on the local network to
-> > another machine on the local network?  what network is the client
-> > traffic sourcing from?  is it the same network?
-> 
-> No, they are on different locations. The old one is in Innsbruck,
-> Austria and the new one in Munich, Germany.
+Hello.
+I'm testing a new iptables script on my server box but
+after some minuts that this script is running, the
+clients in my LAN have no access to Internet.
+I'm using SQUID for proxing and caching.
 
-for what it's worth--it sounds like your problem has much more to do
-with routing than with iptables firewalling.
+I think I'm not being very restrictive for my IPTABLES
+rules because my clients still have Internet access
+after about 20 minuts when the script is running.
 
-i think i may have misunderstood your original post.  are you running
-iptables and the DNAT rule on $oldmachine?  if so, unless the reply
-packets from $newmachine are routed back through $oldmachine; this setup
-won't work (for what should be painfully obvious reasons).
+What can be wrong? Does my kernel have some limit
+about connections? Does it hava someting to do with
+the CONTRACK?
 
-if your DNAT rule is on a gateway machine upstream from both $oldmachine
-and $newmachine--i'd say you have a routing failure somewhere in the
-chain.
+Regards.
+Giancarlo
 
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
