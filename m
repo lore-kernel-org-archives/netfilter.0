@@ -1,12 +1,13 @@
-From: "Matt Parlane" <matt@zevi.net>
-Subject: Re: Web Browser Information Leakage through NetFilter:
-Date: Fri, 27 Sep 2002 13:44:48 +1200
+From: Rowan Reid <rreid@studio3arc.com>
+Subject: RE: Web Browser Information Leakage through NetFilter:
+Date: Thu, 26 Sep 2002 17:52:52 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <02b801c265c7$76f489b0$0200a8c0@bart>
-References: <FLEKIPPLAEDMJMOOBBDPGEBBDAAA.stewart.thompson@shaw.ca>
+Message-ID: <000201c265c0$35cf00c0$6601a8c0@s3ac>
+References: <FLEKIPPLAEDMJMOOBBDPEEBEDAAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <FLEKIPPLAEDMJMOOBBDPEEBEDAAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,25 +20,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: stewart.thompson@shaw.ca, netfilter@lists.netfilter.org
 
-> I was redirected to some German web site.
-> I couldn't read the text obviously, but the gist was I
-> was insecure, it showed a completely accurate listing
-> of all the folders on my Windows machine I was using
-> the browser on at the time. Obviously I wasn't to please
-> about this. I am assuming it is a function of the Browser
-> and Server, and not a direct problem with my firewall.
-> I am running IE V6 on that machine.
-> So the question is, can a malicious website access
-> Sensitive data with this method? Is there some way to block
-> this with Netfilter and/or Browser settings?
 
-Hi Stu...
+> Hi Rowan:
+> 
+> 	Thanks for the reply. IT may be the second option where 
+> it shows you it locally. It is an accurate display of my C 
+> drive. Not a generic one. I run Norton every day. First it 
+> does a live update, then a full system scan. So, I am pretty 
+> sure I don't have any viruses. I have security on IE6 set to 
+> high, likewise for cookies, but it still seems to act the same.
+> 
 
-This is probably an IFrame with a location of file:///C:/ which basically
-shows you a listing of your c:\ directory.  Pretty sneaky... but rest
-assured that if this is what it is, they can't get at anything on your
-machine.
+Below is an extrodinary tool to audit a system and firewall. It not only
+Test for open port, but it impliments known rootkits for both windows
+and
+Unix. Trust me if you have a compramized system this will tell you .
 
-Matt
+http://www.gfi.com/ 
 
 
