@@ -1,12 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
+From: a.ledvinka@promon.cz
 Subject: Re: FTP Connection State Tracking Issue
-Date: Mon, 29 Nov 2004 10:14:23 -0500
-Message-ID: <1101741263.10064.52.camel@hubcap.ljm.dom>
-References: <1101748780.12476.3083.camel@ashutosh.teneoris.com>
-	<1101739147.10064.47.camel@hubcap.ljm.dom>
-	<1101752397.12476.3097.camel@ashutosh.teneoris.com>
+Date: Mon, 29 Nov 2004 17:18:59 +0100
+Message-ID: <OF3B5BCD0A.DAD425FA-ONC1256F5B.0057521A-C1256F5B.0059A145@promon.cz>
+References: <1101752397.12476.3097.camel@ashutosh.teneoris.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <1101752397.12476.3097.camel@ashutosh.teneoris.com>
 List-Id: <netfilter.vger.kernel.org>
@@ -20,37 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Ashutosh <ashutosh@teneoris.com>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 2004-11-29 at 13:19, Ashutosh wrote:
-> > no--but you need to write scripts like this:
-> > 
-> >   iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> Well, I thought the Connection Tracking
+> and NAT Modules *for* FTP did
 
-allows packets that match connections in the conntrack table
+please correct me if i am wrong.
 
-> >   iptables -A FORWARD -p tcp --syn --dport 21 -j ACCEPT
+2 functions you have.
 
-allows FTP connections outbound
+first is ftp NAT algorithm = kernel module ip_nat_ftp + iptables -t nat 
+... rules)
 
-> Well, I thought the Connection Tracking and NAT Modules *for* FTP did
-> the same.. Correct me if I am wrong..
+second is connection tracking firewall which looks also inside of ftp 
+control streams = kernel module ip_conntrack and ip_conntrack_ftp + user 
+space rules iptables -t filter(implicit table) -m state --state 
+NEW/ESTABLISHED/RELATED... 
 
-connection tracking does not write filter rules for you.
+4 combiantions you get.
+none used
+NAT no firewall
+no NAT and firewall
+NAT and firewall
 
-> After all, why are the ALGs neccessary, if *user space* iptables rules
-> are still required ?
+where no firewall translates into setting all built-in chains policy to 
+accept traffic (-t nat/filter/mangle 
+PREROUTING/POSTROUTING/INPUT/OUTPUT/FORWARD -P ACCEPT) and having no 
+additional REJECT/DROP rules
 
-i don't understand this question.  what "ALGs" are you speaking of? 
-iptables rules are necessary to allow/deny traffic; as that's how you
-get firewalls to do what you want (ideally).
+ps: for NAT you can also use dumb nat if it's 1:1 nat. that's probably set 
+up somehow with "ip route/rule whatever"
 
--j
-
---
-"I'm better than dirt. Well, most kinds of dirt... not that fancy
- store-bought dirt... that stuff's loaded with nutrients, I... I
- can't compete with that stuff."
-	--The Simpsons
 
 
