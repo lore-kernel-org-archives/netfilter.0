@@ -1,103 +1,42 @@
-From: "squid" <squid@alanyatirim.com.tr>
-Subject: Re: squid iptables snmp
-Date: Fri, 22 Oct 2004 13:21:04 +0300
-Message-ID: <01a701c4b820$d626ae60$18e021c3@tolga>
-References: <1098440013.4380.40.camel@linux.d2visp.com>
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: RST Packets ?
+Date: Fri, 22 Oct 2004 12:23:46 +0100
+Sender: netfilter-bounces@lists.netfilter.org
+Message-ID: <20041022112346.GC21006@metastasis.org.uk>
+References: <0b0501c4ac95$a40370d0$49caa8c0@caris.priv>
+Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <squid-users-return-49271-gcwsg-squid-users=m.gmane.org@squid-cache.org>
-List-Post: <mailto:squid-users@squid-cache.org>
-List-Help: <mailto:squid-users-help@squid-cache.org>
-List-Unsubscribe: <mailto:squid-users-unsubscribe@squid-cache.org>
-List-Subscribe: <mailto:squid-users-subscribe@squid-cache.org>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <0b0501c4ac95$a40370d0$49caa8c0@caris.priv>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: "Joel n.solanki" <zealous@bonbon.net>, squid-users@squid-cache.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-step 1
-service snmpd stop
-step 2
-pico /etc/snmp/snmp.conf
-
-step 3 change line
-#       sec.name  source          community
-#com2sec notConfigUser  default       public
-rocommunity public
-
-step 4
-service snmpd start
-
-:)
-
------ Original Message ----- 
-From: "Joel n.solanki" <zealous@bonbon.net>
-To: "netfilter" <netfilter@lists.netfilter.org>; "squid" 
-<squid-users@squid-cache.org>
-Sent: Friday, October 22, 2004 1:13 PM
-Subject: [squid-users] squid iptables snmp
-
-
->
-> Dear all,
->
-> I dont know wheather this problem is related to squid or iptables
-> netfilter.
-> But let me specify my problem. I tried my lots but i cant solve this
-> problem.
->
->
-> Mrtg server Squid + Netfilter box Mikrotik Router
->
-> When I try to create mrtg for mikrotik router which is behind Squid +
-> netfilter box, it gives me this error.
->
-> ---------------------------------------------------------------------------
-> -base: Get Device Info on public@202.202.202.202:
-> SNMP Error:
-> no response received
-> SNMPv1_Session (remote host: "202.202.202.202" [202.202.202.202].161)
->                  community: "public"
->                 request ID: 1723286139
->                PDU bufsize: 8000 bytes
->                    timeout: 2s
->                    retries: 5
->                    backoff: 1)
-> at /usr/bin/../lib/mrtg2/SNMP_util.pm line 450
-> SNMPGET Problem for sysDescr sysContact sysName sysLocation sysObjectID
-> on public@202.202.202.202:
-> at /usr/bin/cfgmaker line 657
-> --base: Vendor Id:
-> --base: Populating confcache
-> ---------------------------------------------------------------------------
->
->
-> If I removed squid + netfilter box then I tried to create mrtg for
-> mikrotik router then i can easily do it. It doesnt give me any error.
->
->
-> Now i dont know wheather Is this problem related to Netfilter Iptables
-> OR squid proxy server ????
->
-> I thought this might be iptables firewall problem so I just made the
-> netfilter + squid box iptable rules to INPUT OUTPUT FORWARD to ACCEPT.
-> So now it should work but it didnt.
->
-> Now i cant sort out where is the problem lying ...with iptables or with
-> squid or any thing else ...
->
-> Awaiting for Ideas to get the solution in urgent.
->
->
-> -- 
-> Joel N.Solanki
-> Network Administrator
-> Mobile: 91-9426353268
-> Phone No: 0265-550001/2/3/4/5 Ext: 211/212
-> Digtial 2 Virtual Internet Service Provider.
-> http://www.packetraptor.com/
-> http://www.d2visp.com/
-> Gujarat (India)
->
->
+On Thu, Oct 07, 2004 at 02:46:57PM -0300, Peter Marshall wrote:
+> I keep getting loads of messages like below in my messages file.  Does
+> anyone know why these are occurring ?
 > 
+> Oct  7 14:44:02 radium kernel: REJECT: int-web3 IN=eth0 OUT=eth1
+> SRC=192.168.202.124 DST=205.174.164.21 LEN=40 TOS=0x00 PREC=0x00 TTL=127
+> ID=3855 PROTO=TCP SPT=8010 DPT=45832 WINDOW=0 RES=0x00 RST URGP=0
+
+Any chance of more information on where this firewall sits in relation
+to the relevant networks, and what 192.168.202.124 and 205.174.164.21
+are?
+
+-- 
+We are the Willing, led by the Unknowing,
+Are doing the Impossible, for the Ungrateful.
+We have done so much, for so long, with so little,
+We are now qualified to do anything with nothing.
 
