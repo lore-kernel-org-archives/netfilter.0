@@ -1,12 +1,14 @@
-From: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
-Subject: Problem with Port forwarding
-Date: Mon, 5 Apr 2004 21:14:01 +0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: iptables local port forwarding
+Date: Mon, 5 Apr 2004 18:44:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <146373237921.20040405211401@internetplustravel.ru>
-Reply-To: Oleg Savostyanov <osavostyanov@internetplustravel.ru>
+Message-ID: <200404051844.35289.Antony@Soft-Solutions.co.uk>
+References: <20040403095005.GA4511@scholars.home> <200404031127.02648.Antony@Soft-Solutions.co.uk> <20040404110341.GA13605@scholars.home>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040404110341.GA13605@scholars.home>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,70 +21,44 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I get lost, trying to do a very simple thing...
-My mail server is inside my lan with IP 10.10.10.252
-I need to open port 25 of my mailserver  to the universe
-I made following
-1)I permit in forward chain packets with dest. port 25
-and
-2)do DNAT in PREROUTING chain
+On Sunday 04 April 2004 12:03 pm, Mark Ord wrote:
 
-when I try to telnet to $EXTIP on 25 from outside
-telnet: Unable to connect to remote host: Connection refused
+> On Sat, Apr 03, 2004 at 11:27:02AM +0100, Antony Stone wrote:
+>
+> > The only thing I can think to ask is whether "iptables -L -t nat -nvx"
+> > shows the packet/byte counters for this rule incrementing when you do try
+> > to access port 81?
+>
+> They're not. External connections do (elsewhere on the LAN, or from the
+> internet, but we already know that, as those redirects work), but
+> connections from the iptables machine never show up in the nat table.
 
-This packet is catched by the rule drop-and-log-it, and I see in my logs
+Hey - wait a minute - did I miss something there?   You're trying to NAT 
+packets from the netfilter machine itself in the PREROUTING chain???
 
-Apr  5 20:47:16 firewall kernel: IN=eth0 OUT=eth1 SRC=Y.Y.Y.Y DST=10.10.10.252
-LEN=60 TOS=0x00 PREC=0x00 TTL=55 ID=11611 DF PROTO=TCP SPT=33150 DPT=25
-WINDOW=5840 RES=0x00 SYN URGP=0
+No - won't work.
 
-Maybe I miss smth?
+Sorry, I thought you were trying to get this working from the Internet - I 
+must have missed something in a previous posting about trying to do it from 
+the machine itself.
 
-Any help is appreciated.....
+> Now that I have a bit more of an idea what is going on, I've done
+> another search, can hit this, which says that this actually isn't
+> possible, as the PREROUTING table is bypassed on local connections.
 
+I agree.   You have to do it in the nat table of the OUTPUT chain (that's why 
+it's there).
 
-IPTABLES=/usr/local/sbin/iptables
-EXTIF="eth0"
-INTIF="eth1"
-EXTIP="X.X.X.X"
-INTNET="10.10.10.0/24"
-INTIP="10.10.10.254/24"
-UNIVERSE="0.0.0.0/0"
-$IPTABLES -P INPUT DROP
-$IPTABLES -F INPUT 
-$IPTABLES -P OUTPUT DROP
-$IPTABLES -F OUTPUT 
-$IPTABLES -P FORWARD DROP
-$IPTABLES -F FORWARD 
-$IPTABLES -F -t nat
-$IPTABLES -N drop-and-log-it
-$IPTABLES -A drop-and-log-it -j LOG --log-level info 
-$IPTABLES -A drop-and-log-it -j REJECT
-$IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
-$IPTABLES -A INPUT -i $INTIF -s $INTNET -d $UNIVERSE -j ACCEPT
-$IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j drop-and-log-it
-$IPTABLES -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j drop-and-log-it
-$IPTABLES -A INPUT -p UDP -i $EXTIF -d $UNIVERSE --destination-port 135:139 -j DROP
-$IPTABLES -A INPUT -p UDP -i $INTIF -d $UNIVERSE --destination-port 135:139 -j DROP
-$IPTABLES -A INPUT -p UDP -i $EXTIF -d $UNIVERSE --destination-port 67:68 -j DROP
-$IPTABLES -A INPUT -i $EXTIF -d 224.0.0.0/8 -j DROP
-$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state --state \
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A INPUT -i $EXTIF -s $UNIVERSE -p TCP -d $EXTIP -m state --state \
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j drop-and-log-it
-$IPTABLES -A OUTPUT -o lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
-$IPTABLES -A OUTPUT -o $INTIF -s $EXTIP -d $INTNET -j ACCEPT
-$IPTABLES -A OUTPUT -o $INTIF -s $INTIP -d $INTNET -j ACCEPT
-$IPTABLES -A OUTPUT -o $EXTIF -s $UNIVERSE -d $INTNET -j drop-and-log-it
-$IPTABLES -A OUTPUT -o $EXTIF -s $EXTIP -d $UNIVERSE -j ACCEPT
-$IPTABLES -A OUTPUT -s $UNIVERSE -d $UNIVERSE -j drop-and-log-it
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state ESTABLISHED,RELATED \
--j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
->>>>>>>$IPTABLES -A FORWARD -p TCP -i $EXTIF -o $INTIF -d $EXTIP --dport 25 -j ACCEPT
-$IPTABLES -A FORWARD -j drop-and-log-it
->>>>>>>$IPTABLES -t nat -A PREROUTING -p TCP -i $EXTIF -d $EXTIP --dport 25 -j DNAT --to-destination 10.10.10.252:25
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to-source $EXTIP
+Regards,
+
+Antony.
+
+-- 
+If you want to be happy for an hour, get drunk.
+If you want to be happy for a year, get married.
+If you want to be happy for a lifetime, get a garden.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
