@@ -1,12 +1,12 @@
-From: "Venkatesh. K" <venkatesh@cbayscribe.com>
-Subject: Re: transparent squid with iptables masq
-Date: Sun, 19 Oct 2003 07:11:29 +0530
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: Re: iptables -f locks me out?
+Date: Sat, 18 Oct 2003 21:43:56 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <015201c395e2$2495f220$2800a8c0@karu>
-References: <20031018051051.49925.qmail@web14309.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.53.0310182125530.8624@xena.cft.ca.us>
+References: <001701c395af$409f1a10$0201a8c0@ERICDEV>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <001701c395af$409f1a10$0201a8c0@ERICDEV>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,59 +16,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: Subramanian Thenralmani <sthenral@yahoo.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Eric Gibson <aithien@bellsouth.net>
+Cc: netfilter@lists.netfilter.org
 
------ Original Message ----- 
-From: "Subramanian Thenralmani" <sthenral@yahoo.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Saturday, October 18, 2003 10:40 AM
-Subject: transparent squid with iptables masq
+On Sat, 18 Oct 2003, Eric Gibson wrote:
+>     Is there anyway around this? It never used to happen with ipchains...
+> Whenever I run iptables -F, or stop my shorewall script with it's init
+> script (or if there is an error in the config file, and it stops itself.)
+> it completely locks me out of remote access and I...
 
+"iptables -F" would clear the filter table, and if the nat or mangle tables
+still had rules, something bad might happen.  Also the chains still have
+their individual policies, some of which are DROP.  That's probably what
+is killing you.  You need to set the policies of all the builtin chains to
+ACCEPT.
 
-> Hi,
->
-> I have configured transparent squid on my Linux
-> firewall and masqueraded only ftp ports (20 and 21).
-> My problem is i wanted to block yahoo messenger
-> through squid but after squid rejects yahoo messanger
-> is masquerading with ftp ports and going out and
-> without masquerading anything yahoo messanger is not
-> working. How can I block yahoo messanger with the
-> above situation.
+Consider using iptables-save and iptables-restore.  I've replaced my
+original firewall script with one like this.  For the payload I dumped my
+rules using iptables-save, and then neatened and annotated them, replacing
+numeric ports and protocols with keys from /etc/services and
+/etc/protocols.  If there's a syntax error in any one table, that table
+will not be replaced;  otherwise it is replaced atomically.  No need to
+flush rules, opening up your box for a second.
 
-Consider using ftp proxy like frox (http://frox.sourceforge.net).
-Frox allows you to transparently proxy/cache ftp and it can even use squid
-for anonymous ftp requests. This will allow you transparently proxy/cache
-ftp. Once you have a proxy for ftp, you can simply remove the masquerading.
+iptables-restore <<EOF
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+# auth queries need to be rejected actively to avoid annoying timeouts.
+-A INPUT -p tcp -m tcp --dport auth -j REJECT --reject-with icmp-port-unreachable
+COMMIT
 
-Unfortunately, the above solutions works for you only for ftp. Consider
-using L7 classifier for application level firewalling.
+*nat
+:PREROUTING DROP [0:0]
+:POSTROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+# My user-defined chain
+:COUCHNET - [0:0]
 
-Venkatesh K
-KAEVEE Consulting Services
-Banglaore
+# Ports and protocols that are allowed
+#   ssh secure shell
+-A PREROUTING -p tcp -m tcp --dport ssh                         -j ACCEPT
+# etc. etc.
+EOF
 
->
->
-> Thanx & Regards
-> Mani
->
-> =====
-> Subramanian ThenralMani
-> Manager - Technical
-> Yukthi Systems Pvt. Ltd.
-> #178, 5th Main, J.P.Nagar 3rd Phase,
-> Bangalore-560 074
-> Phone #:6582923
-> Reach me at:9845211913
->
-> __________________________________
-> Do you Yahoo!?
-> The New Yahoo! Shopping - with improved product search
-> http://shopping.yahoo.com
->
->
+It also has a function which restores a pristine state (with ACCEPT
+policies), which is executed when you do "/etc/init.d/firewall stop".
 
+Hope this helps!
+
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
+Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
