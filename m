@@ -1,11 +1,13 @@
-From: "ryan @ thedataarc" <ryanb@thedataarc.com>
-Subject: VPN "Punch-through"
-Date: 20 Sep 2002 23:54:15 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: VPN "Punch-through"
+Date: Sat, 21 Sep 2002 08:56:14 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1032584055.1252.23.camel@rbhome.inside.thedataarc.com>
+Message-ID: <20020921075617.OVWK11421.mta03-svc.ntlworld.com@there>
+References: <1032584055.1252.23.camel@rbhome.inside.thedataarc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1032584055.1252.23.camel@rbhome.inside.thedataarc.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +20,41 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
+On Saturday 21 September 2002 5:54 am, ryanb@thedataarc.com wrote:
 
-I help operate an ISP, delivering bandwidth to 50-60 people in Kansas.
-Right now, I have a cell that is all public IPs.  I'd like to convert it
-to a private subnet (10.1.2.3) as we've done in other scenarios.
+> Hi
+>
+> I help operate an ISP, delivering bandwidth to 50-60 people in Kansas.
+> Right now, I have a cell that is all public IPs.  I'd like to convert it
+> to a private subnet (10.1.2.3) as we've done in other scenarios.
+>
+> I have two computers currently using a VPN router to link to a remote
+> office (outside our realm).
+>
+> If we convert to a filtered private system, is it possible to use a
+> "DMZ" virtual IP approach to NAT traffic to the VPN routers on the
+> inside?  (Moving our current VPN IP to a virtual on the netfilter
+> router.)
+>
+> Interesting, weird I know.  Possible?
 
-The main reason for this is to lower bandwidth usage by superfluous
-traffic like scans and hack attempts on unwary (insecure) subscribers. 
-It can tremendously help wireless performance.
+Depends what sort of VPN you're using.
 
-I have two computers currently using a VPN router to link to a remote
-office (outside our realm).
+IPsec in tunnel mode - perfectly possible, not difficult.
 
-If we convert to a filtered private system, is it possible to use a
-"DMZ" virtual IP approach to NAT traffic to the VPN routers on the
-inside?  (Moving our current VPN IP to a virtual on the netfilter
-router.)
+PPTP - possible but challenging to get working.
 
-I have already mapped virtual IPs through this setup in other cells for
-other purposes, but not for VPNs.
+IPsec in transport mode - forget it.
 
-Interesting, weird I know.  Possible?
-All pointers welcome here.
+Hope this helps,
 
-Thanks in advance,
+Antony.
 
-Ryan
+-- 
 
-ryanb -atnosp@m- () thedataarc.com
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
 
-
-
-
-
-
-
-
+ - Frank Skinner
 
