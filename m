@@ -1,14 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: MAC addresses
-Date: 13 Sep 2004 17:57:52 +0200
+Subject: RE: Port 21, 23, and 80 are open according to Shields Up at grc.com
+Date: 13 Sep 2004 18:04:16 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095079543.6971.1.camel@nostromo.bgsecm.com>
-References: <200409111150.50506.bulliver@badcomputer.no-ip.com>
-	<20040911220159.4cee40bb@oldskool.actisystem.nix>
+Message-ID: <1095091456.6971.4.camel@nostromo.bgsecm.com>
+References: <C8DE82BEF24D0146862937D2A9DD0E92254489@qlmail2.qlogitek.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040911220159.4cee40bb@oldskool.actisystem.nix>
+In-Reply-To: <C8DE82BEF24D0146862937D2A9DD0E92254489@qlmail2.qlogitek.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,24 +20,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El s=C3=A1b, 11 de 09 de 2004 a las 22:01, active escribi=C3=B3:
-> On "Sat 11 of September 2004" Darren Kirby wrote:
+El lun, 13 de 09 de 2004 a las 17:21, Miguel Laborde escribi=C3=B3:
+> Something else you can try is using the lsof command.
 >=20
-> > Are MAC addresses unique for all ethernet cards? What I would like to
-> > know is could I use this rule to allow ssh connections ONLY from my
-> > notebook no matter what its current IP address happens to be, and dro=
-p
-> > all other connection requests?
+> Give lsof -i tcp:21 a try and see what it returns. If you have somethin=
+g running on that port it will tell you its name and PID.
 >=20
-> Yes. MAC addresses are set in the card by the manufacturer. This is a
-> good method to control input traffic.
+> Regards,
 >=20
-> For more info: http://www.webopedia.com/TERM/M/MAC_address.html
+> 	Miguel
 
-But have in mind that some operating systems let you change the
-MAC address of the card. By example, Linux let you do that, and
-that can fool some kinds of traffic control.
-
+Another option is using the nmap -sV option that will tell you
+the version of the program that it's listening on that port.
 
 --=20
 Jose Maria Lopez Hernandez
