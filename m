@@ -1,12 +1,13 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: Re: questions about chain traversal, new ascii diagram
-Date: Fri, 07 Jan 2005 22:08:39 +0000
-Message-ID: <41DF0867.2060505@dsl.pipex.com>
-References: <BAY101-F23030A22FC86C1A88C1F93DF930@phx.gbl>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: transparent bridge troubles?
+Date: Fri, 7 Jan 2005 17:18:22 -0500
+Message-ID: <20050107221822.GA1569@bender.817west.com>
+References: <7C9884991ADAE0479C14F10C858BCDF591E3AC@alderaan.smgtec.com>
+	<005101c4f504$7be50f20$3e0010ac@esonet18>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY101-F23030A22FC86C1A88C1F93DF930@phx.gbl>
+Content-Disposition: inline
+In-Reply-To: <005101c4f504$7be50f20$3e0010ac@esonet18>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +18,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Curby ." <kirbysdl@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Curby . wrote:
-> ----Original Message Follows----
-> 
->> http://joerg.fruehbrodt.bei.t-online.de/pics/abb3_netfilter_ablaufdiagramm.jpg 
->>
->>
->> What about the mangle decisions, do you also want to include them :D?
-> 
-> 
-> It looks reasonable, but if this is true then the article I mentioned 
-> was wrong.  Perhaps there should be a disclaimer by the link on the 
-> netfilter documentation page?
-> 
-> Does anyone know the answers to my other questions? Specifically, is it 
-> due to style or technical reasons that people don't filter traffic in 
-> PREROUTING, and instead put the same rules in both FORWARD and INPUT?
+On Fri, Jan 07, 2005 at 05:01:47PM -0500, mdpeters wrote:
+> Both host and target have no information about the bridge | firewall in the 
+> middle.
 
-Respecting johns answer - as I don't do much firewall stuff, but I 
-thought it was because there are no filter tables in pre/post.
+the arp caches of hosts on either side of the firewall should have
+entries for hosts on the other side though.  try and ping from a host
+on one side of the firewall to a host on the other side of the firewall.
+after the ping, type "arp -an" on the host you pinged from; if you don't
+have an entry for the host you pinged--you have a bridge problem.  if
+you do have an arp entry, but the ping didn't work--you have a firewall
+problem.
 
-http://www.docum.org/docum.org/kptd/
+-j 
 
-> 
-> I think you were probably just being facetious, but I wouldn't mind 
-> knowing when the mangle chains come into play.  If we have to jump to 
-> them explicitly though, then I'll just RTFM. =)
-
-AIUI use mangle if you want to mark/change(mangle) packets eg TOS bits.
-
-
-> 
-> Thanks again!
-> 
-> --Curby
-> 
-> 
-> 
-> 
-
-
+--
+"English - Who needs that? I'm never going to England!"
+        --The Simpsons
 
