@@ -1,13 +1,13 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: NAT + NFS
-Date: Sun, 13 Apr 2003 01:27:15 +0200
+From: waltdnes@waltdnes.org
+Subject: Re: nat and ftp
+Date: Sun, 13 Apr 2003 00:02:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E98A0D3.7050209@fugmann.dhs.org>
-References: <200304111215.h3BCF0q18594@mailgate5.cinetic.de>
+Message-ID: <20030413040208.GB1939@m1800>
+References: <3E95E2D0.4070807@uif.gov.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304111215.h3BCF0q18594@mailgate5.cinetic.de>
+Content-Disposition: inline
+In-Reply-To: <3E95E2D0.4070807@uif.gov.ar>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: doedelberlin@web.de
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter list <netfilter@lists.samba.org>
 
-doedelberlin@web.de wrote:
-> i have a Linux gateway performing NAT (SNAT and DNAT) with iptables_1.2.7a
+On Thu, Apr 10, 2003 at 06:32:00PM -0300, Ing. Jorge Escudero wrote
+> I have a firewall with iptables.
 > 
-> on both sides there are UNIX machines (SOLARIS) 
+> I have a nat rules becouse I have one public IP.  All PC in the LAN
+> can access web, smtp and pop ports.  But We have problem with de
+> ftp. We can`t conect with any ftp server.
 > 
-> telnet, ftp, ... works fine but when i mount on Solaris client a directory from 
-> Solaris nfs server via gateway i have problems with performance.
-> 
-> it starts with "normal speed" but it gets worse and worse.
-> after reboot of this gateway it is ok but then again the same game.
-Assuming that the gateway running iptables is the root to the problem,
-have you tried to make a minimal working set of rules that exposes the 
-problem? If yes then please state them.
+> Do you now what is the problem?
 
-Also, what is the load on the gateway when degradation occurs and is the 
-degradation still present if you reboot one of the clients?
+  Standard ftp is a two-step process...
+  1) You make an outbound connection to the ftp server.
+  2) The ftp server makes an inbound connection to you.
 
-> 
-> does anybody have experiences with this problem ?
-No - but I have a few clues :-)
+  If you are blocking inbound connections, this will block regular ftp.
+Check your iptables logs, and you should see this being blocked.  There
+are two ways around the problem, without opening yourself up connections
+everybody on the net...
 
-> (best would be also a solution ... ;-)
-> 
-> thank you
+  1) Use "passive mode" ftp.  In linux the "-p" option of the ftp
+     command is used, like so
+     ftp -p ftp.bad.example.com
+     The basic Windows ftp client does not support this.  However, web
+     browsers accessing "ftp://" URLs use passive mode.  Entering
+     ftp://userid:password@ftp.bad.example.com
+     in the destination address should work for "userid" with "password"
+     connecting to "ftp.bad.example.com"
 
-Regards
-Anders Fugmann
+  2) Read http://kalamazoolinux.org/presentations/20010417/conntrack.html
+     especially the part "Connection tracking and ftp", and then set up
+     the ip_conntrack_ftp module.  This will allow inbound connections,
+     but only from IP addresses that you are connecting to with ftp.  It
+     gets uglier because you may have to do extra routing work to send
+     the inbound connection to the PC making the outbound connection.
+     Use passive ftp if possible.
 
---
-Author of FIAIF
-FIAIF is an intelligent firewall
-http://www.fiaif.net
-
+-- 
+Walter Dnes <waltdnes@waltdnes.org>
+An infinite number of monkeys pounding away on keyboards will
+eventually produce a report showing that Windows is more secure,
+and has a lower TCO, than linux.
 
