@@ -1,9 +1,11 @@
-From: Brad Chapman <kakadu_croc@yahoo.com>
-Subject: Where did netfilter.org/iptables.org go?
-Date: Thu, 20 Jun 2002 05:32:08 -0700 (PDT)
+From: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
+Subject: Re: Where did netfilter.org/iptables.org go?
+Date: Thu, 20 Jun 2002 13:33:47 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020620123208.83253.qmail@web10905.mail.yahoo.com>
+Message-ID: <1e9e01c21856$b9b535b0$3200a8c0@jungle.funkybadger.org>
+References: <20020620123208.83253.qmail@web10905.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,24 +17,18 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.samba.org>
 
-Everyone,
+Brad Chapman asked:
 
-     Does anyone know why www.netfilter.org and www.iptables.org point to
-lists.netfilter.org/mailman/listinfo? Fortunately netfilter.samba.org and
-netfilter.gnumonks.org are still OK.
+>      Does anyone know why www.netfilter.org and www.iptables.org
+point to
+> lists.netfilter.org/mailman/listinfo? Fortunately
+netfilter.samba.org and
+> netfilter.gnumonks.org are still OK.
 
-Brad
+They both work fine from here (.uk).
 
-=====
-Brad Chapman
+Adam
 
-Permanent e-mail: kakadu_croc@yahoo.com
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! - Official partner of 2002 FIFA World Cup
-http://fifaworldcup.yahoo.com
 
