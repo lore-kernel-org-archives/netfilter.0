@@ -1,10 +1,11 @@
-From: Edmund <cc@belfordhk.com>
-Subject: pktstat and netfilter
-Date: Tue, 05 Aug 2003 15:52:21 +0800
+From: "Lawrence - D" <ingsiong@daltron.com.pg>
+Subject: Firewall software
+Date: Tue, 5 Aug 2003 18:22:58 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F2F6235.5080100@belfordhk.com>
+Message-ID: <003801c35b2a$c9a8c1e0$7700000a@lawrencewin2k>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0035_01C35B7E.9923E820"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,34 +16,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Netfilter <netfilter@lists.netfilter.org>
 
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0035_01C35B7E.9923E820
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
 Hi,
-
-I'm running iptables (latest version) on a 2.4.21
-Linux machine.  I use pktstat to view the general
-packet movement.  Setup as follows:
-
-Internet -> eth0 (<- iptables ->) eth1 -> LAN
-
-I'm not sure where pktstat comes into play in
-the above chart.
-
-Anyway, today I was majorly surprised to see
-a Local IP sending a packet to a remote LAN
-on port 80.
-
-    tcp  192.168.10.3:2041 <-> x.x.x.x:80
+    Can anyone recommend firewall software that can work together with =
+IPtables ? User friendly interface.
 
 
-Is this supposed to happen?  Assuming that
-pktstat listens to the resulting packet
-after NAT'd, shouldn't the 192.168.10.3
-be my actual Internet IP?
+Lawrence Tang=20
 
-Any help appreciated.
+------=_NextPart_000_0035_01C35B7E.9923E820
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Can anyone=20
+recommend&nbsp;firewall software that can work together with IPtables ? =
+User=20
+friendly interface.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Lawrence Tang =
+<BR></FONT></DIV></BODY></HTML>
 
+------=_NextPart_000_0035_01C35B7E.9923E820--
 
 
