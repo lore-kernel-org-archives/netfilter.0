@@ -1,14 +1,12 @@
-From: "Joe Haynes" <jhaynes@heritagepropane.com>
-Subject: Re: Transitioning from one DNAT gateway to another
-Date: Thu, 20 Feb 2003 22:08:34 -0700 (MST)
+From: "Christopher Lyon" <cslyon@netsvcs.com>
+Subject: Issues with NAT from the ipsec0 interface
+Date: Thu, 20 Feb 2003 21:27:07 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1783.192.168.1.7.1045804114.squirrel@web.heritagepropane.com>
-References: <59610.12.227.180.139.1045788151.squirrel@web.heritagepropane.com>
-Reply-To: jhaynes@heritagepropane.com
+Message-ID: <AC3C815D983E4F4F974EC31FDF7F5CAE016D23@neon.netsvcs.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <59610.12.227.180.139.1045788151.squirrel@web.heritagepropane.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,62 +19,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I think I answered my own question. I was able to SNAT
-on connections that were directed toward an internal
-server using this command:
+I am trying to perform NAT using iptables 1.2.7a on packets coming from
+the ipsec0 interface.
 
-iptables -t nat -A POSTROUTING -o $DMZ_DEV -j SNAT --to $DMZ_IP
+Here is the config of the host in question
 
-So, when a packet for port 80 comes into the firewall,
-it is redirected toward a server in the DMZ. Then, SNAT
-is used so the responses back from the web server come back
-out through the current gateway instead of the gateway
-used by the DMZ server.
+eth0 - x.x.x.x (public)
+eth1 - 172.16.124.10
+ipsec0 (FreeS/WAN)
 
-I apologize for finding out on my own what should have been
-obvious from the start.
-
--jph
+Here is the original Packet (Sniffed on ipsec0)
+SRC			DEST
+192.168.254.100 - 1.2.124.10
 
 
-Joe Haynes said:
-> Hello to the list.
->
-> I apologize if this subject has been covered
-> elsewhere, but I have yet to locate instructions
-> on how to to this (redirections to appropriate
-> sites would be much appreciated).
->
-> Our network is currently attached to the internet via
-> a wavelan link (with a dedicated IP). We are transitioning
-> over to a T-1 line that has a new IP address.
->
-> What we would like to do is run a gateway off each single
-> external address and redirect specific ports to a single
-> internal server (we want to run both while we wait for
-> DNS updates).
->
-> Currently, we redirect port 80 on our external IP to an internal
-> webserver (also on port 80) using this line:
-> $IPT -t nat -A PREROUTING -i $INTERNET_DEV -d $INTERNET_IP -p tcp
-> --dport 80 -d $INTERNET_IP -j DNAT --to 192.168.1.5
->
-> We'd like to do the same thing off the new gateway that's
-> linked to the T-1 line.
->
-> The problem I've run into is the responses that have come
-> through the new gateway end up getting sent back out
-> the old gateway.
->
-> Is there a way to redirect packets to the internal server using
-> PREROUTE and then change the source addresses using POSTROUTE so
-> the responses from the internal server come back through
-> the correct gateway?
->
-> Thank you,
->
-> Joe Haynes
-> Helena Montana
+SRC 			DEST
+192.168.254.100 - 172.16.124.10
+
+The translation I would image would need to take place before routing
+since 1.2.124.0 doesn't live on this box so I would guess the command
+would be something like this:
+
+# iptables -t nat -A PREROUTING -s 1.2.124.10 -i ipsec0 -j DNAT --to
+172.16.124.10
+
+I can't seem to get this to work? I am missing something. I have tried
+many combinations of commands but I think the command above should do
+it. Any suggestions?=20
+
+
+
+
+Here is a netstat -rn from the host in question
+Destination     Gateway         Genmask         Flags   MSS Window  irtt
+Iface
+x.x.x.x	    0.0.0.0         255.255.255.192 U        40 0          0
+eth0
+x.x.x.x	    0.0.0.0         255.255.255.192 U        40 0          0
+ipsec0
+172.16.124.0    0.0.0.0         255.255.255.0   U        40 0          0
+eth1
+192.168.254.0   66.167.5.126    255.255.255.0   UG       40 0          0
+ipsec0
+127.0.0.0       0.0.0.0         255.0.0.0       U        40 0          0
+lo
+0.0.0.0         66.167.5.126    0.0.0.0         UG       40 0          0
+eth0
+
 
 
 
