@@ -1,13 +1,13 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: discard TCP SYN
-Date: 06 Aug 2003 14:43:10 +0200
+From: Whit Blauvelt <whit@transpect.com>
+Subject: Re: How can I ask IPTABLES to drop a packet based upon its content
+Date: Wed, 6 Aug 2003 08:53:24 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060173789.1669.113.camel@kermit>
-References: <000001c35c0e$5ba651f0$c800a8c0@klintan.local>
+Message-ID: <20030806125324.GA6378@china.patternbook.com>
+References: <88116A11E9DFD411870900508BEC3831803C2B@CPQ01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c35c0e$5ba651f0$c800a8c0@klintan.local>
+Content-Disposition: inline
+In-Reply-To: <88116A11E9DFD411870900508BEC3831803C2B@CPQ01>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Michael K <micke@klintan.se>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Deshwal Chand <CDD@kampsax.co.in>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Am Mit, 2003-08-06 um 13.32 schrieb Michael K:
-> My firewall have default policy to drop (in, out & fwd)
-> Some protocols are open for communications, such as tcp/80, ftp/21 from
-> the internet
-> Then I use stateful inspection, accepting estabished,related.
-> However, the nessus scanner is reporting this:
-> -----
-> The remote host does not discard TCP SYN packets which
-> have the FIN flag set.
->=20
-> Depending on the kind of firewall you are using, an
-> attacker may use this flaw to bypass its rules.
+You might find it much easier, although still a lot of work, to install a
+relaying mail server on the firewall that uses SpamAssassin and Razor called
+from the MIMEDefang milter in sendmail. I've also seen a Webpage somewhere
+on doing this using Qmail and SpamAssassin (you might google for it). This
+is all free software - the only investment is your time.
 
-The better solution would be to only accept SYN Packets which actually
-are SYN packets.
-iptables -A FORWARD -p tcp --syn -m state --state NEW -s whatever -j
-ACCEPT
+Asking iptables to do it is putting the load in the wrong place, and failing
+to take advantage of the work already done in using mail daemons for this
+task.
 
-But ....
-This SYN/FIN stuff comes from an old packetfilter implementation which
-implemented a very simple SYN test:
-Is only the SYN-Bit set? Yes, then it is a SYN-packet!
-If you relied on this test to implement the firewall-rules on this
-non-stateful packetfilter, you would create two rules:
+Whit
 
-Allow everything from the inside to the outside including SYN.
-Allow everything from the outside to the inside but SYN.
-
-Now, TCP-connection could only be initiated (meaning a SYN could be
-send) from the inside, right? No, you could send a SYN from the outside,
-once you have figured out that you needed a second flag set.=20
-Well, I wonder what happens if you use SYN/FIN? The firewall passes it
-and most (all?) operating systems ignore the FIN and operate on the SYN.
-Connection Established!
-
-Remember this is only possible on non-stateful packetfilters (read:
-These packetfilters do not use connection tracking)
-
-Once you use connection tracking that code decides in which direction
-the connection is initiated. It is not just a matter of the SYN-packet.
-
-Cheers,
-
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
-
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+On Wed, Aug 06, 2003 at 03:07:31PM +0530, Deshwal Chand wrote:
+> Hi,
+> 
+> I am running IPTABLES on Redhat 7.2 box. We are running a mail server behind
+> this firewall. We receive lot of spam e-mails. Instead of investing into the
+> anti-spam s/w, I want to configure the IPTABLES to read the contents on the
+> packets and drop them based upon the filter defined.
+> 
+> Any help ......
+> 
+> 
+> Regards,
+> 
+> Chand
 
