@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Not forwarding?
-Date: Mon, 29 Mar 2004 22:42:16 +0100
+From: ihernandez@cinemasoft.com.ar
+Subject: PPTP NAT and iptables compilation
+Date: Mon, 29 Mar 2004 19:01:09 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403292242.16217.Antony@Soft-Solutions.co.uk>
-References: <20040328155231.32b07799@darna.vectec.net> <20040329155147.4fa98da1@darna.vectec.net> <20040329162620.50afb911@darna.vectec.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040329190109.GB26945@cinemasoft.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040329162620.50afb911@darna.vectec.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,34 +16,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Monday 29 March 2004 9:26 pm, Cody Harris wrote:
+Hello. i have used patch-o-matic to add the pptp-nat helper module
+kernel works fine, but userspace iptables tool fails with:
+"iptables: Invalid argument"
 
-> It works once i ran this:
->
-> iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 22 -j DNAT --to
-> 192.168.0.2:22
->
-> Why did i need that? Do i still need my other rules? (in my filter -
-> forward chain)?
+i have seen a lot of posts and the solution is to compile the
+iptables-1.2.9 tools
+i downloaded a fresh copy from www.netfilter.org and run make
+KERNEL_DIR=mykerneldir
+it says:
+Extensions found: IPv4:recent IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header
+IPv6:hbh IPv6:dst IPv6:rt
 
-You need a PREROUTING nat rule if you want the firewall to change the 
-destination address where the packets are going to.
-
-You need a FORWARD filter rule to allow the packets through the firewall 
-(whether it's changed the destination address or not).
-
-Regards,
-
-Antony.
-
--- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+then i install.
+fine, but it continues with it's problems!!!!
+what can i do to compile the tools th right way?
 
