@@ -1,13 +1,11 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Blocking Netranges Based on IP-to-Country CSV
-Date: Thu, 16 Sep 2004 09:16:23 -0500
+From: "Comunicaciones Servinform" <comunicaciones@servinform.es>
+Subject: FTP USER+IP ASSOCIATION CONTROL
+Date: Thu, 16 Sep 2004 18:05:56 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <4149A037.5050907@pbl.ca>
-References: <35A63C29D445834BA42FE172EC30EB3C01C54833@dfiemlp1.dfi.state.wi.us>
+Message-ID: <000c01c49c07$0c9545f0$031513ac@gmm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <35A63C29D445834BA42FE172EC30EB3C01C54833@dfiemlp1.dfi.state.wi.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +15,22 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-McFall, Gary wrote:
-> Due to a number of issues, my organization is looking at being able to block
-> certain country domains at the firewall.  To be proactive, we want to
-> automate that process via iptables & the CSV available at
-> <http://ip-to-country.webhosting.info <http://ip-to-country.webhosting.info>
+We need have our linux iptables firewall making an ftp user+ip =
+association control in external public interface.=20
+If ftp user+ip association is correct we need transfer ftp ssl =
+connection to internal Ipswitch WS_FTP Server 5 with user db in sql =
+server database.=20
 
-They claim my IP address is in USA.  Which is kind of incorrect.  So if 
-you decide to finally block all those bad nasty Americans, you'll end up 
-blocking good friendly peace loving Canadians too.  Not to mention that 
-no beaver will be able to reach your web site, eh ;-)
+Firewall:=20
+linux suse 8.1 kernel 2.4
+iptables v1.2.7a
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+Internal server:
+w2000 server
+sql server 2000
+ipswitch ws_ftp server 5.0 with forced ssl connections
 
+It's possible? Any idea?. Thanks in advanced 
