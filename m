@@ -1,12 +1,12 @@
 From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: trying to document/understand the iptables kernel config options
-Date: Tue, 8 Apr 2003 06:43:04 -0400 (EDT)
+Subject: Re: more questions about kernel config options for iptables
+Date: Tue, 8 Apr 2003 07:01:34 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304080639320.25860-100000@dell>
-References: <200304080400.46995.netfilter@newkirk.us>
+Message-ID: <Pine.LNX.4.44.0304080644440.25860-100000@dell>
+References: <200304080304.25765.netfilter@newkirk.us>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304080400.46995.netfilter@newkirk.us>
+In-Reply-To: <200304080304.25765.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,37 +23,66 @@ Cc: iptables mailing list <netfilter@lists.netfilter.org>
 
 On Tue, 8 Apr 2003, Joel Newkirk wrote:
 
-> On Monday 07 April 2003 04:19 pm, Robert P. J. Day wrote:
+> On Monday 07 April 2003 05:18 pm, Robert P. J. Day wrote:
+
+> >   first, the basic Connection tracking option claims to be
+> > necessary for masq/NAT.  what value is that option if it is
+> > the only one selected?  it may be *necesasry* for masq/NAT,
+> > but it certainly doesn't seem to be *sufficient*.  what is
+> > the value of selecting that single option to the exclusion
+> > of all others.  what does it allow you to do?
 > 
-> [snipped humiliating reminder of my oversight :^)]
+> Conntrack is what supports stateful filtering - without it you won't have 
+> the "--state" match, and can only filter explicitly on IPs, port 
+> numbers, etc.
 
-don't worry about that.  i'll just bring it out and beat
-you with it on occasion. :-)
+not quite the question i was asking.  read on ...
+
+> >   next, notice that "IP tables support" also claims to be
+> > necessary for masq/NAT.  if that's the case, it would seem
+> > that these two options should somehow be interdependent.
 > 
-> >   so now, the first question or two.  first, even after you
-> > select "IP tables support", you can deselect *everything*
-> > inside that menu.  if you do that, is there *anything* you
-> > can do in terms of netfiltering?  i mean, does that single
-> > selectable "IP tables support" option have any functionality
-> > all by itself?
-> 
-> Yes.  If you select "IP tables support" but no further options within 
-> that set, you can still perform filtering.  For example, you could still 
-> ACCEPT or DROP based on source or destination IP.
+> Well, if you're going to use MASQUERADE then you need iptables support, 
+> even if you're not going to use iptables for any filtering.
 
-i don't think so, tim.  if you look down that list of options,
-past all the "match" options, you'll see "Packet filtering",
-whose help screen claims that it defines the "filter" table.
+right, that's what the kernel config options seem to suggest.
+so what is the value of selecting *only* "Connection tracking"
+if you don't select "IP tables support" as well?  note that,
+based on the dependencies in the kernel config process, this is
+certainly allowable, but it's not clear to me what this would
+represent.
 
-without that filter table, i would have assumed that you can't
-do *any* filtering of any kind, since the filter table wouldn't
-even exist.
+RECAP:  just to make sure folks understand what i'm trying to 
+clarify, here are two "features" of the kernel config process
+for netfilter i find confusing:
 
-i get the feeling that, if you select only "IP tables support"
-and nothing else, you might be able to set up ACCEPT or DROP
-policies on the three chains, and that's about it.
+1) you can select "IP tables support" without selecting one
+   of its submenu options, "Packet filtering".  what is the
+   possible value of this?  what can you do?  as i read it,
+   perhaps it means that you can still do filter-less
+   NAT and masquerading.  if that's the case, i can accept
+   that.
 
-thoughts?
+2) you can select "Connection tracking" (which is allegedly
+   required for NAT/masq), without selecting "IP tables support",
+   which also claims to be necessary for NAT/masq.  this
+   suggests that "Connection tracking" should have a dependency
+   of "IP tables support", no?
+
+i have three tentative goals here:
+
+a) to clarify what each of the NF kernel config options
+   represents
+
+b) to make sure all of the dependencies are represented
+
+c) to clean up the menu structure so that it makes more
+   sense, and possibly add more useful info to the help
+   screens
+
+i'm quite willing to move this discussion to the kernel
+mailing list if it's more appropriate there, but i figured
+i'd start here first.
 
 rday
 
