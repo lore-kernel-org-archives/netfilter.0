@@ -1,12 +1,13 @@
-From: Nuitari <nuitari@balthasar.nuitari.net>
-Subject: Re: Problem with counting
-Date: Sat, 12 Oct 2002 20:31:56 -0400 (EDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: IPSEC and other non tcp/udp/icmp blocking
+Date: Sun, 13 Oct 2002 02:05:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210122020570.10431-100000@balthasar.nuitari.net>
-References: <20021009212244.KUSR459.mta02-svc.ntlworld.com@there>
+Message-ID: <20021013010600.ROPW459.mta02-svc.ntlworld.com@there>
+References: <42349.64.86.49.17.1034435865.squirrel@www.icafe.co.tz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021009212244.KUSR459.mta02-svc.ntlworld.com@there>
+In-Reply-To: <42349.64.86.49.17.1034435865.squirrel@www.icafe.co.tz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 9 Oct 2002, Antony Stone wrote:
+On Friday 11 October 2002 11:45 pm, Mitesh P Choksi wrote:
 
-> On Tuesday 08 October 2002 5:44 am, Nuitari wrote:
-> 
-> > On Sun, 6 Oct 2002, Antony Stone wrote:
-> 
-> > > > iptables -P FORWARD ACCEPT
-> > >
-> > > Ugh :-(   Horrible.
-> > >
-> > > > for HOST in $INTERNAL_HOSTS; do
-> > > >
-> > > >         $IPTABLES -A FORWARD -o $EXTERNAL_INTERFACE -d $HOST -j ACCEPT
-> > > >         $IPTABLES -A OUTPUT -o $EXTERNAL_INTERFACE -d $HOST -j ACCEPT
-> > >
-> > > Why would a packet ever leave your external interface, with a destination
-> > > address of one of your internal machines ?
-> > >
-> > > >         $IPTABLES -A FORWARD -i $EXTERNAL_INTERFACE -s $HOST -j ACCEPT
-> > > >         $IPTABLES -A INPUT -i $EXTERNAL_INTERFACE -s $HOST -j ACCEPT
-> > >
-> > > Why would a packet ever come in through your external interface with a
-> > > source address of one of your internal machines ?
-> > >
-> > > What are these rules supposed to do ?
-> >
-> > They are some rules I wrote after the exemple provided with bw_acct (see
-> > below) didn't work well.
-> 
-> I suggest you sort these out and make sure your firewall is doing what it is 
-> supposed to (ie that the rules you have a processing packets in the way you 
-> expect) before trying to extend the system further to do traffic counting as 
-> well.
+> Dear All,
+>
+> How does netfilter work with other protocols apart tcp/udp/icmp?
 
-Ok I finally got to fixing the firewall.
+Perfectly well.
 
-I also fixed the counting problems.
-The exemple was misleading, the internal_interface should have been used 
-instead of external one...
+> I am trying to either block or account IPSec traffic.
 
+All you need to do is specify the relevant protocol in your rules, eg:
+
+iptables -A FORWARD -p esp ...etc.....
+
+You can still specify things like source & destination addresses, but of 
+course there are no port numbers in anything except TCP & UDP.
+
+Antony.
+
+-- 
+
+Anyone that's normal doesn't really achieve much.
+
+ - Mark Blair, Australian rocket engineer
 
