@@ -1,8 +1,10 @@
-From: ads nat <adsnat@yahoo.com>
-Subject: using bandwidth from multiple adsl supply connections
-Date: Thu, 24 Feb 2005 07:15:49 -0800 (PST)
-Message-ID: <20050224151549.2219.qmail@web60408.mail.yahoo.com>
+From: Michael Tautschnig <michael.tautschnig@zt-consulting.com>
+Subject: Re: using bandwidth from multiple adsl supply connections
+Date: Thu, 24 Feb 2005 16:37:06 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0502241635200.26799@l01.thnet>
+References: <20050224151549.2219.qmail@web60408.mail.yahoo.com>
 Mime-Version: 1.0
+In-Reply-To: <20050224151549.2219.qmail@web60408.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,42 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: ads nat <adsnat@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-I am using Redhat 9 linux server.
-I have 3 ethernet cards cards having
+[...]
+>
+> Any idea how to achieve this OR any tutorial OR Howto
+> for this.
+> Help appreciated.
+> Thanks for supports.
+>
+In fact, this is not really a problem of iptables/netfilter - it's rather 
+a routing problem. The following post might answer your question:
 
-eth0 Static Ip address.
-eth1 192.168.0.1 gateway for subnet 192.168.0.0.
-eth2 10.0.0.1 gateway for subnet 10.0.0.0.
+http://www.uwsg.iu.edu/hypermail/linux/kernel/0005.3/1580.html
 
-I have setup two adsl connections for ethernet card
-for eth0 (ppp0) and for eth1 (ppp1).
-
-I am getting dialup supply from two different ISPs for
-eth0 (ppp0) and eth1(ppp1).
-
-I want to pass supply from eth0 (ppp0) to subnet
-192.168.0.0 and supply from eth1 (ppp1) to subnet
-10.0.0.0.
-But it seems supply from eth0(ppp0) goes to both
-subnets. Supply from eth1 (ppp1) is not going to
-subnet 10.0.0.0. 
-
-Any idea how to achieve this OR any tutorial OR Howto
-for this.
-Help appreciated.
-Thanks for supports.
-
-
-
-	
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - You care about security. So do we. 
-http://promotions.yahoo.com/new_mail
+Regards,
+Michael
 
