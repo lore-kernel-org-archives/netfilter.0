@@ -1,13 +1,11 @@
-From: JOSE MIGUEL MARTINEZ <txemi2@clientes.euskaltel.es>
-Subject: netfilter promiscuous and connection tracking for IDS
-Date: Fri, 20 Jun 2003 11:51:54 +0200
+From: Rory Toma <rory@trs80.net>
+Subject: tftp patches?
+Date: 19 Jun 2003 12:28:13 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <588b854667.54667588b8@euskaltel.es>
+Message-ID: <1056050893.25712.47.camel@miskatonic.pao.digeo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Language: es
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,27 +18,18 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, I am working on IDS and I am trying to use netfilter  
-conntrack on promiscuous mode. I want to track status of connections  
-not intended for localhost. I have been using Sebastian Zander's patch  
-  
-web:http://www.fokus.gmd.de/research/cc/glone/employees/sebastian.zander/private/ne  
-tfilter.html  
-patch:netfilter-prom-patch.tgz  
-Sebastian's mail:zander@fokus.gmd.de  
-  
-It adds a new table called meter that handle promiscuous packages. It  
-works, but I was not able to track connection status using conntrack.  
-  
-Could anybody advise me on this? I need to make a decission, keep  
-trying or  
-go to user space to mangle all this through libpcap as snort or ntop.  
-  
-thanks,  
-txemi.  
-  
-email: txemi2@euskalnet.net  
-web: http://txemi.webhop.org  
- 
+Where can I find the complete set of patches against 2.4.20 for the
+tftp_nat connection?
+
+I find bits and pieces of it here and there, but they all seem to assume
+that you've installed patches to some level.
+
+I've looked thru a  bunch of the docs and can't quite find what I need.
+It seems that all the info isn't in cvs, either.
+
+Thx
+-- 
+Rory Toma		rory@trs80.net
+Senior Principal Lead Something or Other
 
 
