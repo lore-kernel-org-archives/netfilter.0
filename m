@@ -1,14 +1,11 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: ICMP, SYN, ACK flooding
-Date: Fri, 5 Dec 2003 17:33:53 -0500
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Maximum chain name length
+Date: Fri, 05 Dec 2003 21:02:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312051733.53248.JALaramie@Loudoun-Fairfax.com>
-References: <3FD1027E.70007@bodybuildingdiscount.com>
+Message-ID: <1070674657.3314.9.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FD1027E.70007@bodybuildingdiscount.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,35 +18,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 05 December 2003 17:11, Robert Gil wrote:
-> In this script for iptables i cant seem to get the icmp flood protection
-> to work. Im limiting the icmp to 1/s and a burst of 4... (under ping of
-> death), same goes for syn flood allthough im not quite sure how to test
-> syn/ack/fin/xmas flooding. And how can i go about closing all ports to
-> syn packets except the ones listed so i dont have the responding.
-> Perhaps i have some things in the wrong order. Any help would be great.
->
->               ~Rob Gil
-> #######################################################
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT ACCEPT
->
-> iptables -A INPUT -j ACCEPT -p tcp --dport 21
-> iptables -A INPUT -j ACCEPT -p tcp --dport 22
-> iptables -A INPUT -j ACCEPT -p tcp --dport 25
-> iptables -A INPUT -j ACCEPT -p tcp --dport 80
-> iptables -A INPUT -j ACCEPT -p tcp --dport 110
-> iptables -A INPUT -j ACCEPT -p tcp --dport 443
->
-> iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A INPUT -p udp -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
->
+	We are developing a GUI manager for iptables and FreeS/WAN for large
+complex deployments.  It is similar to the global management consoles
+from Smartpipes, Solsoft, NetScreen, Checkpoint, etc., except that it
+creates more efficient rules, is significantly easier to manage, is GPL
+rather than a five to six figure product, but does not yet support
+additional services such as IDS and Content Filtering.  (
+http://iscs.sourceforge.net) Actually it is vendor independent and thus
+can manage more than iptables but iptables is our initial target.
+	We've hit a major problem with the maximum chain name length.  We
+organize our user communities and resource groups into a hierarchical
+structure with inheritance.  These map directly to the iptables chain
+names.  Thus a chain name like 
 
-As a general rule it's good to have the ESTABLISHED, RELATED rule ahead of the 
-generic ACCEPT rules since they will catch most of your packets.
+AppliedTechnologies/Engineering/NewProducts/SanFranciscoLabs/ProjectB
 
-Jeff
+is not out of the ordinary.  This runs us up against the 30 character
+limit of chain names very quickly.  Working around this by substituting
+numbers for names or some other such workaround will greatly complicate
+the project and reduce ease of troubleshooting in the field.
+
+	Is there any way to extend the maximum allowed chain name length in
+iptables? Thanks - John
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
 
