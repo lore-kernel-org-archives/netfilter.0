@@ -1,12 +1,13 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: Re: IP Alias with iptables
-Date: Mon, 19 Apr 2004 12:28:50 -0300
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: IP Alias with iptables
+Date: Mon, 19 Apr 2004 17:43:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <010c01c42623$04885190$0c00a8c0@pepelui>
-References: <EMEKLOMJOPNJPAFKHEDJEECICDAA.rhaces_chistes@yahoo.com.mx>
+Message-ID: <1082389424.1806.68.camel@anduril.intranet.cartel-securite.net>
+References: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <EMEKLOMJOPNJPAFKHEDJGECHCDAA.rhaces_chistes@yahoo.com.mx>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,94 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Rodrigo Haces <rhaces_chistes@yahoo.com.mx>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-in my case, i prefer to use a script made by myself and call it by a
-rc.local or using a sysv script.
+Le lun 19/04/2004 =E0 18:07, Rodrigo Haces a =E9crit :
+> Ok, this is what i want, i have a Restaurant, and have an administrativ=
+e
+> network (192.168.1.0) and i am giving wireless access to my clients, bu=
+t i
+> cant let them get into my administrative network, so i set them 192.168=
+.0.0.
 
-Im not shure if adding a new IPADDR will work, because you need iproute2 to
-achieve what i told you.
+Then aliases are not secure enough to deal with your settings. I mean
+any wireless client that would change its IP manually to 192.160.1.0
+will get administrative network priviliedges. You have to separate
+thoses two LANs physically using a second network adapter or use a VLAN
+aware switch connected by a trunk to eth0, configured to support 802.1q
+tagging.
 
-Just try and let us know :)
-
-
-
------ Original Message ----- 
-From: "Rodrigo Haces" <rhaces_chistes@yahoo.com.mx>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, April 19, 2004 1:20 PM
-Subject: RE: IP Alias with iptables
-
-
->
->
-> > Enviado el: Lunes, 19 de Abril de 2004 08:53 a.m.
-> >
-> > why not to use iproute2 adding a new ip address to the interface
-> > and filter
-> > with the source?
-> >
-> > like
-> >
-> > ip add add 192.168.0.1/24 dev eth0
-> > ip add add 192.168.1.1/24 dev eth0
-> >
-> > and then apply the rules using the source address and not the
-interface???
-> >
-> > could it help???
->
-> Could work, never tryed it, but how do i set it up to work on boot? i use
-> RedHat 7.3 and have a /etc/sysconfig/network-scripts/ifcfg-eth0 file that
-> has the next parameters:
-> DEVICE="eth0"
-> IPADDR="192.168.1.1"
-> NETMASK="255.255.255.0"
-> NETWORK=192.168.1.0
-> ONBOOT="yes"
->
-> Do i just simple add another IPADDR line?
->
-> Thanks
->
-> Rodrigo
->
-> >
-> >
-> > ----- Original Message -----
-> > From: "Rodrigo Haces" <rhaces_chistes@yahoo.com.mx>
-> > To: <netfilter@lists.netfilter.org>
-> > Sent: Monday, April 19, 2004 12:41 PM
-> > Subject: IP Alias with iptables
-> >
-> >
-> > > Hi:
-> > >
-> > > I have only one network adapter in my Server, but i need to have 2
-> > different
-> > > networks, 192.168.1.0 to the MAC addresses i know and 192.168.0.0 to
-the
-> > MAC
-> > > addresses i dont't know, i have managed this by makin mi eth0 to
-> > 192.168.1.1
-> > > and an alias eth0:0 to 192.168.0.1, everythings ok, but i'm also
-sharing
-> > > internet, but when i start the rule to the eth0:0 it sends me
-> > an error. Is
-> > > there a way to use IP Aliasing with iptables? if not, is there a way
-to
-> > > create an eth0 and eth1 witn the same adapter?
-> > >
-> > > Thanks
-> > >
-> > > Rodrigo
-> > >
-> > >
-> > >
->
->
->
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
