@@ -1,14 +1,13 @@
-From: Rohan Almeida <arc_of_descent@gmx.net>
-Subject: Re: ip conflict with proxy arp
-Date: Tue, 29 Oct 2002 17:06:31 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Rules for blocking Email from libero.it domain
+Date: Tue, 29 Oct 2002 13:04:51 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021029170631.43845b12.arc_of_descent@gmx.net>
-References: <20021029122844.6b1e70ca.arc_of_descent@gmx.net>
-	<20021029085844.GBUS1554.mta07-svc.ntlworld.com@there>
+Message-ID: <200210291304.g9TD4ve10070@vulcan.rissington.net>
+References: <200210281507.g9SF70e08704@vulcan.rissington.net> <20021029085004.FRPW1554.mta07-svc.ntlworld.com@there> <0a9501c27f37$a0cf6370$eb00010a@andromeda>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021029085844.GBUS1554.mta07-svc.ntlworld.com@there>
+In-Reply-To: <0a9501c27f37$a0cf6370$eb00010a@andromeda>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,35 +20,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Antony Stone <Antony@Soft-Solutions.co.uk> thus wrote:
-> On Tuesday 29 October 2002 6:58 am, Rohan Almeida wrote:
-> > Noy my setup is such, that a user on the LAN,
-> > would like to have an ip from the 172.16.2.0/24 network.
-> 
-> What, whilst still plugged in to eth1 ?   Why ?
+On Tuesday 29 October 2002 10:40 am, Adam D. Barratt wrote:
 
-Honestly, i have no clue,
-Its just a network setup which I have
-to solve somewhere.
-I tried explaining them the problem but
-they are adamant on using the existing setup.
- 
-> How are you allocating your addresses on the two networks at the moment ?
-> 
-> If it's a system administrator handing out static addresses and recording 
-> who's got what, then tell the person on the LAN to go to the sysadmin and ask 
-> for an unused address.
-> 
-> If it's a DHCP server handing out addresses on request, try setting up a 
-> DHCRELAY (there's another thread going in this mailing list at the moment 
-> about getting that working with netfilter) so pass addresses from one network 
-> to the other.
+> Antony Stone wrote Tuesday, October 29, 2002 8:50 AM
+>
+> > The latter is correct.   Before an email is transmitted, the sender tells
+> > the receiver what size it is so that the receiver can decide whether it
+> > has space to accept it.
+>
+> In most cases, no such decision takes place. Specifically, there are very
+> few servers (IME) that actually implement the SIZE extension, as defined in
+> RFC1870.
+>
+> Note that RFC2821 discourages decisions based on message size.
 
-Its a DHCP server
-I'll take a look at DHCPRELAY.
-Maybe it can help me
-Thanx
+Hmmm.   I suppose everyone assumes that mail servers have infinite hard disk 
+capacity these days...
 
---
-arc_of_descent
+Antony.
+
+-- 
+
+Which part of 'apt-get dist-upgrade' do you not understand ???
 
