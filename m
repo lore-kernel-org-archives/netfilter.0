@@ -1,14 +1,16 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ftp
-Date: Fri, 21 May 2004 09:26:49 +0100
+From: O-Zone <liste@zerozone.it>
+Subject: Re: DMZ to DMT through ROUTER problem !
+Date: Fri, 21 May 2004 11:30:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405210926.49734.Antony@Soft-Solutions.co.uk>
-References: <BAY15-F7JmGzrLCCtgx00008f99@hotmail.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200405211130.21108.liste@zerozone.it>
+References: <200405201318.34706.liste@zerozone.it> <200405201834.23351.Antony@Soft-Solutions.co.uk> <200405201844.49709.Antony@Soft-Solutions.co.uk>
+Reply-To: liste@zerozone.it
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <BAY15-F7JmGzrLCCtgx00008f99@hotmail.com>
+In-Reply-To: <200405201844.49709.Antony@Soft-Solutions.co.uk>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,66 +20,70 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 21 May 2004 3:49 am, azeem ahmad wrote:
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> it is a very simple firewall with only one rule as
-> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> any ways the outout of the two commands is as follow
->
-> iptables -L -nvx
-> Chain INPUT
-> (policy ACCEPT 64966 packets, 22320338 bytes)
->     pkts      bytes target     prot opt in     out     source
-> destination
->
-> Chain FORWARD (policy ACCEPT 48691 packets, 11603504 bytes)
->     pkts      bytes target     prot opt in     out     source
-> destination
->
-> Chain OUTPUT (policy ACCEPT 154653 packets, 66215691 bytes)
->     pkts      bytes target     prot opt in     out     source
->
-> iptables -L -t nat -nvx
-> Chain
-> PREROUTING (policy ACCEPT 9221 packets, 586315 bytes)
->     pkts      bytes target     prot opt in     out     source
-> destination
->
-> Chain POSTROUTING (policy ACCEPT 2693 packets, 178591 bytes)
->     pkts      bytes target     prot opt in     out     source
-> destination
->        0        0 MASQUERADE  all  --  *      ppp0    0.0.0.0/0
-> 0.0.0.0/0
->
-> Chain OUTPUT (policy ACCEPT 6008 packets, 382374 bytes)
->     pkts      bytes target     prot opt in     out     source
-> destination
->
-> i m showing you the different firewall rules in different questions beacuse
-> i m a student and i m working on firewall these days. but wheni try to
-> access ftp then only this single rule works nothing else has been added.
+On Thursday 20 May 2004 19:44, Antony Stone wrote:
+> The same applies to your FORWARDing rules as well, by the way, so these
+> will need changing before the packets can get through your firewall to
+> their destination.
 
-Have you loaded, or compiled in, the ftp nat and ftp connection tracking 
-modules?
+OK ! Thanks a lot...now all works perfeclty. But i still have a problem wit=
+h=20
+UDP. My DNS server inside DMZ, 192.168.0.2 ($DMZ_SIENA_IP), is mapped to tw=
+o=20
+public ip:
 
-You probably don't need the conntrack module since with the above ruleset 
-you're not doing connection tracking, hiowever if you're natting ftp then you 
-need the ftp nat helper loaded (or compiled into your kernel).
+151.8.47.A ($SIENA_IP)
+81.113.95.B ($SIENA2_IP)
 
-Regards,
+and the rules to allow UDP to this server from those IP are:
 
-Antony.
+$IPTABLES -A FORWARD -p TCP -o $DMZ_IFACE -d $DMZ_SIENA_IP -m multiport=20
+=2D --dports 25,53,110 -j allowed
+$IPTABLES -A FORWARD -p UDP -o $DMZ_IFACE -d $DMZ_SIENA_IP -m multiport=20
+=2D --dports 53 -j ACCEPT
 
--- 
-Behind the counter a boy with a shaven head stared vacantly into space,
-a dozen spikes of microsoft protruding from the socket behind his ear.
+$IPTABLES -A FORWARD -p ICMP -o $DMZ_IFACE -d $DMZ_SIENA_IP -j icmp_packets
 
- - William Gibson, Neuromancer (1984)
+$IPTABLES -t nat -A PREROUTING -p TCP -d $SIENA_IP -m multiport --dports=20
+25,53,80,110 -j DNAT --to-destination $DMZ_SIENA_IP
+$IPTABLES -t nat -A PREROUTING -p UDP -d $SIENA_IP -m multiport --dports 53=
+ -j=20
+DNAT --to-destination $DMZ_SIENA_IP
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+$IPTABLES -t nat -A PREROUTING -p TCP -d $SIENA2_IP -m multiport --dports=20
+25,53,80,110 -j DNAT --to-destination $DMZ_SIENA_$
+$IPTABLES -t nat -A PREROUTING -p UDP -d $SIENA2_IP -m multiport --dports 5=
+3=20
+=2D -j DNAT --to-destination $DMZ_SIENA_IP
+
+With the $SIENA_IP all work. With $SIENA2_IP not :-(. Is possible that the =
+UDP=20
+reply packet source is wrong because:
+
+=2E..
+$IPTABLES -t nat -A POSTROUTING -s $DMZ_SIENA_IP -o $INET_IFACE -j SNAT=20
+=2D --to-source $SIENA_IP
+=2E..
+
+?=20
+
+Oz
+
+
+=2D --=20
+What we wish, that we readily believe.
+		-- Demosthenes
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFArcwqYuBSFbgkEysRAmcOAJ9cZZgIyBMqGg9e2kFMzgVc2j1gtgCfZl8e
+CwVcZex0I1X51bAUYx3FKJk=3D
+=3DRgex
+=2D----END PGP SIGNATURE-----
 
 
