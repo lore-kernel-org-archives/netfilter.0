@@ -1,14 +1,13 @@
-From: "Rowan Reid" <rreid@studio3arc.com>
+From: "R. Sterenborg" <rsterenborg@xs4all.nl>
 Subject: RE: PPTP through masquerading gateway
-Date: Mon, 8 Jul 2002 15:19:07 -0700
+Date: Tue, 9 Jul 2002 00:31:41 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000801c226cd$7a6f9780$6b01a8c0@s3ac>
-References: <001901c226c3$573f4e40$3864a8c0@discmail.com>
+Message-ID: <001c01c226cf$3bc72d70$0401000a@win2k>
+References: <000d01c226c1$9a049390$6b01a8c0@s3ac>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0009_01C22692.CE10BF80"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001901c226c3$573f4e40$3864a8c0@discmail.com>
+In-Reply-To: <000d01c226c1$9a049390$6b01a8c0@s3ac>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,95 +17,99 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: "'Aldo S. Lagana'" <alagana@discmail.com>, 'Marc Riddle' <mriddle@socal.rr.com>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@lists.samba.org
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0009_01C22692.CE10BF80
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
- 
-I'm using a 2.4.18 Kernel I'm curious if that smy problem.  my quagmire
-is I need at least a 2.4.18 Kernel to support my reserfs.
- 
-
- 
-
-I am in the process of using that module to allow 'outgoing' from behind
-a Linux firewall - which is a little different than your situation.  
- 
-I have gotten the POM module to patch cleanly against 2.4.16 with
-iptables 1.2.5,  now I just need to get that test box out on the wire to
-give it a go...
- 
-I'l let you know if my scenario works out..  
- 
-
-
-------=_NextPart_000_0009_01C22692.CE10BF80
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<TITLE>Message</TITLE>
-
-<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><FONT color=3D#0000ff face=3DArial size=3D2><SPAN =
-class=3D078591722-08072002>I'm=20
-using a 2.4.18 Kernel I'm curious if that smy problem.&nbsp; my quagmire =
-is I=20
-need at least a 2.4.18 Kernel to support my reserfs.</SPAN></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DTahoma size=3D2><BR></FONT>&nbsp;</DIV>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"BORDER-LEFT: #0000ff 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
-0px; PADDING-LEFT: 5px">
-  <DIV><SPAN class=3D190300321-08072002><FONT color=3D#0000ff =
-face=3DArial size=3D2>I am=20
-  in the process of using that module to allow 'outgoing' from behind a =
-Linux=20
-  firewall - which is a little different than your situation.&nbsp;=20
-  </FONT></SPAN></DIV>
-  <DIV><SPAN class=3D190300321-08072002><FONT color=3D#0000ff =
-face=3DArial=20
-  size=3D2></FONT></SPAN>&nbsp;</DIV>
-  <DIV><SPAN class=3D190300321-08072002><FONT color=3D#0000ff =
-face=3DArial size=3D2>I=20
-  have gotten the POM module to patch cleanly against 2.4.16 with =
-iptables=20
-  1.2.5,&nbsp; now I just need to get that test box out on the wire to =
-give it a=20
-  go...</FONT></SPAN></DIV>
-  <DIV><SPAN class=3D190300321-08072002><FONT color=3D#0000ff =
-face=3DArial=20
-  size=3D2></FONT></SPAN>&nbsp;</DIV>
-  <DIV><FONT size=3D2><FONT color=3D#0000ff><FONT face=3DArial><SPAN=20
-  class=3D190300321-08072002>I'l let you know if my scenario works =
-out..<SPAN=20
-  =
-class=3D078591722-08072002>&nbsp;</SPAN></SPAN></FONT></FONT></FONT><FONT=
-=20
-  size=3D2><FONT color=3D#0000ff><FONT face=3DArial><SPAN=20
-  class=3D190300321-08072002><SPAN=20
-  =
-class=3D078591722-08072002>&nbsp;</SPAN></SPAN></FONT></FONT></FONT></DIV=
+> -----Original Message-----
+> From: netfilter-admin@lists.samba.org
+[mailto:netfilter-admin@lists.samba.org]On
+> Behalf Of Rowan Reid
+> Subject: RE: PPTP through masquerading gateway
 >
-  <DIV><FONT size=3D2><FONT color=3D#0000ff><FONT face=3DArial><SPAN=20
-  class=3D190300321-08072002><SPAN=20
-  =
-class=3D078591722-08072002></SPAN></SPAN></FONT></FONT></FONT>&nbsp;</DIV=
-></BLOCKQUOTE></BODY></HTML>
+> I've been trying to get this to work. with no luck. I've used the POM
+module which
+> fails everytime I try to patch my kernel 2.4.4 and up
+> no luck even on a freshly downloaded kernel. other patches work but pptp
+does not. I
+> tried another patch which patched my 2.4.18 kernel
+> but all my connections fail to make it to my server.  I woudl love to talk
+to
+> at least one person who HAS gotten this to work.
 
-------=_NextPart_000_0009_01C22692.CE10BF80--
+Ok.. I did it this way.
+I'm going through it step by step, so don't flame me for describing steps
+that seem obvious.
+
+I used :
+- kernel 2.4.17 (Because the patch is for *that* kernel. I'm no hacker so
+I'm not going to try it on another kernel...).
+- the PPTP kernel patch from
+http://www.impsec.org/linux/masquerade/ip_masq_vpn.html.
+- iptables-1.2.6a.
+- the default gcc from RH-7.3 (2.96, I know, I know...)
+
+Untar the kernel source to /usr/src/linux.
+Untar the patch to /usr/src.
+Untar iptables to /usr/src/iptables-1.2.6a
+
+cd /usr/src
+patch =96p0 < netfilter-pptp-2.4.17-rev2.patch
+
+cd /usr/src/iptables-1.2.6a
+make pending-patches KERNEL_DIR=3D/usr/src/linux
+
+If all went well go ahead and configure your kernel.
+cd /usr/src/linux
+make xconfig (or whatever you like to use)
+
+Check all (networking) options that apply.
+There are two new options in the kernel config :
+- Networking options -> IP: Netfilter Configuration -> PPTP protocol support
+- Networking options -> IP: Netfilter Configuration -> PPTP verbose debug
+Make sure you check the first.
+If you want ***LOT'S*** of logging in syslog, also check the second.
+(You could try that, see what it's all about when you got it to work and
+after that recompile the kernel without it ;o] You don't need it for normal
+operation.)
+
+make dep clean
+make bzImage (or some other ?)
+make modules modules_install
+
+Copy the ./arch/i386/boot/bzImage file to /boot
+Copy ./System.map to /boot
+Change your lilo.conf or grub.conf to let the new kernel show up in the
+bootmanager. (Lilo needs you to run "lilo" to reflect the changes.)
+
+cd /usr/src/iptables-1.2.6a
+make KERNEL_DIR=3D/usr/src/linux
+make install KERNEL_DIR=3D/usr/src/linux
+
+Reboot and make sure to boot the new kernel.
+
+Now for the forwarding rules.
+I'm taking values from this post. Since it's not mentioned, I take eth0 as
+the LAN NIC.
+http://www.netfilter.org/documentation/tutorials/blueflux/iptables-tutorial.
+html#TRAVERSINGOFTABLES
+Table 3-1. We are forwarding packets -> our packets will be going through
+the PREROUTING chain and the FORWARD chain, so we'll need rules for both of
+them.
+
+iptables -A FORWARD -p tcp -i ppp0 -o eth0 -d 10.1.1.15 --dport 1723 -j
+ACCEPT
+iptables -A FORWARD -p 47 -i ppp0 -o eth0 -d 10.1.1.15 -j ACCEPT
+
+iptables -t nat -A PREROUTING -p tcp -i ppp0 -d <external-ip> --dport
+1723 -j DNAT --to 10.1.1.15:1723
+iptables -t nat -A PREROUTING -p 47 -i ppp0 -d <external-ip> -j DNAT --to
+10.1.1.15
+
+Of course you need to set additional rules for your firewall to work.
+
+Well, this should do it. It does for me.
+Hope I was of help and wasn't talking too much rubbish.
+
+Rob
 
 
