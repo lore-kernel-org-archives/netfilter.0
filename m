@@ -1,12 +1,13 @@
-From: Stack Buffer <black_merkury@yahoo.com>
-Subject: Re: n00b question.....   How to get details on active connections
-Date: Tue, 23 Sep 2003 07:40:31 -0700 (PDT)
+From: Daniel Bidwell <bidwell@andrews.edu>
+Subject: Re: Controlling number of sessions
+Date: 23 Sep 2003 10:43:39 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030923144031.93650.qmail@web60106.mail.yahoo.com>
-References: <1064120968.782.626.camel@shaolin.gridlocksecurity.com>
+Message-ID: <1064328220.3980.26.camel@samwise>
+References: <200309231859450453.1183C0A3@smtp.khi.wol.net.pk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1064120968.782.626.camel@shaolin.gridlocksecurity.com>
+In-Reply-To: <200309231859450453.1183C0A3@smtp.khi.wol.net.pk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +18,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nox <pheusion@snet.net>
+To: Nauman Malik <naumanm@khi.wol.net.pk>
 Cc: netfilter@lists.netfilter.org
 
-Hi Nox
+On Tue, 2003-09-23 at 09:59, Nauman Malik wrote:
+> Hi,
+> 
+> I have a Linux box being used as a cache server. I want to control number of TCP sessions per user/IP on this machine. e.g. At one time only 50 reuqets per user can be passed through this linux box.
+> Is it possible using iptables?.
+> Any idea how?
 
-Well I did manage to get the kernel compiled (Redhat
-9.0)
-kernel 2.4.20-8,
-and it booted the system fine, although I think it is
-pretty large.
-I was not sure of the following though and I hope u
-can help clearify thing for me:
+I have connection tracking enabled and have a perl program that runs
+every 5 minutes and counts the number of connections per local IP.  You
+can then use a program like cutter to kill extra connections if this is
+really what you want to do.
+> 
+-- 
+Daniel R. Bidwell	|	bidwell@andrews.edu
+Andrews University	|	Information Technology Services
+If two always agree, one of them is unnecessary
+"Friends don't let friends do DOS"
+"In theory, theory and practice are the same.
+In practice, however, they are not."
 
-1) IP:Multicasting.
-
-2) IP:Policy Routing.
-
-3) IP:Use netfilter mark value as router.
-
-4) IP:TCP syncookie support.
-
-Plus also I compiled in everything under the netfilter
-configuration and also everything under Qos and/or
-Fair queueing. Is that over kill to compile all those
-otions in?. What are the trade off of compiling
-(netfilter stuff) things as modules,rather than
-directly into the kernel, will I lose any
-functionality.
-I will be very thankful for any help.
-Thanks
-Cheers
-
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
