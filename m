@@ -1,12 +1,12 @@
-From: "Jeremy" <jeremy@paradise.net.nz>
-Subject: pptp_conntrack_nat compatability & dependencies
-Date: Thu, 24 Jul 2003 12:48:15 +1200
+From: "Damien Mason" <dmason@bluefire.com.au>
+Subject: VLANs and DNAT
+Date: Thu, 24 Jul 2003 16:53:57 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <016401c3517d$44744be0$3964a8c0@comsol.co.nz>
+Message-ID: <1D52A5A949FF0F41A737A228837E0F5576638D@homer.bfsyd.local>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0161_01C351E1.D96BFBD0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,139 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi Everyone,
 
-------=_NextPart_000_0161_01C351E1.D96BFBD0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	I have two interfaces, eth1 and eth2
 
-Hi Everyone,=20
+	I have multiple vlans on a eth1, that is, eth1.1 and eth1.2,
+eth1.3
 
-Here is something simple.
+	Eth2 is the external interface to the internet.
 
-I want to clarify the following:
-What kernelversion, what iptables version and what OTHER patches (i.e. =
-helpers) etc. do I need to get this working correctly.=20
+	Vlan1 uses the following network address:	192.168.50.0/24
+	Vlan2 uses the following network address:	192.168.50.0/24
+also
 
-I run debian linux, and have tried the following:
+	Vlan3 uses the following network address: 192.168.10.0/24
 
-Originial Configuration=20
---------------------------
-Vanilla 2.4.20 kernel, iptables 1.2.6a, pom patch applied cleany, =
-re-compiled cleanly.
-rebooted, and any postrounting commands give 'invalid argument'=20
+I have NAT working for the vlans, that is, clients are able to access
+the external internet using nat.
 
-Other configurations tried
-----------------------------
-Vanilla 2.4.21 kernel, iptables 1.2.6a - same problem
-Vanilla 2.4.21 kernel, iptables 1.2.7a - same problem
-Vanilla 2.4.21 kernel, iptables 1.2.8 - same problem
-Vanialla 2.4.19 - iptables 1.2.6a or 1.2.8 - same problem
+	However, there are servers on Vlan2 which I would like to
+forward traffic to from the external interface, I would imagine that I
+could do something like:
 
-the command Is just:
-$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source =
-$INET_IP
+iptables -A PREROUTING -t nat -p tcp -d 203.221.181.27 --dport 80 -j
+DNAT --to 192.168.50.10:80
 
-error occurs when running as a script or typing in the values from a =
-shell.=20
+But I cannot specify an interface -i eth1.2 in the prerouting, because
+it occurs pre-routing?
 
-Do i just have an incompatability problem here? or is there something =
-fundamental i'm doing wrong. =20
-Any help much appreciated.=20
+	How can I forward traffic to a host on a vlan when the vlans
+don't use unique addressing schemes?.. I was thinking I may have to -j
+REDIRECT the traffic to another chain, and forward it from there?
 
-(about to throw this box out the window)
+	Any Ideas or solutions would be most appreciated :)
+
+Regards,
+	Damien Mason
 
 
 
 
-
-
-
-
-
-------=_NextPart_000_0161_01C351E1.D96BFBD0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi Everyone, </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Here is something simple.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT><FONT face=3DArial =
-size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I want to clarify the =
-following:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>What kernelversion, what iptables =
-version and what=20
-OTHER patches (i.e. helpers) etc. do I need to get this working =
-correctly.=20
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I run debian linux, and have tried the=20
-following:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Originial Configuration </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>--------------------------</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Vanilla 2.4.20 kernel, iptables 1.2.6a, =
-pom patch=20
-applied cleany, re-compiled cleanly.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>rebooted, and any postrounting commands =
-give=20
-'invalid argument' </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Other configurations tried</FONT></DIV>
-<DIV><FONT face=3DArial =
-size=3D2>----------------------------</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Vanilla 2.4.21 kernel, iptables 1.2.6a =
-- same=20
-problem</FONT></DIV>
-<DIV>
-<DIV><FONT face=3DArial size=3D2>Vanilla 2.4.21 kernel, iptables 1.2.7a =
-- same=20
-problem</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Vanilla 2.4.21 kernel, iptables 1.2.8 - =
-same=20
-problem</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Vanialla 2.4.19 - iptables 1.2.6a or =
-1.2.8 - same=20
-problem</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>the command Is just:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>$IPTABLES -t nat -A POSTROUTING -o =
-$INET_IFACE -j=20
-SNAT --to-source $INET_IP</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>error occurs when running as a script =
-or typing in=20
-the values from a shell. </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Do i just have an incompatability =
-problem here? or=20
-is there something fundamental i'm doing wrong.&nbsp; </FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Any help much appreciated. =
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>(about to throw this box out the=20
-window)<BR></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0161_01C351E1.D96BFBD0--
 
 
