@@ -1,16 +1,10 @@
-From: Michiel Brandenburg <michielb@toad.stack.nl>
-Subject: Re[2]: using ip_nat_ftp
-Date: Sat, 15 Feb 2003 19:29:09 +0100
+From: Khanh Tran <khanh@slc.edu>
+Subject: RE: module performance
+Date: Sat, 15 Feb 2003 15:47:48 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <64338714703.20030215192909@stack.nl>
-References: <46338.80.26.113.199.1045142920.squirrel@www.clientes.sedifa.com>
- <49309.80.26.113.199.1045228632.squirrel@www.clientes.sedifa.com>
- <3E4CEF2A.2040702@lucidpixels.com>
-Reply-To: michielb <michielb@toad.stack.nl>
+Message-ID: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E2@EXCHANGE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E4CEF2A.2040702@lucidpixels.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,19 +15,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Daniel Wittenberg <daniel-wittenberg@starken.com>
+Cc: netfilter@lists.netfilter.org
+
+Thanks for the insight.  I didn't think it should affect the performance.
+As far as security goes for dynamically loaded modules, are you talking
+about someone getting at the modules from the local file system?
+
+Khanh Tran
+Network Operations
+Sarah Lawrence College
 
 
-Question:
-I'm trying to allow passive ftp traffic for a server running on a
-nonstandard port (1212) with a non-modular ip_nat_ftp.
+-----Original Message-----
+From: Daniel Wittenberg [mailto:daniel-wittenberg@starken.com]
+Sent: Saturday, February 15, 2003 3:05 PM
+To: Khanh Tran
+Subject: Re: module performance
 
-Is there a way to append something to the kernel boot to add 1212 to
-the list of ftp ports the helper should check ?
 
--- 
-Best regards,
- Michiel
+Linux kernel modules are not supposed to suffer any performance
+difference when loaded dynamically or statically.  It applies to any
+module (because of the way they are loaded), so you are good just doing
+the modules.  Using statically built kernel's without module support is
+better for security, but a PITA to upgrade.
+
+Dan
+
+On Sat, 2003-02-15 at 07:16, Khanh Tran wrote:
+> Does anyone feel like giving a somewhat detailed explanation of the
+> differences in loading the ip_tables modules versus building it into the
+> kernel?  I've got several RedHat Linux firewalls and when it comes to
+> upgrading the kernels, loading ip_tables as  modules is easy.  Otherwise,
+I
+> have to upgrade my kernel and then go back and re-compile ip_tables into
+the
+> kernel.  This has proven to be much more time consuming, especially with
+the
+> growth of ip_tables use on our network.
+> 
+> Thoughts?  Thanks in advance?
+> 
+> Khanh Tran
+> Network Operations
+> Sarah Lawrence College
+> 
+
 
 
 
