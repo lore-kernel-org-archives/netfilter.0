@@ -1,12 +1,11 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: [SECURITY] Local Netfilter / IPTables IP Queue PID Wrap Flaw
-Date: Wed, 4 Dec 2002 11:28:33 +0100 (CET)
+From: "fxian_2003" <fxian_2003@mails1.hust.edu.cn>
+Subject: about the number of dropped packets
+Date: Wed, 4 Dec 2002 5:11:7 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0212041127550.1841-100000@dns.toxicfilms.tv>
-References: <20021203202116.58e6d00a.arnt@c2i.net>
+Message-ID: <7755EEDC8FE.AAA57E1@mails1.hust.edu.cn>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021203202116.58e6d00a.arnt@c2i.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,16 +15,16 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-> ..url to a fix patch, anyone?
-http://marc.theaimsgroup.com/?l=linux-kernel&m=103884408631368&w=2
+Hi!netfilter lists:
+ 
+    do you know which iptables command can be used to get the number of dropped packets?
 
-Regards,
-Maciej Soltysiak
 
+Best regards
+Feng Xian
+            fxian_2003@mails1.hust.edu.cn
 
 
