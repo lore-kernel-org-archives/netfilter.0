@@ -1,38 +1,64 @@
-From: Chris Green <cmg@dok.org>
-Subject: ctnetlink in Linux 2.6?
-Date: Wed, 26 May 2004 17:29:18 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <m2ekp698sx.fsf@catbert.dok.org>
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: 64bit changes in cvs
+Date: Thu, 27 May 2004 00:12:01 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <1085609520.969.128.camel@tux.rsn.bth.se>
 Mime-Version: 1.0
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ZImnj1pBnC4KeWRy3CLt"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: Netfilter-devel <netfilter-devel@lists.netfilter.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Good day folks,
 
-I was looking in mailing list archives and found lots of references
-discussing a Netflow-esque stats out of the firewalling/nat
-tables via nfnetlink-ctnetlink..
+--=-ZImnj1pBnC4KeWRy3CLt
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-These patches don't apply on 2.6 and I was wondering if they had been
-superseded by something I've not seen a link to.  Did nfnetlink end
-up not being a good idea?  Did ulogd and ulogd-acctd fulfill the
-needs?
+Hi
 
-Cheers,
-Chris
--- 
-Chris Green <cmg@dok.org>
-Let not the sands of time get in your lunch.
+During the day I've committed some patches into the iptables tree to get
+things working better on 64bit kernels (with both 32bit and 64bit
+userspace).
+(only tested on sparc64 and compile-tested on alpha. x86_64 and ia64
+will most likely need more love in order to work correctly with 32bit
+userspace, more on that later)
 
+All matches and targets in the 2.6 kernel works fine on the sparc64
+kernel now. One thing to mention concerns the ULOG target, the iptables
+part of it works fine with both 32bit and 64bit userspace, but the ulogd
+daemon _must_ be 64bit compiled in order to recieve packets correctly
+from kernel, this is true for all 64bit kernels.
+
+I've reworked the part of the makefile that tries to detect if you are
+compiling a 32bit iptables against a 64bit kernel. I hope it works...
+
+To those of you who have 64bit machines, please test and report any
+problems (including x86_64 / ia64 if you are feeling brave but it will
+probably fail :)
+
+--=20
+/Martin
+
+--=-ZImnj1pBnC4KeWRy3CLt
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQBAtRYwWm2vlfa207ERAj0GAJ9Nt1Z1Nn00oXfGnHlrc0Mkf5YuqQCeJG6e
+4ulhpTbwjw8SkAsPCxidHek=
+=FHVX
+-----END PGP SIGNATURE-----
+
+--=-ZImnj1pBnC4KeWRy3CLt--
 
