@@ -1,15 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Port is open but I am unable to connect
-Date: Wed, 08 Sep 2004 07:35:04 -0400
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: linux-2.6.9-rc1 compilation and configuration issue (fwd)
+Date: Wed, 08 Sep 2004 09:10:25 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094643303.1903.3.camel@wolfpack.ljm.dom>
-References: <413E0B9E.8010708@list.idg.dk>
-	<1094588398.1890.54.camel@wolfpack.ljm.dom>
-	<413EA8E9.3090700@list.idg.dk>
+Message-ID: <413F12D1.3050108@pbl.ca>
+References: <200409072333.i87NXJZA012251@bassett.home.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <413EA8E9.3090700@list.idg.dk>
+In-Reply-To: <200409072333.i87NXJZA012251@bassett.home.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,37 +17,31 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-09-08 at 02:38, Jacob Friis Larsen wrote:
-> > i would content that while you believe your source IP is 1.2.3.4 in this
-> > scenario--it; in fact, is not.
+James B. Hiller wrote:
+> Hi!
 > 
-> I know.
-> 1.2.3.4 is just for the example :)
-> 
-> > try:
-> > 
-> >   iptables -A INPUT -j LOG --log-prefix "FW DROP INPUT: "
-> > 
-> > and see what the logs have to say about it.
-> 
-> This will log all incoming packets?
+> No takers?  Or have I put this in the wrong forum?  If I have, please
+> let me know where to go with it.
 
-setting the above as you last rule, in combination with setting the
-POLICY of the INPUT chain to DROP, will log all packets dropped by the
-INPUT chain.  similarly:
+Wish I could help you.  But I never seem to get past the point of even 
+applying the patches ;-)
 
-  iptables -A OUTPUT -j LOG --log-prefix "FW DROP OUTPUT: "
+Sure, those I don't need apply clean, those that I'm interested in like 
+tcp windows tracking always fail.
 
-will log all packets dropped by the OUTPUT chain; which in your case,
-should show you what Aleksandar already pointed out--you don't allow
-ESTABLISHED packets out through the OUTPUT chain.
-
--j
+BTW, why do we need to recompile entire kernel and iptables, just to get 
+one tiny miny module installed?  It kind of beats the hole idea of 
+modularity and loadable modules, isn't it?  (well, at least half of the 
+idea behind it, anyhow) Why can't we just compile two source files and 
+place resulting object files into appropriate directories 
+(kernel/iptables version independent)?  And not to have to worry about 
+recompiling them when new kernel release is out there.
 
 -- 
-Jason Opperisano <opie@817west.com>
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
