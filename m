@@ -1,14 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Kazaa Ports
-Date: Wed, 10 Sep 2003 14:34:10 -0400
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: FORWARD rules
+Date: Wed, 10 Sep 2003 14:44:30 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F5F6EA2.3030303@Loudoun-Fairfax.com>
-References: <NGBBLGFEALDADHNDAAFFIEPEDKAA.ksmith@perfht.com>
+Message-ID: <20030910184430.GB24654@cannon.eng.us.uu.net>
+References: <20030910175253.GA2752@linux.local>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------020901000903060503020206"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NGBBLGFEALDADHNDAAFFIEPEDKAA.ksmith@perfht.com>
+Content-Disposition: inline
+In-Reply-To: <20030910175253.GA2752@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,66 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: ksmith@perfht.com
-Cc: netfilter@lists.netfilter.org
-
-This is a multi-part message in MIME format.
---------------020901000903060503020206
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+On Wed, Sep 10, 2003 at 11:22:53PM +0530, Payal Rathod wrote:
 
+> Hi,
+> I had kept the default policy of FORWARD as drop.
+> Now, I wanted to see an internal machine from internet. So, I used
+> DNAT as,
+> 
+> iptables -A PREROUTING -t nat -d <ext ip> -j DNAT --to <int ip>
+> It didn't work. When I set the default FORWARD policy to ACCEPT it
+> worked.
+> 
+> What is a better approach? I want to have a default DROP in FORWARD
+> chain. My FORWARD chain looked like this,
 
-Kevin Smith wrote:
+Keep the default "DROP" policy and just open whatever is needed
+including the DNAT'ed packets coming in.
 
->I found this web site with a bit on info about Blocking p2p programs.:
->
->http://testweb.oofle.com/messaging/index.htm
->
->Hope it helps. 
->
->Kev
->  
->
-Thanks to everyone for their suggestions. I've got my resident Kazaa 
-experts (aka children) doing some research on this also. This may take a 
-few days, so stay tuned.
+The place of the ESTABLISHED,RELATED rule should be at the top of
+your rule set.
 
-Jeff
-
---------------020901000903060503020206
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body text="#000000" bgcolor="#ffffff">
-<br>
-<br>
-Kevin Smith wrote:<br>
-<blockquote type="cite"
- cite="midNGBBLGFEALDADHNDAAFFIEPEDKAA.ksmith@perfht.com">
-  <pre wrap="">I found this web site with a bit on info about Blocking p2p programs.:
-
-<a class="moz-txt-link-freetext" href="http://testweb.oofle.com/messaging/index.htm">http://testweb.oofle.com/messaging/index.htm</a>
-
-Hope it helps. 
-
-Kev
-  </pre>
-</blockquote>
-Thanks to everyone for their suggestions. I've got my resident Kazaa
-experts (aka children) doing some research on this also. This may take
-a few days, so stay tuned.<br>
-<br>
-Jeff<br>
-</body>
-</html>
-
---------------020901000903060503020206--
-
+Ramin
 
