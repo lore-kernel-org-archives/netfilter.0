@@ -1,14 +1,11 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: forwarding traffic from one port to another on the same box
-Date: Tue, 27 Jan 2004 21:49:53 -0800
+From: "Babar Kazmi" <BabarKazmi@Hotmail.Com>
+Subject: Re: virus warning
+Date: Wed, 28 Jan 2004 12:02:02 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401280549.i0S5nqmK030255@server5.bandwidthco.com>
-References: <bv779t$mo0$1@sea.gmane.org>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <000501c3e56c$acdb0790$6900a8c0@deamon>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <bv779t$mo0$1@sea.gmane.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +16,145 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Andrew' <andrew@arda.homeunix.net>, netfilter@lists.netfilter.org
+To: alexis@attla.net.ar, netfilter@lists.netfilter.org
 
- Andrew - your DNAT rule looks fine to me and it should work.  I really
-think your problem is the first rule, even though the error is apparently
-charged to the second rule.  I think what you need to do is change the first
-rule to -A to the INPUT chain and not the forward chain and it should work.
-The packet is not being forwarded, but is rather destined to the same NIC -
-so it should be the INPUT chain.  Try that and see if it does the trick.  If
-not, holler again cause there are many with greater expertise on this list
-than me. 
+Dear
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Andrew
-Sent: Tuesday, January 27, 2004 6:38 PM
-To: netfilter@lists.netfilter.org
-Subject: forwarding traffic from one port to another on the same box
+We all will know on 1st Feb as the trigger starts :)
+Any how lets the keep the fingers crossed and hold tight the input policy ..
 
-I would like to forward all tcp traffic arriving on a particular port to
-another port on the same machine. This has worked for me in the past but I
-can't get it working on my current machine.
+Regards
 
-Here are the two commands I'm using to try to create the forward.
+Babar Kazmi.
 
-iptables -I FORWARD -p tcp -d 192.168.10.34 --dport 26 -j ACCEPT
-
-iptables -t nat -A PREROUTING -p tcp -i eth0 -s 0/0 -d 192.168.10.34 --dport
-26 -j DNAT --to 192.168.10.34:25
-
-The first command is accepted but the second command results in an 'Invalid
-argument' error.
-
-The computer has only one interface, eth0. Here are its particulars:
-Mandrake Linux 9.2
-Iptables 1.2.8
-kernel 2.4.24 patched with super-freeswan 1.99.8
-
-The value of /proc/sys/net/ipv4/conf/eth0/forwarding is 0. Changing it to 1
-has no impact.
-The value of /proc/sys/net/ipv4/conf/eth0/rp_filter is 0.
-
-I hope someone out there has some ideas about what's going on because I'm
-all out.
-
-Andrew
-
-
+>
+>In this case, we are protected !!!!!
+>
+>We are all using a firewall with netfilter and input policy drop
+>
+>:))))
+>
+>
+>
+>----- Original Message ----- 
+>From: "Fritz Mesedilla"
+>To: "Netfilter Mailing List (E-mail)"
+>Sent: Tuesday, January 27, 2004 4:30 AM
+>Subject: RE: virus warning
+>
+>
+>
+>I forgot to send the details.
+>
+>
+>W32.Novarg.A@mm is a mass-mailing worm. The worm will arrive as an
+>attachment with a file extension of .bat, .cmd, .exe, .pif, .scr, or .zip.
+>
+>When the machine gets infected, the worm will set up a backdoor into the
+>system by opening TCP ports 3127 thru 3198. This will potentially allow a
+>hacker to connect to the machine and utilize it as a proxy to gain access
+to
+>it's network resources. In addition, the backdoor has the ability to
+>download and execute arbitrary files.
+>
+>The worm will perform a DoS starting on February 1, 2004. On February 12,
+>2004 the worm has a trigger date to stop spreading.
+>
+>
+>http://securityresponse.symantec.com/avcenter/venc/data/w32.novarg.a@mm.htm
+l
+>
+>
+>
+>Cheers,
+>
+>fritz
+>--- 
+>+ Basta Ikaw Lord
+>
+>
+>
+>
+>-----Original Message----- 
+>From:
+>Sent: Tuesday, January 27, 2004 2:45 PM
+>To: Netfilter Mailing List (E-mail)
+>Subject: Re: virus warning
+>
+>
+>
+>Obviously this is a really new one ... F-prot didn't catch it .. and mines
+>up to date ...
+>However ... since kmail and linux don't much like 7 bit mime ... *grin*
+>
+>I'm handing this one up to the folks at F-Prot to see why they didn't catch
+>it...
+>
+>
+>Alistair.
+>
+>On January 27, 2004 12:44 am, Fritz Mesedilla wrote:
+> > friends,
+> >
+> > we got a virus in our list.
+> > clamav warned me about it.
+> > it's now spreading like fire even on other lists.
+> >
+> > thought you might like to be warned.
+> >
+> >
+> > Cheers,
+> >
+> > fritz
+> > --- 
+> > + Basta Ikaw Lord
+> >
+> >
+> >
+> >
+> > ---------------------------------------------------------------------- 
+> > This email and any files transmitted with it are confidential and
+> > intended solely for the use of the individual or entity to whom they
+> > are addressed. If you have received this email in error please notify
+> > the sender immediately by e-mail and delete this e-mail from your
+> > system. Please note that any views or opinions presented in this
+> > email are solely those of the author and do not necessarily represent
+> > those of the company. Finally, the recipient should check this email
+> > and any attachments for the presence of viruses. The company accepts
+> > no liability for any damage caused by any virus transmitted by this
+> > email.
+> >
+> > Overture Media, Inc.
+> > Direct Line: (632) 635-4785
+> > Trunkline:   (632) 631-8971 Local 146
+> > Fax: (632) 637-2206
+> > Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave.,
+> > Quezon City 1100
+>
+>
+>---------------------------------------------------------------------- 
+>This email and any files transmitted with it are confidential and
+>intended solely for the use of the individual or entity to whom they
+>are addressed. If you have received this email in error please notify
+>the sender immediately by e-mail and delete this e-mail from your
+>system. Please note that any views or opinions presented in this
+>email are solely those of the author and do not necessarily represent
+>those of the company. Finally, the recipient should check this email
+>and any attachments for the presence of viruses. The company accepts
+>no liability for any damage caused by any virus transmitted by this
+>email.
+>
+>Overture Media, Inc.
+>Direct Line: (632) 635-4785
+>Trunkline:   (632) 631-8971 Local 146
+>Fax: (632) 637-2206
+>Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave.,
+>Quezon City 1100
+>
+>
+>
+>
+>
 
 
 
