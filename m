@@ -1,10 +1,14 @@
-From: "SB CH" <chulmin2@hotmail.com>
-Subject: about ip_conntrack_max?
-Date: Mon, 17 Mar 2003 08:31:20 +0000
+From: Luis Miguel Cruz Miranda <luismi@b2bi.es>
+Subject: Re[2]: iptables2.spec
+Date: Mon, 17 Mar 2003 09:47:29 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <F1672stY3Uyn3p6ALZW00002666@hotmail.com>
+Message-ID: <5.2.0.9.2.20030317094624.01f3ae98@172.26.0.8>
+References: <5.2.0.9.2.20030313110550.01f8d908@172.26.0.8>
+ <5.2.0.9.2.20030313110550.01f8d908@172.26.0.8>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <13092246473.20030313183850@tis.havelsan.com.tr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,24 +18,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"; format="flowed"
-Content-Transfer-Encoding: base64
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Ali Tekin <atekin@tis.havelsan.com.tr>
+Cc: Prasanta kumar Panda <prasanta.kumar@wipro.com>, netfilter@lists.netfilter.org
 
-SGVsbG8sYWxsLgoKSSB3b3VsZCBsaWtlIHRvIGtub3cgYWJvdXQgdGhlICJpcF9jb25udHJhY2tf
-bWF4Ii4KCgoxLiB3aGF0J3MgdGhlIHRpbWVvdXQgb2YgdGhlICJpcF9jb25udHJhY2siPwogIGlz
-IGl0IDIgbWludXRlPyAKICBzbyBpcF9jb25udHJhY2sgbWFpbnRhaW5zIHRoZSBzdGF0ZSBmb3Ig
-MiBtaW51dGVzIHBlciBjb25uZWN0aW9uPwoKCgoyLiBJbiBteSBzeXN0ZW0sIEkgc2V0IHRoZSBs
-YXJnZSBudW1iZXIgdGhpcyB2YXJpYWJsZSwgYnV0IEkgaGF2ZSBtZXQgc29tZSAKb2RkIHJlc3Vs
-dC4KCigxKSA1MTJNIHJhbSB0aGUgbWF4IG51bWJlciB3YXMgCm5ldC5pcHY0LmlwX2Nvbm50cmFj
-a19tYXggPSAxLDU2OSwzMjUsMDU2CgooMikgNzEyTSByYW0gdGhlIG1heCBudW1iZXIgd2FzIApu
-ZXQuaXB2NC5pcF9jb25udHJhY2tfbWF4ID0gMjc2LDQ0NywyMzIKClN1cmVseSAoMSkgYW5kICgy
-KSBpcyBkaWZmZXJlbnQgc3lzdGVtIGFuZCAoMSkgaXMgbGFyZ2VyIHRoYW4gKDIpLgooMikgaXMg
-YSBiaXQgYnVzeSBzeXN0ZW0uCgpXaGF0J3MgdGhlIHJlYXNvbj8KCgozLiB3aGVuIEkgc2V0IHRo
-ZSB2YXJpYWJsZSBzbyBoaWdoLCB0aGUgc3lzdGVtIGlzIHVuc3RhYmxlPwoKCgpUaGFua3MgaW4g
-YWR2YW5jZSBmb3IgeW91ciBraW5kIGFuc3dlci4KCgoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCrW1w7O/oSC1tbvnuK60
-wiDA58fYwMcgwKfH6LXpLiBBSUfAxyC5q7fhurjH6MC4t84gx9iw4cfPvLy/5C4gICAKaHR0cDov
-L3d3dy5tc24uY28ua3Ivd2ViaW5jbHVkZS9leHJlZGlyLmFzcD9TVEFSVElEPUNMSVBfNTY0NCZh
-ZGdyb3VwPUtSTUdFTiZVUkw9aHR0cDovL21zbi5haWdpcy5jby5rci93ZWVrbHlfbXNuL21haW4u
-YXNwIAogCgoK
+Hehehehe
+I use checkinstall since redhat 7.0 ;-)
+But I would to use iptables spec file before checkinstall, if it is possi=
+ble.
+
+At 18:38 13/03/2003 +0200, Ali Tekin wrote:
+>Hello Luis,
+>
+>maybe you can try checkinstall it is a great utility it makes rpms
+>when making a "make install"
+>
+>address: http://asic-linux.com.mx/~izto/checkinstall/
+>
+>
+>Regards
+>
+>@li
+
+Luis Miguel Cruz Miranda.               |       B2B INTEGRAL, S.A.
+CCNA - Systems Administrator            |       Pol. Ind. de Asipo
+                                         |       C/A - Parcela 86-C
+Tel: +34 902 506 605                    |       33.428 - CAYES - LLANERA
+Fax:+34 985 980 794                     |       ASTURIAS (ESPA=D1A/SPAIN)
+
+
+
