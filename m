@@ -1,9 +1,10 @@
-From: Hideaki Nemoto <eme@bg8.so-net.ne.jp>
-Subject: can't delete with iptables
-Date: Sat, 07 Feb 2004 16:23:07 +0900
+From: "GoMi" <gomi@perezoso.net>
+Subject: Insmod errors
+Date: Sat, 7 Feb 2004 10:04:35 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402070721.i177LxJ09969@mail.bg8.so-net.ne.jp>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAl2aSIfQ5yUKq3VxIaUj/RwEAAAAA@perezoso.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,63 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi there, every time i try to insmod a module i get these errors:
 
-I can't delete the rule by iptables, that I inserted
-with my program using libiptc.
+insmod ipt_mport
+Using /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ipt_mport.o
+/lib/modules/2.4.20/kernel/net/ipv4/netfilter/ipt_mport.o: init_module:
+Invalid argument
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
 
-I've managed to insert, replace, and delete the rulesfrom my program.
-But I can't delete that rule by iptables, or the ip6tables.
+insmod ipt_mport
+Using /lib/modules/2.4.20/kernel/net/ipv4/netfilter/ipt_mport.o
+/lib/modules/2.4.20/kernel/net/ipv4/netfilter/ipt_mport.o: init_module:
+Invalid argument
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
 
-It tells me,
+And so on with many modules. I get no log errors at all, anyone has a
+hint on what to do?
 
- "Bad rule (does a matching rule exist in that chain?)"
 
-Could any one give me some clues to solve this problem?
-
-I'll show the structure of my ipt_entry at the bottom.
-Is there something wrong with this?Anything missing?
-I've seen in a web site, that I need to build something about
-matching if I wanted to delete the rule, but ipt_delete_num_entry
-doesn't require that....
-
-I'd really be happy for your help.
-
-Thanks in advance.
-
-   +---------------------+
-   |______ipt_entry______|
-   |                     |
-   | next_offset---------|--->to the next rule(end of the struct)
-   |                     |
- +-|-target_offset       |
- | |              elems--|-->+----------------------+
- | +---------------------+   |_ipt_standard_target__|
- |                           |                      |
- |                           |  ipt_entry_target    |
- |                           |                      |
- |                           |  name=udp            |
- |                           |                      |
- |                           |                      |
- |      +---------------+ <--|--data                |
- |      |___ipt_udp_____|    +----------------------+ 
- |      |               |
- |      |               |
- |      |_______________|
- |
- |
- +->+---------------------+
-    |_ipt_standard_target_|
-    |  ipt_entry_target   |
-    |                     |
-    |                     |
-    | name=ACCEPT         |
-    +---------------------+
- 
-
--- 
-Hideaki Nemoto mailto:eme@bg8.so-net.ne.jp
 
