@@ -1,11 +1,10 @@
-From: "h.j.w" <tsilliam@hotmail.com>
-Subject: mac header in NF_IP_PRE_ROUTING
-Date: Tue, 21 Oct 2003 18:21:39 +0800
+From: _morpheus@softhome.net
+Subject: Hi.......
+Date: Sat, 18 Oct 2003 20:15:48 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law9-OE40t9zpYwcUwT000057db@hotmail.com>
+Message-ID: <courier.3F91F3D4.000035F6@softhome.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000B_01C39800.2B9801B0"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,73 +15,13 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; format="flowed"; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+I need help to make work the msn (voice & video) in a LAN behind a firewall=
+=20
+using IPTABLES and doing NAT.....I=B4m on a cybercoffe.
+tanks for the help=20
 
-------=_NextPart_000_000B_01C39800.2B9801B0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-
-SGkhDQoNCkkgcmVnaXN0ZXIgYSBob29rIHdpdGggaG9va251bSBORl9JUF9QUkVfUk9VVElORywg
-YW5kIGluIHRoZSBob29rIGZ1bmN0aW9uIA0KSSBmaW5kIG91dCAoKnNrYiktPm1hYy5ldGhlcm5l
-dCBpcyBlcXVhbCB0byAoKnNrYiktPm5oLmlwaC4gDQoNCklzIGl0IGEgYnVnPw0KDQpNeSBPUyBp
-cyBSZWRoYXQgTGludXggOS4wLCB3aXRoIGtlcm5lbCB2ZXJzaW9uIDIuNC4yMC04Lg0KDQpCZWxv
-dyBpcyBzb21lIHBpZWNlIG9mIG15IGNvZGU6DQoNCnN0YXRpYyB1bnNpZ25lZCBpbnQgbXlfbmZf
-aG9va19pbnB1dCh1bnNpZ25lZCBpbnQgaG9va251bSwgDQogc3RydWN0IHNrX2J1ZmYgKiogc2ti
-LCBjb25zdCBzdHJ1Y3QgbmV0X2RldmljZSAqIGluLCANCiBjb25zdCBzdHJ1Y3QgbmV0X2Rldmlj
-ZSAqIG91dCwgaW50ICgqIG9rZm4pKHN0cnVjdCBza19idWZmICopKQ0KeyANCiAgICAgc3RydWN0
-IGlwaGRyICogaXAgPSAoKnNrYiktPm5oLmlwaDsNCiAgICAgc3RydWN0IGV0aGhkciAqIG1hYyA9
-ICgqc2tiKS0+bWFjLmV0aGVybmV0Ow0KICAgIC8qIGZpeCBtZTogPyAqLw0KICAgIGlmKCh2b2lk
-ICopbWFjID09ICh2b2lkKilpcCkNCiAgICB7DQogICAgICAgIHByaW50ayhLRVJOX0lORk8gIkEg
-YnVnPz8/XG4iKTsNCiAgICAgICAgbWFjID0gKHN0cnVjdCBldGhoZHIgKikoKGNoYXIgKilpcCAt
-IHNpemVvZihzdHJ1Y3QgZXRoaGRyKSk7DQogICAgfQ0KDQogICAgLi4uDQogICAgIA0KDQp9DQoN
-ClJlZ2FyZHMh
-
-------=_NextPart_000_000B_01C39800.2B9801B0
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
-MC4yODAwLjEyNjQiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
-Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5IaSE8L0ZPTlQ+PC9ESVY+
-DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9
-Mj5JIHJlZ2lzdGVyIGEgaG9vayB3aXRoIGhvb2tudW0gTkZfSVBfUFJFX1JPVVRJTkcsIGFuZCBp
-biB0aGUgDQpob29rIGZ1bmN0aW9uIDwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPkkg
-ZmluZCBvdXQgKCpza2IpLSZndDttYWMuZXRoZXJuZXQgPC9GT05UPjxGT05UIHNpemU9Mj5pcyAN
-CmVxdWFsIHRvICgqc2tiKS0mZ3Q7bmguaXBoLiA8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNp
-emU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5JcyBpdCBhIGJ1Zz88
-L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElW
-PjxGT05UIHNpemU9Mj5NeSZuYnNwO09TIGlzIFJlZGhhdCBMaW51eCA5LjAsIHdpdGgga2VybmVs
-IHZlcnNpb24gDQoyLjQuMjAtOC48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZP
-TlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5CZWxvdyBpcyBzb21lIHBpZWNlIG9m
-IG15IGNvZGU6PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwv
-RElWPg0KPERJVj48Rk9OVCBzaXplPTI+c3RhdGljIHVuc2lnbmVkIGludCBteV9uZl9ob29rX2lu
-cHV0KHVuc2lnbmVkIGludCBob29rbnVtLCANCjxCUj4mbmJzcDtzdHJ1Y3Qgc2tfYnVmZiAqKiBz
-a2IsIGNvbnN0IHN0cnVjdCBuZXRfZGV2aWNlICogaW4sIDxCUj4mbmJzcDtjb25zdCANCnN0cnVj
-dCBuZXRfZGV2aWNlICogb3V0LCBpbnQgKCogb2tmbikoc3RydWN0IHNrX2J1ZmYgKikpPEJSPnsg
-DQo8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IHN0cnVjdCBpcGhkciAqIGlwID0gDQooKnNr
-YiktJmd0O25oLmlwaDs8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7c3RydWN0IGV0
-aGhkciAqIG1hYyA9IA0KKCpza2IpLSZndDttYWMuZXRoZXJuZXQ7PC9GT05UPjwvRElWPg0KPERJ
-Vj48Rk9OVCBzaXplPTI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7LyogZml4IG1lOiA/ICovPC9G
-T05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IGlmKCh2b2lk
-ICopbWFjID09ICh2b2lkKilpcCk8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj4mbmJz
-cDsmbmJzcDsmbmJzcDsgezwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZu
-YnNwOyZuYnNwOyAmbmJzcDsmbmJzcDsmbmJzcDsgcHJpbnRrKEtFUk5fSU5GTyAiQSANCmJ1Zz8/
-P1xuIik7PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IG1hYyA9IChzdHJ1Y3QgDQpldGhoZHIgKikoKGNoYXIg
-KilpcCAtIHNpemVvZihzdHJ1Y3QgZXRoaGRyKSk7PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBz
-aXplPTI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQg
-c2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZuYnNw
-OyZuYnNwOyAuLi48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj4mbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDs8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+
-Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj59PC9GT05UPjwvRElWPg0KPERJVj48Rk9O
-VCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+UmVnYXJkcyE8
-L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
-
-------=_NextPart_000_000B_01C39800.2B9801B0--
+Agustin
 
