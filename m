@@ -1,11 +1,10 @@
-From: "Klemen Kecman" <klemen@sting.si>
-Subject: Fw: ICMP Rule Problem
-Date: Tue, 3 Feb 2004 09:02:32 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ICMP Rule Problem
+Date: Tue, 3 Feb 2004 09:17:34 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006c01c3ea2c$146686f0$6a02a8c0@klemen>
-Reply-To: "Klemen Kecman" <klemen@sting.si>
+Message-ID: <200402030917.34126.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,50 +16,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+On Monday 02 February 2004 5:02 pm, David C. Hart wrote:
 
------ Original Message ----- 
-From: "Klemen Kecman" <klemen@sting.si>
-To: <markee@bandwidthco.com>
-Sent: Tuesday, February 03, 2004 9:01 AM
-Subject: Re: ICMP Rule Problem
+> Should this not reject echo requests?
+>
+> -A INPUT -p icmp -m icmp --icmp-type 0 -j REJECT --reject-with
+> icmp-net-prohibited
+>
+> It doesn't seem to work.
 
+Never mind that, you're not allowed to respond to ICMP packets with ICMP
+errors.
 
-> Not allowing ICMP type 8 goes in to INPUT chain
-> Not allowing ICMP type 0 goes in to the OUTPUT chain
-> 
-> First is sane .. but second is kinda not good .. unless it has specific
-> purpose.
-> 
-> ----- Original Message -----
-> From: "Mark E. Donaldson" <markee@bandwidthco.com>
-> To: "'David C. Hart'" <dch@TQMcube.com>; "'Iptables Mailing List'"
-> <netfilter@lists.netfilter.org>
-> Sent: Tuesday, February 03, 2004 7:36 AM
-> Subject: RE: ICMP Rule Problem
-> 
-> 
-> > ICMP Type 0 is an echo reply.  Request (ping) is Type 8.
-> >
-> > -----Original Message-----
-> > From: David C. Hart [mailto:dch@TQMcube.com]
-> > Sent: Monday, February 02, 2004 9:03 AM
-> > To: Iptables Mailing List
-> > Subject: ICMP Rule Problem
-> >
-> > Should this not reject echo requests?
-> >
-> > -A INPUT -p icmp -m icmp --icmp-type 0 -j REJECT --reject-with
-> > icmp-net-prohibited
-> >
-> > It doesn't seem to work.
-> >
-> >                                ---------
-> >             Quality Management - A Commitment to Excellence
-> >
-> >
-> >
-> 
+See RFC792 page 1.
+
+Regards,
+
+Antony.
+
+--
+Abandon hope, all ye who enter here.
+You'll feel much better about things once you do.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
