@@ -1,13 +1,12 @@
-From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: More H.323 questions
-Date: Thu, 4 Sep 2003 12:26:28 -0400
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: filter on ethernet alias
+Date: Thu, 4 Sep 2003 09:25:28 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030904162628.GC31513@cannon.eng.us.uu.net>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A019314@wardrive.citadelcomputer.com.au>
+Message-ID: <20030904162528.96264.qmail@web40204.mail.yahoo.com>
+References: <20030904152250.GA25689@mtholyoke.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A019314@wardrive.citadelcomputer.com.au>
+In-Reply-To: <20030904152250.GA25689@mtholyoke.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +18,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: George Vieira <georgev@citadelcomputer.com.au>
-Cc: netfilter@lists.netfilter.org
+To: Ron Peterson <rpeterso@mtholyoke.edu>, Netfilter Discussion <netfilter@lists.netfilter.org>
 
-Way to go, George. If someone could FAQ this...
 
-On Thu, Sep 04, 2003 at 11:50:55AM +1000, George Vieira wrote:
+--- Ron Peterson <rpeterso@mtholyoke.edu> wrote:
+> I've found several threads on the topic in the list archives, but the
+> solutions presented don't quite match my situation.
+> 
+> Putting the aliases issue aside for the moment, here's the application.
+> I configure dhcp to set a linux box's ip address to be the default
+> gateway for certain hosts.  Then I use iptables rules to DNAT traffic
+> destined for ports 80/443 to to a box (could be same box) running apache
+> on say ports 8080/8443.  Apache simply redirects traffic to these ports
+> to a particular URL.  So for example, unregistered computers get
+> directed to a web page that says they have to register their computer
+> before they'll get off-campus Internet access.
+> 
+> Now I'd like to direct certain people to one page, and others to a
+> different page (e.g. their machine has been identified as being hacked,
+> so they get directed to a page telling them what to do).
+> 
+> So I was thinking I could do this by aliasing multiple IP's to a single
+> interface, and filter based on the virtual interface.  Can't do this, I
+> guess.  Neither can I filter on destination IP, because the box is a
+> gateway, not a destination.  Is there any way to filter a packet based
+> on which gateway ip address it was sent to, if both addresses are
+> assigned to the same interface?
+> 
 
-> Ramin, chill out. It was off the top of my head and I remembered there were 2 modules that needed loading.
-> The user only needs to check his docs for this and confirm he has 2 modules loaded if they were compiled as modules.
+I could be really wrong here but to use virtual IPs or what not the device
+takes on another name right? like eth0.1 or something like that does it not?
+You should be able to specify which incoming device to filter from. I have
+heard that it does not matter if its like eth0.1. As long as its a valid device
+name it can be used by iptables.
+
+Hope I understood you right and this helps
+
+SBlaze
+> -- 
+> Ron Peterson                          -o)
+> Network & Systems Manager             /\\
+> Mount Holyoke College                _\_v
+> http://www.mtholyoke.edu/~rpeterso   ---- 
 > 
-> I've answered this exactly the same way once before and even then a user replied to me personally and said "I only had one loaded" whether or not the spelling of the module name was correct or not.. the point was more that there needs to be 2 modules for it to work..
-> 
-> Hence, I've connected home to my H323 machine just to confirm my finding and I was right...
-> 
->         /sbin/insmod ip_conntrack_h323 >/dev/null 2>&1
->         /sbin/insmod ip_nat_h323 >/dev/null 2>&1
-> 
-> And for the archives, I've added my rules.. Now lets see how many vague questions we're going to get asking the exact same problem/request to get working...
-> 
->        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 389    -j DNAT --to 192.168.1.1        # H323
->        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 522    -j DNAT --to 192.168.1.1        # H323
->        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1503   -j DNAT --to 192.168.1.1        # H323
->        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1720   -j DNAT --to 192.168.1.1        # H323
->        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1731   -j DNAT --to 192.168.1.1        # H323
->        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 8080   -j DNAT --to 192.168.1.1        # H323
->        $IPTABLES -t nat -A PREROUTING -i $EXTDEV -p tcp --dport 1469   -j DNAT --to 192.168.1.1        # H323audio?
+
+
+=====
+"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
