@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Apps that try to do net-to-nat
-Date: Fri, 30 Jan 2004 20:53:13 +0000
+From: jo@neolabs.be
+Subject: Re: ssh gets cut off
+Date: Fri, 30 Jan 2004 21:55:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401302053.13354.Antony@Soft-Solutions.co.uk>
-References: <Sea2-F35RQt5fZPNZYM00007124@hotmail.com> <1075495257.20475.2.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <200401302055.i0UKtMu17779@neo1.neolabs.be>
+Reply-To: jo@neolabs.be
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: binary
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1075495257.20475.2.camel@jasiiitosh.nexusmgmt.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +18,90 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: jo@neolabs.be
+Cc: netfilter@lists.netfilter.org
 
-On Friday 30 January 2004 8:40 pm, John A. Sullivan III wrote:
+Hi,
 
-> On Fri, 2004-01-30 at 15:11, Jago Pearce wrote:
-> > I'm behind NAT at work and I need to connect to home, which is also
-> > behind NAT.
-> >
-> > What programs have tried to get past the NAT problem? I heard that mnet,
-> > the p2p program uses a ticketing system to pass messages. Any other
-> > programs that have attempted to do nat-to-nat and done so successfully?
-> > In particular - VoIP?
->
-> <snip>
-> I'm used to the VPN world so for me the obvious choice is to set up a
-> VPN tunnel between home and office.  Hopefully it's not a major concern
-> but an added benefit is that your VoIP is encrypted and not subject to
-> useful interception.  OpenS/WAN (http://www.openswan.org) should work
-> nicely if your are running Linux on your gateway.
+I found some new info...
 
-But, as a discussion on this list pointed out about a week ago, you can't do 
-that if neither of the endpoints which you wish to communicate have publicly 
-routable addresses.
+short description of problem : replaced SNAT-ing ipfilter (solaris) by an 
+SNAT-ing netfilter (linux) three days ago and since then people are
+complaining that ssh-session that are left alone for a while tend to die. 
+MUST be a difference between ipfilter and netfilter.
 
-I think to specify Jago's requirement slightly more explicitly, he has a 
-machine at home, which is SNATted out to the Internet (and therefore cannot 
-receive connections in from the Internet), and he has a machine at work which 
-is in the same situation - it is SNATted behind a firewall so that the 
-machine can connect to the Internet, but the Internet cannot connect to the 
-machine.
+NEW : ipfilter seems to be able to keep sessions alive. I have found some 
+info in a mailing list stating that keepalive must even best be off (!)
+on the ssh server so that ipf apparently can keep the ssh-connecions open 
+itself.
 
-Therefore the requirement here is to break the security policy of both his 
-employer and his home ISP by linking together two machines which have been 
-assigned non-routable addresses.
+Is it possible that netfilter does not/cannot do this? Can you tune
+netfilter so that it keeps ssh sessions open? Am I correct in assuming
+that ipfilter does this automatically?
 
-Regards,
+Thanks
 
-Antony.
+Jo 
 
--- 
-This email was created using 100% recycled electrons.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+
+
+
+
+
+
+On Fri, 30 Jan 2004 19:32:32 +0200 jo@neolabs.be wrote:
+
+> Hi, does anyone recognize the following problem :
+> 
+> people here lose their ssh connections to a remote server over the
+> internet if they leave their ssh open but inactive for like 30 minutes.
+> This has happened since I replaced our gateway firewall ipfilter
+> (solaris) by a netfilter(linux) exactly two days ago. So I am pretty sure 
+> it must be some setting in netfilter.
+> 
+> I have become so desperate that I have cleared out the whole filter
+> table, leaving only the SNAT in the nat table and some kernel tunings,
+> but the problem persists. So it cannot be the --syn thing.
+> 
+> The default timeouts make no sense either, I see correct values in
+> /proc/net/ip_conntrack...
+> 
+> /usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c :
+> 
+> static unsigned long tcp_timeouts[]
+> = { 30 MINS,    /*      TCP_CONNTRACK_NONE,     */
+>     5 DAYS,     /*      TCP_CONNTRACK_ESTABLISHED,      */
+>     2 MINS,     /*      TCP_CONNTRACK_SYN_SENT, */
+>     60 SECS,    /*      TCP_CONNTRACK_SYN_RECV, */
+>     2 MINS,     /*      TCP_CONNTRACK_FIN_WAIT, */
+>     2 MINS,     /*      TCP_CONNTRACK_TIME_WAIT,        */
+>     10 SECS,    /*      TCP_CONNTRACK_CLOSE,    */
+>     60 SECS,    /*      TCP_CONNTRACK_CLOSE_WAIT,       */
+>     30 SECS,    /*      TCP_CONNTRACK_LAST_ACK, */
+>     2 MINS,     /*      TCP_CONNTRACK_LISTEN,   */ 
+> 
+> The only time frame that comes close to the drop out time reported
+> by the users is the NONE (???), since they are cut off appr. after
+> 30 minutes of inactivity.
+> 
+> The only 'special' thing is that I SNAT two different internal networks
+> (10.xx.xx.xx and 172.17.xx.xx - on two internal nic's off
+> course) to a fixed external ip with the following rule :
+> 
+> iptables -t nat -A POSTROUTING -o $EXTIF -j SNAT --to $EXTIP
+> 
+> Any ideas? Must have already happened ;-)
+> 
+> Thanks for any ideas or hints on how I can trace this. By the way I am
+> running the Red Hat 9 kernel without any updates.
+> 
+> Jo
+> 
+> 
+> 
+> NEOlabs - http://www.neolabs.be - mailto:info@neolabs.be
+
+NEOlabs - http://www.neolabs.be - mailto:info@neolabs.be
 
