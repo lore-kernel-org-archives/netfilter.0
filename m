@@ -1,11 +1,15 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: track bandwith used
-Date: Wed, 30 Jun 2004 10:07:13 -0300
+From: Karl Lattimer <karl@kms-lan.co.uk>
+Subject: Re: Kernel 2.6.5 - iptables 1.2.9 problems
+Date: Wed, 30 Jun 2004 14:26:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00e501c45ea3$28e2d110$49caa8c0@caris.priv>
+Message-ID: <1088602005.667.11.camel@despair.kent-music.com>
+References: <1088179390.2701.14.camel@despair.kent-music.com>
+	 <40DC4F0E.5040609@kanux.com>
+	 <1088590006.667.7.camel@despair.kent-music.com>  <40E2ADE8.4020401@mayn.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40E2ADE8.4020401@mayn.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,16 +20,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: Ruprecht Helms <rhelms@mayn.de>
+Cc: netfilter@lists.netfilter.org
 
-Hi again,
+my rule set was attached to my last email.
 
-I was also wondering if anyone knows a way to track bandwith being used
-through the firewall .......
-I use squid as a proxy behind the firewall if that helps at all ...
+firewall.debug.sh
 
-Thank you again,
-Peter
 
+On Wed, 2004-06-30 at 13:11, Ruprecht Helms wrote:
+> Karl Lattimer wrote:
+> 
+> >Hi IP-Tables isn't outputting any error messages at all. Heres my
+> >script. Or there abouts.
+> >
+> >The problems i am getting are the port forwards for 4662 and 4672 arn't
+> >working correctly. I'm getting port forwards adding themselves in for
+> >ports 5800,5900,3372,6502,1025,1026,42 and 366. 
+> >
+> please be so kind and post your ruleset into the list. So it`s better to 
+> say what you have to change.
+> 
+> Regards,
+> Ruprecht
 
 
