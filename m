@@ -1,12 +1,13 @@
-From: <bmcdowell@coxhealthplans.com>
-Subject: RE: netfiltering and ethernet bridging doesn't appear to work as advertised, help!
-Date: Wed, 21 Jan 2004 08:55:15 -0600
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: pptp problem
+Date: Wed, 21 Jan 2004 08:07:07 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D731014BE786@coxhpexg.coxhp.com>
+Message-ID: <20040121130707.GI8642@obroa-skai.de.gnumonks.org>
+References: <HKEHIDPBOOKOHFABIPNIOEKHCAAA.piotr@3id.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <HKEHIDPBOOKOHFABIPNIOEKHCAAA.piotr@3id.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,45 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; x-action="pgp-signed"
+Content-Transfer-Encoding: 7bit
+To: Piotr Klose <piotr@3id.pl>
+Cc: netfilter@lists.netfilter.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I can attest that it does work.  Hang in there.
+On Tue, Jan 20, 2004 at 10:20:51AM +0100, Piotr Klose wrote:
+> Hi,
+> I'm trying to make a pptp connection from my LAN to a outside standing pptp
+> server.
 
-As for patching, it is my understanding that the statement about 'newer
-kernels' is only half right.  You do not need to patch your kernel to
-add bridging functionality (just enable it in the menu).  You DO need to
-patch it if you want to use netfilter to filter said bridge traffic.  I
-use this patch:
-http://bridge.sourceforge.net/devel/bridge-nf/bridge-nf-0.0.7-against-2.
-4.19.diff
+Let me give you another example: I'm trying to find orange juice.  
 
-With only that patch, I have successfully enabled bridges netfilter
-under both RedHat 7.3 and 9.
+One might wonder:
+In which supermarket?  In which city?  In what year?
 
-To clarify a tad on the chains, INPUT and OUTPUT refer to traffic for
-and from the firewall itself.  FORWARD refers to traffic crossing the
-firewall.  These are two separate things and the rules do not effect
-chains they aren't applied to.  For example, your rule...
+want to say:  Any question / bug report / ... is totally useless if it
+is not accompanied by a very detailed report on
+- - which kernel version
+- - which patches (from which version of patch-o-matic)
+- - what ruleset (only rules related to the issue are important)
+- - which loaded modules
+- - any other information that might be necessarry.
+- - a detailed description.  "trying to connect but doesn't work" does not
+  count as detailed.
 
-	iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--v
+Also, please Cc' the netfilter@lists.netfilter.org mailinglist, in case
+somebody else has already found an answer to your problem.
 
-...needs a FORWARD counterpart (if you also want that behavior on
-traffic crossing the firewall):
+> I get this message in syslog: kernel: ip_conntrack_pptp.c: bad csum
 
-	iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j
-ACCEPT -v
+this is not an error message, but rather a warning message.  Let me
+guess, you have a w2k PPTP client?  This has a known bug to send packets
+with bad checksums. This is definitely not the cause of any problem.
 
-Also your policy on FORWARD is accept.  Your post didn't show any
-FORWARD drop rules, so if traffic is passing right through the firewall
-with these rules, well, it's working correctly.  On the other hand, if
-you switch them all to FORWARD then there is no filtering on traffic to
-the firewall.
+> BR
+> ---
+> Piotr Klose
 
-Hope that helps.
+P.S.: Please don't take this too personally.  I just receive way too
+many emails like this, and this is now a rant about all of them, hoping
+that people on the list will pick it up.
 
+- -- 
+- - Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
+============================================================================
+Programming is like sex: One mistake and you have to support it your lifetime
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-Bob
+iD8DBQFADnl6XaXGVTD0i/8RAizTAKCN+4SRANEDYBg0JIWthGZ+ahWcIACfY6IG
+GnF8Yq3jRZ1hvsDsjv8vjw8=
+=jct4
+-----END PGP SIGNATURE-----
 
