@@ -1,10 +1,12 @@
-From: "Allshouse, Brian M (Sabre)" <AllshouseBM@navair.navy.mil>
-Subject: Kernel panic In interupt handler - not syncing
-Date: Mon, 31 Mar 2003 15:51:34 -0500
+From: "Bret Holbrook" <bholbrook@michiganfamilyresources.org>
+Subject: Iptables:  Bad policy name
+Date: Mon, 31 Mar 2003 16:13:23 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7160403BF562D211A1C70000F809810B05286F4A@nems09.nawcad.navy.mil>
+Message-ID: <se886948.098@michiganfamilyresources.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,21 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: "'netfilter@lists.netfilter.org'", netfilter@lists.netfilter.org, , 
 
-I'm having problems with kernel panics. I set up my firewall with the latest
-and greatest version of iptables and the latest stable kernel. I'm runing
-slackware 8.1, and ever since I put it on the network for testing I get
-kernel panics that crash the machine I tried the previous kernel version
-(2.4.18) and also tried the latest patches for Iptables. I wanted to see if
-anyone has faced this problem. Maybe tell me if it's my rules or a bug I
-don't know about. I can post my rules if anyone has some ideas. I'm fairly
-new to this so if faulty rules can cause this kind of behavior than I'm open
-to suggestions. Any help would be appreciated, like I said I can post my
-rules or give more details if someone has some ideas. Thanks.
+Hi all,
 
+Having a small problem with the error message in the subject.  I'm
+running Slackware 9.0, Iptables 1.2.7a, rc.firewall-2.4-stronger version
+.77s.  Basically it gives me the above error on each of the following
+commands trying to set up my default policy:
 
-Brian Allshouse
-allshousebm@navair.navy.mil
+iptables -P INPUT REJECT
+iptables -P OUTPUT REJECT
+iptables -P FORWARD REJECT
+
+Same error wether I punch it in from the command line or it runs in the
+script.  Alternately, the same commands with ACCEPT instead of REJECT
+works fine.  I've used these very same fw rules on various other
+machines with different versions of Linux and they have worked just
+fine.  This is the first time I've used slackware 9 and the newest
+iptables though.  Is there something I'm missing here?  Thanks for the
+help!
+
+Bret
 
