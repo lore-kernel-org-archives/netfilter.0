@@ -1,12 +1,12 @@
-From: =?us-ascii?Q?Account_fur_Maillinglisten?= <mailinglists@dmsb.de>
-Subject: AW: a NAT question
-Date: Thu, 15 Jul 2004 13:26:42 +0200
+From: "tanuki" <phake@sadomain.co.za>
+Subject: Re: Wierd problem with irqs
+Date: Wed, 14 Jul 2004 08:21:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A89E0296B649C4AAFD251222B1492906C4FD8@dmsbsrv1.intranet.dmsb.de>
+Message-ID: <001301c4696a$ca300110$3b7819c4@PHAKE>
+References: <017901c468e1$2c7aeb80$3b7819c4@PHAKE> <3063e5040713205720cd6fbf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +17,249 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Payal Rathod <payalrathod@gmail.com>, netfilter <netfilter@lists.netfilter.org>
+To: George Alexandru Dragoi <waruiinu@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-> Hi,
-> We have been allocated 2 more IPs by our ISP for a period of 1 month
-> for our purpose. Now these 2 IPs will be assigned to 2 Windows
-> machines which are to be accessed from outside. We want port 21 or one
-> machine to be accessed from outside and port 80 and 9001, 25 of other
-> machine. Which is the best way to allow access to these machines from
-> outside still having them under my firewall? I thought of having ip
-> aliases on the Linux box and forwarding the connections to the
-> respective windows box.
-> Can someone explain an easy way for this?
-> With warm regards,
-> -Payal
+Hi 
 
-Hi Payal,
+thanx, didn't think of that . 
+i'll try it and see what happens. 
 
-you should go fort hat issue. Add virtual interfaces to your linuxbox,
-assign them the ip-addresses and create some forwarding-rules for your
-required ports=20
+still it is strange though
 
-# virtual alias on your interface. check man ifconfig and alter my=20
-# statements for your needs eq replace x.x.x.x with the correct values
-ifconfig eth0:1 x.x.x.x
-# This creates a duplicate interface of eth0 with a different ip-address
+tanuki
 
-# (x.x.x.x). To remove one, simply put it down with ifconfig eth0:1 down
 
-After that you've got an interface where you can bind your
-forwardingrules to.
+----- Original Message ----- 
+From: "George Alexandru Dragoi" <waruiinu@gmail.com>
+To: "tanuki" <phake@sadomain.co.za>
+Cc: <netfilter@lists.netfilter.org>
+Sent: Wednesday, July 14, 2004 5:57 AM
+Subject: Re: Wierd problem with irqs
 
-hth
--fe
+
+> I think it is hardware related(well, DOH), which is causing large
+> packets dropping. You could try sending ping of different packets
+> size, and see when they begin to get dropped
+> 
+> 
+> ----- Original Message -----
+> From: tanuki <phake@sadomain.co.za>
+> Date: Tue, 13 Jul 2004 15:56:19 +0200
+> Subject: Wierd problem with irqs
+> To: netfilter@lists.netfilter.org
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> Hi all
+> 
+>  
+> 
+>  
+> 
+> had an interresting problem the other day, just 
+> thought i'd share it with you all and see if 
+> 
+> any body else had a similar experience. 
+> 
+> 
+>  
+> 
+>  
+> 
+> I set up a small nat/firewall box for a client of 
+> ours. we had 5 interfaces and they were as follows 
+> 
+>  
+> 
+> eth0   192.168.10.1 netmask 
+> 255.255.255.255 pointopoint 192.168.10.2   <--- adsl modem 
+>  doing nat 
+> 
+> eth1   192.168.0.1 netmask 
+> 255.255.255.0 
+> 
+> eth2   192.168.1.1 netmask 
+> 255.255.255.0
+> 
+> eth3   192.168.2.1 netmask 
+> 255.255.255.0
+> 
+> eth4    192.168.3.1 netmask 
+> 255.255.255.255 pointopoint 192.168.3.2 <-- some upstairs router 
+> 
+> 
+>  
+> 
+> and the routing table looked like you would expect 
+> it to, with 
+> 
+>  
+> 
+> route add default gw 192.168.10.1 dev eth0 
+> 
+> 
+>  
+> 
+> also we had 
+> 
+>  
+> 
+> echo "1" > /proc/sys/net/ipv4/ip_forward 
+> 
+> 
+>  
+> 
+> for simplicity , iptables rules were as follows 
+> 
+> 
+>  
+> 
+> iptables -t nat --append POSTROUTING -o eth0 --jump 
+> MASQUERADE 
+> 
+>  
+> 
+> so, now all traffic using 192.168.0.1 , 1.1, 2.1 
+> and 3.1 as a gateway should be able to reach the 
+> 
+> internet via the modem on 192.168.10.2 , right ? 
+> 
+> 
+>  
+> 
+> well, all icmp worked, perfectly 
+> 
+>  
+> 
+> but everything else , ie , udp, tcp didn't 
+> 
+> 
+>  
+> 
+> say for example http : packets get sent to tcp 80, 
+> tcp replies get recieved, but no data gets back to 
+> 
+> the user on 192.168.whatever
+> 
+>  
+> 
+> strange huh ? 
+> 
+>  
+> 
+> so i thought my mtu was befuqed, so i do 
+> 
+> 
+>  
+> 
+> iptables --append FORWARD --proto tcp --tcp-flags 
+> SYN,RST SYN --jump TCPMSS --clamp-mss-to-pmtu 
+> 
+>  
+> 
+> no luck though. 
+> 
+>  
+> 
+> tried a plethora of other stuff too , but didn't 
+> work, so i'll leave that there 
+> 
+>  
+> 
+> obviously the nat works, becuase all my icmp's are 
+> natted. 
+> 
+> mmm
+> 
+>  
+> 
+> so i go into the boxes bios set up and tell it to 
+> assign irq's to all pci devices automatically 
+> 
+>  
+> 
+> boot up into linux and do 
+> 
+>  
+> 
+> ifconfig eth4 up 
+> 
+>  
+> 
+> eth4: error fetching interface information: Device 
+> not found
+> 
+> 
+> eh ? wtf ? so i do 
+> ifconfig eth0 up 
+> 
+>  
+> 
+> and the device gets brought up 
+> 
+>  
+> 
+> then i do ifconfig eth4 up 
+> 
+>  
+> 
+> and it brings it up . Strange huh ? 
+> 
+>  
+> 
+> so now i see that all my cards are swopped arround. 
+> that which used to be eth0 is now eth4 and so 
+> 
+> on and so on. 
+> 
+>  
+> 
+> anyway, plug in the appropiate network cables to 
+> the relevant nics and run the script 
+> 
+>  
+> 
+> to a ping to google.com ... everything works fine. 
+> 
+> 
+> right, so far so good. right back were i 
+> started
+> 
+>  
+> 
+> now, do a HTTP-GET http://www.google.com and guess what 
+> 
+> 
+> i get a lovely html page. 
+> 
+>  
+> 
+> strange that changing the device irg assignment in 
+> the bios solved my problem ? 
+> 
+>  
+> 
+> any ideas what could have caused this ? 
+> 
+> 
+>  
+> 
+> thanks a lot for bearing with my idiotic ramblings 
+> so far 
+> 
+>  
+> 
+> ----------------
+> 
+>  
+> 
+> tanuki
+> 
 
