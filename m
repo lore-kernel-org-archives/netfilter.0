@@ -1,13 +1,10 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: NetFilter DMZ question...
-Date: 25 May 2003 09:14:49 +0200
+From: Miguel Manso <mmanso@yahoo.com>
+Subject: disallow access from two internal networks
+Date: Sun, 25 May 2003 10:30:40 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053846889.1862.2.camel@kermit.spenneberg.de>
-References: <sece223b.030@nwtel.ca>
+Message-ID: <20030525173040.13037.qmail@web11506.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <sece223b.030@nwtel.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,49 +14,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Richard Whittaker <RWHITTAKER@nwtel.ca>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Am Fre, 2003-05-23 um 22.29 schrieb Richard Whittaker:
-> Greetings:
->=20
-> We have a webserver living in a DMZ, and I have the following rule
-> setup to allow this:
->=20
-> /usr/sbin/iptables -A PREROUTING -t nat -i eth1 -p tcp -d 199.85.228.1
-> --dport 80 -j DNAT --to 192.168.70.3:80
->=20
-> Unfortunately, the web server only sees the IP address of the
-> interface, not the source IP address, which kinda messes with our
-> statistical programs, since the only address the web server "sees" is
-> the same one over, and over... Is there any way to present the web
-> server with the "real" address, or should it be be already?....
-Apparently you have an unqualified SNAT rule lying around, since DNAT
-only changes the destination address. Look for your SNAT rules and tie
-them to the external interface:
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 199.85.228.1
+Hi there,
 
-Cheers,
+I've a linux router that's sharing an internet connection with four internal
+networks:
 
-Ralf
->=20
-> Thanks,
-> Richard...
->=20
->=20
-> Richard Whittaker, CISSP
-> System Manager
-> NorthwesTel Inc.
-> Whitehorse, YK
-> (867) 393-7756
->=20
---=20
-Ralf Spenneberg
-RHCE, RHCX
+192.168.1.0/24
+192.168.2.0/24
+192.168.3.0/24
+192.168.4.0/24
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                   =20
-http://honeynet.spenneberg.org
+I'd like to disallow each internal network to access the others.
+
+I've this devices on the router:
+
+ppp0 (external connection)
+eth0 (network 1)
+eth1 (network 2)
+eth2 (network 3)
+eth3 (network 4)
+
+I thought that with this:
+
+$IPT -A OUTPUT -o eth0 -s 192.168.2.0/24 -j DROP
+
+I could drop any connection comming from the eth0 device (network 1) to the
+network 192.168.2.0/24 (network 2).
+
+I've tryed it but it don't DROP the connection.
+
+What am I missing?
+
+Thanks.
+
+
+
+=====
+Miguel Manso
+mmanso@yahoo.com
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
