@@ -1,12 +1,14 @@
-From: "Dave McCrudden" <dmccrudden@bigpond.com>
-Subject: NAT performance using tlan driver
-Date: Wed, 2 Oct 2002 09:44:07 +1000
+From: "Mitesh P Choksi" <murli@icafe.co.tz>
+Subject: Re: [Fwd: SNAT to allocat IP from an IP Pool]
+Date: Mon, 30 Sep 2002 22:04:50 +0300 (EAT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E62DA5621A6FF646BAB7B7A469FEBAEB4454@fs03.lv0.custcare.com.au>
+Message-ID: <40391.64.86.49.17.1033412690.squirrel@www.icafe.co.tz>
+References: <200209301224.g8UCOLL03868@vulcan.rissington.net>
+Reply-To: murli@icafe.co.tz
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200209301224.g8UCOLL03868@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +19,93 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Antony@Soft-Solutions.co.uk
+Cc: netfilter@lists.netfilter.org
 
-Hi All,
+So, how does -SNAT --to 23.23.23.0-23.23.23.16 work.
 
-I know this is probably specifically related to the NIC, however I would =
-appreciate any advice.
+How does this work? I have now tried it but did not dare to go beyond a few
+seconds.
 
-I have had some trouble getting my Compaq Netelligent Dual 10/100TX PCI =
-card working well under Kernel version 2.4.19, Iptables version 1.2.7a =
-(no pom). I have tried compiling iptables and the driver as modules and =
-static. The machine is a Compaq Proliant 7000 with Dual P200 pro.
-=20
-The driver compiles, loads and appears to work fine. Performance is fine =
-if I connect to the Net directly via the external interface download =
-browse etc, I can also connect from another machine to the internal =
-interface and transfer via ssh,samba etc and speed is fine.  The problem =
-is the speed when masquerading connections using iptables, the highest =
-speed I have seen is 6kb/s and it slows down from there to almost 0. I =
-have tried forcing half/full duplex.
-=20
-I tested another Compaq card and the same thing happens.  However if I =
-use 2 NE2000 compatible cards the performance is fine, well above =
-500kb/s from the masq'd clients.. which makes me assume it is a tlan =
-driver problem.=20
+Does anybody have some documentation / pointers on how to use -SNAT and give
+a range of IP addresses? I will give it a try and see how does -SNAT handle
+the range of IP addresses.
 
-I have asked the tlan devel mail list, however I haven't seen an reply. =
-I would be interested to hear any suggestions or experiences from other =
-people.
+Antony Stone said:
+> On Monday 30 September 2002 1:05 pm, Mitesh P Choksi wrote:
+>
+>> On Mon, Sep 30, 2002 at 12:51:51PM +0100, Antony Stone wrote:
+>> > On Monday 30 September 2002 12:06 pm, Mitesh P Choksi wrote:
+>> > > Let me explain more to add clarifications here.
+>> > >
+>> > > 1. I have 16 public IP addresses
+>> > > 2. I have LAN with almost 200 private IP addresses
+>> > > 3. I need to give one-to-one relation to a private IP with a
+>> > > public IP at any given time, automatically. something like -SNAT
+>> > > --to
+>> > > 23.23.23.0/255.255.255.240
+>> > > 4. I need to make sure that all connections from on private IP map
+>> > > to one public IP, connection to public IP should be forwarded to
+>> > > the private IP NATted FOR THAT PARTICULAR TIME.
+>> > > 5. Once the set of connections are over then the public IP should
+>> > > be releived for some other private IP asking for the connections.
+>> > > 6. I could do one-to-one SNAT for all 254 IPs, but I don't have
+>> > > any more than 16.
+>> >
+>> > Okay, I think I understand now.
+>> >
+>> > What determines (a) when you need to create the public to private
+>> > association, (b) when you can release it ?
+>
+>> answers
+>> a. when a private IP asks for a connection to the outside world
+>> b. All connections from that private IP closes all the connections.
+>>
+>> Maybe SNAT does the job but i have not understood from documentation.
+>> I did not test since I don;t know the outcome and dont want to run it
+>> on live users
+>
+> The standard SNAT mechanism will share multiple internal users on a
+> single  public IP address, it will allow unrestricted access from the
+> client to the  Internet, but it will not allow any traffic initiated on
+> the Internet to  reach the client.   Therefore it does not sound as
+> though this will do what  you want.
+>
+> My only thought is that you may be able to log all new outbound
+> connections,  and all FIN/RST packets, and have some process watching
+> the log file, and  creating and destroying SNAT / DNAT rules on the fly
+> as needed - however this  would only work for TCP connections, not UDP.
+>
+> Alternatively you could have a process which continually reads the
+> connection  tracking table, and adds the SNAT / DNAT rules when a
+> connection appears (you  could look for the SYN SENT state for TCP -
+> again UDP would be more tricky),  keeps it for the duration of any
+> ESTABLISHED connections, and then removes it  again when the
+> ESTABLISHED state disappears from the table ?
+>
+> You should be aware that any automatic system could get blocked by
+> someone  setting up a TCP connection and then simply leaving it to time
+> out - because  that will take 5 days, and I don't think you want to
+> have one of your IP  addresses tied up but unused for that length of
+> time ?
+>
+> Antony.
+>
+> --
+>
+> All matter in the Universe can be placed into one of two categories:
+>
+> 1. things which need to be fixed
+> 2. things which will need to be fixed once you've had a few minutes to
+> play  with them
 
 
-Thanks
-Dave
 
-=20
-=20
+
+Regards,
+
+Cyberdude Murli
+The Earth
+
+
 
