@@ -1,14 +1,14 @@
 From: Fabrice MARIE <fabrice@celestix.com>
-Subject: Re: Current CVS version doesn't compile
-Date: Fri, 14 Jun 2002 12:12:32 +0800
+Subject: Re: sk_buff
+Date: Fri, 14 Jun 2002 12:14:41 +0800
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206141212.32617.fabrice@celestix.com>
-References: <002201c202cc$32e7ef40$f3c4b5cb@k768>
+Message-ID: <200206141214.41917.fabrice@celestix.com>
+References: <004601c20a3f$4df7d460$8e130b3e@luigicart>
 Reply-To: fabrice@celestix.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <002201c202cc$32e7ef40$f3c4b5cb@k768>
+In-Reply-To: <004601c20a3f$4df7d460$8e130b3e@luigicart>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,24 +19,16 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Takuya Satoh <taka0038@yahoo.com>, netfilter@lists.samba.org
+To: Luigi Cartuccia <luigigocart@tiscalinet.it>, netfilter@lists.samba.org
 
+On Sunday 02 June 2002 22:10, Luigi Cartuccia wrote:
+> Hi I'm Luigi.Where I can find material on sk_buff?
+> Thank you
 
 Hello,
 
-On Friday 24 May 2002 10:39, Takuya Satoh wrote:
-> iptables-1.2.6a-cvs020520:
-> cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/
-> -DNETFILTER_VERSIO N=\"1.2.7\"  -fPIC -o extensions/libipt_REJECT_sh.o -c
-> extensions/libipt_REJECT.c
-> extensions/libipt_REJECT.c: In function `init':
-> extensions/libipt_REJECT.c:92: structure has no member named
-> `fake_source_address'
-
-Seems like you didn't apply properly the extra/ipt_REJECT-fake-source.patch
-or maybe you have kernel-header package installed, the ipt_REJECT.h from kernel-header
-gets included rather than the /usr/src/linux/include/netfilter_ipv4/ipt_REJECT.h
-It works fine for me.
+Harald has written a document probably describing what you need :
+http://www.gnumonks.org/ftp/pub/doc/skb-doc.html
 
 Have a nice day,
 
