@@ -1,14 +1,13 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: iptables: exe
-Date: Sat, 21 Sep 2002 18:57:51 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Setting and Routing on the TOS Source (SRC) and Destination (DST) Bits
+Date: Sun, 22 Sep 2002 09:21:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPOEHBCPAA.stewart.thompson@shaw.ca>
-References: <20020922013651.76933.qmail@web20301.mail.yahoo.com>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <20020922082118.EQR13996.mta05-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0209202140330.2337-100000@laptop1.agatha> <20020921215923.PLBQ27185.mta03-svc.ntlworld.com@there> <0a9401c261c4$bc771400$c6b22543@repligate>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20020922013651.76933.qmail@web20301.mail.yahoo.com>
+In-Reply-To: <0a9401c261c4$bc771400$c6b22543@repligate>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,73 +18,47 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Tasha Smith <natasha3641@yahoo.com>, netfilter@lists.netfilter.org
-
-Hi Tasha:
-
-	That looks like it started ok. Your rule is in the
-Postrouting Chain as it should be. Have a look at
-http://www.linuxguruz.org/iptables/
-for some sample scripts that you can get some ideas.
-From. They have a number of different ones for different
- situations. There is also lots of good information at.
-http://www.netfilter.org/documentation/index.html
-Hope that helps.
-
-Stu.......
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Tasha Smith
-Sent: September 21, 2002 6:37 PM
 To: netfilter@lists.netfilter.org
-Subject: iptables: exe
 
-Alrightyyyy.. here is my script soooo  far:
-#!/bin/bash
+On Sunday 22 September 2002 12:15 am, Jim Fleming wrote:
 
-# Remove any existing rules from all chains.
-iptables --flush
-iptables -t nat --flush
+> IPv4 has a 0100 in the first four bits of the 160 bits that come screaming
+> at you down the wire... ...correct ?
 
-# Unlimited access on the loopback interface
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A OUPUT -o lo -j ACCPET
+Yes.   Otherwise you wouldn't know it's IPv4.
 
-# Set the fefault policy to Drop
-iptables --policy INPUT DROP
-iptables --policy FORWARD DROP
+> Have you ever set the 16 bits of the Identification Field ?....and used
+> those for Extended Addressing ?
 
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-######################################################'
-Here is my output for iptables -vL -t nat
+No, I haven't.   That would be using part of the IPv4 header in a manner 
+different from the standard specification, which is not what I was talking 
+about.   I was talking about which bits of the standard IPv4 header you can 
+use to make routing decisions.
 
-Chain PREROUTING (policy Accept 67 packets, 8497 bytes)
-pkts bytes target prt opt in out source destination
+It sounds to me as though you're talking about finding parts of the header 
+which you can get away with using for a different purpose than originally 
+intended, and then claim that they're routing bits.
 
-CHain POSTROUTING(policy ACCEPT 5 packets, 394 bytes)
-pkts bytes target prt opt in out source destination
-0 0 MASQUERADE all -- any eth0 anwywhere anwhere
+If that's the case then sure, feel free to do whatever you like at both ends 
+of a link, but don't expect compatibility with a standard IPv4 stack.
 
-Chain OUPUT (policy ACCEPT 5 packetts, 394bytes)
-pkts bytes target prt opt in out source destination
----------------------------------------------------------
-Soo does it look like they started ???
+On the other hand, if we're discussing which bits in a genuine IPv4 header it 
+makes sense to read and base routing decisions on, then I still say that 83 
+of them make sense, 28 are doubtful, and 49 are useless.
 
+Either way I think this thread has got sufficiently off-topic for netfilter 
+that we may as well end the discussion on the list.
 
-P.S.>By they way if anyone can gimme a few more rules for my box i could add
-i
-would really appreciate it just to make it a bit more secure beofore i plug
-it
-in ....  I have 2 INTERFACES and it is acting as FIREWALL/ROUTER
+By the way, I was not advocating IPv6 per se - I was simply commenting on the 
+confusion which would ensure if this thing called IPv8 became at all well 
+known in the time between IPv4, which we all use now, and IPv6, which we're 
+all supposed to be using sometime soon.
 
+Antony.
 
+-- 
 
-
-__________________________________________________
-Do you Yahoo!?
-New DSL Internet Access from SBC & Yahoo!
-http://sbc.yahoo.com
-
+Having been asked to provide a reference for this man,
+I can confidently state that you will be very lucky indeed
+if you can get him to work for you.
 
