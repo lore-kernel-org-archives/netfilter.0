@@ -1,10 +1,14 @@
-From: Linux Query <linux_query@yahoo.com>
-Subject: ipt_string
-Date: Mon, 20 Sep 2004 23:57:55 -0700 (PDT)
+From: Mohamed Eldesoky <eldesoky.lists@gmail.com>
+Subject: Re: hello to all
+Date: Tue, 21 Sep 2004 11:31:24 +0300
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040921065755.84270.qmail@web90008.mail.scd.yahoo.com>
+Message-ID: <1403218a040921013139e4f93e@mail.gmail.com>
+References: <a3f524e040920134844f7d174@mail.gmail.com>
+Reply-To: Mohamed Eldesoky <eldesoky.lists@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <a3f524e040920134844f7d174@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,24 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Kashif Ali Bukhari <kbukhari@gmail.com>
+Cc: netfilter@lists.netfilter.org
+
+Received
 
 
-Well, but I still want to try out ipt_string if only
-just for the experiece. I have never done things like
-patching or kernel recompilation so far. Can anybody
-please point me to some step by step guide for making
-ipt_string work in redhat 9 please ..
+On Tue, 21 Sep 2004 01:48:27 +0500, Kashif Ali Bukhari
+<kbukhari@gmail.com> wrote:
+> hello i am joining this list today :) and its just a test msg
+> 
+> --
+> Syed Kashif Ali
+> +923004295604
+> 11-B Toheed Park Gulshen-e-Ravi Lahore, Pakistan
+> 
+> 
 
 
-Regards,
-Jim.
 
-
-		
-_______________________________
-Do you Yahoo!?
-Declare Yourself - Register online to vote today!
-http://vote.yahoo.com
+-- 
+Mohamed Eldesoky
+www.eldesoky.net
+RHCE
 
