@@ -1,10 +1,12 @@
-From: Jeffrey C Albro <jalbro@bu.edu>
-Subject: Questions on DNAT and pre/postrouting...
-Date: Tue, 20 Jul 2004 17:02:35 -0400 (EDT)
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Subject: RE: ports 137 to 139
+Date: Wed, 21 Jul 2004 10:51:16 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0407201652340.20957-100000@signals10.bu.edu>
+Message-ID: <2E314DE03538984BA5634F12115B3A4E62E8E2@email1.mitretek.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,46 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Brent Clark <bclark@eccotours.biz>, iptables <netfilter@lists.netfilter.org>
+
+I do not see the need for it either, why would you (or he even suggest
+to) have it open?
 
 
-I'm trying to wrap my head around some iptables issues with a failover box
-I'm working on.  The failover box has an interface to the outside world, 
-and an interface to each server.  
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Brent Clark
+Sent: Wednesday, July 21, 2004 6:29 AM
+To: iptables
+Subject: ports 137 to 139
 
-I've read every FAQ and HOW-TO I can get my hands on.  I wish the archives 
-of this mailing list was searchable...
+Hi all
 
-Anyways, I have a few questions:
+Stupid question, must ports 137 to 139 (basically netbios)be open a drop
+default policy fw.
+One of my friends is suggesting that I must open it. I cant see the need
+for
+this.
 
-I understand how DNAT works in the prerouting change.  You change the
-destination and out the packet goes to the preferred server.  No problemo.  
-But when the packet comes back, the failover box appears to SNAT the
-packet.  I've seen this referred as un-DNATing.  It makes perfect sense
-that due to the client expecting packets back from the address it sent
-them to that this is required behavior, but can this be turned off or
-controlled?  I just found it odd that this happened with no iptables
-rules.
+Any advice would be appreciated
 
-What's up the the "no filtering" guideline for the PRE and POST routing 
-chains?  I'm doing it right now and it seems to work fine, but WHY is this 
-a problem, and how else would I do it?  It seems that it would result in a 
-longer ruleset if I had to do this in the FORWARD chain.  Is lightning 
-going to strike me down?
+Kind Regards
+Brent Clark
 
-Thanks!
+I have a adsl connection
 
--Jeff
-
-
------------------------------------------------------------
-Jeffrey Albro | Systems Administrator | Boston University
-   - Department of Electrical and Computer Engineering -
-jalbro@bu.edu |  Photonics, Room 305  | 617-358-2785
------------------------------------------------------------
-
+MSN: brentgclark@hotmail.com
+eMail: bclark@eccotours.biz
+Cell: +27 82 701 7827
+Work No: +27 21 683 0069
+Fax No: +27 21 683 6137
 
 
 
