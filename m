@@ -1,13 +1,12 @@
-From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
-Subject: Re: Virtual Hosts
-Date: Fri, 31 May 2002 08:11:16 -0400
+From: Arindam Haldar <arindamhaldar@inbox.lv>
+Subject: Re: PLs HELP !
+Date: Fri, 31 May 2002 18:29:19 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020531121116.GA5481@cannon.eng.us.uu.net>
-References: <3CF7298B.6010506@globit.com>
+Message-ID: <3CF773A7.7060907@inbox.lv>
+References: <XVQFCQNHBPO09ZUFD43212WRP2VYVJH.3cf6f883@ALEXEY>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <3CF7298B.6010506@globit.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,46 +16,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Uwe Eisner <Uwe.Eisner@globit.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: alexey_talikov@texlab.com.uz
 Cc: netfilter@lists.samba.org
 
-On Fri, May 31, 2002 at 09:43:07AM +0200, Uwe Eisner wrote:
+I havent seen it without traffic--i cant replace this running server at 
+the moment ! .. but i can tell u one thing--even at off peak hours the 
+server handles traffic of atleast 512kbps with a max of 2mbps which is 
+comming from the ISP !
 
-> Hi @ all,
+Alexey Talikov wrote:
+> This messages appear with traffic or not ??
 > 
-> I am starting set up a iptables based firewall (iptables v1.2.5) on a 
-> Suse Linux 8.0prof machine.
-> I created a virtual host an eth0, which is eth0:1.
+> 31.05.2002 9:14:31, Arindam Haldar <arindamhaldar@inbox.lv> wrote:
 > 
-> The situation is, that the firewall is a zebra OSPFD-Router (verson 
-> 0.92a), too. And the machine needs a public IP-Address at the internal 
+>>hi to u all again !
+>>i posted the below message yestreday... this log message keeps on commng 
+>>in the messages file EVERY 1min & hence is filing up the disc space 
+>>given for /var/log
+>>pls .. i need some direction in knowing what could be the possible 
+>>problem !..
+>>Thanking u all in advance...
+>>this is the message posted earlier.....
+>>
+>>hi all,
+>>i am getting these messages in my /var/log/messages..
+>>can someone tell me whats hapenning here..
+>>iptables v1.2.7-2--2-423 with  kernel 2.4.18 & patched htb3.3-020512 & 
+>>imq-2.4.18...
+>>May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840 
+>>&ip_conntrack_lock not readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT ip_nat_core.c:739 
+>>&ip_conntrack_lock_R71150de5 readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:91 
+>>&ip_conntrack_lock_R71150de5 readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:743 
+>>&ip_conntrack_lock not readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:973 
+>>&ip_conntrack_lock not readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:840 
+>>&ip_conntrack_lock not readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT ip_nat_core.c:739 
+>>&ip_conntrack_lock_R71150de5 readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:91 
+>>&ip_conntrack_lock_R71150de5 readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:743 
+>>&ip_conntrack_lock not readlocked
+>>May 30 05:10:04 cab1 kernel: ASSERT: ip_nat_core.c:840 
+>>&ip_conntrack_lock not readlocked
+>>[root@cab1 root]#
+>>
+>>awaiting reply
+>>a.h
+>
+>  
+> -----------------------------------
+> mailto:alexey_talikov@texlab.com.uz
+> BR
+> Alexey Talikov
+> FORTEK
+> -----------------------------------
+>
 
-Why?
-
-> interface as well. How ever, I would like to use internal ip-stack at my 
-> network, wherefor I need a virtual host, needn't I?
-
-You can use iproute2 to set multiple ip's on an interface.
-
-> 
-> I have same roule at iptables like:
-> iptables -A FORWARD -d 192.168.0.0/16 -i eth0:1 -j ACCEPT
-> 
-> The script stoped with following error:
-> Warning: wierd chracter in interface 'eth0:1' (No aliases, :, ! or *)
-
-I believe that the newer iptables versions do not have this problem.
-
-Ramin
-
-> 
-> In same list, it is mentioned, that it works, other guys say, it works not..
-> 
-> Hope sameone can help me..
-> 
-> Thx and best reguards
-> Uwe Eisner
-> 
 
