@@ -1,15 +1,12 @@
-From: JM <jerome@gmanmi.tv>
-Subject: Re: iptables help..
-Date: Mon, 13 Oct 2003 11:12:04 +0800
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: iptables help..
+Date: Mon, 13 Oct 2003 13:04:05 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200310131112.04067.jerome@gmanmi.tv>
-References: <200310101245.55993.jerome@gmanmi.tv> <1065763796.1650.21.camel@kermit>
-Reply-To: jerome@gmanmi.tv
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C4A0@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1065763796.1650.21.camel@kermit>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,48 +17,53 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ralf Spenneberg <lists@spenneberg.org>
+To: jerome@gmanmi.tv, Ralf Spenneberg <lists@spenneberg.org>
 Cc: Netfilter <netfilter@lists.netfilter.org>
 
-hi,
-
-i added LOGging on server_A
-
-log all INPUT and FORWARD to messages log file... and for some reason nothing 
-is comming up...
-
-[ having nightmares on this.. : (  ]
-
-TIA
-
-On Friday 10 October 2003 13:29, Ralf Spenneberg wrote:
-> Am Fre, 2003-10-10 um 06.45 schrieb JM:
-> > i want to access the http server on "remote server x" from LAN.. without
-> > going through the internet.. so what i did is setup DNAT on "remote
-> > server A" but somehow its not working..
-> >
-> > this is my ruleset..
-> >
-> > NAT
-> > -A PREROUTING -d serverA_IP -p tcp -m tcp --sport 1024:65535 --dport 81
-> > -j DNAT --to-destination serverx_IP:80
-> >
-> > FILTER
-> > -A INPUT -p tcp -s LAN_IP/24 --sport 1024:65535 -d serverA_IP --dport 81
-> > -j LOG --log-prefix "INPUT packets:" -A FORWARD -d  serverx_IP -p tcp -m
-> > tcp --sport 1024:65535 --dport 80 -m state --state NEW -j ACCEPT -A
 > > FORWARD -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+You have it accepting packets before it gets LOGged.. Put the LOG line =
+above all others..
 > > -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 > > -A FORWARD -p tcp -j LOG --log-prefix "FORWARD packets:"
->
-> So how does it not work? What error messages do you see? Did you enable
-> routing on server_A? You probably want an SNAT rule too, because
-> otherwise server_X will try to answer directly to the LAN. That might
-> create problems doing conntrack on server_A and your Firewall protecting
-> the LAN.
->
-> Cheers,
->
-> Ralf
 
+Also, if your DNATing to a local webserver on the same network, it won't =
+work without a SNAT as per jeromes suggestion as you have to make it =
+look like the firewall is MAQUERADing your lan to an outside address BUT =
+it's really inside, so your webserver will see all packets as the =
+firewall and not local hosts...
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+> -----Original Message-----
+> From: JM [mailto:jerome@gmanmi.tv]
+> Sent: Monday, 13 October 2003 1:12 PM
+> To: Ralf Spenneberg
+> Cc: Netfilter
+> Subject: Re: iptables help..
+>=20
+>=20
+> hi,
+>=20
+> i added LOGging on server_A
+>=20
+> log all INPUT and FORWARD to messages log file... and for=20
+> some reason nothing=20
+> is comming up...
+>=20
+> [ having nightmares on this.. : (  ]
+>=20
+> TIA
+>=20
+>=20
 
