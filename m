@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: tcpdump and iptables ..
-Date: Sat, 6 Mar 2004 18:12:31 +0000
+From: Kai Weber <kai.weber@glorybox.de>
+Subject: What is missed for port forwarding
+Date: Sat, 6 Mar 2004 19:36:58 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403061812.31256.Antony@Soft-Solutions.co.uk>
-References: <FD1B6DC5FFF43C4888DCC155FE8C1FFE70CC74@7xch10ka.sevenspace.local> <1078589808.2066.3.camel@localhost>
+Message-ID: <20040306183657.GB836@glorybox.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1078589808.2066.3.camel@localhost>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Saturday 06 March 2004 4:16 pm, John A. Sullivan III wrote:
+I have a router where only masquerading and some QOS is enabled. I have
+a problem with port forwarding HTTP.
 
-> On Sat, 2004-03-06 at 10:59, Mussie Gebregziabiher wrote:
-> > Dear All,
-> >
-> > When I run tcpdump I seem to be getting data after it is being processed
-> > by iptables.   Can someone tell me where 'tcpdump' resides in the order
-> > of priority?  Have the packets I'm seeing been subjected to 'PREROUTING'
-> > rules such as 'MANGLE' and 'NAT'?
->
-> I'll relate my experiences trying to trace the interchange between
-> iptables and openswan but it is only from observation.  If someone who
-> knows the code responds, please take their word for it over mine.
->
-> I believe you will see the packet on the inbound interface before it
-> hits the PREROUTING chain of the mangle table.  You will see it on the
-> outbound interface after it has passed through POSTROUTING (I don't
-> recall off the top of my head if nat or mangle is last).
+The only rules I use (sorry for long lines):
 
-I agree with John here (with the same disclaimer - if someone who knows the 
-code thinks otherwise - believe them, not me).
+$IPTABLES -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+$IPTABLES -t nat -A PREROUTING -p tcp --dport 10143 -j DNAT --to 192.168.1.=
+2:22
+$IPTABLES -t nat -A PREROUTING -p tcp --dport 8888 -i ppp0 -j DNAT --to 192=
+=2E168.1.2:80
 
-If you think about the information you can see with tcpdump (or other packet 
-sniffers which work at the same level such as ethereal), there's a lot more 
-low-level stuff than netfilter knows about - tcpdump sees ethernet frames, 
-IPX and similar traffic which are not even IP based, as well as completely 
-different media types such as 802.11b headers.   All this gets stripped off 
-before reaching netfilter (with the exception of MAC addresses, but even 
-there, netfilter can't tell whether a packet arrived by ethernet or 802.11).
+The first DNAT rule works without a problem. I can ssh directly to my
+machine. But the requests to port 8888 seems not to be answered or come
+through. To bad I only have switch which has no port mirroring to listen
+to the whole traffic and find out the problem.=20
 
-Therefore tcpdump works at a much lower level, before netfilter on the input 
-side, and after it on the output side.
+Any ideas what I should try or I miss?
 
-Regards,
-
-Antony.
-
--- 
-"Reports that say that something hasn't happened are always interesting to me, 
-because as we know, there are known knowns; there are things we know we know. 
-We also know there are known unknowns; that is to say we know there are some 
-things we do not know. But there are also unknown unknowns - the ones we 
-don't know we don't know."
-
- - Donald Rumsfeld, US Secretary of Defence
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+-- =20
+  Kai Weber
+=BB kai.weber@glorybox.de   http://www.glorybox.de   gpg-key: 0x594D4132
 
