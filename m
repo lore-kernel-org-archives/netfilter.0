@@ -1,12 +1,13 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: ULOGD and invalid timestamps
-Date: Fri, 10 Sep 2004 11:23:26 -0400
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: No Internet Connection
+Date: Fri, 10 Sep 2004 11:33:19 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62EB38@email1.mitretek.org>
+Message-ID: <1094830398.1900.132.camel@wolfpack.ljm.dom>
+References: <20040910144901.42036.qmail@web50204.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <20040910144901.42036.qmail@web50204.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,135 +18,145 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Steve Melo <smelo@communitytrust.ca>, netfilter@lists.netfilter.org
-
-I have used kernel 2.6.7 with no problems.
-
-I currently use kernel 2.6.8.1.
-
-
------Original Message-----
-From: Steve Melo [mailto:smelo@communitytrust.ca]=20
-Sent: Friday, September 10, 2004 10:49 AM
-To: Piszcz, Justin Michael; netfilter@lists.netfilter.org
-Subject: Re: ULOGD and invalid timestamps
-
-Piszcz,
-
-Thank you for taking the time to look into my problem..  My system's
-time
-works, the output of the date command shows: "Fri Sep 10 10:43:35 EDT
-2004".
-You mentioned that you have been using ULOG since version 1.0 with no
-problems in the timestamp feature, but i did see something in the
-changelog
-about a timestamp fix for version 1.02:
-
-=3D=3D=3Dchangelog=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-ulogd (1.02-1) unstable; urgency=3Dlow
-
-  * New upstream release.
-    - fixed timestamp printing in LOGEMU (closes: Bug#208506)
-  * debian/patches/ulogd-version.patch:
-    - this is really ulogd 1.02
-=3D=3D=3Dend =
-changelog=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Unlike yourself tho i installed from binary.  I wonder also if this
-could be
-because im running a 2.6.7 kernel.. what kernel do you use?
-
-
--thanx
-steve
-
------ Original Message -----=20
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-To: "Steve Melo" <smelo@communitytrust.ca>;
-<netfilter@lists.netfilter.org>
-Sent: Friday, September 10, 2004 9:41 AM
-Subject: RE: ULOGD and invalid timestamps
-
-
-I have never had a problem with the timestamp in any version of ulogd
-since 1.00, 1.01 or 1.02.
-
-What does the following show:
-
-% date
-
-
-Where did you obtain/how did you install ulogd?
-
-I used the source in all three versions.
-
-
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Steve Melo
-Sent: Thursday, September 09, 2004 12:31 PM
 To: netfilter@lists.netfilter.org
-Subject: ULOGD and invalid timestamps
 
-Greetings list,
+On Fri, 2004-09-10 at 10:49, Giancarlo Boaron wrote:
+> So, here goes my script:
+> 
+> INET_IP=`ifconfig eth0 | grep inet | cut -d : -f 2 |
+> cut -d ' ' -f 2`
 
-I'm using the ulogd to log information and everything works great except
-that everything that gets logged has a timestamp of "Dec 31 19:00:00".
-I
-would like to have the correct timestamp.
+maybe this is an ifconfig quirk, but that does not produce an IP address
+on my machine here (FC1).  it actually produces nothing.  the working
+version here is:
 
-Here is my setup:
-Debian Linux w/2.6.7-1-686 kernel (binary install)
-ulogd Version 1.02
-iptables v1.2.9
+ifconfig eth0 | grep inet | cut -d : -f 2 | cut -d ' ' -f 1
 
-Here is my /etc/ulogd.conf:
-# netlink multicast group (the same as the iptables --ulog-nlgroup
-param)
-nlgroup 1
+however, might i suggest:
 
-# logfile for status messages
-logfile /var/log/ulog/ulogd.log
+ip -4 -o addr sh eth0 | awk 'NR==1 {print $4}' | cut -d/ -f1
 
-# loglevel: debug(1), info(3), notice(5), error(7) or fatal(8)
-loglevel 5
+> $IPTABLES -N tcp_invalidos
+> 
+> $IPTABLES -A tcp_invalidos -p tcp --tcp-flags SYN,ACK
+> SYN,ACK \
+> -m state --state NEW -j REJECT --reject-with tcp-reset
+> $IPTABLES -A tcp_invalidos -p tcp ! --syn -m state
+> --state NEW -j LOG \
+> --log-prefix "Novo nao SYN:"
+> $IPTABLES -A tcp_invalidos -p tcp ! --syn -m state
+> --state NEW -j DROP
 
-# socket receive buffer size (should be at least the size of the
-# in-kernel buffer (ipt_ULOG.o 'nlbufsiz' parameter)
-rmem 131071
+there's a state called INVALID ("-m state --state INVALID") that could
+probably do most of the work for you here...
 
-# libipulog/ulogd receive buffer size, should be > rmem
-bufsize 150000
+> $IPTABLES -A OUTPUT -p tcp -j tcp_invalidos
+> 
+> $IPTABLES -A OUTPUT -p udp --sport 68 --dport 67 -j
+> ACCEPT
+> 
+> $IPTABLES -A OUTPUT -p all -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> 
+> $IPTABLES -A OUTPUT -p icmp --icmp-type 8 -j ACCEPT
+> 
+> $IPTABLES -A OUTPUT -p tcp --dport 53 -j ACCEPT
+> $IPTABLES -A OUTPUT -p udp --dport 53 -j ACCEPT
+> 
+> $IPTABLES -A OUTPUT -p tcp --dport 80 -s $INET_IP -o
+> $INET_IFACE -j ACCEPT
+> $IPTABLES -A OUTPUT -p tcp --dport 443 -s $INET_IP -o
+> $INET_IFACE -j ACCEPT
+> $IPTABLES -A OUTPUT -p tcp --dport 21 -s $INET_IP -o
+> $INET_IFACE -j ACCEPT
+> 
+> # ICQ:
+> $IPTABLES -A OUTPUT -p tcp -d 64.12.163.197 -o
+> $INET_IFACE -j ACCEPT
 
-# ulogd_BASE.so - interpreter plugin for basic IPv4 header fields
-#                 you will always need this
-plugin /usr/lib/ulogd/ulogd_BASE.so
-plugin /usr/lib/ulogd/ulogd_LOCAL.so
+are you running an ICQ client on your firewall?  the above rule implies
+that you are.  i can't say i recommend this at all.  if your intention
+is to allow ICQ *through* the firewall--this rule belongs in FORWARD.
 
+> $IPTABLES -A INPUT -p tcp -j tcp_invalidos
+> 
+> $IPTABLES -A INPUT -p udp --sport 67 --dport 68 -j
+> ACCEPT
+> 
+> $IPTABLES -A INPUT -p ALL -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> 
+> $IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
+> $IPTABLES -A INPUT -p udp --dport 53 -j ACCEPT
+> 
+> # SQUID:
+> $IPTABLES -A INPUT -i $LAN_IFACE -p tcp --dport 80 -j
+> ACCEPT
+> 
+> $IPTABLES -A FORWARD -p tcp -j tcp_invalidos
+> 
+> $IPTABLES -A FORWARD -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -m mac --mac-source $Mac1 -j
+> ACCEPT
+> 
+> $IPTABLES -A FORWARD -m mac --mac-source $Mac2 -j
+> ACCEPT
+> 
+> $IPTABLES -A FORWARD -m mac --mac-source $Mac3 -j
+> ACCEPT
+> 
+> $IPTABLES -A FORWARD -m mac --mac-source $Mac4 -j
+> ACCEPT
+> 
+> $IPTABLES -A FORWARD -p tcp --dport 53 -j ACCEPT
+> $IPTABLES -A FORWARD -p udp --dport 53 -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -d <my pop server> -p tcp --dport
+> 110 \
+> -i $LAN_IFACE -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -d <my smtp server> -p tcp
+> --dport 25 \
+> -i $LAN_IFACE -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -p tcp --dport 21 -i $LAN_IFACE
+> -j ACCEPT
+> $IPTABLES -A FORWARD -p tcp --dport 80 -i $LAN_IFACE
+> -j ACCEPT
+> $IPTABLES -A FORWARD -p tcp --dport 443 -i $LAN_IFACE
+> -j ACCEPT
+> 
+> $IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT
+> --to-source $INET_IP
+> 
+> That's it. Another question: When I configure this
+> script to run automatically after rebooting the
+> server, I receive this error message (3 times): "Bad
+> argument eth0" so the script doesn't work, neither my
+> Internet access from my LAN and I can't find where is
+> the error.
 
-#
-# ulogd_LOGEMU.so - simple syslog emulation target
-#
-# where to write to
-syslogfile /var/log/ulog/syslogemu.log
-# do we want to fflush() the file after each write?
-syslogsync 1
-# load the plugin
-plugin /usr/lib/ulogd/ulogd_LOGEMU.so
+it's probably related to the fact that your $INET_IP variable expands to
+a text string, not an IP address.
 
+> However, after rebooting the server and loggin in as
+> root, I can run the script from command line. It works
+> and my LAN can access the Internet during that short
+> time (about 20 minutes. However, I didn't test the
+> DHCP rules to ckeck if it continues to happen).
 
-#
-# ulogd_OPRINT.so: file for packet dumping
-#
-# where to write the log
-dumpfile /var/log/ulog/pktlog.log
-# load the plugin (remove the '#'if you want to enable it
-plugin /usr/lib/ulogd/ulogd_OPRINT.so
+are you running your firewall script before your external interface has
+an IP address?  if so--this would explain it.  your DHCP client is most
+likely being spawned by your /etc/init.d/network script, which usually
+kicks off pretty early in rc2.
 
+i cannot explain the "20 minute" phenomenon you refer to.
 
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
 
 
