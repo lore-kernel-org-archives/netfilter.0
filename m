@@ -1,12 +1,11 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: SSL Question
-Date: Wed, 30 Jul 2003 11:23:33 +1000
+From: "Carlo Florendo" <carlo@hq.astra.ph>
+Subject: DNAT from an IP address that does not exist to another that exists
+Date: Wed, 30 Jul 2003 11:13:35 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C001@wardrive.citadelcomputer.com.au>
+Message-ID: <01b401c35648$908ba210$200aa8c0@thorin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +16,69 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: nakisawame <nakisawame@yahoo.com>, netfilter@lists.netfilter.org
-
-it's driving you nuts? You haven't mentioned what's the problem and only =
-asked if it'll work.
-
-I have this working already for 2 external IPs redirected to 2 internal =
-IPs.. I have similar if not the same rules are you.. though I don't =
-specify the --to :443 port, just the IP..
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
-Phone   : +61 2 9955 2644
-HelpDesk: +61 2 9955 2698
-=20
-
------Original Message-----
-From: nakisawame [mailto:nakisawame@yahoo.com]
-Sent: Wednesday, July 30, 2003 11:13 AM
 To: netfilter@lists.netfilter.org
-Subject: SSL Question
+
+Hello iptables gurus,
+
+How do I setup iptables such that connections to a certain non-existent IP address is DNAT to another IP address within the
+network?
+
+Here's an explanation of the problem.  Sorry for the verbosity.  It's my first time to post in this list. :-)
+
+I have several machines on my network and one gateway machine.
+I've setup the gateway to do IP masquerading and everything's fine (i.e. any machine from the local network can acces the  internet
+flawlessly).
+
+The gateway  runs services such as ssh and http.  Other machines on the local network run their respective services as well.
+
+I want to achieve a setup such that connections to a certain non-existent IP address is DNAT to another IP address within the
+network.
+
+The gateway address is 192.168.30.1
+The non-existent address which I want to DNAT to another machine within the network is 192.168.40.40
+The existent IP address where I want 192.168.40.40 to be forwarded to, is 192.168.30.11
 
 
-Hello,
 
-I am wondering if this will work... We are using NAT,
-and I currently have 2 dif
-ferent webservers that we need to put SSL on.
+Here are 2 cases:
 
-Each webserver has a different external DNS entry (I
-am using 55.55.55.56 and 55
-.55.55.57 as examples). Each actual webserver is on
-its own internal IP address=20
-(192.158.0.14 and 192.168.0.15, respectively).
+case 1).  The non-existent IP address is DNAT to the the gateway (i.e. the accepting machine itself).
 
-Can I do something like this:
+When I do this, everything works fine.  (i.e. I get to access 192.168.40.40 as if it really existed although what I'm really
+accessing is the gateway machine 192.168.30.1).
 
-iptables -t nat -A PREROUTING -p tcp -d 55.55.55.56
---dport https -j DNAT --to 1
-92.168.0.14:443
-iptables -t nat -A PREROUTING -p tcp -d 55.55.55.57
---dport https -j DNAT --to 1
-92.168.0.15:443
+Here is how the configuration worked:
 
-Does this work? If it doesn't, how do I do this? This
-is driving me nuts!
+iptables -t nat -D PREROUTING -d 192.168.40.40 -j DNAT --to 192.168.30.1
 
-TIA!!!
+case 2).  The non-existent IP address is DNAT to another machine within the network (not the gateway).
 
--N
+Here's what I think is the solution but it does not work.
+
+iptables -t nat -D PREROUTING -d 192.168.40.40 -j DNAT --to 192.168.30.11
+
+I wanted to force our users to access 192.168.40.40 since it is *NOT* in the same network.  Thus, all connections to it pass through
+the gateway.
+
+The solution does not work.  Are there any pointers on how to make this possible?
+
+A link to the network diagram is here:  http://210.23.193.154/zxff/qsz.html
+
+Thanks a lot!
+
+Best Regards,
+
+Carlo
+------
+Carlo Florendo
+Astra Philippines Inc.
+URL: http://www.hq.astra.ph/resources
 
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+
+
+
+
+
 
 
