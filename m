@@ -1,9 +1,11 @@
-From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
-Subject: Re: load balancing?
-Date: Sat, 14 Jun 2003 22:28:16 -0300
+From: "Allyn Baskerville" <allynb@adsne.com>
+Subject: Upgrading IPTables
+Date: Sat, 14 Jun 2003 21:03:39 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFF909B862.8E351B6B-ON03256D46.0007E741@LocalDomain>
+Message-ID: <NGBBKDHCAKEKLHOEEHDNEEKOCKAA.allynb@adsne.com>
+Reply-To: <allynb@adsne.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,53 +17,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Joel Newkirk <netfilter@newkirk.us>
-Cc: Jean-Yves Simon <lethalwp@tiscali.be>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+I've had IPTables running on RedHat for some time and would like to upgrade
+it. The kernel version is 2.4.18-3. I'm fairly new to Linux, and I don't
+know where the kernel was built. Hence, I don't know how to launch the
+initial command:
 
-if you want load balancing, you should look at http://www.keepalived.org
-and/or http://www.linuxvirtualserver.org/
+% make KERNEL_DIR=<<where-you-built-your-kernel>>
 
---
-Forster
-
-
-Joel Newkirk <netfilter@newkirk.us>@lists.netfilter.org on 06/14/2003
-12:36:55 PM
-
-Sent by:    netfilter-admin@lists.netfilter.org
-
-
-To:    Jean-Yves Simon <lethalwp@tiscali.be>
-cc:    netfilter@lists.netfilter.org
-Subject:    Re: load balancing?
-
-
-
-On Sat, 2003-06-14 at 07:54, Jean-Yves Simon wrote:
-> Hello,
->
-> I'm curious if load balancing can be done with iptables, like for
-> example forwarding incoming web requests to one of the multiple web
-> servers behind the firewall.
->
-> Or is a third party software needed?
-
-If all you need is to distribute requests evenly across a range of IPs
-you can use the rule:
-
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to
-10.10.10.1-10.10.10.16
-
-This example would attempt to distribute incoming HTTP requests evenly
-across the specified range of 16 IPs.
-
-j
-
-
-
-
-
+I see the source under /usr/src/redhat/, and I've tried about every
+directory that has the word 'kernel' or the kernel version in it. TIA for
+your help. Allyn
 
 
