@@ -1,11 +1,13 @@
-From: Emilio Casbas <ecasbas@unav.es>
-Subject: no log various hosts
-Date: Thu, 09 Oct 2003 13:19:59 +0200
+From: "Gilles Yue" <gyue@novelgmt.intnet.mu>
+Subject: Help on IPTABLES
+Date: Thu, 9 Oct 2003 16:24:03 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F85445F.8090307@unav.es>
+Message-ID: <83055D4B014C9E478D2F04624B9E82CF39E7D2@noveldc.novelgmt.mu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms080406090703000900010607"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C38E60.39AD946C"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,121 +19,240 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
-This is a cryptographically signed message in MIME format.
+This is a multi-part message in MIME format.
 
---------------ms080406090703000900010607
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+------_=_NextPart_001_01C38E60.39AD946C
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I'm trying add a iptables rules and not to log various hosts of the form:
+Hi all,
 
-        $IPTABLES -A INPUT -p tcp --src ! 127.0.0.1/32  -m limit --limit 
-100/minute -j LOG --log-level debug
-        $IPTABLES -A INPUT -p tcp --src ! myred/24  -m limit --limit 
-100/minute -j LOG --log-level debug
-
-and I see with iptables -vnL this
-
-134  121K LOG        tcp  --  *      *      !127.0.0.1/32            
-0.0.0.0/0          limit: avg 100/min burst 5 LOG flags 0 level 7
-   87  7268 LOG        tcp  --  *      *      !myred/24                 
-0.0.0.0/0          limit: avg 100/min burst 5 LOG flags 0 level 7
-
-but it continue logging 127.0.0.0 and all myred,
-
-however, if i have only a rule:
-
-    $IPTABLES -A INPUT -p tcp --src ! myred/24  -m limit --limit 
-100/minute -j LOG --log-level debug
-
-works fine!,
-
-How I can to put two o more hosts in a rule for not log ?
+Can somebody explain to me why is when i changed my Chain INPUT Rules
+from ACCEPT to DROP, i cannot browse the internet despite opening port
+80 in the INPUT rule.
+However, when Chain INPUT is changed to ACCEPT, browsing the internet
+works fine. (Note: CHAIN Output is accept for ALL)
 
 
-Thanks.
+The configurations on my IPTABLES are as follows
+
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+RH-Lokkit-0-50-INPUT  all  --  anywhere             anywhere
+ACCEPT     tcp  --  anywhere             anywhere           tcp spt:http
+ACCEPT     udp  --  anywhere             anywhere           udp spt:http
+
+Note that my OUTPUT Rules are as follows:
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+I have two network cards installed on my pc - running Red Hat 9.0
+
+Routing for static routes are follows:
+
+xx.yy.zz.aa        0.0.0.0         255.255.255.0       U     0      0
+0 eth0
+xx.0.0.0           0.0.0.0         255.0.0.0           U     0      0
+0 eth1
+127.0.0.0          0.0.0.0         255.0.0.0           U     0      0
+0 lo
+0.0.0.0            zz.zz.zz.zz       0.0.0.0           UG    0      0
+0 eth0
+0.0.0.0            zz.zz.zz.zz       0.0.0.0           UG    0      0
+0 eth1
+
+Where zz.zz.zz.zz is my gateway to the internet.
+eth0 - Interface with local address
+eth1 - Interface with Internet address.
+
+By the way, is there a way to save static routes because when i reboot
+my pc, all routes are lost.
+
+Thanks for any help.
+
+gilles
 
 
---------------ms080406090703000900010607
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIL5zCC
-A6swggMUoAMCAQICAQIwDQYJKoZIhvcNAQEEBQAwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQI
-EwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUg
-TmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAwDgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkB
-FgtjdGlAdW5hdi5lczAeFw0wMDEyMDcxODM0NTlaFw0xMDEyMDUxODM0NTlaMIGSMQswCQYD
-VQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoT
-FlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1D
-QS0xMTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXMwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
-MIGJAoGBAMnPtNu0DY74Cy8ADkGWQ+P+o0tADrVZ4Lcp7XrTO/DBsviqY2K90SPnjTq4iaHq
-nPR3NtP5NITlgeOriB6Qz0rP2cIyPbvj+omMNcjLNMKwjzN/Xlz/PQHtc7uB475qcRI2Upf0
-efcCuZ+2c9Bh8whAR6yBPMZYBOf/CnTOGhiXAgMBAAGjggEQMIIBDDAdBgNVHQ4EFgQU5IiI
-QsdSywUHw6MhYN5TwgPUKoIwgbwGA1UdIwSBtDCBsYAULcM6eDF7f4FPgfZNagFP7vaHJMqh
-gZWkgZIwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1w
-bG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAw
-DgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkBFgtjdGlAdW5hdi5lc4IBADAMBgNVHRME
-BTADAQH/MAsGA1UdDwQEAwIBBjARBglghkgBhvhCAQEEBAMCAQYwDQYJKoZIhvcNAQEEBQAD
-gYEAX1CIwLZPpFS3JvoHEHZ5Ot5NnfQfQP7P8c0obKsenSVSD5ikiif1FTpZV71IhMBA+CIp
-I5yGHD2lJhRmU8mxydPc4Duc8Vq5yw5TEtbgFamszQDaloFLKVqgsizZ6ljB0X2N/oGKOr70
-BNaayTRZuGaqBRwL9rOtQAPuUVWvvOAwggQYMIIDgaADAgECAgIDSTANBgkqhkiG9w0BAQQF
-ADCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25h
-MR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxEzARBgNV
-BAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0aUB1bmF2LmVzMB4XDTAyMTEwNDEy
-MDc1MVoXDTA0MTEwMzEyMDc1MVowgaYxCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJh
-MREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEM
-MAoGA1UECxMDQ1RJMSMwIQYDVQQDExplbWlsaW8gam9zZSBjYXNiYXMgamltZW5lejEeMBwG
-CSqGSIb3DQEJARYPZWNhc2Jhc0B1bmF2LmVzMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
-gQCjUTWXn5KebVC7S9O1gDRZP3Rk7RhmhfDAwwiGdl762ICY8DhMAkQ8bmhCy/Xka1sNiFQA
-Mgoj0UfVZTX221BWOzHZdaPimyxBTO42jsnvU9D+Q9BAIzRwI/FrBLw4LGngPgGaifQtAdet
-hRiHHCQGj63Ra53JNc1IOFqJo0qdxwIDAQABo4IBZTCCAWEwCQYDVR0TBAIwADARBglghkgB
-hvhCAQEEBAMCBaAwLAYJYIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmlj
-YXRlMB0GA1UdDgQWBBQ1ww0xtTIZCwn1KzaqzfR0rRxjpTCBvAYDVR0jBIG0MIGxgBTkiIhC
-x1LLBQfDoyFg3lPCA9QqgqGBlaSBkjCBjzELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
-cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
-MQwwCgYDVQQLEwNDVEkxEDAOBgNVBAMTB1VOQVYtQ0ExGjAYBgkqhkiG9w0BCQEWC2N0aUB1
-bmF2LmVzggECMDUGA1UdHwQuMCwwKqAooCaGJGh0dHBzOi8vZ2FuZGFsZi5jdGkudW5hdi5l
-cy91bmF2LmNybDANBgkqhkiG9w0BAQQFAAOBgQC8A7UirMJ77vP8eGoeFXCNMV20V+0uWzqs
-Kuu8UqsAbYF3t32SLFO4eQdJILSHIafDqj+L5Qy53UzXgBY0Hu3MheLf6V5U4nwd03ukBGXg
-1Zs9vBqMzGria1D0YjBTYqip7TQTT6mPFMb/Loek0/pmn/q/r45z0w8Cs6ljMKM51zCCBBgw
-ggOBoAMCAQICAgNJMA0GCSqGSIb3DQEBBAUAMIGSMQswCQYDVQQGEwJFUzEQMA4GA1UECBMH
-TmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoTFlVuaXZlcnNpZGFkIGRlIE5h
-dmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1DQS0xMTEaMBgGCSqGSIb3DQEJ
-ARYLY3RpQHVuYXYuZXMwHhcNMDIxMTA0MTIwNzUxWhcNMDQxMTAzMTIwNzUxWjCBpjELMAkG
-A1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQK
-ExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxIzAhBgNVBAMTGmVtaWxp
-byBqb3NlIGNhc2JhcyBqaW1lbmV6MR4wHAYJKoZIhvcNAQkBFg9lY2FzYmFzQHVuYXYuZXMw
-gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKNRNZefkp5tULtL07WANFk/dGTtGGaF8MDD
-CIZ2XvrYgJjwOEwCRDxuaELL9eRrWw2IVAAyCiPRR9VlNfbbUFY7Mdl1o+KbLEFM7jaOye9T
-0P5D0EAjNHAj8WsEvDgsaeA+AZqJ9C0B162FGIccJAaPrdFrnck1zUg4WomjSp3HAgMBAAGj
-ggFlMIIBYTAJBgNVHRMEAjAAMBEGCWCGSAGG+EIBAQQEAwIFoDAsBglghkgBhvhCAQ0EHxYd
-T3BlblNTTCBHZW5lcmF0ZWQgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFDXDDTG1MhkLCfUrNqrN
-9HStHGOlMIG8BgNVHSMEgbQwgbGAFOSIiELHUssFB8OjIWDeU8ID1CqCoYGVpIGSMIGPMQsw
-CQYDVQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNV
-BAoTFlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTEQMA4GA1UEAxMHVU5B
-Vi1DQTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXOCAQIwNQYDVR0fBC4wLDAqoCigJoYk
-aHR0cHM6Ly9nYW5kYWxmLmN0aS51bmF2LmVzL3VuYXYuY3JsMA0GCSqGSIb3DQEBBAUAA4GB
-ALwDtSKswnvu8/x4ah4VcI0xXbRX7S5bOqwq67xSqwBtgXe3fZIsU7h5B0kgtIchp8OqP4vl
-DLndTNeAFjQe7cyF4t/pXlTifB3Te6QEZeDVmz28GozMauJrUPRiMFNiqKntNBNPqY8Uxv8u
-h6TT+maf+r+vjnPTDwKzqWMwoznXMYIDUTCCA00CAQEwgZkwgZIxCzAJBgNVBAYTAkVTMRAw
-DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
-YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
-KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwCQYFKw4DAhoFAKCCAg0wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDMxMDA5MTExOTU5WjAjBgkqhkiG9w0B
-CQQxFgQUJGA+ilHTefMi+9FT2qshlr3KvSowUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0D
-BzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwIC
-ASgwgaoGCSsGAQQBgjcQBDGBnDCBmTCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
-cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
-MQwwCgYDVQQLEwNDVEkxEzARBgNVBAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0
-aUB1bmF2LmVzAgIDSTCBrAYLKoZIhvcNAQkQAgsxgZyggZkwgZIxCzAJBgNVBAYTAkVTMRAw
-DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
-YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
-KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwDQYJKoZIhvcNAQEBBQAEgYCYjlsntASzlKJz
-S9U+PFfWH739pWRH6Z6B8DWXSSJDFvdq36HH2N613x0gKgthwAGee4T1ACi16XN1DpsJ4Eda
-bb1nF0cSw9Xvypbb776V/bB1p+7qL/z8MLCUyeZWQpdrTuBjmxXOFbX05Wd0zLhmWsUOe7cR
-W/lPRczqNnoIWQAAAAAAAA==
---------------ms080406090703000900010607--
+=20
 
+  _____ =20
+
+=20
+
+=20
+
+
+------_=_NextPart_001_01C38E60.39AD946C
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>Hi all,<br>
+<br>
+Can somebody explain to me why is when i changed my Chain INPUT Rules =
+from
+ACCEPT to DROP, i cannot browse the internet despite opening port 80 in =
+the
+INPUT rule.<br>
+However, when Chain INPUT is changed to ACCEPT, browsing the internet =
+works
+fine. (Note: CHAIN Output is accept for ALL)<br>
+<br>
+<br>
+The configurations on my IPTABLES are as follows<br>
+<br>
+<b><u><font color=3D"#ff6600"><span =
+style=3D'color:#FF6600;font-weight:bold'>Chain
+INPUT (policy DROP)</span></font></u></b><br>
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt =
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;
+destination<br>
+RH-Lokkit-0-50-INPUT&nbsp; all&nbsp; --&nbsp;
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;
+anywhere<br>
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; tcp&nbsp; --&nbsp;
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tcp =
+spt:http<br>
+ACCEPT&nbsp;&nbsp;&nbsp;&nbsp; udp&nbsp; --&nbsp;
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;
+anywhere&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; udp =
+spt:http<br>
+<br>
+Note that my OUTPUT Rules are as follows:<br>
+<font color=3D"#ff6600"><span style=3D'color:#FF6600'><br>
+<b><u><span style=3D'font-weight:bold'>Chain OUTPUT (policy =
+ACCEPT)</span></u></b></span></font><br>
+target&nbsp;&nbsp;&nbsp;&nbsp; prot opt
+source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;
+destination<br>
+<br>
+I have two network cards installed on my pc - running Red Hat 9.0<br>
+<br>
+Routing for static routes are follows:<br>
+<br>
+</span></font><font face=3D"Courier New"><span =
+style=3D'font-family:"Courier New"'>xx.yy.zz.aa
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+255.255.255.0&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp; =
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 eth0<br>
+xx.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+255.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+U&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0 eth1<br>
+127.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+255.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+U&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0 lo<br>
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; =
+zz.zz.zz.zz
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; UG&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 eth0<br>
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; =
+zz.zz.zz.zz
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+UG&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 eth1</span></font><br>
+<br>
+Where zz.zz.zz.zz is my gateway to the internet.<br>
+eth0 - Interface with local address<br>
+eth1 - Interface with Internet address.<br>
+<br>
+By the way, is there a way to save static routes because when i reboot =
+my pc,
+all routes are lost.<br>
+<br>
+Thanks for any help.<br>
+<br>
+gilles<br>
+<br>
+</p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;</span></font></p>
+
+<div class=3DMsoNormal align=3Dcenter style=3D'text-align:center'><font =
+size=3D3
+face=3D"Times New Roman"><span style=3D'font-size:12.0pt'>
+
+<hr size=3D2 width=3D"100%" align=3Dcenter>
+
+</span></font></div>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+=00
+------_=_NextPart_001_01C38E60.39AD946C--
 
