@@ -1,12 +1,13 @@
-From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: change MAC address
-Date: 23 Jan 2005 20:39:49 +0100
-Message-ID: <1106509188.6143.1.camel@nostromo.bgsecm.com>
-References: <20050121221348.37806.qmail@web51903.mail.yahoo.com>
+From: Bob Tellefson <bob@zooid.com>
+Subject: Re: networking newbie needs help
+Date: Sun, 23 Jan 2005 20:28:53 +0000
+Message-ID: <200501232028.53215.bob@zooid.com>
+References: <15505515.1106460382543.JavaMail.rct@kale>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050121221348.37806.qmail@web51903.mail.yahoo.com>
+In-Reply-To: <15505515.1106460382543.JavaMail.rct@kale>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +18,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+Cc: "John A. Sullivan III" <jsullivan@opensourcedevelopmentcorp.com>
 
-El vie, 21 de 01 de 2005 a las 23:13, Alireza Yazdani escribi=C3=B3:
-> Hello,
-> I have a network with wireless connection.
-> I manage user by MAC address in accesspoint.
-> some invalid user get the vaild MAC address from valid user.
-> and change his MAC . then thay can come to my network.
-> what is your solution?
+On Sunday 23 January 2005 06:05, Kev askme wrote:
 
-Install a Freeradius solution to authentificate the clients,
-that will solve your problems. It's a little complicate to
-configure it, but it's the best solution if you need real
-security.
+>
+> Thanks for the "dummified" explanation. That is very
+> clear and concise. :) So I just need my ISP to
+> statically assign the public IP addresses to me and
+> then add the addresses to my external interface using
+> the ip command and then the external interface will
+> answer for all ip addresses on the external interface?
+> Or do I need to add aliases for each address, or is
+> that essentially what the ip command is actually
+> doing?
+>
+>
 
-Regards.
+It is generally more useful to have a subnet assigned and routed to you by 
+your isp.  The advantage here is that you may use these ip's on your dmz 
+without the need for DNAT.  In this case, your firewall/router isp interface 
+acts as a gateway that you isp routes your subnet ip's through.  ARP is not 
+involved other than to discover this gateway interface.  You can route/filter 
+the subnet ip's as you see fit.
 
---=20
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
+DNAT comes with side effects that you should consider before proceding.  Have 
+a look at DNAT in in iptables faq 
+( http://www.faqs.org/docs/iptables/targets.html ) for an example of what 
+happens when you DNAT clients from the outside world versus how machines 
+within the DMZ (including the firewall) access the same services.  This can 
+be a serious issue depending on what services reside on your DMZ and how they 
+interact.
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+If you don't get a routed subnet from you isp, consider using proxy arp rather 
+than DNAT.  This effectively gives you the benefits of a routed subnet.  See 
+http://www.tldp.org/HOWTO/Proxy-ARP-Subnet/
 
+DNAT has it's place, but it is a kludge (IMHO).  I avoid it where possible.
+
+
+
+-- 
+
+Bob Tellefson
+Java network application development & hosting
 
