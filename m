@@ -1,11 +1,10 @@
-From: "Shook, Tim - AES" <Tim.Shook@itt.com>
-Subject: Broadcast layer2 forwarding (ff:ff:ff:ff:ff:ff)
-Date: Mon, 6 Jan 2003 11:52:02 -0500
+From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
+Subject: pptp+masq fsckup! PLEASE help...
+Date: Mon, 6 Jan 2003 19:26:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <407C4612AF574244AD03C43504FB74CB19A74F@alexva-mail.aes.de.ittind.com>
+Message-ID: <200301061926.49827.roy@karlsbakk.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPartTM-000-4967f611-eca5-440e-8537-a2dd811f0d92"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,235 +15,103 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------=_NextPartTM-000-4967f611-eca5-440e-8537-a2dd811f0d92
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C2B5A3.EFE81E4E"
-
-------_=_NextPart_001_01C2B5A3.EFE81E4E
-Content-Type: text/plain
-
-Hello,
-
- 
-
-            I'm currently trying something rather unique with IPtables and
-need an opinion.  I'm trying to forward and manipulate a packet with the
-following ip address:
-
- 
-
-Source 192.0.0.1  
-
-Destination 192.0.0.2
-
- 
-
-If the MAC addresses on these are standard, manufacturer assigned addresses,
-everything works fine.  If I manipulate the MACs with ifconfig and set them
-to ALMOST any other MAC, everything works fine, however when I set the MAC
-to a layer 2 broadcast (FF:FF:FF:FF:FF:FF), IPTables stops forwarding the
-packet. 
-
- 
-
-Now, the question is:
-
- 
-
-Where is this packet being trapped and dropped?  Is it in the kernel
-(routing)? Or is IPtables dropping it?  Is the Ethernet card dropping it?
-
- 
-
-I'm going to try to build a test version of the latest iptables source and
-put some debug stuff in to find out if iptables is seeing this packet,
-however I was hoping someone well educated with IPtables might enlighten me
-as too what is happening here.
-
- 
-
-NOTE:  I am fully aware of the bizarre setup that I am using and the MAC
-layer address issue.  This is not standard.  I've been tasked to fix a
-custom software broken IP problem with a device that will mangle packets for
-me and retransmit them as if they were not broken.  Linux is of course the
-obvious choice and iptables does 99.9999 % of what I need it to do.  It
-works fine and does well up to this broadcast MAC.  I just can't get passed
-this last hurdle.
-
- 
-
-Any ideas or suggestions would be helpful
-
- 
-
-Thanks
-
- 
-
-Tim
-
- 
-
-
-************************************ 
-If this email is not intended for you, or you are not responsible for the
-delivery of this message to the addressee, please note that this message may
-contain ITT Privileged/Proprietary Information.  In such a case, you may not
-copy or deliver this message to anyone.  You should destroy this message and
-kindly notify the sender by reply email.  Information contained in this
-message that does not relate to the business of ITT is neither endorsed by
-nor attributable to ITT. 
-************************************ 
-
-
-------_=_NextPart_001_01C2B5A3.EFE81E4E
-Content-Type: text/html
-
-<html>
-
-<head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=US-ASCII">
-
-
-<meta name=Generator content="Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=EN-US link=blue vlink=purple>
-
-<div class=Section1>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Hello,</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I&#8217;m
-currently trying something rather unique with IPtables and need an
-opinion.&nbsp; I&#8217;m trying to forward and manipulate a packet with the
-following ip address:</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Source 192.0.0.1&nbsp; </span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Destination 192.0.0.2</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>If the MAC addresses on these are standard, manufacturer
-assigned addresses, everything works fine.&nbsp; If I manipulate the MACs with ifconfig
-and set them to ALMOST any other MAC, everything works fine, however when I set
-the MAC to a layer 2 broadcast (FF:FF:FF:FF:FF:FF), IPTables stops forwarding
-the packet. </span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Now, the question is:</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Where is this packet being trapped and dropped?&nbsp; Is it
-in the kernel (routing)? Or is IPtables dropping it?&nbsp; Is the Ethernet card
-dropping it?</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>I&#8217;m going to try to build a test version of the latest
-iptables source and put some debug stuff in to find out if iptables is seeing
-this packet, however I was hoping someone well educated with IPtables might
-enlighten me as too what is happening here.</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>NOTE:&nbsp; I am fully aware of the bizarre setup that I am using
-and the MAC layer address issue.&nbsp; This is not standard.&nbsp; I&#8217;ve
-been tasked to fix a custom software broken IP problem with a device that will
-mangle packets for me and retransmit them as if they were not broken.&nbsp;
-Linux is of course the obvious choice and iptables does 99.9999 % of what I
-need it to do.&nbsp; It works fine and does well up to this broadcast
-MAC.&nbsp; I just can&#8217;t get passed this last hurdle.</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Any ideas or suggestions would be helpful</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Thanks</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Tim</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-<BR>
-
-<P><FONT SIZE=2 FACE="Arial">************************************<BR>
-<I>If this email is not intended for you, or you are not responsible for the delivery of this message to the addressee, please note that this message may contain ITT Privileged/Proprietary Information.  In such a case, you may not copy or deliver this message to anyone.  You should destroy this message and kindly notify the sender by reply email.  Information contained in this message that does not relate to the business of ITT is neither endorsed by nor attributable to ITT.<BR>
-************************************ </I></FONT></P>
-<BR>
-
-------_=_NextPart_001_01C2B5A3.EFE81E4E--
-
-------=_NextPartTM-000-4967f611-eca5-440e-8537-a2dd811f0d92--
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter mailinglist <netfilter@lists.netfilter.org>
+
+hi all
+
+still I can't make it
+
+compiled in the patch at http://roeder.goe.net/~koepi/newnat.html, as Die=
+go=20
+Sarasua pointed to, but getting the same ole crap as the only time I've e=
+ver=20
+managed to patch-o-maticize the kernel. As I try to add the following rul=
+e, I=20
+just get an 'invalid argument' message. The following shows an strace of=20
+iptables.
+
+thanks
+
+roy
+
+nyfw:~# strace iptables -t nat -A POSTROUTING -s 192.168.0.0/255.255.0.0 =
+-d !=20
+192.168.0.0/255.255.0.0 -j MASQUERADE
+execve("/sbin/iptables", ["iptables", "-t", "nat", "-A", "POSTROUTING", "=
+-s",=20
+"192.168.0.0/255.255.0.0", "-d", "!", "192.168.0.0/255.255.0.0", "-j",=20
+"MASQUERADE"], [/* 13 vars */]) =3D 0
+uname({sys=3D"Linux", node=3D"nyfw", ...})  =3D 0
+brk(0)                                  =3D 0x8056a5c
+open("/etc/ld.so.preload", O_RDONLY)    =3D -1 ENOENT (No such file or=20
+directory)
+open("/etc/ld.so.cache", O_RDONLY)      =3D 3
+fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D11871, ...}) =3D 0
+old_mmap(NULL, 11871, PROT_READ, MAP_PRIVATE, 3, 0) =3D 0x40014000
+close(3)                                =3D 0
+open("/lib/libdl.so.2", O_RDONLY)       =3D 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0T\27\0\000"..., 1=
+024)=20
+=3D 1024
+fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D8008, ...}) =3D 0
+old_mmap(NULL, 11004, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D 0x40017=
+000
+mprotect(0x40019000, 2812, PROT_NONE)   =3D 0
+old_mmap(0x40019000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3=
+,=20
+0x1000) =3D 0x40019000
+close(3)                                =3D 0
+open("/lib/libc.so.6", O_RDONLY)        =3D 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\30\222"..., 1024=
+) =3D=20
+1024
+fstat64(3, {st_mode=3DS_IFREG|0755, st_size=3D1153784, ...}) =3D 0
+old_mmap(NULL, 1166560, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D 0x400=
+1a000
+mprotect(0x4012d000, 40160, PROT_NONE)  =3D 0
+old_mmap(0x4012d000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, =
+3,=20
+0x113000) =3D 0x4012d000
+old_mmap(0x40133000, 15584, PROT_READ|PROT_WRITE,=20
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) =3D 0x40133000
+close(3)                                =3D 0
+old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,=
+ 0) =3D=20
+0x40137000
+munmap(0x40014000, 11871)               =3D 0
+brk(0)                                  =3D 0x8056a5c
+brk(0x8056a94)                          =3D 0x8056a94
+brk(0x8057000)                          =3D 0x8057000
+open("/lib/iptables/libipt_MASQUERADE.so", O_RDONLY) =3D 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\220\4\0"..., 102=
+4) =3D=20
+1024
+fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D3276, ...}) =3D 0
+old_mmap(NULL, 6720, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) =3D 0x400140=
+00
+mprotect(0x40015000, 2624, PROT_NONE)   =3D 0
+old_mmap(0x40015000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3=
+, 0)=20
+=3D 0x40015000
+close(3)                                =3D 0
+socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  =3D 3
+getsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], [84]) =3D 0
+brk(0x8058000)                          =3D 0x8058000
+getsockopt(3, SOL_IP, 0x41 /* IP_??? */, [7627118], [656]) =3D 0
+setsockopt(3, SOL_IP, 0x40 /* IP_??? */, [7627118], 876) =3D -1 EINVAL (I=
+nvalid=20
+argument)
+write(2, "iptables: Invalid argument\n", 27iptables: Invalid argument
+) =3D 27
+_exit(1)                                =3D ?
+
+--=20
+Roy Sigurd Karlsbakk, Datavaktmester
+ProntoTV AS - http://www.pronto.tv/
+Tel: +47 9801 3356
+
+Computers are like air conditioners.
+They stop working when you open Windows.
 
 
