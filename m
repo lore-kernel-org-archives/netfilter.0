@@ -1,12 +1,12 @@
-From: Andy Furniss <andy.furniss@dsl.pipex.com>
-Subject: Re: downlink marked packets dont go to qdisc, uplink ok
-Date: Thu, 23 Dec 2004 01:16:40 +0000
-Message-ID: <41CA1C78.2030502@dsl.pipex.com>
-References: <41B97CCE.2060904@maxent.cz>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Are established connections interrupted when iptables is
+	restarted?
+Date: Wed, 22 Dec 2004 21:13:30 -0500 (EST)
+Message-ID: <Pine.LNX.4.05.10412222111230.18976-100000@darkstar.sysinfo.com>
+References: <200412221506.iBMF6cDX082047@jkcpub.iserver.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41B97CCE.2060904@maxent.cz>
+In-Reply-To: <200412221506.iBMF6cDX082047@jkcpub.iserver.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Karel Rericha <karel@maxent.cz>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Deepak Seshadri <dseshadri@broadbandmaritime.com>
 Cc: netfilter@lists.netfilter.org
 
-Karel Rericha wrote:
-> Short:**********************************************************
+On Wed, 22 Dec 2004, Deepak Seshadri wrote:
+
+> Hello group,
 > 
-> On Mandrake 10.0 router with htb shaping I have to use U32 classifier 
-> for inserting
-> packets to downlink qdiscs, because marking packets only work for uplink 
-> qdiscs.
-> Downlink packets are properly market, but always reach only default 
-> class without
-> U32. Why?
+> I make changes in the /etc/sysconfig/iptables file and then do a "service
+> iptables restart". Would this interrupt the established connections through
+> the firewall?
 
-The LARTC list is back up now.
+It can.  with connection tracking and matching on NEW ! syn, with a -j
+DROP it certainly will.
 
-Maybe what you see is a quirk of shaping on br0 rather than a real 
-interface. If you really need to mark then you could try using IMQ -
-www.linuximq.net
+Thanks,
 
-Andy.
+Ron DuFresne 
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        admin & senior security consultant:  sysinfo.com
+                        http://sysinfo.com
 
+...Love is the ultimate outlaw.  It just won't adhere to rules.
+The most any of us can do is sign on as it's accomplice.  Instead
+of vowing to honor and obey, maybe we should swear to aid and abet.
+That would mean that security is out of the question.  The words
+"make" and "stay" become inappropriate.  My love for you has no
+strings attached.  I love you for free...
+                        -Tom Robins <Still Life With Woodpecker>
 
 
