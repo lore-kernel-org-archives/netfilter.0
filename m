@@ -1,12 +1,15 @@
-From: "ale" <mystic@tin.it>
-Subject: Condition
-Date: Sun, 9 Mar 2003 20:19:59 +0100
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: [newbie]
+Date: Sun, 9 Mar 2003 16:50:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <004201c2e670$e03301c0$4201a8c0@decibelq2g3k3v>
+Message-ID: <200303091650.32340.Alistair@nerdnet.ca>
+References: <006901c2e62a$2d4ef780$3200a8c0@xp1700>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_003F_01C2E679.41F2D5E0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <006901c2e62a$2d4ef780$3200a8c0@xp1700>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +19,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Frederic SOSSON <fred_sos@swing.be>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_003F_01C2E679.41F2D5E0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	For this to work you would need to load 
+	ip_nat_Ftp and ip_conntrack_ftp with the parm
+	ports=21,113
+	otherwise the connection tracker and the nat will only watch
+	port 21.
 
-Hi.
 
-The string in the Example (iptables -A INPUT -p tcp -m condition =
---condition web_ok --dport 80 -j ACCEPT)
-doesn't work (error: multipe condition),bat if I invert the position of =
---dport 80 and -m condition --condition web_ok (iptables -A INPUT -p tcp =
---dport 80 -m condition --condition web_ok -j ACCEPT) it works properly.
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
+	
 
-BY.
-------=_NextPart_000_003F_01C2E679.41F2D5E0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>Hi.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><FONT size=3D3>The string in the =
-Example</FONT>=20
-(<FONT size=3D3>iptables -A INPUT -p tcp -m condition --condition web_ok =
---dport=20
-80 -j ACCEPT)</FONT></FONT></DIV>
-<DIV><FONT face=3DArial>doesn't work (error: multipe condition),bat if I =
-invert=20
-the position of --dport 80 and -m condition --condition web_ok (iptables =
--A=20
-INPUT -p tcp --dport 80 -m condition --condition web_ok -j ACCEPT) =
-</FONT><FONT=20
-face=3DArial>it works properly.</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>BY.</FONT></DIV></FONT></DIV></BODY></HTML>
+On March 9, 2003 05:53 am, Frederic SOSSON wrote:
+> Hi all,
+>
+> I'm juste a newbie in iptables ;)  My problem is, i have a linux box
+> routing my DSL connection, i set these rules:
+>
+> iptables -A FORWARD -i ppp0 -o eth0 -j ACCEPT
+> iptables -A FORWARD -i eth0 -o ppp0 -j ACCEPT
+> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+> iptables -A FORWARD -j LOG --log-prefix "Firewall: "
+>
+> == Great, i have acces to thet NET ! ==
+>
+> I have also a machine (192.168.0.50) in my local network running an FTP
+> client this one runing an identd daemon (port 113) to access to an FTP
+> server on the internet, i have added this rule
+>
+> iptables -t nat -A PREROUTING -p tcp --dport 113 -i ppp0 -j DNAT --to
+> 192.168.0.50:113
+>
+> But my FTP client tels me:
+>
+> [11:51:58] PORT 192,168,0,50,13,161
+> [11:51:58] 200 PORT command successful.
+> [11:51:58] LIST
+> [11:52:02] 425 Can't build data connection: No route to host.
+>
+> Any help would be appreciate ;)
+>
+>
+>
+> Frederic
 
-------=_NextPart_000_003F_01C2E679.41F2D5E0--
-
+-- 
 
