@@ -1,13 +1,12 @@
-From: "Raj Wurttemberg" <rajw@c64.us>
-Subject: RE: patch-o-matic documentation
-Date: Tue, 10 Sep 2002 17:51:06 -0400
+From: Sean Knox <sknox@sbcglobal.net>
+Subject: Re: patch-o-matic documentation
+Date: Tue, 10 Sep 2002 14:41:23 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000401c25914$2adcb300$d201a8c0@hornet>
+Message-ID: <00a901c25912$cf7a3010$aa01a8c0@sean>
 References: <001301c25912$44e5f600$3a00a8c0@am>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <001301c25912$44e5f600$3a00a8c0@am>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,42 +19,56 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: arif786@rogers.com, netfilter@lists.samba.org
 
-Arif,
+Hi Arif,
 
-From one of my posts last week, here is how I got iptables 1.2.7a
-installed on a fresh install of RH73:
+    The link you want is under the "Netfilter Extentions" HOWTO.
 
-/*Raj*/
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO.htm
+l
 
----------------
+Sean
 
-I am new to this mailing list and new to iptables. I have an x86 Linux
-system running RedHat 7.3 as my SMTP gateway. The default RedHat install
-was using iptables 1.2.5. I have recompiled my kernel (2.4.19) after
-applying the latest netfilter "Patch-o-matic" and I have compiled and
-installed iptables 1.2.7a.
+----- Original Message -----
+From: "Arif Mahmood" <arif786@rogers.com>
+To: <netfilter@lists.samba.org>
+Sent: Tuesday, September 10, 2002 2:37 PM
+Subject: RE: patch-o-matic documentation
 
-I am more of a user and could not find any good HOWTO files for this, so
-my example below is based completely on trial, error, and learning. :)
-Please advise or correct me if I did anything wrong. To get iptables
-installed on RedHat 7.3, I had to do several things:
 
-1) Run "chkconfig --list" to verify the run levels for the
-   installed iptables 1.2.5
-2) Copy the "iptables" file from the /etc/init.d to a temporary
-   directory for safe keeping.
-3) Run "rpm -e iptables" to remove the installed iptables 1.2.5
-4) Installed the new iptables 1.2.7a (/usr/local/sbin/)
-5) Made symbolic links to the iptables files from the /sbin
-   directory (RedHat default location)
-6) Copied the "iptables" file from my temporary directory back
-   to /etc/init.d directory
-7) Run "chkconfig --add iptables" to add the service back into
-   the RedHat configuration. *NOTE* I did not have to use the
-   run level numbers.
-8) Run "ntsysv" and enabled iptables
-9) Rebooted my server. Iptables 1.2.7a started properly
-
-Hope tis helps.
+> Antony Thanks for the link...
+>
+> I need the information to install the netfilter on my RH 7.3 Box. The
+> link doesn't show the procedure....
+>
+> Thanks and Best Regards,
+> Arif
+>
+> PS: Somehow when I replied to the Antony's email it went to his personal
+> email address instead of the mailing list, sorry for that.
+>
+>
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+> Sent: Tuesday, September 10, 2002 4:59 PM
+> To: netfilter@lists.samba.org
+> Subject: Re: patch-o-matic documentation
+>
+>
+> On Tuesday 10 September 2002 9:48 pm, Arif Mahmood wrote:
+>
+> > Hi everyone,
+> >
+> > Is there patch-o-matic documentation available on the net?
+>
+> http://www.netfilter.org/documentation/pomlist/pom-summary.html
+>
+> Antony.
+>
+> --
+>
+> Most people have more than the average number of legs.
+>
+>
 
 
