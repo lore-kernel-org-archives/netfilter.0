@@ -1,14 +1,14 @@
-From: Michael Gale <mgale@utilitran.com>
-Subject: Re: Hello .. Packet path :)
-Date: Wed, 3 Dec 2003 08:49:55 -0700
+From: "Mark E. Donaldson" <markee@bandwidthco.com>
+Subject: RE: Port Forwarding
+Date: Wed, 3 Dec 2003 08:27:54 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031203084955.7491f260.mgale@utilitran.com>
-References: <20031203083034.21e60e89.mgale@utilitran.com>
-	<20031203164647.GB28783@cannon.eng.us.uu.net>
+Message-ID: <200312031627.hB3GRhNC028551@server5.bandwidthco.com>
+References: <039a01c3b977$41188a80$6e69690a@RIMAS>
+Reply-To: <markee@bandwidthco.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031203164647.GB28783@cannon.eng.us.uu.net>
+In-Reply-To: <039a01c3b977$41188a80$6e69690a@RIMAS>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,67 +19,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: 'Remus' <rmocius@auste.elnet.lt>, netfilter@lists.netfilter.org
+
+A method that works well for me, and I use it extensively, is to place all
+your IP addresses in a text file, and feed the file to the script.  With
+this method, all you need to do is update (edit) the text file as needed for
+adding or deleting IP's.  For instance, if you wanted to sneak TFTP through
+the firewall (which I don't really recommend), you could add this rule:
+
+####################################################################
+# TFTP
+####################################################################
+# if TFTP enabled redirect to port 69 on internal TFTP server
+if [ "$TFTP_SERVER" = "1" ] ;
+then
+	while read TRUSTED;
+	do
+		$IPT -t nat -A PREROUTING -p udp -s $TRUSTED
+--destination-port 69 -i $FW_INET_IFACE -j LOG --log-level $LOG_LEVEL
+--log-prefix "DNAT IN TFTP OK: "
+		$IPT -t nat -A PREROUTING -p udp -s $TRUSTED
+--destination-port 69 -i $FW_INET_IFACE -j DNAT --to-destination
+$INTERNAL_TFTP:69
+	done < $TRUSTED_LIST
+fi
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Remus
+Sent: Wednesday, December 03, 2003 12:27 AM
 To: netfilter@lists.netfilter.org
+Subject: Port Forwarding 
+
+Hi folks,
+
+I have a PREROUTING rule:
+iptables -t nat -A PREROUTING -d $EXTERNALIP_1 -s some_external_IP -p 47 -j
+DNAT --to 192.168.0.19
+
+How to add more source addresses which will be able to connect?
 
 
-Thank you to all who replied :)
+Thanks in advance
 
-Michael.
-
-
-On Wed, 3 Dec 2003 11:46:47 -0500
-Ramin Dousti <ramin@cannon.eng.us.uu.net> wrote:
-
-> Daniel Chemko had an email on this subject not too long ago:
->  
-> Raw/PREROUTING
-> Mangle/PREROUTING
-> Nat/PREROUTING
-> Mangle/INPUT
-> Filter/INPUT
-> Mangle/FORWARD
-> Filter/FORWARD
-> Raw/OUTPUT
-> Mangle/OUTPUT
-> Filter/OUTPUT
-> Nat/OUTPUT
-> Mangle/POSTROUTING
-> Nat/POSTROUTING
->  
-> 
-> On Wed, Dec 03, 2003 at 08:30:34AM -0700, Michael Gale wrote:
-> 
-> > Hello,
-> > 
-> > 	I am trying to make a packet go through the least amount of chains / tables as possible for performance.
-> > 
-> > I have read through the online documentation about netfilter and this "Linux Firewalls Second Edition" book (which was ok). 
-> > 
-> > But I still have some questions about the order in which the tables are checked. Here is what I think happens when a pack comes in and should be forwarded to a internal machine
-> > 
-> > Firewall External interface:
-> > Packet comes in:
-> > NAT table PREROUTING 
-> > NAT talbe OUTPUT
-> > NAT table POSTROUTING
-> > filter table INPUT
-> > filter table OUTPUT or forward
-> > 
-> > Then you would have the same thing when the packet leaves the internal interface.
-> > 
-> > Of course this is if you break it down by interface first.
-> > 
-> > Please let me know if this is correct ?
-> > 
-> > -- 
-> > Michael Gale
-> > Network Administrator
-> > Utilitran Corporation
-> 
+Remus
 
 
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
+
 
