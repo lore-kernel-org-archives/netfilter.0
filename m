@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: NAT problem
-Date: Mon, 21 Oct 2002 16:15:55 +0100
+From: "Sander Sneekes" <sander@dmdsecure.com>
+Subject: Re: doing prerouting/postrouting/output logfile problems
+Date: Mon, 21 Oct 2002 19:25:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210211516.g9LFG0L32087@vulcan.rissington.net>
-References: <20021021130413.79139.qmail@web12906.mail.yahoo.com>
+Message-ID: <000701c27926$d6ca1040$0a007976@main>
+References: <1035208680.14664.26.camel@sander.dmdint.com> <200210211509.g9LF9lL32079@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021021130413.79139.qmail@web12906.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +17,130 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: nf <netfilter@lists.samba.org>
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-On Monday 21 October 2002 2:04 pm, saravanan sakthi wrote:
+Antony,
 
->   Here is my sinario...
+You were right i have 32 public ip. I think was not watching
+my typing very well.
 
- [ Large Ascii-art diagram snipped for brevity ]
+is working perfect know by changing the things you sayed
 
-This network setup simply will not work sensibly.
+thanks for the help.
 
-You have the following networks connected to each other:
+Cheers
+Sander
 
-10.1.1.0/16
-10.1.11.0/16
-10.1.9.0/16
-10.1.12.0/16
-10.0.0.0/8
 
-There is no sane way you can get the network addresses, all with a /16 
-netmask, to communicate.   Every one of the /16 networks has 10.1.0.0 as its 
-network address, and 10.1.255.255 as its broadcast address.   Yoou routers 
-simply will not know what to do.
 
-Also, the final network you listed, 10.0.0.0/8, covers all the other networks 
-combined - I don't know whether to say this is just as bad as the first four, 
-or even worse:-)
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Monday, October 21, 2002 5:09 PM
+Subject: Re: doing prerouting/postrouting/output logfile problems
 
-To summarise - before you start playing around with netfilter and trying to 
-control what *isn't* allowed through your routers (after all, that's what 
-netfilter is - a packet filter which doesn't allow some packets through which 
-otherwise would get routed), please create a network setup where you have 
-differen subnets on each segment, and it is possible to create some routing 
-tables which will work.
 
-As a first suggestion, changing all your netmasks to /24 would appear to do 
-the trick.
+> On Monday 21 October 2002 2:57 pm, Sander Sneekes wrote:
+>
+> > Hi,
+> >
+> > I got a firewall (redhat 7.2/iptables) with behind it a couple of
+> > servers running apache/mail etc.
+> >
+> > Now i have 36 public ip's and for the outside it seems like the
+> > server are running public ip's i do that as followed :
+>
+> You have 36 public IPs ???   Seems like a very strange number - 32 I could
+> understand, but 36 ?   Oh well....
+>
+> > firewall
+> > eth0 = x.x.x.x (public ip)
+> > eth1 = 192.168.2.1 (internal ip)
+> >
+> > webserver
+> >
+> > eth0 = 192.168.2.2
+> >
+> >  ${IPTABLES} -t nat -A PREROUTING -p tcp -d x.x.x.x --dport 80 -j DNAT
+> > --to-destination 192.168.2.2
+>
+> Looks good.   This will change the destination address of packets coming
+in
+> to your public IP so they reach the internal privately-addressed server.
+>
+> >  ${IPTABLES} -t nat -A POSTROUTING -p tcp -d 192.168.2.2 --dport 80 -j
+> > SNAT --to-source 192.168.2.1
+>
+> Why are you doing this ?   This will destroy the source address on packets
+> going to your internal server so everything looks like its coming from the
+> Firewall.   Most strange.
+>
+>
+> >  ${IPTABLES} -t nat -A OUTPUT -p tcp -d x.x.x.x --dport 80 -j DNAT
+> > --to-destination 192.168.2.2
+>
+> You do realise that the OUTPUT chain is only for packets originating on
+the
+> Firewall itself ?   This rule will change the destination address of any
+> packets created on the Firewall, going to the public IP, so that they go
+to
+> the private IP instead.   Why not just send them to the private IP in the
+> first place ?   This rule has nothing to do with packets being forwarded
+> through the Firewall.
+>
+> > This work perfect people from the outside using x.x.x.x are getting a
+> > nice website. And also people inside the network using x.x.x.x also
+> > getting a nice site.
+>
+> Ah.   That explains then why you are having to do the SNAT....
+>
+> > But now here is my problem because in the logfile's of the site I get
+> > all entry's coming from 192.168.2.1 instead off when a client viset
+> > our site their ip. How can i solve it.?
+>
+> If you remove the SNAT rule from the POSTROUTING chain you will get
+correct
+> entries in your webserver logfile.   However this will then break your
+> internal clients being able to access the public IP of the webserver
+(because
+> the reply will come back from the private IP and the client will not be
+> happy).
+>
+> I suggest you modify the SNAT rule so that it only applies to packets from
+> your local network:
+>
+> ${IPTABLES} -t nat -A POSTROUTING -p tcp -s 192.168.2.0/24 -d 192.168.2.2
+> --dport 80 -j SNAT --to-source 192.168.2.1
+>
+> The you will see correct public IPs in your webserver logifle for extenal
+> visitors, and 192.168.2.1 for all internal accesses - presumably you'd be
+> happy with this ?
+>
+> > I also use these lines for do mail traffic and I had some problems with
+> > open Relaying.
+>
+> Open Relaying is (a) a very bad thing to do, (b) nothing to do with
+netfilter
+> rules, and (c) quite likely to get your mail server blocked by various
+> anti-spam databases.   I suggest you correct your mail server
+configuration
+> file so that it is not an open relay.
+>
+> > Also because 192.168.2.1 was allowed to mail.
+>
+> Not sure what you mean by this, but I expect once you've sorted out the
+Open
+> Relay problem this will go away too.
+>
+> Antony.
+>
+> --
+>
+> Perfection in design is achieved not when there is nothing left to add,
+> but rather when there is nothing left to take away.
+>
+>  - Antoine de Saint-Exupery
+>
+>
 
-Antony.
-
--- 
-
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
 
