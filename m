@@ -1,53 +1,28 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: netfilter resets TCP conversation that was DNATed from the local machine to another
-Date: Tue, 1 Jul 2003 02:00:00 -0400
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307010200.00067.Alistair@nerdnet.ca>
-References: <3EFD10A2.6020807@adsl-209-204-165-151.sonic.net> <20030630142908.GA29083@cannon.eng.us.uu.net> <3F00986E.4040306@adsl-209-204-165-151.sonic.net>
-Reply-To: Alistair@nerdnet.ca
+From: "David S. Miller" <davem@redhat.com>
+Subject: Re: Oops in replace_in_hashes (ip_net_core.c) 2.4.19
+Date: Tue, 01 Jul 2003 02:47:32 -0700 (PDT)
+Sender: linux-net-owner@vger.kernel.org
+Message-ID: <20030701.024732.71580915.davem@redhat.com>
+References: <S261808AbTGAJfh/20030701093537Z+14616@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F00986E.4040306@adsl-209-204-165-151.sonic.net>
-Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <linux-net-owner@vger.kernel.org>
+In-Reply-To: <S261808AbTGAJfh/20030701093537Z+14616@vger.kernel.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Michael <freeware@adsl-209-204-165-151.sonic.net>, Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: mikesmith1@btconnect.com
+Cc: linux-net@vger.kernel.org, netfilter@lists.netfilter.org
 
-On June 30, 2003 04:07 pm, Michael wrote:
+   From: Mike Smith <mikesmith1@btconnect.com>
+   Date: Tue, 1 Jul 2003 10:52:58 +0000
 
->
-> That's Squid looking up my domain. (Why twice? I don't know.) The OUTPUT
-> chain in the nat table is
->
-> Chain OUTPUT (policy ACCEPT)
->  target prot opt in out source     destination
->  DNAT   tcp  --  *  *   0.0.0.0/0  1.2.3.5     multiport dports 80,443
-> to:192.168.0.8 DNAT   tcp  --  *  *   0.0.0.0/0  1.2.3.6     multiport
-> dports 80,443 to:192.168.0.9
->
->
+   please CC me, I'm not subscribed. I'm getting occasional oopses
+   from my Linux box -- one every week or two -- and I finally managed
+   to capture one (see below -- it's transcribed by hand). This is a
+   RH7.2 based box, running kernel 2.4.19. I'm using iptables NAT
+   to share my ADSL line. In case it's relevant, I'm using Johan
+   Verrept's speedtch driver for my USB-attached SpeedTouch ADSL
+   modem. 
 
-	Please read this page
-	
-	http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO-3.html
-
-	Why are you DNATting in OUTPUT?
--- 
-
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
-
+I believe 2.4.21 has a fix for this, but the netfilter
+experts will know better.
