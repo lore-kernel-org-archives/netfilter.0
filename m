@@ -1,10 +1,10 @@
-From: "Paul" <andnicky@myrealbox.com>
-Subject: Can iptables create alias IP for another box?
-Date: Sat, 21 Dec 2002 18:51:06 -0500
+From: "Mark Ryan" <markryan@cfl.rr.com>
+Subject: Help with game server
+Date: Sat, 21 Dec 2002 21:06:11 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1040514666.5163ee60andnicky@myrealbox.com>
+Message-ID: <000001c2a95e$b93651c0$0501a8c0@underworld>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,29 +18,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-An SNAT & a DNAT rule didn't work for me, and I'm too dumb to know what to =
-do next.
+I have a linux firewall/router with iptables firewall script.  I am
+trying to run a Medal of Honor game server so that me and a friend can
+play.
+ 
+I only want him to be able to connect...however I can't seem to get the
+rules right.  It seems that Medal of Honor is using port 12203.  I have
+the following rules but they don't work:
 
-Behind our firewall which NATs everything, I have a server (A) with one IP =
-1.2.3.4 that needs to be reachable also thru a second IP like 10.5.6.7.  =
-The application won't support adding an alias IP.
+These to allow the connection:
+$IPTABLES -A INPUT -p udp -i $EXT_IF -s 68.99.10.xx -d 67.8.168.xx
+--dport 12203 -j ACCEPT
+$IPTABLES -A INPUT -p tcp -i $EXT_IF -s 68.99.10.xx -d 67.8.168.xx
+--dport 12203 -j ACCEPT
 
-If I give the second IP to box B's eth0, can iptables make box B emulate an=
- alias IP for box A?  It only has to work for port 80 traffic but be nice=
- if it did more.
+These to forward to internal machine:
+$IPTABLES -t nat -A PREROUTING -p tcp --dport 12203 -i eth1 -s
+68.99.10.xx -j DNAT --to 192.168.1.5:12203
+$IPTABLES -t nat -A PREROUTING -p udp --dport 12203 -i eth1 -s
+68.99.10.xx -j DNAT --to 192.168.1.5:12203
+ 
+Am I doing something wrong?
+ 
+Mark
 
-I was trying to do something like this on box B (from error-prone memory, w=
-ith B's address 10.5.6.7):
-
-> iptables -t nat -A PREROUTING -d 10.5.6.7 -p tcp --dport 8080 -j DNAT --t=
-o 1.2.3.4:80
-
-> iptables -t nat -A POSTROUTING -d 1.2.3.4 -p tcp --dport 80 -j SNAT --to =
-10.5.6.7
-
-any ideas will be appreciated.
-
-Paul
-NJ Dept of Health & Senior Services
 
 
