@@ -1,17 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: poptop connection problem
-Date: 24 Oct 2002 21:17:57 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: what do the contents of /proc/net/ip_tables_names mean?
+Date: Thu, 24 Oct 2002 22:19:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1035487077.15747.0.camel@elendil>
-References: <200210231602.00745.roy@karlsbakk.net>
-	<200210231518.g9NFI4L02942@vulcan.rissington.net>
-	<200210241245.52685.roy@karlsbakk.net>
-	<200210241155.g9OBtEe04312@vulcan.rissington.net> 
-	<005101c27b89$90256120$8c01a8c0@sundaram>
+Message-ID: <20021024211932.XLJJ17202.mta01-svc.ntlworld.com@there>
+References: <Pine.LNX.4.44.0210241437140.1620-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005101c27b89$90256120$8c01a8c0@sundaram>
+In-Reply-To: <Pine.LNX.4.44.0210241437140.1620-100000@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,26 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Sundaram Ramasamy <sun@percipia.com>
-Cc: Netfilter mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-Le jeu 24/10/2002 =E0 20:17, Sundaram Ramasamy a =E9crit :
-> tcpdump -i eth0 proto 47 or port 1723
-> the above command not showing any  information.=20
-> my iptables command:
-> iptables -A INPUT -i eth0 -p tcp --dport 1763 -j ACCEPT
-> iptables -A INPUT -i eth0 -p 47 -j ACCEPT
+On Thursday 24 October 2002 7:44 pm, Robert P. J. Day wrote:
 
-There's a typo here !
+>   in looking through the system script for iptables under red hat 8.0,
+> i notice the occasional reference to the file
+> /proc/net/ip_tables_names, which contains, one per line, the names
+> of one of more of the possible netfilter tables (filter, nat
+> and/or mangle).
+>
+>   what does it mean for a table to have its name in this file?
 
-iptables -A INPUT -i eth0 -p tcp --dport 1723 -j ACCEPT
-					 ^^^^
+It means that this particular netfilter system supports rules in those tables.
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+If you compile netfilter without mangle table support and then try to add 
+rules to the mangle table, you will get errors.
+
+By reading this file you can find out which tables are supported on a given 
+machine.
+
+Antony.
+
+-- 
+
+The difference between theory and practice is that
+in theory there is no difference, whereas in practice there is.
 
