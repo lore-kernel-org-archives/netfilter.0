@@ -1,11 +1,10 @@
-From: dhiraj.2.bhuyan@bt.com
-Subject: RE: new tcp connections, without SYN
-Date: Wed, 9 Apr 2003 17:04:33 +0100
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: [PATCH] admin-prohibited option. Let us look at it again.
+Date: Wed, 9 Apr 2003 17:28:41 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7497DCA1C240C042B28F6657ADFD8E09268777@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <Pine.LNX.4.51.0304091722270.12113@dns.toxicfilms.tv>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,45 +14,156 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: mklingens@ism.nl, netfilter@lists.netfilter.org
-
-I tried sending an "ACK" packet from behind my Netfilter firewall to a
-machine on the public side that actually doesn't exist.
-
-A look in the /proc/net/ip_conntrack tells me that Netfilter tracked this
-connection as "ESTABLISHED" but "UNREPLIED". So Netfilter does infact allow
-starting a TCP connection with an ACK packet.
-
-dhiraj
-
-
------Original Message-----
-From: Martijn Klingens [mailto:mklingens@ism.nl]
-Sent: 09 April 2003 14:59
 To: netfilter@lists.netfilter.org
-Subject: Re: new tcp connections, without SYN
 
+Hello,
 
-On Wednesday 09 April 2003 15:06, Cedric Blancher wrote:
-> Timers for Netfilter's conntrack should be the same as TCP stacks. So,
-> if conntrack times out, then destination TCP stack should time out too.
-> that means if a ACK gets so delayed that related conntrack entry gets
-> dropped, than it would be also dropped by destination TCP stack.
+Harald wrote in:
+http://lists.netfilter.org/pipermail/netfilter-devel/2002-December/009962.html
 
-Aaah... that might explain my problem with 'new, not syn'.
+that we should add this option and make an INCOMPATIBILITIES file as Jozsef
+suggested. Also as Jozsef suggested this patch does not have kernel version
+checking, just a warning in the man page, the INCOMPATIBILITIES file and
+the '-j REJECT --help' message.
 
-Problem is that our firewall is a non-masquerading router for a class C
-subnet 
-and that we don't have the ability to set the timeouts on all machines
-behind 
-it.
+Please recall our exchange of opinions back then and review the patch to
+the netfilter tree:
 
-Isn't there a workaround to avoid this problem on the netfilter machine?
+ patch-o-matic/extra/admin-prohib.patch      |   34 ++++++++++++++++++++++++++++
+ patch-o-matic/extra/admin-prohib.patch.help |    9 +++++++
+ userspace/INCOMPATIBILITIES                 |    6 ++++
+ userspace/extensions/libipt_REJECT.c        |   16 ++++++++++++-
+ userspace/iptables.8                        |    7 ++++-
+ 5 files changed, 69 insertions(+), 3 deletions(-)
 
--- 
-Martijn
+Regards,
+Maciej
 
+diff -Nru netfilter.orig/patch-o-matic/extra/admin-prohib.patch netfilter/patch-o-matic/extra/admin-prohib.patch
+--- netfilter.orig/patch-o-matic/extra/admin-prohib.patch	1970-01-01 01:00:00.000000000 +0100
++++ netfilter/patch-o-matic/extra/admin-prohib.patch	2003-04-09 16:43:50.000000000 +0200
+@@ -0,0 +1,34 @@
++diff -Nru linux.bak/include/linux/netfilter_ipv4/ipt_REJECT.h linux/include/linux/netfilter_ipv4/ipt_REJECT.h
++--- linux.bak/include/linux/netfilter_ipv4/ipt_REJECT.h	2003-04-08 20:21:22.000000000 +0200
+++++ linux/include/linux/netfilter_ipv4/ipt_REJECT.h	2003-04-09 16:40:05.000000000 +0200
++@@ -9,7 +9,8 @@
++ 	IPT_ICMP_ECHOREPLY,
++ 	IPT_ICMP_NET_PROHIBITED,
++ 	IPT_ICMP_HOST_PROHIBITED,
++-	IPT_TCP_RESET
+++	IPT_TCP_RESET,
+++	IPT_ICMP_ADMIN_PROHIBITED
++ };
++
++ struct ipt_reject_info {
++diff -Nru linux.bak/net/ipv4/netfilter/ipt_REJECT.c linux/net/ipv4/netfilter/ipt_REJECT.c
++--- linux.bak/net/ipv4/netfilter/ipt_REJECT.c	2003-04-08 20:21:56.000000000 +0200
+++++ linux/net/ipv4/netfilter/ipt_REJECT.c	2003-04-09 16:41:07.000000000 +0200
++@@ -1,6 +1,7 @@
++ /*
++  * This is a module which is used for rejecting packets.
++  * Added support for customized reject packets (Jozsef Kadlecsik).
+++ * Added support for ICMP type-3-code-13 (Maciej Soltysiak). [RFC 1812]
++  */
++ #include <linux/config.h>
++ #include <linux/module.h>
++@@ -330,6 +331,9 @@
++ 	case IPT_ICMP_HOST_PROHIBITED:
++     		send_unreach(*pskb, ICMP_HOST_ANO);
++     		break;
+++    	case IPT_ICMP_ADMIN_PROHIBITED:
+++		send_unreach(*pskb, ICMP_PKT_FILTERED);
+++		break;
++ 	case IPT_TCP_RESET:
++ 		send_reset(*pskb, hooknum == NF_IP_LOCAL_IN);
++ 	case IPT_ICMP_ECHOREPLY:
+diff -Nru netfilter.orig/patch-o-matic/extra/admin-prohib.patch.help netfilter/patch-o-matic/extra/admin-prohib.patch.help
+--- netfilter.orig/patch-o-matic/extra/admin-prohib.patch.help	1970-01-01 01:00:00.000000000 +0100
++++ netfilter/patch-o-matic/extra/admin-prohib.patch.help	2003-04-09 16:47:14.000000000 +0200
+@@ -0,0 +1,9 @@
++Author: Maciej Soltysiak <solt@dns.toxicfilms.tv>
++Status: Working, causes incompatibilities.
++
++This patch adds --reject-with admin-prohib option to the REJECT targe
++making it compliant with RFC 1812 and making an incompatibility
++with kernels that do not support this ipt_REJECT.c option.
++
++Usage of this option with kernels that do not support will effect in
++a DROP, not REJECT.
+diff -Nru netfilter.orig/userspace/INCOMPATIBILITIES netfilter/userspace/INCOMPATIBILITIES
+--- netfilter.orig/userspace/INCOMPATIBILITIES	1970-01-01 01:00:00.000000000 +0100
++++ netfilter/userspace/INCOMPATIBILITIES	2003-04-09 16:53:01.000000000 +0200
+@@ -0,0 +1,6 @@
++INCOMPATIBILITIES:
++
++- The REJECT target has an '--reject-with admin-prohib' option which used
++  with kernels that do not support it, will result in a plain DROP instead
++  of REJECT.  Use with caution.
++  Kernels that do support it:
+diff -Nru netfilter.orig/userspace/extensions/libipt_REJECT.c netfilter/userspace/extensions/libipt_REJECT.c
+--- netfilter.orig/userspace/extensions/libipt_REJECT.c	2003-04-08 21:49:15.000000000 +0200
++++ netfilter/userspace/extensions/libipt_REJECT.c	2003-04-09 16:59:53.000000000 +0200
+@@ -9,6 +9,16 @@
+ #include <iptables.h>
+ #include <linux/netfilter_ipv4/ip_tables.h>
+ #include <linux/netfilter_ipv4/ipt_REJECT.h>
++#include <linux/version.h>
++
++/* If we are compiling against a kernel that does not support
++ * IPT_ICMP_ADMIN_PROHIBITED, we are emulating it.
++ * The result will be a plain DROP of the packet instead of
++ * reject. -- Maciej Soltysiak <solt@dns.toxicfilms.tv>
++ */
++#ifndef IPT_ICMP_ADMIN_PROHIBITED
++#define IPT_ICMP_ADMIN_PROHIBITED	IPT_TCP_RESET + 1
++#endif
 
+ struct reject_names {
+ 	const char *name;
+@@ -35,7 +45,9 @@
+ 	{"icmp-host-prohibited", "host-prohib",
+ 	 IPT_ICMP_HOST_PROHIBITED, "ICMP host prohibited"},
+ 	{"tcp-reset", "tcp-reset",
+-	 IPT_TCP_RESET, "TCP RST packet"}
++	 IPT_TCP_RESET, "TCP RST packet"},
++	{"icmp-admin-prohibited", "admin-prohib",
++	 IPT_ICMP_ADMIN_PROHIBITED, "ICMP administratively prohibited (*)"}
+ };
+
+ static void
+@@ -64,6 +76,8 @@
+ "                                a reply packet according to type:\n");
+
+ 	print_reject_types();
++
++	printf("(*) See man page or read the INCOMPATIBILITES file for compatibility issues.\n");
+ }
+
+ static struct option opts[] = {
+diff -Nru netfilter.orig/userspace/iptables.8 netfilter/userspace/iptables.8
+--- netfilter.orig/userspace/iptables.8	2003-04-08 21:49:17.000000000 +0200
++++ netfilter/userspace/iptables.8	2003-04-09 17:11:20.000000000 +0200
+@@ -852,8 +852,9 @@
+ .BR icmp-host-unreachable ,
+ .BR icmp-port-unreachable ,
+ .BR icmp-proto-unreachable ,
+-.BR "icmp-net-prohibited or"
+-.BR icmp-host-prohibited ,
++.BR icmp-net-prohibited ,
++.BR "icmp-host-prohibited or"
++.BR "icmp-admin-prohibited (*)"
+ which return the appropriate ICMP error message (\fBport-unreachable\fP is
+ the default).  The option
+ .B tcp-reset
+@@ -862,6 +863,8 @@
+ .I ident
+ (113/tcp) probes which frequently occur when sending mail to broken mail
+ hosts (which won't accept your mail otherwise).
++.TP
++(*) Using icmp-admin-prohibited with kernels that do not support it will result in a plain DROP instead of REJECT
+ .SS SNAT
+ This target is only valid in the
+ .B nat
 
