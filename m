@@ -1,13 +1,10 @@
-From: =?ISO-8859-1?Q?Ren=E9_Gallati?= <draxinusom@gmail.com>
-Subject: Re: ip + mac authentication
-Date: Wed, 19 Jan 2005 15:55:21 +0100
-Message-ID: <50f03b970501190655386250c1@mail.gmail.com>
-References: <20050119103603.82231.qmail@web30810.mail.mud.yahoo.com>
-Reply-To: =?ISO-8859-1?Q?Ren=E9_Gallati?= <draxinusom@gmail.com>
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: why am I getting this syn packet
+Date: Wed, 19 Jan 2005 10:59:18 -0400
+Message-ID: <JKENKBGIPCFNFMNFENJPCEMICJAA.peter.marshall@caris.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050119103603.82231.qmail@web30810.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Linux Query <linux_query@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 19 Jan 2005 02:36:03 -0800 (PST), Linux Query
-<linux_query@yahoo.com> wrote:
->=20
-> Hi all!
->=20
-> I want to ensure that each of my clients can have
-> access to the net only with the ip address which is
-> specifically assigned to him / her. Is the following
-> going to work ?
->=20
-> iptables -I FORWARD -o externalinterface -s
-> xx.xx.xx.xx -m mac --mac-source yy:yy:yy:yy:yy -j
-> ACCEPT
->=20
-> or is it required to be done in some other way ?
->=20
 
-You already received advice on how it can be done. I'll just add here
-that you should not forget that changing one's MAC address is as easy
-as changing an IP address. Many people blindly believe it is not
-possible or hard to change a MAC address but it is in fact very easy.
+I have a stand alone proxy server in my dmz.  It has an internal IP (that
+internal users connect to), and an external IP.
+I am seeing the following on my internal firewall logs.  I am not sure why
+the proxy would be trying to send a syn packet to the internal.
 
-So all you can do is really force an IP/MAC pair, but you cannot
-prevent that someone impersonates another system that is also allowed
-to communicate.
 
---=20
-C U
+Jan 19 10:56:40 radium kernel: DROP: prxy-int IN=eth1 OUT=eth0
+SRC=192.168.1.254 DST=192.168.201.109 LEN=60 TOS=0x00 PREC=0x00 TTL=63
+ID=57253 DF PROTO=TCP SPT=60145 DPT=113 WINDOW=5840 RES=0x00 SYN URGP=0
 
-     - -- ---- ----- -----/\/  Ren=E9 Gallati  \/\---- ----- --- -- -
+Thanks,
+P
+
 
