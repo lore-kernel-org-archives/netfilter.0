@@ -1,12 +1,12 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: rc.firewall script
-Date: Wed, 12 Nov 2003 09:03:16 -0800 (PST)
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Forwarding GnomeMeeting to internal network
+Date: Wed, 12 Nov 2003 12:56:56 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031112170316.69571.qmail@web40204.mail.yahoo.com>
-References: <Pine.LNX.4.53.0311101822110.1446@hardon.truncatedtetrahedron.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122EA2@alderaan.smgtec.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.53.0311101822110.1446@hardon.truncatedtetrahedron.com>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,101 +17,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Kelly Shutt <tetrahedron@hardon.truncatedtetrahedron.com>, netfilter@lists.netfilter.org
+To: Julien Didron <admin@tripnotik.dyndns.org>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+
+If you are using a newish version of Netfilter, you can execute
+something like the following:
+
+echo "1000" >
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait
+
+This would set TCP CLOSE_WAIT timeouts to 1000 seconds. The default
+number is 3 days, so within that time, any traffic that does not close
+the connection properly will linger inside the conntrack systems.
+
+I don't have the option to fix the bad system. I do Nagios probes for
+Windows 2000 RDP uptimes using tcp socket probing (I know I could use
+RPC, blah blah), but the RDP connections are never fully closed by the
+windows machine, so within a couple days of probing various servers, I
+have quite a large conntrack table.=20
 
 
---- Kelly Shutt <tetrahedron@hardon.truncatedtetrahedron.com> wrote:
-> Can someone look over my rc script.  I'm relatively new to iptables, so I
-> just want to make sure I'm not doing something that's just totally insane.
-> Any input on this would be nice, I'm still trying to figure out exactly
-> how secure i want to get with this.
-> 
-> Thanks,
-> Kelly Shutt> ##!/bin/sh
-> echo -e "- rc.firewall ruleset -"
-> #IPTABLES=/sbin/iptables
-> IPTABLES=/usr/sbin/iptables
-> 
-> 
-> echo "Verifying that all kernel modules are ok"
-> /sbin/depmod -a
-> 
-> 
-> #/sbin/insmod ip_nat_ftp
-> #/sbin/insmod ip_conntrack_ftp
-> 
-> 
-> echo "Enabling packet forwarding in the kernel"
-> echo "1" > /proc/sys/net/ipv4/ip_forward
-> 
-> 
-> echo "Enabling dynamic addressing measures"
-> echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-> 
-> 
-> echo "Flushing old IP Tables"
-> $IPTABLES -F
-> $IPTABLES -X
-> 
-> 
-> echo "Setting the INPUT policies"
-> $IPTABLES -P INPUT REJECT
-> echo "  -Setting tcp packet policies"
-> $IPTABLES -A INPUT -p tcp --dport 21 -j ACCEPT		#ftp
-> $IPTABLES -A INPUT -p tcp --dport 22 -j ACCEPT		#ssh
-> $IPTABLES -A INPUT -p tcp --dport 25 -j ACCEPT		#smtp
-> $IPTABLES -A INPUT -p tcp --dport 37 -j ACCEPT		#time
-> $IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT		#domain
-> $IPTABLES -A INPUT -p tcp --dport 80 -j ACCEPT		#http
-> $IPTABLES -A INPUT -p tcp --dport 113 -j ACCEPT		#auth
-> $IPTABLES -A INPUT -p tcp --dport 3333 -j ACCEPT	#eggdrop
-> echo "  -Setting icmp packet policies"
-> $IPTABLES -A INPUT -p icmp --icmp-type 8 -j ACCEPT	#echo
-> $IPTABLES -A INPUT -p icmp --icmp-type 11 -j ACCEPT	#time extend
-> echo "  -Setting udp packet policies"
-> $IPTABLES -A INPUT -p udp --dport 53 -j ACCEPT		#domain
-> $IPTABLES -A INPUT -p udp -i eth1 --dport 67 --sport 68 -j ACCEPT	#dhcp
-> requests
-> 
-> 
-> echo "Setting the OUTPUT policies"
-> $IPTABLES -P OUTPUT ACCEPT
-> 
-> 
-> echo "Setting the FORWARD policies"
-> $IPTABLES -P FORWARD ACCEPT
-> $IPTABLES -t nat -A PREROUTING -p tcp --dport 3389 -i eth0 -j DNAT
-> --to-destination 192.168.0.2-192.168.0.100
-> 
-> 
-> echo "Enabling SNAT (IPMASQ) functionality on eth0"
-> $IPTABLES -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> 
-> 
-> echo -e "\nDone.\n"
-> 
+-----Original Message-----
+From: Julien Didron [mailto:admin@tripnotik.dyndns.org]=20
+Sent: Wednesday, November 12, 2003 5:11 AM
+To: Netfilter Mailing List
+Subject: Re: Forwarding GnomeMeeting to internal network
+
+Hi again,
 
 
-Perhaps not that important...but it's good to know. when you flush you only
-flush your filter table yet later in the script you place rules in a nat
-table... You might want to flush those as well before calling nat rules
-again..otherwise you get reaccuring nat lines...
+Thanks for the answer Antony.
+I'll then grant this box a fixed IP using DHCP declaration with the MAC=20
+adress.
 
-iptables -F
-iptables -t nat -F
+Concerning the ip_conntrack table, I indeed have a sort of worm on my
+network=20
+called "MLdonkey" ;o) (it's on some other box on the network), process
+that I=20
+kill everytime the problem occurs, but with no success : i still get the
+very=20
+same error line in syslog.
+after increasing the value of ip_conntrack_max, I monitored the traffic
+on=20
+the outgoing interface, that was very little : say from 150B/s to 500B/s
+up=20
+and down.
+For information my local network (this is home) is composed of 4
+machines=20
+ranging from mail server (smtp and pop) to DDNS, DHCP and web server ...
+But=20
+I really don't think it to be a "large" network :o)
 
-The above solves the problem. Remember to do this if you ever use the mangle
-table as well.
-
-Hope this helps 
-SBlaze
-
-=====
-In the absence of order there will be chaos.
-
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
 
