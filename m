@@ -1,14 +1,11 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: kernel2.6.2-3 + iptables/shorewall
-Date: Thu, 19 Feb 2004 07:29:32 -0800
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Overruns ?
+Date: Thu, 19 Feb 2004 08:32:22 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402190729.32891.teastep@shorewall.net>
-References: <1077202137.4302.12.camel@gb7tf.org.uk> <200402190707.10094.teastep@shorewall.net>
+Message-ID: <20040219083222.7e4dc5a3@mgalepc.utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200402190707.10094.teastep@shorewall.net>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,21 +16,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Richard Bown <richard.bown@blueyonder.co.uk>, 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Thursday 19 February 2004 07:07 am, Tom Eastep wrote:
-> On Thursday 19 February 2004 06:48 am, Richard Bown wrote:
-> 
-> (although the first 2.6.2 kernel that I successfully
-> tested was built on a Mandrake 9.0 box).
+Hello,
 
-Correction -- it's running Drake 9.2.
+	Not sure if this is the place to ask but when I do a ifconfig I see some
+overruns. I have tried google and man ifconfig but can not find what a "overrun"
+is.
 
--Tom
+eth0      Link encap:Ethernet  HWaddr 00:E0:81:25:A6:92  
+          inet addr:10.10.10.173  Bcast:10.10.10.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:9639161 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:9598780 errors:0 dropped:0 overruns:21 carrier:0
+          collisions:0 txqueuelen:100 
+          RX bytes:2726609687 (2600.2 Mb)  TX bytes:1986194437 (1894.1 Mb)
+          Interrupt:10 Base address:0xb000 
+
+
+
 -- 
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
-
-
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
