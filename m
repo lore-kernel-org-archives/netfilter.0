@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: to use or not to use stateful capabilities
-Date: Mon, 5 Apr 2004 14:19:11 +0100
+Subject: Re: Is this config OK, plus where should I be logging...
+Date: Mon, 5 Apr 2004 14:34:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404051419.11291.Antony@Soft-Solutions.co.uk>
-References: <28662.1081169609@zworg.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200404051434.04761.Antony@Soft-Solutions.co.uk>
+References: <000001c41ad1$692d25b0$0464a8c0@stu> <200404051011.16437.Antony@Soft-Solutions.co.uk> <200404050914.19563.Alistair Tonner <>>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <28662.1081169609@zworg.com>
+In-Reply-To: <>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,82 +21,50 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 05 April 2004 1:53 pm, __ Radien__ wrote:
+On Monday 05 April 2004 2:14 pm, Alistair Tonner, the man with no email 
+address, wrote:
 
-> Antony, I made mistake in specifying the port greater than 1024, and I
-> meant  >1024.
+> 	(on an aside Antony ... what value do you see in a smoll system config of
+> breaking the traffic down into user chains based on direction of traffic?
+> -- and only using the builtins to get the packets into those user chains?)
 
-Good, but remember that not all client connections will come from source
-ports >1024 - some will be from ports <=1024, so you have to allow for both.
+I see no benefit in that unless your traffic rules are sufficiently complex to 
+make them easier to understand if you break them down into multiple user 
+chains (and for what I think you described as a "small system", you wouldn't 
+have that complexity).
 
-> Anyway, for a more complex configuration same as example you wrote,
-> can you tell me what is the benefit?
+Most systems below an unreasonable level of complication have rules which fall 
+into the following categories:
 
-Suppose you have the five servers I mentioned: web, dns, ftp, mail and news.
+1. Clients on local LAN accessing servers on Internet.
+2. Clients on local LAN accessing servers on DMZ.
+3. Systems on the Internet accessing servers on DMZ.
+4. Servers on DMZ accessing the Internet.
+5. Replies to any/all the above.
 
-Let's see what rules we would need:
+For the very simplest systems of course you don't even have categories (2), 
+(3) or (4).
 
-1. Stateful
+For most small systems, (1) is very simple - allow everything.
+(2) and (4) (for a simple setup) provide the same services, so combined rules 
+can be used without bothering about the input interface.
+(3) is the area where your level of paranoia determines how complex your rules 
+get.
+(5) is a single rule on the whole firewall allowing Established / Related 
+packets.
 
-iptables -A FORWARD -i $DMZ -o $EXT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 80 -d $WEB -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 53 -d $DNS -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p udp --dport 53 -d $DNS -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 21 -d $FTP -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 25 -d $MAIL -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 119 -d $NEWS -j ACCEPT
-
-2. Non-stateful
-
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 80 -d $WEB -j ACCEPT
-iptables -A FORWARD -i $DMZ -o $EXT -p tcp --sport 80 -s $WEB -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 53 -d $DNS -j ACCEPT
-iptables -A FORWARD -i $DMZ -o $EXT -p tcp --sport 53 -s $DNS -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p udp --dport 53 -d $DNS -j ACCEPT
-iptables -A FORWARD -i $DMZ -o $EXT -p udp --sport 53 -s $DNS -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 21 -d $FTP -j ACCEPT
-iptables -A FORWARD -i $DMZ -o $EXT -p tcp --sport 21 -s $FTP -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 25 -d $MAIL -j ACCEPT
-iptables -A FORWARD -i $DMZ -o $EXT -p tcp --sport 25 -s $MAIL -j ACCEPT
-iptables -A FORWARD -i $EXT -o $DMZ -p tcp --dport 119 -d $NEWS -j ACCEPT
-iptables -A FORWARD -i $DMZ -o $EXT -p tcp --sport 119 -s $NEWS -j ACCEPT
-
-... and these rules don't even allow for the second data channel on FTP, and
-active connections (which are very difficult to do with non-stateful rules)
-
-You see how the stateful version is simpler, easier to understand, and in the
-case of ftp, actually makes full use of the protocol *possible*?
-
-
-The other example I quoted was internal clients.   Suppose for a moment that
-you want to allow internal clients to access any service they like out on the
-Internet.
-
-1. The stateful version:
-
-iptables -A FORWARD -i $EXT -o $LAN -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i $LAN -o $EXT -j ACCEPT
-
-2. The non-stateful version:
-
-iptables -A FORWARD -i $LAN -o $EXT -j ACCEPT
-... and then you have to work out a way for reply packets to come in from
-the outside, without simply opening up your entire network to the Internet
-using a rule such as:
-
-iptables -A FORWARD -i $EXT -o $LAN -j ACCEPT
-
-I really wouldn't know how to do this securely, therefore I always use
-stateful rules for the reply packets.
-
-Hopefully this answers your question?
+Therefore I see no reason not to put the whole lot of the above into a single 
+FORWARD chain, with the proviso that rule (5) comes first.
 
 Regards,
 
 Antony.
 
 -- 
-People who use Microsoft software should be certified.
+I don't know, maybe if we all waited then cosmic rays would write all our 
+software for us. Of course it might take a while.
+
+ - Ron Minnich, Los Alamos National Laboratory
 
                                                      Please reply to the list;
                                                            please don't CC me.
