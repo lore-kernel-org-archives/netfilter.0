@@ -1,11 +1,9 @@
-From: "Michael D. Baldwin" <p@pcmike.net>
-Subject: FXP Support Broken?
-Date: Tue, 1 Jun 2004 08:35:01 -0400
+From: aksingh@hss.hns.com
+Subject: ipq_read and NF_ACCEPT
+Date: Tue, 1 Jun 2004 18:06:49 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001401c447d4$e110ccf0$13100e0a@jupiter>
-Reply-To: "Michael D. Baldwin" <p@pcmike.net>
+Message-ID: <OF05930183.BCDDA269-ON65256EA6.0044B86F@hss.hns.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,24 +15,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Sven Schuster <schuster.sven@gmx.de>, "Jee J.Z." <jz105@york.ac.uk>
+Cc: netfilter@lists.netfilter.org
 
-I'm currently running 1.2.9 and all of a sudden (well, not all of a sudden,
-I actually cannot pinpoint exactly when this issue arose) I can no longer
-FXP from/into my server. I've tried searching all sorts of lists and using
-google to find any help on this issue as netfilter relates to the 2.4.26
-kernel and I've come up empty-handed. I've also tried looking at the old
-ftp-fxp.patch in an old release of patch-o-matic, but that as well does NOT
-seem to work.
 
-Has anyone else noticed FXP not working on netfilter-1.2.9 and linux-2.4.26?
-Can anyone on the devel team report on FXP support directly in the netfilter
-code? Sorry for what may of been a dumb post, but I'd really like to have
-the ability to FXP yet again. Thank you.
 
---
-/p at pcmike dot net
-http://pcmike.net/
 
+
+hi,
+
+   i have made an application that reads using libipq functions, and a
+kernel module which delivers packet to it. I catch packets originating from
+the local machine, and in my user space libipq application i change the
+packet (that i get using ipq_read), set its mark field, change src/dest and
+then finally return a return code of NF_ACCEPT,
+   so this changed packet should go back to the kernel right ?, (this
+   packet i had caught in local_out hook).
+   Once i inject this packet, i expect the same apcket(with changed ip and
+   all) to hit post routing, so in my post routing hook function i wait for
+   a packet with skb->nfmark==some value, but this packet doesnt seem to be
+   getting caught at post_routing ??
+
+any clues ?
+
+thanks
+Amit
 
 
