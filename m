@@ -1,13 +1,12 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: Problem with iptables P-O-M
-Date: Tue, 22 Oct 2002 21:40:38 +0530
+From: blah blah <filt5447@yahoo.com>
+Subject: Re: Trouble with --dport
+Date: Tue, 22 Oct 2002 09:48:37 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <02ee01c279e5$8fcddc20$7cfcc5cb@nextto>
-References: <20021021233312.512.qmail@web40701.mail.yahoo.com> <200210221014.g9MAErL00581@vulcan.rissington.net> <01c901c279b7$fe7a5000$7cfcc5cb@nextto>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <20021022164837.2036.qmail@web10902.mail.yahoo.com>
+References: <200210221559.g9MFxOL01471@vulcan.rissington.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200210221559.g9MFxOL01471@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,62 +17,36 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
-Hi all
-thanks to Hard__warE
-i have rectified my problem
+Could be.  I am using the default kernel supplied with
+Redhat 7.3.
 
-hare
------ Original Message -----
-From: "hare ram" <hareram@sol.net.in>
-To: "Antony Stone" <Antony@Soft-Solutions.co.uk>;
-<netfilter@lists.netfilter.org>
-Sent: Tuesday, October 22, 2002 4:14 PM
-Subject: Problem with iptables P-O-M
+--- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+> On Tuesday 22 October 2002 2:35 pm, blah blah wrote:
+> 
+> > Thanks for all of the help.  Adding a "-m tcp"
+> appears
+> > to have fixed the problem.
+> 
+> Does this imply that you don't have TCP match
+> support compiled in to your 
+> kernel ?   What an extraordinary way to run a
+> firewall.....
+> 
+> Antony.
+> 
+> -- 
+> 
+> If the human brain were so simple that we could
+> understand it,
+> we'd be so simple that we couldn't.
+> 
 
 
-> Hi all
->
-> iam using redhat 7.2 with iptable 1.2.5 rpm
-> iam trying to patch the iptables with P-o-M
-> i was patched only one option iplimit
-> its patched with
->
-> /var/tmp/patchomatic/netfilter/patch-o-matic/runme
-> ../userspace/extensions/libipt_iplimit.c
->
-> patch is applied
-> then
-> i run in kernal
->
-> make dep
-> make
-> make bzImage
-> make modules
-> make install
-> make modules_install
->
-> when iam doing make modules_install, iam getting following error
-> any one can point me where iam doing wrong
->
->
->
-> find kernel -path '*/pcmcia/*' -name '*.o' | xargs -i -r ln -sf ../{}
-pcmcia
-> if [ -r System.map ]; then /sbin/depmod -ae -F System.map  2.4.18-3custom;
-> fi
-> depmod: *** Unresolved symbols in
-> /lib/modules/2.4.18-3custom/kernel/net/ipv4/netfilter/ipt_iplimit.o
-> depmod:         ip_conntrack_find_get
-> make: *** [_modinst_post] Error 1
->
-> thanks
-> advance
->
-> hare
->
->
->
-
+__________________________________________________
+Do you Yahoo!?
+Y! Web Hosting - Let the expert host your web site
+http://webhosting.yahoo.com/
 
