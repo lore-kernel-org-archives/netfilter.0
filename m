@@ -1,9 +1,8 @@
-From: Alberto Sierra <albertux@gmail.com>
-Subject: Re: about ip_conntrack_buckets
-Date: Sun, 28 Nov 2004 15:50:50 -0600
-Message-ID: <115f94404112813505fc750e3@mail.gmail.com>
-Reply-To: Alberto Sierra <albertux@gmail.com>
-Mime-Version: 1.0
+From: Roberto Jung Drebes <drebes@inf.ufrgs.br>
+Subject: Simple sk_buff question
+Date: Sun, 28 Nov 2004 22:53:09 -0200
+Message-ID: <09BEF1EC-41A1-11D9-B8CC-000A957B2B6C@inf.ufrgs.br>
+Mime-Version: 1.0 (Apple Message framework v619)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -16,32 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
->>On Sat, 2004-11-27 at 14:04, Alberto Sierra wrote:
->> i was reading some netfilter tunning article and found a comment about
->> /proc/sys/net/ipv4/netfilter/ip_conntrack_buckets but when i issued a
->> cat to check the value of the file, the system said it didn't exist,
->> it this bad? what could happen if not specified?
->>
->> thanks
->>
->> Alberto
+Hello there,
 
->kernel version?
+I am working in a simple netfilter module, and in some situations it 
+has to duplicate received IP packets. It does this with something like:
 
->the ip_conntrack_buckets variable appears after applying:
+clone_skb = skb_clone(skb, GFP_ATOMIC);
+ip_rcv(clone_skb, clone_skb->dev, NULL);
+return NF_ACCEPT;
 
-> submitted/76_conntrack_bucket_sysctl.patch
+Should I call kfree_skb(clone_skb) after the ip_rcv(), or will the 
+cloned sk_buff be freed when it reaches upper level protocols?
 
->from POM, circa Thu Nov 27 06:28:59 2003...  sounds like the kernel you
->are running does not have this patch applied to it.
+Sorry if the question is really not netfilter specific, but it is 
+related to another question I will do next.
 
-im using version 2.4.22, with the iprange patch only, i found the
-ip_conntrack_buckets default value on the dmesg file, but, what is the
-submitted/76_conntrack_bucket_sysctl.patch? i can't find information
-on this patch on the netfilter page.do i really need it?
+Thanks in advance,
 
-thanks.
+
+-- 
+Roberto Jung Drebes <drebes@inf.ufrgs.br>
+Porto Alegre, RS - Brasil
+http://www.inf.ufrgs.br/~drebes/
+
 
