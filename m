@@ -1,13 +1,12 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: iptables delay connection phase
-Date: 30 Jun 2003 09:33:04 +0200
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: PCAnywhere and netfilter
+Date: Mon, 30 Jun 2003 13:27:13 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1056958383.8463.14.camel@raylinux.internal>
-References: <002d01c33ed7$360fc600$8101a8c0@tani>
+Message-ID: <Pine.LNX.4.44.0306301314470.31613-100000@localhost>
+References: <3F00135A.5070707@belfordhk.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-bRsJo/3PJmVxx/l5b4VO"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002d01c33ed7$360fc600$8101a8c0@tani>
+In-Reply-To: <3F00135A.5070707@belfordhk.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,110 +16,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: cc <cc@belfordhk.com>
+Cc: netfilter@lists.netfilter.org
+
+Hi Edmund,
+
+On Mon, 30 Jun 2003, cc wrote:
+
+> ACCEPT     tcp  --  anywhere             192.168.5.31       tcp dpt:5631
+> ACCEPT     udp  --  anywhere             192.168.5.31       udp dpt:5632
+> ACCEPT     tcp  --  192.168.5.31         anywhere           tcp dpt:5631
+> ACCEPT     udp  --  192.168.5.31         anywhere           udp dpt:5632
+
+Is this a listing from FORWARD or PREROUTING? In fact, could you send 
+the output of "iptables -L -n -v" and "iptables -t nat -L -n -v"?
+
+> I've even modified the script to the following:
+> (Yes, it is a trial and error effort as I've exhausted
+> my limited knowledge in what's going on.)
+> 
+> PC_INT_IP="192.168.5.31"
+> EX_IP="aa.bb.cc.dd"
+> 
+> $IPTABLES -t nat -A PREROUTING -i eth0 -d $EX_IP -p tcp \
+>           --dport 5631 -j DNAT --to $PC_INT_IP
+> $IPTABLES -t nat -A PREROUTING -i eth0 -d $EX_IP -p udp \
+>           --dport 5632 -j DNAT --to $PC_INT_IP
+
+Which interface is your external, and which is internal? If eth0 is 
+external, and you have an ACCEPT ESTABLISHED rule, then all you need is 
+the two rules above, and:
+
+> $IPTABLES -A FORWARD -i eth0 -d $PC_INT_IP -p tcp --dport 5631 -j ACCEPT
+> $IPTABLES -A FORWARD -i eth0 -d $PC_INT_IP -p udp --dport 5632 -j ACCEPT
+
+> Here's where I'm completely confused.  Let's say:
+>  I = some Internet IP
+>  L = some LAN IP
+> Fo = firewall's external IP,
+> Fi = firewall's internal IP
+>  P = PCAnywhere machine.
+> 
+> I -> Fo -> Fi -> P
+
+I think this is the wrong way to look at NAT, although it's probably OK 
+for routing.
+
+Basically there are 3 stages:
+
+- Packet arrives at machine (destination field is EX_IP)
+- Packet passes through PREROUTING which rewrites the destination to 
+  PC_INT_IP. The source address is not changed and the Firewall internal 
+  IP (Fi) is not involved.
+- Packet passes through FORWARD and is filtered based on the NEW 
+  destination IP address (PC_INT_IP)
+
+The reply packets should be covered by an ESTABLISHED rule, if any.
+
+You could try to telnet from outside to EX_IP port 5631. If it says "Press 
+[ENTER]" then your rules are OK. If it gives "Connection refused" then the 
+internal machine is not listening. If it times out after 30 seconds then 
+the NAT is still broken.
+
+Please send tcpdumps of internal interface, along with "iptables -L ..."
+as requested above.
+
+> Does anyone have a working PCAnywhere-permitted firewall script?
+
+Not a script, but it works for us here.
+
+I've added netfilter@lists.netfilter.org back onto the CC: list, so that 
+you can benefit from the advice of others as well as me, and our 
+discussion should be recorded to help others in future.
+
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
 
---=-bRsJo/3PJmVxx/l5b4VO
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-Make sure that your rc.firewall allows auth (port 113). That is most
-likely causing your delay.
-
-On Mon, 2003-06-30 at 09:14, eNet wrote:
-> Hello List,
-> =20
-> I am new in iptables and list.
-> =20
-> I have problem when my dialup clients trying to check their emails.
-> There is a delay because of iptables. On that box I use linux kernel
-> 2.4.19 and rc.firewall=20
-> =20
-> Here are more details of what is happening:
-> =20
-> Case  1. without iptables . It is OK. No delay.
-> 19:45:51.756818 arp who-has xxx.xxx.xxx.1 tell xxx.xxx.xxx.129
-> 19:45:51.756837 arp reply xxx.xxx.xxx.1 is-at yy:yy:yy:yy:yy
-> 19:45:51.756920 xxx.xxx.xxx.129.2814 > NS1.enet.org.al.pop3: S
-> 1490445489:1490445489(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-> 19:45:51.756988 NS1.enet.org.al.pop3 > xxx.xxx.xxx.129.2814: S
-> 401842756:401842756(0) ack 1490445490 win 5840 <mss
-> 1460,nop,nop,sackOK>=20
-> (DF)
-> 19:45:51.757102 xxx.xxx.xxx.129.2814 > NS1.enet.org.al.pop3: . ack 1
-> win 17520 (DF)
-> 19:45:51.761677 xxx.xxx.xxx.1.48021 > xxx.xxx.xxx.129.auth: S
-> 387191140:387191140(0) win 5840 <mss 1460,sackOK,timestamp 251690774=20
-> 0,nop,wscale 0> (DF) 19:45:51.761856 xxx.xxx.xxx.129.auth >
-> xxx.xxx.xxx.1.48021: R 0:0(0) ack 387191141 win 0
-> =20
-> etc...
->=20
-> Case 2. iptables activated. Problem: delay
-> 20:00:43.670848 xxx.xxx.xxx.129.2824 > NS1.enet.org.al.pop3: S
-> 1713847144:1713847144(0) win 16384 <mss 1460,nop,nop,sackOK> (DF)
-> 20:00:43.670903 NS1.enet.org.al.pop3 > xxx.xxx.xxx.129.2824: S
-> 1342878817:1342878817(0) ack 1713847145 win 5840 <mss
-> 1460,nop,nop,sackOK>=20
-> (DF)
-> 20:00:43.671015 xxx.xxx.xxx.129.2824 > NS1.enet.org.al.pop3: . ack 1
-> win 17520 (DF)
-> 20:00:43.672185 xxx.xxx.xxx.1.48326 > xxx.xxx.xxx.129.auth: S
-> 1340299399:1340299399(0) win 5840 <mss 1460,sackOK,timestamp 251779965
-> 0,nop,wscale 0> (DF)
->=20
-> =20
-> now it goes around (!!!!!??)
-> =20
-> 20:00:43.672291 xxx.xxx.xxx.129.auth > xxx.xxx.xxx.1.48326: R 0:0(0)
-> ack 1340299400 win 0
-> 20:00:46.666594 xxx.xxx.xxx.1.48326 > xxx.xxx.xxx.129.auth: S
-> 1340299399:1340299399(0) win 5840 <mss 1460,sackOK,timestamp 251780265
-> 0,nop,wscale 0> (DF)
-> 20:00:46.666744 192.168.1.129.auth > xxx.xxx.xxx.1.48326: R 0:0(0) ack
-> 1 win=20
-> 0
-> 20:00:52.666607 192.168.1.1.48326 > xxx.xxx.xxx.129.auth: S=20
-> 1340299399:1340299399(0) win 5840 <mss 1460,sackOK,timestamp 251780865
-> 0,nop,wscale 0> (DF)
-> 20:00:52.666754 xxx.xxx.xxx.129.auth > xxx.xxx.xxx.1.48326: R 0:0(0)
-> ack 1 win=20
-> 0
->=20
-> untill here:
-> =20
-> 20:01:04.666637 xxx.xxx.xxx.1.48326 > xxx.xxx.xxx.129.auth: S
-> 1340299399:1340299399(0) win 5840 <mss 1460,sackOK,timestamp 251782065
-> 0,nop,wscale 0> (DF)
->=20
-> etc....=20
-> =20
-> Any help appreciated.
-> =20
-> Tani
-> =20
-> =20
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
-
---=-bRsJo/3PJmVxx/l5b4VO
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+/+evh1fuR/Bv+ygRAhGIAKCrj7yM2RVuaDx3arhIKFQ19vqWzACdGsSl
-BkmMU6NsEnWdMnJzqjrtIRo=
-=BADh
------END PGP SIGNATURE-----
-
---=-bRsJo/3PJmVxx/l5b4VO--
 
 
