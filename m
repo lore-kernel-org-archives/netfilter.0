@@ -1,14 +1,12 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Two IP add
-Date: 05 Jun 2003 15:29:06 +0200
+From: "Willem-Jan Meijer" <meyer3@chello.nl>
+Subject: Firewall troubles
+Date: Thu, 5 Jun 2003 15:43:12 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054819746.13885.39.camel@raylinux.internal>
-References: <200306051156.45624.pandre@darkstar.nom.za>
-	 <1054813152.1206.9.camel@india>
+Message-ID: <000001c32b68$6bc631d0$0500a8c0@m28721.findquick.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-+OcrCJQUEYH9406YT58O"
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0001_01C32B79.2F4F01D0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1054813152.1206.9.camel@india>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,78 +16,131 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Netfilter <netfilter@lists.netfilter.org>
 
+This is a multi-part message in MIME format.
 
---=-+OcrCJQUEYH9406YT58O
-Content-Type: text/plain
+------=_NextPart_000_0001_01C32B79.2F4F01D0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2003-06-05 at 13:38, Dharmendra.T wrote:
-> On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:=20
->         I would like to do the following:
->        =20
->         Stop MASQUESRADING to two servers say. 10.10.10.5 and 10.10.10.8,=
- how would i=20
->         do this with a rule.
->        =20
->         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers ip' -j MA=
-SQUERADE=20
->         now how would i put in two ip address's ?
->        =20
->        =20
->         	Hi
-> iptables -t nat -A POSTROUTING -s 10.10.10.5 -d 'sever ip' -j DROP=20
-> iptables -t nat -A POSTROUTING -s 10.10.10.8 -d 'sever ip' -j DROP=20
->=20
-> Should work=20
-No, that will drop the packets and they won't traverse any more
-tables/chains.
+Hello all,
 
-the -j return tells iptables to leave the POSTROUTING chain and
-continue, so no more POSTROUTING rules will be checked for that packet.
+I'm running debian 3.0r1 stable with all security and usual updates. I =
+was
+running a=20
+firewall wich is send with this e-mail as attachment.=20
 
-the nat table has these chains:
+It was running fine, but recently my hdd died and recovery was to =
+expensive
+and not=20
+necessary because I had a backup. I installed debian again, did all =
+updates
+and I wanted=20
+to load the firewall, but when I load this one, my remote login hangs, I
+can't ping=20
+my server anymore and my network isn't working anymore, but the script =
+has
+runned fine=20
+before. What is the problem? At this moment ipmasq is also installed to =
+keep
+my network=20
+running, this is conflicting, I know but I don't know anything else.
 
-PREROUTING
-POSTROUTING
-OUTPUT
+Can someone point me in the right direction? I'm using linux/debian from
+november 2002,=20
+so my knowledge is very small.
 
-A target of -j return means leave this chain and continue to the next.
+HTH,
 
-Ray
+Willem-Jan Meijer
+Netherlands
 
-> --=20
-> Regards
-> Dharmendra.T
->=20
->=20
-> This message is intended for the addressee only. It may contain privilege=
-d or Confidential information. If you have received this message in error,p=
-lease notify the sender and destroy the message immediately.Unauthorised us=
-e or reproduction of this message is strictly prohibited.
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+Windows: Where do you want to go today?
+MacOS:   Where do you want to be tomorrow?
+Linux:   Are you coming or what?
 
+------=_NextPart_000_0001_01C32B79.2F4F01D0
+Content-Type: text/plain;
+	name="fw-meijer.txt"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="fw-meijer.txt"
 
---=-+OcrCJQUEYH9406YT58O
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+echo -n "IPTables Firewall."
+IPTABLES=3D"/sbin/iptables"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+#FLUSH
+echo -n "Flush all tables."
+$IPTABLES --flush
+echo -n "."
+$IPTABLES --table nat --flush
+echo -n "."
+$IPTABLES --delete-chain
+echo -n "."
+$IPTABLES --table nat --delete-chain
+echo ". done"
 
-iD8DBQA+30Wih1fuR/Bv+ygRAniGAKCoyx7UUIRVq8Emh6Wx5R0UH2f16QCfSvN6
-lJZbC7CaFnFCv4oBpK3XBw4=
-=Eo00
------END PGP SIGNATURE-----
+echo -n " Setting up masquerading rules."
+# Set up IPFORWARDing and Masquerading
+$IPTABLES --table nat --append POSTROUTING --out-interface eth1 -j =
+MASQUERADE
+echo -n "."
+$IPTABLES --append FORWARD --in-interface eth1 -j ACCEPT
+echo ". done"
 
---=-+OcrCJQUEYH9406YT58O--
+echo -n "Setting rules for loopback device."
+# Allow loopback access.
+$IPTABLES -A INPUT -i lo -p all -j ACCEPT
+echo -n "."
+$IPTABLES -A OUTPUT -o lo -p all -j ACCEPT
+echo -n "."
+
+echo -n "Setting rules for eth0 device."
+# accept established connections
+$IPTABLES -A INPUT -i eht0 -m state --state ESTABLISHED,RELATED -j =
+ACCEPT
+echo -n "."
+#$IPTABLES -A INPUT -p tcp --tcp-option ! 2 -j REJECT --reject-with =
+tcp-reset
+#echo -n "."
+$IPTABLES -A INPUT -p tcp -i eth0 --dport 21 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p udp -i eth0 --dport 21 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p tcp -i eth0 --dport 22 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p udp -i eth0 --dport 22 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p tcp -i eth0 --dport 25 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p udp -i eth0 --dport 25 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p tcp -i eth0 --dport 80 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p udp -i eth0 --dport 80 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p tcp -i eth0 --dport 110 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p udp -i eth0 --dport 110 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p tcp -i eth0 --dport 65500:65535 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p udp -i eth0 --dport 65500:65535 -j ACCEPT
+echo -n "."
+$IPTABLES -A INPUT -p icmp -i eth0 -j ACCEPT
+echo ". done"
+
+echo -n " Setting rules for eth1 device."
+# Accept all incoming connections
+$IPTABLES -A INPUT -i eth1 -p all -j ACCEPT
+echo ". done"
+
+echo -n " Drop all other connection attempts."
+$IPTABLES -P INPUT DROP
+echo ". done"
+------=_NextPart_000_0001_01C32B79.2F4F01D0--
+
 
 
