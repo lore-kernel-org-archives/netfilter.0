@@ -1,14 +1,14 @@
-From: Jan Humme <jan.humme@xs4all.nl>
-Subject: Re: Re: unexpected problem with DNAT
-Date: Wed, 10 Jul 2002 18:53:55 +0200
+From: Tom Eastep <teastep@shorewall.net>
+Subject: Re: Destination Nat Loopback Clarified !
+Date: Wed, 10 Jul 2002 09:59:15 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <02071018535509.04513@Lms>
-References: <02071014505504.04513@Lms> <02071017494208.04513@Lms> <200207101555.g6AFtj813062@vulcan.rissington.net>
-Reply-To: jan.humme@xs4all.nl
+Message-ID: <85440000.1026320355@wookie.shorewall.net>
+References: <00e201c2282e$e9e12bd0$0300a8c0@W2KP01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200207101555.g6AFtj813062@vulcan.rissington.net>
+In-Reply-To: <00e201c2282e$e9e12bd0$0300a8c0@W2KP01>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,37 +18,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mark Ayad <mark@javamark.com>, "netfilter@lists.samba.org" <netfilter@lists.samba.org>
 
-On Wednesday 10 July 2002 17:55, Antony Stone wrote:
-> On Wednesday 10 July 2002 4:49 pm, Jan Humme wrote:
-> > On Wednesday 10 July 2002 16:43, Antony Stone wrote:
-> > > The mangle table might be your answer.
 >
-> etc...........
+> This has nearly go me licked, and so far there is no answer ?
 >
-> > I don't get it: the source original addresses are only SNATted *after*
-> > the FORWARD chain has already been filtered, there is no need to (ab)use
-> > the mangle chain for this purpose? Or am I misunderstanding something?
-> >
-> > So he can directly create one rule in FORWARD chain to drop the packets;
-> > but his problem seems to be that he doesn't know which IP-addresses he
-> > wants to block.
->
-> Ah.   Okay then; in that case I misunderstood the problem and I gave an
-> unhelpful solution.   Sorry.
->
-> If the original poster doesn't know what addresses s/he wishes to block,
-> then I can't think of a netfilter rule which will help :-)
 
-Harty-har-har.........!
+Well, I just set up the exact same scenario with Shorewall and it worked 
+fine. Unfortunately, I don't have the time right now to dig through your 
+rules and give you further advice.
 
-But I still don't understand the reason why you would mark (or even DROP) 
-packages at the mangle stage, if the same source IP is still available at the 
-filter stage?
+I'll try to get to it this evening.
 
-Please explain, you got me confused.
+Back to my real job,
+-Tom
+--
+Tom Eastep    \ Shorewall - iptables made easy
+AIM: tmeastep  \ http://www.shorewall.net
+ICQ: #60745924  \ teastep@shorewall.net
 
-Jan Humme.
 
