@@ -1,12 +1,13 @@
-From: "filipe_abrantes" <filipe_abrantes@netcabo.pt>
-Subject: routing table, sending packets through multiple interfaces
-Date: Sun, 11 Apr 2004 04:29:53 +0100
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: Packet sniffing... sort of
+Date: Sun, 11 Apr 2004 00:43:50 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5CD2BD8F1F23A943BAEBE96AB20C24980549DD64@VS1.hdi.tvcabo>
+Message-ID: <1081658629.2015.13.camel@localhost>
+References: <200404110154.39209.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200404110154.39209.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,54 +18,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-hi
+On Sat, 2004-04-10 at 20:54, Antony Stone wrote:
+> Hi people.
+> 
+> This is not strictly a netfilter question, but I'm wondering if maybe someone 
+> can help or make a suggestion?
+> 
+> I want to pick up a packet stream, but for an HTTPS connection, and using a 
+> standard packet sniffer like ethereal just gives me the encrypted SSLv3 
+> stuff, not the plaintext data which I need to see.
+> 
+> Can anyone think how I can see the content of packets from a browser running 
+> on my machine, which is posting a form back to a remote server somewhere, 
+> using HTTPS?
+> 
+> I can do anything I want on the client machine (and I can see the source code 
+> of the form page too), however when I try sending what I think is the same 
+> data back to the server from a Perl program instead of from my browser, the 
+> remote server complains at me (and not in a helpful way, either - it says 
+> "500 Internal Server Error").
+> 
+> Any suggestions gratefully received :)
+> 
+> Regards,
+> 
+> Antony.
 
-im not sure if this is the right list to ask this, dont be too harsh one =
-me :~
+This sounds like a good place for a legitimate man-in-the-middle
+attack.  I would suggest taking a look at ettercap
+(http://ettercap.sourceforge.net).  I have found it not only a good
+security tool but an excellent network analysis tool for tough jobs like
+sniffing on switched networks and intercepting and decoding https
+streams.  You can run it, place your station between the client and
+server and see all the traffic in the clear either in ettercap or in
+Ethereal - John
 
-
-this is my ipv6 routing table
-
-# route -A inet6 -n
-Kernel IPv6 routing table
-Destination                                 Next Hop                     =
-           Flags Metric Ref    Use Iface
-::1/128                                     ::                           =
-           U     0      0        0 lo
-2020::2030/128                              ::                           =
-           U     0      49       1 lo
-fe80::200:ff:fe00:0/128                     ::                           =
-           U     0      0        0 lo
-fe80::204:e2ff:fe64:9376/128                ::                           =
-           U     0      0        0 lo
-fe80::20c:6eff:fe35:6cc2/128                ::                           =
-           U     0      0        0 lo
-fe80::/64                                   ::                           =
-           U     256    0        0 eth0
-fe80::/64                                   ::                           =
-           U     256    0        0 eth1
-fe80::/64                                   ::                           =
-           U     256    0        0 aodv0
-ff02::1/128                                 ::                           =
-           U     1024   0        0 eth1
-ff02::1/128                                 ::                           =
-           U     1024   0        0 eth0
-::/0                                        ::                           =
-           U     1024   0        0 aodv0
-
-
-i want packets which destination is ff02::1 to be sent through both eth1 =
-and eth0, which doesn't happen with the above configuration...
-
-do i need to set up a socket for each interface(binding the socket to =
-that interface) in order to send through both interfaces, or is there =
-another way??
-
-
-thanks a lot for your time
-
-filipe
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
 
