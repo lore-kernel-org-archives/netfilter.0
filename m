@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Using mangle table to change source address, how?
-Date: Sat, 2 Nov 2002 14:09:01 +0000
+From: "Mihai Tanasescu" <cloud@sky.kappa.ro>
+Subject: IRC and Conntrack problem
+Date: Sat, 2 Nov 2002 17:42:56 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021102140904.GFGR292.mta03-svc.ntlworld.com@there>
-References: <m3ela425v6.fsf_-_@khem.blackfedora.com>
+Message-ID: <00d601c28286$83cf1390$6928a8c0@MIHAI>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00D3_01C28297.473651D0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <m3ela425v6.fsf_-_@khem.blackfedora.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,40 +16,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Saturday 02 November 2002 12:05 am, Mark Atwood wrote:
+This is a multi-part message in MIME format.
 
-> I have an interface eth1, with an IP address 192.168.23.100
->
-> I've configured eth1 to have a subinterface eth1:1, and
-> have given that subinterface an IP address 172.23.1.3.
->
-> There is a host on the segment that this interface is connected to
-> with an IP address of 172.23.1.2.
->
-> If I send packets to that host 172.23.1.2, the packets from me have a
-> source address of 192.168.23.100, not 172.23.1.3!
->
-> Can I use the mangle table to rewrite the source address?  If so,
-> what is the iptable command line?
->
-> Or is there an easier way?
+------=_NextPart_000_00D3_01C28297.473651D0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Use the nat table - that's what it's for.
+I have installed the kernel module for conntracking irc connections. =
+Still I can only receive dcc sends but I can't initiate any dcc send =
+sessions. I get the error message failed to connect or something like =
+that.=20
+What am I doing wrong?
 
-eg
+------=_NextPart_000_00D3_01C28297.473651D0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-iptables -A POSTROUTING -t nat -d 172.23.1.2 -j SNAT --to 172.23.1.3
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I have installed the kernel module for =
+conntracking=20
+irc connections. Still I can only receive dcc sends but I can't initiate =
+any dcc=20
+send sessions. I get the error message failed to connect or something =
+like=20
+that.&nbsp;<BR>What am I doing wrong?</FONT></DIV></BODY></HTML>
 
-Antony.
+------=_NextPart_000_00D3_01C28297.473651D0--
 
--- 
-
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
 
