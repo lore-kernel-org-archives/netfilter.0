@@ -1,13 +1,13 @@
 From: Jose Maria Lopez <jkerouac@bgsec.com>
-Subject: Re: web server in DMZ
-Date: 28 Sep 2004 16:27:41 +0200
+Subject: Re: Iptables
+Date: 28 Sep 2004 16:27:46 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1096376341.28905.27.camel@nostromo.bgsecm.com>
-References: <web-6416739@infinito.it>
+Message-ID: <1096376565.28905.32.camel@nostromo.bgsecm.com>
+References: <MAILwhABuLWBgAHM6H900000023@mail.netscan.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-6416739@infinito.it>
+In-Reply-To: <MAILwhABuLWBgAHM6H900000023@mail.netscan.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,23 +20,41 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-El mar, 28 de 09 de 2004 a las 12:21, hamals@infinito.it escribi=C3=B3:
-> I have a big problem
+El mar, 28 de 09 de 2004 a las 07:07, Contact escribi=C3=B3:
+> Hi,
 >=20
-> I have a web server in my DMZ, I reach it with his=20
-> internal IP 192.168.1.10 from my internal LAN, but I can't=20
-> reach them with his public IP.
+> I'm new to iptables and having a problem grasping the concept as well a=
+s the
+> syntax. I have read a lot of sites on this but just not getting it. Fir=
+st -
+> running rules. From what I can gather I need to have an rc.firewall fil=
+e
+> with the various rules and such in it - and have this started at boot. =
+Am I
+> close?  Second - the syntax. I want to be able to allow my local LAN fu=
+ll
+> access to the Linux box (Slackware 10). I also have a website which I w=
+ant
+> to allow everyone - except for a few domains and IP's, SSH which I want=
+ to
+> allow only certain IP's or domains, and Samba which I want to allow onl=
+y my
+> local LAN. This is where I'm really confused putting this all together.=
+ If
+> someone could explain this in plain english - or put me on to a really =
+easy
+> iptables for dummies type site, it would be appreciated.
 >=20
-> I did a DNAT and from internet everythings is ok, my web=20
-> server is working in right by DNAT.
+> This box is behind attached to a Linksys router and does not act as a N=
+AT.
+> It is just a simple little setup on a p166.
 >=20
-> Where is the problem?
+> Thanks
+>=20
 
-If you have a public IP in the external NIC of your
-server then it should be working OK. I don't know if
-you want it to respond directly to Internet or via
-DNAT. Anyway it should work as you have it configured.
-Check the IP in the external NIC.
+Read the Iptables Tutorial from
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+it explains everything you want to do and more.
 
 --=20
 Jose Maria Lopez Hernandez
