@@ -1,13 +1,12 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: again problem with alias / virtual interface
-Date: Tue, 20 Jul 2004 14:22:04 -0500
+From: =?ISO-8859-1?Q?Fr=E9d=E9ric_Gonzatti?= <fred99@libertysurf.fr>
+Subject: Forward a port ??!!
+Date: Tue, 20 Jul 2004 21:47:26 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40FD70DC.1010002@pbl.ca>
-References: <d3caf706513e42bc4d4a4a08209f5cd9@62.98.80.108> <40FC2286.3070005@pbl.ca> <007d01c46dae$0a45f330$eb53623e@x> <40FD6E81.10904@pbl.ca>
+Message-ID: <40FD76CE.6050501@libertysurf.fr>
+Reply-To: fred99@libertysurf.fr
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40FD6E81.10904@pbl.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +17,64 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Aleksandar Milivojevic wrote:
-[snip]
->    -A INPUT -i eth1 -p tcp -d 82.186.92.90 --dport 22 \
->       -m state --state NEW,ESTABLISHED
->    -A OUTPUT -o eth1 -p tcp -s 82.186.92.90 --sport 22 \
->       -m state --state ESTABLISHED
->    -A INPUT -i eth1 -p icmp -d 82.186.92.90 -m state --state RELATED
->    -A OUTPUT -o eth1 -p icmp -s 82.186.92.90 -m state --state RELATED
+Hi all,
 
-I forgot "-j ACCEPT" in all of the above.  Sorry for the omission...
+I''ve got a firewall with three cards : eth0 (LAN), eth1(DMZ) and eth2 
+(WAN).
+I'm trying to test port forward with iptables but it doesn't work !
+eth0 : 172.168.2.1 (I'm not using this card now)
+eth1: 192.168.2.1/255.255.255.0
+eth2: 192.168.3.1/255.255.255.0
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+On the DMZ I've put a computer (192.168.2.151/255.255.255.0) with sendmail.
+When I'm on this computer a telnet localhost 25 is working fine.
+I've connected a computer on eth2 with ip 192.168.3.2/255.255.255.0
+I would like to access to the computer with sendmail when I make a 
+telnet 192.168.3.1 but I've got a timeout response.
+
+My iptables script is :
+#!/bin/sh
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+modprobe ip_tables
+modprobe ip_nat_ftp
+modprobe iptable_filter
+modprobe iptable_nat
+
+iptables -F
+iptables -X
+
+iptables -N LOG_ACCEPT
+iptables -A LOG_ACCEPT -j LOG --log-prefix '[IPTABLES ACCEPT] : '
+iptables -A LOG_ACCEPT -j ACCEPT
+
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD ACCEPT
+
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+iptables -t nat -A PREROUTING -d 192.168.3.1 -p tcp --dport 25 -j DNAT 
+--to-destination 192.168.2.151:25
+
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --destination-port 25 -m 
+state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -o eth2 -i eth1 -p tcp --source-port 25 -m state 
+--state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -j DROP
+iptables -A INPUT -j DROP
+iptables -A OUTPUT -j DROP
+
+What it's wrong with this script ?
+
+Thanks
+
+    Frederic
+
+
 
