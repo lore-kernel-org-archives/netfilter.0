@@ -1,11 +1,13 @@
-From: "Micah Abrams" <micah@micahabrams.com>
-Subject: dns doctoring
-Date: Thu, 9 Jan 2003 01:03:00 -0700
+From: =?ISO-8859-1?Q?J=F6rg_Esser?= <jackfritt@boh.de>
+Subject: Re: length match problem
+Date: Thu, 09 Jan 2003 08:53:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FHEJJHLEAGOMBFDMFHNOAEIADKAA.micah@micahabrams.com>
+Message-ID: <3E1D2A66.6040503@boh.de>
+References: <3E1CA2BF.6050707@boh.de> <200301091039.44259.fabrice@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200301091039.44259.fabrice@netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,31 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-List --
 
-I'm building an iptables firewall to replace my pix 506.  The firewall will
-only have two interfaces for now.  My dns server sits outside my firewall on
-the internet and answers queries for both my internal network and the world.
-Of course it only contains real world ips.  The pix has an option (called
-alias) that doctors dns request from my internal lan so that the reply
-packet contains the internal ip address instead of the public address given
-out by my dns server.  This lets the internal machines access internal hosts
-via dns without having to run two dns servers.  For example with following
-command:
 
-alias (inside) 192.168.0.5 245.243.3.5 255.255.255.255
+Fabrice MARIE wrote:
 
-all dns queries passing through the pix containing the address 245.243.3.5
-are re-written to contain 192.168.0.5.  My question is, is there any way to
-do this with iptables?  How is everyone handling this?  I would really like
-to avoid having two dns servers.  I am very new to iptables so any and all
-help is much appreciated.
+>Hello Joerg,
+>
+>On Thursday 09 January 2003 06:14, Jackfritt wrote:
+>  
+>
+>>Ok I have the following problem.
+>>iptables -A OUTPUT -o ppp0 -p tcp -m length --length :40 -j MARK --set-mark 10
+>>That should mark all ACK's or not ?
+>>When I try to do this I get the error:
+>>iptables: Invalid argument
+>>[...]
+>>So now my question is what am I doin wrong ?
+>>    
+>>
+>
+>Typically when the only error message from iptables
+>is 'Invalid Argument', the actual error message would
+>be most of the time in the kernel log.
+>i.e. If I run your command above, it tells me
+>
+># dmesg
+>MARK: can only be called from "mangle" table, not "filter"
+>  
+>
+Hmm forget to look there (Just a newbie ;)
 
-Thanks
+>So, you should be using a -t mangle in front..
+>  
+>
+Thx that did it.
 
-~Micah
+>Have a nice day,
+>  
+>
+You too.
+
 
 
