@@ -1,14 +1,14 @@
-From: =?iso-8859-1?q?Andreas=20Wright?= <learnvoip@yahoo.co.uk>
-Subject: Using PRIO qdisc
-Date: Tue, 3 Dec 2002 10:28:46 +0000 (GMT)
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Too many ARP entries and Re: sendto: No buffer space available
+Date: 03 Dec 2002 14:08:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021203102846.86260.qmail@web14504.mail.yahoo.com>
-References: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net>
+Message-ID: <1038920934.8888.4.camel@elendil.intranet.cartel-securite.net>
+References: <571705138.20021202111645@pobox.com>
+	 <14127620470.20021202182836@pobox.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-104552463-1038911326=:30129"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net>
+In-Reply-To: <14127620470.20021202182836@pobox.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +18,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Andre Docena Correa <andre.docena@pobox.com>
+Cc: netfilter@lists.netfilter.org, andre.correa@pobox.com
 
---0-104552463-1038911326=:30129
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Le lun 02/12/2002 =E0 21:28, andre.correa@pobox.com a =E9crit :
+> But  there  is  still a question for me. Looking at my arp table, I
+> see that there are =3D~ 150 entries, seconds passing and more entries
+> coming, 20 seconds after I can have =3D~1100, it goes on until it reach=
+s
+> =3D~2200  entries,  then it goes back to the =3D~100 and starts over ag=
+ain.
 
+Wierd...
 
-Hello ,
+> I  have  less  then  50  NAT users. Is it normal to have some many ARP
+> entries with this variation? Looking the ARP table I see my "Internet"
+> interface with lots of entries, with internet host IP addresses and my
+> gateway's NIC MAC address.
+> Isn't ARP supposed to keep entries just to local network systems?
 
-I want to use PRIO qdisc to priortize packets coming from a known IP address.Can I specify a filter along with PRIO qdisc instead of using the default priomap.
+Yes it is.
+ARP is supposed to keep track of IP/MAC associations for network
+directly routed to interface, i.e. directly connected, aka local LANs.
 
-tc qdisc add dev eth0 root handle 1 : [filter]
+> Is it all normal? And if so, how big can gc_threash[1,2,3] be?
 
-If such a filter is possible what would be the syntax for specifying the IP address for example 1.2.3.4
-
-Regards,
-
-Andreas.
-
-
-
-
----------------------------------
-With Yahoo! Mail you can get a bigger mailbox -- choose a size that fits your needs
-
---0-104552463-1038911326=:30129
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-
-<P>Hello ,</P>
-<P>I want to use PRIO qdisc to priortize packets coming from a known IP address.Can I specify a filter along with PRIO qdisc instead of using the default priomap.</P>
-<P>tc qdisc add dev eth0 root handle 1 : [<FONT color=#ff0000>filter</FONT>]</P>
-<P>If such a filter is possible what would be the syntax for specifying the IP address for example 1.2.3.4</P>
-<P>Regards,</P>
-<P>Andreas.</P><p><p><br><hr size=1><a href="http://uk.yahoo.com/mail/tagline_xtra/?http://uk.docs.yahoo.com/mail_storage.html"><b><font face="Arial" size="2">With Yahoo! Mail you can get a bigger mailbox -- choose a size that fits your needs</font></b></a><br>
---0-104552463-1038911326=:30129--
+It is not normal. You should monitor ARP traffic on your network using
+arpwatch (see Freshmeat, available as .deb, .rpm too) to see if someone
+would be playing ARP cache poisoning (see http://www.arp-sk.org/).
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security expert  - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
