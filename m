@@ -1,12 +1,9 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: Block outbound host to specific port(s) using Masq./NAT?
-Date: Wed, 05 Jan 2005 14:41:36 +0200
-Message-ID: <41DBE080.2050204@hotpop.com>
-References: <5dda57be050103135225b4e665@mail.gmail.com>
+From: Benjamin Bostow <bbostow@exypnos.com>
+Subject: Limit Virus Effects on Web Server
+Date: Wed,  5 Jan 2005 07:44:13 -0700
+Message-ID: <20050105144413.15525.qmail@webmail02.mesa1.secureserver.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5dda57be050103135225b4e665@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,53 +14,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+I have a gateway that directs all internal web traffic to my website.
+The site makes use of extensive DB calls. When someone with a virus
+that connects to port 80 plugs in behind the gateway the DB goes to
+100% CPU usage. I am trying to limit this and try to filter out virus
+traffic from browser/user traffic. I was thinking I could use kinda the
+same rule as I have for preventing ping attacks but it doesn't seem to
+work. I have tried using "iptables -t nat -I PREROUTING 1 -p tcp -m tcp
+--dport 80 -m limit --limit 5/s --limit-burst 10 -j redirection_chain". 
+It seems that all traffic no matter how great still goes to my
+webserver. Also, is there a way to drop packets over a certain amount
+per time from one user?
 
-If you're getting into "greping" packets payload for different 
-apps/services, you can try layer 7 filtering - 
-http://l7-filter.sourceforge.net/
-
-regards,
-Georgi Alexandrov
-
-
-Jerry2A wrote:
-
->Hello - this is probably a dumb question....I'm using iptables for my
->home network (DSL) and I have masquerading, some port forwarding,
->etc., etc., and everything works great...EXCEPT....I have a situation
->where I occaisionally want to block outbound traffic from a certain
->host inside to a certain destination IP and/or port.  For example, I'd
->like to block one host from within my network from using Instant
->Messenger but still allow web surfing.  I've been able to dynamically
->block ALL outbound access to the internet but I'm unable to restrict
->access to certain destination ports.
->
->So this works:
->iptables -A INPUT -s 10.1.1.10 -j DROP
->iptables -A OUTPUT -d 10.1.1.10 -j DROP
->iptables -A FORWARD -d 10.1.1.10 -j DROP
->
->And I thought I could do something like this:
->iptables -A OUTPUT -s 10.1.1.10 -p tcp -m tcp --dport 5190 -j DROP
->iptables -A FORWARD -d 10.1.1.10 -p tcp -m tcp --dport 5190 -j DROP
->....but it has no effect.
->
->I've tried different combinations of "-d and -s" and "--dport and
->--sport" just to see if I was doing something backwards....no dice.  I
->was wondering if I needed to set up some kind of pre or post routing
->because of the masquerading?
->
->Any help would be appreciated.
->
->Thanks!
->
->Jerry A.
->
->
->  
->
+Benjamin
 
 
