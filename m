@@ -1,11 +1,15 @@
-From: "Tim Evans" <tkevans@tkevans.com>
-Subject: Log Entries with multiple PROTO fields?
-Date: Wed, 17 Mar 2004 10:10:56 -0400
+From: David Cannings <lists@edeca.net>
+Subject: Re: transparent proxy
+Date: Wed, 17 Mar 2004 14:21:12 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040317141056.M19130@tkevans.com>
-Reply-To: tkevans@tkevans.com
+Message-ID: <200403171421.12463.lists@edeca.net>
+References: <3C204966522884458700FF59D6EFB87A01CAFE@FORUS01.netpower.lan>
+Reply-To: david@edeca.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3C204966522884458700FF59D6EFB87A01CAFE@FORUS01.netpower.lan>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +20,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-What do these kind of log message mean?  Note there are two PROTO fields:
+On Wednesday 17 March 2004 12:33, Fredrik Emil Jensen wrote:
+> Thank you Antony, finally it's working for me.  I have another question
+> for the list; is it possible to use iptables to redirect any request on
+> port 80 to a specific web address?
+>
+> I know you can use the rule, iptables -t nat -A PREROUTING -p tcp -s
+> 192.168.1.0/24 -d 0/0 --dport 80 -j DNAT --to ip.address.xx.xx:80
+>
+> But my problem occurs when you have many different subnets and you want
+> subnet1 to be redirected to http://test.domain.com/site1, subnet2 to be
+> redirected to http://test.domain.com/site2 etc.
+>
+> Does anyone have any suggestions on how to do this with iptables, is it
+> possible? Or do I still need to use squid and squidGuard!
 
-Mar  8 08:19:43 kernel: IPT OUT_ICMP: IN= OUT=eth1 SRC=x.x.x.xDST=x.x.x.
-.x LEN=76 TOS=0x00 PREC=0xC0 TTL=64 ID=54844 PROTO=ICMP TYPE=11 CODE=0
-[SRC=x.x.x.x DST=x.x.x.x LEN=48 TOS=0x00 PREC=0x00 TTL=1 ID=0 DF PROTO=TCP
-SPT=110 DPT=4312 WINDOW=5840 RES=0x00 ACK SYN URGP=0 ]
+That's application level, the request is inside the HTTP packet (which is 
+inside the TCP packet, which is inside the IP packet, etc).  iptables 
+cannot do this, you would have to use a proxy such as Apache or Squid.
 
-Mar  8 09:24:14 kernel: IPT OUT_ICMP: IN= OUT=eth1 SRC=x.x.x.xDST=x.x.x.x
-  LEN=80 TOS=0x00 PREC=0xC0 TTL=64 ID=24045 PROTO=ICMP TYPE=11 CODE=0
-[SRC=x.x.x.x DST=x.x.x.x LEN=52 TOS=0x00 PREC=0x00 TTL=1 ID=27964 DF PROTO=TCP
-SPT=80 DPT=60884 WINDOW=57920 RES=0x00 ACK FIN URGP=0 ]
-
-
-
---
-Tim Evans, TKEvans.com, Inc.    |    5 Chestnut Court
-tkevans@tkevans.com             |    Owings Mills, MD 21117
-http://www.tkevans.com/         |    443-394-3864
-http://www.come-here.com/News/  |    
+David
 
