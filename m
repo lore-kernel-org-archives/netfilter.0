@@ -1,13 +1,13 @@
-From: David Harel <hareldvd@ergolight-sw.com>
-Subject: Re: How to block sending mail from local network.
-Date: Sun, 08 Feb 2004 11:39:06 +0200
+From: "Tarek W." <mailinglists1@hotpop.com>
+Subject: Re: wired route entry
+Date: Sun, 08 Feb 2004 17:18:37 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <402603BA.1060006@ergolight-sw.com>
-References: <4024C335.7080705@ergolight-sw.com> <20040207201511.GA2097@zion.homelinux.com>
+Message-ID: <1076253383.3008.8.camel@carve.personal.localdomain>
+References: <20040204124241.48917.qmail@web20721.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040207201511.GA2097@zion.homelinux.com>
+In-Reply-To: <20040204124241.48917.qmail@web20721.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,73 +17,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sven Schuster <schuster.sven@gmx.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Thanks,
+<snip source='/etc/sysconfig/network-scripts/ifup'>
+# Add Zeroconf route.
+if [ -z "${NOZEROCONF}" -a "${ISALIAS}" = "no" ]; then
+    ip route replace 169.254.0.0/16 dev ${REALDEVICE} 
+fi
+</snip>
 
-This works great.
 
-Sven Schuster wrote:
-
->Hi David, 
->
->On Sat, Feb 07, 2004 at 12:51:33PM +0200, David Harel told us:
+On Wed, 2004-02-04 at 14:42, ip tables wrote:
+> Hello Alexis and group,
 >  
->
->>Hi all,
->>
->>
->>I tried a command:
->>$IPTABLES -A OUTPUT -p TCP -i $LAN_IFACE -s $LAN_IP_RANGE --dport smtp 
->>-j DROP
->>but it did nothing.
->>    
->>
->
->This will only stop traffic generated on your gateway. To stop traffic
->going _through_ the gateway you will need to put this rule in the
->FORWARD rule instead of OUTPUT, so replace OUTPUT with FORWARD, you
->might try something like this:
->
->$IPTABLES -A FORWARD -p tcp --dprt 25 -i $LAN_IFACE -o $EXT_IFACE \
->	-j REJECT --reject-with tcp-reset
->
->HTH
->
->Sven
->
+> No these are not bound to be DHCP...i still donno what really causes
+> it.
 >  
->
->>What can I do to block those messages sending attempts?
->>
->>-- 
->>Thanks.
->>
->>David Harel,
->>
->>    
->>
->
->  
->
-
--- 
-Thanks.
-
-David Harel,
-
-==================================
-
-Home office +972 4 6921986
-Fax:        +972 4 6921986
-Cellular:   +972 54 534502
-Snail Mail: Amuka
-            D.N Merom Hagalil
-            13802
-            Israel
-Email:      hareldvd@ergolight-sw.com
-
+> Thanks and regards
+> 
+> Alexis <alexis@attla.net.ar> wrote:
+>         is this device configured to obtain its address via dhcp?
+>         
+>         
+>         ----- Original Message ----- 
+>         From: "ip tables" 
+>         To: 
+>         Sent: Tuesday, February 03, 2004 6:19 PM
+>         Subject: wired route entry
+>         
+>         
+>         > hello group(S)
+>         > 
+>         > I have installed redhat 9 (2.4.20 - 8) on an i686 with
+>         > 3 network cards fixed. When i start network services
+>         > it puts in an entry 
+>         > 
+>         > 169.254.0.0 255.255.0.0 eth2
+>         > 
+>         > why does this happen. This happen on boot also but i
+>         > managed to remove it with a route del in the rc.local.
+>         > What is the reason for this and how can i prevent
+>         > this.
+>         > 
+>         > Thanks and regards
+>         > 
+>         > __________________________________
+>         > Do you Yahoo!?
+>         > Yahoo! SiteBuilder - Free web site building tool. Try it!
+>         > http://webhosting.yahoo.com/ps/sb/
+>         > 
+>         > 
+>         
+> 
+> ______________________________________________________________________
+> Do you Yahoo!?
+> Yahoo! SiteBuilder - Free web site building tool. Try it!
 
 
