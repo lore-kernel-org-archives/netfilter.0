@@ -1,9 +1,10 @@
-From: "Markus Zeilinger" <mz@sea.uni-linz.ac.at>
-Subject: ip_send() function
-Date: Thu, 13 May 2004 13:56:03 +0200
+From: "Klemen Kecman" <klemen@sting.si>
+Subject: Re: Log files for iptables
+Date: Thu, 13 May 2004 13:59:36 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <ASERV1QzBxhJTANZwwP000003e2@aserv1.sea.uni-linz.ac.at>
-Reply-To: <mz@sea.uni-linz.ac.at>
+Message-ID: <004601c438e1$c7100750$6a02a8c0@klemen>
+References: <20040513092802.71510.qmail@web8302.mail.in.yahoo.com> <40A347C4.3030802@riafinancial.com> <200405131117.47320.Antony@Soft-Solutions.co.uk>
+Reply-To: "Klemen Kecman" <klemen@sting.si>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,38 +18,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Dear all,
+> On Thursday 13 May 2004 11:02 am, Oscar Arranz wrote:
+>
+> > Sameer Gurung wrote:
+> > >Hi,
+> > >  Can anybody tell me where are the log files for
+> > >iptables ....cant seem to find them on /var/log. Do I
+> > >have to configure / change /tweak somthing to enable
+> > >loging???
+> > >
+> > Look into /var/log/kernel .
+>
+> What distribution/s do you find that on, and what goes into it?   It
+doesn't
+> exist in Slackware, for example.
+>
+> Regards,
+>
+> Antony.
+>
+> --
+> "Reports that say that something hasn't happened are always interesting to
+me,
+> because as we know, there are known knowns; there are things we know we
+know.
+> We also know there are known unknowns; that is to say we know there are
+some
+> things we do not know. But there are also unknown unknowns - the ones we
+> don't know we don't know."
+>
+>  - Donald Rumsfeld, US Secretary of Defence
+>
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
 
-I am currently writing a paper for my studies about netfilter and Linux
-Firewalling. In this case I also write a chapter about packet handling
-through the Linux network stack.
-Several papers and also in Harald Welte's "The journey of a packet through
-the linux 2.4 network stack" mention a function ip_send() in the process of
-packet forwarding. According to Harald this function is defined in
-/include/net/ip.h. But I cannot find a definition there, and surprisingly I
-was not able to find the ip_send() function anywhere in the kernel source. I
-searched through Kernel 2.6.6, 2.4.6 and 2.4.0 but did not find any tracks
-of a ip_send() function!?!
+I run slackware and log output goes to /var/log/messages by default. I
+configured syslog to log into /var/log/iptables.
 
-Can you help me with this problem? Sorry if this is a stupid question, but I
-am a newbie in Linux networking. ;-)
-
-Thx a lot for your assistence!
-
-best regards,
-Markus
-
-------------------------------------------------
-Markus Zeilinger
-Institute for Systems Engineering and Automation 
-University of Linz 
-Altenberger Strasse 69 
-A-4040 Linz, AUSTRIA
-
-Tel.: +43-(0)732-2468-8869
-Fax:  +43-(0)732-2468-8878
-Mail: mz@sea.uni-linz.ac.at 
+Klemen
 
 
