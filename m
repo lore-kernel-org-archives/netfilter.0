@@ -1,12 +1,11 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Iptabels string module
-Date: Mon, 17 Mar 2003 16:24:44 -0800 (PST)
+From: "Shaun Hedges" <sh@realsecure.net>
+Subject: FORWARD in/out VS. states
+Date: Mon, 17 Mar 2003 22:04:09 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030318002444.63333.qmail@web40208.mail.yahoo.com>
-References: <3E70B46C.5030506@brandid.co.uk>
+Message-ID: <IAEOKBNDAKLABMLEEMMKOEMBDCAA.sh@realsecure.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E70B46C.5030506@brandid.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,73 +16,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Steve Cherry <steve.cherry@brandid.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Hi,
 
---- Steve Cherry <steve.cherry@brandid.co.uk> wrote:
-> Hello,
-> 
->         I'm new to the list & this is my first post, thanks for any help 
-> in advance.
-> 
-> Kernel version       2.4.7 (Linux RedHat)
-> Iptables version    1.2.5
-> 
-> I'm having some problems with the 'string module'
-> 
-> I managed to download Patch-o-matic and patch the kernel source with the 
-> string module, compile it, boot using the fresh kernel, compile & 
-> reinstall iptables with the new libiptb_striong.so library and then load 
-> the ipt_string module.
-> 
-> However when I use the ............-m string "text string 
-> here"............... in my rule set the config is accepted/loaded but 
-> has no effect at all, it's as if the rule never existed.
-> 
-> 
-> 
-> Background
-> 
-> I have transparent web proxy setup on DMZ, when any internal web traffic 
-> (Port 80) destined for the outside world hits the firewall the packet's 
-> destination IP gets translated to the web proxy's IP on the DMZ which 
-> inturn proxy's the request & serves the client. This all works fine, 
-> however I would like some destinations to not be proxied, for example 
-> 'hotmail.com'. This is where the 'string' module would come in handy, 
-> below is the rule with IP's removed
-> 
-> -t nat -A PREROUTING -s (internal IP subnet) -i (internal firewall 
-> interface) -p tcp -m tcp --dport 80 -m stat --state ESTABLISHED,NEW -m 
-> string --string "hotmail.com" -j ACCEPT
-> 
-> this rule appears before the rule that translates the destination IP 
-> address to the proxy's IP for all externally bound HTTP traffic. However 
-> the rule simply has no effect, all web traffic destined to 
-> http://www.hotmail.com still gets proxied?????
-> 
-> 
-> Any ideas anyone????
-> 
-> 
-> thanks
-> 
-> 
-> 
-> steve
-> 
-> 
+Our scenario:
 
-I don't know if you typed this rule in or copy and pasted from a shell..but it
-could be that if you copied from a shell your -m stat --state should be -m
-state --state etc etc.
+One firewall serving roughly 5000 in/out connections every second on avg.
 
+Our mission:
 
-=====
-"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
+To only allow FORWARD traffic coming from a trusted NIC or subnet out to the
+internet, while not letting any traffic at ALL back into that trusted NIC or
+SUBNET UNLESS it was initiated from within.
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Platinum - Watch CBS' NCAA March Madness, live on your desktop!
-http://platinum.yahoo.com
+Our problem:
+
+Using states (ip_conntrack) works, but performance is not good, connections
+are dropped/lost, etc.
+
+We want to somehow implement this without any connection tracking, can this
+be done?
+
+Our ifaces:
+
+eth1 ( 10.0.0.1 ) Trusted
+eth0:1 ( 2.2.2.1 ) Default gateway to 2.2.2.0/24
+eth1 ( 1.1.1.1 ) Small /31 subnet for routing, it's default gw is 1.1.1.2
+and vice versa, all 2.2.2.0/24 traffic routes over here
+
+So, we want 2.2.2.0/24 to be able to initiate any connections they want, and
+get the response it needs back, but we want no connections to be able to
+come in ( i.e. those annoying windows msg popup ads spammers are using, worm
+problems, icmp probes, etc ).
+
+I've read up and understand somewhat, but can't seem to figure out how to
+deal with this in/out issue and not using connection tracking.
+
+Thanks!
+
 
