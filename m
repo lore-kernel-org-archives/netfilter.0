@@ -1,8 +1,8 @@
-From: netfilter <netfilter@FrielTek.com>
-Subject: RE: upgrade to iptables from ipchains
-Date: Wed, 28 May 2003 13:40:46 -0500
+From: "SB CH" <chulmin2@hotmail.com>
+Subject: lots of ACK/FIN filtering (DPT=80) at web server.
+Date: Wed, 28 May 2003 08:46:13 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <6B61CBDA8C62344EB172855F4D94D74C042F3E@alpha.frieltek.com>
+Message-ID: <Sea1-F98nnh99RhOQmI000379a3@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,32 +14,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
-Cc: =?iso-8859-1?Q?=27Leonardo_Rodrigues_Magalh=E3es=27?= <leolistas@solucoesip.net>
+Content-Type: text/plain; charset="euc-kr"; format="flowed"
+Content-Transfer-Encoding: base64
+To: netfilter@lists.netfilter.org
 
->     would became this in iptables
-> 
-> iptables -N soporte
-> iptables -A soporte -s 10.0.1.1 -j ACCEPT
-> iptables -A soporte -j DROP
-> iptables -A FORWARD -s 10.0.0.0/25 -j soporte
-> iptables -t nat -A POSTROUTING -s 10.0.1.1 -j MASQUERADE
-
-And it should be noted that with these rules in place, all packets that get
-forwarded to the soporte chain will get DROPPED because the forward rule
-only forwards IP's in the range of 10.0.0.0-10.0.0.127 and the accept range
-is restricted to -only- IP 10.0.1.1.  
-
-The 4th rule should be:
-
-iptables -A FORWARD -s 10.0.0.0/16 -j soporte
-
-
-
-
-Cheers!
-John Friel III
-Frieltek Consulting, Inc.
-
+SGVsbG8sIGFsbC4KCkkgaGF2ZSBvcGVyYXRlZCBsaW51eCB3ZWIgc2VydmVyIGFuZCBleGVjdXRl
+ZCBpcHRhYmxlcyAxLjIuOC4KCmFuZCBJIGhhdmUgZm91bmQgc28gbG90cyBvZiBsb2dzIGxpa2Ug
+dGhpcyBBQ0ssRklOIGZpbHRlcmluZy4KU3VyZWx5LCBBQ0stRklOIGlzIGEgY29ubmVjdGlvbiBj
+bG9zaW5nIHN0ZXAsIHNvIHRoZXJlIGlzIG5vIHByb2JsZW0gZm9yIApjdXN0b21lcnMgYnV0IEkg
+d291bGQgbGlrZSB0byBrbm93IHdoeSB0aGlzIGhhcHBlbnMhIQpJIGd1ZXNzIHRoYXQgdGhlIHRp
+bWVvdXQgb2YgdGhlIGNvbm5lY3Rpb24gdHJhY2tpbmcgcmVsYXRlZC4KCgpNYXkgMjUgMTI6MzM6
+MDUgd3d3IGtlcm5lbDogSU49ZXRoMCBPVVQ9IFNSQz0yMTAuMTI2Lnh4eC54eCAKRFNUPTIxMS4x
+MC54eC54eCBMRU49NDAgVE9TPTB4MDAgUFJFQz0weDAwIFRUTD0xMTggSUQ9MzM3NiBERiBQUk9U
+Tz1UQ1AgClNQVD0zNjA4IERQVD04MCBXSU5ET1c9NjM1MjAgUkVTPTB4MDAgQUNLIEZJTiBVUkdQ
+PTAKCkRvIHlvdSBoYXZlIGFueSBwcm9ibGVtcyBsaWtlIG1lPwphbmQgd2hhdCdzIHRoZSBwcm9i
+bGVtIGFuZCBob3cgY2FuIEkgc29sdmUgdGhpcyBwcm9ibGVtPwoKClRoYW5rcyBpbiBhZHZhbmNl
+IGZvciB5b3VyIGtpbmQgb3BpbmlvcyEhCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwrIrsDOx8/A2i4gv8C0w8DHIL/uvLwg
+uau34SC758HWLCCxw8fVLCDA27jtLCDA/Lv9ILChwMy15SAgIApodHRwOi8vd3d3Lm1zbi5jby5r
+ci9mb3J0dW5lL2RlZmF1bHQuYXNwICAKCgo=
