@@ -1,13 +1,12 @@
-From: =?iso-8859-1?Q?Herv=E9?= <herve@lucidia.net>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: Two NICS with same IP and same client IP
-Date: Wed, 2 Feb 2005 20:47:32 -0000 (GMT)
-Message-ID: <57788.192.168.144.1.1107377252.squirrel@192.168.144.1>
-References: <27594E8BA9D5CA458F5EF87D88B6B48F019948@pxtvjoexd01.pxt.primeexalia.com>
-	<18348031.1107363459685.JavaMail.rct@kale>
-	<200502021841.35410.bob@zooid.com>
+Date: Wed, 2 Feb 2005 15:56:11 -0500
+Message-ID: <20050202205611.GA1221@bender.817west.com>
+References: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <200502021841.35410.bob@zooid.com>
+Content-Disposition: inline
+In-Reply-To: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,63 +18,95 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter  <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> On Wednesday 02 February 2005 16:57, Herv=E9 wrote:
->
->> Basically, the network interface where the packet originated has to
->> somehow be remembered at the routing stage. I only see source address
->> mangling to do that...
->>
->
-> It would seem that if you add two additional IPs to the NFS machine (on=
- a
-> dummy interface) and do a local DNAT to those IPs based on the incoming
-> nic,
-> that the correct routing tables/rules would be all that is needed to ro=
-ute
-> the return packets to the correct network.
->
-> Have a look at
->
->    http://www.policyrouting.org/PolicyRoutingBook/ONLINE/TOC.html
->
-> for the concepts and examples.  Chapter 5, in particular, covers the
-> routing
-> concepts your solution will need.
->
-> Note that ProxyARP uses the same ip on two interfaces and depends on th=
+On Wed, Feb 02, 2005 at 09:35:31AM -0000, Herv=E9 wrote:
+> Hello,
+>=20
+> I have a weird setup I would like to make work: I have two identical
+> subnets connected to one machine via two different NICs, like this:
+>=20
+> Server             |         | Client 1
+> eth0:192.168.100.1 |---------| 192.168.100.2
+>                    |                              | Client 2
+> eth1:192.168.100.1 |------------------------------| 192.168.100.2
+>=20
+> These two machines only access an NFS share on the server, but I assume
+> this is irrelevant: the problem is to route the packets back through th=
 e
-> proper routing table entries to do the right thing.
->
->
-> --
->
-> Bob Tellefson
-> Java network application development & hosting
->
-Yup, that's what I started doing, but I still have to modify the source
-address somehow, so the return packet is routed according to that
-address...
+> interface the request came from (I am not trying to access the boxes
+> _from_ the server).
 
-In fact, conceptually, I really want a router between each client and my
-server:
+aight--this comes with no warranty expressed nor implied, and no
+guarantee that it won't burn down your house or that it will even work
+at all...  this is off the top of my head, and other than typing the
+commands on a test machine to validate the syntax, i have not tested
+this one iota...  i also don't believe that you *_have_* to do this--i
+think you secretly just want to do this, because you think you should be
+able to...  ;-)
 
-Client1 (a.b.c.d) -> (a.b.c.1) Router (x.y.z.1) -|-> (x.y.z.3) Server
-Client2 (a.b.c.d) -> (a.b.c.1) Router (x.y.z.2) -|
+here goes--it obviously requires iproute2, and the CONNMARK patch from
+POM:
 
-This does all: same client IPs, unique server for all the clients IP (and
-only one NIC).
+---BEGIN STUFF I DON'T WANNA HEAR COMMENTS ABOUT---
 
-And that's probably what I'm going to do, not just conceptually!
+# start fresh
+ip addr flush dev eth0
+ip addr flush dev eth1
 
-But I have to say that I would have liked to do it all on the one machine=
-,
-rather than needing to go through routers.
+# add the same IP to each NIC
+ip addr add 192.168.100.1/24 brd + dev eth0
+ip addr add 192.168.100.1/24 brd + dev eth1
 
-Thanks for the link as well, I need to read through it carefully before
-giving up my first idea (I hate giving up ;-)
+# add two new route tables to hold our local network routes
+#   (this only needs to be done once)
+echo 200 zero >> /etc/iproute2/rt_tables
+echo 201 one >> /etc/iproute2/rt_tables
 
-Herve.
+# start fresh
+for t in mangle nat filter; do
+  iptables -t $t -F
+  iptables -t $t -X
+  iptables -t $t -Z
+done
 
+# restore the connmark on each packet as it comes in off the wire
+iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+# if a packet isn't marked, mark it based off the inbound NIC
+iptables -t mangle -A PREROUTING -i eth0 -m connmark --mark 0 \
+  -j CONNMARK --set-mark 1
+iptables -t mangle -A PREROUTING -i eth1 -m connmark --mark 0 \
+  -j CONNMARK --set-mark 2
+
+# restore the mark on locally-generated reply packets
+#   before the outbound route lookup
+iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark
+
+# add local network route for each NIC in its routing table
+ip route add 192.168.100.0/24 dev eth0 src 192.168.100.1 table zero
+ip route add 192.168.100.0/24 dev eth1 src 192.168.100.1 table one
+
+# add rules to lookup routes based on the netfilter mark
+ip rule add fwmark 1 table zero
+ip rule add fwmark 2 table one
+
+# disable reverse path filtering on the duplicate NICs
+sysctl -w net.ipv4.conf.eth0.rp_filter=3D0
+sysctl -w net.ipv4.conf.eth1.rp_filter=3D0
+
+# start clean
+ip route flush cache
+
+---END STUFF I DON'T WANNA HEAR COMMENTS ABOUT---
+
+just a thought--hope it doesn't lead you too astray.
+
+i feel so dirty...
+
+-j
+
+--
+"You couldn't fool your mother on the foolingest day of your life if
+ you had an electrified fooling machine."
+        --The Simpsons
 
