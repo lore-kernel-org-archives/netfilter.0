@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ipt_iplimit - IPtables 1.2.7a - Kernel 2.4.18 Issue Resolved
-Date: Sun, 29 Sep 2002 13:45:54 +0100
+Subject: Re: SNAT matching question
+Date: Sun, 29 Sep 2002 14:53:21 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020929124557.VRSF2092.mta07-svc.ntlworld.com@there>
-References: <OE29obC32qU4Z5flHgS00004b68@hotmail.com>
+Message-ID: <20020929135323.MYFB13996.mta05-svc.ntlworld.com@there>
+References: <Pine.GSO.4.44L-027.0209290930010.1180-100000@unix4.andrew.cmu.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <OE29obC32qU4Z5flHgS00004b68@hotmail.com>
+In-Reply-To: <Pine.GSO.4.44L-027.0209290930010.1180-100000@unix4.andrew.cmu.edu>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,41 +20,64 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 29 September 2002 12:18 pm, hard__ware wrote:
+On Sunday 29 September 2002 2:30 pm, Mohan Khurana wrote:
 
-> Hello Eveyone .. :D
+> Hi everyone,
 >
-> just been doing alot of kernel patching / hacking lately with Netfilter ,
-> (i luv it :-D ).
+> I'm trying to make a dual-homed router right now.
+>
+> I'm wondering, if I add two SNAT entries to the POSTROUTING chain of the
+> nat table, that are completely identical except the the fact that they
+> have different values for their specification of --to-source, will both of
+> them get the opportunity to match?  What decides which one matches them?
 
-> ### Now here's a real nice one. Sick of two many connetions being tracked
-> by netfilter that are not even ### being used or conntrack's that didnt
-> recive a CLOSE or FIN message, this way you can lower the ### default Time
-> To Tive for TCP connection tracking while using NetFilter / Iptables.  Try
-> setting the
-> ### time value's in this lower,  Expecially the one that Says 5 Bloody Days
-> ###  --- 5 DAYS, /* TCP_CONNTRACK_ESTABLISHED, */
+Well, yes, they will both get the *opportunity* to match (ie every packet 
+will get tested against both rules), however depending on how you qualify the 
+rules (specifically, whether you check the source address), the second one 
+may not match because the first one has already changed the address.
 
-Please don't refer to the connection timeout values as Time To Live, 
-especially if you put it in comments or documentation for any patches you 
-submit - it'll confuse people.
+> I am wondering, if packets come in, and I route them, and ensure that
+> their next-hop is one of the --to-sources, will the rule check both the
+> source range, and the value of the --to-source?
 
-Time To Live refers to the number of router hops an IP packet is allowed to 
-go through.
+I don't understand.   Why would you set the *source* address of a packet to 
+be the address of the next-hop router you're just about to send it on to ?   
+Where are you expecting a reply to come back to ?
 
-TCP timeouts are the number of seconds a machine will wait for a TCP 
-connection to change its status before dropping it from a connection tracking 
-table.
+> Example:
+>
+> iptables -t nat -A POSTROUTING -s 192.168.2.10 -d \! 192.168.2.0/24 -j
+> SNAT --to-source 1.2.3.4
 
-They're very different, and people will get confused if you make them think 
-the "Time" in "Time To Live" is measured in seconds (it was originally 
-intended to be, but is now number of routers).
+This rule will match all packets with a source address = 192.168.2.10 which 
+are not going to the network 192.168.2.0/24 (if they were, why would they be 
+going through this firewall anyway ?   They'd just get sent straight across 
+the local network...) and will change the source address to 1.2.3.4
+
+> iptables -t nat -A POSTROUTING -s 192.168.2.10 -d \! 192.168.2.0/24 -j
+> SNAT --to-source 5.6.7.8
+
+This rule will try to match all packets with a source address = 192.168.2.10 
+which are not going to the network 192.168.2.0/24 but there will never be 
+any, because they've all just been changed to have a source address = 1.2.3.4
+
+> If in my iproute2 configuration, if I ensure that the packet is going out
+> with source 5.6.7.8 when flowing around, it should match to the second
+> rule, and skip the first altogether, right?  If I set it to hop to source
+> 1.2.3.4, it should choose the first nat rule, and then skip the second one
+> altogether, right?
+
+I don't understand what you're saying here, and I'm not sure I understand 
+what you're trying to do.
+
+Perhaps you could explain your network setup a bit more, and explain what 
+you're trying to achieve, and we can comment on whether this seems like a 
+reasonable way to achieve it.....
 
 Antony.
 
 -- 
 
-Software development can be quick, high-quality, or low-cost.
-
-The customer gets to pick any two out of three.
+I vote "no" to this proposal to form a committee to investigate whether we 
+should or should not hold a ballot on whether to vote yet.
 
