@@ -1,70 +1,91 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Send local traffic to a different server.
-Date: Wed, 23 Jun 2004 15:24:14 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406231524.14579.Antony@Soft-Solutions.co.uk>
-References: <s0d956ae.099@GroupWise> <200406231500.05742.Antony@Soft-Solutions.co.uk> <1088003535.4009.78.camel@simpsonb.hillsboroughcounty.org>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+From: Eric Leblond <eric@inl.fr>
+Subject: [ANNOUNCE] mod_auth_nufw, an apache authentication module
+Date: Wed, 23 Jun 2004 17:30:04 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <1088004603.5595.57.camel@porky>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1088003535.4009.78.camel@simpsonb.hillsboroughcounty.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-X/6ohQgYPlYjMVah3bJf"
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Cc: Vincent Deffontaines <vincent@inl.fr>
 
-On Wednesday 23 June 2004 4:12 pm, Brett Simpson wrote:
 
-> On Wed, 2004-06-23 at 10:00, Antony Stone wrote:
-> > On Wednesday 23 June 2004 3:33 pm, Brett Simpson wrote:
-> > > On Wed, 2004-06-23 at 09:33, Antony Stone wrote:
-> > > > On Wednesday 23 June 2004 3:08 pm, Brett Simpson wrote:
-> > > > > I've tried a number of different PREROUTING and POSTROUTING rules
-> > > > > and can't seem to make this work.
-> > > > >
-> > > > > I have a system with a single nic (eth0). While I'm on the system
-> > > > > via a shell I would like to connect to 127.0.0.1:6000 and get
-> > > > > seemlessly translated to 207.156.7.15:80.
-> >
-> > My rule will send packets to 207.156.7.15 with a source address of
-> > 127.0.0.1
-> >
-> > Not surprisingly, you don't get anything back...
-> >
-> > Try:
-> >
-> > iptables -A OUTPUT -t nat -p tcp --dport 6000 -d 127.0.0.1 -j DNAT --to
-> > 207.156.7.15:80
-> > iptables -A POSTROUTING -t nat -p tcp --dport 80 -d 207.156.7.15 -s
-> > 127.0.0.1 -j SNAT --to a.b.c.d
-> >
-> > Where a.b.c.d is the routable address of your machine, to which reply
-> > packets can successfully return.
->
-> Still no go. My machine is 172.27.228.145. I'm using lynx for the
-> browser on my machine.
+--=-X/6ohQgYPlYjMVah3bJf
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-That's not a routable address.
+Hello everyone,
 
-How are packets from the machine we are talking about routed to and from the 
-Internet?   Where is NAT taking place?
+NuFW core team and INL are proud to introduce mod_auth_nufw, an SSO
+apache authentication module using the NuFW authentication framework, to
+you.
 
-Antony.
+You may think "Hey, we're talking about Netfilter here. Not apache !",
+but this is indeed about Netfilter :
+Let's have first a few word about NuFW. NuFW is a GPL authentication
+firewall suite working under Linux, based on Netfilter.
+Its main feature is that it can trustfully authenticate connections, and
+link them to actual user IDs (stored in an LDAP tree).=20
+It also provides other features, such as user id marking of packet,
+dynamic acls list, ...
 
--- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
+For more information on NuFW see :
+        http://www.nufw.org
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+NuFW 0.7.1, which was released last week, introduces an option that
+permits to build a real-time authenticated connection tracking table :
+it's a sort of Conntrack table where each entry contains IP parameters
+of the connection and the identity of user at the origin of this
+connection and the state of the connection. This table is stored in an
+SQL database (both MySQL and PostgreSQL are supported).
+
+As a server (like Apache) knows about the IP parameters of the
+connections it receives, it can query the SQL database to find the
+corresponding entry for each connection. Mod_auth_nufw performs this
+exact task for Apache : lookup in the Nufw "conntrack" for the userID,
+and let Apache know this user is now identified (and authenticated).
+(The authorization task then lays on other Apache modules, and is just
+the classical process)
+
+This gives the server the identity of the user who opened the
+connection. So the authentication of the user by the server is done and
+it's fully transparent to the user. Thus, this principle allows to build
+complete Single Sign On systems where the key is a netfilter firewall
+using NuFW.
+
+mod_auth_nufw is the first authentication module that uses NuFW
+authentication principle. It permits to achieve Single Sign On for a
+whole set of apache servers.
+
+mod_auth_nufw is available for download at :
+        http://www.inl.fr/article.php3?id_article=3D24
+
+Best regards,
+--=20
+Eric Leblond <eric@inl.fr>
+INL
+
+--=-X/6ohQgYPlYjMVah3bJf
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQBA2aH6nxA7CdMWjzIRAmG9AJ9i73/XcrQvKBERPD0NuImf/2ri5gCdG1IO
+O7FWWXP50I9ihRM9izOP+3E=
+=TjFt
+-----END PGP SIGNATURE-----
+
+--=-X/6ohQgYPlYjMVah3bJf--
 
 
