@@ -1,13 +1,12 @@
-From: Shawn <core@enodev.com>
-Subject: Re: Routing Public IPs over NAT Address Space
-Date: 14 Jul 2003 13:10:04 -0500
+From: "David Busby" <busby@pnts.com>
+Subject: SNAT kills local stuff?
+Date: Mon, 14 Jul 2003 11:29:30 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058206204.24263.19.camel@localhost>
-References: <200307141052.AA122028212@mail.alberni.net>
+Message-ID: <00ec01c34a35$e5c6d0c0$1100000a@busbydev>
+Reply-To: "David Busby" <busby@pnts.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307141052.AA122028212@mail.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +17,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: techlists@alberni.net
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Just like the subject says is kind of terse, and a little fuzzy.
+List,
+    Perhaps I'm missing something, when I enable SNAT it makes it so I can't
+resolve names anymore on my machine or make outbound connections it seems.
 
-That depends on how you mean your question. I assume you want the big
-"I" to be able to reach your public over one of your routers, through a
-NAT so-to-speak?
-          -----------------------------------------     some      Your
- ---     | public int   |            | private int |    private   public
-| I | -> | pubnet.0/224 | nat-ROUTER | rfc1918/224 | -> IP     -> IP
- ---      -----------------------------------------     space     space
+My Setup:
+[ Local (10./24) ] <-> [ netfilter ] <-> [ Internet ]
 
-??? Why???
+So I setup iptables like this:
+root@repono:/etc# iptables -t filter -L
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere           state
+RELATED,ESTABLISHED
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssh
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:domain
+ACCEPT     udp  --  anywhere             anywhere           udp dpt:domain
+LOG        all  --  anywhere             anywhere           LOG level
+warning
 
-On Mon, 2003-07-14 at 12:52, Aaron Clausen wrote:
-> Just like the subject says; is there any way to route a public IP/subnet over a NAT address space?
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+root@repono:/etc
+
+Everything is OK, Lan can resolve names and such.
+
+Now I add:
+iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to $EXTERNAL_IP
+And it all works, this command:
+iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -j SNAT --to $EXTERNAL_IP
+Doesn't work. The LAN is fine, but the localbox cannot connect out.
+What is so different about those two commands?
+
+David Busby
+Systems Engineer
+busby@pnts.com
+
 
