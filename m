@@ -1,12 +1,12 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: How to flush the connection state in the linux
-Date: Mon, 27 Dec 2004 11:22:28 -0500
-Message-ID: <1104164548.6322.20.camel@hubcap.ljm.dom>
-References: <000b01c4ebe5$64dab730$aa0ba8c0@l7.com.tw>
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: RE: Ping only inside my network
+Date: 27 Dec 2004 17:32:52 +0100
+Message-ID: <1103719534.5956.3.camel@nostromo.bgsecm.com>
+References: <20041220073406.E37712F42A@kshira.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000b01c4ebe5$64dab730$aa0ba8c0@l7.com.tw>
+In-Reply-To: <20041220073406.E37712F42A@kshira.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Mon, 2004-12-27 at 02:26, Vincent wrote:
-> Hello,
-> 
-> Does any one know how to flush the connection state in the linux (Not
-> flush iptables rule -F).
-> I used transparent mode in the linux (use brctl to bridge eth & eth1).
-> When I tried to use iptables to drop some specified packet and it was
-> fail.
-> So I doubt there are some established connection state exist in the
-> linux to pass these
-> Forbidden connections.
-> 
-> My enviroment
-> Linux 2.4.25
-> Iptables 1.2.11 
+El lun, 20 de 12 de 2004 a las 08:34, Rob Sterenborg escribi=C3=B3:
+> You don't give much information about what you've done already, but you
+> have probably set the policy for the INPUT chain to DROP so it will dro=
+p
+> any packet for which NF has no rule to accept it.
+> In that case you'll have to accept ICMP traffic from your LAN :
+> iptables -A INPUT -i $IF_LAN -s $IP_LAN -p icmp -j ACCEPT
+>=20
+> If you have also set policy to DROP for the OUTPUT chain, you'll want t=
+o
+> be able to send the reply packets :
+> iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+>=20
+>=20
+> Gr,
+> Rob
 
-you need to remove the "ip_conntrack" module.
+It would be even better if he only accepts the echo-request and
+echo-reply packets. That will allow pings but will deny other
+kind of icmp packets that could be harmful.
 
-in order to do that--you need to remove all the modules that use it
-(like 'iptable_nat' etc).
+--=20
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPA=C3=91A
 
--j
-
---
-"'Nuke the whales?' You don't really believe that, do you?
- I dunno. Gotta nuke something."
-	--The Simpsons
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
 
