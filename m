@@ -1,8 +1,8 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: transparent tcp proxy
-Date: Sat, 24 May 2003 12:05:23 +1000
+Subject: RE: Some confuisions about following script
+Date: Sat, 24 May 2003 11:31:28 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A019241@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A01923F@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,85 +17,101 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: ml-netfilter@adtech.be, netfilter@lists.netfilter.org
+To: syd_salman@yahoo.com, netfilter@lists.netfilter.org
 
-Hmm. I don't think bridging copies the packets MAC address over. it just =
-copies the packet data with it's source and destination IPs.
+This is a script so it's like a language to some extend..
 
-Can I ask what the mac address is used for, or needed for? Is it for =
-some authenticity reasons?
+
+"What is LOGLIMIT "
+LOGLIMIT is just something he's used as a variable.
+
+
+"What is LOGLIMITBURST and"
+Same as above.
+
+"What is --log-prefix "fp=3DINVALID:1 a=3DDROP " "
+This is what's put in the syslogs in front of the packet so it is =
+recognisable..
+ie. I used --log-prefix "INETPKT " when means it's an internet packet. I =
+also use --log-prefix "VPNPKT " which tells me this packet was from my =
+VPN.. etc..etc.. it's just a log label.
+
+Alot of scripts do this because it's easier to manage.. eg.
+---example script--
+
+#!/bin/bash
+
+# Define variables
+WRKVPN=3D"ppp+"
+IPSEC0=3D"ipsec0"
+EXTDEV=3D"eth1"
+INTSN=3D"192.168.1.0/24"
+PUBPORTS=3D"1024:65535"
+#
+#
+echo -n "  Configuring  : Enabling some ICMP"
+#
+#
+$IPTABLES -A INPUT -i $EXTDEV -p icmp --icmp-type echo-request -j ACCEPT
+$IPTABLES -A INPUT -i $EXTDEV -p icmp --icmp-type echo-reply   -j ACCEPT
+$IPTABLES -A INPUT -i $EXTDEV -p icmp --icmp-type 3            -j ACCEPT
+$IPTABLES -A INPUT -i $EXTDEV -p icmp --icmp-type 11           -j ACCEPT
+success;echo
+
+Now with the above script, can you imagine what a pain it would be if I =
+changed my network card from eth1 to eth2 because I've added a DMZ or =
+something.. all the lines with "-i eth1" would need changing... so =
+variable fix that..
+
 
 -----Original Message-----
-From: Michael Stilmant [mailto:ml-netfilter@adtech.be]
-Sent: Saturday, May 24, 2003 1:07 AM
+From: Salman Ahmed [mailto:syd_salman@yahoo.com]
+Sent: Saturday, May 24, 2003 8:20 AM
 To: netfilter@lists.netfilter.org
-Subject: transparent tcp proxy
+Subject: Some confuisions about following script
 
 
-Hello,
+I have downloaded one script from internet which some
+parts are making confusion which are:
 
-First of all, an hello from a new user on this mailing list.
+####################################################
+#----Create logging chains-----#
 
-and finally my actual problem.
+##These are the logging-chains. They all have a
+certain limit of log-entries/sec to prevent
+log-flooding
+##The syslog-entries will be fireparse-compatible (see
+http://www.fireparse.com)
 
-I'm need to make a transparent proxy for an billing application. To to
-that I need to put myself in the middle point of a protocol exchange not
-thinked to be easy done with a proxy.
+#Invalid packets (not ESTABLISHED,RELATED or NEW)
+	$IPTABLES -N LINVALID
+	$IPTABLES -A LINVALID -m limit --limit $LOGLIMIT
+--limit-burst $LOGLIMITBURST -j LOG --log-prefix
+"fp=3DINVALID:1 a=3DDROP " $IPTABLES -A LINVALID -j DROP
 
-So to do that I've done this installation:
-
-I've have a computer where I place transparent proxy via ebtables this
-is B. (no special rules : just ones to activate a transparent proxy:
-                brctl addbr mybridge
-                brctl addif mybridge eth0
-                brctl addif mybridge eth1
-                ifconfig eth0 0.0.0.0
-                ifconfig eth1 0.0.0.0
-                ifconfig mybridge up
-                ifconfig mybridge 10.0.0.225
-                route add default gw 10.0.0.254 )
-
-A and C communicate with all normal exchange
-
-                     10.0.0.225
-                     +--------+
-                     |   B    |
-   +-----+           |        |          +-----+
-   |  A  +-----------[ebtables]----------|  C  |
-   +-----+           +--------+          +-----+
-   10.0.0.3                             10.0.0.32        =20
-
-I've place this Iptables rules
-
-iptables -t nat -A PREROUTING -i eth1 -d 10.0.0.3 -p tcp --dport 3435 -j
-DNAT --to-destination 10.0.0.225:3625
-
-iptables -t nat -A POSTROUTING -o eth0 -d 10.0.0.3 -p tcp --dport 3435
--j SNAT --to-source 10.0.0.32
-
-so with that when C want to connect the A:3435 service all traffic is
-oriented to B and when B send traffic to A: A see C ip address. -> full
-transparent.
-
-But there are a big problem:
-
-Address Mac used from B to A is not the MAC address. Not a problem since
-i don't want really be transparent but other traffic form C go to A
-directly with the good MAC and traffic from B to A have an other MAC. so
-switch or other router in the A side see 10.0.0.32 sometime with C Mac
-and other time with B MAC .. gloupspss ?? .. :-D
-
-I need to find a way to read mac address from a connection from C and
-set this MAC when I start a connection to A from B=20
-
-have you some clues ? (allready send the same question on the ebtables
-ailin list .. perhaps with a function from there there are a solution
-... )
-
-thanks
+#####################################################
 
 
-Michael Stilmant
+I am having following confusions.
 
+What is LOGLIMIT=20
+What is LOGLIMITBURST and
+What is --log-prefix "fp=3DINVALID:1 a=3DDROP "
+
+How can we only block mns messenger and yahoo
+messenger?
+
+How can we block all communications except www.=20
+
+
+Please help me out.
+
+Best Regards
+Salman
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
 
