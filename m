@@ -1,13 +1,11 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: Kazza
-Date: Mon, 17 Mar 2003 19:15:08 +0530
+From: "Juan Torres" <islero77@telefonica.net>
+Subject: Problems loading a Patch-O-Matic match
+Date: Mon, 17 Mar 2003 14:48:48 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003401c2ec8b$6f976fc0$13fcc5cb@Housecall>
-References: <000001c2ebfc$38afb380$2f6a81d9@pccarol>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <001201c2ec8b$f03e01c0$0300000a@juan>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002F_01C2ECB9.86658420"
+	boundary="----=_NextPart_000_0013_01C2EC94.520269C0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,106 +16,154 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: =?iso-8859-1?B?Sm/jbw==?= <joao.paulo.dente@netvisao.pt>, netfilter@lists.netfilter.org
+To: Netfilter-users <netfilter@lists.netfilter.org>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_002F_01C2ECB9.86658420
+------=_NextPart_000_0013_01C2EC94.520269C0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-This should work for you
-
-iptables -I FORWARD -i eth1 -p tcp -m string --string "KazaaClient" -j =
-REJECT --reject-with tcp-reset
-
-hare
-  ----- Original Message -----=20
-  From: Jo=E3o=20
-  To: netfilter@lists.netfilter.org=20
-  Sent: Monday, March 17, 2003 2:10 AM
-  Subject: Kazza
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
 
-  Can you give me ana example how to block kazaa
+Hi, I'm trying to load a new match which comes in the Patch-O-Matic
+package. I have run Patch-O-Matic and I have selected the match I'm
+interested in (mport), then I have compiled the new kernel selecting in
+the xconfig the new option. But after all of these steps I can't use the
+new match. I have seen in the documentation that I have to go to the
+userspace/ directory (I suppose that it is the "userspace" directory
+into the Patch-O-Matic package) and execute make all install, but, when
+I do that the response is the next:
 
+make: *** No rule to make target 'all'. Stop.
 
-------=_NextPart_000_002F_01C2ECB9.86658420
+Can anybody tell me what it's my problem?
+
+Thank you very much.
+
+	Juan.
+
+------=_NextPart_000_0013_01C2EC94.520269C0
 Content-Type: text/html;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE>@page Section1 {size: 595.3pt 841.9pt; margin: 70.85pt 3.0cm =
-70.85pt 3.0cm; }
-P.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0cm 0cm 0pt; FONT-FAMILY: "Times New Roman"
-}
-LI.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0cm 0cm 0pt; FONT-FAMILY: "Times New Roman"
-}
-DIV.MsoNormal {
-	FONT-SIZE: 12pt; MARGIN: 0cm 0cm 0pt; FONT-FAMILY: "Times New Roman"
-}
-A:link {
-	COLOR: blue; TEXT-DECORATION: underline
-}
-SPAN.MsoHyperlink {
-	COLOR: blue; TEXT-DECORATION: underline
-}
-A:visited {
-	COLOR: purple; TEXT-DECORATION: underline
-}
-SPAN.MsoHyperlinkFollowed {
-	COLOR: purple; TEXT-DECORATION: underline
-}
-SPAN.EstiloCorreioElectrnico17 {
-	COLOR: windowtext; FONT-FAMILY: Arial
-}
-DIV.Section1 {
-	page: Section1
-}
-</STYLE>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.4630.0">
+<TITLE>Problems loading a Patch-O-Matic match</TITLE>
 </HEAD>
-<BODY lang=3DPT vLink=3Dpurple link=3Dblue bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>This should work for you</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>iptables -I FORWARD -i eth1 -p tcp -m =
-string=20
---string "KazaaClient" -j REJECT --reject-with tcp-reset</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>hare</FONT></DIV>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 5px; MARGIN-LEFT: 5px; =
-BORDER-LEFT: #000000 2px solid; MARGIN-RIGHT: 0px">
-  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
-  <DIV=20
-  style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
-black"><B>From:</B>=20
-  <A title=3Djoao.paulo.dente@netvisao.pt=20
-  href=3D"mailto:joao.paulo.dente@netvisao.pt">Jo=E3o</A> </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>To:</B> <A=20
-  title=3Dnetfilter@lists.netfilter.org=20
-  =
-href=3D"mailto:netfilter@lists.netfilter.org">netfilter@lists.netfilter.o=
-rg</A>=20
-  </DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Sent:</B> Monday, March 17, 2003 =
-2:10=20
-AM</DIV>
-  <DIV style=3D"FONT: 10pt arial"><B>Subject:</B> Kazza</DIV>
-  <DIV><BR></DIV>
-  <DIV class=3DSection1>
-  <P class=3DMsoNormal><FONT face=3DArial size=3D2><SPAN lang=3DEN-GB=20
-  style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Can you give me ana =
-example how to=20
-  block kazaa</SPAN></FONT></P></DIV></BLOCKQUOTE></BODY></HTML>
+<BODY>
+<!-- Converted from text/rtf format -->
+<BR>
 
-------=_NextPart_000_002F_01C2ECB9.86658420--
+<P ALIGN=3DJUSTIFY><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">Hi, I</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">m =
+trying to load a new matc</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">h</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+which comes in the Patch-O-Matic package.</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">I ha</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">ve</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+run</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"> <FONT SIZE=3D2 FACE=3D"Arial">Patch-O-Matic and I =
+ha</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">ve</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial"> selected the</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial"> match I</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">m interested in</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial"> (mport)</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">, then I ha</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">ve</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+compiled the new kernel selecting in the xconfig the new =
+option.</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT SIZE=3D2 =
+FACE=3D"Arial">But after all of these steps I can</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">t use the new match. I have seen in the =
+documentation that I ha</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">ve</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+to</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"> <FONT SIZE=3D2 FACE=3D"Arial">go to the userspace/ =
+directory</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+(I</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"en-gb"> <FONT SIZE=3D2 FACE=3D"Arial">suppose</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial"> that it is the</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">&#8220;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">userspace</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">&#8221;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial"> directory into the Patch-O-Matic =
+package)</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+and execute</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT SIZE=3D2 =
+FACE=3D"Arial">make all install, but, when I do that the response is the =
+next:</FONT></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">make: *** No rule to make target</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">&#8216;</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT =
+SIZE=3D2 FACE=3D"Arial">all</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial">. =
+Stop.</FONT></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">Can anybody tell me what</FONT></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"> <FONT =
+SIZE=3D2 FACE=3D"Arial">it</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">s</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 FACE=3D"Arial"> =
+my problem</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">?</FONT></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN LANG=3D"en-gb"><FONT SIZE=3D2 =
+FACE=3D"Arial">Thank you very much.</FONT></SPAN></P>
+
+<P ALIGN=3DJUSTIFY><SPAN =
+LANG=3D"en-gb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2 =
+FACE=3D"Arial">Juan.</FONT></SPAN><SPAN LANG=3D"es"></SPAN><SPAN =
+LANG=3D"es"></SPAN><SPAN LANG=3D"en-gb"></SPAN></P>
+
+</BODY>
+</HTML>
+------=_NextPart_000_0013_01C2EC94.520269C0--
 
 
