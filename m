@@ -1,10 +1,12 @@
-From: "Kevin Smith" <starwatcher22@earthlink.net>
-Subject: KAZAA
-Date: Sat, 31 May 2003 03:35:37 -0400
+From: "khalifa Ally" <khalifa.ally@intafrica.com>
+Subject: connect me to the list
+Date: Sat, 31 May 2003 11:31:14 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001301c32747$3b9e57a0$0200000a@workgroup.kev>
+Message-ID: <00a501c3274e$ffdd9570$1523a8c0@satcom>
+Reply-To: "khalifa Ally" <khalifa.ally@intafrica.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00A2_01C32768.25261280"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,40 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, wjdeypalan@ictuscomm.net
+To: netfilter and Ipt <netfilter@lists.netfilter.org>
 
-Now I am no expert and this is just a random thought. But if Kazaa looks for
-other ports to connect, is there a way to send it a fake connect signal so
-it THINKS its connected? Or what someone suggested to block everything. and
-allow only the ports you know.
-As I said its just a thought...you decide whether its viable, since I dont
-use Kazaa anymore.
-Kev
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_00A2_01C32768.25261280
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+dear Admin,
+add me to the list
 
+------=_NextPart_000_00A2_01C32768.25261280
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3516.2800" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>dear Admin,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>add me to the =
+list</FONT></DIV></BODY></HTML>
 
-Message: 1
-Date: Thu, 24 Apr 2003 19:28:52 +0800 (PHT)
-Subject: block kazaa using iptables
-From: "Wesley Jay Deypalan" <wjdeypalan@ictuscomm.net>
-To: <netfilter@lists.netfilter.org>
-Reply-To: wjdeypalan@ictuscomm.net
-
-Hi,
-
-Is there a way to block kazaa using iptables?Already tried blocking port
-1214 but to no avail, I heard that kazaa change ports if it cannot connect
-using 1214.
-TIA,
-
-wesley
-
-
-
-
---__--__--
+------=_NextPart_000_00A2_01C32768.25261280--
 
 
