@@ -1,11 +1,9 @@
-From: "Bo Jacobsen" <subs@systemhouse.dk>
-Subject: Iptables, what to upgrade
-Date: Sat, 21 Sep 2002 21:43:23 +0200
+From: Tasha Smith <natasha3641@yahoo.com>
+Subject: iptables: exe
+Date: Sat, 21 Sep 2002 14:12:46 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006101c261a7$279f9e00$6307a8c0@net>
+Message-ID: <20020921211246.84065.qmail@web20302.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_005E_01C261B7.E8FE8920"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,82 +14,62 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Ok...i have my own iptables script trying to get it
+going...here what i have soo far in it...just starting
+ 
+SPECS: 
+RedHat 7.2 
+2.4.19 Kernel 
+iptables-1.2.3 
 
-------=_NextPart_000_005E_01C261B7.E8FE8920
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+####################################### 
+#!/bin/bash 
 
-Hi,
-I have a number of 7.3 and 8.0 SuSE machines (running 2.4.16, 2.4.19-6 =
-and 2.4.19-19 kernels) and would=20
-like to upgrade iptables on all of them, to the newest version.
+echo 1 = > /proc/sys/net/ipv4//ip_forward 
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE 
 
-I understand that iptables consists of the part in the kernel, and the =
-user space tools.
-I trust that one has to make sure that the version of the user space =
-tools and the part of iptables
-located in the kernel, somehow ?.
+# Remove any existing rules from all chains. 
+iptables --flush 
+iptables -t nat --flush 
 
-How do I display the version of iptables located in the kernel.
+# Unlimited access on the loopback interface 
+iptables -A INPUT -i lo -j ACCEPT 
+iptables -A OUPUT -o lo -j ACCPET 
 
-I would like to upgrade iptables on all machines to the newest versions. =
-Is that possible on all the
-machines with the above kernel versions ?.
+# Set the fefault policy to Drop 
+iptables --policy INPUT DROP 
+####################################### 
+Now... to get this to run on start-up here is what i
+did but it didnt start up it gave me an error. 
+chown root.root /etc/init.d/firewall 
+chmod u=rwx /etc/init.d /firewall 
+
+And when i restart I GET ERROR... which is 
+"iptables: execvp: Permission Denied 
+rc. Starting iptables: Failed"  
+
+I also have this line sh /etc/init.d/firewall at the
+end of my "rc.local" file 
+
+HOW CAN I FIX THIS OR GET THEM TO START-UP PROPERLY?
+EDIT: > OOPPPPPPSS guys  i forgot to mention the
+original iptables script that came installed already
+on my system in the "/etc/init.d/" i moved that to
+somewhere else.... was i suppose to do that or just
+leave them there???
 
 
-Thanks in advance
-Bo Jacobsen
 
+=====
 
-------=_NextPart_000_005E_01C261B7.E8FE8920
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Image by MackDaddy
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2715.400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>
-<DIV><FONT size=3D2>Hi,</FONT></DIV>
-<DIV><FONT size=3D2>I have a number of 7.3 and 8.0 SuSE machines=20
-(running&nbsp;2.4.16, 2.4.19-6 and&nbsp;2.4.19-19 kernels) and would=20
-</FONT></DIV>
-<DIV><FONT size=3D2>like to upgrade&nbsp;iptables on all of them, to the =
-newest=20
-version.</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I understand that&nbsp;iptables consists of the part =
-in the=20
-kernel, and the user space tools.</FONT></DIV>
-<DIV><FONT size=3D2>I&nbsp;trust that one has to make sure that the =
-version of the=20
-user space tools and the part of iptables</FONT></DIV>
-<DIV><FONT size=3D2>located in the kernel, somehow ?.</FONT></DIV>
-<DIV><FONT size=3D2></FONT><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>How do I display the version of iptables located in =
-the=20
-kernel.</FONT></DIV>
-<DIV><FONT size=3D2></FONT><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I would like to upgrade iptables on all machines to =
-the newest=20
-versions. Is that possible on all the</FONT></DIV>
-<DIV><FONT size=3D2>machines with the above kernel versions =
-?.</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>Thanks in advance</FONT></DIV>
-<DIV><FONT size=3D2>Bo Jacobsen</DIV>
-<DIV></FONT>&nbsp;</DIV></DIV></BODY></HTML>
-
-------=_NextPart_000_005E_01C261B7.E8FE8920--
-
+__________________________________________________
+Do you Yahoo!?
+New DSL Internet Access from SBC & Yahoo!
+http://sbc.yahoo.com
 
