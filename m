@@ -1,14 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: simple config question
-Date: Sun, 28 Mar 2004 09:17:34 +0100
+From: "IT Clown" <iptables@mailbox.co.za>
+Subject: client on local network
+Date: Sun, 28 Mar 2004 10:31:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403280917.34504.Antony@Soft-Solutions.co.uk>
-References: <000a01c41470$9dbe3ec0$8a361645@Earthlink.net>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <web-269277793@mail01.infosat.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000a01c41470$9dbe3ec0$8a361645@Earthlink.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,38 +18,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 28 March 2004 3:58 am, Eric McAfee wrote:
+Hi
 
-> I need to know the iptables command that would restrict all access to my
-> server except for my computer's Dreamweaver program and ccbill's access to
-> my password file. I know it would be some variation of:
-> iptables -A INPUT -i ppp0 -p tcp --syn -j DROP
+i have setup a local network users iptables as follow to
+access webpages:
 
-That rule will definitely block all TCP access via ppp0 to the machine.
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+-A INPUT -i lo -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+-A INPUT -i eth0 -p tcp -m multiport --sport 80,8080 -j
+ACCEPT
+-A INPUT -i eth0 -p tcp --sport 53 -j ACCEPT
+-A OUTPUT -o eth0 -p tcp -m multiport --dport 80,8080 -j
+ACCEPT
+-A OUTPUT -o eth0 -p udp --dport 53 -j ACCEPT
+COMMIT
 
-All you need to do next is insert before that rule something suitable to allow 
-the connections you mentioned.
+I would like to know the way i set it up is it correct or
+is there a better way.The client can browse.
 
-I can't quite figure out from the description you gave what network protocols 
-you are talking about however, so I can't suggest what rules they need to be, 
-however if you're not sure either, a simple LOGging rule should help you work 
-out what is needed:
+What i dont really understand is the sport and the dport.
+When i say: -A INPUT -i eth0 -p tcp -m multiport --sport
+80,8080 -j ACCEPT. Does that mean any ip external and port
+80,8080 from external?
 
-iptables -I INPUT -i ppp0 -p tcp -s a.b.c.d -j LOG
+-A OUTPUT -o eth0 -p tcp -m multiport --dport 80,8080 -j
+ACCEPT. The output and dport is that arguemant for the
+network client to go out onto port 80,8080?
 
-where a.b.c.d is the IP address of a machine you want to allow access.   The 
-LOG will show you what packets arrive, just before they get DROPped, so you 
-should be able to work out from that what rule to add to ACCEPT them instead.
+The rules i have here i did with trile and error.
 
-Regards,
-
-Antony.
-
--- 
-This is not a rehearsal.
-This is Real Life.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Regards
+__________________________________________________________________________
+http://www.webmail.co.za/dialup Webmail ISP - Cool Connection, Cool Price
 
