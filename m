@@ -1,11 +1,11 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
+From: Joel Newkirk <netfilter@newkirk.us>
 Subject: Re: how to filter applications with iptables
-Date: 26 Jun 2003 09:21:13 +0200
+Date: 26 Jun 2003 03:25:14 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1056612072.1474.10.camel@raylinux.internal>
+Message-ID: <1056612314.1893.5.camel@alpha.newkirk.us>
 References: <20030626070125.065CEC11A@postfix4-2.free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-qSkqduTl0vee+Zymf1TE"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <20030626070125.065CEC11A@postfix4-2.free.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,30 +17,11 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Liber =?ISO-8859-1?Q?Chr=E9tien?= <liber.chretien@free.fr>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-
---=-qSkqduTl0vee+Zymf1TE
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-There are verious ways to 'block' packets from unwanted apps. Some use
-netfilter some don't.
-
-You can block mime types using a squid proxy.
-You can block arbitrary strings in packets using the string match
-support in the P-O-M for netfilter, e.g. -m string --string 'KAZAA'
-Most applications use specific ports and protocols, so you could find a
-combination of those and block the app that way, e.g. MSN messenger uses
-TCP port 1863
-Some apps need to contact a central server, so blocking that server will
-effectively disable the app, e.g. Yahoo messenger.=20
-
-Regards
-
-Ray
-
-On Thu, 2003-06-26 at 10:03, Liber Chr=E9tien wrote:
+On Thu, 2003-06-26 at 04:03, Liber Chr=E9tien wrote:
 > Hello,
 > I've been looking for some information but couldn't find, so here it goes=
 , I'm asking=20
@@ -57,28 +38,20 @@ m ?
 > Thanks=20
 >=20
 > Bruno
->=20
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
 
---=-qSkqduTl0vee+Zymf1TE
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+The only way to accomplish this is blocking by IP and ports.  If there
+is a certain type of connection you want to block you can perhaps
+accomplish it by port.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+If you want to run an iptables firewall and filter out explicitly
+traffic from a certain windows application that communicates on
+'standard' ports that you otherwise want open, you're out of luck.  That
+would be better handled on the Win box itself with something like
+ZoneAlarm that lets you grant/deny connection privileges per
+application.
 
-iD8DBQA++p7oh1fuR/Bv+ygRAo+kAKCOVFxoANFAb3g4XyNJzrZwK+LeNQCeM67r
-ykRZPqIBok9jd2y7xAwA2Gg=
-=zL5A
------END PGP SIGNATURE-----
+j
 
---=-qSkqduTl0vee+Zymf1TE--
+
 
 
