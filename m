@@ -1,8 +1,9 @@
-From: guillaume <guillaume.riviere@hcm.vsl-vn.com>
-Subject: 2 ISP NAT configuration
-Date: Thu, 29 Jul 2004 17:26:54 +0700
+From: "david" <david@suarapembaruan.co.id>
+Subject: Blocking IP
+Date: Thu, 29 Jul 2004 19:14:10 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4108D0EE.2070400@hcm.vsl-vn.com>
+Message-ID: <001601c47565$8e0ba110$858310ac@suarapembaruan.com>
+References: <5.1.0.14.2.20040602145807.00b74bf8@pop3.netcologne.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,49 +16,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear All netfilter users and developpers,
+Dear all,
 
-This software is an amazing software,
-We are are very happy of this solution
-for our office.
+My mail server received so many virus mails from ip 202.145.10.147 and after
+i look at gateway (linux) and i using iptraf i see so many traffic from
+202.145.10.147.
+After that i try to block all traffic from 202.145.10.147 with command :
+#iptables -A INPUT -s 202.145.10.146 -j DROP
 
-Now, I need some help to improve our network:
+but i still receiveall traffic from 202.145.10.146......
+Can anybody help me ........... that ip send virus in to mail server more
+then 20 mails per minute.......
 
-Our office is based in Vietnam, and in this country
-(for the moment) all internet connections are unstable.
 
-We currently use an ISP with a (slow) connection, but
-providing real static IP address (6). We want to add a second ISP
-to our office with non static IP Address. They provide us also a
-modem/router for NAT.
+Regards,
+David Kandou
 
-We already install a GNU/Debian Router with netfiler support (2.6 kernel)
-in order to manage our first ISP link.
+Help me ... iam so confused
 
-We would like to add a network card in this router and "loadbalance"
-our internet connection between those two ISPs.
+FYI :
+Iam using RedHat 9
+eth0 --> ippublic
+eth1 --> local ip
+mail server --> local ip
 
-The problem is that some of our internal IP need to be link to
-a real external IP on the first provider only (For VPN connections).
-
-Is it possible with netfilter to link some internal IP to a "load 
-balancing" between 2 ISPs and some other on just one of those ISP ?
-
-Is there a possibility to detect a "down" line and to use automatically 
-the second line for all our internals IP ?
-
-How can I manage the differents bandwith with "load balancing" ( I mean, 
-my first ISP average is something around 64 kbps and my second is 512 
-kpbs: How can I said to net filter 20% on this line and 80% on this line)
-
-Is there How to or Dosumentation for this on 2.6 kernel ?
-
-Thank you in advance for your help,
-
-Guillaume
-
- 
 
