@@ -1,13 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: re: -m state --state
-Date: 17 Jun 2003 08:52:25 +0200
+From: "PiSiC..." <pisic@service.agress.ro>
+Subject: DHCP related problem
+Date: Tue, 17 Jun 2003 11:30:39 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1055832745.674.4.camel@elendil.intranet.cartel-securite.net>
-References: <20030616233414.GC7125@tweedle.finchhaven.net>
+Message-ID: <001001c334aa$bcef4d30$c80da8c0@pisic>
+Reply-To: "PiSiC..." <pisic@service.agress.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000D_01C334C3.E0D3F480"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030616233414.GC7125@tweedle.finchhaven.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +17,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: John Sage <jsage@finchhaven.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Le mar 17/06/2003 =E0 01:34, John Sage a =E9crit :
-> From man 8 iptables, and the Linux 2.4 Packet Filtering HOWTO:
-> "--state [state]
-> Where state is a comma separated list of the connection states
-> to match..."
-> "Specifying `-m state' allows an additional `--state' option, which is
-> a comma-separated list of states to match (the `!'  flag indicates not
-> to match those states).  These states are..."
-> Is this comma-separated list creating a series of AND's or OR's?
+This is a multi-part message in MIME format.
 
-OR
+------=_NextPart_000_000D_01C334C3.E0D3F480
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
-> Thus -m state --state INVALID,NEW is
-> INVALID AND NEW
-> or
-> INVALID OR NEW?
+Hi all,
 
-INVALID OR NEW
+I want to ask you something... You know a possibility to drop outgoing =
+traffic of clients who define their address staticaly instead of using =
+my DHCP server ?
+I also want to allow outgoing access to those who have their IP address =
+given by my DHCP server.
 
-A packet has only one state at time. So, AND does not make sens at all.
+Thank you in advance,
+                                         Danila Octavian
+------=_NextPart_000_000D_01C334C3.E0D3F480
+Content-Type: text/html;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux - Cartel S=E9curit=
-=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-2">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi all,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I want to ask you something... You know =
+a=20
+possibility to drop outgoing traffic of clients who define their address =
+
+staticaly instead of using my DHCP server ?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I also want to allow outgoing access to =
+those who=20
+have their IP address given by my DHCP server.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thank you in advance,</FONT></DIV>
+<DIV><FONT face=3DArial=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+Danila Octavian</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000D_01C334C3.E0D3F480--
+
+
 
