@@ -1,13 +1,13 @@
-From: Deshwal Chand <CDD@kampsax.co.in>
-Subject: Difficulties in stopping mass advertisement IP directed broadcast
-	 popup windows
-Date: Fri, 5 Sep 2003 10:16:33 +0530
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: Difficulties in stopping mass advertisement IP directed broadcast popup windows
+Date: Fri, 5 Sep 2003 15:04:25 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <88116A11E9DFD411870900508BEC3831803CB6@CPQ01>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C25D@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C37368.AE93A310"
+	boundary="----_=_NextPart_001_01C3736B.2D879AE4"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +17,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: Deshwal Chand <CDD@kampsax.co.in>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C37368.AE93A310
+------_=_NextPart_001_01C3736B.2D879AE4
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Hi
+Stop the messenger service... isn't that easier?
 
-We used to receive ip directed popup windows mass messages. I blocked
-135,137-39, 445 ports and they stopped. Now they have started to come again.
+-----Original Message-----
+From: Deshwal Chand [mailto:CDD@kampsax.co.in]
+Sent: Friday, September 05, 2003 2:47 PM
+To: Netfilter (E-mail)
+Subject: Difficulties in stopping mass advertisement IP directed =
+broadcast popup windows
 
-Any comments!
 
 
-BR
-Chand
+Hi=20
 
-------_=_NextPart_001_01C37368.AE93A310
+We used to receive ip directed popup windows mass messages. I blocked =
+135,137-39, 445 ports and they stopped. Now they have started to come =
+again.
+
+Any comments!=20
+
+
+BR=20
+Chand=20
+
+
+------_=_NextPart_001_01C3736B.2D879AE4
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
 <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
 charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2653.12">
-<TITLE>Difficulties in stopping mass advertisement IP directed =
-broadcast popup windows</TITLE>
-</HEAD>
+<TITLE>Difficulties in stopping mass advertisement IP directed broadcast =
+popup windows</TITLE>
+
+<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></HEAD>
 <BODY>
+<DIV><SPAN class=3D644120405-05092003><FONT face=3DArial color=3D#0000ff =
+size=3D2>Stop=20
+the messenger service... isn't that easier?</FONT></SPAN></DIV>
+<BLOCKQUOTE dir=3Dltr style=3D"MARGIN-RIGHT: 0px">
+  <DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
+face=3DTahoma=20
+  size=3D2>-----Original Message-----<BR><B>From:</B> Deshwal Chand=20
+  [mailto:CDD@kampsax.co.in]<BR><B>Sent:</B> Friday, September 05, 2003 =
+2:47=20
+  PM<BR><B>To:</B> Netfilter (E-mail)<BR><B>Subject:</B> Difficulties in =
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">Hi</FONT>
-</P>
+  stopping mass advertisement IP directed broadcast popup=20
+  windows<BR><BR></FONT></DIV>
+  <P><FONT face=3DArial size=3D2>Hi</FONT> </P>
+  <P><FONT face=3DArial size=3D2>We used to receive ip directed popup =
+windows mass=20
+  messages. I blocked 135,137-39, 445 ports and they stopped. Now they =
+have=20
+  started to come again.</FONT></P>
+  <P><FONT face=3DArial size=3D2>Any comments!</FONT> </P><BR>
+  <P><FONT face=3DArial size=3D2>BR</FONT> <BR><FONT face=3DArial =
+size=3D2>Chand</FONT>=20
+  </P></BLOCKQUOTE></BODY></HTML>
 
-<P><FONT SIZE=3D2 FACE=3D"Arial">We used to receive ip directed popup =
-windows mass messages. I blocked 135,137-39, 445 ports and they =
-stopped. Now they have started to come again.</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Any comments!</FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">BR</FONT>
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Chand</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C37368.AE93A310--
+------_=_NextPart_001_01C3736B.2D879AE4--
 
