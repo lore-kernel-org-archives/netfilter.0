@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How to build a better security setup for my problem?
-Date: Sat, 13 Mar 2004 18:33:41 +0000
+Subject: Re: terminating connections when an interface goes down
+Date: Sat, 13 Mar 2004 18:44:50 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403131833.41690.Antony@Soft-Solutions.co.uk>
-References: <20040313181927.80861.qmail@web41605.mail.yahoo.com>
+Message-ID: <200403131844.50093.Antony@Soft-Solutions.co.uk>
+References: <1127959457.20040313192408@anime-h.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040313181927.80861.qmail@web41605.mail.yahoo.com>
+In-Reply-To: <1127959457.20040313192408@anime-h.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,57 +20,41 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 13 March 2004 6:19 pm, Vlad H. wrote:
+On Saturday 13 March 2004 6:24 pm, MaXxX wrote:
 
-> 1.) What activity are you trying to allow?
-> General internet access for a small group of users from a larger local
-> network: web, ftp, mail, etc.
+> Hello.
+>
+> Having recently switched to a faster ISP but with dynamically assigned
+> (and forcibly changed every 24h) IP, I'd like the conntrack module to
+> TERMINATE all active connections when the IP changes.
+>
+> So far I've been using the MASQUERADE target, but all the difference
+> between it and SNAT is that it forgets its connections. What I'd like
+> is that it terminated them - preferably by generating a two-way
+> FIN+RST (or whatever a "terminate" packet looks like).
 
-Okay, so you want these people to be able to do more or less anything, out to 
-the Internet....
+My recommendation is to use a utility quite independently of netfilter, which 
+gets called when your IP address changes (the dhcpcd-eth0.exe script would be 
+a good place to do this), and simply sends a suitable RST packet to each 
+connection found in /proc/net/ip_conntrack at the time it is called.   
+Netfilter will then sort itself out and remove the connection tracking table 
+entries when it sees the RST packets.
 
-> 2.) What activity are you trying to prevent?
-> Deny internet access for all other local users.
+I'm sure you can find a ready-made utility for generating such RST packets 
+(they have to contain the right sequence number) if you don't want to do your 
+own coding.
 
-Well, yes, I assumed that - what I really meant was "what do you suspect your 
-denied users will get up to, which you wish to detect and make ineffective?" 
-In this case it seems that the answer is IP and MAC address stealing / 
-spoofing.
+If you still want to try building this into netfilter, I suggest you ask on 
+the developers' list instead of the users' list.
 
-> 3.) What is your concern?
-> A denied user can change his mac address to aa:aa:aa:aa:aa:aa and ip
-> address to x.x.x.x for example and become a valid internet user.
-
-True.   Here are a few ideas which might help you:
-
-1. Run arpwatch and keep an eye on the MAC/IP combinations which you see on 
-the network.
-2. Install an ssh server on the machines which are allowed access to the 
-Internet, and periodically check that they can be connected to (using a 
-digital signature, not a password).
-3. Set up a VPN between the allowed clients and the firewall, so that a 
-machine which cannot set up a VPN tunnel cannot route to the Internet.
-4. Set up a proxy firewall instead of a packet filter, with user 
-authentication for things like ssh, ftp, http, and selective filtering for 
-things like pop3 & smtp.
-5. Require users to log in to a (local) web server with a username and 
-password, which if successful runs a script to install the netfilter rule 
-enabling them access to the Internet.   The rule is removed either after some 
-period of time, or when they close their browser connection, or something 
-similar which meets your needs.
-6. Don't give the users root (or Administrator) access to their machines so 
-they cannot change their IP & MAC addresses.
-7. Use a tool such as nmap to check the uptimes of clients which should be 
-allowed access, and investigate any which seem to jump forward or backward.
-
-Hope something here helps,
+Regards,
 
 Antony.
 
 -- 
-If you want to be happy for an hour, get drunk.
-If you want to be happy for a year, get married.
-If you want to be happy for a lifetime, get a garden.
+I want to build a machine that will be proud of me.
+
+ - Danny Hillis, creator of The Connection Machine
 
                                                      Please reply to the list;
                                                            please don't CC me.
