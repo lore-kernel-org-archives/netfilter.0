@@ -1,11 +1,10 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: What is the application sending packet out?
-Date: Fri, 4 Feb 2005 22:35:52 -0500 (EST)
-Message-ID: <Pine.LNX.4.05.10502042231340.352-100000@darkstar.sysinfo.com>
-References: <1107551244.24666.21.camel@nostromo.bgsecm.com>
+From: Joris <joriske@gmail.com>
+Subject: routing broadcast mac ethernet frames
+Date: Sat, 5 Feb 2005 08:24:23 +0100
+Message-ID: <afcf620205020423242dbf2877@mail.gmail.com>
+Reply-To: Joris <joriske@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1107551244.24666.21.camel@nostromo.bgsecm.com>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,53 +15,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Jose Maria Lopez <jkerouac@bgsec.com>
-Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 4 Feb 2005, Jose Maria Lopez wrote:
+Dear netfilter team,
 
-> El vie, 04 de 02 de 2005 a las 21:41, Mohammad Khan escribi=C3=B3:
-> > Hello List,
-> >=20
-> > I am not sure about some packet was trying to go out from my router.
-> > Is there a way to know, what application(s) is/are sending those
-> > packets?
-> >=20
-> > Thanks
-> > Mohammad
->=20
-> Yes, it's very easy. Just use ethereal to capture the packets
-> and identify the ports the application it's using to send the
-> packets, then use lsof -i to see what application it's using
-> that port.
->=20
-> Regards.
->=20
->=20
+I'd like to make a linux setup (both 2.4 and 2.6) accept and route
+packets on a lan with a broadcast mac.
 
-In most cases it is easier then that.  Knowing the ports that specific
-apps use can be the first determiner or narrower for making a possible
-answer pop up.  Netstat on the server in qustion is another method, lsof
-is not as common a tool on many vendor offerings still, and then if all
-else is failing falling back upon traffic captures from the wire.  Most
-the time the level of paranoia of going to the most aggresive and
-technically challenging mode is a 'ramp-up' kinda thing.
+Maybe it's a setting somewhere we haven't discovered yet, perhaps it
+can be done with an iptables rule, or perhaps someone can whip up a
+kernel patch?
 
-Thanks,
 
-Ron DuFresne
---=20
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        admin & senior security consultant:  sysinfo.com
-                        http://sysinfo.com
+This is why: certain embedded devices, such as some wifi accesspoints
+and some DSL modems, seem to have a common bug/feature.
+They keep an arp table, and any traffic from any host not in that
+table is re-sent with a broadcast mac address (ff:ff:ff:ff:ff:ff).
 
-...Love is the ultimate outlaw.  It just won't adhere to rules.
-The most any of us can do is sign on as it's accomplice.  Instead
-of vowing to honor and obey, maybe we should swear to aid and abet.
-That would mean that security is out of the question.  The words
-"make" and "stay" become inappropriate.  My love for you has no
-strings attached.  I love you for free...
-                        -Tom Robins <Still Life With Woodpecker>
+As far as I know, linux will happily accept packets like that when
+they're adressed to itself, but will not route them. This makes
+communication impossible in certain setups with linux as a router.
+A lot of people, especially wireless communities, are (knowingly or
+more likely unknowningly) suffering from this problem.
 
+Of course, those devices are buggy and should use ARP, but making
+linux 'compatible' is a lot easier than getting multiple hardware
+manufacturers to rewrite their firmware.
+
+
+
+
+Many thanks in advance,
+Joris & zombie
+
+
+A highly similar problem description I found on the linux-net list:
+http://marc.theaimsgroup.com/?l=linux-net&m=108263333208537&w=2
+Read this too: http://marc.theaimsgroup.com/?l=linux-net&m=108264197315176&w=2
 
