@@ -1,13 +1,13 @@
-From: William Stearns <wstearns@pobox.com>
-Subject: Re: Jeff's Rules
-Date: Mon, 17 Nov 2003 16:53:16 -0500 (EST)
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: proxy a dns
+Date: Mon, 17 Nov 2003 17:24:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0311171651090.22671-100000@sparrow>
-References: <3FB934C3.6080001@Loudoun-Fairfax.com>
-Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <3FB94AAB.2010807@Loudoun-Fairfax.com>
+References: <OF35D63A47.696E0D67-ON85256DE1.0066888E-85256DE1.0066CA71@kal.kalsec.com> <000d01c3ad41$80bb64b0$6500a8c0@ProxY>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FB934C3.6080001@Loudoun-Fairfax.com>
+In-Reply-To: <000d01c3ad41$80bb64b0$6500a8c0@ProxY>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,32 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Cc: nf <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Good evening, Jeff,
+Guillermo wrote:
 
-On Mon, 17 Nov 2003, Jeffrey Laramie wrote:
+>como puedo configurar que mi proxy squid redireccione las peticiones que le
+>llegan desde un pc de mi lan.... a un puerto 80 de otro proxy .....para que
+>pueda llegar a el servidor dns definitivo??
+>
+>tengo dos proxys...un squid y un wingate que sale directamente a internet...
+>pero los pcs de mi lan que pasan por el squid no pueden llegar por el puerto
+>53 al dns.... llegan al wingate y ahi quedan...
+>necesito que se redireccionen al puerto 80 para ue el squid asuma que es
+>cualquier pc de la otra lan...
+>
+>
+>  
+>
+As I can configure that my proxy squid redireccione the petitions that 
+him> arrive since a pc of my lan. ... to a port 80 of another proxy 
+.....para that> can arrive the servant dns final??  >> I have two
+proxys. ..un squid and a wingate that leaves directly to> internet... 
+but the pcs of my lan that pass for the squid cannot arrive> by the port 
+53 al dns. ... arrive al wingate and ahi remain..  > I need that
+itself redireccionen al port 80 for eu the squid assume that it is> any 
+pc of the other lan.. 
 
-> It's been a busy day on the mailing list and I've already spent far more 
-> time online than I should have, so I think this is a good time to share 
-> "Jeff's Unofficial Rules for Using a Mailing List":
 
-	We think alike... :-)
-	http://www.stearns.org/doc/howtoask.current.html
-	Cheers,
-	- Bill
+Ok, this didn't work. Can someone else help out with this one? I'm still 
+waiting for my squid to arrive.
 
----------------------------------------------------------------------------
-	"At Group L, Stoffel oversees six first-rate programmers, a
-managerial challenge roughly comparable to herding cats."
-	-- The Washington Post Magazine, 9 June, 1985
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
-Linux articles at:                         http://www.opensourcedigest.com
---------------------------------------------------------------------------
+Jeff
 
 
