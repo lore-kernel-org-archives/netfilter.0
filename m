@@ -1,13 +1,11 @@
-From: Sasa Stupar <sasa@stupar.homelinux.net>
-Subject: Re: SV: Ports opened without request
-Date: Thu, 26 Feb 2004 14:48:29 +0100
+From: =?ISO-8859-1?Q?Sven-=C5ke_Larsson?= <Sven-Ake.Larsson@hiq.se>
+Subject: RE: SV: Ports opened without request
+Date: Thu, 26 Feb 2004 16:53:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <403DF92D.3070504@stupar.homelinux.net>
-References: <IKEBLEEAACOIAKBCECDDOECICAAA.sven-ake.larsson@hiq.se>	 <403DE584.7020704@stupar.homelinux.net> <1077800995.2445.31.camel@raylinux.internal>
+Message-ID: <31A473DBB655D21180850008C71E251A07D3D630@mail.kebne.se>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077800995.2445.31.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,8 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter-List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: 'Netfilter-List ' <netfilter@lists.netfilter.org>
+
+=20
+I (but that's only me) always get nervous when there are lines like =
+"input
+accept". So yes, drop everything that it's not necessary.
+
+Best regards,
+S
+
+=20
+
+-----Original Message-----
+From: Sasa Stupar
+To: Netfilter-List
+Sent: 2004-02-26 14:48
+Subject: Re: SV: Ports opened without request
 
 So I should change default policy to DROP on FORWARD chain for filter=20
 only or also for mangle?
@@ -30,7 +44,8 @@ Ray Leach pravi:
 >On Thu, 2004-02-26 at 14:24, Sasa Stupar wrote:
 > =20
 >
->>I have scanned from another machine. Yes, I allow ICMP packets. I have
+>>I have scanned from another machine. Yes, I allow ICMP packets. I =
+have
 >>droped them and rescanned the machine but still the same issue.
 >>My current ruleset is:
 >>---------------------
@@ -45,8 +60,8 @@ Ray Leach pravi:
 >>-A INPUT -i lo -j ACCEPT
 >># Accept established connections
 >>-A INPUT -m state -i eth0 --state ESTABLISHED,RELATED -j ACCEPT
->>-A INPUT -p tcp -m tcp ! --tcp-option 2 -j REJECT --reject-with tcp-res=
-et
+>>-A INPUT -p tcp -m tcp ! --tcp-option 2 -j REJECT --reject-with
+tcp-reset
 >># FTP
 >>-A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
 >># Telnet
@@ -112,15 +127,16 @@ et
 >>
 >>   =20
 >>
->>>How did you make scan, from the machine itself or from another machine=
- on
->>>the outside? Some rulesets doesn't really work when you are at the sam=
-e
+>>>How did you make scan, from the machine itself or from another
+machine on
+>>>the outside? Some rulesets doesn't really work when you are at the
+same
 >>>machine.
->>>Do you allow any ICMP packets? If so, try to drop them too and scan th=
-e
+>>>Do you allow any ICMP packets? If so, try to drop them too and scan
+the
 >>>machine again.
->>>What is your current ruleset? It helps a lot if you can add it to the =
+>>>What is your current ruleset? It helps a lot if you can add it to =
+the
 list.
 >>>
 >>>I believe you'll have the masters answers soon... ;-)
@@ -138,15 +154,18 @@ list.
 >>>
 >>>Hi!
 >>>
->>>I have linux RH8 with kernel 2.4.20-28.8, iptables v1.2.8. I have setu=
-p
->>>a firewall with some tcp ports opened (21,25,80,110,443) for servers.
->>>Then I have ran a port scan  and scanned all 65535 tcp and udp ports. =
+>>>I have linux RH8 with kernel 2.4.20-28.8, iptables v1.2.8. I have
+setup
+>>>a firewall with some tcp ports opened (21,25,80,110,443) for =
+servers.
+>>>Then I have ran a port scan  and scanned all 65535 tcp and udp =
+ports.
 I
->>>was suprised that 3 ports were opened even if I didn't opened them in
+>>>was suprised that 3 ports were opened even if I didn't opened them =
+in
 >>>the configuration. These ports are tcp 389,1002 and 1720.
->>>I have tried to block them manually by entering a drop command for the=
-se
+>>>I have tried to block them manually by entering a drop command for
+these
 >>>three ports but no success-they are still open.
 >>>What am I missing here? Is this some problem with iptables?
 >>>
