@@ -1,13 +1,14 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: Many Many table rules
-Date: Tue, 14 Sep 2004 14:24:05 -0500
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Proto 41 filtering and processing...
+Date: Tue, 14 Sep 2004 18:19:30 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41474555.1030207@pbl.ca>
-References: <d82fbdb70409141006173a23f2@mail.gmail.com>
+Message-ID: <200409141819.30436.Alistair@nerdnet.ca>
+References: <20040913174539.GA17190@alcove.wittsend.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <d82fbdb70409141006173a23f2@mail.gmail.com>
+In-Reply-To: <20040913174539.GA17190@alcove.wittsend.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +18,84 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Michael Eck wrote:
-> I have a bridging traffic shaper that uses htb and sfq.  My iptables
-> and kernel are patched with ipp2p and layer-7 filtering to mark p2p
-> traffic.  Currently, this unit is at the head end of a broadband
-> network.  I'm dividing up my users into htb classes based on their
-> location on the network.  This amounts to 5 rules per IP address, 1
-> for generic traffic, and 4 for ipp2p and a few layer7 rules.  That
-> puts me at about 820 rules for the inside interface portion of my
-> iptables.
+On September 13, 2004 01:45 pm, Michael H. Warfield wrote:
+> Hey all,
+>
+> 	I've got some questions and some observations viv-a-vis proto 41
+> filtering (that "named" ipv6 but, what it really is, is 6over4 in the
+> IPv4 tables).  These are problems where IPv4 and IPv6 interreact or
+> interoperate and some recognition of both layers simultaniously is
+> required.
+>
+> 	There are cases where, in handling protocol 41 traffic, I want
+> to respond with IPv4 errors codes.  For instance, if I receive 6to4
+> traffic (protocol 41 traffic with IPv6 addresses in the 2002::/16
+> range) from an IPv6 range I don't want to talk to, I want to send back
+> and IPv4 ICMP protocol unreachable (indicating that I'm not going to
+> talk protocol 41 with him - think scanners).  To generate the IPv4 ICMP
+> unreachable error, this needs to be done in the IPv4 tables, correct?
+> But to select out the packets, I need to examine the IPv6 addresses in
+> the next header up.  So it's examination of the IPv6 information in the
+> 6over4 protocol (proto 41) by the IPv4 iptables.
 
-It might be a good idea to optimize things using user defined chains. 
-That way, packet that matches your 820th rule, wouldn't need to go 
-through 820 rules.
+	Okay -- as I understand things in this neck of the woods, protocol 41 is the 
+IPv4 tunnel into which we have stuffed the IPv6 packets.  Since this is a 
+tunnel, there should be an endpoint to the tunnel.  I have my firewall setup:
 
-For example, simple solution would be to have rules that match only by 
-protocol, and than from them jump into the chain where you match by IP 
-address, something like:
+iptables -I INPUT 7 -p 41 -s {ip(v4) of tunnel provider} -d {ip(v4) of  \ 
+firewall} -j ACCEPT
 
-   -A FORWARD -p tcp --dport aaa -j mychain
-   -A FORWARD -p tcp --dport bbb -j mychain
-   -A FORWARD -p udp --dport ccc -j mychain
-   -A mychain -s a1.b1.c1.d1 -d e1.f1.g1.h1 -j ACCEPT
-   -A mychain -s a2.b2.c2.d2 -d e2.f2.g2.h2 -j ACCEPT
-       ... and so on ...
-   -A mychain -j DROP
+(I also have a reciprocal rule in output to limit where I will let protocol 41 
+go out to )
 
-Or you could do it the other way around (first by IP addresses, and than 
-by protocol)...  Even with simple setup, if you have 200 clients and you 
-are allowing 5 protocols per client, in worst case packet would go 
-through 205 rules instead of 1000 rules.
+I suppose you could:
 
-Another idea that might work for you is using statefull matching, and 
-putting rule that matches ESTABLISHED packets as the first rule of 
-INPUT, OUTPUT and FORWARD chains, for example:
+iptables (-I -A) INPUT (rulenum?) -p 41 -s 0/0 -d {ip(v4) of firewall} -j  \ 
+REJECT --reject-with icmp-host-unreachable
 
-   -A FORWARD -m state --state ESTABLISHED -j ACCEPT
+so long as that rule *followed* the ACCEPT rule from your provider.
+I have a default DROP policy on INPUT and OUTPUT and FORWARD.  The firewall 
+does the tunnelling and ip6tables kicks in after the tunnel comes up.
 
-If this is the very first rule in forward chain, 99.99% of your network 
-traffic will be matched by it (so as performance goes, it's like you 
-have only one rule instead of 820).
 
-Only the very first packet of each connection would have to go through 
-subsequent rules (say 400 rules on average?).  And if you presorted 
-packets to user defined chains first, than this number will be even lower.
+>
+> 	Any thoughts on the best way to accomplish this?
+>
+> 	Second problem...
+>
+> 	Someone issues a proto 41 packet addressed to me but it doesn't
+> come FROM any source address I recognize in any of my SIT tunnels.  So,
+> it shows up as proto 41 in the IPv4 tables (does it?).  
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+	Yes indeedy it does.  I drop about 5 packets a day -- on a simple home router 
+on a DSL net.  I *believe* that these are likely from misconfigured *cough* 
+winboxen that have IPV6 pointed out the door and are looking for a tunnel. 
+*sigh* thanks MS.
+
+> Does it show up 
+> at all in any of the IPv6 tables?  If so, what input device?  If not, how
+> is the error generated?  Is it an IPv6 error from one of the IPv6 addresses
+> or is it an IPv4 error?  Thoughts on that?
+	
+	Unless you have the tunnel setup to the other end you will NOT see the ipv6 
+data, since the standard TCP stack will not unwrap the packet without the 
+tunnel code in place, so no it will NOT show up in ip6tables at this point.
+
+	I suppose that if you are leaking your ipv4 address into ipv6 packets 
+(application layer perhaps?) the remote ipv6 enabled hosts could well be 
+trying to talk back to you on ipv4 direct -- but those packets should be ipv4 
+packets OTHER than protocol 41.  I just accept that there are skiddidiots out 
+there and poorly configured systems, and drop the packets. 
+
+
+	(please note that ipv6 is not my strong suit, someone else out there might 
+have more details ....  and .. please read the sample rules carefully and 
+check syntax .. I may not be perfect today)
+	
+	Alistair Tonner
+>
+> 	Mike
 
