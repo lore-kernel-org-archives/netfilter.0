@@ -1,12 +1,17 @@
-From: "ganesh kumar godavari" <gkgodava@rediffmail.com>
-Subject: Re: Re: iptables problem with rules
-Date: 28 Jun 2002 21:30:38 -0000
+From: Jack Bowling <jbinpg@shaw.ca>
+Subject: Re: bridging with iptables (was no subject)
+Date: Fri, 28 Jun 2002 15:22:52 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020628213038.11959.qmail@webmail30.rediffmail.com>
-Reply-To: "ganesh kumar godavari" <gkgodava@rediffmail.com>
+Message-ID: <0GYF00FO1SU6ML@l-daemon>
+References: <000901c1000a$8aaa63e0$4d2848c7@shaggy>
+ <20020628194809.RPKD4626.mta02-svc.ntlworld.com@there>
+ <20020628220220.G4136@oknodo.bof.de>
+ <20020628200048.TETZ19225.mta07-svc.ntlworld.com@there>
+Reply-To: Jack Bowling <jbinpg@shaw.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
+In-Reply-To: <20020628200048.TETZ19225.mta07-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,68 +21,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain;
-	format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-hai anthony,
-  i am currently trying to limit the # of incomming packets.
+Nothing to add. Just changed the subject line to something useful for the archives and search engines.
 
-in my current setup i configured a linux router where i am running 
-iptables. i want to limit the # of packets comming in and also 
-being forwarded. the rules must be specified for both input and 
-forward chain. i am currently testing them for the input chain.
+jb
 
-please tell me if u need further more information.
 
-Thanks
-ganesh
+** Reply to message from Antony Stone <Antony@Soft-Solutions.co.uk> on Fri, 28 Jun 2002 21:00:46 +0100
 
-On Fri, 28 Jun 2002 Antony Stone wrote :
->On Friday 28 June 2002 7:04 pm, ganesh kumar godavari wrote:
->
-> > hello group,
->
-> >   i want to limit
-> >   the # of packets based on the type of protocol used
+
+> On Friday 28 June 2002 9:02 pm, Patrick Schaaf wrote:
+> 
+> > Hi Antony,
 > >
-> >   i have used iptables rules like
+> > > Hmmm.   I thought a bridge was supposed to have the same address on both
+> > > interfaces.   Still, I've never set one up myself, so maybe there's more
+> > > than one way to do it.
 > >
-> > #Syn-flood protection:
-> >   iptables -A FORWARD -s a.b.c.d -p tcp --syn -m
-> >   limit --limit 1/s -j ACCEPT
-> >
-> > the rule doesn't help to stop the packets
-> >
-> > i tried the following rule it helps me to stop the ping 
->flood
-> > attack
-> >
-> >   iptables -A INPUT  -s 128.198.60.195 -p icmp
-> >   --icmp-type echo-request -m limit --limit 1/s -j
-> >   ACCEPT
-> >   iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
->
->I am confused about whether you are trying to stop packets coming 
->in to the
->machine running netfilter (ie you are putting the rules in the 
->INPUT chain)
->or whether you are trying to stop packets going through the 
->netfilter machine
->to another host (ie you are putting the rules in the FORWARD 
->chain).
->
->Please can you clarify your network setup ?
->
->
->
->Antony.
->
-
-_________________________________________________________
-There is always a better job for you at Monsterindia.com.
-Go now http://monsterindia.com/rediffin/
-
+> > A bridge, by its nature, has no IP addresses at all. The original poster
+> > is asking about a pure router.
+> 
+> Ugh.   In that case I recommend using IPs from two *different* network ranges 
+> on the two sides of the machine !
+> 
+> > And you are right on spot with your observation about the ability of a
+> > malicious user to fake her MAC address at will. And one nice thing about
+> > most wireless networks is that I can just listen to the air for some time
+> > to learn what MAC/IP combination it is that I should fake after it became
+> > silent...
+> 
+> Indeed.   There may be anti-sniffing measures available for wired networks, 
+> but I know of nothing which can detect / defeat sniffing on wireless.
+> 
+>  
+> 
+> Antony.
 
