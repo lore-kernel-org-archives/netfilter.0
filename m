@@ -1,11 +1,11 @@
-From: darcy w.christ <darcy@1000camels.com>
-Subject: DNAT and udp
-Date: Thu, 23 May 2002 12:58:58 -0400
+From: jmc <jmc@_REMOVE_prioris.mini.pw.edu.pl>
+Subject: Autoloading h323 module
+Date: Thu, 23 May 2002 17:28:36 +0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <60031D7A-6E6E-11D6-A1A0-000502212A00@1000camels.com>
-Mime-Version: 1.0 (Apple Message framework v481)
-Content-Transfer-Encoding: 7bit
+Message-ID: <20020523172836.GA32496@62-moo-3.acn.waw.pl>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,37 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-hi,
+Hi,
+I am trying to autoload <via kmod> some modules from iptables,
+specifically ip_conntrack_h323.o. I can load it manually, but to do it
+automatically I need to have the correct info. in my /etc/modules.rc file.
+If anyone else uses this method of module loading and can help me with my
+options I would be very grateful.
 
-   i'm trying to do some DNATing and i'm having some trouble.  The 
-particular problem exists only for a udp port.  The port is 3283.  It's 
-for apple's remote desktop.   i've got allow DNATs setup for appletalk 
-and other protocals over tcp.  They work fine.  But when i try to 
-connect to this port, i see the following logged.
+The rest of iptables seems to load OK without any options in my
+modules.conf file which makes me think I might be using the module
+wrongly. I simply expect it to autoload when an h323 connection is made.
+In my rules I just use:
 
-May 23 12:41:31 one kernel: IN= OUT=eth0 SRC=192.168.0.4 
-DST=64.229.137.72 LEN=66 TOS=0x00 PREC=0x00 TTL=63 ID=6476 PROTO=UDP 
-SPT=3283 DPT=3283 LEN=46
-May 23 12:41:41 one kernel: IN= OUT=eth0 SRC=192.168.0.4 
-DST=192.168.181.3 LEN=33 TOS=0x00 PREC=0x00 TTL=63 ID=6486 PROTO=UDP 
-SPT=3283 DPT=3283 LEN=13
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-My question is is why do i see the 192.168.181.3 address, which is what 
-is suppose to be DNATed.  Obviously my machine cannot get to it.  The 
-logs for the other tcp ports shows only the first line and the 
-connection works.
+Someone please correct me if this is not the case.
+The modules which I have loaded are:
 
-Anyway, here is the rule i have.
+ipt_state
+ip_conntrack
+iptable_filter
+ip_tables
 
-/sbin/iptables -A PREROUTING -t nat -i ppp0 -p udp --dport 3283 -j DNAT 
---to 192.168.181.3:3283
+I have checked the files in the source, the FAQ's and archives but can't
+find anything on how to do this. I also saw someone else with the same
+trouble, but their question went unanswered.
 
-i appreciate any thoughts that anyone has.
-
-~darcy w. christ
-1000camels in a courtyard
-
+Many thanks for any help,
+Jmc.
 
