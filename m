@@ -1,12 +1,12 @@
-From: Gerd Knops <gerti-netfilter@bitart.com>
-Subject: Re: Force route to local?
-Date: Sat, 19 Feb 2005 14:55:07 -0600
-Message-ID: <a2d48c3f21c595b1b842a45d64bd3929@bitart.com>
-References: <9d2f2ab5f3a89fcc41889f81fb56ac77@bitart.com>
-	<1108839617.8303.1.camel@hubcap.ljm.dom>
-Mime-Version: 1.0 (Apple Message framework v619.2)
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108839617.8303.1.camel@hubcap.ljm.dom>
+From: spdesai@gnvfc.net
+Subject: IP traffic/accounting  per user
+Date: Sun, 20 Feb 2005 09:48:39 +0530
+Message-ID: <1108873119.42180f9f66ae7@mail.gnvfc.net>
+References: <20050214110926.99202.qmail@web53709.mail.yahoo.com>
+	<16210062593.20050214144250@osetia.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <16210062593.20050214144250@osetia.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jason Opperisano <opie@817west.com>
+Content-Type: text/plain; charset="us-ascii"
+To: maxim@osetia.org
 Cc: netfilter@lists.netfilter.org
 
+Hello ..
 
-On Feb 19, 2005, at 1:00 PM, Jason Opperisano wrote:
+I have installed NetAMS on my IPTABLE server to monitor per IP traffic and 
+based on that accounting them..
 
-> On Sat, 2005-02-19 at 13:33, Gerd Knops wrote:
->> (BTW If you are wondering why: There are a bunch of web sites hosted 
->> on
->> the firewall system. I could just add them all to the internal name
->> server and return the local address. But I shouldn't have to...)
->
-> i respectfully disagree--you should have to.
->
-Thanks for the response, but could you please enlighten me why I can't 
-do what I am trying to do? I just can not see a reason that would 
-preclude this from working. And sorry if this is a dumb question, i 
-really spent hours reading through documentation and working with 
-ethereal etc...
+It generating html file regurely but it is not updated...i.e it show Zero 
+In/Out traffic for hour/month/week etc.
 
-Thanks
+when i run netams it show below message at the end.
+  
+NeTAMS is now operational, 20.02.2005 09:54:31
+Shutdown signal received at 20.02.2005 09:54:31
+NeTAMS exiting at 20.02.2005 09:54:31
 
-gerd
+Pl. help me for proper configuration..
+
+thanks in advance
+
+suhag
+
+
+
+
+-------------------------------------------------
+This mail sent through IMP: http://horde.org/imp/
 
 
