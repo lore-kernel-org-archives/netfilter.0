@@ -1,12 +1,18 @@
 From: Oskar Andreasson <blueflux@koffein.net>
-Subject: Re: protocol specification
-Date: Wed, 17 Sep 2003 11:50:52 +0200 (CEST)
+Subject: Re: STATELESS
+Date: Wed, 17 Sep 2003 12:00:58 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309171148520.3253@oskar-lap.agatha>
-References: <3F668C64.6060500@kdtc.net>
+Message-ID: <Pine.LNX.4.53.0309171156180.3253@oskar-lap.agatha>
+References: <02ba01c37c46$bb7a5f60$798014ac@matthew>  <200309161256.15286.gdh@acentral.co.uk>
+  <1063716386.31093.160.camel@raylinux.internal>  <20030916131153.GA16559@cannon.eng.us.uu.net>
+  <1063720447.31093.166.camel@raylinux.internal>  <20030916141505.GB16559@cannon.eng.us.uu.net>
+  <plopm3isnshj1n.fsf@drizzt.kilobug.org>  <20030916155001.GE16559@cannon.eng.us.uu.net>
+  <1063731433.784.25.camel@elendil.intranet.cartel-securite.net> 
+ <1063736564.2429.44.camel@ranjeet-pc2.zultys.com>
+ <1063737473.786.73.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F668C64.6060500@kdtc.net>
+In-Reply-To: <1063737473.786.73.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +24,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: cc <cc@kdtc.net>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Ranjeet Shetye <ranjeet.shetye2@zultys.com>, Ramin Dousti <ramin@cannon.eng.us.uu.net>, =?ISO-8859-1?Q?Ga=EBl?= Le Mignot <kilobug@freesurf.fr>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Bad mistake on my part actually, and for some strange reason, people tend
-to discover bugs "in group" (you're the 3rd person talking about
-this in less than a week;)). In other words, I have this fixed locally,
-will update when I get the rest of the  material finished.
+On Tue, 16 Sep 2003, Cedric Blancher wrote:
 
+>
+> See documentation at :
+>
+> 	http://www.suse.de/~mha/linux-ip-nat/diplom/nat.html
+>
+> With 2.2 kernels, one was able to achieve simple NAT with iproute, but
+> it was far from flexible.
+>
 
+Yupp, not as flexible, but much faster than netfilter NAT. It doesn't rely
+on any kind of connection tracking at all, which is part problem, part
+good thing. Good thing is, you get much lower overhead (and hence can
+shovel more packets through), bad thing is, it gets less flexible, and it
+isn't secure per se (doesn't track, and hence no knowledge about 3-way
+handshakes, and no filtering).
 
-On Tue, 16 Sep 2003, cc wrote:
+Of course, it may suite much better on a router I assume, and if you want
+filtering like that, you may as well run netfilter NAT anyways.
 
-> Hi,
->
-> Can someone clarify whether I've made a mistake or
-> mis understood the tutorial?  I'm using the latest
-> iptables (1.2.8 I believe) on a Linux 2.4.22 machine.
->
-> In the tutorial, it says -p tcp,udp is permitted;
-> but the manpage states nothing of the sort(but
-> implies that it can't be done that way).
->
-> In the past, I've been using two lines for both
-> tcp and udp settings.  I just decided to re-read
-> on the tutorial and noticed that I could use
-> the tcp,udp (or udp,tcp) way.  Saves space.
->
-> But it doesn't work.  I googled and came up with
-> an archived message stating that there is indeed
-> an error, but that was two years ago.
->
-> If it is indeed true that I can't specify protocols
-> like that, is there a patch that can allow me to
-> do this?
->
-> Thanks for the clarification.
->
->
->
->
+> I must admit that, even if this option is activated into my kernel, I
+> don't use it at all.
 >
 
 ----
