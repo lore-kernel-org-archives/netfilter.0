@@ -1,10 +1,13 @@
-From: Tim Cronin <tim@13-colonies.com>
-Subject: iptables and linuxVirtualServer
-Date: Wed, 2 Oct 2002 10:52:06 -0500
+From: "Clint Todish" <ctodish@crayon.com>
+Subject: RE: transfer Bytes Counting
+Date: Wed, 2 Oct 2002 11:13:29 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <71FD63241A2DD511AFED00010236A4B33224B3@LIVAUDAIS>
+Message-ID: <MGEJJDEEGMBGKBIMLPDDAEELCBAA.ctodish@crayon.com>
+References: <200210021433.g92EX1L08338@vulcan.rissington.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200210021433.g92EX1L08338@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,55 +18,51 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
-
-I have a box I'm using as a gateway to a private network.
-It does lvs_nat to expose http and ftp services.
-eth0 is my external nic.
-it's running rh 7.3 /w kernel 2.4.19
-I've go the connection tracking modules loading.
-
-I've posted this on the lvs mailing list and it was suggested 
-I post here as well.
-
-I'm having problems with the following
-iptables -A INPUT -i eth0 -p tcp ! --syn -m state --state NEW -j DROP 
-if this rule is set I'm unable to connect to my web server.
-
-I added the following 
-
-iptables -A INPUT -i eht0 -p tcp ! --syn \
--m state --state NEW \
--j LOG --log-prefix "IPTABLES SYN: "
-
-and I get the following log
-
-Oct  1 11:12:24 loadbalancer kernel: 
-IPTABLES SYN: 
-IN=eth0 OUT= 
-MAC=00:80:ad:98:14:94:00:b0:d0:2c:96:16:08:00 
-SRC=172.24.1.24 
-DST=172.24.1.251 
-LEN=411 TOS=0x00 PREC=0x00 TTL=128 ID=61175 DF 
-PROTO=TCP 
-SPT=1262 
-DPT=80 
-WINDOW=64240 RES=0x00 ACK PSH URGP=0
-
-if I add the following before the rule above
-
-iptables -A INPUT -i eth0 -p tcp ! --syn --dport http -m state --state NEW
--j ACCEPT
-
-I can get access, but this seems to defeat the purpose.
-
-I'm guessing that since the http requests are being handled by
-lvs iptables doesn't track the state, but this is just a swag on my part.
-
-any help would be appreciated.
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
 
 
+What might be exceeding useful is the addition of in/out packet counters in
+/proc/net/ip_conntrack - kind of like Cisco's netflow. Not only would
+historical info been gleaned, but a nice real-time "what's goin on with the
+net" tool could be built off of that.
 
+-C
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+Sent: Wednesday, October 02, 2002 9:33 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: transfer Bytes Counting
+
+
+On Wednesday 02 October 2002 2:39 pm, HareRam wrote:
+
+> Hi
+>
+> thanks for the reply
+> i did the same, but iam not able to see the in and out bytes
+
+If you mean a separate count of bytes in each direction on the connection,
+you would need to have two rules, one to count packets in and one to count
+packets out.
+
+> is there any way i can send those packets to mysql
+> from there i can generate report
+
+I believe other people have posted to this list with mechanisms for
+capturing
+log entries to sql database - can anyone post a tool or URL to help with
+this?
+
+Antony.
+
+--
+
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
+
+ - Frank Skinner
 
 
