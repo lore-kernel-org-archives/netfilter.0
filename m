@@ -1,44 +1,40 @@
-From: Bobo <boboaq@163.com>
-Subject: How does a NAT-packet traverse?
-Date: Fri, 14 Mar 2003 15:2:11 +0800
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20030314070154.5FDA81CFB5E00@sm203.163.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: How does a NAT-packet traverse?
+Date: Fri, 14 Mar 2003 09:10:31 +0100
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019C48@hslex01.hslbz.local>
+References: <20030314070154.5FDA81CFB5E00@sm203.163.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030314070154.5FDA81CFB5E00@sm203.163.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
-Cc: netfilter-devel@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+> Will these packets pass through INPUT chains and go 
+> out from OUT chains?and  they are changed at the local process ?
+
+No, the INPUT and OUTPUT are chains *only* used by the local iptables
+machine.
+FORWARD is the chain used by PC's on your lan.
+
+> I am puzzled now .
+
+Did you look in the iptables tutorial (chapter 3) ?
+http://iptables-tutorial.frozentux.net/
+
+There is an explanation with pic in it.
 
 
-
- Hello:
-
-        Now,I  am studying how to setup Iptable rules,and I meet a question.
-
-        I would like to know how netfilter  do with a packet which is the response of 
-
-        a NAT-packet from the inside network?
-
-        Where does netfilter do with these packets and give them original IP address?
-  
-       Will these packets pass through INPUT chains and go out from OUT chains?and  they are
-
-       changed at the local process ?
-
-        I am puzzled now .
-
-       Hope to know of it soon .
-
-      Thanks
+Rob
 
 
