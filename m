@@ -1,51 +1,93 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Second shot at IPTables script
-Date: Fri, 17 Dec 2004 19:50:26 -0500
-Message-ID: <200412171950.26445.JALaramie@Loudoun-Fairfax.com>
-References: <6.1.2.0.0.20041217130746.026796b0@corpmail.courtesymortgage.com>
-	<200412171840.20625.JALaramie@Loudoun-Fairfax.com>
-	<1103328683.3262.57.camel@hubcap.ljm.dom>
+From: Phil Dibowitz <phil@ipom.com>
+Subject: REPOST: nfnetlink / ctnetlink / iptables2 questions
+Date: Fri, 17 Dec 2004 21:48:35 -0800
+Message-ID: <41C3C4B3.2060003@ipom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1103328683.3262.57.camel@hubcap.ljm.dom>
-Content-Disposition: inline
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary=------------enigBA121E421DAAD2C0ABE2DDC3
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-> > > then the rules should have interface restrictions as well.  do or do
-> > > not do, there is no try.
-> >
-> > Huh? If it's not an IP you assigned why let it out on any interface? I'm
-> > not sure I follow you here.
->
-> sorry, i suppose i wasn't very clear--what i meant was...instead of
-> using a rule that says:
->
->   iptables -A OUTPUT -s $LAN_IP -j ACCEPT
->
-> restrict it by interface as well as by IP:
->
->   iptables -A OUTPUT -o $LAN_IF -s $LAN_IP -j ACCEPT
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigBA121E421DAAD2C0ABE2DDC3
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-OK, now I see your point.
->
-> this is all matter of opinion.  i'm not trying to dictate anything here.
+NOTE: I'm reposting this as I never got a response. I independently 
+posted to both netfilter and netfilter-devel before, but am now posting 
+to both. Hopefully _someone_ can answer this.
 
-The whole issue is essentially theoretical since changing IP addresses 
-requires root access. If it ever gets to this you're only buying yourself a 
-few minutes and an intruder would probably rather have the original 
-functioning connection anyway.
 
-Jeff
+Hey folks,
+
+A while back Herald Welte emailed me (and CC'd the list) and suggested I 
+port my application (iptstate) to use the new ctnetlink/nfnetlink 
+framework (as opposed to reading data out of /proc).
+
+I haven't had much time since then, but I decided to sit down and look 
+at this, and I'm a bit confused by what I found. I found libnfnetlink here:
+http://ftp.iasi.roedu.net/netfilter/libnfnetlink/snapshot/
+and libctnetlink here:
+http://ftp.iasi.roedu.net/netfilter/libctnetlink/snapshot/
+
+And since cfnetlink requires nfnetlink, I went to compile that first. 
+And ran into some problems. So I started browsing the archives, and it 
+seems people refer to an old "ctnetlink/nfnetlink" and a new one... and 
+the new one is part of "iptables2" ? I haven't followed 
+netfilter/iptables developement very carefully, so I don't know what 
+iptables2 is, but seems to be the latest suite of "frontend" 
+applications to netfilter.
+
+At the very least, libnfnetlink requires nfnetlink.h, which I would have 
+thought was part of libnfnetlink, but it appears it's not. I found a 
+mention of a "release" of iptables2 here:
+
+http://lists.netfilter.org/pipermail/netfilter/2001-November/016646.html
+
+but the download requires a password which I don't have. Additionally 
+the post talkes about a whole lot of kernel incompatibilities between 
+old versions and new versions and it doesn't appear the latest versions 
+have made it into the main kernel tree yet. Is this correct? If so, this 
+doesn't actually sound like something ready for primetime yet...
+
+Perhaps someone can relate ctnetlink/nfnetlink (old and new) to 
+libcfnetlink/libnfnetlink and iptables2, and the current kernels for me?
+
+Thanks...
+-- 
+Phil Dibowitz                             phil@ipom.com
+Freeware and Technical Pages              Insanity Palace of Metallica
+http://www.phildev.net/                   http://www.ipom.com/
+
+"They that can give up essential liberty to obtain a little temporary
+safety deserve neither liberty nor safety."
+  - Benjamin Franklin, 1759
+
+
+--------------enigBA121E421DAAD2C0ABE2DDC3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFBw8SzN5XoxaHnMrsRAvE7AJ4/kfpR0NBppSshbobanFv7ZKG9+QCgqAkn
+Q/pMYco5X+TNvn07cstXMoA=
+=Hetd
+-----END PGP SIGNATURE-----
+
+--------------enigBA121E421DAAD2C0ABE2DDC3--
 
