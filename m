@@ -1,12 +1,11 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
-Subject: Re: --set-mark
-Date: Wed, 12 Jan 2005 09:59:14 -0500 (EST)
-Message-ID: <32492.142.169.215.10.1105541954.squirrel@142.169.215.10>
-References: <41E52B7C.9070802@uplink-verein.ch>
+From: Trevor Cordes <netfilter@tecnopolis.ca>
+Subject: Re: netfilter Digest, Vol 6, Issue 22
+Date: Wed, 12 Jan 2005 08:47:06 -0600 (CST)
+Message-ID: <200501121447.j0CEl6p1027271@pog.tecnopolis.ca>
+References: <200501110024.j0B0Os0S018657@pog.tecnopolis.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41E52B7C.9070802@uplink-verein.ch>
+In-Reply-To: <200501110024.j0B0Os0S018657@pog.tecnopolis.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,57 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Moritz Gartenmeister <moritz@uplink-verein.ch>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+Cc: sschmidt@compass.net.nz
 
-On Wed, January 12, 2005 8:51 am, Moritz Gartenmeister said:
-> hi all
->
-> i have a problem with -j MARK --set-mark
->
-> everthing was working until i changed the kernel and iptables ;-)
->
-> before i had kernel 2.6.7 and iptables 1.2.9 (and everything was workin=
-g
-> perfectly)
+> From: "Curby ." <kirbysdl@hotmail.com>
+> 
+> In what order should i have /etc/init.d/network and my iptables setup script 
+> (henceforth called "iptables") start?
 
-ipt_MARK suffered of new versioning system. However, it's only in SVN and
-should work perfectly since testsuite for 2.6.10 works.
+I've though about this also.  In RH/FC it defaults to iptables then
+network.  This seems the only safe and sensible solution.
 
->
-> now i have kernel 2.6.10 and iptables 1.2.10
+> If iptables starts before network, then network could override settings in 
+> /proc/sys/net when it calls upon /etc/sysctl.conf.   Additionally, it would 
 
-Haven't tested with 1.2.10 tho. Will do.
+I haven't given that issue much thought.  I have not yet run into any
+conflicts or difficulties.
 
-> error message:
-> iptables: Invalid argument
+> be harder to identify dynamic IPs, additional IPs set with "ip addr add," 
+> etc.  simply because the network isn't up yet.
 
-Looks like checkentry() didn't like something. Are you sure both
-userspace and kernelspace share the same structure (i.e.: you compiled
-iptables against your 2.6.10 source and do _use_ that iptables binary) ?
+I too need to identify dynamic IP's and so I do exactly what you
+suggested by running iptables before network and my iptables script
+detects that the net is down and queues itself to run again every 30
+seconds until successful (ie: can resolve domain names).
 
-> MARK target exists:
-> sudo /usr/local/sbin/iptables -I FORWARD -j MARK
-> iptables v1.2.11: MARK target: No action
-
-So you are using iptables-1.2.11 finally ?
-
-> was something changed in the syntax? do i have to use another modul?
-
-I can't tell you (cause my boss is watching me) but ipt_MARK sure
-has been modified to add new 'AND' & 'OR' mark features.
-
-I don't think it's in released iptables and kernel yet. (AFAIK)
-
-(I might be wrong since I don't play with ipt_MARK)
-
->
-> regards
-> moritz
-
-Will give a try at home,
-
-Samuel
+This has been very successful for me.
 
 
