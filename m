@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Balancing Web Traffic
-Date: Tue, 29 Mar 2005 16:45:05 -0500
-Message-ID: <20050329214505.GA11669@bender.817west.com>
-References: <1112108665.1136.48.camel@Knoppix>
+From: Jorge Enrique <nunezj@ucbcba.edu.bo>
+Subject: Problemas REDIRECT
+Date: Tue, 29 Mar 2005 18:08:14 -0400
+Message-ID: <1112134095.8721.76.camel@admin.ucbcba.edu.bo>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1112108665.1136.48.camel@Knoppix>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Mar 29, 2005 at 05:04:25PM +0200, Miguel Amador wrote:
-> Hi all
-> 				
-> I have:	
-> 				      ___ WWW1 __
-> Inet <--> [Iptables/Netfilter Box ---|	         |- BD
-> 				     |___ WWW2 __|
-> 					
-> My question is, somebody know anyway to balanced the traffic to the
-> Webservers with iptables ?
->  I know that if i repeat Nat's rules for different ip's (ip's of web
-> services) iptables does a primitive balanced... but anybody know other
-> way ?
+Hola a todos, una pregunta se me presento problemas con mis reglas de mi
+firewall.
 
-you can do bone-headed round-robin load-balancing with "-j DNAT --to
-destination $WWW1_IP --to-destination $WWW2_IP"
+Estado probando los redireccionamientos la idea es la siguiente:
 
-for intelligent load-balancing, look at:
 
-http://www.linuxvirtualserver.org/
+              Internet
+                 |
+		 |
+		 V
 
--j
+ 		Firewall  ----> Server web
+			    |
+			    |-> Usuario1
 
---
-"I saw weird stuff in that place last night. Weird, strange, sick,
- twisted, eerie, godless, evil stuff. And I want in."
-         --The Simpsons
+ Configure primero para q desde internet lo vean a mi server web
+
+ iptables -A PREROUTING -s 0/0 -d IP_PUBLICA -j DNAT -to IP_SERVER_WEB
+
+ Esto funciona bien pero los usuarios de mi red privada no la pueden
+acceder a mi sito en mi server web, pero desde afuera si..
+
+ estado viendo lo siguiente pero no me esta funcionando
+
+ iptables -A PREROUTING -s RED_PRIVADA -d IP_PUBLICA -p tcp --dport 443
+-j REDIRECT -to-ports 443
+
+  Cual puede ser el problema o donde me estoy equivocando, ayuda????
+
+
+
+
+
+
 
