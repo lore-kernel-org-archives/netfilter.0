@@ -1,12 +1,11 @@
-From: Michael <mutk@iprimus.com.au>
-Subject: Re: forward is not forwarding
-Date: Fri, 06 Sep 2002 19:09:30 +1000
+From: Tomas Edwardsson <netfilter-people@tommi.org>
+Subject: /proc/net/ip_conntrack info
+Date: Thu, 5 Sep 2002 11:33:52 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D7870CA.4010803@iprimus.com.au>
-References: <EF33C96B91C212479FA2B0B0A96868F80102C887@sydxch02.veritas.com>
+Message-ID: <20020905113352.B3918@hp.is>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: IPtables Users <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-Abraham Kim wrote:
+Hiay
 
-> Dear Stewart, Chris, Steve, and many others...
->  
-> Thanks for giving me help on this.
-> <snip>
->  
-> I know it does not quite fit to this mailing list, but could anyone
-> shout at me if you had similar experience and a tip together?
+Is there any documentation on the contents of ip_conntract. Exactly what each field means.
+What I can't actually figure out is the 3rd argument which is numeric and seems to be
+a decrementing counter, but what does it do?
 
-I'll bet it's the classic DNS problem in Linux.
-Add the solaris machine's name to /etc/hosts on Linux.
-
-Or if the machines you are connecting to are on DNS, make the Linux 
-system can DNS the machines properly
-
-Cheers,
-Michael
-
+- Tomas Edwardsson
+- Unix/Linux Support
+- Opin Kerfi
 
