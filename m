@@ -1,12 +1,14 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iprange match processing overhead
-Date: Mon, 5 May 2003 10:17:07 +0200 (CEST)
+From: "John Guntenaar" <john@guntenaar.nl>
+Subject: RE: per user IP adresses
+Date: Mon, 5 May 2003 10:30:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0305051004570.607-100000@blackhole.kfki.hu>
-References: <1051714001.3448.3.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <000401c312e0$8bf85d70$0200a8c0@WKSJOHN>
+References: <01CEA3A5B8B2D511890F0002A5870AEC0128AD85@EXCHANGE>
+Reply-To: <john@guntenaar.nl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1051714001.3448.3.camel@jasiiitosh.nexusmgmt.com>
+In-Reply-To: <01CEA3A5B8B2D511890F0002A5870AEC0128AD85@EXCHANGE>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +18,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Khanh Tran' <khanh@slc.edu>
 Cc: netfilter@lists.netfilter.org
 
-On 30 Apr 2003, John A. Sullivan III wrote:
+That won't work either because the IP's are aliased, so the all have the
+same MAC address.
 
-> We've done some initial testing of the iprange patch and are thrilled
-> with it.  However, is it any more processing intensive to use an iprange
-> match than to use the standard source or destination match, i.e., -s
-> rather than -m iprange --iprange --src/dst-range? Thanks- John
+I just want that userid 1234 can't use IP 1.2.3.4 BUT userid 1235 CAN
+use that IP to bind for things like IRC sessions (for like a vhost or
+something).
 
-Yes.
+-----Oorspronkelijk bericht-----
+Van: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] Namens Khanh Tran
+Verzonden: maandag 5 mei 2003 2:10
+Aan: john@guntenaar.nl
+CC: netfilter@lists.netfilter.org
+Onderwerp: RE: per user IP adresses
 
-The iprange match is an extension, which means that it's preceded by an
-implicit match against the any address (as if -s 0.0.0.0/0 -d 0.0.0.0/0
-were specified).
+I think what you want to do is continue to use your rule that drops all
+IRC
+packets, but then add a rule that will -m --mac yo:ur:ma:ca:dd:re:ss and
+-j
+ACCEPT for IRC ports.  Remember to put the match rule for your MAC
+address
+after the drop rule since the rules are processed in order!
 
-But I don't think you'd notice the extra overhead. :-)
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Khanh Tran
+Network Operations
+Sarah Lawrence College
+
+-----Original Message-----
+From: John Guntenaar [mailto:john@guntenaar.nl]
+Sent: Sunday, May 04, 2003 3:19 PM
+To: netfilter@lists.netfilter.org
+Subject: RE: per user IP adresses
+
+
+I think you didn't understand my question,
+
+Ofcourse I can just set open that IP address, but I only want it to be
+open for my own user (so the other users CAN'T use the IP)
+
+I think I need things like -m owner --owner-uid or something but I can't
+figure out a good rule, I get errors on everything I try :(
+
+John
+
+-----Oorspronkelijk bericht-----
+Van: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] Namens SaVaGE
+Verzonden: zondag 4 mei 2003 21:19
+Aan: netfilter@lists.netfilter.org
+Onderwerp: Re: per user IP adresses
+
+Op zondag 4 mei 2003 20:38, schreef John Guntenaar:
+> Hello,
+>
+> I have a linux machine with 4 IP addresses, I have a couple of friends
+> on that machine and I don't allow them to use IRC, so I simply blocked
+> the IRC ports, but I want to use IRC from the 4th IP without the other
+> users being able to use it. I think I can reach that goal by using the
+> owner match facility of iptables, though I can't find any good
+examples
+> with google, is it correct and can somebody post an example?
+>
+> Thanks in advantage,
+>
+> John
+
+this one is very easy , you can use the same rule , you used before ,
+but now 
+you say :     ..........     -s ! $4th_ip -j DROP
+
+
+Pascal
+
+
+
+
+
+
+
 
 
