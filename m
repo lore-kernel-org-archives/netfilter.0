@@ -1,10 +1,10 @@
-From: Mohammad Shakir <shakirz1@yahoo.com>
-Subject: Need Halp in Netfilter
-Date: Wed, 15 Jan 2003 02:41:30 -0800 (PST)
+From: Kurt Tragant <k.tragant@firemail.de>
+Subject: compiling iplimit
+Date: Wed, 15 Jan 2003 12:19:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030115104130.6396.qmail@web40710.mail.yahoo.com>
+Message-ID: <1042629562027740@lycos-europe.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-209013797-1042627290=:4864"
+Content-Type: multipart/mixed; boundary="=_NextPart_Lycos_0277401042629562_ID"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,43 +17,56 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
---0-209013797-1042627290=:4864
-Content-Type: text/plain; charset=us-ascii
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
+
+--=_NextPart_Lycos_0277401042629562_ID
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Hello list,
+
+I tried to compile iplimit into my kernel and failed: I took a 2.4.20 kernel and
+selected iplimit in patch-o-matic 20030107. Patch applied correctly. Then I
+selected "IP Limit" (make menuconfig) into the kernel (not a module) and
+recompiled the kernel. The compilation of kernel stopped with an error.
+Compilation as a module ended with the same error:
+
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.20/include -Wall -Wstrict-prototypes
+-Wno-trigraphs -O2   -fno-strict-aliasing -fno-common -fomit-frame-pointer -pipe
+-mpreferred-stack-boundary=3D2 -march=3Di686 -nostdinc -iwithprefix include
+-DKBUILD_BASENAME=3Dipt_iplimit -c -o ipt_iplimit.o ipt_iplimit.c
+In file included from ipt_iplimit.c:15:
+/usr/src/linux-2.4.20/include/linux/netfilter_ipv4/ip_conntrack_core.h: In
+function `ip_conntrack_confirm':
+/usr/src/linux-2.4.20/include/linux/netfilter_ipv4/ip_conntrack_core.h:44:
+`NF_ACCEPT' undeclared (first use in this function)
+/usr/src/linux-2.4.20/include/linux/netfilter_ipv4/ip_conntrack_core.h:44: (Each
+undeclared identifier is reported only once
+/usr/src/linux-2.4.20/include/linux/netfilter_ipv4/ip_conntrack_core.h:44: for
+each function it appears in.)
+/usr/src/linux-2.4.20/include/linux/netfilter_ipv4/ip_conntrack_core.h:45:
+warning: control reaches end of non-void function
+make[3]: *** [ipt_iplimit.o] Fehler 1
+make[3]: Verlassen des Verzeichnisses Verzeichnis
+=BB/usr/src/linux-2.4.20/net/ipv4/netfilter=AB
+make[2]: *** [first_rule] Fehler 2
+make[2]: Verlassen des Verzeichnisses Verzeichnis
+=BB/usr/src/linux-2.4.20/net/ipv4/netfilter=AB
+make[1]: *** [_subdir_ipv4/netfilter] Fehler 2
+make[1]: Verlassen des Verzeichnisses Verzeichnis =BB/usr/src/linux-2.4.20/net=AB
+make: *** [_dir_net] Fehler 2
+
+For any hints I would be very thankful...
+
+Regards
+Kurt Tragant
+
+__________________________________________________________________
+Arcor-DSL Flatrate - jetzt kostenlos einsteigen und bis zu 76,18 Euro sparen!
+Arcor-DSL gibt es jetzt auch mit bis zu 1500 Mbit/s Downstream! http://www.angebot.arcor.net/cgi-bin/angebot.cgi?key=3Db13e92247022
 
 
-I have setup two servers hostname server ip address 192.168.0.1 and hostname proxy ipaddress 192.168.0.2 both servers are connected with dialup sepratly and also configure squid, DHCP, DNS services. I have also 100 PCs of windows 98 as a client with auto ip and set their gateway,dns,dhcpserver and so on from DHCP 192.168.0.1.
- 
-Now I want that any request for browsing come from client  automatically forward to my squid which is running on 3128 port on server 192.168.0.2 and all others request go on direct ppp0 of 192.168.0.1. Please help me what script I make for this.
+--=_NextPart_Lycos_0277401042629562_ID--
 
-I also visited at netfilter website and found some script, I found "DHCP IP Firewall Script" 
-
-http://iptables-tutorial.frozentux.net/scripts/rc.DHCP.firewall.txt
-
-which is on site is little bit match with my requirment but for proxy request what should I do ?
-
- 
-
-
-
----------------------------------
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now
-
-
----------------------------------
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now
---0-209013797-1042627290=:4864
-Content-Type: text/html; charset=us-ascii
-
-<P>I have setup two servers hostname server ip address 192.168.0.1 and hostname proxy ipaddress 192.168.0.2 both servers are connected with dialup sepratly and also configure squid, DHCP, DNS services. I have also 100 PCs of windows 98 as a client with auto ip and set their gateway,dns,dhcpserver and so on from DHCP 192.168.0.1.<BR>&nbsp;<BR>Now I want that any request for browsing come from client&nbsp; automatically forward to my squid which is running on 3128 port on server 192.168.0.2 and all others request go on direct ppp0 of 192.168.0.1. Please help me what script I make for this.</P>
-<P>I also visited at netfilter website and found some script, I found "DHCP IP Firewall Script" </P>
-<P><A href="http://iptables-tutorial.frozentux.net/scripts/rc.DHCP.firewall.txt">http://iptables-tutorial.frozentux.net/scripts/rc.DHCP.firewall.txt</A></P>
-<P>which is on site is little bit match with my requirment but for proxy request what should I do ?</P>
-<P>&nbsp;</P>
-<P><BR>
-<HR SIZE=1>
-Do you Yahoo!?<BR><A href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Yahoo! Mail Plus</A> - Powerful. Affordable. <A href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Sign up now</A><p><br><hr size=1>Do you Yahoo!?<br>
-<a href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Yahoo! Mail Plus</a> - Powerful. Affordable. <a href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Sign up now</a>
---0-209013797-1042627290=:4864--
 
