@@ -1,12 +1,14 @@
-From: "Paul Albert" <palbert@rovingplanet.com>
-Subject: Ipables memory footprint
-Date: Wed, 30 Apr 2003 10:23:22 -0600
+From: Frank Smith <fsmith@hoovers.com>
+Subject: Re: limit match log question
+Date: Wed, 30 Apr 2003 10:39:03 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <661F9268BBA8CB4EB92CC12B8C42F06901F623@pluto.rovingplanet.com>
+Message-ID: <29940000.1051717143@hoovers-59.hoovers.com>
+References: <17030000.1051714338@hoovers-59.hoovers.com> <Pine.LNX.4.51.0304301712450.18203@dns.toxicfilms.tv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.51.0304301712450.18203@dns.toxicfilms.tv>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,32 +18,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hi all -=20
+--On Wednesday, April 30, 2003 17:13:50 +0200 Maciej Soltysiak <solt@dns.toxicfilms.tv> wrote:
 
-I'm running a RH 7.3 box with a 2.4.20 kernel (with the bridge patches)
-and iptables v1.2.7a as a bridge.  Last night I received notice that the
-machine was out of memory.  After killing all of the java processes that
-were running, the machine was still using a substantial amount of memory
-(440MB/512MB).  I took the machine to single user mode to see if this
-would reduce the memory footprint, but this didn't change things
-significantly.
+>> If you are using the limit match to control the number of log entries,
+>> is there any way to also show the number of matches?
+> Yes,
+>
+># iptables -L -nv
+>
+> -v option will show the number of packets that has hit the rule.
 
-I've run iptables for about a year without problems.  However, some
-people belive that it is this code that is causing our problems.  My
-questions are as follows:
+Thanks for the reply, but it seems I wasn't clear on my question.  I was
+looking for a way to get the number logged, so when the log entry was
+written it would contain the number of matches that occurred during the
+log limit interval.  If the log limit interval were set to 5 seconds, and
+it got 1000 matches in that 5 seconds, the log entry would contain the
+number 1000 in it somewhere.
+   It seemed to me like a useful extension that would enable you to reduce
+log file sizes while still providing data on the frequency of events. Getting
+the counters from iptables on the command line is helpful for seeing what's
+going on right now, but doesn't help if you want data from some time in the
+past.
 
-* Is there a way that I can measure the amount of memory that iptables
-is using?
+Frank
 
-* Is there a way that I can manually flush all of the entries in
-/proc/net/ip_conntrack?
-
-* Are there any tools that I could use the monitor the kernel memory
-size?
-
-Thanks,
-Paul
+--
+Frank Smith                                             fsmith@hoovers.com
+Systems Administrator                                  Voice: 512-374-4673
+Hoover's Online                                          Fax: 512-374-4501
 
