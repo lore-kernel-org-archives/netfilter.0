@@ -1,12 +1,12 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Iptables router issue
-Date: Tue, 23 Sep 2003 16:11:12 -0700
+From: Jim Carter <jimc@math.ucla.edu>
+Subject: Re: active firewall
+Date: Tue, 23 Sep 2003 18:18:25 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5122E4B@alderaan.smgtec.com>
+Message-ID: <Pine.LNX.4.53.0309231812340.4494@xena.cft.ca.us>
+References: <03092320103102.01185@slinky.exmosys.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <03092320103102.01185@slinky.exmosys.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,56 +16,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: dalive@flashmail.com, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Nik Trevallyn-Jones <nik@designer.com.au>
+Cc: netfilter@lists.netfilter.org
 
-$IPTABLES -A INPUT -p UDP -i $INET_IFACE -j udp_packets
+On Tue, 23 Sep 2003, Nik Trevallyn-Jones wrote:
+>    As a result of experiences deploying PortSentry behind an ipchains
+> firewall recently, I started considering how iptables could be used to deploy
+> a dynamic firewall which would be able to modify itself in response to
+> predefined events. As far as I can see, such features would require extension
+> modules.
 
-Should be setup in the FORWARD chain, since the DNS request was not sent
-from the local machine itself.
+Take a look at the ULOG target which will send a copy of the packet to a
+netlink socket.  A listening daemon can then do wierd and wonderful
+modifications to the tables.  There's the issue that the table changes
+wouldn't happen until the daemon got the CPU, so a few :-) milliseconds
+delay could be expected, but in the scenario you described, that would be
+tolerable.
 
-$IPTABLES -A FORWARD -p UDP -i $INET_IFACE -j udp_packets
+The less brains are in the kernel, the less things can go wrong and
+splatter.  Hope this helps.
 
-
-
------Original Message-----
-From: DALive Editor [mailto:dalive@flashmail.com]=20
-Sent: Tuesday, September 23, 2003 3:48 PM
-To: netfilter@lists.netfilter.org
-Subject: Iptables router issue
-
-Objective:
-
-To use a single Penguin box to do everything. (at least for now). But=20
-more importantly to route traffic to and from a private lan to the=20
-internet, and to filter off open ports of the box.
-
-
-Problem:
-
-When DNS lookup to my client returns the my internet dynamic ip) as it=20
-should for my own domain, for some reason my firewall filters out the=20
-traffic. Although it's to an open port and the firewall is suppose to=20
-accept all traffic from the lan.
-
-
-Host Setup
-
-Kernel from RH9 Distribution and latest version of Iptables (having been
-
-haveing probs with settign up my own kernel)
-
-
-Network Map:
-
-eth0 -- 192.168.100.1 -- internal lan's NIC
-eth1 -- dynamic address -- internet's NIC
-
-Additional Information:
-
-I have attached my firewall script as a .txt file.
-
-
-Your assistance is much appreciated and anticipated.
-Thank you.
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
+Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
 
