@@ -1,12 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: internet gateway bandwidth control
-Date: Fri, 21 Mar 2003 09:35:57 -0800
+From: Henry Ritzlmayr <h.ritzlmayr@gmx.at>
+Subject: Re: Masquerading on local ports
+Date: 21 Mar 2003 18:17:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF50C6FC1@alderaan.smgtec.com>
+Message-ID: <1048267063.1493.162.camel@localhost.localdomain>
+References: <1048169013.1491.107.camel@localhost.localdomain>
+	 <200303210222.47189.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200303210222.47189.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,56 +19,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@newkirk.us, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-This calls for TC. Go to http://lartc.org/
+Am Fre, 2003-03-21 um 08.22 schrieb Joel Newkirk:
+> On Thursday 20 March 2003 09:03 am, Henry Ritzlmayr wrote:
+> > Hi everyone - this is my first post to this list - so if anything is
+> > wrong with my way of posting please tell.
+> >
+> > And here is the question. How is it possible to nat a lokal port?
+> >
+> > IPTABLES -t nat -A PREROUTING -p tcp -d 127.0.0.1 --destination-port
+> > 81 -j DNAT --to-destination 127.0.0.1:80
+> >
+> > telnet localhost 80  <<< works
+> > telnet localhost 81  <<< Connection refused
+> >
+> > Henry
+> 
+> Packets originating on the local box never go through the PREROUTING 
+> chains.  This is why there is an OUTPUT chain in the nat table.  (and 
+> the mangle table)
+> 
+> iptables -t nat -A OUTPUT -o lo -p tcp --dport 81 -j DNAT --to 
+> 127.0.0.1:80
+> 
+> should do it.  I'm not sure if the REDIRECT target would work properly 
+> for this use (localhost->localhost), but you can try easily enough.
+> 
+> j
 
-There is more than you ever wanted to know about it.
+That was it. I overlooked that local packets do not go trough the
+PREROUTING.
 
------Original Message-----
-From: realsite internetcafe [mailto:realsiteinternetcafe@yahoo.com]=20
-Sent: Friday, March 21, 2003 8:18 AM
-To: netfilter@lists.netfilter.org
-Subject: internet gateway bandwidth control
-
-hi all.
-
-need help in formulating an iptables rule.
-
-i need suggestion on a gnu/linux solution for my
-internet gateway server sharing a adsl connection via
-iptables_nat.
-
-i got client that uses kazaa too much, but i dont want
-to block kazaa i only need to retune it and give him
-slow connection. problem is, i dont want to limit his
-connection to the server coz the server is a samba
-server also. only need to limit his kazaa connection.
-
-heres the design:
-
-if client bandwidth > 35kbps=20
-then limit only to 35kbps
-where kazaa dport and sport are 80 and 1214.
-where -s 192.168.0.0/255.255.255.255.0 except
-192.168.0.1 and 192.168.0.15 (.1 is the server and .15
-is my box in my room, i believe i would be needing the
-"!", but how do i make it for two ip address?)
-where eth0 is 192.168.0.1 (LAN)
-and
-eth1 is 203.204.250.206 (DSL)
-
-of course i know thats not the rule. but im having a
-hard time formulating it. ive read all the netfilet
-how-to's but i need to incorporate and thats the
-problem.
-
-or i need better suggestion.
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+thanks for the help
+Henry
 
 
