@@ -1,12 +1,12 @@
-From: "Reklitis Georgios" <icsdm02011@icsd.aegean.gr>
-Subject: RE: problem applying dscp.patch(iptables)
-Date: Thu, 9 Sep 2004 14:45:42 +0300
+From: Bill Hayes <hayes@mail.ru>
+Subject: iptables: forwarding, masquerading, and high-availability
+Date: Wed, 08 Sep 2004 23:16:23 +0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D855E501E69F9A4FBA902D10A630482B30836C@hermes2.aegean.gr>
+Message-ID: <E1C57vb-000JD8-00.hayes-mail-ru@f25.mail.ru>
+Reply-To: Bill Hayes <hayes@mail.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +16,60 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-SSdtIHRyeWluZyB0byBzZXR1cCBhIHBsYXRmb3JtIHdoaWNoIG5lZWRzIHRoYXQgcGFydGlrdWxh
-ciBrZXJuZWwoMi40LjIwLCBjYW4ndCB1cGdyYWRlIGl0KSBhbmQgdGhlIHBhdGNoLW8tbWF0aWMg
-SSdtIHVzaW5nIGNvbWVzIHdpdGggaXB0YWJsZXMgKGh0dHA6Ly9kc21wbHMuYXRsYW50aXMudWdl
-bnQuYmUvZmlsZXMvaXB0YWJsZXMtMS4yLjQtMC4yLWRzY3AudGd6KSAoSSBkb24ndCBrbm93IGlm
-IG5ld2VyIHZlcnNpb25zIG9mIGlwdGFibGVzIGNhbiBiZSB1c2VkIHdpdGggbm8gcHJvYmxlbSku
-VGhhdCdzIHdoeSBJIGNob29zZWQgdGhhdCBvbGQgdmVyc2lvbnMuDQoNCg0KDQoNCi0tLS0tT3Jp
-Z2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItYm91bmNlc0BsaXN0cy5uZXRmaWx0
-ZXIub3JnDQpbbWFpbHRvOm5ldGZpbHRlci1ib3VuY2VzQGxpc3RzLm5ldGZpbHRlci5vcmddT24g
-QmVoYWxmIE9mIEpvc2UgTWFyaWENCkxvcGV6DQpTZW50OiBXZWRuZXNkYXksIFNlcHRlbWJlciAw
-OCwgMjAwNCA4OjM3IFBNDQpUbzogbmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmcNClN1Ympl
-Y3Q6IFJlOiBwcm9ibGVtIGFwcGx5aW5nIGRzY3AucGF0Y2goaXB0YWJsZXMpDQoNCg0KRWwgbWnD
-qSwgMDggZGUgMDkgZGUgMjAwNCBhIGxhcyAxODozMywgUmVrbGl0aXMgR2Vvcmdpb3MgZXNjcmli
-acOzOg0KPiBrZXJuZWwgMi40LjIwDQo+IGlwdGFibGVzLTEtMi00LTAuMi1kc2NwDQo+IA0KDQpX
-aGF0IHBhdGNoLW8tbWF0aWMgYXJlIHlvdSB1c2luZz8gWW91IGFyZSB1c2luZyB2ZXJ5IG9sZCBr
-ZXJuZWwgYW5kDQppcHRhYmxlcyB2ZXJzaW9ucy4gQXQgbGVhc3QgeW91IHNob3VsZCB1cGdyYWRl
-IHlvdXIgaXB0YWJsZXMgYW5kIHVzZQ0KdGhlIGxhcyBwYXRjaC1vLW1hdGljLiBQYXRjaCBib3Ro
-IHRoZSBrZXJuZWwgc291cmNlIGFuZCB0aGUgaXB0YWJsZXMNCnNvdXJjZSBhbmQgY29tcGlsZSB0
-aGVtLiBJdCBzaG91bGQgd29yayB0aGF0IHdheS4NCg0KPiAgSSdtIHRyeWluZyB0byBpbnN0YWxs
-IGlwdGFibGVzLHVzaW5nIGNvbW1hbmQgIm1ha2UgcGF0Y2gtby1tYXRpYyIsIEknbSBiZWluZyBh
-c2tlZCBhYm91dCBzb21lIHBhdGNoZXMgdG8gaW5zdGFsbCwgYnV0IGRzY3AucGF0Y2ggd2hpY2gg
-SSBuZWVkLCBjYW5ub3QgYmUgYXBwbGllZC1JIHJlY2VpdmUgYW4gZXJyb3IgKGZhaWxlZCB0byBw
-YXRjaCBjb3B5IG9mIC91c3Ivc3JjL2xpbnV4LTIuNC4yMCkuIEFsc28gSSdtIG5vdCBiZWluZyBx
-dWVzdGlvbmVkIGFib3V0IGFwcGx5aW5nIG9yIG5vdCBmdG9zLnBhdGNoLg0KPiBXaHkgZGlkIHRo
-YXQgaGFwcGVuZWQ/DQo+IFRoYW5rIHlvdSANCi0tIA0KSm9zZSBNYXJpYSBMb3BleiBIZXJuYW5k
-ZXoNCkRpcmVjdG9yIFRlY25pY28gZGUgYmdTRUMNCmprZXJvdWFjQGJnc2VjLmNvbQ0KYmdTRUMg
-U2VndXJpZGFkIHkgQ29uc3VsdG9yaWEgZGUgU2lzdGVtYXMgSW5mb3JtYXRpY29zDQpodHRwOi8v
-d3d3LmJnc2VjLmNvbQ0KRVNQQcORQQ0KDQpUaGUgb25seSBwZW9wbGUgZm9yIG1lIGFyZSB0aGUg
-bWFkIG9uZXMgLS0gdGhlIG9uZXMgd2hvIGFyZSBtYWQgdG8gbGl2ZSwNCm1hZCB0byB0YWxrLCBt
-YWQgdG8gYmUgc2F2ZWQsIGRlc2lyb3VzIG9mIGV2ZXJ5dGhpbmcgYXQgdGhlIHNhbWUgdGltZSwN
-CnRoZSBvbmVzIHdobyBuZXZlciB5YXduIG9yIHNheSBhIGNvbW1vbnBsYWNlIHRoaW5nLCBidXQg
-YnVybiwgYnVybiwgYnVybg0KbGlrZSBmYWJ1bG91cyB5ZWxsb3cgUm9tYW4gY2FuZGxlcy4NCiAg
-ICAgICAgICAgICAgICAtLSBKYWNrIEtlcm91YWMsICJPbiB0aGUgUm9hZCINCg0KDQo=
+I have a problem trying to create a high availability firewall/router setup. Multiple servers on the internal network should be masqueraded to appear as a single server on the external network.
+
+The simplest case that fails for me looks like this...
+
+
+Configuration: SuSE 9.1 (linux 2.6.5, iptables 1.2.9, heartbeat 1.2.0)
+
+firewall-1: eth0 = 192.168.1.1, eth1 = 10.1.1.1
+firewall-2: eth0 = 192.168.1.2, eth1 = 10.1.1.2
+
+         +--------+
+         | server |
+         +----+---+
+              |
+    +---------+---------+
+    |        hub        |
+    +-+---------------+-+
+      |               |
++-----+------+ +------+-----+
+| firewall-1 | | firewall-2 |
++-----+------+ +------+-----+
+      |               |
+    +-+---------------+-+
+    |        hub        |
+    +---------+---------+
+              |
+          +---+----+
+          | router |
+          +---+----+
+              |
+
+If I configure my servers to use 192.168.1.1 as their gateway, and tell all my clients that 10.1.1.1 is my server, then everything works as desired.
+
+On to high availability, I configure my servers to use 192.168.1.3 as their gateway, and tell all my clients that 10.1.1.3 is my server. I start heartbeat and soon my firewalls now look like...
+
+firewall-1: eth0 = 192.168.1.1, eth0:1 = 192.168.1.3, eth1 = 10.1.1.1, eth1:1 = 10.1.1.3
+firewall-2: eth0 = 192.168.1.2, eth1 = 10.1.1.2
+
+Now, all my outgoing connections are established as before, but all the incoming connections fail with...
+
+SFW2-INext-DROP-DEFLT
+
+instead of succeeding with...
+
+SFW2-FWDext-ACC-REVMASQ
+
+I know that iptables treats virtual interfaces as if they are the underlying physical interface, thus eth1:1 should be eth1, and outgoing connections work, thus I have proof that eth0:1 is eth0, so what is happening? Why are the packets being dropped?
+
+Thanks to anyone that can help,
+Bill
+
+wjh [at] sympatico [dot] ca
+hayes [at] mail [dot] ru
 
