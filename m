@@ -1,8 +1,8 @@
-From: "yomega.info - Stephan Kessler" <sk@yomega.info>
-Subject: Server can't send :-/
-Date: Wed, 3 Sep 2003 09:40:38 +0200
+From: Andrey Tverdokhleb <at@tigry.net>
+Subject: Is there way to bypass conntrack?
+Date: Wed, 03 Sep 2003 10:47:06 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001801c371ee$abce1230$0000fea9@kessler.local>
+Message-ID: <3F56291A.90003@tigry.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,21 +15,21 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi List,
+I'd really like to have some way to bypass ip_conntrack for some 
+packets. Basically I need to run very intensive port scanning through my 
+firewall and as soon as ip_conntrack loaded it dies within seconds from 
+syn flood. Increase limit doesnt work becuase I need about  127000 
+packets to be sent from different source ports. So far I just keep 
+contrack unloaded and firewall works fine as pure stateless filter. But 
+now I need statefull inspection on this machine for some IPs. So the 
+question - is it possible to avoid connection tracking for some specific 
+IPs?
 
-I got that Configuration of my Firewall:
-http://warpy.yomeganet.biz/fw.txt
+Thanks!
 
-It seemed to be nice, everything worked but then i tried to initiate
-outbound Traffic from my Server via SSH. The result: I can't establish
-any connection from my to an another, except DNS (via UDP?). What did i
-wrong?
-
-Thank you in advance!
-
-Stephan
+Andrey
 
 
