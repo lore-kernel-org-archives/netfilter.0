@@ -1,14 +1,10 @@
-From: justin <cmbb@dslr.net>
-Subject: Re: Broken MS tcp new not syn: better to REJECT or DROP?
-Date: Wed, 29 Jan 2003 18:03:42 -0500
+From: "PAUL FABRICIO VILLACRESES LEON" <paulvillacreses@hotmail.com>
+Subject: REDIRECT,DNAT,SNAT in C
+Date: Thu, 30 Jan 2003 00:32:15 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <106459900750.20030129180342@dslr.net>
-References: <3E307456.70104@orix.com.au.>
-Reply-To: justin <cmbb@dslr.net>
+Message-ID: <F170govcke7m99L3U600000494d@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E307456.70104@orix.com.au.>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,13 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Phil Crooker <pcrooker@orix.com.au>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Is there a web page somewhere on this subject you can point me at?
-"broken ms tcp" ?
 
-thanks -Justin
+
+Hi
+
+Developers,
+
+I'm Paul Villacreses
+Again
+
+I use libiptc for put rules in the chain FORWARD but i can't put in the 
+chain PREROUTING because, libiptc accept this target : ACCEPT, DROP, RETURN 
+and QUEUE but not DNAT ,SNAT and REDIRECT
+
+How i can put rules programming in c for DNAT , SNAT and REDIRECT
+
+Please Core developers or anybody answer me
+
+thank you for give some idea
+
+Paul
+
+
+
+
+
+_________________________________________________________________
+The new MSN 8: advanced junk mail protection and 2 months FREE* 
+http://join.msn.com/?page=features/junkmail
 
 
