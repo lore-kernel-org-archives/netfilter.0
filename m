@@ -1,12 +1,10 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: RFC 1035 Bind
-Date: Tue, 09 Nov 2004 15:56:21 -0600
-Message-ID: <41913D05.9040501@pbl.ca>
-References: <20041109190202.GB18755@marschmellow.homeunix.net>
+From: "=?GB2312?Q?=D6=DC=C6=BD?=" <zping@founderbn.com>
+Subject: Re:Multiple client VPN - where to put conntrack?
+Date: Wed, 10 Nov 2004 9:1:38 +0800
+Message-ID: <20041110013146.98301482BC@mail.founderbn.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041109190202.GB18755@marschmellow.homeunix.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Mark-Walter@t-online.de wrote:
-> Ok, I know there could be a problem in the inside of a webserverfarm
-> and you need to allow both protocols and he is refering to this
-> but generally I would like prefer to avoid TCP over port 53 concerning
-> to avoid a man-in-the-middle attack.
+Hi there,
 
-I've read the article, and found an error in it.  If the response does
-not fit into 512 bytes, it is the client side (be it real client, or
-another DNS server) that will open connection on TCP 53, reissue the
-query, and read response.  Which is completely different than what was
-described on that page (server side opening connection back to the
-client side).
+This may be a very stupid question, but I haven't found the information 
+anywhere, so here goes - I have a working VPN client-server set-up that 
+works through an iptables masquerading NAT configuration but only for 
+one client at a time - and I need to expand it. The VPN is:
+- Server - running PPTP (poptop) on Redhat 9 connected directly to the 
+internet via iptables.
+- Client(s) - A small network of workstations (Debian, win2k, mac OSX) 
+connected to the internet with ADSL via a Debian router running iptables
 
-Back to your question.  Yes, you should allow both UDP and TCP for DNS
-queries.  In both cases, outgoing only.  Unless you have publicly
-available DNS server (in which case you will obviously need to allow
-incoming for both UDP and TCP).
+doing NAT. Currently, tunnels are created from the workstations to the 
+server through the router and internet successfully, but only one 
+machine can connect at a time and I would like to improve on this.
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+I understand that I need to install PPTP and GRE connection tracking on 
+the Debian router...(and here's the silly question...) will the RH9 PPTP
+
+server need conntrack too?
+
+One further question, the ADSL connection at the client end uses PPPoA 
+with LLC - would it be possible for this to stuff up the connection 
+tracking or unlikely? And what about PPPoE? Or is it all just completely
+
+dependent on the ISP?
+
+Thanks,
+
+James
+
+
+I should update your ppp server 
+
 
 
