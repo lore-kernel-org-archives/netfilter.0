@@ -1,10 +1,13 @@
-From: David Reta <DavidR@Narus.com>
-Subject: New to IP Tables
-Date: Wed, 13 Nov 2002 16:31:43 -0800
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: New to IP Tables
+Date: Thu, 14 Nov 2002 01:43:12 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <580E532D9F7A9B4BAE8A130848E0DDA702A0B751@franklin.narus.com>
+Message-ID: <200211140143.gAE1hHe00663@vulcan.rissington.net>
+References: <580E532D9F7A9B4BAE8A130848E0DDA702A0B751@franklin.narus.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <580E532D9F7A9B4BAE8A130848E0DDA702A0B751@franklin.narus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,46 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I just started using IP Tables and have a question. I was not able to find
-the answer in any of the docs I've read so far.
-I have a machine that I am using as a router and running Ip Tables on it.
-Here is a list of my tables.
+On Thursday 14 November 2002 12:31 am, David Reta wrote:
 
-[root@qa-gate root]# iptables -L
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination         
+> I just started using IP Tables and have a question. I was not able to find
+> the answer in any of the docs I've read so far.
+> I have a machine that I am using as a router and running Ip Tables on it.
+> Here is a list of my tables.
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination         
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ftp-data
+Please repost your rules as the 'iptables' commands which are used to set 
+them up, not the output of 'iptables -L' (this does not give all the 
+information, and is not a friendly format for most of us to read).
 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ftp 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:domain 
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:26 
-DROP       tcp  --  anywhere             anywhere           
+Just as an offchance thought, have you got
+echo 1 >/proc/sys/net/ipv4/ip_forward
+somewhere in your startup scripts, so that the box can forward packets at 
+all,even if they're not blocked by netfilter ?
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination         
+Antony.
 
-Chain test (0 references)
-target     prot opt source               destination
+-- 
 
-I am not able to pass any data through the router. Here is the scenario, I
-want to access a Web Site which is on the other side of the router. The way
-that I interpret this is that the packet will get passed to the first chain
-which is
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http
-and be let through, yet this is not happening. All tcp traffic is being
-blocked which is defined by my 6th rule. I guess I am not understanding
-this, but I would think that the packet would match the first rule and be
-passed through. The following chains would be ignored, but this is not the
-case.  My logic is probably wrong. Any help would be appreciated.
+In science, one tries to tell people
+in such a way as to be understood by everyone
+something that no-one ever knew before.
 
-Thanks,
-David
+In poetry, it is the exact opposite.
 
+ - Paul Dirac
 
