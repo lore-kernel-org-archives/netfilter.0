@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Checkpoint VPN through Iptables
-Date: Tue, 24 Sep 2002 14:57:14 +0100
+From: "Preston Wade" <Preston_Wade@hilton.com>
+Subject: RE: Checkpoint VPN through Iptables
+Date: Tue, 24 Sep 2002 09:12:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209241357.g8ODvNv26202@vulcan.rissington.net>
-References: <8F31D8DF00BBD411975C00508B6D6E65F89096@hermes.upu.int>
+Message-ID: <0B2759D401C1D211ACA500805FFE2C3F06367692@cmxserv3.hilton.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <8F31D8DF00BBD411975C00508B6D6E65F89096@hermes.upu.int>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,83 +18,87 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Tuesday 24 September 2002 1:37 pm, Netfilter.UPU wrote:
+VPN's usually use some IP protocols that firewalls don't pass by default.
+You probably want to read through the VPN-Masquerade-HOWTO.
 
+http://www.linux.org/docs/ldp/howto/VPN-Masquerade-HOWTO-3.html
+
+Being that your VPN seems to use UDP port 500 indicates that it is probably
+an IPSec VPN in which case your firewall also needs to handle IP protocol
+50.
+
+Hope this helps.
+
+Thanks,
+Preston
+
+> -----Original Message-----
+> From:	Netfilter.UPU <netfilter@upu.int>@INTERNET@HHC 
+> Sent:	Tuesday, September 24, 2002 7:37 AM
+> To:	'netfilter@lists.netfilter.org'
+> Subject:	Checkpoint VPN through Iptables
+> 
 > Hi all,
->
+> 
+> I'm hanged with the following problem.
+> I want to access our enterprise network behind a Nokia checkpoint FW-UPU
+> @a.b.c.d
+> from a Windows 2k Checkpoint NG client @192.168.0.2
+> behind my Linux Redhat 7.2 iptables 1.2.6a FW-HOME with eth0 @DHCP and
+> eth1
+> @192.168.0.1
+> 
 > I have the following script
->
+> 
 > $IPTABLES -F
 > $IPTABLES -t nat -F
 > $IPTABLES -t mangle -F
 > $IPTABLES -P INPUT ACCEPT
 > $IPTABLES -P FORWARD ACCEPT
 > $IPTABLES -t nat -A POSTROUTING -s 192.168.0/24 -o eth0 -j MASQUERADE
-
-Simple enough.....
-
+> 
 > My little understanding of firewall, linux and iptables, makes me believe
 > that :
 > a) I've a quite secureless FW-HOME and my internal LAN is nated
-
-i agree.
-
 > b) no matter the protocol, the src/dst ports etc, everything should pass.
-
-From inside to outside, yes.   Also reply packets provided you have 
-connection tracking support.
-
 > c) The checkpoint client should be able to access my enterprise VPN
-
-Maybe :-)
-
+> Is that right?
+> 
 > My problem is that the client cannot access my enterprise VPN.
 > I added some loging rules and it seems that
 > My client uses UDP, src port 500 dst port 500.
-
-Okay - that is the IKE protocol as used with IPsec.
-
 > The FW-HOME send that to FW-UPU (prot udp, src port 500 dst port 500)
 > (masquerading the IP@)
 > The FW-UPU replies to FW-UPU (prot udp, src port 500 dst port 500)
 > The FW-HOME replies : icmp port udp 500 unreachable
-
-The reason is because you are performing NAT on outgoing packets, but here 
-you are getting a (completely separate) connection from the outside to the 
-inside, for which you do not have a NAT rule.
-
-Here is what you should add:
-
-iptables -A PREROUTING -t nat -i eth0 -p udp --sport 500 --dport 500 -j DNAT 
---to a.b.c.d
-
-where a.b.c.d is the internal IP address of your VPN client.
-
-You will also need to set up the same translation for protocol 50 (ESP) in 
-order to allow that connection to be made after IKE has established the 
-encryption keys.
-
-There is one thing you said which makes me think this is likely to work at 
-all:
-
+> 
+> I made another test before incriminating the Client
+> I plugged it directly to my CableModem and it worked immediately.
+> I check that it was configured correctly (IKE + Force UDP encapsulation +
+> IKE over TCP)
+> according to PhoneBoy http://www.phoneboy.com/faq/0141.html
+> and http://www.phoneboy.com/faq/0372.html
+> After this test I concluded that the Client is operational.
+> 
 > Another info:
 > It worked with a Redhat 7.0 + ipchains
+> It didn't worked with ISA
+> 
+> So for me the problem is located somewhere on FW-HOME.
+> Anybody can help, explain, advice!?!?
+> 
+> 
+> 
+> _________________________________________________________
+> Birahim FALL
+> Project Manager (Postal Technologie Centre)
+> Universal Postal Union, PO Box, CH-3000 Bern 15 (Switzerland)
+> Phone	+41 313.503.372
+> Fax	+41 313.503.110
+> Email	mailto:birahim.fall@upu.int
+> 
+> 
+> 
+> 
 
-I presume that was also with NAT (masquerading) in operation ?
-
-The reason I say that is because there are twoways of using IPsec: transport 
-mode and tunnel mode.
-
-Transport mode does not work through NAT.
-Tunnel mode does work through NAT.
-
-Hope this helps,
-
-Antony.
-
--- 
-
-G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
-w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
-!X- !R K--?
 
