@@ -1,11 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Axel Heinrici <heinrici76@gmx.de>
 Subject: Re: block ports
-Date: Mon, 16 Sep 2002 08:46:17 +0100
+Date: Mon, 16 Sep 2002 09:53:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020916074619.KCJK295.mta06-svc.ntlworld.com@there>
+Message-ID: <200209160953.50974.heinrici76@gmx.de>
 References: <200209161226.11945@.>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <200209161226.11945@.>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -20,39 +20,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 16 September 2002 8:02 am, PayalR wrote:
-
+Hi
+on 16. September 2002 09:02 PayalR wrote:
 > Hi all,
-> I have a stupid question. I want to have incoming internet access for only
-> port 22, 25, 80 and 110. How do I go abut it?
+> I have a stupid question. I want to have incoming internet access for
+> only port 22, 25, 80 and 110. How do I go abut it?
 > I thought of this rule first,
 >
 > #iptables -A INPUT -i eth0 -p tcp --dport ! 22 -j DROP
 >
-> and go for the other ports as well. But my problem is that if a packet
-> arrives from port 110, it will be checked for rule 1 above and since it is
-> not for port 22 it will be dropped disregarding the next rules. Right?
+> and go for the other ports as well. But my problem is that if a
+> packet arrives from port 110, it will be checked for rule 1 above and
+> since it is not for port 22 it will be dropped disregarding the next
+> rules. Right?
+>
+> What can I do about this? How do I exactly frame the rules?
+> Thanks a lot and bye.
 
-Right.
+ #iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
+ #iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
+ #iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
+ #iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+=20
+ And at the end of the Chain
+#iptables -A INPUT -i eth0 -p tcp --dport 1:1024 -j DROP
+to drop all other priviledged ports or =20
+#iptables -P INPUT DROP
+to drop all other traffic (use when you know you want to drop all=20
+including ICMP and UDP)
 
-The recommended way to configure a firewall is "block everything except what 
-you want to allow".   Therefore do this:
+You know that this is not the right way if you want to "surf", send=20
+email and use ssh. This is the server-side setup for this.
 
-iptables -P INPUT DROP
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+greetings=20
+=09Axel
 
-I recommend the ESTABLISHED, RELATED rule to make sure that things like ICMP 
-get through as well.
-
-Antony.
-
--- 
-
-Documentation is like sex:
-when it's good, it's very very good;
-when it's bad, it's still better than nothing.
 
