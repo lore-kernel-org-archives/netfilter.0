@@ -1,11 +1,11 @@
-From: Tero Kilkanen <tkilkane@cc.hut.fi>
-Subject: A question on netfilter behavior.
-Date: Wed, 8 May 2002 14:38:49 +0300 (EET DST)
+From: arustagi@hss.hns.com
+Subject: How to write filters for protocols over UDP/IP??
+Date: Wed, 8 May 2002 17:35:52 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.OSF.4.10.10205081432250.20901-100000@kosh.hut.fi>
-Reply-To: kilkanen@iki.fi
+Message-ID: <65256BB3.0041ECA4.00@sandesh.hss.hns.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,44 +15,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Hello, 
 
-I have a question, on IPTables behavior in the following scenario. I have
-not subscribed to the netfilter list, so please CC me when answering.
 
-First, I am using Linux kernel version 2.4.9, and IPTables v1.2.
+Hi,
 
-The scenario is the following:
+I would like to know if we can write filter for protocols running over UDP/IP in
+netfilter. Any info in this regard will be useful.
 
-I have a private network, with 192.168.x.x addresses, and an ADSL
-connection to the outside. I have configured NAT like this:
+thanks
+amit.
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     all  --  192.168.0.0/24       192.168.0.0/24
-SNAT       all  --  192.168.0.0/24       0.0.0.0/0
-to:10.131.80.34
-
-Now, I am running a program which uses a TCP connection to a server. The
-TCP connection is from the private network to the Internet. Now, when I
-try to block this connection by denying all traffic from this machine's IP
-address to outside world, the TCP connection is still there. I have put a
-DENY rule both to the INPUT chain and PREROUTING chain.
-
-Is this the way it should work? I think this could be a problem with
-normal firewall setups in some scenarios. If there is a malicious program
-connected from inside network to outside world, and the connection needs
-to be stopped at the firewall. This looks impossible with the current
-software.
-
-Greetings,
-
-- Tero Kilkanen
-
+DISCLAIMER: This message is proprietary to Hughes Software Systems
+Limited (HSS) and is intended solely for the use of the individual
+to whom it is addressed. It may contain  privileged or confidential
+information  and should not be circulated or used for any purpose other
+than for what it is intended. If you have received this message in error,
+please notify the originator immediately. If you are not the intended
+recipient, you are notified that you are strictly prohibited from using,
+copying, altering, or disclosing the contents of this message. HSS accepts
+no responsibility for loss or damage arising from the use of the information
+transmitted by this email including damage from virus.
 
 
 
