@@ -1,13 +1,13 @@
-From: Joshua N Pritikin <jpritikin@pobox.com>
-Subject: FAQ 3.13, but on the same box
-Date: Sun, 18 Jul 2004 23:02:00 +0530
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: Re: LAN accessing DMZ
+Date: Sun, 18 Jul 2004 13:39:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040718173200.GC718@always.joy.eth.net>
+Message-ID: <20040718173937.GA31408@tranquility.scriptkitchen.com>
+References: <f51b72bc040718062373640612@mail.gmail.com> <200407181739.05377.Antony@Soft-Solutions.co.uk> <20040718165830.GA30303@tranquility.scriptkitchen.com> <200407181812.31070.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <200407181812.31070.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +17,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
+On Sun, Jul 18, 2004 at 06:12:31PM +0100, Antony Stone wrote:
+> I do not see how TCP port 10000 should be accessible from the Internet either 
+> (which is what I believe you were asking about - allowing access to the DMZ 
+> from the Internet, but not from the LAN?)
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We will keep it more simple. All ports which are allowed from internet are 
+allowed from LAN (192.168) range for DMZ. Ok? Just for start-up.
 
-I understand how to set up a transparent proxy.  However, it is
-possible to run a transparent proxy and web browser on the same box?
+> Please post the output of "iptables -L -nvx; iptables -L -t nat -nvx".   Post 
+> it on the website if you prefer (the formatting is probably easier to read 
 
-What if I put the proxy on a loopback interface and REDIRECT port 80
-to port 3128 the loopback?  Would that work?
+I do not have access to that machine till tomorrow. But I have copied the 
+firewall script at,
+http://payal.staticky.com/fw2.txt
+I have masked the real IP and I have noticed a small error now.
+"INET_IFACE" is not eth0 as in script but eth1. eth0 is blank. Not
+using it.
+My firewall IP is 10.10.10.1.
 
---=20
-A new cognitive theory of emotion, http://openheartlogic.org
+> there anyway).   Please also post the IP addresses of the machine you are 
+> connecting from, and the machine you are connecting to, on TCP port 10000.
 
---gKMricLos+KVdGMg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+I am connecting from any machine in range 192.168/16
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+If you want any more *live* information I will get it tomorrow.
 
-iD8DBQFA+rQQqcqnlKSmC70RAiRkAJ0YDBOKOJGYApDrq1GNXb1/qCQoNwCgw3jh
-5liubT7W4KBaJBBH/5kHaWU=
-=GXXa
------END PGP SIGNATURE-----
-
---gKMricLos+KVdGMg--
+With warm regards,
+-Payal
 
