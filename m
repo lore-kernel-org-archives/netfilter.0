@@ -1,8 +1,8 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Multiple IPSEC VPNs through a firewall based on 2.4.2X kernel
-Date: Tue, 24 Aug 2004 07:56:33 -0400
+Subject: RE: problem with 2 NAT and 2 ROUTE
+Date: Tue, 24 Aug 2004 08:13:47 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512BA@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512BB@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,37 +19,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Hi,
+> I have a problem with mi linux BOX
+> .
+> Eth0 =3D  192.168.0.254  (RED A)
+> Eth1 =3D  200.69.123.177/130  (LINK A)
+> Eth2 =3D  192.168.0.100  (RED B)
+> Eth3 =3D  192.168.1.1 para el PPPOE
+> ppp0=3D  DynamicIP (LINK B)
+> -------------------------------------------------------------------
+> DEFAULT ROUTE
+> 200.69.123.178 (LINKA)
+> ppp0 (cdo establece el PPPOE)
+> -------------------------------------------------------------------
+> IPTABLES  NAT RULES
+> iptables -t nat -A POSTROUTING -s 192.168.0.0/255.255.255.128 -o ppp0 =
+-j MASQU
+ERADE
+> iptables -t nat -A POSTROUTING -s 192.168.0.128/255.255.255.128 -o =
+eth1 -j MAS
+QUERADE
 >
-> I am trying to set up multiple ipsec VPN clients working behind a =
-Linux
-> router with NAT/PAT, based on a 2.4.20 (can be 2.4.22) kernel. I would
-> like to be able to connect a number of Windows (2k or XP) machines to =
-an
-> existing Cisco VPN server.
+> -------------------------------------------------------------------
 >
-> client 1 (ipsec) --->  | router       |
-> client 2 (ipsec) --->  |  NAT/        |
-> .                     PAT     | -> ipsec VPN server (Cisco)
-> .                  |          |
-> client 10 (ipsec) --->|               |
+> My problem is the only NAT works is the NAT with march with de default =
+route..
 >
-> A patch seems to be needed to make this work, and I have seen a lot of
-> emails with a similar question in regards to pptp VPN clients, but
-> nothing encouraging for ipsec.  I have also seen the IP masquerade =
-HOWTO
-> and the VPN HOWTO, which both refer to a patch for 2.2 kernels, but
-> claim nothing is available for 2.4 kernels. I am a netfilter newbie =
-(if
-> this is not blindingly obvious), so any help would be much =
-appreciated.
->
->
-> Kind regards, Roksana
+> Can any one helme?
 
-enable IKE over TCP on the clients and UDP encapsulation.  this is not a =
-problem with netfilter, but with multiple IPSec clients behind *any* NAT =
-device.
+you need to add a policy route thats routes traffic from =
+192.168.0.128/25 via the eth1 (ppp1, maybe?) interface.
+
+have a look at:
+
+http://lartc.org/howto/lartc.rpdb.html
 
 -j
 
