@@ -1,8 +1,8 @@
 From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: Port forwarding doesn't work.
-Date: Mon, 13 Oct 2003 15:31:48 -0400
+Date: Mon, 13 Oct 2003 16:00:15 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F8AFDA4.60802@Loudoun-Fairfax.com>
+Message-ID: <3F8B044F.3060104@Loudoun-Fairfax.com>
 References: <LFEHKEBEBHAFGJBMNKAOKELACCAA.markee@bandwidthco.com> <200310121840.27031.Herman@AerospaceSoftware.com> <20031013031712.7fd7be69.arnt@c2i.net> <200310131205.55401.Herman@AerospaceSoftware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,7 +18,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Herman@AerospaceSoftware.com
+Cc: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+
+I almost forgot. You'll need the same line for your FORWARD chain:
+
+iptables -t filter -A FORWARD -p all -m state --state 
+RELATED,ESTABLISHED -j ACCEPT
+
+Jeff
+
 
 Herman wrote:
 
@@ -34,22 +43,38 @@ Herman wrote:
 >   ..if these hosts are initiating this connection from your end,
 >   " -j ESTABLISHED,RELATED" should do it, instead of you
 >   running around chasing your tail.
+>
+>Hi Arnt,
+>
+>Could you please elaborate on that?
+>
+>As far as I can see, the hosts are initiating the connection, but the port 
+>must somehow be forwarded through the firewall snat box.
+>
+>This is what I have:
+>echo "   DNAT Forward port 3270 for Alberta Registries application on Pluto"
+>$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 3270 -j ACCEPT
+>$IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 3270 -j DNAT --to 
+>192.168.10.1:3270
+>
+>This is working now, provided that I use that specific IP address on the 
+>inside - I had to load the iptable_mangle module, which made my problems go 
+>away...
+>
+>I don't understand how to add the ESTABLISHED,RELATED idea into this type of 
+>rule.  
+>
+>Something like this:
+>
+>$IPTABLES -t nat -A PREROUTING -i $EXTIF -p tcp --dport 3270 -m state --state 
+>ESTABLISHED,RELATED
+>
+>???
+>
+>
+>Cheers,
 >  
 >
-
-I don't have the whole thread so I apologize if I missed something. If
-you are using SNAT the return packets should be RELATED or ESTABLISHED
-and they can be passed back to your box without any further natting:
-
-# Masquerade everything leaving the lan as the firewall IP.
-iptables -t nat -A POSTROUTING -o $Net_Interface -j SNAT --to $Net_IP
-
-# This makes sure the returning packets make it through.
-iptables -t filter -A INPUT -p all -m state --state RELATED,ESTABLISHED
--j ACCEPT
-
-Jeff
-
 
 
 
