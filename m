@@ -1,11 +1,13 @@
-From: "G. Georgiev" <ggeorgiev@videotron.ca>
-Subject: Routing / masqerading advice needed.
-Date: Tue, 18 Mar 2003 17:23:41 -0500
+From: Kelly Setzer <Kelly.Setzer@placemark.com>
+Subject: Re: DHCP IssuesB
+Date: Thu, 20 Mar 2003 09:18:42 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303181723.41632.ggeorgiev@videotron.ca>
+Message-ID: <20030320151842.GB18401@placemark.com>
+References: <Pine.LNX.4.53.0303200827390.6606@beethoven.javaspotlet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.53.0303200827390.6606@beethoven.javaspotlet.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +18,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Tim Miller <tj.miller@javaspotlet.com>
+Cc: NetFilter List <netfilter@lists.netfilter.org>
 
+On Thu, Mar 20, 2003 at 08:46:41AM -0600, Tim Miller wrote:
+> 
+> I'm pretty new to netfilter so bear with me.  I have a server that has a
+> quad card, currently the card is configured:
+> 
+> eth0 -> internet
+> eth1,eth2 -> not active (yet)
+> eth3 -> internal lan 10.2.0.0/24 network
+> 
+> I am running dhcpd on eth3 and everything works ok, except for the
+> renewing of addresses.  For example:
+> 
+> 1. Connect a laptop to the network and power up, get an address ok.
+> 2. Release the address and then renew the address, get an address ok.
+> 3. Perform a renew on the laptop and it fails.
 
-        Hello,
+What does your dhcpd log say?
 
-        Have a non-standard routing / masquerading issue to which I still can 
-not imagine a solution.
+> 
+> 
+> Does this make sense? What am I missing?
+> 
 
-        The problem: I need to create several encrypted links to a remote 
-side - VPN.GALILEO.COM from a single linux machine - a gateway for a new 
-branch office. The problem comes from the fact that for every link the remote 
-side assigns me a different address. This way I end up having several
- local interfaces (ppp0,ppp1...) with different addresses that communicate 
-to the same addres on the other end. 
+Do a tcpdump while you attempt to renew.  That should be revealing.
 
-        However, the package (Focalpoint emulator) that I run in several 
-copies on the SAME computer behind the firewall  has to communicate with the 
-'SERVER' on the other end every copy via one and only one of those channels, 
-determined by the login name/address assigned when I create the channel, else 
-packets are discarded. The emulator uses one port to communicate to the 
-server, all emulators executing connect() to the same remote port, and of 
-cource getting an ephemerial port after the connection is accept() ed.
+Kelly
 
-    emulator 1 \          /-gw/ppp0 --encrypted ----\
-    emulator 2 -my net--gw/ppp1 -------------------- other end ---- SERVER
-    emulator x /         \- gw/ppp* -------------------/
-
-
-        So, I need to masquerade packets via those interfaces at my gw - no 
-problem, but how to route them if all they have same destination address, but 
-packets originating from different copies of the same application should use 
-different channels? 
-
-
-        In general, I have to make my gateway lie the other end that every 
-copy of the emulator runs on a different computer. How?
-
-        Any ideas appreciated, George.
+--
+Kelly Setzer, System Administrator/Architect - Placemark Investments
+14180 Dallas Pkwy, Suite 200, Dallas, TX 75240
+kelly.setzer@placemark.com  http://www.placemark.com
+(972)404-8100x41 (work)       (214) 287-3464 (cell)
 
