@@ -1,12 +1,13 @@
-From: "mailinglists" <mailinglists@belfin.ch>
-Subject: AW: Turning on IP Forwarding
-Date: Mon, 24 Mar 2003 14:36:19 +0100
+From: sathvanth <sathvanth.subramaniam@ctp.ilabsgroup.com>
+Subject: Re: Turning on IP Forwarding
+Date: 24 Mar 2003 20:24:32 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <65F646CE24EBF24AA3714070D537988E0105B9@gargoyle.seaan.net>
+Message-ID: <1048517685.1042.4.camel@Sath>
+References: <20030324130221.39616.qmail@web40201.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20030324130221.39616.qmail@web40201.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,21 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="utf-8"
-To: James Marcinek <james_marcinek@yahoo.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: James Marcinek <james_marcinek@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-SGkNCg0KZWNobyAxID4gL3Byb2Mvc3lzL25ldC9pcHY0L2lwX2ZvcndhcmQgdHVybnMgb24gaXAg
-Zm9yd2FyZGluZw0KDQpIVEgNClBoaWxpcHANCg0KPiAtLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hy
-aWNodC0tLS0tDQo+IFZvbjogSmFtZXMgTWFyY2luZWsgW21haWx0bzpqYW1lc19tYXJjaW5la0B5
-YWhvby5jb21dDQo+IEdlc2VuZGV0OiBNb250YWcsIDI0LiBNw6RyeiAyMDAzIDE0OjAyDQo+IEFu
-OiBuZXRmaWx0ZXJAbGlzdHMubmV0ZmlsdGVyLm9yZw0KPiBCZXRyZWZmOiBUdXJuaW5nIG9uIElQ
-IEZvcndhcmRpbmcNCj4gDQo+IA0KPiBJIGFsd2F5cyBmb2dldCB0aGlzLg0KPiANCj4gQ2FuIGFu
-eW9uZSB0ZWxsIG1lIHdoaWNoIGZpbGUgSSBuZWVkIHRvIG1vZGlmeSB0byB0dXJuDQo+IG9uIElQ
-IEZvcndhcmRpbmc/IEkga25vdyB3aGVyZSB0byBkbyBpdCB3aGlsZSB0aGUNCj4gc3lzdGVtIGlz
-IG9uOyBob3dldmVyLCBzaW5jZSBpdCdzIGEgbXVsdGktaG9tZWQgc3lzdGVtDQo+IGFuZCBteSBy
-b3V0ZXIsIEkgd291bGQgbGlrZSB0byBoYXZlIGl0IHNldHVwDQo+IGNvcnJlY3RseS4uLg0KPiAN
-Cj4gVGhhbmtzLA0KPiANCj4gSmFtZXMNCj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fDQo+IERvIHlvdSBZYWhvbyE/DQo+IFlhaG9vISBQbGF0
-aW51bSAtIFdhdGNoIENCUycgTkNBQSBNYXJjaCBNYWRuZXNzLCBsaXZlIG9uIHlvdXIgZGVza3Rv
-cCENCj4gaHR0cDovL3BsYXRpbnVtLnlhaG9vLmNvbQ0KPiANCj4gDQo=
+hi,
+ u have to do it in two places.
+ one /proc/sys/net/ipv4/ip_forward ..echo 1 to this file
+
+the next is /etc/sysctl.conf..set net.ipv4.conf.default.ip_forward=1
+
+hope this helps.
+
+Regds,
+sathvanth
+On Mon, 2003-03-24 at 18:32, James Marcinek wrote:
+> I always foget this.
+> 
+> Can anyone tell me which file I need to modify to turn
+> on IP Forwarding? I know where to do it while the
+> system is on; however, since it's a multi-homed system
+> and my router, I would like to have it setup
+> correctly...
+> 
+> Thanks,
+> 
+> James
+> 
+> __________________________________________________
+> Do you Yahoo!?
+> Yahoo! Platinum - Watch CBS' NCAA March Madness, live on your desktop!
+> http://platinum.yahoo.com
+
+
 
