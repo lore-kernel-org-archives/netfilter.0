@@ -1,8 +1,8 @@
 From: Payal Rathod <payalrathod@gmail.com>
-Subject: SNAT
-Date: Fri, 9 Jul 2004 09:27:08 +0530
+Subject: MASQUERADE
+Date: Fri, 9 Jul 2004 09:19:58 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <f51b72bc04070820577fd223df@mail.gmail.com>
+Message-ID: <f51b72bc040708204912ab0cc7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,17 +19,16 @@ Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hi,
-While reading man page of iptables I stumbled in MASQUERADE section,
+Is there any different way to do MASQUERADE in kernel 2.6.3-7  with
+iptables v1.2.9?
+I get,
 
-| This  target  is only valid in the nat table, in the POSTROUTING chain.
-|  It should only be used with dynamically assigned  IP  (dialup)  connec-
-|  tions: if you have a static IP address, you should use the SNAT target.
+# iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+iptables: Invalid argument
 
-Can someone explain please why this is not valid when I am using a
-permanent conneciton terminating at say eth0 and also a small example
-on how SNAT can be used in the place?
+A quick look at the man page did not suggest anything.
+Any ideas to what is missing?
 
-Thanks a lot in advance.
 With warm regards,
-Payal
+-Payal
 
