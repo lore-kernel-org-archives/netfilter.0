@@ -1,12 +1,14 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: RE: Restricting IP addresses from ports
-Date: Tue, 25 Feb 2003 11:43:34 -0800 (PST)
+From: Willi Dyck <wdyck@gmx.net>
+Subject: Re: Port Forwarding Problem
+Date: Tue, 25 Feb 2003 21:14:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030225194334.8393.qmail@web40204.mail.yahoo.com>
-References: <HMEBKOCKLOOEJGIOMFAPKENJFKAA.ian@icreditvision.com>
+Message-ID: <20030225201418.GA1099@tekilla.homeip.net>
+References: <3E5BB0BF.2070401@openadventures.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HMEBKOCKLOOEJGIOMFAPKENJFKAA.ian@icreditvision.com>
+Content-Disposition: inline
+In-Reply-To: <3E5BB0BF.2070401@openadventures.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,52 +22,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-
---- Ian Douglas <ian@icreditvision.com> wrote:
-> >   How do I allow a specific IP address access to a port like SSH?  I want
-> > to deny all access to ports on a system that I manage except for specific
-> > addresses.
+On Tue, Feb 25, 2003 at 11:06:55AM -0700, Tom Smith wrote:
+> Having problem forwarding 216.161.174.4 port 8241 to 192.168.20.246 port 22.
 > 
-> In a general sense, you create a rule to ALLOW a specific IP address (or
-> range),
-> and then explicitly REJECT/DROP/TREJECT/etc that port for everyone else.
+> I added the following rule to run DNAT:
+> $IPTABLES -t nat -A PREROUTING -p tcp -d 216.161.174.4 --dport 8241 -j 
+> DNAT --to-destination 192.168.20.246:22
+
+Good.
+
+> What I saw when trying to connect to the port from a remote host was:
+> uccinet kernel: IN=eth1 OUT=eth0 SRC=64.158.129.226 DST=192.168.20.246 
+> LEN=60 TOS=0x10 PREC=0x00 TTL=45 ID=63685 DF PROTO=TCP SPT=2030 DPT=22 
+> WINDOW=5840 RES=0x00 SYN URGP=0
 > 
-> -id
-> 
-> 
-This is what I use to stop incoming Connection and common Port Scans
-The state matching INVALID is redundant but I like the feeling of security it
-gives me LOL
+> I later learned that I also needed some FORWARD rules to make it work. 
+> The default script had most of them. I added:
+> $IPTABLES -A FORWARD -d 192.168.20.246 -p tcp --dport 22 -j ACCEPT
 
-# NMAP and Incoming connection Killer(SYN/RST)
-# NMAP Xmas Tree scan Killer ( God bless Google )
-# NMAP Null scan killer (got from a IPTABLES tutorial..confirmed via the web)
-# NMAP Stealth FIN scan killer (this one was a hard one to figure out)
-# Droppping INVALID packets not matched anywhere else ALL PROTOS
+Better. Much better would be a second rule which allows the way back
+from 192.168.20.246.
 
-iptables -A INPUT -p tcp --syn -m state --state NEW -i eth0 -j DROP
-iptables -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -i eth0 -j DROP
-iptables -A INPUT -p tcp --tcp-flags ALL NONE -i eth0 -j DROP
-iptables -A INPUT -p tcp ! --syn -m state --state NEW -i eth0  -j DROP
-iptables -A INPUT -p ALL -m state --state INVALID -j DROP
+$IPTABLES -A FORWARD -s 192.168.20.246 -p tcp --sport 22 -j ACCEPT
 
-Allowing specific stuff is easy...
+What I see in your 'iptables -nL' output is that you allow everything
+in the FORWARD chain which has a state ESTABLISHED and/or RELATED, thus
+the second rule above isn't necessery. Does 192.168.20.246 have routing
+entry back to the inet? Also, what is the output of 'iptables -nvL
+FORWARD'?
 
-iptables -A INPUT -p TCP -i eth0 --src ip address you want to allow here -j
-ACCEPT
+> Chain FORWARD (policy DROP)
+> target     prot opt source               destination         
+> ACCEPT     tcp  --  0.0.0.0/0            192.168.20.246     tcp dpt:22 
+> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          state RELATED,ESTABLISHED 
+> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          
+> drop-and-log-it  all  --  0.0.0.0/0            0.0.0.0/0          
 
-of course you need to make sure you set the right Protocol (TCP is fine for
-ssh)
-but if you want to allow PINGS and such you can eiather allow all or create an
-ICMP rule for the src ips
+Regards -- Willi
 
-also make sure you use the right DEVICE... eth0 is mine but might not be yours
-
-=====
-"No touchy NO TOUCHY! Emperor Kuzko -=Emperor's New Groove=-"
-
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Tax Center - forms, calculators, tips, more
-http://taxes.yahoo.com/
+-- 
+-----BEGIN GEEK CODE BLOCK-----
+Version: 3.1
+GPA/CS dx s-:- a-- C++$ UL/S+++>++++ P++>+++ L+++(++++)$ !E W+ N- o?
+K? !w 0? !M V- PS++(---) !PE Y+ PGP++ t-- !5 X+ R- !tv b+(++) DI++
+D+++ G e+ h-- r y?
+------END GEEK CODE BLOCK------
 
