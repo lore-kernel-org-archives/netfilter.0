@@ -1,13 +1,13 @@
-From: Juan Hernandez <alucard@kanux.com>
-Subject: RE: port forwarding in a web server
-Date: 24 Nov 2003 13:56:20 -0400
+From: mpdykeman@micron.com
+Subject: Netfilter connection management
+Date: Mon, 24 Nov 2003 11:25:49 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069696580.1083.27.camel@webmail.aeropostal.com.ve>
-References: <20031124171108.6D4DC8047@sterenborg.info>
+Message-ID: <040405FAA8D7CD41BCA471B1A3451EE305AA7A@ntxboimbx08.micron.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3B2B8.6270A160"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031124171108.6D4DC8047@sterenborg.info>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,46 +17,97 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>, Lista de netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Thank you so much pal... 
+This is a multi-part message in MIME format.
 
-Now its working
+------_=_NextPart_001_01C3B2B8.6270A160
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Juan :D
+Hello,
 
-On Mon, 2003-11-24 at 13:11, Rob Sterenborg wrote:
-> > simple. Here's my scenario: I have a static IP address routed 
-> > (1.1.1.1)
-> > to one server using a 192.168.0.* address. Is a cisco router and
-> > everything works fine. This server has 192.168.0.1 as it's address and
-> 
-> So I can assume that *ALL* traffic is routed from 1.1.1.1 to 192.168.0.1,
-> which has Netfilter running ?
-> 
-> > functions as a web server, everything works fine but, I have another
-> > server that works as our mail server that is using 192.168.0.2. I've
-> > been trying to redirect everything coming from port 25 to my 
-> > mail server
-> > but it doesn't get any answer. These are the rules I've been using: 
-> 
-> echo 0 > /proc/sys/net/ipv4/ip_forward
-> iptables -P FORWARD DROP
-> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 25 -j ACCEPT
-> iptables -t nat -A PREROUTING -d 192.168.0.1 -p tcp --dport 25 \
->     -j DNAT --to-destination 192.168.0.2:25
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> 
-> If you're forwarding anything else than just smtp, you have to add rules to
-> allow it : these rules DROP all traffic to be forwarded except smtp which is
-> DNAT-ed to the MTA and RELATED/ESTABLISHED traffic.
-> 
-> 
-> Gr,
-> Rob
-> 
-> 
+I posted a more verbose message and did not get any replies earlier. So
+please forgive me if I am appearing a bit clueless.
 
+Is there anyway using Iptables or some other command-line tool to manage
+the Netfilter connection hash tables? More specifically, I would like to
+be able remove ASSURED connections as a component of a method to cut off
+existing connections that are suspect of virus activity. I really don't
+want to use a tool like cutter to send RST's...It just seems that it
+would be much cleaner to directly manipulate the hash.
+
+Also, I have been noticing some occasional problems with ASSURED entries
+possibly disappearing from the Netfilter connection hash (causing a rule
+which checks for packets without SYN and not ESTABLISHED to start
+dropping packets which kills legitimate connections) and I'm trying to
+find a way to log or somehow determine what caused the entry to be
+removed....I'm not sure logging RST's or FIN's will locate all reasons
+for a table entry drop.
+
+Any assistance or helpful direction someone could provide me would be
+appreciated.
+
+Thanx.
+
+-- Markley Dykeman
+
+
+
+------_=_NextPart_001_01C3B2B8.6270A160
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6487.1">
+<TITLE>Netfilter connection management</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">Hello,</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">I posted a more verbose message and =
+did not get any replies earlier. So please forgive me if I am appearing =
+a bit clueless.</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">Is there anyway using Iptables or =
+some other command-line tool to manage the Netfilter connection hash =
+tables? More specifically, I would like to be able remove ASSURED =
+connections as a component of a method to cut off existing connections =
+that are suspect of virus activity. I really don&#8217;t want to use a =
+tool like cutter to send RST's&#8230;It just seems that it would be much =
+cleaner to directly manipulate the hash.</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">Also, I have been noticing some =
+occasional problems with ASSURED entries possibly disappearing from the =
+Netfilter connection hash (causing a rule which checks for packets =
+without SYN and not ESTABLISHED to start dropping packets which kills =
+legitimate connections) and I'm trying to find a way to log or somehow =
+determine what caused the entry to be removed&#8230;.I'm not sure =
+logging RST's or FIN's will locate all reasons for a table entry =
+drop.</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">Any assistance or helpful direction =
+someone could provide me would be appreciated.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">Thanx.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">-- Markley Dykeman</FONT>
+</P>
+<BR>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C3B2B8.6270A160--
 
