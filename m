@@ -1,17 +1,13 @@
-From: Hitesh Ballani <hb69@cornell.edu>
-Subject: Re: tunneling and iptables
-Date: Wed, 10 Mar 2004 03:15:18 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Howto Make Gateway with iptables?
+Date: Wed, 10 Mar 2004 09:06:18 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.2.1.1.2.20040310030818.00b40808@postoffice6.mail.cornell.edu>
-References: <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
- <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu> <1078902997.2564.18.camel@anduril.intranet.cartel-securite.
- net>
+Message-ID: <200403100906.18963.Antony@Soft-Solutions.co.uk>
+References: <20040310073428.M64644@cc.iut.ac.ir>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1078902997.2564.18.camel@anduril.intranet.cartel-securite.
- net>
-References: <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
- <5.2.1.1.2.20040309214501.00b47310@postoffice6.mail.cornell.edu>
+In-Reply-To: <20040310073428.M64644@cc.iut.ac.ir>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,34 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Wednesday 10 March 2004 7:35 am, Mojgan Masroor wrote:
 
->
-> > Also,  the mark extension allows you to mark packets with 16-bits marks
-> > which is big enough to encode the port number, but if i try to add policy
-> > routing on the fly using the ip rules command then i get screwed because
-> > the table-id (for specifying which table has the rules to route this
-> > packet) is only 8-bits and so, I cannot encode the port numbers in there
-> > ... i know this is not a clear description but if you know anything about
-> > this problem, i would be more than happy to spell the details out...
->
->-Do you really need the full 16 bits space ? I mean that you'll need it
->-if you have 16^2 different routes (one mark per route) which should not
->-the case.
+> Hi,
+>  I have a linux redhat9.0 - I want to create an gateway between our
+> sections  and central site.
+> It have 4 ethernet cards. 2 cards for internal LANs with 2 invalid sunbet
+> 192.168.101.x and 192.168.102.x range. 3th card for intranet use such
+> connect to our web-server or email-server, 4th card for internet connection
+> and when they want go to internet.i want also close all extra ports and
+> close udp + icmp protocols.
+> How i could do this with IPTABLES Rules? Anybody have such this schema?
+> Any help would be appriciated
 
-thanks for your comments on tunnels ... actually i am working on a model 
-for anycast deployment and need to have the 16 bits so that i can support 
-256*(2^16) services using a single /24 block .. by the way, how heavy are 
-tunnels - i.e how many can the kernel support .... but i have almost given 
-up on using the standard iptables interface - i am thinking of writing a 
-module that uses a netfilter hook.... while i think i have the details 
-figured out, any word of advice will be highly appreciated !
+Oskar Andreasson's netfilter tutorial at 
+http://iptables-tutorial.frozentux.net should tell you most, if not all, of 
+what you need to know.
 
-Thanks again,
+If you have any specific questions after getting as far as you can with that, 
+feel free to come back and ask here.
 
-Hitesh 
+Regards,
+
+Antony.
+
+-- 
+"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
+line program, and it ends up depending on the entire known universe."
+
+ - Philip Hands
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
