@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: adderek <adderek@polbox.com>
 Subject: Re: Problem: ISA card & iptables (2.4.26) - disappearing packets
-Date: Sun, 18 Jul 2004 09:39:37 +0100
+Date: Sat, 17 Jul 2004 10:20:59 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407180939.37668.Antony@Soft-Solutions.co.uk>
-References: <40F8D503.3040608@polbox.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <40F8E16B.2020808@polbox.com>
+References: <40F8D503.3040608@polbox.com> <200407180939.37668.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40F8D503.3040608@polbox.com>
+In-Reply-To: <200407180939.37668.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,47 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Saturday 17 July 2004 8:28 am, adderek wrote:
+> 1. I really can't see this is a netfilter problem.
 
-<much detail snipped>
+I thought that if packets are bypassing kernel (and iptables in it) then 
+it will be IPtables problem.
 
-> I had already configured firewall/router (based on debian distribution
-> is has only a few things in common with debian).
->
-> At first I've configured everything with my old PCI cards.
-> After everything worked fine I've changed eth0 to ISA card.
->
-> After changing my PCI card to ISA card firewall gone down :(
->
-> Can somebody tell me what is happening?
->
-> Configuration is the same in both cases. Only network cards differ.
-> Both cards are working fine (cause 'tcpdump' is giving me an output).
 
-1. I really can't see this is a netfilter problem.
+> 2. I don't agree with your reasoning that "both cards are working fine because 
+> tcpdump is giving me an output" - everything else indicates that the ISA card 
+> is not working fine, because with this in place you have problems; swapping 
+> for a PCI you do not have problems.
 
-2. I don't agree with your reasoning that "both cards are working fine because 
-tcpdump is giving me an output" - everything else indicates that the ISA card 
-is not working fine, because with this in place you have problems; swapping 
-for a PCI you do not have problems.
+OK. I'll check it on another ISA card as soon as I get one.
 
-3. Have you checked the interrupts & I/O address range in use by the ISA card, 
-and whether they conflict with something else in the machine?
 
-Regards,
+> 3. Have you checked the interrupts & I/O address range in use by the ISA card, 
+> and whether they conflict with something else in the machine?
 
-Antony
+It's ISA PnP card so it's autoconfigured. I've checked and there is no 
+conflicts :(
 
--- 
-I don't know, maybe if we all waited then cosmic rays would write all our 
-software for us. Of course it might take a while.
 
- - Ron Minnich, Los Alamos National Laboratory
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> Regards,
+> 
+> Antony
+> 
 
 
