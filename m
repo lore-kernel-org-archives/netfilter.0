@@ -1,11 +1,16 @@
-From: Karol Tomala <ktomala@tgc.pl>
-Subject: Serious NAT problem
-Date: Mon, 29 Mar 2004 21:51:09 +0200
+From: Cody Harris <hchs@ns.sympatico.ca>
+Subject: Re: Not forwarding?
+Date: Mon, 29 Mar 2004 15:51:47 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080589869.2754.152.camel@wolverine.waw.tgc.pl>
+Message-ID: <20040329155147.4fa98da1@darna.vectec.net>
+References: <20040328155231.32b07799@darna.vectec.net>
+	<200403282154.17071.Antony@Soft-Solutions.co.uk>
+	<20040328170733.23247779@darna.vectec.net>
+	<200403282224.12071.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200403282224.12071.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,82 +23,85 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello!
-I have a question regarding netfilter. I have been looking for an answer
-for two days and I'm hopeless. That's why I have decided to ask for help
-here.
+It didn't work. I'm getting somebody on my ISP to test it (offsite). The firewall IPs are: 10.30.7.147 for net (my ISP nats it) and 192.168.0.1 and my box i want to forward to is 192.168.0.2. It still doesn't work. Here's an updated ruleset:
 
-I have a Mandrake Linux 9.2.1 internal router acting as a
-natbox/firewall. It has three NIC's:
-eth0 -> x.y.z.x (DMZ interface) [Doesn't matter for this issue]
-eth1 -> 172.18.12.0/255.255.252.0 (LAN interface)
-eth2 -> 10.128.2.64/255.255.255.224 (Client network)
 
-Here's a liitle graph showing the connections:
+Chain INPUT (policy ACCEPT 3787 packets, 1815K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:10000
+    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:631
+    3   144 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:http
+    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:smtp
+    0     0 DROP       tcp  --  eth0   any     anywhere             anywhere           tcp dpt:ftp
+    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp echo-reply
+    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp destination-unreachable
+    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp redirect
+    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp echo-request
+    0     0 ACCEPT     icmp --  eth0   any     anywhere             anywhere           icmp time-exceeded
+    0     0 DROP       icmp --  eth0   any     anywhere             anywhere
 
-[ Cisco 1700 ]        [ NATBOX/FIREWALL ]  
-[ 10.128.2.65 ] <---> { eth2 }   { eth1 } <---> { LAN: 172.18.12.0 }
+Chain FORWARD (policy DROP 36 packets, 2291 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 ACCEPT     all  --  any    any     anywhere             anywhere           state RELATED,ESTABLISHED
+    0     0 ACCEPT     tcp  --  any    any     192.168.0.2          anywhere           tcp dpt:ssh
 
-Eth2 interface has IP number 10.128.2.66.
-Eth1 interface has IP number 172.18.15.125.
+Chain OUTPUT (policy ACCEPT 3996 packets, 585K bytes)
+ pkts bytes target     prot opt in     out     source               destination
 
-I want to connect client's Cisco 1700 router via eth2 network. However I
-don't want a 1:1 NAT. I would like to NAT a few hosts from 172.18.
-network to 10.128.2. so client could easily connect to some of our
-servers without having access to the rest of our LAN. 
 
-I have a host 172.18.5.2 that should be NAT'ed to 10.128.2.70. All
-traffic going to 10.128.2.70 should reach 172.18.5.2 transparently.
+On Sun, 28 Mar 2004 22:24:12 +0100,
+Someone named Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
 
-I have been trying to configure NAT without much success. 
+> On Sunday 28 March 2004 10:07 pm, Cody Harris wrote:
+> 
+> > I rewrote the rules following your suggestions. It still doesn't work:
+> >
+> > Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+> > target     prot opt in     out     source              destination
+> > ACCEPT     all  --  eth1   any     anywhere             anywhere
+> 
+> Okay, that will allow all packets coming through from eth1
+> 
+> > ACCEPT     tcp  --  any    any     anywhere             192.168.0.2       
+> > tcp dpt:ssh state RELATED,ESTABLISHED
+> 
+> That will allow packets coming through from 192.168.0.2 (which is plugged in 
+> to eth1) to destination port 22.
+> 
+> You have no rule to allow the reply packets back (and the above rule won't 
+> allow the NEW packets through, either).
+> 
+> Try this:
+> 
+> iptables -F FORWARD
+> iptables -P FORWARD DROP
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -s 192.168.0.2 -p tcp --dport 22 -j ACCEPT
+> 
+> If that doesn't work tell us exactly how you are testing it - which machine is 
+> the SSH client on, where is the server, what are the IP addresses...
+> 
+> Regards,
+> 
+> Antony.
+> 
+> -- 
+> It is also possible that putting the birds in a laboratory setting 
+> inadvertently renders them relatively incompetent.
+> 
+>  - Daniel C Dennet
+> 
+>                                                      Please reply to the list;
+>                                                            please don't CC me.
+> 
+> 
 
-This is a part of my configuration:
 
-### Netfilter
-echo 1 > /proc/sys/net/ipv4/ip_forward
-echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_all
-
-# Add route to 172.18.5.0/29 network
-ip route add 172.18.5.0/29 gw 172.18.15.254 dev eth1
-
-# Only for testing, will be changed when NAT works
-iptables -t filter -P INPUT ACCEPT
-iptables -t filter -P OUTPUT ACCEPT
-iptables -t filter -P FORWARD ACCEPT
-
-# NAT
-iptables -t nat -A POSTROUTING -o eth2 -s 172.18.5.2 -j SNAT --to-source
-10.128.2.70
-iptables -t nat -A PREROUTING -i eth2 -d 10.128.2.70 -j DNAT
---to-destination 172.18.5.2
-
-[cut]
-
-Unfortunatelly it's not working. I have lost two days on it, browsing
-through google and found nothing much helpful.
-
-I would like to achieve exactly the same as you can do in Cisco IOS with
-issuing command:
-ip nat inside static host 172.18.5.2 host 10.128.2.70
-
-I don't want to assign VLAN on my eth2 NIC with IP 10.128.2.70. (Reason
-for this is that NATBOX is acting as a firewall/natbox/vpn router and I
-would have to assign thousands of VLANs on my NICs). I would like the
-host 172.18.5.2 to be seen as 10.128.2.70 in the client's network. 
-
-I can ping the Cisco router on 10.128.2.65 from 10.128.2.66 via eth2. I
-can ping 172.18.5.2 from 172.18.15.125 via eth1. Unfortunatelly NAT is
-not working. Pinging 10.128.2.70 from eth2 gives Destination Host
-Unreachable. tcpdump -i eth2 gives "arp who-has 10.128.2.70 tell
-10.128.2.66". Nothing else happens. I cannot telnet to 10.128.2.70, but
-I can telnet to it by 172.18.5.2 IP number. 
-
-What am I doing wrong? Please help me. I'm hopeless and don't know what
-to do. :(
-
-Greetings
 -- 
-Karol Tomala
-
-
++------------------+-----------------------------+
+| Cody Harris      | --------------------------- |
+| ---------------- | --------------------------- |
++------------------+-------+---------------------+---+
+| *Sigh*. No key.                                    |
++----------------------------------------------------+
 
