@@ -1,13 +1,13 @@
-From: Carlos Ble <carlosble@terra.es>
-Subject: new tcp connections, without SYN
-Date: Wed, 9 Apr 2003 12:16:28 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: NAT question
+Date: 09 Apr 2003 12:27:53 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200304091216.28528.carlosble@terra.es>
-Reply-To: carlosble@terra.es
+Message-ID: <1049884073.22137.10.camel@elendil.intranet.cartel-securite.net>
+References: <B5747F3DB39FD411884B00B0D07808CCB6CA01@server10>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <B5747F3DB39FD411884B00B0D07808CCB6CA01@server10>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +17,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
+Cc: netfilter@lists.netfilter.org
 
-Hi all. Two days ago, i added the policy that drops all new tcp connections
-that starts without SYN to prevent port scaners and other attacks:
+Le mer 09/04/2003 =E0 11:51, Philippe Dhont (Sea-ro) a =E9crit :
+> I added=20
+> $IPTABLES -t nat -A POSTROUTING -j SNAT --to-source 10.165.165.165=20
+> Now when i ping from 10.51.13.13 on eth0 side to 10.165.1.60 then i can=
+ see
+> via tcpdump that on eth1 the 10.165.1.60 is seeking the 10.165.165.165=20
+> "arp who-has 10.165.165.165 tell 10.165.1.60" is what i get.
+> So i guess that this means that iptables changed the address ?
 
-iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG \
---log-prefix "NEW tcp try no SYN:"
-iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+As far as I understand your configuration, eth0's side is NATed when
+talking to eth1's side.
 
-Now the system is registering this event every minute from diferents ip. 
-Is this usual?. What kind of programs tries to start a new tcp connection 
-without a SYN ?. 
-Im no so worried because scaning the ports of my server from another computer 
-in the internet, using nmap , the answer is that all ports al filtered. 
+If so, yes, Netfilter as already changed the address. That's obvious.
+Your echo request has crossed the box, and has been source NATed to
+10.165.165.165. Then 10.165.1.60 receive it and tries to reply. It
+replies to 10.165.165.165. Nothing special in there, everything's
+normal.
 
-Another question: I had disabled the icmp answers :
-echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
-echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-to try to be "invisible" for some wicked programs .
-will i have problems with some other programas that makes ping 
-before establish a connection? 
+But on eth1's side, nobody answers ARP requests for 10.165.165.165. So
+you did not configured your firewall to answer them. That's the issue.
 
-Thanks in advance
+> So the firewall doesn't knows that it converted the ip number before an=
+d
+> can't send a reply to the correct ip address where it originally came f=
+rom
+
+He knows about this. But it is not its job to answer ARP requests. It's
+your job to configure it as such.
+
+> How can i make this work so that if i ping to 10.165.1.60 that i can ge=
+t a
+> reply ?
+
+	ip addr add 10.165.165.165 dev eth1
+
+So your firewall answers ARP requests for 10.165.165.165.
+
+> AND that the NAT thing did its work ?
+
+It did it well.
+
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
