@@ -1,13 +1,10 @@
-From: "jdf [zionarea.org]" <zionarea@free.fr>
-Subject: Re: using with big ban lists (peerguardian and so).
-Date: Fri, 21 Jan 2005 20:30:00 +0100
-Message-ID: <1106335800.41f15838d9d26@imp6-q.free.fr>
-References: <1106251621.41f00f65147cb@imp6-q.free.fr>
-	<1106252952.5024.25.camel@hubcap.ljm.dom>
+From: "Micah Wedemeyer" <fanmail@micah-wedemeyer.net>
+Subject: limit speed of file transfer
+Date: Fri, 21 Jan 2005 20:08:06 -0500
+Message-ID: <001001c5001e$d80df760$0201a8c0@micah>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1106252952.5024.25.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,49 +18,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Selon Jason Opperisano <opie@817west.com>:
+Hi,
 
-> On Thu, 2005-01-20 at 15:07, jdf [zionarea.org] wrote:
-> > Hi,
-> >
-> > I was intended to use peerguardian ban list inside my iptables rules.
-> > I've done a program in C++ to read this file and to put iptables
-> > commands (using the system function).
-> > However it is very very very slow (1 hour picked up a very few of
-> > all the machines). It might be due to the fact that I don't use
-> > the iprange. Is it true ?
-> > Is there any way to do that in a fast manner without using iprange ?
-> >
-> > I mean:
-> >
-> > when I have addresses like 4.1.2.0-4.1.3.255, I need to call as much
-> > iptables command as there are computers. iprange seems to be best
-> > but I'm not sure if I will encounter speed up.
-> >
-> > Thank you.
->
-> you may want to add network summarization capabilities to your program;
-> as your example "range" can be summarized as:  4.1.2.0/23...which
-> results in 1 rule instead of 512 rules.
+My system consistently locks up on file transfers across the LAN.  When
+transferring a file to it using scp, it dies after less than 5 seconds.
+However, if I use it to download a file from the Internet (using wget),
+it does just fine.
 
-Ok. This seems well. I'll have a look at that solution.
+I have heard that my motherboard (a Via Epia MII) has DMA problems and
+that high Ethernet traffic is known to lock them up.  My theory is that
+the Internet connection is slow enough to not hit whatever magic
+threshold causes the crash.  So, I was hoping to find a way to limit the
+speed of transfers with scp and ftp so that they also don't lock up the
+machine.
 
->
-> i use the perl NetAddr::IP module to do things like this.
+I asked on a few message boards, and they all mentioned iptables.  I've
+never used it before, and am a total noob when it comes to networking
+stuff.  So, I was hoping that the people on this list could point me in
+the right direction of where to start.
 
-Don't know that, I'll google it.
+To sum up:  I need a way to limit the speed of incoming file transfers
+using ftp or scp.
 
->
-> -j
->
-> --
-> "The only monster here is the gambling monster that has enslaved your
->  mother! I call him Gamblor, and it's time to snatch your mother from
->  his neon claws!"
-> 	--The Simpsons
->
->
->
-
+Any help would be greatly appreciated,
+Micah
 
 
