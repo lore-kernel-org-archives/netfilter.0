@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: rules don't work!
-Date: Tue, 6 Apr 2004 00:26:40 +0100
+Subject: Re: Logging of kernel packets dropped for lack of a route
+Date: Tue, 6 Apr 2004 00:28:49 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404060026.40046.Antony@Soft-Solutions.co.uk>
-References: <40720D9A.6030001@tin.it>
+Message-ID: <200404060028.49546.Antony@Soft-Solutions.co.uk>
+References: <4071A85F.E2D9D7ED@vrml.k12.la.us>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40720D9A.6030001@tin.it>
+In-Reply-To: <4071A85F.E2D9D7ED@vrml.k12.la.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,22 +21,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 06 April 2004 2:53 am, Gianni Pucciani wrote:
+On Monday 05 April 2004 7:41 pm, root wrote:
 
-> Hi all,
-> I'm new to the use of iptable. I set this script for my home
-> workstation, but when I apply these rules anything stop functioning.
-> Can anyone give me some help?
+> How may one log packets the kernel drops because  no route exists ???
 
-Please correct the clock on your PC, and wait a little while for a reply 
-before posting the same (long) question twice.
+Perhaps by adding a default route and then dropping the packets with 
+netfilter, after logging them?
 
-Thanks.
+It's certainly the only way I can think to answer this question using 
+netfilter.
+
+Regards,
 
 Antony.
 
 -- 
-The lottery is a tax for people who can't do maths.
+Microsoft may sell more software than any other company, but McDonald's sell 
+more burgers than any other company, and I think the other similarities are 
+obvious...
 
                                                      Please reply to the list;
                                                            please don't CC me.
