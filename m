@@ -1,14 +1,13 @@
-From: zynkx <skydive@megamail.pt>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: (no subject)
-Date: Wed, 26 Nov 2003 20:46:08 +0000
+Date: Wed, 26 Nov 2003 20:48:49 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069879568.3fc51110b7e85@paris-hme1>
-References: <1069853846.3fc4ac966be15@paris-hme1>
- <200311261401.04191.Antony@Soft-Solutions.co.uk>
+Message-ID: <200311262048.49827.Antony@Soft-Solutions.co.uk>
+References: <1069853846.3fc4ac966be15@paris-hme1> <20031126151015.GB4486@cannon.eng.us.uu.net> <1069879109.3fc50f45e7331@paris-hme1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200311261401.04191.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <1069879109.3fc50f45e7331@paris-hme1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,83 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi antony and tanx for writting ;))
+On Wednesday 26 November 2003 8:38 pm, zynkx wrote:
 
-i'm doing stmp indeed, but i need to allow traffic,=20
-not to block it ;)))
-
-i happen to have qmail! i am aware something near that=20
-could done but i  guess that would a qmail mailling=20
-list matter!!!!! ;)))
-
-if not just give me a hint on how could i filter=20
-incoming mail on qmail.
-
-i know that to allow outgoing mail all i need to do id=20
-to fill up rcpthosts. i'm not informe about how to=20
-filter incoming mail coming to qmail.
-
-if could give me a hint i would appreciate it ;))
-
-you may mail to this address directly so we won't=20
-bother here!!
-
-
-thanx again :)))
-
-
-[][][][]
-[][][]
-
-
-
-C=F3pia Antony Stone <Antony@Soft-Solutions.co.uk>:
-
-> On Wednesday 26 November 2003 1:37 pm, zynkx
-> wrote:
+> hi Ramin and tanx for your trouble ;))
 >
-> > yahoo and hotmail ip ranges? does anyone
-> knows this ip
-> > ranges? need to allow them in my smtp
-> prerouting
-> > rulez  :))
+> what i am looking for is the adresses from hotmail and
+> yahoo from wich smtp connections may come from :)
 >
-> If you're doing smtp, why not filter on the
-> domain names yahoo.com and
-> hotmail.com in your MTA?
->
-> > danke !
->
-> Bitte.
->
-> Antony.
->
-> --
-> Behind the counter a boy with a shaven head
-> stared vacantly into space,
-> a dozen spikes of microsoft protruding from the
-> socket behind his ear.
->
->  - William Gibson, Neuromancer (1984)
->
->                                               =20
->      Please reply to the list;
->                                               =20
->            please don't CC me.
->
->
->=20
+> i have a smtp running and i need to allow traffic
+> coming from these two, (hotmail and yahoo).
 
+I'm not quite sure why you want to accept email only from Hotmail and Yahoo, 
+and from nowhere else (a lot of people I know do the exact opposite!), 
+however I still think an easier solution to your erquirement is to accept all 
+email through your firewall, and then accept only mail from Hotmail / Yahoo 
+on your mail server - because that can select based on the sender's address, 
+without needing to know the IPs of their mail servers (which may change one 
+day without you knowing).
 
+Antony.
 
-unix is user friendly. it's just selective when=20
-choosing=20
-friends.
+-- 
+If at first you don't succeed, destroy all the evidence that you tried.
 
--------------------------------------------------
-Email Enviado utilizando o servi=E7o MegaMail
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
