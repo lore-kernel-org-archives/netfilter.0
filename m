@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Speed Issues through NAT Firewall
-Date: Tue, 9 Jul 2002 20:32:30 +0100
+From: Patrick Petermair <captain.nuke@gmx.at>
+Subject: Re: Strange log entries (again)
+Date: Tue, 9 Jul 2002 21:44:09 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020709193231.DGDB19225.mta07-svc.ntlworld.com@there>
-References: <001701c2276e$3a94a0a0$6702a8c0@mindtrip.com> <200207091808.g69I8R810149@vulcan.rissington.net> <1026239145.804.56.camel@tux>
+Message-ID: <200207092144.09877.captain.nuke@gmx.at>
+References: <200207082243.35434.captain.nuke@gmx.at> <20020708205822.EMAP4119.mta06-svc.ntlworld.com@there>
+Reply-To: captain.nuke@gmx.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <1026239145.804.56.camel@tux>
+In-Reply-To: <20020708205822.EMAP4119.mta06-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,36 +19,36 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Tuesday 09 July 2002 7:25 pm, Martin Josefsson wrote:
-
-> On Tue, 2002-07-09 at 20:08, Antony Stone wrote:
-> > On Tuesday 09 July 2002 6:57 pm, Travis Crook wrote:
-
-> > > The firewall on the DSL is an Athlon XP 1500+.  The firewall on the ISP
-> > > line is a PII 333.  I will check on the full/half duplex issue.
-> >
-> > That's a hell of a difference, and could conceivably account for the
-> > bandwidth.   I'd say it depends on how much RAM you have in the PII/333
-> > and how many connections you're trying to support.
+Am Montag, 8. Juli 2002 22:58 schrieb Antony Stone:
+> On Monday 08 July 2002 9:43 pm, Patrick Petermair wrote:
+> > Jul  8 22:25:11 wormhole kernel: IN=3Dppp0 OUT=3D MAC=3D SRC=3D207.17=
+1.169.16
+> > DST=3D213.225.41.145 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D49 ID=3D21=
+031 DF PROTO=3DTCP
+> > SPT=3D80 DPT=3D42111 WINDOW=3D8760 RES=3D0x00 ACK RST URGP=3D0
 >
-> No way a pII 333 is to slow to handle 2Mbit/s, my old 486 can handle
-> that easily. You would have to trash the conntrack hashtable with
-> multiple attacks to even have a chance of getting it that slow.
+> This is an ACK RST packet, so it's quite likely that the connection
+> tracking has already deleted the connection from the conntrack table (w=
+hen
+> it got the previous RST packet), therefore when this packet turns up, i=
+t no
+> longer belongs to an ESTABLISHED connection.
+>
+> Don't worry about it.
 
-I only said it could *conceivably* account for the bandwidth limit - I didn't 
-say it was likely.   I agree with you that a 486 can easily exceed this 
-performance, but it depends what Travis is doing with the system - last 
-summer I saw netfilter boxes reduced to tens of kbits/sec bandwidth by Nimda 
-and Code Red saturating the conntracking tables with half-open links.
+Mhmm, am I the only one getting these entries in my logs?
+I'm thinking of putting a rule just before the logging rule to drop those=
+=20
+packets because they are useless information for the logs.
 
-I agree with several people here that Travis should check the hardware first, 
-and I would also recommend testing the bandwidth by doing several downloads 
-simultaneously from sites with high-bandwidth links, as close (in hops) to 
-his machine as possible.
+Is this due to a misconfiguration of the destination=20
+webserver/router/firewall?
 
- 
+Thnx so far...
+Patrick
 
-Antony.
+--=20
+http://www.petermair.com
 
