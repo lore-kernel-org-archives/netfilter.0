@@ -1,9 +1,11 @@
-From: spdesai@gnvfc.net
-Subject: Allow particular website/port
-Date: Fri, 11 Feb 2005 01:04:50 +0530
-Message-ID: <1108064090.420bb75ac0009@mail.gnvfc.net>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Allow particular website/port
+Date: Thu, 10 Feb 2005 15:10:10 -0500
+Message-ID: <1108066210.4489.0.camel@hubcap.ljm.dom>
+References: <1108064090.420bb75ac0009@mail.gnvfc.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1108064090.420bb75ac0009@mail.gnvfc.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +19,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
- 
-I have one linux machine with two NIC cards. One is connected to internet and 
-one is private PC. Below is my IP configuration
- 
-I have enable ip_forward to 1 in linux machine as well as donw masqared in 
-linux.
+On Thu, 2005-02-10 at 14:34, spdesai@gnvfc.net wrote:
+> Hi
+>  
+> I have one linux machine with two NIC cards. One is connected to internet and 
+> one is private PC. Below is my IP configuration
+>  
+> I have enable ip_forward to 1 in linux machine as well as donw masqared in 
+> linux.
+> 
+> I can browse the internet as well from window machine.
+> 
+> Now I want to allow/restricted my window machine to access/deny particular 
+> site/block/messanger ...
+> 
+> i have tried with FORWARD chain but..it restricted all HTTP traffic which i 
+> dont want.
+> 
+> So pl.  give me the solution.
 
-I can browse the internet as well from window machine.
+squid.
 
-Now I want to allow/restricted my window machine to access/deny particular 
-site/block/messanger ...
+-j
 
-i have tried with FORWARD chain but..it restricted all HTTP traffic which i 
-dont want.
-
-So pl.  give me the solution.
-
-Thanks in advance
-
-Suhag
-
--------------------------------------------------
-This mail sent through IMP: http://horde.org/imp/
+--
+"Mr. Simpson, why are you here?
+ Don't say revenge! Don't say revenge!
+ Revenge?
+ That's it! I'm outta here!"
+	--The Simpsons
 
 
