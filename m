@@ -1,12 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: UDP connections and Conntrack...
-Date: Mon, 5 Jan 2004 13:33:01 +0100 (CET)
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Upgrading patch-o-matic
+Date: Mon, 05 Jan 2004 08:21:10 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0401051332170.15139-100000@blackhole.kfki.hu>
-References: <1073106266.24037.13.camel@gamux>
+Message-ID: <1073308870.15280.3.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1073106266.24037.13.camel@gamux>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,33 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Eddahbi Karim <installation_fault_association@yahoo.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sat, 3 Jan 2004, Eddahbi Karim wrote:
+I am using a very old patch-o-matic (April) and would like to use the
+latest December release.  How does one upgrade an existing patch-o-matic
+installation? Does one:
 
-> When a client sends an UDP datagram to an UDP server, the connection is
-> ESTABLISHED when the server sends back an UDP datagram and the client
-> sends another UDP datagram or does the connection is ESTABLISHED when
-> the server answer to the first UDP datagram ?
->
-> For example, is it like that :
->
-> Client -> DATA -> Server
-> Client <- DATA <- Server
->
-> Connection ESTABLISHED for the server !
+1) start with a fresh kernel
+2) uninstall all the old patches and reinstall but with the new
+patch-o-matic
+3) install the same patches over the old ones
+4) copy in the new patch-o-matic files, wave one's hands and say
+"prest-o, change-o, patch-o upgrade be done!"
 
-This one happens in conntrack for UDP.
+Thanks - John
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
 
