@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: prevent script kiddies to abuse my ppp connection
-Date: Fri, 11 Oct 2002 18:16:54 +0100
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: Optimize large iptables by hashing on MAC address help
+Date: Fri, 11 Oct 2002 12:59:06 -0400 (EDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210111717.g9BHH1L19776@vulcan.rissington.net>
-References: <15781.58154.125224.618756@juliva.com>
+Message-ID: <Pine.LNX.4.44.0210111239320.31276-100000@localhost.localdomain>
+References: <00cc01c2713f$7e37f530$0800000a@wormhole>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <15781.58154.125224.618756@juliva.com>
+In-Reply-To: <00cc01c2713f$7e37f530$0800000a@wormhole>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,51 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-On Thursday 10 October 2002 9:29 pm, Ivan Kanis wrote:
+On Fri, 11 Oct 2002, Dan Searle wrote:
 
-> Hello,
->
-> I left my computer for an hour and I was
-> surprised to see that the connection was still on! I thought that one
-> of my proces was using the connection so i did a quick dump of ppp0. I
-> was surprise to see that some script kiddy was looking at my netbios
-> port!
->
-> Now I have been thinking of ways to prevent these silliness from
-> shutting down my conneciton within 3mn. If I firewall these incoming
-> packets I believe that it won't help me. The blocked packet will still
-> traverse the ppp link. So it will still be seen as "activity" to the
-> ppp daemon. Correct me if I am mistaken.
+> Re,
+> 
+> I've had a look at the linux/net/ipv4/netfilter/ipt_mac.c source and had a
+> thought...
+> 
+> It wouldn't be too difficult to add an extra parameter to the mac match
+> module to allow masked matching, i.e. add a --mac-mask parameter which would
+> allow the user to specify a bit mask so that only the un-masked bits of the
+> 6 byte mac address were compared, e.g...
+> 
+> iptables -A INPUT -m mac --mac-source 00:00:00:00:00:02 --mac-mask
+> 00:00:00:00:00:0F -j ACCEPT
+> 
+> ...meaning that only the least significant 4 bits of the mac source are
+> compared against the specified mac source parameter.
 
-I don't know - try it and see.
+but how frequently would such a mask be used?  after all, conventional
+wisdom suggests that, while you have the freedom to assign IP addresses
+any way you want, most people just have to work with the MAC addresses
+on the cards they're given.  and if a card burns out and you replace it,
+the new MAC address may not be programmable.
 
-Set a simple ruleset in netfilter, such as:
+so i'm just curious -- aside from the original poster, how many others
+would take advantage of this feature?
 
-iptables -P INPUT DROP
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD DROP
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+rday
 
-(assuming netfilter and you applications, are running on the machine with the 
-dialup connection).
-
-Then set up an inbound ping from some remote machine and see if your 
-connection times out...
-
-If not, maybe you can adjust your ppp daemon to only count outgoing packets 
-as contributing to a connection which should be kept alive ?   Then inbound 
-packets which get no response won't count...
-
-Antony.
-
--- 
-
-All matter in the Universe can be placed into one of two categories:
-
-1. things which need to be fixed
-2. things which will need to be fixed once you've had a few minutes to play 
-with them
 
