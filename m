@@ -1,14 +1,11 @@
-From: Thilo Schulz <arny@ats.s.bawue.de>
-Subject: Re: traffic graphing?
-Date: Sat, 21 Aug 2004 01:14:30 +0200
+From: Russell Handorf <rhandorf@closednetworks.com>
+Subject: Question regarding packet src/dst rewriting
+Date: Fri, 20 Aug 2004 12:32:31 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408210114.45320.arny@ats.s.bawue.de>
-References: <41267935.2040008@leaplab.com>
+Message-ID: <4126279F.7040109@closednetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <41267935.2040008@leaplab.com>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello all,
 
-On Saturday 21 August 2004 00:20, Dave Barnum wrote:
-> What would you guys suggest for a good traffic monitoring/graphing
-> sollution for a iptables (shorewall) firewall?
+I have a linux router over here with 4 ethernet nics running on 2.6.4 
+kernel. The respective IP's are as follows:
+eth0 : peering point to ISP
+eth1: public routable IP block (/23)
+eth2 : 172.16.0.1
+eth3 : 192.168.0.1
 
-You could try out my new solution, that's up at sourceforge now and now doi=
-ng=20
-it's job quite well, but needs MySQL as a database.
-Have a look at:
-http://sourceforge.net/projects/ltaccts/
+The weird behavior I am having is that whenever a packet from the 
+Internet comes in interface eth0, and gets forwarded to a server on 
+eth1, the server which resides on the eth1 side of the network sees the 
+source IP as coming from the router and not the real host on the 
+Internet. Vice versa applies as well (a node behind eth1 sends a packet 
+out to, say, google.com. Google.com sees the data as coming from the 
+router, and not the node which is behind eth1).
 
-It will not destroy your current firewall configuration, but create rules=20
-solely intended for logging, use ULOG for collecting traffic statistics. Yo=
-u=20
-can define your own categories and browse through the logs using a web=20
-interface.
+I dont understand why the packet headers are being re-written. I also 
+dont understand if this is a specific problem with iptables, or the 
+linux kernel itself.
 
-=2D --=20
-Thilo Schulz
+eth2 and eth3 are masquerading, but eth1 is not.
 
-My public PGP key is available at http://home.bawue.de/~arny/public_key.asc
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+Any help would be greatly appreciated.
 
-iD8DBQFBJoXfZx4hBtWQhl4RAjC/AJ9dlVQ31p4DIW+WSS4b+l53ATJsBQCgk4oS
-=46stTAyxAWRwCk7O8VS7U9Sc=3D
-=3DboMJ
-=2D----END PGP SIGNATURE-----
+Thanks again,
+
+Russ
+
 
