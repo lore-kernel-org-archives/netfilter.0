@@ -1,11 +1,11 @@
 From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Dropping network "noise"
-Date: Sun, 13 Feb 2005 13:03:45 +0100
-Message-ID: <1108296226.10876.16.camel@nostromo.bgsecm.com>
-References: <200502130928.41225.e-boogie@yandex.ru>
+Subject: Re: Is this possible?
+Date: Sun, 13 Feb 2005 13:18:38 +0100
+Message-ID: <1108297118.10876.20.camel@nostromo.bgsecm.com>
+References: <420CD815.1000806@thompsonmike.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <200502130928.41225.e-boogie@yandex.ru>
+In-Reply-To: <420CD815.1000806@thompsonmike.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,57 +19,28 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
-El dom, 13-02-2005 a las 09:28 +0300, Mikhail Zotov escribi=C3=B3:
-> Hello everybody,
+El vie, 11-02-2005 a las 16:06 +0000, Michael Thompson escribi=C3=B3:
+> I have a issue where I cannot connect to my server because the firewall=
+=20
+> only allows ports 80 and 443 out.
 >=20
-> I have a Linux machine (with a static routable IP address)
-> connected to a windoops LAN.  As is known, there is certain
-> "noise" in windoops networks, which can be silently dropped
-> by a rule like this:
+> I previously ran SSH on port 443 to overcome this, but I have had to=20
+> implement a HTTPS solution for users who wanted secure access, so that=20
+> is now gone.
 >=20
-> iptables -A INPUT -p udp --dport 135:139 -j DROP
+> This system has DNS records for ssh.server.co.uk and www.server.co.uk,=20
+> so can I use IPTables or similar to recognise if it is being connected=20
+> to via ssh.server.co.uk on port 443 and forward the traffic to port 22?=
+=20
+> If www.server.co.uk:443 is used apache gets the traffic? Or is this (As=
+=20
+> I suspect) Impossible?
 
-That's OK, but also DROP port 445 because there's also a great
-amount of traffic in that port.
-
-> I have found that this "noise" can also be effectively blocked
-> by the following rule:
->=20
-> iptables -A INPUT -d ! $IP.ADDRESS.OF.MY_BOX -j DROP
-
-Yes, it's a rule to prevent spoofing. It's OK *if* and *only if*
-the $IP.ADDRESS.OF.MY_BOX it's really the IP address of your
-box, and the *only* IP address of your box (you can have more
-than one for various reasons).
-
-> I haven't noticed anything going wrong yet, still I'd like to
-> know: Does this rule have a (potential) drawback?  Can it break
-> anything in case I have NFS or obtain IP address via DHCP or
-> in any other situation?
-
-NFS doesn't have any problem, but if you receive your IP via
-DHCP you must change the IP in the rule with the one received.
-And also if you use Zeroconf you must have a rule to accept
-the traffic for the Zeroconf IP.
-
-> A similar question goes for the case of a Linux router/gateway
-> protecting a LAN (with machines with routable IP addresses).
-> Can the following rules do any harm?
->=20
-> iptables -A FORWARD -i $EXTERIOR_INTERFACE -d $LAN.BROADCAST -j DROP
-
-If you are don't want to receive traffic your broadcast it's OK.
-
-> iptables -A FORWARD -i $EXTERIOR_INTERFACE -d ! $LAN.IP.ADDRESSES.RANGE=
- -j DROP
-
-And this it's another anti-spoofing rule. I'll tell you the same that
-for the previous rule. It's OK if the $LAN.IP.ADDRESSES.RANGE it's OK.
-
-> Thanks in advance!
->=20
-> --
-> Mikhail
+I think the DNS trick it's impossible.
+You should ask the administrator to open you the ssh port, if he
+let you use the 443 to run sshd then why he doesn't let you do the
+same in port 22/tcp or at least any other port he has open in his
+firewall.
 
 Regards.
 
