@@ -1,13 +1,11 @@
 From: "GoMi" <gomi@perezoso.net>
-Subject: RE: Netmeeting support
-Date: Thu, 15 Jan 2004 10:47:56 +0100
+Subject: RV: Netmeeting support
+Date: Thu, 15 Jan 2004 10:53:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAVhTao1u2JUiWOw5FpPz2mgEAAAAA@perezoso.net>
-References: <1074119521.3053.2.camel@jasiiitosh.nexusmgmt.com>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAQ9p4DPXbskyUcfRAQ4WF9MKAAAAQAAAAVhoBvB30c0Skiv078oN7AwEAAAAA@perezoso.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1074119521.3053.2.camel@jasiiitosh.nexusmgmt.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,8 +16,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: "'John A. Sullivan III'" <john.sullivan@nexusmgmt.com>
-Cc: 'Ramin Dousti' <ramin@cannon.eng.us.uu.net>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: john.sullivan@nexusmgmt.com
+
+
+
+-----Mensaje original-----
+De: GoMi [mailto:gomi@perezoso.net]=20
+Enviado el: jueves, 15 de enero de 2004 10:48
+Para: 'John A. Sullivan III'
+CC: 'Ramin Dousti'; 'netfilter@lists.netfilter.org'
+Asunto: RE: Netmeeting support
+
 
 What i mean is, i have the patch applied, and built-in the kernel (not
 as a module) When i try to make a call to initialise a web-cam
@@ -42,6 +50,7 @@ On Wed, 2004-01-14 at 17:09, GoMi wrote:
 > On Wed, Jan 14, 2004 at 09:43:06PM +0100, GoMi wrote:
 >=20
 > > Hi there, i have protocol h232 support patched by patch-o-matic, and
+
 > > my kernel recompiled with it, but when i try to have a webcam=20
 > > conversation via netmeeting, it tries to connect to local addresses=20
 > > unstead of public addresses. Any help?
