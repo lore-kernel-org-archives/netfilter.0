@@ -1,13 +1,13 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: Need help on NAT
-Date: Tue, 10 Feb 2004 05:55:56 -0500
+From: <enosp.netmeeting@onlinehome.de>
+Subject: Packet loss at routing to own machine
+Date: Mon,  9 Feb 2004 19:52:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1076410556.2020.11.camel@ca.gts.nexusmgmt.com>
-References: <002401c3ebb8$4d7ccc00$f301a8c0@Zamani>
+Message-ID: <6747028$10763525044027d5f82f55f0.43608586@config13.schlund.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----_=_NextPart_10763525044027d5f82f55f0.43608586";
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <002401c3ebb8$4d7ccc00$f301a8c0@Zamani>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +17,109 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Saeed Zamani <szamani@tavanesh.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 2004-02-05 at 02:18, Saeed Zamani wrote:
-> Hi all,
->    I am new to list and have a basic nat question on Redhat Linux 9. I
-> have to translate my local IP ( 192.168.1.0/24 ) to two different public
-> IP given by two different ISP ( IPE1 & IPE2 ) at a specified rate. For
-> example for every 4 received packet, one have to translate to IPE1 and
-> other three to IPE2. I need this for load balacing the internet traffic
-> between two isp. At the end, it is excellent if there is an option that
-> If one the ISP gateway is dead, all packets have to translate to other
-> public IP. Please help me. 
-> Thanks, 
-> Saeed Zamani, 
-> Technical Manager, 
-> Concept FZ LLC. 
 
-I see that no one has yet responded to your query so I'll try but please
-be aware that I am not an expert on iptables internals nor have I ever
-tried this before.
+This is a multi-part message in MIME format.
 
-You may have a problem of handling exactly four packets and then
-switching if you are using connection tracking (which one almost always
-wants to use when possible).  I do not know the internals but I would
-think that once it establishes a data flow, all packets in that flow
-will go out over the same interface.
+------_=_NextPart_10763525044027d5f82f55f0.43608586
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 
-I do not know if there is someway to use an application in conjunction
-with iptables that can grab the outbound packets and redistribute them
-across the interfaces.  Perhaps iproute2 can but I would be surprised as
-I would assume its job is finished before packets hit the postrouting
-netfilter hooks.
+Please see attached file!
 
-If you do not need to be exact, maybe you could do something with the
-limit matches where the first four packets are directed to one chain
-where one NATs them to one address and the next three jump to a chain
-that NATs them to the second address.  I rarely use the limit match so
-I'm not intimately aware of its capabilities.
+------_=_NextPart_10763525044027d5f82f55f0.43608586
+Content-Type: text/plain; name=udp-packet-loss.txt
+Content-Disposition: attachment; filename="udp-packet-loss.txt"
 
-I'm not sure how one would dynamically alter those rules in the event
-one ISP fails.  Perhaps some script can be created that checks for
-availability, if it finds a link down, changes the rules.
+Packet loss at routing to own machine!
 
-It may be easier to take a non-iptables approach if you do not need
-exact balancing.  If there are multiple subnets passing through the
-firewall, one could always send the traffic from some through one
-interface and traffic from the others to the other interface.
 
-Again, I've not tried any of this (other than the last approach) and
-have my doubts but good luck with it - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
----
-If you are interested in helping to develop a GPL enterprise class
-VPN/Firewall/Security device management console, please visit
-http://iscs.sourceforge.net 
+
+I have following test configuration to measure udp round trip time:
+
+(ADR is set to 192.168)
+
+                                             |--------| 
+
+|---------|eth1 (ADR.1.2)<---->(ADR.1.1) eth1|router 1|eth0 (ADR.3.1)<-   
+
+|Test PC  |           cross cable 1          |--------|                |
+
+|reflect. |                                                   cross    |
+
+|         |                                                   cable 3  |
+
+|send/rec.|                                  |--------|                |
+
+|---------|eth0 (ADR.2.2)<---->(ADR.2.1) eth1|router 2|eth1 (ADR.3.2)<-
+
+                      cross cable 2          |--------|
+
+
+
+The linux routers 1 and 2 have activated forwarding.
+
+On the Test PC is running an udp Sender program, which sends udp packets from 
+
+eth0 (192.168.2.2) over the routers 2 and 1 to eth1 (192.168.1.2) on the Test PC.
+
+An udp reflector program receiving the packets on eth1 sends it back over both
+
+routers to eth0 where the packets arrive.
+
+With etheral it can be seen, that the reflected packets arrive at eth0 of the
+
+Test PC, but the receive call of the send/receive program does not get the packets.
+
+
+
+When the Sender program and the reflector program run on separate machines,
+
+it works fine.
+
+
+
+To avoid an internal shortcut,
+
+(udp packets sent from eth0 to eth1 over the loop back interface)
+
+I shut down the loop back interface with 
+
+ifconfig lo down
+
+
+
+Following routing table entries were set:
+
+route add -host 192.168.1.1 dev eth1
+
+route add -host 192.168.2.2 gw 192.168.1.1 dev eth1
+
+route add -host 192.168.2.1 dev eth0
+
+route add -host 192.168.1.2 gw 192.168.2.1 dev eth0
+
+
+
+All other routing entries were deleted.
+
+
+
+Who throws away the received udp packets, when the send/receive program
+
+and the reflector program runs on the same machine ?
+
+
+
+Have I to set iptables rules, if so, which rules have I to use ? 
+
+
+
+Many thanks in advace for your help ...    
+
+
+
+------_=_NextPart_10763525044027d5f82f55f0.43608586--
 
 
