@@ -1,12 +1,14 @@
-From: Mickael DILY <woksy@ether.net1.nerim.net>
-Subject: PREROUTING
-Date: Fri, 19 Sep 2003 17:48:03 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: HELP!!! (ip_conntrack: table full)
+Date: Fri, 19 Sep 2003 18:06:29 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309191748.19695.woksy@ether.net1.nerim.net>
-Reply-To: woksy@ether.net1.nerim.net
+Message-ID: <1063987589.5022.56.camel@elendil.intranet.cartel-securite.net>
+References: <20030919144311.55129.qmail@web13310.mail.yahoo.com>
+	 <1063984503.782.564.camel@shaolin.gridlocksecurity.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1063984503.782.564.camel@shaolin.gridlocksecurity.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +19,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: Nox <pheusion@snet.net>
+Cc: Alpha Technologies <alphaside@yahoo.com>, netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Le ven 19/09/2003 =E0 17:15, Nox a =E9crit :
+> You can flush conntrack entries for masqueraded connections
+> by doing either a down/up or ip addr add/del on the associated
+> interface.  This probably won't help you in this case though
+> because the problem conntrack is not masqueraded.  I don't
+> know of any other ways of flushing conntracks.
 
-Hi people :-)
-I would like to add the following line to my firewall
-iptables -A PREROUTING -t mangle -p tcp --sport ssh -j TOS --set-tos\=20
-Minimize-Delay
-iptables -A PREROUTING -t mangle -p tcp --sport ftp -j TOS --set-tos\=20
-Minimize-Delay
-iptables -A PREROUTING -t mangle -p tcp --sport ftp -j TOS --set-tos\=20
-Maximize-Throughput
+Afaik, if you use SNAT, then IP address removal won't change anything,
+as you can SNAT on IP that does not belong to the box.
+For MASQUERADE, you may have to bring the interface down to flush
+associated conntrack entries.
 
-When i do this, nothing tells me if it is good or bad. I presume it is go=
-od.=20
-But, when i list my iptables, i see nothing in the rule PREROUTING.
-I think it is not normal. Where do i bug  ?
-Thanks
-- --=20
-- - M. DILY, administrateur r=E9seau, geek :-)
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE/ayU9zEzekoYhlpsRAtMqAKCsd2oXEK1CQYRR2bbvu2QCUNqy3QCdGbJ5
-zmKvWz9TGTGva7hQgZjdqhY=3D
-=3DFfgc
------END PGP SIGNATURE-----
-
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
