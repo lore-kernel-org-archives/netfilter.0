@@ -1,13 +1,12 @@
-From: Shane Hickey <shane@howsyournetwork.com>
-Subject: Re: Port forwarding with multiple public IPs
-Date: Thu, 25 Mar 2004 12:40:45 -0700
+From: Fabiano Bonin <fabiano@personalsoft.com.br>
+Subject: Re: Redirect ports on localhost
+Date: Thu, 25 Mar 2004 16:47:50 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040325124045.241a5e90@localhost>
-References: <7C9884991ADAE0479C14F10C858BCDF5122F2D@alderaan.smgtec.com>
+Message-ID: <40633766.3050005@personalsoft.com.br>
+References: <20040325193403.19216.70237.Mailman@vishnu.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122F2D@alderaan.smgtec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,23 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Daniel Chemko <dchemko@smgtec.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-"Daniel Chemko" <dchemko@smgtec.com> [2004-03-25 11:08]:
-> Remove all of your reverse-SNAT rules. They are automagically handled
-> implicitly.
+>
+>
+>Date: Thu, 25 Mar 2004 00:34:11 -0700
+>From: Ben Yerushalmi <beny@pd.verio.net>
+>Subject: Re: Redirect ports on localhost
+>To: netfilter@lists.netfilter.org
+>
+>Looks like changing the OUTPUT chain did actually work in redirecting 
+>localhost traffic. On the Linux 2.4 kernel you will need to enable the 
+>"NF_NAT_LOCAL" kernel option.
+>
+>Thanks everyone for their help.
+>
+>Ben
+>  
+>
+Could you provide a complete example of how to do all this?
+I think it will solve some of my problems.
 
-Woah.  I removed those lines and gave 'er a go and it just worked.  I
-must have fat-fingered something last night.  
+Thanks
 
-Thanks!
-
--- 
-Shane Hickey <shane@howsyournetwork.com>: Network/System Consultant
-GPG KeyID: 777CBF3F
-Key fingerprint: 254F B2AC 9939 C715 278C  DA95 4109 9F69 777C BF3F
-Listening to:
-My_Bloody_Valentine_-_Esctacy_And_Wine_-_04_-_She_Loves_You_No_Less
 
