@@ -1,14 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Too many ARP entries and Re: sendto: No buffer space available
-Date: 03 Dec 2002 14:08:54 +0100
+From: "hare ram" <hareram@sol.net.in>
+Subject: Re: Multible Links with Transparent Cache
+Date: Tue, 3 Dec 2002 18:36:09 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1038920934.8888.4.camel@elendil.intranet.cartel-securite.net>
-References: <571705138.20021202111645@pobox.com>
-	 <14127620470.20021202182836@pobox.com>
+Message-ID: <001d01c29acc$bfebc220$13fcc5cb@nextto>
+References: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net> <5.1.0.14.2.20021203140152.030ccd48@of23sm3>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <14127620470.20021202182836@pobox.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,38 +17,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Andre Docena Correa <andre.docena@pobox.com>
-Cc: netfilter@lists.netfilter.org, andre.correa@pobox.com
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, Rasmus Reinholdt Nielsen <rasmus@narani.dk>
 
-Le lun 02/12/2002 =E0 21:28, andre.correa@pobox.com a =E9crit :
-> But  there  is  still a question for me. Looking at my arp table, I
-> see that there are =3D~ 150 entries, seconds passing and more entries
-> coming, 20 seconds after I can have =3D~1100, it goes on until it reach=
-s
-> =3D~2200  entries,  then it goes back to the =3D~100 and starts over ag=
-ain.
+Hi
 
-Wierd...
+thanks for the reply
+what is your setup are you using Redhat
+did you able to prioritize the traffic, either HTB or CBQ
 
-> I  have  less  then  50  NAT users. Is it normal to have some many ARP
-> entries with this variation? Looking the ARP table I see my "Internet"
-> interface with lots of entries, with internet host IP addresses and my
-> gateway's NIC MAC address.
-> Isn't ARP supposed to keep entries just to local network systems?
+hare
+----- Original Message ----- 
+From: "Rasmus Reinholdt Nielsen" <rasmus@narani.dk>
+To: "hare ram" <hareram@sol.net.in>; <netfilter@lists.netfilter.org>
+Sent: Tuesday, December 03, 2002 6:32 PM
+Subject: Re: Multible Links with Transparent Cache
 
-Yes it is.
-ARP is supposed to keep track of IP/MAC associations for network
-directly routed to interface, i.e. directly connected, aka local LANs.
 
-> Is it all normal? And if so, how big can gc_threash[1,2,3] be?
+> Take a look at
+> http://www.linuxvirtualserver.org/~julian/nano.txt
+> 
+> its working for me.
+> 
+> /Rasmus
+> 
+> At 16:11 03-12-2002 +0530, hare ram wrote:
+> >Hi all
+> >
+> >i am running with RedHat 7.3 with iptables + transparent Cache
+> >its working well
+> >
+> >no i have added another Link to My network with another Provider
+> >now i want to Load Balance with Two Links
+> >
+> >At now iam running both with 2 Different Server,
+> >
+> >iam planning to do below
+> >
+> >  eth0 with Public IP x.x.x.x gateway x.x.x.1
+> >  eht0:0 with Private IP (ADSL)  which is provided another Provider
+> >192.168.3.2 gateway is 192.168.3.1
+> >
+> >i have LAN with 2 networks at this moment with 2 servers
+> >
+> >one Server Serving 192.168.2.0 network Going to First Link
+> >another Server Serving 192.168.20.0 network Going to Second Link
+> >
+> >i want  to load balance with this two network with One Server with
+> >Transparent cache,
+> >the cache and routing should automatically load Balance the Links
+> >
+> >one link is 128kbps another is 256kbps Link
+> >
+> >any one recomend how to do this
+> >
+> >thanks
+> >hare
+> 
+> 
+> 
 
-It is not normal. You should monitor ARP traffic on your network using
-arpwatch (see Freshmeat, available as .deb, .rpm too) to see if someone
-would be playing ARP cache poisoning (see http://www.arp-sk.org/).
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-IT systems and networks security expert  - Cartel S=E9curit=E9
-Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
