@@ -1,40 +1,58 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: Weird TCP flags?
-Date: Fri, 12 Dec 2003 00:20:40 -0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312120020.40434.JALaramie@Loudoun-Fairfax.com>
-References: <003101c3c065$f61ad790$13fea8c0@melita.com> <200312112346.41936.JALaramie@Loudoun-Fairfax.com> <005401c3c06b$c4f107b0$13fea8c0@melita.com>
+From: Kishore Dharmavaram <kishored@servgate.com>
+Subject: iptable_nat module slows/hoses my Redhat 9.0 box
+Date: Thu, 11 Dec 2003 21:47:25 -0800
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <EFBADA8C200C2B418DA39734FD15475B0B20EF@skat.sky.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005401c3c06b$c4f107b0$13fea8c0@melita.com>
-Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ian Hunter <ihunter@hunterweb.net>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, "'netfilter-devel@lists.netfilter.org'" <netfilter-devel@lists.netfilter.org>
 
-On Thursday 11 December 2003 23:52, Ian Hunter wrote:
-> There are no users on that box though, and it's not web browser traffic
-> because the SOURCE port is 80, not the dest port, so this is web traffic
-> being served by that box for sure...
->
-> I've seen references to doing --reply-with tcp-reject to this sort of
-> packet... ???
+Hi All,
 
-Hmmm,  I wouldn't expect a SYN/ACK reply to be on a high port. I'm more of a 
-rules and logging kind of guy so I'm afraid you'll need to wait until the 
-tcp/ip (i.e. smart) people wake up.
+I find that after inserting "iptable_nat" module on my RH9.0(2.4.20-19.9)
+box, session-setup(ip_conntrack)  performance gets very bad. 
 
-Jeff
+Details of my test and results are as follows:
+-I used 2.4.20-19.9 kernel on my RH9.0 box and I inserted "ip_tables",
+"iptable_filter" and "ip_conntrack" modules.
+-There are only INPUT, FORWARD, OUTPUT chains all with policy as ACCEPT
+with no other rules/chains and "no" NAT rules.
+-I used IXIA to send UDP packets continuously at 7Mbps rate to
+20,000(incrementing) destination IP addresses through the RH9.0 box.
+-I  find by doing "fgrep ip_conntrack /proc/slabinfo"  that 20,000 sessions
+were created within 1 second and RH9.0 box was behaving normally, 60%CPU
+idle.
+-I stopped the test, did "insmod iptable_nat" on my RH9.0 and after all
+existing ip_conntrack sessions have expired I reran the test again.
+-My RH9.0 box got very busy, I even couldn't type any command on Linux
+shell, and only some UDP traffic was going through the box at 200Kbps rate.
+-After I stopped the test RH9.0 box returned to normal state and I found by
+doing "fgrep ip_conntrack /proc/slabinfo" that only about 8,000 sessions
+were created.
+
+I am wondering why "iptable_nat" is slowing doing the box so much when I
+don't have any NAT rules defined.
+
+Do you guys know of any netfilter patches made to address/fix this issue?.
+Any help willbe appreciated.
+
+Thanks,
+Kishore
 
 
+
+
+ 
 
 
