@@ -1,14 +1,12 @@
-From: Mark Seamans <marks@crvinc.com>
-Subject: Re: Core Linux Router - NO NAT
-Date: Fri, 21 Mar 2003 05:16:43 -0600
+From: "Leonardo Rodrigues Magalhaes" <leolistas@solucoesip.net>
+Subject: Re: question on ip_conntrack log entries and behavior
+Date: Fri, 21 Mar 2003 08:32:36 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303210516.43482.marks@crvinc.com>
-References: <200303201723.50161.marks@crvinc.com> <200303210140.48570.netfilter@newkirk.us>
+Message-ID: <002201c2ef9d$932eb190$3201a8c0@ESTACAO>
+References: <Pine.LNX.4.33.0303201500280.17210-100000@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200303210140.48570.netfilter@newkirk.us>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,68 +16,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@newkirk.us, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter ML <netfilter@lists.samba.org>
 
 
-So, this will allow all routing between all interfaces to all networks but 
-only allowing host 1.2.3.4 have access to ssh?
-See!  I was going to make it too hard.  I do appreciate the tip.  I will be 
-doing this on a production box for an ISP 1600 miles away with little room 
-for error.
+    OK ......... i downloaded latest patch-o-matic snapshot, get a new
+kernel 2.4.20 source tree and tried to aplly the needed patchs. But, I got a
+problem here ....
 
------Original Message-----
-On Thursday 20 March 2003 06:23 pm, Mark Seamans wrote:
-> I have a Linux router that consists of 4 T1ports and 1 ethernet.
-> This "Router" will act as an ISP core router doing Routing Only!
-> I wish to protect the box itself, while it preforms it's duties as a
-> Router allowing only ssh from the ip's that I wish for management.
-> This way I can also setup rules to protect it form DOS attacks etc...
-> Now I have been thinking of this, but I can go two ways:
-> 1.  Making it harder than it really is  -OR-
-> 2.  Allowing it to be so easy it is not secure.
+    Seems I need submitted/10_confirm_fix.patch to fix the CLOSE stuff .....
+but I also need tcp-window-tracking.patch for allowing deal with conntrack
+timeouts in kernel runtime. But both patchs seems to change the SAME line in
+two files. So, I cannot apply the two. I can only apply one of them ( any
+one ) and it will apply correctly. The other will always fail.
+
+    Problem seems to be:
+
+hunk from submitted/10_confirm_fix.patch
+
+--- linux-2.4.20-base/net/ipv4/netfilter/ip_conntrack_proto_tcp.c       Tue
+Feb 18 17:07:26 2003
++++ linux-2.4.20-del/net/ipv4/netfilter/ip_conntrack_proto_tcp.c        Fri
+Feb 21 17:03:35 2003
+@@ -192,7 +192,7 @@
+           have an established connection: this is a fairly common
+           problem case, so we can delete the conntrack
+           immediately.  --RR */
+-       if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
++       if (!test_bit(IPS_SEEN_REPLY_BIT, &conntrack->status) && tcph->rst)
+{
+                WRITE_UNLOCK(&tcp_lock);
+                if (del_timer(&conntrack->timeout))
+                        conntrack->timeout.function((unsigned
+long)conntrack);
+
+    in extra/tcp-window-tracking.patch file, I have, among several other
+changes:
+
+-       if (!(conntrack->status & IPS_SEEN_REPLY) && tcph->rst) {
++       if (!(conntrack->status & IPS_SEEN_REPLY)) {
+
+    Question ...... and now, what should I do ?? :) It would be very
+interesting to me having both patchs applied. Do the mainteners of these
+patchs are subscribed to this list ? If yes, can you help me ?
+
+
+    Sincerily,
+    Leonardo Rodrigues
+
+----- Original Message -----
+From: "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu>
+To: "Leonardo Rodrigues Magalhaes" <leolistas@solucoesip.net>
+Cc: "netfilter ML" <netfilter@lists.samba.org>
+Sent: Thursday, March 20, 2003 11:04 AM
+Subject: Re: question on ip_conntrack log entries and behavior
+
+
+On Thu, 20 Mar 2003, [iso-8859-1] Leonardo Rodrigues Magalh=E3es wrote:
+
+>     I got a firewall running kernel 2.4.20 with some p-o-m patches,
+> including tcp-window-tracking which allows me change timeout stuff in
+> runtime.
 >
-> So any suggestions would be great.
->
-> Thanks!
->
-> Mark
-> marks@crvinc.com
+>     Well ...... my /proc/net/ip_conntrack log is PLENTY of CLOSE
+> connections, just like:
 
-For the basic task of restricting access to the routing box itself, and
-allowing only SSH connections from designated IPs:
+This is a bug in 2.4.20. You need the submitted/10_confirm_fix.patch.help
+patch from the most recent patch-o-matic.
 
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -N SSHLOG
-iptables -A SSHLOG -j LOG --log-level debug --log-prefix "Router SSH
-Access:"
-iptables -A SSHLOG -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
-iptables -A INPUT -p tcp --dport 22 -s a.b.c.d -j SSHLOG
-{repeat last rule as needed for different authorized IPs}
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
-Another approach might be to have only one or two IPs from which you
-allow SSH connections.  Then if you need to connect from a remote
-client, SSH to the authorized client, (an admin box at the office?) then
-SSH from that client to the router.  (I use this approach to SSH to my
-home desktop - which cannot be directly reached from the internet - by
-first initiating an SSH session to my gateway from one of the IPs from
-which IT will accept an SSH connection)
-
-If your usage will permit, you can match more closely in the INPUT rules
-by also restricting to input on a particular interface.  This is made
-more likely if you use the double-SSH approach above, the main reason I
-mentioned it.
-
-You can change /etc/syslog.conf to add a new target like:
-kern.=debug	/var/log/firewall
-or even set it up for remote logging with
-kern.=debug	@remotelogginghostname
-(this would make it much harder for someone who has compromised the box
-to cover their tracks, and would require an additional OUTPUT rule
-ACCEPTing UDP dport 514 to the designated logging host)
-
-j
 
 
