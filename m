@@ -1,12 +1,12 @@
-From: "Damien Mason" <dmason@bluefire.com.au>
-Subject: VLANs and DNAT
-Date: Thu, 24 Jul 2003 16:53:57 +1000
+From: Bill Chappell <bill.chappell@critical.com>
+Subject: MARK - set with mask or read, add, set???
+Date: Thu, 24 Jul 2003 18:48:45 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1D52A5A949FF0F41A737A228837E0F5576638D@homer.bfsyd.local>
+Message-ID: <3F20624D.186126FF@critical.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+ boundary="------------BB411AE675A6E3779633BD13"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +16,100 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Everyone,
 
-	I have two interfaces, eth1 and eth2
+--------------BB411AE675A6E3779633BD13
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-	I have multiple vlans on a eth1, that is, eth1.1 and eth1.2,
-eth1.3
+Condensed version - I need to share the nfmark with
+another developer on the same packet, where I use the
+high-order 8 bits and she can have the low-order 24 bits.
+Problem is that -j MARK --set-mark writes one unsigned
+integer so I would wipe out her nfmark and vice versa.
 
-	Eth2 is the external interface to the internet.
+I have successfully used a mask in a mark match:
+iptables -t nat -A mychain -m mark --mark $mymark/0xFF000000
+and had the packets flow as desired.
 
-	Vlan1 uses the following network address:	192.168.50.0/24
-	Vlan2 uses the following network address:	192.168.50.0/24
-also
+It was not documented that a mask would work with
+-j MARK --set-mark <number>/<mask>, but I tried
+anyway.
+I used <number> = 0xFF000000 (which does work by itself)
+with <mask> = 0xFF000000 and <number> = 0xFFFFFFFF
+with <mask> = 0xFF000000 and got the error message:
+"Bad MARK value `<number>/<mask>'
 
-	Vlan3 uses the following network address: 192.168.10.0/24
+I could read the existing nfmark, add the second one, and set
+the summed nfmark, but I do not see any way to read an nfmark
+in iptables.
 
-I have NAT working for the vlans, that is, clients are able to access
-the external internet using nat.
+I do see a solution using the mark match to identify the current
+nfmark/mask (one rule for each possible nfmark) with the new nfmark
+equal to the sum of the matching nfmark/mask and the nfmark
+of the second use, but that gets clunky very quickly as the number
+of possible nfmarks increases and it forces each use to know
+which nfmarks the other is using (== reduced modularity).
 
-	However, there are servers on Vlan2 which I would like to
-forward traffic to from the external interface, I would imagine that I
-could do something like:
+Any help would be greatly appreciated and attributed in the project.
 
-iptables -A PREROUTING -t nat -p tcp -d 203.221.181.27 --dport 80 -j
-DNAT --to 192.168.50.10:80
+Thank you.
 
-But I cannot specify an interface -i eth1.2 in the prerouting, because
-it occurs pre-routing?
-
-	How can I forward traffic to a host on a vlan when the vlans
-don't use unique addressing schemes?.. I was thinking I may have to -j
-REDIRECT the traffic to another chain, and forward it from there?
-
-	Any Ideas or solutions would be most appreciated :)
-
-Regards,
-	Damien Mason
-
+Bill Chappell
 
 
 
+
+--
+William Chappell,     Software Engineer,     Critical Technologies, Inc.
+Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica, NY 13501
+315-793-0248  x148  < bill.chappell@critical.com >  www.critical.com
+
+
+
+--------------BB411AE675A6E3779633BD13
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+Condensed version - I need to share the nfmark with
+<br>another developer on the same packet, where I use the
+<br>high-order 8 bits and she can have the low-order 24 bits.
+<br>Problem is that -j MARK --set-mark writes one unsigned
+<br>integer so I would wipe out her nfmark and vice versa.
+<p>I have successfully used a mask in a mark match:
+<br>iptables -t nat -A mychain -m mark --mark $mymark/0xFF000000
+<br>and had the packets flow as desired.
+<p>It was not documented that a mask would work with
+<br>-j MARK --set-mark &lt;number>/&lt;mask>, but I tried
+<br>anyway.
+<br>I used &lt;number> = 0xFF000000 (which does work by itself)
+<br>with &lt;mask> = 0xFF000000 and &lt;number> = 0xFFFFFFFF
+<br>with &lt;mask> = 0xFF000000 and got the error message:
+<br>"Bad MARK value `&lt;number>/&lt;mask>'
+<p>I could read the existing nfmark, add the second one, and set
+<br>the summed nfmark, but I do not see any way to read an nfmark
+<br>in iptables.
+<p>I do see a solution using the mark match to identify the current
+<br>nfmark/mask (one rule for each possible nfmark) with the new nfmark
+<br>equal to the sum of the matching nfmark/mask and the nfmark
+<br>of the second use, but that gets clunky very quickly as the number
+<br>of possible nfmarks increases and it forces each use to know
+<br>which nfmarks the other is using (== reduced modularity).
+<p>Any help would be greatly appreciated and attributed in the project.
+<p>Thank you.
+<p>Bill Chappell
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<pre>--&nbsp;
+William Chappell,&nbsp;&nbsp;&nbsp;&nbsp; Software Engineer,&nbsp;&nbsp;&nbsp;&nbsp; Critical Technologies, Inc.
+Suite 400 Technology Center, 4th Floor 1001 Broad Street, Utica, NY 13501
+315-793-0248&nbsp; x148&nbsp; &lt; bill.chappell@critical.com >&nbsp; www.critical.com</pre>
+&nbsp;</html>
+
+--------------BB411AE675A6E3779633BD13--
 
 
