@@ -1,14 +1,13 @@
-From: Nick Drage <nickd@funkyjesus.org>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Iptables Problem on DNS Server
-Date: Fri, 21 Jun 2002 18:23:08 +0100
+Date: Fri, 21 Jun 2002 18:27:01 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020621182308.B2957@funkyjesus.org>
-References: <003f01c219c5$4c54e900$6500a8c0@systemsadmin> <20020621172016.GY26150@cannon.eng.us.uu.net>
-Reply-To: Nick Drage <nickd@funkyjesus.org>
+Message-ID: <20020621172705.MXYB2755.mta05-svc.ntlworld.com@there>
+References: <003f01c219c5$4c54e900$6500a8c0@systemsadmin>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <20020621172016.GY26150@cannon.eng.us.uu.net>; from ramin@cannon.eng.us.uu.net on Fri, Jun 21, 2002 at 01:20:16PM -0400
+In-Reply-To: <003f01c219c5$4c54e900$6500a8c0@systemsadmin>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,21 +18,37 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Fri, Jun 21, 2002 at 01:20:16PM -0400, Ramin Alidousti wrote:
-> >> What rules do you have ?
-> > 
-> > how would i know if what kind of rules do i have?
-> 
-> You could, eg, cat your firewall script, ie, if you knew
-> where it was.
+On Saturday 22 June 2002 9:17 am, Joe de Vera Jr. wrote:
 
-Run "iptables -L -n" and, as long as it isn't too long, send the results to
-this mailing list, along with any relevant IP addresses.
+> From: Antony Stone <Antony@Soft-Solutions.co.uk>
+>
+> On Saturday 22 June 2002 6:29 am, Joe de Vera Jr. wrote:
+> >
+> > the scenario is this.. my DNS can't resolve when i activate the firewall
+> > on this machine..
+>
+> What rules do you have ?
+>
+> Antony.
 
--- 
-FunkyJesus System Administration Team
+> how would i know if what kind of rules do i have?
 
+1. What rules are being set in the firewall script you are running ?
+
+2. What is the output of:
+
+iptables -L -n -v
+iptables -L -n -v -t nat
+iptables -L -n -v -t mangle
+
+> it just so happen that when i activate my firewall the DNS doesn't work..
+> but when i deavtivate my firewall it turn back to normal operation...
+
+That's why we need to know what rules you have in your firewall :-)
+
+ 
+
+Antony.
 
