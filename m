@@ -1,11 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: ntpdate works; ntpd doesn't
-Date: Fri, 02 Apr 2004 22:02:11 +0200
+Date: Fri, 2 Apr 2004 21:04:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080936131.1655.38.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <200404022104.39456.Antony@Soft-Solutions.co.uk>
 References: <200404021950.i32JoiCO012686@osprey.tkevans.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <200404021950.i32JoiCO012686@osprey.tkevans.com>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,20 +18,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Tim Evans <tkevans@tkevans.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le ven 02/04/2004 =E0 21:50, Tim Evans a =E9crit :
+On Friday 02 April 2004 8:50 pm, Tim Evans wrote:
+
 > I can manually set the time on my system with ntpdate:
-[...]
+>
+> # ntpdate time.nist.gov
+>  2 Apr 14:38:16 ntpdate[16583]: step time server 192.43.244.18 offset
+> -48.173770 sec
+>
 > However, once I start ntpd, it never adjusts the time.
 
-It may be a ntpd configuration problem. You should check your logs.
-  =20
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+I believe ntpd uses the "time" protocol on port 37, whereas netdate and 
+ntpdate uses "ntp" on port 123.
+
+Regards,
+
+Antony
+
+-- 
+Normal people think "If it ain't broke, don't fix it".
+Engineers think "If it ain't broke, it doesn't have enough features yet".
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
