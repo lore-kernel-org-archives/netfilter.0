@@ -1,12 +1,12 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: RE: My ack is more important than anything else!
-Date: Wed, 5 Nov 2003 13:57:26 -0800 (PST)
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: My ack is more important than anything else!
+Date: Wed, 5 Nov 2003 23:10:05 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031105215726.48967.qmail@web40209.mail.yahoo.com>
-References: <7C9884991ADAE0479C14F10C858BCDF52E37BD@alderaan.smgtec.com>
+Message-ID: <Pine.LNX.4.58.0311052309060.18724@mercury.sdinet.de>
+References: <20031105205036.42186.qmail@web40204.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF52E37BD@alderaan.smgtec.com>
+In-Reply-To: <20031105205036.42186.qmail@web40204.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +16,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Daniel Chemko <dchemko@smgtec.com>, Elver Loho <kernelpenguin@hot.ee>, netfilter@lists.netfilter.org
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: Elver Loho <kernelpenguin@hot.ee>, netfilter@lists.netfilter.org
 
-If ya going to post a URL at least post the right one :P
+On Wed, 5 Nov 2003, SBlaze wrote:
 
-http://lartc.org
+> This too interests me... I have seen this done on OpenBSD but the same tools
+> they use are not for Linux.. anyone out there know this?
 
---- Daniel Chemko <dchemko@smgtec.com> wrote:
-> http://lartc.net
-> 
-> -----Original Message-----
-> From: Elver Loho [mailto:kernelpenguin@hot.ee] 
-> Sent: Wednesday, November 05, 2003 11:15 AM
-> To: netfilter@lists.netfilter.org
-> Subject: My ack is more important than anything else!
-> 
-> Prioritization of outgoing acknowledgement packets. How?
-> 
-> 
-> Elver Loho
-> 
-> 
-> 
+have a look into the docs on www.lartc.org
 
+> --- Elver Loho <kernelpenguin@hot.ee> wrote:
+> > Prioritization of outgoing acknowledgement packets. How?
 
-=====
-In the absence of order there will be chaos.
+c'ya
+sven
 
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
+-- 
+
+The Internet treats censorship as a routing problem, and routes around it.
+(John Gilmore on http://www.cygnus.com/~gnu/)
 
