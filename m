@@ -1,15 +1,14 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Re: vpn under linux
-Date: Sun, 11 Apr 2004 09:41:27 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: network setup help
+Date: Sun, 11 Apr 2004 00:59:05 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040410234127.GD14988@samad.com.au>
-References: <4077B7EF.5070805@tin.it> <200404101018.38664.Antony@Soft-Solutions.co.uk> <4077C15E.9080701@tin.it> <200404101100.25648.Antony@Soft-Solutions.co.uk>
+Message-ID: <200404110059.05382.Antony@Soft-Solutions.co.uk>
+References: <008301c41f2d$4be932e0$68892090@grouse> <200404102350.24148.Antony@Soft-Solutions.co.uk> <00d001c41f54$2b238ac0$68892090@grouse>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TybLhxa8M7aNoW+V"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200404101100.25648.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <00d001c41f54$2b238ac0$68892090@grouse>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,91 +18,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Sunday 11 April 2004 12:33 am, Jee J.Z. wrote:
 
---TybLhxa8M7aNoW+V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Hi Antony,
 
-On Sat, Apr 10, 2004 at 11:00:25AM +0100, Antony Stone wrote:
-> On Saturday 10 April 2004 10:41 am, Gianni Pucciani wrote:
->=20
-> > Hi,
-> > I forget one things, waht about the CIPE solution. I read that in the
-> > rh9 sec guide about VPN.
->=20
-> Yes, I should have mentioned that.   It uses a different method for encry=
-pting=20
-> the data than IPsec does (Blowfish instead of 3DES) and is therefore supp=
-osed=20
-> to be faster.   However in my experience you need to have a *big* pipe to=
- the=20
-> outside world in order to be encrypting so much data down your VPN that a=
-=20
-> basic CPU can't handle it.
->=20
-> I've never used CIPE so can't comment on it in practice.
->=20
-> I tend to use the standard which is supported by most other vendors for=
-=20
-> cross-compatibility, therefore I like IPsec.
->=20
-> > And then, I see this  news:  the FreeS/WAN project is no longer in
-> > active development, it could be a problem?
->=20
-> I don't regard it as a problem - I think people will continue to use the=
-=20
-> latest version for setting up IPsec with Linux 2.4 kernels, and they'll=
-=20
-> migrate to using the built-in IPsec for 2.6 kernels.
->=20
-> The main reason that FreeS/WAN is no longer being developed is because=20
-> although it works well as a VPN, the team don't think they can achieve on=
-e of=20
-> their goals, which was Opportunistic Encryption (using DNS to hold public=
-=20
-> keys so that routers could create VPN tunnels on their own when they want=
-ed=20
-> to talk to each other, instead of being manually configured to set up=20
-> specific tunnels).
->=20
-> In my opinion that doesn't stop it still being very useful as a way to=20
-> configure standard IPsec links.
+Thanks for getting the spelling right - lots of people round here don't :)
 
-Development has moved to openswan=20
+> > Look at the routing table of each machine the packets are going through,
+> > and then the replies trying to get back again, and see if (a) there is a
+> > path, and (b) it makes sense.
+>
+> Both PC2 and PC3's routing look like:
+> Destination                Gateway                   Genmask
+> Flags      Metric      Ref      Iface
+> 192.168.0.0               0.0.0.0                     255.255.255.0
+> U            0           0        eth1
+> 144.32.xxx.0              0.0.0.0                     255.255.254.0
+> U            0           0        eth0
+> 127.0.0.0                  0.0.0.0                     255.0.0.0
+> U            0           0         lo
+> 0.0.0.0                     144.32.xxx.yyy           0.0.0.0
+> UG           0           0        eth0
 
->=20
-> Regards,
->=20
-> Antony.
->=20
-> --=20
-> The difference between theory and practice is that in theory there is no=
-=20
-> difference, whereas in practice there is.
->=20
->                                                      Please reply to the =
-list;
->                                                            please don't C=
-C me.
->=20
->=20
->=20
+Okay, I'm assuming that 144.32.xxx.yyy is not the address of PC1 - it's 
+something else which is connected to your switch - however that's not too 
+important here.
 
---TybLhxa8M7aNoW+V
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Here's what I think is going on:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+PC1 has a simple routing table saying "network 144.32.xxx.0/23 is on eth0, and 
+the deafult gateway is 144.32.xxx.yyy".   That means if you ping 192.168.0.2 
+from PC1 it will send the packets to the default gateway :(
 
-iD8DBQFAeIYnkZz88chpJ2MRAp14AKCHljW9GIVAIOkJVRciDI2PMzfTRwCffiz8
-Oa+m1qYDLXpvbIdXyud2jXw=
-=/01t
------END PGP SIGNATURE-----
+Set a network route on PC1 to tell it how to find the 192.168.0.0/24 network, 
+via PC2 as a router:
 
---TybLhxa8M7aNoW+V--
+route add -net 192.168.0.0 netmask 255.255.255.0 gw 144.32.xxx.b
+
+where 144.32.xxx.b is the IP address on PC2/eth0
+
+Once you have done that I think the pings will work, however they will not 
+work the way you would like them to :)
+
+An echo request packet will come from 144.32.xxx.a (PC1/eth0) to 192.168.0.2 
+and get routed (by your new routing table entry on PC1) via 144.32.xxx.b, 
+where PC2 will decide "192.168.0.2? Oh, that's on my eth1", and will send it 
+to PC2.
+
+However, if PC2/eth0 is still operational and plugged in, it will think "I 
+have to send an echo response packet to 144.32.xxx.a, and that's on this 
+subnet connected to my eth0", so it will send the reply packet out through 
+eth0.
+
+This will actually work for pings, but it's not the way you want TCP packets 
+to flow (remember that pings are ICMP packets), and it certainly won't work 
+once you start doing nat on PC2 (which I assume, for some reason, that you do 
+want to do?).
+
+However, I still remain puzzled about why you have this crazy setup in the 
+first place, and what you're trying to achieve by sending pings from PC1 to 
+PC3 via PC2, so add the routing table entry to PC1, check whether a ping 
+works (with all the cables plugged in, so all the paths shown on your 
+original diagram are available), and then try to explain to us why you are 
+doing things this way and what you want to achieve.
+
+Regards,
+
+Antony.
+
+-- 
+If at first you don't succeed, destroy all the evidence that you tried.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
