@@ -1,13 +1,13 @@
-From: "David Busby" <busby@pnts.com>
-Subject: Re: filter p2p
-Date: Mon, 16 Jun 2003 14:11:51 -0700
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: External Resolved IPs
+Date: 16 Jun 2003 18:33:33 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <056701c3344b$efeeebf0$1100000a@busbydev>
-References: <E19Ricd-0004kA-00@kashyyyk.netfilter.org>
-Reply-To: "David Busby" <busby@pnts.com>
+Message-ID: <1055802812.19430.188.camel@alpha.newkirk.us>
+References: <003001c3344a$5d220240$093010ac@power>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <003001c3344a$5d220240$093010ac@power>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +18,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: gbj <gbj@glc.cn.net>, netfilter@lists.netfilter.org
+To: "Herbert G. Fischer" <manager@trama.com>
+Cc: NetFilter Users <netfilter@lists.netfilter.org>
 
-I'd set my iptables to something like:
+On Mon, 2003-06-16 at 17:00, Herbert G. Fischer wrote:
 
-# Drop _all_ packets
-iptables -t filter -P FORWARD DROP
-# Allow http
-iptables -t filter -A FORWARD -p tcp -m tcp --dport 80 -j ACCEPT
-# Many more rules here to allow all the other s41t.
+> My problem is that, when I try to connect to a internal server, using the
+> external and real
+> IP, I cannot because my FW/NAT appears to be confused or misconfigured.
+> 
+> For example:
+> 
+> Internal Network: 172.16.48.0/24
+> 
+> My IP: 172.16.48.10
+> Server Internal IP: 172.16.48.20
+> * Both are on the same network
+> 
+> Server External IP: 200.180.180.20 (IP alias on FW/NAT machine, that
+> redirects to 172.16.48.20)
+> DNS name of Server: server.domain.com, points to 200.180.180.20
 
+> # server
+> iptables -t nat -A POSTROUTING -s 172.16.48.20 -j SNAT --to-source
+> 200.180.180.20
+> iptables -t nat -A PREROUTING -s 0/0 -d 200.180.180.20 -j
+> DNAT --to-destination 172.16.48.20
+> 
+> # NAT for the rest of the world
+> iptables -t nat -A POSTROUTING -o eth1 -s 172.16.48.0/24 -j SNAT --to-source
+> 200.180.180.22
 
+When a request from a local client arrives at the iptables box addressed
+to 200.180.180.20, it hits PREROUTING and is DNATted to the appropriate
+server.  Problem is that the server tries to reply directly to the
+client, (since it's a local IP) which sees a 'new' connection from
+172.16.48.20, which it ignores.  Try adding:
 
------ Original Message ----- 
-From: "gbj" <gbj@glc.cn.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, June 15, 2003 18:16
-Subject: filter p2p
+iptables -t nat -A POSTROUTING -d 172.16.48.20 -s 172.16.48.0/24 -j SNAT
+--to iptables.box.local.ip
 
+With this additional rule in place, requests from local clients hit the
+iptables box and are DNATted to the local server, then before leaving
+the iptables box they are SNATted so that the server sends its reply
+back to the iptables box.  When that reply is received by the iptables
+box, it unSNATs and restores the correct destination IP (the local
+client) then before it leaves the box it unDNATs to restore the correct
+source IP (the local server's public IP).
 
-> hello everyone,I have a lan with a gateway iptables firewall,and I don't
-want the user on the lan use P2P software like e-donkey ,because I think
-it's will led to some administration  proplem.but I don't know how to setup
-iptables rules to archieves this goal,does anybody has the same experience?
->
->
->
->
->
->                   sword
->
->
->
+j
+
 
 
