@@ -1,12 +1,14 @@
-From: "Emre CELEB&#304;" <emre22@europe.com>
-Subject: Re: secure remote management
-Date: Sat, 24 Jan 2004 19:02:46 +0200
+From: Sven Riedel <sr@gimp.org>
+Subject: Re: Filtered Port 21 somewhat open - iptables weirdness?
+Date: Sat, 24 Jan 2004 19:57:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040124170246.20948.qmail@mail.com>
+Message-ID: <20040124185737.GA16233@localnet>
+References: <20040124014842.GA9219@localnet> <000501c3e287$ea1f5490$0200000a@heretic>
+Reply-To: sr@gimp.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <000501c3e287$ea1f5490$0200000a@heretic>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +19,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Alexis <alexis@attla.net.ar>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-
- 
-> 	Where I've used webmin in the past, I've changed the port that
-> 	it listens on, and filtered access to that port to a specific list of ips.
-> 	Given some configuration, it can be relatively secure.  
-> 	Question -- you don't want to do X11 forwarded sessions because? .. 
-> 	at a guess the users want to be able to see the rules from a winders 
-> 	box downstream from the firewall?  -- at that point I can ses why ..
-> 	webmin is a bit of overkill for this, but is granular enough that you
-> 	can let your clients review the firewall rules and not allow them to 
-> 	muck with them too much.
-> 	
-> 	There is a java project you might look at: http://sourceforge.net/projects/jwall
-> 	but I've never used it -- I do know one person who has and finds it useful,
-> 	how useful it would be for you I don't know.
+On Sat, Jan 24, 2004 at 11:39:46AM -0300, Alexis wrote:
+> try using 
 > 
-> 	Alistair
-> 
-Yeah, yur right cause users want to see the rules and logs in a windows enviroment, i also offered the Cygwin installation for ssh-X tunneling but oofff they are the bosses man they love IE!!. its easy for logs with php#mysql and using log analyzer and get custom reports but when it comes to rules im really scared. Also i tried JWall but it seems still pre-mature as i tested some rule genarating operations and it unfortunely produces wrong scripts for iptables (will contack the developer for this,) but i admire that jwall as it aims to be able to manage remotely IDS and firewall in a secure GUI env. cool for ones like me who tries to satisfy the unsatisfied MS users and also can scripting to check that gui outputs.
+> netstat -tupan and see wich process is using that port. if any.
 
-Emre.
+Already tried that, and came up empty. Same thing with lsof (I compiled
+a static version of lsof on a guarenteed clean machine, just to make
+sure that I wasn't getting the output of a rootkit).
 
-
-
-
+Regs,
+Sven
 -- 
-_______________________________________________
-Get your free email from http://www.mail.com
-
+Sven Riedel                      sr@gimp.org
+Liebigstr. 38 
+30163 Hannover                  "Python is merely Perl for those who
+                                 prefer Pascal to C" (anon)
 
