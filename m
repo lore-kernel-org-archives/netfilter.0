@@ -1,15 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: failure when using --string
-Date: Fri, 27 Aug 2004 10:21:48 +0100
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: forwarding traffic to different hosts
+Date: Fri, 27 Aug 2004 07:35:21 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200408271021.48984.gdh@acentral.co.uk>
-References: <D5C9032B2B09C64EA2409D6214E91AC906420B@asimail2.alphanumeric.com>
-	<20040827091446.GH22322@metastasis.org.uk>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512F1@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040827091446.GH22322@metastasis.org.uk>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,21 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Friday 27 August 2004 10:14, Nick Drage wrote:
+> > > iptables -t nat -I PREROUTING --source 207.155.252.12 -p tcp =
+--dport 777
+> > > -j DNAT --to-destination 198.81.129.101
+>
+> >   iptables -t nat -I POSTROUTING -p tcp --dport 777 -s =
+207.155.252.12 \
+> >     -d 198.81.129.101 -j SNAT --to-source 198.81.129.100
+>
+> Thanks... but I wanted to keep the original source.  Sorry, udp is
+> really what I've got in mind here, I was just using tcp because it's
+> easier to test with "telnet 198.81.129.100 777" than it is to fire up =
+a
+> program to create a UDP packet.
+>
+> What I'm looking for is for queries to one DNS server from certain IP
+> addresses to be redirected to another... but without any interaction
+> with the BIND daemon itself.
 
-> I'm not sure about upgrading netfilter on a distribution like Debian,
-> apt-get trundles along nicely, I'm kind of loathe to play.  Is anyone
-> else here using a more recent version of netfilter on Debian?
+can you provide a more detailed description of the network architecture? =
+ it is unclear to me what you're actually trying to do.  is =
+198.81.129.101 a gateway, or just a host?  where is 207.155.252.12 in =
+relation to the 198.81.129 network?  where's the default gateway in this =
+situation?
 
-Yep, works just fine.. 
+thanks.
 
-http://backports.hands.com/debian/dists/stable/iptables/binary-i386/
-
-OK it's not cutting edge 1.2.11, but it's at least progress from that shipped 
-with woody :)
-
-Cheers,
-Gavin.
+-j
 
