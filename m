@@ -1,13 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: maybe out of topic
-Date: 31 Aug 2003 12:42:00 +0200
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: ipt_string problems and FAQ
+Date: Mon, 1 Sep 2003 13:03:48 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062326520.1607.10.camel@kermit>
-References: <3F4EA5D3.1010504@skyinet.net>
+Message-ID: <Pine.LNX.4.51.0309011300560.32229@dns.toxicfilms.tv>
+References: <200308271319.29439.tabris@tabris.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F4EA5D3.1010504@skyinet.net>
+In-Reply-To: <200308271319.29439.tabris@tabris.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +16,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: jaws <jaws@skyinet.net>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Tabris <tabris@tabris.net>
+Cc: netfilter@lists.netfilter.org
 
-Am Fre, 2003-08-29 um 03.01 schrieb jaws:
-> I'm just wondering why im getting this error:
->=20
-> [root@tracker root]#/usr/sbin/tcpdump -i eth0
-> Couldn't find user 'pcap'
-You need the following entry in your /etc/passwd file:
-pcap:x:77:77::/var/arpwatch:/bin/nologin
+Hi,
+> ask where this FAQ entry is...
+http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.14
 
-This was taken from a stock RH9 machine.
+> second, I've been using ipkungfu to attempt to stop codered, nimda, etc
+> from hitting my apache server and clogging up my logs.
+> It's not working, the rules never trigger. I've played around with it to
+> no avail.
+I do not know how ipkungfu works, i'd have to check it out to see if it
+can works and if it is a valid and clean solution.
 
-Cheers,
+> I guess, if this doesn't work, and isn't supposed to work, what SHOULD I
+> do?
+Patch your affected servers, use unaffected software and
+inform the netadmins of infected hosts about virii.
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
-
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+Regards,
+Maciej
 
