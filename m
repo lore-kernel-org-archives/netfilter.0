@@ -1,12 +1,13 @@
-From: "Adi" <adi@nettek.pl>
-Subject: Port FWD via 2 NAT
-Date: Wed, 21 May 2003 22:08:48 +0100
+From: xavier renaut <list.netfilter@natch.dyndns.org>
+Subject: Re: split iptables log from messages
+Date: Wed, 21 May 2003 17:04:11 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030521200848.524F4256DFE@ip.sec.artur.pl>
-Reply-To: "Adi" <adi@nettek.pl>
+Message-ID: <20030521210411.GL12302@natch.8d.com>
+References: <IHEHKFMEMKMGFDMIAHCIKENEDMAA.borda@netwall.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <IHEHKFMEMKMGFDMIAHCIKENEDMAA.borda@netwall.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; 
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Leonardo Borda <borda@netwall.com.br>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+On Wed, May 21, 2003 at 12:18:43PM -0300, Leonardo Borda wrote:
+|Hello
+|
+|Does anynone know how to split iptables logs from /var/log/messages ?
+|
 
-For ascii art fans:
 
-INTERNET----[eth0 LINUX1 eth1]----[eth0 LINUX2 eth1]----[Windows]
+you could check ulogd
+http://gnumonks.org/projects/project_details?p_id=1
 
-Linux1 eth0 - public address, NAT, eth1 - 10.0.2.1
-Linux2 eth0 - 10.0.2.2, NAT, eth1 - 10.0.5.1
-Windows - 10.0.5.13
+here is what i do :
 
-What I can do on Linux1 and Linux2 to allow connect
-from INTERNET to telnet on Windows machine?
+LOG --log-level debug  
 
-I put on Linux1 something like this:
-iptables -A PREROUTING -t nat -p tcp -d (public address) --dport 23 -j DNAT
---to 10.0.2.2:23
-On Linux2:
-iptables -A PREROUTING -t nat -p tcp -d 10.0.2.2 --dport 23 -j DNAT --to
-10.0.5.13
+*.*;auth,authpriv.none;kern.!=debug     -/var/log/syslog
+*.=info;*.=notice;*.=warn;\
+        auth,authpriv.none;\
+        cron,daemon.none;\
+        mail,news.none          -/var/log/messages
+*.*                             -/var/log/all.log
+kern.=debug                             -/var/log/iptables.log
 
-But it still not working :( What I doing wrong?
-Adi
 
+bye
+
+
+-- 
+xavier renaut
 
