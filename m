@@ -1,17 +1,13 @@
-From: Mike <1100100@gmail.com>
-Subject: Re: Policy Misunderstanding: RTFM Guidance Requested.
-Date: Wed, 1 Sep 2004 14:12:56 -0400
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: locally access server behind firewall
+Date: Wed, 01 Sep 2004 14:05:03 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <8ca4228204090111127401567b@mail.gmail.com>
-References: <7768933ECEDCA644AF7908B278CF125D021454@exchange.datec.com.fj>
-	<200409011044.27158.Alistair@nerdnet.ca>
-	<8ca4228204090109202271a1da@mail.gmail.com>
-	<200409011253.52931.Alistair@nerdnet.ca>
-Reply-To: Mike <1100100@gmail.com>
+Message-ID: <1094061903.2037.112.camel@localhost>
+References: <41360CA0.6090109@tomdp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409011253.52931.Alistair@nerdnet.ca>
+In-Reply-To: <41360CA0.6090109@tomdp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,38 +18,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair Tonner <alistair@nerdnet.ca>
+To: Tom <tom@tomdp.com>
 Cc: netfilter@lists.netfilter.org
 
-> Better to let things through the mangle and nat tables, and do filtering in
-> the filter table.  There have been folks who like to drop things in the
-> mangle and nat tables, but setting actual DROP policies makes life very
-> difficult.
-
-This seems like sound advice after what I've been through.  Maybe the
-folks in The Matrix can bend the laws of physics with relative ease,
-but for myself, I can barely achieve 'dude' status.  I think I'll
-ACCEPT mangle and nat, and get some sleep tonight.  :-)
-
->         There is no definition of the SOURCE that you want to drop ICMP echorequests
-> from.  Thus this rule drops all ping echorequests.
->         iptables -t filter -A INPUT -p icmp -i [internet pipe device] -icmp-type \
-> echo-request -j DROP
->         will allow your LAN users to ping the box, but prevent pings from the
-> internet from getting in.
-
-Oh I see.  By stating specifically the internet-facing device, you
-make it possible for LAN clients to ping the box through the gateway
-NIC - eth1, while the rule blocks all the other echo requests.
-
->         Really and truely -- Oskar's tutorials are great and easy to read... and even
-> the sample firewalls there are decent enough to start with for a newbie.
+On Wed, 2004-09-01 at 13:53, Tom wrote:
+> Hi,
 > 
-I definitely feel more secure about working on my firewall knowing
-that this reference material is around.  It's packed.
+> I have a linux firewall (iptables), and a linux server with apache 
+> behind that firewall. My provider blocks ports below 1024, so I have a 
+> prerouting-rule that redirects traffic like this:
+> 
+> $IPTABLES -A PREROUTING -t nat -i $WWW p tcp -d $EXTIP --dport 8888 -j 
+> DNAT --to $SERVER:80
+> 
+> I also have 2 forward-rules:
+> 
+> $IPTABLES -A FORWARD -i $WWW -o $LAN -p tcp --dport 80 -j ACCEPT
+> $IPTABLES -A FORWARD -i $LAN -o $WWW -p tcp --sport 80 -j ACCEPT
+> 
+> and I have these two lines to allow my local pc's to connect to the 
+> firewall with ssh and stuff like that:
+> $IPTABLES -A INPUT -i $LAN -s $INTLAN -j ACCEPT
+> $IPTABLES -A OUTPUT -o $LAN -d $INTLAN -j ACCEPT
+> 
+> 
+> where:
+>   $EXTIP = my external IP address
+>   $WWW is eth1
+>   $LAN is eth0
+>   $SERVER = my server's internal IP address.
+>   $INTLAN = "192.168.0.0/24"
+> 
+> This works really well when I try to connect from the outside to my 
+> webserver. But, if I try to connect to http://myserver.com:8888 from the 
+> internal network (or from my server itself), I always get 'connection 
+> refused'. I'm pretty sure I need some other rules, but can someone 
+> please help me in the good direction here? Thanks a lot!!
+> 
+> 
+> 
+> PS: Here's a little drawing of the situation:
+> 
+> SERVER (eth0) <----> (eth0) GATEWAY-PC (eth1) <----> internet
+If I understand you correctly, you are trying to connect to the web
+server on the internal network from devices on the internal network. 
+That means the packets never pass through the firewall.  In that case,
+no additional rules will help you.
 
-Thanks again, Alistair.
-It's great to have your assistance.
+You could force the traffic to pass through the firewall by placing the
+web server on a physical DMZ (highly preferable if this web server
+allows public access as it appears to - if someone cracks it, they will
+be on your internal network) or on a logical DMZ.  To create a logical
+DMZ, simply bind a second address for a separate subnet to the internal
+interface of the firewall and change the web server internal address to
+an address on that new subnet.
 
-Mike
+However, I would think the easiest thing to do is configure Apache to
+answer on port 8888.  Hope this helps - John
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
+
 
