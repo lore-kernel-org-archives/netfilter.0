@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Alexis <alexis@attla.net.ar>
 Subject: Re: Windows Broadcast
-Date: Mon, 1 Mar 2004 14:21:57 +0000
+Date: Mon, 01 Mar 2004 11:26:53 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403011421.57263.Antony@Soft-Solutions.co.uk>
-References: <20040301141547.30501.qmail@flock1.newmail.ru>
+Message-ID: <1078151213.1702.56.camel@pepelui.baicom>
+References: <200403011612.26193.eric@regit.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040301141547.30501.qmail@flock1.newmail.ru>
+In-Reply-To: <200403011612.26193.eric@regit.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,36 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="koi8-r"
-To: Netfilter-List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="macroman"
+To: Eric Leblond <eric@regit.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Monday 01 March 2004 2:15 pm, =F0=CF=D0=CF=D7 =E9=C7=CF=D2=D8 =EE=C9=CB=
-=CF=CC=C1=C5=D7=C9=DE wrote:
+i think that a good aproach could be to use an internal dns in order to
+resolve the name and then you could use netbios over tcp to get routed
+to the other lan.
 
+
+A broadcast will not pass the router.
+
+On Mon, 2004-03-01 at 11:12, Eric Leblond wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+>=20
 > >As a broadcast packet is a packet internal to a network, it don't have
 > >to go through a router, so it will go on INPUT chain.
->
-> If I have two networks with windows machines without wins server, what =
-I
-> can do with iptables to permit broadcats packets for netbios name resol=
-ve.
-
-Set up a bridge?
-
-Depends on your subnet addressing arrangements (and why they are two netw=
-orks=20
-anyway...)
-
-Antony.
-
+>=20
+> If I have two networks with windows machines without wins server, what I =
+can=20
+> do with iptables to permit broadcats packets for netbios name resolve.
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.2.4 (FreeBSD)
+>=20
+> iQEVAwUBQENEx+Xb9tKkwh23AQJ86QgAlQ8OV0J3nhKeC+O8fMArDmnR4qAlCoPa
+> ZkQ4d4Ly0uyUcBFu+4ZjqHW4SijXgzFhQcD2gdTdWF9fqo9udS+pa5iPR9p8bkgR
+> fhpWXQU5N+H7RO0IxV6GhPt84v8+J8BHwS1MgdslVXGdFgkPSjZlQ7QSEHcgYJHQ
+> 2UMNuDtBJaHJncXO17zE7++MQnUfExak3PwaTkIYk0sSkKL+nqA2W+8qDYN/5K1A
+> VumPUgKRuuX2OQJeD8XGlqy8ltLG99ztSPgyCVhJjUGf8Vmqe9q6lle65tPuWPtK
+> aULvEVguHQstJ9WIjV9VBtPXj6vV+ScG7pniq/NRyS4d4vpOMsYAtA=3D=3D
+> =3DrHkP
+> -----END PGP SIGNATURE-----
 --=20
-Christmas was just an opportunity to upgrade to kernel 2.6 while no-one w=
-as=20
-around to notice the downtime.
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
+Tus problemas no se pueden resolver en el mismo
+nivel mental que ten=C3=ADas cuando los creaste.=20
+		Albert Einstein
 
 
