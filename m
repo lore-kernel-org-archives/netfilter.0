@@ -1,11 +1,9 @@
-From: "Lohan Spies" <l.spies@petzetakis.co.za>
-Subject: open port to specific ip address
-Date: Mon, 10 Nov 2003 11:58:07 +0200
+From: Marcelo Tosatti <marcelo.tosatti@cyclades.com>
+Subject: PROBLEM: PATCH for 2.4.23-pre4 and up hang on one system (fwd)
+Date: Mon, 10 Nov 2003 09:06:16 -0200 (BRST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAAB9kBk8x7gEWq7An1YpHyjgEAAAAA@petzetakis-africa.co.za>
+Message-ID: <Pine.LNX.4.44.0311100906120.16790-100000@logos.cnet>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00A1_01C3A781.E8448410"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,162 +14,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org, netfilter-admin@lists.netfilter.org
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_00A1_01C3A781.E8448410
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi All,
+
+
+---------- Forwarded message ----------
+Date: Sat, 8 Nov 2003 13:41:38 -1000
+From: Beau E. Cox <beau@beaucox.com>
+To: linux-kernel@vger.kernel.org;
+Cc: Marcelo Tosatti <marcelo.tosatti@cyclades.com>
+Subject: PROBLEM: PATCH for 2.4.23-pre4 and up hang on one system
+
+submitted Sat Nov  8 13:08:55 HST 2003 by Beau E. Cox <beau@beaucox.com>
+
+[1.] One line summary of the problem:
+
+Patch that fixes my problem:
+Starting with 2.4.23-pre4 my system hangs during startup and/or is
+generally unstable (see patch in [ X. ] below.)
+
+[2.] Full description of the problem/report:
+
+Origionally I had catagorized this problem with the startup sequence;
+the system always seemed to hang when squid was started before
+mysql, etc. Moving squid near the end of the startup process, I
+thought the problem was in hand. However, the system (pre9) proved
+unstable (would not stay up for longer than one day.)
+
+The problem exibits itself with a solid 'hang'; no oops, no dumps,
+nada.
+
+[ 3. ] - [ 7. ]
+
+See previous posting; no hardware or configuration changes.
+
+[X.] Other notes, patches, fixes, workarounds:
+
+This patch to net/ipv4/netfilter/ip_nat_core.c fixed my problem
+in all 2.4.23 versions pre4 - pre9:
+
+--- linux-2.4.23-pre4/net/ipv4/netfilter/ip_nat_core.c	2003-11-08 
+03:01:59.000000000 -1000
++++ linux-2.4.23-pre3/net/ipv4/netfilter/ip_nat_core.c	2003-11-08 
+03:00:47.000000000 -1000
+@@ -157,8 +157,8 @@
+ 				continue;
+ 		}
  
-I need to know how will i open a specific port to a external ip mapping!
- 
-I need to specify a internal_ip:port on my internal network, and then if
-someone connects to internal_ip:port it must redirect them to
-external_ip with no cgi scripting and no authentication support!
- 
-How will i do this?
- 
-Thanks,
- 
-Lohan Spies 
-Systems Administrator CSA / DBA / MCP
-IQ Business  <http://www.iqgroup.net/> Group
-Tel: +27 12 521 7309
-Fax: +27 12 541 3441
-Cell: +27 83 258 2698
-l.spies@petzetakis-africa.co.za 
+-		if (!(mr->range[i].flags & IP_NAT_RANGE_PROTO_SPECIFIED)
+-		    || proto->in_range(&newtuple, IP_NAT_MANIP_SRC,
++		if ((mr->range[i].flags & IP_NAT_RANGE_PROTO_SPECIFIED)
++		    && proto->in_range(&newtuple, IP_NAT_MANIP_SRC,
+ 				       &mr->range[i].min, &mr->range[i].max))
+ 			return 1;
+ 	}
 
+It is simply a rollback of changes to ip_nat_core.c made in
+pre4.
 
- 
+All the information I can think of relating to this problem is at:
 
- 
+ftp://beaucox.com/pub/kernel/2.4.23-pre4-bug
 
+Please see the README file.
 
-CONFIDENTIALITY CAUTION: If you have received this communication in error, please note that it is intended for the addressee only, is private and confidential and dissemination or copying prohibited. Please notify us immediately by e-mail and return the original message. We cannot assure that the integrity of this communication has been maintained nor that it is free of errors, virus, interception or interference. Thank you
+---------------------------WARNING--------------------------
+I am NOT a kernel programmer. The patch above was arrived at
+by hit-or-miss. I REALLY don't know what I am doing (but
+my system works now!)
+---------------------------WARNING--------------------------
 
-------=_NextPart_000_00A1_01C3A781.E8448410
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Aloha => Beau;
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<TITLE>Message</TITLE>
+PS: Please let me know if you need more information.
 
-<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV>
-<DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr =
-align=3Dleft><FONT face=3DTahoma=20
-size=3D2></FONT></DIV>
-<DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr =
-align=3Dleft><FONT face=3DTahoma=20
-size=3D2></FONT></DIV>
-<DIV class=3DOutlookMessageHeader lang=3Den-us dir=3Dltr =
-align=3Dleft><FONT face=3DTahoma=20
-size=3D2></FONT></DIV><SPAN class=3D609595009-04112003><FONT =
-face=3DArial size=3D2>Hi=20
-All,</FONT></SPAN></DIV>
-<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial size=3D2>I need =
-to know how=20
-will i open a specific port to a external ip =
-mapping!</FONT></SPAN></DIV>
-<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial size=3D2>I need =
-to specify a=20
-internal_ip:port on my internal network, and then if someone connects to =
-
-internal_ip:port it must redirect them to external_ip with no cgi =
-scripting and=20
-no authentication support!</FONT></SPAN></DIV>
-<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial size=3D2>How =
-will i do=20
-this?</FONT></SPAN></DIV>
-<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D609595009-04112003><FONT face=3DArial=20
-size=3D2>Thanks,</FONT></SPAN></DIV>
-<DIV>&nbsp;</DIV><FONT face=3DArial size=3D2></FONT><FONT face=3DArial=20
-size=3D2></FONT><FONT face=3DArial size=3D2></FONT>
-<MARQUEE id=3DMarquee2 style=3D"WIDTH: 340px; HEIGHT: 17px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D1 behavior=3Dslide loop=3D1 width=3D394 height=3D19 =
-border=3D"0"><B><FONT=20
-size=3D5>Lohan Spies</FONT></B></MARQUEE>
-<DIV></DIV></SPAN></FONT></B><FONT face=3DVerdana color=3D#ff0000 =
-size=3D2><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana"><FONT face=3DArial=20
-color=3D#000000></FONT><FONT face=3DArial color=3D#000000></FONT>
-<MARQUEE id=3DMarquee2 style=3D"FONT-WEIGHT: bold; COLOR: #ff0000" =
-trueSpeed=20
-scrollAmount=3D1 scrollDelay=3D2 behavior=3Dslide loop=3D1 width=3D550 =
-height=3D19=20
-border=3D"0">Systems Administrator CSA / DBA /=20
-MCP</MARQUEE></SPAN></FONT><BR><FONT face=3DVerdana size=3D2><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Verdana">
-<MARQUEE id=3DMarquee2 style=3D"WIDTH: 340px; HEIGHT: 17px" trueSpeed =
-scrollAmount=3D1=20
-scrollDelay=3D2 behavior=3Dslide loop=3D1 width=3D393 height=3D19 =
-border=3D"0"><A=20
-href=3D"http://www.iqgroup.net/">IQ Business=20
-Group</A></MARQUEE></SPAN></FONT><BR><FONT face=3DVerdana size=3D1>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
-16px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
-width=3D390 height=3D16=20
-border=3D"0"><SPAN=20
-style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Tel: +27 =
-12 521=20
-7309</SPAN></MARQUEE></FONT><BR>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
-16px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
-width=3D390 height=3D16=20
-border=3D"0"><SPAN=20
-style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Fax: +27 =
-12 541=20
-3441</SPAN></MARQUEE></FONT><FONT face=3DVerdana><SPAN=20
-style=3D"FONT-FAMILY: Verdana"><BR></SPAN></FONT><FONT face=3DVerdana =
-size=3D1>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 268px; HEIGHT: =
-16px"=20
-trueSpeed scrollAmount=3D1 scrollDelay=3D3 behavior=3Dslide loop=3D1 =
-width=3D390 height=3D16=20
-border=3D"0"><SPAN=20
-style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: Verdana">Cell: +27 =
-83 258=20
-2698</SPAN></MARQUEE></FONT><FONT face=3DVerdana><SPAN=20
-style=3D"FONT-FAMILY: Verdana"><BR></SPAN></FONT><FONT face=3DVerdana =
-size=3D1>
-<MARQUEE id=3DMarquee3 style=3D"FONT-SIZE: 10pt; WIDTH: 340px; HEIGHT: =
-17px"=20
-trueSpeed scrollAmount=3D4 scrollDelay=3D5 behavior=3Dslide loop=3D1 =
-width=3D391 height=3D16=20
-border=3D"0"><SPAN style=3D"FONT-SIZE: 7.5pt; COLOR: black; FONT-FAMILY: =
-Verdana"><A=20
-href=3D"mailto:l.spies@petzetakis-africa.co.za">l.spies@petzetakis-africa=
-.co.za</A></SPAN></MARQUEE></FONT>
-<P><FONT face=3DArial size=3D2></FONT><FONT face=3DArial =
-size=3D2></FONT><BR>&nbsp;</P>
-<DIV><FONT face=3DVerdana color=3D#0000ff></FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-
-<html>
-<br>
-CONFIDENTIALITY CAUTION: If you have received this communication in error, please note that it is intended for the addressee only, is private and confidential and dissemination or copying prohibited. Please notify us immediately by e-mail and return the original message. We cannot assure that the integrity of this communication has been maintained nor that it is free of errors, virus, interception or interference. Thank you</html>
-
-------=_NextPart_000_00A1_01C3A781.E8448410--
 
 
