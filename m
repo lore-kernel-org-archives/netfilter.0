@@ -1,15 +1,14 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: [netfilter-core] IPTables...
-Date: Tue, 18 Feb 2003 18:44:57 +0100
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Lot of MAC Address
+Date: Tue, 18 Feb 2003 13:07:14 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030218174457.GW11812@sunbeam.de.gnumonks.org>
-References: <HAEDIOFCFBKACBFKGGJEAEJKCIAA.mike@plenty.co.za>
+Message-ID: <200302181307.14726.netfilter@newkirk.us>
+References: <1045576151.291.153.camel@bigblue> <05e701c2d764$08de8f20$13fcc5cb@Housecall>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vIXBmblrD40XNCy4"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <HAEDIOFCFBKACBFKGGJEAEJKCIAA.mike@plenty.co.za>
+In-Reply-To: <05e701c2d764$08de8f20$13fcc5cb@Housecall>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,63 +18,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Michael Lawford <mike@plenty.co.za>
-Cc: coreteam@netfilter.org, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: hare ram <hareram@sol.net.in>, netfilter <netfilter@lists.netfilter.org>
 
+On Tuesday 18 February 2003 10:40 am, hare ram wrote:
+> Hi  all
+>
+> In my LAN, i have lot of MAC address,  ( pc's)
+> how do i make a rule for 100 MAC address (PC) to allow
+> and any other MAC address to Deny
+>
+> any suggestions
+> thanks
+> hare
 
---vIXBmblrD40XNCy4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You have to match each MAC individually, one at a time.  If there is no=20
+other acceptable filtering criteria (IP + incoming interface, for=20
+example) then your best bet is something like this:
 
-On Tue, Feb 18, 2003 at 06:39:45PM +0200, Michael Lawford wrote:
-> Hi There,
+iptables -N MACtest
+iptables -A MACtest -m mac --mac-source 00:11:22:33:44:55 -j RETURN
+iptables -A MACtest -m mac --mac-source 00:11:22:33:44:66 -j RETURN
+[... etc with all 100 MACs in individual rules, followed by ...]
+iptables -A MACtest -j DROP
 
-Hi!
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED    \
+-j ACCEPT
+iptables -A FORWARD -i eth0 -m state --state NEW -j MACtest
+iptables -A FORWARD {ordinary rules from here on in FORWARD}
 
-> I have a RaQ550 server that runs iptables.  The other day i logged in and
-> got 1000+ of the following message from my server.
+This will take any NEW traffic coming from eth0 to be forwarded and pass=20
+ALL of it to the user-defined MACtest chain, which will RETURN=20
+acceptable MACs back to FORWARD for continued processing, and DROP any=20
+that don't match up with one of the rules. ( This way only the NEW=20
+packets have to traverse potentially 101 extra rules before ordinary=20
+matching in FORWARD continues.)  You can call the same user-def chain=20
+from INPUT as well, or instead.
 
-Please read http://www.netfilter.org/contact.html... I am sure you can
-understand that the development team of a volunteer project can not
-provide individual enduser support.
+Keep in mind that a script can build the MACtest chain in a loop, reading=
+=20
+the MAC addresses from a separate textfile and appending the DROP=20
+'policy' after the loop completes.
 
-Apart from this, I cannot see how iptables should be involved with your
-problem.  Maybe you should contact the vendor of your particular
-product.
+j
 
-> And I keep getting these little error messages every 2 or 3 minutes...  N=
-ow
-> my network and UUNet guys tell me that it is IPTables that is trying to
-> resolve to their main DNS server.  They have checked the settings and all
-
-DNS resolving is done unsing UDP, your errors were about ICMP.
-
-> Regards,
-> Michael
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---vIXBmblrD40XNCy4
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE+UnEZXaXGVTD0i/8RApgHAJ9ZnpRsGmpihWJmYVf+wU7AH8dYpACfUaJo
-jKZgi5hmTfUxLpMM6e8h8P4=
-=8/6e
------END PGP SIGNATURE-----
-
---vIXBmblrD40XNCy4--
 
