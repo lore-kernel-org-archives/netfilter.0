@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: nat problem
-Date: Wed, 7 Jul 2004 14:07:21 +0100
+Subject: Re: telnet question
+Date: Wed, 7 Jul 2004 14:08:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407071407.21256.Antony@Soft-Solutions.co.uk>
-References: <40E982F0.309A28A3@knoware.nl>
+Message-ID: <200407071408.36725.Antony@Soft-Solutions.co.uk>
+References: <a0f69e5040706225576326815@mail.gmail.com> <20040707084358.4c25c38b.leslie.polzer@gmx.net> <a0f69e50407070232540b8014@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40E982F0.309A28A3@knoware.nl>
+In-Reply-To: <a0f69e50407070232540b8014@mail.gmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Monday 05 July 2004 5:33 pm, Frans Luteijn wrote:
+On Wednesday 07 July 2004 10:32 am, Askar Ali Khan wrote:
 
-> Dear Sirs,
+> On Wed, 7 Jul 2004 08:43:58 +0200, Patrick Leslie Polzer
 >
-> I have a little problem, which might be a bug. I have an 3COM
-> ISDN-router. It broadcasts every 10 seconds its connectionstatus to the
-> internal net.
+> <leslie.polzer@gmx.net> wrote:
+> > On Wed, 7 Jul 2004 10:55:21 +0500
+> >
+> > Askar Ali Khan <askarali@gmail.com> wrote:
+> > > my question is that how to makes Linux Box (B) direct to machine C i-e
+> > > like that Linux Box A.
+> >
+> > That depends on your network architecture. Could you please provide
+> > more information? Use dummy IPs and network ranges that resemble the real
+> > setup and maybe draw some ASCII stuff.
+>
+> okay i will try with dumy IPs, I don't know whats more information you
+> are asking for :)?
 
-What do yuo mean by "broadcasts"?   What protocol is being used?   What 
-address are the packets sent to?
-
-> Now I want to forward those broadcasts to another network.
-
-If, by broadcasts, you mean packets addressed to the "broadcast address" of 
-your subnet, it can't be done - you cannot route broadcast packets across a 
-router (that's why people use bridges).   The only way it could be done is to 
-have a machine which understands the protocol, and is connected to both 
-networks, picking up the broadcast packets on one subnet, and then creating 
-new broadcast packets to send to the other network (and, of course, dealign 
-sensibly with the replies).
-
-This, for example, is how you get Windows NetBios share browsing to work 
-across network boundaries - it's not pretty, but if broadcast packets are 
-what you're starting from then it's the only way.
+We need to understand  how your computers are connected together - ie: what 
+shape your network is.   Imagine one of us had to recreate your network 
+layout in our own office - give us enough information that we'd be able to do 
+that.
 
 Regards,
 
 Antony.
 
 -- 
-I love deadlines.   I love the whooshing noise they make as they go by.
-
- - Douglas Noel Adams
+Normal people think "If it ain't broke, don't fix it".
+Engineers think "If it ain't broke, it doesn't have enough features yet".
 
                                                      Please reply to the list;
                                                            please don't CC me.
