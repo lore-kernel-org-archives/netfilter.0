@@ -1,13 +1,13 @@
-From: Louie <bishop@pacbell.net>
-Subject: IPTable Help !
-Date: Tue, 05 Nov 2002 11:51:46 -0800
+From: Pavlos Parissis <p_pavlos@freemail.gr>
+Subject: Re: Port 723?
+Date: Tue, 5 Nov 2002 21:30:44 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBJIEMADMKCHCLFBLKKECOCBAA.bishop@pacbell.net>
-References: <20021104195745.DUTJ27595.mta05-svc.ntlworld.com@there>
+Message-ID: <20021105213044.3d2ab609.p_pavlos@freemail.gr>
+References: <E2913D4A-F0E6-11D6-AEC7-0030656EDEF8@art-ad.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20021104195745.DUTJ27595.mta05-svc.ntlworld.com@there>
+In-Reply-To: <E2913D4A-F0E6-11D6-AEC7-0030656EDEF8@art-ad.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,18 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hello all!
+On Tue, 5 Nov 2002 18:49:08 +0100 pi <pi@art-ad.se> wrote:
+>  Can anyone tell me what runs  on port 723?
+>  After nmap <interface> i got this:
+>  
+>  723/tcp open unknown
+Are you sure about that???
+If it is 1723 then it is pptp service port.
+After a quick search in google i found that
 
-Hope that everyone had a good weekend. I
-was wondering does anyone know a site
-that has simple explains on iptables
-like "Iptables for dummies"
+MOSIX uses:
 
-Thank you,
+TCP port 4660 for migration;
 
-Louie
+UDP port 5428 for information dessimination;
 
+MFS uses TCP port 723.
+
+Pavlos
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I love having the feeling of being in control
+while i have the sensation of speed
+
+The surfer of life
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
