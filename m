@@ -1,12 +1,15 @@
-From: Dieter Braun <dieter.braun@onevision.de>
-Subject: ftp connection tracking and frox proxy
-Date: Tue, 28 Jan 2003 17:17:24 +0100
+From: Athan <netfilter@miggy.org>
+Subject: Re: Should i be worried?
+Date: Tue, 28 Jan 2003 23:24:11 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E36AD14.4AAA111F@onevision.de>
+Message-ID: <20030128232411.GG11221@miggy.org>
+References: <000c01c2c71c$bd541090$0200a8c0@whyzpc>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------63DE009080044A5BD4EB13B4"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UFHRwCdBEJvubb2X"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <000c01c2c71c$bd541090$0200a8c0@whyzpc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,157 +19,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+To: Erik Ahlner <whyz@home.se>
+Cc: netfilter@lists.netfilter.org
 
 
---------------63DE009080044A5BD4EB13B4
+--UFHRwCdBEJvubb2X
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, Jan 28, 2003 at 11:29:36PM +0100, Erik Ahlner wrote:
+> Hello!
+>=20
+> I just happened to do a dmesg, and got this output:
+>=20
+> IN=3Deth0 OUT=3Deth0 SRC=3D192.168.0.186 DST=3D130.236.230.9 LEN=3D74 TOS=
+=3D0x00
+> PREC=3D0x00 TTL=3D127 ID=3D14459 PROTO=3DUDP SPT=3D137 DPT=3D53 LEN=3D54
+> IN=3Deth0 OUT=3Deth0 SRC=3D192.168.0.186 DST=3D130.236.230.9 LEN=3D74 TOS=
+=3D0x00
+> PREC=3D0x00 TTL=3D127 ID=3D14715 PROTO=3DUDP SPT=3D137 DPT=3D53 LEN=3D54
+> IN=3Deth0 OUT=3Deth0 SRC=3D192.168.0.88 DST=3D217.209.28.135 LEN=3D48 TOS=
+=3D0x00
+> PREC=3D0x00 TTL=3D127 ID=3D37469 DF PROTO=3DTCP SPT=3D2418 DPT=3D80 WINDO=
+W=3D16384
+> RES=3D0x00 SYN URGP=3D0
+>=20
+>=20
+> As you can see, i get some message about traffic from 192.168.0.186 and .=
+88
+> .. these two computers are NOT in my home network, so i guess that someone
+> has named his computers like that on the university network, even though =
+the
+> university network has 130.236.x.x.
+> Is this a problem for me?
+> And what does this output actually mean?
+> Has someone used my computer as a router?
+> If they have, how is that possible?
+> This is what my iptable looks like:
+>=20
+> $IPTABLES -P INPUT ACCEPT
+> $IPTABLES -F INPUT
+> $IPTABLES -P OUTPUT ACCEPT
+> $IPTABLES -F OUTPUT
+> $IPTABLES -P FORWARD DROP
+> $IPTABLES -F FORWARD
+> $IPTABLES -t nat -F
+>=20
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -j ACCEPT
+> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -j LOG
+                       ^^^^^^
+This is what causes the messages in dmesg.  You probably want to change
+the INPUT rule below to be a FORWARD one.  Make sure to put it ABOVE the
+two other FORWARD rules above, otherwise they'll get the packet first
+and just pass it anyway.
 
-I just set up a transparent ftp proxy using frox 0.7.6. Works pretty
-well, only state matching (iptables 1.2.5-58) for the connections
-between the client and frox doesn't work as I would have expected. Here
-are the rules that are necessary:
+> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+> $IPTABLES -A INPUT -s 192.168.0.0/24 -i eth0 -j DROP
 
-----------------------------------------------------------------------------
+  Actually, just go find a DECENT fw script and use that ;).
 
-# Redirection to frox port
-$PROG -t nat -A PREROUTING -p tcp -i br0 -s $INTRANET --sport 1024: -d !
-$INTRANET --dport 21 -j REDIRECT --to-ports 2121
+HTH,
 
-# ftp request client to frox
-$PROG -A INPUT -p tcp -i br0 -s $INTRANET --sport 1024: -d $INT --dport
-2121 -m state --state NEW,ESTABLISHED -j ACCEPT
-$PROG -A OUTPUT -p tcp -s $INT --sport 2121 -o br0 -d $INTRANET --dport
-1024: ! --syn -m state --state ESTABLISHED -j ACCEPT
-                                # as expected
+-Ath
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
 
-# data channel frox to client, passive ftp
-$PROG -A INPUT -p tcp -i br0 -s $INTRANET --sport 1024: -d $INT --dport
-1024: -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-$PROG -A OUTPUT -p tcp -s $INT --sport 1024: -o br0 -d $INTRANET --dport
-1024: -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-                                # would expect to need only
-ESTABLISHED,RELATED in the first line
-                                # would expect to need only ESTABLISHED
-in the second line
-                                # (didn't try NEW,ESTABLISHED without
-RELATED yet)
+--UFHRwCdBEJvubb2X
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-# data channel frox to client, active ftp
-$PROG -A OUTPUT -p tcp -s $INT --sport 20 -o br0 -d $INTRANET --dport
-1024: -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-$PROG -A INPUT -p tcp -i br0 -s $INTRANET --sport 1024: -d $INT --dport
-20 ! --syn -m state --state ESTABLISHED -j ACCEPT
-                                # would expect to need only
-ESTABLISHED,RELATED in the first line
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-# ftp request frox to internet
-$PROG -A OUTPUT -p tcp -s $EXT --sport 1024: -o eth2 -d 0/0 --dport 21
--m state --state NEW,ESTABLISHED -j ACCEPT
-$PROG -A INPUT -p tcp -i eth2 -s 0/0 --sport 21 -d $EXT --dport 1024: !
---syn -m state --state ESTABLISHED -j ACCEPT
+iEYEARECAAYFAj43ERsACgkQzbc+I5XfxKcBmwCgmEAccEbmdmSje5T1Ju6hnGlA
+NSQAni+Sb/grMNW1iOMt/Ee2FnnJFMCO
+=3I0I
+-----END PGP SIGNATURE-----
 
-# data channel internet to frox, passive ftp
-$PROG -A OUTPUT -p tcp -s $EXT --sport 1024: -o eth2 -d 0/0 --dport
-1024: -m state --state ESTABLISHED,RELATED -j ACCEPT
-$PROG -A INPUT -p tcp -i eth2 -s 0/0 --sport 1024: -d $EXT --dport 1024:
-! --syn -m state --state ESTABLISHED -j ACCEPT
-
-## data channel internet to frox, active ftp
-#$PROG -A INPUT -p tcp -i eth2 -s 0/0 --sport 20 -d $EXT --dport 1024:
--m state --state ESTABLISHED,RELATED -j ACCEPT
-#$PROG -A OUTPUT -p tcp -s $EXT --sport 1024: -o eth2 -d 0/0 --dport 20
-! --syn -m state --state ESTABLISHED -j ACCEPT
-----------------------------------------------------------------------------
-
-(You might wonder about the device br0: frox works with bridging! .-)))
-
-The state matching rules for the "external" connections to the internet
-work as expected. But for the "internal" data connections between frox
-and the clients, frox always needs to build a NEW data connection
-instead of a RELATED one. Since this is only for the internal
-connections, not for the external ones, I have the feeling that this
-might be due to frox. (Didn't find any frox mailing list; does anybody
-know one?) Or is there any problem with ip_conntrack_ftp for a ftp
-server? Perhaps somebody has any better clue.
-
-Greetings,
-Dieter
-
-
---------------63DE009080044A5BD4EB13B4
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-Hi,
-<p>I just set up a transparent ftp proxy using frox 0.7.6. Works pretty
-well, only state matching (iptables 1.2.5-58) for the connections between
-the client and frox doesn't work as I would have expected. Here are the
-rules that are necessary:
-<p><tt>----------------------------------------------------------------------------</tt>
-<br><tt># Redirection to frox port</tt>
-<br><tt>$PROG -t nat -A PREROUTING -p tcp -i br0 -s $INTRANET --sport 1024:
--d ! $INTRANET --dport 21 -j REDIRECT --to-ports 2121</tt><tt></tt>
-<p><tt># ftp request client to frox</tt>
-<br><tt>$PROG -A INPUT -p tcp -i br0 -s $INTRANET --sport 1024: -d $INT
---dport 2121 -m state --state NEW,ESTABLISHED -j ACCEPT</tt>
-<br><tt>$PROG -A OUTPUT -p tcp -s $INT --sport 2121 -o br0 -d $INTRANET
---dport 1024: ! --syn -m state --state ESTABLISHED -j ACCEPT</tt>
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-# as expected</tt><tt></tt>
-<p><tt># data channel frox to client, passive ftp</tt>
-<br><tt>$PROG -A INPUT -p tcp -i br0 -s $INTRANET --sport 1024: -d $INT
---dport 1024: -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT</tt>
-<br><tt>$PROG -A OUTPUT -p tcp -s $INT --sport 1024: -o br0 -d $INTRANET
---dport 1024: -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT</tt>
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-# would expect to need only ESTABLISHED,RELATED in the first line</tt>
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-# would expect to need only ESTABLISHED in the second line</tt>
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-# (didn't try NEW,ESTABLISHED without RELATED yet)</tt><tt></tt>
-<p><tt># data channel frox to client, active ftp</tt>
-<br><tt>$PROG -A OUTPUT -p tcp -s $INT --sport 20 -o br0 -d $INTRANET --dport
-1024: -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT</tt>
-<br><tt>$PROG -A INPUT -p tcp -i br0 -s $INTRANET --sport 1024: -d $INT
---dport 20 ! --syn -m state --state ESTABLISHED -j ACCEPT</tt>
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-# would expect to need only ESTABLISHED,RELATED in the first line</tt><tt></tt>
-<p><tt># ftp request frox to internet</tt>
-<br><tt>$PROG -A OUTPUT -p tcp -s $EXT --sport 1024: -o eth2 -d 0/0 --dport
-21 -m state --state NEW,ESTABLISHED -j ACCEPT</tt>
-<br><tt>$PROG -A INPUT -p tcp -i eth2 -s 0/0 --sport 21 -d $EXT --dport
-1024: ! --syn -m state --state ESTABLISHED -j ACCEPT</tt><tt></tt>
-<p><tt># data channel internet to frox, passive ftp</tt>
-<br><tt>$PROG -A OUTPUT -p tcp -s $EXT --sport 1024: -o eth2 -d 0/0 --dport
-1024: -m state --state ESTABLISHED,RELATED -j ACCEPT</tt>
-<br><tt>$PROG -A INPUT -p tcp -i eth2 -s 0/0 --sport 1024: -d $EXT --dport
-1024: ! --syn -m state --state ESTABLISHED -j ACCEPT</tt><tt></tt>
-<p><tt>## data channel internet to frox, active ftp</tt>
-<br><tt>#$PROG -A INPUT -p tcp -i eth2 -s 0/0 --sport 20 -d $EXT --dport
-1024: -m state --state ESTABLISHED,RELATED -j ACCEPT</tt>
-<br><tt>#$PROG -A OUTPUT -p tcp -s $EXT --sport 1024: -o eth2 -d 0/0 --dport
-20 ! --syn -m state --state ESTABLISHED -j ACCEPT</tt>
-<br><tt>----------------------------------------------------------------------------</tt><tt></tt>
-<p>(You might wonder about the device <tt>br0</tt>: frox works with bridging!
-.-)))
-<p>The state matching rules for the "external" connections to the internet
-work as expected. But for the "internal" data connections between frox
-and the clients, frox always needs to build a <tt>NEW</tt> data connection
-instead of a <tt>RELATED</tt> one. Since this is only for the internal
-connections, not for the external ones, I have the feeling that this might
-be due to frox. (Didn't find any frox mailing list; does anybody know one?)
-Or is there any problem with <tt>ip_conntrack_ftp</tt> for a ftp server?
-Perhaps somebody has any better clue.
-<p>Greetings,
-<br>Dieter
-<br>&nbsp;</html>
-
---------------63DE009080044A5BD4EB13B4--
-
+--UFHRwCdBEJvubb2X--
 
