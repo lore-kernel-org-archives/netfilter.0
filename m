@@ -1,14 +1,15 @@
-From: alucard@kanux.com
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
 Subject: Re: forwarding on the same NIC
-Date: Mon, 10 May 2004 18:09:23 -0400 (VET)
+Date: Mon, 10 May 2004 18:26:32 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>
+Message-ID: <1084227992.14224.5.camel@localhost>
 References: <3401.200.44.170.105.1084217773.squirrel@200.44.170.105>
-    <200405102115.14089.Antony@Soft-Solutions.co.uk>
+	 <200405102115.14089.Antony@Soft-Solutions.co.uk>
+	 <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200405102115.14089.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <1292.192.168.74.154.1084226963.squirrel@192.168.74.154>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,100 +20,114 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: alucard@kanux.com
+Cc: netfilter@lists.netfilter.org
 
-Hi again...
+Alas, I discarded your original e-mail with the set up info when I saw
+you received a credible reply.  However, have you set up either a packet
+trace to see if the packets are getting lost on the wire or logging
+rules at the various points within iptables to see if where the
+unexpected behavior is happening in iptables?
 
-   I did it, and nothing happens, the 2nd webserver is fully operational
-and I cant get to it from my server/router. Here's my nmap test:
-
-PORT     STATE SERVICE
-21/tcp   open  ftp
-22/tcp   open  ssh
-25/tcp   open  smtp
-80/tcp   open  http
-143/tcp  open  imap
-3306/tcp open  mysql
-
-and there's no 8080 port that could be getting packets
-
-And here's my script again... maybe I'm missing something else...
-
--------------
-echo "Borrando posibles reglas anteriores..."
-iptables -F
-iptables -X
-
-echo "Habilitando politicas de negacion total de paquetes"
-
-iptables -P FORWARD DROP
-iptables -P INPUT DROP
-
-echo "Reglas para paquetes de entrada y salida"
-
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-iptables -A INPUT -p tcp --dport 21 -j ACCEPT
-iptables -A INPUT -p tcp --dport 25 -j ACCEPT
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-
-##internas
-iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
-iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
-iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
-
-#para el forward a la maquina compaq
-
-echo 0 > /proc/sys/net/ipv4/ip_forward
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT
---to-destination 10.73.219.77:80
-echo 1 > /proc/sys/net/ipv4/ip_forward
--------------
-
-Any sugestions pals?
-Thanx again for your great help
-Juan
-
-
-
-> On Monday 10 May 2004 8:36 pm, alucard@kanux.com wrote:
->
->> Hi there...
->>
->>    I have been using netfilter for a while and now, I have to integrate
->> some other servers and somehow I can't get it to forward packets.
->
-> Change:
->
->> iptables -A FORWARD -i eth0 -p tcp --dport 8080 -j ACCEPT
->
-> Into:
->
+On Mon, 2004-05-10 at 18:09, alucard@kanux.com wrote:
+> Hi again...
+> 
+>    I did it, and nothing happens, the 2nd webserver is fully operational
+> and I cant get to it from my server/router. Here's my nmap test:
+> 
+> PORT     STATE SERVICE
+> 21/tcp   open  ftp
+> 22/tcp   open  ssh
+> 25/tcp   open  smtp
+> 80/tcp   open  http
+> 143/tcp  open  imap
+> 3306/tcp open  mysql
+> 
+> and there's no 8080 port that could be getting packets
+> 
+> And here's my script again... maybe I'm missing something else...
+> 
+> -------------
+> echo "Borrando posibles reglas anteriores..."
+> iptables -F
+> iptables -X
+> 
+> echo "Habilitando politicas de negacion total de paquetes"
+> 
+> iptables -P FORWARD DROP
+> iptables -P INPUT DROP
+> 
+> echo "Reglas para paquetes de entrada y salida"
+> 
+> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> 
+> iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+> iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+> iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+> 
+> ##internas
+> iptables -A INPUT -i eth0 -p tcp --dport 143 -j ACCEPT
+> iptables -A INPUT -i lo -p tcp --dport 143 -j ACCEPT
+> iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+> iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+> 
+> #para el forward a la maquina compaq
+> 
+> echo 0 > /proc/sys/net/ipv4/ip_forward
+> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 > iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
->
-> Remember that PREROUTING (where you are changing the port number) happens
-> before FORWARD.
->
-> Regards,
->
-> Antony.
->
-> --
-> I don't know, maybe if we all waited then cosmic rays would write all our
-> software for us. Of course it might take a while.
->
->  - Ron Minnich, Los Alamos National Laboratory
->
->                                                      Please reply to the
-> list;
->                                                            please don't CC
-> me.
->
->
->
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT
+> --to-destination 10.73.219.77:80
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> -------------
+> 
+> Any sugestions pals?
+> Thanx again for your great help
+> Juan
+> 
+> 
+> 
+> > On Monday 10 May 2004 8:36 pm, alucard@kanux.com wrote:
+> >
+> >> Hi there...
+> >>
+> >>    I have been using netfilter for a while and now, I have to integrate
+> >> some other servers and somehow I can't get it to forward packets.
+> >
+> > Change:
+> >
+> >> iptables -A FORWARD -i eth0 -p tcp --dport 8080 -j ACCEPT
+> >
+> > Into:
+> >
+> > iptables -A FORWARD -i eth0 -p tcp --dport 80 -j ACCEPT
+> >
+> > Remember that PREROUTING (where you are changing the port number) happens
+> > before FORWARD.
+> >
+> > Regards,
+> >
+> > Antony.
+> >
+> > --
+> > I don't know, maybe if we all waited then cosmic rays would write all our
+> > software for us. Of course it might take a while.
+> >
+> >  - Ron Minnich, Los Alamos National Laboratory
+> >
+> >                                                      Please reply to the
+> > list;
+> >                                                            please don't CC
+> > me.
+> >
+> >
+> >
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
 
