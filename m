@@ -1,14 +1,11 @@
-From: Askar <askarali@gmail.com>
-Subject: Re: web server behind firewall
-Date: Thu, 23 Dec 2004 09:54:06 +0500
-Message-ID: <a0f69e5041222205434ab79db@mail.gmail.com>
-References: <1103737938.17922.55.camel@localhost.localdomain>
-	<1103743586.6473.0.camel@hubcap.ljm.dom>
-Reply-To: Askar <askarali@gmail.com>
+From: Frans Luteijn <f.a.g.luteijn@knoware.nl>
+Subject: Re: broadcasts to other network?
+Date: Thu, 23 Dec 2004 08:35:30 +0100
+Message-ID: <41CA7542.99C24E57@knoware.nl>
+References: <41C7F5C5.6023137F@knoware.nl> <41C87F59.8050606@hdr-roma.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1103743586.6473.0.camel@hubcap.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,35 +19,47 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-And don't forget to peek into www.apache.org for web server stuff ;)
+primero@hdr-roma.it schreef:
 
-
-
-On Wed, 22 Dec 2004 14:26:26 -0500, Jason Opperisano <opie@817west.com> wrote:
-> On Wed, 2004-12-22 at 12:52, Mohammad Khan wrote:
-> > Hello List:
+> Frans Luteijn wrote:
+>
+> >...
 > >
-> > I would like to setup a web server behind my firewall.
-> > Where can I get more documentation/tutorials/How-to?
+> >But no packets went out, at least that I couldn't see after adding a
+> >LOG-rule at OUTPUT and FORWARD.
 > >
-> > Thanks in advance.
+> >Is there an easy way to solve this or do I need a relaying-program (like
+> >dhcp)?
 > >
-> > Mohammad
-> 
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-> 
-> would be a good start.
-> 
-> -j
-> 
-> --
-> "I hope I didn't brain my damage."
->         --The Simpsons
-> 
-> 
+> >Greetings,
+> >
+> >
+> >
+> The easiest way, IMHO, is using an UDP-Relay ... i mean, what is more
+> simple then a little daemon running smoothly ? ;)
+>
+> A better and not easy way would be bridging the interface to the
+> internal lan with the interface to the router using the same network
+> class. This way broadcasts would pass normally from one side of the
+> firewall to the other one, you could as well filter traffic beetween the
+> two interfaces.
+>
+> I would choose the latter ;)
+> bye
+> primeroz
 
+I want to choose the former. I am offering  my ADSL to my house-mates
+via a
+wireless lan connected to my firewall with a fourth interface (not drawn
+in
+my first mail) and I don't want thost users on my private-net (it can be
+filtered out, but why doing it the hard way?).
+Does someone know a program, that can relay udp-broadcasts?
 
--- 
-(after bouncing head on desk for days trying to get mine working, I'll make
-your life a little easier)
+Greetings,
+--
+Frans Luteijn
+PGP PblKey fprnt=C4 87 CE AF BC B6 98 C1  EF 42 A1 9A E2 C0 42 5B
+GPG PblKey fprnt=ED20 0F25 C233 DC59 3FFA  170E D0BF 15F5 0BA6 1355
+
 
