@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Outgoing SMTP Mystery
-Date: Tue, 4 Jun 2002 23:37:22 +0100
+Subject: Re: ftp forward to internal machine
+Date: Tue, 4 Jun 2002 23:38:38 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206042237.g54MbOA10863@Networker.rockstone.co.uk>
-References: <013601c20c15$cba57520$52cfd3cf@michael>
+Message-ID: <200206042238.g54MceA10923@Networker.rockstone.co.uk>
+References: <Pine.LNX.4.44.0206041531190.30454-100000@wookie.shorewall.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <013601c20c15$cba57520$52cfd3cf@michael>
+In-Reply-To: <Pine.LNX.4.44.0206041531190.30454-100000@wookie.shorewall.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,26 +18,18 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
 
-On Tuesday 04 June 2002 11:18 pm, Michael Hudin wrote:
+On Tuesday 04 June 2002 11:32 pm, Tom Eastep wrote:
 
->  I can send SMTP out just fine, but no other server can send it in for some
-> reason.
+> On Tue, 4 Jun 2002, Antony Stone wrote:
 
-> -A POSTROUTING -o eth0 -j SNAT --to-source 10.10.10.254
-> -A POSTROUTING -o eth1 -j SNAT --to-source 10.10.10.254
+> > You're almost certainly using "-m state --state RELATED" to handle port
+> > 20 for you.   Isn't stateful inspection wonderful :-)
 
-I really don't like the look of those two rules together.   You're saying 
-that any packet going out of the external interface should bear the source 
-address of the external interface - pretty standard.   But you're also saying 
-that any packet going out of the *internal* interface should also have the 
-source address of the external interface - why ???
+> And also loading ip_conntrack_ftp.o and ip_nat_ftp.o.
 
-Do you have any access control rules on your SMTP server - is it fussy about 
-the IP addresses it accepts connections from ?
-
-What happens if you telnet to port 25 on the mail server from your firewall ?
+Well, yes, that's where your stateful inspection comes in, innit ?   :-)
 
 
 Antony.
