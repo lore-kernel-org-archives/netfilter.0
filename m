@@ -1,15 +1,13 @@
-From: Adam Ellis <aellis@saberlogic.com>
-Subject: Re: SMTP Routing Based On Recipient
-Date: Tue, 23 Dec 2003 08:00:55 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Packets missing state ?
+Date: Tue, 23 Dec 2003 13:08:50 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1072184455.708.2.camel@localhost.localdomain>
-References: <1072121282.10935.12.camel@localhost.localdomain>
-	 <1072179452.2184.286.camel@grendel>
-Reply-To: aellis@saberlogic.com
+Message-ID: <200312231308.50481.Antony@Soft-Solutions.co.uk>
+References: <200312231828.59518.rajiv@theargoncompany.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-5voLGjgQUMIfqBd2UEbY"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1072179452.2184.286.camel@grendel>
+In-Reply-To: <200312231828.59518.rajiv@theargoncompany.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,53 +17,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Tuesday 23 December 2003 12:58 pm, Rajiv Shah wrote:
 
---=-5voLGjgQUMIfqBd2UEbY
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> Hi,
+> 	I can see the following lines in my /var/log/messages
+>
+> IN=eth1 OUT= MAC=00:03:47:6a:5c:6b:00:c0:49:25:d1:a3:08:00 SRC=69.6.16.110
+> DST=xxx.xxx.xxx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=61 ID=15968 PROTO=TCP
+> SPT=80 DPT=1821 WINDOW=65535 RES=0x00 ACK URGP=0
+>
+> IN=eth1 OUT= MAC=00:03:47:6a:5c:6b:00:c0:49:25:d1:a3:08:00 SRC=69.6.16.110
+> DST=xxx.xxx.xxx.xx LEN=40 TOS=0x00 PREC=0x00 TTL=61 ID=15968 PROTO=TCP
+> SPT=110 DPT=4553 WINDOW=65535 RES=0x00 ACK URGP=0
+>
+> where xxx.xxx.xxx.xx is my IP. This seems to be one of the return packets
+> which is being logged. I can access the site without any problems. The
+> mails come thru, can do a ssh login. But looking at the logs I feel there
+> is some problem somewhere.
 
-On Tue, 2003-12-23 at 06:37, Chris Brenton wrote:
-> On Mon, 2003-12-22 at 14:28, Adam Ellis wrote:
-> >
-> > What I
-> > am wondering is this - would it be possible to redirect SMTP to my Linu=
-x
-> > server, use iptables to check that the recipient matches a valid user
-> > from a list I'd supply, and, if so, route the message to the Exchange
-> > server?=20
->=20
-> As others have mentioned, this is not an optimal choice. You *might* be
-> able to hack things together using strings and tarpit, but it would be a
-> kluge at best.
->=20
-> A couple of other options:
-> I use a combination of Sendmail, ClamAV, MimeDefang and Spamassassin to
-> clean up all inbound e-mail before passing it off to my mail server. You
-> can find a great tutorial on setting this up here:
-> http://www.rudolphtire.com/mimedefang-howto/
+You say you can access the site without any problems.
 
-Chris and everyone else in this thread,
+I would expect the above log entries to happen when you close down the browser 
+(or view a different site), but the remote server still continues to send a 
+few packets.   They are no longer part of an established connection as far as 
+netfilter is concerned, so they get logged.
 
-Thanks for the information.  I think you all have me going in the right
-direction now!
+Try checking the timestamps, or view the logfile in real time as you do your 
+browsing - I'd expect these log entries to occur soon after you leave the 
+site at the SRC address.
 
-Regards,
-AE
+Nothing to worry about.
 
---=-5voLGjgQUMIfqBd2UEbY
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Antony.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+-- 
+What is this talk of "software release"?
+Our software evolves and matures until it is capable of escape, leaving a 
+bloody trail of designers and quality assurance people in its wake.
 
-iD8DBQA/6DyHTVqlkAkp0+wRAmVzAJ9Azuvn0ZUKFhF3U2+ZvSGWl3vvDACg0+Bd
-CZVJC8NNsvZ2W4CIqeI0rEs=
-=0FJ6
------END PGP SIGNATURE-----
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
---=-5voLGjgQUMIfqBd2UEbY--
 
