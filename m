@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: about ip_conntrack_buckets
-Date: Sat, 27 Nov 2004 14:54:16 -0500
-Message-ID: <1101585255.10064.25.camel@hubcap.ljm.dom>
-References: <115f9440411271104762456e7@mail.gmail.com>
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: How to block only MX query made to DNS server
+Date: Sat, 27 Nov 2004 13:23:24 -0800
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF56795EA@alderaan.smgtec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <115f9440411271104762456e7@mail.gmail.com>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +17,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: pravin rane <pgr_80@yahoo.com>, netfilter@lists.netfilter.org
 
-On Sat, 2004-11-27 at 14:04, Alberto Sierra wrote:
-> i was reading some netfilter tunning article and found a comment about
-> /proc/sys/net/ipv4/netfilter/ip_conntrack_buckets but when i issued a
-> cat to check the value of the file, the system said it didn't exist,
-> it this bad? what could happen if not specified?
-> 
-> thanks
-> 
-> Alberto
+pravin rane wrote:
+> Hi all,
+>=20
+> I want to block DNS MX query made through my network.
+> What iptables rule I should use.
 
-kernel version?
-
-the ip_conntrack_buckets variable appears after applying:
-
-  submitted/76_conntrack_bucket_sysctl.patch
-
-from POM, circa Thu Nov 27 06:28:59 2003...  sounds like the kernel you
-are running does not have this patch applied to it.
-
--j
-
---
-"It takes two to lie. One to lie and one to listen."
-	--The Simpsons
-
+You don't use iptables to do this. named has built in ACL's to determine
+who can perform what oeprations. Look at bind 'view's for more
+information on how to properly deal with name resolution issues.
 
