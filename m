@@ -1,14 +1,11 @@
-From: Jan Humme <jan.humme@xs4all.nl>
-Subject: Re: Clear Iptables chains?
-Date: Mon, 8 Jul 2002 18:34:19 +0200
+From: Mark Tessier <mt@open2web.com>
+Subject: trying to get one blessed thing to work
+Date: Mon, 8 Jul 2002 12:32:23 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <02070818341908.14428@Lms>
-References: <839BF5387528D311AD5D00902751CFC301B0419A@HAVASSMX> <200207081456.g68EuF807141@vulcan.rissington.net> <200207081522.g68FMr807248@vulcan.rissington.net>
-Reply-To: jan.humme@xs4all.nl
+Message-ID: <20020708123223.7107dc16.mt@open2web.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200207081522.g68FMr807248@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,28 +16,29 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+To: Netfilter Mailing List <netfilter@lists.samba.org>
 
-On Monday 08 July 2002 17:22, Antony Stone wrote:
-> On Monday 08 July 2002 3:56 pm, Antony Stone wrote:
-> > On Monday 08 July 2002 3:46 pm, Lukas Ruf wrote:
-> > > iptables -P INPUT ACCEPT
-> > > iptables -P OUTPUT ACCEPT
-> > > iptables -P FORWARD ACCEPT
->
-> I'd prefer to see:
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -P FORWARD DROP
->
-> Then you add in the rules for the stuff your definitely know you want to
-> allow.
+I have a PC running rh7.1., which I'm trying to turn into a firewall. The firewall stands between a DMZ and a LAN. I have an elaborate script which I've been trying to deploy, but so far no luck. Since I really don't know where to begin in terms of diagnosing my problem, I decided to see if I could just ping one machine on the DMZ from another on the LAN.
 
-Certainly.
+The first thing I did was to set the policy to drop for the forward chain as in:
 
-What about default policies for the nat and mangle tables?
+iptables --policy FORWARD DROP
 
-Or perhaps you find that it doesn't belong here?
+Next, I tried to open one door on the forward chain, allowing icmp packets of the echo request type to ping any other machine as in:
 
-Jan Humme.
+iptables -A FORWARD -o eth0 -p icmp --icmp-type echo-request -s 192.168.0.0/24 -m state --state NEW -j ACCEPT
+
+The result is, it doesn't work.
+
+If I do a lsmod I get what I think are the relevant modules that should allow state tracking to work (I haven't included the others):
+
+ip_conntrack 23088 3 [ipt_state ip_conntrack_ftp iptable_nat]
+ip_tables 14016 [ipt_state iptables_mangle iptables_filter iptables_nat]
+
+Any recommendations are appreciated.
+
+-- 
+Thanks,
+
+Mark
 
