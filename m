@@ -1,12 +1,12 @@
 From: "Ben Tan" <linuxnewbie74@hotmail.com>
-Subject: Re: why do we need to allow all traffic from lo interface???
-Date: Wed, 30 Oct 2002 18:00:55 +0800
+Subject: test firewall with nmap
+Date: Wed, 30 Oct 2002 18:38:06 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002b01c27ffb$3cc6b710$1801010a@demo>
+Message-ID: <006f01c28000$6eba65a0$1801010a@demo>
 Reply-To: "Ben Tan" <linuxnewbie74@hotmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0028_01C2803E.4AD00670"
+	boundary="----=_NextPart_000_006C_01C28043.7CD78B20"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -21,19 +21,21 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0028_01C2803E.4AD00670
+------=_NextPart_000_006C_01C28043.7CD78B20
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-hi antony,
-    thanks for your help.
+hi,
+    I used nmap -v -sS -O xxx.xxx.xxx.xxx to check for any open ports, =
+it it enough?
+
+    Any tool to recommend?
 
 cheers
+ben
 
-
-
-------=_NextPart_000_0028_01C2803E.4AD00670
+------=_NextPart_000_006C_01C28043.7CD78B20
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,15 +48,17 @@ charset=3Diso-8859-1">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>hi</FONT><FONT face=3DArial=20
-size=3D2>&nbsp;antony,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; thanks for your=20
-help.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I used nmap -v -sS =
+-O=20
+xxx.xxx.xxx.xxx to check for any open ports, it it enough?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Any tool to=20
+recommend?</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3DArial size=3D2>cheers</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>ben</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_0028_01C2803E.4AD00670--
+------=_NextPart_000_006C_01C28043.7CD78B20--
 
 
