@@ -1,12 +1,13 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Maximum Number of Chains
-Date: Wed, 3 Sep 2003 09:25:51 +1000
+From: Ralf Spenneberg <lists@spenneberg.org>
+Subject: Re: ftp connection tracking
+Date: 31 Aug 2003 12:48:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A15C21A@wardrive.citadelcomputer.com.au>
+Message-ID: <1062326882.1607.15.camel@kermit>
+References: <00eb01c36cc1$b29fa240$020b0b0b@home>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <00eb01c36cc1$b29fa240$020b0b0b@home>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Paul Caritj <pcaritj@freespace-networks.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: David Luyens <david.luyens@skynet.be>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-How much memory do you have???
+Am Mit, 2003-08-27 um 19.36 schrieb David Luyens:
+> Hi,=20
+> =20
+> When a change the portnumber of my ftp deamon, the connection tracking
+> of netfilter does not work anymore.
+> Is it possible to say to netfilter to look at a different port (than
+> 21) for ftp connections?
+Yes, see:
+# modinfo ip_conntrack_ftp
+filename:  =20
+/lib/modules/2.4.20-20.9/kernel/net/ipv4/netfilter/ip_conntrack_ftp.o
+description: <none>
+author:      <none>
+license:     "GPL"
+parm:        ports int array (min =3D 1, max =3D 8)
+parm:        loose int
 
-I've added at once stage around 500+ rules in once chain alone, if that =
-helps you in anyway..
+You can define the ports when loading the ip_conntrack_ftp module.
 
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-=20
+Cheers,
 
------Original Message-----
-From: Paul Caritj [mailto:pcaritj@freespace-networks.net]
-Sent: Saturday, August 30, 2003 2:16 PM
-To: netfilter@lists.netfilter.org
-Subject: Maximum Number of Chains
-
-
-Greetings, I hope everyone is well.
-Though I suspect the subject line adequately conveys my question, I will =
-
-restate it: Does anyone out there know the maximum number of chains per=20
-table?
-
-Many thanks,
-Paul
-
+Ralf
 --=20
+Ralf Spenneberg
+RHCE, RHCX
 
-
-
-------------------------------
-Paul James Caritj
-
-President
-Freespace Networks, Inc.
-pcaritj@freespace-networks.net
-
-
-
+Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
+IPsec-Howto				     http://www.ipsec-howto.org
+Honeynet Project Mirror:                     http://honeynet.spenneberg.org
 
