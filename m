@@ -1,13 +1,15 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: weird message in logs
-Date: Wed, 20 Oct 2004 08:30:21 -0300
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: Abot libipq
+Date: Wed, 20 Oct 2004 13:34:36 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <11e601c4b698$2f88b870$49caa8c0@caris.priv>
-References: <116401c4b5fc$0485cc40$49caa8c0@caris.priv>
-	<41755F42.3050802@pbl.ca>
+Message-ID: <1098272076.8628.13.camel@porky>
+References: <200410191856493.SM01604@FERRARI>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-jD/O3R1Fvgh+Vw3aFvJb"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200410191856493.SM01604@FERRARI>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,78 +19,43 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Aleksandar Milivojevic <amilivojevic@pbl.ca>, netfilter <netfilter@lists.netfilter.org>
-
-Thanks very much for the detailed reply.  It was very clear.  My question
-now is  .. don't I want it to redirect ?  I assume letting icmp type 5
-through would allow this ?  Is that a problem ?
+To: Danyel Leon Toledo <danyel@tesla.cujae.edu.cu>
+Cc: netfilter@lists.netfilter.org
 
 
------ Original Message ----- 
-From: "Aleksandar Milivojevic" <amilivojevic@pbl.ca>
-To: "netfilter" <netfilter@lists.netfilter.org>
-Sent: Tuesday, October 19, 2004 3:38 PM
-Subject: Re: weird message in logs
+--=-jD/O3R1Fvgh+Vw3aFvJb
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, 2004-10-19 at 18:56 -0400, Danyel Leon Toledo wrote:
+> I need write one aplication for look into pakets I recive in my linux
+> router. I found that libipq can help me. But, ?can any body tell me where=
+ I
+> find documentation about it? Really is hard to find it=85
 
-Peter Marshall wrote:
-> Below is a message I get in my messages file.  Basically, there is a
-company
-> going to lease space from us.  I know it would have been easier to just
-> stick another card in my firewall and give them a subnet, however, that is
-> not possible for our setup (long story).  Anyway, I bult another firewall
-> for them.  This firewall sits within our internal network (physically) and
-> has 2 network cards.  The firewalls internal network card is for their
-> netowrk; 192.168.90.0/24,  The external card has a network of its own
-> 10.90.0.2.  My internal firewall has a sub interface eth0:1 with the
-number
-> 10.90.0.1  (eth0 is 192.168.200.1 and is the gateway to my companys
-internal
-> network).
->
-> What I am doing at the moment is ssh'ing to the newly created firewall
-> called rubidium on port 15422.  I get the following in my messages file.
-> Does anyone know how to correct this problem.  It does not prevent me from
-> sshing, however, I would prefer to not have errors in my log files.
->
-> Oct 19 14:46:05 rubidium kernel: REJECT: INPUT IN=eth1 OUT=
-> MAC=00:50:04:9b:7a:ee:00:50:04:68:df:06:08:00 SRC=10.90.0.1 DST=10.90.0.2
-> LEN=484 TOS=0x10 PREC=0xC0 TTL=64 ID=58050 PROTO=ICMP TYPE=5 CODE=1
-> GATEWAY=192.168.202.73 [SRC=10.90.0.2 DST=192.168.202.73 LEN=456 TOS=0x10
-> PREC=0x00 TTL=64 ID=7787 DF PROTO=TCP SPT=15422 DPT=2510 WINDOW=8576
-> RES=0x00 ACK PSH URGP=0 ]
+NuFW (http://www.nufw.org) use libipq (but don't deal with payload
+inspection as it only works on headers).
+You can have a look at the source code in directory=20
+	src/nufw/
+for usage example.
 
-What happened is that your internal firewall got packet from rubidium
-for a host on your local network.  It found out that it needs to route
-it back to the interface it came from (eth0), so it generated ICMP host
-redirect packet (PROTO=ICMP TYPE=5 CODE=1) telling rubidium to talk to
-192.168.202.73 directly (GATEWAY=192.168.202.73).  The thing in square
-brackets is copy of the packet that caused this ICMP redirect (it is
-part of it).
+BR,
+--=20
+Eric Leblond <eric@regit.org>
+NuFW, Now User Filtering Works : http://www.nufw.org
 
-If putting 10.90.0.1 onto separate physical interface is not an option,
-than the only thing you could do is disabling generation of ICMP
-redirects on your internal firewall.
+--=-jD/O3R1Fvgh+Vw3aFvJb
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-To disable them on the running host, do:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-for a in /proc/sys/net/ipv4/conf/*/send_redirects
-do
-    echo 0 > $a
-done
+iD8DBQBBdk1LnxA7CdMWjzIRAj/gAJ93Pdwt1fP3MKFPC5+miSQTtVX+zQCdEppn
+mn1WNDUgvrpwcv3CzKiEeTc=
+=fZ+q
+-----END PGP SIGNATURE-----
 
-To have them disabled on next reboot, place this into /etc/sysctl.conf:
-
-net.ipv4.conf.all.send_redirects = 0
-net.ipv4.conf.default.send_redirects = 0
-
-Of course, instead of disabling them on all interfaces, you can disable
-them per interface too.
-
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+--=-jD/O3R1Fvgh+Vw3aFvJb--
 
 
