@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: IPtables accounting ...
-Date: Wed, 13 Nov 2002 15:38:16 +0000
+From: Raymond Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Time based rules ...
+Date: 13 Nov 2002 18:00:46 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211131538.gADFcPe32172@vulcan.rissington.net>
-References: <1037193855.4553.25.camel@rayw.knowledgefactory.co.za> <1037196520.7181.205.camel@tech004>
+Message-ID: <1037203246.4557.39.camel@rayw.knowledgefactory.co.za>
+References: <1037199668.4556.30.camel@rayw.knowledgefactory.co.za>
+	 <3DD27725.7030006@mcgill.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-HCUrDpqjoceGUm/hOsj8"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1037196520.7181.205.camel@tech004>
+In-Reply-To: <3DD27725.7030006@mcgill.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,30 +18,50 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Chris Poupart <chris.poupart@mcgill.ca>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Wednesday 13 November 2002 2:08 pm, Eric Leblond wrote:
 
-> On Wed, 2002-11-13 at 14:24, Raymond Leach wrote:
+--=-HCUrDpqjoceGUm/hOsj8
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2002-11-13 at 18:00, Chris Poupart wrote:
+> Couldn't you just use a CRON job to add and remove that rule at the=20
+> required times?
+>=20
+Well that's what I'm doing, but it gets cumbersome when you have
+multiple timeslots for different days, e.g. Weekends.
+
+> -- Chris
+>=20
+> Raymond Leach wrote:
 > > Hi
-> >
-> > Where do I do iptables accounting?
-> >
-> > For example: If I have users on a private LAN surfing via a proxy on the
-> > firewall and I have web servers in a DMZ also being routed via the
-> > firewall, where do I put my accounting rules? In the FORWARD chain, or
-> > the INPUT chain, or both?
->
-> Not INPUT if you don't have a web server on your firewall.
-> FORWARD is a good place.
+> >=20
+> > Is there a way to put time restrictions on rules?
+> > For eaxmple, something like:
+> >=20
+> > iptables -A FORWARD -i eth0 -p tcp -sport 1024: -dport 1024: -time
+> > 0700:1700 -j DROP
+> >=20
+> > It would be nice ...
+> >=20
+> > Ray
+> > --=20
+--=20
 
-But he does have a web server on his firewall - he is running a proxy, which 
-is both a server and a client in a single application.
+--=-HCUrDpqjoceGUm/hOsj8
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Antony.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
--- 
+iD8DBQA90ncuh1fuR/Bv+ygRAmU8AJ4rUn2YS0yqrUaS8DxnjNDFE5rRMACfSe6Z
+0kS5UAAiPcGjMbgdq3w/cp0=
+=By6m
+-----END PGP SIGNATURE-----
 
-Most people have more than the average number of legs.
+--=-HCUrDpqjoceGUm/hOsj8--
+
 
