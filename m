@@ -1,11 +1,13 @@
-From: "Joe Patterson" <jpatterson@asgardgroup.com>
-Subject: setting fwmark in output chain for policy routing
-Date: Tue, 11 Jun 2002 17:51:00 -0400
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Multi Port Tested & Example
+Date: Tue, 11 Jun 2002 17:55:39 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NJEFLNJDIFFNMHDEBKMJKEGLDOAA.jpatterson@asgardgroup.com>
+Message-ID: <20020611215538.GD21405@cannon.eng.us.uu.net>
+References: <000d01c21191$53304e40$7b0010ac@dynamicaccess.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <000d01c21191$53304e40$7b0010ac@dynamicaccess.lan>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,35 +18,178 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Hard__warE <hard__ware@hotmail.com>
+Cc: netfilter@lists.samba.org
 
-I've got a kind of an odd setup, and am curious about something.
+Mr. Hard__warE,
 
-I've seen some references that say that one should be able to set an fwmark
-on a packet in the mangle/OUTPUT chain, and then have the linux policy
-routing database determine the route to use based on that fwmark.  I'm a
-little confused as to the order in which this happens.  I would think that
-in order to be able to hand a packet to netfilter, it'd have to be a pretty
-complete packet, including things like the source IP address.  However, the
-source address of a localy generated packet is determined by which route it
-matches.  But you can't know which route it matches unless you have all of
-the information, such as the fwmarks.
+It's very cool that you're helping us with your preconf'ed scripts.
+But I think it's more appropriate if you could set up a web page for
+all these excellent suggestions/scripts that you've been posting so
+the people can go and take a look at it at their convenience.
+Just send us the URL and not an email every hour :-)
 
-It seems to me to be a bit of a chicken-and-egg thing.  Or is the source
-address determined first, based on the route that the packet will *probably*
-take, then it's shipped through mangle/OUTPUT, then the real routing
-decision is made?
+Ramin
 
-This is kind of halfway between netfilter and lartc, but I figured someone
-here might know better than I.
+On Wed, Jun 12, 2002 at 07:45:38AM +1000, Hard__warE wrote:
 
-Thanks,
-
--Joe Patterson, CCNP, CISSP
-Senior Security Engineer
-The Asgard Group
-(954)343-4370 x102
-jpatterson@asgardgroup.com
-
-
+> i remember a while back people were screeming for help on multi port
+> 
+> well here what ya .. need
+> 
+> the example is For all SAMBA Ports to be added and DROPED
+> 
+> ---------------Start Below This Line---------------------
+> 
+> ## Load the Multi Port  Modue ##
+> 
+> echo -e "ipt_multiport, "
+> if [ -z "` $LSMOD | $GREP ipt_multiport | $AWK {'print $1'} `" ]; then
+>    /sbin/insmod ipt_multiport
+> fi
+> 
+> ##########Creat Samba Chain #############
+> $IPTABLES -N SMB
+> $IPTABLES -A SMB -m multiport -p tcp --dport 135,136,137,138,139,445 -j DROP
+> $IPTABLES -A SMB -m multiport -p tcp --dport 135,136,137,138,139,445 -j DROP
+> $IPTABLES -A SMB -m multiport -p udp --sport 135,136,137,138,139,445 -j DROP
+> $IPTABLES -A SMB -m multiport -p udp --sport 135,136,137,138,139,445 -j DROP
+> 
+> $IPTABLES -A INPUT -s $UNIVERSE -d $UNIVERSE -j SMB
+> $IPTABLES -A OUTPUT -s $UNIVERSE -d $UNIVERSE -j SMB
+> $IPTABLES -A FORWARD -j SMB
+> 
+> To prove it works here is my Chains  /sbin/iptbales -L -n -v
+> 
+> Chain INPUT (policy DROP 0 packets, 0 bytes)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>     2   202 ACCEPT     all  --  lo     *       0.0.0.0/0
+> 0.0.0.0/0
+>   470 49894 ACCEPT     all  --  eth0   *       172.16.0.0/16
+> 0.0.0.0/0
+>     0     0 drop-and-log-it  all  --  eth1   *       172.16.0.0/16
+> 0.0.0.0/0
+>     0     0 drop-and-log-it  all  --  eth1   *       0.0.0.0/0
+> 172.16.0.0/16
+>     0     0 SPOOFED    icmp --  eth1   *       0.0.0.0/0
+> 0.0.0.0/0
+>     0     0 ACCEPT     icmp --  eth1   *       0.0.0.0/0
+> 192.168.0.253
+>    16  1395 ACCEPT     all  --  eth1   *       0.0.0.0/0
+> 192.168.0.253
+>     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+> 192.168.0.212
+>     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+> 192.168.0.212      state RELATED,ESTABLISHED
+>     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+> 192.168.0.213
+>     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+> 192.168.0.213      state RELATED,ESTABLISHED
+>     0     0 ACCEPT     all  --  eth1   *       0.0.0.0/0
+> 192.168.0.253      state RELATED,ESTABLISHED
+>    17  1702 SMB        all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0
+>     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0
+> 
+> Chain FORWARD (policy DROP 0 packets, 0 bytes)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>    67  5190 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
+> 172.16.0.111       tcp dpt:80
+>     0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
+> 172.16.0.111       tcp dpt:443
+>     0     0 ACCEPT     udp  --  eth1   *       0.0.0.0/0
+> 172.16.0.111       udp dpt:443
+>     0     0 ACCEPT     tcp  --  eth1   *       192.168.0.212
+> 172.16.0.52        tcp
+>     0     0 ACCEPT     udp  --  eth1   *       192.168.0.212
+> 172.16.0.52        udp
+>     0     0 ACCEPT     tcp  --  eth1   *       192.168.0.213
+> 172.16.0.53        tcp
+>     0     0 ACCEPT     udp  --  eth1   *       192.168.0.213
+> 172.16.0.53        udp
+>   334 92708 SMB        all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0
+>     0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
+> 0.0.0.0/0          tcp flags:0x16/0x02 limit: avg 1/sec burst 5
+>     0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
+> 0.0.0.0/0          tcp flags:0x17/0x04 limit: avg 1/sec burst 5
+>     0     0 ACCEPT     icmp --  eth1   *       0.0.0.0/0
+> 0.0.0.0/0          icmp type 8 limit: avg 1/sec burst 5
+>     0     0 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
+> 172.16.0.52        state RELATED,ESTABLISHED
+>     0     0 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
+> 172.16.0.53        state RELATED,ESTABLISHED
+>   127 32555 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
+> 0.0.0.0/0          state RELATED,ESTABLISHED
+>   207 60153 ACCEPT     all  --  eth0   eth1    172.16.0.0/16
+> 0.0.0.0/0
+>     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0
+> 
+> Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>     2   202 ACCEPT     all  --  *      lo      0.0.0.0/0
+> 0.0.0.0/0
+>   392  151K ACCEPT     all  --  *      eth0    172.16.0.253
+> 172.16.0.0/16
+>     0     0 ACCEPT     all  --  *      eth0    192.168.0.253
+> 172.16.0.0/16
+>     0     0 drop-and-log-it  all  --  *      eth1    0.0.0.0/0
+> 172.16.0.0/16
+>     0     0 ACCEPT     all  --  *      eth0    192.168.0.212
+> 172.16.0.0/16
+>     0     0 ACCEPT     all  --  *      eth1    192.168.0.212
+> 0.0.0.0/0
+>     0     0 ACCEPT     all  --  *      eth0    192.168.0.213
+> 172.16.0.0/16
+>     0     0 ACCEPT     all  --  *      eth1    192.168.0.213
+> 0.0.0.0/0
+>    16  1059 ACCEPT     all  --  *      eth1    192.168.0.253
+> 0.0.0.0/0
+>     0     0 SMB        all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0
+>     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0
+> 
+> Chain SMB (3 references)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>     0     0 DROP       tcp  --  *      *       0.0.0.0/0
+> 0.0.0.0/0          multiport dports 135,136,137,138,139,445
+>     0     0 DROP       tcp  --  *      *       0.0.0.0/0
+> 0.0.0.0/0          multiport dports 135,136,137,138,139,445
+>    17  1702 DROP       udp  --  *      *       0.0.0.0/0
+> 0.0.0.0/0          multiport sports 135,136,137,138,139,445
+>     0     0 DROP       udp  --  *      *       0.0.0.0/0
+> 0.0.0.0/0          multiport sports 135,136,137,138,139,445
+> 
+> Chain SPOOFED (1 references)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>     0     0 drop-and-log-it  all  --  *      *       10.0.0.0/8
+> 0.0.0.0/0
+>     0     0 drop-and-log-it  all  --  *      *       172.16.0.0/16
+> 0.0.0.0/0
+>     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+> 10.0.0.0/8
+>     0     0 drop-and-log-it  all  --  *      *       0.0.0.0/0
+> 172.16.0.0/16
+> 
+> Chain drop-and-log-it (10 references)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>     0     0 LOG        all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0          LOG flags 0 level 6
+>     0     0 DROP       all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0
+> 
+> 
+> 
+> 
+> 
 
