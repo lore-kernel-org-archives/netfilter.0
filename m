@@ -1,12 +1,15 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: -j SNAT question
-Date: Wed, 29 Oct 2003 21:42:15 -0800 (PST)
+From: Herman <Herman@AerospaceSoftware.com>
+Subject: Re: Handling a clients fixed IP address
+Date: Wed, 29 Oct 2003 23:35:37 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0310292119590.6554@xena.cft.ca.us>
-References: <D5A9EB3555F2D04AB1EE3DD6C748C4758BB863@qlmail.qlogitek.com>
+Message-ID: <200310292335.37809.Herman@AerospaceSoftware.com>
+References: <BAY10-F94NOrTemXpAJ0002af16@hotmail.com>
+Reply-To: Herman@AerospaceSoftware.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5A9EB3555F2D04AB1EE3DD6C748C4758BB863@qlmail.qlogitek.com>
+In-Reply-To: <BAY10-F94NOrTemXpAJ0002af16@hotmail.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,52 +19,52 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Miguel Laborde <Miguel.Laborde@qlogitek.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: john zurowski <johnzurowski@hotmail.com>, netfilter@lists.netfilter.org
 
-On Wed, 29 Oct 2003, Miguel Laborde wrote:
+On Wednesday 29 October 2003 9:04 pm, john zurowski wrote:
+> I've been using iptables without problems for almost a year now. A
+> situation has however occured where I would like to allow access to users
+> with fixed IP addresses onto the LAN in order to gain access to the
+> internet. The situation is complicated because the client devices may be
+> assigned fixed IP addresses which do not match our subnet or point at our
+> gateway. Can iptables be configured in such a way that this could be
+> handled
+> transparently i.e. without the client having to set up dhcp client service?
+>
+> _________________________________________________________________
+> Tired of 56k? Get a FREE BT Broadband connection
+> http://www.msn.co.uk/specials/btbroadband
 
-> the DMZ such as web/ftp/etc. What I currently do is DNAT in the
-> PREROUTING chain to my DMZ addresses for these machines, and then in the
-> POSTROUTING chain i -J SNAT to my main firewall IP. This is where the
-> question arises.
---snip--
+Hmm, as I understand it:
+A visitor plugs a 'foreign' laptop into the wall in your meeting room and 
+starts a browser, then he expects to connect to say www.cnn.com without 
+having to change *any* settings on his machine, which may be configured to 
+talk to a non-existant gateway IP address.  
 
-> So everything that goes out through my firewall is source nat'd to the
-> firewall's IP. This is where I'm confused.. mostly by the fact that this
-> kind of setup appears to work while I think it shouldn't. If a client
-> sends a SYN packet with the destination IP of EXT_IP_WEB and then gets a
-> ACK packet back with the source IP set to EXT_IP_FW won't it wonder what
-> the heck is going on and just ignore it?!
+We hope that your guest IP and Gateway settings do not clash with an existing 
+IP address on your network.  If you are concerned about clashes, then you 
+would need either a dedicated interface or a virtual LAN interface to 
+separate the meeting room from the rest of the place.
 
-No, because the internal webserver acks to the external (?) firewall, which
-de-SNATs it (so the ack's destination is now the client) and then de-DNATs
-it (so the ack's source is the external web address), so the client thinks
-there is a real machine at the external web address which is talking to it.
+Well, this clearly calls for NAT, but it won't be simple.
 
-If the objective is to ensure that the internal webserver sends responses
-to the firewall and not some strange alternative route that doesn't know to
-undo the DNAT transformation, I think it would be safer to SNAT to the
-firewall's internal (DMZ) address, which is what the webserver is supposed
-to send the packet to anyway, as a gateway to the external firewall
-address.  But if the only way to the Internet (at least, the only way known
-to the webserver) is through that one firewall, I think most people don't
-bother with the SNAT step.
+I think you have to look at "-m state --state NEW, ESTABLISHED, RELATED" and 
+"SNAT" to cause every new previously unknown connection attempt and whatever 
+follows from that, to be redirected to the External IP on the firewall 
+machine.
 
-On the other hand, traffic *originating* on the internal net, which
-presumably is not routeable, needs SNAT as it goes out the external
-firewall interface, so replies from the wide world will return to the
-firewall.
+I think the simplest case would be if you use a dedicated interface or VLAN, 
+say eth3 if it is dedicated hardware or eth1.1 if it is a VLAN and then SNAT 
+whatever arrives on that interface to the outside IP address of the firewall.
 
-Or is this actually what you're doing -- did I misunderstand your rules?
-When an outside client originates the connection, subsequent packets will
-not get SNAT treatment in the outgoing direction -- only originating (SYN
-and not RST) packets lead to creation of a SNAT conntrack, in this
-scenario.
+Since the packets would be addressed to a non-existant gateway machine, you 
+would need to do DNAT too.
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+I have a feeling that this problem can be solved with iptables and it would be 
+interesting if one of the real iptables gurus can comment.
+
+Cheers,
+-- 
+Herman
 
