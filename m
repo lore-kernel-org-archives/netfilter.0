@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: displaying connections recognized by the conn.-tracking module possible?
-Date: Sun, 22 Aug 2004 18:16:53 +0100
+From: Sanjay Arora <skpobox@hotpop.com>
+Subject: Cons?: Directed Pinholes
+Date: 22 Aug 2004 22:44:47 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408221816.53845.Antony@Soft-Solutions.co.uk>
-References: <200408211759.50531.shirai@kawo1.rwth-aachen.de>
+Message-ID: <1093194886.16081.84.camel@Sewak.Asr.Lan>
+Reply-To: skpobox@hotpop.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200408211759.50531.shirai@kawo1.rwth-aachen.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +17,17 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Saturday 21 August 2004 4:59 pm, Andrej Stender wrote:
+Can someone please tell me about the downside of implementing directed pinholes in the firewall between DMZ & Green subnet. Pointers to literature/resources on the same would be most welcome. Expert advice more so ;-))
 
-> Hi,
->
-> is there a tool which is able to print out a list of all tcp-connections
-> currently recognized by the connection-tracking module? (on a router doing
-> nat) I mean perhaps a similar output than "netstat -t" does, when showing
-> all current tcp-connections on a host. Or perhaps is this listed somewhere
-> in the /proc filesystem?
+Specifically I want to implement directed pinholes (am presently reading up on them) for database access by webserver in DMZ and SMTP forwarding by mailserver from/to respectively the Green subnet. But I am totally unaware of any security & maintenence/monitoring implications.
 
-cat /proc/net/ip_conntrack
+I am using ipcop firewall with static public IP and two Lan segments using 192.168.x.x address-space, with ipCop default instalation, incoming http , smtp & pop3/imap forwarded to webserver in DMZ, which is fully firewalled from connecting to Green Segment and no restrictions on outward connections. Request iptables gurus to please comment and point out various issues.
 
-Regards,
+With best regards and thanks in advance.
 
-Antony.
+Sanjay.
 
--- 
-The words "e pluribus unum" on the Great Seal of the United States are from a 
-poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
-dressing.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
