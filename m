@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Trying to setup two ethernet cards with two websites
-Date: Thu, 2 Jan 2003 10:21:07 -0500
+From: "Ranjeet Shetye" <ranjeet.shetye@zultys.com>
+Subject: RE: unknown arg --syn
+Date: Thu, 2 Jan 2003 10:35:38 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200301021021.07838.netfilter@newkirk.us>
-References: <se140b47.055@butchers.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <005c01c2b28d$bf441c40$0100a8c0@zultys.com>
+References: <011e01c2b24a$f7b2a800$13fcc5cb@Housecall>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <se140b47.055@butchers.com>
+In-Reply-To: <011e01c2b24a$f7b2a800$13fcc5cb@Housecall>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +17,99 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: JUSTIN GERRY <JGERRY@butchers.com>, roy@karlsbakk.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@lists.netfilter.org
 
-On Thursday 02 January 2003 09:49 am, JUSTIN GERRY wrote:
-> I tried your suggestions below and yes, I finally have two websites
-> working on the same box. Simplifying things does indeed work.
->
-> Is there a way to, by default drop everything on the output chain, but
-> insert a rule to allow only http requests that were initialed by a
-> client to either website?
->
-> Or if my input rules are sufficient, do I really need to do anything
-> on the output chain other than let everthing out?
->
-> Thanks,
-> Justin
 
-If you trust that nothing on the box is or ever will connect that you=20
-don't want to, then output chain can just have an ACCEPT policy.  If you=20
-want to lock down to make it harder for a trojan or such to communicate=20
-back from the box, you can set a DROP policy, then:
+Don=92t use iptables 1.2.7. The NetFilter team released a 1.2.7a version
+cos 1.2.7 introduced some serious bugs.
 
-iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+Ranjeet Shetye
+Senior Software Engineer
+Zultys Technologies
+771 Vaqueros Avenue
+Sunnyvale  CA  94085
+USA
+Ranjeet.Shetye@Zultys.com
+http://www.zultys.com/
 
-will let traffic back out in response to client requests, but not let the=
 =20
-box initiate any connections.  If this tighter firewall still allows the=20
-needed connections, why open up any further?  I'd suggest you might want=20
-to log dropped output traffic, though, to see what DOES try to get out. =20
-Depending on your usage and plans, you might want to open a few=20
-outbounds, like traceroute, ping, CVS, http, or ftp access FROM the box=20
-if you want to use these services when logged into the box, for updating=20
-software etc.  Of course you can just allow those connections when=20
-needed, and the rest of the time go with DROP policy and the EST/REL=20
-rule above.
 
-j
+
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org=20
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of hare ram
+> Sent: Thursday, January 02, 2003 2:38 AM
+> To: Keith Mastin; netfilter@lists.netfilter.org
+> Subject: Re: unknown arg --syn
+>=20
+>=20
+> Hi
+>=20
+> iam using redhat 8.0
+> better u upgrate Iptables to 1.2.7
+> its works fine
+>=20
+> hare
+> ----- Original Message -----
+> From: "Keith Mastin" <kmastin@beechtree.ca>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Wednesday, January 01, 2003 5:07 AM
+> Subject: unknown arg --syn
+>=20
+>=20
+> > This should be so simple, yet it's eluding me... a simple iptables=20
+> > script on a protected machine, with a few rules where the=20
+> syn flag is=20
+> > set returns an error:
+> >
+> > rule example (lives all on one line in script):
+> >  iptables -A INPUT -p tcp -s 0/0 -d 192.168.0.167/32=20
+> --destination-port 22
+> >   --syn -j ACCEPT
+> >
+> > the error when the script is run:
+> >  [root@spy root]# sh ./iptables-rules
+> >  iptables v1.2.5: Unknown arg `--syn'
+> >  Try `iptables -h' or 'iptables --help' for more information.
+> >
+> > sure enough, no mention of --syn in iptables -h
+> >
+> > from man iptables:
+> >  [!] --syn
+> >  Only match TCP packets with the SYN bit set and the ACK=20
+> and FIN bits =20
+> > cleared.  Such packets are used to  request  TCP  connection=20
+> > initiation;  for  example,  blocking  such packets coming in an=20
+> > interface will prevent  incoming TCP connections, but outgoing TCP=20
+> > connections will be  unaffected.  It is equivalent to --tcp-flags=20
+> > SYN,RST,ACK SYN. If the "!"  flag  precedes  the  "--syn",=20
+> the sense=20
+> > of the option is inverted.
+> >
+> > I also replaced --syn with --tcp-flags SYN,RST,ACK SYN,=20
+> which resulted=20
+> > in the error:  [root@spy root]# sh ./iptables-rules
+> >  iptables v1.2.5: Unknown arg `--tcp-flags'
+> >  Try `iptables -h' or 'iptables --help' for more information.
+> >
+> > I think I'm too close to see the solution, so if anybody can see it=20
+> > right off, it would be much appreciated...
+> >
+> > System info:
+> > Redhat 7.3
+> > kernel-2.4.18-19.7.x.athlon
+> >
+> > Also tried on another system with similar results:
+> > Redhat 7.3
+> > kernel-2.4.18-3smp
+> >
+> > TIA
+> >
+> >
+> >
+> >
+>=20
+>=20
 
 
