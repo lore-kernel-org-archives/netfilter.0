@@ -1,13 +1,13 @@
 From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: (no subject)
-Date: Tue, 21 Sep 2004 09:38:52 -0500
+Subject: Re: Understanding how nat works
+Date: Tue, 21 Sep 2004 09:47:56 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <41503CFC.5030107@pbl.ca>
-References: <1095620074.3098.1.camel@jabbera-laptop>
+Message-ID: <41503F1C.6060406@pbl.ca>
+References: <20040921140258.75515.qmail@web51307.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1095620074.3098.1.camel@jabbera-laptop>
+In-Reply-To: <20040921140258.75515.qmail@web51307.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,33 +20,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Michael Barry wrote:
-> I have a bunch of public IP addresses, for example, in the range
-> 192.168.1.100-192.168.1.104. 
+Dominic Iadicicco wrote:
+> Hello all,
 > 
-> I have a 5 computers on my internal network statically defined from
-> 192.168.0.100-192.168.0.104. 
+> I am new at iptables and am tring to learn for furture
+> projects. For an expirement I tried this.
 > 
-> I am trying to create a rule where each computer will always map to the
-> same public ip address. For example I did: iptables -t nat -s
-> 192.168.0.100 -j SNAT --to-source 192.168.1.100. 
+> "iptables -t nat -A POSTROUTING -s 172.16.12.131 -o
+> eth0 -j SNAT --to 172.16.12.167"
+> 
+> This is all on a 172.16.12.x subnet.
+> 
+> from the same machine I then tried to ping
+> 172.16.12.200 and I got nowhere.  When I deleted the
+> rule it worked fine.  
 
-I'd guess there was also "-A POSTROUTING" in above command?
-
-> The problem is if I try to do a ping from 192.168.0.100 it correctly
-> gets translated to 192.168.1.100 and the ping goes out, but when the
-> reply comes back there is an ARP request for WHO-HAS 192.168.1.100, and
-> since no-one technically holds this address no reply is ever sent, and
-> the ping reply gets dropped. Does anyone know a solution to this
-> problem?
-
-This part is strange.  The reply should have been translated 
-automatically back to your private range.  I'm not sure if connection 
-tracking module is required for SNAT.  It might be.  Try doing "lsmod | 
-grep ip" and see if it shows up (you might also send output to mailing 
-list, might help somebody to help you).  It is usually automatically 
-loaded (even when you don't expect it), but if it isn't, try loading it 
-with "modprobe ip_conntrack".
+What machine has 172.16.12.167?  Usually you should SNAT only to address 
+that is assigned to the machine/interface where you SNATing.
 
 -- 
 Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
