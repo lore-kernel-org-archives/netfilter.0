@@ -1,9 +1,10 @@
-From: "Glen Spidal" <glens@mail.cybercorpinc.com>
-Subject: Netfilter or DNS issue?
-Date: Tue,  8 Feb 2005 13:14:22 -0800
-Message-ID: <200502081314.AA721338@mail.cybercorpinc.com>
-Reply-To: glens@mail.cybercorpinc.com
+From: "Charles Lee" <charles@utstar.com>
+Subject: re: configure TOS in IPtables failing
+Date: Tue, 8 Feb 2005 16:48:15 -0500
+Message-ID: <CKECJADCIGJOKLCDNALCGELCCNAA.charles@utstar.com>
+Reply-To: charles@utstar.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,357 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
-Greetings all,
-
-I have constructed a wirewall based off of the tutorial at frozentux.  The problem I'm having is that I have two DNS servers with the second being a slave to the first.  I can DIG other domains from the slave DNS server except for my own.  IT appears that the slave DSN server is not getting updated for the primary one. Here's my script:
-
-#!/bin/sh
-#
-#Feb-05-2005
-#Feb-07-2005 Activated DNS2
-#
-# rc.DMZ.firewall - DMZ IP Firewall script for Linux 2.4.x and iptables
-#
-# Copyright (C) 2001  Oskar Andreasson &lt;bluefluxATkoffeinDOTnet&gt;
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; version 2 of the License.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program or from the site that you downloaded it
-# from; if not, write to the Free Software Foundation, Inc., 59 Temple
-# Place, Suite 330, Boston, MA  02111-1307   USA
-#
-###########################################################################
-#
-# 1. Configuration options.
-#
-# 1.1 Internet Configuration.
-#
-#INET_IP="194.236.50.152"
-#HTTP_IP="194.236.50.153"
-#DNS_IP="194.236.50.154"
-#
-#Add IP addresses
-#EXT_IP="eth0"
-# for i in 'seq 17 26'; do
-#  ip addr add 66.15.233.${i} dev $EXT_IP
-# done
-#
-INET_IP="66.15.233.16"
-HTTP_IP="66.15.233.19"
-DNS_IP="66.15.233.17"
-DNS2_IP="66.15.233.18"
-INET_IFACE="eth0"
-#
-# 1.1.1 DHCP
-#
-# 1.1.2 PPPoE
-#
-# 1.2 Local Area Network configuration.
-#
-# your LAN's IP range and localhost IP. /24 means to only use the first 24
-# bits of the 32 bit IP address. the same as netmask 255.255.255.0
-#
-LAN_IP="192.168.0.1"
-LAN_IFACE="eth1"
-#
-# 1.3 DMZ Configuration.
-#DMZ_HTTP_IP="192.168.1.2"
-#DMZ_DNS_IP="192.168.1.3"
-#DMZ_IP="192.168.1.1"
-#DMZ_IFACE="eth2"
-DMZ_HTTP_IP="192.168.1.2"
-DMZ_DNS_IP="192.168.1.17"
-DMZ_DNS2_IP="192.168.1.18"
-DMZ_IP="192.168.1.1"
-DMZ_IFACE="eth2"
-#
-# 1.4 Localhost Configuration.
-#
-LO_IFACE="lo"
-LO_IP="127.0.0.1"
-#
-# 1.5 IPTables Configuration.
-#
-IPTABLES="/sbin/iptables"
-#
-# 1.6 Other Configuration.
-#
-###########################################################################
-#
-# 2. Module loading.
-#
-# Needed to initially load modules
-#
-/sbin/depmod -a
-#
-# 2.1 Required modules
-#
-/sbin/modprobe ip_tables
-/sbin/modprobe ip_conntrack
-/sbin/modprobe iptable_filter
-/sbin/modprobe iptable_mangle
-/sbin/modprobe iptable_nat
-/sbin/modprobe ipt_LOG
-/sbin/modprobe ipt_limit
-/sbin/modprobe ipt_state
-#
-# 2.2 Non-Required modules
-#
-#/sbin/modprobe ipt_owner
-#/sbin/modprobe ipt_REJECT
-#/sbin/modprobe ipt_MASQUERADE
-#/sbin/modprobe ip_conntrack_ftp
-#/sbin/modprobe ip_conntrack_irc
-#/sbin/modprobe ip_nat_ftp
-#/sbin/modprobe ip_nat_irc
-###########################################################################
-#
-# 3. /proc set up.
-#
-# 3.1 Required proc configuration
-#
-echo "1" > /proc/sys/net/ipv4/ip_forward
-#
-# 3.2 Non-Required proc configuration
-#
-#echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter
-#echo "1" > /proc/sys/net/ipv4/conf/all/proxy_arp
-#echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-###########################################################################
-# 4. rules set up.
-######
-# 4.1 Filter table
-#
-# 4.1.1 Set policies
-#
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT DROP
-$IPTABLES -P FORWARD DROP
-#
-# 4.1.2 Create userspecified chains
-#
-# Create chain for bad tcp packets
-$IPTABLES -N bad_tcp_packets
-#
-# Create separate chains for ICMP, TCP and UDP to traverse
-#
-$IPTABLES -N allowed
-$IPTABLES -N icmp_packets
-#
-# 4.1.3 Create content in userspecified chains
-#
-# bad_tcp_packets chain
-#
-$IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK \
--m state --state NEW -j REJECT --reject-with tcp-reset
-$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG \
---log-prefix "New not syn:"
-$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
-#
-# allowed chain
-#
-$IPTABLES -A allowed -p TCP --syn -j ACCEPT
-$IPTABLES -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A allowed -p TCP -j DROP
-#
-# ICMP rules
-# Changed rules totally
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 8 -j ACCEPT
-$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
-#
-# 4.1.4 INPUT chain
-#
-# Bad TCP packets we don't want
-#
-$IPTABLES -A INPUT -p tcp -j bad_tcp_packets
-#
-# Packets from the Internet to this box
-#
-$IPTABLES -A INPUT -p ICMP -i $INET_IFACE -j icmp_packets
-#
-# Packets from LAN, DMZ or LOCALHOST
-#
-# From DMZ Interface to DMZ firewall IP
-#
-$IPTABLES -A INPUT -p ALL -i $DMZ_IFACE -d $DMZ_IP -j ACCEPT
-#
-# From LAN Interface to LAN firewall IP
-#
-$IPTABLES -A INPUT -p ALL -i $LAN_IFACE -d $LAN_IP -j ACCEPT
-#
-# From Localhost interface to Localhost IP's
-#
-$IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
-$IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LAN_IP -j ACCEPT
-$IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $INET_IP -j ACCEPT
-#
-# Special rule for DHCP requests from LAN, which are not caught properly
-# otherwise.
-#
-$IPTABLES -A INPUT -p UDP -i $LAN_IFACE --dport 67 --sport 68 -j ACCEPT
-#
-# All established and related packets incoming from the internet to the
-# firewall
-$IPTABLES -A INPUT -p ALL -d $INET_IP -m state --state ESTABLISHED,RELATED \
--j ACCEPT
-#
-# In Microsoft Networks you will be swamped by broadcasts. These lines
-# will prevent them from showing up in the logs.
-#
-#$IPTABLES -A INPUT -p UDP -i $INET_IFACE -d $INET_BROADCAST \
-#--destination-port 135:139 -j DROP
-#
-# If we get DHCP requests from the Outside of our network, our logs will
-# be swamped as well. This rule will block them from getting logged.
-#
-#$IPTABLES -A INPUT -p UDP -i $INET_IFACE -d 255.255.255.255 \
-#--destination-port 67:68 -j DROP
-#
-# If you have a Microsoft Network on the outside of your firewall, you may
-# also get flooded by Multicasts. We drop them so we do not get flooded by
-# logs
-#
-#$IPTABLES -A INPUT -i $INET_IFACE -d 224.0.0.0/8 -j DROP
-#
-# Log weird packets that don't match the above.
-#
-$IPTABLES -A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG \
---log-level DEBUG --log-prefix "IPT INPUT packet died: "
-#
-# 4.1.5 FORWARD chain
-#
-# Bad TCP packets we don't want
-#
-$IPTABLES -A FORWARD -p tcp -j bad_tcp_packets
-#
-# DMZ section
-#
-# General rules
-#
-$IPTABLES -A FORWARD -i $DMZ_IFACE -o $INET_IFACE -j ACCEPT
-$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -m state \
---state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i $LAN_IFACE -o $DMZ_IFACE -j ACCEPT
-$IPTABLES -A FORWARD -i $DMZ_IFACE -o $LAN_IFACE -m state \
---state ESTABLISHED,RELATED -j ACCEPT
-#
-# HTTP server
-#
-$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_HTTP_IP \
---dport 80 -j allowed
-$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_HTTP_IP \
--j icmp_packets
-#
-# DNS server
-#
-# DNS1
-$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_DNS_IP --dport 53 -j allowed
-$IPTABLES -A FORWARD -p UDP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_DNS_IP --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_DNS_IP -j icmp_packets
-#
-# DNS2
-$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_DNS2_IP --dport 53 -j allowed
-$IPTABLES -A FORWARD -p UDP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_DNS2_IP --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_DNS2_IP -j icmp_packets
-
-#
-# LAN section
-#
-$IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-#
-# Log weird packets that don't match the above.
-#
-$IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG \
---log-level DEBUG --log-prefix "IPT FORWARD packet died: "
-#
-# 4.1.6 OUTPUT chain
-#
-# Bad TCP packets we don't want.
-#
-$IPTABLES -A OUTPUT -p tcp -j bad_tcp_packets
-#
-# Special OUTPUT rules to decide which IP's to allow.
-#
-$IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
-$IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
-$IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
-#
-# Log weird packets that don't match the above.
-#
-$IPTABLES -A OUTPUT -m limit --limit 3/minute --limit-burst 3 -j LOG \
---log-level DEBUG --log-prefix "IPT OUTPUT packet died: "
-######
-# 4.2 nat table
-#
-# 4.2.1 Set policies
-#
-# 4.2.2 Create user specified chains
-#
-# 4.2.3 Create content in user specified chains
-#
-# 4.2.4 PREROUTING chain
-#
-$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $HTTP_IP --dport 80 \
--j DNAT --to-destination $DMZ_HTTP_IP
-#
-# DNS1
-$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $DNS_IP --dport 53 -j DNAT --to-destination $DMZ_DNS_IP
-$IPTABLES -t nat -A PREROUTING -p UDP -i $INET_IFACE -d $DNS_IP --dport 53 -j DNAT --to-destination $DMZ_DNS_IP
-#
-#DNS2
-$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $DNS2_IP --dport 53 -j DNAT --to-destination $DMZ_DNS2_IP
-$IPTABLES -t nat -A PREROUTING -p UDP -i $INET_IFACE -d $DNS2_IP --dport 53 -j DNAT --to-destination $DMZ_DNS2_IP
-#
-# 4.2.5 POSTROUTING chain
-#
-# Enable simple IP Forwarding and Network Address Translation
-#
-$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
-#
-# 4.2.6 OUTPUT chain
-######
-# 4.3 mangle table
-#
-# 4.3.1 Set policies
-#
-# 4.3.2 Create user specified chains
-#
-# 4.3.3 Create content in user specified chains
-#
-# 4.3.4 PREROUTING chain
-#
-# 4.3.5 INPUT chain
-#
-# 4.3.6 FORWARD chain
-#
-# 4.3.7 OUTPUT chain
-#
-# 4.3.8 POSTROUTING chain
-#
-
-Glen Spidal
- 
-
-
-
-
-________________________________________________________________
-Sent via the WebMail system at mail.cybercorpinc.com
-
-
- 
-                   
-
+Hello!  To it maybe concern,
+=20
+I want change the particular L3 =93OUTPUT=94 interface with specific TOS =
+value.  So do the following:
+<iptables =96A OUTPUT =96t mangle =96s 192.168.10.1 =96j TOS =96set-tos =
+0x10>
+=20
+After I type this command,  ping 192.168.10.1 from other PC with =
+192.168.10.2.
+The ping respond come-back with TOS field=3D0.  but I was expecting the =
+TOS value changed to 0x10.
+=20
+How can I make output from particular L3 output interface to have =
+specific TOS value?
+=20
+Would also show me how to verify the configuration the TOS field in the =
+Iptables for particular output interface?
+=20
+=20
+Thank your help in advance,
+=20
+Charles
+=20
+=20
