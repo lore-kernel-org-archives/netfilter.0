@@ -1,14 +1,10 @@
-From: Kenneth Porter <shiva@sewingwitch.com>
-Subject: Re: I need a clever solution for two Bittorrent machines behind
- a	firewall
-Date: Thu, 18 Nov 2004 11:31:06 -0800
-Message-ID: <260C0D3A0781D4EBEEED6053@[10.169.6.246]>
-References: <00c801c4cd90$8980f090$0400a8c0@bradmorgan>
+From: Lopsch <lopsch@lopsch.com>
+Subject: error compiling ipt_connlimit.c
+Date: Thu, 18 Nov 2004 21:30:52 +0100
+Message-ID: <419D067C.70206@lopsch.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00c801c4cd90$8980f090$0400a8c0@bradmorgan>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Netfilter-Mailinglist <netfilter@lists.netfilter.org>
 
---On Thursday, November 18, 2004 10:03 AM -0700 Brad Morgan 
-<B-Morgan@concentric.net> wrote:
+Is connlimit from patch-o-matic-ng-20041114 incompatible with the kernel=20
+version 2.6.9? I=B4m getting this error:
 
-> I'm using a Linux firewall with IPTables as my home firewall.
+net/ipv4/netfilter/ipt_connlimit.c: In function `count_them':
+net/ipv4/netfilter/ipt_connlimit.c:100: error: structure has no member=20
+named `infos'
+net/ipv4/netfilter/ipt_connlimit.c:107: error: structure has no member=20
+named `infos'
+make[3]: *** [net/ipv4/netfilter/ipt_connlimit.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
 
-Take a look at "port triggering". This is a feature in the Linksys WRT54G, 
-which uses uClinux under the hood. When an outbound connection is seen to a 
-particular port, a port forwarding rule is installed for the internal 
-client. I'm guessing this is done by monitoring the iptables logs and 
-installing a custom chain on demand that's removed after a period of 
-inactivity.
+I think it=B4s because of the changing in the structures in the conntrack=
+=20
+as of 2.6.9. Any ideas to solve the problem?
+
 
