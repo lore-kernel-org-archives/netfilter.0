@@ -1,13 +1,13 @@
-From: "freedom" <freedom10@idemation.com>
-Subject: RE: Redhat 7.3 and IPTables 1.2.7a (was ICMP Destination Unreachable)
-Date: Mon, 16 Dec 2002 21:53:45 -0600
+From: Rob Sterenborg <r.sterenborg@hsl-brabantzuid.nl>
+Subject: RE: Redhat 7.3 and IPTables 1.2.7a (was ICMP Destination Unreacha
+	ble)
+Date: Tue, 17 Dec 2002 10:41:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000a01c2a57f$e7a44f90$0501020a@compname3>
-References: <1040044701.29233.1.camel@nxitmirms1>
+Message-ID: <FD8F124A387AD6119F7900A0D218B32154A891@hslex01.hslbz.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2A5B0.71B35340"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1040044701.29233.1.camel@nxitmirms1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,55 +17,79 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Marcello Scacchetti' <marcello.scacchetti@nextrem.it>, netfilter@lists.netfilter.org
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Marcello,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Sure...
+------_=_NextPart_001_01C2A5B0.71B35340
+Content-Type: text/plain
 
-Is it possible to use IPTables version 1.2.7a with Redhat 7.3?  RH 7.3
-comes with a different version by default and I wanted to upgrade to
-1.2.7a.  Is it possible?
+> Is it possible to use IPTables version 1.2.7a with Redhat 
+> 7.3?  RH 7.3 comes with a different version by default and I 
+> wanted to upgrade to 1.2.7a.  Is it possible?
 
-Also, do you know if any RPMs exist for IPTables version 1.2.7a and RH
-7.3?
+Yes, you can compile a brand new version for your own system.
+It's not that hard...
 
-Thanks!
-Kameron
+> Also, do you know if any RPMs exist for IPTables version 
+> 1.2.7a and RH 7.3?
 
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org [mailto:netfilter-
-> admin@lists.netfilter.org] On Behalf Of Marcello Scacchetti
-> Sent: Monday, December 16, 2002 7:18 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: ICMP Destination Unreachable
-> 
-> Hi Kameron,
-> can you be a little more verbose?
-> What does "run" means? Unable to set rules? Unable to run iptables
-> command? Unable to make rules work?
-> 
-> Marcello
-> 
-> Il ven, 2002-12-06 alle 16:09, Kameron ha scritto:
-> > Hello Gurus,
-> >
-> > I have a couple of quick questions...
-> >
-> > 1) Does anybody know of any reason why I couldn't run IPTables
-1.2.7a
-> > with RH7.3.
-> >
-> > 2) Are there any .rpm's for IPTables 1.2.7.a available?  I attempted
-to
-> > compile my own, but didn't have any luck.
-> >
-> > Thanks!
-> > Kameron
-> --
-> Marcello Scacchetti <marcello.scacchetti@nextrem.it>
-> 
+A Google search on "iptables 1.2.7a redhat rpm" returns results like
+http://www.haoli.org/rpm/redhat-7.x/RPMS/i386/.
+But I still think you'd better compile your own.
 
 
+Rob
+
+------_=_NextPart_001_01C2A5B0.71B35340
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>RE: Redhat 7.3 and IPTables 1.2.7a (was ICMP Destination =
+Unreachable)</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>&gt; Is it possible to use IPTables version 1.2.7a =
+with Redhat </FONT>
+<BR><FONT SIZE=3D2>&gt; 7.3?&nbsp; RH 7.3 comes with a different =
+version by default and I </FONT>
+<BR><FONT SIZE=3D2>&gt; wanted to upgrade to 1.2.7a.&nbsp; Is it =
+possible?</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Yes, you can compile a brand new version for your own =
+system.</FONT>
+<BR><FONT SIZE=3D2>It's not that hard...</FONT>
+</P>
+
+<P><FONT SIZE=3D2>&gt; Also, do you know if any RPMs exist for IPTables =
+version </FONT>
+<BR><FONT SIZE=3D2>&gt; 1.2.7a and RH 7.3?</FONT>
+</P>
+
+<P><FONT SIZE=3D2>A Google search on &quot;iptables 1.2.7a redhat =
+rpm&quot; returns results like <A =
+HREF=3D"http://www.haoli.org/rpm/redhat-7.x/RPMS/i386/" =
+TARGET=3D"_blank">http://www.haoli.org/rpm/redhat-7.x/RPMS/i386/</A>.</F=
+ONT>
+<BR><FONT SIZE=3D2>But I still think you'd better compile your =
+own.</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>Rob</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C2A5B0.71B35340--
 
