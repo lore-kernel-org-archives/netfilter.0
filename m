@@ -1,14 +1,12 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: A drop-in firewall
-Date: Thu, 4 Sep 2003 11:01:13 +0100
+From: "Luke Hinds" <luke.hinds@neuvoice.com>
+Subject: RE: OT: iptables-like firewall for windows?
+Date: Thu, 4 Sep 2003 11:42:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309041101.13462.gdh@acentral.co.uk>
-References: <5.2.1.1.0.20030830201439.01072380@fluent2.pyramid.net>
+Message-ID: <50D72569B3D8DD468A233F2AFCDE3BEC2341BB@london.plymouth.neuvoice.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <5.2.1.1.0.20030830201439.01072380@fluent2.pyramid.net>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,33 +18,59 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: Michael <michael@klintan.cjb.net>
 
-lOn Sunday 31 August 2003 04:25, Stephen Satchell wrote:
+I would recommend the kerios personal firewall. It has a rule table that =
+can be exported for use on other hosts. There may even be a way of =
+configuring the .msi file to install the app with your chosen rule set. =
+However I am sure that all of the personal firewalls our only free to =
+personal use. So there will be a fee for company use, might be worth =
+checking the licence plans on offer.
 
-> Desired solution:  "Drop" a Linux box between the Windows boxes and the
-> rest of the internal network.  Use IPTABLES to ensure that the Windows
-> boxes can't do anything nasty to the rest of the systems in the room,
-> without impairing access to the rest of the Internet.
+Regards,
+Luke
 
-What you want to do is perfectly common and perfectly achievable... However, 
-can I suggest an alternative route? 
+-----Original Message-----
+From: Michael [mailto:michael@klintan.cjb.net]
+Sent: 01 September 2003 06:34
+To: netfilter@lists.netfilter.org
+Subject: RE: OT: iptables-like firewall for windows?
 
-Check out the Linux bridge-filter patch which allows you to apply iptables 
-rules whilst running a machine as a bridge - i.e. your eth0 and eth1 become a 
-single 'br0' for management purposes..
 
-The joy of this is that you CAN literally just drop the box in between your 
-LAN and WAN, and you need not change ANY default gateway settings on either 
-the routers or the Windows boxes.
 
-I've been using an old P233 as a bridge-firewall for a client LAN of 50 
-machines with 2Mbps upstream bandwidth, and the thing never misses a beat, 
-and loadavg is usually below 0.05 
 
-http://ebtables.sf.net/
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org=20
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Jason Joines
+> Sent: Tuesday, August 26, 2003 6:58 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: OT: iptables-like firewall for windows?
+>=20
+>=20
+> Jim Carter wrote:
+>=20
+> >On Fri, 22 Aug 2003, Jason Joines wrote:
+> >
+> > =20
+> >
+> >>  We have a completely Linux back-end environment but unfortunately=20
+> >>hundreds of windows desktops.  I'm pretty tired of all the=20
+> attacks on=20
+> >>the unprotected windows boxes but don't have the authority=20
+> to put up a=20
+> >>network firewall.  We protect all of our Linux servers with=20
+> iptables.=20
+> >>Does anyone know of a similar tool for windows,=20
+> particularly w2k?  The=20
+> >>built-in stuff seems to be virtually worthless.
+> >> =20
 
-and specifically http://ebtables.sourceforge.net/download.html
+I haven't followed this tread but; ZoneAlarm is a good choice for
+Windows Workstations and there is a free version too.
 
-Cheers,
-Gavin.
+/Michael
+ =20
+
+
+
 
