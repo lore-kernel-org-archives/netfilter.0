@@ -1,10 +1,9 @@
-From: Milan Durovic <milan@milica.com.au>
-Subject: redirecting packets from one destination to a local host
-Date: Wed, 30 Jun 2004 14:51:22 +1000
+From: aksingh@hss.hns.com
+Subject: Re: FW: injecting new packets into the netfilter
+Date: Wed, 30 Jun 2004 10:35:40 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E246CA.9030902@milica.com.au>
+Message-ID: <OFCF2776AE.6C81672D-ON65256EC3.001BBD08@hss.hns.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,43 +14,203 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mayank Kumar <mayank_kumar@intersolutions.stpn.soft.net>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+
+
+
+
+
+hi,
+
+  pls see inline
+
+
+
+
+"Mayank Kumar"
+<mayank_kumar@intersolutions.stpn.soft.net>@lists.netfilter.org on
+06/30/2004 10:16:59 AM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    Amit Kumar Singh/HSS@HSS
+cc:    <netfilter@lists.netfilter.org>,
+       <netfilter-devel@lists.netfilter.org>
+
+Subject:    FW: injecting new packets into the netfilter
+
+
+Hi Amit
+i think u missed out my mail so i resending it to you
+regds
+Mayank
+
+-----Original Message-----
+From: Mayank Kumar [mailto:mayank_kumar@intersolutions.stpn.soft.net]
+Sent: Tuesday, June 29, 2004 11:49 AM
+To: aksingh@hss.hns.com
+Cc: netfilter@lists.netfilter.org
+Subject: RE: injecting new packets into the netfilter
+
+
+Hi Amit
+thanks for ur prompt replies.
+firstly from ur replies it seems
+that
+1: Whatever packets that i will construct using libnet or
+   for that matter using ordinary bsd sockets would pass the
+   relevant hooks in the netfilter based on the dest ip address
+   i set. Is this true?? In this case i am constructing the packet
+   completely on my own.
+   >>> yes that is true, see netfilter hooks if you have read about them,
+   catch ANY packet that passes thru the machines IP, be it raw packets
+   that you inject using libnet(they are caught first by IP_LOCAL_OUT ..
+   then they might hit other hooks), oor if they are coming from ethernet
+   or any sort of mac layer(in this case caught first by PRE_ROUTING hook
+   and then by others ) ...
+
+Now what i want to do is steal(NF_STOLEN) packets at specific hooks
+(generally pre routing)
+within the netfilter and queue them to a user mode process.
+The User mode process does some processing and either sends
+the same packet or completely new and umpteen in number packets
+at the post routing hook in netfilter(from ur answer using libnet).
+From ur answer it seems quite possible very easily. Correct
+me if i am wrong here. Also is there any advantage of using
+libnet over bsd sockets in terms of performance. Is there any
+other performance optmized way of sending and receiving packets from
+user to kernel mode?? Does netlink sockets way offer a more
+optimized way of doing it?? (Sorry for a flurry of questions!!)
+
+
+Now the second part is what if i want to move it all to kernel mode for
+performance reasons.
+This means steal packet at pre_routing and then queue them all to
+a kernel thread which was created using a kernel module. The kernel
+thread then does some processing on the packets and then sends either
+the captured packet or completely new packets out through the post routing
+hook.
+How can this be achieved??
+
+regds
+Mayank
+
+
+
+
+-----Original Message-----
+From: aksingh@hss.hns.com [mailto:aksingh@hss.hns.com]
+Sent: Tuesday, June 29, 2004 11:21 AM
+To: Mayank Kumar
+Cc: netfilter@lists.netfilter.org
+Subject: RE: injecting new packets into the netfilter
+
+
+
+
+
 
 Hi,
 
-I have iptables 1.2.2 (debian woody), kernel 2.4.25. In my network 
-setup, I have an ADSL modem/router that does NAT and redirects all the 
-smtp, http, etc requests to a Linux machine on inside. This works fine.
+ You want to insert packets within the kernel module thta has netfilter
+hooks ?, I dont thinkthat is a very good idea, as the packets u send using
+a libnet application wld be caught at the netfilter hooks, if the
+application resides on the same pc on which yr kernel module that has hook
+funcstions resides, then those packets will traverse, local_out, post
+routing, pre_routing, local_in etc based on their dest ip addresses, any
+packet coming from ethernet wld traverse pre_routing, then local_in or
+ip_forward and post_routing .....
 
-The problem: when I recently installed mailman, its scripts try to 
-access smtp server via address that maps into the public IP address of 
-the ADSL modem/router. So, requests never reach the mail server, which 
-is running on the Linux machine itself.
+Amit
 
-I want to setup iptables so that any requests originating from the Linux 
-server and destined to the public IP address of the ADSL modem/router 
-are redirected to the Linux server itself.
 
-I tried:
 
-iptables -t nat -A OUTPUT -d public_ip -j REDIRECT
 
-(rule was accepted).
+"Mayank Kumar"
+<mayank_kumar@intersolutions.stpn.soft.net>@lists.netfilter.org on
+06/29/2004 11:15:52 AM
 
-I also tried:
+Sent by:    netfilter-admin@lists.netfilter.org
 
-iptables -t nat -A OUTPUT -d public_ip -p tcp -j DNAT --to lin_srv_ip
 
-but the command failed ("iptables: Invalid argument").
+To:    Amit Kumar Singh/HSS@HSS
+cc:    <netfilter@lists.netfilter.org>
 
-When I try "telnet public_ip smtp" I get 'connection refused' and when I 
-then go with "iptables -t nat -v -L" it shows that no packet matched the 
-REDIRECT rule.
+Subject:    RE: injecting new packets into the netfilter
 
-Is there a simple way of achieving this? REDIRECT seems to be the right 
-sort of action that I want, but it doesn't seem to work.
 
-Regards,
-Milan
+Hi Akash
+i know of this library.
+But i want to inject packets at precise hooks
+in the netfilter. for e.g. i want to inject packets whenever
+the need arises ,at the fwding hook or the post routing hook. Will the
+raw packets i send using the libnet get caught at hooks inserted using
+netfilter at various points.
+
+regds
+Mayank
+
+-----Original Message-----
+From: aksingh@hss.hns.com [mailto:aksingh@hss.hns.com]
+Sent: Tuesday, June 29, 2004 10:49 AM
+To: Mayank Kumar
+Cc: netfilter@lists.netfilter.org
+Subject: Re: injecting new packets into the netfilter
+
+
+
+
+
+
+Hi,
+
+  Try libnet for injecting new packets, you can use raw packets(u inject
+from userland), libnet provides you with a better interface, but you wld
+need root permission to use raw sockets. you can get libnet library from
+packetfactory.net
+
+HTH
+Amit
+
+
+
+
+"Mayank Kumar"
+<mayank_kumar@intersolutions.stpn.soft.net>@lists.netfilter.org on
+06/29/2004 10:17:16 AM
+
+Sent by:    netfilter-admin@lists.netfilter.org
+
+
+To:    <netfilter@lists.netfilter.org>
+cc:
+
+Subject:    injecting new packets into the netfilter
+
+
+Hi all,
+I want to know how can we inject absolutely new packets at
+various hook points in netfilter. I have already seen
+some questions posted on this earlier too but no replies
+as such. I am very eager to know about this because using
+this we can construct some really cool stuff. Currently we
+are undergoing a project on this and it would be of greate
+help if somebody can find a solution to this.
+
+Thanks in advance for any help on this.
+regds
+Mayank
+
+
+
+
+
+
+
+
+
 
