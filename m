@@ -1,13 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Redirect of DNS requests
-Date: 18 Aug 2003 09:31:47 +0200
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: is this ip spoofing?
+Date: Mon, 18 Aug 2003 11:05:14 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1061191907.1915.4.camel@kermit>
-References: <3F403CD2.4060507@hailix.com>
+Message-ID: <Pine.LNX.4.44.0308181049080.31438-100000@localhost>
+References: <20030817022857.GA1426@linux.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F403CD2.4060507@hailix.com>
+In-Reply-To: <20030817022857.GA1426@linux.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Trevor Morrison <trevor@hailix.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Payal Rathod <payal-iptables@staticky.com>
+Cc: netfilter@lists.netfilter.org
 
-Am Mon, 2003-08-18 um 04.41 schrieb Trevor Morrison:
-> I have a RH 9.0 with a 2.4.20 kernel.  The box is running iptables-1.2.7=20
-> and does NAT from my 192.168.1.x network to my  ISP assigned dhcp IP.=20
->  What I would like to do is redirect a certain domain's email, DNS, or=20
-> Web traffic to a w2k server that sits in my private network, sort of=20
-> like a DMZ situation and have the another domain's services continue to=20
-> be routed to the RH box.  On the RH box I am running Bind and Sendmail=20
-> amoung other things.
-You cannot do this using iptables. Iptables does not support the kind of
-application protocol filtering you need.=20
-You can only configure your Linux applications (bind/sendmail/apache) to
-do this.
+Hi Payal,
 
-Cheers,
+> I don't know much about SNAT. But is this equivalent to i-spoofing in
+> such case? Is this how SNAT works?
+> 
+> Assume I have a internal ip 192.168.0.10. All traffic coming from it
+> should be seem as coming from 202.1.1.1. So I use SNAT and POSTROUTING
+> and now connection seems to take place from 202.1.1.1. But isn't it
+> similar to ip-spoofing?
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+Technically, I suppose that IP spoofing is simply generating a packet 
+where the source address is not an address of your own machine. I suppose 
+that SNAT is one way of achieving that, although there are far easier ways 
+if that's all you want to do, and SNAT can also be used for non-spoofing 
+purposes, such as rewriting to an alias on your machine.
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+
 
