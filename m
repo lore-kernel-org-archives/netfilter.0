@@ -1,12 +1,11 @@
-From: Martin <martin@balkanboy.net>
-Subject: Re: H323 module installing and copiling prob
-Date: Wed, 19 Mar 2003 11:49:36 -0800 (PST)
+From: =?iso-8859-1?Q?Heriberto_H=F6hlke?= <hhohlke2000@yahoo.com.ar>
+Subject: Netmeeting behind a firewall
+Date: Wed, 19 Mar 2003 21:45:42 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0303191144340.9224-100000@balkanboy.net>
-References: <14C5057BC852D611BAC400E0299AA10F127444@MAILSERV>
+Message-ID: <NHBBJMFAILALELGBFJEJGEMJCJAA.hhohlke2000@yahoo.com.ar>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <14C5057BC852D611BAC400E0299AA10F127444@MAILSERV>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,61 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: MOUDARIR Mohamed <moudarir@Richbond.ma>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Why don't you try upgrading your kernel to 2.4.20? I know patching the 
-2.4.20 kernel works indeed, because I have RedHat 8.0 and I compiled a 
-vanila kernel (from kernel.org), applied the H323 patch through the 
-patch-o-matic, enabled the H323 module through the linux menu 
-configuration (the curses enabled one), and recompiled.. Reboot, and you 
-should be able to place calls from a NAT-ed box where Linux is your 
-gateway/firewall...
+Hello
 
-What I cannot do, and what no one here seems to have offered any advice 
-on, is how to get incoming NetMeeting connections to go through NAT and 
-into one of the boxes on the internal LAN.. I tried various command sets 
-that I found on the archives of this list, but to no avail, none of them 
-work. So either I'm doing something wrong, or incoming netmeeting 
-connections are just not possible behind NAT...
+I am trying to connect Netmeeting from behind a firewall to another PC with
+a external public IP with 50% success.
+The firewall is Bering 1.0, kernel 2.4.18, iptables 1.2.6a and shorewall
+1.3.10.
+I included ip_nat_h323.o and ip_conntrack_h323.o modules of Jozsef
+Kadlecsik.
 
-Martin
-p.s. One more important thing - patching the RedHat kernel with the 
-Patch-o-Matic H323 patch, does not work. There's some conflicts that do 
-not resolve when patching so the patch fails to apply. Which is why I said 
-to use 2.4.20 vanila...
++-----+
+|     |
++-----+ Internal PC IP 192.168.1.11.
+   |    LAN
++-----+ Firewall internal gateway IP 192.168.1.254.
+|     |
++-----+ Firewall external IP 200.45.218.203
+   |    Internet
++-----+ Other PC Public IP
+|     |
++-----+
 
+Audio and video Netmeeting incoming calls does work well, from a PC with
+public IP to my private IP.
 
-On Wed, 19 Mar 2003, MOUDARIR Mohamed wrote:
+Outgoing calls doesn't work, from my private IP to a public IP. In the other
+PC appears a message like "Waiting confirmation from 192.168.1.11", but in
+my netmeeting doesn't appears any message. I think this IP should be the
+public IP of firewall 200.45.218.203.
+I run tcpdump on interface ppp0, but no private IP 192.168.1.11 appears,
+only the public IPs.
+What could be the problem?
 
-> Date: Wed, 19 Mar 2003 11:58:46 -0000
-> From: MOUDARIR Mohamed <moudarir@Richbond.ma>
-> To: netfilter@lists.netfilter.org
-> Subject: H323 module installing and copiling prob
-> 
-> Hi all,
-> I want to use netmeeting over an iptables firewal version 1.2.3 ( redhat
-> 7.2, kernel 2.4 )
-> I use this command to update iptables :
-> 	# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login 
-> 	# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic co
-> netfilter/userspace netfilter/patch-o-matic 
-> And to make dependecies :
-> 	# cd /usr/src/linux/ 
-> 	# make dep 
-> And cd ton ~/netfilter/patch-o-matic/ :
-> 	./runme extra
-> and  # ./runme --batch extra/h323-conntrack-nat.patch
-> After that, i add H323 module to kernel :#  make menuconfig
-> And compile iptables :
-> 	# cd ~/netfilter/userspace/
-> 	# make all install
-[snip]
-> 
-> Is there any probleme, and how can i delete the old version of iptables.
-> Thanks.
-> 
+Regards
+Heriberto
 
 
