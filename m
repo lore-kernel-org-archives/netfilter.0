@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: block an ip
-Date: Sat, 14 Sep 2002 09:59:55 +0100
+From: NagyZ <nagyz@piarista-kkt.sulinet.hu>
+Subject: fxp doesnt work & connection tracking
+Date: Sat, 14 Sep 2002 12:22:14 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020914085958.ZYDV13709.mta07-svc.ntlworld.com@there>
-References: <34638.10.0.0.10.1031971141.squirrel@aydin.no-ip.org>
+Message-ID: <Pine.LNX.4.44.0209141218320.20369-100000@server.piarista-kkt.sulinet.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <34638.10.0.0.10.1031971141.squirrel@aydin.no-ip.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +14,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Saturday 14 September 2002 3:39 am, yuksel@aydin.no-ip.org wrote:
+hi!
 
-> Hello,
->
-> I'm a novice. I understand how to block acces to some ports but I didn't
-> understand how to block an ip.
+if i apply these rules, then incoming fxp's dont work (outgoing is still 
+work).. any idea?
+:
+iptables -N szabalyok
+iptables -A szabalyok -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A szabalyok -p tcp --dport 21 -d <ip> -j ACCEPT
+iptables -A szabalyok -p tcp --dport 22 -d <ip> -j ACCEPT
+iptables -A szabalyok -p tcp --dport 1024: -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A szabalyok -j DROP
+iptables -A INPUT -j szabalyok
+iptables -A FORWARD -j szabalyok
 
-iptables -A FORWARD -s 11.22.33.44 -j DROP
+other:
+before that, i did:
+modprobe ip_conntrack_ftp ports=21,etc,etc
+modprobe ip_conntrack_irc ports=6667,6668,6669,7000,31337
 
-Antony.
--- 
+but in lsmod i see:
+ip_conntrack_irc        2400   0  (unused)
+ip_conntrack_ftp        3136   0  (unused)
 
-This is not a rehearsal.
-This is Real Life.
+why is that? if i understand the howto correctly, it should be unused..
+any idea?
+
+NagyZ
+
+
 
