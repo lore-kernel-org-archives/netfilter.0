@@ -1,11 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Problem with nat/OUTPUT/DNAT rule
-Date: Fri, 12 Nov 2004 10:04:30 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F1B44@pxtvjoexd01.pxt.primeexalia.com>
+From: Joel Newkirk <firewalldude@newkirk.us>
+Subject: Re: iptables with policy routing
+Date: Sat, 13 Nov 2004 02:45:04 -0500
+Message-ID: <4195BB80.5060702@newkirk.us>
+References: <41939AD2.602@phreaker.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <41939AD2.602@phreaker.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,55 +17,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: ro0ot <ro0ot@phreaker.net>
+Cc: netfilter@lists.netfilter.org
 
-Ya know, I just read that in some FAQ on the netfilter site.  I did a =
-search last night but I guess I either misspelled the search terms or =
-the cafine caused me to miss the point. :)
-=20
-I'm trying to recompile it now.  I have a few problems as my origial =
-changes were made the the RPM source files for the RPM build.  The =
-primary kernel tree doesn't contain these changes which is probably why =
-the compile of iptables didn't pickup the change.
-=20
-Thanks,=20
-=20
-Gary
-=20
+ro0ot wrote:
+> Hi,
+> 
+> Below is my Linux firewall network configuration: -
+> 
 
-________________________________
+> iptables -t nat -A POSTROUTING -s 172.16.0.1 -j SNAT --to-source 1.1.1.10
+> iptables -t nat -A POSTROUTING -s 192.168.0.1 -j SNAT --to-source 2.2.2.10
+> 
+> 
+> Below is my split access routing for multiple providers: -
+> 
+> # First ISP
+> ip route add 1.1.1.8/30 dev eth0 src 1.1.1.10 table 1
+> ip route add default via 1.1.1.9 table 1
+> 
+> # Second ISP
+> ip route add 2.2.2.8/30 dev eth1 src 2.2.2.10 table 2
+> ip route add default via 2.2.2.9 table 2
+> 
+> #
+> ip rule add from 1.1.1.8/30 lookup 1
+> ip rule add from 2.2.2.8/30 lookup 2
+> 
+> # My default choice of gateway
+> ip route add default via 1.1.1.9
 
-From: netfilter-bounces@lists.netfilter.org on behalf of Jason =
-Opperisano
-Sent: Fri 11/12/2004 9:07 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: Problem with nat/OUTPUT/DNAT rule
+
+> When I perform a traceroute from a workstation with the IP address of 
+> 192.168.0.1 and gateway 192.168.0.254, I can see the result of the 
+> traceroute going through the 1.1.1.9 gateway, why?  It suppose to SNAT 
+> to 2.2.2.10 via 2.2.2.9 gateway.
+
+Happens because your default gateway is 1.1.1.9.  2.2.2.9 is only chosen 
+when the source IP is 2.2.2.8/30.  Problem is, the routing decision is 
+made BEFORE iptables->nat->POSTROUTING changes the source IP.  You will 
+have to key your routing rules on the private IPs, like so:
+
+ip rule add from 172.16.0.0/24 lookup 1
+ip r a from 192.168.0.0/24 lookup 2
+
+(I've gone through various configurations of a linux gateway router 
+connecting multiple private networks to three T1s: bridge and plain 
+router, load-balanced and source-routed, and with shaping/routing based 
+on fwmarks)
+
+j
 
 
 
-On Thu, Nov 11, 2004 at 11:34:09PM -0800, Gary W. Smith wrote:
-> I have been trying to upgrade a RH9 firewall box running 1.2.7a to =
-RHEL3.  I applied patch-o-matic pptp-conntrack to the RHEL3 kernel and =
-everything "seemed" fine.  I have an automated script that generates =
-some baseline firewall rules for some clients.  Anyways, It fails only =
-on RHEL3 1.2.7a.  It works on my FC2 and RH9 boxes.
->=20
-> The failure always happens on the nat filter, output chain:
->=20
-> [0:0] -A OUTPUT -d 66.120.18.34 -j DNAT --to-destination 192.198.0.34
->=20
-> Any ideas?
-
-you say you applied a patch from POM and recompiled your kernel.  did
-you also rebuild iptables?  IIRC the pptp-conntrack patch changes the
-size of the internal structures, so an unpatched iptables will fail to
-add rules in this way (usually on a NAT rule).
-
--j
-
---
-Jason Opperisano <opie@817west.com>
-
+> Regards,
+> ro0ot
+> 
+> 
+> 
+> 
 
 
