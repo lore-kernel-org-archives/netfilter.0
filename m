@@ -1,8 +1,9 @@
-From: Nilesh <niluforalways@yahoo.com>
-Subject: IPsec through NAT Mode
-Date: Mon, 22 Nov 2004 02:48:00 -0800 (PST)
-Message-ID: <20041122104800.99801.qmail@web50506.mail.yahoo.com>
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: Is this suitable (2)?
+Date: Mon, 22 Nov 2004 08:23:08 -0300
+Message-ID: <E1CWCIm-0004Hh-00@deer.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,53 +16,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello All, 
-
-I am using Squid proxy and IPtables. I am having some
-problems to configure firewall. 
-The problem is SNAT rule If I put rule in script I am
-able to connect VPN server at outside world but could
-not block yahoo messengers by squid without SNAT rule
-I can block messenger through squid. 
-I have checked VPN connection properties there is
-check box IPsec through NAT mode . If I uncheck I wont
-able to connect 
-SNAT Rule 
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j SNAT --to
-$EXTIP
-
-could anyone help to solve my problem 
-also I have tried this rules to connect VPN 
-but wont work 
-# IKE negotiations
-$IPTABLES -A INPUT  -p udp --sport 500 --dport 500 -j
-ACCEPT
-$IPTABLES -A OUTPUT -p udp --sport 500 --dport 500 -j
-ACCEPT
-$IPTABLES -A FORWARD -p udp --sport 500 --dport 500 -j
-ACCEPT
-# ESP encrypton and authentication
-$IPTABLES -A INPUT  -p 50 -j ACCEPT
-$IPTABLES -A OUTPUT -p 50 -j ACCEPT
-$IPTABLES -A FORWARD -p 50 -j ACCEPT
-# uncomment for AH authentication header
-#$IPTABLES -A INPUT  -p 51 -j ACCEPT
-#$IPTABLES -A OUTPUT -p 51 -j ACCEPT
-
-
-
-Thanks in advance 
-Nilesh,
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Meet the all-new My Yahoo! - Try it today! 
-http://my.yahoo.com 
+Im doing some tests in the lab, i have this idea and i want 
+to know if this is suitable to do.
  
+ 
+This is the idea (not mine, customer,and the customer is 
+always right) , suppose this schema
+ 
+  
+Wap server <-> GW
+SQL server _| 
+
+
+My customer wants to wap server send the sql queries to GW 
+(so the wap box thinks that sql server is the gw box), then 
+gw redirect the sql request to the sql server, and replies 
+then follow the same way back. 
+
+For this case WAP server is in a dmz, sql is in another dmz, 
+and sql server is in the local lan (different from the 
+dmz's). The idea to fit 2 nic's to the GW is discarded 
+because the only device allowed to interconnect the DMZ's, 
+the LAN and the WAN are the firewalls.
+ 
+So I need to do this.
+
+In GW using only 1 NIC, rederirect the traffic in both directions.
+
+Using mysql as an example and this addresses
+ 
+Wap server: 10.11.0.20
+GW: 10.12.0.10 (gw 10.12.0.1)
+SQL: 10.10.2.205
+ 
+Will this rules in the gw box work?
+ 
+(filter:INPUT and filter:FORWARD policies are DROP)
+ 
+ip ro add default via 10.12.0.1
+iptables -t nat -A PREROUTING -s 10.11.0.20 -d 10.12.0.10 -p tcp --dport
+3306 -j DNAT --to 10.10.2.205:3306 
+iptables -t nat -A PREROUTING -s 10.10.2.205 -d 10.12.0.10 -p tcp --sport
+3306 -j DNAT --to 10.11.0.20 
+iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 
+iptables -A FORWARD -m state --state NEW -s 10.11.0.20 -d 10.12.0.10 -p tcp
+--dport 3306 -j ACCEPT 
+iptables -A FORWARD -m state --state NEW -s 10.10.2.205 -d 10.12.0.10 -p tcp
+--sport 3306 -j ACCEPT
+
+Is this enough????
+ 
+I think that, as the connections will be always started from 
+wap server, the second FORWARD rule will not match never, 
+because this match will be in the RELATED,ESTABLISHED rule, 
+but the main doubt is if this is correct in the nat table.
+ 
+ 
+Thanks in advance.
+ 
+Best regards
 
 
