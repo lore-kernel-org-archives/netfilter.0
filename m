@@ -1,12 +1,13 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: ip_queue, userspace module, ipq_packet_msg_t field 'hook'.  Any purpose?
-Date: Thu, 29 May 2003 04:58:08 -0700 (PDT)
+From: Martin Josefsson <gandalf@wlug.westbo.se>
+Subject: Re: Skipping connection tracking for certain traffic types?
+Date: 29 May 2003 14:51:22 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030529115808.57818.qmail@web13908.mail.yahoo.com>
-References: <20030529104713.GL33081@justpickone.org>
+Message-ID: <1054212682.749.34.camel@tux.rsn.bth.se>
+References: <20030528115842.S20519@poliisi.iki.fi>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030529104713.GL33081@justpickone.org>
+In-Reply-To: <20030528115842.S20519@poliisi.iki.fi>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Ville Mattila <vm@iki.fi>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hello.
-I am working with a userspace module, registered for
-the QUEUE iptables target.  When getting packets from
-the kernel, it receives a ipt_packet_msg_t structure. 
-One of the fields it gets is an int 'hook'.  Does this
-field serve any useful purpose?  Does it describe in
-any way the  table which the QUEUE was invoked from?
+On Wed, 2003-05-28 at 11:03, Ville Mattila wrote:
 
--Scott
+> This problem would be solved if it was possible with
+> Netfilter/iptables to skip connection tracking for some
+> rules (servers sending dns queries and replies to them in
+> our case), or better yet, not to track every connection by
+> default but only when requested per rule. Is this kind
+> of selective connection tracking possible already or will
+> it possibly become supported in future conntrack versions?
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
-http://calendar.yahoo.com
+This has been supported for a long time. Look at userspace/raw.patch
+in patch-o-matic.
+
+-- 
+/Martin
 
