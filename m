@@ -1,13 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: AW: AW: GRE/PPTP and modules
-Date: Thu, 29 Apr 2004 17:57:20 +0200
+From: Boingo <b0ing0@yahoo.com>
+Subject: More PPTP and NAT
+Date: Thu, 29 Apr 2004 10:06:33 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1083254240.4884.130.camel@anduril.intranet.cartel-securite.net>
-References: <D3DD55FDB74AD511BA5100500416368053E890@ORION>
+Message-ID: <20040429170633.74707.qmail@web80508.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D3DD55FDB74AD511BA5100500416368053E890@ORION>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,20 +14,20 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jochen Vogel <jvogel@it-sec.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Le jeu 29/04/2004 =E0 17:33, Jochen Vogel a =E9crit :
-> Is it possible to get the modules precompiled?
-> For a lazy bugger ;)
+Hi there,
+  Following Luke's suggestion, I compiled and
+installed (make && make install) iptables 1.2.9.  I
+now get further along before an error but I still get
+errors.  I am sure it is something stupid I am doing
+or have done, but I would still like to get it fixed. 
+With the same file as the previous post, restarting
+iptables now stops on the "COMMIT" lines.  Am I still
+missing somthing?  I am just trying to get PPTP to
+work through NAT.
 
-Don't know, I'm a lazy googler :) You'll have to look at some search
-engines too find a RPM.
-
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+  Thanks in advance for any help you can provide.
 
