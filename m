@@ -1,113 +1,67 @@
-From: =?iso-8859-1?Q?Svavar_=D6rn_Eysteinsson?= <svavar@fiton.is>
-Subject: RE: DNAT to another Network?
-Date: Wed, 7 Jul 2004 12:22:27 -0000
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407071201.i67C12P23199@ps0.linanet.is>
-References: <200407071307.17282.gdh@acentral.co.uk>
+From: Martijn van Oosterhout <kleptog@svana.org>
+Subject: Re: Different routes for different src addresses
+Date: Wed, 7 Jul 2004 22:39:39 +1000
+Sender: linux-net-owner@vger.kernel.org
+Message-ID: <20040707123930.GD17226@svana.org>
+References: <20040707120502.GA23120@nihil>
+Reply-To: Martijn van Oosterhout <kleptog@svana.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_003F_01C4641D.13261AB0"
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200407071307.17282.gdh@acentral.co.uk>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KdquIMZPjGJQvRdI"
+Return-path: <linux-net-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20040707120502.GA23120@nihil>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: 'Gavin Hamill' <gdh@acentral.co.uk>, netfilter@lists.netfilter.org
+To: Alpt <alpt@freaknet.org>, netfilter@lists.netfilter.org, linux-net@vger.kernel.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_003F_01C4641D.13261AB0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+--KdquIMZPjGJQvRdI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jul 07, 2004 at 02:05:02PM +0200, Alpt wrote:
+> Hi all,
+> is it possible to create a route for a single src address?
+> For example these are some routes I'd like to use:=20
+>=20
+> 1) "All the pkts coming from hostA with dst=3DhostX are routed to eth1".
+> 2) "All the pkts coming from hostB with dst=3DhostT are routed to eth0"
+> /*Normal routes start here*/
+> 3) "All the pkts (that are not pkts of type 1) and 2)) with dst=3DhostX
+> are routed to eth3"
+> 4) "All the pkts (that are not pkts of type 1) and 2)) with dst=3DhostU
+> are routed to eth2"
+> 5) And so on...
 
+Lookup ip rules, you can do something like:
 
-Cool :0)
-Thanks.
+ip rule add from hostA table tableA
+ip rule add from hostB table tableB
 
-Anyone know how I would draw this in fwbuilder?.
-This scenario confuses me. :0(
+ip route add hostX dev eth1 table tableA prio 500
+ip route add hostY dev eth0 table tableB prio 501
 
-Thanks a lot.
-Best regards,
+etc...
 
-Svavar O=20
-=20
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Gavin Hamill
-Sent: 7. j=FAl=ED 2004 12:07
-To: netfilter@lists.netfilter.org
-Subject: Re: DNAT to another Network?
+Hope this helps,
+--=20
+Martijn van Oosterhout   <kleptog@svana.org>   http://svana.org/kleptog/
+> Patent. n. Genius is 5% inspiration and 95% perspiration. A patent is a
+> tool for doing 5% of the work and then sitting around waiting for someone
+> else to do the other 95% so you can sue them.
 
-On Wednesday 07 July 2004 12:51, Svavar =D6rn Eysteinsson wrote:
-> Hi everybody.
->
-> I have one question about DNAT.
->
-> I have a computer foo.com on an ipaddress xxx.xxx.xxx.xxx
->
-> Is there any way for me to DNAT all traffic with destination to =
-foo.com
-> to another server out-of-town, e.g. computer foobar.com with
-> zzz.zzz.zzz.zzz that
-> is not on my public network.?
+--KdquIMZPjGJQvRdI
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Yes, basically using Computer A to be an IP-level proxy. Note that the
-source=20
-address as seen by Computer B will always be that of Computer A. If this =
-is=20
-not a problem, you can use:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-$IPTABLES -t nat -A PREROUTING -p tcp --dport 80 -d xxx.xxx.xxx.xxx -j =
-DNAT=20
---to zzz.zzz.zzz.zzz
-$IPTABLES -A FORWARD -p tcp --dport 80 -d xxx.xxx.xxx.xxx j ACCEPT
-$IPTABLES -t nat -A POSTROUTING -p tcp --dport 80 -d zzz.zzz.zzz.zzz -j =
-SNAT
+iD8DBQFA6+8CY5Twig3Ge+YRAqP5AJ4gq6OQ1BBkvJ09Ia0YaYhjpOhq7QCeOHnm
+e0iVAwB5WFQNs/8+6YiMWOw=
+=OpMH
+-----END PGP SIGNATURE-----
 
---to xxx.xxx.xxx.xxx
-
-Drop the '--dport 80' bits if you want all traffic, not just HTTP to be=20
-proxied.
-
-Cheers,
-Gavin.
-
-
-------=_NextPart_000_003F_01C4641D.13261AB0
-Content-Type: text/x-vcard;
-	name="=?iso-8859-1?Q?Svavar_=D6rn_Eysteinsson_=28svavar@fiton.is=29_-_F=EDton_e?=
-	=?iso-8859-1?Q?hf.vcf?="
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="=?iso-8859-1?Q?Svavar_=D6rn_Eysteinsson_=28svavar@fiton.is=29_-_F=EDton_e?=
-	=?iso-8859-1?Q?hf.vcf?="
-
-BEGIN:VCARD
-VERSION:2.1
-N:Eysteinsson;Svavar;=D6rn
-FN:Svavar =D6rn Eysteinsson (svavar@fiton.is) - F=EDton ehf
-ORG:F=EDton ehf;IT
-TITLE:Kerfisstj=F3ri / System Administrator
-TEL;WORK;VOICE:5953600
-TEL;CELL;VOICE:8621624
-TEL;WORK;FAX:5953649
-ADR;WORK:;;Gar=F0astr=E6ti 37;RVK;;101;Iceland
-LABEL;WORK;ENCODING=3DQUOTED-PRINTABLE:Gar=3DF0astr=3DE6ti =
-37=3D0D=3D0ARVK 101=3D0D=3D0AIceland
-URL;WORK:http://www.fiton.is
-EMAIL;PREF;INTERNET:svavar@fiton.is
-REV:20040616T133518Z
-END:VCARD
-
-------=_NextPart_000_003F_01C4641D.13261AB0--
-
-
+--KdquIMZPjGJQvRdI--
