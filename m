@@ -1,8 +1,9 @@
-From: "Zhang, Peng" <pzhang@hsph.harvard.edu>
-Subject: using nfs server
-Date: 01 May 2003 21:52:04 -0400
+From: "hare ram" <hareram@sol.net.in>
+Subject: traffic counting
+Date: Fri, 2 May 2003 13:40:24 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051840324.19244.81.camel@sph184-76.harvard.edu>
+Message-ID: <06fd01c31082$49a13380$13fcc5cb@Housecall>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,44 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-Hi,
+Hi all
 
-I want some help from you since I do have no experience about iptables.
-The situation is that we have a cluster, which has ip called IP_MAIN. We
-also have a inside node whose ip is 192.168.0.2. I setup nfs server on
-the 192.168.0.2 and the /etc/exports is /aaa IP_CLIENT(rw)
-I set up IP masquerade on IP_MAIN so that the inside node can access
-outside network. (I tested it and it is OK) and then I add some iptables
-rules in IP_MAIN:
-iptables -A PREROUTING -t nat -p tcp -d IP_MAIN --dport 2049 -j DNAT
---to 192.168.0.2:2049
-iptables -A PREROUTING -t nat -p udp -d IP_MAIN --dport 2049 -j DNAT
---to 192.168.0.2:2049
-iptables -t nat -I POSTROUTING -s 192.168.0.2 -p tcp --sport 2049 -j
-SNAT --to IP_MAIN
-iptables -t nat -I POSTROUTING -s 192.168.0.2 -p udp --sport 2049 -j
-SNAT --to IP_MAIN
-Now it doesn't work and I really don't know what's wrong. Need I also
-create /aaa on in IP_MAIN which is the directory I want to share in the
-192.168.0.2 and need I also open the nfs service on IP_MAIN?
+i have market the packet for shaping just test setup
 
-Thank you for your help!
+any ip source from myip should mark, and iam doing shaping( thats next
+matter)
+but when i give below command, iam not able to see in and out bytes , its
+shows *
 
--- 
-Best wishes,
-Peng
+how can i get this results( both in and out bytes,), iam able to see total
 
-*******************************
-Peng Zhang
-Department of Biostatistics
-Harvard School of Public Health
-655 Huntington Avenue
-Boston, Massachusetts 02115
-*******************************
 
-I believe I can fly
-I believe I can touch the sky
+[root@bridge root]# iptables -xnvL -t mangle
+Chain PREROUTING (policy ACCEPT 382274 packets, 41589233 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination
+    1024   197338 MARK       all  --  *      *       myip       0.0.0.0/0
+MARK set 0x1
+
+
+hare
 
 
