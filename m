@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: TARPIT target
-Date: Fri, 26 Sep 2003 23:32:27 +0200
+From: "Thomas J. Baker" <tjb@unh.edu>
+Subject: Kernel 2.6.0-test5 and slow network xmits with ip_conntrack
+Date: Fri, 26 Sep 2003 08:59:25 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1064611946.812.36.camel@elendil.intranet.cartel-securite.net>
-References: <7A3B4AA360FDEF448F3390421FC8D731F41374@coxhpexg.coxhp.com>
+Message-ID: <1064581165.10462.8.camel@wintermute.sr.unh.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-XQXOjYmIcMK8v4kUjYAE"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7A3B4AA360FDEF448F3390421FC8D731F41374@coxhpexg.coxhp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,50 +15,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: bmcdowell@coxhealthplans.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Le ven 26/09/2003 =E0 22:45, bmcdowell@coxhealthplans.com a =E9crit :
-> How do I use the TARPIT target?
-> I have iptables 1.2.8 installed and working otherwise.  I'm running Red=
-Hat 9.
-> When I try and use
-> 	'iptables -A FORWARD -j TARPIT'
-> I get
-> 	'iptables: No chain/target/match by that name'
 
-Your kernel does not support TARPIT.
+--=-XQXOjYmIcMK8v4kUjYAE
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> I have rebuilt the kernel, but I do not see an option for 'TARPIT'
-> anywhere in the netfilter stuff.  Yes, I do have 'experimental' turned
-> on.  I have also deleted iptables completely and used only the source
-> to install it.
+It was suggested by davem@redhat.com that I report this problem here.
 
-TARPIT target is in patch-o-matic (extra section). So you have to
-download and install it.
+I'm running Red Hat's 2.6.x test kernels in RPM format and have a
+problem with ip_conntrack. When it's installed, I get very slow
+transmits in the range of 50KB/s on a 100Mb interface.=20
 
-	1. install patch-o-matic (see README)
-	2. rebuild your kernel from sources that got patched
-	3. build iptables
+I currently using 2.6.0-0.test5.1.45smp. When transfering a 93MB file,
+the first 2.5MB or so is transfered at about 50KB/s and then suddenly
+the transfer speed increases to about 8MB/s. The total transfer time for
+a 93MB file averages about 1 minute with ip_conntrack installed. The
+time goes down to 11 seconds for the same transfer after removing it.
 
-And it should work.
+My bugilla report on this problem is here:
 
-Not that TARPIT only applies to TCP connections. So your previously
-given command won't work :
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=3D101734
 
-	cbr@elendil:~$ sudo iptables -A FORWARD -j TARPIT
-	iptables: Invalid argument
+I'm not on this list so please CC me on any questions you have.
 
-You have to specify TCP matching :
+Thanks,
 
-	cbr@elendil:~$ sudo iptables -A FORWARD -p tcp -j TARPIT
-	cbr@elendil:~$ sudo iptables -L FORWARD
-	Chain FORWARD (policy ACCEPT)
-	target     prot opt source               destination
-	TARPIT     tcp  --  anywhere             anywhere
-
+tjb
 --=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+| Thomas Baker                                  email: tjb@unh.edu    |
+| Systems Programmer                                                  |
+| Research Computing Center                     voice: (603) 862-4490 |
+| University of New Hampshire                     fax: (603) 862-1761 |
+| 332 Morse Hall                                                      |
+| Durham, NH 03824 USA              http://wintermute.sr.unh.edu/~tjb |
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
+--=-XQXOjYmIcMK8v4kUjYAE
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQA/dDgtoCtjjhzuY8QRAnGPAJ0f5Z6RVug/UxA+hOg4UC5SCmncSgCeOrc9
+hAn93+hz2mZ6F9i7DncCzWM=
+=1izn
+-----END PGP SIGNATURE-----
+
+--=-XQXOjYmIcMK8v4kUjYAE--
 
