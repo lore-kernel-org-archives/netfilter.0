@@ -1,12 +1,13 @@
-From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: Compile problems with iptables 1.2.7
-Date: Tue, 01 Oct 2002 20:13:03 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: How to enable delivering of SMTP mail?
+Date: Tue, 1 Oct 2002 20:00:04 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D99E5AF.8020805@fugmann.dhs.org>
-References: <B0A500E93795D311AD4300A0C9A98F4801610ABD@lara.epiuse.co.za>
+Message-ID: <20021001190006.XHUI459.mta02-svc.ntlworld.com@there>
+References: <20021001181302.31190.qmail@hm36.locaweb.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20021001181302.31190.qmail@hm36.locaweb.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Dian Brits <dian.brits@epiuse.com>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Dian Brits wrote:
-> ok i've tried using 1.2.7a but i still get this:
-> 
-> kagisofw:/usr/local/iptables/src/iptables-1.2.7a $ /kernel/src/linux
-> <
-> Extensions found:
-> cc -O2 -Wall -Wunused -I/usr/local/kernel/src/linux/include -Iinclude/
-> -DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_conntrack_sh.o -c
-> extensions/libipt_conntrack.c
- > In file included from extensions/libipt_conntrack.c:14:
- >/usr/local/kernel/src/linux/include/linux/netfilter_ipv4/ipt_conntrack.h:28:
- > `IP_CT_DIR_MAX' undeclared here (not in a function)
+On Tuesday 01 October 2002 7:13 pm, Luis Fernando C. Talora wrote:
 
-I guess the kernel source is located at '/usr/local/kernel/src/linux/'. 
-What version is it? (the kernel source), and what patches have you 
-applied from pom?
+> I'd like some help to enable smtp packets form Internet servers to reach my
+> smtp server, on the internal networks. I don't know which ports
+> combinations are involved in the process:
+>
+>      (External -> Internal)
+>       highports -> 25
+>       25 -> 25
+>       25 -> highports (not probable)
+>
+> Could someone help-me, please?
 
-There should be an enum at the top of 
-'/usr/local/kernel/src/linux/include/linux/netfilter_ipv4/ipt_conntrack.h', 
-defining the constant `IP_CT_DIR_MAX'. Either its not there, or the 
-compiler does not like that one. What compiler are you using?
+Allow access from anything outside, any port, to TCP port 25 on your internal 
+mail server.
 
-Also try reproduce with a vanilla 2.4.19 kernel source.
+Allow replies either with the standard ESTABLISHED,RELATED rule, or else from 
+your internal mail server, TCP port 25, to anywhere outside.
 
-Regards
-Anders Fugmann
+For example:
+
+iptables -P FORWARD DROP
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -p tcp --dport 25 -d a.b.c.d -j ACCEPT
+
+where a.b.c.d is the internal address of your mailserver.
+
+Note that a.b.c.d should be the internal address of your mailserver even if 
+you have a PREROUTING DNAT rule to convert some public IP address to some 
+private IP address for that machine.   It's the real address of the machine 
+you need to put inthe FORWARD rule.
+
+Antony.
 
 -- 
-Neo: 'Can you fly that thing?'
-Trinity: 'Not yet'.
-$ apt-get install pilot-prg-v212helicopter.
 
+Normal people think "if it ain't broke, don't fix it".
+Engineers think "if it ain't broke, it doesn't have enough features yet".
 
