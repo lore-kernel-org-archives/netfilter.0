@@ -1,17 +1,16 @@
-From: "Piotr =?iso-8859-2?Q?Gasid=B3o?="
-	<quaker@pandora.barbara.ds.polsl.gliwice.pl>
+From: Harald Welte <laforge@netfilter.org>
 Subject: Re: [ANNOUNCE] Proceedings of Netfilter Developer Workshop 2004
-Date: Mon, 27 Sep 2004 16:31:16 +0200
+Date: Mon, 27 Sep 2004 17:16:31 +0200
 Sender: netfilter-devel-bounces@lists.netfilter.org
-Message-ID: <20040927143116.GB18298@barbara.eu.org>
+Message-ID: <20040927151631.GS3236@sunbeam.de.gnumonks.org>
 References: <20040925213322.GJ3236@sunbeam.de.gnumonks.org>
+	<20040927143116.GB18298@barbara.eu.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=_pandora.barbara.ds.polsl.gliwice.pl-22823-1096295476-0001-2"
+	protocol="application/pgp-signature"; boundary="EosnjXlKWIaKpj07"
 Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20040925213322.GJ3236@sunbeam.de.gnumonks.org>
+In-Reply-To: <20040927143116.GB18298@barbara.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,53 +20,46 @@ List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: netfilter-devel@lists.netfilter.org
-Cc: Harald Welte <laforge@netfilter.org>, lwn@lwn.net, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
+To: Piotr Gasid?o <quaker@pandora.barbara.ds.polsl.gliwice.pl>, netfilter-devel@lists.netfilter.org, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, lwn@lwn.net
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
 
---=_pandora.barbara.ds.polsl.gliwice.pl-22823-1096295476-0001-2
-Content-Type: text/plain; charset=iso-8859-2
+--EosnjXlKWIaKpj07
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 25/09, 11:33:22PM, Harald Welte wrote:
-> |---------------------------+----------------------------------------+---=
------|
-> |IPMARK                     |why is tc not enough to do this? Too    |No =
-     |
-> |                           |obscure                                 |   =
-     |
-> |---------------------------+----------------------------------------+---=
------|
+On Mon, Sep 27, 2004 at 04:31:16PM +0200, Piotr Gasid?o wrote:
+> Target is useful when using MASQUERADE or SNAT. Using tc we are *unable*
+> to put outgoing trafic from single IP (behind masquerade) into queue
+> created on outgoing interface. With this target we can mark packets from
+> each internal IP and then, using tc filter fw put it into queues. This
+> target replaces many MARK rules, which can be really CPU hog.
 
-Target is useful when using MASQUERADE or SNAT. Using tc we are *unable*
-to put outgoing trafic from single IP (behind masquerade) into queue
-created on outgoing interface. With this target we can mark packets from
-each internal IP and then, using tc filter fw put it into queues. This
-target replaces many MARK rules, which can be really CPU hog.
+if TC is all you care, why don't you write a new TC filter that
+references the ip_conntrack and matches on adresses in there?
 
 --=20
-Piotr 'QuakeR' Gasid=B3o, BOFH @ pandora.barbara.eu.org
-############## sending lusers to /dev/null since 1998
-##### Waiting for tomorrow, for a little ray of light
-### Waiting for tomorrow just to see your smile again
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
---=_pandora.barbara.ds.polsl.gliwice.pl-22823-1096295476-0001-2
+--EosnjXlKWIaKpj07
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
 Content-Description: Digital signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-iD8DBQFBWCQ0gEmu6PNADqoRAkf7AJ9LQqyywkTHjEM1ucK1IGQXu/oBtACdG2Mm
-8UPAzglIIfiBm541A7WbuHQ=
-=4rea
+iD8DBQFBWC7PXaXGVTD0i/8RAkQEAJwJqxoCWpPi06n0oHqh2doFcwlgBgCgrvYT
+l84x2e9fpqvklx7WIbMZOr4=
+=o9J0
 -----END PGP SIGNATURE-----
 
---=_pandora.barbara.ds.polsl.gliwice.pl-22823-1096295476-0001-2--
+--EosnjXlKWIaKpj07--
 
