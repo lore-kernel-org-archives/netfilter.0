@@ -1,13 +1,12 @@
-From: William Stearns <wstearns@pobox.com>
-Subject: Re: logging with iptables
-Date: Sat, 13 Dec 2003 11:38:01 -0500 (EST)
+From: "Jee J.Z." <jz105@york.ac.uk>
+Subject: Re: Modify packets using netfilter
+Date: Sat, 13 Dec 2003 16:45:31 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0312131134280.2784-100000@sparrow>
-References: <200312130958.24160.Antony@Soft-Solutions.co.uk>
-Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <007d01c3c198$873df440$cb0210ac@jz105>
+References: <007101c3c190$0b3d6450$cb0210ac@jz105> <200312131549.45158.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312130958.24160.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +16,14 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, Piers Finlayson <pdf@dataconnection.com>
-Cc: ML-netfilter <netfilter@lists.netfilter.org>, William Stearns <wstearns@pobox.com>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Good day, Piers,
-
-On Sat, 13 Dec 2003, Antony Stone wrote:
-
-> On Saturday 13 December 2003 9:45 am, Piers Finlayson wrote:
-> 
-> > Is it possible to log a packet's entire contents with iptables, rather than
-> > just useful stuff from the packet header?
-> 
-> No.   Netfilter has a single fixed logging format which shows onlt the packet 
-> header information, nothing from the body itself.
-> 
-> > I can run tcpdump/tethereal etc to log the packets I'm interested in, but
-> > figure it would be much neater if I can just use iptables to do it.
-> 
-> You might want to have a look at http://gnumonks.org/projects/ulogd to see if 
-> it will help with what you want, but I suspect tcpdump etc will remain your 
-> best bet.
-
-	It will help. http://www.stearns.org/doc/iptables-ulog.current.html
-	Cheers,
-	- Bill
-
----------------------------------------------------------------------------
-	The thing that I suspect matters most is that Telsa is more 
-important to me than sitting in front of a computer reading email. 
-	- Alan Cox
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
-Linux articles at:                         http://www.opensourcedigest.com
---------------------------------------------------------------------------
+SGkgQW50b255IGFuZCBhbGwsDQoNClRoYW5rcyBmb3IgeW91ciByZXBseS4gV2hhdCBJIGFtIHRy
+eWluZyB0byBkbyBpcyB0byBnZXQgdGhlIHdob2xlIHBhY2tldHMgaW5jbHVkaW5nIHRoZWlyIHBh
+eWxvYWRzIGFuZCBzdG9yZSB0aGVtIGludG8gYSBzZWxmIGRlZmluZWQgcXVldWUsIGFuZCByYW5k
+b21seSBtb2RpZnkgc29tZSBiaXRzIGluIGVhY2ggcGFja2V0LiBJIGFtIHVzaW5nIGlwdGFibGVz
+IHVzZXJzcGFjZSBwcm9ncmFtbWluZy4gRG9lcyBhbnlib2R5IGhhdmUgc29tZSBnb29kIGlkZWEg
+aG93IHRvIGFjaGlldmUgdGhpcz8gVGhhbmsgeW91Lg0KDQpSZWdhcmRzLA0KSmVl
 
 
