@@ -1,13 +1,13 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: patch-o-matic automatic build ?
-Date: Fri, 4 Apr 2003 16:49:17 +0200
+From: Kim Jensen <kimj@dawn.dk>
+Subject: Re: diskless iptables
+Date: Fri, 4 Apr 2003 16:25:02 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030404164917.175b9f47.arnt@c2i.net>
-References: <000901c2fa92$abef6f80$5863a8c0@note>
+Message-ID: <200304041625.02547.kimj@dawn.dk>
+References: <200304041440450637.241F386F@lei.fis.uc.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000901c2fa92$abef6f80$5863a8c0@note>
+In-Reply-To: <200304041440450637.241F386F@lei.fis.uc.pt>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +18,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: nunocruz@berta.fis.uc.pt, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-On Fri, 4 Apr 2003 12:12:16 +0200, 
-"Johannes Walch" <j.walch@nwe.de> wrote in message 
-<000901c2fa92$abef6f80$5863a8c0@note>:
+On Friday 04 April 2003 15:40, Nuno Cruz wrote:
+> Does anyone know a linux distribution to run iptables in a floppy disk =
+(for
+> diskless systems)?
+>
+If you can settle with a CD version, then Knoppix is an excellent choice.=
+ But=20
+most floppy versions lack a bit in drivers, so you usually have to build =
+them=20
+yourself.
 
-> hi all,
-> 
-> does anyone know if its possible to select the patch-o-matic modules
-> automatically (e.g by a file / list) rather then executign ./runme
-> extra and doing it interactively ?
-> 
-> for example sth. like ./runme extra h323-patch ....
-> 
-> johannes walch
-
-..according to the README, you're supposed to be able to extract 
-any and all of the patches.
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+/Kim
 
 
