@@ -1,13 +1,13 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: NAT & MySQL
-Date: Tue, 25 Nov 2003 16:24:55 -0500
+From: Cody Harris <hchs@ns.sympatico.ca>
+Subject: Re: Mailing List Guidelines
+Date: Tue, 25 Nov 2003 18:34:33 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FC3C8A7.2030301@Loudoun-Fairfax.com>
-References: <200311251923.hAPJNpiu001203@server5.bandwidthco.com>
+Message-ID: <20031125183433.08352adc.hchs@ns.sympatico.ca>
+References: <3FC3609D.4030509@Loudoun-Fairfax.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311251923.hAPJNpiu001203@server5.bandwidthco.com>
+In-Reply-To: <3FC3609D.4030509@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +17,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Cc: nf <netfilter@lists.netfilter.org>, QT mail group <qt-interest@trolltech.com>, xmail@xmailserver.org
 
-Mark E. Donaldson wrote:
+On Tue, 25 Nov 2003 09:01:01 -0500,
+Someone named Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
 
-> The ACK packets you see in your dump are probably being dropped at the 
-> firewall because a state table entry does not exist.  So you need to 
-> add a NEW rule to do this:
->  
-> iptables -A FORWARD -i ppp0 -o eth0 -m state --state NEW -j ACCEPT
->  
-> this rule will then allow your ESTABLISHED,RELATED rule to work and 
-> permit those ACK packets to pass.
->
->
+> Hi All,
+> 
+> In an effort to provide some guidance to people who use mailing lists 
+> I've created a short list of guidelines. Some of you may have seen parts 
+> of this in my previous "Jeff's Rules" posting.
+> 
+> http://www.ubaight.com/JeffsRules
+> 
+> If you wish you may quote them, share them, link to the page, or ignore 
+> them altogether. I welcome any comments, suggestions, or criticisms.
 
-Hi Mark,
+Good job. I think this should be included in all server welcome messages. Do you mind if i use it for that purpose (Basicly copy and paste w/credit)
 
-I'm not sure I understand what this rule does for him. Only the first 
-packet from the web client would be NEW and based on his FORWARD rules 
-that's been accepted and the dump shows it went through (although I'd 
-still like to see his SNAT rule). Your rule would open his mysql server 
-to any NEW packet. Are you saying that the RELATED ACK packets won't go 
-through unless the first packet is matched with a NEW state and makes an 
-entry in the state table?
+Cody
 
-Jeff
+> 
+> Jeff
+> 
+> 
 
 
+-- 
++------------------+-----------------------------+
+| Cody Harris      | Signed with GnuPG signature |
+| KeyID: 610031E2A | vectec.net/~cody/key.asc    |
++------------------+-----------------------------+
 
