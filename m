@@ -1,16 +1,13 @@
-From: cmbb@dslr.net
-Subject: Re[3]: iplimit module refuses to work
-Date: Mon, 11 Aug 2003 14:12:13 -0400
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Blocking access to UDP port 53 (DNS) - Solution
+Date: Mon, 11 Aug 2003 14:25:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <159352501562.20030811141213@dslr.net>
-References: <63349768828.20030811132640@dslr.net>
- <1060624988.728.6.camel@elendil.intranet.cartel-securite.net>
- <183352264796.20030811140816@dslr.net>
-Reply-To: justin <justin@dslr.net>
+Message-ID: <20030811182518.GC11900@cannon.eng.us.uu.net>
+References: <12CC60849165134FB7DF8570B621F4D51C89CD@mailxserver.euler.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <183352264796.20030811140816@dslr.net>
+Content-Disposition: inline
+In-Reply-To: <12CC60849165134FB7DF8570B621F4D51C89CD@mailxserver.euler.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,14 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "Len L." <len@euler.com>
+Cc: netfilter@lists.netfilter.org
 
-CONFIG_IP_NF_MATCH_IPLIMIT=m
+I'm glad it worked but a small note: Is there any standard/RFC specifying
+that an MX lookup must come from port 25? Or is it just an arbitrary
+observation which works for certain smtp servers and fails for others?
 
-um, is there another secret hidden option, not checked, that has to be
-turned on before the iplimit module will work, even though it compiles
-ok as a module and can be insmod'd ok?
+Ramin
 
-CB>> Is your running kernel built with iplimit support ?
+On Mon, Aug 11, 2003 at 12:48:22PM -0500, Len L. wrote:
 
+> OK, 
+> I got it. Here is the rule set I tried and had success (b.t.w. The DNS server is fire walled but is a standalone machine - no forwarding) 
+> The answer was to reference DNS requests for port 25 only. 
+> iptables -A INPUT --protocol udp --source-port 25 -s 63.143.210.0/24 -j LOG --log-prefix "XXX LOCAL UDP DNS XXX "
+> iptables -A INPUT --protocol udp --source-port 25 -s 63.143.210.0/24 -j ACCEPT
+> iptables -A INPUT --protocol udp --source-port 25 -j LOG --log-prefix "XXX EXTERNAL UDP LOG XXX "
+> iptables -A INPUT --protocol udp --source-port 25 -j ACCEPT
+> iptables -A INPUT -p udp -j LOG --log-prefix "XXX UDP DROP XXX "
+> iptables -A INPUT -p udp -j DROP 
+> Also will drop the 25 sport reference on the internal side along with the logging as a final solution
+> 
+> 
+> Len Laulainen 
+> 
+> 
+> 
 
