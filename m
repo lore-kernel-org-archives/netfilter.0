@@ -1,12 +1,14 @@
-From: "Samuel Jean" <sj-netfilter@cookinglinux.org>
+From: Gavin Hamill <gdh@acentral.co.uk>
 Subject: Re: ipt_string and Kernel 2.6 !!URGENT!!
-Date: Wed, 12 Jan 2005 08:34:39 -0500 (EST)
-Message-ID: <27087.142.169.215.10.1105536879.squirrel@142.169.215.10>
+Date: Wed, 12 Jan 2005 13:39:00 +0000
+Message-ID: <200501121339.00401.gdh@acentral.co.uk>
 References: <20050112083023.42281.qmail@web26109.mail.ukl.yahoo.com>
+	<27087.142.169.215.10.1105536879.squirrel@142.169.215.10>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050112083023.42281.qmail@web26109.mail.ukl.yahoo.com>
+In-Reply-To: <27087.142.169.215.10.1105536879.squirrel@142.169.215.10>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +20,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Roland Kaeser <roli8200@yahoo.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, January 12, 2005 3:30 am, Roland Kaeser said:
-> Hi all
+On Wednesday 12 January 2005 13:34, Samuel Jean wrote:
+> On Wed, January 12, 2005 3:30 am, Roland Kaeser said:
 
-Hi!
-
-> [...]
-> Some of the web sources speaks about a patch-o-matic-ng-20041229 but I
-> could not see
-> any download by that name. Can somebody give me REALLY working howto fo=
-r
-> enabling
-> this function in a kernel 2.6.9?
-
-Since 2.6, the networking stack broke ipt_string and there's no way by
-now to reintroduce ipt_string with 2.6.
-
-However, Harald and Pablo are working on a 'string search' infrastructure=
-.
-Which means every match needing it, including ipt_string, will do.
-
+> > This is for a very large firewall project.
 >
-> This is for a very large firewall project.
-Out of curiosity, why do you need this match ?
+> Out of curiosity, why do you need this match ?
 
->
-> Kind Regards
->
-> Roland Kaeser
-> Systems Administrator
+Would the Layer 7 filter project not be more appropriate?
 
-HTH,
+http://l7-filter.sf.net
 
-Samuel
-
+gdh
 
