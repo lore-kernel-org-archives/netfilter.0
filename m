@@ -1,14 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: icmp echo reply && FORWARD chain
-Date: Sun, 2 May 2004 16:42:01 +0100
+From: persaie persaie <persaie77@yahoo.com>
+Subject: DNAT-MODULE
+Date: Sun, 2 May 2004 03:43:52 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405021642.01619.Antony@Soft-Solutions.co.uk>
-References: <006701c43051$39130ad0$68892090@grouse> <200405021546.51594.Antony@Soft-Solutions.co.uk> <007b01c4305a$34258300$68892090@grouse>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <20040502104352.92393.qmail@web61302.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <007b01c4305a$34258300$68892090@grouse>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,57 +15,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sunday 02 May 2004 4:29 pm, Jee J.Z. wrote:
+I have a doubt , please clear it
 
-> Hi Antony,
->
-> Sorry for the confusion.
->
-> > > My rules on a gateway linux box (PC2) are set as follows:
-> > >
-> > > Internet (PC1 and so on)
-> > >   |
-> > >   |
-> > > (eth0:global_ip)
-> > > PC2
-> > > (eth1:192.168.0.1)
-> > >   |
-> > >   |
-> > > Internal networks (PC3 (192.168.0.2) and so on...)
-> > >
-> > > iptables -F
-> > > iptables -F -t nat
-> > > iptables -I FORWARD -j QUEUE
-> > > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to global_ip
-> > > iptables -t nat -A PREROUTING -i eth1 -j DNAT --to 192.168.0.2
-> >
-> > That is a weird-looking rule.   Where does IP 192.168.0.2 exist on the
-> > above diagram?
->
-> It's the internal IP of PC3. I modified the diagram a little bit. Thank you.
+for Masquerading we have module "ipt_MASQUERADE.o"
 
-I modified it a bit too, so we don't have problems with line-wrap.
+then for DNAT and SNAT which modules are responsible,
+please tell.
 
-So, what you're saying is that any packet coming in on eth1, addressed to 
-anywhere at all, gets DNATted, and sent straight back out eth1 again, now 
-addressed to PC3.   Hm.
+where can i get information about these modules
+individually .
 
-Why?
+thanks in advance,
+rohit
 
-Antony.
 
-PS: I'm not sure if the sig below (which gets selected at random by my mail 
-client) is appropriate here, however I can't see it doing any harm to remind 
-people :)
-
--- 
-90% of networking problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+	
+		
+__________________________________
+Do you Yahoo!?
+Win a $20,000 Career Makeover at Yahoo! HotJobs  
+http://hotjobs.sweepstakes.yahoo.com/careermakeover 
 
