@@ -1,13 +1,13 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Re: need help
-Date: Tue, 29 Apr 2003 12:13:28 +0530
+From: SaVaGE  <pc-secure@home.nl>
+Subject: Re: PREROUTING
+Date: Tue, 29 Apr 2003 09:49:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00ee01c30e1a$a65da780$13fcc5cb@Housecall>
-References: <3EAE5239.3080605@naturesoft.net>
-Reply-To: "hare ram" <hareram@sol.net.in>
+Message-ID: <200304290949.10989.pc-secure@home.nl>
+References: <13955288009.20030429092330@o2.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <13955288009.20030429092330@o2.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +18,37 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: karthikeyan-rc@naturesoft.net, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi
+Op dinsdag 29 april 2003 09:23, schreef netfilter_user:
+> Hello everyone,
+>
+> this is my problem:
+> My LAN is connected to Internet via Linux machine with 2 interface (
+> ppp0 - for internet and eth1 for local net). I need to connect from
+> local host, service that is running on port 23073 and 23083 UDP in
+> internet. For this i wrote afew rules with PREROUTING but when I start
+> script with rules below i receive:
+>
+> Bad argument `PREROUTING'
+> Try `iptables -h' or 'iptables --help' for more information.
+> Bad argument `PREROUTING'
+> Try `iptables -h' or 'iptables --help' for more information.
+>
+>
+> iptables -t nat -A PREROUTING -p udp -d 80.50.60.185 --dport 23073 -j D=
+NAT
+> --to-destination 192.168.1.2 iptables -t nat -A PREROUTING -p udp -d
+> 80.50.60.185 --dport 23083 -j DNAT --to-destination 192.168.1.2
+>
+> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23073 -j ACCEPT
+> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23083 -j ACCEPT
+>
+> What maybe a reason of this msg?
+> Im using slackware 8.1 with iptables 1.2.6a
 
-Yes you can do MAC address based Filter using Iptables
-
-hare
------ Original Message ----- 
-From: "Karthik RC" <karthikeyan-rc@naturesoft.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, April 29, 2003 3:51 PM
-Subject: need help
+This behaviour is correct NATting is done on the POSTROUTING table !!!!
 
 
-> Hello ,
->    can we do IP/MAC filering through iptables..
-> regards
-> from karthik
-> 
-> 
-> 
-
+Pascal (PC-Secure Dutch security service)
 
