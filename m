@@ -1,12 +1,12 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: Re: availability of ROUTE target
-Date: Sun, 6 Mar 2005 12:12:54 -0500
-Message-ID: <876ef97a05030609126e4aa085@mail.gmail.com>
-References: <Pine.LNX.4.61.0503060105470.9386@forty-thieves.cis.upenn.edu>
-Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
+From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Subject: Re: some web sites need more than port 80?....
+Date: Sun, 6 Mar 2005 19:19:23 +0200
+Message-ID: <fad9d48405030609192b96682e@mail.gmail.com>
+References: <20050306164509.GA15342@spawar.navy.mil>
+Reply-To: Kenneth Kalmer <kenneth.kalmer@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.61.0503060105470.9386@forty-thieves.cis.upenn.edu>
+In-Reply-To: <20050306164509.GA15342@spawar.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Yun Mao <maoy+netfilter@cis.upenn.edu>, netfilter <netfilter@lists.netfilter.org>
+To: "seberino@spawar.navy.mil" <seberino@spawar.navy.mil>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, 6 Mar 2005 01:08:05 -0500 (EST), Yun Mao
-<maoy+netfilter@cis.upenn.edu> wrote:
->    I can't find ipt_ROUTE.c in my 2.6.10 kernel source. I tried google
-> "ipt_ROUTE" but only diff patches were found. Any hint on how to use
-> the ROUTE target? Thanks!
+On Sun, 6 Mar 2005 08:45:09 -0800, seberino@spawar.navy.mil
+<seberino@spawar.navy.mil> wrote:
+> I locked down my laptop with a firewall script to only
+> allow port 80.
+> 
+> I noticed that only the text gets downloaded from ucsd.edu.
+> 
+> It seems that the graphics from ucsd.edu could not get
+> 
+> through my firewall.
+> 
+> Do webs sites now send JPEGs in parallel with the text
+> on a different port or something?
 
-It's not part of the vanilla sources. To get the ROUTE target, you
-need to apply it from patch-o-matic. Check out
-http://www.netfilter.org/ for more information on that.
+Nope, something else is amiss. Maybe their server sends back the
+images using unprivileged ports (> 1024). I've never seen this happen.
+Tried any other sites?
+
+I had a look at their HTML and everything is fine there...
+
+> 
+> chris
+> 
+> 
+
 
 -- 
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+
+Kenneth Kalmer
+kenneth.kalmer@gmail.com
+http://opensourcery.blogspot.com
 
