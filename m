@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Forwarding Problems
-Date: Thu, 6 Mar 2003 19:17:34 +0100
+From: "Rune" <runner@mail.tele.dk>
+Subject: Re: Passive FTP through IPTables DNAT
+Date: Thu, 6 Mar 2003 19:55:21 +0000 (UTC)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000401c2e40c$a9280d30$0401000a@sterenborg.info>
-References: <ABEKJILKOKKGGDJKHKDFOEBGCAAA.patrick@vikus.com>
+Message-ID: <001001c403b3$79629670$0b00a8c0@runner>
+References: <4D613EBFB75BD6118A5B00508BEEC62C0111CB53@JESS>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ABEKJILKOKKGGDJKHKDFOEBGCAAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,43 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Date: Sat, 6 Mar 2004 20:44:43 +0100
 Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter EMAIL' <netfilter@lists.netfilter.org>
+To: Jonathan Humphrey <jhumphrey@codemasters.com>, netfilter@lists.netfilter.org
 
-> accepted. The problem
-> is, if I use
-> 
-> iptables -A FORWARD -j DROP
-> or
-> iptables -P FORWARD DROP
-> 
-> they will drop all packets including the ones I already ACCEPTed.
+All  you need is having a forward rule for the ftp-data connection which
+uses the
+port below the ftp port e.g:
+    ftp at port 21
+    ftp-data at port 20
 
-I don't see any rule that makes the filter stateful.
-When it's stateful, you don't have to worry about all the returning
-packets.
-I think that will make it work.
-
-> 
-> example (want to allow all incoming and outgoing www traffic):
-> iptables -A FORWARD -p tcp -d 192.168.1.0/24 --dport 80 -j ACCEPT
-> iptables -A FORWARD -p tcp -d 192.168.1.0/24 --sport 80 -j ACCEPT
-
-Packets sent *to* a webserver will most likely not come *from* port
-80/tcp.
-
-> iptables -A FORWARD -p tcp -s 192.168.1.0/24 --dport 80 -j ACCEPT
-> iptables -A FORWARD -p tcp -s 192.168.1.0/24 --sport 80 -j ACCEPT
-> iptables -A FORWARD -j DROP
-
-So, making it stateful, it would look like this :
-
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -d 192.168.1.0/24 -p tcp --dport 80 -j ACCEPT
+Rune Petersen
+----- Original Message -----
+From: "Jonathan Humphrey" <jhumphrey@codemasters.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, March 06, 2003 7:20 PM
+Subject: Passive FTP through IPTables DNAT
 
 
-Gr,
-Rob
+> Does anyone have a working script for this?
+>
+> I'm attempting to hide a FTP server behind a Linux IPTables firewall using
+> dnat but having problems
+>
+> thx!
+>
+>
+> **********************************************************************
+> This email and any files transmitted with it are confidential and
+> intended solely for the use of the individual or entity to whom they
+> are addressed. If you have received this email in error please notify
+> the system manager.
+>
+> This footnote also confirms that this email message has been swept by
+> MIMEsweeper for the presence of computer viruses.
+>
+> **********************************************************************
+>
+>
 
 
