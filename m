@@ -1,13 +1,12 @@
-From: "Joe Patterson" <jpatterson@asgardgroup.com>
-Subject: RE: TCP delay, solved
-Date: Fri, 14 Jun 2002 16:29:45 -0400
+From: =?ISO-8859-1?Q?Z=E9=20Lu=EDs?= <zeluis@objetivo-americana.com.br>
+Subject: Re: squid and iptables
+Date: Fri, 14 Jun 2002 18:16:06 -0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <NJEFLNJDIFFNMHDEBKMJOEHCDOAA.jpatterson@asgardgroup.com>
-References: <200206140919.KAA11259@slate.rockstone.co.uk>
+Message-ID: <3D0A5D16.1020806@objetivo-americana.com.br>
+References: <3A5DC36EC1506C40825C05BE65E62AEF0E7A0D@neptuno.idea.com.mx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206140919.KAA11259@slate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,62 +16,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.samba.org
 
-How about this as a possible solution:
+Omar Castaneda Acosta wrote:
 
-in your OUTPUT chain and in FORWARD -o $EXTERNAL_INT, have a rule something
-like (with the recent patch compiled in):
+> Setup iptables to DROP/REJECT everything from the internal interface
+> except -m state NEW,ESTABLISHED,RELATED on every service you want to
+> allow.
 
-$IPT -A OUTPUT -m state --state NEW -m recent --name validconn --set
-$IPT -A FORWARD -m state --state NEW -o $EXTERNAL_INT -m recent --name
-validconn --set
 
-and then:
+thanks Omar,
 
-$IPT -A INPUT -m recent --name validconn -rcheck --seconds 20 -p tcp --dport
-113 -j REJECT --reject-with tcp-reset
+i'm  needing more details about how to exactly do it.
 
-and let everything else fall through to a default DROP rule.  This way you
-will only send tcp resets for ident lookups if you have made a connection to
-the source of the ident lookup in the last 20 seconds.  Otherwise (for
-general nmappers out there), everything gets dropped.  Add this to some -m
-psd magic and some other judicious use of the recent patch, and you should
-be able to have a firewall that denies all evidence that you exist.
+I'm opening just few ports from eth0( NET_INT, my local network) to my 
+eth1 firewall (my internet valid ip), like 25,53,80 and 3128 ports.
+I do something like this
 
--Joe
+"iptables -A INPUT -p tcp -j ACCEPT -s 192.168.1.10/255.255.255.0 -i 
+eth0 -d 192.168.1.154 --dport nn"
 
-> -----Original Message-----
-> From: netfilter-admin@lists.samba.org
-> [mailto:netfilter-admin@lists.samba.org]On Behalf Of Antony Stone
-> Sent: Friday, June 14, 2002 5:19 AM
-> To: netfilter@lists.samba.org
-> Subject: Re: TCP delay, solved
->
->
-> On Friday 14 June 2002 9:25 am, David Luyer wrote:
->
-> > > Easy solution:
-> > >
-> > >   deny (connection reset) rather than drop the connections
-> >
-> > I meant reject.  From the man page:
-> >
-> > Why connection reset?  For idiots at the other end who firewall all
-> > ICMP.
->
-> Same problem.   Leaves me with a port on my Firewall which
-> responds to nmap
-> etc.   All other ports on my Firewall return nothing, so the machine is
-> invisible - I don't want port 113 standing out by doing something
-> different.
->
->
->
-> Antony.
->
->
->
+but all traffic is made like this:
+
+Client:
+------
+
+from: 192.168.1.10:nn
+to: 192.168.1.154:3128 (my firewall, squid server)
+
+Server:
+-------
+from: 192.168.1.154:3128
+to: 0.0.0.0 (Internet)
+
+All client browsers is configurated to work with proxy on port 3128.
+
+
+How can i filter destination ports requests from clients machines to 
+external internet with proxy intercepting this traffic on 3128 port???
+
+Very Thanks again..
+
+Ze Luis
+
+> 
+> Hi,
+> 
+> i have a network with squid authentication on port 3128 and acl's
+> controls. My users only surf with password authentication.
+> 
+> I don't control access port with squid acl. All ports is free by squid.
+> 
+> But,
+> 
+> i need control wich ports each machine can access by iptables. Is it
+> possible?
+> 
+> My idea is :
+> 
+> - squid do not control ports, only url_path, urlpath_regex, time,
+> password.
+> 
+> - iptables open and close ports (from internal mchines to internet) for
+> data from proxy and other (telnet, irc, ssh and all other)
+> 
+> My question:
+> 
+> - Is it possible.
+> 
+> if yes:
+> 
+> - what chain use?
+> - a example, plase ;-)
+> 
+> if no:
+> 
+> - what's betther way to do this
+> 
+> 
+> Thanks, thanks, thanks.
+> 
+> Ze Luis
+
 
 
