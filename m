@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Leaking ICMP and UDP packets
-Date: Tue, 20 Apr 2004 19:37:20 +0100
+Subject: Re: Need some clarification or help
+Date: Tue, 20 Apr 2004 19:47:39 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404201937.20176.Antony@Soft-Solutions.co.uk>
-References: <Pine.LNX.4.44.0404201059380.9758-100000@dudester.spoontail.com>
-Reply-To: Netfilter <netfilter@lists.netfilter.org>
+Message-ID: <200404201947.39774.Antony@Soft-Solutions.co.uk>
+References: <20040420182205.GA2948@rie.rie.priv>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0404201059380.9758-100000@dudester.spoontail.com>
+In-Reply-To: <20040420182205.GA2948@rie.rie.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,58 +19,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tuesday 20 April 2004 7:06 pm, Daniel David Benson wrote:
+On Tuesday 20 April 2004 7:22 pm, Christian Riechmann wrote:
 
-> Ok, so if I understand correctly, the 10.101.10.103 host is trying to
-> respond to this windows box -- it only knows the default gateway to get to
-> that 169 address.
+> Hello,
+>
+> is it possible to read - via ipq_read/ipq_get_packet - a UDP packetr
+> and after some changes to accept - via ipq_set_verdict with NF_ACCEPT and
+> shorter length - it as a TCP packet?
 
-Yes, and the default gateway (your firewall) only knows its external interface 
-to send out packets which don't belong to the internal LAN/s.
+My immediate response to this is "no, of course not, because UDP and TCP 
+packet headers are completely different".
 
->  It doesn't NAT because it doesn't have a corresponding
-> "initiated" NAT entry?  I guess I'm confused as to why it doesn't match
-> the global NAT entry -- I suspect it's my lack of understanding of how NAT
-> is implemented.
+I mean, UDP packets just get sent - who knows whether the receiver gets them 
+or not?   TCP involves a three-way handshake to set up a connection, and then 
+sequence & acknowledgement numbers to maintain the reliability.   Creating 
+that out of nowhere would be difficult.
 
-Hm, actually, yes, you have a point there - you do have a generic SNAT rule 
-which should apply to any packets leaving the external interface.   I don't 
-have an answer for that one right now.
+> Here is what I wish to do:
+> For the transmission of IP packets (UDP, ICMP, TCP) between two hosts
+> I want to send these packets through a UDP tunnel.
 
->  In the end, I should be blocking these 169 requests in
-> the FORWARD table anyway.
+Tunnelling is a very different matter from converting UDP packets into TCP 
+packets, and should be eminently feasible.
 
-Yes, that would be a good plan.
-
-> Is it common practice to set the NAT chains default policies to DROP?
-
-NO!!!!   *Never* set a nat table (or a mangle table) to have any default 
-policy other than ACCEPT.
-
-Think really *really* hard before using a rule with a DROP target in the nat 
-or mangle tables (it can be valid sometimes, but make sure know what it will 
-do before you use it).
-
->  I guess, I'd like to know the best way to stop these bad boys from getting
-> out to be a good netizen.
-
-Well, I wouldn't worry about it too much - an upstream ISP will drop them soon 
-enough with that destination address.
-
-If you do want to drop them yourself, however, start with the addresses listed 
-in http://www.rfc-editor.org/rfc/rfc3330.txt and block anything entering or 
-leaving your network with a source or destination address in these ranges.
+http://vtun.sourceforge.net will provide you a general-purpose tunnel which 
+operates over UDP.   See if that does what you need - it'll probably simplify 
+what you've been attempting to do with netfilter considerably.
 
 Regards,
 
 Antony.
 
 -- 
-"The future is already here.   It's just not evenly distributed yet."
+"640 kilobytes (of RAM) should be enough for anybody."
 
- - William Gibson
+ - Bill Gates
 
                                                      Please reply to the list;
                                                            please don't CC me.
