@@ -1,11 +1,13 @@
-From: "Heiko Fischer" <electropunk@web.de>
-Subject: Re: Problem reading an URL with Java through IPTables/Squid proxy
-Date: Tue, 5 Aug 2003 00:58:16 +0200
+From: Whit Blauvelt <whit@transpect.com>
+Subject: Re: SNAT "invalid argument"
+Date: Mon, 4 Aug 2003 19:45:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000901c35adb$ea6aa0a0$0200a8c0@hf.home.de>
+Message-ID: <20030804234518.GA9093@free.transpect.com>
+References: <20030804185601.GA8546@free.transpect.com> <06a001c35abb$cfcf0120$1100000a@busbydev> <20030804195613.GA8638@free.transpect.com> <1060033549.3175.5.camel@tux.rsn.bth.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1060033549.3175.5.camel@tux.rsn.bth.se>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Martin Josefsson <gandalf@wlug.westbo.se>
+Cc: David Busby <busby@pnts.com>, Netfilter <netfilter@lists.netfilter.org>
 
-George,
+On Mon, Aug 04, 2003 at 11:45:49PM +0200, Martin Josefsson wrote:
+> This has been asked several times on this list.
+> And I've answered it several time as well.
 
-thanks for responding to my message.
-Fortunately, I've just been able to fix the problem by setting the following
-system properties in my Java environment:
+Thanks Martin. I wasn't subscribed until today, and looking back a couple of
+months in the archives didn't see any message titles that obviously
+pertained.
 
-System.getProperties().put("proxySet", "true");
-System.getProperties().put("proxyHost", "myProxyMachineName");
-System.getProperties().put("proxyPort", "myProxyPort");
+> Recompile the iptables program against your new kernel.
+> Some major changes were made in the 2.4.21 kernel that requires this
+> recompile.
 
-Seems that Squid chokes when receiving HTTP requests which have been
-redirected by IPTables from a different port.
-Without the above settings, Java tries to connect on the standard HTTP port
-(80), and these connections are being redirected to port 3128 (the port
-Squid listens on in my configuration).
-The reason why it works in my Win2k environment without the above settings
-is that the Win2k firewall allows direct HTTP connections, thus bypassing
-the proxy server.
-Besides, the Squid log entries are now correct, too (complete URLs, protocol
-HTTP/1.0 etc).
+I'll do that presently. This seems to be a dependency that the Gentoo crew
+aren't familiar with.
 
-Regards,
-
-Heiko Fischer
-
-
------ Original Message -----
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-To: "Heiko" <electropunk@web.de>; <netfilter@lists.netfilter.org>
-Sent: Tuesday, August 05, 2003 12:12 AM
-Subject: RE: Problem reading an URL with Java through IPTables/Squid proxy
-
-
-"GET /intl/de/about.html HTTP/0.0"
-Your Java applet isn't using proper HTTP protocols and should send a
-HTTP/1.0 or HTTP/1.1 to the website..
-I do this already in PHP to check website uptime etc and works fine.
-
-This is something you need to send to the web server..
-
-
-GET /webchecker.jsp HTTP/1.0\r\n
-Cache-Control: no-cache\r\n
-Expires: Mon, 26 Jul 1997 05:00:00 GMT\r\n
-Pragma: no-cache\r\n
-Host:www.citadelcomputer.com.au\r\n
-\r\n
-
-<2 sets of CRLF to tell the webserver your finished>
-
-
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
+Whit
 
