@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Filtering Nimda, Code Red and Code Red II
-Date: Wed, 11 Sep 2002 13:48:04 +0100
+From: "Roy" <roy@digiport.net.tw>
+Subject: LOCALTIME problem.
+Date: Wed, 11 Sep 2002 20:30:16 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209111248.g8BCmAv08513@vulcan.rissington.net>
-References: <Pine.LNX.4.44.0209111237190.32463-100000@dns.toxicfilms.tv>
+Message-ID: <006901c2598f$02fb1540$0a0aa8c0@roy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0062_01C259D2.0A2227D0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0209111237190.32463-100000@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,26 +16,89 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 11 September 2002 11:42 am, Maciej Soltysiak wrote:
+This is a multi-part message in MIME format.
 
-> The short answer is no. Netfilter is a packet filter, it works on 3rd and
-> 4th layer, You need a 5th layer application, like a proxy.
+------=_NextPart_000_0062_01C259D2.0A2227D0
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-You're going to confuse people between OSI & TCP models if you say things 
-like that around here :-)
+Dear all,             =20
+               Did anyone try this function well ?
+               I put ulogd_LOCALTIME.c into ulogd-x/extensions =
+directory,and replace Rule.make.in in ulogd-xxx/
+               It has complied ulogd_LOCALTIME.so and installed.
+               add the line=20
+                          plugin /usr/local/lib/ulogd/ulogd_LOCALTIME.so
+               in ulogd.conf
+               Mysql info.
+               local_time field value is 1031676302
+               It's seems not work,Is my procedure correct ? Thanks for =
+your comments.
 
-Folks: don't try looking up the 5th layer of the TCP networking model :-)
+Regards / Roy
 
-Antony.
+------=_NextPart_000_0062_01C259D2.0A2227D0
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
--- 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
+<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>
+<DIV><FONT size=3D2><FONT face=3DArial color=3D#0000ff>Dear=20
+all,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;</FONT></FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;=20
+Did anyone try this function well ?</FONT></DIV>
+<DIV><FONT size=3D2><FONT face=3DArial=20
+color=3D#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+I put ulogd_LOCALTIME.c into ulogd-x/extensions directory,and replace=20
+Rule.make.in in ulogd-xxx/</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;=20
+&nbsp;It has complied ulogd_LOCALTIME.so and installed.</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+&nbsp;&nbsp;&nbsp; add the line </FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;=20
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p=
+lugin=20
+/usr/local/lib/ulogd/ulogd_LOCALTIME.so</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;=20
+&nbsp;in ulogd.conf</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;=20
+Mysql info.</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;local_time=20
+field value is 1031676302</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;=20
+It's seems not work,Is my procedure&nbsp;correct ? Thanks for your=20
+comments.</FONT></DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial color=3D#0000ff size=3D2>Regards /=20
+Roy</FONT></DIV></FONT></FONT></DIV></BODY></HTML>
 
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
+------=_NextPart_000_0062_01C259D2.0A2227D0--
+
 
