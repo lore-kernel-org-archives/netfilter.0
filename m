@@ -1,13 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Forwarding non local packets to loopback with iptables?
-Date: Tue, 07 Sep 2004 20:35:29 -0400
+From: "James B. Hiller" <jhiller@visi.net>
+Subject: Re: linux-2.6.9-rc1 compilation and configuration issue (fwd)
+Date: Tue, 7 Sep 2004 21:55:54 -0400 (EDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094603729.1751.34.camel@wolfpack.ljm.dom>
-References: <20040907114859.GA13315@scholars.home>
+Message-ID: <200409080155.i881ts4K012789@bassett.home.org>
+References: <1094603246.1751.25.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040907114859.GA13315@scholars.home>
+In-Reply-To: <1094603246.1751.25.camel@wolfpack.ljm.dom> from "Jason
+	Opperisano" at Sep 07, 2004 08:27:27 PM
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,97 +19,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jason Opperisano <opie@817west.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 2004-09-07 at 07:49, Mark Ord wrote:
-> Setup:
->    NAT + Firewall - Debian, 2.4.18 kernel, iptables v1.2.6a
->    eth0 - 10.0.x.x        - wireless broadband VPN connection
->    eth1 - 192.168.0.1     - Local network
->    ppp0 - server assigned - Internet connection via VPN established via
->                             eth0 - though, fairly irrelivent.
->    eth1:1 - 192.168.0.128 - Local network alias
->    eth1:2 - 192.168.0.129 - Local network alias
->       .. etc ..
+Hi Jason.
+
+> On Tue, 2004-09-07 at 19:33, James B. Hiller wrote:
+> > Hi!
+> > 
+> > No takers?  Or have I put this in the wrong forum?  If I have, please
+> > let me know where to go with it.
 > 
-> What I want to do is set up a SSH tunnel to another machine, behind
-> another firewall, and use the eth1 aliases to access the remote machines from my
-> local network (eth1) and the iptables machine. I tried to set this up
-> before with iptables, failed, 
+> i'm not really qualified to answer this question, (which has never
+> stopped me before)...and hey--beggars can't be choosers...  ;-)
 
-can we revisit why that failed, perhaps?
+You bet.  Thanks for giving it a throw.
 
-> found discovered rinetd, and have been using
-> that since successfully. However, I'd like to use an iptables solution,
-> because I think it'll be cleaner (can't easily ifup/ifdown the eth1 aliases
-> when using rinetd), plus I'm plain interested in if/how to do an iptables
-> solution.
+> 2.6.9-rc1 seems pretty bleeding edge...  the 2.6 series has kind of
+> become a test branch as it is, but sheesh--that's really out there.  do
+> you have a "gotta have it" reason to run this kernel?  if not--i'd say
+> stick with the "release" version:  2.6.8.1...  seems these kind of
+> compilation issues would be par-for-the-course on an "rc" kernel.
 
-k--see above.
+With maybe one or two exceptions beginning in late 2.4.X when I started
+using rc's and mmX, no, clean compilation hasn't been an issue.  My main
+reason for moving with each change is that for about a year, I've been
+working with a developer who's trying to get DMA-related bugs out of
+the switch from using SCSI emulation to having SCSI handling built into
+the IDE driver.  Until that's done, I can't use DMA with my CD writer,
+where before I could.  His bugfixes have been going into 2.6.7+, a bit at
+a time, through the mm branch.
 
-> The main catch here is that I'm not using GatewayPorts for the ssh port
-> forwarding. Firstly because binding the forwards to the loopback seems
-> slightly more secure, and secondly because the ports I forward to on the
-> remote machines are the same - using GatewayPorts binds to all available
-> interfaces. Hence I do the ssh port forwards, binding to different
-> ports on the loopback on the local end of the ssh tunnel, and then map
-> the default service ports on the eth1 aliases to the appropriate port on
-> the loopback ie:
+> anyways...if you must--you should probably be following the
+> netfilter-devel list (and linux-kernel for that matter)--check out the
+> post from Harald Welte (with patch):
 > 
-> rinetd.conf:
-> 
->    192.168.0.128   3389      127.0.0.1       13389 # rdc
->    192.168.0.129   3389      127.0.0.1       23389 # rdc
->    192.168.0.130   3389      127.0.0.1       33389 # rdc
-> 
-> Connections to 192.168.0.128:3389 redirect to localhost:13389, which connects
-> via the ssh tunnel to port 3389 on the remote host.
-> 
-> Last time I tried to establish this with iptables, I got nowhere. This time
-> around I got it working on the iptables machine with:
-> 
-> $IPTABLES -t nat -I OUTPUT -p tcp -s 192.168.0.128 --dport 3389 \
->         -j DNAT --to 127.0.0.1:13389
->    .. etc .. for each address and port required.
-> 
-> Connecting to 129.168.0.128 port 3389 takes me where I want - down the
-> ssh tunnel, to machine on the remote network.
+> http://marc.theaimsgroup.com/?l=netfilter-devel&m=109346594923412&w=2
 
-this isn't exactly a great test scenario, as you're testing locally on
-the box itself, which will not cleanly extrapolate to the forwarding
-scenario.
+Thx!  I haven't been looking at netfilter-devel, since until now, it was
+a non-issue for me.  What that particular item, and a few after it, show
+is that indeed there is a known issue both with NAT in general and
+double NAT in 2.6.9-rc1; and that the hang I'm getting is affecting others
+as well.  So that tells me I don't need to try to report it; I'm not using
+a dumb netfilter configuration; and that it may get better in -rc2++.  Since
+my DMA issue isn't done yet anyway, no harm in laying back from -rc1.
 
-> However, no matter what I try, I can't get connections from other machines
-> on the 192.168.0.0/24 network to work. I've tried to several combinations
-> of using PREROUTING, POSTROUTING and OUTPUT chains, with no luck.
-> In particular, I've tried to model it on a rule that works:
-> 
->     iptables -t nat -I PREROUTING -p tcp -d 192.168.0.128 --dport 3389 \
->          -j DNAT --to x.x.x.x:3389
->     (where x.x.x.x is a host on the internet.)
-> 
-> with:
-> 
->     iptables -t nat -I PREROUTING -p tcp -d 192.168.0.128 --dport 3389 \
->          -j DNAT --to 127.0.0.1:3389
-> 
-> which doesn't work, to which I can only conclude that you can't dnat to
-> 127.0.0.1.
+I really appreciate the pointer!
 
-nope--you sure can't. 
-
-> Is it possible to achieve this with iptables (redirecting traffic coming in
-> on eth1 (for eth1:?) to a port on 127.0.0.1), and if so, what rules are
-> required?
-
-no.  but since you have dedicated IP addresses per host--why aren't you
-just DNAT-ing from the IP on eth1 directly to the host that should
-receive the traffic (i believe this is the "previously failed"
-scenario)?
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
-
+regards,
+jbh
 
