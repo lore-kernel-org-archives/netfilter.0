@@ -1,17 +1,12 @@
-From: "Skip Morrow" <skip-lists@pelorus.org>
-Subject: Re: Rejecting udp
-Date: Tue, 4 Mar 2003 08:31:34 -0500 (EST)
+From: "Daniel Beckham" <danbeck-netfilter@dealnews.com>
+Subject: Re: DNAT and VPN Tunnel problems, traffic checks in, but doesn't check out
+Date: Tue, 4 Mar 2003 09:29:39 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <39942.192.222.90.38.1046784694.squirrel@pelorus.org>
-References: <000801c2e1aa$3fc8f660$0200a8c0@klintan.local>
-        <003f01c2e1e2$2d9bd100$0301a8c0@hotpop3>
-        <33803.192.222.90.38.1046775610.squirrel@pelorus.org>
-        <1046777181.3924.1.camel@raylinux.internal>
-Reply-To: skip-lists@pelorus.org
+Message-ID: <005f01c2e262$e18d9560$0a02010a@danbeck>
+References: <007f01c2e1d3$7b7fd740$0a02010a@danbeck> <009f01c2e215$69c78830$e11310ac@techknowledge.ws>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1046777181.3924.1.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,81 +17,156 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter <netfilter@lists.netfilter.org>
 
-I agree that it is important to block certain UDP ports/traffic.  What the
-issue is, is what is the purpose of REJECTing a UDP packet versus DROPping
-the UDP packet?  My point is, sending back a REJECT message doesn't make
-sense with UDP.
+Thank you for your help, but I don't really understand what you are trying
+to tell me.  The first config line makes sense and that is similar to what
+I'm doing now.  Although, I'm not using any specific ports because I'm
+testing at the moment.
 
-Skip
+The second line is confusing though.  Why would I SNAT a 10.1.1.0/24 address
+to another 10.1.1.0/24 address?  I was thinking you may have meant a
+10.1.2.0/24 address, but that makes even less sense as that is the client
+trying to connect in the first place.  Also, why would you use a 10.1.1.7 as
+the -d option, the destination address?  Btw, I tried several combinations
+including your example just for the hell of it, but none of them work. =)
 
-> I suppose being able to reject UDP packets is just allowing you to
-> control access to a service that may be listening on that UDP port. For
-> example blocking the nimba virus by rejecting UDP port 137,138,139.
+Something that I did not mention before though is that I have tried this:
+iptables -t nat -A POSTROUTING -s 10.1.1.7 -p tcp -j SNAT --to 129.41.69.137
+
+I would think this would solve the problem, but this doesn't help.  Anyone
+else have any ideas?
+
+Thank you for your help,
+
+Daniel Beckham
+dealnews.com
+
+
+
+----- Original Message -----
+From: "Pavan Gokarn" <pavang@techknowledge.ws>
+To: "Daniel Beckham" <danbeck-netfilter@dealnews.com>
+Sent: Tuesday, March 04, 2003 12:15 AM
+Subject: Re: DNAT and VPN Tunnel problems, traffic checks in, but doesn't
+check out
+
+
+> yes daniel you'll need a rule to get the packets back from the remote
+> network back into your network.
+> these will be the rules substitute them eoth you desired ip addresses
+> for outgoing connection
+> # iptables -t nat -A PREROUTING -d 129.41.69.137 -p tcp --dport 25 -j
+> DNAT --to 10.1.1.7
+> for incomming replies
+> # iptables -t nat -A POSTROUTING -d 10.1.1.7 -p tcp --dport 25 -j
+SNAT --to
+> 10.1.1.something
 >
-> On Tue, 2003-03-04 at 13:00, Skip Morrow wrote:
->> I am trying to remember my networking class (/me shakes the cobwebs
->> out)
->>
->> I think that the original question is a good question.  UDP packets
->> (legitimately) arriving at my computer are not acknowledged.  That is,
->> I don't tell the sender "Yeah, I got that packet.  Thanks."  Nor, do I
->> tell the sender "Whoops.  I didn't quite get all of that last packet.
->> Could you send it again?" So, REJECTing a UDP packet doesn't make
->> sense.  The sender isn't looking for any type of OK message or
->> anything for that matter.  In fact, where would the REJECT message go?
->>  Does the sender even have a listen port open?
->>
->> But then again, I could be completely wrong.
->>
->> Regards,
->> Skip
->>
->> > ----- Original Message -----
->> > From: "Michael K" <micke@klintan.se>
->> > To: <netfilter@lists.netfilter.org>
->> > Sent: Monday, March 03, 2003 6:28 PM
->> > Subject: Rejecting udp
->> >
->> >
->> >> I saw this rule someware on the net.
->> >> $IPTABLES -A FORWARD -o $EXTERNALIF -p udp --dport 137 -j REJECT
->> >>
->> >> Whats the use to use reject on a UDP packet? Isn't udp
->> connection-less A more correct shouldn't that be "-j DROP"? Or am I
->> thinking wrong here?
->> >>
->> >> Regards Klintan
->> >>
->> >
->> > First of all: This has little to do with TCP or UDP (or
->> connection-less stuff).
->> >
->> > Many firewalls have a policy to drop packets coming from the outside
->> when nothing on the inside has started communicating to the internet
->> (outside). But, port 137 is part of the SMB (filesharing) protocol.
->> It starts inside your network, broadcasting that services are
->> available. The firewall will see this as legitimate traffic, since
->> it started on the inside.
->> > If you wouldn't block port 137, you'd be broadcasting to the
->> internet that you have filesharing enabled on your network, thereby
->> opening up port 137 to the internet, as the firewall sees no danger.
->> > The next step for a cracker would be easy, get into your filesharing
->> network, steal passwords or worse...
->> > Simply: Things that "You Don't Want to Happen" (TM).
->> >
->> > Short answer: You do want to filter port 137 (and 138/139).
->> >
->> > A good approach is to block all traffic to the firewall/internet
->> from the inside, then open op ports (POP, SMTP, HTTP and other
->> services) as needed, but no more then what's needed.
->> >
->> > HTH,
->> > Willem
->>
->>
-> --
+> remember not to allow all types of connections to in and out because this
+> might cause a security threat. substitute the 10.1.1.something ip address
+> with the ip that connects/talks to the 10.1.1.7 address.
+> this might work
+> hope this was helpful
+> regards
+>
+> ----- Original Message -----
+> From: Daniel Beckham <danbeck-netfilter@dealnews.com>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Tuesday, March 04, 2003 3:53 AM
+> Subject: DNAT and VPN Tunnel problems, traffic checks in, but doesn't
+check
+> out
+>
+>
+> > I'm seeing a strange issue with DNAT'ed traffic over a VPN.  Incoming
+> > packets arrive just fine, but outgoing traffic has trouble for large
+> streams
+> > of tcp data.
+> >
+> > My setup is fairly simple.   A group of machines on a private network
+> behind
+> > a gateway/firewall (netfilter) connect through an OpenVPN tunnel to a
+> remote
+> > group of machines on a different private network.
+> >
+> > Local subnet: 10.1.2.0/24
+> > Remote Subnet 10.1.1.0/24
+> >
+> > Client machines on the local subnet can freely talk to servers on the
+> remote
+> > subnet through the vpn with out any problems.
+> >
+> > Until the vpn tunnel was functional, client machines on the local
+private
+> > network connected to mail.dealnews.com to retrieve and send mail, a
+public
+> > interface of the mail server on the remote private network.  Now that
+the
+> > vpn is working, they need to retrieve and send mail using the private
+> > address 10.1.1.7.
+> >
+> > For several reasons, one being laptop administration, I don't want to
+> change
+> > all of the mail client's ip addresses to 10.1.1.7.  I want to use
+iptables
+> > to DNAT packets headed for the public mail address (mail.dealnews.com)
+to
+> > the private mail address 10.1.1.7 so that packets are routed over the
+vpn
+> > instead of the internet.
+> >
+> > This is how I attempted to configure iptables:
+> > iptables -t nat -A PREROUTING -s 10.1.2.10 -d 129.41.69.137 -p all -j
+> > DNAT --to-destination 10.1.1.7
+> >
+> > The -s option is there so that I can test the config myself without
+> Borking
+> > the rest of the network.
+> >
+> > This seems to work at first as I can see traffic sent from the client to
+> > mail.dealnews.com over the tunnel interface on the remote network.  What
+> > happens though, is although that I can connect to the remote mail server
+
+> > just fine through IMAP and even send out a very small email message
+> through
+> > SMTP, large mail messages just stall and fail.  Ftp is the same way.  I
+> can
+> > transfer files from the remote server, but I can not send any sizeable
+> file
+> > to the server.  I know for sure that traffic is traveling over the vpn
+> > tunnel because I'm dumping the tunnel interface up at the remote
+network.
+> > This sounds like something to do with fragmentation or possibly
+something
+> > along that line of thinking, but I can not for the life of me figure out
+> > what this is.
+> >
+> > I wondered if possibly, I needed another rule to DNAT packets coming
+from
+> > the remote network over the tunnel back to the public mail.dealnews.com
+ip
+> > address:
+> > iptables -t nat -A PREROUTING -s 129.41.69.37 -d 10.1.2.10 -p all -j
+> > DNAT --to-destination 129.41.69.137
+> >
+> > But this didn't seem to help anything.
+> >
+> > Could anyone help me figure out how I can work around this?  Again,
+> incoming
+> > traffic through the tunnel seems to work just fine, but outgoing traffic
+> > only half seems to work.  As strange as that sounds.
+> >
+> > Thanks,
+> >
+> > Daniel
+> > dealnews.com
+> >
+> >
+> >
+> >
+>
+>
 
 
 
