@@ -1,11 +1,10 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Help- can't ftp
-Date: Mon, 26 May 2003 10:46:20 +1000
+From: <g_netfilter@netfids.com>
+Subject: H/A
+Date: Sun, 25 May 2003 21:45:12 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3ED163DC.9060108@snapgear.com>
-References: <000001c3210b$62dbba70$0223a8c0@satconet.com>
+Message-ID: <27597.200.48.226.214.1053917112.squirrel@www.netfids.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,26 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Steven Mugassa <steven.mugassa@intafrica.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Steven Mugassa wrote:
-> I have got Windows machines behind a Red Hat 9.0 Linux router (with SNAT +
-> CIPE-VPN). The problem i'm getting is that the machines behind that router
-> can't open ftp sites. The error message is "__ Invalid PORT command" (and
-> for some sites there is one more error message " __ command not
-> understood"). However, the router itself can open ftp sites. 
-> 
-> Can this be a problem with ip_conntrack or something else? 
+Hi friends, I have some boxes running iptables and i works well. But now I
+need to configure a failover solution, please could you give me some links
+to start reading? I need to consider Netfilter/Iptables and FreeSwan in the
+same box and with a failover configuration.
 
-Have you loaded the ftp conntrack and nat modules?
+Thanks in advance.
 
-/sbin/modprobe ip_conntrack_ftp
-/sbin/modprobe ip_nat_ftp
+Geffrey.
 
--- 
-Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
-SnapGear - Custom Embedded Solutions and Security Appliances
 
 
