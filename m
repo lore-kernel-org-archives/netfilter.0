@@ -1,10 +1,10 @@
-From: "Andy Wood" <andy@digitalindustry.org>
-Subject: SNAT
-Date: Fri, 25 Apr 2003 13:45:47 -0400
+From: Gladson George <georgc@FARMINGDALE.EDU>
+Subject: RE: block kazaa using iptables
+Date: Fri, 25 Apr 2003 13:20:43 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030425174620.DJBA1385.lakecmmtao02.coxmail.com@vaio>
+Message-ID: <2CE951F1A7DC0644A33B9F763D2029C0012A2869@mail.it.farmingdale.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,80 +18,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-	There is no easy way to describe this, so I'll just start.
-
-	I am running a Snort IDS/FW with 4 interfaces, but we'll just be
-concerned with 2 (eth0 and eth2 + ipsec0).  Ipsec is functioning, so =
-that is
-not the problem.
-
-Local subnet	10.10.41.0/24
-Local GW		10.10.41.100
-
-Remote Network:
-Network		111.111.0.0/16
-Eth0			111.111.3.160 (gw 111.111.3.129)
-Eth2			111.111.3.163
-Add. Route		route add 111.111.8.204 gw 111.111.3.129 dev eth2
-(just cause I want to ensure it 			goes out eth2) and I
-can ping that host; it does go out eth2
-
-To ensure that there is no unintentional DROPping of packets there are =
-only
-3 rules:
-
-iptables -A POSTROUTING -t nat -o ipsec0 -s 111.111.3.160 -d =
-10.10.41.0/24
--j SNAT --to 111.111.3.163
-iptables -A POSTROUTING -t nat -o eth2 -s 10.10.41.0/24 -j SNAT --to
-111.111.3.163
-Iptables -A FORWARD -j ACCEPT
-
-	Basically, I want to send a packet through the tunnel (ipsec0) and
-out to system 111.111.8.204.  Because the packet will arrive as source
-10.10.41.100, and I cannot control the route table of system =
-111.111.8.204,
-I figured I would SNAT the packet from 10.10.41.100 to 111.111.3.163.  =
-If I
-do a tcpdump on ipsec0 I see the pachet coming in:
-
-(Remote Side - Inbound) tcpdump -i ipsec0 -p -n -nn icmp
-13:27:33.916290 10.10.41.100 > 111.111.8.204: icmp: echo request (DF)
-13:27:34.919120 10.10.41.100 > 111.111.8.204: icmp: echo request (DF)
-13:27:35.931122 10.10.41.100 > 111.111.8.204: icmp: echo request (DF)
-13:27:36.923962 10.10.41.100 > 111.111.8.204: icmp: echo request (DF)
-
-	However, (On the remote side) "tcpdump -i eth2 -p -n -nn icmp" or
-"tcpdump -i eth0 -p -n -nn icmp" (just in case) do not show any packets
-outbound (to 111.111.8.204).  I can't see anything wrong with my rules, =
-but
-sometimes I can't think outside the box.....any ideas?
-
-Thanks,
-Andy
-
-	To verify the tunnel works:
-
-[root@darkgate root]# ping 111.111.3.163
-
-PING 111.111.3.163 (111.111.3.163) from 68.68.130.209 : 56(84) bytes of
-data.
-64 bytes from 111.111.3.163: icmp_seq=3D1 ttl=3D64 time=3D29.5 ms
-64 bytes from 111.111.3.163: icmp_seq=3D2 ttl=3D64 time=3D31.7 ms
-64 bytes from 111.111.3.163: icmp_seq=3D3 ttl=3D64 time=3D26.1 ms
-64 bytes from 111.111.3.163: icmp_seq=3D4 ttl=3D64 time=3D26.7 ms
-
-
-
-[root@testids root]# tcpdump -i ipsec0 -p -n -nn icmp
-
-13:35:50.883841 10.10.41.100 > 111.111.3.163: icmp: echo request (DF)
-13:35:50.884001 111.111.3.163 > 10.10.41.100: icmp: echo reply
-13:35:51.832915 10.10.41.100 > 111.111.3.163: icmp: echo request (DF)
-13:35:51.832976 111.111.3.163 > 10.10.41.100: icmp: echo reply
-13:35:52.847691 10.10.41.100 > 111.111.3.163: icmp: echo request (DF)
-13:35:52.847749 111.111.3.163 > 10.10.41.100: icmp: echo reply
-13:35:53.859624 10.10.41.100 > 111.111.3.163: icmp: echo request (DF)
-13:35:53.859684 111.111.3.163 > 10.10.41.100: icmp: echo reply
-
+=0D=0A=0D=0ADoes anyone have a list of IP addresses for the kazaa ser=
+vers?\=0D=0A=0D=0A-----Original Message-----=0D=0AFrom: Wijaya, J. [m=
+ailto:wijayaj@gmx.net] =0D=0ASent: Friday, April 25, 2003 7:12 AM=
+=0D=0ATo: wjdeypalan@ictuscomm.net; netfilter@lists.netfilter.org=
+=0D=0ASubject: Re: block kazaa using iptables=0D=0A=0D=0ATry not to b=
+lock the port number, instead of blocking the access to the=0D=0Aserv=
+er ip address, this will be a bit difficult, we have to find out all=
+=0D=0Athe kazaa server addreses.=0D=0A=0D=0AI have done this task to =
+block yahoo messenger, because yahoo msg will use=0D=0Aany available =
+port, so it is useless to block 5050 (yahoo port number), so=0D=0Ai j=
+ust block all the ip addresses for the yahoo msg servers.=0D=0A=0D=
+=0Ajw.=0D=0A=0D=0A*********** REPLY SEPARATOR  ***********=0D=0A=0D=
+=0AOn 24/04/2003 at 19:28 PM Wesley Jay Deypalan wrote:=0D=0A=0D=0A>H=
+i,=0D=0A>=0D=0A>Is there a way to block kazaa using iptables?Already =
+tried blocking port=0D=0A>1214 but to no avail, I heard that kazaa ch=
+ange ports if it cannot connect=0D=0A>using 1214.=0D=0A>TIA,=0D=0A>=
+=0D=0A>wesley=0D=0A=0D=0A=0D=0A=0D=0A=0D=0A=
 
