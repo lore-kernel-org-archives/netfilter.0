@@ -1,14 +1,12 @@
-From: "Ed Street" <blacknet@simplyaquatics.com>
-Subject: RE: PREROUTING AND SECURITY
-Date: Fri, 28 Jun 2002 10:45:18 -0400
+From: Harald Welte <laforge@gnumonks.org>
+Subject: [luigicart@tin.it: iptables problem]
+Date: Fri, 28 Jun 2002 13:46:50 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000301c21eb2$6c47ec20$0a01a8c0@ed>
-References: <003101c21e9a$be395360$020aa8c0@matttm9svd8lrh>
-Reply-To: <blacknet@simplyaquatics.com>
+Message-ID: <20020628114650.GG10008@naboo.ols.wavesec.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="6c2NcOVqGQ03X4Wi"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <003101c21e9a$be395360$020aa8c0@matttm9svd8lrh>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,129 +16,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Matthew Hellman' <mhellman@raccoon.com>, 'Guillaume Devoyon' <guillaume.devoyon@integro-networks.com>, netfilter@lists.samba.org
-
-Hello,
-
-What type of network card are you using, what distribution of linux,
-what kernel version and what is the hardware your using. If you want you
-can email directly.
-
-A few possibilities I can think is 
-a) resource sharing issues
-b) eepro 100 nic (but not limited to this card)
-c) local network layout/setup
-d) low system resources.  
-
-" Since the interrupt handler keeps calling the Rx and Tx-done routines
-while there are packets to be processed, a slower machine will have a
-higher average "work event" count per interrupt handler pass.  (ie.
-faster machines can do the required work before more new work arrives
-and thus fall out the bottom of the IRQ handler sooner.)"
-
-From this it would be interesting to see the cpu time during these
-events.  If I recall correctly didn't earlier releases of 2.4 kernel
-have issues with resource sharing and ide devices?
-
-Hope this helps,
-
-Ed
+To: netfilter@lists.samba.org
 
 
------Original Message-----
-From: netfilter-admin@lists.samba.org
-[mailto:netfilter-admin@lists.samba.org] On Behalf Of Matthew Hellman
-Sent: Friday, June 28, 2002 7:56 AM
-To: Guillaume Devoyon; netfilter@lists.samba.org
-Subject: Re: PREROUTING AND SECURITY
-
-I wouldn't jump to any conclusions about an attack just yet.  If these
-two
-machines are similarily configured (same network card, etc) , it's very
-likely that this is just a hardware or driver problem. Do a search for
-that
-error on groups.google.com and you'll see what I mean.  Goodluck,
-
-Matt
-
------ Original Message -----
-From: "Guillaume Devoyon" <guillaume.devoyon@integro-networks.com>
-To: <netfilter@lists.samba.org>
-Sent: Friday, June 28, 2002 3:17 AM
-Subject: PREROUTING AND SECURITY
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
-> hello,
->
-> on the firewall at my office, i do preroutings tasks in order to
-forward
-ports.
-> In order to do that, i use the following rule :
->
-> /sbin/iptables -t nat -A PREROUTING -s $CLIENT_PUBLIC_IP -p tcp -i
-$EXTERNAL_INTERFACE\
->  --dport 80 -j DNAT --to $INTERNAL_MACHINE:80
->
-> As you can see, I use the "-s" option  to allow only  one person to
-use my
-forwarding port.
->
-> Yesterday, I had an attack on the firewall .
-> I had this in my /var/log/messages :
->
->
-> Jun 27 14:44:39 cofw01 kernel: FIREWALL_80IN=eth0 OUT=
-MAC=00:30:48:51:08:f0:00:20:6f:11:34:7b:08:00 SRC=xxx.xxx.xxx.xxx
-DST=192.168.1.2 LEN=48 TOS=0x00 PREC=0x00 TTL=115 ID=47214 DF PROTO=TCP
-SPT=3033 DPT=80 WINDOW=8192 RES=0x00 SYN URGP=0
-> Jun 27 14:51:49 cofw01 kernel: eth0: card reports no resources.
-> Jun 27 14:51:49 cofw01 last message repeated 15 times
-> Jun 27 14:51:49 cofw01 kernel: eth0: Too much work at interrupt,
-status=0x4050.
-> Jun 27 14:51:49 cofw01 kernel: eth0: card reports no resources.
-> Jun 27 14:51:49 cofw01 last message repeated 19 times
-> Jun 27 14:51:49 cofw01 kernel: eth0: Too much work at interrupt,
-status=0x4050.
-> Jun 27 14:51:49 cofw01 kernel: eth0: card reports no resources.
-> Jun 27 14:51:49 cofw01 kernel: eth0: Too much work at interrupt,
-status=0x4050.
-> Jun 27 14:51:49 cofw01 kernel: eth0: Too much work at interrupt,
-status=0x4050.
-> Jun 27 14:51:49 cofw01 kernel: eth0: card reports no resources.
-> Jun 27 14:51:49 cofw01 last message repeated 8 times
-> Jun 27 14:51:49 cofw01 kernel: eth0: Too much work at interrupt,
-status=0x4050
->
-> so i saw that xxx.xxx.xxx.xxx had attacked my firewall.
->
-> After this i had to reboot my firewall
->
-> 1) how is it possible that my firewall switched of my eth0 card ?
->    Is it because I do a log of this translation rule ? (made my system
-heavy if there are many connections ?)
->    Is it because for others rules i do an reject instead of an drop ?
->
-> Next, I had a look at my apache server behind the firewall, and I
-found
-the following messages in my /var/log/messages
->
-> Jun 27 14:51:24 coupf01 kernel: eth0: card reports no resources.
-> Jun 27 14:51:24 coupf01 kernel: eth0: Too much work at interrupt,
-status=0x4050.
->
->
-> whow !!
-> the attack had also touched my server behind the firewall..
-> How is it possible ? I put an "-s" option in my prerouting..
-> Is it enough or should I put an drop rule for others connections?
-(other
-than my client : -s $CLIENT_PUBLIC_IP)
->
->
-> Guillaume Devoyon
->
+-- 
+Live long and prosper
+- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
+============================================================================
+GCS/E/IT d- s-: a-- C+++ UL++++$ P+++ L++++$ E--- W- N++ o? K- w--- O- M- 
+V-- PS+ PE-- Y+ PGP++ t++ 5-- !X !R tv-- b+++ DI? !D G+ e* h+ r% y+(*)
+
+--6c2NcOVqGQ03X4Wi
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Return-Path: X-Sieve: cmu-sieve 2.0
+Received: from vsmtp1.tin.it ([212.216.176.221] helo=smtp1.cp.tin.it)
+	by coruscant.gnumonks.org with esmtp (Exim 3.34 #1)
+	id 17Ns8I-0000Um-00
+	for laforge@gnumonks.org; Fri, 28 Jun 2002 11:33:38 +0200
+Received: from ims3c.cp.tin.it (192.168.70.103) by smtp1.cp.tin.it (6.5.019)
+        id 3D0A96D8003AAA13 for laforge@gnumonks.org; Fri, 28 Jun 2002 11:33:33 +0200
+Received: from [192.168.70.229] by ims3c.cp.tin.it with HTTP; Fri, 28 Jun 2002 11:33:31 +0200
+Date: Fri, 28 Jun 2002 11:33:31 +0200
+Message-ID: <3CEF4F3E00024EFC@ims3c.cp.tin.it>
+From: luigicart@tin.it
+Subject: iptables problem
+To: laforge@gnumonks.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+
+
+Hi I'm Luigi.When I digit a whichever iptables command the shell say:
+/lib/modules/2.4.7-10/net/ipv4/netfilter/ip_tables.o :init_module:
+Device or resource busy
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO orIRQ parameters
+/lib/modules/2.4.7-10/net/ipv4/netfilter/ip_tables.o: insmod /lib/modules=
+/Kernel/net/ipv4/netfilter/ip_tables.o
+failed
+/lib/modules/2.4.7-10/kernel/net/ipv4/netfilter/ip_tables.o :insmod ip_ta=
+bles
+failed
+iptables v1.2.3: can't initialize iptables table 'filter' :iptables who?
+(do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+
+Why???????
+Thak you very much
+Luigi
 
 
 
+
+--6c2NcOVqGQ03X4Wi--
 
