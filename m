@@ -1,13 +1,12 @@
-From: Tom Van Overbeke <tvanoverbeke@ccncsi.net>
-Subject: RE: daisy chaining firewalls causes connection tracking problems ?
-Date: Wed, 13 Aug 2003 13:46:04 +0200
+From: "Peter Marshall" <peter.marshall@caris.com>
+Subject: Re: iptables and the  RELATED option
+Date: Wed, 13 Aug 2003 10:46:57 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000301c36190$7acc7370$d90315ac@rsrc.be.local>
-References: <20030812141400.GC14135@cannon.eng.us.uu.net>
+Message-ID: <033101c361a1$5d33ca50$49caa8c0@caris.priv>
+References: <01f801c36103$00a67150$49caa8c0@caris.priv> <1060723749.3781.77.camel@vimes.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <20030812141400.GC14135@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,128 +17,155 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Ramin Dousti' <ramin@cannon.eng.us.uu.net>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: Rob Verduijn <rverduij@dds.nl>, netfilter@lists.netfilter.org
 
-Hi,
-
-
-I've done some further testing, and i'm still puzzled. i'm not inclined
-anymore to think it's because of the 3 firewalls one behind the other, i
-think it's maybe because of our network topology:
-
-this is the error from the iptables logs:
-
-Aug 13 13:31:26 dobermann kernel: -drop_the_rest-IN=eth1 OUT=eth1
-SRC=172.21.3.18 DST=172.16.208.130 LEN=44 TOS=0x00 PREC=0x00 TTL=127
-ID=40929 DF PROTO=TCP SPT=6101 DPT=8361 WINDOW=8760 RES=0x00 ACK SYN URGP=0
-
-as you can see, the traffic comes in via eth1 and leaves via eth1 (this is
-just temporarily luckily). traffic to 172.16.208.130 is rerouted to the dmz
-via another machine on the 172.21.x.x subnet
-
-.
-.
-.
+Thanks for the help.  I guess I just needed to add the ip_contrack_ftp
+module.  After that, every thing worked great.
 
 
-.... and then it suddenly dawned on me:
-
-the traffic arrives at the destination via a different route than the
-returned packets, so the last firewall never sees the SYN, only the ACK SYN.
-
-
-grmbllll.
-
-
-I'll go chew up a tree now.
+----- Original Message -----
+From: "Rob Verduijn" <rverduij@dds.nl>
+To: <netfilter@lists.netfilter.org>
+Cc: <peter.marshall@caris.com>
+Sent: Tuesday, August 12, 2003 6:29 PM
+Subject: Re: iptables and the RELATED option
 
 
-
-Tom.
-
-
-
------Original Message-----
-From: Ramin Dousti [mailto:ramin@cannon.eng.us.uu.net]
-Sent: 12 August 2003 16:14
-To: Tom Van Overbeke
-Cc: Netfilter (E-mail)
-Subject: Re: daisy chaining firewalls causes connection tracking
-problems ?
-
-
-Hello,
-
-Interesting. Do you think it's anything to do with chaining the three
-FW's? Are you sure you don't have any back-door for the first SYN to
-by-pass the "outer" FW, so the SYN,ACK is being considered as unrelated?
-
-Ramin
-
-On Tue, Aug 12, 2003 at 03:38:40PM +0200, Tom Van Overbeke wrote:
-
-> Hi,
+> Hi there,
+>
+> The description is a bit vague...
+>
+> But I assume you have a machine with more than 1 network card
+> Let's say you got 2
+>
+> You need the established and the related for ip connection tracking
+> If you would use a script like the one below asuming eth2 is the
+> external ontrusted network card
+>
+> Have a look at this example using connection tracking
 >
 >
-> I'm faced with an environment where there are 3 iptables firewalls
-directly
-> connected to one another. I have a few servers on one end, that need to
-talk
-> to servers on the other end of the 3 firewalls. (we use fwbuilder to
-> maintain the firewalls).
+> modprobe ip_conntrack_ftp # load ftp conntracking module
+> IPTABLES="/path/to/iptables"
+> INTERNAL_INT="eth?" # your thrusted network interface
+> INTERNAL_IPADDR="1.2.3.4" # internal network card ip
+> INTERNAL_NETWORK="10.0.0.0/255.0.0.0 #your internal thrusted network
+> EXTERNAL_INT="eth?" # untrusted network card
+> EXTERNAL_IPADDR="1.2.3.4" # untrusted network card ip
 >
-> normally, i have no problems adding stateful rules to enable/disable
-> traffic, but in this case, i seem to either have hit a bug, or maybe a
-> limitation of iptables ???
+> UNPRIVPORTS="1024:65535"                # unprivileged port range
+>
+> # wipe old chains and erase personal created chains
+> CHAINS=`cat /proc/net/ip_tables_names 2>/dev/null`
+> for I in $CHAINS; do $IPTABLES -t $I -F; done
+> for I in $CHAINS; do $IPTABLES -t $I -X; done
+>
+> # set policy to drop
+> $IPTABLES -t filter -P INPUT DROP
+> $IPTABLES -t filter -P OUTPUT DROP
+> $IPTABLES -t filter -P FORWARD DROP
+>
+> # accept local traffic
+> $IPTABLES -A INPUT -i lo -d 127.0.0.1 -j ACCEPT
+> $IPTABLES -A OUTPUT -o lo -d 127.0.0.1 -j ACCEPT
+>
+> # turn on connection tracking and some logging
+> $IPTABLES -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A INPUT -m state --state INVALID -j LOG \
+>         --log-prefix "INVALID input: "
+> $IPTABLES -A INPUT -m state --state INVALID -j DROP
+> $IPTABLES -A OUTPUT -m state --state INVALID -j LOG \
+>         --log-prefix "INVALID ouput: "
+> $IPTABLES -A FORWARD -i $INTERNAL_INT -m state --state INVALID -j DROP
+> $IPTABLES -A FORWARD -i $INTERNAL_INT -m state --state INVALID -j LOG \
+>         --log-prefix "INVALID ouput: "
+>
+> # allow all traffice from internal over internal interface
+> # to external interface
+> $IPTABLES -A FORWARD -i $INTERNAL_INT -s $INTERNAL_NETWORK \
+>         -m state --state NEW -j ACCEPT
+>
+> # above script allows all traffic from internal network to the
+> # external network and answers to that traffic
+> # including ftp
+> # no traffic is allowed from the external network to the gateway
+> # no traffic is allowed from the external network to the internal
+> # network
+> # no traffic is allowed from the internal network to the gateway
+> # no traffic is allowed from the gateway to the internal network
+> # no traffic is allowed from the gateway to the internet
+> # in other words a pretty restricted ruleset
+>
+> # if you want traffic from and to the gateway a examples (ssh) below
+>
+> # allow ssh traffic from thrusted network towards gateway
+> # you can even be more restrictive by replacing the network with
+> # a single ip address.
+> $IPTABLES -A INPUT -i $INTERNAL_INT -p tcp \
+>         -s $INTERNAL_NETWORK --sport $UNPRIVPORTS \
+>         -d $INTERNAL_IPADDR --dport 22 \
+>         -m state --state NEW -j ACCEPT
+>
+> # or an ftp (client) example :-P
+> # gateway is the ftp client here
+> # remember ftp == very unsecure protocol
+> $IPTABLES -A OUTPUT -0 $EXTERNAL_INT -p tcp \
+> --sport $UNPRIVPORTS \
+> -d $EXTERNAL_IPADDR -dport 21 \
+> -m state --state NEW -j ACCEPT
 >
 >
-> my case:
+> # or an ftp (server) example :-P
+> # gateway is the server here
+> # remember ftp == very unsecure protocol
+> # consider sftp uses the same ruleset as ssh (yup same port number)
+> # or else try scp , comes free with openssh as does sftp
+> $IPTABLES -A INPUT -i $EXTERNAL_INT -p tcp \
+> --sport $UNPRIVPORTS \
+> -d $EXTERNAL_IPADDR -dport 21 \
+> -m state --state NEW -j ACCEPT
 >
-> i need to have a server talk to our backup server via an agent. we know
-> which ports the backup app uses, and have before succesfully changed our
-> firewall to enable backups on previous occasions.
+> # compare the client and server examples ....see something
+> # oddly repetetive  ;)
 >
-> now, with 3 firewalls in between, i thought i could just use the exact 3
-> rules and put them on each firewall, and it should work.
+> # end script
 >
+> Well that's it,nothing fancy no special things no tricks against
+> portscanners.
+> Just something that keeps out most basic bad things from the internet.
 >
-> but ... it doesn't. on one of the outer firewalls, i see that the session
-> setup packets (ACK SYN bits are set) is being blocked.
->
->
-> i had already solved a similar problem (with big brother) by doing it the
-> 'ipchains' way, that is creating a rule for the traffic in each direction,
-> and disabling the 'statefulness' of the rule. obviously, i'm not too happy
-> with this solution, so I'd thought i ask you guys if the connection
-tracking
-> might have problems with multiple firewalls chained together ?
->
->
->
-> thx,
->
->
-> Tom.
+> Regards
+> Rob
 >
 >
 >
->
->
->
-****************************************************************************
-> Disclaimer:
-> This electronic transmission and any files attached to it are strictly
-> confidential and intended solely for the addressee. If you are not
-> the intended addressee, you must not disclose, copy or take any
-> action in reliance of this transmission. If you have received this
-> transmission in error, please notify the sender by return and delete
-> the transmission.  Although the sender endeavors to maintain a
-> computer virus free network, the sender does not warrant that this
-> transmission is virus-free and will not be liable for any damages
-> resulting from any virus transmitted.
-> Thank You.
->
-****************************************************************************
+> On Tue, 2003-08-12 at 20:53, Peter Marshall wrote:
+> > Hi, My name is Peter Marshall.  I am having some problems letting ftp
+> > through my firewall without opening all of the ports.  I was trying to
+get
+> > RELATED to work, but for some reason it will not.  Here is an example of
+> > what my file looks like
+> >
+> > $TABLENAME -A FORWARD -d x.x.x.x -o eth2 -j mychain
+> >
+> > $TABLENAME -A mychain -m state --state ESTABLISHED,RELATED -j ACCEPT
+> > $TABLENAME -A mychain -j DROP
+> >
+> > I don't think I need the ESTABLISHED, but I put it in anyways.
+> >
+> > If anyone could help it would be greatly appriciated.
+> >
+> > Thanks
+> >
+> >
+> > Peter Marshall
+> > PS.  Sorry if te message appears twice.  I sent it the first tiem before
+I
+> > became a member
+> >
+> >
 >
 
 
