@@ -1,10 +1,11 @@
-From: "Sean Oh" <oh@storageone.co.kr>
-Subject: [Q] IP MASQ and IPROUTE2 ?
-Date: Mon, 14 Oct 2002 10:36:27 +0900
+From: Thomas Lussnig <thomas.lussnig@bewegungsmelder.de>
+Subject: Re: how to block 10000's of addresses?
+Date: Sun, 13 Oct 2002 15:13:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007601c27322$1d549540$c300a8c0@COMPAQ>
+Message-ID: <3DA9716C.8070806@bewegungsmelder.de>
+References: <20021013065007.A15824@hamal.ipal.net> <20021013121026.EKOU27697.mta05-svc.ntlworld.com@there> <20021013080034.B15824@hamal.ipal.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,50 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Phil Howard <phil-netfilter@ipal.net>
+Cc: netfilter@lists.netfilter.org
 
-SGkNCg0KSSBhbSBoYXZpbmcgYSBsaXR0bGUgcHJvYmxlbSB3aXRoIElQIE1BU1EgYW5kIElQUk9V
-VEUyLg0KSSBhbSB1c2luZyBSZWRIYXQgNy4zIHdpdGggSVBUQUJMRVMuDQoNCkkgaGF2ZSBhIGxp
-bnV4IGdhdGV3YXkgc2VydmVyIHdpdGggMyBOSUNzLg0KVGhlIGVudmlyb25tZW50IGlzIGFzIGZv
-bGxvd3M6DQoNCg0KTG9jYWwgTmV0d29yayAgICAgICAgICstLS0tLS0tLS0tLS0rIGV0aDEoMjE4
-LngueC4yMCkgLS0+IElTUDENCigxOTIuMTY4LjAueCkgICAtLS0tLXwgTGludXggU2VydmVyIHwt
-LS0tLS0tLQ0KICAgICAgICAgICAgICAgICAgICBldGgwICAgfCAgICAgICAgICAgICAgICAgICAg
-fCANCiAgICAgICAgICAgMTkyLjE2OC4wLjEgIHwgICAgICAgICAgICAgICAgICAgIHwtLS0tLS0t
-LQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICArLS0tLS0tLS0tLS0tLSsgZXRoMigyMTEu
-eC54LjE1NSkgLS0+SVNQMg0KDQoNClRoZSBldGgxIGFuZCBldGgyIGFyZSB0aGUgbGlua3MgdG8g
-aW50ZXJuZXQuIEkgIGhhdmUgMiBwcm92aWRlcnMgdG8gSW50ZXJuZXQNCmFuZCBJIHdvdWxkIGxp
-a2UgdG8gdXNlIGV0aDIgYXMgdGhlIGRlZmF1bHQgcm91dGUgdG8gaW50ZXJuZXQgZnJvbSBMb2Nh
-bA0KTmV0d29yaygxOTIuMTY4LjAueCkgYW5kIGV0aDEgYXMgZm9yIHRoZSBzZXJ2ZXJzKEROUywg
-bWFpbCwgd2ViKSB0aGF0IHBlb3BsZSBmcm9tIGV4dGVybmFsIEludGVybmV0DQp0byBhY2Nlc3Mu
-IFRoZSByZWFzb24gYmVoaW5kIHRoYXQgaXMgdGhhdCBwcm92aWRlciBJU1AyIGFyZSBub3QNCmFs
-bG93aW5nIG1lIHRvIHJ1biBzZXJ2ZXJzIG9uIHRoYXQgbGluaywgc28gSSBoYWQgdG8gc2V0dXAg
-YW5vdGhlciBsaW5rIGZvcg0Kc2VydmVycyhldGgxKS4NCg0KVGhlIElQIG1hc3F1cmFkaW5nIGlz
-IHVzZWQgYW5kIGlwIGZvcndhcmRpbmcgaXMgdHVybmVkIG9uLg0KDQplY2hvIDEgPiAvcHJvYy9z
-eXMvbmV0L2lwdjQvaXBfZm9yd2FyZA0KDQovc2Jpbi9pcCByb3V0ZSBhZGQgMjExLngueC4xMjgg
-ZGV2IGV0aDIgc3JjIDIxMS54LnguMTU1IHRhYmxlIFNJDQovc2Jpbi9pcCByb3V0ZSBhZGQgZGVm
-YXVsdCB2aWEgMjExLngueC4xMjkgdGFibGUgU0kNCi9zYmluL2lwIHJvdXRlIGFkZCAyMTgueC54
-LjAgZGV2IGV0aDEgc3JjIDIxOC54LnguMjAgdGFibGUgS1QNCi9zYmluL2lwIHJvdXRlIGFkZCBk
-ZWZhdWx0IHZpYSAyMTgueC54LjEgdGFibGUgS1QNCg0KL3NiaW4vaXAgcm91dGUgYWRkIDIxMS54
-LnguMTI4IGRldiBldGgyIHNyYyAyMTEueC54LjE1NQ0KL3NiaW4vaXAgcm91dGUgYWRkIDIxOC54
-LnguMCBkZXYgZXRoMSBzcmMgMjE4LngueC4yMA0KDQovc2Jpbi9pcCByb3V0ZSBhZGQgZGVmYXVs
-dCB2aWEgMjExLngueC4xMjkNCg0KL3NiaW4vaXAgcnVsZSBhZGQgZnJvbSAyMTEueC54LjE1NSB0
-YWJsZSBTSQ0KL3NiaW4vaXAgcnVsZSBhZGQgZnJvbSAyMTgueC54LjIwIHRhYmxlIEtUDQoNCi9z
-YmluL2lwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtcyAxOTIuMTY4LjAuMC8yNCAtaiBN
-QVNRVUVSQURFDQovc2Jpbi9pcHRhYmxlcyAtUCBGT1JXQVJEIEFDQ0VQVA0KL3NiaW4vaXB0YWJs
-ZXMgLVAgSU5QVVQgQUNDRVBUDQovc2Jpbi9pcHRhYmxlcyAtUCBPVVRQVVQgQUNDRVBUDQoNCg0K
-W3Jvb3RAd3d3IHJvb3RdIyBpcCByb3V0ZSBzaG93DQoyMTEueC54LjEyOCBkZXYgZXRoMiAgc2Nv
-cGUgbGluayAgc3JjIDIxMS54LnguMTU1DQoyMTgueC54LjAgZGV2IGV0aDEgIHNjb3BlIGxpbmsg
-IHNyYyAyMTgueC54LjIwDQoyMTEueC54LjEyOC8yNSBkZXYgZXRoMiAgc2NvcGUgbGluaw0KMTky
-LjE2OC4wLjAvMjQgZGV2IGV0aDAgIHNjb3BlIGxpbmsNCjIxOC54LnguMC8yNCBkZXYgZXRoMSAg
-c2NvcGUgbGluaw0KMTI3LjAuMC4wLzggZGV2IGxvICBzY29wZSBsaW5rDQpkZWZhdWx0IHZpYSAy
-MTEueC54LjEyOSBkZXYgZXRoMg0KDQoNCml0IHdvcmtzIGZpbmUoIDE5Mi4xNjguMC54IGNhbiBh
-Y2Nlc3MgdGhlIGludGVybmV0IGJ5IG1hc3F1ZXJhZGluZyB2aWEgZXRoMiBhbmQgZXh0ZXJuYWwg
-aW50ZXJuZXQgY2FuIGFjY2VzcyB0aGUgZXRoMSBhbmQgZXRoMikuDQpCdXQgdGhlIHByb2JsZW0g
-aXMgdGhhdCB0aGUgaG9zdHMgaW4gdGhlIGxvY2FsIG5ldHdvcmsgKDE5Mi4xNjguMC54KSBjYW4g
-bm90IGFjY2VzcyAyMTEueC54LjE1NShldGgyKSBhbmQgMjE4LngueC4yMChldGgxKS4gSXQgY2Fu
-IG9ubHkgYWNjZXNzIDE5Mi4xNjguMC4xDQoNCkNvdWxkIHNvbWVvbmUgcGxlYXNlIHN1Z2d1ZXN0
-ZWQgbWUgdGhlIHNvbHV0aW9ucz8NCg0KVGhhbmtzIGluIGFkdmFuY2UuDQoNCkJUVywgSSBhbSBu
-b3Qgb24gdGhlIGxpc3QuIFBsZWFzZSByZXBseSB2aWEgZW1haWwu
+>
+>
+>| Why don't you want 10000 rules on your netfilter box ?   Have you tried it 
+>| and found it causes any problems ?
+>
+>My understanding is they are tested sequentially.  Maybe this isn't true,
+>but I see no documentation to the contrary regarding netfilter being any
+>different than past table oriented access list style filtering which uses
+>sequential testing to implement the ordered logic usually involved.
+>
+>One other goal I had not mentioned is being able to add/delete netblocks
+>as needed without replacing the whole ruleset.  But I don't think it would
+>be a big issue.
+>
+With the posibility of user defined tables you can create an BTREE that 
+is much faster the linear search.
+But i think that for this propose an mathing like "pool" should be the 
+right. there was some ime ago an
+discousion here. If pool should support sparse set of ip's to (rand 
+spread). Maybe you can implement it
+and the use the pool module.
+
+Cu Thomas
 
 
