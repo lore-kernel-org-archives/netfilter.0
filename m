@@ -1,11 +1,16 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: how to automate ip_forward
-Date: Thu, 8 Jul 2004 09:00:04 -0300
+From: Rainer Arnst <Rainer.Arnst@ee-consultants.de>
+Subject: Re: IPSec Transport Mode
+Date: Thu, 08 Jul 2004 14:00:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <16ac01c464e3$1af42c20$49caa8c0@caris.priv>
+Message-ID: <1089288010.9768.1.camel@PCA-ARNSTR.ee-consultants.de>
+References: <1089207305.788.14.camel@PCA-ARNSTR.ee-consultants.de>
+	 <200407071453.49223.Antony@Soft-Solutions.co.uk>
+	 <1089210110.788.27.camel@PCA-ARNSTR.ee-consultants.de>
+	 <200407072154.52923.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200407072154.52923.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,19 +21,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: NetFilter Mailling List <netfilter@lists.netfilter.org>
 
-Hey guys, I know this sounds stupid, but I can not seem to get the value of
-/proc/sys/net/ipv4/ip_forward to be 1 after boot.  I tried putting the echo
-1 > /pro...../ip_forward in my iptables script .... (BTW, I have a bash
-script with my rules in it and a startup script in rc2.d that calls it)
+On Wed, 2004-07-07 at 22:54, Antony Stone wrote:
+> For example:
+> 
+> iptables -A PREROUTING -t nat -p 50 -j ACCEPT
+> iptables -A PREROUTING -t nat -d a.b.c.d -j DNAT --to w.x.y.z
+> 
+> These rules will DNAT all packets originally addressed to a.b.c.d and send 
+> them to w.x.y.z instead, *unless* they are protocol 50, in which case they 
+> won't get NATted.
+> 
+> Hope that helps,
 
-I also tried making a separate starup script just for the ip_forward and set
-it to run in as the last thing in rc2,d .....
+Perfect, I'll try that immediately! Thanks again to everybody who
+participated.
 
-If anyone has any suggestions, I would greatly appreciate it.
-
-Thanks.
-Peter
+Greetings,
+Rainer
 
 
