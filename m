@@ -1,76 +1,74 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: New netfilter/iptables homepage
-Date: Tue, 13 Jan 2004 15:28:56 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <20040113142856.GR20206@sunbeam.de.gnumonks.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h1wVxq8aeHrvhZJz"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-Content-Disposition: inline
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+From: Birn.Robert@t-online.de
+Subject: Problems compiling iptables with kernel 2.4.16
+Date: Mon, 12 Jan 2004 18:56:29 +0100 (CET)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1073929796.4002de44426fd@webmail.t-online.de>
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Hello,
 
---h1wVxq8aeHrvhZJz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm trying to setup a linux box as a NAT router, but when I try to
+compile iptables, I get the following message:
 
-Hi!
+Extensions found:
+cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/
+-DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o
+extensions/libipt_conntrack_sh.o -c extensions/libipt_conntrack.c
+In file included from extensions/libipt_conntrack.c:14:
+include/linux/netfilter_ipv4/ipt_conntrack.h:28: `IP_CT_DIR_MAX'
+undeclared here (not in a function)
+include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX'
+undeclared here (not in a function)
+include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX'
+undeclared here (not in a function)
+extensions/libipt_conntrack.c: In function `parse_status':
+extensions/libipt_conntrack.c:103: `IPS_EXPECTED' undeclared (first use
+in this function)
+extensions/libipt_conntrack.c:103: (Each undeclared identifier is
+reported only once
+extensions/libipt_conntrack.c:103: for each function it appears in.)
+extensions/libipt_conntrack.c:105: `IPS_SEEN_REPLY' undeclared (first
+use in this function)
+extensions/libipt_conntrack.c:107: `IPS_ASSURED' undeclared (first use
+in this function)
+extensions/libipt_conntrack.c: In function `parse':
+extensions/libipt_conntrack.c:202: `IP_CT_DIR_ORIGINAL' undeclared
+(first use in this function)
+extensions/libipt_conntrack.c:259: `IP_CT_DIR_REPLY' undeclared (first
+use in this function)
+extensions/libipt_conntrack.c: In function `print_status':
+extensions/libipt_conntrack.c:364: `IPS_EXPECTED' undeclared (first use
+in this function)
+extensions/libipt_conntrack.c:368: `IPS_SEEN_REPLY' undeclared (first
+use in this function)
+extensions/libipt_conntrack.c:372: `IPS_ASSURED' undeclared (first use
+in this function)
+extensions/libipt_conntrack.c: In function `matchinfo_print':
+extensions/libipt_conntrack.c:420: `IP_CT_DIR_ORIGINAL' undeclared
+(first use in this function)
+extensions/libipt_conntrack.c:440: `IP_CT_DIR_REPLY' undeclared (first
+use in this function)
+make: *** [extensions/libipt_conntrack_sh.o] Error 1
 
-I've just put the new (3rd incarnation) of the netfilter/iptables
-homepage online.=20
+I'm using the kernel 2.4.16 and iptables 1.2.8 (but I also tried 1.2.7a
+and 1.2.9).
 
-The changes shouldn't be too visible to the user, as everything is
-hidden behind the same layout as the old homepage. =20
+Where is my fault? Can anyone help me?
 
-However, the whole page is now built from docbook-website XML, which
-should produce way cleaner results than our own cut+paste perlscript
-template system.
+Thanks
 
-The new homepage also features patch-o-matic-ng HTMLization.  pomlist
-has disappeared in favour of pom-ng.
-
-If you find any broken links, please report them to
-webmaster@netfilter.org, where I will take care of them.
-
-	- Harald Welte (netfilter core team)
-
-P.S.: Yes, I know... our XSLT's don't yet produce fully-compliant XHTML
-1.0.  If anybody is more keen with all this buzzword-compatible 'web
-technology' than I am - feel free to volunteer.
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---h1wVxq8aeHrvhZJz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQFABACoXaXGVTD0i/8RAoV9AJ0WseP5AjP0SS3cOawBLlLVAVBX7gCeJH4O
-D2/0klJS52wv7kioTWY+/+U=
-=3Dh4
------END PGP SIGNATURE-----
-
---h1wVxq8aeHrvhZJz--
+Robert
 
