@@ -1,8 +1,10 @@
-From: "__ Radien__" <radien@zworg.com>
-Subject: need example on some conntrack patches
-Date: Wed, 21 Apr 2004 23:04:28 -0700
+From: Emilio Casbas <ecasbas@unav.es>
+Subject: strange log
+Date: Thu, 22 Apr 2004 08:50:12 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <19109.1082613868@zworg.com>
+Message-ID: <40876B24.6030209@unav.es>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms070703070301030603070906"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -13,27 +15,109 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dear All
+This is a cryptographically signed message in MIME format.
 
-  Can anyone give an example of using these patches? (a simple
-configuraiton + the correcponding rule set)
+--------------ms070703070301030603070906
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-   1. record-rpc patch 
-   2. h323-conntrack-nat patch 
-   3. pptp patch 
+Hi,
 
-   I'm a little confused about them. It seems I could match connection
-that are RELATED to existing connection that use PPTP, h323 and RPC(I
-guess what MS Uses in windows) using these patches, I mean tracking
-connection on these protocols. But still I need more explaination w/
-simple examples.
+We've seen  in the firewall's log of transparent proxy this messege from 
+different ips repeteadly :
 
-TIA
-Regards
-__Radien__
+Apr 21 21:28:55 moria kernel: TCP: Treason uncloaked! Peer 
+external_ip/80 shrinks window 1466359669:1466360884. Repaired.
+
+We've googling, but we dont know if is an attack or a bad negotiation.
+Any suggestion?
+
+Thanks
+Emilio C.
+
+
+--------------ms070703070301030603070906
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIL5zCC
+A6swggMUoAMCAQICAQIwDQYJKoZIhvcNAQEEBQAwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQI
+EwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUg
+TmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAwDgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkB
+FgtjdGlAdW5hdi5lczAeFw0wMDEyMDcxODM0NTlaFw0xMDEyMDUxODM0NTlaMIGSMQswCQYD
+VQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoT
+FlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1D
+QS0xMTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXMwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
+MIGJAoGBAMnPtNu0DY74Cy8ADkGWQ+P+o0tADrVZ4Lcp7XrTO/DBsviqY2K90SPnjTq4iaHq
+nPR3NtP5NITlgeOriB6Qz0rP2cIyPbvj+omMNcjLNMKwjzN/Xlz/PQHtc7uB475qcRI2Upf0
+efcCuZ+2c9Bh8whAR6yBPMZYBOf/CnTOGhiXAgMBAAGjggEQMIIBDDAdBgNVHQ4EFgQU5IiI
+QsdSywUHw6MhYN5TwgPUKoIwgbwGA1UdIwSBtDCBsYAULcM6eDF7f4FPgfZNagFP7vaHJMqh
+gZWkgZIwgY8xCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1w
+bG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRAw
+DgYDVQQDEwdVTkFWLUNBMRowGAYJKoZIhvcNAQkBFgtjdGlAdW5hdi5lc4IBADAMBgNVHRME
+BTADAQH/MAsGA1UdDwQEAwIBBjARBglghkgBhvhCAQEEBAMCAQYwDQYJKoZIhvcNAQEEBQAD
+gYEAX1CIwLZPpFS3JvoHEHZ5Ot5NnfQfQP7P8c0obKsenSVSD5ikiif1FTpZV71IhMBA+CIp
+I5yGHD2lJhRmU8mxydPc4Duc8Vq5yw5TEtbgFamszQDaloFLKVqgsizZ6ljB0X2N/oGKOr70
+BNaayTRZuGaqBRwL9rOtQAPuUVWvvOAwggQYMIIDgaADAgECAgIDSTANBgkqhkiG9w0BAQQF
+ADCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25h
+MR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxEzARBgNV
+BAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0aUB1bmF2LmVzMB4XDTAyMTEwNDEy
+MDc1MVoXDTA0MTEwMzEyMDc1MVowgaYxCzAJBgNVBAYTAkVTMRAwDgYDVQQIEwdOYXZhcnJh
+MREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lkYWQgZGUgTmF2YXJyYTEM
+MAoGA1UECxMDQ1RJMSMwIQYDVQQDExplbWlsaW8gam9zZSBjYXNiYXMgamltZW5lejEeMBwG
+CSqGSIb3DQEJARYPZWNhc2Jhc0B1bmF2LmVzMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
+gQCjUTWXn5KebVC7S9O1gDRZP3Rk7RhmhfDAwwiGdl762ICY8DhMAkQ8bmhCy/Xka1sNiFQA
+Mgoj0UfVZTX221BWOzHZdaPimyxBTO42jsnvU9D+Q9BAIzRwI/FrBLw4LGngPgGaifQtAdet
+hRiHHCQGj63Ra53JNc1IOFqJo0qdxwIDAQABo4IBZTCCAWEwCQYDVR0TBAIwADARBglghkgB
+hvhCAQEEBAMCBaAwLAYJYIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmlj
+YXRlMB0GA1UdDgQWBBQ1ww0xtTIZCwn1KzaqzfR0rRxjpTCBvAYDVR0jBIG0MIGxgBTkiIhC
+x1LLBQfDoyFg3lPCA9QqgqGBlaSBkjCBjzELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
+cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
+MQwwCgYDVQQLEwNDVEkxEDAOBgNVBAMTB1VOQVYtQ0ExGjAYBgkqhkiG9w0BCQEWC2N0aUB1
+bmF2LmVzggECMDUGA1UdHwQuMCwwKqAooCaGJGh0dHBzOi8vZ2FuZGFsZi5jdGkudW5hdi5l
+cy91bmF2LmNybDANBgkqhkiG9w0BAQQFAAOBgQC8A7UirMJ77vP8eGoeFXCNMV20V+0uWzqs
+Kuu8UqsAbYF3t32SLFO4eQdJILSHIafDqj+L5Qy53UzXgBY0Hu3MheLf6V5U4nwd03ukBGXg
+1Zs9vBqMzGria1D0YjBTYqip7TQTT6mPFMb/Loek0/pmn/q/r45z0w8Cs6ljMKM51zCCBBgw
+ggOBoAMCAQICAgNJMA0GCSqGSIb3DQEBBAUAMIGSMQswCQYDVQQGEwJFUzEQMA4GA1UECBMH
+TmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNVBAoTFlVuaXZlcnNpZGFkIGRlIE5h
+dmFycmExDDAKBgNVBAsTA0NUSTETMBEGA1UEAxMKVU5BVi1DQS0xMTEaMBgGCSqGSIb3DQEJ
+ARYLY3RpQHVuYXYuZXMwHhcNMDIxMTA0MTIwNzUxWhcNMDQxMTAzMTIwNzUxWjCBpjELMAkG
+A1UEBhMCRVMxEDAOBgNVBAgTB05hdmFycmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQK
+ExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJhMQwwCgYDVQQLEwNDVEkxIzAhBgNVBAMTGmVtaWxp
+byBqb3NlIGNhc2JhcyBqaW1lbmV6MR4wHAYJKoZIhvcNAQkBFg9lY2FzYmFzQHVuYXYuZXMw
+gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKNRNZefkp5tULtL07WANFk/dGTtGGaF8MDD
+CIZ2XvrYgJjwOEwCRDxuaELL9eRrWw2IVAAyCiPRR9VlNfbbUFY7Mdl1o+KbLEFM7jaOye9T
+0P5D0EAjNHAj8WsEvDgsaeA+AZqJ9C0B162FGIccJAaPrdFrnck1zUg4WomjSp3HAgMBAAGj
+ggFlMIIBYTAJBgNVHRMEAjAAMBEGCWCGSAGG+EIBAQQEAwIFoDAsBglghkgBhvhCAQ0EHxYd
+T3BlblNTTCBHZW5lcmF0ZWQgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFDXDDTG1MhkLCfUrNqrN
+9HStHGOlMIG8BgNVHSMEgbQwgbGAFOSIiELHUssFB8OjIWDeU8ID1CqCoYGVpIGSMIGPMQsw
+CQYDVQQGEwJFUzEQMA4GA1UECBMHTmF2YXJyYTERMA8GA1UEBxMIUGFtcGxvbmExHzAdBgNV
+BAoTFlVuaXZlcnNpZGFkIGRlIE5hdmFycmExDDAKBgNVBAsTA0NUSTEQMA4GA1UEAxMHVU5B
+Vi1DQTEaMBgGCSqGSIb3DQEJARYLY3RpQHVuYXYuZXOCAQIwNQYDVR0fBC4wLDAqoCigJoYk
+aHR0cHM6Ly9nYW5kYWxmLmN0aS51bmF2LmVzL3VuYXYuY3JsMA0GCSqGSIb3DQEBBAUAA4GB
+ALwDtSKswnvu8/x4ah4VcI0xXbRX7S5bOqwq67xSqwBtgXe3fZIsU7h5B0kgtIchp8OqP4vl
+DLndTNeAFjQe7cyF4t/pXlTifB3Te6QEZeDVmz28GozMauJrUPRiMFNiqKntNBNPqY8Uxv8u
+h6TT+maf+r+vjnPTDwKzqWMwoznXMYIDUTCCA00CAQEwgZkwgZIxCzAJBgNVBAYTAkVTMRAw
+DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
+YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
+KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwCQYFKw4DAhoFAKCCAg0wGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDQwNDIyMDY1MDEyWjAjBgkqhkiG9w0B
+CQQxFgQU4D2kYip1XyK3VSPKbDkkXCXxucwwUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0D
+BzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwIC
+ASgwgaoGCSsGAQQBgjcQBDGBnDCBmTCBkjELMAkGA1UEBhMCRVMxEDAOBgNVBAgTB05hdmFy
+cmExETAPBgNVBAcTCFBhbXBsb25hMR8wHQYDVQQKExZVbml2ZXJzaWRhZCBkZSBOYXZhcnJh
+MQwwCgYDVQQLEwNDVEkxEzARBgNVBAMTClVOQVYtQ0EtMTExGjAYBgkqhkiG9w0BCQEWC2N0
+aUB1bmF2LmVzAgIDSTCBrAYLKoZIhvcNAQkQAgsxgZyggZkwgZIxCzAJBgNVBAYTAkVTMRAw
+DgYDVQQIEwdOYXZhcnJhMREwDwYDVQQHEwhQYW1wbG9uYTEfMB0GA1UEChMWVW5pdmVyc2lk
+YWQgZGUgTmF2YXJyYTEMMAoGA1UECxMDQ1RJMRMwEQYDVQQDEwpVTkFWLUNBLTExMRowGAYJ
+KoZIhvcNAQkBFgtjdGlAdW5hdi5lcwICA0kwDQYJKoZIhvcNAQEBBQAEgYBfS3NcgQQv/La9
+Kh+xd77h8m4C0Ohc0JunEbG1KayjUza1yMd6y1AGoG0aljPwqpqdtD7N5aURKsPFi8hy3UY0
+lFZzN7CigJgUYdju8E53t4lPBR2L2YBtMBp+SURUCo8uDt+zL19A4zJTJTZwZ3Z/A/eLxE8V
+6S2V0sxh+oKQxAAAAAAAAA==
+--------------ms070703070301030603070906--
+
 
