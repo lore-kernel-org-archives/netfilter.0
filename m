@@ -1,14 +1,13 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: speed connection problem
-Date: Mon, 26 Jul 2004 21:41:25 -0700
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: FTP problems on ports other than 21
+Date: Tue, 27 Jul 2004 06:55:26 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <SERVER7RQXPAhp6R47w00000001@server7.bandwidthco.com>
-References: <41051990.9070208@yahoo.fr>
-Reply-To: <markee@bandwidthco.com>
+Message-ID: <20040727045526.A427320AB@sterenborg.info>
+References: <4915A8E67C498D42BAB5CB1351FD026E23CB60@3webad1.3WebMedia.int>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <41051990.9070208@yahoo.fr>
+In-Reply-To: <4915A8E67C498D42BAB5CB1351FD026E23CB60@3webad1.3WebMedia.int>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,47 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'stephane durieux' <durieux42@yahoo.fr>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
- 
+> I have several customer FTP sites hosted on ports other than 
+> 21 (ex: 2001, 2002, 2003 and so on)
+>  
+>  
+> Right now, the only way they can work properly is if I open 
+> ports 1024 to 8000 for that machines so the ftp return ports 
+> are able to connect.
 
-How can I solve this problem. Is it due to my heavy configuration ?
-I am afraid it will be worse if I install DMZ servers (http, ftp, postfix,
-dns)
+You would need virtual hosting I suppose, this is not a netfilter thing.
 
-Have you got any suggestion ?
+Reading this, you can not use name-based virtual hosting with ftp :
+http://www.castaglia.org/proftpd/doc/contrib/ProFTPD-mini-HOWTO-Vhost.ht
+ml
 
-Thanks a lot.
+It says this :
 
+-------------
+The definition of the File Transfer Protocol, unfortunately, does not
+(currently) support name-based virtual hosts, as HTTP1.1 supports.
+....
+The bottom line is that ProFTPD does not support name-based virtual
+hosts; not because they are not implemented, but simply because the
+protocol itself does not support them. 
+-------------
 
-Here is my (heavy) configuration
-
-This is not what I would call a heavy load Stephane. Your rig should handle
-this without a blink. My netfilter/iptables firewall is also directly
-connected to the internet via dsl (albeit with a static IP), with five
-subnets behind it, including a DMZ with a mail relay, DNS server, web
-server, squid proxy, etc, etc, blah, blah. My rule set stands at
-approximately 2000 and my machine does not blink. So I suggest the slow down
-might be something else. Suggestions and questions:
-
-1. Run your firewall (temporarily of course) with no rules loaded and all
-your default policies set to default so you can make some rate comparisons:
-
-set_default_policy()
-{
-	$IPT -F
-   	$IPT -X
-	$IPT -P INPUT ACCEPT
-	$IPT -P FORWARD ACCEPT
-	$IPT -P OUTPUT ACCEPT
-}
-
-2. Your FTP rules need a little tuning. I can see these giving you some
-problems with your ftp communication. Are you using ip_conntrack_ftp?
-
-3. I notice you seem to favor source port 1024 on you output rules. I find
-this a little hard to understand. Is there a reason for this?
+So, the only way to virtual host would be if you have multiple public
+IP's on which you run a ftp-site.
 
 
+Gr,
+Rob
 
 
