@@ -1,14 +1,13 @@
-From: Michael Gale <mgale@utilitran.com>
-Subject: Re: Hello -- kind of of topic -- but still related
-Date: Wed, 3 Dec 2003 16:27:10 -0700
+From: "David F. Strauch" <dstrauch@cyberlink.com>
+Subject: Re: open ports 25/tcp and 110/tcp
+Date: Wed, 3 Dec 2003 17:34:23 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031203162710.540a1fc9.mgale@utilitran.com>
-References: <20031203151030.31eaeacd.mgale@utilitran.com>
-	<200312032234.22291.Antony@Soft-Solutions.co.uk>
+Message-ID: <002901c3b9f5$fc81d8c0$0201a8c0@OurPC>
+References: <002101c3b9ef$53e5d780$0201a8c0@OurPC> <200312032301.11900.Antony@Soft-Solutions.co.uk>
+Reply-To: "David F. Strauch" <dstrauch@cyberlink.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312032234.22291.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,63 +20,72 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Antony,
 
-Hello,
+I tried telnet from my WinXP machine to both open ports without any
+responce.  I'm hosting neither services on this machine.  It will be a
+gateway machine with a very minimal hardened installation.
 
-	Thanks for the response -- it starting logging all outbound traffic and found that the FTP server is sending out ident request to the Cisco router. Which is odd because there is NO ident server on the FTP box and the FTP config specifies no Ident lookups.
+Dave
 
-The packet leaves from port X to the Cisco on port 113 but then the Cisco returns a ACK RST from port number < 10 to port X.
+----- Original Message ----- 
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, December 03, 2003 5:01 PM
+Subject: Re: open ports 25/tcp and 110/tcp
 
-Michael.
 
-
-On Wed, 3 Dec 2003 22:34:22 +0000
-Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-
-> On Wednesday 03 December 2003 10:10 pm, Michael Gale wrote:
-> 
-> > In my log I am seeing the following -- but our production FTP server is
-> > currently out side of our network so we can connecting to it through a
-> > Cisco router. Not my doing :( Dec  3 15:00:57 lightning kernel:
-> > Firewall:IN=eth0 OUT= MAC=X.X.X.X SRC=CISCO_ROUTER DST=FTP_SERVER LEN=40
-> > TOS=0x00 PREC=0x00 TTL=255 ID=16538 PROTO=TCP SPT=5 DPT=35607 WINDOW=0
-> > RES=0x00 ACK RST URGP=0
+> On Wednesday 03 December 2003 10:46 pm, David F. Strauch wrote:
+>
+> > Hello All,
 > >
-> > There are a large number of these packets -- at first it thought maybe it
-> > was the Cisco router doing something funny when a FTP connect closed and it
-> > was trying to close or reset the data channel.
+> > I've been working with giptables firewall and have run into a big issue.
+> > Although my script seems to be correct namp is finding ports 25/tcp and
+> > 110/tcp open.  To start troubleshooting this problem I've commented
+> > everything out and stripped down the ruleset to just the default DROP
+> > policy.  Yet nmap -sT -F -P0 -0 xx.xx.xx.xx still returns 25/tcp and
+> > 110/tcp as open!
 > >
-> > Any ideas ?
-> 
-> The packet in the log above has ACK and RST set - that suggests that the 
-> remote end has rather abruptly decided to terminate the connection (ACK and 
-> FIN would be used for a polite termination).
-> 
-> However - Source Port 5???  Remote Job Entry???   That seems so unlikely...
-> 
-> Frankly I can't see that it has anything to do with FTP service at all.
-> 
-> It would be useful to know what network activity preceded this log entry - 
-> what was someone trying to do (almost certainly starting from the FTP server, 
-> sending to the router)?
-> 
+> > Now I'm starting to think that iptables is broken. I've built iptables
+with
+> > grsecurity-1.9.12 and iptables1.2.8 with a plain vanilla kernel 2.4.22
+Is
+> > anyone aware of any issues?
+>
+> Where are you testing from?
+>
+> Is there any chance (particularly with port 25) that the requests are
+being
+> redirected to some other server, and this is what is being reported as
+open?
+>
+> Try doing "telnet xx.xx.xx.xx 25" and see what login banner you get for
+the
+> SMTP service - does this correspond to the machine you're testing, or any
+> other machine you know about?
+>
+> Try the same thing on port 110 and see if that login banner reveals a clue
+> either.
+>
 > Antony.
-> 
+>
 > -- 
-> You can spend the whole of your life trying to be popular,
-> but at the end of the day the size of the crowd at your funeral
-> will be largely dictated by the weather.
-> 
->  - Frank Skinner
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
+> The idea that Bill Gates appeared like a knight in shining armour to lead
+all
+> customers out of a mire of technological chaos neatly ignores the fact
+that
+> it was he who, by peddling second-rate technology, led them into it in the
+> first place.
+>
+>  - Douglas Adams in The Guardian, 25th August 1995
+>
+>                                                      Please reply to the
+list;
+>                                                            please don't CC
+me.
+>
+>
+>
 
 
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
 
