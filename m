@@ -1,9 +1,11 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: counting packets and bytes
-Date: Mon, 28 Oct 2002 08:25:43 -0500 (EST)
+From: "Ben Tan" <linuxnewbie74@hotmail.com>
+Subject: setup firewall to allow Remote Desktop in XP???
+Date: Sun, 27 Oct 2002 23:05:00 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210280821560.7961-100000@localhost.localdomain>
+Message-ID: <000f01c27dca$38bb9b00$1801010a@demo>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000C_01C27E0D.46C7F7A0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,21 +16,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
-  i'm sure i saw somewhere a reference to using iptables rules
-just for counting packets.  how did that work?  if i recall correctly,
-it had to do with the fact that the target part of a rule was optional,
-and i could forward the packets i wanted to count through a chain
-or rule that did, essentially, nothing, but i could use
-"iptables -L" later to get statistics.
+------=_NextPart_000_000C_01C27E0D.46C7F7A0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-  pointer, anyone?  i'm pretty sure this required a user-defined
-chain, but i forget the format.
+hi,
+    I am considering to setup a firewall to allow the remote desktop =
+connection for internet. which ports to allow for INPUT, FORWARD, =
+OUTPUT?
 
-rday
+    There will be a DNAT for each connecton request to the internal =
+client.
+
+thanxs.
+
+------=_NextPart_000_000C_01C27E0D.46C7F7A0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; I am considering to =
+setup a=20
+firewall to allow the remote desktop connection for internet. which =
+ports to=20
+allow for INPUT, FORWARD, OUTPUT?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; There will be a DNAT =
+for each=20
+connecton request to the internal client.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>thanxs.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000C_01C27E0D.46C7F7A0--
 
 
