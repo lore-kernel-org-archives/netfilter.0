@@ -1,14 +1,12 @@
-From: Andreas Kretschmer <andreas_kretschmer@despammed.com>
-Subject: Re: [despammed] -i and -o options for iptables FORWARD chain
-Date: Fri, 2 Jan 2004 15:25:51 +0100
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: [despammed] -i and -o options for iptables FORWARD chain
+Date: Fri, 2 Jan 2004 09:13:09 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040102142551.GA6925@kaufbach.delug.de>
-References: <009a01c3cff6$ee23bd90$a5bbd00c@issaquah> <20040102133002.GA6057@kaufbach.delug.de> <200401021403.02171.Antony@Soft-Solutions.co.uk>
+Message-ID: <7A3B4AA360FDEF448F3390421FC8D731012C6B04@coxhpexg.coxhp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200401021403.02171.Antony@Soft-Solutions.co.uk>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,25 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-am  Fri, dem 02.01.2004, um 14:03:02 +0000 mailte Antony Stone folgendes:
-> > -i is only for INPUT, FORWARD and PREROUTING
-> > -o is only for FORWARD, OUTPUT and POSTROUTING
->=20
-> Are you suggesting that -i and -o cannot be used in FORWARD?   As far as =
+
+Actually, couldn't this be just a 2.6.x change? (I never saw the rules =
+go by...)  I thought I saw a message go by earlier to that effect.  =
+Something about the syntax and needing '--physdev' and '-i' both, or =
+something?
+
+I could search the archives, I guess, but instead I suggest Gonya give =
+that a go.
+
+
+Bob
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+Sent: Friday, January 02, 2004 8:03 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: [despammed] -i and -o options for iptables FORWARD chain
+
+
+On Friday 02 January 2004 1:30 pm, Andreas Kretschmer wrote:
+
+> am  Wed, dem 31.12.2003, um 15:36:34 -0800 mailte Gongya Yu folgendes:
+> > Hi, I just updated Linux kernel to 2.6.0 with iptables and ebtables
+> > enabled.
+>
+> I'm using iptables on 2.4.x, possible there are differences with =
+2.6.x.
+>
+> > But iptables ignores -i and -o options for FORWARD chain. Wheneneve =
+I use
+> > something like -i eth0 or -o eth0, the rule is just ignored.
+>
+> RTFM!
+>
+> -i is only for INPUT, FORWARD and PREROUTING
+> -o is only for FORWARD, OUTPUT and POSTROUTING
+
+Are you suggesting that -i and -o cannot be used in FORWARD?   As far as =
 I can=20
-> see the syntax of the rule Gonya posted is perfectly okay.
+see the syntax of the rule Gonya posted is perfectly okay.
 
-Oh, i'm sorry, parse error by me =3D:-(
+Antony.
 
-
-Andreas
 --=20
-Diese Message wurde erstellt mit freundlicher Unterst=FCtzung eines freilau-
-fenden Pinguins aus artgerechter Freilandhaltung.   Er ist garantiert frei
-von Micro$oft'schen Viren. (#97922 http://counter.li.org)     GPG 7F4584DA
-Was, Sie wissen nicht, wo Kaufbach ist? Hier: N 51.05082=B0, E 13.56889=B0 =
-;-)
+Christmas is an opportunity to upgrade to kernel 2.6 while no-one's =
+around to=20
+notice the downtime.
+
+                                                     Please reply to the =
+list;
+                                                           please don't =
+CC me.
+
 
