@@ -1,12 +1,11 @@
-From: "Didier Hung Wan Luk" <DidierH@frci.net>
-Subject: XMAS and NMAP scanning.... With default rules dropping all packets
-Date: Sat, 14 Dec 2002 13:09:53 +0400
+From: Torsten Puls <lists@pumpum.de>
+Subject: Re: Time Patch on 1.2.6a
+Date: Sat, 14 Dec 2002 13:55:06 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <39778BFB9C25BA429794B15B50AEC78104EAA0@server-dcms>
+Message-ID: <20021214125506.905831B7AEF@webbox10.server-home.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,41 +16,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
 
-Hi people,
+I work with Debian/GNU Linux Woody 3.0
+Anyway.
 
-I was wondering whether I really need to include these rules if I am
-already using a default rule of DROP for INPUT, OUTPUT and FORWARD
-chains.
+download patch-o-matic.tar.gz from netfilter.org
 
-Default rule:-
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+cd /usr/src
+tar -xzvf patch-o-matic.tar.gz
 
-Do I really need these rules? To protect me from these scans..
+cd patch-o-matic
 
-iptables -I FORWARD -p tcp --tcp-flags ALL ALL -j DROP
-iptables -I INPUT -p tcp --tcp-flags ALL ALL -j DROP
+KERNEL_DIR=/usr/src/linux ./runme pending
 
-#nmap NULL-Packets drop
-iptables -I FORWARD -p tcp --tcp-flags ALL NONE -j DROP
-iptables -I INPUT -p tcp --tcp-flags ALL NONE -j DROP
+or/and
 
+KERNEL_DIR=/usr/src/linux ./runme base
 
-Thanks,
+and/or
 
-Didier
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.0 (MingW32)
+KERNEL_DIR=/usr/src/linux ./runme extra
 
-iD8DBQE9+vVhH0p2xGbWNGwRAqebAJ9qQqpvAY0wZ50NqiaaW51HyQHLGwCePEAo
-NPYRxMYonG0SWe0GzKiNb3M=3D
-=3DbEjK
------END PGP SIGNATURE-----
+so that's it.
 
+Now you can recompile your new Kernel.
+
+Greetz Torsten
 
