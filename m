@@ -1,12 +1,14 @@
-From: yunus <yunus@neduet.edu.pk>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: iptables on Satellite receive only linux PC
-Date: Mon, 02 Aug 2004 10:36:10 +0500
+Date: Mon, 2 Aug 2004 07:14:47 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <410DD2C9.9DBAE992@neduet.edu.pk>
-References: <410736B8.D9130BBF@neduet.edu.pk> <1090995073.2141.35.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <200408020714.47648.Antony@Soft-Solutions.co.uk>
+References: <410736B8.D9130BBF@neduet.edu.pk> <1090995073.2141.35.camel@anduril.intranet.cartel-securite.net> <410DD2C9.9DBAE992@neduet.edu.pk>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <410DD2C9.9DBAE992@neduet.edu.pk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,133 +21,77 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-These are the default values. It still does'nt work. Can any one kindly go
-through my script and tell me the mistake I am making. This is a Linux PC with
-receive only pentanet card.
+On Monday 02 August 2004 6:36 am, yunus wrote:
 
-Thanks for all the help.
-IPTABLES="/sbin/iptables"
-IP1=212.15.150.9
-#
+> These are the default values. It still does'nt work. Can any one kindly go
+> through my script and tell me the mistake I am making. This is a Linux PC
+> with receive only pentanet card.
+>
+> # Allow selected ICMP types and drop the rest.
+> #
+> $IPTABLES -A INPUT -p icmp --icmp-type 0 -j ACCEPT
+> $IPTABLES -A INPUT -p icmp --icmp-type 3 -j ACCEPT
+> $IPTABLES -A INPUT -p icmp --icmp-type 11 -j ACCEPT
+> $IPTABLES -A INPUT -p icmp --icmp-type 8 -m limit --limit 1/second -j ACCEPT
+> $IPTABLES -A INPUT -p icmp -j firewalled
 
-#
-$IPTABLES -F
-$IPTABLES -F INPUT
-$IPTABLES -F OUTPUT
-$IPTABLES -F FORWARD
-$IPTABLES -F -t mangle
-$IPTABLES -F -t nat
-$IPTABLES -X
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -P FORWARD DROP
-#
+Are you getting any ICMP packets logged from your "firewalled" user-defined 
+chain?   I just wonder whether the satellite link uses any ICMP types you 
+haven't allowed for here...?
 
-#
-# silent       - Just dop the packet
-# tcpflags     - Log packets with bad flags, most likely an attack
-# firewalled   - Log packets that that we refuse, possibly from an
-attack
-#
-$IPTABLES -N silent
-$IPTABLES -A silent -j DROP
+> $IPTABLES -A INPUT -p tcp -s 0/0 --dport 80 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp -s 0/0 --dport 443 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp -s 0/0 --dport 25 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp -s 0/0 --dport 53 -j ACCEPT
+> $IPTABLES -A INPUT -p udp -s 0/0 --dport 53 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp -s 0/0 --dport 123 -j ACCEPT
+> $IPTABLES -A INPUT -p udp -s 0/0 --dport 123 -j ACCEPT
+> #
+> $IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 80 -j ACCEPT
+> $IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 443 -j ACCEPT
+> $IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 25 -j ACCEPT
+> $IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 53 -j ACCEPT
+> $IPTABLES -A FORWARD -i pentanet0 -p udp --dport 53 -j ACCEPT
+> $IPTABLES -A FORWARD -i pentanet0 -p udp --dport 123 -j ACCEPT
+> $IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 123 -j ACCEPT
 
-$IPTABLES -N tcpflags
-$IPTABLES -A tcpflags -m limit --limit 15/minute -j LOG --log-prefix
-TCPflags:
-$IPTABLES -A tcpflags -j DROP
+Are you *really* providing all these services - HTTP, HTTPS, SMTP, DNS, Time, 
+*on* the firewall itself (INPUT) as well as on server/s inside your network 
+(FORWARD)?
 
-$IPTABLES -N firewalled
-$IPTABLES -A firewalled -m limit --limit 15/minute -j LOG --log-prefix
-Firewalled:
-$IPTABLES -A firewalled -j DROP
-#
-# These are all TCP flag combinations that should never, ever, occur in
-the
-# wild. All of these are illegal combinations that are used to attack a
-box
-# in various ways.
-#
-$IPTABLES -A INPUT -s 127.0.0.0/8 -d 127.0.0.0/8 -i lo -j ACCEPT
-# the above line will allow traffic from loopback interface
-$IPTABLES -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags ALL ALL -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j
-tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags ALL NONE -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j tcpflags
-$IPTABLES -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j tcpflags
-#
-# Allow selected ICMP types and drop the rest.
-#
-$IPTABLES -A INPUT -p icmp --icmp-type 0 -j ACCEPT
-$IPTABLES -A INPUT -p icmp --icmp-type 3 -j ACCEPT
-$IPTABLES -A INPUT -p icmp --icmp-type 11 -j ACCEPT
-$IPTABLES -A INPUT -p icmp --icmp-type 8 -m limit --limit 1/second -j
-ACCEPT
-$IPTABLES -A INPUT -p icmp -j firewalled
-#
-# The loopback interface is inheritly trustworthy. Don't disable it or
-# a number of things will break.
-#
-$IPTABLES -A INPUT -i lo -j ACCEPT
-#
-# Now allow Internet hosts access to those services we provide. Note
-that
-# enabling inbound FTP 20 & 21 tcp will also require allowing ports
-# 1024-65534/tcp. Which in itself is good enough reason not to allow FTP
+> #$IPTABLES -A INPUT -s 10.0.0.0/24 -d $IP1 -j ACCEPT
+>
+> #
+> # Allow packets that are part of an established connection to pass
+> # through the firewall. This is required for normal Internet activity
+> # by inside clients.
+> #
+> $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# connections and to only allow ssh/scp/sftp.
-#
-# Allow ssh frpm anywhere to this server
-#
-$IPTABLES -A INPUT -p tcp -s 0/0 --dport 22 -j ACCEPT
-#
-# HTTP access from anywhere
-#
-$IPTABLES -A INPUT -p tcp -s 0/0 --dport 80 -j ACCEPT
-$IPTABLES -A INPUT -p tcp -s 0/0 --dport 443 -j ACCEPT
-$IPTABLES -A INPUT -p tcp -s 0/0 --dport 25 -j ACCEPT
-$IPTABLES -A INPUT -p tcp -s 0/0 --dport 53 -j ACCEPT
-$IPTABLES -A INPUT -p udp -s 0/0 --dport 53 -j ACCEPT
-$IPTABLES -A INPUT -p tcp -s 0/0 --dport 123 -j ACCEPT
-$IPTABLES -A INPUT -p udp -s 0/0 --dport 123 -j ACCEPT
-#
-#
-$IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 80 -j ACCEPT
-$IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 443 -j ACCEPT
-$IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 25 -j ACCEPT
-$IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -i pentanet0 -p udp --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -i pentanet0 -p udp --dport 123 -j ACCEPT
-$IPTABLES -A FORWARD -i pentanet0 -p tcp --dport 123 -j ACCEPT
-#
-# If there are trusted nodes you can allow then access to everything
-with
-# something like. Be sure to set IP at the top of this script if you
-enable one
-# of these.
-#
-#$IPTABLES -A INPUT -s 10.0.0.0/24 -d $IP1 -j ACCEPT
+I would advise putting these rules as the first in their respective tables.   
+Either move the position of these rules in your script, or change "-A" to 
+"-I".   The vast majority of packets coming into or through the firewall will 
+match one of the above rules, so it should be the first in the list.
 
-#
-# Allow packets that are part of an established connection to pass
-# through the firewall. This is required for normal Internet activity
-# by inside clients.
-#
-$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-#
-# Anything not already matched gets firewalled and logged.
-#
-$IPTABLES -A INPUT -j firewalled
+> # Anything not already matched gets firewalled and logged.
+> #
+> $IPTABLES -A INPUT -j firewalled
 
->Actually assuming that the satellite card is pentanet0 you want
+And what about other packets trying to get through FORWARD?   Do you LOG 
+those?   (LOGging can be a big clue when trying to track down why something 
+isn't working...)
 
->echo 0 > /proc/sys/net/ipv4/conf/all/rp_filters
->echo 1 > /proc/sys/net/ipv4/conf/pentanet0/rp_filters
+Regards,
 
->To only turn off spoofing protection on the one interface.
+Antony.
 
+-- 
+There are only 10 types of people in the world:
+those who understand binary notation,
+and those who don't.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
