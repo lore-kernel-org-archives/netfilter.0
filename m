@@ -1,12 +1,13 @@
-From: Sandy C <sc_netfiltermail@yahoo.com>
-Subject: Re: bridge/ebtables/iptables interaction question
-Date: Tue, 23 Mar 2004 18:25:10 -0800 (PST)
+From: Ben Yerushalmi <beny@pd.verio.net>
+Subject: Re: Redirect ports on localhost
+Date: Tue, 23 Mar 2004 22:15:02 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040324022510.72338.qmail@web60004.mail.yahoo.com>
-References: <1080085546.1439.227.camel@anduril.intranet.cartel-securite.net>
+Message-ID: <343604D8-7D52-11D8-980E-000A957E9214@pd.verio.net>
+References: <406099AD.2070403@verio.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1080085546.1439.227.camel@anduril.intranet.cartel-securite.net>
+In-reply-to: <406099AD.2070403@verio.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,62 +17,59 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-That didn't work either. I wonder if its my kernel
-version. I'm running:
+I have bind listening on port 5300 so named.conf isn't the problem.
 
-Kernel: 2.4.20-6
-patch: ebtables-brnf-3_vs_2.4.21.diff (applied 3/16)
-       Latest POM (12/03: applied 3/22)
-IPTables: 1.2.9
-EBTables: 2.0.6
+I've been using tcpdump to try and troubleshoot the packets. Both the 
+source and destination of the packet are localhost. I noticed that by 
+changing the OUTPUT (and enabling "NAT_LOCAL" in my linux 2.4.25 
+kernel), tcpdump is fooled into thinking the packet is headed to port 
+5300 but I think by that point the packet has passed the application 
+layer and bind doesn't see the packet.
 
-From the docs, the br-nf code is required for iptables
-to see the bridge traffic. I'm wondering if the order
-in which I applied the patches matters. I'll go take a
-look at that, but if you folks have any hints I'd much
-appreciate it!
+Also, I have the filter table accepting EVERYTHING.
 
-Merci beaucoup,
-S C
+# iptables -L -vn
+Chain INPUT (policy ACCEPT 18907 packets, 1521K bytes)
+  pkts bytes target     prot opt in     out     source               
+destination
 
---- Cedric Blancher <blancher@cartel-securite.fr>
-wrote:
-> Le mar 23/03/2004 =E0 22:16, Sandy C a =E9crit :
-> > iptables -A INPUT -m physdev --physdev-in eth1 -p
-> tcp
-> > --destination-port 2049 -j LOG
-> [...]
-> > iptables -A INPUT -m physdev --physdev-in eth2 -p
-> tcp
-> > --source-port 2049 -j LOG
-> [...]
-> > I must be missing something though because I get
-> > nothing in my logs.
-> [...]
-> > what could I be doing wrong?=20
->=20
-> Bridged traffic goes through FORWARD chain, for it's
-> not destined to
-> your box.
->=20
->=20
-> --=20
-> http://www.netexit.com/~sid/
-> PGP KeyID: 157E98EE FingerPrint:
-> FA62226DA9E72FA8AECAA240008B480E157E98EE
-> >> Hi! I'm your friendly neighbourhood signature
-> virus.
-> >> Copy me to your signature file and help me
-> spread!
->=20
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source               
+destination
 
+Chain OUTPUT (policy ACCEPT 18208 packets, 2540K bytes)
+  pkts bytes target     prot opt in     out     source               
+destination
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Finance Tax Center - File online. File on time.
-http://taxes.yahoo.com/filing.html
+#
+
+On Mar 23, 2004, at 1:10 PM, Ben Yerushalmi wrote:
+
+> Hi,
+>
+> I'm trying to redirect traffic on my DNS server. I have bind listening 
+> on port 5300 (UDP) instead of 53. I've got it working from the 
+> internal network but seem to have problem on redirecting localhost 
+> traffic. I've tried changing both PREROUTING and OUTPUT chains in the 
+> nat table but it doesn't seem to help.
+>
+> iptables -A PREROUTING -t nat -p udp -i lo --dport domain -j REDIRECT 
+> --to-ports 5300
+>
+> and
+>
+> iptables -A OUTPUT -t nat -p udp -d localhost  --dport domain -j 
+> REDIRECT --to-ports 5300
+>
+>
+> Anyone have luck doing this? What am I missing?
+>
+> Thanks,
+> Ben
+>
+>
+
 
