@@ -1,13 +1,13 @@
-From: waltdnes@waltdnes.org
-Subject: Re: nat and ftp
-Date: Sun, 13 Apr 2003 00:02:08 -0400
+From: Povilas <csh@unix-like.net>
+Subject: Re: about yahoo messenger and http download
+Date: Sat, 12 Apr 2003 13:48:14 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030413040208.GB1939@m1800>
-References: <3E95E2D0.4070807@uif.gov.ar>
+Message-ID: <3E97E0DE.9010808@unix-like.net>
+References: <000801c30088$90e25490$9600000a@xpsys>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <3E95E2D0.4070807@uif.gov.ar>
+In-Reply-To: <000801c30088$90e25490$9600000a@xpsys>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter list <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: chammy <chammy@netvigator.com>
+Cc: netfilter@lists.netfilter.org
 
-On Thu, Apr 10, 2003 at 06:32:00PM -0300, Ing. Jorge Escudero wrote
-> I have a firewall with iptables.
-> 
-> I have a nat rules becouse I have one public IP.  All PC in the LAN
-> can access web, smtp and pop ports.  But We have problem with de
-> ftp. We can`t conect with any ftp server.
-> 
-> Do you now what is the problem?
+Hello,
+chammy wrote:
 
-  Standard ftp is a two-step process...
-  1) You make an outbound connection to the ftp server.
-  2) The ftp server makes an inbound connection to you.
+> Does any one can provide tip & hints, how to block the yahoo messenger 
+> and http downlaod, the mainly problem of yahoo messenger is can not 
+> block "all block"
+>  
+> yahoo mesenger default is 5050, if not avaiable will scan 80 , we can 
+> not stop 80 cause we need to www service and the http download is same 
+> problem
+>  
+> thanks  a lot
 
-  If you are blocking inbound connections, this will block regular ftp.
-Check your iptables logs, and you should see this being blocked.  There
-are two ways around the problem, without opening yourself up connections
-everybody on the net...
+I suppose you can try this::
+in your router ( of course if it's possible) you can run proxy server as 
+squid. Then you can mane transparent proxy, redirecting transparently 
+from 80 port to squid port. Squid understands only http and ftp 
+requesrs. Kazaa and others over 80 port won't work. I've tested this and 
+it really works.
+I don't know, but I think that yahoo messenger will do the same.
 
-  1) Use "passive mode" ftp.  In linux the "-p" option of the ftp
-     command is used, like so
-     ftp -p ftp.bad.example.com
-     The basic Windows ftp client does not support this.  However, web
-     browsers accessing "ftp://" URLs use passive mode.  Entering
-     ftp://userid:password@ftp.bad.example.com
-     in the destination address should work for "userid" with "password"
-     connecting to "ftp.bad.example.com"
+Bye,
+Paul
 
-  2) Read http://kalamazoolinux.org/presentations/20010417/conntrack.html
-     especially the part "Connection tracking and ftp", and then set up
-     the ip_conntrack_ftp module.  This will allow inbound connections,
-     but only from IP addresses that you are connecting to with ftp.  It
-     gets uglier because you may have to do extra routing work to send
-     the inbound connection to the PC making the outbound connection.
-     Use passive ftp if possible.
-
--- 
-Walter Dnes <waltdnes@waltdnes.org>
-An infinite number of monkeys pounding away on keyboards will
-eventually produce a report showing that Windows is more secure,
-and has a lower TCO, than linux.
 
