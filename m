@@ -1,12 +1,11 @@
-From: rpjday <rpjday@mindspring.com>
-Subject: Re: IP address to MAC address
-Date: Tue, 11 Jun 2002 17:45:56 -0400 (EDT)
+From: "Joe Patterson" <jpatterson@asgardgroup.com>
+Subject: setting fwmark in output chain for policy routing
+Date: Tue, 11 Jun 2002 17:51:00 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.44.0206111744430.1615-100000@dhcp64-134-107-24.han.aus.wayport.net>
-References: <081501c2118f$79efcf30$3200a8c0@jungle.funkybadger.org>
+Message-ID: <NJEFLNJDIFFNMHDEBKMJKEGLDOAA.jpatterson@asgardgroup.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <081501c2118f$79efcf30$3200a8c0@jungle.funkybadger.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,39 +15,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Adam D. Barratt" <netfilter.list@adam-barratt.org.uk>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-On Tue, 11 Jun 2002, Adam D. Barratt wrote:
+I've got a kind of an odd setup, and am curious about something.
 
-> Non sequiter. /sbin contains, by convention, binaries connected with
-> system administration. That is *not* the same as "binaries that may
-> only be executed by root".
-> 
-> /sbin is not on non-root users' paths, by default, but that doesn't
-> necessarily mean they can't execute stuff that lives there. Certainly,
-> on my Debian Woody and Sid boxes here, the contents of /sbin
-> are -rwxr-xr-x ;- the main thing stopping non-root users using some of
-> them is a lack of privileges, not a lack of execute rights to the
-> files.
-> 
-> Specifically, arp lives in /usr/sbin on my boxen, and whilst that's
-> not on my normal user's path, and the files are owned by root.root, I
-> can quite happily:
-> 
->   /usr/sbin/arp -a
-> 
-> as any user. Similarly, a non-privileged user has no problems running
-> /sbin/route.
+I've seen some references that say that one should be able to set an fwmark
+on a packet in the mangle/OUTPUT chain, and then have the linux policy
+routing database determine the route to use based on that fwmark.  I'm a
+little confused as to the order in which this happens.  I would think that
+in order to be able to hand a packet to netfilter, it'd have to be a pretty
+complete packet, including things like the source IP address.  However, the
+source address of a localy generated packet is determined by which route it
+matches.  But you can't know which route it matches unless you have all of
+the information, such as the fwmarks.
 
-i would go one step further and suggest that regular users might
-consider adding /sbin and /usr/sbin to their search paths.  there's
-nothing wrong with that, and it allows users to run the same commands
-they would be allowed to run if they typed out the names in full:
-"route" instead of "/sbin/route", for instance.
+It seems to me to be a bit of a chicken-and-egg thing.  Or is the source
+address determined first, based on the route that the packet will *probably*
+take, then it's shipped through mangle/OUTPUT, then the real routing
+decision is made?
 
-rday
+This is kind of halfway between netfilter and lartc, but I figured someone
+here might know better than I.
+
+Thanks,
+
+-Joe Patterson, CCNP, CISSP
+Senior Security Engineer
+The Asgard Group
+(954)343-4370 x102
+jpatterson@asgardgroup.com
+
 
 
