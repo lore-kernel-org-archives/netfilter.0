@@ -1,14 +1,13 @@
-From: Jan Humme <jan.humme@xs4all.nl>
-Subject: Re: trying to get one blessed thing to work
-Date: Mon, 8 Jul 2002 18:56:24 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Why are default policies not possible for user-defined chains?
+Date: Mon, 8 Jul 2002 17:56:39 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <02070818562409.14428@Lms>
-References: <20020708123223.7107dc16.mt@open2web.com>
-Reply-To: jan.humme@xs4all.nl
+Message-ID: <20020708165641.UMXD19225.mta07-svc.ntlworld.com@there>
+References: <02070818322007.14428@Lms>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020708123223.7107dc16.mt@open2web.com>
+In-Reply-To: <02070818322007.14428@Lms>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,48 +18,28 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Mark Tessier <mt@open2web.com>, Netfilter Mailing List <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Monday 08 July 2002 18:32, Mark Tessier wrote:
-> I have a PC running rh7.1., which I'm trying to turn into a firewall. The
-> firewall stands between a DMZ and a LAN. I have an elaborate script which
-> I've been trying to deploy, but so far no luck. Since I really don't know
-> where to begin in terms of diagnosing my problem, I decided to see if I
-> could just ping one machine on the DMZ from another on the LAN.
->
-> The first thing I did was to set the policy to drop for the forward chain
-> as in:
->
-> iptables --policy FORWARD DROP
+On Monday 08 July 2002 5:32 pm, Jan Humme wrote:
 
-=> Response on my machine (and yours) is:
-iptables v1.2.1a: Unknown arg '--policy'
-Try 'iptables -h` or 'iptables --help' for more information.
+> What is the reason that iptables does not support default policies on
+> user-chains?
 
-Suppose you mean:
-#iptables -P FORWARD DROP ?
+I suppose it's partly because there's not a lot of point (that I can see).
 
+You can only call a user-defined chain from one of the built-in chains (or 
+from another user-defined chain, which has to be called from a built-in 
+chain, etc...) therefore ultimately it's the default policy of the built-in 
+chain which determines what happens to a packet if none of the rules match.
 
-> Next, I tried to open one door on the forward chain, allowing icmp packets
-> of the echo request type to ping any other machine as in:
->
-> iptables -A FORWARD -o eth0 -p icmp --icmp-type echo-request -s
-> 192.168.0.0/24 -m state --state NEW -j ACCEPT
+> It seems like such a natural extension, and easy to implement. Or not? Is
+> there perhaps a catch that I am overlooking?
 
-Assuming that this line properly reflects your network configuration, you may 
-also want to allow the reply to come in:
+It's easy enough to put a DROP, or ACCEPT, or whatever, as the last rule in 
+your user-defined chain, thereby catching any packets which haven't already 
+matched.....
 
-#iptables -A FORWARD -i eth0 -p icmp --icmp-type echo-reply -d 192.168.0.0/24 
--j ACCEPT.
+ 
 
-
-In general though, one good way to debug is to look at the firewall machine, 
-and use:
-=> iptables -Z FORWARD to clear counter
-=> do your ping
-=> run iptables -L -v -x to inspect counters to see which rule(s) matched and 
-caused your packets to be dropped.
-=> also tcpdump may help
-
-Jan Humme.
+Antony.
 
