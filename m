@@ -1,14 +1,12 @@
-From: "Shaun T. Erickson" <ste@smxy.org>
-Subject: Re: Need to replace a SonicWall firewall with an iptables firewall.
-Date: Mon, 30 Aug 2004 14:41:01 -0400
+From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
+Subject: RE: why does this packet not match these rules?
+Date: Mon, 30 Aug 2004 14:50:12 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <413374BD.7050701@smxy.org>
-References: <41334F72.4010402@smxy.org>
-Reply-To: ste@smxy.org
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051301@asimail2.alphanumeric.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41334F72.4010402@smxy.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,32 +16,55 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: ste@smxy.org
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-I wrote:
+> Hi,
+>
+> I have these rules in my iptables script (iptables -L -v -n):
+>
+> Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+>  pkts bytes target     prot opt in     out     source
+> destination
+>
+> 16955 5070K ACCEPT     all  --  *      lo      0.0.0.0/0            =
+0.0.0.0/0
+>
+> 35895  278M out_lan    all  --  *      eth0    0.0.0.0/0            =
+0.0.0.0/0
+>
+>   16M 3830M out_internet  all  --  *      ppp0    x.x.x.x       =
+0.0.0.0/0
+>
+>     0     0 ACCEPT     all  --  *      *       0.0.0.0/0           =
+0.0.0.0/0
+>      state RELATED
+>
+> 26649 1534K LOG        all  --  *      *       0.0.0.0/0            =
+0.0.0.0/0
+> 0 level 4 prefix `OUT-unknown:'
+>
+>  28209 1621K DROP       all  --  *      *       0.0.0.0/0            =
+0.0.0.0/0
+>
+>
+> (where x.x.x.x is my ip), and yet these packets are being logged:
+>
+> ... OUT-unknown:IN=3D OUT=3Dppp0 SRC=3Dx.x.x.x DST=3Dy.y.y.y LEN=3D60 =
+TOS=3D0x00 PREC=3D0x00
+> TTL=3D64 ID=3D45650 DF PROTO=3DTCP SPT=3D43257 DPT=3D4662 =
+WINDOW=3D4383 RES=3D0x00 SYN
+> URGP=3D0
+>
+> surely this should match rule 3 (src=3Dx.x.x.x, out=3Dppp0) and be =
+handled by
+> out_internet?
 
-> However, I'm not sure how to handle the external network and the DMZ. We 
-> have a /28 subnet from our ISP. Our router uses one address on the 
-> subnet. From the router, you proceed to a switch, where three devices 
-> are plugged in: a wireless access point, a VPN device, and the external 
-> interface of the SonicWall firewall. All three devices have addresses on 
-> the same /28 subnet as the router. Additionally, the SonicWall's DMZ 
-> interface does not have and address assigned to it - it is somehow 
-> logically bridged to the external interface. The systems in the DMZ are 
-> also on the same /28 subnet. You tell the SonicWall which IP addresses 
-> are in use in the DMZ, so that it knows which interface to send traffic 
-> for that subnet out of. Internal traffice, heading out either the 
-> external or DMZ interfaces of the SonicWall, appear to come from the 
-> external address of the SonicWall. I have no idea how to replicate this 
-> setup under iptables.
+it probably does.  the question is:  does the packet actually match =
+anything in "out_internet?"  if it doesn't, the packet will continue on =
+down the list until it hits your log rule.
 
-It occurs to me that I'm running out of IPs anyway, so maybe what I 
-should do is get two subnets from my ISP: a subnet of 16 (14 usable) 
-addresses for the router, the firewall's external interface, and 
-everything in between, and a subnet of 32 (30 usable) addresses for my 
-DMZ. That would work, yes?
+show us:  iptables -vnL out_internet
 
-	-ste
+-j
 
