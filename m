@@ -1,13 +1,10 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: Traffic limitation with iptables
-Date: Wed, 23 Jul 2003 02:19:06 +0200
+From: Tim Burress <hokousha2001@yahoo.com>
+Subject: Conntrack Response to Port Unreachable for UDP
+Date: Tue, 22 Jul 2003 19:54:55 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030723021906.7cf93042.arnt@c2i.net>
-References: <20030722200858.74374455.epv_xemul@mail.ru>
+Message-ID: <20030723025455.36204.qmail@web21102.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030722200858.74374455.epv_xemul@mail.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +15,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, 22 Jul 2003 20:08:58 +0400, 
-Xemul <epv_xemul@mail.ru> wrote in message 
-<20030722200858.74374455.epv_xemul@mail.ru>:
+Hello!
 
-> Hi.
-> I wanna solve such a problem:
-> When I see that byte counter on some chain reaches or exceedes any
-> fixed value - then IMMEDIATELY insert into that cahin new first rule
-> (e.g. -j DROP) or delete some rules from any other chain. Or more
-> abstract - how can can discover that byte counter is higher than smth
-> without"polling" chains?
-> 
-> Sorry for sending such a mail into announce, developers and user
-> maillists but I need help as soon as possible. :)
-> 
+We kind of an interesting problem and I was wondering
+if people have any suggestions. Imagine a network like
+this:
 
-..2 ways: either trottle using, say cbq, check the Advanced Routing
-how-to, or get ip-limit from patch-o-matic.
+    X----------F---------Z
 
-..for cbq throttling for say 802.11 isp networks, feel free to try out 
-my wee http://fmb.no/ipcop/setup-cbq-0.0.4.tar.bz2, it could use a gui, 
-but is overkill a home user.
+where F is a Linux box acting as a firewall to protect
+the Z network. F runs
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;-)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+    kernel 2.4.21-pre5 
+    iptables 1.2.7a
+    patch-o-matic 20030112
 
+The problem arises like this:
+
+X attempts to initiate a UDP exchange with Z, but Z
+responds to the initial packet with an ICMP port
+unreachable. That's fine, but once this happens, it
+seems that Z (or some other node on Z's network) is
+then able to repeatedly replay this same ICMP port
+unreachable back to X.
+
+So the question is, what's the best way to prevent
+that at F?
+
+One idea was that conntrack could destroy the
+conntrack record for the UDP "connection" upon receipt
+of the port unreachable. Another, much larger scope
+solution would be to implement some sort of
+generalized replay protection that would attempt to
+identify and DROP replayed packets. The first seems
+nice and simple, but we're worried about unintended
+consequences. The second seems interesting, but could
+get a little involved. I wondered if people had any
+thoughts or suggestions for other ways to deal with
+this.
+
+Thanks!
+
+Tim
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
