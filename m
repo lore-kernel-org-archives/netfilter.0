@@ -1,10 +1,10 @@
 From: "Tahmid Quazi" <quazit@nu.ac.za>
-Subject: help with iptables
-Date: Tue, 03 Jun 2003 11:22:05 +0200
+Subject: How to compile iptables for Linux running on Ipaq
+Date: Tue, 03 Jun 2003 22:07:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sedc84e5.060@smtp.nu.ac.za>
+Message-ID: <sedd1c21.017@smtp.nu.ac.za>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=_3768D8D5.2342A5E5"
+Content-Type: multipart/alternative; boundary="=_9AC57411.2140A76E"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -21,39 +21,33 @@ This is a MIME message. If you are reading this text, you may want to
 consider changing to a mail reader or gateway that understands how to 
 properly handle MIME multipart messages.
 
---=_3768D8D5.2342A5E5
+--=_9AC57411.2140A76E
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi
+hi=20
 =20
-I am trying to use the iptables command on an iPaq running Familiar. The =
-kernel version is 2.4.18-rmk3-hh6.=20
-The kernel does not have netfilter configured so for any functionality I =
-need, I have to install a module.
+I am trying to use iptables on a linux running on an iPaq 3800. I am using =
+the Familiar running the linux kernel
+linux-2.4.18-rmk3-hh6.=20
+From my kernel set up i have managed to install the iptable_filter,ip_table=
+s modules.
+But when i tried to run the iptables command there was no executable to be =
+found on the ipaq.=20
+I found the executable file for my pc but it wouldnt be appropriate for =
+the iPaq.
 =20
-I have installed the following modules:
-iptable_filter
-ip_tables
+Can anyone tell me if there is any documentation as to how i can compile =
+the iptables executable file.
+I would really appreciate it if someone could help me or direct me to =
+where I could get some help.
 =20
-successfully. ( i can see them when i type /proc/modules)
-=20
-But when i try a simple iptables command (i got this from the "howto" =
-document)
-/ # iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP
-=20
-I get the following output:
-
-iptables: No such file or directory
-=20
-Please could someone tell me what i am doing wrong or missing.
-=20
-Many thanks in advance for your help!
+Many thanks in advance.
 =20
 -- tahmid
 
 
---=_3768D8D5.2342A5E5
+--=_9AC57411.2140A76E
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Description: HTML
@@ -63,40 +57,33 @@ Content-Description: HTML
 <META content=3D"text/html; charset=3Diso-8859-1" http-equiv=3DContent-Type=
 >
 <META content=3D"MSHTML 5.00.3315.2870" name=3DGENERATOR></HEAD>
-<BODY style=3D"FONT: 8pt Tahoma; MARGIN-LEFT: 2px; MARGIN-TOP: 2px"><FONT =
-size=3D2>
-<DIV><FONT size=3D2>Hi</FONT></DIV>
+<BODY style=3D"FONT: 8pt Tahoma; MARGIN-LEFT: 2px; MARGIN-TOP: 2px">
+<DIV><FONT size=3D2>hi </FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>I am trying to use the iptables command on an iPaq =
-running=20
-Familiar. The kernel version is 2.4.18-rmk3-hh6. </FONT></DIV>
-<DIV><FONT size=3D2>The kernel does not have netfilter configured so for =
-any=20
-functionality I need,&nbsp;I have to install a module.</FONT></DIV>
+<DIV><FONT size=3D2>I am trying to use iptables on&nbsp;a linux running on =
+an iPaq=20
+3800. I am using the Familiar running the linux kernel</FONT></DIV>
+<DIV><FONT size=3D2>linux-2.4.18-rmk3-hh6. </FONT></DIV>
+<DIV>From my kernel set up i have managed to install the <FONT=20
+size=3D2>iptable_filter,</FONT><FONT size=3D2>ip_tables modules.</FONT></DI=
+V>
+<DIV><FONT size=3D2>But when i tried to run the iptables command there was =
+no=20
+executable to be found on the ipaq. </FONT></DIV>
+<DIV><FONT size=3D2>I found the executable file for my pc but it wouldnt =
+be=20
+appropriate for the iPaq.</FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>I have installed the following modules:</FONT></DIV>
-<DIV><FONT size=3D2>iptable_filter</FONT></DIV>
-<DIV><FONT size=3D2>ip_tables</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>successfully. ( i can see them when i type=20
-/proc/modules)</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>But when i try a simple iptables command (i got this =
-from the=20
-"howto" document)</FONT></DIV>
-<DIV><FONT size=3D2>/ # iptables -A INPUT -s 127.0.0.1 -p icmp -j=20
-DROP</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I get the following output:</FONT></DIV>
-<DIV><FONT size=3D2><BR>iptables: No such file or directory</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>Please could someone tell me what i am doing wrong =
+<DIV><FONT size=3D2>Can anyone tell me if there is any documentation as to =
+how i=20
+can compile the iptables executable file.</FONT></DIV>
+<DIV><FONT size=3D2>I would really appreciate it if someone could help me =
 or=20
-missing.</FONT></DIV>
+direct me to where&nbsp;I could get some help.</FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>Many thanks in advance for your help!</FONT></DIV>
+<DIV><FONT size=3D2>Many thanks in advance.</FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>-- tahmid</FONT></DIV></FONT></BODY></HTML>
+<DIV><FONT size=3D2>-- tahmid</FONT></DIV></BODY></HTML>
 
---=_3768D8D5.2342A5E5--
+--=_9AC57411.2140A76E--
 
