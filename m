@@ -1,12 +1,8 @@
-From: Netfilter Core Team <coreteam@netfilter.org>
-Subject: [ANNOUNCE] Release of iptables-1.3.1
-Date: Mon, 7 Mar 2005 15:35:32 +0100
-Message-ID: <20050307143532.GI30487@sunbeam.de.gnumonks.org>
-Reply-To: coreteam@netfilter.org
+From: "joe z" <securadd@hotmail.com>
+Subject: attempting to transparently proxy with this script to no avail
+Date: Mon, 07 Mar 2005 13:23:04 -0500
+Message-ID: <BAY17-F37FBD7C9A60728124BBCE4DC5F0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ECAkxgSy0pGoHfdA"
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,107 +13,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: lwn@lwn.net
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
+
+hello all,
+im attempting to run a transparent proxy with the iptables script below... 
+to no avail. this box sits inline between the firewall and internal switch 
+and everything works except the transparent proxy part. the box routes 
+traffic properly and when i point the browser at the proxy on 8080, all 
+good. proxy goes dansguardian -> squid -> privoxy. additionally i have snort 
+inline running as well and that works. the box is fc2 and squid is installed 
+via yum. 11.10 is internal and 11.8 faces the firewall. so far i have tried 
+multiple combinations; when i comment out all rules except INPUT, OUTPUT, 
+and FORWARD ACCEPT, all good; when i comment out the nat table lines and 
+uncomment the mangle table and use the queue and snort, all good; when i 
+comment out the mangle table and queue and uncomment the nat redirect 
+(leaving commented the -j DROP) everything works, just not the proxy... in 
+other words http passes through the box but it doesn't get sent to/through  
+the proxy(i confirmed this with tcpdump) and, most interestingly, when i 
+comment the redirect and uncomment the -j DROP, it doesn't drop http or 
+anything for that matter(?). below is the script and the relevant squid.conf 
+entries. any thoughts? am i missing something(obvious?) here?
+
+/sbin/depmod -a
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_REDIRECT
+#/sbin/modprobe ip_queue
+iptables -F
+iptables -t mangle -F
+iptables -t nat -F
+iptables -X
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -t nat -P PREROUTING ACCEPT
+#iptables -t mangle -P PREROUTING ACCEPT
+#iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DROP
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
+--to-port 8080
+#iptables  -t mangle -A PREROUTING -j QUEUE
 
 
---ECAkxgSy0pGoHfdA
-Content-Type: multipart/mixed; boundary="Zll6mx50Q8J7qlLQ"
-Content-Disposition: inline
 
+ifdown eth1
+ifdown eth0
+ifup eth0
+ifup eth1
+ifconfig eth1 192.168.11.8 netmask 255.255.255.0
+ifconfig eth0 192.168.11.10 netmask 255.255.255.0
+ifconfig eth0 promisc
+ifconfig eth1 promisc
+ifconfig eth1 arp
+ifconfig eth0 arp
 
---Zll6mx50Q8J7qlLQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+route add 192.168.11.2 dev eth1
+route add default gw 192.168.11.2
 
-Hi!
+#and squid.conf=
 
-The netfilter coreteam proudly presents:
+httpd_accel_host virtual
+httpd_accel_port 80
+httpd_accel_single_host off
+httpd_accel_with_proxy on
+httpd_accel_uses_host_header on
 
-	iptables version 1.3.1
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today - it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
 
-The final 1.3.1 version contains some minor bugfixes to the
-recently-released version 1.3.0
-
-The ChangeLog is attached to this mail.
-
-Version 1.3.1 can be obtained from:
-
-	http://www.netfilter.org/files/iptables-1.3.1.tar.bz2
-	ftp://ftp.netfilter.org/pub/iptables/iptables-1.3.1.tar.bz2
-
-Please also note: Since Kernel 2.6.x is out, we now use
-patch-o-matic-ng for both 2.4.x and 2.6.x. patch-o-matic-ng is
-Distributed as seperate package:=20
-	ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/
-=09
-More information can be found at the netfilter/iptables project homepage,
-available at:
-
-	http://www.netfilter.org/
-	http://www.iptables.org/
-
-Happy firewalling,
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---Zll6mx50Q8J7qlLQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-iptables-1.3.1.txt"
-
-iptables v1.3.1 Changelog
-======================================================================
-This version requires kernel >= 2.4.4
-This version recommends kernel >= 2.4.18
-
-Bugs fixed from 1.3.0:
-
-- Fix CLUSTERIP rule deletion
-	[ Pablo Neira ]
-
-- Fix libip6t_random compilation
-	[ Harald Welte ]
-
-- Fix CONNMARK on 32bit userspace / 64bit kernel archs
-	[ Pablo Neira ]
-
-Changes from 1.3.0:
-
-- remove bogus NFC_* stuff in iptables
-	[ Pablo Neira ]
-
-- libiptc: don't sort builtin chains, restores iptables-1.2.x sort order
-	[ Olaf Rempel ]
-
-
-Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
-iptables but rather distributed as a seperate package
-(ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot)
-
-
---Zll6mx50Q8J7qlLQ--
-
---ECAkxgSy0pGoHfdA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFCLGa0NfqJzMqajVsRAvSwAJ4g++23LvPnbAGwYmr7iLFzLdm9XACgt8yk
-wLl/c3V9XSk5ohn3359hkIo=
-=fWic
------END PGP SIGNATURE-----
-
---ECAkxgSy0pGoHfdA--
 
