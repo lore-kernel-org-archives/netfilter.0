@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Q: transform unicast to multicast with iptables?
-Date: Wed, 2 Oct 2002 08:39:43 +0100
+From: mourik jan c heupink <heupink@intech.unu.edu>
+Subject: RE: Firewall Question
+Date: 02 Oct 2002 09:38:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021002073945.WMWB28004.mta07-svc.ntlworld.com@there>
-References: <871271734CB8D611B2A300306E1F108D250D49@NDS-IL-EX7>
+Message-ID: <1033544303.1179.5.camel@suse8>
+References: <FLEKIPPLAEDMJMOOBBDPCENHDAAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <871271734CB8D611B2A300306E1F108D250D49@NDS-IL-EX7>
+In-Reply-To: <FLEKIPPLAEDMJMOOBBDPCENHDAAA.stewart.thompson@shaw.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +18,84 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Wednesday 02 October 2002 8:16 am, Karasik, Vitaly wrote:
+I agree. I have just setup my first iptables firewall, and it's really
+not as difficult as it might seem.
 
-> Is is possible to transform unicast UDP stream to multicast output with
-> iptables NAT?
+I also doubted wether to use a special firewall program, or do it
+myself. I eventually did it myself. The program I *would* have used
+otherwise is shorewall. (http://www.shorewall.net)
 
-I don't see why not, so long as the original packets are not being created on 
-the netfilter machine itself.
+Hope this helps.
 
-Just put a rule in the PREROUTING chain like so:
+Mourik Jan
 
-iptables -A PREROUTING -t nat -d a.b.c.d -j DNAT --to w.x.y.z
+On Wed, 2002-10-02 at 09:27, Stewart Thompson wrote:
+> Hi:
+> 
+> 	I wasn't the original poster. I was just replying to Bishop.
+> 
+> Stu........
+> 
+> 
+> -----Original Message-----
+> From: mourik jan c heupink [mailto:heupink@intech.unu.edu]
+> Sent: October 2, 2002 12:21 AM
+> To: stewart.thompson@shaw.ca
+> Subject: RE: Firewall Question
+> 
+> I agree. I have just setup my first iptables firewall, and it's really
+> not as difficult as it might seem.
+> 
+> I also doubted wether to use a special firewall program, or do it
+> myself. I eventually did it myself. The program I *would* have used
+> otherwise is shorewall. (http://www.shorewall.net)
+> 
+> Hope this helps.
+> 
+> Mourik Jan
+> 
+> On Wed, 2002-10-02 at 03:26, Stewart Thompson wrote:
+> > HI Luis:
+> >
+> >       I prefer to write a script by hand using the CLI.
+> > Most modern Linux distributions include Iptables/Netfilter.
+> > You can also control when it starts up, and include other
+> > things in it like Stunnel set up, conditional rules etc. I
+> > have not used any of the firewall front ends, but a GUI is
+> > probably easier if you are new. The trouble I have is the
+> > rules are hidden behind the GUI interface. There are lots
+> > of good sample scripts on the net that you can modify for
+> > your purposes. Plus, you will get a much more interment
+> > knowledge of Iptables. Just my two cents worth.
+> >
+> > Stu.........
+> >
+> >
+> >
+> >
+> > -----Original Message-----
+> > From: netfilter-admin@lists.netfilter.org
+> > [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Bishop
+> > Sent: October 1, 2002 5:04 PM
+> > To: stewart.thompson@shaw.ca; HareRam; netfilter@lists.netfilter.org
+> > Subject: Firewall Question
+> >
+> > Hello all,
+> >
+> >         I have  a question for you guys. I will installing a firewall on
+> my
+> > linux box soon. My question is would it be better for me to download a
+> > firewall software off then net , or should I build my own firewall from
+> > scratch. Let me know what you guys think, and which one would be better.
+> >
+> >
+> > Thank you all
+> >
+> > --Luis
+> >
+> 
 
-where a.b.c.d is the unicast address your application was sending to, and 
-w.x.y.z is the mutlicast address you want to broadcast to.
 
-Antony.
-
--- 
-
-There are two possible outcomes.
-
-If the result confirms the hypothesis, then you've made a measurement.
-If the result is contrary to the hypothesis, then you've made a discovery.
-
- - Enrico Fermi
 
