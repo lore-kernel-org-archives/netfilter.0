@@ -1,12 +1,10 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: Two NICS with same IP and same client IP
-Date: Wed, 02 Feb 2005 08:22:24 -0800
-Message-ID: <4200FE40.8070509@shorewall.net>
-References: <61246.57.66.65.39.1107336931.squirrel@57.66.65.39>
-	<4200A1F3.8030609@imag.fr>
+From: "Hudson Delbert J Contr 61 CS/SCBN" <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: Two NICS with same IP and same client IP
+Date: Wed, 2 Feb 2005 08:26:24 -0800
+Message-ID: <186AC876521E0F46BDE77079A6567FD06F5FBA@la-ncc-ms1nsabb.losangeles.afspc.ds.af.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <4200A1F3.8030609@imag.fr>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,7 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
+To: Tom Eastep <teastep@shorewall.net>
 Cc: netfilter@lists.netfilter.org
+
+tom,
+
+why ?
+
+to what end, this topology ?
+
+please enlightenment as to the value added ?
+
+v/r,
+~piranha
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Tom Eastep
+Sent: Wednesday, February 02, 2005 8:22 AM
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Two NICS with same IP and same client IP
+
 
 Raphael Jacquot wrote:
 > Herv=E9 wrote:
@@ -85,4 +103,5 @@ Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
 Shoreline,     \ http://shorewall.net
 Washington USA  \ teastep@shorewall.net
 PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
+
 
