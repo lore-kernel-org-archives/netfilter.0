@@ -1,15 +1,12 @@
-From: Fabrice MARIE <fabrice-marie-sec@ifrance.com>
-Subject: Re: IPSEC and other non tcp/udp/icmp blocking
-Date: Mon, 14 Oct 2002 19:17:39 +0800
+From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
+Subject: RE: IPSEC and other non tcp/udp/icmp blocking
+Date: Mon, 14 Oct 2002 13:37:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210141917.40231.fabrice-marie-sec@ifrance.com>
-References: <41791.64.86.49.17.1034369123.squirrel@www.icafe.co.tz>
-Reply-To: fabrice-marie-sec@ifrance.com
+Message-ID: <E131E9F1848D0148813EAF06A846608F615F80@w2ks-e2k.iconos.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <41791.64.86.49.17.1034369123.squirrel@www.icafe.co.tz>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,29 +19,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: murli@icafe.co.tz, netfilter@lists.netfilter.org
 
-Hello Cyberdude,
+Hi,
 
-On Saturday 12 October 2002 04:45, Mitesh P Choksi wrote:
-> Dear All,
+Mitesh P Choksi [mailto:murli@icafe.co.tz] wrote:
+>=20
 > How does netfilter work with other protocols apart tcp/udp/icmp?
+>=20
 > I am trying to either block or account IPSec traffic.
-> Regards,
-> Cyberdude Murli
-> The Earth
+>=20
 
-to block ipsec (IIRC):
-# iptables -A FORWARD -p 50 -j DROP
-# iptables -A FORWARD -p 51 -j DROP
-# iptables -A FORWARD -p tcp --dport 500 -j DROP
+Well that can be done with:
 
-(to block ah&esp as well as the IKE daemon).
+iptables -A ... -p udp --dport 500 -j ...=20
+iptables -A ... -p 50 -j ...
+iptables -A ... -p 51 -j ...
 
-Have a nice day,
+for IKE, ESP and AH respectively. You may also want to=20
+look at the "ah" and "esp" matches that allow you to=20
+match against the SPI of AH and ESP IPsec traffic.
+Those matches are in the standard kernel.
 
-Fabrice.
---
-Fabrice MARIE
-
-"Silly hacker, root is for administrators"
-       -Unknown
+Regards,
+Filip
 
