@@ -1,14 +1,12 @@
-From: "John Arthur" <list@davey.net.au>
-Subject: RE: redirect port 80 to another port > 1024 on same machine
-Date: Tue, 19 Aug 2003 16:23:33 +0930
+From: "Kyoungyong Lee" <leeky@icu.ac.kr>
+Subject: what is the relationship between Netfilter & iptables.
+Date: Tue, 19 Aug 2003 18:36:02 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <GNECLCLHIFNNAHMOKHDPMENLDGAA.list@davey.net.au>
-References: <005901c365d9$5c127d10$6564a8c0@redwood.medexpert.com>
+Message-ID: <001001c36635$4e476ef0$da836bd2@kylee>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0023_01C3666E.3C3C8220"
+	boundary="----=_NextPart_000_000D_01C36680.BE0BFE90"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005901c365d9$5c127d10$6564a8c0@redwood.medexpert.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,71 +16,81 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: david brant <dbrant@medexpert.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0023_01C3666E.3C3C8220
+------=_NextPart_000_000D_01C36680.BE0BFE90
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+SGVsbG8sIA0KDQpJJ20gYSBub3ZpY2UgaW4ga2VybmVsLg0KDQpJJ2QgbGlrZSB0byBrbm93IHRo
+ZSByZWxhdGlvbnNoaXAgYmV0d2VlbiBOZXRmaWx0ZXIgYW5kIGlwdGFibGVzLg0KDQpOZXRmaWx0
+ZXIgaW5jbHVkZXMgaXB0YWJsZXM/PyAtXy07Ow0KDQphcmUgdGhleSBpbmRlcGVuZGVudD8/DQoN
+Cg0KU2Vjb25kIHF1ZXNldGlvbiBpcy4uDQoNCndlIGNhbiB3cml0ZSBtb2R1bGUgcHJvZ3JhbSB1
+c2luZyBuZXRmaWx0ZXIuDQoNCmJ1dCBJIGRpZG4ndCBzZWUgdGhlIG1vZHVsZSBwcm9ncmFtIHVz
+aW5nIGlwdGFibGVzLi4NCg0KSSBjb3VsZCBzZWUganVzdCBzY3JpcHQgdXNpbmcgaXB0YWJsZXMu
+DQoNCmlzIHRoZXJlIGFueSB3YXkgd3JpdGluZyBhIG1vZHVsZSBwcm9ncmFtIHVzaW5nIGlwdGFi
+bGVzPw0KDQoNCkknbSB2ZXJ5IGNvbmZ1c2VkIGFib3V0IHRoZW0uLiAtXy07Ow0KDQpwbHosIGhl
+bHAgbWUuLiBeXjs7DQoNCg0KVGhhbmtzIHZlcnkgbXVjaC4NCg0KDQo9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KTVMgU3R1ZGVudCBL
+eW91bmdZb25nIExlZQ0KQ29tcHV0ZXIgTmV0d29ya3MgTGFiLiwgU2Nob29sIG9mIEVuZ2luZWVy
+aW5nDQpJQ1UoSW5mb3JtYXRpb24gYW5kIENvbW11bmljYXRpb25zIFVuaXZlcnNpdHkpDQo1OC00
+IEh3YWFtLWRvbmcgWXVzdW5nLWd1IFRhZWpvbiwgU291dGggS29yZWEsIDMwNS0zNDgNCkUtbWFp
+bCA6IGxlZWt5QGljdS5hYy5rcg0KcGhvbmUgOiANCis4Mi00Mi04NjYtNjE1MSAoTGFiLikgDQor
+ODItNDItODY2LTQyNzIgKERvcm1pdGFyeSkgDQorODItMTYtNDIzLTg5NzAgKFBDUykNCk1TTiA6
+IGJsdWV2b3hAb3JnaW8ubmV0DQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PQ==
 
-  -----Original Message-----
-  From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of david brant
-  Sent: Tuesday, 19 August 2003 8:08 AM
-  To: netfilter@lists.netfilter.org
-  Subject: redirect port 80 to another port > 1024 on same machine
-
-
-  I need to forward tcp port 80 to tcp port 8080 on the same box.  The
-machine does not function as a NAT box and has only a single interface.  Has
-anyone come across a rule that might help me out?
-
-
-------=_NextPart_000_0023_01C3666E.3C3C8220
+------=_NextPart_000_000D_01C36680.BE0BFE90
 Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 5.50.4926.2500" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial><FONT color=3D#0000ff><FONT size=3D2><SPAN=20
-class=3D298335206-19082003>iptables</SPAN>&nbsp;-t nat -A&nbsp;<SPAN=20
-class=3D298335206-19082003>PREROUTING</SPAN> -p tcp --dport 80 -j =
-REDIRECT=20
---to-port&nbsp;<SPAN=20
-class=3D298335206-19082003>8080</SPAN><BR></FONT></FONT></FONT></DIV>
-<BLOCKQUOTE dir=3Dltr=20
-style=3D"PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #0000ff 2px =
-solid; MARGIN-RIGHT: 0px">
-  <DIV class=3DOutlookMessageHeader dir=3Dltr align=3Dleft><FONT =
-face=3DTahoma=20
-  size=3D2>-----Original Message-----<BR><B>From:</B>=20
-  netfilter-admin@lists.netfilter.org=20
-  [mailto:netfilter-admin@lists.netfilter.org]<B>On Behalf Of </B>david=20
-  brant<BR><B>Sent:</B> Tuesday, 19 August 2003 8:08 AM<BR><B>To:</B>=20
-  netfilter@lists.netfilter.org<BR><B>Subject:</B> redirect port 80 to =
-another=20
-  port &gt; 1024 on same machine<BR><BR></FONT></DIV>
-  <DIV><FONT face=3DArial><FONT face=3D"Courier New"><FONT =
-size=3D2>I&nbsp;need to=20
-  forward tcp port&nbsp;80 to tcp port&nbsp;8080 on the same box.&nbsp; =
-The=20
-  machine does not function as a NAT box and has only a single =
-interface.&nbsp;=20
-  Has anyone come across a rule that might help me=20
-  =
-out?</FONT>&nbsp;<BR></FONT><BR></FONT></DIV></BLOCKQUOTE></BODY></HTML>
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWtzX2NfNTYwMS0xOTg3Ij4NCjxNRVRBIGNvbnRlbnQ9Ik1T
+SFRNTCA2LjAwLjI4MDAuMTE3MCIgbmFtZT1HRU5FUkFUT1I+DQo8U1RZTEU+PC9TVFlMRT4NCjwv
+SEVBRD4NCjxCT0RZIGJnQ29sb3I9I2ZmZmZmZj4NCjxESVY+PEZPTlQgc2l6ZT0yPkhlbGxvLCA8
+L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElW
+PjxGT05UIHNpemU9Mj5JJ20gYSBub3ZpY2UgaW4ga2VybmVsLjwvRk9OVD48L0RJVj4NCjxESVY+
+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPkknZCBs
+aWtlIHRvIGtub3cgdGhlIHJlbGF0aW9uc2hpcCBiZXR3ZWVuIE5ldGZpbHRlciBhbmQgDQppcHRh
+Ymxlcy48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+
+DQo8RElWPjxGT05UIHNpemU9Mj5OZXRmaWx0ZXIgaW5jbHVkZXMgaXB0YWJsZXM/PyAtXy07Ozwv
+Rk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+
+PEZPTlQgc2l6ZT0yPmFyZSB0aGV5IGluZGVwZW5kZW50Pz88L0ZPTlQ+PC9ESVY+DQo8RElWPjxG
+T05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+
+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5TZWNvbmQgcXVlc2V0aW9uIGlzLi48L0ZP
+TlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxG
+T05UIHNpemU9Mj53ZSBjYW4gd3JpdGUgbW9kdWxlIHByb2dyYW0gdXNpbmcgbmV0ZmlsdGVyLjwv
+Rk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+
+PEZPTlQgc2l6ZT0yPmJ1dCBJIGRpZG4ndCBzZWUgdGhlIG1vZHVsZSBwcm9ncmFtIHVzaW5nIA0K
+aXB0YWJsZXMuLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8
+L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPkkgY291bGQgc2VlIGp1c3Qgc2NyaXB0IHVzaW5nIGlw
+dGFibGVzLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJ
+Vj4NCjxESVY+PEZPTlQgc2l6ZT0yPmlzIHRoZXJlIGFueSB3YXkgd3JpdGluZyBhIG1vZHVsZSBw
+cm9ncmFtIHVzaW5nIA0KaXB0YWJsZXM/PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+
+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElW
+Pg0KPERJVj48Rk9OVCBzaXplPTI+SSdtIHZlcnkgY29uZnVzZWQgYWJvdXQgdGhlbS4uIC1fLTs7
+PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJ
+Vj48Rk9OVCBzaXplPTI+cGx6LCBoZWxwIG1lLi4gXl47OzwvRk9OVD48L0RJVj4NCjxESVY+PEZP
+TlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4m
+bmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPlRoYW5rcyB2ZXJ5IG11Y2guPC9GT05UPjwv
+RElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBz
+aXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCANCnNpemU9Mj49PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PTxCUj5NUyBT
+dHVkZW50IA0KS3lvdW5nWW9uZyBMZWU8QlI+Q29tcHV0ZXIgTmV0d29ya3MgTGFiLiwgU2Nob29s
+IG9mIA0KRW5naW5lZXJpbmc8QlI+SUNVKEluZm9ybWF0aW9uIGFuZCBDb21tdW5pY2F0aW9ucyBV
+bml2ZXJzaXR5KTxCUj41OC00IEh3YWFtLWRvbmcgDQpZdXN1bmctZ3UgVGFlam9uLCBTb3V0aCBL
+b3JlYSwgMzA1LTM0ODxCUj5FLW1haWwgOiA8QSANCmhyZWY9Im1haWx0bzpsZWVreUBpY3UuYWMu
+a3IiPmxlZWt5QGljdS5hYy5rcjwvQT48QlI+cGhvbmUgOiA8QlI+KzgyLTQyLTg2Ni02MTUxIA0K
+KExhYi4pIDxCUj4rODItNDItODY2LTQyNzIgKERvcm1pdGFyeSkgPEJSPis4Mi0xNi00MjMtODk3
+MCAoUENTKTxCUj5NU04gOiA8QSANCmhyZWY9Im1haWx0bzpibHVldm94QG9yZ2lvLm5ldCI+Ymx1
+ZXZveEBvcmdpby5uZXQ8L0E+PEJSPj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PC9GT05UPjwvRElWPjwvQk9EWT48L0hUTUw+DQo=
 
-------=_NextPart_000_0023_01C3666E.3C3C8220--
+------=_NextPart_000_000D_01C36680.BE0BFE90--
 
 
