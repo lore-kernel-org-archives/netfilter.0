@@ -1,13 +1,10 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: Iptables 1.3 - Snapshot
-Date: Tue, 1 Feb 2005 14:49:03 +0100
-Message-ID: <20050201134903.GO6878@sunbeam.de.gnumonks.org>
-References: <1107251959.2988.12.camel@spookerlabs.brc.com.br>
+From: Michael Goldish <michael.goldish@gmail.com>
+Subject: Problem with connrate
+Date: Wed, 2 Feb 2005 03:18:41 +0000
+Message-ID: <200502020318.42074.michael.goldish@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="isRWw+cSVDtV6LY4"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1107251959.2988.12.camel@spookerlabs.brc.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +15,80 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Rodrigo Ribeiro Montoro <rodrigo@brc.com.br>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hello,
+
+This is my first post to this list. I've just started using iptables and I 
+very much like it, except for two little things --
 
 
---isRWw+cSVDtV6LY4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+(1) I tried the following command:
 
-On Tue, Feb 01, 2005 at 09:59:19AM +0000, Rodrigo Ribeiro Montoro wrote:
->  I saw your post about iptables 1.3 snapshot =3D)!!
->  Where can i find a changelog ou something with new features in this
-> version?
+iptables -A OUTPUT -m connrate --connrate 1024 -j ACCEPT
 
-we always write the changelog at the time a version is released... (by
-reading through the subversion commit logs), sorry
+and got this error message:
 
---=20
-- Harald Welte <laforge@gnumonks.org>               http://www.gnumonks.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-"Privacy in residential applications is a desirable marketing option."
-                                                  (ETSI EN 300 175-7 Ch. A6)
+iptables v1.2.11: Couldn't load match 
+`connrate':/usr/local/lib/iptables/libipt_connrate.so: cannot open shared 
+object file: No such file or directory
 
---isRWw+cSVDtV6LY4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+(other match modules like connmark seem to work fine)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+To solve this I tried looking for related config options in my kernel and I 
+think I pretty much enabled everything (I know it's not a good idea). Then I 
+recompiled iptables but I still don't seem to have libipt_connrate.so. I've 
+noticed that there's a .C file with a similar name in my iptables source 
+tree, but it probably just doesn't get compiled for some reason.
 
-iD8DBQFB/4jPXaXGVTD0i/8RAsVRAJ9L21DJV1jOAv6wWB793kcHhgOytwCeIsPe
-F/MjExRYnowO1Wex6BtISA4=
-=QThT
------END PGP SIGNATURE-----
+I also tried using patch-o-matic, which brings me to my second problem:
 
---isRWw+cSVDtV6LY4--
+
+
+
+(2) No patch in patch-o-matic could be applied. I tried:
+
+KERNEL_DIR=/usr/src/linux 
+IPTABLES_DIR=/home/cyber/Installs/iptables-1.2.11 ./runme base
+
+and got:
+
+Kernel:   2.6.10, /usr/src/linux
+Iptables: 1.2.11, /home/cyber/Installs/iptables-1.2.11
+Each patch is a new feature: many have minimal impact, some do not.
+Almost every one has bugs, so don't apply what you don't need!
+-------------------------------------------------------
+Already applied: CLASSIFY_more-hooks amanda_offset-fix
+
+Testing conntrack-acct... not applied
+The conntrack-acct patch:
+   Author: Harald Welte <laforge@netfilter.org> 
+   Status: Stable
+
+If you enable this option, the connection tracking code will keep
+per-flow packet and byte counters. 
+
+Those counters can be used for flow-based accounting or the `connbytes' match.
+
+If unsure, say N.
+-----------------------------------------------------------------
+Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
+cannot apply (10 rejects out of 12 hunks)
+-----------------------------------------------------------------
+
+This happened for every patch that followed.
+
+The patch-o-matic I downloaded was patch-o-matic-ng-20050130.
+
+
+
+
+
+
+
+(I'm using Slackware 10 with kernel 2.6.10)
+
+Sorry for the long post and the for the newbie questions. But if you can help 
+me somehow I'll be grateful.
 
