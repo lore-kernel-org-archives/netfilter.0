@@ -1,13 +1,10 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Performace problems with NAT
-Date: Fri, 25 Oct 2002 17:59:59 +0100
+From: Tasha Smith <natasha3641@yahoo.com>
+Subject: Why are XMAS and NULLS scans not filtered with these rules?
+Date: Fri, 25 Oct 2002 18:13:29 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021025170004.BDIX27595.mta05-svc.ntlworld.com@there>
-References: <1035554190.24028.19.camel@ITS-Sevcik> <200210251446.g9PEkUe06183@vulcan.rissington.net> <1035560291.24039.38.camel@ITS-Sevcik>
+Message-ID: <20021026011329.71679.qmail@web40707.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1035560291.24039.38.camel@ITS-Sevcik>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,60 +15,126 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailinglist <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Friday 25 October 2002 4:38 pm, Berndt Sevcik wrote:
+Why when scanning my system using nmap from a machine on a different network for
+NULL scans and XMAS scans these rules still dont filter my ports from these
+sorts of scans?  Here are my rules...anoything else i can try to get them to
+filter these scans??? I tyred REJECT instead of DROP also but nothing they still
+get through!
 
-> Thanks for the answer!
->
-> We use two Internet Connections. So we need to splitt our Source
-> addresses over these. All our official addresses are sent via the slower
-> one and all private addresses and proxies are transmitted via the fast
-> line (neede NAT).
->
-> Another interessting fact ist that ping times are exptremely good. We
-> have about 2ms between each Hop in the Chello Nertwork, better than
-> ever.
->
-> We need source based routing, because we have to default gateways, one
-> for each internet connection.
+#!/bin/bash
 
-Okay, I understand.
+# Enable broadcast echo protection
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
 
-> Here our full configuration:
->
-> route add -net ..... (local nets)
-> route add default gw 193.170.9.1 (first ISP)
->
-> ip rule add from 10.0.0.0/8 table chello1
-> ip route add feault via 192.168.158.101 table chello1 (second ISP)
-> ip rule add from 193.170.8.133 table chello1
-> ip rule add from 193.170.8.134 table chello1
-> ip route flush cash
+# Disable source routed packets
+for f in /proc/sys/net/ipv4/conf/*/accept_source_route; do
+	echo 0 > $f
+done
 
-Ah.   A little more than you posted last time :-)   However I still don't see 
-a reason for only 20% usage of a 10Mbit connection.
+# Disable ICMP Redirect Acceptence
+for f in /proc/sys/net/ipv4/conf/*/accept_redirects; do
+	echo 0 > $f
+done
+# Dont't send Redirect Messages
+for f in /proc/sys/net/ipv4/conf/*/send_redirects; do
+	echo 0 > $f
+done
 
-How do you know the problem is not with your ISP ?   Can you download
-at 10Mbit under any circumstances ?
+# Enable TCP SYN Cookie protection
+echo 1 > /proc/sys/net/ipv4/tcp_syncookies
 
-What makes you think is it NAT which is causing the performance
-problem ? Does the problem go away if you do not use NAT ?
+# This will also update my ipaddress.
+INET_IP=`/sbin/ifconfig eth0 | grep inet | cut -d -f2: | cut -d\ -f1`
 
-How busy is your box (what load average does uptime show) ?
+# Remove any existing rules from all chains.
+iptables --flush
+iptables -t nat --flush
+iptables -t mangle --flush
 
-Are you getting any kernellogging messages about conntrack table full
-etc ?
+# Unlimited access on the loopback interface.
+iptables -A INPUT  -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
 
-What speed CPU / how much memory is in the netfilter machine ?
+# Set the default policy to drop.
+iptables --policy INPUT DROP
+iptables --policy FORWARD DROP
+iptables --policy OUTPUT ACCEPT
 
-Antony.
+# iptables -t nat --policy PREROUTING DROP
+# iptables -t nat --policy OUTPUT DROP
+# iptables -t nat --policy POSTROUTING DROP
 
--- 
+# All of the bits are cleared
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP# tryed REJECT
+iptables -A FORWARD -p tcp --tcp-flags ALL NONE -j DROP# tryed REJECT
+# SYN and FIN are both set
+iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP # tryed REJECT
+iptables -A FORWARD -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP# tryed REJECT
+# SYN and RST are both set.
+iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP# tryed REJECT
+iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN,RST -j DROP# tryed REJECT
+# FIN and RST are both set
+iptables -A INPUT -p tcp --tcp-flags FIN,RST FIN,RST -j DROP# tryed REJECT
+iptables -A FORWARD -p tcp --tcp-flags FIN,RST FIN,RST -j DROP# tryed REJECT
+# FIN is the only bit set, without the expected accompanyuing ACK
+iptables -A INPUT -p tcp --tcp-flags ACK,FIN FIN -j DROP# tryed REJECT
+iptables -A FORWARD -p tcp --tcp-flags ACK,FIN FIN -j DROP# tryed REJECT
+# PSH is the only bit set, without the expected accompaying ACK
+iptables -A INPUT -p tcp --tcp-flags ACK,PSH PSH -j DROP# tryed REJECT
+iptables -A FORWARD -p tcp --tcp-flags ACK,PSH PSH -j DROP# tryed REJECT
+# URG is the only bit set, without the expected accompayning ACK
+iptables -A INPUT -p tcp --tcp-flags ACK,URG URG -j DROP# tryed REJECT
+iptables -A FORWARD -p tcp --tcp-flags ACK,URG URG -j DROP# tryed REJECT
 
-All matter in the Universe can be placed into one of two categories:
+# Log Policy for first 25 ports UDP/TCP.
+iptables -I INPUT -i eth0 -p tcp \
+         --dport 0:25 -j LOG --log-prefix "PortScans to 0-25TCP: "
 
-1. things which need to be fixed
-2. things which will need to be fixed once you've had a few minutes to play 
-with them
+iptables -I INPUT -i eth0 -p udp \
+         --dport 0:25 -j LOG --log-prefix "PortScan-to 0-25UDP: "
+
+# Allow stateful connections 
+iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow access for accessing remote web servers.
+if [ "$CONNECTION_TRACKING" = "1" ]; then
+    iptables -A OUTPUT -o eth0 -p tcp \
+             --sport 1024:65535 \
+             --dport 80 -m state --state NEW -j ACCEPT
+fi
+
+iptables -A OUTPUT -o eth0 -p tcp --dport 80 -s $eth0_address --sport 1024:65535
+-j ACCEPT
+
+        
+          
+
+# FOR MY ISP DHCP
+#iptables -A INPUT -i eth0 -p udp \
+#         -s xxx.53.4.149 --sport 67 \
+#         --dport 68 -j ACCEPT
+#iptables -A OUTPUT -o eth0 -p udp \
+#         -s eth0 --sport 68 \
+#         -d xxx.53.4.149 --dport 67 -j ACCEPT
+
+
+# echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+# Forwarding is allowed in the direction
+iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.0/24 -j ACCEPT 
+
+# Enables Packet Forwarding
+iptables -t nat -A POSTROUTING -o eth0  -j MASQUERADE
+
+
+__________________________________________________
+Do you Yahoo!?
+Y! Web Hosting - Let the expert host your web site
+http://webhosting.yahoo.com/
 
