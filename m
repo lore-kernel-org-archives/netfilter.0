@@ -1,12 +1,12 @@
 From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
-Subject: What is the protocol number of NETBIOS over IEEE 802.2 ethernet?
-Date: Mon, 14 Jun 2004 16:57:44 +0800
+Subject: How to DNAT the only NetBios broadcast traffic (03:00:00:00:00:01)??
+Date: Mon, 14 Jun 2004 12:08:23 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c451ed$a84bb790$1d01a8c0@palettemm.com>
+Message-ID: <001b01c451c5$3c734150$1d01a8c0@palettemm.com>
 Reply-To: <bassam@palettemm.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C45230.B66EF790"
+	boundary="----=_NextPart_000_001C_01C45208.4A968150"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -21,28 +21,38 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C45230.B66EF790
+------=_NextPart_000_001C_01C45208.4A968150
 Content-Type: text/plain;
 	charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Guys,
-   I am trying to DNAT the netbios broadcast traffic (03:00:00:00:00:01)
-over IEEE 802.2 ethernet. So is there any number for this protocol so I
-can use it with my iptables rule?
+Dear All,
+   I am implementing a Linux box gateway that lunch my own firewall (I
+wrote my own iptables rules). The gateway connects two LANs, LAN1:
+192.168.1.0/24 and LAN2: 192.168.0.0/24. LAN1 contains a windows 2000
+server domain controller IP: 192.168.1.231 and LAN2 contains my clients
+based on windows xp.
 =20
-Note: I am asking for netbios protocol over IEEE 802.2 ethernet and not
-over Ethernet II
+In fact I got stuck on how to forward ONLY and ONLY the NETBIOS
+broadcast traffic (03:00:00:00:00:01) from any machine on LAN2 to the
+domain controller on LAN1. Take note that the NETBIOS traffic is carried
+on IEEE 802.3 Ethernet.
 =20
-For example:
-=20
-iptables =96t nat =96A PREROUTING -i eth1 =96p netbios =96j DNAT =
-=96to-destination
+I wrote the following iptable rule, but here all the traffic will be
+directed from LAN2 to the domain controller on LAN1
+Iptables =96t nat =96A PREROUTING =96I eth1 =96j DNAT =96to-destination
 192.168.1.231
 =20
-Thanks for your help
+So can anybody help me on how can I forward the traffic with destination
+MAC address 03:00:00:00:00:01 from LAN2 to the domain controller
+(192.168.1.231) on LAN1?
 =20
+Thanks for your support
+=20
+Regards
 Bassam
+=20
+=20
 
 ---
 Outgoing mail is certified Virus Free.
@@ -50,7 +60,7 @@ Checked by AVG anti-virus system (http://www.grisoft.com).
 Version: 6.0.516 / Virus Database: 313 - Release Date: 9/1/2003
 =20
 
-------=_NextPart_000_0001_01C45230.B66EF790
+------=_NextPart_000_001C_01C45208.4A968150
 Content-Type: text/html;
 	charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -68,7 +78,7 @@ charset=3DWindows-1252">
 <meta name=3DProgId content=3DWord.Document>
 <meta name=3DGenerator content=3D"Microsoft Word 10">
 <meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C45230.B5C6D0B0">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C45208.4A2B8A80">
 <o:SmartTagType =
 namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
  name=3D"time"/>
@@ -170,36 +180,45 @@ style=3D'tab-interval:.5in'>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
-font-family:Arial'>Hi Guys,<o:p></o:p></span></font></p>
+font-family:Arial'>Dear All,<o:p></o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
 font-family:Arial'><span style=3D'mso-spacerun:yes'>&nbsp;&nbsp; =
 </span>I am
-trying to </span></font><st1:stockticker><font size=3D2 =
-face=3DArial><span
- =
-style=3D'font-size:10.0pt;font-family:Arial'>DNA</span></font></st1:stock=
-ticker><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>T the <span
-class=3DSpellE>netbios</span> broadcast traffic (</span></font><st1:time =
-Hour=3D"15"
-Minute=3D"0"><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:
- Arial'>03:00:00:00:00:01</span></font></st1:time><font size=3D2 =
-face=3DArial><span
-style=3D'font-size:10.0pt;font-family:Arial'>) over =
-</span></font><st1:stockticker><font
+implementing a Linux box gateway that lunch my own firewall (I wrote my =
+own <span
+class=3DSpellE>iptables</span> rules). The gateway connects two LANs, =
+LAN1:
+192.168.1.0/24 and LAN2: 192.168.0.0/24. LAN1 contains a windows 2000 =
+server domain
+controller IP: 192.168.1.231 and LAN2 contains my clients based on =
+windows <span
+class=3DSpellE>xp</span>.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>In fact I got stuck on how to forward ONLY and ONLY =
+the
+NETBIOS broadcast traffic (</span></font><st1:time Hour=3D"15" =
+Minute=3D"0"><font
  size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>IEE</span></font></st1:stock=
-ticker><font
+style=3D'font-size:10.0pt;font-family:Arial'>03:00:00:00:00:01</span></fo=
+nt></st1:time><font
 size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>E 802.2 <span
-class=3DSpellE>ethernet</span>. So is there any number for this protocol =
-so I can
-use it with my <span class=3DSpellE>iptables</span> =
-rule?<o:p></o:p></span></font></p>
+style=3D'font-size:10.0pt;font-family:Arial'>) from any
+machine on LAN2 to the domain controller on LAN1. Take note that the =
+NE</span></font><st1:stockticker><font
+ size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'>TBIO</span></font></st1:stoc=
+kticker><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'>S traffic is
+carried on IEEE 802.3 Ethernet.<o:p></o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
@@ -207,40 +226,18 @@ font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
-font-family:Arial'>Note: I am asking for <span =
-class=3DSpellE>netbios</span>
-protocol over </span></font><st1:stockticker><font size=3D2 =
+font-family:Arial'>I wrote the following <span =
+class=3DSpellE>iptable</span>
+rule, but here all the traffic will be directed from LAN2 to the domain
+controller on LAN1<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><span class=3DSpellE><font size=3D2 =
 face=3DArial><span
- =
-style=3D'font-size:10.0pt;font-family:Arial'>IEE</span></font></st1:stock=
-ticker><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>E 802.2 <span
-class=3DSpellE>ethernet</span> and not over Ethernet =
-II<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>For example:<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><span class=3DSpellE><span class=3DGramE><font =
-size=3D2
-face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'>iptables</span></font></span=
-></span><font
+style=3D'font-size:10.0pt;font-family:Arial'>Iptables</span></font></span=
+><font
 size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;font-family:Arial'> =96t <span
-class=3DSpellE>nat</span> =96A PREROUTING -<span class=3DSpellE>i</span> =
-eth1 =96p
-<span class=3DSpellE>netbios</span> =96j =
+class=3DSpellE>nat</span> =96A PREROUTING =96I eth1 =96j =
 </span></font><st1:stockticker><font
  size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;font-family:Arial'>DNA</span></font></st1:stock=
@@ -255,11 +252,33 @@ font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks for your help<o:p></o:p></span></font></p>
+font-family:Arial'>So can anybody help me on how can I forward the =
+traffic with
+destination MAC address </span></font><st1:time Hour=3D"15" =
+Minute=3D"0"><font
+ size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'>03:00:00:00:00:01</span></fo=
+nt></st1:time><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'> from LAN2
+to the domain controller (192.168.1.231) on =
+LAN1?<o:p></o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
 font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks for your support<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Regards<o:p></o:p></span></font></p>
 
 <p class=3DMsoNormal><span class=3DSpellE><font size=3D2 =
 face=3DArial><span
@@ -268,6 +287,15 @@ font
 size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
 >
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><span =
+style=3D'mso-spacerun:yes'>&nbsp;</span><o:p></o:p></span></font></p>
 
 </div>
 
@@ -282,6 +310,6 @@ Checked by AVG anti-virus system (http://www.grisoft.com).<BR>
 Version: 6.0.516 / Virus Database: 313 - Release Date: 9/1/2003<BR>
 </FONT> </P>
 
-------=_NextPart_000_0001_01C45230.B66EF790--
+------=_NextPart_000_001C_01C45208.4A968150--
 
 
