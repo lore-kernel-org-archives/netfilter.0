@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ip_conntrack_max
-Date: Thu, 8 Jul 2004 14:29:24 +0100
+Subject: Re: Is Linux based Gateway/Firewall feasible
+Date: Thu, 8 Jul 2004 14:38:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407081429.24492.Antony@Soft-Solutions.co.uk>
-References: <40ED161F.5070804@cisbic.com> <200407081152.42618.Antony@Soft-Solutions.co.uk> <40ED4865.7020208@cisbic.com>
+Message-ID: <200407081438.11445.Antony@Soft-Solutions.co.uk>
+References: <BAY4-F14s1UAuiJ1yhn000561d1@hotmail.com>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40ED4865.7020208@cisbic.com>
+In-Reply-To: <BAY4-F14s1UAuiJ1yhn000561d1@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,49 +21,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 08 July 2004 2:13 pm, Fallucchi Antonio wrote:
+On Thursday 08 July 2004 2:21 pm, Mike O wrote:
 
-> Antony Stone wrote:
->
-> oh!, excuse me for the html!
+> I'd like to chime in here considering I brought this topic up a few years
+> ago. From a standpoint of routing data from one subnet to another with high
+> speed serial interfaces etc.. nothing beats a cisco. Cisco routers have
+> special ASIC(application specific intergrated circuits) that do nothing but
+> routing and other features.
 
-Thanks for turning it off.
+That's true, however the benefits of ASICs (in this context) are throughput 
+and latency.   If you don't have a high-speed (by which I mean more than 
+about 10Mbps) pipe to the Internet, then throughput is not an issue (ie: your 
+firewall / router is not the bottleneck in the system), and as for latency, 
+well how important is it to you really?
 
-> I have 20 computer in the lan and 5 server.
+A Linux box with a Sangoma WAN card will happily connect directly into a high 
+speed serial port on a Telco NTU, and I've yet to see any external connection 
+running at less than ATM speeds (155Mbps or 625Mbps) where a Linux system 
+can't handle the packets.
 
-In that case a 128Mbyte machine should have no trouble.
-
-> Another questions: how I can limit the number of connection for every
-> computer?
-
-This is difficult.   I think we should start by asking "what do you mean by a 
-connection?"   Remember that many web browsers, for example, will open 5-10 
-simultaneous connections in order to load all the elements of a web page.   
-DNS needs its own connections in order to do name lookups.   Some connections 
-are long-term (eg: telnet, ssh - even when you're not typing, the connection 
-is still there), some are very transient (eg: http - once you have the page 
-displayed, there's no connection between your browser and the server until 
-you click on another hyperlink).
-
-Why do you want to limit connections per machine?   What are you trying to 
-achieve?
-
-> >What is the value in /proc/sys/net/ipv4/ip_conntrack_max ?
->
-> ip_conntrack_max now is 10240.
-
-That sounds fine.   Tell us if you get "connection tracking table full" errors 
-again.
+My feeling is that unless you're an ISP in the core of the Internet, where the 
+important features are gigabit routing, dynamic routing protocol support, and 
+apart from dropping a few RFC1918 addresses, you're not trying to do any 
+firewalling, then you don't need to spend money on a dedicated router when a 
+Linux system will do all the routing you need and supply firewalling and 
+traffic control if you want it as well.
 
 Regards,
 
 Antony.
 
 -- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
-
- - William H Gates III
+Wanted: telepath.   You know where to apply.
 
                                                      Please reply to the list;
                                                            please don't CC me.
