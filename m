@@ -1,14 +1,9 @@
-From: Victor Julien <victor@nk.nl>
-Subject: Re: RELATED ICMP packets of type 3
-Date: Fri, 11 Feb 2005 16:41:19 +0100
-Message-ID: <200502111641.19968.victor@nk.nl>
-References: <200502111757.16352.e-boogie@yandex.ru>
-	<20050211150635.GA2371@bender.817west.com>
+From: Tib <tib@tigerknight.org>
+Subject: more limiting fun
+Date: Fri, 11 Feb 2005 09:43:05 -0600 (CST)
+Message-ID: <Pine.LNX.4.53.0502110936210.1996@altaica>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050211150635.GA2371@bender.817west.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +14,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> yes.  personally (for whatever that is worth), i allow ICMP Types 3, 11,
-> and 12 [*].
 
-Will these all be accepted by the accepting all RELATED packets? Or do i need 
-extra rules to allow them?
+Ok, I've done some fiddling but still have some issues. I went with some
+recommendations on what people said and here's what I have. The first
+three rules of my startup set are as follows:
 
-Regards,
-Victor
+iptables -A INPUT -i eth0 -p tcp --dport 22 -m state \
+  --state ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -i eth0 -p tcp --destination-port 22 -m limit \
+--limit 15/hour --limit-burst 5
+
+iptables -A INPUT -i eth0 -p tcp --destination-port 22 -j DROP
+
+
+This places (as directed), the established-accept rule first, my limit
+preferences second, and the drop last.
+
+The problem is that it still does exactly what it did before, namely that
+it doesn't respond at all once those rules are in place. Anyone have an
+idea what's going on? I know my ssh port isn't getting hammered THAT hard.
+
+<EOL>
+Tib
 
