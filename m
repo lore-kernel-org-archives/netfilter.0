@@ -1,11 +1,11 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: transparent bridge troubles?
-Date: Fri, 7 Jan 2005 13:38:06 -0800
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E3AC@alderaan.smgtec.com>
+From: Andrew Beekhof <beekhof@gmail.com>
+Subject: Masquerade difficulties
+Date: Fri, 7 Jan 2005 22:42:34 +0100
+Message-ID: <26ef5e705010713424fac90a9@mail.gmail.com>
+Reply-To: Andrew Beekhof <beekhof@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: mdpeters <michael.peters@lazarusalliance.com>, Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-mdpeters wrote:
-> Du'oh!
->=20
-> I changed it and this is what I see so far. I'm running a Nessus scan
-> on one side of the bridge and the target system is at the other side
-> of the bridge.=20
->=20
-> PRE QUEUEIN=3Dsafetynet0 OUT=3Dsafetynet0 PHYSIN=3Deth2 PHYSOUT=3Deth1
-> SRC=3D68.16.185.132 DST=3D68.16.185.130 LEN=3D41 TOS=3D0x00 =
-PREC=3D0x00 TTL=3D64
-> ID=3D3072 PROTO=3DTCP SPT=3D3133 DPT=3D45495 WINDOW=3D2048 RES=3D0x00 =
-ACK URGP=3D0
->=20
-> POST QUEUEIN=3Dsafetynet0 OUT=3Dsafetynet0 PHYSIN=3Deth2 =
-PHYSOUT=3Deth1
-> SRC=3D68.16.185.132 DST=3D68.16.185.130 LEN=3D41 TOS=3D0x00 =
-PREC=3D0x00 TTL=3D64
-> ID=3D3072 PROTO=3DTCP SPT=3D3133 DPT=3D45495 WINDOW=3D2048 RES=3D0x00 =
-ACK URGP=3D0
+Hi All,
 
-Ok, since there was no return traffic, I'm assuming that the destination
-host doesn't know the firewall's in between the two PC's. In
-68.16.185.130's arp table, does it have 68.16.185.132 mapped to your
-firewall's eth1 interface? Is proxyARPing setup on both firewall
-interfaces? This is leaving my knowledge realm, so if someone else can
-help..
+I'm having some difficulties getting masquerading to work and hoping
+for some pointers...
 
+The server (BoxA) has an ipsec (openswan) connection to another
+network and I've run:
+        echo 1 > /proc/sys/net/ipv4/ip_forward
+        iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+On the client (BoxB) I've set the gateway for the other network to be BoxA.
+
+Normally that does the trick, but not today...
+If BoxB tries to ping BoxC, I can see BoxA forwarding the request but
+it never gets an answer to forward back to BoxB.  Obviously BoxA can
+ping BoxC directly.
+
+There are no errors in dmesg or /var/log/messages and I tried
+comparing "-j LOG" entries from my old server (a SLES9 box) where
+masquerading works with those from my new server and everything looks
+the same... it just doesn't work :(
+
+Any pointers on what I'm missing or things to try would be appreciated.
+
+Andrew
+
+Distro: Gentoo
+Kernel: 2.6.9-gentoo-r13
+iptables: iptables v1.2.11
+Openswan: Linux Openswan U2.2.0/K2.6.9-gentoo-r13 (native)
 
