@@ -1,14 +1,10 @@
-From: Ray Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: ntop not saving ...
-Date: 19 Jun 2003 13:13:25 +0200
+From: "Hill, John" <jhill@columbuscontainer.com>
+Subject: pptp patch
+Date: Wed, 18 Jun 2003 08:27:25 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1056021204.1490.41.camel@raylinux.internal>
-References: <1056019245.1490.33.camel@raylinux.internal>
-	 <3EF19644.9050401@brandid.net>
+Message-ID: <84874F5F45111E48B53F4A3314BC4F3C389674@mail.columbuscontainer.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-8FdyD06xB1xwQDFyw8Tv"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3EF19644.9050401@brandid.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,72 +14,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: steve.cherry@brandid.net
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>, GLUG Tech <glug-tech@linux.org.za>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+
+For the record netfilter is a terrific tool. I am grateful for the time and
+hard work given by the netfilter team.
 
 
---=-8FdyD06xB1xwQDFyw8Tv
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I have kernel 2.4.21 netfilter - latest cvs.
 
-On Thu, 2003-06-19 at 12:53, Steven Cherry wrote:
-> hello,
->=20
-> I had this problem with servers who's network load was quite high and=20
-> when you restart it all your logs are gone and you have to start a fresh?
->=20
-That is exactly what is happening.
+Built netfilter for extra added pptp support.
 
-I'm going to try the new 2.2 version and see what happens.
+Recompiled kernel -- netfilter.
 
-> Never got to the bottom of it though, I would be intrested to hear if=20
-> you do though
->=20
-> thanks
->=20
->=20
-> steve
->=20
-> Ray Leach wrote:
-> > Hi
-> >=20
-> > Has anyone used ntop to monitor network load?
-> >=20
-> > My ntopd keeps dying with no evidence as to why. No messages on console
-> > or in /var/log/messages.
-> >=20
-> > Any clues as to what is happening?
-> >=20
-> >=20
->=20
->=20
-> ----------------------------------------------
-> This message has been scanned for viruses and
-> dangerous content by the Brand I.D. Ltd E-mail
-> Virus Scanner, and is believed to be clean.
->=20
-> http://www.brandid.net
---=20
---
-Raymond Leach <raymondl@knowledgefactory.co.za>
-Network Support Specialist
-http://www.knowledgefactory.co.za
-"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
-Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
---
+I have a win2000 pptp server behind a Linux firewall
 
---=-8FdyD06xB1xwQDFyw8Tv
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Dnat gre and port 1723 to the pptp server.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+I had 3 VPN connections working. When one closed the connection the kernel
+panicked and died. I could not recover the error message. I was forced to
+power off.
 
-iD8DBQA+8ZrUh1fuR/Bv+ygRAm4aAJ4tf4euRIhvXT/72rDZ3iJttLgNewCfQV+r
-5sEJ+zHBgpo5Iv7v8Aun0Ag=
-=Pxaa
------END PGP SIGNATURE-----
 
---=-8FdyD06xB1xwQDFyw8Tv--
+I have used 2.4.19 with Brian Kuschak's 2.4.19 pptp patch without problems.
+He no longer supports the patch. I was hoping to upgrade the kernel.
+Unfortunately the 2.4.19 patch will not work on 2.4.21 and the pptp
+netfilter patch will not work for me. I had to roll back to 2.4.19.
+
+I have several firewall installations and need PPTP and the ability to keep
+kernels current.
+
+Has anyone looked at Brian's code to see if it is practical to be
+incorporated by the netfilter team? 
+
+Any help would be appreciated.
+
+
+--John Hill
+
+
+
+
+
 
 
