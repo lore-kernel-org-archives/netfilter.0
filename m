@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Chain traversal with multiple internal IP subnets.
-Date: Mon, 23 Sep 2002 02:22:22 +0100
+From: "Toshihiro Sonoda" <toshihiro@jp.fujitsu.com>
+Subject: Re: h323
+Date: Mon, 23 Sep 2002 10:45:24 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020923012225.QAN13996.mta05-svc.ntlworld.com@there>
-References: <1032724445.1352.22.camel@neo.matrix.ca.>
+Message-ID: <001d01c262a2$e2cbdb70$ccf8a8c0@monday>
+References: <3D8DF73A.7020408@iol.it> <003e01c26263$bcbef230$8201a8c0@lw1dqwin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1032724445.1352.22.camel@neo.matrix.ca.>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,49 +19,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 22 September 2002 8:54 pm, Jared Brick wrote:
 
-> I have (for various reasons) a LAN with two gateways that internally use
-> three different IP subnets (don't ask).
+Hi, Diego.
 
-Okay ...  :-)
+I have questions.
+does the new nat patch have h.225ras, or ldap for NAT problems.
+before, when i applied the h.323 patch, the patchs
+have a part of h.323, but not h.225.
+Is that ok?
 
-> However the other gateway is a Linux box with two IP addresses (it only
-> acts as a gateway for two of the subnets)  using Iptables. The gateway
-> itself has static routes so that it can route between the different
-> subnets, including the subnet for which it has no IP address. My
-> question in which chain will a packet traverse when it is traveling
-> between two different internal subnets. I think it is the FORWARD chain
-> but my colleague feels it would be the OUTPUT chain. I ask because I am
-> having trouble routing between the internal networks.
+Can you use ILS server, or Gatekeeper?
 
-It is the FORWARD chain.   The reasoning is simple:
 
-Only packets which are destined for the machine running netfilter traverse 
-the INPUT chain.
-
-Only packets which are originated on the machine running netfilter traverse 
-the OUTPUT chain.
-
-Packets which originate on another machine and are destined for another 
-machine only traverse the FORWARD chain.
-
-Of course, the above statements are for the filter tables only - all packets 
-coming in to a machine will traverse the PREROUTING chain (nat table) and all 
-packets leaving a machine will traverse the POSTROUTING chain (nat table).
-
-The PREROUTING chain in particular may change the selection about whether the 
-packet terminates on this machine and enters the INPUT chain, or whether it 
-goes on to some other machine and therefore enters the FORWARD chain.
-
-Netfilter does not even care about packets which enter through an interface 
-and then exit by the same interface - they still go through the FORWARD chain.
-
-Hope this helps,
-
-Antony.
-
--- 
-
-Which part of 'apt-get dist-upgrade' do you not understand ???
+> Hi, 
+> sorry about my english.
+> I use kernel 2.4.17 with the newnat patch and h323 work great !
+> Regards,
+> 
+> Diego
+> 
+> 
+> ----- Original Message ----- 
+> From: "Mattia Martinello" <m.martinello@iol.it>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Sunday, September 22, 2002 2:00 PM
+> Subject: h323
+> 
+> 
+> > Hi
+> > 
+> > I am on a LAN which access to the Internet with a NAT on a gateway Linux 
+> > server configured with iptables.
+> > How I can use on a client inside the LAN a program which uses h323 
+> > protocol, for example Microsoft Netmeeting? I wish to correctly use 
+> > text, audio and video features of Netmeeting, and I wish to call and to 
+> > be called.
+> > 
+> > How I can configure the firewall on the gateway server?
+> > I rememeber that for ipchains there was an h323 module. There is 
+> > anything for iptables too?
+> > 
+> > Thank you very much
+> > Bye
+> > Mattia Martinello
+> > m.martinello@iol.it
+> > 
+> > 
+> > 
+> 
+> 
 
