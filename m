@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Completely NAT an ISP: A practical possibility?
-Date: Sun, 16 Jun 2002 00:30:15 +0100
+From: "hard__ware" <hard__ware@hotmail.com>
+Subject: Completely NAT an ISP: A practical possibility?
+Date: Sun, 16 Jun 2002 09:47:19 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206152330.g5FNUHA30988@Networker.rockstone.co.uk>
-References: <3D0BBC45.5000807@palaver.net> <200206152233.g5FMXPA27757@Networker.rockstone.co.uk> <20020616001745.N2090@funkyjesus.org>
+Message-ID: <OE765XsCj1d4vJFRFWM00002445@hotmail.com>
+Reply-To: "hard__ware" <hard__ware@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020616001745.N2090@funkyjesus.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,34 +19,51 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Sunday 16 June 2002 12:17 am, Nick Drage wrote:
+Completely NAT an ISP: A practical possibility?
 
-> On Sat, Jun 15, 2002 at 11:33:23PM +0100, Antony Stone wrote:
-> > On Saturday 15 June 2002 11:14 pm, Brian Capouch wrote:
 
-> > > I wonder if the sages on this list might share advice as to whether or
-> > > not it might be practical to maintain a working ISP where ALL client
-> > > machines use private IP addresses, which are then NAT-ted to public IP
-> > > space as necessary by iptables.
+>Antony Stone wrote:
 
-> > Some current ISPs already do this, and I guess the popularity with their
-> > customers varies according to what the customers want to do :-)
+> > Just out of interest, how are you proposing to handle bandwidth
+allocation -
+> > making sure each customer gets a reasonable bandwidth without hogging
+the
+> >whole link ?
 
-> Can you name any ISPs that do this?  I haven't seen it in my limited
-> experience.
 
-There's a satellite ISP in the UK which does this - it's called either Hughes 
-or StreamBeam, I'm not sure which is the end provider and which is the 
-sub-carrier.   The equipment they provide is labelled Hughes.
+>(Ducking) Still studying that matter, but the current
+>candidates-of-record are tc, and cbq, but the Advanced Routing HOWTO is
+>about to scare me off from CBQ, even though they admit there that it is
+>the "most hyped."
+>
+>I won't mind any advice in that arena, either :-)
+>
+>Thx.
 
-As a standard account you get private (10.x.y.z) addresses on the end of the 
-link, however you can ask for public-private NAT and they do SNAT/DNAT to 
-your private addresses (one-to-one mapping).
 
-I thought I'd heard that some ADSL services in UK provide private addresses 
-too, but I've never had this, so I can't comment from personal experience.
+A CBQ and a few SFQ limits will do this perfectly
+as you can match by IP / Protocol / Headers / (Actual Data Contained inside
+of each Packet / Frame )
+and ToS fw Marks .. :D
 
- 
+And about the NAT / ISP thing , i think it would be great to do someting
+like that .. :D
+i so hate peer-to-peer sharing over the internet ... lol
 
-Antony.
+what kind of ISP is it going to be dialup , ISDN ??
+
+because Radius & Portslave (Linux Dialin Server) will allow you to restict
+Bandwidth per client ...
+let me know how you go, as i have a Buisness Partner that plans to build a
+NAT / IPTables ISP
+so we can give these Buisness Based Clients exactlly what they want .. :D
+
+  hope this helps
+
+    Alex...
+
+Hard__warE
+
+
+
 
