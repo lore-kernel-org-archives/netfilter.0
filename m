@@ -1,13 +1,12 @@
-From: Alasdair Ramsay <alasdair.ramsay@cdc.uk.net>
-Subject: Related but general question. (WAS:Re: ip_conntrack_ftp doesn't work
- with ftp proxy)
-Date: Tue, 19 Nov 2002 14:16:49 +0000
+From: Erdal Mutlu <emutlu@fonts.de>
+Subject: Test: is this list alive
+Date: Wed, 20 Nov 2002 11:38:44 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DDA47D1.9040801@cdc.uk.net>
-References: <61127EF4BF2E9C4C8DA4E358CFD4E52D7A406A@olga.chs.chalmers.se>
+Message-ID: <Pine.LNX.4.33.0211201137360.20937-100000@bhows40003.fonts.de>
+References: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200211152128.58239.sysadmin@hnoe1.sth.ac.at>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,34 +16,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Kim Leandersson <kim.leandersson@chs.chalmers.se>, netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
 
-If you can pass additional information to the modules as you load them,
-can you pass the same information to a module that is statically built
-into the kernel?  How is such information passed?
+I don't get any messages from this list. What is going on?
 
-Regards
+Erdal Mutlu
+System Administrator
 
-Alasdair Ramsay
+Du-Pont-Strasse 1
+D-61352 Bad Homburg
+Tel.: +49 6172 484 - 447
+Fax: +49 6172 484 - 5447
+email: emutlu@fonts.de
+http://www.linotypelibrary.com
+http://www.fonts.de
 
-Kim Leandersson wrote:
-| Try loading the ip_conntrack_ftp module with the option ports instead.
-|
-| ip_conntrack_ftp ports=8082 should do the trick for you!
-|
-| //kim
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.0 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+On Fri, 15 Nov 2002, Karl Gruber wrote:
 
-iD8DBQE92kfO4+7BX0uR648RAqWWAJ9DFe+ts78YiTIZQiHaAu7ANlNdSQCfR5Mx
-cWTAQ8VRAoz2gkZ4mq3WbLA=
-=RGSK
------END PGP SIGNATURE-----
+> Hi!
+>
+> I want to know if it is possible that an iptables-rule matches only once. I
+> want to implement a redirection of the first http-request of an user.
+>
+> thanx,
+>      Karl
+>
+>
+>
+>
+>
+>
+
 
 
 
