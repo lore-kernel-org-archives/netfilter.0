@@ -1,13 +1,12 @@
-From: "Technical" <technical@sojourn.dyndns.org>
-Subject: Re: could someone translate these rules inot plain english
-Date: Thu, 22 Jan 2004 05:48:09 -0500 (EST)
+From: "bino-psn" <bino@indoakses-online.com>
+Subject: Re: Recomendations for replacing a Raptor (Symantec Enterprise) firewall
+Date: Thu, 22 Jan 2004 17:56:36 +0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <34137.66.65.52.125.1074768489.squirrel@sojourn.dyndns.org>
-References: <33682.66.65.52.125.1074751856.squirrel@sojourn.dyndns.org> 
-     <400F6EF4.2060608@lintelsys.com.au>
+Message-ID: <008701c3e0d6$691edf80$0300a8c0@indoaksesbno>
+References: <000901c3e090$db03aef0$0400a8c0@bradmorgan>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <400F6EF4.2060608@lintelsys.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,31 +17,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> Technical wrote:
->> -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> For this chain (presumably packets inbound to the network), accept any
-> packets that are part of established TCP connections (ie: a SYN packet
-> for the connection has gone out from the network), or related to UDP
-> packets that have gone out through the firewall.
->
->> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
->
-> Otherwise, reject the packet by sending back an ICMP message telling the
-> remote host that communication with its intended target is
-> administratively prohibited.
->
->
-> HTH
-> Alex Satrapa
->
->
+Brad ..
+You can take a look at http://leaf.sourceforge.net
+LEAF = Linux Embeded Aplication Firewall
+By default .. it's only a floppy in size.
+Sincerely
+-bino-
+----- Original Message -----
+From: "Brad Morgan" <B-Morgan@concentric.net>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, January 22, 2004 9:38 AM
+Subject: Recomendations for replacing a Raptor (Symantec Enterprise)
+firewall
 
 
-If the default is that iptables to reject all packets that cannot not be
-deall with any of the previous rules, why would somemone use the last
-rule??  am I missing something??
+I have a Raptor (version 6.5) firewall running on Windows NT 4.0.  We have a
+/27 netblock with multiple FTP and Web servers at different public addresses
+within this block.
+
+I'd like to replace this firewall with something like Smoothwall but need to
+be able to redirect multiple public IP addresses to the proper internal
+machines.  I'd like to use a Netfilter / iptables based solution.
+
+Can you suggest some possible alternatives?  I guess I could just use a
+general purpose Linux distribution, but I was hoping for something a bit
+more focused.
+
+Thanks,
+
+Brad Morgan
+
+
+
+
 
