@@ -1,11 +1,11 @@
 From: =?ISO-8859-1?Q?Fl=E1vio?= Brito <flavio@gral.com.br>
-Subject: Re: Newbie Question - Redirect traffic to internal Web server -
+Subject: Re: Newbie Question - Redirect traffic to Internal Web Server -
 	SOLUTION
-Date: 18 Oct 2002 07:36:32 -0200
+Date: 18 Oct 2002 08:30:22 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1034933793.1262.7.camel@pegasus.gral.com.br>
+Message-ID: <1034937022.1262.14.camel@pegasus.gral.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-KqHCnB2gNHRR6BJwnjeM"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,40 +16,9 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-
---=-KqHCnB2gNHRR6BJwnjeM
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-
-
-
---=-KqHCnB2gNHRR6BJwnjeM
-Content-Disposition: inline
-Content-Description: Mensagem encaminhada - Re: Newbie Question - Redirect
-	traffic to internal Web server - SOLUTION
-Content-Type: message/rfc822
-
-Return-Path: <flavio@gral.com.br>
-Delivered-To: flavio@gral.com.br
-Received: from [192.168.1.33] (unknown [192.168.1.33]) by mail.gral.com.br
-	(Postfix) with ESMTP id CB01BD1EE6 for <flavio@gral.com.br>; Fri, 18 Oct
-	2002 03:46:39 -0400 (EDT)
-Subject: Re: Newbie Question - Redirect traffic to internal Web server -
-	SOLUTION
-From: =?ISO-8859-1?Q?Fl=E1vio?= Brito <flavio@gral.com.br>
-To: =?ISO-8859-1?Q?Fl=E1vio?= Brito <flavio@gral.com.br>
-In-Reply-To: <1034882656.2076.31.camel@pegasus.gral.com.br>
-References: <1034882656.2076.31.camel@pegasus.gral.com.br>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Ximian Evolution 1.0.8 (1.0.8-10) 
-Date: 18 Oct 2002 07:35:47 -0200
-Message-Id: <1034933747.1249.5.camel@pegasus.gral.com.br>
-Mime-Version: 1.0
-Status: 
 
 Dear List
 
@@ -75,9 +44,11 @@ Fl=E1vio
 Em Qui, 2002-10-17 =E0s 17:24, Fl=E1vio Brito escreveu:
 > Dear List
 >=20
-> I have two servers in my net,one with a valid IP. I want to redirect all
+> I have two servers in my net,one with a valid IP. I want to redirect
+all
 > the HTTP Traffic(external -> internal) to my internal Web server I'm
-> trying to learn iptables, but when I test my rules, sometimes when I try
+> trying to learn iptables, but when I test my rules, sometimes when I
+try
 > to erase them it appears not do what I want.
 >=20
 > Questions
@@ -91,23 +62,25 @@ Em Qui, 2002-10-17 =E0s 17:24, Fl=E1vio Brito escreveu:
 > iptables -Z=20
 > iptables -Z  -t nat
 >=20
-> 2)To redirect the traffic to my internal server I must have a DNS in my
+> 2)To redirect the traffic to my internal server I must have a DNS in
+my
 > FW server?  or only redirect?
 >=20
 >=20
->       	[FW]-eth0-> [200.179.213.245]------> Internet
-> 	|
-> 	|
-> 	|eth1 ->[192.168.1.1]
-> 	| ---------------> [Web Server ] 192.168.1.33
-> 	|----------------> [LAN Hosts] [192.168.1.2 to 192.168.1.100]
+>               [FW]-eth0-> [200.179.213.245]------> Internet
+>       |
+>       |
+>       |eth1 ->[192.168.1.1]
+>       | ---------------> [Web Server ] 192.168.1.33
+>       |----------------> [LAN Hosts] [192.168.1.2 to 192.168.1.100]
 >=20
 > eth0-> 200.179.213.245
 > eth1-> 192.168.1.1
 >=20
 > Can someone help me with this rules?
 >=20
-> iptables -t nat -A POSTROUTING -s 192.168.1.10/24 -d any/0 -j MASQUERADE
+> iptables -t nat -A POSTROUTING -s 192.168.1.10/24 -d any/0 -j
+MASQUERADE
 > iptables -A INPUT -p tcp -s 192.168.1.33 -d 0/0 --dport www -j ACCEPT
 > iptables -A OUTPUT -p tcp -s 192.168.1.33 -d 0/0 --dport www -j ACCEPT
 > iptables -A PREROUTING -t nat -p tcp -d 0/0 --dport www -j REDIRECT
@@ -119,8 +92,5 @@ Em Qui, 2002-10-17 =E0s 17:24, Fl=E1vio Brito escreveu:
 >=20
 >=20
 >=20
-
-
---=-KqHCnB2gNHRR6BJwnjeM--
 
 
