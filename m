@@ -1,14 +1,11 @@
-From: Fabrice MARIE <fabrice@celestix.com>
-Subject: Re: Patch-O-matic
-Date: Wed, 10 Jul 2002 10:40:12 +0800
+From: "Rob" <rwideman@austin.rr.com>
+Subject: having issues with kernel 2.4.18 and iptables 1.2.6a
+Date: Tue, 9 Jul 2002 21:52:45 -0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200207101040.12164.fabrice@celestix.com>
-References: <001e01c226c3$e6268ec0$3864a8c0@discmail.com> <001401c22717$c1fd76e0$f948e1c2@redhat>
-Reply-To: fabrice@celestix.com
+Message-ID: <NEENJAPFEAIEMGMNIGFLOEEOCBAA.rwideman@austin.rr.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <001401c22717$c1fd76e0$f948e1c2@redhat>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,31 +16,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Redhat Enigma <redhat@zagros.ipm.ac.ir>, "Aldo S. Lagana" <alagana@discmail.com>, Denis JULIEN <denis.julien@vupublishing.net>, iptables <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-On Tuesday 09 July 2002 15:09, Redhat Enigma wrote:
-> Dear Sir,
-> Thanx for your help ,I just want to use iplimit and time matching, but I
-> can't apply them to my kernel.
-> Anyway I just want to apply pending-patches and most-of-pom that the
-> documents tell they don't have any confilict with each other. So I don't
-> know what kind of process i should follow.
+I am trying to install 2.4.18 and 1.2.6a on an NEC VP75 (proc swapped upto
+p100mhz)with 40mb ram, commandline, on MDK 8.2 fresh install with updated
+packages...  I ran the following and got the error below:
+-----
+# make pending-patches KERNEL_DIR=/usr/src/linux/
+Making dependencies: please wait...
+Something wrong... deleting dependencies.
+make: *** [/usr/src/linux/include/linux/autoconf.h] Error 1
+-----
+Anyone have a thought on this? I dont find anything on google or the list
+about this error.  I do find alot of install/compile issues with 2.4.18 all
+over.  I have tried this 2 times after deleting the directories and
+recreating them, fresh tar xvf...
 
-Hello,
 
-basically, all patches contained in pending/ submitted & base/ in p-o-m should apply without
-conflict. Maybe you didn't follow the appropriate steps ?
-http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO.html
+Rob
 
-Have a nice day,
-
-Fabrice.
---
-Fabrice MARIE
-Senior R&D Engineer
-Celestix Networks
-http://www.celestix.com/
-
-"Silly hacker, root is for administrators"
-       -Unknown
 
