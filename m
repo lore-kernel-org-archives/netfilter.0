@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: How do i Block adult sites
-Date: Wed, 24 Dec 2003 12:39:52 +0000
+From: Payal Rathod <payal-netfilter@staticky.com>
+Subject: Re: changing rules at a defined time
+Date: Wed, 24 Dec 2003 18:56:04 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312241239.52285.Antony@Soft-Solutions.co.uk>
-References: <20031224121931.71388.qmail@web13203.mail.yahoo.com>
+Message-ID: <20031224132604.GA1942@linux.local>
+References: <20031224092936.GB27890@staticky.com> <200312241011.14770.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031224121931.71388.qmail@web13203.mail.yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <200312241011.14770.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
-On Wednesday 24 December 2003 12:19 pm, Nilesh wrote:
+Hi,
 
-> Hello all
->
-> can any one please tell me how do i block adult sites form my proxy server
+Thanks for the mails all of you. I am also going to look into
+patch-o-matic later. I have a couple of doubts now.
 
-Squidguard or Dan's Guardian are good places to start.
+On Wed, Dec 24, 2003 at 10:11:14AM +0000, Antony Stone wrote:
+> I really disapprove of a default ACCEPT policy on FORWARD.
 
-http://www.squidguard.org
-http://dansguardian.org
+Why? I can DROP everything later.
 
-This is Application layer 7 problem, not a Transport / Network layer 4/3 
-problem.   Netfilter is not your solution.
+> iptables -P FORWARD DROP
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+[...]
 
-Antony
+> Then at 16:00, use a cron rule to run:
+> 
+> iptables -A FORWARD -i $INTIF -s 192.168.0.0/24 -j ACCEPT
 
--- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
+Should that be iptables -I or specifically -A?
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+> At 17:00 use a cron rule to run:
+> 
+> iptables -D FORWARD -i $INTIF -s 192.168.0.0/24 -j ACCEPT
+> 
+> The only thing I can think of which this solution which you have to decide 
+> whether you're happy about is that connections currently in progress at 17:00 
+> will not be cut off - users simply won't be able to make new ones until 16:00 
+> the following day.
+
+You mean a person logged on to MSN can continue being logged on
+throughout?
+So, do I FLUSH the rules through cron to prevent this?
+
+With warm regards,
+-Payal
 
 
