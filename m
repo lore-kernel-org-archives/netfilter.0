@@ -1,15 +1,12 @@
-From: Payal Rathod <payal-netfilter@scriptkitchen.com>
-Subject: Re: will port forwarding work here?
-Date: Fri, 14 Jan 2005 12:34:57 -0500
-Message-ID: <20050114173457.GB4162@tranquility.scriptkitchen.com>
-References: <20050114153508.GA1189@tranquility.scriptkitchen.com>
-	<20050114155549.GA26172@bender.817west.com>
-	<20050114171008.GA3088@tranquility.scriptkitchen.com>
-	<20050114171800.GA26612@bender.817west.com>
+From: "Brian French" <bfrench@imageworksstudio.com>
+Subject: RE: Trouble with router and iptables
+Date: Fri, 14 Jan 2005 12:34:41 -0500
+Message-ID: <KJEGIFLIAAKLNBMJNOIJOEHMECAA.bfrench@imageworksstudio.com>
+References: <8093.142.169.215.10.1105723840.squirrel@142.169.215.10>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20050114171800.GA26612@bender.817west.com>
+In-Reply-To: <8093.142.169.215.10.1105723840.squirrel@142.169.215.10>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,18 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter ML <netfilter@lists.netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-On Fri, Jan 14, 2005 at 12:18:00PM -0500, Jason Opperisano wrote:
-> > Will it help, if I move the second squid proxy to the DMZ in 
-> > 10.10.10.3 ?
-> 
-> yes, because then the traffic routed through the firewall.  just out of
-> curiosity, is 192.168.0.10 your firewall?
+imagestream created a a program called 'sand'
 
-Yes. Will that be a problem then?
+it's interface and config file looks just like Cisco's IOS' files.
 
-With warm regards,
--Payal
+-----Original Message-----
+From: Samuel Jean [mailto:sj-netfilter@cookinglinux.org]
+Sent: Friday, January 14, 2005 12:31 PM
+To: Brian French
+Cc: netfilter@lists.netfilter.org
+Subject: RE: Trouble with router and iptables
+
+
+On Fri, January 14, 2005 11:57 am, Brian French said:
+> # External interface
+> EXT=Serial0
+> EXTIP=200.200.200.200
+> # Interlan interface
+> INT=Ethernet0
+> INTIP=192.168.0.1
+
+Uhmm.. Does anyone ported netfilter to Cisco's IOS ?
+
+Just kidding.. 8)
+
+Cheers!
+
+
+
 
