@@ -1,8 +1,8 @@
-From: "Hildebrand, Brian" <BrianHildebrand@universalcomputersys.com>
+From: "Daniel Chemko" <dchemko@smgtec.com>
 Subject: RE: Order in ruleset edition
-Date: Wed, 26 Nov 2003 13:34:03 -0600
+Date: Wed, 26 Nov 2003 11:36:48 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D8FBABA1EF6F2E4DBCC88903F60691F3023F158E@houxchsvr.ucscorp.ucs.pvt>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E3802@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,18 +17,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>, "Hildebrand, Brian" <BrianHildebrand@universalcomputersys.com>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-It is acceptable, but it creates a significant amount of downtime. =
-Uptime is important on our network so this solution minimizes the amount =
-of time the network is unavailable. I have had rulesets in the past that =
-would take 5-10 minutes to upload and install because they were so =
-large. That is a long time for any number of people to lose Internet =
-access.
+Gold Star!
+
+That's exactly what I do, and since I policy drop FORWARD and INPUT by =
+default, no unauthorized traffic is getting anywhere!
 
 -----Original Message-----
-From: Leonardo Rodrigues Magalh=E3es [mailto:leolistas@solutti.com.br]
-Sent: Wednesday, November 26, 2003 14:27
+From: Leonardo Rodrigues Magalh=E3es [mailto:leolistas@solutti.com.br]=20
+Sent: Wednesday, November 26, 2003 12:27 PM
 To: Hildebrand, Brian; Netfilter (E-mail)
 Subject: Re: Order in ruleset edition
 
@@ -49,12 +47,5 @@ DROP )
     Sincerily,
     Leonardo Rodrigues
 
-----------------------------------------
-The information transmitted in this message is intended only for the =
-person or entity to whom it is addressed and may contain confidential =
-and/or privileged material.  Any review, retransmission, dissemination =
-or other use of, or taking of any action in reliance upon this =
-information by persons or entities other than the intended recipient is =
-prohibited.  If you received this in error, please contact the sender =
-and destroy any copies of this document.
+
 
