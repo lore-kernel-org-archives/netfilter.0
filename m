@@ -1,12 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iptables, stateful checking using tcp sequence numbers
-Date: Fri, 14 Jun 2002 13:15:06 +0200 (CEST)
+Subject: Re: Flag SYN not necessarily state NEW?
+Date: Fri, 14 Jun 2002 13:17:15 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206141310510.17402-100000@blackhole.kfki.hu>
-References: <67024BB66045D511A9380000F6B2EF85F20C1F@RBGMSG02>
+Message-ID: <Pine.LNX.4.33.0206141315450.17402-100000@blackhole.kfki.hu>
+References: <3CD8C99B.E81155B5@mazda.at>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <67024BB66045D511A9380000F6B2EF85F20C1F@RBGMSG02>
+In-Reply-To: <3CD8C99B.E81155B5@mazda.at>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,23 +18,20 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Williamson, Fionn" <FWilliamson@fnb.co.za>
-Cc: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+To: "Ing. Christian Ogris" <ogris@mazda.at>
+Cc: netfilter@lists.samba.org
 
-On Tue, 7 May 2002, Williamson, Fionn wrote:
+On Wed, 8 May 2002, Ing. Christian Ogris wrote:
 
-> 1. if the sequence numbers are actually used in iptables to MAINTAIN the
-> state of a connection, or if it is merely used to ESTABLISH connections,
-> and thereafter ignored.
+> I connect from Box A via SSH to Box B, where the firewall runs, and i
+> get the state "NEW" on the first packet.
+> Then - the first connection is still established - i connect AGAIN from
+> Box A to Box B and do NOT get the state "NEW" anymore. (So obviously
+> it's already accepted by the ESTABLISHED,RELATED -j ACCEPT rule).
+> Is this behavior correct?
 
-Sequence numbers are checked when the tcp-window-tracking patch is applied
-from patch-o-matic. Otherwise sequence numbers are *used* only when the
-mangling of those is required (ftp/irc/etc NAT helpers).
-
-> 2. point me towards documentation confirming or denying this.
-
-The documentation states nowhere that sequence number would be used to
-check wether the packets belongs to a TCP session.
+No. But so far nobody has reported such an ill-behaviour. I assume
+something is wrong in your setup/logging.
 
 Regards,
 Jozsef
