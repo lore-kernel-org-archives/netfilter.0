@@ -1,11 +1,12 @@
-From: KJ <ksj@sover.net>
-Subject: iptables, PPTP, and actually making it all work!
-Date: 18 Mar 2003 13:18:10 -0500
+From: "Greg Dickinson" <gdickinson@logistasolutions.com>
+Subject: Re: Static NATting
+Date: Tue, 18 Mar 2003 13:25:33 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048011490.1161.5.camel@localhost.localdomain>
+Message-ID: <se771e54.002@logistasolutions.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,26 +17,65 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: steve@warning.ca
+Cc: netfilter@lists.netfilter.org
 
-Hello,
-I have a small network at my house (where I work out of, lucky me!) and
-I have been running Linux 7.3 and ipchains for sometime now.  I have a
-Linux 8 box built and ready to roll, but everytime I try to get it
-running, I run into roadblocks.  The issues are this.
-1) When I first get everything running I have access to the internet
-from my firewall box through eth0, I setup iptables to masquerade all,
-that is all I do... it worked in the past, but seems to not be working
-now.  I can't even ping eth1 from inside my network.
-2) I need to do PPTP through my iptables firewall and I can't... 
+Ok, turns out I wasn't an idiot after all :-)
 
-I'm very confused and frustrated, this has been going on for about a
-month and I can't find any help.  anyone that can help would be GREATLY
-appreciated. 
+The ISP's Cisco router was not expiring the ARP cache correctly.  Since I =
+had moved these public addresses from a BorderManager server to this Linux =
+box, I had the help desk clear the ARP cache manually and all is well :-)
 
-Thank you in advance. 
-KJ
+Thanks for the quick reply, though.  It is appreciated.
 
+>>> Steve Mickeler <steve@warning.ca> 03/18/03 12:59PM >>>
+
+
+On Tue, 18 Mar 2003, Greg Dickinson wrote:
+
+> Hello all,
+>
+> This question will undoubtedly get me branded as a n00b :-) but I am =
+about to go insane trying to figure this out.  Am I doing something wrong?
+>
+> Here's the scenario:
+>
+> I have a RedHat 8 (Kernel 2.4-18) firewall that I am going to run squid =
+on, as well as do some static NATting for some of the administrative PC's =
+here.  I have configured the Cisco router to direct all the traffic from =
+the affected /24 subnet to the linux box, and I am trying to do a 1-to-1 =
+NAT so we can do things like Terminal Services, etc. across the internet.  =
+I am using the following commands (the addresses are for my PC)
+>
+> iptables -t nat -A POSTROUTING -s 10.227.101.4 -j SNAT --to 207.157.9.<so=
+mething>
+> iptables -t nat -A PREROUTING -s 207.157.9.<something> -j DNAT --to =
+10.227.101.4
+
+Change the -s to -d on the PREROUTING rule.
+
+iptables -t nat -A PREROUTING -d 207.157.9.X -j DNAT --to 10.227.101.4
+iptables -t nat -A POSTROUTING -s 10.227.101.4 -j SNAT --to 207.157.9.X
+
+>
+> And all the traffic summarily dies at the firewall :-)
+>
+> I have aliased the 207.157.9.<something> address to the eth1 interface =
+of the firewall.  What simple, obvious thing have I missed?
+>
+> TIA,
+>
+> --Greg
+>
+>
+>
+> Gregory B. Dickinson, CNE CCNA
+> Systems Engineer
+> Logista Solutions
+> (205) 231-5602
+> (tQ =3D 2b|!2b)
+>
+>
 
 
 
