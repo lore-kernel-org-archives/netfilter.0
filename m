@@ -1,15 +1,13 @@
-From: Angel j Alvarez <a.alvarez@uah.es>
-Subject: Re: how to stop broadcasts using iptables
-Date: Tue, 27 Apr 2004 17:40:00 +0200
+From: Mike Andersen <mike@src.no>
+Subject: Re: Idea: Check session source and destination
+Date: Tue, 27 Apr 2004 14:47:42 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404271740.01050.a.alvarez@uah.es>
-References: <20040427123529.HVYI23570.viefep19-int.chello.at@localhost> <408E7229.40001@pbl.ca>
-Reply-To: a.alvarez@uah.es
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <132609FB-9849-11D8-8B47-000A957FD99E@src.no>
+References: <Pine.LNX.4.44.0404261640210.6443-100000@filer.marasystems.com>
+Mime-Version: 1.0 (Apple Message framework v613)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <408E7229.40001@pbl.ca>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0404261640210.6443-100000@filer.marasystems.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,48 +17,91 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: Netfilter Developers List <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
-try pkttype match
+On Apr 26, 2004, at 16:44, Henrik Nordstrom wrote:
 
-El Martes, 27 de Abril de 2004 16:46, Aleksandar Milivojevic escribi=F3:
-> sschlesi@chello.at wrote:
-> > hi,
-> >
-> > I'm trying to stop broadcasts getting forwarded, but I'm  not sure how =
-to
-> > do this. i read that *.255 - which are afaik broadcast addresses - does=
-nt
-> > guarantie that its a broadcast. then i read that its possible by matchi=
-ng
-> > the mac address, because broadcast will have ff:ff:ff:ff:ff:ff . but I'm
-> > not sure if that's all  nonsense.
+> On Mon, 26 Apr 2004, Mike Andersen wrote:
 >
-> IP broadcast address does not need to end with 255.  It is convention on
-> C class subnets to give it address of 255 (all ones), however
-> theoretically it can be any address, as long as you define it as
-> broadcast address on all of your machines.  If you subnet C class to
-> even smaller subnets and use "all ones" convetion for broadcast address,
-> broadcast address will not end in 255 (for example, using "all ones"
-> convetion, broadcast address of 192.168.1.0/25 would be 192.168.1.127).
->   Same goes for A or B class subnets (If your network is defined as
-> 192.168.0.0/16, broadcast address (using convention) would be
-> 192.168.255.255, so in this case 192.168.12.255 is not broadcast
-> address, it's just a host in 192.168.0.0/16).
+>> iptables -A FORWARD -m conntrack --ctorigdst <int_ip> -j ACCEPT
+>> iptables -A FORWARD -j DROP
 >
-> However, do note that 255.255.255.255 is always valid broadcast address!
+> Works here..
 >
-> The answer to your second question is, yes, on Ethernet
-> ff:ff:ff:ff:ff:ff is always an (Ethernet) broadcast.  Ethernet
-> broadcasts are not the same as IP broadcast.  However, IP broadcasts
-> packets will be encapsulated into Ethernet broadcast packets (unless you
-> have something really wrong in your configuraion).  Do note that I saw
-> at least one broken higher level protocol implementation (no, it wasn't
-> IP) that spit out everything using Ethernet broadcasts.
+>> I then look more closely at the state table (/proc/net/ip_conntrack)
+>> and see that there are two sets of source definition, and two sets for
+>> the destination:
 >
-> As David already told you, broadcasts should not be routed (if you want
-> them to be routed, you usually need to read tips-and-tricks section in
-> your router configuration, and do something to make it work).  So the
-> router is the place to have them blocked.
+> One is the ORIGINAL direction, the other the REPLY direction. Each is
+> matched independently by the "conntrack" match (--ctorigdst vs
+> --ctreplydst).
+
+Ah, that explains it.  Thanks for clearing up that.
+
+>> Any idea of why the "-m conntrack --ctorigdst <int_ip>" also passes
+>> through traffic where int_ip is the source of the session?
+>
+> Does work like intended here and only matches where it is the original
+> destination. But I am using this for packet filtering, not mirroring.
+> Not that I see any difference.
+
+I reconfigured my test setup and used the FW for filtering instead of 
+mirroring (physical reconfiguration, all software .  Then the rules 
+works as intended.
+
+So the problem I'm having here, seems to be related to the mirroring.  
+My gut feeling says that it may be related to the fact that the state 
+table is being built independently of the netfilter rules.
+
+Here is some more data. First the rules used in this test case:
+
+iptables -A FORWARD -m conntrack --ctorigdst 10.10.10.199/32 -j LOG 
+--log-level  DEBUG --log-prefix '>ctorigdst> '
+iptables -A FORWARD -m conntrack --ctorigdst 10.10.10.199/32 -j ACCEPT
+iptables -A FORWARD -j LOG --log-level DEBUG --log-prefix '>drop> '
+iptables -A FORWARD -j DROP
+
+Then I try to connect _from_ 10.10.10.199, and this is what the log 
+says:
+
+Apr 27 14:22:35 local kernel: >drop> IN=br0 OUT=br0 PHYSIN=eth0 
+PHYSOUT=eth1 SRC=10.10.10.199 DST=10.10.10.200 LEN=60 TOS=0x00 
+PREC=0x00 TTL=64 ID=19660 DF PROTO=TCP SPT=51905 DPT=80 WINDOW=65535 
+RES=0x00 SYN URGP=0
+
+Apr 27 14:22:35 local kernel: >ctorigdst> IN=br0 OUT=br0 PHYSIN=eth0 
+PHYSOUT=eth1 SRC=10.10.10.200 DST=10.10.10.199 LEN=60 TOS=0x00 
+PREC=0x00 TTL=61 ID=0 DF PROTO=TCP SPT=80 DPT=51905 WINDOW=5792 
+RES=0x00 ACK SYN URGP=0
+
+Apr 27 14:22:35 local kernel: >ctorigdst> IN=br0 OUT=br0 PHYSIN=eth0 
+PHYSOUT=eth1 SRC=10.10.10.199 DST=10.10.10.200 LEN=52 TOS=0x00 
+PREC=0x00 TTL=64 ID=19661 DF PROTO=TCP SPT=51905 DPT=80 WINDOW=65535 
+RES=0x00 ACK URGP=0
+
+Apr 27 14:22:35 local kernel: >ctorigdst> IN=br0 OUT=br0 PHYSIN=eth0 
+PHYSOUT=eth1 SRC=10.10.10.199 DST=10.10.10.200 LEN=536 TOS=0x00 
+PREC=0x00 TTL=64 ID=19662 DF PROTO=TCP SPT=51905 DPT=80 WINDOW=65535 
+RES=0x00 ACK PSH URGP=0
+
+Apr 27 14:22:36 local kernel: >ctorigdst> IN=br0 OUT=br0 PHYSIN=eth0 
+PHYSOUT=eth1 SRC=10.10.10.200 DST=10.10.10.199 LEN=52 TOS=0x00 
+PREC=0x00 TTL=61 ID=58220 DF PROTO=TCP SPT=80 DPT=51905 WINDOW=6432 
+RES=0x00 ACK URGP=0
+
+As you see, the first SYN package is dropped, while the rest of the 
+traffic is passed through.
+
+I really want to figure out _why_ this is not working as intended, and 
+are therefore willing to put a lot of hours into testing.  But I'm 
+pretty stuck here.  Any suggestion and hints about what I should try 
+out next (tools/configurations etc) is very welcome.
+
+mike
+-- 
+"It is a lesson which all history teaches wise men, to put trust in
+  ideas, and not in circumstances."            --Ralph Waldo Emerson
+
 
