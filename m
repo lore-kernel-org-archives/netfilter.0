@@ -1,15 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Hoax..
-Date: 23 Apr 2003 13:02:33 -0400
+From: Carsten Maass <cm@blinkenlichten.de>
+Subject: Re: Redirect DHCP requests to DMZ?
+Date: Wed, 23 Apr 2003 18:58:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051117353.25368.12.camel@alpha.newkirk.us>
-References: <20030423021401.26417.52880.Mailman@kashyyyk>
-	 <NGBBLGFEALDADHNDAAFFCEIKDJAA.ksmith@perfht.com>
-	 <20030423182602.24b0d726.arnt@c2i.net>
+Message-ID: <3EA6C622.3020103@blinkenlichten.de>
+References: <3EA66634.2020508@blinkenlichten.de> <1051100353.12295.96.camel@elendil.intranet.cartel-securite.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030423182602.24b0d726.arnt@c2i.net>
+In-Reply-To: <1051100353.12295.96.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,51 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Wed, 2003-04-23 at 12:26, Arnt Karlsen wrote:
-> On Wed, 23 Apr 2003 09:07:28 -0400, 
-> "Kevin Smith" <ksmith@perfht.com> wrote in message 
-> <NGBBLGFEALDADHNDAAFFCEIKDJAA.ksmith@perfht.com>:
+Salut Cedric!
+
+Cedric Blancher wrote:
+>>redirect DHCP request from the clients on the local LAN to the DHCP
+>>server inside the DMZ.
 > 
-> > 
-> > >>UNION TOGOLAISE DE BANQUE LOME TOGO,
-> > >>LOME-TOGO.
-> > >>STRICTLY AND CONFIDENTIAL,
-> >     ^^^^^^^^^^^^^^^^^^^^
-> > The Hint this this is a hoax..(I mean to a mailing list?)
-> > 
-> 
-> ..this went to and __thru__ the netfilter list ?????????
-> I thought is was only my ~/.procmailrc having a hickup.
+> You'll achieve this setting a DHCP Relay up. Due to what they are, DHCP
+> packets cannot be routed through different IP networks (mainly because
+> of destination addresses that are used).
 
-Someone harvested the archives of this mailinglist for email addresses,
-and is sending various forms of these "Nigerian 419 scam" emails.  I use
-netfilter@newkirk.us for ONLY this mailinglist and associated
-conversations, and I get about one of these every 2-3 weeks now at that
-address.  
+This is exactly what I dont understand: What are they? After all they 
+are just IP packets. And if I am able to apply to them a rule like
 
-They're mailing direct to the email addresses found in the archive.  I
-forward them to the Secret Service, who collect these in the US.
+$IPTABLES -A INPUT -p UDP -i $INET_IFACE -d 255.255.255.255 
+--destination-port 67:68 -j DROP
 
-My latest was two days ago:
+which discards them, why am I unable to apply a rule which redirects 
+them to another subnets interface? Shouldn't the DNAT thingy take care 
+of the new destination address?
 
-> From: SAMSON GUEI <samsonguei@redffmail.com>
-> To: netfilter@newkirk.us
-> Subject: CONFIDENTIAL & URGENT
-> Date: 22 Apr 2003 12:06:48 +0200
-> 
-> FROM:MR,Samson Guei. 
->  
-> DEAR SIR, ATTN:THE PRESIDENT/CEO. 
->  
-> I AM MR,Samson GUEI, THE SON OF LATE GENERAL ROBERT GUEI 
-> EX-MILITARY HEAD OF STATE OF IVORY COAST, WHO WAS MURDERED ALONG 
-> WITH THE INTERIOR MINISTER ON THE 19th OF SEPTEMBER 2002
+Yes, a DHCP relay would be a solution, but I opted against it. I am 
+trying to keep the router/firewall as (c)lean as possible: just routing, 
+firewall and ssh stuff.
 
-j
+> But this kind of setup is no secure. If someones breaks into your DMZ,
+> he will be able to have your LAN's configuration, and even tamper it,
+> acting on DHCP stuff. That's _very bad_. DMZ compromission must not
+> endanger rest of network security.
 
+Right you are. But our setup was a compromise between money and 
+security: Another server is just not affordable at the moment.
+
+But you make me considering if it wouldn't be better to convince our 
+Windows admin to let go his DHCP idea. The administrative overhead of a 
+static client setup might be a better price to pay, pondering the 
+security impact of the current setup. On the other hand I am also eager 
+to find out, why this doesn't work out as expected.
+
+
+Thank you for your answer,
+Carsten.
 
 
