@@ -1,17 +1,12 @@
-From: J A <jake.lists@gmail.com>
-Subject: Re: IPTables & HTTPD Conflict
-Date: Tue, 5 Apr 2005 14:41:57 +0800
-Message-ID: <249c20290504042341465be16c@mail.gmail.com>
-References: <200504031339.j33DdR2X003262@osprey.tkevans.com>
-	<249c202905040319115c97c290@mail.gmail.com>
-	<a0f69e5050404024079ea9980@mail.gmail.com>
-	<249c20290504040259680894c@mail.gmail.com>
-	<a0f69e505040404325bf851f5@mail.gmail.com>
-Reply-To: J A <jake.lists@gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: long ruleset perfomance issue
+Date: Tue, 5 Apr 2005 08:46:54 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0504050842240.14753@blackhole.kfki.hu>
+References: <005901c5390b$a363fe30$03c01751@jg>
+	<42515EC7.90506@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e505040404325bf851f5@mail.gmail.com>
+In-Reply-To: <42515EC7.90506@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,109 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Askar <askarali@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: anton@web-sat.com, netfilter@lists.netfilter.org
 
-Hello Askar/A.Dreyer,
+On Mon, 4 Apr 2005, Grant Taylor wrote:
 
-Thank you very much for your insights,  now i see how badly our
-IPTables is setup.  Will re-configure along your recommended settings,
-and see how system goes.
-
-I will post whatever our final rules will look like.
-
-Best regards!
-
----jake
-
-On Apr 4, 2005 7:32 PM, Askar <askarali@gmail.com> wrote:
-> On Apr 4, 2005 3:59 PM, J A <jake.lists@gmail.com> wrote:
-> > Sorry, when i replied to the thread, i seemed to have copied only
-> > guido, here's a re-send:
-> >
-> > Here are our rules (pls refer to the thread for the problem
-> > description), hope you could share us your vasluable insight.
-> > --------------------------------------------------------------------------
-> > *filter
-> > :INPUT ACCEPT [0:0]
-> > :FORWARD ACCEPT [0:0]
-> > :OUTPUT ACCEPT [0:0]
-> > :RH-Lokkit-0-50-INPUT - [0:0]
-> > -A INPUT -j RH-Lokkit-0-50-INPUT
-> > -A FORWARD -j RH-Lokkit-0-50-INPUT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 25 --syn -j ACCEPT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 80 --syn -j ACCEPT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 21 --syn -j ACCEPT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 22 --syn -j ACCEPT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 23 --syn -j ACCEPT
-> > -A RH-Lokkit-0-50-INPUT -i lo -j ACCEPT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 0:1023 --syn -j REJECT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 2049 --syn -j REJECT
-> > -A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 0:1023 -j REJECT
-> > -A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 2049 -j REJECT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 6000:6009 --syn -j REJECT
-> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 7100 --syn -j REJECT
-> > COMMIT
-> > --------------------------------------------------------------------------
-> >
-> >
-> > On Apr 4, 2005 5:40 PM, Askar <askarali@gmail.com> wrote:
-> > > how should we suggest something without watchen your iptables rules set?
-> > >
-> > > regards
-> > >
-> > >
-> > > On Apr 4, 2005 8:11 AM, J A <jake.lists@gmail.com> wrote:
-> > > > Hello All,
-> > > >
-> > > > We're using Redhat 9
-> > > > We've been running a Web Server (Apache & Tomcat), and were told to
-> > > > run a firewall, in this case IPTables.  When we enabled IPTables, many
-> > > > of our web sites (BUT not all) could no longer be browsed from the
-> > > > Internet.
-> > > >
-> > > > Could you tell us which specific IPTables parameter is doing this, so
-> > > > we could disable only the specific parameter?
-> > > > Or is it not advisable to run IPTables side-by-side with Web services?
-> > > >
-> > > > Thanks, appreciate your ideas.
-> > > >
-> > > > ---jake
-> > > >
-> > > >
-> > >
-> > > --
-> > > I love deadlines. I like the whooshing sound they make as they fly by.
-> > > Douglas Adams
-> > >
-> >
-> okay try these iptables rules as starting point,
-> 
-> # Load the FTP connection state helper module.
-> #Clear \ Flush all the rules from the different chains and tables
-> for table in mangle nat filter; do
->   iptables -t $table -F
->   iptables -t $table -X
-> done
-> # Set the default filter table policy
-> iptables --policy INPUT   DROP
-> iptables --policy OUTPUT  ACCEPT
-> iptables --policy FORWARD DROP
-> 
-> # Using Connection State to By-pass Rule Checking
-> iptables -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A INPUT -p tcp -m multiport --dport 25,80,21,22,23 -m state
-> --state NEW -j ACCEPT
-> 
-> Note: save these rules to a file, then chmod +x the file and then
-> execute it with ./filename :)
-> 
-> regards
-> 
-> 
-> --
-> I love deadlines. I like the whooshing sound they make as they fly by.
-> Douglas Adams
+> This will make is such that your packets don't have to traverse as many
+> rules in the FORWARD chain directly.  In fact there would only be 18
+> conditional JUMP to sub chain rules in the main FORWARD chain.  In this
+> situation there would be 255 entries in the sub chains.  You end up with
+> a pseudo tree structure like this
 >
+> FORWARD
+>    |
+>    <sbunet 1.1.1.0/24 -j FORWARD_1_1_1_0
+>       |
+>       <ip 1.1.1.1 -j MARK>
+>       <ip 1.1.1.2 -j MARK>
+>       <ip 1.1.1.3 -j MARK>
+>    <sbunet 1.1.2.0/24 -j FORWARD_1_1_2_0
+>       |
+>       <ip 1.1.2.1 -j MARK>
+>       <ip 1.1.2.2 -j MARK>
+>       <ip 1.1.2.3 -j MARK>
+>    <sbunet 1.1.3.0/24 -j FORWARD_1_1_3_0
+>       |
+>       <ip 1.1.3.1 -j MARK>
+>       <ip 1.1.3.2 -j MARK>
+>       <ip 1.1.3.3 -j MARK>
+
+If the possible mark values are small, then ipset is a much more efficient
+solution for the problem. You can even build up similar tree structure
+with bindings in ipset. Actually, one can collapse the corresponding
+iptables rules to the number of distinct mark values.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
