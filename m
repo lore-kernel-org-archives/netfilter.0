@@ -1,13 +1,14 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Curious problem with my iptable rules.....detailed postinside, help appreciated.
-Date: Sun, 18 Apr 2004 21:47:58 +0200
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: Prerouting fails no DNAT
+Date: Sun, 18 Apr 2004 16:09:40 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040418194758.8E5A6474C@sterenborg.info>
-References: <1082311801.5336.38.camel@james>
+Message-ID: <200404181609.40234.Alistair@nerdnet.ca>
+References: <33044.64.81.147.25.1082316532.squirrel@home.schroedernet.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1082311801.5336.38.camel@james>
+In-Reply-To: <33044.64.81.147.25.1082316532.squirrel@home.schroedernet.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,81 +19,76 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> From what I read, this is to prevent a "hole" from opening up. By 
-> having
-> a default policy of DROP, anything overlooked is by default 
-> dropped. I was under the impression that having only 
-> explicitly accepted packets allowed is a good thing.
+On April 18, 2004 07:28 pm, wschroed@schroedernet.net wrote:
+> With the firewall configured like below:
+> track_conn="1"
+> ExtIP1="64.x.x.x" # External IP
+> ExtIP2="64.x.x.y" # External IP eth4
+> pss1="10.0.0.1" # eth3
+> ns="IP" # master dns
+> ns3="IP" #s ns2 slave dns
+> ntp1="IP"
+> loopback="127.0.0.0/8"
+> class_a="10.0.0.0/8" #non routable networks
+> class_b="172.16.0.0/12"
+> class_c="192.168.0.0/16"
+> class_d="224.0.0.0/5"
+> privports="0:1023" # privildeged ports
+> unprivports="1024:65535"
+> xwindows="6000:6003" #Lets block access to X
+> mysql="3306"
+> #Set Default Policy
+> iptables --policy INPUT DROP
+> iptables --policy OUTPUT DROP
+> iptables --policy FORWARD DROP
+> # Pre-Routing Redirect for Web Server. in from public ip (eth4) to pss1
+> (eth3)
+> iptables -t nat -A PREROUTING -i eth4 -p tcp --sport $unprivports -d
+> $ExtIP2 --dport 8080 -j DNAT --to-destination 10.0.0.57:8080
+> iptables -A FORWARD -i eth4 -o eth3 -p tcp --sport $unprivports -d
+> 10.0.0.57 --dport 8080 -m state --state NEW -j ACCEPT
+> iptables -A FORWARD -i eth3 -o eth4 -m state --state ESTABLISHED,RELATED
+> -j ACCEPT
+> iptables -A FORWARD -i eth4 -o eth3 -m state --state ESTABLISHED,RELATED
+> -j ACCEPT
+>
+> ###########################################################################
+>############################## RULES for SSH in to INTERNAL, Handling ICMP
+> NTP, and dropping and logging all traffic..blah blah
+> ##############
+> AT THE END I HAVE
+> #Forward
+> iptables -A FORWARD -o eth0 -m state --state NEW,ESTABLISHED,RELATED -j
+> ACCEPT
+> iptables -A FORWARD -o eth1 -m state --state NEW,ESTABLISHED,RELATED -j
+> ACCEPT
+> ###########################################################
+> #Postrouting
+> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source $ExtIP1
+> ###########################################################################
+>#########################
+>
+> SNAT works but the DNAT is dropped as seen below. The drop is occuring
+> inbound on the internal interface. I put a log rule on the PREROUTE and
+> did not see anything. It seems that the forwards at the end I doung
+> something bad... Any suggestions.
+>
+> Inbnd TCP Drp Internal IN=eth1 OUT=  SRC=10.10.10.2 DST=64.x.x.x PROTO=TCP
+> SPT=32826 DPT=9001
+> Additional info:
+> SuSE 8.2
+> iptables-1.2.7a-174
+>
+>
+	The above packet came IN eth1 -- which doesn't match your prerouting rule  or
+	your PREROUTING or FORWARD rules. 
+	At a guess it should likely go back out eth4 -- you need to either alter the 
+	two FORWARD ESTABLISHED,RELATED rules and open them up or add 
+	one to handle the packets coming back from your webserver to the internet.
 
-That is indeed what you're doing when you set policy to DROP and then write
-rules to accept what you want to accept. (Or any other rule, like REJECT
-packets on port 113/tcp instead of DROPping them, which might speed up
-connecting to certain ftp sites.)
-What I saw in your script was logging and dropping together in a user chain.
-Nothing wrong with that but you seem to be logging a lot :-). I don't know
-if you want all that information.
-
-At the end of your script there is :
-$IPT -A INPUT -j DROPl
-$IPT -A OUTPUT -j REJECTl
-$IPT -A FORWARD -j DROPl
-Which effectively becomes your "policy" : log and DROP/REJECT, since it
-matches everything.
-(Again, it's not wrong.)
-
-> problem I commented out the initial DROP Policies....the same 
-> problem persisted. Since the only remedy I've found for 
-> getting it working again after initially running the script 
-> is a hard reboot, it greatly complicates the troubleshooting. 
-
-Well, I don't know exactly what you tried but don't filter in the nat table.
-It's easy to forget that you do and although it's possible ; you have the
-filter table for that.
-Flushing all rules and setting policy to ACCEPT should keep you from
-rebooting.
-
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -F
-(iptables -X)
-
-But I suppose you already tried this..
-If it doesn't I'm curious what the output is of "iptables -nvL" and
-"iptables -t nat -nvL".
-
-> I'm in the process of reading it now, I've read several other 
-> tutorials...but this is the most thorough I've seen yet. 
-
-Yeah, it's good and it's free ;-)..
-
-> Thank you.
-
-You're welcome.
-
-Reading your first post, one problem was : "eth1 can access the internet,
-but eth2 cannot". I took another look at your script, and I'll focus on nat
-only.
-This should nat clients on both eth1 and eth2 :
-
-echo 0 > /proc/sys/net/ipv4/ip_forward
-iptables -P FORWARD DROP
-iptables -F FORWARD
-iptables -A FORWARD -i eth1 -o ppp0 -s <net_lan_1> -j ACCEPT
-iptables -A FORWARD -i eth2 -o ppp0 -s <net_lan_2> -j ACCEPT
-iptables -t nat -A POSTROUTING -o ppp0 -s <net_lan_1> -j MASQUERADE
-iptables -t nat -A POSTROUTING -o ppp0 -s <net_lan_2> -j MASQUERADE
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-Of course, you have to make sure your routing table on the iptables box as
-well as on the clients is correct.
-In my experience (I also have a ppp0 for internet) you cannot use SNAT for
-ppp interfaces.
-
-
-Gr,
-Rob
-
+	Alistair Tonner
+	
+> Will
 
