@@ -1,14 +1,13 @@
-From: Kenneth Porter <shiva@sewingwitch.com>
-Subject: Re: VPN over netfilter NAT
-Date: Thu, 16 Sep 2004 18:36:45 -0700
+From: Jan Du Caju <Jan.DuCaju@kuleuven.net>
+Subject: Re: how many rules can be added?
+Date: Fri, 17 Sep 2004 11:33:20 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <B98BE374FDFB3A71F6ED1D44@[10.169.6.246]>
-References: <200409161436.26695.apapadop@alumni.carnegiemellon.edu>
+Message-ID: <20040917093320.GA8651@kuleuven.net>
+References: <1314.81.10.7.66.1095343827.squirrel@81.10.7.66>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200409161436.26695.apapadop@alumni.carnegiemellon.edu>
 Content-Disposition: inline
+In-Reply-To: <1314.81.10.7.66.1095343827.squirrel@81.10.7.66>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,20 +17,34 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Alaadin <alaadin@alaadin.org>
+Cc: netfilter@lists.netfilter.org
 
---On Thursday, September 16, 2004 2:36 PM +0300 Alexandros Papadopoulos 
-<apapadop@alumni.carnegiemellon.edu> wrote:
+On Thu, Sep 16, 2004 at 05:10:27PM +0300, Alaadin wrote:
+> Hello,
+> 
+> how many ip tables rules can i add ?
+> i added already 40
+> if i added untill 100 or 500 rule
+> would this make problems ?
+> would this make the system lag ?
+> would this make the system hang
+> how many ip tables rules can i add ? or its unlimited?
 
-> This is exactly what I'm planning to do; I've got my mind set on having
-> the two VPN endpoints inside two NATed networks, both managed by
-> respective dedicated linux boxes running only netfilter.
+If you have many rules and/or high bandwidth you should consider hipac
+(High Performance Packet Classification) It uses the netfilter hooks 
+and ... checkout yourself at http://www.hipac.org
+There is also a performance comparison with iptables ...
+It exists for a 2.4 kernel. A 2.6 version is promissed for october 2004.
+As we (our university http://www.kuleuven.be/english) have many rules 
+we use it and with success
 
-If you're not wedded to IPSec, you might try OpenVPN, which runs over SSL. 
-I found it a lot easier to get working.
-
-<http://openvpn.sourceforge.net/>
-
-
+Hope this helps,
+Jan.
+--------------------------------------------------- KULeuvenNet ----
+Jan.DuCaju@kuleuven.net		http://www.KULeuven.Net/e_index.html
+K.U.Leuven BELGIUM		      http://www.kuleuven.be/english
+--------------------------------------------------------------------
 
