@@ -1,8 +1,8 @@
 From: aksingh@hss.hns.com
-Subject: libipq speed
-Date: Tue, 20 Apr 2004 15:01:10 +0530
+Subject: ipq_set_verdict
+Date: Tue, 20 Apr 2004 15:26:52 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFB36523E3.68912DA0-ON65256E7C.00336D2F@hss.hns.com>
+Message-ID: <OF99855CB4.5A120950-ON65256E7C.00357431@hss.hns.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -22,21 +22,28 @@ To: netfilter@lists.netfilter.org
 
 
 
-Hi
+hi
 
-    On  many links regarding user space hanlding of packets I have read
-warnings about using libipq, speed wise .... "do this only if u dont want
-ultra high speeds and all" ... this speed issue arises because we need to
-copy things from kernel space to usr space and vice versa, or is there any
-other reason for this. I mean suppose i want to make a process that gets
-the packets from the kernel and plays with them and then reinjects them
-into the kernel( my process has to be in user space) ... keeping this
-constraint in mind (the process that tinkers with the packets has to be in
-user space), is there any faster solution than using libipq i.e do these
-warnings just mean that using libipq gives slower results when if packet
-mangling is done in the kernel space itself .. which is quite obvious, or
-do they mean that we can have better ways(faster) than libipq for user
-space packet mangling.
+  I thought of a way of reinjecting absolutely new packets into the kernel
+.... suppose i call ip_set_verdict (this in turn calls nf_reinject) to
+inject packets into the kernel)for the new packets that a user space
+process generates. nf_reinject has a parameter nf_info which probably tells
+the kernel from which hook was this packet captured and hence from where to
+continue when this is reinjected(from the next hook onwards). Now, suppose
+I have a PRE_ROUTING hook that captures the packets and sends it to my user
+space process. This process might  return some packets to be reinjected and
+might generate some of its own that it wants injected into the kernel (from
+pre_routing stage but bypassing the netfilter PRE_ROUTING hook) .. for
+these newly generated packets I can use the same nf_info param i used for
+the packets that i captured from the kernel and that will make the kernel
+think that they were captured by the PRE_ROUTING hook and so after
+reinjection continue from after the PRE_ROUTING hook....so for these
+packets routing decision would be taken after injection and hence these
+newly packets cld either be outbound(going to the wore) or inbound (the
+ones that need to travel up the stack from ip).
+
+This sounds good to me but can this be done or am i thinking on wrong lines
+here. Please suggest if im wrong.
 
 thanks
 Amit
