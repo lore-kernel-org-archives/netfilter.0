@@ -1,12 +1,13 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: iptables1.2.7 + pptp + rh9
-Date: Tue, 21 Oct 2003 15:06:41 -0700
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: 1 webserver NATd, 2nd won't work
+Date: Wed, 22 Oct 2003 00:24:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E375B@alderaan.smgtec.com>
+Message-ID: <000901c39822$176fd1a0$0201000a@sterenborg.info>
+References: <Pine.LNX.4.44.0310211011580.16322-100000@orca.princerupertlibrary.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.44.0310211011580.16322-100000@orca.princerupertlibrary.ca>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,53 +18,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Fernando Barrocal <fbarrocal@uol.com.br>, netfilter@lists.netfilter.org
+To: joe@princerupertlibrary.ca, netfilter@lists.netfilter.org
 
-Um, yeah. You need to compile the userspace tools against the kernel
-that you are installing.
+> I will be using pseudonyms for the machines and public IP addresses
+> The two web servers are:
+> NAME		INTERNAL IP ADDRESS	PUBLIC IP ADDRESS
+> 
+> marge.prl.ca 	192.168.0.244		8.8.8.149
+> homer.prl.ca	192.168.0.211		8.8.8.148
+...
+> I have successfully NAT'd the first web server marge with the 
+> following instructions:
+> #Open ports on Marge
+> #First the regular port 80
+> /sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 80
+> /sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 
+> -j DNAT --to 192.168.0.244:80
 
------Original Message-----
-From: Fernando Barrocal [mailto:fbarrocal@uol.com.br]=20
-Sent: Tuesday, October 21, 2003 3:00 PM
-To: Daniel Chemko; netfilter@lists.netfilter.org
-Subject: RE: iptables1.2.7 + pptp + rh9
+If this is your first PREROUTING rule, it will match *all* http traffic
+coming in at eth1 since you didn't specify a destination IP (-d <ip>).
+
+> But when I try to NAT homer with the following commands I can 
+> NOT find the page outside of 
+> our network.  
+> #Opening a route to Homer
+> /sbin/iptables -A FORWARD -j ACCEPT -p tcp --dport 80
+> /sbin/iptables -t nat -A PREROUTING -d homer.prl.ca -p tcp 
+> --dport 80 -j DNAT --to 192.168.0.211:80
+
+So this PREROUTING rule will never match. The http traffic was already
+cought by the previous rule.
+Besides, the way you're using it you only need the FORWARD rule once.
+
+In short, I think it would be :
+/sbin/iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+/sbin/iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+/sbin/iptables -t nat -A PREROUTING -i eth1 -d marge.prl.ca \
+  -p tcp --dport 80 -j DNAT --to 192.168.0.244:80
+/sbin/iptables -t nat -A PREROUTING -i eth1 -d homer.prl.ca \
+  -p tcp --dport 80 -j DNAT --to 192.168.0.211:80
 
 
-Still after installing 1.2.8 it does not work. Do I need to compile ipt
-?=20
-and the kernel ?
-
-At 19:15 21/10/2003, Daniel Chemko wrote:
->Download ipt 1.2.8 or 1.2.9 if it is out.
->Or, use the CVS userspace
->
-># KERNEL_DIR=3D<yourkerneldir> make
-># make install
->
->You might want to change the destination directories in the Makefile to
->conform to the Redhat deployment layout
->LIBDIR=3D/lib/
->MANDIR=3D/usr/man
->etc..
->
->-----Original Message-----
->From: Fernando Barrocal [mailto:fbarrocal@uol.com.br]
->Sent: Tuesday, October 21, 2003 2:04 PM
->To: netfilter@lists.netfilter.org
->Subject: iptables1.2.7 + pptp + rh9
->
->
->Hi,
->
->I am applying the pptp patch with patch-o-matic in my redhat 9.0.
->Somebody
->have somer step by step to patch the kernel, compile the iptable
->userspace
->and compile the kernel to accept DNAT ?
->
->Thanks in advance
->
->Fernando Barrocal
-
+Gr,
+Rob
 
 
