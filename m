@@ -1,13 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: unexpected behaviour...?
-Date: 02 Sep 2003 22:26:09 +0200
+From: "Mark Goldberg" <goldber@globalcrossing.net>
+Subject: More H.323 questions
+Date: Mon, 01 Sep 2003 22:36:39 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062534369.6144.24.camel@kermit>
-References: <20030828113329.32071.qmail@web21404.mail.yahoo.com>
+Message-ID: <200309020523.WAA28180@smtp08.phx.gblx.net>
+Reply-To: "Mark Goldberg" <goldber@globalcrossing.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030828113329.32071.qmail@web21404.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +16,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Christof Nyffenegger <cnyf@yahoo.de>
-Cc: Jim Carter <jimc@math.ucla.edu>, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Am Don, 2003-08-28 um 13.33 schrieb Christof Nyffenegger:
->  --- Jim Carter <jimc@math.ucla.edu> schrieb:
-> > Hmmm, good point.  However, I think a packet is considered to be part o=
-f an
-> > established connection because it has particular header bits set, not
-> > because of IP address matching in the conntrack tables.  Someone who's =
-more
-> > familiar with the sources, could you please confirm or correct this
-> > statement?
-No bits in the header. It is simply matching the IP addresses, protocol
-and ports. If you add the TCP-Window-Tracking patch it does more.
-At the moment TCP is handled just like  UDP, ICMP, and generic
-protocols.
+I've built kernel 2.4.22 with the h.323 extensions from pom. Iptables is 1.2.8. I installed teh new kernel and included the following rules:
 
-If the client behind the firewall sends an ACK the connection is
-automatically picked up by iptables.
+Basically, I want to only establish h.323 with a specific ip after I initiate it from an internal machine on the network normally using NAT.
 
-Cheers,
+/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1503 -i eth0 -j LOG --log-level 6 --log-prefix "1503 in "  >>/var/log/netfiltersetup.log 2>&1
+/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1720 -i eth0 -j LOG --log-level 6 --log-prefix "1720 in "  >>/var/log/netfiltersetup.log 2>&1
+/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -i eth0 -j LOG --log-level 6 --log-prefix "Anything else in "  >>/var/log/netfiltersetup.log 2>&1
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1503 -i eth0 -j DNAT --to $DEST  >>/var/log/netfiltersetup.log 2>&1
+/usr/local/sbin/iptables -t nat -A PREROUTING -s $SRC -p tcp -m state --state RELATED --dport 1720 -i eth0 -j DNAT --to $DEST  >>/var/log/netfiltersetup.log 2>&1
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+There are no errors in netfiltersetup.log.
+
+Iptables -L -v -n does not show the rules, but iptables-save does show them.
+
+Nothing is logged and it does not seem to work. Before the rules were added, incoming to 1503 and 1720 triggered another rule that logged them.
+
+Ethereal does not show any packets coming in that match the above. It did before the rules were added.
+
+If anyone has a suggestion or can explain why listing the rules does not show any PREROUTING or POSTROUTING rules, please let me know.
+
+I'm basically at a loss as to what to do next. Troubleshooting tips are welcome. Thanks.
+
+
+
+Mark Goldberg
+goldber@globalcrossing.net
+
+
+
 
