@@ -1,12 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: A really buggy official release ?
-Date: Fri, 9 Jul 2004 18:33:43 +0200 (CEST)
+From: ming fu <fming@borderware.com>
+Subject: Re: IPSec Transport Mode
+Date: Fri, 09 Jul 2004 12:51:19 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0407091829350.17924-100000@blackhole.kfki.hu>
-References: <005401c4658e$c5319960$f301a8c0@groupecpro.local>
+Message-ID: <40EECD07.1090009@borderware.com>
+References: <1089207305.788.14.camel@PCA-ARNSTR.ee-consultants.de>	 <200407071453.49223.Antony@Soft-Solutions.co.uk>	 <1089210110.788.27.camel@PCA-ARNSTR.ee-consultants.de>	 <200407072154.52923.Antony@Soft-Solutions.co.uk>	 <1089387536.4237.20.camel@PCA-ARNSTR.ee-consultants.de>	 <1089389598.2111.33.camel@anduril.intranet.cartel-securite.net> <1089390320.4237.29.camel@PCA-ARNSTR.ee-consultants.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <005401c4658e$c5319960$f301a8c0@groupecpro.local>
+In-Reply-To: <1089390320.4237.29.camel@PCA-ARNSTR.ee-consultants.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,38 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Wilfried BARNAVON (Fire)" <wbarnavon@on-fire.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Rainer Arnst <Rainer.Arnst@ee-consultants.de>
+Cc: NetFilter Mailling List <netfilter@lists.netfilter.org>
 
-On Fri, 9 Jul 2004, Wilfried BARNAVON (Fire) wrote:
+Rainer Arnst wrote:
 
-> I've downloaded iptables-1.2.11, kernel 2.6.7 and pom-ng-20040621
+>>When you do NAT, you alter IP source and/or destination. But TCP
+>>checksum includes IP addresses, which means you have to recompute it on
+>>the fly when NATing. Anf for it is ciphered, you can't.
+>>    
+>>
 >
-> kernel and pom-ng seem OK however, even without any patch, iptables won't
-> compile !
+>Unfortuneately I have to find a way to make the transport mode work; we
+>were using NAT-T, which worked fine, but now I am looking for another
+>solution which does not require the VPN Gateway to support NAT-T.
+>  
 >
-> I'm on Fedora Core 2.
+If you are using NAT-T for outbound IPSEC connections, open udp port 500 
+and 4500 and source nat them. Just do not load any "smart VPN proxy" 
+that would alter other parts of the UDP, the simplest udp NAT will do 
+the trick.
+
+>Greetings,
+>Rainer
 >
-> It says that there is no rule to build the target "extensions/libipt_!!!.c"
-> needed by "extensions/libipt_!!!.d". Stopped !
+>  
 >
-> The return code of make is 2.
-
-Did you set the KERNEL_DIR environment variable before issuing the make
-command? If not, what kind of kernel source can be found at
-/usr/src/linux?
-
-We have never seen such error. There is no extensions/libipt_!!!.c in
-iptables-1.2.11 or pom-ng.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
 
 
