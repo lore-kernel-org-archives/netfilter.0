@@ -1,15 +1,13 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: Totally Off-Topic again
-Date: Thu, 8 Apr 2004 08:29:17 -0400
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Problems regarding IPtables
+Date: Thu, 08 Apr 2004 14:50:17 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2577.97417366437$1081429255@news.gmane.org>
-References: <200404080951.35001.Antony@Soft-Solutions.co.uk>
+Message-ID: <1081428617.1727.16.camel@anduril.intranet.cartel-securite.net>
+References: <53720.172.31.1.1.1081411596.squirrel@mail.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Alistair Tonner <>
-In-Reply-To: <200404080951.35001.Antony@Soft-Solutions.co.uk>
-Content-Disposition: inline
+In-Reply-To: <53720.172.31.1.1.1081411596.squirrel@mail.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,26 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: raman mittal <rmittal_02@iiita.ac.in>
+Cc: netfilter@lists.netfilter.org
 
-On April 8, 2004 04:51 am, Antony Stone wrote:
-> Hi.
->
-> I repeat my request to the person who is subscribed to this list, and whose
-> email server sends out anti-spam responses addressed from
-> "spammaster@amcotech.com" to please contact me off-list.
->
-> Your anti-spam software is broken, it is sending out inappropriate
-> notifications, and it is becoming annoying.
->
-> Thanks,
->
-> Antony.
+Le jeu 08/04/2004 =E0 10:06, raman mittal a =E9crit :
+> I am student graduating in Indian Institute of Technology, India.
+> I have a small  problem regarding IP tables.I am capturing DNS reply
+> packets (which are later to be forwarded to a client)at the firewall an=
+d
+> QUEUEing them using IPQ library for altering the DNS answer section in =
+the
+> user space using the forward chain of filter table.
 
-	If you're getting the anti-spam messages from him, I'll say it's b0rked.
-	you never get a rating above 0.05 on spamassasin on my system -- only ever
-	that because of the occasional sig containing a keyword.
+OK.
 
-	Alistair.
+> i have changed the answer section of the dns reply, which results in
+> change of checksum fields in IP and UDP header.I have also corrected th=
+e
+> checksum of both the headers but the problem is that after doing
+> this,reverse SNAT takes place automatically (because Of DNAT done
+> earlier)which again changes the checksum and the packets get dropped at
+> the client side.
+
+I must admit I'm quite puzzled.
+
+UDP packet containing DNS answer arrives, with good checksums. You
+capture it and modify DNS answer. For it may modify data length, you
+have to recompute IP checksum. For it modifies UDP payload, you have to
+recompute UDP checksum as well. So you reinject a packet with good
+checksums. Then goes SNAT which modifies IP, and optionnaly UDP, header,
+so recomputes checksum. But checksums recomptued by SNAT should be good
+as well.
+
+So my question : are you sure checksums are to blame for packet
+rejection at client side ? If they're OK, there's no reason for the
+packet to get rejected.
+
+BTW, UDP checksum is optional. Maybe you zero it to disable UDP checksum
+check at client side.
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
