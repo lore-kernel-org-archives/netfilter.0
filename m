@@ -1,31 +1,50 @@
-From: "Randy.Dunlap" <rddunlap@osdl.org>
-Subject: Re: kernel modules won't auto load
-Date: Thu, 30 Oct 2003 15:48:25 -0800
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20031030154825.70b13a35.rddunlap@osdl.org>
-References: <3FA19A2A.3090500@savages.net>
+From: "Tarek W." <ticallion@hotpop.com>
+Subject: Re: thoughts on a newbie tutorial i'll be giving shortly
+Date: Fri, 31 Oct 2003 02:07:53 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <1067558874.1133.9.camel@carve.localdomain>
+References: <Pine.LNX.4.44.0310300725550.18040-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <3FA19A2A.3090500@savages.net>
+Content-Transfer-Encoding: 7BIT
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <Pine.LNX.4.44.0310300725550.18040-100000@localhost.localdomain>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Shaun Savage <savages@savages.net>
-Cc: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 30 Oct 2003 15:09:30 -0800 Shaun Savage <savages@savages.net> wrote:
+http://ticallion.nuit.ca/pub/iptables/ is something u should be looking
+at... it's a tutorial on irc I gave a while ago... purpose of which is
+to really make the user able to (ab/)use iptables.
 
-| I am trying to get kernel 2.6-t9 working on redhat9
-| 
-| I have downloaded and compiled, and installed the kernel.
-| module-init-tools-0.9.15-pre2,
-| and iptables-1.2.9rc1
-| 
-| when I run iptables-restore it dies if I have not loaded the kernel
-| modules by hand before.
+u should look at it to either "grep -P" interesting things or inspect
+carefully for things to avoid :P
 
-Did you run generate-modprobe.con (script) to convert your
-/etc/modules.conf file to /etc/modprobe.conf ?
+either way, people r invited to send flames/comments/wanton written
+violence to tarek [at] cyberia -dot- net /dot/ lb. errata should come
+out this week...
 
---
-~Randy
+happy hacking,
+Tarek
+
+On Thu, 2003-10-30 at 14:30, Robert P. J. Day wrote:
+> 
+>   as a really low-level iptables intro i'm giving this monday,
+> i'm going to show and explain something like the following.
+> it's deliberately simplified as i have only about a half hour,
+> but i'm interested in whether anyone here has any kind of 
+> visceral reaction to this configuration -- whether i'm suggesting
+> anything violently insecure or anything like that.  (i've removed
+> a lot of preliminary variable setting, just wanting to show the
+> salient stuff.)
+<snip>
+
+
+
