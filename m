@@ -1,14 +1,11 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: Need Some Help Fine Tunning Rule....
-Date: Mon, 17 Feb 2003 13:52:01 -0500
+From: "Michael P. Soulier" <michael_soulier@mitel.com>
+Subject: netfilter oddness
+Date: Mon, 17 Feb 2003 17:36:30 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302171352.01068.netfilter@newkirk.us>
-References: <20030217102959.25447.qmail@web13303.mail.yahoo.com>
-Reply-To: netfilter@newkirk.us
+Message-ID: <20030217173630.F21013@e-smith.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030217102959.25447.qmail@web13303.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,67 +16,80 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Tasha Smith <tashamaillist@yahoo.com>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-On Monday 17 February 2003 05:29 am, Tasha Smith wrote:
-> Hiiiii,
->
-> I have a LAN that has 3 windows 2000 computers and 1 Redhat7.3
-> (2.4.20) running
-> iptables 1.2.7a(Firewall/Router). I need some help fine tunning my
-> rules right now
-> the windows  machines on my LAN behind Firewall can access the net
-> wihtout any
-> restrictions. I mean as soon as i add a program like MSN Messenger i
-> dont have to
-> add RULES to my Firewall Machine it just lets it pass right on
-> through.Soo this
+    People,
 
-> # Set the default policy to drop.
-> iptables --policy INPUT DROP
-> iptables --policy FORWARD DROP
-> iptables --policy OUTPUT ACCEPT
+    I'm debugging a problem with using DNAT to create a DMZ. We're getting
+problems due to a failure to maintain the source port of the traffic in a
+couple of cases. 
+    What I'm doing is forwarding UDP in the range 20000:20999 to the box on
+the DMZ, but the source port of the traffic is not always being maintained.
+I'm hoping someone has seen something like this before. Here is an
+annotated packet trace, sniffing all interfaces on the firewall/gateway.
+There are 3 NICs on that box, for the external, internal, and DMZ networks. 
 
-This is a good start, with DROP policy.
+-> 6010 sends to tw1 in the field
+15:11:30.854033 192.168.17.3.20004 > 66.46.196.131.9000:  udp 172 (DF)
+-> traffic is SNAT'd
+15:11:30.854065 firewall.mitel.com.20004 > 66.46.196.131.9000:  udp 172 (DF)
 
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+-> 6010 sends to tw2 in the field
+15:11:30.854227 192.168.17.3.20000 > 66.46.196.139.9000:  udp 172 (DF)
+-> traffic is SNAT'd
+15:11:30.854243 firewall.mitel.com.20000 > 66.46.196.139.9000:  udp 172 (DF)
 
-Good step two, lets existing connections through, along with related=20
-traffic.
+-> 6010 sends to ICP
+15:11:30.854417 192.168.17.3.20001 > 192.168.1.2.5001:  udp 172 (DF)
+-> traffic is routed
+15:11:30.854431 192.168.17.3.20001 > 192.168.1.2.5001:  udp 172 (DF)
 
-> # Fowarding is allowed in the direction
-> iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.0/24 -j ACCEPT
+-> tw2 sends to 6010
+15:11:30.856266 66.46.196.139.9000 > firewall.mitel.com.20000:  udp 172 [tos 0xb0]
+-> traffic is DNAT'd
+15:11:30.856304 66.46.196.139.9000 > 192.168.17.3.20000:  udp 172 [tos 0xb0]
 
-This is your problem here.  You don't want this.  You want to have a rule=
-=20
-for each type of traffic you want to allow to be forwarded.  IE:
+-> 6010 sends to ICP
+15:11:30.865773 192.168.17.3.20005 > 192.168.1.2.5000:  udp 172 (DF)
+-> traffic is routed
+15:11:30.865822 192.168.17.3.20005 > 192.168.1.2.5000:  udp 172 (DF)
 
-iptables -A FORWARD -i eth1 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -i eth1 -p udp --dport 53 -j ACCEPT
+-> tw1 sends to 6010
+15:11:30.868172 66.46.196.131.9000 > firewall.mitel.com.20004:  udp 172 [tos 0xb0]
+-> traffic is DNAT'd
+15:11:30.868189 66.46.196.131.9000 > 192.168.17.3.20004:  udp 172 [tos 0xb0]
 
-These two, together with the DROP policy and state rule will allow=20
-machines behind the firewall to browse HTTP documents, (and consult DNS=20
-to resolve web addresses) and nothing else.
+-------problem---------
+-> ICP sends to 6010
+15:11:30.873526 192.168.1.2.5000 > firewall.mitel.com.20005:  udp 172 [tos 0xb0]
+-> traffic is DNAT'd incorrectly?
+15:11:30.873560 192.168.1.2.1024 > 192.168.17.3.20005:  udp 172 [tos 0xb0]
+-----------------------
 
-iptables -A FORWARD -i eth0 -p tcp --m multiport --dport 25,80,110,443 -j=
-=20
-ACCEPT
+Checking,
 
-This one, instead of the first one above, would allow email (POP3 and=20
-SMTP) and both HTTP and HTTPS web browsing.
+ip_nat_core.c
+ip_nat_proto_udp.c
 
-As a suggestion, for a short fine-tuning period, try placing specific=20
-ACCEPT rules first in FORWARD (after the state rule) followed by a LOG=20
-rule like:
+    I find that netfilter does try to maintain the port, and do a 1:1 pass
+through. However, I can't figure out why it's translating port 5000 to 1024
+in this case. 
+    Additionally, I found a case where traffic from ports 5000 and 5001
+were both translated to a source port of 1024! How connection tracking is
+supposed to pull that apart again, I don't know. 
 
-iptables -A FORWARD -i eth0 -j LOG --log-prefix "UnhandledForward:"
+    Any help appreciated. Neither port 5000 or 5001 seem to be occupied,
+according to netstat and this trace, so I don't know why it would change
+the source port. According to the above code, it will change it if I can't
+get uniqueness, 
 
-and finally by your original 'allow all traffic' rule.  Then consult the=20
-LOG frequently to see what traffic is not handled by your specific=20
-rules, and you can decide whether to create a specific rule to allow it,=20
-or just let it be DROPped when you finally pull the catch-all out.  The=20
-alternative is just to ditch the catch-all rule now, and handle "my AIM=20
-won't work!" and similar complaints as they arise.
+    Thanks,
+    Mike
 
-j
+-- 
+Michael P. Soulier <michael_soulier@mitel.com>, 613-592-2122 x2522
+SME Solutions, Mitel Networks Corporation
+"...the word HACK is used as a verb to indicate a massive amount
+of nerd-like effort."  -Harley Hahn, A Student's Guide to Unix
 
