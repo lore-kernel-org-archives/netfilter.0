@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Instructions on how to redirect port 80 to port 8080
-Date: Tue, 17 Feb 2004 19:30:37 +0000
+From: Ben Goedeke <goedeke-netfilter@gmx.net>
+Subject: NATed and direct connection to one server
+Date: Tue, 17 Feb 2004 20:29:18 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402171930.37729.Antony@Soft-Solutions.co.uk>
-References: <9908FCB837A50642B74E2BEC198843095CC64A@csrees-exchsrvb.csrees.usda.gov> <1077044692.2402.51.camel@pepelui.baicom> <1077045002.2397.54.camel@pepelui.baicom>
+Message-ID: <40326B8E.10303@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1077045002.2397.54.camel@pepelui.baicom>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,63 +15,37 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Tuesday 17 February 2004 7:10 pm, Alexis wrote:
+Hey everybody,
 
-> iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to
-> x.x.x.x:8080
+I just took over administering a LAN at a university site and I have to 
+move an entire subnet from private to regular IPs. Up until now the only 
+outside access to this net was a pop and an smtp server both of which 
+the users accessed through the firewall's _IP_ address (there was no DNS 
+entry). There were two NAT rules that forwarded the ports to the real 
+servers.
 
-You might prefer to use REDIRECT - it's like DNAT, but only allows you to 
-specify the port number, and forces the IP address to the local machine:
+To make the move as painless as possible for the users I want to keep 
+the DNAT rules for a while (and point them to the new IP of the mail 
+servers). I also added DNS entries for the real IPs of the mail servers. 
+In the long run I want to drop NAT altogether but for now the mail 
+servers should be reachable via both the firewall and their own 
+addresses. Because I doubt everybody will immediately change their mail 
+client'ss settings.
 
-iptables -A PREROUTING -t nat -d a.b.c.d -p tcp --dport 80 -j REDIRECT --to 
-8080
+Now for my question: Do I need to add an SNAT rule in POSTROUTING to 
+handle responses from the mail servers or is it enough to have the DNAT 
+rules in PREROUTING? And if I indeed need an SNAT rule how can I 
+possibly distinguish packets that belong to connections that were DNATed 
+when they came in and those that weren't and had the right destination 
+IP all along?
 
-(Note that I've added a "-d a.b.c.d" where a.b.c.d is the IP address of the 
-machine with the rule on it - otherwise it would redirect *all* TCP port 80 
-traffic, whether it was originally addressed to this machine or somewhere 
-else.)
+I feel like I'm making a simple thing very complicated here... but I 
+only have limited experience with iptables. So any help is greatly 
+appreciated.
 
-Regards,
-
-Antony.
-
-> On Tue, 2004-02-17 at 16:04, Alexis wrote:
-> > iptables -t mangle -A PREROUTING -p tcp --dport 80 -j DNAT --to
-> > x.x.x.x:8080
-> >
-> > could be a start :)
-> >
-> > On Tue, 2004-02-17 at 15:55, Martinez, Michael wrote:
-> > > Guys -
-> > >
-> > > I'm finding a lack of documentation describing how to do this. It ought
-> > > to be simple. I know how to do it with ipchains.
-> > >
-> > > On a redhat linux system using /etc/sysconfig/iptables, what line(s) do
-> > > I add to /etc/sysconfig/iptables to configure to redirect all inbound
-> > > port 80 traffic to port 8080 on the same host?
-> > >
-> > > Thank  you -
-> > >
-> > > Regards,
-> > >
-> > > Michael Martinez
-> > > ISTM/CSREES
-> > > United States Department of Agriculture
-> > > ---
-> > > This email is signed with my digital signature so that you may verify
-> > > the authenticity of the sender.
-
--- 
-These clients are often infected by viruses or other malware and need to be 
-fixed.  If not, the user at that client needs to be fixed...
-
- - Henrik Nordstrom, on Squid user's mailing list
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Thanks,
+Ben
 
