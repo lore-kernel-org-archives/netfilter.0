@@ -1,19 +1,18 @@
-From: Mark Moseley <moseleymark@gmail.com>
+From: Tib <tib@tigerknight.org>
 Subject: Re: use of the limiting options
-Date: Tue, 25 Jan 2005 12:17:22 -0800
-Message-ID: <294d5daa0501251217b1935c4@mail.gmail.com>
-References: <Pine.LNX.4.53.0501251248340.24829@altaica>
+Date: Tue, 25 Jan 2005 14:22:25 -0600 (CST)
+Message-ID: <Pine.LNX.4.53.0501251421150.24829@altaica>
+References: <Pine.LNX.4.53.0501251248340.24829@altaica> 
 	<Pine.LNX.4.53.0501251306320.24829@altaica>
 	<Pine.LNX.4.53.0501251327570.24829@altaica>
 	<294d5daa0501251137328fa4ff@mail.gmail.com>
 	<Pine.LNX.4.53.0501251340370.24829@altaica>
 	<294d5daa05012511513465fcc1@mail.gmail.com>
 	<Pine.LNX.4.53.0501251355270.24829@altaica>
-Reply-To: Mark Moseley <moseleymark@gmail.com>
+	<294d5daa0501251217b1935c4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.53.0501251355270.24829@altaica>
+In-Reply-To: <294d5daa0501251217b1935c4@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,58 +23,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Tib <tib@tigerknight.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mark Moseley <moseleymark@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-It's used very often for logging, so that the logging doesn't swamp
-the firewall's disk. Imagine you're dropping 100 packet/s and want to
-log what's going on. You'd want to have the logging rule limited to
-something like 1/s or whatever.
 
+OOOOOOH - I see I think.. the ones that get caught by the limit rule don't
+go to the drop rule, which means they're allowed to connect. The ones that
+don't get caught by the limit rule slip on through to the drop rule.
 
+See - my understanding of what the limit module was doing was completely
+off base! Now I understand what's going on.
 
-On Tue, 25 Jan 2005 13:56:25 -0600 (CST), Tib <tib@tigerknight.org> wrote:
-> 
-> You're kidding o_O
-> 
-> I guess it makes sense.. the connections will trip that rule until it is
-> satisfied and then move onto the next. That's.. bizarre.
-> 
-> <EOL>
-> Tib
-> 
-> On Tue, 25 Jan 2005, Mark Moseley wrote:
-> 
-> > Heh, forgot to CC the list on my original reply, sorry.
+<EOL>
+Tib
+
+On Tue, 25 Jan 2005, Mark Moseley wrote:
+
+> It's used very often for logging, so that the logging doesn't swamp
+> the firewall's disk. Imagine you're dropping 100 packet/s and want to
+> log what's going on. You'd want to have the logging rule limited to
+> something like 1/s or whatever.
+>
+>
+>
+> On Tue, 25 Jan 2005 13:56:25 -0600 (CST), Tib <tib@tigerknight.org> wrote:
 > >
-> > Makes sense on the --limit-burst. :)
+> > You're kidding o_O
 > >
-> > As far as adding the DROP/REJECT after that, once the connection limit
-> > in the --limit rule has been reached, it will simply just fall through
-> > the next rule (i.e. it doesn't do any implicit DROP'ing on its own).
-> > So the rule with the --limit just matches up to the rate in --limit
-> > and then doesn't match. Without a rule later on (or a policy to
-> > DROP/REJECT), any overflow will just get accepted.
+> > I guess it makes sense.. the connections will trip that rule until it is
+> > satisfied and then move onto the next. That's.. bizarre.
 > >
+> > <EOL>
+> > Tib
 > >
+> > On Tue, 25 Jan 2005, Mark Moseley wrote:
 > >
-> > > Yup - once I saw an example of someone USING the limit options it made
-> > > sense :]
+> > > Heh, forgot to CC the list on my original reply, sorry.
 > > >
-> > > The only thing --limit-burst does is say 'you have x many free tries
-> > > before you fall under the rate limit of Y/time restrictions'.
+> > > Makes sense on the --limit-burst. :)
 > > >
-> > > So on mine, you can effectively connect twice in short succession before
-> > > you are cut back to once every 10 minutes (6 per hour).
+> > > As far as adding the DROP/REJECT after that, once the connection limit
+> > > in the --limit rule has been reached, it will simply just fall through
+> > > the next rule (i.e. it doesn't do any implicit DROP'ing on its own).
+> > > So the rule with the --limit just matches up to the rate in --limit
+> > > and then doesn't match. Without a rule later on (or a policy to
+> > > DROP/REJECT), any overflow will just get accepted.
 > > >
-> > > > Be sure to add a DROP or REJECT on the same match (unless the default
-> > > > policy is already that).
 > > >
-> > > I don't follow why to do this - explain?
 > > >
-> > > <EOL>
-> > > Tib
+> > > > Yup - once I saw an example of someone USING the limit options it made
+> > > > sense :]
+> > > >
+> > > > The only thing --limit-burst does is say 'you have x many free tries
+> > > > before you fall under the rate limit of Y/time restrictions'.
+> > > >
+> > > > So on mine, you can effectively connect twice in short succession before
+> > > > you are cut back to once every 10 minutes (6 per hour).
+> > > >
+> > > > > Be sure to add a DROP or REJECT on the same match (unless the default
+> > > > > policy is already that).
+> > > >
+> > > > I don't follow why to do this - explain?
+> > > >
+> > > > <EOL>
+> > > > Tib
+> > > >
 > > >
 > >
 >
