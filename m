@@ -1,10 +1,13 @@
-From: George Vieira <GeorgeV@citadelcomputer.com.au>
-Subject: RE: hosts.deny
-Date: Mon, 8 Jul 2002 09:58:21 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: hosts.deny
+Date: Mon, 8 Jul 2002 00:59:16 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200FAA488DE0D41194F10010B597610D2BA269@JUPITER>
+Message-ID: <20020707235918.OPUR23840.mta03-svc.ntlworld.com@there>
+References: <EPEHIDPIPEBFNAHLCHPGAEMPCEAA.dennis@core-enterprises.com> <20020707230435.FXCG2755.mta05-svc.ntlworld.com@there> <0GYW00K53KXH59@l-daemon>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <0GYW00K53KXH59@l-daemon>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,43 +18,25 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-Most of the http and sql scans are viruses I found.
+On Monday 08 July 2002 12:51 am, Jack Bowling wrote:
 
-in regards to sendmail, use a spam filter using sendmail 8.12 and spamcop or
-something..
-
-thanks,
-George Vieira
-Systems Manager
-Citadel Computer Systems P/L
-http://www.citadelcomputer.com.au
-
-
-
------Original Message-----
-From: Antony Stone [mailto:Antony@Soft-Solutions.co.uk]
-Sent: Monday, 08 July 2002 9:56 AM
-To: netfilter@lists.samba.org
-Subject: Re: hosts.deny
-
-
-On Monday 08 July 2002 12:49 am, Ed Street wrote:
-
-> Hello,
+> ** Reply to message from Antony Stone <Antony@Soft-Solutions.co.uk> on Mon,
+> 08 Jul 2002 00:04:34 +0100
 >
-> This is most commonly seen in spam mail.
+> > hosts.allow can still be useful to specify a command to run when a
+> > connection comes in (eg to provide some special logging ?), but these
+> > files don't add any security to a decently configured netfilter setup.
+>
+> Beg to differ. /etc/hosts.deny allows access tuning of services that are
+> set wide open on the firewall, ssh being a prime example.
 
-I most commonly see it in port scans, and probes for http / sql holes.
+The firewall shouldn't be set wide open.   Put whatever restrictions you used 
+to apply in hosts.deny into your firewall rules instead, then people can't 
+even see you're running an ssh server to try cracking.
 
-Spam mail may contain misleading headers (until you get to learn where to 
-stop reading the machine names, and realise that the headers have been
-rigged 
-from that point on), but they can't disguise the real IP address of the
-relay 
-machine which fed the mail into the smtp chain...
+ 
 
 Antony.
 
