@@ -1,13 +1,10 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: irc dcc incoming transfers truncated after a while
-Date: Tue, 5 Apr 2005 17:59:50 -0400
-Message-ID: <200504051759.50574.Alistair@nerdnet.ca>
-References: <1112267638.21083.14.camel@localhost.localdomain>
+From: "dave beach" <drbeach@rogers.com>
+Subject: Iptables, nat, and IPSec
+Date: Tue, 5 Apr 2005 21:47:02 -0400
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4w8KAAAAQAAAA4U2BieFWiUege5oTSkUNnQEAAAAA@rogers.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1112267638.21083.14.camel@localhost.localdomain>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,32 +18,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On March 31, 2005 06:13 am, Andrea Ratto wrote:
-> Hello List!
-> I am running a SuSE based router and NAT gateway. It uses the
-> SuSEFirewall iptables based script, which saved me a lot of tweaking.
-> Everything works great except irc dcc file transfers. I am not talking
-> about uploads from internal network (those works because I use forwarded
-> ports) but about downloads. After a minute or so the firewall blocks
-> some packages killing the transfer.
-	
-	Are you absolutely certain that your firewall is doing the blocking? -- LOG 
-the packets please and let us see.... 
+I have a class C private net behind both a dedicated linux/iptables box and
+a Linksys BEFSR41 broadband router. Traffic outbound from the iptables box
+to the router is DNATted to that machine's "external" (but still private) IP
+by iptables, and NATted again by the router to ITS external (public) IP.
+Everything works fine, except...
 
-	When you loaded the ip_conntrack_irc module did you set the server ports you 
-would be connecting to?  --> modinfo ip_conntrack_irc for the details, you 
-need to have the IRC server ports you are connecting to in there.
+I need to be able to run two concurrent passthrough IPSec sessions outbound
+through that configuration. Singly, they work fine. When run concurrently,
+the second one to try and connect to the office VPN (the IPSec requirement)
+fails.
 
-> Of course i have modprobed ip_nat_irc and ip_conntrack_irc that SuSE
-> didn't load by default, but the problem remains. So I was wondering if
-> there is something I still need to do (some iptables command to make use
-> of the modules?). I haven't found any doc so I am asking the list.
-> Thank very much. Bye
+Digging through Linksys documentation reveals that this particular router
+will not support more than one passthrough IPSec session. Before I go and
+drop money on a replacement router (such as the BEFSX41), are there inherent
+limitations with iptables (or, probably more accurately) with NAT/IPSec
+generally, that would render such a purchase a waste of money in that it
+wouldn't solve my problem?
 
-
-	P.S. I've had problems with users on RR getting dcc transfers started, but 
-the  connection dies .. I'm not sure where the problem lies -- but its 
-something I've seen.
-	
-	Alistair
-
+Of course, I COULD bypass the iptables box and plug the second connecting
+device right into the (new) router, but I'd rather not do that if I don't
+have to.
