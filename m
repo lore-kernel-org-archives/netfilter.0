@@ -1,12 +1,13 @@
-From: Corin Langosch <corinl@gmx.de>
-Subject: netmeeting ?
-Date: Sun, 16 Jun 2002 19:54:15 +0200
+From: Geog Hofstetter <geggo@g3gg0.dyndns.org>
+Subject: Flag SYN not necessarily state NEW?
+Date: 16 Jun 2002 20:04:56 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <17729088316.20020616195415@gmx.de>
-Reply-To: Corin Langosch <corinl@gmx.de>
+Message-ID: <1024250696.6468.3.camel@geggo>
+References: <000501c21415$544d0e40$7b0010ac@dynamicaccess.lan>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <000501c21415$544d0e40$7b0010ac@dynamicaccess.lan>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,25 +18,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: IP-Tables Maillingliste <netfilter@lists.samba.org>
+To: NetFilter Mailinglist <netfilter@lists.samba.org>
 
-Hi all,
+hmm is it possible that (if u use target LOG) your syslog just shows up 
+'blah: SYN packet received'
+'last message repeatet 2 times'
 
-im behind a iptables firewall and want to be able to accept incomming netmeeting
-calls. To make things simple I added the following rules:
+;)
 
-$IPTABLES -t nat -A PREROUTING -p tcp --dport ! 80 -j DNAT --source 217.229.94.141 --to 192.168.1.3
-$IPTABLES -t nat -A PREROUTING -p udp --dport ! 80 -j DNAT --source 217.229.94.141 --to 192.168.1.3
-$IPTABLES -A FORWARD -p tcp -d 192.168.1.3 --dport ! 80 -j ACCEPT
-$IPTABLES -A FORWARD -p udp -d 192.168.1.3 --dport ! 80 -j ACCEPT
 
-unluckily, no incomming calls are detected and the other party gets an error.
-other programms like my local ftp server etc. work fine, this means the
-rules are correct.
+    >>On Wed, 8 May 2002, Ing. Christian Ogris wrote:
+    >> I connect from Box A via SSH to Box B, where the firewall runs, and i
+    >>get the state "NEW" on the first packet.
+    >> Then - the first connection is still established - i connect AGAIN from
+    >>Box A to Box B and do NOT get the state "NEW" anymore. (So obviously
+    >> it's already accepted by the ESTABLISHED,RELATED -j ACCEPT rule).
+    >> Is this behavior correct?
+    
 
-can anyone help me please ?
-
-thanks,
-Corin
 
 
