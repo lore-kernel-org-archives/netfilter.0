@@ -1,11 +1,13 @@
-From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
-Subject: RE: Upper limit of users for iptables firewall
-Date: Mon, 18 Oct 2004 09:17:29 -0700
+From: Jose Maria Lopez <jkerouac@bgsec.com>
+Subject: Re: Differentiating direct, and redirected access?
+Date: 18 Oct 2004 20:14:27 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <29F6FAF7F2C0D41190980002A513591E0E1707CC@FSNSAB30>
+Message-ID: <1098097784.23550.3.camel@nostromo.bgsecm.com>
+References: <20041018021948.48396.qmail@web50902.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20041018021948.48396.qmail@web50902.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,64 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: 'Jose Maria Lopez' <jkerouac@bgsec.com>, ads nat <adsnat@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-jose,
+bl	 -El lun, 18 de 10 de 2004 a las 04:19, J Kim escribi=C3=B3:
+> Hello all,
+>=20
+> I'm running a squid at port 3128 as a transparent proxy.
+>=20
+> There are requests coming directly to 3128 port and=20
+> those coming to 80 port and then redirected to 3128 by=20
+> following rule:
+>=20
+> -t nat -A PREROUTING -i eth0 -p tcp -m tcp \
+>    --dport 80 -j REDIRECT --to-ports 3128
+>=20
+> What I want is block direct requests to 3128, allowing
+> redirected access (transparent proxy) only. How do I do it?
+>=20
+> If I just set up a rule in filter chain like:
+>=20
+> -t filter -A INPUT -i eth0 -p tcp -m tcp \\=20
+>    --dport 3128 -j DROP=20
+>=20
+> Those requests redirected from port 80 to 3128 are also
+> blocked by this rule. It seems that the redirected packets
+> come in to this chain once again with the new port number.
+>=20
+> How can I differentiate these two different kinds of
+> request? Any clue will be greatly appreciated.
+>=20
+> Jinsuk Kim
 
-
-processing acls is not  afunction of how many but how deep thru the =
-list
-before  we get  a match and how the firewall internals address usage
-of horse power - this is NOT bandwidth issue at all.
-
-
-acl building  is an art that born out of a combination of
-1.	blocking known badstuff.
-2. 	placing 'noisy' allowed protocols near top to not thrash.
-3.	blocking ALL un needed traffic EARLY in the acl.
-4. 	pro-actively monitoring and profile bulding to fine-tune the acls.
-
-this is why i suggest that firewalls, routers, servers and clients be
-separated
-whenever finances and layer 8 of the OSI allow it.
-
-btw,,,,layer 8 relates to finance/marketing/politics, if one is =
-hindered by
-this
-then they have my sympathies as this is usually what allows intruders
-access
-more than any other single componenet.
-
-~piranha
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Jose Maria
-Lopez
-Sent: Saturday, October 16, 2004 5:30 AM
-To: ads nat
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Upper limit of users for iptables firewall
-
-
-El vie, 15 de 10 de 2004 a las 07:47, ads nat escribi=C3=B3:
-> hi,
-> I am having 512 Mbps bandwidth. Users are mainly
-> browsing Web and using email facility. I am using
-> squid for cache. I have about 10 % cache so i think
-> total upper bandwidth availability will be aroung 600
-> Kbps. Bandwidthwise there is no problem. My worry is
-> if iptables processing for 400 users with various acl
-> s should not slow down firwall processing due to
-> hardware configuration.
-> Thanks for support.
-
-In my experience you should not have any problem to
-manage that number of users even if you have a huge
-number of rules with your machine. But you can always
-make some tests to see if the machine slows down, but
-I think it should be ok.
+Insert your DROP rule in the nat table, in the
+PREROUTING chain before the rule that does the
+redirect.
 
 --=20
 Jose Maria Lopez Hernandez
@@ -83,11 +61,9 @@ bgSEC Seguridad y Consultoria de Sistemas Informaticos
 http://www.bgsec.com
 ESPA=C3=91A
 
-The only people for me are the mad ones -- the ones who are mad to =
-live,
+The only people for me are the mad ones -- the ones who are mad to live,
 mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, =
-burn
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
 like fabulous yellow Roman candles.
                 -- Jack Kerouac, "On the Road"
 
