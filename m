@@ -1,11 +1,12 @@
-From: Esteban <esteban@alstec.fr>
-Subject: polip
-Date: Wed, 12 Mar 2003 10:54:35 +0100
+From: "Shankar; Hari" <hari@ece.utexas.edu>
+Subject: Very Basic Newbie Question
+Date: Wed, 12 Mar 2003 02:44:54 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030312105435.1eac4fcf.esteban@alstec.fr>
+Message-ID: <Pine.GSO.4.10.10303120238420.23360-100000@tick.ece.utexas.edu>
+References: <D7FB597C5A18824C9A257EC757CEAF4C344D90@pepsi.teamlynx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <D7FB597C5A18824C9A257EC757CEAF4C344D90@pepsi.teamlynx.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,31 +16,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi there,
-while I was writing a QoS configuration script, I heard about polip,
-which seem to be what a was trying to do by myself.
 
-here a part of the web site :
-"Pol-IP is a complete traffic control system for a Linux NAT box with
-multiplataform clients.  It has a user-friendly wizard to config the
-system in which you can add, delete or chage, clients or groups
-bandwith, in a hierarchical structure. The clients get clean statistics
-about their actual speed and assigned bandwith."
+Hello,
 
-So I would like to know if someone has already tried this script, and if
-it is a good way to configure QoS.
-It don't seem to be based on iproute2, so i really don't know if it is a
-godd idea to use it. 
-Anybody heard about it ?
+I'm new to real world kernel hacking (recently finished a course in school
+on linux kernel basics). I was hoping to get some insight from y'all about
+debugging tools and methods/strategies while debugging the kernel. I know
+lots of tools exist, like UML,Ptrace,kdb, remote gdb, DProbes, etc...just
+wanted some insight into which tools are better to use, or whether it
+depends on what part of kernel you're debugging. I've used User Mode Linux
+(UML), and gdb with UML, but dont know if thats the best approach.
 
-Thanks a lot
+Any insights, comments would be highly appreciated!
 
--- 
-Stephane DESMET
-Alstec Informatique
-17, rue du Colisee
-75008 Paris
+Thanks!
+
+Hari
+
 
