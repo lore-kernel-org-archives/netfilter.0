@@ -1,75 +1,45 @@
-From: Patrick Maartense <patrick@patrick.at>
-Subject: Re: How to block all ports except port 21,22,80,8080 ???
-Date: Tue, 18 Feb 2003 11:15:21 +0100
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E5207B9.7C2BEDFA@patrick.at>
-References: <1045555939.94722.jacob_chan@so-net.net.tw> 
-		<1045558628.1967.29.camel@kermit.spenneberg.de> <1045560648.1913.39.camel@kermit.spenneberg.de>
+From: paridhi bansal <paridhibansal@yahoo.com>
+Subject: Problem with IPtables/Netfilter hooks
+Date: Tue, 18 Feb 2003 03:40:34 -0800 (PST)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20030218114034.47859.qmail@web10802.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-it would be MUCH better to
+Hi!!
 
-iptables -p INPUT DROP # default drop
-then allow only these ports
-iptables -A INPUT -p tcp -m multiport  --dport 21,22,80,8080 -j ACCEPT
+I am a newbie to iptables...I was trying to understand
+the hooks defined in netfilter.With natting enabled,
+every pkt shld ideally come to Prerouting hook and
+then only move to input hook if it is for local m/c
+itself or forward hook if it is to be forwardedand
+finally to postrouting..
+This is what i have understood..and i hope this is
+correct..If not,,pls correct me and give ur comments..
 
-safe thinking: Default : drop, allow only what needed.
+But my analysis of pkts says that sometimes, the pkts
+meant for the local machine come directly to the input
+hook rather than the prerouting hook..Is it
+right?????Is yes, why/when does this happen??If no,
+can what can be the case when this happens??
+
+Paridhi
 
 
-
-Ralf Spenneberg wrote:
-
-> Am Die, 2003-02-18 um 09.57 schrieb Ralf Spenneberg:
-> > Am Die, 2003-02-18 um 09.12 schrieb jacob_chan:
-> > > How to block all ports except port 21,22,80,8080 ???
-> > >
-> > > Dear all,
-> > >
-> > > I want to block all ports except port 21,22,80,8080.
-> > Block for what? Input? What protocol? TCP?
-> > iptables -A INPUT -p tcp ! --dport 21,22,80,8080 -j DROP
-> Missed the multiport part:
->
-> iptables -A INPUT -p tcp -m multiport ! --dport 21,22,80,8080 -j DROP
->
-> > Cheers,
-> >
-> > Ralf
-> > >
-> > > Any help appreciated.
-> > >
-> > > Best regards,
-> > >
-> > > Jacob
-> > --
-> > Ralf Spenneberg
-> > RHCE, RHCX
-> >
-> > IPsec/PPTP Kernels for Red Hat Linux:
-> > http://www.spenneberg.com/.net/.org/.de
-> > Honeynet Project Mirror:                http://honeynet.spenneberg.org
-> > Snort Mirror:                           http://snort.spenneberg.org
-> --
-> Ralf Spenneberg
-> RHCE, RHCX
->
-> IPsec/PPTP Kernels for Red Hat Linux:
-> http://www.spenneberg.com/.net/.org/.de
-> Honeynet Project Mirror:                http://honeynet.spenneberg.org
-> Snort Mirror:                           http://snort.spenneberg.org
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Shopping - Send Flowers for Valentine's Day
+http://shopping.yahoo.com
 
