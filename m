@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Transparent proxy question
-Date: Mon, 15 Mar 2004 11:24:00 +0000
+Subject: Re: iptables acting as a TCP proxy
+Date: Mon, 15 Mar 2004 11:28:20 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403151124.00040.Antony@Soft-Solutions.co.uk>
-References: <40556EE6.6040809@stupar.homelinux.net> <200403151057.13169.Antony@Soft-Solutions.co.uk> <40558E8D.2010303@stupar.homelinux.net>
+Message-ID: <200403151128.20474.Antony@Soft-Solutions.co.uk>
+References: <1079349033.10231.14.camel@gdh.walshsimmons.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40558E8D.2010303@stupar.homelinux.net>
+In-Reply-To: <1079349033.10231.14.camel@gdh.walshsimmons.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +18,55 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter-List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 15 March 2004 11:07 am, Sasa Stupar wrote:
+On Monday 15 March 2004 11:10 am, Gavin Hamill wrote:
 
-> Antony Stone pravi:
+> Basically, we're moving a webserver from hosting in-house to a data
+> centre, so whilst the DNS is propogating, I'd like to use our firewall
+> to proxy port 80 requests destined for the now-defunct old IP, to the
+> new external IP.
 >
-> > 1. Now that it isn't working, do you get any errors in your proxy log
-> > file, or does it think there are no requests?
-> > 2. What source IPs does your proxy server allow access for?
-> > 3. Does the proxy server know how to route back to the clients?
-> > 4. Do you have a suitable ESTABLISHED,RELATED rule on your firewall to
-> > allow back the replies?   (I expect so, but you didn't post your full
-> > ruleset earlier, so I can't be sure...)
-> > 5. Where are the clients on the network in relation to the firewall and
-> > the proxy server (please don't tell me they're on the same subnet as the
-> > proxy...?)
+> I know this means wasting a lot of bandwidth, but there should be plenty
+> left over once the webserver is no longer in the building.
 >
-> 1. I've got nothing in the squid log but in the browser I get Timeout
-> error, so looks like squid doesn't get any requests
-> 2. It allows for LAN IP's
-> 3. Yep
-> 4. Yep $IPT -A STATE -m state --state ESTABLISHED,RELATED -j ACCEPT
-> 5. Some of them are on the same subnet and some not.
+> I seem to remember the solution was a pair of rules using the mangle
+> table and SNAT / DNAT, but try as I might, I can't find it with Google.
+>
+> Can anyone help?
 
-Okay, first off, you will not be able to do what you want for clients which 
-are on the same subnet as the proxy server - the only way to get them 
-communicating through the firewall is to SNAT the packets on the way out of 
-the firewall.   If you want their real IPs to be seen by the proxy, configure 
-the clients to use the proxy instead of doing it transparently.
+iptables -A PREROUTING -p tcp --dport 80 -d old.ip.add.ress -j DNAT --to 
+new.ip.add.ress
+iptables -A FORWARD -p tcp --dport 80 -d new.ip.add.ress -j ACCEPT
+iptables -A POSTROUTING -p tcp --dport 80 -d new.ip.add.ress -j SNAT --to 
+my.ip.add.ress
 
-Second, are you experiencing the same problem (clients can no longer access 
-proxy) for both clients which are on the same subnet as the proxy (I expect 
-this to fail) and clients which are not?
+Where old.ip.add.ress is the old IP, routed towards the machine running these 
+rules, new.ip.add.ress is the new IP, somewhere out in the Internet, and 
+my.ip.add.ress is the address of the Firewall itself.
+
+What these rules mean is:
+1. Anything sent to the old address should go to the new address instead.
+2. Make sure it gets there through the FORWARD chain.
+3. Set the source address to be this machine so the replies come back this way 
+and get reverse-natted.
+
+Note that whilst you are using this rule, all accesses to the remote webserver 
+will appear to come from your firewall (you can't tell where the real clients 
+are), but since this is only a temporary arrangement I guess you're happy 
+with that.
 
 Regards,
 
 Antony.
 
 -- 
-This email is intended for the use of the individual addressee(s) named above 
-and may contain information that is confidential, privileged or unsuitable 
-for overly sensitive persons with low self-esteem, no sense of humour, or 
-irrational religious beliefs.
+There are two possible outcomes:
 
-If you have received this email in error, you are required to shred it 
-immediately, add some nutmeg, three egg whites and a dessertspoonful of 
-caster sugar.   Whisk until soft peaks form, then place in a warm oven for 40 
-minutes.   Remove promptly and let stand for 2 hours before adding some 
-decorative kiwi fruit and cream.   Then notify me immediately by return email 
-and eat the original message.
+ If the result confirms the hypothesis, then you've made a measurement.
+ If the result is contrary to the hypothesis, then you've made a discovery.
+
+ - Enrico Fermi
 
                                                      Please reply to the list;
                                                            please don't CC me.
