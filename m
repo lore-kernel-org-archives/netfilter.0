@@ -1,8 +1,8 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Fwd: Returned mail: see transcript for details
-Date: Mon, 23 Sep 2002 17:03:14 +0100
+Subject: Fwd: Re: FreeS/WAN + static NAT + 2 machines
+Date: Mon, 23 Sep 2002 17:04:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209231603.g8NG3Lv24847@vulcan.rissington.net>
+Message-ID: <200209231604.g8NG4mv24864@vulcan.rissington.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,32 +18,46 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Strange - just got this back from the netfilter list server.....
-
 ----------  Forwarded Message  ----------
 
-Subject: Returned mail: see transcript for details
-Date: Mon, 23 Sep 2002 16:58:09 +0100
-From: Mail Delivery Subsystem
-To: <Antony@Soft-Solutions.co.uk>
+Subject: Re: FreeS/WAN + static NAT + 2 machines
+Date: Mon, 23 Sep 2002 16:57:41 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+To: nefilter@lists.netfilter.org
 
-from lbr-wlan-57-66.external.my.domain.com [1x.14x.5x.6x]
+On Monday 23 September 2002 4:51 pm, Walther@gehag-dsk.de wrote:
+> > I'm intrigued to know what quantity of data you're trying to shovel
+> > through FreeS/WAN that you find the performance of the machine a
+> > limitation.   Please tell me your link bandwidth and a rough spec of the
+> > machine/s you're using.
+>
+> I have a 2MBit with about 15 official IP's.
 
-   ----- The following addresses had permanent fatal errors -----
-<nefilter@lists.netfilter.org>
-    (reason: 550 Unknown local part nefilter in
- <nefilter@lists.netfilter.org>)
+What type / speed CPU on the FreeS/WAN box ?
+How much memory ?
+What load average does it generate ?
 
-   ----- Transcript of session follows -----
+I'm surprised you are experiencing performance problems with less than
+2Mbits/sec through FreeS/WAN.
 
-... while talking to kashyyyk.netfilter.org.:
->>> RCPT To:<nefilter@lists.netfilter.org>
+> i will install the testmachine on wednesday in the DMZ, and will try again
+> with the modes. i rechecked my rules and in my test-environment it works
+> now (with NAT).
 
-<<< 550 Unknown local part nefilter in <nefilter@lists.netfilter.org>
-550 5.1.1 <nefilter@lists.netfilter.org>... User unknown
+What did you change ?
 
--------------------------------------------------------
+> i will tell you on wednesday if it works or not, coz there is no way to
+> test it before this date.
 
+Okay.
 
 Antony.
+
+--
+
+Having been asked to provide a reference for this man,
+I can confidently state that you will be very lucky indeed
+if you can get him to work for you.
+
+-------------------------------------------------------
 
