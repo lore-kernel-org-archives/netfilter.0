@@ -1,11 +1,12 @@
-From: andilist@gmx.de
-Subject: Delete connection tracking for udp connection
-Date: Thu, 16 Dec 2004 07:55:04 +0100 (MET)
-Message-ID: <21290.1103180104@www68.gmx.net>
+From: varun_saa@vsnl.net
+Subject: port 80 to port 3128
+Date: Thu, 16 Dec 2004 13:36:58 +0500
+Message-ID: <8b9d168b968c.8b968c8b9d16@vsnl.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-language: en
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,41 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 Hello,
-how can i delete an entry in /proc/net/ip_conntrack for a udp connection?
+      My server is on Mandrake 10.10ff.
 
-I am doing NAT and have the following problem:
+eth0 is WAN with static IP connected to 512Kbps DSL.
 
-An internal client sends a udp packet every 10 sekonds.
-After the first packet the connection is listet in /proc/net/ip_conntrack.
-eg:
-source: 192.168.1.1
-destionatin: 1.2.3.4
-NAT
-destionatin: external ip of nat machine (3.4.5.6
-source: 1.2.3.4
-State: Assured
-Timeout: 180-170 (sends every 10 seconds)
+eth1 is LAN.
 
-now, my external address changes (from 3.4.5.6 -> 4.5.6.7) (reconnect to the
-internet).
-My problem is, that in /proc/net/ip_conntrack the old address (3.4.5.6) is
-listed
-How can i delete the connection tracking manually (on reconnect; on change
-of external address)?  it will never reach the timeout because the client
-sends a new packet every 10 seconds.
+Using webmin - networking - Linux firewall, I have done a NAT on eth0.
 
-Or, is there a possibility to change the ip-address in the connection
-tracking table?
+After I did NAT on eth0 I see that all clients can access straight away
+the internet without any settings. Is it Ok ?
 
-Regards 
-Andreas
+Next I would like to use packet filter and redirect all port 80
+to port 3128. I have tried as follows :
+
+accept - If protocol is TCP and input interface is eth1 and destination port is 3128  
+         and source port is 80
+
+
+Is it Ok ? 
+
+Please correct me as I am a newbie to iptables.
+
+Thanks
+
+Varun
 
 
 
--- 
-GMX ProMail mit bestem Virenschutz http://www.gmx.net/de/go/mail
-+++ Empfehlung der Redaktion +++ Internet Professionell 10/04 +++
 
