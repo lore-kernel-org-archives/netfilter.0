@@ -1,8 +1,8 @@
-From: Jeronimo de A Barros <jero@i2.com.br>
-Subject: Slackware 10RC1 + Kernel 2.6.7 + iptables 1.2.10
-Date: Wed, 16 Jun 2004 18:01:53 -0300 (BRT)
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: icq
+Date: Wed, 16 Jun 2004 14:03:35 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0406161739360.8826-100000@lima.i2.com.br>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D47285E@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,35 +14,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: 'Rob Sterenborg' <rob@sterenborg.info>, 'netfilter' <netfilter@lists.netfilter.org>
 
-Hi all,
+the rpc like tendencies of icq make it not worth the trouble to manage
+access to/from it.
 
-	While compiling iptables 1.2.10 (GCC 3.3.4):
+~piranha
 
-Making dependencies: please wait...
-Extensions found: IPv4:recent IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.10\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt_ah.c
-In file included from include/libiptc/libiptc.h:6,
-                 from include/iptables.h:5,
-                 from extensions/libipt_ah.c:8:
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: warning: no semicolon at end of struct or union
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: error: parse error before '*' token
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:259: error: parse error before '}' token
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: type defaults to `int' in declaration of `DECLARE_MUTEX'
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: parameter names (without types) in function declaration
-/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: `DECLARE_MUTEX' declared `static' but never defined
-make: *** [extensions/libipt_ah_sh.o] Error 1
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Rob Sterenborg
+Sent: Wednesday, June 16, 2004 1:42 PM
+To: 'netfilter'
+Subject: RE: icq
 
-	IPv6 is not checked.
 
-	Any hint ? Any help ?
+> what do I need to do to allow ICQ to work through my firewall
 
-	Thanks in advance.
+(Other answers already given..)
 
-[]s, Jero
+Not sure about recent versions, but with old versions you could only do
+simple things like messaging when using NAT only.
+If you wanted to do things like chat and/or filetransfer, you needed a
+socks server. I guess this still holds.
+NEC had a free socks5 server for *nix once, but stopped providing it.
+It's now Permeo's (www.permeo.com) but AFAIK not free any more. If you
+need it ; there's a source version on rpmfind.net.
 
+
+
+Gr,
+Rob
 
 
