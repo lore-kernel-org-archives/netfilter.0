@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: Scary Hole in the Firewall?
-Date: Mon, 19 Jul 2004 20:50:56 +0100
+Date: Mon, 19 Jul 2004 15:01:21 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407192050.56542.Antony@Soft-Solutions.co.uk>
-References: <1090265344.11052.7.camel@dchws.tqmcube.com>
-Reply-To: NetFilter List <netfilter@lists.netfilter.org>
+Message-ID: <40FC2891.4080404@pbl.ca>
+References: <1090265344.11052.7.camel@dchws.tqmcube.com>	 <40FC242E.3050504@pbl.ca> <1090266741.11052.12.camel@dchws.tqmcube.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090265344.11052.7.camel@dchws.tqmcube.com>
+In-Reply-To: <1090266741.11052.12.camel@dchws.tqmcube.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,53 +17,29 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: NetFilter List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter User Mailinglist <netfilter@lists.netfilter.org>
 
-On Monday 19 July 2004 8:29 pm, David Cary Hart wrote:
+David Cary Hart wrote:
+> On Mon, 2004-07-19 at 15:42, Aleksandar Milivojevic wrote:
+>>Question.  Iniside firewall as in "on separate machine inside firewall", 
+>>or as in "on the same machine as firewall"?
+> 
+> -snip-
+> 
+>>In later case, what you are seeing is what you were supposed to see (if 
+>>I'm correct on how snort works, by sniffig network traffic directly from 
+>>the network interface).
+> 
+> Same machine. I think that Snort only sees what gets through the
+> firewall.
 
-> Platform = Fedora 2
-> IPTables firewall. Snort running inside the firewall.
->
-> Here's the log entry. This is the default log entry prior to DROP. In
-> other words, what gets logged, gets dropped.
->
-> Jul 19 14:32:39 mail kernel: DEFAULT - Firewall: IN=eth0 OUT=
-> MAC=00:4f:4e:12:f9:93:00:09:5b:c9:37:54:08:00 SRC=203.202.150.156
-> DST=192.168.0.31 LEN=404 TOS=0x00 PREC=0x00 TTL=111 ID=4719 PROTO=UDP
-> SPT=1042 DPT=1434 LEN=384
->
-> Here's the Snort log:
->
-> [**] MS-SQL Worm propagation attempt [**]
-> 07/19-14:32:39.314347 203.202.150.156:1042 -> 192.168.0.31:1434
-> UDP TTL:111 TOS:0x0 ID:4719 IpLen:20 DgmLen:404
-> Len: 376
-> =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
->
-> [**] MS-SQL version overflow attempt [**]
-> 07/19-14:32:39.314347 203.202.150.156:1042 -> 192.168.0.31:1434
-> UDP TTL:111 TOS:0x0 ID:4719 IpLen:20 DgmLen:404
-> Len: 376
->
-> Now what?
-
-Well, without seeing your firewall ruleset, we can't offer much advice about 
-why this packet got caught by snort.
-
-Also, where is eth0 on your firewall?   Inside or outside?   I notice that the 
-log entry says it came in on eth0 but didn't go out, therefore it's not being 
-routed....
-
-Regards,
-
-Antony.
+Actually, if Snort is sniffing traffic directly on the network interface 
+(like tcpdump or ethereal), than it will see the packets as they arrive 
+on the wire (before Netfilter can filter them out).
 
 -- 
-If the human brain were so simple that we could understand it,
-we'd be so simple that we couldn't.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
