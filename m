@@ -1,16 +1,14 @@
-From: Cody Harris <hchs@ns.sympatico.ca>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: Not forwarding?
-Date: Sun, 28 Mar 2004 17:16:52 -0400
+Date: Sun, 28 Mar 2004 22:32:06 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040328171652.7c6cddb4@darna.vectec.net>
-References: <20040328155231.32b07799@darna.vectec.net>
-	<200403282148.46815.Antony@Soft-Solutions.co.uk>
-	<20040328165948.66bef4ef@darna.vectec.net>
-	<200403282209.16455.Antony@Soft-Solutions.co.uk>
+Message-ID: <200403282232.06322.Antony@Soft-Solutions.co.uk>
+References: <20040328155231.32b07799@darna.vectec.net> <200403282148.46815.Antony@Soft-Solutions.co.uk> <20040328171548.72cbcdd6@darna.vectec.net>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200403282209.16455.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040328171548.72cbcdd6@darna.vectec.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -23,67 +21,38 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, 28 Mar 2004 22:09:16 +0100,
-Someone named Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+On Sunday 28 March 2004 10:15 pm, Cody Harris wrote:
 
-> On Sunday 28 March 2004 9:59 pm, Cody Harris wrote:
-> 
-> > On Sun, 28 Mar 2004 21:48:46 Antony Stone wrote:
-> > >
-> > > 1. Is any other protocol being forwarded correctly?
-> >
-> > I'm only forwarding tcp, i don't know what the deal is with ICMP.
-> 
-> Yes, I meant any protocol like HTTP, SMTP, POP3....?
-> 
-> Another way of wording my question: "Is SSH failing where other things work, 
-> or is SSH failing the same as everything else?"
+> On Sun, 28 Mar 2004 21:48:46 +0100, Antony Stone wrote:
+>
+> > 4. Sorry for the way my mailer has mangled your rules, however please
+> > post the output from "iptables -L FORWARD -nvx" (the v is important as it
+> > shows the interface data which is not in the standard listing output).
+>
+> I did that. Check the other thread. Unless you want me to repost.
 
-I'll try using HTTP. I'll post the results.
+No, seen it already.   Thanks.
 
-> 
-> > > 2. What does "cat /proc/sys/net/ipv4/ip_forward" return?
-> >
-> > 1
-> 
-> That's good.
-> 
-> > > 3. What do you mean by "properly"?   Does ssh work at all?  Sometimes?  
-> > > From some machines?   Only for a certain time, then stops?   What?
-> >
-> > It logs into my firewall. We've tested that by creating "phoneyuser" on the
-> > firewall and logging in as that.
-> 
-> So what's the answer to question 5?
+> > 5. How are you testing the setup?
+>
+> I created 2 unique usernames. And tested both. I got a freiend to try both.
+> Phoneyuser on the firewall and night on the box i wanted. night didn't work
+> but phoneyuser logged in ok
 
-I'm another e-mail.
+This is netfilter.   We're talking OSI layer 3/4, not layer 7.
 
-> 
-> > > 4. Sorry for the way my mailer has mangled your rules, however please
-> > > post the output from "iptables -L FORWARD -nvx" (the v is important as it
-> > > shows the interface data which is not in the standard listing output).
-> > >
-> > > 5. How are you testing the setup?
-> 
-> Regards,
-> 
-> Antony.
-> 
-> -- 
-> The difference between theory and practice is that in theory there is no 
-> difference, whereas in practice there is.
-> 
->                                                      Please reply to the list;
->                                                            please don't CC me.
-> 
-> 
+That means I don't need to know about usernames & passwords, I need to know 
+about IP addresses, where's the client, where's the server, etc.
 
+Regards,
+
+Antony.
 
 -- 
-+------------------+-----------------------------+
-| Cody Harris      | --------------------------- |
-| ---------------- | --------------------------- |
-+------------------+-------+---------------------+---+
-| *Sigh*. No key.                                    |
-+----------------------------------------------------+
+If the human brain were so simple that we could understand it,
+we'd be so simple that we couldn't.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
