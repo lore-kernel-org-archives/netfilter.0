@@ -1,8 +1,9 @@
-From: Kenneth Andresen <kenneth@cancun.net>
-Subject: Why is networking enabled at kernel level?
-Date: Tue, 06 Apr 2004 12:59:16 -0500
+From: "Stuart Lamble" <stu@gateway10.homeip.net>
+Subject: Prerouting question
+Date: Tue, 6 Apr 2004 20:00:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1081274356.2983.2.camel@kenneth.intracol.net>
+Message-ID: <000801c41c01$01e18b40$0464a8c0@stu>
+Reply-To: <stu@gateway10.homeip.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,17 +19,22 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all, 
+Hi All
 
-I have been searching for information related with why networking is
-part of the Linux kernel itself, but have found nothing at either
-kernel.org or with any of my Google searches. 
+If prerouting is the first rule a packet touches when arriving at the
+firewall, why then do we not set the default to DROP here and allow
+through what we need.
+That is if you are running a nat environment.
 
-I can see multiple pro's and con's but am looking for a more extensive
-discussion about this. Anyone who can provide me with some good links?
+Then if a packet makes it through the PREROUTING, you can pass it to the
+INPUT rule base if it is for the firewall machine itself or to FORWARD
+if its for the LAN for example.
+Making the default DROP for both the above, and allowing specifics
+again.
 
+Thanks for any comments offered...
 
-Best regards,
-Kenneth
+Stuart
+
 
 
