@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Deleting Connection Tracking information
-Date: Tue, 9 Jul 2002 00:50:51 +0100
+From: Michael <mutk@ozemail.com.au>
+Subject: Soliciting User's Experiences with NewNat patch...
+Date: Tue, 09 Jul 2002 11:22:42 +1000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020708235054.PKTV16050.mta01-svc.ntlworld.com@there>
-References: <AE696B0F5B44A348B8D18E40F976D9571BA92E@mailsrv.etagon.com> <200207081143.g68Bh6806571@vulcan.rissington.net> <20020708233153.GB30970@aaricia.hemmet.chalmers.se>
+Message-ID: <3D2A3AE2.6050203@ozemail.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020708233153.GB30970@aaricia.hemmet.chalmers.se>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,54 +15,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.samba.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: IPtables Users <netfilter@lists.samba.org>
 
-On Tuesday 09 July 2002 12:31 am, Joakim Axelsson wrote:
+Hi all,
 
-> 2002-07-08 12:43:01+0100, Antony Stone <Antony@Soft-Solutions.co.uk> ->
->
-> > If you are talking about TCP, then I do not believe this assumption is
-> > valid, because only the very first packet of a connection contains the
-> > SYN flag, and only the second packet contains the SYN/ACK, which are the
-> > first two steps of the TCP three-way handshake.   Without those the
-> > connection tracking system won't set up an ESTABLISHED connection, and
-> > the automatic NAT rules won't apply.
->
-> That is not true. I suggest reading some old mails in the archive and
-> documents. Conntrack's state of NEW is NOT the same things as a TCP with
-> SYN-flag. The FIRST packet is sees in a flow is marked state NEW.
+I am asking for some personal experiences among users regarding 
+the"NewNat" patch.
 
-Okay, let's think about this a little further...
+Particularly:
 
-Suppose I have two netfilter boxes sitting side by side with identical rules 
-on them, including NAT, identical addresses on the interfaces (suppose for 
-the time being I've arranged to have identical MACs on the ethernet cards as 
-well) and identical routing tables.
+How stable is it?
 
-One box is plugged into my network, client on one side, server on the other - 
-the other netfilter box is switched on but disconnected from the network.
+Is it production ready, any crashes lately?
 
-After a bit of traffic has flowed, the netfilter box has some conntracking 
-table entries, and the client and server have an established connection (or 
-maybe several).
+Any known security problems?
 
-Suddenly I decide to pull out the network cables from netfilter box 1 and 
-connect them to netfilter box 2 instead.
+I seem to recall reading that the general feeling amongst developers of 
+Netfilter is that H323 support should never have been done, and it's 
+inclusion in the Netfilter release schedule is not definate (It may be 
+dropped).
 
-Are you saying that the first packet to flow between the client and server 
-through this second netfilter machine, which has no connection tracking table 
-on it yet, will cause a NEW entry to be placed in the connection tracking 
-table, and that the reply packet will cause that entry to become ESTABLISHED, 
-and that the NAT rules will work ?
+I need to consider (Yet again) using the patch, as our users are wanting 
+to use Web cam and Netmeeting etc.. I have a system setup that uses 
+iptables, and pam_iptables that add's and deletes iptables rules as 
+users log in. The purpose is to share a single xADSL link to internet, 
+NAT'ing etc. Actually in one server/gateway I have another Firewall that 
+does support Netmeeting protocols, and I use my iptables firewall to 
+just filter. I have used all statefull (state NEW for outgoing, state 
+RELATED,ESTABLISHED for incomming etc) so Netmeeting breaks in this 
+situation anyway.
 
-Even though both of these packets are just mid-connection ACK packets with no 
-SYN flags in them ?
+I have considered using Open gatekeeper  but the way I see it, Open323 
+is an abomination, and more dificult than NewNat patch to set up...And 
+yet another daemon to keep running, support and keep up to date....
 
-If this is true, what stops us having high-availability automatic-failover 
-netfilter machines ?
+Any thoughts, suggestions as to the best way to go? My personal feeling 
+is to to say no to H323 support , and weather the complaints for another 
+year :| At until the future of NewNat is clear...
 
- 
 
-Antony.
+Cheers,
+Michael
+
 
