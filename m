@@ -1,13 +1,11 @@
-From: "Alexander W. Janssen" <yalla@ynfonatic.de>
-Subject: awkward p2p clients ignoring tcp-reset and everything
-Date: Tue, 18 Feb 2003 21:03:49 +0100
+From: - = k o l i s k o = - <kolisko@penguin.cz>
+Subject: h323 compilation error
+Date: 18 Feb 2003 22:15:03 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030218200349.GD23914@ynfonatic.de>
+Message-ID: <1045602903.1536.13.camel@kolisko>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="q9KOos5vDmpwPx9o"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,48 +15,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, kadlec@blackhole.kfki.hu
+
+Hi all,
+
+i have a linux 2.4.21-pre4 patched by h323-conntrack-nat.patch and set
+Makefile, Configure.help, Configure.in and when i compile kernel i get
+this error message:
 
 
---q9KOos5vDmpwPx9o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.21-pre4/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-fomit-frame-pointer -pipe -mpreferred-stack-boundary=3D2 -march=3Di686 =20
+-nostdinc -iwithprefix include -DKBUILD_BASENAME=3Dip_conntrack_h323  -c
+-o ip_conntrack_h323.o ip_conntrack_h323.c
+ip_conntrack_h323.c: In function `h245_help':
+ip_conntrack_h323.c:49: union has no member named `ct_h225_info'
+ip_conntrack_h323.c:51: union has no member named `exp_h225_info'
+ip_conntrack_h323.c: In function `h225_help':
+ip_conntrack_h323.c:166: union has no member named `ct_h225_info'
+ip_conntrack_h323.c:168: union has no member named `exp_h225_info'
+make[3]: *** [ip_conntrack_h323.o] Error 1
+make[3]: Leaving directory
+`/usr/src/linux-2.4.21-pre4/net/ipv4/netfilter'
+make[2]: *** [first_rule] Error 2
+make[2]: Leaving directory
+`/usr/src/linux-2.4.21-pre4/net/ipv4/netfilter'
+make[1]: *** [_subdir_ipv4/netfilter] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.21-pre4/net'
+make: *** [_dir_net] Error 2
 
-Hello,
+What is wrong?
 
-i'm writing to the list because of a topic which drives me mad. I'm talking
-about port 4662/tcp and about awkward p2p clients constantly ignoring
-tcp-resets and icmp-port-unreachables. Well, since i don't use p2p clients
-personally, can anyone tell me which p2p client uses that? Emule, Edonkey,
-Kazaa, whatever?
+Thank You.
+kolisko
 
-I really can't understand why those hosts keep ignoring my refusal; they ju=
-st
-keep sending syn after syn. Is it a broken ip-stack? Or is it a bad-coded
-client-application?
-
-Oh Bugger :) OK, that was offtopic.
-
-Alex.
 
 --=20
-"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
-l."
-Instructions for use of this post: Insert tounge in cheek. Read as normal.
 
---q9KOos5vDmpwPx9o
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+---
+Michal Koles=E1r
+kolisko@penguin.cz
+http://kolisko.penguin.cz
++420.777.225.297
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: Weitere Infos: siehe http://www.gnupg.org
 
-iEYEARECAAYFAj5SkaUACgkQEMMZKORQoYJ50ACfVfMxd75E4ezh5gVKmBumYRat
-pVQAnj0OICmjiSJnL6+/ikEckpHAux5U
-=HlZ6
------END PGP SIGNATURE-----
+Don't send me any attachment in Micro$oft (.DOC, .PPT) format please
+Read http://www.fsf.org/philosophy/no-word-attachments.html
+Preferable attachments: .PDF, .HTML, .TXT
+Thanx for adding this text to Your signature
 
---q9KOos5vDmpwPx9o--
 
