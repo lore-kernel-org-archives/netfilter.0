@@ -1,12 +1,13 @@
-From: "Antonio Paulo Salgado Forster" <aforster@br.ibm.com>
-Subject: logging mac address
-Date: Tue, 15 Jul 2003 17:06:04 -0300
+From: Emanoil Kotsev <emanuel@abc.at>
+Subject: iptables 1.2.8 libc6 question
+Date: Tue, 15 Jul 2003 22:40:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OFED428E53.CB94B945-ON83256D64.006E5081-83256D64.006E6B88@LocalDomain>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DF5@alderaan.smgtec.com>
+Message-ID: <200307152240.47954.emanuel@abc.at>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122DF5@alderaan.smgtec.com>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,21 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
+Please help me to find information how to build iptables (1.2.8) for kernel=
+=20
+2.4.20 on my PC with libc-2.3.1 for another PC where libc-2.2.5 is installe=
+d.
 
-Hello all,
+I have no problem to compile and install but iptables dies miserably trying=
+ to=20
+load libc6 which is actually a link to libc-2.2.5 on the target machine.
 
-      Is there any known way to log the mac address for packets blocked on
-the forward table just like in the input table? I've been searching the
-archives and documentations but found nothing so far.
+What should I do?
 
-Thanks in advance.
+P.S above this I found quite a lot of documentation telling me how I can=20
+compile and install a linux kernel and iptables and aplications based on=20
+libiptc but nothing to tell me how I can link iptables to different libc an=
+d=20
+I don't want to make a mistake ...
 
-Forster
+Thanks
 
+=2D --=20
+//----------------------
+||
+|| Emanoil Kotsev      =20
+||
+|| tel. 0043 1 9253175
+||
+\\--- penguin friendly--
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE/FGbMMdng4VCsE9oRAjaXAJ9OM74eOS6HQYua3AaIq3RIghtobACg8LJQ
+NfXxplQIsrR+2ahNUw2c6CA=3D
+=3D/tyx
+=2D----END PGP SIGNATURE-----
 
 
