@@ -1,11 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: multiple nat'd clients to poptop
-Date: Tue, 14 Dec 2004 18:05:26 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F1BBD@pxtvjoexd01.pxt.primeexalia.com>
+From: O-Zone <liste@zerozone.it>
+Subject: Multiple output routes
+Date: Wed, 15 Dec 2004 10:44:46 +0100
+Message-ID: <200412151044.46362@X-Blurb>
+Reply-To: o-zone@zerozone.it
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,55 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Craig Nellist <nellistc@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-v1.2.11.  This is on RHEL3v3.  I figured if I had to recompile iptables =
-I might as well upgrade while I was at it. =20
-=20
-It could also be that the hardware device does not support multiple =
-NAT'd GRE packets.  I've had problems with some clients using some (not =
-all) Linksys devices.  Some others that are based on the Linux kernel =
-are more likely to fail as well (from what I've been told and found in =
-some news groups). =20
-=20
-Gary
-=20
+Hi all,
+i want to route traffico for a specific subnet to routeA while default route 
+for my linuxbox is routeB. Here's the diagram:
 
-________________________________
+(internet)--[Router A]---+
+                                    |
+                                [Linux BOX]----(Subnet 10.0.0.x)
+                                    |
+(internet)--[Router B]---+
 
-From: Craig Nellist [mailto:nellistc@gmail.com]
-Sent: Tue 12/14/2004 5:02 PM
-To: Gary W. Smith
-Cc: netfilter@lists.netfilter.org
-Subject: Re: multiple nat'd clients to poptop
+RouterA and RouterB have the same subnet (i.e. RouterA lan is 192.168.0.1 and 
+RouterB has 192.168.0.2) and LinuxBox have ONLY ONE externat iface like 
+192.168.0.3. While i use LinuxBOX i wanna go "out" trought 192.168.0.1 but 
+PC's MASQ'ed in Subnet 10.0.0.x must go out throug 192.168.0.2. 
 
+Can someone point me in the right direction ?
 
+Thanks ! Oz
 
-On Tue, 14 Dec 2004 15:02:43 -0800, Gary W. Smith <gary@primeexalia.com> =
-wrote:
-> >trying to connect to a server which is itself behind a router and =
-NAT'd
->
-> You mentioned that you applied the conntrack patch.  Did you do this =
-on both the firewalls?  I have had success with the following.  Note =
-that I have disabled ip_nat_pptp.  If I load ip_nat_pptp then only one =
-person can connect and on the first time only.  Subsequent attempts =
-fail.  I have asked but received no feedback on this as well.  But =
-hopefully this will help you as well.
-
-I have the conntrack patch applied on the server machine. The clients
-are behind a hardware router/firewall (not a PC).
-
-> Anyways, here's what I run and the order that I run them in.  The =
-firewall currently has two active incoming connections I did test =
-multiple outgoing connections when I configured it.
-
-Ok, thanks for the info. Which iptables rules do you have running in
-conjunction with this?
-
-
-cheers,
- Craig
-
+-- 
+------
+O-Zone ! www.zerozone.it
 
