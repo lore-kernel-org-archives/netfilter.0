@@ -1,13 +1,9 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: "-m state -state NEW" or "--tcp-flags ALL SYN" for tcp?
-Date: Thu, 30 Oct 2003 11:53:25 +0100 (CET)
+From: "Knight, Steve" <Steve.Knight@bskyb.com>
+Subject: first time set up
+Date: Thu, 30 Oct 2003 11:50:35 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0310301150560.24537@dns.toxicfilms.tv>
-References: <20031029203922.3d8f47cf.netfilter@schuetter.org>
- <1067500316.893.13.camel@elendil.intranet.cartel-securite.net>
-Mime-Version: 1.0
+Message-ID: <FDB52A0429DFD31196FB0008C7D972D50EA57901@OST_EXCH_USR5>
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1067500316.893.13.camel@elendil.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +13,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: =?ISO-8859-1?Q?J=F6rg_Sch=FCtter?= <netfilter@schuetter.org>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> If you're really paranoid, you can also enforce that TCP packets flagged
-> as ESTABLISHED should not be SYN ones :
->
-> 	iptables -A FORWARD -m state --state ESTABLISHED -p tcp \
-> 		! --syn -j ACCEPT
-And If you're really really PARANOID try this for new TCP :-)
-	iptables -A FORWARD -p tcp -m state --state NEW --syn -m length \
-		--length 40:68 -j ACCEPT
+Hi there ---
 
-New SYN packets are 40 to 68 bytes (depending on IP options) - without
-payload.
+Once I've got the normal stuff in place on a test standalone box [default
+drop, accept related + established on tcp, loopback enabled]
 
-Regards,
-Maciej
+iptables -A OUTPUT -p udp -s $LOCALIP -d $DNS1 --dport 53 -j ACCEPT
+
+Shouldn't this be enough to allow standard dns resolution to take place?
+According to Ziegler, it should?
+
+Or am I a complete plum.
+
+Any pointers as to my plumness gratefully received.  Thanks :)
+
+steve
+
+
+
+-----------------------------------------------------------------------
+Information in this email may be privileged, confidential and is 
+intended exclusively for the addressee.  The views expressed may
+not be official policy, but the personal views of the originator.
+If you have received it in error, please notify the sender by return
+e-mail and delete it from your system.  You should not reproduce, 
+distribute, store, retransmit, use or disclose its contents to anyone.
+ 
+Please note we reserve the right to monitor all e-mail
+communication through our internal and external networks.
+-----------------------------------------------------------------------
 
 
