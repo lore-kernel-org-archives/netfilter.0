@@ -1,8 +1,8 @@
 From: Alexey Talikov <alexey_talikov@texlab.com.uz>
-Subject: simple error in extensions/libipt_ROUTE.c extensions/libipt_IMQ.c
-Date: Thu, 20 Jun 2002 16:17:50 +0500
+Subject: simple error in extensions/libipt_ROUTE.c
+Date: Thu, 20 Jun 2002 16:30:27 +0500
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <31HD43XO85VPGD98ZXBRM4XJIYV1X.3d11b9de@ALEXEY>
+Message-ID: <ZWYXC9KGRLXLKB676ON62KFZX93FDDC.3d11bcd3@ALEXEY>
 Reply-To: alexey_talikov@texlab.com.uz
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
@@ -18,18 +18,24 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
+Cc: delaunois@info.ucl.ac.be
 
-Simple error in extensions/libipt_ROUTE.c
-line 24 and 127 need change NETFILTER_VERSION to IPTABLES_VERSION
-also
-extensions/libipt_IMQ.c
-line 18 and 87 need change NETFILTER_VERSION to IPTABLES_VERSION
+in extensions/libipt_ROUTE.c
+line 60 and 77
+also change " if (check_inverse(optarg, &invert)) " to
+"  if (check_inverse(optarg, &invert, NULL, 0))  "
+
+
 -----------------------------------
 mailto:alexey_talikov@texlab.com.uz
 BR
 Alexey Talikov
 FORTEK
 -----------------------------------
+
+
+
+
 
 
 
