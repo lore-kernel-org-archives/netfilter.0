@@ -1,13 +1,11 @@
-From: Axel Heinrici <axel.foley-beverly-hills@gmx.de>
-Subject: Re: migration to iptables
-Date: Thu, 13 Jun 2002 14:38:15 +0200
+From: Daniel Rycaj <daniel.rycaj@fuchs.pl>
+Subject: splitting one network physically using linux box.
+Date: Tue, 7 May 2002 11:07:03 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206131238.OAA02077@axpmgr.physik.rwth-aachen.de>
-References: <200206101942.43007@.> <200206101431.g5AEVpU08614@vulcan.rissington.net> <200206110754.14398@.>
+Message-ID: <20020507110703.2ef33390.daniel.rycaj@fuchs.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <200206110754.14398@.>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,45 +18,39 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-Hi
+hi,
 
-On Tuesday 11 June 2002 04:26, Payal wrote:
-> Hi,
-> Thanks for the mails.
->
-> iptables -A POSTROUTING -o $EXT_IF -j MASQUERADE
-> Warning: wierd character in interface `-j' (No aliases, :, ! or
+I have a *very* standard situation:
 
-Is it possible that EXT_IF is not set? This really looks like 
-EXT_IF="". Try expicitly iptables -A POSTROUTING -o ppp0 -j 
-MASQUERADE (or eth1 or whatever).
-But I think it should be iptables -t nat -A POSTROUTING -o ..... -j 
-MASQUERADE.
+network: 10.1.1.97/27
 
-From info iptables:
-  MASQUERADE
-       This  target  is  only  valid  in  the  nat  table, in the
-       POSTROUTING chain.
+	   small router			10 PCs
+	---[ 10.1.1.97 / 27 ] --------- [ 10.1.1.98-108 ]
 
+Now I want to create a firewall between the "small router" and "10 PCs".
+The only problem is: nobody should change configuration of PC. 
+So the default gw still should be set to 10.1.1.97 on each PC.
 
-> *). Bad argument `MASQUERADE'
-> Try `iptables -h' or 'iptables --help' for more information.
+I did such configuration:
 
-Same problem. May you should have a look at man iptables.
+	
+	--[ 10.1.1.97 / 27 ] ----- eth0 [ linux box ] eth1 ------ [ 10.1.1.98-108 ]
 
-> and this gave,
-> iptables -A forward -j MASQUERADE
-> iptables: No chain/target/match by that name
+eth1 must have assigned IP: 10.1.1.97 because I don`t want to change configuration of PCs.
+eth0 can be set to one of unused addresses from 10.1.1.96 network (in my example 10.1.1.110)
 
-Correct. MASQUERADE is not valid there.
+I have to set up the default gw for my linux box to 10.1.1.97.
+How to tell linux that he has to route packet through the external 10.1.1.97 rather the local one ? :)
 
-> My aim is very simple, I just wanted the equivalent command for
-> ipchains -A forward -j MASQ
-> in iptables.
-> Thanks a lot in advance and eagerly waiting for the help.
-> -Payal
+I tried to do it by several ways:
 
+1) ip ro add 10.1.1.97/32 dev eth0	- doesn`t work because 10.1.1.97 exists in table local
 
-greetings 
-	Axel
+2) ip ro del 10.1.1.97/32 table local	- works fine for 1-2 minutes. After this short time
+the local table contains .97 again !
+
+Any ideas how to solve this ?
+
+regards,
+Daniel Rycaj
 
