@@ -1,12 +1,12 @@
-From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
-Subject: Re: ipt_string problems and FAQ
-Date: Mon, 1 Sep 2003 13:03:48 +0200 (CEST)
+From: Jay Eno <JEno@finali.com>
+Subject: Session State question
+Date: Tue, 2 Sep 2003 16:10:19 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.51.0309011300560.32229@dns.toxicfilms.tv>
-References: <200308271319.29439.tabris@tabris.net>
+Message-ID: <D73ABBB16E06D411B60F00508B6DD9F80474AE40@postoffice.finali.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3719E.FED48D60"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200308271319.29439.tabris@tabris.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,27 +16,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Tabris <tabris@tabris.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
+
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
+
+------_=_NextPart_001_01C3719E.FED48D60
+Content-Type: text/plain
 
 Hi,
-> ask where this FAQ entry is...
-http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.14
 
-> second, I've been using ipkungfu to attempt to stop codered, nimda, etc
-> from hitting my apache server and clogging up my logs.
-> It's not working, the rules never trigger. I've played around with it to
-> no avail.
-I do not know how ipkungfu works, i'd have to check it out to see if it
-can works and if it is a valid and clean solution.
+     I'm trying to do an HA firewall scendario, with the ability to failover
+session state. This works OK, for everything but the session state. Anybody
+have any idea if there's a way to do this with iptables between 2 boxes?
 
-> I guess, if this doesn't work, and isn't supposed to work, what SHOULD I
-> do?
-Patch your affected servers, use unaffected software and
-inform the netadmins of infected hosts about virii.
+-= Jay =-
 
-Regards,
-Maciej
+------_=_NextPart_001_01C3719E.FED48D60
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2654.45">
+<TITLE>Session State question</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>Hi,</FONT>
+</P>
+
+<P><FONT SIZE=3D2>&nbsp;&nbsp;&nbsp;&nbsp; I'm trying to do an HA =
+firewall scendario, with the ability to failover session state. This =
+works OK, for everything but the session state. Anybody have any idea =
+if there's a way to do this with iptables between 2 boxes?</FONT></P>
+
+<P><FONT SIZE=3D2>-=3D Jay =3D-</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C3719E.FED48D60--
 
