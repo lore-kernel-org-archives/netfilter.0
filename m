@@ -1,14 +1,13 @@
-From: "P.Italiaander" <pc-secure@home.nl>
-Subject: Re: NOT acceptable "/etc/sysconfig/network-scripts/ifup" script !!!
-Date: Thu, 15 May 2003 21:46:17 +0200
+From: Tomas Edwardsson <netfilter@tommi.org>
+Subject: Re: Connection Rate Limiting
+Date: Thu, 15 May 2003 19:15:47 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305152146.17228.pc-secure@home.nl>
-References: <200305142155.31623.pc-secure@home.nl> <200305151742.26913.pc-secure@home.nl> <20030515194843.6c8876f2.arnt@c2i.net>
+Message-ID: <20030515191547.GA13517@ok.is>
+References: <Pine.GSO.4.44.0305150852190.7322-100000@dudester.spoontail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030515194843.6c8876f2.arnt@c2i.net>
 Content-Disposition: inline
+In-Reply-To: <Pine.GSO.4.44.0305150852190.7322-100000@dudester.spoontail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,39 +18,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Daniel David Benson <dan@spoontail.com>
+Cc: netfilter@lists.netfilter.org
 
-Op donderdag 15 mei 2003 19:48, schreef u:
-> On Thu, 15 May 2003 17:42:26 +0200,
-> "P.Italiaander" <pc-secure@home.nl> wrote in message
->
-> <200305151742.26913.pc-secure@home.nl>:
-> > Op donderdag 15 mei 2003 14:52, schreef Arnt Karlsen:
-> > > ..I know, ipup _is_ buggy, my hint was more on Red Hats somewhat
-> > > sloppy QA attitude.  I mean, if I should _not_ use RH9 to route
-> > > traffic, I would like to know _that_ from the docs.
-> > >
-> > > ..does Mandrake or Debian turn their rear end onto _whoever_ like
-> > > RH-9 does in
-> > > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=89171 ???
-> >
-> > I've checked , but Mandrake 9.1 is not effected with that bug.
-> > Thanks for mention it.
-> > On Debian i don't know  ,don't have it , i use OpenBSD en Linux SuSe ,
-> > Redhat ,Mandrake.
-> >
-> > Does anyone have tested yet,  my patched /sbin/ifup file, for
-> > iptables-script ??
->
-> ..the wifi part of it works fine, but it _introduces_ bug # 89171,
-> I tested with a thinkpad 760 ED I use as AP, it runs RH-7.3.
->
-> ..it looks like Red Hat cannot use mac addresses to ID nics.
+On Thu, May 15, 2003 at 08:58:25AM -0700, Daniel David Benson wrote:
+> 
+> Hopefully this one hasn't been answered before.  We need to rate
+> limit on a per source IP address to port 80.  We are seeing certain
+> web servers suffer from resource starvation under a DDOS attack.
+> The solution to this problem is rate limit the number of
+> connections any source IP address can make.  Is this possible
+> to do with iptables?  I have searched just about everything and
+> I can't seem to find anything.  I know I can do traffic shaping
+> with iproute2, but I don't think that is the direction I want
+> to take.
+
+I believe that a iplimit from the patch-o-matic would serve you in
+this. A part of the description:
+
+This adds CONFIG_IP_NF_MATCH_IPLIMIT match allows you to restrict the
+number of parallel TCP connections to a server per client IP address
+(or address block).
+
+Examples:
+
+# allow 2 telnet connections per client host
+iptables -p tcp --syn --dport 23 -m iplimit --iplimit-above 2 -j REJECT
 
 
-hmm... , I really thought ,that after my update , this shoud be fixed ??
-since syntax is changed.
-I 've looked but can't find patch anywhere , do you have one ?
-
-Pascal 
+====
+Tomas Edwardsson
+HP Unix - Technical Support \  HP Unix Certified System Administrator
+Red Hat Technical Support    \  Red Hat Certified Engineer.
+Opin Kerfi
 
