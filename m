@@ -1,7 +1,7 @@
 From: "Andreas Grabner" <andi@vnc.at>
 Subject: 2 ISPs again
-Date: Fri, 10 Dec 2004 18:58:48 +0100 (CET)
-Message-ID: <40239.83.64.132.50.1102701528.squirrel@webmail.vnc.at>
+Date: Fri, 10 Dec 2004 20:03:24 +0100 (CET)
+Message-ID: <40842.213.33.127.134.1102705404.squirrel@webmail.vnc.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -41,7 +41,7 @@ Some config lines:
 default via EXTIP2 dev eth2
 
 # iptables -L -nv -t mangle
-1624  113K MARK       all  --  eth2   *       0.0.0.0/0           
+1624  113K MARK       all  --  eth2   *       0.0.0.0/0
 0.0.0.0/0           MARK set 0x1
 Thanks for any Tips, Documentation links ...
 
