@@ -1,12 +1,12 @@
-From: Vigil <nvnwdfuq02@sneakemail.com>
-Subject: Re: iprange
-Date: Wed, 12 Nov 2003 00:11:43 +0000 (GMT)
+From: Leonid Veytser <veytser@cs.bu.edu>
+Subject: Re: Problem with FORWARD hook
+Date: Tue, 11 Nov 2003 19:40:54 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.58.0311120005560.7355@fhynpb.envafyvqr.arg>
-References: <Pine.LNX.4.33.0311120009030.26051-100000@blackhole.kfki.hu>
+Message-ID: <Pine.SOL.4.20.0311111940090.29271-100000@csa.bu.edu>
+References: <200311112212.hABMCmj17939@agate.rockstone.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0311120009030.26051-100000@blackhole.kfki.hu>
+In-Reply-To: <200311112212.hABMCmj17939@agate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,27 +18,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Antony Stone <Antony@soft-solutions.co.uk>
+Cc: netfilter@lists.netfilter.org
 
->What is 'ngh'? Negative?
+I have figured out what my problem was. My machine had ip forwarding
+disabled.
 
-It is the sound a mong makes when he realises he made a stupid mistake.
+Thanks for you help.
 
->Where did you read it's built into the iptables *binary*? Which binary? Why are
->you sure it's truly built into the binary on your machine?
+On Tue, 11 Nov 2003, Antony Stone wrote:
 
-All I did to resolve my problem was run the iprange patch from patch-o-matic to
-put it into my kernel, recompile the kernel and reboot. Patch-o-matic didn't
-touch iptables 1.2.9 that I already had installed.
+> On Tuesday 11 November 2003 9:59 pm, Leonid Veytser wrote:
+> 
+> > When I dump the output of all the packets traveling thru my machine, I
+> > notice that none go thru FORWARD hook.
+> 
+> There's no other way packets are going to get routed through your machine 
+> except by passing through the FORWARD chain.
+> 
+> > So, I tried to make a packet have
+> > to go thru the FORWARD hook (ie by changing the packet dest at PREROUTING
+> > hook), but the packet never goes to the FORWARD hook, but disappears.
+> 
+> Show us an example of your rules so we can see what you are trying to do.
+> 
+> > Can there be some incorrect configuration on my machine that would cause
+> > it not to be able to forward packets?
+> 
+> There are many ways of (mis)configuring a machine so that it doesn't forward 
+> packets.   Some people might say this is a highly secure router :)
+> 
+> Antony.
+> 
+> -- 
+> 
+> Your email has been returned due to insufficient voltage.
+>                                                      Please reply to the list;
+>                                                            please don't CC me.
+> 
+> 
 
-IIRC (and I probably don't), I had to compile patch-o-matic's netfilter with the
-iprange patch and use that instead of the 'normal' iptables 1.2.8 source. I just
-forgot that there were two parts to getting iprange working: 1. iptables has to
-recognise it, 2. the kernel also must be compiled with it. With the 1.2.9
-changelog saying iprange was built into it, in my excitement I forgot about part
-two.
-
--- 
-
-.
 
