@@ -1,12 +1,13 @@
-From: "Alex Bennee" <alex@bennee.com>
-Subject: Mailing list problem?
-Date: Thu, 7 Nov 2002 11:27:19 -0000 (GMT)
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+Subject: RE: DNAT - TCP_MISS/503
+Date: Thu, 7 Nov 2002 14:03:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <36272.217.42.120.194.1036668439.squirrel@www.bennee.com>
-Reply-To: alex@bennee.com
+Message-ID: <FD8F124A387AD6119F7900A0D218B321019974@hslex01.hsl-brabantzuid.nl>
+References: <NGBBJHGGHKMOJBIADANIAEKGEFAA.eugenio@imidianet.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_20021107112719_83559"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <NGBBJHGGHKMOJBIADANIAEKGEFAA.eugenio@imidianet.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,58 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-------=_20021107112719_83559
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+> Sorry! I think this is a netfilter problem, because I'd
+> stoped my squid
+> and the problem not stoped.
+>
+> (If you test localhost IP my web server [123.0.0.18] it's okay!! but
+> if you test the name of the local domain
+> (wwww.mywebserver.com.br) it's not
+> okay,
+> the netscape report this error.)
+>
+> The access from INTERNET IP or domain name it's Okay, I don't
+> undestant why.
+>
+> It's probably something with my Iptables CHAIS, what do you think?
+
+What webserver did you test ; http://localhost or http://123.0.0.18 ?
+
+We don't know anything about your setup so it's quite difficult if not
+impossible to answer your question.
+Could you post your iptables rules so that we might be able help you (and
+please, not the output of : iptables -L, but the actual commands) ?
 
 
-Should posters be getting bounces from mailing list postings that can't
-be delivered to subscribers? Does the reply-to field not get set to the
-list?
-
--------- Original Message --------
-Subject: Returned mail: User unknown
-From: Mail Delivery Subsystem <MAILER-DAEMON@attglobal.net>
-Date: Thu, November 7, 2002 11:20
-To: <alex@bennee.com>
-
-The original message was received at Thu, 7 Nov 2002 06:20:04 -0500 from
-kashyyyk.netfilter.org
-
-   ----- The following addresses had permanent fatal errors -----
-<cutterd@attglobal.net>
-    (expanded from: <cutterd@attglobal.net>)
-
-   ----- Transcript of session follows -----
-mail.local: unknown name: cutterd
-550 <cutterd@attglobal.net>... User unknown
-
-Alex
-www.bennee.com/~alex/
-
-
-------=_20021107112719_83559
-Content-Type: message/delivery-status; name="untitled-2"
-Content-Disposition: attachment; filename="untitled-2"
-
-Reporting-MTA: dns; mx1.attglobal.net
-Received-From-MTA: DNS; kashyyyk.netfilter.org
-Arrival-Date: Thu, 7 Nov 2002 06:20:04 -0500
-
-Final-Recipient: RFC822; <cutterd@attglobal.net>
-X-Actual-Recipient: RFC822; cutterd@attglobal.net
-Action: failed
-Status: 5.1.1
-Last-Attempt-Date: Thu, 7 Nov 2002 06:20:04 -0500------=_20021107112719_83559
-Content-Type: text/plain; name="untitled-3.1"
-Content-Disposition: attachment; filename="untitled-3.1"
-
-
-
-Scratch that, must of been cached on the remote machine I was testing with.
-I'm still confused.
-------=_20021107112719_83559--
+Rob
 
 
