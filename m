@@ -1,13 +1,12 @@
-From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: FYI: QUEUE & ipqmpd bugs
-Date: Fri, 5 Jul 2002 21:15:26 +0200
+From: "david" <david@aid.inf.cu>
+Subject: Re: I need help , please
+Date: Fri, 5 Jul 2002 15:54:57 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <ag4rc0$pf3$2@main.gmane.org>
-References: <003301c2242d$7fca2e40$0689cb8a@etbx180>
+Message-ID: <020c01c2242b$8c9565b0$8703000a@aid.inf.cu>
+References: <NJEFLNJDIFFNMHDEBKMJAEKADOAA.jpatterson@asgardgroup.com> <200207051655.g65Gt3802651@vulcan.rissington.net> <01b501c22423$6fb6a010$8703000a@aid.inf.cu> <20020705191417.UWDG4119.mta06-svc.ntlworld.com@there>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
-In-Reply-To: <003301c2242d$7fca2e40$0689cb8a@etbx180>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,47 +17,79 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jean-Michel Hemstedt <jean-michel.hemstedt@alcatel.be>
-Cc: netfilter-devel@lists.samba.org, netfilter@lists.samba.org
+To: Antony Stone <Antony@Soft-Solutions.co.uk>
+Cc: netfilter@lists.samba.org
 
-On Fri, Jul 05, 2002 at 04:08:54PM +0200, Jean-Michel Hemstedt wrote:
-> FYI,
-> 
-> I upgraded to iptables-1.2.6a (user & kernel-2.4.18 patches)
-> and got the following (maybe known) problems:
-> 
-> - QUEUE target is NOK with kernel compiled with CONFIG_IP_NF_QUEUE=m
->   => the packets are queued, but ipq_create_handle() returns 
->      "can't create netlink socket"
->      "ERROR: Unable to create netlink socket: Connection refused"
->     (problem with exported symbols?)
->   =>quick fix: compile kernel with CONFIG_IP_NF_QUEUE=y
+Yes tony ,but I do not know what to do with these rules .I put these in the
+/etc/rc.d/init.d/iptables script , in  the start section of the script and
+then what i do is :
 
-I think james should be able to answer that.
+service iptables save
+/etc/rc.d/init.d/iptables restart
 
-> - ipqmpd-0.3: default verdict NF_ACCEPT is not applied when no
->   process has attached to it. In fact ipqmpd starts, but it seems
->   that it never receives any packet (in ipq_inp). When one process
->   attaches to it, with a mark different from the queued packet, then
->   the default NF_ACCEPT is applied correctly. When all processes have
->   detached from ipqmpd, the default NF_ACCEPT continues to be applied
->   correctly.
+and I got all those errors message.
 
-ever looked at the CVS repository? 
-http://www.gnumonks.org/cgi-bin/cvsweb.cgi/ipqmpd/
+Maybe I am doing something wrong with putting these rules in the script.
 
-None of that code has been touched since 22 months... I wrote ipqmpd for
-fun, and nobody really seemed to use it.  Feel free to submit patches or
-take over maintainership of ipqmpd :)
+Thanks  a lot for all your advise and your time to me.
+david
 
-> kr,
-> -jmhe-               He who expects nothing shall never be disappointed
 
--- 
-Live long and prosper
-- Harald Welte / laforge@gnumonks.org               http://www.gnumonks.org/
-============================================================================
-GCS/E/IT d- s-: a-- C+++ UL++++$ P+++ L++++$ E--- W- N++ o? K- w--- O- M- 
-V-- PS+ PE-- Y+ PGP++ t++ 5-- !X !R tv-- b+++ DI? !D G+ e* h+ r% y+(*)
+
+
+
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: <netfilter@lists.samba.org>
+Sent: Friday, July 05, 2002 9:14 PM
+Subject: Re: I need help , please
+
+
+> On Friday 05 July 2002 1:56 pm, david wrote:
+>
+> > Tony:
+> >
+> > #echo $PATH
+> >
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/X11R6/bin
+> >: /root/bin
+> >
+> > how you can see iptables is in the PATH
+>
+> Okay, that's good.   I was concerned that you might have . in your path,
+so
+> that commands in the local directory were getting executed instead of the
+> ones in /sbin./bin etc.
+>
+> By the way, did you ever try the list of rules I posted in
+> http://lists.samba.org/pipermail/netfilter/2002-July/024548.html ?
+>
+>
+>
+> Antony.
+>
+> > ----- Original Message -----
+> > From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> > To: <netfilter@lists.samba.org>
+> > Sent: Friday, July 05, 2002 6:54 PM
+> > Subject: Re: I need help , please
+> >
+> > > On Friday 05 July 2002 5:45 pm, Joe Patterson wrote:
+> > > > next tell us the output of these commands:
+> > > >
+> > > > which iptables
+> > > > file `which iptables`
+> > >
+> > > I think we should point out that the ` symbols above are the backtick
+> > > character (probably at the top left of your keyboard), and not the
+> >
+> > apostrophe.
+> >
+> > > Also, please can you tell us what you get in response to
+> > > echo $PATH
+> > >
+> > >
+> > >
+> > > Antony.
+
 
