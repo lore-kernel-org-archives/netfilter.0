@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Qustion wrt state RELATED,ESTABLISHED
-Date: Wed, 7 Jul 2004 07:11:50 +0200
+From: Askar Ali Khan <askarali@gmail.com>
+Subject: telnet question
+Date: Wed, 7 Jul 2004 10:55:21 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040707051150.381201787@sterenborg.info>
-References: <opsaq0vou24evsfm@smtp.pacific.net.th>
+Message-ID: <a0f69e5040706225576326815@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <opsaq0vou24evsfm@smtp.pacific.net.th>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +16,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-> Is my  assumtion correct that state RELATED,ESTABLISHED 
-> checks all flags
-> for match and thus this state can (and should be for 
-> performance reasons)
-> be the first in each table ?
+hi,
 
-No, it checks the *state*.
+we got a machine to which we telnet only telnet is allow on that
+machine (C) no ssh thingy, the problem is that we telnet the machine
+from two different linux boxes "servers" here is the traceroute for
+...
 
-The first packet that is seen in a connection has state NEW, the rest
-have state ESTABLISHED or RELATED (as with e.g. ftp). Since these
-packets are let's say 99% in a connection, the ESTABLISHED and RELATED
-match will match the most packets. Also see the byte/packet counters for
-this (first 2 columns in the list below).
-That's why you probably want that rule somewhere on top for performance
-reasons because the rules are traversed in the order they are entered,
-and therefore matched in the order they are entered.
+Linux Box :A tracetroute output for the machine C
+     
+     traceroute to xxx.xxx.xx.x (xxx.xxx.xx.x), 30 hops max, 38 byte packets
+     1  abc.foo.net (xxx.xxx.xx.x)  4.440 ms  3.931 ms  4.406 ms
+<---direct to machine C
 
-> Chain INPUT (policy DROP 0 packets, 0 bytes)
->   pkts bytes       target     prot opt in     out     source  
->              destination
+Linux Box: B tracetroute output for the machine C
+traceroute to xxx.xxx.xx.x (xxx.xxx.xx.x), 30 hops max, 38 byte packets
+ 1  xxx.xxx.xx.1 (xxx.xxx.xx.1)  5.056 ms  1.088 ms  1.109 ms <-----gateway
+ 2  xxx.xxx.xx.x (xxx.xxx.xx.x)  5.198 ms  5.887 ms  14.429 ms <-----machine C
 
-> 15172 2029K ACCEPT     all  --  any    any     anywhere       
->       anywhere           state RELATED,ESTABLISHED
+my question is that how to makes Linux Box (B) direct to machine C i-e
+like that Linux Box A.
 
-Rule 1 (state checking)
-
->   0       0             BADTCP     tcp  --  any    any     
-> anywhere             anywhere           tcp 
-> flags:FIN,SYN,RST,PSH,ACK,URG/FIN,PSH,URG
-
-Rule 2 (flag checking)
-
-So you have 2 separate rules ; 1 for state and 1 for flag checking.
-
-
-Gr,
-Rob
-
+regards
 
