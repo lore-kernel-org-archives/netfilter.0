@@ -1,12 +1,15 @@
-From: =?iso-8859-1?Q?Oriol_Magran=E9?= <omagrane@mediapro.es>
-Subject: Simple question
-Date: Wed, 5 May 2004 17:27:23 +0200
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: IPSec - IPTables issues
+Date: Wed, 05 May 2004 12:08:57 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001501c432b5$7a5c5f80$a704a8c0@mpro4167>
+Message-ID: <1083773336.9138.43.camel@localhost>
+References: <20040502155538.GD515@schottelius.org>
+	 <20040504211557.GA236@schottelius.org> <4098FE7A.8070707@pbl.ca>
+	 <200405051622.26944.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0012_01C432C6.3A26C7F0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200405051622.26944.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,64 +19,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0012_01C432C6.3A26C7F0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-
-    Hello!
-    Just one question...
-    I have a firewall with the INPUT, OUTPUT and FORWARD policies set to =
-DROP, and now I want to allow connections from localhost to localhost =
-(any port). Which chains are implied here? INPUT? OUTPUT? Both?
-    How should the needed rule(s) be?
-
-    Thank you very much in advance!
-
-    Oriol
-
-
-------=_NextPart_000_0012_01C432C6.3A26C7F0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Hello!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;Just&nbsp;one=20
-question...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;I have a =
-firewall with the=20
-INPUT, OUTPUT and FORWARD policies set to DROP, and now I want to allow=20
-connections from localhost to localhost (any port). Which chains are =
-implied=20
-here? INPUT? OUTPUT? Both?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; How should the =
-needed rule(s)=20
-be?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;&nbsp;&nbsp; Thank you very much =
-in=20
-advance!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;Oriol</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0012_01C432C6.3A26C7F0--
+On Wed, 2004-05-05 at 11:22, Antony Stone wrote:
+> On Wednesday 05 May 2004 3:47 pm, Aleksandar Milivojevic wrote:
+> 
+> > Nico Schottelius wrote:
+> > > I'll compare what freeswan did with what Linux 2.6 does now:
+> > >
+> > > Freeswan has virtual devices (ipsec*), through which the unencrypted
+> > > packets come into the system. So you can add these firewall lines:
+> > >
+> > > - allow AH, ESP, UDP/500, deny rest on eth0
+> > > - allow IPs/networks, etc. on ipsec0
+> >
+> > Haven't worked much with IPSec (at least not over firewall).  Are you
+> > sure that IPSec packets will go through Netfilter twice (once encrypted,
+> > and than once again unencrypted)?
+> 
+> They do.   This makes it easy to filter the packet types you want to allow 
+> through the tunnel, rather than having a VPN which passes just everything.
+Please pardon my ignorance; I haven't yet played with 2.6 and the native
+IPSec.  So how does one distinguish packets which have arrived from an
+IPSec tunnel and are now re-traversing netfilter from those which have
+arrived unencrypted and are traversing netfilter for the first time? We
+would typically have a different set of access controls for data coming
+from a quasi-trusted tunnel versus data coming in from the Internet and
+historically differentiated by examining the interface (e.g., ipsec0
+versus eth0).
+> 
+> > Anyhow, if I assume that what you wrote is correct (and it is how Linux
+> > kernel handles packets), I still don't see need for virtual devices.
+> 
+> That's the way FreeS/WAN does it.
+> 
+> Regards,
+> 
+> Antony.
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
 
 
