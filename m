@@ -1,14 +1,15 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: firewall rules for subinterfaces
-Date: Fri, 15 Oct 2004 16:44:56 +0200
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Limiting access to some number from random users.
+Date: Fri, 15 Oct 2004 11:33:54 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097851496.2705.16.camel@anduril.intranet.cartel-securite.net>
-References: <20041015035535.GA19170@clifford.headnut.org>
-	<416FCE80.9090801@pbl.ca>  <416FDDEA.20209@pobox.com>
+Message-ID: <20041015153354.GA7143@bender.817west.com>
+References: <20041014074601.27218.qmail@web60406.mail.yahoo.com>
+	<1097755804.1708.14.camel@wolfpack.ljm.dom>
+	<200410151048.28634.rio@martin.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <416FDDEA.20209@pobox.com>
+Content-Disposition: inline
+In-Reply-To: <200410151048.28634.rio@martin.mu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +19,55 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Andre Correa <andre.correa@pobox.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Rio Martin." <rio@martin.mu>
 Cc: netfilter@lists.netfilter.org
 
-Le ven 15/10/2004 =E0 16:25, Andre Correa a =E9crit :
-> Hi, there is really no meaning on setting rules for subinterfaces, If=20
-> you need to segment your network and can't plug new NICs look for VLANs.=20
-> You can apply rules indicating VLAN interfaces (-i and -o) like this:=20
-> eth0.100, eth0.200, etc...
+On Fri, Oct 15, 2004 at 10:48:28AM +0000, Rio Martin. wrote:
+> Folks,
+> I need to know how to limit access to some number from bulk random users.
+> Let say, i have 256 PCs connecting to Internet daily. 
+> I want to limit my users accessing to Internet only for 100 users during peak 
+> time. But these 100users must be selected in random.
+> 
+> Need a fresh idea how to do that with iptables. Should i apply special 
+> patches?
 
-Definitly true.
-Different IP addresses spaces on the same ethernet segment are a joke to
-fool.
+iptables -N random
+iptables -A FORWARD -j random
 
-> Somebody correct me if I'm wrong but this was made possible under >=3D 2.=
-6=20
-> kernel versions, on 2.4.x you can't do it too.
+--- BEGIN PERL CODE TO GENERATE LIST OF 100 RANDOM IPs ---
+  #!/usr/bin/perl
 
-VLAN support is available for kernel >=3D 2.4.14 and 2.6. Otherwise, you
-can find patches for >=3D2.2.13 at :
+  use strict;
 
-	http://www.candelatech.com/~greear/vlan.html
+  my %ips = ();
+  my $ip;
+  my $randomIP;
 
-You can also find a "Linux VLAN + Cisco" HOWTO at :
+  while ( scalar(keys(%ips)) < 100) {
+    $randomIP = int( rand(254)) + 1;
+    if ( exists($ips{$randomIP}) ) {
+      next;
+    } else {
+      $ips{$randomIP} = $randomIP;
+    }
+  }
 
-	http://www.candelatech.com/~greear/vlan/cisco_howto.html
+  foreach $ip (sort {$a <=> $b} keys %ips) {
+    print "$ip\n";
+  }
+--- END PERL CODE ---
 
+iptables -F random
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+for i in `./random_ips.pl`; do
+  iptables -A random -s 192.168.1.${i} -j ACCEPT
+done
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
 
