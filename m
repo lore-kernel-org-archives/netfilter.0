@@ -1,13 +1,13 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: port based filtering and IPsec 2.6
-Date: Sun, 18 Jan 2004 10:14:52 +0100
+Date: Sun, 18 Jan 2004 09:34:21 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1Ai91E-0007XZ-Is@vishnu.netfilter.org>
-References: <20040114162623.GR4106@openoffice.nl> <20040117134519.GA4911@kaufbach.delug.de> <E1AhuY9-0002Ze-BK@vishnu.netfilter.org> <200401171829.56492.Antony@Soft-Solutions.co.uk>
+Message-ID: <200401180934.21656.Antony@Soft-Solutions.co.uk>
+References: <20040114162623.GR4106@openoffice.nl> <200401171829.56492.Antony@Soft-Solutions.co.uk> <E1Ai91E-0007XZ-Is@vishnu.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200401171829.56492.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <E1Ai91E-0007XZ-Is@vishnu.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,56 +20,45 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sat, 17 Jan 2004 18:29:56 +0000, Antony Stone
-<Antony@Soft-Solutions.co.uk> wrote:
->On Saturday 17 January 2004 5:47 pm, =
-netfilter.lists.samba.org@marc-haber.de=20
->wrote:
->> Actually, not being able to filter traffic from an ipsec tunnel is a
->> killer. Either for netfilter, or for kernel 2.6 ipsec. I suspect it
->> will kill kernel 2.6 ipsec. Which is really bad since frees/wan
->> positively sucks.
+On Sunday 18 January 2004 9:14 am, Marc Haber wrote:
+
+> On Sat, 17 Jan 2004 18:29:56 +0000, Antony Stone wrote:
 >
->What do you think is wrong with FreeS/WAN?
+> > What do you think is wrong with FreeS/WAN?
+>
+> FreeS/WAN is - as somebody else said very nicely - at war with the
+> kernel routing machinery.
+>
+> FreeS/WAN is a kernel patch with a very strange applying mechanism
+>
+> The latest FreeS/WAN version I have successfully used is 1.99.
+>
+> The FreeS/WAN-Users mailing list is flooded with spam
+>
+> I hope that I made my point clear.
 
-=46reeS/WAN is - as somebody else said very nicely - at war with the
-kernel routing machinery. It makes me sick to see two identical
-routing table entries, one pointing to the physical interface and one
-pointing to the logical interface, with some hidden magic favoring the
-ipsec0 route.
+Indeed, thanks.   I understand now why you dislike it.
 
-=46reeS/WAN is a kernel patch with a very strange applying mechanism
-which makes it hard but impossible to use any pre-fabricated patching
-framework. I have never been able to get the new module approach to
-run. FreeS/WAN needs to be tailored for each new kernel version which
-keeps the possibility of a new exploit being fixed, breaking
-=46reeS/WAN, forcing me to choose between staying exploitable or living
-without my VPN connections until the FreeS/WAN project has adapted.
+I guess I've just been lucky that I prefer compiling my own kernels anyway, I 
+don't mind a strange patching mechanism so long as it works, and I've not 
+joined the mailing list because I've found the info I need in the 
+documentation or in the list archives.
 
-The latest FreeS/WAN version I have successfully used is 1.99. Later
-versions insist on establishing a "default route" (manifested as one
-route for 0.0.0.0/1 and one for 128.0.0.0/1 which is one more proof of
-being at war with the normal routing mechanisms) which breaks the test
-boxes unencrypted network connection.
+I agree with the point made earlier however that it's a very poor situation if 
+the 2.6 kernel IPsec won't allow filtering unencrypted packets.
 
-The FreeS/WAN-Users mailing list is flooded with spam because the
-mailing list owners refuse to establish even the most trivial of spam
-prevention measure because they're afraid of handicapping free speech
-without realizing that a spam flooded mailing list is a bad handicap
-of free speech because nobody would use it.
+Antony.
 
-I hope that I made my point clear.
+-- 
+In science, one tries to tell people
+in such a way as to be understood by everyone
+something that no-one ever knew before.
 
-Greetings
-Marc
+In poetry, it is the exact opposite.
 
---=20
--------------------------------------- !! No courtesy copies, please !! =
------
-Marc Haber          |   " Questions are the         | Mailadresse im =
-Header
-Karlsruhe, Germany  |     Beginning of Wisdom "     | Fon: *49 721 966 32=
- 15
-Nordisch by Nature  | Lt. Worf, TNG "Rightful Heir" | Fax: *49 721 966 31=
- 29
+ - Paul Dirac
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
