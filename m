@@ -1,13 +1,14 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
-Subject: Re: examining data portion of packet
-Date: Wed, 24 Mar 2004 14:57:26 -0500
+From: al clethero <aclethero@ihug.co.nz>
+Subject: Re: Redirect ports on localhost
+Date: 25 Mar 2004 08:31:14 +1200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080158245.1995.2.camel@localhost>
-References: <20040324172244.84631.qmail@web60001.mail.yahoo.com>
+Message-ID: <1080160274.5203.13.camel@bluespi.orb.co.nz>
+References: <406099AD.2070403@verio.net>
+	 <20040324031427.GO3387@samad.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040324172244.84631.qmail@web60001.mail.yahoo.com>
+In-Reply-To: <20040324031427.GO3387@samad.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,50 +19,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Sandy C <sc_netfiltermail@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Have you looked at Snort - http://www.snort.org
-that will allow you to look for patterns in the application layer
-payload - John
+Recently I was trying to redirect traffic on the  localhost though for
+different reasons. I finally came to the conclusion that localhost
+packets aren't prerouted. Can anyone confirm this?
 
-On Wed, 2004-03-24 at 12:22, Sandy C wrote:
-> I'd like to be able to examine the network data, and
-> if the data (not the header info) matches certain
-> criteria, I want to perform certain actions. Its not
-> clear to me what those actions might be yet.
+al
+
+On Wed, 2004-03-24 at 15:14, Alexander Samad wrote:
+> On Tue, Mar 23, 2004 at 01:10:21PM -0700, Ben Yerushalmi wrote:
+> > Hi,
+> > 
+> > I'm trying to redirect traffic on my DNS server. I have bind listening 
+> > on port 5300 (UDP) instead of 53. I've got it working from the internal 
+> > network but seem to have problem on redirecting localhost traffic. I've 
+> > tried changing both PREROUTING and OUTPUT chains in the nat table but it 
+> > doesn't seem to help.
+> > 
+> > iptables -A PREROUTING -t nat -p udp -i lo --dport domain -j REDIRECT 
+> > --to-ports 5300
+> > 
+> > and
+> > 
+> > iptables -A OUTPUT -t nat -p udp -d localhost  --dport domain -j 
+> > REDIRECT --to-ports 5300
+> might be of target but will the destination be localhost or the real ip
+> address ?
 > 
-> S C 
+> A
 > 
-> --- "John A. Sullivan III"
-> <john.sullivan@nexusmgmt.com> wrote:
-> > On Wed, 2004-03-24 at 00:45, Sandy C wrote:
-> > >    I would like to be able to be able to examine
-> > the
-> > > data portion of a network packet after matching
-> > it. 
-> > > 
-> ..
-> > >    What is the best way to go about this? Should I
-> > be
-> > > thinking of writing a target extension?
-> > <snip>
-> > It depends on what you want to do.  What do you want
-> > to do with the
-> > information?
-> > -- 
-> > John A. Sullivan III
-> 
-> 
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! Finance Tax Center - File online. File on time.
-> http://taxes.yahoo.com/filing.html
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+> > 
+> > 
+> > Anyone have luck doing this? What am I missing?
+> > 
+> > Thanks,
+> > Ben
+> > 
+> > 
+> > 
+> > 
 
 
