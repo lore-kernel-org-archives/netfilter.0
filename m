@@ -1,13 +1,13 @@
-From: =?ISO-8859-15?Q?J=F6rg_Sch=FCtter?= <netfilter@schuetter.org>
-Subject: Re: time module
-Date: Mon, 10 Nov 2003 15:53:31 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: open port to specific ip address
+Date: Mon, 10 Nov 2003 15:44:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031110155331.5bef6bb0.netfilter@schuetter.org>
-References: <000501c3a652$e1987520$050314ac@rip>
+Message-ID: <200311101545.hAAFj6j16919@agate.rockstone.co.uk>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAHvCSmpkyA0+lP5YKpr7djsKAAAAQAAAAX5TmzymhnkKWYhlmn/VLAwEAAAAA@petzetakis-africa.co.za> <200311101326.hAADQXj16843@agate.rockstone.co.uk> <1068476240.1530.30.camel@valhalla>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000501c3a652$e1987520$050314ac@rip>
+In-Reply-To: <1068476240.1530.30.camel@valhalla>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hallo Tomas,
+On Monday 10 November 2003 2:57 pm, Chris Brenton wrote:
 
-On Sun, 9 Nov 2003 00:48:59 +0100
-"Tomas Charvat" <eaglecz@tiscali.cz> wrote:
+> On Mon, 2003-11-10 at 08:26, Antony Stone wrote:
+> > I assumed (maybe wrongly?) that because Lohan specified an internal IP
+> > address, the access was required from the internal network.
+>
+> Obviously Lohan needs to be the one to clarify, but I think your right.
+> Going back through the thread, it looks like the access is internal to
+> internal, with forwarding to an external.
+>
+> Of course this is still going to give him trouble if 10.10.10.41 is part
+> of the local subnet. Systems are going to ARP for this IP, not send the
+> traffic to their default gateway.
 
-> greeting folk
->=20
-> im just testing rule
->=20
-> [0:0] -A FORWARD -s 62.84.131.35 -m time  --timestart 07:00 --timestop
-> 00:38 --days Sun,Mon,Tue,Wed,Thu,Fri,Sat -j shape
+That's why I included:
 
-have you tryed to break the rule up in to rules?
-... --timestart 07:00 --timestop 23:59 ...
-... --timestart 00:00 --timestop 00:38 ...
+ip addr add dev eth1 internal_ip
 
+as part of the original solution I proposed.
 
-J=F6rg
+> You might be able to use publish ARP on the internal interface of the
+> firewall, but that assumes a flat subnet and starts to get real messy.
 
---=20
-J=F6rg Sch=FCtter           http://www.lug-untermain.de/
-joerg@schuetter.org     http://www.schuetter.org/joerg/
-ICQ: 298982789          http://mypenguin.bei.t-online.de/
+Huh?   What do you mean by a 'flat subnet'?   Either the address is on a 
+local subnet, in which case arp sorts things out with the above ip addr 
+command, or else it's on the other side of a router, in which case there's no 
+problem because it gets forwarded anyway.
 
+What's messy about this solution?
+
+Antony.
+
+-- 
+
+Behind the counter a boy with a shaven head stared vacantly into space,
+a dozen spikes of microsoft protruding from the socket behind his ear.
+
+ - William Gibson, Neuromancer (1984)
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
