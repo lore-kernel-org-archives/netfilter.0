@@ -1,12 +1,15 @@
-From: "Dan Egli" <dan@shortcircuit.dyndns.org>
-Subject: Re: Still an IPTABLES newbie
-Date: Tue, 26 Nov 2002 14:18:13 -0700
+From: cbaker@bbbscentralohio.org
+Subject: Re: [Announce] PacketFlow firewall generator
+Date: Tue, 26 Nov 2002 17:07:59 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001501c29591$5c85bbe0$1e00a8c0@yamatto>
-References: <20021122155352.GA5665@gnjilux.srk.fer.hr> <200211241945.38762.netfilter@newkirk.us> <20021126105429.GB9457@gnjilux.srk.fer.hr> <200211260853.46333.netfilter@newkirk.us> <20021126140315.GA12281@gnjilux.srk.fer.hr> <006101c29584$f31904c0$8f8aa0cf@um.umsystem.edu>
+Message-ID: <3DE3AA6F.28057.1689A35@localhost>
+References: <3DE2FF32.7030308@users.sourceforge.net>
+Reply-To: cbaker@bbbscolumbus.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-reply-to: <3DE2FF32.7030308@users.sourceforge.net>
+Content-description: Mail message body
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,125 +20,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Bob Avery-Babel <Bob@yellowbugcomputers.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I have that book too and I find it confusing. I answer some questions best I
-can. I'm a newbie too.
+It sounds good. What else do I need to have installed for this to 
+work? What type of dependencies will it have?
 
-As far as editing rules, iptables-save will save the current setup. So if
-you run your script, then add an additional set of rules and rerun
-iptables-save then your new file will contain all the rules combined.
+> 
+> I would like to announce the initial public release of a new tool
+> called PacketFlow.  It is a free command line XML based iptables
+> firewall generator.  I would like to invite you to download and
+> evaluate it.
+> 
+> The basic concept of PacketFlow is that of "security levels."*  Every
+> interface has a security level, and it indicates how much the
+> interface is trusted.  By  default connections may made from a high
+> security interface to a low security interface. By default,
+> connections may not be made from  a low security interface to a high
+> security interface. Both may be overridden with access lists.
+> 
+> Several examples are included in the download.  These include dial-up,
+> broadband, single DMZ, and multiple DMZ examples.  These should
+> illustrate the basics of the configuration file.  There are a few
+> features that are not yet shown in the samples, but hopefully they
+> will be shown soon.
+> 
+> PacketFlow is currently able to generate complete rule sets.  Current
+> development is focusing on better configuration validation and sanity
+> checking.  That said, the rule sets generated from a valid
+> configuration file do work well.  You are strongly encouraged to read
+> through the generated rules for yourself.
+> 
+> PacketFlow currently does not support generating NAT rules, but I hope
+> to add that in the future.  Any recommendations on a syntax for NAT
+> rules would be appreciated.
+> 
+> I would appreciate any feedback that you could provide.  There is a
+> FAQ on the home page listed below, and the source may be downloaded
+> from the project page.  Please submit any bugs that you find to the
+> bug tracking system on the SourceForge site.
+> 
+> Sincerely,
+> 
+> Paul Frieden
+> 
+> Home page:		http://packetflowfw.sourceforge.net
+> Project page:	http://sourceforge.net/projects/packetflowfw/
+> 
+> 
+> * This is very similar to the security-levels used by the PIX firewall
+> 
+> 
+> 
 
-In the UNIX world, \ is commonly used as a line continuation. For example:
-iptables -A INPUT -p tcp -i eth0 \
--m multiport smtp,imap,pop3 -j ACCEPT
-
-would translate to:
-iptables -A INPUT -p tcp -i eth0 -m multiport smtp,imap,pop3 -j ACCEPT
-
-it's used for when one line is too long for the screen.
-
-the INTERNET things are for human readability and simplicity of change. It's
-an environment variable assignment. When you see the lines:
-
-PORTS="telnet,ftp,ssh,smtp"
-/sbin/iptables -A INPUT -p TCP -m multiport --dports $PORTS -j ACCEPT
-that is what YOU See. The command that is actually executed is:
-/sbin/iptables -A INPUT -p TCP -m multiport --dports telnet,ftp,ssh,smtp -j
-ACCEPT
-
-hope this helps!
-
--- Dan
------ Original Message -----
-From: "Bob Avery-Babel" <Bob@yellowbugcomputers.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, November 26, 2002 12:49 PM
-Subject: Still an IPTABLES newbie
-
-
-> Thanks to everyone for the tips on my last question. If anyone on this
-list
-> lives close to Columbia, MO, and would like to tutor me just give me a
-> holler. :-) Here are my new questions, after reading and re-reading the
-> first 128 pages of "Linux Firewalls" by Robert Ziegler.
->
-> My setup is a RH 8 box with an internal and an external nic. I also run
-all
-> my services (ssh, http, samba) on this box, as I am poor and this is only
-a
-> test box. :-). I have set all of my initial policies to drop as was
-> suggested here. Now I've slowly been trying to learn how to add exceptions
-> and understand just how the rules are constructed.
->
-> Many of the scripts I've looked at, and in Ziegler's book, they mention
-> "Symbolic Constants" that look like this:
->
-> INTERNET="eth0"        #Internet connected interface
->
-> Does IPTABLES recognize things like this, or is this just a convention to
-> help humans read the rules easier? If I defined all of the symbolic
-> constants at the start, where in the iptables script would I specifically
-> put them? Is there a command line option to add them or do I edit the file
-> directly to add the constants? When I tried to add the constants to the
-> beginning of my script it errored out on me.
->
-> Another question I have is how to add iptable rules. Usually when I set up
-> the first script I enter in the lines one at a time, and then when I've
-> added all of the lines I want I'll enter a command like:
->
-> iptables-save > /etc/sysconfig/iptables
->
-> Then I'll have a working iptables script. However, if I want to add
-> additional rules one by one at the cli and then do another iptables-save
-it
-> overwrites what I originally had. Are there easier options to do this, or
-is
-> it best just to edit the file itself?
->
-> My third question is about the format of the examples Robert Zeigler gives
-> in his Linux Firewalls book. He writes all of his rules like this, without
-> any explanation as to why. I guess it is supposed to be obvious? For
-> example:
->
-> iptables -A OUTPUT -o $INTERNET -p tcp \
-> -m multiport --destination-port \
-> $NFS_PORT,$OPENWINDS_PORT,$SOCKS_PORT,SQUID_PORT \
-> --syn -j DROP
->
-> Are these "\" just to indicate line breaks? Sorry if that is an obvious
-> question. oy!
->
-> Final question for the month, I swear...
->
-> In trying to understand forwarding the packets from my internal nic to my
-> public nic and vice versa. Do I need to make a rule for both inbound and
-> outbound traffic to each nic?
->
-> For instance, to allow Samba traffic to flow, here is what I am thinking:
->
-> Allow Internal network traffic to my internal nic card, does the traffic
-> need to flow to my public IP? I've only bound my samba server on my
-internal
-> nic and localhost.
->
-> Do I need to put a rule in place that looks something like:
->
-> -A OUTPUT -o eth1 -p tcp --sport 445 -j ACCEPT
-> #Anything headed outbound to the private nic, destined for port 445,
-Accept
->
-> I don't think that is right, but it is kind of how I understand (or don't
-> understand) the concept.
->
-> Thanks in advance to everyone!
->
-> Bob
->
->
->
->
->
+Chris Baker -- technical specialist
+614-839-2447x108
+cbaker@bbbscolumbus.org
+Big Brothers Big Sisters of Central Ohio
+www.bbbscolumbus.org
 
 
