@@ -1,10 +1,12 @@
-From: "Santhosh, H." <SANTHOSH@timken.com>
-Subject: RE: Basic firewalling
-Date: Mon, 28 Jul 2003 14:12:13 +0530
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: Chains policy and rules
+Date: Mon, 28 Jul 2003 10:09:22 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <334618035904D611BBFE00306E12110C018107DE@terhemail01.corp.timken.com>
+Message-ID: <Pine.LNX.4.44.0307281007190.11112-100000@localhost>
+References: <87969271865366.03228@send3.inner-21cn.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <87969271865366.03228@send3.inner-21cn.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,79 +16,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: 'hare ram' <hareram@sol.net.in>, netfilter@lists.netfilter.org
+To: LiMeiYong <jobsli@21cn.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi
-It is  both the case
-	The external PC and Internal PC are in the same Place but  I assume
-external PC Over Internet and Internal PC at my  Place for lab testing
-purpose
+On Mon, 28 Jul 2003, LiMeiYong wrote:
 
+> /sbin/iptables -F
+> /sbin/iptables -A INPUT -p tcp -d 192.168.1.165 --dport 80 -i eth2 -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp -d 192.168.1.165 --dport 22 -i eth2 -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp -d 152.201.3.179 --dport ! 80 -i eth0 -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp -d 152.201.3.179 --dport ! 22 -i eth0 -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp -d 152.201.3.177 --dport ! 80 -i eth0 -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp -d 152.201.3.177 --dport ! 22   -i eth0 -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp -d 152.20.3.181 --dport ! 80 -i eth1 -j ACCEPT
+> /sbin/iptables -A INPUT -p tcp -d 152.20.3.181 --dport ! 22 -i eth1 -j ACCEPT
+> /sbin/iptables -P INPUT DROP
+> 
+>     I think both of them shoud do the same things. Yes it does work. But when I use the second group, the connection to 192.168.1.165:80 become very slow. The same thing happend on ssh connection to 192.168.1.165. If I use the first group command, everything is normal! Who can tell me why this happend? What's the difference between droping packets on the chain and droping packets on every ethernet card?
+>     Thanks a million to you who answer this question.
 
-		Regards
-		Santhosh.H
+You forgot to allow traffic in from the loopback interface (lo). Without 
+this, if you have e.g. 127.0.0.1 in your /etc/resolv.conf, it will not 
+work (you will get a long wait while DNS times out). If you have another 
+resolver, the lookup will probably succeed when it tries that one, but 
+after a long delay waiting for the local name server.
 
-
-
------Original Message-----
-From: hare ram [mailto:hareram@sol.net.in]
-Sent: Sunday, July 27, 2003 12:07 PM
-To: Santhosh, H.; netfilter@lists.netfilter.org
-Subject: Re: Basic firewalling
-
-
-Hi Santhosh
-
-The setup was not clear, what exactly you want to achive
-
-case 1
-
-Is this external PC and Internal PC are in the same Place ?
-
-case 2
-
-or external PC Over Internet and Internal PC at your Place ?
-
-
-hare
------ Original Message -----
-From: "Santhosh, H." <SANTHOSH@timken.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Saturday, July 26, 2003 6:55 PM
-Subject: Basic firewalling
-
-
-> Hi
-> Please help me with the below setup
->
-> External pc1<-------->(eth1)Server(eth0)<------>Internal pc1
->
-> 1. What is the cmd to route data from internal pc1 to external pc1 through
-> the server using iptables or route cmd
-> 2. What should be the gateway value in Internal & external pc
-> 3. How do I make the iptables make it permanent so that after reboot also
-> those rules should remain
->
-> Thanks in advance
->
->
->
-> Regards
-> Santhosh.H
->
->
-
-
-**********************************************************************
-This message and any attachments are intended for the 
-individual or entity named above. If you are not the intended
-recipient, please do not forward, copy, print, use or disclose this 
-communication to others; also please notify the sender by 
-replying to this message, and then delete it from your system. 
-
-The Timken Company
-**********************************************************************
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
 
