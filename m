@@ -1,11 +1,9 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
 Subject: RE: Simple Blackberry Enterprise configuration
-Date: Wed, 17 Nov 2004 10:05:51 -0800
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E391@alderaan.smgtec.com>
+Date: Wed, 17 Nov 2004 10:12:10 -0800
+Message-ID: <29F6FAF7F2C0D41190980002A513591E0E93BA73@FSNSAB30>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,7 +15,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: mclinden@informed.net, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: 'Daniel Chemko' <dchemko@smgtec.com>, mclinden@informed.net, netfilter@lists.netfilter.org
+
+i would be very wary as regards rim's netsec.
+v/r,piranha
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Daniel Chemko
+Sent: Wednesday, November 17, 2004 10:06 AM
+To: mclinden@informed.net; netfilter@lists.netfilter.org
+Subject: RE: Simple Blackberry Enterprise configuration
+
 
 mclinden@informed.net wrote:
 > I have two users who need to be able to ORIGINATE bidirectional
@@ -25,7 +36,7 @@ mclinden@informed.net wrote:
 > e-mail using their Blackberries and the Server Relay Protocol. This
 > should be fairly simple but if anyone has done this and could point
 > me to a reference it would be appreciated.
->=20
+> 
 > Sean McLinden
 > Allegheny County Health Department
 
