@@ -1,9 +1,10 @@
-From: Paryl Tomasz <Tomasz.Paryl@gze.pl>
-Subject: arptables
-Date: Mon, 3 Jun 2002 08:39:09 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Sudden blast of old messages
+Date: Thu, 13 Jun 2002 18:34:45 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <B4A243E4F5A6D311B31B00A0C9B79A51019482E5@exmail1.dyrekcja.gze.pl>
+Message-ID: <200206131735.SAA08794@slate.rockstone.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,16 +16,15 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
+Harald, have you just come back from holiday or something, and approved a 
+whole load of postings to the list ???
 
-Hi
+It's as much as I can do to keep up reading them, let alone answering them as 
+well :-)
 
-Does anyone how to use arptables in 2.4.18 pre 19 ?.
-I was sucessfully applly two modules into ther ram and what how ?
-Is there any doc ? 
+ 
 
-Tom
-
+Antony.
 
