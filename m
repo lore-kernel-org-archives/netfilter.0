@@ -1,12 +1,14 @@
-From: Mark <markryan@cfl.rr.com>
-Subject: error message
-Date: Sun, 6 Jul 2003 14:59:42 -0400
+From: Marek Habersack <grendel@caudium.net>
+Subject: Tux and netfilter
+Date: Sun, 6 Jul 2003 23:14:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200307061459.42268.markryan@cfl.rr.com>
+Message-ID: <20030706211403.GA9350@thanes.org>
+Reply-To: grendel@caudium.net
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_eGHC/ZaCr2u+IX4"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,372 +21,125 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
 
---Boundary-00=_eGHC/ZaCr2u+IX4
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+  One of the servers at our colo is under a heavy attack consisting of
+massive synfloods followed by the connections to port 80 issuing bogus HTTP
+requestss like
+
+  ET xxx.yyy.zzz.vvv HTTP/X.Y
+  Host: /search.php
+  Referer: http://google.com/
+
+  ^^^^^^^^^note the referer, an impossible one.
+
+Where xx etc is an IP number, there are numerous other variations of the
+requests. The number of packets amounts to around 200M in the course of
+around 5h (latest data). I have tuned the kernel so that it survives the
+number of packets, but still netstat shows around 20k sockets in FIN2_WAIT
+state (most of them), the machine load is ~3. So far so good. I've put tux
+in front of apache (which is running vBulletin :>) to stop apache from
+bogging down the machine and that helped a bit. I've modified tux so that it
+zaps HTTP/1.0 and bogus Referer connections immediately, that also helped a
+bit but it wasn't enough. So I resorted to using the TARPIT target and the
+string matcher with iptables. The rules used are:
+
+  33M 6284M TARPIT tcp  --  *      *       0.0.0.0/0 0.0.0.0/0          tcp=
+ dpt:80 STRING match HTTP/1.0^M=20
+  31M 6505M TARPIT tcp  --  *      *       0.0.0.0/0 0.0.0.0/0          tcp=
+ dpt:80 STRING match ET 66.28.=20
+ 573K  119M mightbevalid  tcp  --  *      *       0.0.0.0/0 0.0.0.0/0      =
+    tcp dpt:80 STRING match HTTP/1.1^M=20
+  928  185K TARPIT tcp  --  *      *       0.0.0.0/0 0.0.0.0/0          tcp=
+ dpt:80 STRING match Referer: http://google.com/^M=20
+    0     0 TARPIT tcp  --  *      *       0.0.0.0/0 0.0.0.0/0          tcp=
+ dpt:80 STRING match Referer: http://www.google.com/^M=20
+    0     0 TARPIT tcp  --  *      *       0.0.0.0/0 0.0.0.0/0          tcp=
+ dpt:80 STRING match Referer: http://www.google.com^M=20
+    0     0 TARPIT tcp  --  *      *       0.0.0.0/0 0.0.0.0/0          tcp=
+ dpt:80 STRING match Referer: http://google.com^M=20
+  70M 2879M ACCEPT tcp  --  *      *       0.0.0.0/0 0.0.0.0/0          tcp=
+ flags:!0x16/0x02=20
+Chain mightbevalid (1 references)
+ pkts bytes target     prot opt in     out     source
+destination        =20
+23245 4892K ACCEPT     tcp  --  *      *       0.0.0.0/0 0.0.0.0/0         =
+ STRING match .php=20
+    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0 0.0.0.0/0         =
+ STRING match GET /index.html HTTP/1.1=20
+ 386K   78M ACCEPT     tcp  --  *      *       0.0.0.0/0 0.0.0.0/0         =
+ STRING match GET / HTTP/1.1^M=20
+ 164K   36M TARPIT     tcp  --  *      *       0.0.0.0/0 0.0.0.0/0         =
+=20
+
+
+The counter values are the real ones. I would use the iplimit matcher, but I
+don't want to use connection tracking since that would hose the machine
+pretty quick. All of the above actions have the effect that the machine is
+reachable, interaction is good, but tux is practically clogged (it's
+configured to accept 50k connections, keep alives are at 1000 since setting
+them to 0 makes tux close any connection immediately, no logging etc,). Apa=
+che sits
+on port 81 and when accessed directly it works fine, that's good enough, but
+I'd like to do more. And here I come to the real question I want to ask to
+the list. Is it possible and if yes, then how, to redirect the offending
+packets from within tux to the TARPIT chain? It seems a bit backwards to me
+and I'm not quite sure whether it's possible at all, but maybe?
+I'm not asking for ready code, just some helping hand and some advice=20
+where to start.
+
+If any of the above sounds chaotic and unclear, don't hesitate to ask me...
+:)
+
+TIA,
+
+marek
+
+p.s. The machine is PIII/800Mhz with 0.5GB of RAM, kernel 2.4.21-aa1rc8,
+syncookies are on and here are the relevant sysctl values I'm using (I know,
+some of them have dangerous values, but it works pretty well atm):
+
+net/ipv4/icmp_echo_ignore_broadcasts=3D1
+fs/file-max=3D70000
+fs/dir-notify-enable=3D0
+net/ipv4/tcp_keepalive_time=3D30
+net/core/rmem_max=3D262143
+net/core/rmem_default=3D262143
+net/core/wmem_max=3D262143
+net/core/wmem_default=3D262143
+net/ipv4/tcp_sack=3D0
+net/ipv4/tcp_timestamps=3D0
+net/ipv4/tcp_syncookies=3D1
+net/ipv4/icmp_echo_ignore_all =3D1
+net/ipv4/icmp_ignore_bogus_error_responses =3D 1
+net/ipv4/tcp_syn_retries =3D 1
+net/ipv4/tcp_synack_retries =3D 1
+net/ipv4/tcp_keepalive_probes =3D 1
+net/ipv4/tcp_keepalive_intvl =3D 10
+net/ipv4/tcp_max_syn_backlog =3D 64
+net/ipv4/tcp_low_latency =3D 1
+net/ipv4/tcp_abort_on_overflow =3D 1
+net/ipv4/ipfrag_time =3D 30
+net/ipv4/tcp_fin_timeout =3D 10
+net/ipv4/tcp_max_orphans =3D 2048
+net/ipv4/tcp_tw_reuse =3D 1
+
+--xHFwDpU9dbj6ez1V
+Content-Type: application/pgp-signature
 Content-Disposition: inline
 
-I am using the following script to ban users with iptables.  I keep getting an 
-error that says the following:
- 
-06.07.2003 14:38:41: Creating chain proftpdban to store blacklisted IPs
-06.07.2003 14:38:41: Adding INPUT-rule which redirects to proftpdban
-06.07.2003 14:38:41: Shutting down: Insertion of new rule in INPUT chain 
-failed: Index of insertion too big
-
- 
-I have no idea what the error means or how to solve the problem.  Any help 
-would be appreciated.
- 
-I have attached the perl script that I am using.
- 
-Mark
-
---Boundary-00=_eGHC/ZaCr2u+IX4
-Content-Type: text/x-perl;
-  charset="us-ascii";
-  name="anti-hammer.pl"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="anti-hammer.pl"
-
-#!/usr/bin/perl
-
-# anti-hammer v. 0.1
-# Copyright (c) 2003 Michael Renner <robe@amd.co.at>
-
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 2 of the License, or
-#(at your option) any later version.
-#
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-#along with this program; if not, write to the Free Software
-#Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#
-#TODO : 
-#
-#Statefile/permbans/checking of hitcounters
-
-use strict;
-use warnings;
-use IPTables::IPv4;
-use File::Tail;
-use Time::ParseDate;
-use POSIX;
-
-use vars qw (%ips %config);
-
-my (%config) = (
-    logtoparse => "/usr/local/sbin/proftpd.log",
-    outputlog => "/usr/local/sbin/hammer.log",
-    port => "21",
-    chainname => "proftpdban",
-    duration => "60",
-    maxhits => "4",
-    bantime => "86400",
-    bofh => "1",
-    logdebug => "1",
-    logstatus => "1",
-    logbans => "1",
-    loginfos => "1",
-    );
-
-
-daemonize();
-open_log();
-init_sighandlers();
-init_iptable();
-
-parselog();
-die("parselog() returned... this should not happen!\n");
-
-
-############
-#   SUBS   #
-############
-
-sub parselog {
-  my ($log) = File::Tail->new(name => $config{'logtoparse'}, resetafter=>120, interval => 1);
-  my ($line);
-
-  my ($ctime) = time();
-
-  while (defined($line = $log->read)) {
-    chomp $line;
-
-    if ((time() - $ctime) >= 60) {
-      cleanup(\%ips);
-      $ctime = time();
-    }
-
-    my ($logtime, $ip) = parseproftpd($line);
-
-    if ($logtime > 0) {
-      if (! exists($ips{$ip})) {
-        $ips{$ip} = [];
-      }
-
-      my ($iparef) = \@{$ips{$ip}}; 
-      if (($#$iparef < 0) || ($$iparef[0] ne "BANNED")) {
-        storeip($iparef, $logtime, $ip);
-        clearold($iparef, $ip);
-        try_ban($iparef, $ip);
-      } else {
-        logit("debug", "%s: is already banned, probably lines from the logbuffer", $ip);
-      }
-    } 
-  }
-}
-
-sub daemonize {
-  chdir('/') || die("Can't chdir to /: $!");
-  open(STDIN, '/dev/null') || die("Failed to set stdin to /dev/null: $!");
-  open(STDOUT, '>/dev/null') || die("Failed to set stdout to /dev/null: $!");
-
-  defined(my $pid = fork()) || die("Failed to fork: $!");
-  exit if $pid;
-  setsid() || die("Failed to start a new session: $!");
-  open(STDERR, '>&STDOUT') || die("Failed to redirect STDERR: $!");
-}
-
-
-sub cleanup {
-  my ($chain, $timeout) = ($config{'chainname'}, $config{'duration'});
-  my ($now) = time();
-
-  my ($ip, @unban);
-
-  logit("status", "!!!!!! Cleanup-Run-Start !!!!!!");
-
-  foreach $ip (keys %ips) {
-    my ($iparef) = $ips{$ip};
-
-    if ($#$iparef < 0) {
-      logit("status", "%-15s: Deleting: Empty.", $ip);
-      delete($ips{$ip});
-
-    } elsif (($$iparef[0] eq "BANNED")) {
-
-      if ($$iparef[1] < $now) {
-        logit("status", "%-15s: Unbanning: %d seconds old", $ip, $now - $$iparef[1]);
-        
-        do_unban($ip, $chain);
-        push @unban, sprintf("IP %s got unbanned, Ban expired %d seconds ago", $ip, $now - $$iparef[1]);
-        delete($ips{$ip});
-        
-      } else {
-        logit("status", "%-15s: Banned: %d seconds left", $ip, $$iparef[1] - $now);
-      } 
-
-    } elsif ($$iparef[-1] < ($now - $timeout)) {
-      logit("status", "%-15s: Deleting: %d seconds old", $ip, $now - $$iparef[-1]);
-      delete($ips{$ip});
-
-    } else {
-      logit("status", "%-15s: Still active: %d seconds old, %d hit(s) recorded", $ip, $now - $$iparef[-1], $#$iparef + 1);
-    }
-  }
-
-  logit("status", "!!!!!! Cleanup-Run-End !!!!!!");
-  logit("ban", $_) foreach (@unban);
-}
-
-sub do_unban {
-  my ($ip, $chain) = @_;
-  my ($it) = IPTables::IPv4::init('filter');
-  my (@banr) = $it->list_rules($chain);
-  my ($rule);
-
-  foreach $rule (@banr) {
-    if ($rule->{'source'} eq $ip) {
-      $it->delete_entry($chain, $rule) || shut_down("Deletion of banrule for $ip in $chain failed: $!");
-    }
-  }
-  $it->commit();
-}
-
-  
-sub storeip {
-  my ($iparef, $ctime, $ip) = @_;
-
-  if ($#$iparef >= 0) { 
-    if (${$iparef}[-1] <= $ctime) {
-      logit("debug", "%-15s: Storing hit %d", $ip, $ctime);
-      push(@$iparef, $ctime);
-
-    } else {
-      logit("error", "Array for %s has a newer element than %d (possible clock jump?), clearing it", $ip, $ctime);
-      @$iparef = ($ctime);
-    } 
-  } else {
-    push(@$iparef, $ctime);
-    logit("debug", "%-15s: First hit: %d", $ip, $ctime);
-  }
-}
-
-sub clearold {
-  my ($iparef, $ip) = @_;
-  my ($timeout) = ($config{'duration'});
-  my ($now) = time();
-
-  while (($#$iparef >= 0) && (${$iparef}[0] < ($now - $timeout))) {
-    my ($removed) = shift(@$iparef);
-    logit("debug", "%-15s: Removed $removed", $ip);
-  }
-  logit("debug", "%-15s: %d hit(s) stored", $ip, ($#$iparef + 1)); 
-}
-
-sub try_ban {
-  my ($iparef, $ip) = @_;
-  my ($treshold, $chain, $bantime) = ($config{'maxhits'}, $config{'chainname'}, $config{'bantime'});
-  
-  if ($#$iparef >= ($treshold - 1)) {
-    logit("ban", "IP %s gets banned now for %d seconds (%d hits in %d seconds)", $ip, $bantime, $treshold, $$iparef[-1] - $$iparef[0]);
-
-    do_ban($ip, $chain, $bantime);
-
-    $#$iparef = 1;
-    $$iparef[0] = "BANNED";
-    $$iparef[1] = time() + $bantime;
-  }
-}
-
-sub do_ban {
-  my ($ip, $chain, $bantime) = @_;
-  my ($it) = IPTables::IPv4::init('filter');
-
-  my (%newrule) = (
-      source => $ip,
-      jump => 'DROP',
-      );
-
-  $it->append_entry($chain, \%newrule) || shut_down("Insertion of ban-rule into $chain failed: $!");
-  $it->commit();
-}
-
-sub init_iptable {
-  my ($it) = IPTables::IPv4::init('filter');
-  my ($chain, $port, $bofh) = ($config{'chainname'}, $config{'port'}, $config{'bofh'});
-  my ($state, $rule);
-
-  if ($it->is_chain($chain)) {
-    logit("error", "Chain %s exists - flushing entries", $chain);
-    $it->flush_entries($chain);
-  } else {
-    logit("info", "Creating chain %s to store blacklisted IPs", $chain);
-    $it->create_chain($chain);
-  }
-
-  my ($cicrc) = clear_input_chain($it, $chain);
-  shut_down($cicrc) if ($cicrc ne "");
-
-  if ($bofh) {
-    $state = ['NEW', 'ESTABLISHED', 'RELATED']
-  } else {
-    $state = ['NEW']
-  }
-
-  my (%newrule) = (
-      protocol => "TCP",
-      'destination-port' => $port,
-      matches => ['state'],
-      state => $state,
-      jump => $chain,
-      );
-
-  logit("info", "Adding INPUT-rule which redirects to %s", $chain);
-
-  $it->insert_entry('INPUT', \%newrule, 1) || shut_down("Insertion of new rule in INPUT chain failed: $!");
-  $it->commit();
-}
-
-sub clear_input_chain {
-  my ($it, $chain) = @_;
-  my (@inputr) = $it->list_rules('INPUT');
-
-  my ($rule);
-  foreach $rule (@inputr) {
-    if ($rule->{jump} eq $chain) {
-      logit("debug", "Deleting rule in INPUT chain which jumps to %s", $chain);
-      $it->delete_entry('INPUT', $rule) || return("Deletion of rule in INPUT chain failed: $!");
-    }
-  }
-  return("");
-}
-
-sub logit {
-  my ($priority, $message, @strings) = @_;
-  my ($debug, $status, $bans, $info) = ($config{'logdebug'}, $config{'logstatus'}, $config{'logbans'}, $config{'loginfos'});
-  my ($timestamp) = strftime("%d.%m.%Y %H:%M:%S", localtime(time()));
-
-  if ((($priority eq "debug") && ($debug)) 
-      || (($priority eq "status") && ($status)) 
-      || (($priority eq "ban") && ($bans))
-      || (($priority eq "info") && ($info))
-      || ($priority eq "error")) {
-    $message = "$timestamp: $message\n";
-    printf(LOG $message, @strings);
-  }
-}
-
-sub open_log {
-  my ($logfile) = ($config{'outputlog'});
-  open(LOG, ">>$logfile") || die("Failed to open logfile $logfile: $!\n");
-  select(LOG);
-  $|=1;
-}
-
-sub parseproftpd {
-  my ($line) = @_;
-
-  #Datetime: $1, IP: $3
-  if ($line =~ /^([a-zA-Z]{3}\s+[0-9]{1,2}\s+([0-9]{2}:){2}[0-9]{2}).*\([a-zA-Z0-9\-\.]+\[(([0-9]{1,3}\.){3}[0-9]{1,3})\]\):\ FTP\ session\ opened\.$/) {
-    my ($ctime, $ip) = ($1, $3);
-    $ctime = parsedate($ctime);
-    return($ctime, $ip);
-  }
-}
-
-sub shut_down {
-  my ($reason) = @_;
-  my ($chain) = $config{'chainname'};
-  my ($it) = IPTables::IPv4::init('filter');
-
-  $reason = "Shutting down: $reason";
-  
-  logit("error", $reason);
-
-  my ($cicrc) = clear_input_chain($it, $chain);
-  logit("error", "Shutting down: %s", $cicrc) if ($cicrc ne "");
-
-  if ($it->is_chain($chain)) {
-    $it->flush_entries($chain) || logit("error", "Shutting down: Failed to flush entries of %s: %s", $chain, $!);
-    $it->delete_chain($chain) || logit("error", "Shutting down: Failed to delete chain %s: %s", $chain, $!);
-  }
-
-  $it->commit();
-  close(LOG);
-  exit;
-}
-
-sub handle_signal {
-  my ($signame) = @_;
-  shut_down("Signal SIG$signame received");
-}
-
-sub init_sighandlers {
-  $SIG{INT} = \&handle_signal;
-  $SIG{ABRT} = \&handle_signal;
-  $SIG{TERM} = \&handle_signal;
-}
-
---Boundary-00=_eGHC/ZaCr2u+IX4--
-
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/CJEbq3909GIf5uoRAuh9AJ0YItdkD7QmzJdx5073PL9a3k1bkwCeMBgr
+70SnP5rEBhLvmTBptpSF2q0=
+=9kKO
+-----END PGP SIGNATURE-----
+
+--xHFwDpU9dbj6ez1V--
 
