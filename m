@@ -1,12 +1,11 @@
-From: Art Reisman <astormchaser2002@yahoo.com>
-Subject: Ooops the attachment did not work Re: help:how to interact with userspace?
-Date: Thu, 30 May 2002 19:50:25 -0700 (PDT)
+From: "Brendan Grieve" <brendan_200201@grieve.com.au>
+Subject: [Announce]: IP Traffic Log for Netfilter - ulacc
+Date: Fri, 31 May 2002 11:11:21 +0800
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020531025025.43645.qmail@web10405.mail.yahoo.com>
-References: <20020531011241.15667.qmail@sina.com>
+Message-ID: <001001c20850$d6c7f630$023610ac@techstart.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020531011241.15667.qmail@sina.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,82 +15,144 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-To: lljjff <lljjff@sina.com>, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Ci0tLSBsbGpqZmYgPGxsampmZkBzaW5hLmNvbT4gd3JvdGU6Cj4gSGkgCj4gSSB3YW50IHRvIHdy
-aXRlIGEgTmV0ZmlsdGVyIG1vZHVsZSB3aGljaCBzaG91bGQKPiBpbnRlcmFjdCB3aXRoIHVzZXIg
-c3BhY2UuUnVzdHkgUnVzc2VsbCBzYWlkIGluIHRoZQo+IGhhY2tpbmcgSE9XLVRPLHRoaXMgY2Fu
-IGJlIGRvbmUgYnkgc2V0c29ja29wdAo+IG1lY2hhbmlzbS5CdXQgSSBkb24ndCBoYXZlIGFueSBp
-ZGVhLkNhbiB5b3UgaGVscCBtZT8KPiBJcyB0aGVyZSBhbnkgZXhhbXBsZT8KPiAKPiAzeC4KPiAK
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo+IHdvb2Ro
-ZWFkCj4gCgoKSSBoYWNrZWQgdGhpcyBmcm9tIGEgbW9yZSBjb21wbGV4IHByb2dyYW0sIGl0IGp1
-c3QKdGFrZXMgcGFja2V0cyBpbnRvIHVzZXIgc3BhY2UgYW5kIHRoZW4gcHVzaGVzIHRoZW0KYmFj
-ayBpbiB0aGUga2VybmVsLiBZb3UgbmVlZCBhbiBvYmplY3QgaXBfcXVldWUubwpidWlsdCBpbnRv
-IHlvdXIga2VybmVsIGFuZCBJIGNhbm5vdCByZW1lbWJlciB3aGF0CnBhY2thZ2UgSSBmb3VuZCBp
-dCBpbi4gQ2hlY2sgb3V0IHRoZSBtYW4gcGFnZXMgZm9yCmlwcV9yZWFkIGV0Yy4gCgojaW5jbHVk
-ZSA8YXBwLmg+CgppbnQKbWFpbiAoaW50IGFyZ2MsIGNoYXIgKiphcmd2KQp7CiAgaW50IHJlYWQ7
-CiAgaXBxX3BhY2tldF9tc2dfdCAqIHN0dWZmICA7CiAgY2hhciBpbmJ1ZlsyMDQ4XTsKCiAgdi5y
-b3RhdGUgPSBNQVhfUk9UQVRFOwogIHYubWNvdW50ID0gMDsKI2lmZGVmIFBPTElDWQogIHByaW50
-ZigiUE9MSUNZIFxuIik7CiAgdi5wb2xpY3kgPSBQT0xJQ1k7CiNlbHNlIAogIHByaW50ZiAoIk5G
-X0RST1AgXG4iKTsKICB2LnBvbGljeSA9IE5GX0RST1A7CiNlbmRpZiAvKiBQT0xJQ1kgKi8KCiNp
-ZmRlZiBNQUlMCiAgZnByaW50ZihzdGRlcnIsIm1haWwgXG4iKTsKICB2Lm1haWwgPSAwOwogIHYu
-dGltZXIgPSBRX1RJTUU7CiAgdi5tYXhxID0gTUFYX1E7CiNlbmRpZiAvKiBNQUlMICovCgogIHVt
-YXNrICgwMDc3KTsKCiAgZnByaW50ZihzdGRlcnIsImNhbGwgY29tbWFuZCBsaW5lIFxuIik7CiAg
-Y21kbGluZSAoYXJnYywgYXJndik7CiAgZnByaW50ZihzdGRlcnIsInJldHVybiBmcm9tIGNvbW1h
-bmQgbGluZSBcbiIpOwoKICBzZXRfc2lnbmFscyAoKTsKICBmcHJpbnRmKHN0ZGVyciwicmV0dXJu
-IGZyb20gc2V0X3NpZ25hbHMgXG4iKTsKLyogICBpZiAodi5kYWVtb24pCiAgICBkZXRhY2ggKCk7
-ICBkb250IGRvIHRoaXMgaXQgaXMgc3R1cGlkIHRoZSBmb3JrCmJsb3dzIHVwICovCiAgZnByaW50
-ZiAoc3RkZXJyLCJDYWxsIGlwcSBpbml0IFxuIik7CiAgaXBxX2luaXQgKCk7CiAgcHJpbnRmICgi
-cmV0dXJuIGZyb20gaXBxIGluaXQgXG4iKTsKICBpZiAoIW9wZW5fZmlsZSAodi5kdW1wZmlsZSkp
-CiAgICBjcmFzaCAoIm9wZW5pbmcgZHVtcCBmaWxlOnBkdW1wcSIpOwoKICBmb3IgKDs7KQogICAg
-ewogICAgICByZWFkID0gaXBxX3JlYWQgKHYuaCwgaW5idWYsIDIwNDgsIDApOwogICAgICBzdHVm
-ZiA9IGlwcV9nZXRfcGFja2V0KGluYnVmKTsKCiAgICAgIHByaW50ZigicmVhZCBwYWNrZXQgbGVu
-Z3RoID0gJWQgLCBpZCA9ICVkClxuIixzdHVmZi0+ZGF0YV9sZW4sc3R1ZmYtPnBhY2tldF9pZCk7
-CiAgICAgIGlmCihpcHFfc2V0X3ZlcmRpY3Qodi5oLHN0dWZmLT5wYWNrZXRfaWQsTkZfQUNDRVBU
-LDAsTlVMTCkKIDwgMSkKICAgICAgIHsKICAgICAgIHByaW50ZiAoInNldCB2ZXJkaWN0IGZhaWxl
-ZCBcbiIpOwogICAgICAgZXhpdCgxKTsKICAgICAgIH0KICAgICB9Cn0KCgoKCmFwcC5oLi4uCgov
-KiBwZHVtcHEgLSBQY2FwIER1bXAgZm9yIExpbnV4L05ldGZpbHRlciBRVUVVRQogKgogKiBDb3B5
-cmlnaHQgKEMpIDIwMDEgSWFuIEpvbmVzIDxyb3V4QHNwZWFrZWFzeS5vcmc+CiAqCiAqIFRoaXMg
-cHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZQppdCBhbmQvb3IK
-ICogbW9kaWZ5IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljCkxp
-Y2Vuc2UKICogYXMgcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247CmVp
-dGhlciB2ZXJzaW9uIDIKICogb2YgdGhlIExpY2Vuc2UsIG9yIChhdCB5b3VyIG9wdGlvbikgYW55
-IGxhdGVyCnZlcnNpb24uCiAqCiAqIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUg
-aG9wZSB0aGF0IGl0CndpbGwgYmUgdXNlZnVsLAogKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7
-IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZAp3YXJyYW50eSBvZgogKiBNRVJDSEFOVEFCSUxJVFkg
-b3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSClBVUlBPU0UuICBTZWUgdGhlCiAqIEdOVSBHZW5l
-cmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCiAqCiAqIFlvdSBzaG91bGQgaGF2
-ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsClB1YmxpYyBMaWNlbnNlCiAqIGFs
-b25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlClNvZnR3YXJl
-CiAqIEZvdW5kYXRpb24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSAtIFN1aXRlIDMzMCwKQm9zdG9u
-LCBNQSAgMDIxMTEtMTMwNywgVVNBLgogKi8KCiNkZWZpbmUgX0dOVV9TT1VSQ0UKCgojaW5jbHVk
-ZSA8bGludXgvbmV0ZmlsdGVyLmg+CiNpbmNsdWRlIDxsaWJpcHEuaD4KCiNpbmNsdWRlIDxzdGRp
-by5oPgojaW5jbHVkZSA8c3RkbGliLmg+CiNpbmNsdWRlIDxmY250bC5oPgojaW5jbHVkZSA8c2ln
-bmFsLmg+CiNpbmNsdWRlIDxzdHJpbmcuaD4KI2luY2x1ZGUgPGVycm5vLmg+CiNpbmNsdWRlIDx1
-bmlzdGQuaD4KI2luY2x1ZGUgPHRpbWUuaD4KI2luY2x1ZGUgPHN5c2xvZy5oPgojaW5jbHVkZSA8
-c3lzL3RpbWUuaD4KI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CiNpbmNsdWRlIDxzeXMvdHlwZXMuaD4K
-CiNpbmNsdWRlIDxwY2FwLWlzaC5oPgoKCiNkZWZpbmUgUElERklMRSAiL3Zhci9ydW4vcGR1bXBx
-LnBpZCIKCiNpZmRlZiBNQUlMCiNpbmNsdWRlIDxtYWlsLmg+CiNlbmRpZiAvKiBNQUlMICovCgoj
-aWZuZGVmIE1BWF9ST1RBVEUKI2RlZmluZSBNQVhfUk9UQVRFIDEwCiNlbmRpZgoKI2lmbmRlZiBW
-RVJTSU9OCiNkZWZpbmUgVkVSU0lPTiAidW5rbm93biIKI2VuZGlmCgovKiBydW50aW1lIHZhcmlh
-YmxlcyAqLwp0eXBlZGVmIHN0cnVjdCBfVgp7CiAgdW5zaWduZWQgaW50IHBvbGljeTsKICBpbnQg
-ZGFlbW9uOwogIGludCByb3RhdGU7CiAgaW50IG1jb3VudDsKICB1bnNpZ25lZCBsb25nICptYXJr
-czsKICB1bnNpZ25lZCBpbnQgKnZlcmRpY3RzOwojaWZkZWYgTUFJTAogIGludCBtYWlsOwogIGNo
-YXIgKmVtYWlsOwogIGludCB0aW1lcjsKICBpbnQgbWF4cTsKI2VuZGlmCQkJCS8qIE1BSUwgKi8K
-ICBjaGFyICpkdW1wZmlsZTsKICBzdHJ1Y3QgaXBxX2hhbmRsZSAqaDsKICBzdHJ1Y3Qgc2lnYWN0
-aW9uIHNhOwogIEZJTEUgKmZpbGU7Cn0KVmFsdWVzOwpWYWx1ZXMgdjsKCnZvaWQgZGV0YWNoICh2
-b2lkKTsKdm9pZCBpcHFfaW5pdCAodm9pZCk7CnZvaWQgdXNhZ2UgKGNoYXIgKmFwcCk7CnBpZF90
-IGlzX3J1bm5pbmcgKHZvaWQpOwp2b2lkIHJvdGF0ZSAoY2hhciAqZm4pOwp2b2lkIHNldF9zaWdu
-YWxzICh2b2lkKTsKaW50IG9wZW5fZmlsZSAoY2hhciAqZm4pOwp2b2lkIHFfaGFuZGxlciAoaW50
-IHNpZyk7CnZvaWQgY3Jhc2ggKGNoYXIgKmVycm9yKTsKaW50IGdtdDJsb2NhbCAodGltZV90IHQp
-Owp2b2lkIGNtZGxpbmUgKGludCBhcmdjLCBjaGFyICoqYXJndik7CnZvaWQgcHJvY2Vzc19wa3Qg
-KGlwcV9wYWNrZXRfbXNnX3QgKiBtLCB1bnNpZ25lZCBpbnQKdmVyZGljdCk7CgoKCgoKPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IAo+Cj09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiDQwsDL
-w+K30bXn19PTys/kIChodHRwOi8vbWFpbC5zaW5hLmNvbS5jbikKPiDQwsDLt9bA4NDFz6Kjurb+
-ytbK0LOh19/Su9ffo6y4w7P2ytbKsb7Ns/bK1qOhCj4gKGh0dHA6Ly9jbGFzc2FkLnNpbmEuY29t
-LmNuLzJzaG91LykKPiAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkRvIFlvdSBZYWhvbyE/CllhaG9vISAtIE9mZmljaWFsIHBhcnRuZXIgb2YgMjAw
-MiBGSUZBIFdvcmxkIEN1cApodHRwOi8vZmlmYXdvcmxkY3VwLnlhaG9vLmNvbQoK
+ulogd_ACCOUNT
+--------------------
+
+---------------------------------------------------------------------------
+1. What is it?
+---------------------------------------------------------------------------
+
+As part of my UAS software suite (Users Arn't Stupid), I have a Traffic
+Accounting module for use with Harald Welte's ulog netfilter target.
+(http://www.gnumonks.org/cgi-bin/cvsweb.cgi/ulog). I've been looking for
+a decent 2.4 Kernel traffic accounting module for a while and gave up and
+wrote my own.
+
+This module has one fairly interesting feature. Most networks that I
+administrate are generally quite dynamic. That is, all the workstations
+on it are assigned their network details and IP Address via DHCP. As some
+of my clients wished to have accounting down to the workstation detail,
+I've made this particular module use a mixture of the IP and MAC. This
+means that if a workstation gets a new IP, it will still have traffic
+statistics applied correctly to it. If more than one IP has the same MAC,
+as when they are behind a router, then accounting will still work, but
+will only give totals for all addresses. This means I'm trusting the MAC
+rather than the IP, and I am using two tables, one to store MAC's and one
+to store IP's, with a relationship of one MAC to many IP's. NOTE: Both a
+MAC and IP_can_ be forged, but this is a topic for another discussion.
+
+A quick description of HOW this module achieves this is as follows: -
+
+1. On each packet, determine if it is 'outgoing' or 'incoming'. (We're
+   assuming that this is running on a router which the packets pass
+   through). We can then determine whether to use the source IP (on
+   outgoing packets) or destination IP (on incoming packets).
+
+2. We then try to work out a MAC address, as follows: -
+  a)  We check if we already have a cached entry that links the IP to a
+      MAC, if so, we use it.
+  b)  Else if traffic is outgoing, then we will also have the source MAC
+      address given to us. We cache the MAC and link this IP to it.
+  c)  Else If traffic is incoming then we store the traffic in a temp
+      variable linked to the IP, and return. A future 'answer' will link
+      this, and will also transfer the temp traffic counter to the MAC.
+
+3. A few sanity checks are performed. ie: -
+  a)  If traffic is outgoing, check that the currently linked MAC to the
+      IP is correct. If not, fix up.
+
+4. Traffic counters for the MAC are updated, and the cache times are
+   touched to current time.
+
+
+Some notes:
+  * When a MAC cache expires, it is written to the log file, in the
+    format:
+           TIMESTAMP MACADDRESS TOTALTRAFFICFROM TOTALTRAFFICTO
+  * When a SIGHUP is caught, all MAC stats are written to the log file
+    and the tables cleared.
+  * All memory allocation is cached so that performance is at optimum.
+    Some sort of cleanup of the cached mallocs is probably useful to
+    prevent Denial of Service.
+  * Written for performance, so not much double-checking is done.
+  * It would be fairly simple to write a web front-end that parses
+    the file and links MAC to machine names.
+
+---------------------------------------------------------------------------
+2. How do I Compile it?
+---------------------------------------------------------------------------
+
+I've probably done things the wrong way, but I've copied the needed files
+from ulogd and included them with this. A future change may to make a
+configuration script that determines the directory of a ulogd source and
+uses it.
+
+To compile this, it should be as simple as doing the following: -
+
+1. Uncompress archive to some directory.
+
+2. Compile it. Should be as simple as going 'make' in the directory. The
+   makefile will install it in /usr/lib/ulogd
+
+3. Edit /etc/ulogd.conf. Theres an example in the example directory to
+   get you started, but heres an example of a section: -
+
+      # Where to write the logfile
+      dumpfile /var/log/ipacc/ipaccount.log
+      # What is the external interface? (IE, gateway Interface)
+      extif eth0
+      # Enable Plugin
+      plugin /usr/lib/ulogd/ulogd_ACCOUNT.so
+
+4. In your forward chain, just jump to ULOG. For example, I have: -
+    iptables -A FORWARD -j ULOG --ulog-nlgroup 1 --ulog-cprange 20 \
+             --ulog-qthreshold 50
+
+4.1 UPDATE - It is better to have the following (So that Transparently
+    routed traffic can be accounted for): -
+        iptables -N ACCOUNT
+        iptables -A ACCOUNT -j ULOG --ulog-nlgroup 1 \
+                                --ulog-cprange 20 --ulog-qthreshold 50
+
+        # Jump to it from FORWARD
+        iptables -A FORWARD     -i ${GATEWAY_IF}        -o ! ${GATEWAY_IF} \
+                        -j ACCOUNT
+        iptables -A FORWARD     -i ! ${GATEWAY_IF}      -o ${GATEWAY_IF} \
+                        -j ACCOUNT
+
+        # Example: Account for transparent squid proxy:
+        iptables -A INPUT -p tcp        -i ${SQUID_INTERFACE} --dport 3128 \
+                                                -j ACCOUNT
+        iptables -A OUTPUT -p tcp       -o ${SQUID_INTERFACE} --sport 3128 \
+                                                -j ACCOUNT
+
+5. Start ulogd.
+
+6. Set up a cronjob to send a HUP to ulogd every day or every hour. That
+   way you can have fairly recent statistics.
+
+NOTE: I use a /var/log/ipacc  directory so that the directory can be
+given a group write permission. This way a statistics parsing engine
+(ie: http://www.worldguard.com.au/projects/ipacc) can read and write
+securly to the directory.
+
+---------------------------------------------------------------------------
+3. TO DO
+---------------------------------------------------------------------------
+Probably something, but I'm sure it can wait.
+
+---------------------------------------------------------------------------
+4. Contact/Download Details
+---------------------------------------------------------------------------
+My name is Brendan Grieve. I hope someone finds some use for this software
+or can modify to their needs.
+
+Official Download Location: http://www.worldguard.com.au/projects/ulacc
+My Email:  brendan (@) worldguard.com.au
+
+Stay well. God Bless!
+
+
