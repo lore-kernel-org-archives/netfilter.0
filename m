@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: http tunneling apps.
-Date: Fri, 13 Sep 2002 09:24:59 +0100
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Filtering Nimda, Code Red and Code Red II
+Date: Fri, 13 Sep 2002 10:28:20 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020913082502.EODB13709.mta07-svc.ntlworld.com@there>
-References: <00d301c25999$c2662e60$0a0fa8c0@diabelec.com>
+Message-ID: <Pine.LNX.4.33.0209131025050.8619-100000@blackhole.kfki.hu>
+References: <1031812695.1954.16.camel@cygnus.szczepanek.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00d301c25999$c2662e60$0a0fa8c0@diabelec.com>
+In-Reply-To: <1031812695.1954.16.camel@cygnus.szczepanek.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: NetFilter List <NetFilter@Lists.NetFilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Torge Szczepanek <netfilter@szczepanek.de>
+Cc: netfilter@lists.samba.org
 
-On Wednesday 11 September 2002 2:46 pm, George J. Jahchan wrote:
+On 12 Sep 2002, Torge Szczepanek wrote:
 
-> Is there a way to somehow mark non-browsing traffic encapsulated in http
-> packets?
-
-Not with netfilter, no.   This is content-filtering question; netfilter is 
-not a content filter.
-
-> (ie. packets encapsulated by socks2http or httptunnel, there may
-> be others). Encapsulating (otherwise blocked by the firewall) applications
-> in http and sending/receiving them as http traffic allows users to
-> circumvent firewall policies intended to stop these applications.
+> Compile in String Matching support.
 >
-> Any suggestions on how to handle these in NetFilter (if at all possible)?
+> Then do the following:
+>
+> IPTABLES="/usr/sbin/iptables"
+>
+> $IPTABLES -A INPUT -p tcp -i eth0 --dport 80 -m string \
+>                --string "/default.ida" -m state --state ESTABLISHED \
+>                        -j REJECT --reject-with tcp-reset
+>
+> $IPTABLES -A INPUT -p tcp -i eth0 --dport 80 -m string \
+>                --string "/cmd.exe" -m state --state ESTABLISHED \
+>                        -j REJECT --reject-with tcp-reset
+>
+> On a router/firewall replace INPUT by FORWARD and also adjust the -i and
+> or -o parameter.
 
-Netfilter can redirect all your http traffic to a proxy such that it works 
-transparently to the users (and cannot be bypassed).   See whether Squid or 
-Apache will do the sort of filtering you need by restricting the type of 
-traffic.
+Please note that following this advice, the connection still will be alive
+on the webserver. You might even encounter traffic as the server tries to
+communicate with the client.
 
-If those can't do it, you might want to investigate Hogwash.
+netfilter/iptables is a packet filtering solution and not a content
+filter.
 
-Antony.
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
--- 
-
-Normal people think "if it ain't broke, don't fix it".
-Engineers think "if it ain't broke, it doesn't have enough features yet".
 
