@@ -1,11 +1,9 @@
-From: "sarky" <sarky@raycon.net>
-Subject: BroadCast, Multicast and Unicast..
-Date: Fri, 15 Aug 2003 03:15:54 +0100
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Need help have some questions...
+Date: Fri, 15 Aug 2003 02:29:58 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009101c362d3$294a42e0$cc9b7ad5@AlienW>
-References: <000501c360d7$0b5f5ca0$d90315ac@rsrc.be.local>
+Message-ID: <20030815092958.19403.qmail@web40208.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,18 +15,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Just wondering what ports do those work on, if someone wants to try to limit
-the broadcast and the rest coming out of the system what is the best method.
+I've been toying around with the idea of redirecting unwanted traffic to the
+discard surface. I'm having trouble understanding some concepts though. Could
+anyone please explain this in more detail or perhaps suggest a way to
+accomplish this.
 
-At the moment my Switch is recieving low amount of Broadcast and MultiCast
-but transmitting a lot of it..
-And i dont know what to do or where to start.
+On the filter tables using IMPUT there is no way to change or alter the
+destination of packets and cause them to be sent to another port?
 
-Need major assistance here or a pointer to know where to start.
+Using the POSTROUTING chain in the nat table is impoosible to effectively
+filter traffic via specific matches due to the fact that POSTROUTED packets are
+sort of "lumped together" for lack of a better way to explain it?
 
-Thank you
-Sarky
+If anyone can answer these I would MOST appreciate it as it is really causing
+me alot of confusion.
 
+Thanks
+s-blaze
+
+=====
+"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
