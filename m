@@ -1,12 +1,14 @@
-From: blah blah <filt5447@yahoo.com>
-Subject: Re: Trouble with --dport
-Date: Tue, 22 Oct 2002 09:48:37 -0700 (PDT)
+From: kilobug@freesurf.fr (=?iso-8859-1?q?Ga=EBl?= Le Mignot)
+Subject: Re: nmap
+Date: Tue, 22 Oct 2002 20:25:11 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021022164837.2036.qmail@web10902.mail.yahoo.com>
-References: <200210221559.g9MFxOL01471@vulcan.rissington.net>
+Message-ID: <plopm31y6icovs.fsf@drizzt.dyndns.org>
+References: <1035264046.15391.85.camel@hyperno>
+	<20021022174245.13d2766b.fonetica@tiscali.it>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200210221559.g9MFxOL01471@vulcan.rissington.net>
+In-Reply-To: <20021022174245.13d2766b.fonetica@tiscali.it> (antonio's
+ message of "Tue, 22 Oct 2002 17:42:45 +0200")
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +20,29 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
-
-Could be.  I am using the default kernel supplied with
-Redhat 7.3.
-
---- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
-> On Tuesday 22 October 2002 2:35 pm, blah blah wrote:
-> 
-> > Thanks for all of the help.  Adding a "-m tcp"
-> appears
-> > to have fixed the problem.
-> 
-> Does this imply that you don't have TCP match
-> support compiled in to your 
-> kernel ?   What an extraordinary way to run a
-> firewall.....
-> 
-> Antony.
-> 
-> -- 
-> 
-> If the human brain were so simple that we could
-> understand it,
-> we'd be so simple that we couldn't.
-> 
+To: antonio <fonetica@tiscali.it>
+Cc: netfilter@lists.netfilter.org
 
 
-__________________________________________________
-Do you Yahoo!?
-Y! Web Hosting - Let the expert host your web site
-http://webhosting.yahoo.com/
+Tue, 22 Oct 2002 17:42:45 +0200, tu as dit : 
+
+ > Hi Everyone,
+ > Just a question:
+ > I want to set up a firewall box with iptables in which I can use nmap.
+ > Which ports/protocols can I set to ACCEPT and which to DROP?
+
+I advise you to set the policy at DROP, and to accept:
+* RELATED, ESTABLISHED packets
+* NEW packets on the ports you _need_ to open (80 if you host a web server,
+  22 if you want to allow remote login using ssh and so on).
+* ICMP echo-request packets
+
+This is a basic and a simple firewall and should be a good start.
+
+-- 
+Gael Le Mignot "Kilobug" - kilobug@freesurf.fr - http://kilobug.free.fr
+GSM         : 06.71.47.18.22 (in France)   ICQ UIN   : 7299959
+Fingerprint : 1F2C 9804 7505 79DF 95E6 7323 B66B F67B 7103 C5DA
+
+Member of HurdFr: http://hurdfr.org - The GNU Hurd: http://hurd.gnu.org
 
