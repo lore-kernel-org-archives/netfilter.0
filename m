@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Iptables --owner-uid
-Date: Sat, 14 Sep 2002 12:22:25 +0100
+From: "Didier Hung Wan Luk" <DidierH@frci.net>
+Subject: Iptables --owner-uid
+Date: Sat, 14 Sep 2002 14:36:24 +0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020914112228.DMUD13709.mta07-svc.ntlworld.com@there>
-References: <39778BFB9C25BA429794B15B50AEC781045422@server-dcms>
+Message-ID: <39778BFB9C25BA429794B15B50AEC781045422@server-dcms>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <39778BFB9C25BA429794B15B50AEC781045422@server-dcms>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,38 +19,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Saturday 14 September 2002 11:36 am, Didier Hung Wan Luk wrote:
+Hello All,
 
-> Hello All,
->
-> I have a question about iptables with the --owner-uid option..
->
-> Is it possible to create rules with iptables based on users?
->
-> i.e can I say that user marry(uid=513) can telnet out but user
-> John(uid=601) cannot?
+I have a question about iptables with the --owner-uid option..
 
-Only if those users are telnetting out from your firewall machine (which 
-implies they have accounts on it, and are logged in to it, which is not a 
-recommended arrangement for a firewall).
+Is it possible to create rules with iptables based on users?
 
-> In the iptables man it is said that --owner-? (owner module) can match
-> characteristics of locally-generated packets only.. if this is the case
-> then I cannot use it in an environment where all my clients are windows
-> clients and the server is a Samba PDC with iptables. Am I right? Or is
-> there another way to do this?
+i.e can I say that user marry(uid=3D513) can telnet out but user =
+John(uid=3D601) cannot?
 
-You are correct.   --owner-uid only knows about the locally-owning process, 
-therefore there is no meaningful owner match for forwarded packets.
+In the iptables man it is said that --owner-? (owner module) can match =
+characteristics of locally-generated packets only.. if this is the case =
+then I cannot use it in an environment where all my clients are windows =
+clients and the server is a Samba PDC with iptables. Am I right? Or is =
+there another way to do this?
 
-There may be some way you can get Samba to link user ID to IP address, and 
-then from there generate some netfilter rules to restrict what each user can 
-do ?
+Thanks,
 
-Antony.
+Didier Hung Wan Luk
+FRCI, Sibotie House
+L'Anse Courtois
+Pailles
+Tel: 230-2869636
+Fax: 230-2869629
 
--- 
 
-The first ninety percent of an engineering project takes ninety percent
-of the time, and the last ten percent takes the remaining ninety percent.
 
