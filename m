@@ -1,10 +1,12 @@
-From: MOUDARIR Mohamed <moudarir@Richbond.ma>
-Subject: H323 module installing and copiling prob
-Date: Wed, 19 Mar 2003 11:58:46 -0000
+From: Martin <martin@balkanboy.net>
+Subject: Re: H323 module installing and copiling prob
+Date: Wed, 19 Mar 2003 11:49:36 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <14C5057BC852D611BAC400E0299AA10F127444@MAILSERV>
+Message-ID: <Pine.LNX.4.44.0303191144340.9224-100000@balkanboy.net>
+References: <14C5057BC852D611BAC400E0299AA10F127444@MAILSERV>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <14C5057BC852D611BAC400E0299AA10F127444@MAILSERV>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,72 +16,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: MOUDARIR Mohamed <moudarir@Richbond.ma>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
-I want to use netmeeting over an iptables firewal version 1.2.3 ( redhat
-7.2, kernel 2.4 )
-I use this command to update iptables :
-	# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login 
-	# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic co
-netfilter/userspace netfilter/patch-o-matic 
-And to make dependecies :
-	# cd /usr/src/linux/ 
-	# make dep 
-And cd ton ~/netfilter/patch-o-matic/ :
-	./runme extra
-and  # ./runme --batch extra/h323-conntrack-nat.patch
-After that, i add H323 module to kernel :#  make menuconfig
-And compile iptables :
-	# cd ~/netfilter/userspace/
-	# make all install
-So i obtain this message :
-Making dependencies: please wait...
-cc -O2 -Wall -Wunused -I/usr/src/linux-2.4.7-10/include -Iinclude/
--DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_ah_sh.o -c
-extensions/libipt_ah.c
-ld -shared -o extensions/libipt_ah.so extensions/libipt_ah_sh.o
-cc -O2 -Wall -Wunused -I/usr/src/linux-2.4.7-10/include -Iinclude/
--DIPTABLES_VERSION=\"1.2.7a\"  -fPIC -o extensions/libipt_conntrack_sh.o -c
-extensions/libipt_conntrack.c
-In file included from extensions/libipt_conntrack.c:14:
-include/linux/netfilter_ipv4/ipt_conntrack.h:28: `IP_CT_DIR_MAX' undeclared
-here (not in a function)
-include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX' undeclared
-here (not in a function)
-include/linux/netfilter_ipv4/ipt_conntrack.h:29: `IP_CT_DIR_MAX' undeclared
-here (not in a function)
-extensions/libipt_conntrack.c: In function `parse_status':
-extensions/libipt_conntrack.c:103: `IPS_EXPECTED' undeclared (first use in
-this function)
-extensions/libipt_conntrack.c:103: (Each undeclared identifier is reported
-only once
-extensions/libipt_conntrack.c:103: for each function it appears in.)
-extensions/libipt_conntrack.c:105: `IPS_SEEN_REPLY' undeclared (first use in
-this function)
-extensions/libipt_conntrack.c:107: `IPS_ASSURED' undeclared (first use in
-this function)
-extensions/libipt_conntrack.c: In function `parse':
-extensions/libipt_conntrack.c:202: `IP_CT_DIR_ORIGINAL' undeclared (first
-use in this function)
-extensions/libipt_conntrack.c:259: `IP_CT_DIR_REPLY' undeclared (first use
-in this function)
-extensions/libipt_conntrack.c: In function `print_status':
-extensions/libipt_conntrack.c:364: `IPS_EXPECTED' undeclared (first use in
-this function)
-extensions/libipt_conntrack.c:368: `IPS_SEEN_REPLY' undeclared (first use in
-this function)
-extensions/libipt_conntrack.c:372: `IPS_ASSURED' undeclared (first use in
-this function)
-extensions/libipt_conntrack.c: In function `matchinfo_print':
-extensions/libipt_conntrack.c:420: `IP_CT_DIR_ORIGINAL' undeclared (first
-use in this function)
-extensions/libipt_conntrack.c:440: `IP_CT_DIR_REPLY' undeclared (first use
-in this function)
-make: *** [extensions/libipt_conntrack_sh.o] Error 1
+Why don't you try upgrading your kernel to 2.4.20? I know patching the 
+2.4.20 kernel works indeed, because I have RedHat 8.0 and I compiled a 
+vanila kernel (from kernel.org), applied the H323 patch through the 
+patch-o-matic, enabled the H323 module through the linux menu 
+configuration (the curses enabled one), and recompiled.. Reboot, and you 
+should be able to place calls from a NAT-ed box where Linux is your 
+gateway/firewall...
 
-Is there any probleme, and how can i delete the old version of iptables.
-Thanks.
+What I cannot do, and what no one here seems to have offered any advice 
+on, is how to get incoming NetMeeting connections to go through NAT and 
+into one of the boxes on the internal LAN.. I tried various command sets 
+that I found on the archives of this list, but to no avail, none of them 
+work. So either I'm doing something wrong, or incoming netmeeting 
+connections are just not possible behind NAT...
+
+Martin
+p.s. One more important thing - patching the RedHat kernel with the 
+Patch-o-Matic H323 patch, does not work. There's some conflicts that do 
+not resolve when patching so the patch fails to apply. Which is why I said 
+to use 2.4.20 vanila...
+
+
+On Wed, 19 Mar 2003, MOUDARIR Mohamed wrote:
+
+> Date: Wed, 19 Mar 2003 11:58:46 -0000
+> From: MOUDARIR Mohamed <moudarir@Richbond.ma>
+> To: netfilter@lists.netfilter.org
+> Subject: H323 module installing and copiling prob
+> 
+> Hi all,
+> I want to use netmeeting over an iptables firewal version 1.2.3 ( redhat
+> 7.2, kernel 2.4 )
+> I use this command to update iptables :
+> 	# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login 
+> 	# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic co
+> netfilter/userspace netfilter/patch-o-matic 
+> And to make dependecies :
+> 	# cd /usr/src/linux/ 
+> 	# make dep 
+> And cd ton ~/netfilter/patch-o-matic/ :
+> 	./runme extra
+> and  # ./runme --batch extra/h323-conntrack-nat.patch
+> After that, i add H323 module to kernel :#  make menuconfig
+> And compile iptables :
+> 	# cd ~/netfilter/userspace/
+> 	# make all install
+[snip]
+> 
+> Is there any probleme, and how can i delete the old version of iptables.
+> Thanks.
+> 
+
 
