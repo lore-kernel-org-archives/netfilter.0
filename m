@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: script firewall
-Date: Tue, 13 Apr 2004 23:02:20 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: ipip tunnel connection tracking
+Date: Wed, 14 Apr 2004 01:08:38 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404132302.20098.Antony@Soft-Solutions.co.uk>
-References: <20040413212810.35514.qmail@web40506.mail.yahoo.com>
+Message-ID: <1081897718.1731.14.camel@anduril.intranet.cartel-securite.net>
+References: <EXCFE04GjcAbeYrvKM9000011ef@smtp.e-kolay.net>
+	 <200404112134.40862.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040413212810.35514.qmail@web40506.mail.yahoo.com>
+In-Reply-To: <200404112134.40862.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,68 +21,19 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 13 April 2004 10:28 pm, Luis GUSTAVO wrote:
+Le dim 11/04/2004 =E0 22:34, Antony Stone a =E9crit :
+> Why would a connection tracking module need to know about the addreses =
+inside=20
+> the packets, rather than the addresses in the headers?
 
-> Hi,
->
-> i=B4m looking for a script for my adsl conection.
-
-Er, that's not a very helpful description, but anyway...
-
-> i found this
->
-> iptables -F
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -P FORWARD DROP
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A OUTPUT -p tcp --dport 22 -j ACCEPT
-> iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
-> iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
-
-Hmmm.   Looks like one of mine :)
-
-> when i apllyed this rules, my machines clients, don=B4t know acces my
-> machine.
-
-I tell you what - you let us know what you'd like your firewall to do, an=
-d we=20
-might be able to help you.
-
-If you don't tell us what your network setup is, and what you want your=20
-firewall to do for you, we might not be able to suggest the perfect rules=
-et=20
-for your needs.
-
-I *did* say when I posted the above ruleset that it allowed me to access=20
-*from* the machine the rules were running on *to* other systems by SSH, a=
-nd=20
-blocked *all access in to my machine*  (which is what I consider to be=20
-secure).
-
-Therefore that fact that after you've applied these rules to your machine=
-,=20
-your clients can't access the system, suggests that the ruleset is workin=
-g=20
-correctly.
-
-Tell us what you'd like to be different (and preferably tell us what you'=
-ve=20
-tried yourself and had problems with) and we'll see what we can do to hel=
-p.
-
-Regards,
-
-Antony
+And if you want to deal with inner packet, then you just terminate the
+tunnel on your firewall and see what's in through
+tun0/gre0/whateveryoulike0 interface. And you build another tunnel with
+destination and you're done.
 
 --=20
-"640 kilobytes (of RAM) should be enough for anybody."
-
- - Bill Gates
-
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
-
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
