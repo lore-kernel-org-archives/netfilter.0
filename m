@@ -1,11 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: Kiran Kumar <immidi_kiran@yahoo.com>
 Subject: Re: ICMP Rule Problem
-Date: Tue, 3 Feb 2004 09:17:34 +0000
+Date: Tue, 3 Feb 2004 05:24:11 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402030917.34126.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040203132411.96455.qmail@web14004.mail.yahoo.com>
+References: <200402030917.34126.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200402030917.34126.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +17,28 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Monday 02 February 2004 5:02 pm, David C. Hart wrote:
+--- Antony Stone <Antony@Soft-Solutions.co.uk> wrote:
+> Never mind that, you're not allowed to respond to
+> ICMP packets with ICMP
+> errors.
+> 
+> See RFC792 page 1.
 
-> Should this not reject echo requests?
->
-> -A INPUT -p icmp -m icmp --icmp-type 0 -j REJECT --reject-with
-> icmp-net-prohibited
->
-> It doesn't seem to work.
+  Wrong. You are not allowed to respond to ICMP
+_errors_ with ICMP errors, what else does ping mean by
+giving error messages like "Destination Host
+Unreachable" ?.
 
-Never mind that, you're not allowed to respond to ICMP packets with ICMP
-errors.
 
-See RFC792 page 1.
-
+=====
 Regards,
+Kiran Kumar Immidi
 
-Antony.
-
---
-Abandon hope, all ye who enter here.
-You'll feel much better about things once you do.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free web site building tool. Try it!
+http://webhosting.yahoo.com/ps/sb/
 
