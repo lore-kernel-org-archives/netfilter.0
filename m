@@ -1,12 +1,13 @@
-From: <sschlesi@chello.at>
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
 Subject: Re: how to stop broadcasts using iptables
-Date: Tue, 27 Apr 2004 15:19:00 +0200
+Date: Tue, 27 Apr 2004 09:46:01 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040427131900.JCWU23570.viefep19-int.chello.at@localhost>
-Reply-To: sschlesi@chello.at
+Message-ID: <408E7229.40001@pbl.ca>
+References: <20040427123529.HVYI23570.viefep19-int.chello.at@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040427123529.HVYI23570.viefep19-int.chello.at@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,55 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-David Cannings wrote:
+sschlesi@chello.at wrote:
+> hi, 
+> 
+> I'm trying to stop broadcasts getting forwarded, but I'm  not sure how to do 
+> this. i read that *.255 - which are afaik broadcast addresses - doesnt 
+> guarantie that its a broadcast. then i read that its possible by matching the 
+> mac address, because broadcast will have ff:ff:ff:ff:ff:ff . but I'm not sure 
+> if that's all  nonsense.
 
+IP broadcast address does not need to end with 255.  It is convention on 
+C class subnets to give it address of 255 (all ones), however 
+theoretically it can be any address, as long as you define it as 
+broadcast address on all of your machines.  If you subnet C class to 
+even smaller subnets and use "all ones" convetion for broadcast address, 
+broadcast address will not end in 255 (for example, using "all ones" 
+convetion, broadcast address of 192.168.1.0/25 would be 192.168.1.127). 
+  Same goes for A or B class subnets (If your network is defined as 
+192.168.0.0/16, broadcast address (using convention) would be 
+192.168.255.255, so in this case 192.168.12.255 is not broadcast 
+address, it's just a host in 192.168.0.0/16).
 
->>On Tuesday 27 April 2004 13:35, sschlesi@chello.at wrote:
->>
->
->>>>I'm trying to stop broadcasts getting forwarded, but I'm  not sure how
->>>>to do this. i read that *.255 - which are afaik broadcast addresses -
->
->>
->>
->>My first question is why are broadcasts getting forwarded anyway?  Neither 
->>ethernet or IP broadcasts should leave your subnet.  How and where 
->>exactly are broadcasts being forwarded?
->>
+However, do note that 255.255.255.255 is always valid broadcast address!
 
-my policies are set to -P FORWARD ACCEPT because its just an simple ethernet router, w/o nat and stuff.
-so i thought iptables'll also forward broadcasts from one net to the other.
+The answer to your second question is, yes, on Ethernet 
+ff:ff:ff:ff:ff:ff is always an (Ethernet) broadcast.  Ethernet 
+broadcasts are not the same as IP broadcast.  However, IP broadcasts 
+packets will be encapsulated into Ethernet broadcast packets (unless you 
+have something really wrong in your configuraion).  Do note that I saw 
+at least one broken higher level protocol implementation (no, it wasn't 
+IP) that spit out everything using Ethernet broadcasts.
 
+As David already told you, broadcasts should not be routed (if you want 
+them to be routed, you usually need to read tips-and-tricks section in 
+your router configuration, and do something to make it work).  So the 
+router is the place to have them blocked.
 
->>
->>IP addresses ending in .255 are not always broadcast addresses.  Any 
->>subnet larger than class C (/24) can span more than one "block" of 256 IP 
->>addresses.
->>
->
->>>>doesnt guarantie that its a broadcast. then i read that its possible by
->>>>matching the mac address, because broadcast will have ff:ff:ff:ff:ff:ff
->>>>. but I'm not sure if that's all  nonsense.
->
->>
->>
->>There is the difference here between an IP broadcast and an ethernet 
->>broadcast.  IP broadcasts are sent to the ethernet broadcast address [1], 
->>so you may be able to do a MAC match.
->>
->>According to the manual page I have here, the module "mac" only offers a 
->>--mac-source option but there are more options in PoM I believe, you may 
->>want to check the mailing list archives.
->>
->>David
->>
->>1- A ping to the broadcast address on a LAN:
->>13:44:59.765871 0:10:XX:XX:XX:XX Broadcast ip 98: 192.168.0.100 > 
->>192.168.0.255: icmp: echo request (DF)
->>
-
-
+-- 
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
