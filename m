@@ -1,8 +1,8 @@
 From: "Daniel Chemko" <dchemko@smgtec.com>
 Subject: RE: filtering by VLAN possible?
-Date: Tue, 18 May 2004 16:37:45 -0700
+Date: Tue, 18 May 2004 16:39:10 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF5679352@alderaan.smgtec.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF5679353@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -30,5 +30,7 @@ Cybr0t McWhulf wrote:
 >=20
 > Has anyone tried this before with any success?
 
-Seems to be a ebtables feature:
+Seems to be an ebtables feature:
+
+http://ebtables.sourceforge.net/brnf-faq.html
 
