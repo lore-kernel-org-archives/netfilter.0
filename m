@@ -1,12 +1,15 @@
-From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: where is libipt_match.so?
-Date: Thu, 29 May 2003 13:54:45 +1000
+From: David T-G <davidtg-netfilter@justpickone.org>
+Subject: Re: where is libipt_match.so?
+Date: Wed, 28 May 2003 23:56:02 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D40@wardrive.citadelcomputer.com.au>
+Message-ID: <20030529035602.GG33081@justpickone.org>
+References: <20030529034344.GF33081@justpickone.org> <09B04A55822EFF4DA48D2E0BB2941D4A0D6D40@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Q6STzHxy03qt/hK9"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D40@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,63 +19,78 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: David T-G <davidtg-netfilter@justpickone.org>, NetFilter Users' List <netfilter@lists.netfilter.org>
-
-Have you searched for the file?
-
-# Unix compatible search. ;)
-find / -name libipt_match.so -exec ls -l {} \;
-
-if it's in a different location just symbolic link it to where ever it's
-looking for it.. ;) cheap way out..
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-=20
-
------Original Message-----
-From: David T-G [mailto:davidtg-netfilter@justpickone.org]
-Sent: Thursday, May 29, 2003 1:44 PM
-To: NetFilter Users' List
-Subject: where is libipt_match.so?
+To: NetFilter Users' List <netfilter@lists.netfilter.org>
+Cc: George Vieira <georgev@citadelcomputer.com.au>
 
 
-Hi again, all --
+--Q6STzHxy03qt/hK9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have finally gotten my client to rebuild his SCO UnitedLinux machine
-from scratch to give me a guaranteed-clean base and I tried running my
-iptables setup script.  Everything (NIC discovery, init script creation,
-etcetc) appears to have gone well but iptables has a problem:
+George, et al --
 
-  ...
-  iptables -t filter -A INPUT -i eth0 -m match NEW,RELATED,ESTABLISHED
--j ACCEPT
-  iptables v1.2.7a: Couldn't load match
-`match':/usr/lib/iptables/libipt_match.so: cannot open shared object
-file: No such file or directory
+=2E..and then George Vieira said...
+%=20
+% Have you searched for the file?
 
-This worked before, but I had also mucked around with the SuSEfirewall2
-scripts before; sure enough, it isn't there now.  Where does that file
-live?  Do I need another RPM, perhaps?
+I hadn't yet, but I did, and it truly isn't on the system.
+
+What is it?  From where does (er, should) it come?
 
 
-TIA & HAND
+%=20
+% # Unix compatible search. ;)
+% find / -name libipt_match.so -exec ls -l {} \;
+
+The only kind -- although I wouldn't bother with the extra overhead of
+the exec ;-)
+
+
+
+%=20
+% if it's in a different location just symbolic link it to where ever it's
+% looking for it.. ;) cheap way out..
+
+If only it were that simple!
+
+
+%=20
+% Thanks,
+
+Thanks, anyway.
+
+
+% ____________________________________________
+% George Vieira
+% Systems Manager
+% georgev@citadelcomputer.com.au
+%=20
+% Citadel Computer Systems Pty Ltd
+% http://www.citadelcomputer.com.au
+
+
+HAND
 
 :-D
 --=20
 David T-G                      * There is too much animal courage in=20
-(play) davidtg@justpickone.org * society and not sufficient moral
-courage.
-(work) davidtgwork@justpickone.org  -- Mary Baker Eddy, "Science and
-Health"
-http://justpickone.org/davidtg/      Shpx gur Pbzzhavpngvbaf Qrprapl
-Npg!
+(play) davidtg@justpickone.org * society and not sufficient moral courage.
+(work) davidtgwork@justpickone.org  -- Mary Baker Eddy, "Science and Health"
+http://justpickone.org/davidtg/      Shpx gur Pbzzhavpngvbaf Qrprapl Npg!
 
+
+--Q6STzHxy03qt/hK9
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (FreeBSD)
+
+iD4DBQE+1YTSGb7uCXufRwARAoLEAJi2QvonZ80lW2T8pQ4N5fSXppkcAJ9ZTAW2
+YWNL9K8bw1ZeYPUajAnlQQ==
+=AKaq
+-----END PGP SIGNATURE-----
+
+--Q6STzHxy03qt/hK9--
 
