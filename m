@@ -1,14 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: How exactly does RELATED work in Connection Tracking?
-Date: 23 Oct 2002 15:26:22 +0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: static IP, different gateway & dns
+Date: Wed, 23 Oct 2002 16:14:40 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1035379582.8853.69.camel@elendil>
-References: <000801c2798e$a7dcfd70$09c809c0@PENT4>
-	<1035325277.10494.18.camel@elendil>  <000b01c27aac$d6b2a270$09c809c0@PENT4>
+Message-ID: <200210231514.g9NFEoL02930@vulcan.rissington.net>
+References: <011001c27a9b$6eb1c9a0$0f01a8c0@Inspiron2100>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000b01c27aac$d6b2a270$09c809c0@PENT4>
+In-Reply-To: <011001c27a9b$6eb1c9a0$0f01a8c0@Inspiron2100>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Matthew Donofrio <mdonof2@pride.hofstra.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mer 23/10/2002 =E0 17:57, Matthew Donofrio a =E9crit :
-> The tuple is just the source address and destination address for a
-> particular packet, correct?
+On Wednesday 23 October 2002 2:52 pm, Clayton Check wrote:
 
-No, because your box can have multiple different flows with the same
-destination. A tuple as src address, dst address, layer 4 protocol and
-layer 4 datas, such as src and dst ports for TCP or UDP.
+> Hi,
+>
+> Can iptables NAT or handle nodes that have static IP address not on the
+> same subnet as the iptable box, also with different gateway configuration
+> and different DNS config?
 
-> So is it safe to say that the  only fields that are compared for
-> connection tracking are the source and destination addresses?
+Yes, netfilter can NAT anything which passes through it.   It doesn't care 
+what the original or translated addresses are.
 
-No it's not sufficient. you have to look at layer 4 datas.
-=20
-> So, if a packet comes in and the source and destination addresses
-> match an entry in the conntrack state table, then we can say that
-> it is part of some ESTABLISHED connection.
+> Overview
+> A linux box with iptable acts as a gateway to connect several clients to
+> the Internet. However, the clients behind this gateway have static IP
+> addresses and different gateway and dns configuration. Lets assume that
+> changing their network configurations are not possible.
+>
+> Can iptables handle this sort of networking?
+>
+>                              |--- 192.168.1.12 (gw: 192.168.1.1)
+>
+> ---- eth0 (iptables) eth1 ---|--- 192.168.10.25 (gw: 192.168.10.1)
+>                   10.0.0.1/8 |
+>
+>                              |--- 202.145.23.25 (gw: 202.145.0.5)
+>                              |
+>                              |--- 10.0.0.16 (gw: 10.0.0.1)
 
-It is established if its tuple (as defined below) matches an entry in
-the conntrack table, i.e. if it is the same than the tuples associated
-to entries.
+Put it like this: if you can get the packets to pass through netfilter, it 
+will do the NAT for you.
 
-Good reading for you are :
+My feeling about the network setup you've described above is that the packets 
+you're interested in won't be routed through the netfilter box, therefore it 
+won't be able to do anything with them.
 
-http://www.gnumonks.org/presentations/netfilter-knf2002/netfilter-knf2002=
-.pdf
-http://www.gnumonks.org/presentations/netfilter-internals-lt2002/netfilte=
-r-internals-lt2002.pdf
+Antony.
 
---=20
-C=E9dric Blancher  <blancher@cartel-securite.fr>
-Consultant en s=E9curit=E9 des syst=E8mes et r=E9seaux  - Cartel S=E9curi=
-t=E9
-T=E9l: +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
-PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
+-- 
+
+Anything that improbable is effectively impossible.
+
+ - Murray Gell-Mann, Nobel Prizewinner in Physics
 
