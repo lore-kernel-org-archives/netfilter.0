@@ -1,12 +1,14 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: Need to replace a SonicWall firewall with an iptables firewall.
-Date: Tue, 31 Aug 2004 10:11:10 -0400
+From: Gavin Hamill <gdh@acentral.co.uk>
+Subject: Re: list delete bug: kernel crash
+Date: Tue, 31 Aug 2004 16:05:31 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC9051310@asimail2.alphanumeric.com>
+Message-ID: <200408311605.31805.gdh@acentral.co.uk>
+References: <000801c48f65$58d3c940$0a00a8c0@aziz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <000801c48f65$58d3c940$0a00a8c0@aziz>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,44 +21,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> It's not a matter of what I want or don't want=20
+On Tuesday 31 August 2004 15:18, security wrote:
 
-sorry--"want" was probably a poor choice of words on my part.
-
-> - I inherited this mess
-> from someone else, recently, and I'm slowly working my way through all
-> my systems, learning how they are working (or not). We don't currently
-> have split-dns (see my reply to the off-topic portion of this thread).
-> Systems in the DMZ currently use real IP addresses, and can be =
-accessed
-> by their name in our external domain, from either the Internet, or =
-from
-> our internal domain (a sub-domain of our external domain). I'm trying =
-to
-> replicate this with an iptables firewall, without having to eliminate
-> our internal domain and completely re-doing our internal and external
-> dns in a split-dns fashion, just to get the firewall to work. Should I
-> go to split-dns? From what I've read, and been told here, it would =
-seem
-> an excellent thing to do, but it's not something I can do overnight.
+> Ok still have  crash after re-compil my kernel and re-install iptable
+> userspace package.
+> Allways the same error:
 >
-> I mentioned in another email, that I could probably get two subnets =
-from
-> my ISP - one for my external network and one for my DMZ. Would this
-> solve the problem until I can migrate to a split dns and one-to-one
-> NAT'ing of the DMZ systems?
+> Aug 31 16:01:39 gateway kernel: LIST_DELETE:
+> net/ipv4/netfilter/ip_conntrack_core.c:300
+> `&ct->tuplehash[IP_CT_DIR_REPLY]'(d3ac9224) not in
+> &ip_conntrack_hash[hr].
 
-it sounds like it would probably be less of a headache for you to get =
-that
-second public subnet from your ISP.  that way, you're really only =
-changing
-the addressing on the DMZ, without also simultaneously introducing NAT,=20
-split-dns, etc...  i don't particularly like changing multiple, major
-things all at once.  you'll probably have enough to deal with just =
-changing
-from sonicwall to iptables, and whatever idiosyncrasies are involved =
-with
-that.
+That's a shame. Unless your netfilter support came via modules rather than 
+from the kernel itself, then I'm afraid I have no more suggestions :( My last 
+thinking was that you may not have replaced any modules - only the main 
+kernel file...
 
--j
+Cheers,
+Gavin.
 
