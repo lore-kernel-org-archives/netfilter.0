@@ -1,10 +1,13 @@
-From: Guido Lorenzutti <guido@lorenzutti.com.ar>
-Subject: is there a way to discriminate the ESTABLISHED traffic?
-Date: Sun, 03 Apr 2005 23:51:24 -0300
-Message-ID: <4250ABAC.5010207@lorenzutti.com.ar>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Load balancing.
+Date: Sun, 03 Apr 2005 22:23:25 -0500
+Message-ID: <4250B32D.6040703@riverviewtech.net>
+References: <004e01c53881$c1adb2d0$88161753@szpaq>
+Reply-To: gtaylor@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <004e01c53881$c1adb2d0$88161753@szpaq>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +19,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: szpak <xperience@interia.pl>
+Cc: netfilter@lists.netfilter.org
 
-How can i discriminate the traffic that my firewall is answering from a 
-NEW request from a network from the ESTABLISHED traffic that my firewall 
-is making from a NEW request from him?
+You are wanting something like Equal Cost Multi Path routing and it's corresponding "ip route" commands.
 
-In rules, to allow traffic TO my box from the lan 10.0.0.0/32
 
-1 ipt -A INPUT -s 10.0.0.0/32 -m state --state NEW -j ACCEPT
-2 ipt -A INPUT -s 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
-3 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
 
-Now, to allow traffic FROM my box to the lan 10.0.0.0/32
+Grant. . . .
 
-4 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state NEW -j ACCEPT
-5 ipt -A OUTPUT -d 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
-6 ipt -A INPUT -s 10.0.0.0/32 -m state --state ESTABLISHED -j ACCEPT
-
-The 3 and 5 rules are exactly the same. Is there a way to discriminate 
-this or the things are just like this and there is nothing to do about it?
-
-Tnxs in advance.
+szpak wrote:
+> Hello.
+> 
+> I need help with I think something very easy to do with Iptables.
+> 
+> I need to have load balancing via nat for two or more ISP as in chart:
+> 
+>                            ------ ISP1
+>                           |          128.0.0.0/30        
+> <MY NET>---->[Linux NAT]-------- ISP2
+> 192.168.0.0/24     |      80.0.0.0/30
+>                            ------ ISP3
+>                                    85.0.0.0/30
+> 
+> I have some users on my side and I want them to simply load balance trafic
+> from them via those three ISP's.  How to do that, is there a way to have three default static routes?
+> 
+> Thank You for any help it will be very usefull.
+> 
+> Xperience
+> 
+> 
+> 
 
