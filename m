@@ -1,8 +1,8 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: locally access server behind firewall
-Date: Wed, 01 Sep 2004 14:08:02 -0400
+From: "Deepak Seshadri" <dseshadri@broadbandmaritime.com>
+Subject: RE: locally access server behind firewall
+Date: Wed, 1 Sep 2004 14:13:00 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094062082.1824.49.camel@wolfpack.ljm.dom>
+Message-ID: <200409011809.i81I94Fh094124@jkcpub.iserver.net>
 References: <41360CA0.6090109@tomdp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,37 +18,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+To: 'Tom' <tom@tomdp.com>, netfilter@lists.netfilter.org
+
+Hi Tom,
+
+I think your Apache server is expecting connections on port 80 & your
+Nat'ing will occur only if the packet comes in form the $WWW interface.
+Since you are on the local LAN the packets are not Nat'ted and hence you get
+the connection refused from the server as it is getting requests on a port
+where no application is listening.
+
+You don't need any rule, just type http://myserver.com within the LAN.
+
+
+Hope this helps!
+Regards,
+
+Deepak Seshadri
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Tom
+Sent: Wednesday, September 01, 2004 1:54 PM
 To: netfilter@lists.netfilter.org
+Subject: locally access server behind firewall
 
-On Wed, 2004-09-01 at 13:53, Tom wrote:
-> This works really well when I try to connect from the outside to my 
-> webserver. But, if I try to connect to http://myserver.com:8888 from the 
-> internal network (or from my server itself), I always get 'connection 
-> refused'. I'm pretty sure I need some other rules, but can someone 
-> please help me in the good direction here? Thanks a lot!!
+Hi,
 
-because your server doesn't listen on port 8888--it listens on port 80. 
-that's why you had to create the DNAT rule.
+I have a linux firewall (iptables), and a linux server with apache 
+behind that firewall. My provider blocks ports below 1024, so I have a 
+prerouting-rule that redirects traffic like this:
 
-as far as trying to connect "from the internal network"--these packets
-will go directly from LAN client to WWW server and never traverse your
-firewall, so no DNAT can take place.  if you must be able to do
-this--configure your WWW server to listen on port 8888 ("Listen 8888" in
-apache).
+$IPTABLES -A PREROUTING -t nat -i $WWW p tcp -d $EXTIP --dport 8888 -j 
+DNAT --to $SERVER:80
 
-NAT-ing of locally-generated packets on your firewall would require a
-rule in the OUTPUT chain of the nat table:
+I also have 2 forward-rules:
 
-        iptables -t nat -A OUTPUT -p tcp -d $EXTIP --dport 8888 \
-          -j DNAT --to-destination $SERVER:8888
-        
-note:  i don't even know if that will work, as it requires the output
-interface to change from external to internal and i vaguely recall that
-this doesn't work cleanly without a patch.
+$IPTABLES -A FORWARD -i $WWW -o $LAN -p tcp --dport 80 -j ACCEPT
+$IPTABLES -A FORWARD -i $LAN -o $WWW -p tcp --sport 80 -j ACCEPT
 
--j
+and I have these two lines to allow my local pc's to connect to the 
+firewall with ssh and stuff like that:
+$IPTABLES -A INPUT -i $LAN -s $INTLAN -j ACCEPT
+$IPTABLES -A OUTPUT -o $LAN -d $INTLAN -j ACCEPT
 
--- 
-Jason Opperisano <opie@817west.com>
+
+where:
+  $EXTIP = my external IP address
+  $WWW is eth1
+  $LAN is eth0
+  $SERVER = my server's internal IP address.
+  $INTLAN = "192.168.0.0/24"
+
+This works really well when I try to connect from the outside to my 
+webserver. But, if I try to connect to http://myserver.com:8888 from the 
+internal network (or from my server itself), I always get 'connection 
+refused'. I'm pretty sure I need some other rules, but can someone 
+please help me in the good direction here? Thanks a lot!!
+
+
+
+PS: Here's a little drawing of the situation:
+
+SERVER (eth0) <----> (eth0) GATEWAY-PC (eth1) <----> internet
+
+
 
 
