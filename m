@@ -1,11 +1,11 @@
-From: "Nadav Har'El" <nyh@math.technion.ac.il>
-Subject: conntrack too eager to track everything
-Date: Sun, 16 Feb 2003 12:25:10 +0200
+From: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
+Subject: Command not working  in latest version
+Date: Sun, 16 Feb 2003 14:00:10 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030216102510.GA19285@fermat.math.technion.ac.il>
+Message-ID: <00b401c2d5c3$b87fd6c0$0100a8c0@nikita>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +16,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-In a transparent-proxy-like application, I'm redirecting connections
-forwarded through the machine and destined to some port (say, 80) into
-a local port.
-Tracking these NATed connections by conntrack is obviously necessary, so
-the ip_conntrack modules needs to be run.
+Hi all,
 
-However, in some cases most of the connections (as much as 100%) that pass
-through the computer, or originate in it, or a destined to it, have nothing
-to do with these NATed connections. There is absolutely no reason to track
-these other connections, as no iptables filters, NAT, or anything else will
-ever affect them.
+I've changed from my old distribution to a new one that comes with iptables
+1.2.7a.
+I have iptables in the kernel (2.4.20) and I've loaded the modules
+iptable_nat, ipt_REDIRECT and ipt_MASQUERADE.
+I had in my previous distributions the following lines:
+iptables -t nat -F
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-So I was wondering, is there a way for me to configure ip_conntrack (or
-modify its code) not to track any connections except those explictly created
-by netfilter while doing NAT?
+This would give total access from lan attached to eth0 to the internet
+through my computer. But now, line 1 executes ok, line 2 gives:
+iptables: Invalid Argument
 
-Note that what bothers me isn't only the issue of time wasted while
-needlessly tracking connections - it's more the space issue of the space
-needed to track all these (potentially, hundreds of thousands) connections,
-and what happens when the connection tracking hash-tables gets filled up.
+If I do :
+iptables -t nat -A POSTROUTING -o eth0
+everything runs ok but lan has still no access to the internet as expected.
+What's happening, any ideas?
 
-I'd be greatful for any hints or pointers,
+Best regards,
 
-	Nadav.
+Paulo
 
--- 
-Nadav Har'El                        |      Sunday, Feb 16 2003, 14 Adar I 5763
-nyh@math.technion.ac.il             |-----------------------------------------
-Phone: +972-53-245868, ICQ 13349191 |A messy desk is a sign of a messy mind.
-http://nadav.harel.org.il           |An empty desk is a sign of an empty mind.
+
+
 
