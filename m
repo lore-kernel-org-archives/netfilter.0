@@ -1,12 +1,13 @@
-From: "Thhoep" <thhoep@gmx.de>
-Subject: Re: Iproute2 and fwmark usage
-Date: Fri, 9 Jan 2004 17:50:41 +0100
+From: Peter Schobel <pschobel@porchlight.ca>
+Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
+Date: Fri, 9 Jan 2004 11:57:22 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001601c3d6d0$b8198e10$1684188d@Kiste>
-References: <001401c3d63b$e9ebdff0$1684188d@Kiste> <20040109164718.GB24304@cannon.eng.us.uu.net> <001d01c3d6cc$191fc210$1684188d@Kiste> <20040109173530.GC24304@cannon.eng.us.uu.net>
-Mime-Version: 1.0
+Message-ID: <E4853B0A-42C4-11D8-AFEE-000393677A36@porchlight.ca>
+References: <200401090950.56343.Alistair Tonner <>
+Mime-Version: 1.0 (Apple Message framework v553)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200401090950.56343.Alistair Tonner <>>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,40 +17,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
-Cc: netfilter@lists.netfilter.org
-
-> OK. You mean when doing MARK in mangle for ping a -> b, you see both
-> ping and pong on ppp4 but the pongs get dropped somewhere between
-> PREROUTING and FORWARD. When you remove the MARK from netfilter then
-> all works fine??
-
-nonono, the marking isnt the problem. but first:
-
-for marking i use:
-"iptables -t mangle -A PREROUTING -i eth4 -s 192.168.0.22 -d 141.24.12.2 -j
-MARK --mark-with 1"
-
-for selecting a routing table upon that marking i use:
-"ip rule add fwmark 1 table test"
-
-while table test has a local network route, a host route to the ppp peer and
-a default route to the internet over the ppp peer as gateway.
-
-the main table is the same but using another ppp interface.
-
-all the other tables only differ only in the way out, but all include the
-route to the one and only local net.
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
 
-back to the problem:
-the marking doesnt seem to be the problem. if i let the marking stay and
-just remove the upon routing rule and replace it with:
-"ip rule add from 192.168.0.22 table test"
-then everything works absolutely fine. so i think its something with the
-iproute trying to use the firewall mark what drops the packet, because it
-seems to disappear while beeing routed.
+#error including kernel header in userspace; use the glibc headers 
+instead!
 
+On Friday, January 9, 2004, at 09:50  AM, Alistair Tonner wrote:
+
+> On January 8, 2004 10:58 pm, Peter Schobel wrote:
+>> On Thursday, January 8, 2004, at 09:33  PM, Alistair Tonner wrote:
+>>> what do you get for modprobe --version and ld -v ?
+>>> 	I suspect your modutils is incorrect for 2.6.0
+>>
+>> modprobe --version
+>> module-init-tools version 0.9.12
+>>
+>> ld -v
+>> GNU ld version 2.13.90.0.18 20030206
+>
+> 	Okay .. those are both good --
+>
+> 	is the error you are getting
+> 	"WARNING : dont include kernel headers in userspace"
+> 	?
+> 	
+> 	Alistair
+>>
+>>
+>> *****************************
+>> Peter Schobel
+>> Network Administrator
+>> Porchlight.ca
+>> Unlimited Internet
+>> *****************************
+>> In a world without walls or fences
+>> We will have no need for gates or windows
+>> *****************************
+>
+>
+*****************************
+Peter Schobel
+Network Administrator
+Porchlight.ca
+Unlimited Internet
+*****************************
+In a world without walls or fences
+We will have no need for gates or windows
+*****************************
 
 
