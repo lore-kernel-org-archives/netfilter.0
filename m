@@ -1,12 +1,12 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Limiting upload bandwidth ...
-Date: 03 Feb 2003 12:42:22 +0200
+From: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Subject: Re: iptables UDP problem
+Date: Mon, 3 Feb 2003 13:16:56 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044268942.1119.3.camel@rayw.knowledgefactory.co.za>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <Pine.LNX.4.51.0302031301220.7256@dns.toxicfilms.tv>
+References: <20030202001150.26421.qmail@web41303.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-yJhEntLl5ebbUfco/hKR"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20030202001150.26421.qmail@web41303.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,60 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: k n <kn57@yahoo.com>
+Cc: netfilter@lists.netfilter.org
+
+> I'm using iptables on RedHat 8 with the rules listed
+> below. When scanned from outside the TCP port appear
+> as filtered; however, the UDP port is still open.
+>
+> $ip0  is my external IP address.
+>
+> Am I doing something wrong?
+>
+> -------------
+> /sbin/iptables -A INPUT -i lo -p all -j ACCEPT
+> /sbin/iptables -A INPUT  -p tcp -d $ip0 --dport 53  -j
+> DROP
+Scanners see this:
+- the machine pings back
+- some ports (eg. 80) are open and respond properly
+- some other ports (eg. 53) do respond at all (DROP), normally the should
+  responds TCP RESET (normal operation, or -j REJECT --reject-with tcp-reset)
+= so, the port is filtered.
 
 
---=-yJhEntLl5ebbUfco/hKR
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> /sbin/iptables -A INPUT  -p udp -d $ip0 --dport 53  -j DROP
+Scanners see this:
+- the machine pings back,
+- i do net get a "icmp dest. unreach / port unreachable), so the port is
+  open.
 
-Hi all
+Solution #1
+- forget about what the scanner says: and leave it so it dropps the
+  packets.
+  For: The scans take much more time and may iritate the scanner;
+       The scanner gets much less information that can be used with OS
+       fingerprinting.
 
-Enjoying your day so far?
+Solution #2
+If you want the scanners to get (closed) for everything.
+- reject with tcp-resets to tcp
+- reject with icmp-unreach to udp
 
-Does anyone have any ideas for limiting upload bandwidth per user(ip)?
-Can I use delay pools in squid to do this, or is that only for
-downloads? I didn't see in the docs where I could specify either upload
-or download.
+Against: The scans are quicker, you actually send packets thus disclose
+information interesting to os fingerprinting.
 
-Do I have to use something like HTB?
-
-Regards
-
-Ray
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
-
---=-yJhEntLl5ebbUfco/hKR
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA+PkeOh1fuR/Bv+ygRAneKAJ9MIZQcLv2JgLfTUpvU1K4oApJ16wCfTzFy
-mnbAwlDNbqyVj3g5h3wOqPI=
-=A5ET
------END PGP SIGNATURE-----
-
---=-yJhEntLl5ebbUfco/hKR--
+Regards,
+Maciej Soltysiak
 
 
