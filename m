@@ -1,33 +1,54 @@
-From: raido <raido@elin.ttu.ee>
-Subject: Re: Is there a filter for Ethernet packets ?
-Date: Wed, 4 Aug 2004 22:30:08 +0300
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408042230.08200.raido@elin.ttu.ee>
-References: <20040804185709.55744.qmail@web10708.mail.yahoo.com>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: Iptables acting as a load balancer
+Date: Wed, 4 Aug 2004 21:40:14 +0200 (CEST)
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0408042137370.18805-100000@filer.marasystems.com>
+References: <200408041619.SAA09183@mail.nexusat.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040804185709.55744.qmail@web10708.mail.yahoo.com>
-Content-Disposition: inline
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <200408041619.SAA09183@mail.nexusat.it>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Giovanni Costagliola <giovanni.costagliola@nexusat.it>
+Cc: 'Netfilter Mailinglist' <netfilter@lists.netfilter.org>, 'Netfilter Development Mailinglist' <netfilter-devel@lists.netfilter.org>
 
-> I'd like to write a filter for all the Ethernet
-> frames recevied on an Ethernet interface.  I'm
-> wondering if there is something in Netfilter for
-> me to use.
+On Wed, 4 Aug 2004, Giovanni Costagliola wrote:
 
-I think ebtables (http://ebtables.sourceforge.net/) is for filtering non-ip 
-ethernet traffic. Maybe you can get advice from there?
+> Q1: Does iptables allow a state-balancing? Or it simple span the packets on
+> the range of IPs? (I further guess: Has it any reasonable sense?)
 
-Raido
+iptables does not have any reasonable sense for load balancing. It is not 
+what it is designed for.
+
+> Q2: What happens in the case a target IPs doesn't respond yet? In other
+> words Is iptables able to recognize an host failure?
+
+Not the job of iptables, but there is plenty of other software doing this.
+
+> Q3: Provided my needs, and supposing I'll receive negative answers, does
+> exists some free/gpled solution feasible to me
+
+For the low-level load balancing look into Linux Virtual Server / IPVS. 
+Standard part of the Linux kernel. For the host monitoring see LVS/IPVS 
+related software (there is several good options).
+
+> Q4: Provided iptables fit positively to Q1 and Q2, does anyone experimented
+> the solution? Any feedback to the regard?
+
+Have played with implementing NAT based load balancing ontop of 
+netfilter NAT. It is technically doable but is missing some small pieces 
+of accounting to make it work in a nice manner.
+
+Regards
+Henrik
+
 
