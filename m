@@ -1,14 +1,10 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: Blocking Netranges Based on IP-to-Country CSV
-Date: Fri, 17 Sep 2004 12:46:13 +0100
+From: nikhil hegde <ndhegde@yahoo.com>
+Subject: ipqueue related problem. large file transfer not taking place.
+Date: Thu, 16 Sep 2004 06:55:43 -0700 (PDT)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040917114613.GP452@metastasis.org.uk>
-References: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
-Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Message-ID: <20040916135543.8668.qmail@web20828.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <7EACCDBB65D37443912D80713CC1245D02382B06@fsnsab20.losangeles.af.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,28 +18,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Sep 16, 2004 at 09:33:03AM -0700, Hudson Delbert J Contr 61 CS/SCBN wrote:
-> 
-> why do this ?
+Hi all,
+I am a beginner and I have this problem:
+I installed fedora core 2 and iptables 1.2.11 and
+iptables-devel for 1.2.11. In my application when i
+try to scp or sftp any file larger than few bytes the
+transfer is not taking place.
+The transfer "stalls" at 132KB typically. I can
+successfully transfer files of the order of bytes.
 
-There's a good set of reasons on:
+I tried:
+-increasing netlink buffer size(rite now i have kept
+it to 65535 * 4)
+-increasing the size of the buffer to which i
+read(ipq_read ) thinking that the other end is writing
+to netlink buffer very fast.
 
-http://ip-to-country.webhosting.info/
+But nothing seems to have worked. could anyone please
+help me?
 
-> seems a bit nasty in nature.
+Thanks and regards
+Nikhil
 
-Depends how you use the information.  And to be honest considering the
-reputation of some sources of traffic, such as Korea and South America,
-which might be unlikely to have legitimate connections to your site, it
-would be handy to block them all.
 
-> we dont even do this sort of thing? see email addy...
 
-But you're a worldwide organisation, and I think there's much more that
-you can do with this than just block.  For example, has anything figured
-out a way to tie this into logging rules, it would great to see which
-countries I'm being attacked from.
 
--- 
-mors omnia vincit
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - You care about security. So do we.
+http://promotions.yahoo.com/new_mail
 
