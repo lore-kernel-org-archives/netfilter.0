@@ -1,12 +1,14 @@
-From: "Herry Wild" <herry.wild@TENDI.COM>
-Subject: pptp-conntrack-nat problem
-Date: Tue, 5 Aug 2003 10:45:20 +0200
+From: Rob Verduijn <rverduij@dds.nl>
+Subject: Re: nfs
+Date: Tue, 05 Aug 2003 11:02:57 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <87D4F492F75B66408915EF4FE2814926509D@mail-pfr.corp.tendi.com>
+Message-ID: <1060074177.2848.3.camel@rincewind>
+References: <1060065419.3395.1.camel@rincewind>
+	 <20030805081723.GD11849@localnet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <20030805081723.GD11849@localnet>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,72 +19,50 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: sr@gimp.org
+Cc: netfilter@lists.netfilter.org
 
-Hello everybody,
+Hi there,
 
-i have the following configuration:
------------------------------------------------
-W2k client -> SuSE Linux 8.2 router with iptables (NAT) -> W2k PPTP =
-Server
+I do have some influence over the nfs server, (it's my backup server) so
+that wouldn't be a big problem.
 
-on linux i use:
---------------------
-2.4.20 kernel source
-patch-o-matic Patch
-   i ran ./run extra and applied:
-      submitted/01_2.4.19 (already applied)
-      submitted/01_2.4.20 (already applied)
-      submitted/63_ip_conntrack_destroy (already applied)
-      base/REJECT-ipv6 (already applied)
-      base/psd (already applied)
-      extra/pptp-conntrack-nat
-      extra/string (already applied)
-   i ran make menuconfig
-      <*> Connection tracking
-      <*>    FTP protocol support
-      <*>    IRC protocol support
-      <*>    GRE protocol support
-      <*>       PPTP protocol support
-iptables 1.2.8
+My second question would be what the IP table rule settings would be on
+the server :)
 
-i compiled the kernel (once Connection tracking and once as kernel =
-embedded)
-i compiled iptables
 
-my iptables script lock like:
-----------------------------------------
-iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i ! eth1 -m state --state NEW,ESTABLISHED,RELATED =
--j ACCEPT
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t nat -A PREROUTING -i eth1 -p 47 -j DNAT --to-destination =
-$VPN_SERVER
-iptables -t nat -A POSTROUTING -o eth0 -p 47 -j SNAT --to-source $LAN_IP
-iptables -A FORWARD -i eth1 -m state --state NEW -p 47 -d $VPN_SERVER -j =
-ACCEPT
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 1723 -j DNAT =
---to-destination $VPN_SERVER
-iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 1723 -j SNAT =
---to-source $LAN_IP
-iptables -A FORWARD -i eth1 -m state --state NEW -p tcp -d $VPN_SERVER =
---dport 1723 -j ACCEPT
 
-eth1 is the external network interface.
 
-and now the problem:
-------------------------------
-I made connections to the VPN Server which is working very well. Now =
-sending data through this connection
-like FTP, HTTP or Terminalsessions. During the data transfer the linux =
-box is closing the connecting and the
-LAN is no longer available. If i try this a couple of times the linux =
-box is going down and i have to reboot!
+On Tue, 2003-08-05 at 10:17, Sven Riedel wrote:
+> On Tue, Aug 05, 2003 at 08:36:59AM +0200, Rob Verduijn wrote:
+> > What would be the rule setting I need to mount a remote nfs share when I
+> > am using connection tracking and a default DROP policy?
+> 
+> First, since NFS uses RPCs you need to know what ports rpc.mountd,
+> rpc.statd and maybe rpc.lockd are running on. If you have influence over
+> the server, try setting the ports explictly (invoke the daemons with the
+> -p flag. Works with statd and mountd, lockd is a bit more tricky). 
+> 
+> Otherwise the ports are
+> allocated dynamically and the client has to ask the remote portmapper
+> where the daemons are listening. Any rules in this case are only valid
+> as long as the rpc-services on the nfs-server aren't restarted.
+> 
+> You'll have to allow the following ports:
+> udp/2049: nfs 
+> tcp/2049: nfs, if you're using nfs over tcp, nfs v3 and up
+> udp/111: portmap/sunrpc
+> tcp/111: portmap/sunrpc
+> udp/<rpc.statd>
+> tcp/<rpc.statd>
+> udp/<rpc.mountd>
+> tcp/<rpc.mountd>
+> and maybe:
+> udp/<rpc.lockd>
+> tcp/<rpc.lockd>
+> 
+> Regs,
+> Sven
+> 
 
-have somebody an idea?
-
-thank you for your help
-
-Herry Wild
 
