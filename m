@@ -1,14 +1,13 @@
-From: Atsushi Nakagawa <atnak@chejz.com>
-Subject: Re: Dropping RST of SYN
-Date: Mon, 08 Sep 2003 20:58:50 +1000
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: shorewall
+Date: Mon, 8 Sep 2003 13:08:58 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030908204206.C148.ATNAK@chejz.com>
-References: <1063000297.827.26.camel@india.nsecure.net> <3F5C539E.8030704@chrisbrenton.org>
-Reply-To: Atsushi Nakagawa <atnak@chejz.com>
+Message-ID: <20030908130858.677b5874.arnt@c2i.net>
+References: <F22386C3FEB012449238672E38ED61E70A8CB0@overlord.overturemedia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F5C539E.8030704@chrisbrenton.org>
+In-Reply-To: <F22386C3FEB012449238672E38ED61E70A8CB0@overlord.overturemedia.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +18,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Brenton <cbrenton@chrisbrenton.org>
-Cc: "Dharmendra.T" <dharmu@nsecure.net>, Ralf Spenneberg <lists@spenneberg.org>, Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Chris Brenton <cbrenton@chrisbrenton.org> wrote:
-> Dharmendra.T responded:
-> > On Thu, 2003-09-04 at 14:43, Ralf Spenneberg wrote:
-> > > Am Don, 2003-09-04 um 10.50 schrieb Atsushi Nakagawa:
-> > > > What iptables table/rule can I use to drop RST (TCP) packets
-> > > > that're in reply to SYN?
-> > >
-> > > There is no way to differentiate between this RST and a later valid
-> > > and needed RST packet.  You can only drop all RST packets
-> > > -m state --state ESTABLISHED -p tcp --tcp-flags RST,ACK RST,ACK -j DROP
-> >
-> > Blocking the RST packets on the firewall is not recommended. If the 
-> > attacker comes to know that the server is dropping RST packets then he 
-> > can flood the servers by initiating lacks of connections, which inturn 
-> > result closewait state.
+On Mon, 8 Sep 2003 17:26:10 +0800, 
+"Fritz Mesedilla" <fritz.mesedilla@overturemedia.com> wrote in message 
+<F22386C3FEB012449238672E38ED61E70A8CB0@overlord.overturemedia.com>:
 > 
-> Ya know, I missed this the first time through but Dharmendra is 
-> absolutely right. This will make you far more susceptible to SYN flood 
-> attacks.
->
-> ...
+> Has anybody used shorewall? 
 
-Both Dharmendra and Chris have pointed out perfectly legitimate reasons
-why it is a bad idea to drop RSTs in general.  However, these warnings
-have taken the original proposition slightly out of context. --AFAIS
+..yup.
 
-Ralf's response was to a question regarding the removal of outgoing RST
-packets that are generated in reply to incoming SYN packets.  (These
-RSTs being the kind that causes the "Connection Refused" TCP message)
+> If I try shorewall to fix my nat problem (make it easier) and still
+> does not work, will I be able to disable shorewall and implement a
+> manual setup of iptables again?
 
-Hence, "dropping all RST packets", should implicitly have meant, "all
-outgoing RST packets".  (The -m state ... -j DROP line is ambiguous.)
+..yup.
 
-In this case, there should be no consequences with SYN flood-type
-attacks.  The only ill-effect, AFAIK, is with abortive disconnects not
-reaching remote host (and remote host will resend obselete packets
-little more times).  --A problem enough to deter me from implmementing
-this.
+..check out http://webmin.com/ ,   has a neat shorewall module.
 
-Regards,
-
+..also check out ipcop-1.3.0 at http://ipcop.org/ is a firewall 
+distro with proxy server, 5 minute setup time, a good tutor 
+towards shorewall.
 
 -- 
-Atsushi Nakagawa
-<atnak@chejz.com>
-Changes are made when there is inconvenience.
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
 
