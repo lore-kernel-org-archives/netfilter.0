@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ftp
-Date: Thu, 27 May 2004 19:06:54 +0100
+From: "Alejandro Kurchis" <sisdis@tournet.com.ar>
+Subject: Add modules to iptables
+Date: Thu, 27 May 2004 15:31:39 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200405271906.54858.Antony@Soft-Solutions.co.uk>
-References: <20040527164327.6B8A1DBD@sterenborg.info> <119801c44414$60dc9500$49caa8c0@caris.priv>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <00a801c44418$d9f6f1c0$0200a8c0@ale>
+Reply-To: "Alejandro Kurchis" <sisdis@tournet.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <119801c44414$60dc9500$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +17,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-On Thursday 27 May 2004 6:59 pm, Peter Marshall wrote:
+Hi folks !!!
 
-> I actually don't need the dnat as I have internet routable ip's in my dmz
-> .... Thank you for the info.  My question now is, will your rule take care
-> of both passive and active ftp ?  I would prefer to just use active .. but
-> I know many clients would have their own issues .. grr .. stupid ftp ....
+I have Red Hat 9 with Iptables 1.2.7. In iptables, I have all the default
+modules (ip_nat_irc, ip_nat_ftp, etc....) that came with this version af
+iptables.
 
-ip_conntrack_ftp does handle both passive and active ftp.
+If I want to add extra modules like ip_conntrack_h323, ip_string or any
+other.....Do I have to re-compile iptables or is there any easy way to do
+that ??? How can I do this pease ??? I'm not an expert so I like the simple
+way....
 
-Obviously if you're not doing DNAT then you don't need the ip_nat_ftp module 
-either.
+Special thanks,
 
-Regards,
+Alejandro
 
-Antony.
-
--- 
-Software development can be quick, high quality, or low cost.
-
-The customer gets to pick any two out of three.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
