@@ -1,14 +1,13 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: two negatived parameters
-Date: Mon, 6 Sep 2004 04:49:01 -0400
+Date: Mon, 06 Sep 2004 11:00:19 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409060449.02415.Alistair@nerdnet.ca>
+Message-ID: <1094461219.2309.24.camel@anduril.intranet.cartel-securite.net>
 References: <7421.1094459312@www2.gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <7421.1094459312@www2.gmx.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +17,51 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Akolinare@gmx.net
+Cc: netfilter@lists.netfilter.org
 
-On September 6, 2004 04:28 am, Akolinare@gmx.net wrote:
-> Hi,
->
-> I have a little question with two negatived parameters in one rule.
->
-> I create a rule, which should only match if source and destination are not
+Le lun 06/09/2004 =E0 10:28, Akolinare@gmx.net a =E9crit :
+> I create a rule, which should only match if source and destination are =
+not
 > the given. I think that it is easy and try the following rule:
->
 > iptables -A FORWARD -s ! host1 -d ! host2 -j ACCEPT
->
-> But with this rule pakets from host1 to host3 (or from host2 to host3) were
-> not affected. It seems like the logical combination is OR and not AND
-> unlike the not negatived rule.
-> I think that the rule is logical right. Is it a little bug or have I
-> misunderstood something?
->
-> I used the version 1.2.11 with kernel 2.4.26.
->
->   Markus
+> But with this rule pakets from host1 to host3 (or from host2 to host3) =
+were
+> not affected. It seems like the logical combination is OR and not AND u=
+nlike
+> the not negatived rule.
 
-	I take it to mean that packets from host2 to host 3 were NOT accepted by this 
-rule? ... What do the counters for the rule say? ( iptables -L -n -v -x  ).
+When you build a rule, all parameters are combined with an AND, and it's
+logical (to me) that it is style the case here. When you write :
 
-	What other rules exist that might affect said packets? -- I note the above is  
-an ADD.  Could rules farther up the FORWARD chain have already 
-accepted/denied the said packets?
+	iptables -A FORWARD -s host1 -d host2 -j ACCEPT
 
-	FYI -- I just tested this by inserting a double negative rule in my firewall 
+You say :
 
-	iptables -I tcp_packets -p tcp -s ! {internal_lan} -d ! {internal lan ip} 
---dport 25 -j allowed 
+	if packet is (from host1) AND (to host2) then ACCEPT
 
-	and sending myself an email from outside.  The packet counter incremented 
-appropriately.
+Now, if you negate a parameter, you only negate this one, not a couple
+of them. So you get :
 
-	2.6.7 linux iptables 1.2.11
+	if packet is (not from host1) AND (not to host2) then ACCEPT
 
-	and now that rule is gone.
+Which can be translated as :
 
-	Alistair
+	if packet is not (from host1 OR to host2) then ACCEPT
+
+And it explains why your packets are not matched, as your test packet is
+from host1. So there's no bug (imho) ;)
+
+But there's something about the second packet that should matche (host2
+to host3). Can you confirm that this very packet does not match ? As
+Alistair, I did a similar test (iptables 1.2.11 on 2.6.5 kernel) on a
+double negative rule and it matched.
+
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
