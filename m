@@ -1,13 +1,12 @@
-From: Frederic de Villamil <neuro@seclab.jp>
+From: "j.travis" <skynet@psinode.com>
 Subject: Re: -m tcp
-Date: Wed, 24 Mar 2004 19:39:37 +0100
+Date: Wed, 24 Mar 2004 10:41:07 -0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040324183937.GB20010@jesus.seclab.jp>
-References: <017e01c411cd$c358a170$0300a8c0@max2>
+Message-ID: <019301c411cf$94dbc5f0$0300a8c0@max2>
+References: <017e01c411cd$c358a170$0300a8c0@max2> <20040324183937.GB20010@jesus.seclab.jp>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <017e01c411cd$c358a170$0300a8c0@max2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +17,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "j.travis" <skynet@psinode.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 24 Mar 2004, j.travis wrote:
+-Then why might one be inclined to use the '-m tcp' in a situation like
+this?  Clarity?
 
-> Is  there any (functional) difference between these two statements?
+-Under what circumstances might '-m tcp' give added value?
+
+
+
+> On Wed, 24 Mar 2004, j.travis wrote:
 >
-> -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+> > Is  there any (functional) difference between these two statements?
+> >
+> > -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+> >
+> > -A INPUT -p tcp --dport 80 -j ACCEPT
+> >
 >
-> -A INPUT -p tcp --dport 80 -j ACCEPT
+> No. Absolutely not.
 >
 
-No. Absolutely not.
 
---
-http://www.seclab.jp
 
