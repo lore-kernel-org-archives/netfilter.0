@@ -1,11 +1,9 @@
-From: "Pawel Staszewski" <pstaszewski@artcom.pl>
+From: =?iso-8859-1?B?SOVrYW4gRW5nYmxvbQ==?= <cynic_0@hotmail.com>
 Subject: Re: source-mac filtering
-Date: Sun, 11 Jan 2004 01:34:34 +0100
+Date: Sun, 11 Jan 2004 01:43:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005801c3d7da$afe66460$0d04460a@orion>
-References: <Sea1-F7gMiX6AZCFgXe000520e9@hotmail.com> <003801c3d7d7$ba8ed850$0d04460a@orion> <200401110025.25675.Antony@Soft-Solutions.co.uk>
+Message-ID: <Sea1-F19zSK5iQovlQJ00051334@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,46 +14,63 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
+Yes I can try that.
 
------ Original Message ----- 
-From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, January 11, 2004 1:25 AM
-Subject: Re: source-mac filtering
+However I do managed to get the DHCP-discovery packets dropped (and logged =
+
+as dropped) by a general DROP-rule after having matched on vaild source-mac=
+=20
+addresses. But even if iptables consider the packets to be dropped, they ar=
+e=20
+still forwarded to the dhcpd. This could be seen using "iptables -L -v"
+
+I think it's more likely that the dhcp-server listens on a very low layer.
+
+I'll try it anyway.
+
+/H=E5kan E.
 
 
-On Sunday 11 January 2004 12:13 am, Pawel Staszewski wrote:
-
-> Hello
+>From: Antony Stone <Antony@Soft-Solutions.co.uk>
+>To: <netfilter@lists.netfilter.org>
+>Subject: Re: source-mac filtering
+>Date: Sun, 11 Jan 2004 00:25:25 +0000
 >
-> Maybe try to block broadcast to the "blocked" client....
-> "-m pkttype --pkttype broadcast ........."
+>On Sunday 11 January 2004 12:13 am, Pawel Staszewski wrote:
 >
-> I use it and this work fine...
+> > Hello
+> >
+> > Maybe try to block broadcast to the "blocked" client....
+> > "-m pkttype --pkttype broadcast ........."
+> >
+> > I use it and this work fine...
+>
+>You can use a rule with this match in it to stop your DHCP server giving=20
+>out
+>addresses?
+>
+>I thought DHCPD caught the packets before they ever got to netfilter,
+>therefore you couldn't block the traffic with any sort of rule.
+>
+>Antony.
+>
+>--
+>Ramdisk is not an installation procedure.
+>
+>                                                      Please reply to the =
 
-You can use a rule with this match in it to stop your DHCP server giving out
-addresses?
+>list;
+>                                                            please don't C=
+C=20
+>me.
+>
+>
 
-I thought DHCPD caught the packets before they ever got to netfilter,
-therefore you couldn't block the traffic with any sort of rule.
-
-Antony.
-
--- 
-Ramdisk is not an installation procedure.
-
-                                                     Please reply to the
-list;
-                                                           please don't CC
-me.
-
-Hmm...
-iptables -t raw ??
-Maybe this helps...
-
-Paol
+_________________________________________________________________
+Hitta r=E4tt k=F6pare p=E5 MSN K=F6p & S=E4lj http://www.msn.se/koposalj
 
 
