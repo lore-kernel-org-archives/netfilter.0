@@ -1,15 +1,13 @@
-From: Michael Leun <netfilter@newton.lahn.de>
-Subject: Re: kernel 2.6 ipsec and DNAT
-Date: Thu, 16 Sep 2004 07:25:27 +0200
+From: Arthur Meyer <arthur.meyer@tbz.ch>
+Subject: Re: Passive FTP Problem in NAT.
+Date: Thu, 16 Sep 2004 08:58:18 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20040916072527.58f1ffb9@xenia.leun.net>
-References: <1095068909.27900.953.camel@cluster>
-	<HAEOIFPIBBBLGLHOMLLIMEFACMAA.bclark@eccotours.biz>
-Reply-To: mlist-20040910@newton.leun.net
+Message-ID: <200409160858.18046.arthur.meyer@tbz.ch>
+References: <84F19A978A20454D96263C93109EE76937CE@telex.atom01.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <HAEOIFPIBBBLGLHOMLLIMEFACMAA.bclark@eccotours.biz>
+In-Reply-To: <84F19A978A20454D96263C93109EE76937CE@telex.atom01.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,39 +17,64 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Is the nat-ftp-helper module loades?
 
-On Mon, 13 Sep 2004 12:29:56 +0200
-"Brent Clark" <bclark@eccotours.biz> wrote:
+insmod ip_nat_ftp
 
-> >Hi all,
-> 
-> >i have recently discovered on the list that more people is suffering
-> >the nat problem with ipsec vpn tunnels on 2.6.x kernels, does anyone
-> >know if its fixed on 2.6.8.1 ??
-> 
-> >The unique way i found to bypass the nat problem is using a proxy
-> >server(squid), not the best solution but for now im able to surf the
-> >web .-)
+Arthur Meyer
 
-> But why would nat a vpn tunnel be a problem.
-> Are there certain requirement for creating tunnel.
-> Can the vpn server \ client be on the same box as the iptables
-> gateway\router\firewall.
+On Wednesday 15 September 2004 16:51, Svavar =D6rn Eysteinsson wrote:
+> Hi.
+>
+> Could someone help me or give me advice regarding NAT on a FTP server
+> located in my DMZ.
+>
+> This is my setup :
+>
+> My Firewall(Linux 2.4.22-1) :
+>
+> - eth0 =3D Public Interface (x.x.x.66 / 26 )
+>
+> - eth1 =3D DMZ Interface (172.16.100.254 / 24 )
+>
+> - eth2 =3D My Internal Network ( 192.168.1.1 / 24 )
+>
+>
+> I have a FTP server located on my DMZ Network. The server is listening
+> on a "non-standard" ftp port. It listens on port : 2121.
+>
+> To generate my firewall config I use FwBuilder. I've tried many
+> configurations but, I never get the data port to open( e.g. to list a
+> directory)
+>
+> In my configuration I've allowed, and NAT'ed the following services
+> to my FTP server located on the DMZ  :
+>
+> FTP =09=09=3D =09TCP Destination Port : Start : 2121 - End : 2121
+> FTP_DATA=09=3D=09TCP Source Port : Start : 20 - End : 20
+> =09=09=09        Destination : Start : 1024 - End : 65535
+>
+> I can connect, but cannot list the directories.
+>
+> p.s. I'm running Proftpd on my FTP server. I have also tried to configu=
+re
+> the "PassivePorts=3D 60000 65534" to configure a group of the passive p=
+orts.
+> But it's the same issue with the directory listening.
+>
+> Any help would be much appreciated.
+>
+>
+> Best regards to all,
+>
+> Svavar O
+> Reykjavik - Iceland
 
-I've a notebook, running linux of course and I have an vpn tunnel. There
-are sometimes some jobs which require windows, because there is no such
-software for linux - then I run windows in vmware and need, of course
-linux to forward the packets from vmware through the tunnel.
+--=20
 
-I would really appreciate to see this fixed soon.
-
--- 
-Bye,
-
-Michael Leun
+This email was created using 100% recycled electrons.
 
 
