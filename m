@@ -1,15 +1,11 @@
-From: David Cannings <lists@edeca.net>
-Subject: Re: problem with nmap
-Date: Mon, 16 Feb 2004 14:30:55 +0000
+From: Matteo Pampolini <matteo.pampolini@ciaolab.com>
+Subject: Please help me with iptables/NAT
+Date: Mon, 16 Feb 2004 16:22:37 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402161430.55591.lists@edeca.net>
-References: <001901c3f496$5feac900$7b00000a@optusclub.gr>
-Reply-To: david@edeca.net
+Message-ID: <4030E03D.6050502@ciaolab.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001901c3f496$5feac900$7b00000a@optusclub.gr>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +15,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Monday 16 February 2004 14:08, Galiatsis Sokratis wrote:
-> I want to know if there is a "special" rule which blocks all nmap
-> scanning methods. I have something here for fragments, xmas, nmap etc
-> but whenever i try to test it my server ports are always shown as open
-> instead of stealth. I tried Online Symantec Security Scan and nmapping
-> from another host from an external network. Both show the same results.
+Hi everybody,
 
-Are these scans coming from places that should be able to access your 
-services or not?  The whole point of having your ports open is so that 
-people can access what is behind them, the whole point of using nmap to 
-scan is to see what ports are open.  The TCP connect scan in nmap 
-connects exactly the same as any other client application would, 
-therefore you'll never completely stop a scan unless you want to block 
-access totally.
+I have a Linux box running kernel 2.4.17 and iptables 1.2.5 where
+a DNAT rule is applied and I'm experiencing a strange behaviour.
 
-Perhaps rate limiting to 5 SYN-only packets (or other, for the special 
-cases) per second might help.  This will slow a scan considerably, though 
-you may have to play with the timing:limit ratios.  Blocking invalid 
-packets (those unrelated to existing connections) and packets with flags 
-that are bogus (such as SYN and FIN at the same time, to give a poor 
-example) will also block scans.
+If I delete the rule while no connections related to it are active,
+then everything works fine, otherwise rule is apparently deleted
+but network traffic is still active while it shouldn't.
 
-David
+Same thing with another box doing masquerading: if a start a ping
+from the inside private network to the outside and the remove the
+rule, then the rules listing is OK but ping still works.
+
+Is it a bug or is a choice? In the latter case, why?
+
+Thanks in advance,
+
+Matteo.
+
 
