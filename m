@@ -1,7 +1,7 @@
-From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+From: Jason Opperisano <opie@817west.com>
 Subject: Re: protocol 50 unreachable
-Date: Wed, 01 Dec 2004 23:09:25 -0500
-Message-ID: <1101960564.2032.121.camel@localhost>
+Date: Wed, 01 Dec 2004 23:12:25 -0500
+Message-ID: <1101960745.22517.31.camel@hubcap.ljm.dom>
 References: <Pine.LNX.4.44.0412011956430.22471-100000@gollum.grajagan.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,49 +18,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Helge Weissig <helgew@grajagan.org>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 On Wed, 2004-12-01 at 23:00, Helge Weissig wrote:
-> On Wed, 1 Dec 2004 at 22:46 -0500, Jason Opperisano wrote:
-> 
-> JO> > no such luck :(. I should note that the VPN connections works fine when I 
-> JO> > hook the client up directly to my DSL line. btw - it looks like your 
-> JO> > script does not forward anything from one of my interfaces to the other.
-> JO> 
-> JO> yeah--precisely.  you seem obsessed with the desire to "port forward"
-> JO> esp traffic to your VPN client, which is absolutely not necessary.
-> JO> 
-> JO> look into configuring NAT-T with your VPN client, sometimes called "UDP
-> JO> Encapsulation" as your VPN server appears unwilling to accept esp
-> JO> packets that have traversed an intermediate NAT device.
-> 
 > hmm... how does a packet know it needs to go from my external NIC to my 
 > internal NIC if it comes through ESP? Maybe I am confused here... 
-> 
+
+state tracking.  in a VPN client -> VPN server scenario the esp packets
+are *always* initiated from the client side:
+
+  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+  iptables -A FORWARD -i $INSIDE_IF -p 50 -j ACCEPT
+
+  iptables -t nat -A POSTROUTING -o $OUTSIDE_IF -j MASQUERADE
+
+that's it...
+
 > let's leave the VPN client/server out of the picture to simplify. If I 
 > send an ESP packet from somewhere to my external IP address I get the 
 > "protocol 50 unreachable" ICMP response. The underlying problem seems to 
 > be the primary cause of my troubles, no?
-> 
-> h.
-Yes, you should be able to get this to work as long as there is only one
-station behind the NAT gateway using IPSec.  NAT traversal is a valid
-way to go and the only way to go if you have more than one IPSec client
-using the same public address.  I do assume that the NAT gateway is not
-running IPSec.
 
-To use NAT traversal, you would forward the appropriate UDP port
-(typically 4500 or 500) rather than ip/50.
+um--no.  i have run pretty much every single VPN client/server
+combination in existence, and have never even thought of testing it by
+sending unsolicited IP Protocol 50 packets through a firewall to the VPN
+client behind it.  it's the most flawed troubleshooting technique i've
+heard in quite some time...save yourself some time and give up on it.
 
-I do not know why your NAT gateway is refusing to pass the IPSec
-packets.  That's why I suggest logging in my previous e-mail is
-clarifying the DNAT interface does not work.  Good luck - John
--- 
-John A. Sullivan III
-Chief Technology Officer
-Nexus Management
-+1 207-985-7880
-john.sullivan@nexusmgmt.com
+to troubleshoot VPN client/server connection problems--use the debug
+logs on either side.  use tcpdump.  do both the client and server agree
+that both Phase 1 and Phase 2 key exchanges complete?  is there a
+routing problem on either side of the tunnel?  are packets successfully
+encrypted and sent from the client?  successfully received and decrypted
+by the server?  where do they go from there?  do the replies get
+encrypted and sent back from the server?  received and decrypted by the
+client?
+
+debug at each link in the chain--don't poke at the chain from afar.
+
+-j
+
+--
+"Dear Baby, Welcome to Dumpsville. Population: You"
+	--The Simpsons
 
 
