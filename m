@@ -1,8 +1,8 @@
 From: Tasha Smith <natasha3641@yahoo.com>
 Subject: RE: iptables: exe
-Date: Sat, 21 Sep 2002 15:58:55 -0700 (PDT)
+Date: Sat, 21 Sep 2002 15:58:10 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020921225855.62604.qmail@web20301.mail.yahoo.com>
+Message-ID: <20020921225810.80968.qmail@web20309.mail.yahoo.com>
 References: <FLEKIPPLAEDMJMOOBBDPKEGOCPAA.stewart.thompson@shaw.ca>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
