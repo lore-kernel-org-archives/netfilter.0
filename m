@@ -1,15 +1,14 @@
 From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: ip_conntrack_max vs ip_conntrack
-Date: Tue, 28 Sep 2004 11:19:35 -0400
+Subject: Re: how to log dropped packet
+Date: Tue, 28 Sep 2004 11:30:51 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409281119.36045.Alistair@nerdnet.ca>
-References: <4154A112.20308@suse.cz>
-	<1096376802.28905.38.camel@nostromo.bgsecm.com>
-	<1403218a040928074868a3a36@mail.gmail.com>
+Message-ID: <200409281130.51732.Alistair@nerdnet.ca>
+References: <web-6413785@infinito.it> <41595002.70706@arcor.de>
+	<41598522.2060207@arcor.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1403218a040928074868a3a36@mail.gmail.com>
+In-Reply-To: <41598522.2060207@arcor.de>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,55 +19,35 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On September 28, 2004 10:48 am, Mohamed Eldesoky wrote:
-> Well, I want to make sure that it remembers only connections that
-> passes THROUGH it !!
-
-	Are you saying you don't want to track local connections?
-
-	This file keeps track of anything that *_conntrack_* would watch.
-	As far as I know this includes local connections --=20
-
-	If you are accepting any connections locally, they are very likely in this
-	table. =20
-
-	I've seen at least one discussion about breaking this up into different=20
-files.  That gets messy very quicky from a code point of view, as well as=20
-from a logic point of view.  I certainly prefer the idea of having one plac=
-e=20
-to track connections.
-
-	Alistair Tonner
-
-=09
+On September 28, 2004 11:37 am, Florian Boelstler wrote:
+> I forgot to paste a very important statement:
 >
-> On 28 Sep 2004 16:27:53 +0200, Jose Maria Lopez <jkerouac@bgsec.com> wrot=
-e:
-> > El mar, 28 de 09 de 2004 a las 09:59, Mohamed Eldesoky escribi=F3:
-> > > But still,
-> > > The /proc/net/ip_conntrack should contain all connections tracked by
-> > > that firewall (ie, passing through the firewall), am I right ??
+> Florian Boelstler wrote:
+> > # DROP & LOG chain
 > >
-> > Yes, and it will remember the connections made for a time. It's
-> > a list of all the connections the conntrack system have seen, and
-> > it's used to check the established and related connections.
-> >
-> >
-> >
-> > --
-> > Jose Maria Lopez Hernandez
-> > Director Tecnico de bgSEC
-> > jkerouac@bgsec.com
-> > bgSEC Seguridad y Consultoria de Sistemas Informaticos
-> > http://www.bgsec.com
-> > ESPA=D1A
-> >
-> > The only people for me are the mad ones -- the ones who are mad to live,
-> > mad to talk, mad to be saved, desirous of everything at the same time,
-> > the ones who never yawn or say a commonplace thing, but burn, burn, burn
-> > like fabulous yellow Roman candles.
-> >                 -- Jack Kerouac, "On the Road"
+> > $IPTABLES -N DROPnLOG
+> > $IPTABLES -A DROPnLOG -p ICMP -j ULOG --ulog-nlgroup 1 --ulog-prefix
+> > "DROP-ICMP "
+> > $IPTABLES -A DROPnLOG -p TCP -j ULOG --ulog-nlgroup 1 --ulog-prefix
+> > "DROP-TCP "
+> > $IPTABLES -A DROPnLOG -p UDP -j ULOG --ulog-nlgroup 1 --ulog-prefix
+> > "DROP-UDP "
+>
+> $IPTABLES -A DROPnLOG -j DROP
+>
+> [ ... ]
+
+
+	Indeed an important component -- the point being that user created tables 
+cannot have a POLICY set and when a packet reaches the end of a user created 
+table, unless otherwise set, the packet RETURNS to the calling table and 
+continues to traverse it again at that point.
+
+	(just clarifying for the record)
+
+
+	Alistair.Tonner
 
