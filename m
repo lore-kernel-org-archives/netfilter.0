@@ -1,15 +1,11 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Remove from mailing list
-Date: Sun, 5 Oct 2003 16:10:49 +0200
+From: c0g <c0g@wp.pl>
+Subject: raw patch = kernel panic :(
+Date: Sun, 05 Oct 2003 18:23:40 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031005141049.GD5758@sunbeam.de.gnumonks.org>
-References: <20031003173736.81086.qmail@web13202.mail.yahoo.com> <3F7DCE60.9000209@Loudoun-Fairfax.com> <Pine.LNX.4.53.0310041134180.367@chameleon.view.net.au>
+Message-ID: <3F80458C.9030203@wp.pl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Xb5utjIKPSB5yXiR"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.53.0310041134180.367@chameleon.view.net.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,54 +15,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Michael Talbot-Wilson <mtw@birdseye.view.net.au>
-Cc: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+Cc: kadlec@blackhole.kfki.hu, laforge@netfilter.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
---Xb5utjIKPSB5yXiR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi!
+I applied raw-patch from CVS patch-o-matic (20031003), and it appears
+that loading rule in PREROUTING chain of table raw causes kernel panic.
+Specifing policy for this table doesn't.
 
-On Sat, Oct 04, 2003 at 11:38:34AM +0930, Michael Talbot-Wilson wrote:
-> Ye 2003-10-03 15:30 -0400, Jeffrey Laramie skribis:
->=20
-> > bt spawn wrote:
-> >
-> > >Can you please remove me from the mailing list.
-> >
-> > You can check out any time you like, but you can never leave.
->=20
-> Correct.  If you have a password you may be allowed to leave.  If not,
-> forget it.
+So I was forced to use older POM, which fills my logs with "Frag of
+proto" messages :(
 
-You can always request your password being sent to you.  All automatic,
-without any manual intervention (and thus unexpected delay).
+Jozsef, could you look at it?
 
-There's nothing special about the netfilter.org mailinglists... we're
-using mailman, I guess the most common mailinglist software on the net.
+I have vanilla 2.4.22 kernel with following POM patches applied:
+submitted/01_2.4.19
+submitted/02_2.4.20
+submitted/03_2.4.21
+submitted/04_2.4.22
+submitted/44_backport_ah_esp_fixes
+submitted/54_ip_nat-macro-args
+submitted/58-ip_conntrack-macro-args
+submitted/60_nat_tftp-remove-warning
+submitted/72_recent_procfs_fix
+submitted/73_ipt_MASQUERADE-oif
+submitted/74_nat-range-fix
+submitted/75_REJECT_localpmtu-fix
+submitted/76_snmp-checksum_h-fix
+submitted/77_destroy-conntrack
+submitted/78_nathelper-udp-csum
+submitted/79_mangle_udp-sizecheck
+submitted/80_ip_conntrack-proc
+submitted/81_ipt_unclean-tcp-flag-table
+submitted/82_irc-conntrack-mirc-serverlookup
+submitted/83_nolocalout
+submitted/84_local-nullbinding
+submitted/85_ipv6header
+submitted/86_getorigdst-tuple-zero
+pending/40_nf-log
+pending/59_ip_nat_h-unused-var
+pending/61-remove-memsets
+pending/64_masquerade-sameip-noflush
+base/mport
+extra/addrtype
+extra/tcp-window-tracking
+userspace/ipt_REJECT-fake-source
+userspace/raw
 
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---Xb5utjIKPSB5yXiR
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
+- --
+c0g@wp.pl
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Version: GnuPG v1.2.1 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQE/gCZpXaXGVTD0i/8RAlL4AJ9Sa7uugl2JS30LxWokJrhcFTGB+ACeJeyQ
-nAq0DoaIAM91Ibv9s/7h83Y=
-=KSfa
+iD8DBQE/gEWMPqmVt5WhbA8RAr7RAJ9VQQ113DigkI3z3RQmC1O0jLLABACdG+8J
+1aWGhgAe91Ftgyvq+5g5cv0=
+=+2Gf
 -----END PGP SIGNATURE-----
 
---Xb5utjIKPSB5yXiR--
 
