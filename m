@@ -1,9 +1,8 @@
-From: "Rimas" <rmocius@auste.elnet.lt>
-Subject: Re: IP MASQ and IPROUTE2?
-Date: Tue, 15 Oct 2002 13:11:58 +0100
+From: "Jan" <Oblivion@tiscali.be>
+Subject: Netfilter and multiple internet connections
+Date: Tue, 15 Oct 2002 13:55:41 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <01d201c27444$113613b0$6e69690a@rimas>
-References: <001101c273f5$fc2c5220$c300a8c0@COMPAQ>
+Message-ID: <00d701c27441$c9578e90$0100a8c0@obsidian>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,98 +17,32 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: Sean Oh <oh@storageone.co.kr>
 
-Sean,
+Hello,
 
-You need to both eth cards.
-Like this:
+I have a kernel 2.4.19 machine running netfilter (1.2.7a) and performing NAT
+for my internal network.  The machine has two internet connections, one ADSL
+and one via a cable provider.  I select the provider by changing the default
+gateway at the netfilter machine.
 
-iptables -t nat -A POSTROUTING -o $EXTERNAL_INTERFACE_1 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o $EXTERNAL_INTERFACE_2 -j MASQUERADE
+The strange thing I noticed:  when I am using cable as the default gateway,
+my firewall ruleset shows the multicast query the provider's router is
+sending me on a regular base.  But when I change the default gateway to
+direct all outgoing traffic via the ADSL link, there are no more log entries
+showing the multicast query over the cable modem.
 
-Rimas
+Although when I dump the packets on the cable interface, I do see the
+Multicast queries.  The firewall ruleset stays the same.  I compared the
+loaded version, only different in packet counters.
 
+I suspect one of the kernel parameters (/proc/sys/net/...) influences this
+behaviour.  But I don't know which one.
+Or is this behaviour netfilter specific?
+Do the packets which netfilter doesn't see get further into my machine?  Or
+are they dropped by the kernel?
 
-
-
------ Original Message -----
-From: "Sean Oh" <oh@storageone.co.kr>
-To: <netfilter@lists.netfilter.org>
-Sent: Tuesday, October 15, 2002 3:53 AM
-Subject: IP MASQ and IPROUTE2?
-
-
-> Hi
->
-> I am having a little problem with IP MASQ and IPROUTE2.
-> I am using RedHat 7.3 with IPTABLES.
->
-> I have a linux gateway server with 3 NICs.
-> The environment is as follows:
->
->
-> Local Network      +------------+ eth1(218.x.x.20) --> ISP1
-> (192.168.0.x) --- | Linux Server |--------
->                 eth0   |                    |
->       192.168.0.1  |                    |--------
->                          +-------------+ eth2(211.x.x.155) -->ISP2
->
->
-> The eth1 and eth2 are the links to internet. I  have 2 providers to
-Internet
-> and I would like to use eth2 as the default route to internet from Local
-> Network(192.168.0.x) and eth1 as for the servers(DNS, mail, web) that
-people from external Internet
-> to access. The reason behind that is that provider ISP2 are not
-> allowing me to run servers on that link, so I had to setup another link
-for
-> servers(eth1).
->
-> The IP masqurading is used and ip forwarding is turned on.
->
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->
-> /sbin/ip route add 211.x.x.128 dev eth2 src 211.x.x.155 table SI
-> /sbin/ip route add default via 211.x.x.129 table SI
-> /sbin/ip route add 218.x.x.0 dev eth1 src 218.x.x.20 table KT
-> /sbin/ip route add default via 218.x.x.1 table KT
->
-> /sbin/ip route add 211.x.x.128 dev eth2 src 211.x.x.155
-> /sbin/ip route add 218.x.x.0 dev eth1 src 218.x.x.20
->
-> /sbin/ip route add default via 211.x.x.129
->
-> /sbin/ip rule add from 211.x.x.155 table SI
-> /sbin/ip rule add from 218.x.x.20 table KT
->
-> /sbin/iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
-> /sbin/iptables -P FORWARD ACCEPT
-> /sbin/iptables -P INPUT ACCEPT
-> /sbin/iptables -P OUTPUT ACCEPT
->
->
-> [root@www root]# ip route show
-> 211.x.x.128 dev eth2  scope link  src 211.x.x.155
-> 218.x.x.0 dev eth1  scope link  src 218.x.x.20
-> 211.x.x.128/25 dev eth2  scope link
-> 192.168.0.0/24 dev eth0  scope link
-> 218.x.x.0/24 dev eth1  scope link
-> 127.0.0.0/8 dev lo  scope link
-> default via 211.x.x.129 dev eth2
->
->
-> it works fine( 192.168.0.x can access the internet by masquerading via
-eth2 and external internet can access the eth1 and eth2).
-> But the problem is that the hosts in the local network (192.168.0.x) can
-not access 211.x.x.155(eth2) and 218.x.x.20(eth1), even though ip forwarding
-is turned on. It can only access 192.168.0.1
->
-> Could someone please sugguested me the solutions?
->
-> Thanks in advance.
->
->
+Thanks,
+Jan
 
 
 
