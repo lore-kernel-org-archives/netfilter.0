@@ -1,10 +1,13 @@
-From: Valentijn Sessink <valentyn+netfilter-users@nospam.openoffice.nl>
-Subject: MTU on masqueraded connections
-Date: Tue, 3 Feb 2004 22:27:38 +0100
+From: clister <clister@uah.es>
+Subject: local connections getting natted
+Date: Tue, 3 Feb 2004 11:07:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040203212738.GA9427@openoffice.nl>
+Message-ID: <200402031107.16864.clister@uah.es>
+References: <1075694310.401dcae6b3b8b@smwp01.maa.sify.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1075694310.401dcae6b3b8b@smwp01.maa.sify.net>
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,35 +19,41 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello Netfilter list,
+Hello, 
+i have a this setup on nat table.
 
-Can anyone tell me (or point me to a link) how MTU detection works in a
-masqueraded environment? I.e. are there different MTU's for inside and
-outside networks (meaning the masquerading router would see the inside
-traffic as separate from outside traffic), or is the inside MTU copied to
-the outside interface - i.e. the whole thing is seen as one sort of "broken
-up" connection?
+Chain PREROUTING (policy ACCEPT 1456K packets, 384M bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
 
-(On a side note (and somewhat related) I read that the MASQUERADE target does
-the same as the ancient "defragment all" option in the kernel, but I can't
-find information about that).
+Chain POSTROUTING (policy ACCEPT 20 packets, 1192 bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
+ 185K 8942K SNAT       all  --  *      eth0    0.0.0.0/0            0.0.0.0/0          
+to:1.2.3.4
 
-(Background of my question is that MTU in IPsec tunnels is not correctly
-evaluated, and when you have an IPsec tunnel that terminates on a
-masquerading router, you get to see 
-13:57:30.240329 $router > $outside: icmp: $router unreachable
-which is rather odd - and prevents further communication.
-See http://bugzilla.kernel.org/show_bug.cgi?id=1148)
+Chain OUTPUT (policy ACCEPT 74 packets, 4622 bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
 
-(please note that my previous message about this had some nonsensical source
-listing, it pointed to ip_output.c to send icmp frag_needed, which has
-nothing to do with the above).
+Connections coming from eth1 (internal network 10.10.10.x) to eth0 (external) 
+get natted to to 1.2.3.4 , it's correct for me but whenever i try to connect 
+from this box to inet i get natted also to 1.2.3.4. 
 
-Valentijn
--- 
-http://www.openoffice.nl/   Open Office - Linux Office Solutions
-Valentijn Sessink  valentyn+sessink@nospam.openoffice.nl
+I thought this happened only if you create such rule on NAT::ouput so local 
+connections get natted prior to go out of the box.
+
+Should i change this to:
+-t nat -A POSTROUTING -i eth1 -o eth0 -j SNAT --to-destination:1.2.3.4 to 
+avoid local packets getting natted?
+
+and last question:
+All packets leaving routing code (local, forwarded) pass througth POSTROUTING 
+chain at nat table or only forwarded packets?
+
+Thanks
+
+
 
