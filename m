@@ -1,9 +1,10 @@
-From: Tasha Smith <natasha3641@yahoo.com>
-Subject: Why are XMAS and NULLS scans not filtered with these rules?
-Date: Fri, 25 Oct 2002 18:13:29 -0700 (PDT)
+From: "mike" <jericho@fuse.net>
+Subject: comments + suggestions on script hopefully can help others out
+Date: Sat, 26 Oct 2002 02:56:47 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021026011329.71679.qmail@web40707.mail.yahoo.com>
+Message-ID: <003e01c27cbc$da32bf90$0200a8c0@winbox>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,126 +16,68 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Why when scanning my system using nmap from a machine on a different network for
-NULL scans and XMAS scans these rules still dont filter my ports from these
-sorts of scans?  Here are my rules...anoything else i can try to get them to
-filter these scans??? I tyred REJECT instead of DROP also but nothing they still
-get through!
+Ok I've been testing things out here and there and I think I finally got my
+firewall script exactlly how I need it.  I'm hoping this can help others
+out, cause it's a pain looking through as much stuff as I did for examples
+and that.  Start with what I intend to do.  1.) I want to block EVERYTHING
+coming in.  2.) allow services that I want to run, I'll be running a DNS
+server, mail, pop3 etc.  3.) Using my linux box as a gateway for my 2
+windows comps so I setup IP MASQ for them to connect to internet.  Here's
+what I've come up with, I've got some questions underneath on things I'm a
+little fuzzy on, some things just weren't comprehending
 
-#!/bin/bash
+iptables="/usr/sbin/iptables"
 
-# Enable broadcast echo protection
-echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+## Create block chain
+  $iptables -N block
 
-# Disable source routed packets
-for f in /proc/sys/net/ipv4/conf/*/accept_source_route; do
-	echo 0 > $f
-done
+## Allow connections that are alrealy established or related back in.
+  $iptables -A block -m state --state ESTABLISHED,RELATED -j ACCEPT
+^^ I'm taking this as whatever is running, it'll accept connections back?
 
-# Disable ICMP Redirect Acceptence
-for f in /proc/sys/net/ipv4/conf/*/accept_redirects; do
-	echo 0 > $f
-done
-# Dont't send Redirect Messages
-for f in /proc/sys/net/ipv4/conf/*/send_redirects; do
-	echo 0 > $f
-done
+## network test stuff
+$iptables -P FORWARD DROP
+$iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+^^ NAT stuff I'm not real big on, not exactly sure how this works, or what
+it lets in and out, but it gets my other boxes online
 
-# Enable TCP SYN Cookie protection
-echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+## Things we want to accept as incoming.
+## www.  smtp.  domain.  http.  ident.
+  $iptables -A block -p tcp --dport ftp -i eth0 -j ACCEPT
+  $iptables -A block -p tcp --dport www -i eth0 -j ACCEPT
+  $iptables -A block -p udp --dport www -i eth0 -j ACCEPT
+  $iptables -A block -p tcp --dport domain -i eth0 -j ACCEPT
+  $iptables -A block -p udp --dport domain -i eth0 -j ACCEPT
+  $iptables -A block -p tcp --dport smtp -i eth0 -j ACCEPT
+  $iptables -A block -p tcp --dport auth -i eth0 -j ACCEPT
 
-# This will also update my ipaddress.
-INET_IP=`/sbin/ifconfig eth0 | grep inet | cut -d -f2: | cut -d\ -f1`
+### windows box
+$iptables -A block -s 192.168.0.2 -d 0/0 -p all -j ACCEPT
 
-# Remove any existing rules from all chains.
-iptables --flush
-iptables -t nat --flush
-iptables -t mangle --flush
+### friend to leech from ftp
+$iptables -A block -p tcp --dport 21 -s 150.135.141.93 -j ACCEPT
 
-# Unlimited access on the loopback interface.
-iptables -A INPUT  -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
+### nameserver crap
+$iptables -A block -s 66.152.144.154 -d 0/0 -p all -j ACCEPT
+$iptables -A block -s 231.68.4.10 -d 0/0 -p all -j ACCEPT
+$iptables -A block -s 231.68.5.10 -d 0/0 -p all -j ACCEPT
 
-# Set the default policy to drop.
-iptables --policy INPUT DROP
-iptables --policy FORWARD DROP
-iptables --policy OUTPUT ACCEPT
+## Drop everything else
+  $iptables -A block -j DROP
 
-# iptables -t nat --policy PREROUTING DROP
-# iptables -t nat --policy OUTPUT DROP
-# iptables -t nat --policy POSTROUTING DROP
-
-# All of the bits are cleared
-iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP# tryed REJECT
-iptables -A FORWARD -p tcp --tcp-flags ALL NONE -j DROP# tryed REJECT
-# SYN and FIN are both set
-iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP # tryed REJECT
-iptables -A FORWARD -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP# tryed REJECT
-# SYN and RST are both set.
-iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP# tryed REJECT
-iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN,RST -j DROP# tryed REJECT
-# FIN and RST are both set
-iptables -A INPUT -p tcp --tcp-flags FIN,RST FIN,RST -j DROP# tryed REJECT
-iptables -A FORWARD -p tcp --tcp-flags FIN,RST FIN,RST -j DROP# tryed REJECT
-# FIN is the only bit set, without the expected accompanyuing ACK
-iptables -A INPUT -p tcp --tcp-flags ACK,FIN FIN -j DROP# tryed REJECT
-iptables -A FORWARD -p tcp --tcp-flags ACK,FIN FIN -j DROP# tryed REJECT
-# PSH is the only bit set, without the expected accompaying ACK
-iptables -A INPUT -p tcp --tcp-flags ACK,PSH PSH -j DROP# tryed REJECT
-iptables -A FORWARD -p tcp --tcp-flags ACK,PSH PSH -j DROP# tryed REJECT
-# URG is the only bit set, without the expected accompayning ACK
-iptables -A INPUT -p tcp --tcp-flags ACK,URG URG -j DROP# tryed REJECT
-iptables -A FORWARD -p tcp --tcp-flags ACK,URG URG -j DROP# tryed REJECT
-
-# Log Policy for first 25 ports UDP/TCP.
-iptables -I INPUT -i eth0 -p tcp \
-         --dport 0:25 -j LOG --log-prefix "PortScans to 0-25TCP: "
-
-iptables -I INPUT -i eth0 -p udp \
-         --dport 0:25 -j LOG --log-prefix "PortScan-to 0-25UDP: "
-
-# Allow stateful connections 
-iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Allow access for accessing remote web servers.
-if [ "$CONNECTION_TRACKING" = "1" ]; then
-    iptables -A OUTPUT -o eth0 -p tcp \
-             --sport 1024:65535 \
-             --dport 80 -m state --state NEW -j ACCEPT
-fi
-
-iptables -A OUTPUT -o eth0 -p tcp --dport 80 -s $eth0_address --sport 1024:65535
--j ACCEPT
-
-        
-          
-
-# FOR MY ISP DHCP
-#iptables -A INPUT -i eth0 -p udp \
-#         -s xxx.53.4.149 --sport 67 \
-#         --dport 68 -j ACCEPT
-#iptables -A OUTPUT -o eth0 -p udp \
-#         -s eth0 --sport 68 \
-#         -d xxx.53.4.149 --dport 67 -j ACCEPT
+ ## Jump to block chain from INPUT and FORWARD chains.
+  $iptables -A INPUT -j block
+  $iptables -A FORWARD -j block
+## INPUT has a default to accept. If it doesn't fit the -j block, drop it.
+  $iptables -A INPUT -j DROP
 
 
-# echo 1 > /proc/sys/net/ipv4/ip_forward
+That's my script hopefully someone can use this as a starting point.  If
+someone could clear up for me what the ESTABLISHED and MASQUERADING chains
+do exactly would be awesome.  Please feel free to offer any comments or
+suggestions.  Thanks Mike
 
 
-# Forwarding is allowed in the direction
-iptables -A FORWARD -i eth1 -o eth0 -s 192.168.0.0/24 -j ACCEPT 
-
-# Enables Packet Forwarding
-iptables -t nat -A POSTROUTING -o eth0  -j MASQUERADE
-
-
-__________________________________________________
-Do you Yahoo!?
-Y! Web Hosting - Let the expert host your web site
-http://webhosting.yahoo.com/
 
