@@ -1,16 +1,12 @@
-From: Mark Vevers <mark@vevers.net>
-Subject: Re: Iptables and SNAT
-Date: Tue, 17 Feb 2004 10:57:04 +0000
+From: "Jan Kleinsorge" <wobble@gmx.de>
+Subject: UDP forwarding: multiple targets
+Date: Tue, 17 Feb 2004 13:05:09 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402171057.08738.mark@vevers.net>
-References: <004d01c3f53f$73685cf0$2d64a8c0@pcjka>
-Reply-To: mark@vevers.net
+Message-ID: <002501c3f54e$4a6c94b0$0200a8c0@wobstation>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0022_01C3F556.ABE72270"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <004d01c3f53f$73685cf0$2d64a8c0@pcjka>
-Content-Description: clearsigned data
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +16,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
-To: Jan Kaastrup <jka@protego.dk>, 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+This is a multi-part message in MIME format.
 
-On Tuesday 17 Feb 2004 10:18 am, Jan Kaastrup wrote:
-> Hi list
-> After a reboot of my RedHat mashine, the NAT part of Iptables stop
-> working.
-Is the iptable_nat module loaded? =20
-/sbin/lsmod will list the modules and if any modules are not loaded for
-the ruleset then you'll either need to modprobe them beforehand or
-alter modules.conf to load them when iptables loads (add below ...)
+------=_NextPart_000_0022_01C3F556.ABE72270
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Cheers
-Mark
-=2D --=20
-Mark Vevers.    mark@ifl.net / mark@vevers.net
-Principal Internet Engineer, Internet for Learning,
-Research Machines Plc. (AS5503)
-=2D --
-GPG Key: http://pgp.mit.edu:11371/pks/lookup?op=3Dget&search=3D0xB08F3CA3
-=46ingerprint: 85BA 30C4 9EC8 1792 4C8C   C31E 58B5 3D1C B08F 3CA3
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+Hi,
 
-iD8DBQFAMfOEWLU9HLCPPKMRAu0XAJ9yVLQ0X3x0XNQ84irLTOVdZPrWUACdGr2Y
-udGvM/2ukyptia+Vh/+UX6s=3D
-=3Dt6Ag
-=2D----END PGP SIGNATURE-----
+I have a problem concerning UDP forwarding. My local network is =
+connected to the internet. One of the local computers receives a =
+constant stream of UDP data - this stream gets forwarded by a =
+linux-based gateway. The situation now is as follows: I need to route a =
+'copy' of that stream to another local computer.
+
+Is it possible to forward to multiple targets ? Another way I thought of =
+is to reset the header-information, creating broadcast-packets out of =
+those unicasts.
+
+Thanks in advance !
+
+
+Jan
+
+------=_NextPart_000_0022_01C3F556.ABE72270
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2734.1600" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have a problem concerning UDP =
+forwarding. My=20
+local network is connected to the internet. One of the local computers =
+receives=20
+a constant stream of UDP data - this stream gets forwarded by a =
+linux-based=20
+gateway. The situation now is as follows: I need to&nbsp;route a 'copy' =
+of that=20
+stream to another local computer.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Is it possible to forward to multiple =
+targets ?=20
+Another way I thought of is to reset the header-information, creating=20
+broadcast-packets out of those unicasts.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks in advance !</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Jan</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0022_01C3F556.ABE72270--
 
 
