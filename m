@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: extension modules in patch-o-matic
-Date: Mon, 31 Jan 2005 11:15:33 -0500
-Message-ID: <20050131161533.GA24914@bender.817west.com>
-References: <20050130203332.0F16066E@mail.817west.com>
+Subject: Re: MARKing question
+Date: Mon, 31 Jan 2005 11:25:31 -0500
+Message-ID: <20050131162531.GA24980@bender.817west.com>
+References: <a0f69e5050131022966942181@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20050130203332.0F16066E@mail.817west.com>
+In-Reply-To: <a0f69e5050131022966942181@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,39 +19,58 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Sun, Jan 30, 2005 at 09:38:56PM +0100, Seferovic Edvin wrote:
-> Hi all,
+On Mon, Jan 31, 2005 at 03:29:32PM +0500, Askar wrote:
+> hi list, 
 > 
-> I am kinda new to extension modules, but I could really use some of them (
-> ip_limit, accounting etc ). The problem I have is following.. after I
-> download patch-o-matic and try to implement it I cannot find e.g. ip_limit
-> module :-( where did it go? Is it already in iptables? I cannot find it
-> there neither... 
+> I'm MARKing packets in PREROUTING of mangle with the below rule to
+> route them from other route then the default route .(iproute2 +
+> iptables)
 > 
-> I use iptables 1.2.9 / kernel 2.6.5 ( Suse Lin 9.1 x86-64 )!
+> $iptables -A PREROUTING -i eth0 -t mangle -s 202.xxx.xxx.0/24 -d 0/0
+> -p tcp --dport 80 -j MARK --set-mark 4
+> 
+> What I want is to exclude a single IP from the above to be MARKed, i-e
+> the particular IP packets goes through default route of the firewall
+> machine not through iproute2 route.
+> 
+> Is this possible with iptables or I have to apply pom (extentions) to
+> accomplished this?
 
-make sure you are following this process:
+two thoughts:  1) ACCEPT the packet from the "excluded IP" prior to the
+mark rule or 2) reset the MARK on packets from the "excluded IP" after
+the mark rule.
 
-cd /path/to/patch-o-matic
-KERNEL_DIR=/usr/src/linux-$VER IPTABLES_DIR=/path/to/iptables-src ./runme
-[select desired patches]
-recompile kernel
-recompile iptables
-reboot with new kernel
-ensure that your PATH points you to your new iptables binary and not
-some distro-provided iptables
+version 1:
 
-HTH...
+  iptables -t mangle -A PREROUTING -i eth0 -p tcp -s $EXCLUDED_IP \
+    --dport 80 -j ACCEPT
+
+  iptables -t mangle -A PREROUTING -i eth0 -p tcp -s 202.xxx.xxx.0/24 \
+    --dport 80 -j MARK --set-mark 4
+
+version 2:
+
+  iptables -t mangle -A PREROUTING -i eth0 -p tcp -s 202.xxx.xxx.0/24 \
+    --dport 80 -j MARK --set-mark 4
+
+  iptables -t mangle -A PREROUTING -i eth0 -p tcp -s $EXCLUDED_IP \
+    --dport 80 -j MARK --set-mark 0
+
+version 1 gets packets from $EXCLUDED_IP out of the mangle PREROUTING
+chain as quickly as possible.
+
+version 2 allows packets from $EXCLUDED_IP to continue to traverse
+mangle PREROUTING in case you want to do other stuff to it.
+
+which one is "better" would depend on your specific situation.
 
 -j
 
 --
-"Poor predictable Bart, always picks rock.
- Good ol' rock, nothing beats that.
- Rock.
- Paper.
- D'oh!"
+"I saw this in a movie about a bus that had to SPEED around a city,
+ keeping its SPEED over fifty, and if its SPEED dropped, it would
+ explode. I think it was called, 'The Bus That Couldn't Slow Down.'"
         --The Simpsons
 
