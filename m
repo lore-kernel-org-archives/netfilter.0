@@ -1,8 +1,8 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: iptables routing help
-Date: Sun, 25 Jan 2004 08:57:37 +0000
+Date: Sun, 25 Jan 2004 09:18:30 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401250857.37939.Antony@Soft-Solutions.co.uk>
+Message-ID: <200401250918.30773.Antony@Soft-Solutions.co.uk>
 References: <CD650C0C-4EB3-11D8-8BD0-000A9577164C@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -26,42 +26,25 @@ On Saturday 24 January 2004 9:25 pm, William Knop wrote:
 > My dsl provider has my house on several subnets (ips obtained via dhcp,
 > along with a netmask of 255.255.255.0), so I have had to screw around
 > with each machine to make sure local traffic doesn't flood the dsl
-> modem. To remedy this, I've been trying to set up a firewall box to
-> basically reroute those three subnets as local, but I'm finding it very
-> difficult. It seems like every doc out there only addresses nat, which
-> is definitely not what we want. I'd greatly appreciate some help
-> accomplishing this.
+> modem.
 
-This is not a netfilter question - in fact quite the opposite - it is an IP 
-routing question, which netfilter will only help to interfere with.
+An alternative solution to this would be to set up a nice simple internal 
+network for whatever machines you want to run, doing your own DHCP etc, and 
+then hide all these behind a single firewall talking to the DSL modem on a 
+single external IP address.
 
-All netfilter would do for you in a case like this is help to drop packets 
-which would otherwise be routed.   Netfilter doesn't route packets - that's 
-the job of the normal routing table.
+Unless you actually have a need for multilple external addresses, this is 
+probably your best solution, as it means you remain in control of your 
+internal network addressing, not your ISP.
 
-Many times on this list a question is answered with "get your basic routing 
-working first, then start implementing netfilter rules to drop things you 
-don't want."   In your case the correct routing table entries will solve your 
-problem - there's almost certainly no need for netfilter to be involved 
-except as the perimeter firewall just before your networks hit the DSL.
-
-I suggest you start with something like 
-http://www.linux.org/docs/ldp/howto/Networking-Overview-HOWTO.html or 
-http://www.linux.org/docs/ldp/howto/IP-Subnetworking.html - alternatively a 
-standard IP book such as O'Reilly's "TCP/IP Network Administration" by Craig 
-Hunt will tell you what you need.
-
-The main thing is to make sure you don't have netfilter rules blocking what 
-your routing table would otherwise allow between your local subnets.
-
-Hope this helps,
+Regards,
 
 Antony.
 
 -- 
-Most people are aware that the Universe is big.
+There's no such thing as bad weather - only the wrong clothes.
 
- - Paul Davies, Professor of Theoretical Physics
+ - Billy Connolly
 
                                                      Please reply to the list;
                                                            please don't CC me.
