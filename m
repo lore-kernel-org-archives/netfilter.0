@@ -1,9 +1,9 @@
-From: Jose Horacio Mello de Jesus <jose.jesus@inteli.com.br>
-Subject: open port for external connections
-Date: Wed, 26 Jan 2005 18:31:50 +0000
-Message-ID: <41F7E216.5090505@inteli.com.br>
+From: travis@visionsbeyond.com
+Subject: FTP: masqued AND forwarded
+Date: Wed, 26 Jan 2005 15:31:04 -0700 (MST)
+Message-ID: <36476.192.168.2.125.1106778664.squirrel@mail2.visionsbeyond.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,45 +15,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-    I have a following network environment:
+Hi all,
+     I am new to the list.  I have spent several hours scouring the
+archives trying to find out how to send external ftp requests to an
+internal server while at the same time allowing clients behind the
+firewall to access external ftp servers.  (currently requests from
+internal clients to external ftp servers time out).
 
-             DSL                                                       =20
-GW                               SERVER=20
-1                                                         SERVER 2
+Any suggestions would be greatly appreciated!
 
-    xxx.xxx.xxx.xxx:8080 eth0 <-----------> 192.168.1.25 eth0
-                                                                 =20
-192.1.1.1 eth1 < ---------- > 192.1.2.1 eth0
-                                                                           =
-             =20
-                      192.1.3.1 eth1
-                                                                           =
-                      =20
-             192.1.4.1 eth2 <----------> HUB <----------> =20
-192.1.4.100:5000 eth0
-                                                                         =20
-    I need open 5000 port to external intranet access on 8080 port.
+Here are the rules that I have in place:
 
-    Thank's,                    =20
+#Load Modules
+/sbin/modprobe ip_tables
+/sbin/modprobe iptable_filter
+/sbin/modprobe ip_conntrack
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_nat_ftp
 
-            Jos=E9 Hor=E1cio.                               =20
+#Send ftp to an internal machine
+$IPTABLES -A PREROUTING -t nat -i $EXTERNALIF -p tcp -d $MYADDR --dport 20
+-j DNAT --to 192.168.2.5:20
+$IPTABLES -A FORWARD -i $EXTERNALIF -p tcp -d 192.168.2.5 --dport 20 -j
+ACCEPT
+$IPTABLES -A PREROUTING -t nat -i $EXTERNALIF -p tcp -d $MYADDR --dport 21
+-j DNAT --to 192.168.2.5:21
+$IPTABLES -A FORWARD -i $EXTERNALIF -p tcp -d 192.168.2.5 --dport 21 -j
+ACCEPT
 
-INTELI Tecnologia em Alta Seguran=E7a
-Fone/Fax: +55-51-3019-8388
-*** Importante ***
-Esta mensagem, incluindo seus eventuais anexos, tem car=E1ter confidencial e
-seu conte=FAdo =E9 restrito ao(s) destinat=E1rio(s) da mensagem. A INTELI n=
-=E3o =E9
-respons=E1vel pelo conte=FAdo ou a veracidade desta informa=E7=E3o. Caso vo=
-c=EA
-tenha recebido esta mensagem por engano, queira por favor imediatamente
-retorn=E1-la ao emissor e apag=E1-la sem a leitura de seus arquivos. Qualqu=
-er uso,
-replica=E7=E3o ou dissemina=E7=E3o desta mensagem ou parte dela =E9 proibid=
-o.
+#Masquerade internal connections going out.
+$IPTABLES -A POSTROUTING -t nat -o $EXTERNALIF -j MASQUERADE
 
+
+$MYADDR is the firewall external address
+$EXTERNALIF is the external interface (eth0)
+$INTERNALIF is the internal interface (eth1)
+
+
+
+Travis Crook
+Visions Beyond
 
 
