@@ -1,15 +1,11 @@
-From: George Georgalis <georgw@galis.org>
-Subject: Re: IPTables not available
-Date: Wed, 26 Jun 2002 08:55:20 -0400
+From: JHoskins98@aol.com
+Subject: Re: what traffic is this?
+Date: Wed, 26 Jun 2002 09:25:34 EDT
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020626085520.A13115@trot>
-References: <20020625174406.9A4D9489B@lists.samba.org> <004601c21cb9$a9482400$2400a8c0@inq7.net>
+Message-ID: <fd.19d60313.2a4b1ace@aol.com>
 Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="part1_fd.19d60313.2a4b1ace_boundary"
 Return-path: <netfilter-admin@lists.samba.org>
-Resent-Message-Id: <200206261302.g5QD2PX13330@trot.galis.org>
-Content-Disposition: inline
-In-Reply-To: <004601c21cb9$a9482400$2400a8c0@inq7.net>; from jdelima@inq7.net on Wed, Jun 26, 2002 at 10:32:02AM +0800
-Resent-To: netfilter@lists.samba.org
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,54 +15,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
+
+
+--part1_fd.19d60313.2a4b1ace_boundary
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-To: "jesse.linux" <jdelima@inq7.net>
 
-On Wed, Jun 26, 2002 at 10:32:02AM +0800, jesse.linux wrote:
->
->Date: Tue, 25 Jun 2002 08:20:43 -0700
->From: "Daniel Curry" <dcurry@cariocas.com>
->To: "Netfilter (E-mail)" <netfilter@lists.samba.org>
->
->On fresh RH7.2 and RH7.3 installs  IPTables executables are installed,
->but will not execute.  I get Kernel errors.  Can someone please direct
->me to a listing of what steps and option I need to enable this?  I wish
->to put firewalling with NAT services on a machine running an Apache web
->server, with PHP and Perl scripts connecting to a localhosted MySQL DB,
->as well as offering sendmail, POP(S)/IMAP(S), ftp, and PPTP VPN
->services.  Or a compatible ipchains script for this would also be
->appreciated.
->
->Thanks
->
->Daniel Curry
->IT Manager
->Cariocas
->625 Second Street=20
->Suite 201
->San Francisco, CA 94107=20
->ph: 415-348-6516
->fx: 415-348-6505=20
->cell: 510-579-6680
->
->"If A equals success, then the formula is: A =3D X + Y + Z,=20
->X is work. Y is play. Z is keep your mouth shut."=20
->  - Albert Einstein
->
->maybe ipchains is your problem.....
->try to unload ipchains then execute your iptables rules......
->
+The traffic is CDP - Cisco Discovery Protocol.  It is a heartbeat to detect 
+changes i.e. newly attached or detacted cisco equipment.  
 
-yeah, I think rh72 ships with an ipchains kernel. if you apply system
-updates, the new kernel is an ipchains one. don't know about rh73, which
-would be odd if it's the same reason. ...send the error?
+You can turn it off with "no cdp run" command at the enable prompt or "no cdp 
+enable" at the interface.  
+jhh
 
-// George
+In a message dated 6/26/2002 7:37:06 AM Eastern Standard Time, 
+netfilter-request@lists.samba.org writes:
 
--- 
-GEORGE GEORGALIS, System Admin/Architect    cell: 347-451-8229 
-Security Services, Web, Mail,            mailto:george@galis.org 
-File, Print, DB and DNS Servers.       http://www.galis.org/george 
 
+> This traffic comes from a cisco router.
+> what type of traffic is ?
+> 
+> [root@cuelebre root]# tcpdump -i eth2
+> tcpdump: listening on eth2
+> 
+> 13:19:12.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
+>                          0000 0100 0000 0000 0000 0000 0000 0000
+>                          0000 0000 0000 0000 0000 0000 0000 0000
+>                          0000 0000 0000 0000 0000 0000 0000
+> 13:19:22.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:
+>                          0000 0100 0000 0000 0000 0000 0000 0000
+>                          0000 0000 0000 0000 0000 0000 0000 0000
+>                          0000 0000 0000 0000 0000 0000 0000
+
+
+--part1_fd.19d60313.2a4b1ace_boundary
+Content-Type: text/html; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+
+<HTML><FONT FACE=arial,helvetica><BODY BGCOLOR="#3dffff"><FONT  SIZE=2 FAMILY="SANSSERIF" FACE="Arial" LANG="0">The traffic is CDP - Cisco Discovery Protocol.&nbsp; It is a heartbeat to detect changes i.e. newly attached or detacted cisco equipment.&nbsp; <BR>
+<BR>
+You can turn it off with "no cdp run" command at the enable prompt or "no cdp enable" at the interface.&nbsp; <BR>
+jhh<BR>
+<BR>
+In a message dated 6/26/2002 7:37:06 AM Eastern Standard Time, netfilter-request@lists.samba.org writes:<BR>
+<BR>
+<BR>
+<BLOCKQUOTE TYPE=CITE style="BORDER-LEFT: #0000ff 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: 0px; PADDING-LEFT: 5px">This traffic comes from a cisco router.<BR>
+what type of traffic is ?<BR>
+<BR>
+[root@cuelebre root]# tcpdump -i eth2<BR>
+tcpdump: listening on eth2<BR>
+<BR>
+13:19:12.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0100 0000 0000 0000 0000 0000 0000<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0000 0000 0000 0000 0000 0000 0000<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0000 0000 0000 0000 0000 0000<BR>
+13:19:22.640000 0:4:dd:c:42:a6 0:4:dd:c:42:a6 loopback 60:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0100 0000 0000 0000 0000 0000 0000<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0000 0000 0000 0000 0000 0000 0000<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0000 0000 0000 0000 0000 0000 0000</BLOCKQUOTE><BR>
+<BR>
+</FONT></HTML>
+--part1_fd.19d60313.2a4b1ace_boundary--
 
