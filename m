@@ -1,11 +1,13 @@
-From: "Joel n.solanki" <zealous@bonbon.net>
-Subject: iptables msn messenger
-Date: 14 Oct 2004 09:19:20 +0530
+From: Juan Hernandez <alucard@kanux.com>
+Subject: Re: iptables msn messenger
+Date: Thu, 14 Oct 2004 00:49:14 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1097725760.1580.9.camel@joel.d2visp.com>
+Message-ID: <1097729354.1931.1.camel@alucard.kanux.com>
+References: <1097725760.1580.9.camel@joel.d2visp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1097725760.1580.9.camel@joel.d2visp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +20,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Dear list,
-
-I am facing problem with msn messenger connection. I havent recived this
-type of problem for atleast year. 
-
-I want to know wheather iptables can perform msn messenger connection
-problem. I am facing this problem for 2 days.
-
-some time msn messenger connects and works properly and sometime it
-doesnt connect. 
-
-yesterday there was msn messenger maintenance ....we got that message in
-msn itself.
-but as i told u i m facing this problem for 2 days so i dont know
-wheather they have done maintenance due to this.
-
-is there any option in /proc/sys/net/ipv4/????? or anything or iptables.
-??
-
-I know this question is little out of list.
-but i have mailed to this coz i want to know wheather this type of
-problem is created by iptables or not?
+Yes, it is a know issue -at least by me- but it's a problem inside MSN's
+Messenger design; even though it's gotten better after 6.0, it happens
+not only with iptables but with many other routers in the market.
 
 -- 
-Joel N.Solanki
-Network Administrator
-Mobile: 91-9426353268
-Phone No: 0265-550001/2/3/4/5 Ext: 211/212
-Digtial 2 Virtual Internet Service Provider.
-http://www.packetraptor.com/
-http://www.d2visp.com/
-Gujarat (India)
 
+Juan Hernandez, RHCE SCSA
+Developer/SysAdmin  | .knxTech C.A. |  GNU Support and Development
+CC Los Chaguaramos, Ofc 16-10B      |  Tel: (58) 212-6624745
+Los Chaguaramos, Caracas-Venezuela  |  Mobile: (58) 412-5821882
+
+Programmin' Python is like sugar... Sweet ;)
 
 
