@@ -1,11 +1,12 @@
-From: "pengjie" <bill@acamar.com.cn>
-Subject: about ip_conntrack_count!
-Date: Sun, 27 Apr 2003 14:32:56 +0800
+From: "Eric Poulin" <deejays@darkstorm.ca>
+Subject: Re: nat table not working with 'iptables -L nat'
+Date: Fri, 25 Apr 2003 09:21:29 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000801c30c86$d7042570$02020a0a@acamarpeng>
+Message-ID: <09f901c30b2d$9627f220$c565a8c0@lvl.digidyne.ca>
+References: <002001c30923$1a65a440$0100a8c0@yogi>
+Reply-To: "Eric Poulin" <epoulin@onepost.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C30CC9.E50A6790"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,46 +17,76 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Stuart Clark <elmhurst@spacelink.com.au>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Try "iptables -t nat -L" or "iptables -t nat -nvL"
 
-------=_NextPart_000_0005_01C30CC9.E50A6790
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+The default table is Filter, so when you do iptables -L, in reality, iptables
+execute "iptables -t filter -L . The Prerouting/Postrouting rules of the nat
+table must be accessed using iptables -t nat...
 
-aGVsbG8sYWxsIQ0KSSBoYXZlIGV4cGVyaW1lbnRlZCBvbiB0aGUgaXBfY29ubnRyYWNrLkJ1dCBJ
-IGZvdW5kIGEgaW50ZXJlc3RpbmcgdGhpbmc6IEkgc2V0IHRoZSBoYXNoc2l6ZSAyMCwgdGhlbiB0
-aGUgaXBfY29ubnRyYWNrX21heCBzaG91bGQgYmUgMTYwLCBleGFjdGx5IGl0J3MgMTYwIGluIC9w
-cm9jL3N5cy9uZXQvaXB2NC9pcF9jb25udHJhY2tfbWF4LkluIHRoZSBoZWFkZXIgb2YgZnVuY3Rp
-b24gaW5pdF9jb25udHJhY2soKSBJIHByaW50ayB0aGUgaXBfY29ubnRyYWNrX2NvdW50LiBOb3cs
-IHRoaXMgcHJpbnRpbmcgdmFsdWUgbWF5IGdyZWF0IHRoYW4gaXBfY29ubnRyYWNrX21heCgxNjAp
-IG9jY2FzaW9uYWx5LkhvdyBjYW4gdGhpcyBvY2N1cj8NCldobyBjYW4gaGVscCBtZT8gVGhhbmtz
-IQ0KQmVzdCByZWdhcmRzIQ0KDQpCaWxsLg0K
+Eric
 
-------=_NextPart_000_0005_01C30CC9.E50A6790
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+----- Original Message -----
+From: "Stuart Clark" <elmhurst@spacelink.com.au>
+To: <netfilter@lists.netfilter.org>
+Sent: Tuesday, April 22, 2003 7:01 PM
+Subject: nat table not working with 'iptables -L nat'
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PWdi
-MjMxMiIgaHR0cC1lcXVpdj1Db250ZW50LVR5cGU+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNS4w
-MC4yOTIwLjAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8Qk9E
-WSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5oZWxsbyxhbGwhPC9GT05UPjwv
-RElWPg0KPERJVj48Rk9OVCBzaXplPTI+SSBoYXZlIGV4cGVyaW1lbnRlZCBvbiB0aGUgaXBfY29u
-bnRyYWNrLkJ1dCBJIGZvdW5kIGEgDQppbnRlcmVzdGluZyB0aGluZzogSSBzZXQgdGhlIGhhc2hz
-aXplIDIwLCB0aGVuIHRoZSBpcF9jb25udHJhY2tfbWF4IHNob3VsZCBiZSANCjE2MCwgZXhhY3Rs
-eSBpdCdzIDE2MCBpbiAvcHJvYy9zeXMvbmV0L2lwdjQvaXBfY29ubnRyYWNrX21heC5JbiB0aGUg
-aGVhZGVyIG9mIA0KZnVuY3Rpb24gaW5pdF9jb25udHJhY2soKSBJIHByaW50ayB0aGUgaXBfY29u
-bnRyYWNrX2NvdW50LiBOb3csIHRoaXMgcHJpbnRpbmcgDQp2YWx1ZSBtYXkgZ3JlYXQgdGhhbiBp
-cF9jb25udHJhY2tfbWF4KDE2MCkgb2NjYXNpb25hbHkuSG93IGNhbiB0aGlzIA0Kb2NjdXI/PC9G
-T05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+V2hvIGNhbiBoZWxwIG1lPyBUaGFua3MhPC9G
-T05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+QmVzdCByZWdhcmRzITwvRk9OVD48L0RJVj4N
-CjxESVY+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5CaWxsLjwvRk9OVD48L0RJVj48
-L0JPRFk+PC9IVE1MPg0K
 
-------=_NextPart_000_0005_01C30CC9.E50A6790--
+> Hi
+>
+> When I try and add a rule to the nat table it seems to work but when I
+> do 'iptables -L nat' I get the error
+>
+> 'iptables: Table does not exist (do you need to insmod?)'
+>
+> All the other tables are there when I do 'iptables -L' but no nat table.
+>
+> How can I get this working?
+>
+> I don't want to recompile the kernel
+>
+> Machine Specifications
+>
+> Pentium2, 266Mhz
+> 64meg Ram
+> Redhat 7.3
+> iptables-1.2.5-3.rpm
+>
+>
+> Here is my module config
+>
+> #
+> # 2.1 Required modules
+> #
+>
+> /sbin/modprobe ip_tables
+> /sbin/modprobe ip_conntrack
+> /sbin/modprobe iptable_filter
+> /sbin/modprobe iptable_mangle
+> /sbin/modprobe iptable_nat
+> /sbin/modprobe ipt_LOG
+> /sbin/modprobe ipt_limit
+> /sbin/modprobe ipt_state
+> /sbin/modprobe ip_nat_ftp
+>
+> #
+> # 2.2 Non-Required modules
+> #
+>
+> #/sbin/modprobe ipt_owner
+> #/sbin/modprobe ipt_REJECT
+> /sbin/modprobe ipt_MASQUERADE
+> /sbin/modprobe ip_conntrack_ftp
+> #/sbin/modprobe ip_conntrack_irc
+> #/sbin/modprobe ip_nat_irc
+>
+>
+>
+>
+>
 
 
