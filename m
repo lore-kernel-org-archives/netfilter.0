@@ -1,14 +1,13 @@
-From: Pascal Italiaander <pc-secure@home.nl>
-Subject: Re: Snuffing out hackers
-Date: Fri, 1 Aug 2003 08:50:55 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: source mac address
+Date: 01 Aug 2003 09:50:08 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200308010850.55270.pc-secure@home.nl>
-References: <7C9884991ADAE0479C14F10C858BCDF5122DF6@alderaan.smgtec.com>
+Message-ID: <1059724207.1178.5.camel@elendil.intranet.cartel-securite.net>
+References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAArnhC4pMfykCnPZlPMhHrI8KAAAAQAAAA9QxKLSpdOESQ12+Zk6/CxgEAAAAA@sicredi.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7C9884991ADAE0479C14F10C858BCDF5122DF6@alderaan.smgtec.com>
-Content-Disposition: inline
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAArnhC4pMfykCnPZlPMhHrI8KAAAAQAAAA9QxKLSpdOESQ12+Zk6/CxgEAAAAA@sicredi.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,46 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: jmurlick@sicredi.com.br
+Cc: netfilter@lists.netfilter.org
 
-Op woensdag 16 juli 2003 20:58, schreef Daniel Chemko:
-> I am getting some disturbing packet traffic hitting my firewall. Here
-> goes:
->
->
->
-> IN=eth4 OUT=eth5 SRC=24.87.243.251 DST=24.57.108.11 LEN=76 TOS=0x00
-> PREC=0xC0 TTL=25
->
-> 4 ID=17431 PROTO=ICMP TYPE=3 CODE=3 [SRC=24.57.108.11 DST=24.87.243.251
-> LEN=48 TOS=0x00 PREC=0x00 TTL=117 ID=15860 DF PROTO=TCP SPT=
->
-> 3161 DPT=80 WINDOW=16384 RES=0x00 SYN URGP=0 ]
->
->
->
-> None of the addresses listed in the packets are from my networks, but
-> what is more disturbing is that eth4 is my internal network interface.
-> Can anyone see (baring an internal intrusion has occurred) how this can
-> happen?
->
->
->
-> It definitely appears to be an exploit on my configuration or something.
+Le jeu 31/07/2003 =E0 22:02, Juliano Murlick a =E9crit :
+> How can i log the source mac address ? I'm logging every dropped packet=
+,
+> my log is like it :=20
+> Jul 15 08:51:26 fwwan kernel: IPT: INPUT DROPPED IN=3Deth0 OUT=3D
+> MAC=3D00:00:00:00:00:00:00:00:8827:42:00:08:00 SRC=3DIP1 DST=3DIP2 LEN=3D=
+60
+> TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D52070 DF PROTO=3DTCP SPT=3D43812 D=
+PT=3D25
+> WINDOW=3D5840 RES=3D0x00 SYN URGP=3D0
+> that mac is a destin address, i wanna log the source, is it possible ?
 
+What you have in log is the whole MAC header :
 
-To snif out hackers , to watch their activities, or block them ,you could put 
-a bridge in front of your firewall ( OpenBSD perhaps ).
-Since the bridge has no IP-address no hacker noticed that you're watching, or 
-has no clue what blocks him. Even better , the bridge can not be attacked or 
-hacked. ( since there is no ip-address the bridge is NOT seen as a part of 
-youre network , no extra HOP is seen, makes it almost invissible  )
+	00:00:00:00:00:00:00:00:8827:42:00:08:00
 
-Some advanced method could be a honeypot.
+You read it like this :
 
+	DST MAC : 00:00:00:00:00:00 (strange...)
+	SRC MAC : 00:00:88:27:42:00
+	PROTO : 08:00 (IP)
 
-This can give you more output about attacks or whatever an intruder wants to.  
-
-Pascal
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
