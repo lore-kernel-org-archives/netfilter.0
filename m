@@ -1,11 +1,11 @@
-From: Samuel Jean <sj-netfilter@cookinglinux.org>
-Subject: Re: netfilter accounting by stateful session
-Date: Mon, 31 Jan 2005 20:07:32 -0500
-Message-ID: <41FED654.5080606@cookinglinux.org>
-References: <20050131020647.30751.qmail@web54405.mail.yahoo.com>
+From: Nguyen Dinh Nam <64vn@cardvn.net>
+Subject: Re: problem with connlimit
+Date: Tue, 01 Feb 2005 09:06:15 +0700
+Message-ID: <41FEE417.2050603@cardvn.net>
+References: <41FE3EF3.7020909@fnet.pl> <41FED40B.2040307@cookinglinux.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050131020647.30751.qmail@web54405.mail.yahoo.com>
+In-Reply-To: <41FED40B.2040307@cookinglinux.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,31 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Vincent Chen <vctw@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Samuel Jean <sj-netfilter@cookinglinux.org>
+Cc: netfilter@lists.netfilter.org, iv <iv@fnet.pl>
 
-Vincent Chen wrote:
-> Hi, all
+No, connlimit still work with 2.6.8.1, it breaks since 2.6.9 you may try 
+the lastest version from http://svn.netfilter.org/, I hope they will fix 
+it soon. I am missing connlimit as well as connbytes and connrates and 
+waiting for them to be available for 2.6.10 too
 
-Hi Vincent,
+Samuel Jean wrote:
 
-> 
-> I have been looking around for accounting solution by stateful session.
-> FreeBSD's ipfilter have done a pretty good job. Can netfilter do that?
-
-Of course, search for 'ctstat' which is a conntrack accounting tool.
-IIRC, you may or may not need a patch for your conntrack, depending on
-the linux kernel release you have.
-
-> 
-> 
-> Thanks,
-> 
-> Vincent Chen
-> 
-HTH,
-
-Samuel
+> No, that's not a bug.. with older kernel. Stuff in patch-o-matic 
+> belong to it
+> because they are unmaintained to be synced with kernel.
+>
+> Yes, connlimit is unsynced since 2.6.8.1 IIRC.
+>
+> Regards,
+>
+> Samuel
 
 
