@@ -1,10 +1,10 @@
-From: fabrizio.gennari@philips.com
-Subject: Netfilter and Linux bridge
-Date: Thu, 13 Jun 2002 13:23:36 +0200
+From: <tbsky@greenware.com.tw>
+Subject: how to leave mangle table?
+Date: Thu, 13 Jun 2002 19:44:42 +0800 (CST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <OF1937A5BF.D92E37F1-ONC1256BD7.003E8CC7@diamond.philips.com>
+Message-ID: <1618.172.16.10.1.1023968682.squirrel@mail>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -15,21 +15,23 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-I was wondering whether Netfilter can filter away packets handled by Linux 
-bridge. If the bridge forwards the packet to another port, the packet 
-never goes through IP routing, so Netfilter should handle it inside the 
-bridge.
+hi:
+  i try to set some rules at mangle table.
+  if rule 1 match, rule2 seems still be checked.
+  can i leave mangle table if rule 1 match?
+  eg: if rule 1 match, then rest of rules are not checked,
+      just like filter table..
+  do i need to create a new chain to do this?
 
-Also, is it possible to apply rules to packets according to the protocol 
-type in Ethernet header (h_proto in struct ethhdr)? The man page says it 
-is possible to apply rules according to source MAC, but says nothing about 
-Ethernet protocol type.
+example:
+rule1: iptables -t mangle -A PREROUTING -s 10.1.1.2 -j MARK --set-mark 1
+rule2: iptables -t mangle -A PREROUTING -s 10.1.1.0/24 -j MARK --set-mark 2
 
-Fabrizio Gennari
-Philips Research Monza
-via G.Casati 23, 20052 Monza (MI), Italy
-tel. +39 039 2037816, fax +39 039 2037800
+Regards,
+tbsky
+
+
 
