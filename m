@@ -1,12 +1,14 @@
-From: SBlaze <dagent.geo@yahoo.com>
-Subject: Re: Kazaa Ports
-Date: Tue, 9 Sep 2003 11:25:14 -0700 (PDT)
+From: Oskar Andreasson <oan@frozentux.net>
+Subject: Re: 3 part firewall
+Date: 21 May 2003 13:00:24 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030909182514.9346.qmail@web40203.mail.yahoo.com>
-References: <3F5DDAF7.1030602@Loudoun-Fairfax.com>
+Message-ID: <1053514824.29649.281.camel@staring.direct2internet.com>
+References: <200305202342.51581.robert.cole@support4linux.com>
+	 <20030521100826.GA1359@floyd>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F5DDAF7.1030602@Loudoun-Fairfax.com>
+In-Reply-To: <20030521100826.GA1359@floyd>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,71 +19,79 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>, jimbo jones <jdvuyk_crap@hotmail.com>
+To: "robert.cole@support4linux.com" <robert.cole@support4linux.com>
 Cc: netfilter@lists.netfilter.org
 
+Hi Robert,
 
---- Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com> wrote:
-> 
-> 
-> jimbo jones wrote:
-> 
-> >
-> > Have you fiddled with the firewall settings in Kazaa that supposedly 
-> > let you change the outgoing port to anything you like.
-> 
-> 
-> I don't know if Kazaa Lite has that option, but I'll look for it. We did 
-> set the maximum number of connections to 10 with the hopes that it would 
-> be happy with the ports I'd already opened. Unfortunately it appears to 
-> use source ports in sequence and doesn't reuse them, so all I did was 
-> delay the problem a few minutes.
-> 
-> > I have heard in cases that you can change this to, say, port 80 and 
-> > suddenly everything goes (web port and all).  However I have exactly 
-> > the same setup with exactly the same issue and this option didnt work 
-> > for me.  But maybe it will for someone else.
-> 
-> 
-> I posted an article a couple of days ago about this very issue: the 
-> ability of some programs to use commonly open ports for other types of 
-> connections and the ramifications this has on firewalling. Now we're on 
-> the other side of the fence viewing this as a "feature" rather than a 
-> threat. Of course if Kazaa didn't behave this way in the first place we 
-> wouldn't need to use other ports. Still the irony of the situation isn't 
-> lost on me.
-> 
-> >   Would also like to get this solved.
-> >
-> > Suggestions appreciated.
-> >
-> > Cheers
-> >
-> 
-> Ditto. SBlaze had an idea to use DNAT in PREROUTING, but I don't think 
-> that will work here. I can't predict which ports would need to be natted 
-> and if I nat every port it'll break all the other services. Something 
-> tells me the developers of Kazaa Lite just aren't too concerned about 
-> the security of our proprietary information ;-)
-> 
-> Jeff
-> 
-> 
-I still say all that should be needed is finding out what the ports are....
-more over what are the minimum ports needed to maintain the service.
+Hmmm, there should actually be an abundant of those kind of scripts, if
+I'm not totally offbase :).
 
-Find that out and you may or may not be able to DNAT to the destination you
-need. Depending on what services you offer already(ie kazzaa may need port 80
-but you are running apache elsewhere).
+I have at least one script that should do almost exactly what you want
+in the iptables tutorial at http://iptables-tutorial.frozentux.net. I
+hope this is of some help.
 
-SBlaze
+Have a nice day,
 
-=====
-"Winky is not knowing how sir, winky is not knowing how?" -=Winky / Harry Potter and the Goblet of Fire=-"
+Oskar Andreasson <oan@frozentux.net>
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+
+On Wed, 2003-05-21 at 12:08, Julian Gomez wrote:
+> On Tue, May 20, 2003 at 11:42:51PM -0700, Robert Cole spoke thusly:
+> >I have a server that has 3 real interfaces (no aliases). eth0 is the
+> >public, eth1 is the private and eth2 is the DMZ interface. All the books
+> >and docs I've seen so far work with only two interfaces and trying to
+> >adapt those scripts is giving me a headache.
+> 
+> You did not supply any real IP addresses to go with it. Therefore, I'll
+> assume it like so :
+> 
+> eth0	- 1.1.1.1
+> eth1	- 192.168.250.0/24
+> eth2	- 172.30.55.0/24
+> 
+> and the eth0 IP is static.
+> 
+> >I want to allow all private traffic out to the internet through PAT (port
+> >address translation). But when going from the LAN to the DMZ I want no nat
+> >or pat going on, only when leaving to the internet. 
+> 
+> Hmm, I don't think we hold the same definition for PAT. In any case, if you
+> merely want normal SNAT / MASQ, do it like so.
+> 
+> /sbin/iptables -F
+> /sbin/iptables -P INPUT DROP
+> /sbin/iptables -P OUTPUT DROP
+> /sbin/iptables -P FORWARD DROP
+> 
+> /sbin/iptables -A FORWARD -p all -s 192.168.250.0/24 -d any/0 -j ACCEPT
+> /sbin/iptables -t nat -A POSTROUTING -p all -j SNAT --to-source \
+>                1.1.1.1
+> 
+> /sbin/iptables -A OUTPUT -p all -m state --state ESTABLISHED,RELATED \
+>                -j ACCEPT
+> /sbin/iptables -A FORWARD -p all -m state --state ESTABLISHED,RELATED \
+>                -j ACCEPT
+> /sbin/iptables -A INPUT -p all -m state --state ESTABLISHED,RELATED \
+>                -j ACCEPT
+> 
+> >Next I would like a strict rule that allows another public IP to be 1 to 1 
+> >nat'd from the public interface to a server out the DMZ interface.
+> 
+> /sbin/iptables -t nat -A PREROUTING -p tcp -s any/0 -d 1.1.1.1 \
+>                --dport 12345 -j DNAT --to-destination 172.30.55.100:12345
+> 
+> /sbin/iptables -A FORWARD -p tcp -s any/0 -d 172.30.55.100 --dport 22 \
+>                -j ACCEPT
+> 
+> >I'm currently using narc to setup the firewall and it appears to work to
+> >get basic internet bound traffic from the lan and I can get to the DMZ
+> >from the LAN without translation so I'm close here but getting the 1 to 1
+> >NAT working is causing me grief.
+> 
+> Haven't use narc, can't comment. The aforementioned rules can be tightened
+> somemore, depending on your overall situation.
+> 
+
+
 
