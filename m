@@ -1,13 +1,12 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Subject: Re: proxy a dns
-Date: Mon, 17 Nov 2003 17:24:43 -0500
+From: "Helder C Souza" <helder_cesario@yahoo.com.br>
+Subject: Streaming and online radio
+Date: Mon, 17 Nov 2003 21:29:09 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB94AAB.2010807@Loudoun-Fairfax.com>
-References: <OF35D63A47.696E0D67-ON85256DE1.0066888E-85256DE1.0066CA71@kal.kalsec.com> <000d01c3ad41$80bb64b0$6500a8c0@ProxY>
+Message-ID: <00ba01c3ad62$9cfa1060$4a14000a@euroi.intranet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00B7_01C3AD51.D63CA240"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000d01c3ad41$80bb64b0$6500a8c0@ProxY>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,37 +16,54 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Guillermo wrote:
+This is a multi-part message in MIME format.
 
->como puedo configurar que mi proxy squid redireccione las peticiones que le
->llegan desde un pc de mi lan.... a un puerto 80 de otro proxy .....para que
->pueda llegar a el servidor dns definitivo??
->
->tengo dos proxys...un squid y un wingate que sale directamente a internet...
->pero los pcs de mi lan que pasan por el squid no pueden llegar por el puerto
->53 al dns.... llegan al wingate y ahi quedan...
->necesito que se redireccionen al puerto 80 para ue el squid asuma que es
->cualquier pc de la otra lan...
->
->
->  
->
-As I can configure that my proxy squid redireccione the petitions that 
-him> arrive since a pc of my lan. ... to a port 80 of another proxy 
-.....para that> can arrive the servant dns final??  >> I have two
-proxys. ..un squid and a wingate that leaves directly to> internet... 
-but the pcs of my lan that pass for the squid cannot arrive> by the port 
-53 al dns. ... arrive al wingate and ahi remain..  > I need that
-itself redireccionen al port 80 for eu the squid assume that it is> any 
-pc of the other lan.. 
+------=_NextPart_000_00B7_01C3AD51.D63CA240
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+There is someway to block acess to online radio ( like Itunes ) and =
+online streaming ( WindowsMedia , Real, etc ).
+All this programs can go by 80 port and i can=B4t figure out how =
+iptables can solve this .
+Thanks.
+
+Helder C Souza=20
 
 
-Ok, this didn't work. Can someone else help out with this one? I'm still 
-waiting for my squid to arrive.
+------=_NextPart_000_00B7_01C3AD51.D63CA240
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Jeff
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>There is someway to block acess to =
+online radio (=20
+like Itunes ) and online streaming ( WindowsMedia , Real, etc =
+).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>All this&nbsp;programs can go by 80 =
+port and i=20
+can=B4t figure out how iptables can solve this .</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Helder C Souza</FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_00B7_01C3AD51.D63CA240--
 
 
