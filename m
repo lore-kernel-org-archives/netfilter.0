@@ -1,11 +1,11 @@
-From: "R. Sterenborg" <rsterenborg@xs4all.nl>
-Subject: Re: Unable to apply pptp patch
-Date: Wed, 3 Jul 2002 09:22:46 +0200
+From: David Gaston Rodriguez <davidgr@interlap.com.ar>
+Subject: Masquerading problems
+Date: Wed, 3 Jul 2002 05:07:58 +0000
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <002901c22262$6e42b4c0$153fa8c0@hslbrabantzuid.nl>
-References: <000c01c2222e$157ed9b0$0a02a8c0@s3ac>
+Message-ID: <200207030507.58215.davidgr@interlap.com.ar>
+Reply-To: davidgr@interlap.com.ar
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,35 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.samba.org
 
------ Original Message -----
-From: "Rowan Reid" <rreid@studio3arc.com>
-To: <netfilter@lists.samba.org>
-Sent: Wednesday, July 03, 2002 3:08 AM
-Subject: Unable to apply pptp patch
+Hi!, i am new in the list, i am from argentina, this is mi problem:
+I have a small LAN with a server doing masquerading, I used the kernel 2.2.=
+20 and
+did not have any problem, now i decided to use the kernel 2.4.18, i set ipt=
+ables=20
+to make the masquerading, but now there are web pages which i can enter fro=
+m=20
+workstations, like for example www.mixmail.com or www.yahoo.com, and from t=
+he server
+i can enter to this pages. I using 2 interfaces, eth0: external, eth1: inte=
+rnal, the
+external interface is connect to ADSL Modem (PPPoE).
+Some idea on as could be mi problem?
+Thanks!!
 
-> Has anyone been able to apply the pptp patch to a 2.4.4 or above kernel
-> I've used rusties patch-o-matic with the make pending-pom_patches
-> Whenever I get to the pptp patch it fails. Several others fail too.  I
-> tried on a 2.4.8 and a 2.4.4 kernel.
->
-I think there are multiple PPTP patches available.
-I got mine from http://www.impsec.org/linux/masquerade/ip_masq_vpn.html and
-it works like a charm.
-There are patches for 2.4.12, 2.4.15 and 2.4.17.
 
-The Netfilter website says that the PPTP patch that can be downloaded on
-their site has a limitation so you can only make one pptp connection to one
-host - not stopping you to make another connection to another host.
-I don't know if the one I use has the same limitation.
+--=20
 
-I have it up and running with the 2.4.17 kernel.
-No problems encountered here (yet). Just patched the kernel and recompiled
-it.
-Then I compiled a new iptables and it worked.
-
-Rob
+---------------------------------
+DAVID GAST=D3N RODRIGUEZ
+Linux Tucum=E1n
+Nick: [[D4V|D]]
+---------------------------------
+Email:  davidgr@interlap.com.ar
+        david_80gr@hotmail.com
+ICQ: 81492566
+MSN Messenger: david_80gr
+---------------------------------
 
 
