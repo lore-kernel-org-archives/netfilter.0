@@ -1,15 +1,13 @@
-From: Abdul-Wahid Paterson <abdulwahid@gmail.com>
-Subject: Re: Multiple iptables exceptions?
-Date: Thu, 23 Sep 2004 16:59:52 +0100
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: Can anyone tell me how to do this?
+Date: Thu, 23 Sep 2004 12:15:24 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <995fcdb0040923085916643d3a@mail.gmail.com>
-References: <bc9fb38004092308087dc97b87@mail.gmail.com>
-	<4152EA7B.3010802@pbl.ca>
-Reply-To: Abdul-Wahid Paterson <abdulwahid@gmail.com>
+Message-ID: <1095956124.6715.8.camel@wolfpack.ljm.dom>
+References: <20040923151413.68240.qmail@web51309.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4152EA7B.3010802@pbl.ca>
+In-Reply-To: <20040923151413.68240.qmail@web51309.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,44 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I think it is better to do it this way incase there are other rules
-that need to be traversed in the PREROUTING chain.
-
-iptables -t nat -N MS
-iptables -t nat -A MS -d 207.46.0.0/16 -j RETURN
-iptables -t nat -A MS -d 64,4,0,0/16 -j RETURN
-iptables -t nat -A MS -j DNAT --to-destination 10.1.1.3:80
-iptables -t nat -A PREROUTING -j MS
-
-Regards,
-
-Abdul-Wahid
-
-
-On Thu, 23 Sep 2004 10:23:39 -0500, Aleksandar Milivojevic
-<amilivojevic@pbl.ca> wrote:
-> Jaret wrote:
-> > conceptually what im looking for is something like this...
-> >
-> > IPTABLES -t nat -A PREROUTING -s 10.1.1.2 -d ! 207.46.0.0/16,
-> > 64.4.0.0/16 --proto tcp --dport 80 -j DNAT --to-destination
-> > 10.1.1.3:80
+On Thu, 2004-09-23 at 11:14, Dominic Iadicicco wrote:
+> yes
 > 
-> You can try using user defined chain.  Add source, protocol and port
-> options back into three PREROUTING rules, I left them out for clarity:
+> > wrote: On Thu, 2004-09-23 at 09:22, Dominic Iadicicco wrote:
+> > ok, I have another one for all.
+> > 
+> > I have now been tring to do this:
+> > 
+> > I have an IP, 10.0.0.1 on eth1 and an IP 172.16.12.130
+> > at eth0. And heres were things get fun. I want all
+> > ssh requests that go to 10.0.0.1 to get routed to
+> > 172.16.12.130 just like it worked when we did it from
+> > .130 to .212. (if anyone is new and doesn't what was
+> > discussed yesterday, please let me know I will post
+> > it.)
 > 
-> iptables -t nat -N MS
-> iptables -t nat -A MS -j ACCEPT
-> iptables -t nat -A PREROUTING -d 207.46.0.0/16 -j MS
-> iptables -t nat -A PREROUTING -d 64.4.0.0/16 -j MS
-> iptables -t nat -A PREROUTING -j DNAT --to-destination 10.1.1.3:80
+> are 10.0.0.1 and 172.16.12.130 on the same physical machine?
 > 
-> --
-> Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-> Systems Administrator                           1499 Buffalo Place
-> Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
-> 
->
+> -j
+
+i hate answering questions with the "why don't you just do it this way"
+response, but here goes...
+
+if you have SSH connections being received on 10.0.0.1, and that machine
+also has an IP of 172.16.12.130, why don't you just accept the
+connections on 10.0.0.1?
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
+
 
