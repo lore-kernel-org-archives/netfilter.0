@@ -1,12 +1,12 @@
 From: Kevin McConnell <kevymac@yahoo.com>
-Subject: Re: iptables on Red Hat Linux 8.0 installation requires frequent iptables restart
-Date: Sun, 22 Dec 2002 09:01:08 -0800 (PST)
+Subject: Re: H.323 Modules and 2.4.20?
+Date: Sun, 22 Dec 2002 08:53:44 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021222170108.6054.qmail@web40301.mail.yahoo.com>
-References: <F635E25A78F69C41B85DC6CB18972A9A4746FA@kepler.blueshiftinc.com>
+Message-ID: <20021222165344.89571.qmail@web40303.mail.yahoo.com>
+References: <3E03D76D.3090805@palaver.net>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <F635E25A78F69C41B85DC6CB18972A9A4746FA@kepler.blueshiftinc.com>
+In-Reply-To: <3E03D76D.3090805@palaver.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,35 +18,45 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "John A. Novak" <jnovak@blueshiftinc.com>, netfilter@lists.netfilter.org
+To: Brian Capouch <brianc@palaver.net>, netfilter@lists.netfilter.org
 
 
---- "John A. Novak" <jnovak@blueshiftinc.com> wrote:
-> The system iptables is running on is used only as a
-> firewall, has 512MB of RAM and three network
-> adapters.  The symptom I'm seeing is that every day
-> or so I need to restart the iptables service to get
-> packets moving through the firewall again.  The
-> system appears to have plenty of available RAM and
-> plenty of free disk space when the firewall is
-> dysfunctional.  
+--- Brian Capouch <brianc@palaver.net> wrote:
+> I patch-o-matic'ed the H.323 conntrack and nat
+> modules, and load them 
+> up, but the result is identical to what I get
+> without them: the port 
+> 1720 TCP call setup traffic goes just fine, but then
+> the resulting RTP 
+> stream is one-way only, from the public network in
+> to my client.
+
+I know it works with this kernel version...
+
 > 
-> I am using NAT and have it configured to remap
-> internal addresses to two ranges of external ip
-> addresses, one for each of the two internal
-> networks.
-> 
-> The periodic failure and resurrection after restart
-> is suggestive of a resource leak, but I'm at a loss
-> as to how to proceed to further debug this problem.
+> I have googled myself silly and find references
+> hither and yon to the 
+> code being broken, my needing to mark packets to use
+> it, to use 
+> different modules because of NEWNAT kernel code,
+> etc., etc., but so far 
+> nothing that looks like it's going to help me.
 
-When you say resource leak, are you referring to a
-memory leak? I don't think that's the case. I'm only
-using 64 MB of RAM on my FW and it works without
-restart every day. Coincidentally, does doing this
-change and make the firewall start allowing packets
-through again... try checking out the arp entries on
-the FW itself and see if an arp problem exists.
+At least you tried to make the effort. See below
+
+> 
+> Is there somewhere I can go find out about all of
+> this, definitively?
+
+There was a posting to this list last month IIRC, that
+details the procedures to get this working properly.
+For the most part, it's probably in the other ports
+that you have to allow that you've forgotten to add.
+
+> Thanks in advance.
+
+You're welcome in advance.
+
 
 
 =====
