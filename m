@@ -1,15 +1,13 @@
 From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Liaise with port forwarding proxies?
-Date: 08 Sep 2003 11:38:41 +0530
+Subject: Re: Installing iptables 1.2.8 in a SUSE 8.1
+Date: 08 Sep 2003 11:29:45 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1063001331.831.35.camel@india.nsecure.net>
-References: <20030905194710.A375.ATNAK@chejz.com>
-	<1062762797.1164.8.camel@india.nsecure.net> 
-	<20030906003513.A37B.ATNAK@chejz.com>
+Message-ID: <1063000795.831.31.camel@india.nsecure.net>
+References: <89DFDF0DBB95BF47AB7A83A5A72FC402416559@ntmail5.corp.ute.com.uy>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-djDYm1m3IGB1LPZ3z4gt"
+Content-Type: multipart/alternative; boundary="=-LYQhBRhCUA32h5Ehupow"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030906003513.A37B.ATNAK@chejz.com>
+In-Reply-To: <89DFDF0DBB95BF47AB7A83A5A72FC402416559@ntmail5.corp.ute.com.uy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,57 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Atsushi Nakagawa <atnak@chejz.com>
+To: "Fried Melgar, Gustavo" <GFried@ute.com.uy>
 Cc: netfilter@lists.netfilter.org
 
 
---=-djDYm1m3IGB1LPZ3z4gt
+--=-LYQhBRhCUA32h5Ehupow
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Fri, 2003-09-05 at 20:35, Atsushi Nakagawa wrote:
+On Fri, 2003-09-05 at 20:22, Fried Melgar, Gustavo wrote:
 
-    "Dharmendra.T" <dharmu@nsecure.net> wrote:
-    > Can you say more clearly what you are trying?
-    
-    I have a linux server with services and an iptables configuration set to
-    discard any NEW incoming packets that aren't for these services.  I do
-    this based on protocol and port.  (e.g. Accept: TCP/80, TCP/21)
-    
-    I want to add a SOCKS5 server (Dante) to the list of services.  The
-    problem with this is that this server can listen to any arbitary port
-    above 1024 for port tunneling, but I don't want to automatically allow
-    all ports > 1024 in iptables.
-    
-    I'm wondering if there is a way for iptables to determine which ports
-    are in use by the SOCKS5 server and selectively allow those.
+    Hi all,
+     
+    I want to upgrade my SUSE 8.1 (with 2.4.19 kernel) from iptables 1.2.7 to iptableas 1.2.8. But also I want to install some patches to the kernel (kernel-source-2.4.19.SuSE-340.i586.patch.rpm )
 
+Patch the kernel and then install the new kernel and then install
+iptables.  
 
-You can allow related packets.
+     
+    I don't know in which order I have to do that.
+    Do I have to install the SUSE's patch first, then iptables 1.2.8 and at last patch-o-matic? Is this the right order to install this patches?
+    Do I need to install patch-o-matic-20030107 (I don't need extra options)
+
+If you don't want this option you don't have to patch this.
 
     
-    Regards,
-    
-    
-    -- 
-    Atsushi Nakagawa
-    <atnak@chejz.com>
-    Changes are made when there is inconvenience.
-    
-    
+    Do I have to recompile the kernel each time I modify the kernel source or can I recompile it at the end?
+
+Whatever the chnges you make in the kernel source will only be reflected
+when you compile and install it. 
+
+    Do you have any other suggestions for this task?
+
+no
+
+     
+    Best regards and thank you in advance,
+    Gustavo
 
 -- 
 Regards
 Dharmendra.T
 dharmu@nsecure.net
+Linux Security and Admin
 
-This message is intended for the addressee only. It may contain
-privileged or Confidential information. If you have received this
-message in error,please notify the sender and destroy the message
-immediately.Unauthorised use or reproduction of this message is strictly
-prohibited.
-
---=-djDYm1m3IGB1LPZ3z4gt
+--=-LYQhBRhCUA32h5Ehupow
 Content-Type: text/html; charset=utf-8
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
@@ -79,37 +71,33 @@ Content-Type: text/html; charset=utf-8
   <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
 </HEAD>
 <BODY>
-On Fri, 2003-09-05 at 20:35, Atsushi Nakagawa wrote:
+On Fri, 2003-09-05 at 20:22, Fried Melgar, Gustavo wrote:
     <BLOCKQUOTE>
-<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>&quot;Dharmendra.T&quot; &lt;dharmu@nsecure.net&gt; wrote:</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&gt; Can you say more clearly what you are trying?</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>I have a linux server with services and an iptables configuration set to</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>discard any NEW incoming packets that aren't for these services.  I do</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>this based on protocol and port.  (e.g. Accept: TCP/80, TCP/21)</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>I want to add a SOCKS5 server (Dante) to the list of services.  The</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>problem with this is that this server can listen to any arbitary port</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>above 1024 for port tunneling, but I don't want to automatically allow</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>all ports &gt; 1024 in iptables.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>I'm wondering if there is a way for iptables to determine which ports</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>are in use by the SOCKS5 server and selectively allow those.</FONT></FONT></I></PRE>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Hi all,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I> </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>I want to upgrade my SUSE 8.1 (with 2.4.19 kernel) from iptables 1.2.7 to iptableas 1.2.8. But also I want to install some patches to the kernel (kernel-source-2.4.19.SuSE-340.i586.patch.rpm )</FONT></FONT></I></PRE>
     </BLOCKQUOTE>
-<FONT SIZE="3"></FONT>
-<BR>
-<FONT SIZE="3">You can allow related packets.</FONT>
+<FONT SIZE="3">Patch the kernel and then install the new kernel and then install iptables.&nbsp; </FONT>
+    <BLOCKQUOTE>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I> </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>I don't know in which order I have to do that.</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Do I have to install the SUSE's patch first, then iptables 1.2.8 and at last patch-o-matic? Is this the right order to install this patches?</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Do I need to install patch-o-matic-20030107 (I don't need extra options)</FONT></FONT></I></PRE>
+    </BLOCKQUOTE>
+<FONT SIZE="3">If you don't want this option you don't have to patch this.</FONT>
     <BLOCKQUOTE>
 <PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Regards,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>-- </FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Atsushi Nakagawa</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>&lt;atnak@chejz.com&gt;</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Changes are made when there is inconvenience.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Do I have to recompile the kernel each time I modify the kernel source or can I recompile it at the end?</FONT></FONT></I></PRE>
+    </BLOCKQUOTE>
+<FONT SIZE="3">Whatever the chnges you make in the kernel source will only be reflected when you compile and install it. </FONT>
+    <BLOCKQUOTE>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Do you have any other suggestions for this task?</FONT></FONT></I></PRE>
+    </BLOCKQUOTE>
+<FONT SIZE="3">no</FONT>
+    <BLOCKQUOTE>
+<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I> </FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Best regards and thank you in advance,</FONT></FONT></I>
+<FONT COLOR="#73273a"><FONT SIZE="3"><I>Gustavo</FONT></FONT></I></PRE>
     </BLOCKQUOTE>
 <TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
 <TR>
@@ -118,8 +106,7 @@ On Fri, 2003-09-05 at 20:35, Atsushi Nakagawa wrote:
 Regards
 Dharmendra.T
 dharmu@nsecure.net
-
-This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
+Linux Security and Admin</PRE>
 </TD>
 </TR>
 </TABLE>
@@ -127,6 +114,6 @@ This message is intended for the addressee only. It may contain privileged or Co
 </BODY>
 </HTML>
 
---=-djDYm1m3IGB1LPZ3z4gt--
+--=-LYQhBRhCUA32h5Ehupow--
 
 
