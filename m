@@ -1,14 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Policy Misunderstanding: RTFM Guidance Requested.
-Date: Wed, 01 Sep 2004 12:50:58 -0400
+From: Jose Maria Lopez <jkerouac@eresmas.com>
+Subject: Re: multiple mapping
+Date: 01 Sep 2004 18:44:39 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094057457.1824.11.camel@wolfpack.ljm.dom>
-References: <200409011323.i81DNQAi040521@jkcpub.iserver.net>
-	<8ca4228204090108466549b5f3@mail.gmail.com>
+Message-ID: <1094048371.6066.3.camel@nostromo.bgsecm.com>
+References: <006701c48ff9$9627b5b0$2a245cc2@cea05>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8ca4228204090108466549b5f3@mail.gmail.com>
+In-Reply-To: <006701c48ff9$9627b5b0$2a245cc2@cea05>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +17,38 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2004-09-01 at 11:46, Mike wrote:
-> Hi Deepak,
-> 
-> Thank you for your response.
-> 
-> On Wed, 1 Sep 2004 09:27:22 -0400, Deepak Seshadri
-> <dseshadri@broadbandmaritime.com> wrote:
-> > 
-> > If the default policy on your mangle & Nat chain is set to DROP & if you
-> > have no rules to classify traffic in these tables, all your packets will get
-> > dropped here. They will not make it to the FILTER table.
-> 
-> This is a good point and shows where maybe I am starting to MIS-understand.  
-> 
-> 1.  Can appended rules override default polices? 
+El mié, 01 de 09 de 2004 a las 09:59, Tomek Macioszek escribió:
+> Hi
+> I have my FIREWALL BOX with address 4.3.2.1 (eth0) and local address 192.168.10.0/24.
+> Now I have SNAT:
+> iptables -t nat -A POSTROUTING -s 192.168.10.0/24 -o eth1 -j SNAT --to 4.3.2.1
+> I would like to make SNAT with i.e two external address.
+> iptables -t nat -A POSTROUTING -s 192.168.10.0/28 -o eth1 -j SNAT --to 4.3.2.1
+> iptables -t nat -A POSTROUTING -s 192.168.10.128/28 -o eth1 -j SNAT --to 4.3.2.2. It is good solution? Should I make alias for eth0 with address 4.3.2.2?
 
-yes--for example:
+Yes, it's a good solution, and you can use --to more than once in the
+same rule. Check iptables -j SNAT --help.
+You should have an alias for the IP if you need routing through the IP,
+not only for the SNAT.
 
-iptables -P INPUT DROP
-iptables -A INPUT -j ACCEPT
-
-will accept all traffic in the INPUT chain.  the POLICY of a chain is
-only enforced when a packet reaches the last rule in that chain and
-hasn't matched any rules.
-
-> 2.  Do you need to include appended rules to parts of the iptables
-> chain that you are not using, or else all the packets will get
-> dropped?  For example, do you have to set Mangle rules even if you are
-> not using any Mangling but have set a DROP policy for mangling.
-
-if you set the policies of the mangle chains to DROP and then do not
-append any rules, you can be pretty sure that no traffic will get
-through.
-
-i'd recommend against starting your netfilter adventure by setting the
-policies of nat & mangle chains to DROP.  it will make it a very short
-trip...
-
--j
-
+> Thanks for help and sorry for my English.
+> Best regards
+> T.  
 -- 
-Jason Opperisano <opie@817west.com>
+Jose Maria Lopez Hernandez
+Director Tecnico de bgSEC
+jkerouac@bgsec.com
+bgSEC Seguridad y Consultoria de Sistemas Informaticos
+http://www.bgsec.com
+ESPAÑA
+
+The only people for me are the mad ones -- the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn, burn
+like fabulous yellow Roman candles.
+                -- Jack Kerouac, "On the Road"
 
 
