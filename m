@@ -1,11 +1,15 @@
-From: "Manikandan" <manikandan@manikandan.org>
-Subject: LAN Proxy - iptables gateway
-Date: Fri, 10 Sep 2004 11:06:04 +0530
+From: Michael Leun <netfilter@newton.lahn.de>
+Subject: Re: kernel 2.6 ipsec and DNAT
+Date: Fri, 10 Sep 2004 08:13:22 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <E1C5e54-0002P5-00@deer.gmane.org>
+Message-ID: <20040910081322.1a2e843a@xenia.leun.net>
+References: <ED78BD9E-FDCA-11D8-8A26-000A95BDFB08@equation.fr>
+	<20040903223115.GP3169@samad.com.au>
+Reply-To: mlist-20040910@newton.leun.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20040903223115.GP3169@samad.com.au>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +22,38 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hello,
 
- 
+On Sat, 4 Sep 2004 08:31:15 +1000
+Alexander Samad <alex@samad.com.au> wrote:
 
-I have a local LAN (10.35.50.0/24) which is connected to my linux
-firewall/gateway running iptables for internet access using an internet
-link. My LAN is connected to other subnets using a leased line. 
+> > The problem I am encountering now is that it seems that DNAT is not 
+> > working when the d-natted session is from a tunneled site. My settup
+> > is 
+[...]
+> > Is there any problem like this under the current 2.6.8 kernel ? Do
+> > you have any idea to try to bypass the problem ?
 
- 
 
-I had to add a few routes in my linux gateway (running iptables) to enable
-my LAN clients to access servers in other subnets and networks which are in
-the range of 10.0.0.0/8 and 97.0.0.0/8. 
+> This is a known problem with netfilter and 2.6 and ipsec with the
+> native stack, there are fixs in pom-ng (Patch o matic), but this means
+> building your own kernel as it patches the kernel and the netfilter
+> modules.  Not to bad though, been doing this for a while and haven't
+> had any majour problems
 
-            
+But, as far as I know, the patches in pom-ng (even cvs) do not work
+since 2.6.7.
 
-Everything seems to be working fine. But recently I found that one of my LAN
-clients is running an Analog proxy. Few users sitting in other networks are
-using this proxy and able to access internet. 
+I mailed the author of this patches (Patrick McHardy) and he told me two
+times he is going to fix this RSN(tm) - but unfortunately does seem to
+have not had time to do it yet.
 
- 
+Have I overlooked something, or is there indeed no working solution for
+2.6.8? Has anybody fixed the patches?
 
-My firewall is configured to allow traffic to internet from LAN only
-(10.35.50.0/24). As the proxy is inside this network, firewall allows the
-traffic.
+-- 
+Bye,
 
- 
+Michael Leun
 
-How do I stop this? I don't want users in other network to access internet
-through my iptables. Please help me. Thanks in advance. 
-
- 
-
-Regards,
-
-Manikandan
-
- 
-
- 
 
