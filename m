@@ -1,10 +1,14 @@
-From: udo <udovdh@yahoo.com>
-Subject: ipt_string...
-Date: Thu, 6 May 2004 10:26:36 -0700 (PDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ipt_string...
+Date: Thu, 6 May 2004 18:43:12 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040506172636.31443.qmail@web40702.mail.yahoo.com>
+Message-ID: <200405061843.12557.Antony@Soft-Solutions.co.uk>
+References: <20040506172636.31443.qmail@web40702.mail.yahoo.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040506172636.31443.qmail@web40702.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,25 +19,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Thursday 06 May 2004 6:26 pm, udo wrote:
 
-Does the string match function better (uses less CPU)
-when matching long patterns or is it better to keep
-the patterns as short as possible?
-Or in other words: how can I use as many matches as
-possible without hitting the CPU too much?
+> Hello,
+>
+> Does the string match function better (uses less CPU)
+> when matching long patterns or is it better to keep
+> the patterns as short as possible?
 
-Kind regards,
-Udo
+My advice is not to use the string match at all, or if you do, remember that 
+it will not be 100% effective.
 
+The reason is that the match works on IP packets, not on connection streams, 
+and therefore if you wanted to match my name "Antony Stone", and it turned 
+out that my first name was at the end of one packet, and my second name was 
+at the start of the next packet, the match would fail - netfilter would not 
+trigger in this situation.
 
-	
-		
-__________________________________
-Do you Yahoo!?
-Win a $20,000 Career Makeover at Yahoo! HotJobs  
-http://hotjobs.sweepstakes.yahoo.com/careermakeover 
+I would recommend you look at solutions which work at the application layer 
+instead of the network routing layer for this sort of thing.   Depending on 
+exactly what it is you're trying to do, Snort might be a good place to start.
+
+Regards,
+
+Antony.
+
+-- 
+90% of networking problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
+
 
