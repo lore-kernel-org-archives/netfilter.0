@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Problems with kernel 2.6.1 and iptables
-Date: Mon, 16 Feb 2004 10:47:18 +0000
+From: =?iso-8859-1?Q?Svavar_=D6rn_Eysteinsson?= <svavar@fiton.is>
+Subject: Best NICS for new Firewall(Router) ?
+Date: Mon, 16 Feb 2004 10:59:24 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402161047.18866.Antony@Soft-Solutions.co.uk>
-References: <005801c3f475$91a645d0$2d64a8c0@pcjka> <1076927162.2333.6.camel@raylinux.internal>
+Message-ID: <20040216110335.DE34C22F177@mail.fiton.is>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1076927162.2333.6.camel@raylinux.internal>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,34 +16,27 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Monday 16 February 2004 10:26 am, Ray Leach wrote:
+Hi all.
+I need to buy, or build a powerfull Firewall Machine that will use IPTABLES.
 
-> The 'filter' table does not exist by default, but the 'FILTER' table
-> does. Is this a user chain than you created?
+What are the best NICS to use on a IPTABLES Firewall?
 
-I think you're getting confused here about the difference between chains and 
-tables.
+3COM?
+Intel?
 
-Chains are normally named in uppercase; standard ones are INPUT, OUTPUT, 
-PREROUTING, POSTROUTING, FORWARD.   User-defined chains can of course be 
-added.
+I've been using RH 7.1 on a AMD Athlon 1200, with 3COM 3C905C-TXM cards
+without any problems. (It serves as a firewall on a 10Mbit fiber connection)
 
-Tables are normally named in lowercase; standard ones are filter, nat, mangle.   
-Adding a user-defined table is quite a significant programming task, and not 
-to be assumed in a reasonably standard configuration of netfilter :)
 
-The 'filter' table should exist in any healthy netfilter install.
+Any help or suggestions apriaceted. :0)
 
-Regards,
+With Best regards,
 
-Antony.
+Svavar O
+Reykjavik - Iceland
 
--- 
-If at first you don't succeed, destroy all the evidence that you tried.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
