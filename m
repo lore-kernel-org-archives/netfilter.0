@@ -1,11 +1,13 @@
-From: "Benny Butler" <benny.butler@nexusitg.com>
-Subject: Multiple source question
-Date: Wed, 19 Jun 2002 08:31:57 -0500
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: ACK lost after SYN,SYN/ACK when DNATting to do transparent Squid proxy
+Date: Wed, 19 Jun 2002 09:31:45 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000101c21795$aff6d3b0$0205a8c0@maxima>
+Message-ID: <20020619133145.GG26150@cannon.eng.us.uu.net>
+References: <20020619115823.F26409@cscoms.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
+Content-Disposition: inline
+In-Reply-To: <20020619115823.F26409@cscoms.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,52 +18,39 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Transfer-Encoding: 7bit
+To: Alain Fauconnet <alain@cscoms.net>
+Cc: netfilter@lists.samba.org
 
-Ok, after much hacking together the rule below I finally get the machine
-at 192.168.2.70 to access 10.46.210.5.  Great, but if I run the same
-rule on any more internal IP addresses, still only 2.70 works.  I'm
-pretty sure after reading the docs that my problem is because my rule is
-being matched and it's not allowing anything after the first.  I got
-desperate and tried -A PREROUTING and -A FORWARD and -j ACCEPT, none of
-which helped (usually made it worse.)
+On Wed, Jun 19, 2002 at 11:58:24AM +0700, Alain Fauconnet wrote:
 
-I also tried multiple source addresses in one rule, but either that's
-not acceptable or it's not , or ; delimited.
+> Hello -
+> 
+> I have a strange problem that has been bugging me for a long time.
+> I do transparent redirection to a separate Squid  box  from  a  2.4.18
+> kernel box using Netfilter, over a private LAN (10.254.254.0/24).
+> Something like:
+> 
+> iptables -t nat -A PREROUTING -i ppp+ -p  tcp -s 172.16.1.0/24 \
+>  --dport 80 -j DNAT --to 10.254.254.2:3128
+> 
+> Sometimes several times per hour, I observe that  ALL  connections  to
+> 10.254.254.2:3128 just hang for 30s to 3min,  even  when  I  originate
+> them  from  the  Netfilter  box  itself  using telnet. Everything then
+> resumes normally. This is a major annoyance to the people behind these
+> boxes. Protocol analysis revealed the following:
+> 
+> Netfilter box      Squid box
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> ----------- SYN --------->
+> <-------- SYN/ACK -------
+> . . . . . . ACK . . . . .> MISSING!
 
-And you may ask why sudo, it's cause this whole thing runs out of a php
-script as the apache user.
+What is the complete ruleset?
 
-Does anyone have any tips for this?
+Ramin
 
-Thanks
-
-
-sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -s 192.168.2.70 -d /
-10.46.210.5 -p tcp --dport 80 -j MASQUERADE
-
-
-
-[root@localhost html]# iptables -t nat -L
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  tcp  --  192.168.2.70         10.46.210.5        tcp
-dpt:http
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-[root@localhost html]#
-
-
-
-
- 
-_______________________
-Benny Butler
-334-340-8345
-http://www.nexusitg.com
-
+> 
+> So  the problem is on the Netfilter box side, it never sends the final
+> ACK to the 3-way handshake.
 
