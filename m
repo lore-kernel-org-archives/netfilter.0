@@ -1,11 +1,10 @@
-From: "Dmitry L. Donskih" <donskih@delna.ru>
-Subject: REDIRECT outgoing packets -- how?
-Date: Mon, 9 Feb 2004 12:59:12 +0300
+From: "Todor Mihai" <todor.mihai@xnet.ro>
+Subject: MASQ & routing
+Date: Mon,  9 Feb 2004 22:24:39 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <164332529593.20040209125912@mail.ru>
-Reply-To: DD <9222653@mail.ru>
+Message-ID: <24528.3395554454$1076457121@news.gmane.org>
+Reply-To: todor.mihai@xnet.ro
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,40 +16,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi everyone.
+I want to configure a Mandrake Linux 9.2 box to act as a masquerading gateway for a lan conected on eth0. The INet connection is a normal dial-up ppp link. The gateway can reach any host on the Net and on the lan (so routing should be ok) and ip_forward is set to 1, but no masqueraded host can reach the Net. When I fire-up the masquerading script I get the error message
 
-I am trying to make some outgoing IP packets (from my linux box
-itself, not forwarded) be redirected to a port on localhost. And it
-doesn't work just because any such packet can be caught by a NAT rule
-only after "routing decision". So even NAT-ed packets leave the box
-anyway.
+	 kernel: MASQUERADE: No route: Rusty's brain broke!
 
-Example:
-I want TCP packets from (localhost):10000 to (any_host):80 be
-redirected to (localhost:8080).
-I could use
+If anybody had a similar problem please give me a hint! 10x
 
-   iptables -t nat -A PREROUTING -p tcp -s 12.34.56.78 --sport 10000 \
-   --dport 80 -j DNAT --to-destination 12.34.56.78:8080
 
-but it doesn't work (and, it shouldn't) -- for only POSTROUTING and OUTPUT
-chains are available for outgoing packets.
 
-(By the way, REDIRECT for local packets (originally from and to localhost)
-works fine)
 
-Is there any other way to DNAT/REDIRECT outgoing packets to localhost?
+-------------------------------------------------------
 
-System: RedHat 7.2 (2.4.7-10), iptables 1.2.6a
+Connex scaneaza automat toate mesajele impotriva virusilor folosind RAV AntiVirus.
 
-Thanks in advance for assistance.
+Connex automatically scans all messages for viruses using RAV AntiVirus.
 
-P.S. Please CC: your reply to donskih@delna.ru.
 
--- 
-WBR,
- Dmitry                          mailto:donskih@delna.ru
+
+Nota: RAV AntiVirus poate sa nu detecteze toti virusii noi sau toate variantele lor. 
+
+Pentru a inlatura efectele nedorite si din dorinta de a va oferi in permanenta servicii 
+
+de cea mai buna calitate msajele detectate ca fiind infectate vor fi sterse automat .
+
+Va rugam sa luati in considerare ca exista un risc de fiecare data cand deschideti 
+
+fisiere atasate si ca MobiFon nu este responsabila pentru nici un prejudiciu cauzat de 
+
+virusi.
+
+
+
+Disclaimer: RAV Antivirus may not be able to detect all new viruses and variants. In 
+
+order to remove  unwanted effects and to continuously provide quality services all 
+
+infected e-mails will be automatically deleted .Please be aware that there is a risk 
+
+involved whenever opening e-mail attachments to your computer and that MobiFon is not 
+
+responsible for any damages caused by viruses.
+
 
 
