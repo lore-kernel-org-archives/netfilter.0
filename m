@@ -1,13 +1,13 @@
-From: Phil C <flah@hell.com>
-Subject: Re: help accepting unbound addresses
-Date: Fri, 14 May 2004 23:32:49 -0400
+From: Micha Silver <micha@arava.co.il>
+Subject: Re: Redirecting outgoing SMTP from LAN to another LAN server
+Date: Sat, 15 May 2004 14:42:21 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040515033249.GW78829@adsl195.cofs.net>
-References: <20040515002908.GU78829@adsl195.cofs.net>
+Message-ID: <40A6021D.9030201@arava.co.il>
+References: <20040429095949.GB22172@acentral.co.uk> <20040429144757.GA6534@zion.homelinux.com> <200405131346.12621.gdh@acentral.co.uk> <200405131442.24566.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20040515002908.GU78829@adsl195.cofs.net>
+In-Reply-To: <200405131442.24566.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,24 +17,56 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-As a follow up to my initial questions, I began looking into the possible
-viability of using libipq and the QUEUE target. Right now I'm using the
-example provided in the man page, but with the same results... The packets are
-looping and eventually producing icmp in-transit timeouts.
+Antony Stone wrote:
+> On Thursday 13 May 2004 1:46 pm, Gavin Hamill wrote:
+> 
+> 
+>>This is just a final followup to say thanks for the advice, and to report
+>>on the final solution.
+>>
+>>eth0 is the 0utside, and eth1 is the 1nside (that's what I use to stop
+>>confusing myself...) and 10.0.0.254 is the firewall and default gateway for
+>>all LAN machines
+>>
+>>$ iptables -t nat -A PREROUTING -p tcp -i eth1 -s ! 10.0.0.253 --dport 25
+>>-j DNAT --to 10.0.0.253:25
+>>$ iptables -t nat -A POSTROUTING -p tcp -s 10.0.0.0/24 -d 10.0.0.253
+>>--dport 25 -j SNAT --to 10.0.0.254
+>>
+>>This way, LAN users trying to connect directly to an external mail server
+>>get sent to the MTA on 10.0.0.253, and 10.0.0.253 itself still has full
+>>access to 'real' port 25 in order that it can deliver mails! :)
+>>
 
-I thought that doing an ipq_set_verdict() would allow the packet to actually
-be accepted, short circuiting the rest of the kernel processing of the
-packet... It appears that this is not the case, or am I missing something?
+Gavin:
+Why would your LAN users ever need to send SMTP to anywhere other 
+than your MTA? With the above rules aren't you allowing an 1nside (I 
+like that 0 1 idea!) computer, infected with a worm to propagate the 
+virus?
+I apologize if I missed something in your original post that 
+explains this.
 
-Again, all I really need to do it accept traffic for addresses that aren't
-bound to any interfaces, without modifying the original destination address.
-It seems that one way or another, this must be possible.
+--Micha
 
--- 
-<flah@hell.com>
-\x104\x97\x108\x102
+>>Cheers,
+>>Gavin.
+> 
+> 
+> I'd just like to say that it's very nice to see a posting like this here, 
+> showing the working solution (together with an explanation of why it works, 
+> and exactly what it does), since this sort of thing is very useful to people 
+> searching the archives in future.
+> 
+> Find a working solution which someone has bothered to document is much more 
+> helpful than finding someone with a similar problem, and having to go through 
+> half the same effort of solving it, so thanks Gavin for providing this info.
+> 
+> Regards,
+> 
+> Antony.
+> 
+
 
