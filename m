@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables bridge filter question
-Date: Thu, 18 Mar 2004 23:16:47 +0000
+From: SBlaze <dagent.geo@yahoo.com>
+Subject: Re: port scanning
+Date: Thu, 18 Mar 2004 16:15:20 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403182316.47015.Antony@Soft-Solutions.co.uk>
-References: <ILECICAFAJIIMPBBLMEAGELNCPAA.gerryw@objectivedomain.com>
+Message-ID: <20040319001520.73563.qmail@web61008.mail.yahoo.com>
+References: <20040318224754.5502418D76@smtp.latinmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ILECICAFAJIIMPBBLMEAGELNCPAA.gerryw@objectivedomain.com>
+In-Reply-To: <20040318224754.5502418D76@smtp.latinmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,54 +16,98 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: Jorge Garcia <anarkophobia@latinmail.com>, netfilter@lists.netfilter.org
 
-On Thursday 18 March 2004 11:09 pm, Gerry Weaver wrote:
 
-> Hi,
->
-> I understand what your suggesting. Perhaps I still didn't explain well
-> enough. Here's an example:
->
-> [NodeA 10.10.10.1]<==>[Firewall 10.10.10.2]<==>[Router 10.10.10.254]
->
-> If the router is setup as the default gateway for NodeA then wouldn't it be
-> sending packets with a source address on the 10.10.10.0 network through the
-> external interface of the bridge.
+--- Jorge Garcia <anarkophobia@latinmail.com> wrote:
+> hi, i need an example of script ( please, i need the example works, becuo=
+use
+> i found a lot on internet that doesnt work) for logging and dropping port
+> scans with iptables.
+> thanx
+>=20
+> http://www.latinmail.com - La forma m=E1s c=F3moda de enviar y recibir tus
+e-mails
 
-No, I don't think so.
+This is what I use and it works very well. You will need to allow services(=
+if
+you have any that is.) Those rules must be placed before these lines. Also =
+of
+course you must have the device reflect your internet device.
 
-I assume three things here (please let me know if I'm wrong):
+# NMAP and Connection killer
+ #
+ # iptables -A INPUT -p tcp -i eth0 -m state --state NEW -j LOG
+ iptables -A INPUT -p tcp -i eth0 -m state --state NEW,INVALID -j DROP
+ iptables -A INPUT -p tcp -i eth0 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
 
-1. The router IS performing source nat on outbound packets (so that packets 
-which end up on the Internet have a public routable source address rather 
-than something within 10.10.10.0/24).
+ # UDP Filters
+ #
+ #iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j LOG
+ iptables -A INPUT -p udp -i eth0 -m state --state NEW,INVALID -j DROP
+ iptables -A INPUT -p udp -i eth0 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
 
-2. The router is NOT performing source nat on inbound packets coming from the 
-Internet (so that packets arriving on your local network have the correct 
-source address of the machine they came from, out in the Big Wide World).
+ # ICMP Filtration
+ #
+ iptables -A INPUT -p icmp -i eth0 -m state --state NEW,INVALID -j DROP
+ iptables -A INPUT -p icmp -i eth0 -m state --state ESTABLISHED,RELATED -j
+ACCEPT
 
-3. You have no great interest in talking to your router from local network 
-machines - they want to talk to the Rest Of The World, which is on the other 
-side of the router.
+Proof that it works?
 
-Now, if all the above assumptions are true, then valid packets arriving at 
-your network through the router from the Internet will have the source 
-addresses of the machines they came from, not the internal address of the 
-router.
+hogwarts:~# iptables -vnL
+Chain INPUT (policy ACCEPT 789K packets, 166M bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+15813 1383K LOG        tcp  --  eth0   *       0.0.0.0/0            0.0.0.0=
+/0 =20
+        tcp dpt:80 LOG flags 0 level 4
+ 2137  128K DROP       all  --  eth0   *       12.175.0.35          0.0.0.0=
+/0
+    0     0 ACCEPT     all  --  eth0   *       68.1.132.236         0.0.0.0=
+/0
+13676 1255K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0=
+/0 =20
+        tcp dpt:80
+ 3727  208K DROP       tcp  --  eth0   *       0.0.0.0/0            0.0.0.0=
+/0 =20
+        state INVALID,NEW
+ 2516 3759K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0=
+/0 =20
+        state RELATED,ESTABLISHED
+  27M 3361M DROP       udp  --  eth0   *       0.0.0.0/0            0.0.0.0=
+/0 =20
+        state INVALID,NEW
+ 1543  227K ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0=
+/0 =20
+        state RELATED,ESTABLISHED
+ 1697 1426K DROP       icmp --  eth0   *       0.0.0.0/0            0.0.0.0=
+/0 =20
+        state INVALID,NEW
+  133  7448 ACCEPT     icmp --  eth0   *       0.0.0.0/0            0.0.0.0=
+/0 =20
+        state RELATED,ESTABLISHED
 
-If, for some rather obscure reason, your router is performing source nat on 
-incoming packets, then yes, they will have 10.10.10.254 as their source 
-address, but I really can't think why this would be the case.
+Chain FORWARD (policy ACCEPT 11M packets, 3359M bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
 
-Regards,
+Chain OUTPUT (policy ACCEPT 1452K packets, 1121M bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
 
-Antony.
 
--- 
-One good tern deserves another.
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
+
+=3D=3D=3D=3D=3D
+In the absence of order there will be chaos.
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - More reliable, more storage, less spam
+http://mail.yahoo.com
 
