@@ -1,14 +1,10 @@
-From: Jan Humme <jan.humme@xs4all.nl>
-Subject: Re: I need help , please
-Date: Thu, 4 Jul 2002 21:31:38 +0200
+From: Paul Dunphy <pdunphy@research.ryerson.ca>
+Subject: Stateful FW Questions
+Date: Thu, 04 Jul 2002 16:04:27 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <02070421313802.06327@Lms>
-References: <001e01c22321$e86018a0$2400a8c0@inq7.net> <02070420590401.06327@Lms> <20020704190130.YPAF4626.mta02-svc.ntlworld.com@there>
-Reply-To: jan.humme@xs4all.nl
+Message-ID: <5.1.0.14.0.20020704160414.022d3d40@mailhost.csca.ryerson.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020704190130.YPAF4626.mta02-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,40 +14,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.samba.org
 
-On Thursday 04 July 2002 21:01, Antony Stone wrote:
-> On Thursday 04 July 2002 7:59 pm, Jan Humme wrote:
-> > On Thursday 04 July 2002 20:51, Antony Stone wrote:
-> > > On Thursday 04 July 2002 7:48 pm, Jan Humme wrote:
-> > > > On Thursday 04 July 2002 20:20, Antony Stone wrote:
-> > > > > # Redirect http requests to local proxy
-> > > > > iptables -A PREROUTING -t nat -p tcp --dport 80 -j DNAT
-> > > > > 127.0.0.1:80
-> > > >
-> > > > Antony, just for my understanding: is this any different from:
-> > > >
-> > > > iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT   ?
-> > >
-> > > No.   I just find the name 'redirect' a bit ambiguous (I mean, it could
-> > > redirect it somewhere else, couldn't it, but no, it only redirects it
-> > > to the local machine...) therefore I use DNAT which I'm familiar with
-> > > from other uses.
-> >
-> > OK, and agree.
-> >
-> > But I am somewhat surprised to find such redundant syntax at this level.
->
-> I could have written it as
->
-> iptables -A PREROUTING -t nat -p tcp --dport 80 -j DNAT 127.0.0.1
->
-> if you prefer :-)
+Hi Everyone,
 
-I was in fact refering to the redundant design of the iptables syntax, and 
-not to your beautiful piece of nat-art, Anthony ;-) !
+I'm new to stateful firewalls (can you tell?!), and I have a couple of 
+iptables-related questions:
 
-Jan Humme. 
+Question 1:
+
+Say I have a simple firewall with two NICs, and rules as follows:
+
+iptables -A internal-external -p tcp --dport www -j ACCEPT
+iptables -A internal-external -p tcp --dport https -j ACCEPT
+iptables -A internal-external -p tcp --dport telnet -j ACCEPT
+iptables -A internal-external -p tcp --dport ssh -j ACCEPT
+iptables -A internal-external -j REJECT
+
+where internal-external is a user-defined chain to be used in the FORWARD 
+chain. So with this, I am allowing my internal users to access www, https, 
+telnet and ssh on machines outside. Now, if I define an external-internal 
+chain to handle communications going the other way (i.e. from the outside 
+world to the internal LAN), can I simply say:
+
+iptables -A external-internal -state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A external-internal -j DROP
+
+or should I do something like this instead:
+
+iptables -A external-internal -p tcp -m state --state ESTABLISHED --sport 
+www -j ACCEPT
+iptables -A external-internal -p tcp -m state --state ESTABLISHED --sport 
+https -j ACCEPT
+iptables -A external-internal -p tcp -m state --state ESTABLISHED --sport 
+telnet -j ACCEPT
+iptables -A external-internal -p tcp -m state --state ESTABLISHED --sport 
+ssh -j ACCEPT
+iptables -A external-internal -j DROP
+
+In other words, is there any reason to itemize the established connections 
+one by one, or can I simply allow all ESTABLISHED connections through from 
+the outside, and rely on the internal-external chain to limit the type of 
+connections that can be initiated from inside? Is one way more secure than 
+the other?
+
+Question 2:
+
+Another related question: If I want to use "-m state --state ESTABLISHED" 
+as I'm doing above in the external-internal chain, do I also have to 
+specify "-m state" or "-m state NEW" in the internal-external chain so that 
+the state of the connection will be tracked, or will it simply work the way 
+it is written above? (Are all connections tracked?)
+
+As always, your help is greatly appreciated. Thanks!
+
+Paul
+
+
+---------------------------------------------------------------------
+Paul T. Dunphy, P.Eng.
+Systems Administrator/Research Engineer
+Centre for the Study of Commercial Activity
+Toronto, Ontario, CANADA
+
 
