@@ -1,12 +1,13 @@
-From: "Matthew Donofrio" <mdonof2@pride.hofstra.edu>
-Subject: Re: How exactly does RELATED work in Connection Tracking?
-Date: Wed, 23 Oct 2002 08:57:06 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: static IP, different gateway & dns
+Date: Thu, 24 Oct 2002 10:54:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000b01c27aac$d6b2a270$09c809c0@PENT4>
-References: <000801c2798e$a7dcfd70$09c809c0@PENT4> <1035325277.10494.18.camel@elendil>
+Message-ID: <200210240954.g9O9sbL04022@vulcan.rissington.net>
+References: <006301c27a57$f29f8840$0f01a8c0@Inspiron2100>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <006301c27a57$f29f8840$0f01a8c0@Inspiron2100>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,33 +18,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
->Connection tracking relies on data structures. In those, to be quick,
->you have tuples that are used to recognise packets going both ways. A
->tuple is a set of datas that caracterize a packet for Netfilter. Theses
->tuples are used firstly to build conntrack table entries, and then to
->try to match theses entries against further packets. That means when you
->see a packet, you can calculate its own tuple, and then compare it to
->the ones that are in data structures that represent current conntracked
->flows.
+On Wednesday 23 October 2002 6:49 am, Clayton Check wrote:
 
->When a packet reaches the box, then Netfilter looks at it, extract from
->the header its own tuple and then compares it to known tuples that are
->part of current conntracked connections. If it matches one of theses
->tuples, then it is ESTABLISHED. It is also compared to all expectations.
->If it matches one expectation, then we know this packet is RELATED (and
->if it does not match anything, it is NEW). Then, we can create a new
->structure for him with tuples and so on and treat the flow as others.
+> Hi,
+>
+> Can iptables NAT or handle nodes that have static IP address not on the
+> same subnet as the iptable box, also with different gateway configuration
+> and different DNS config?
 
-The tuple is just the source address and destination address for a
-particular packet, correct?  So is it safe to say that the  only fields that
-are compared for connection tracking are the source and destination
-addresses?  So, if a packet comes in and the source and destination
-addresses match an entry in the conntrack state table, then we can say that
-it is part of some ESTABLISHED connection.  Thanks again.
+Yes, netfilter can NAT anything which passes through it.   It doesn't care 
+what the original or translated addresses are.
 
--Matt
+> Overview
+> A linux box with iptable acts as a gateway to connect several clients to
+> the Internet. However, the clients behind this gateway have static IP
+> addresses and different gateway and dns configuration. Lets assume that
+> changing their network configurations are not possible.
+>
+> Can iptables handle this sort of networking?
+>
+>                              |--- 192.168.1.12 (gw: 192.168.1.1)
+>
+> ---- eth0 (iptables) eth1 ---|--- 192.168.10.25 (gw: 192.168.10.1)
+>                   10.0.0.1/8 |
+>
+>                              |--- 202.145.23.25 (gw: 202.145.0.5)
+>                              |
+>                              |--- 10.0.0.16 (gw: 10.0.0.1)
 
+If you can get the packets to pass through netfilter, it will do the NAT for 
+you.
+
+My feeling about the network setup you've described above is that the packets 
+you're interested in won't be routed through the netfilter box, therefore it 
+won't be able to do anything with them.
+
+Antony.
+
+-- 
+
+Perfection in design is achieved not when there is nothing left to add,
+but rather when there is nothing left to take away.
+
+ - Antoine de Saint-Exupery
 
