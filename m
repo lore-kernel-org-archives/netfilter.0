@@ -1,13 +1,13 @@
-From: "Waldecir Loureiro dos Santos Filho" <waldecir.santos@centriabusiness.com.br>
-Subject: RE: filtering by packet contents?
-Date: Wed, 16 Jul 2003 08:30:38 -0300
+From: =?iso-8859-1?q?Stephen=20Bylo?= <stephenbylo@yahoo.com.sg>
+Subject: Re: DNAT/SNAT & existing connections
+Date: Wed, 16 Jul 2003 13:25:38 +0800 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <IIEKKHFJALFLMOPAIGGIAEFECAAA.waldecir.santos@centriabusiness.com.br>
-References: <09B04A55822EFF4DA48D2E0BB2941D4A0192BF@wardrive.citadelcomputer.com.au>
+Message-ID: <20030716052538.55184.qmail@web13115.mail.yahoo.com>
+References: <20030716025041.GE25639@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0192BF@wardrive.citadelcomputer.com.au>
+In-Reply-To: <20030716025041.GE25639@cannon.eng.us.uu.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,91 +17,199 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ramin Dousti <ramin@cannon.eng.us.uu.net>
+Cc: netfilter@lists.netfilter.org
+
+ --- Ramin Dousti <ramin@cannon.eng.us.uu.net> wrote:
+> 
+
+Hi Ramin,
+(sorry, an amended version)
+ 
+                       _______A_(slow)____(1)
+    S ----------------R___________________ M
+                              B (faster)  (2)
+
++ Yes, R is Linux
++ (1) and (2) will get their IPs through
+  DHCP whenever they connect.
++ We have full influence on S, R and M but only
+  *partial* influence on A & B networks.
++ M can inform R which IP to use (1 or 2).
++ S can only know 1's IP.
++ A UDP stream can exist through S->R->A->(1) and
+  should be diverted by R (through A to 2) when (2)
+  comes on-line.
++ The UDP stream can be diverted back agin to (1)
+  when (2) goes off-line again.
+
+Does this help?
+
+Thanx
+Steve
 
 
-i have a question, how can i measure the cpu load of my linux box with
-iptables ?
-i have a P200 but allways stay in 98% idle and i have a High traffic going
-in.
-i see high traffic with TCPDUMP. heehe
+Hi Stephen,
+> 
+> You lost me here. M is a remote host with two
+> interfaces. There are
+> two networks (AS) between your router R and M. I
+> take that R is a
+> linux box (??).  Interface 1 is always up and
+> interface 2 is sometimes
+> up. Now you want to send the packets (mostly UDP)
+> from your server S to M
+> and you want the router R to do some kind of magic
+> and know when 2 is up
+> and nat to 2 and use 1 otherwise. While this might
+> work for UDP (if I only
+> knew how) there is no way you can switch between dst
+> IP's of a TCP session.
+> 
+> What you could do is:
+> 1) Have a loopback(dummy) interface D on M
+> 2) Use some kind of routing protocol on M to
+> propagate this D through
+>    1 and 2 to the networks..
+> 3) Receive this route from those networks on R
+> 
+> Then you could assign a higher cost to the network
+> connected to 1. When 2 is
+> up your preference would be through the lower
+> network. When 2 is down, the
+> only path would be through 1. At any rate the server
+> S should only talk to
+> D. This solution works for both UDP and TCP...
+> 
+> But I'm certain that M (being mobile) cannot send
+> out any routing information.
+> And besides your ISP's are not willing to receive
+> the route from M and also
+> are not willing to pass that route to R.
+> 
+> So, no, sorry I don't have any solution for you.
+> 
+> Ramin
+> 
+> 
+> On Wed, Jul 16, 2003 at 10:12:58AM +0800, Stephen
+> Bylo wrote:
+> 
+> > Dear Ramin & List,
+> > 
+> > Thanx for your mail.  The world is getting more
+> > mobile, so here is some detail to my problem:
+> > 
+> > A mobile host M has two interfaces 1 & 2.
+> > M is reading an open udp stream from host S
+> (server)
+> > on interface 1.  Interface 1 is always on-line. 
+> > Interface 2 is only sometimes online and the route
+> to
+> > 2 provides much more bandwidth than the route to
+> 1.  I
+> > want to route the stream through the higher
+> bandwidth
+> > without S having to know about it.  S should
+> always
+> > think its communicating with the IP on interface
+> 1.
+> > 
+> >                       ____some network___(1) slow
+> >    S -------- NAT ---R___________________ M
+> >                           some network   (2) fast
+> > 
+> > R = our router to two different external networks
+> > 
+> > Tcp connections should also be "kept alive" and
+> > diverted to interface 2 on M.
+> > 
+> > After reading
+> > "netfilter-hacking-HOWTO.linuxdoc-4.html" and
+> > "iptables-tutorial.html" I find that existing
+> > connections will not be "diverted" in this way,
+> only
+> > new connections are looked up in the NAT table.
+> > Would it be possible to change the dst values in
+> the
+> > "conntrack" table as well as changing the NAT
+> entry
+> > when interface (2) comes on-line ?
+> > 
+> > Any other ideas ?
+> > 
+> > Thanx for any help,
+> > Steve
+> > 
+> >  --- Ramin Dousti <ramin@cannon.eng.us.uu.net>
+> wrote:
+> > > On Tue, Jul 15, 2003 at 06:01:15PM +0800,
+> Stephen
+> > > Bylo wrote:
+> > > 
+> > > > Dear list,
+> > > > 
+> > > > I am looking into the use of a NAT "router" to
+> > > change
+> > > > the destination (or source) IP addresses of
+> > > packets in
+> > > > existing connections.  Maybe it sounds weird
+> why I
+> > > > might want to do this, but I need to divert
+> > > streams to
+> > > > other destinations!
+> > > > 
+> > > > I understand from the iptables docs that only
+> the
+> > > > first packet of a connection is examined for
+> NAT
+> > > > entries, subsequent packets do not need to be
+> > > > processed again.
+> > > 
+> > > They do get processed. There is a short circuit
+> to
+> > > identify these
+> > > packets and avoid traversing the whole nat
+> table.
+> > > 
+> > > It's not clear to me what you precisely want to
+> do.
+> > > 
+> > > Ramin
+> > > 
+> > > > I would like all packets to be
+> > > > examined OR I would like to be able to "reset"
+> the
+> > > > particular entry in the table so that the
+> existing
+> > > > connection will be "re-considered" again using
+> the
+> > > > NAT.
+> > > > 
+> > > > Is this possible in some way with iptables? 
+> If
+> > > not,
+> > > > can you point me in the right direction to a
+> > > solution,
+> > > > please?
+> > > > 
+> > > > Thanx,
+> > > > Steve
+> > > > 
+> > > >
+> __________________________________________________
+> > > > Do You Yahoo!?
+> > > > Send free SMS from your PC!
+> > > > http://sg.sms.yahoo.com 
+> > 
+> > __________________________________________________
+> > Do You Yahoo!?
+> > Send free SMS from your PC!
+> > http://sg.sms.yahoo.com 
 
-somebody know how ?
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of George Vieira
-Sent: quarta-feira, 16 de julho de 2003 03:43
-To: Daniel Chemko
-Cc: cc; netfilter@lists.netfilter.org
-Subject: RE: filtering by packet contents?
-
-
-Yes this is true but what you can do is this...
-
-Patch in the "string" module as well as the "iplimit" module
-
-Add a rule for "iplimit" to block already registered IPsfor xx seconds.
-Then add a rule for SYN connections with that --string to add it's source to
-the iplimit table.
-
-Usually the code red attacks aren't spoofed (from memory) and are just
-trying to get in.. so after the first attempt, the second/third/fourth will
-be automatically dropped and won't be looked at by --string since iplimit
-blocks before it... get it? this should not stress the CPU as much I don't
-think...
-
-dunno if that made sense or would fully work 100% but it's an idea I had for
-other types of problems.. PSD is another one..
-
-Thanks,
-____________________________________________
-George Vieira
-Systems Manager
-georgev@citadelcomputer.com.au
-
-Citadel Computer Systems Pty Ltd
-http://www.citadelcomputer.com.au
-
------Original Message-----
-From: Daniel Chemko [mailto:dchemko@smgtec.com]
-Sent: Wednesday, July 16, 2003 4:23 PM
-To: George Vieira
-Cc: cc; netfilter@lists.netfilter.org
-Subject: Re: filtering by packet contents?
-
-
-George Vieira wrote:
-
->You can you use the p-o-m patch for the string module "-m string --string
-pattern"
->
->this works and can be used for some funky stuff too like redirecting 1
-virtual host on a server to another server which is very handy when a
-particular virtual host goes down...
->
->
->
-
-Just keep in mind that the string patch is VERY heavy on CPU depending
-on how much traffic passes through the rule.
-
-
-
-
-********Confidencialidade do Correio do Eletr=F4nico***************
-Informa=E7=F5es confidenciais podem estar contidas nesta mensagem. Se voc=
-=EA n=E3o
-se encontra na lista de destinat=E1rios ou n=E3o =E9 o remetente da mesma, =
-voc=EA
-n=E3o deve copiar ou enviar esta mensagem para ningu=E9m. Neste caso, voc=
-=EA deve
-destruir e notificar o remetente da mesma. A empresa considera opini=F5es,
-conclus=F5es e outras informa=E7=F5es que n=E3o se relacionam com o neg=F3c=
-io oficial
-da corpora=E7=E3o de responsabilidade do usu=E1rio do servi=E7o.
-
-
+__________________________________________________
+Do You Yahoo!?
+Send free SMS from your PC!
+http://sg.sms.yahoo.com
 
