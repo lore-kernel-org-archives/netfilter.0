@@ -1,10 +1,12 @@
-From: "Jeppe Frandsen" <jeppe@fralle.dk>
-Subject: IP Masquerading problem with packet socket.
-Date: Sun, 31 Oct 2004 10:31:36 +0100
-Message-ID: <001d01c4bf2c$6d406720$0200a8c0@p9e6p78bjgt6355>
+From: Andy Furniss <andy.furniss@dsl.pipex.com>
+Subject: Re: limiting bandwidth with iptables or squid?
+Date: Sun, 31 Oct 2004 11:40:56 +0000
+Message-ID: <4184CF48.10605@dsl.pipex.com>
+References: <web-493669244@mail01.infosat.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <web-493669244@mail01.infosat.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,48 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: it clown <suse@mailbox.co.za>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
+it clown wrote:
+> Hi All,
+> 
+> I am abit confused with tc.
+> 
+> I need a string to limit band whidth for ips or mac
+> addresses.
+> 
+> iptables -A PREROUTING -i eth0 -s x.x.x.x -t mangle -j MARK
+> --set-mark 1
 
-I have constructed a number of device drivers (dev1 - dev3), which is =
-accessed from=20
-an userspace program via a packet interface. All devices are connected =
-to a bridge=20
-(br0) with a static IP address 192.168.0.1/24 and a running DHCP server. =
-Besides this
-I have an external interface (eth0) assigned with a dynamic IP address.
+If you want to shape traffic from the internet to certain IPs there are 
+several ways -
+you could mark them on the WAN interface eg. -i ppp0. If you do it in 
+PREROUTING and are doing NAT it won't work for local addresses, though.
 
-Now I would like to make access from the 3 devices to the external =
-interface by using=20
-IP Masquerading at the same time. I found an example on the web with a =
-similar setup
-(see figure 7b) where eth1 and eth2 is exchanged with dev1 - dev3:
+If you do not care about shaping traffic headed for your shaping box and 
+you only have one lan interface you can set up HTB/CBQ/HFSC egress on 
+eth0. You could then use POSTROUTING to mark IPs which will be denatted 
+  at that point.
 
-http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html#section4
-
-I then tried to use the following configuration after the bridge was =
-setup with a running=20
-DHCP server, the device driver interfaces and a IP address, but without =
-any luck:
-
-iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -d 192.168.0.0/24 -j =
-ACCEPT
-iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
-
-echo '1' > /proc/sys/net/ipv4/ip_forward
-
-I do not know if the problem is related to IP forwarding because (as I =
-know) this is done
-in the IP stack and hereby does not work with a AF_PACKET socket, since =
-this is a direct=20
-layer 2 connection between the device driver and the userspace program.=20
-
-Thank you in advance for you help!
+> 
+> will mark the packets for that ip.i think.
+> 
+> what string for tc do i need to limit x.x.x.x to say 5kb/s
+> download speed? eth0 is my internal network card of my
+> linux box.
+>
 
 
-Best Regards,
+I would use HTB - there are examples and links on www.docum.org / LARTC 
+how to.
 
-Jeppe Frandsen,
-Denmark
+You will need to run at about 80% of your link speed.
+
+Andy.
+
+
