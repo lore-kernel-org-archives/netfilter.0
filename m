@@ -1,13 +1,13 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: tcp & udp timeout hardcoding
-Date: Mon, 17 Nov 2003 17:30:33 +0100
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+Subject: Re: irc
+Date: Mon, 17 Nov 2003 11:35:19 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069086632.2640.3.camel@tech004.alphalink.fr>
-References: <20031117144208.GA22431@nest.8d.com>
+Message-ID: <3FB8F8C7.8090104@Loudoun-Fairfax.com>
+References: <20031117161039.97875.qmail@web40203.mail.yahoo.com> <200311171618.hAHGIAj22261@agate.rockstone.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-adC0LW7skQ481jywmzaP"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20031117144208.GA22431@nest.8d.com>
+In-Reply-To: <200311171618.hAHGIAj22261@agate.rockstone.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,45 +17,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: xavier <list.netfilter@natch.dyndns.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Antony Stone wrote:
 
---=-adC0LW7skQ481jywmzaP
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+>On Monday 17 November 2003 4:10 pm, SBlaze wrote:
+>
+>  
+>
+>> > All I can suggest is that you look around for an IRC proxy server,
+>> > however I have no knowledge of such things myself.
+>>    
+>>
+>>>Regards,
+>>>
+>>>Antony.
+>>>      
+>>>
+>>There are such things as IRC Proxys. bnc is one of the more common ones
+>>that I have heard of. However this won't do him any good since he is
+>>looking for a rule to allow in IRC protocol.
+>>    
+>>
+>
+>I'm not sure that *is* what he's looking for?   Quoting from his second 
+>posting:
+>
+>"The 'firewall' in this case, is a transparent proxy server.  The proxy 
+>server will be the gateway to the internet.   I need to allow irc connections 
+>through this machine, somehow.  I don't know how to do that."
+>
+>Therefore it seems to me that he's looking for an IRC proxy server, not a 
+>packet filtering rule.
+>
+>Maybe I'm just confused.
+>  
+>
+Say it ain't so!  :-)
 
-Le lun 17/11/2003 =E0 15:42, xavier a =E9crit :
-> Hello,
->=20
-> I saw in the 2.4.22 kernel source :=20
->=20
-> /usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+Just out of curiosity, what exactly is the difference between an IRC 
+server and an IRC proxy?
 
-> Is there any plan to be able to set thoses values throught /proc ?
+Client connects to server
+Client connects to proxy
 
-It is already available in P-O-M :
-http://www.netfilter.org/documentation/pomlist/pom-combined.html#tcp-window=
--tracking
+Server relays
+Proxy relays
 
-BR,
---=20
-Eric Leblond
-NuFW, Now User Filtering Works (http://www.nufw.org)
+Hmmm.
 
---=-adC0LW7skQ481jywmzaP
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQA/uPeonxA7CdMWjzIRAr1bAJ0ReUkA0Emog2jeg4GsKbRbBa65VgCbB6q3
-BCLl5DlHLM1MdnIP1BS+WD4=
-=/Knv
------END PGP SIGNATURE-----
-
---=-adC0LW7skQ481jywmzaP--
 
 
