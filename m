@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: [despammed] -i and -o options for iptables FORWARD chain
-Date: Fri, 2 Jan 2004 14:03:02 +0000
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: TTL patch buggy?
+Date: Fri, 02 Jan 2004 08:13:37 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401021403.02171.Antony@Soft-Solutions.co.uk>
-References: <009a01c3cff6$ee23bd90$a5bbd00c@issaquah> <20040102133002.GA6057@kaufbach.delug.de>
+Message-ID: <1073049217.2993.1.camel@jasiiitosh.nexusmgmt.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040102133002.GA6057@kaufbach.delug.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,32 +18,19 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 02 January 2004 1:30 pm, Andreas Kretschmer wrote:
-
-> am  Wed, dem 31.12.2003, um 15:36:34 -0800 mailte Gongya Yu folgendes:
-> > Hi, I just updated Linux kernel to 2.6.0 with iptables and ebtables
-> > enabled.
->
-> I'm using iptables on 2.4.x, possible there are differences with 2.6.x.
->
-> > But iptables ignores -i and -o options for FORWARD chain. Wheneneve I use
-> > something like -i eth0 or -o eth0, the rule is just ignored.
->
-> RTFM!
->
-> -i is only for INPUT, FORWARD and PREROUTING
-> -o is only for FORWARD, OUTPUT and POSTROUTING
-
-Are you suggesting that -i and -o cannot be used in FORWARD?   As far as I can 
-see the syntax of the rule Gonya posted is perfectly okay.
-
-Antony.
-
+I noticed a recent post on this list about the TTL patch being buggy. 
+We were planning to make extensive use of it in the ISCS project.  I've
+not seen anything recent about such a bug in a google search.  Is there
+currently a known problem with this patch? Thanks - John
 -- 
-Christmas is an opportunity to upgrade to kernel 2.6 while no-one's around to 
-notice the downtime.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
 
 
