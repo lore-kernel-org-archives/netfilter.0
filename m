@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Can't forward Win2k VPN through NAT
-Date: Fri, 6 Sep 2002 22:22:21 +0100
+From: Stewart Thompson <stewart.thompson@shaw.ca>
+Subject: RE: Can't forward Win2k VPN through NAT
+Date: Fri, 06 Sep 2002 14:13:34 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020906212224.ZHIL13709.mta07-svc.ntlworld.com@there>
-References: <FLEKIPPLAEDMJMOOBBDPMENECNAA.stewart.thompson@shaw.ca>
+Message-ID: <FLEKIPPLAEDMJMOOBBDPMENECNAA.stewart.thompson@shaw.ca>
+References: <200209061422.g86EMQv02254@vulcan.rissington.net>
+Reply-To: stewart.thompson@shaw.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FLEKIPPLAEDMJMOOBBDPMENECNAA.stewart.thompson@shaw.ca>
+In-Reply-To: <200209061422.g86EMQv02254@vulcan.rissington.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,26 +19,54 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, Netfilter mailinglist <netfilter@lists.netfilter.org>
 
-On Friday 06 September 2002 10:13 pm, Stewart Thompson wrote:
+Hi Antony:
 
-> Hi Antony:
+	Off the top of your head, do you know what the first
+Version of iptables that pptp_conntrack_nat was implemented?
+
+Stu..........
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
+Sent: September 6, 2002 7:22 AM
+To: Netfilter mailinglist
+Subject: Re: Can't forward Win2k VPN through NAT
+
+On Friday 06 September 2002 1:42 pm, Roy Sigurd Karlsbakk wrote:
+
+> hi all
 >
-> 	Off the top of your head, do you know what the first
-> Version of iptables that pptp_conntrack_nat was implemented?
+> I have this fw as sketched below. What I want, is to enable win2k VPN
+> connection NATed into 192.168.144.24.
+>
+> Can someone help me here? It just doesn't work ...
 
-No idea - sorry.
+You;re right.   It doesn't work.
 
-All I can say is that I've seen many postings on this list over the weeks and 
-months about people trying to get PPTP working effectively (especially 
-through iptables and NAT), so you should be able to find plenty of 
-information in the archives at http://lists.netfilter.org/pipermail/netfilter
+PPTP doesn't like being NATted, because it embeds addressing information
+inside the protocol.
+
+You need to load the pptp helper module in netfilter to stand any chance of
+getting this going.   Look for pptp_conntrack_nat.
+
+I think the sig on your email was highly appropriate to the situation,
+however:
+
+"Computers are like air conditioners.
+They stop working when you open Windows."
 
 Antony.
 
--- 
+--
 
-This is not a rehearsal.
-This is Real Life.
+You can spend the whole of your life trying to be popular,
+but at the end of the day the size of the crowd at your funeral
+will be largely dictated by the weather.
+
+ - Frank Skinner
+
 
