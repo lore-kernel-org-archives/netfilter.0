@@ -1,13 +1,13 @@
 From: Christian Seberino <seberino@spawar.navy.mil>
 Subject: Re: how is this stuff getting thru default deny iptables firewall?....
-Date: Sun, 23 Jun 2002 00:13:02 -0700
+Date: Sun, 23 Jun 2002 00:13:59 -0700
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020623001302.A949@spawar.navy.mil>
-References: <20020622103055.B32585@spawar.navy.mil> <20020622173842.AGM19225.mta07-svc.ntlworld.com@there>
+Message-ID: <20020623001359.B949@spawar.navy.mil>
+References: <000701c21a35$d5b51b00$0264a8c0@ZANE>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
 Content-Disposition: inline
-In-Reply-To: <20020622173842.AGM19225.mta07-svc.ntlworld.com@there>; from Antony@Soft-Solutions.co.uk on Sat, Jun 22, 2002 at 06:38:40PM +0100
+In-Reply-To: <000701c21a35$d5b51b00$0264a8c0@ZANE>; from jamoore2@vt.edu on Sat, Jun 22, 2002 at 05:43:22PM -0400
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -19,89 +19,62 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Antony Stone <Antony@Soft-Solutions.co.uk>
+To: "James T. Moore" <jamoore2@vt.edu>
 Cc: netfilter@lists.samba.org
 
-Antony
+James
 
-Thanks again.
-
-Here is my rule set... it is preceded by the usual stuff
-like flushing chains, dropping certain classes of packets, etc.
-
-These are the *only* rules with "-j ACCEPT" in my entire firewall script
-and somehow DNS sneaks thru...
-
-
-$PROTECTED_NETWORK = 192.168.0.0/29
-$PROTECTED_NETWORK_SPACE = 192.168.0.0/16
-
-...
-
-# Allow all thru loopback.
-$IPTABLES -t filter -A INPUT  -i $LOOPBACK_INTERFACE -j ACCEPT
-$IPTABLES -t filter -A OUTPUT -o $LOOPBACK_INTERFACE -j ACCEPT
-
-# Only SSH from Internet but anything *to* Internet.
-$IPTABLES -t filter -A FORWARD     -i $INTERNET_INTERFACE             \
-          -s ! $PROTECTED_NETWORK_SPACE -d   $PROTECTED_PC_IP_ADDRESS \
-          -p tcp --dport $SSH_PORT                                    \
-          -j ACCEPT
-$IPTABLES -t filter -A FORWARD     -o $INTERNET_INTERFACE             \
-          -s   $PROTECTED_NETWORK       -d ! $PROTECTED_NETWORK_SPACE \
-          -j ACCEPT
-
-# Allow all thru priviate LAN NIC.
-$IPTABLES -t filter -A FORWARD     -i $PROTECTED_NETWORK_INTERFACE    \
-          -s $PROTECTED_NETWORK         -d ! $PROTECTED_NETWORK_SPACE \
-          -j ACCEPT
-$IPTABLES -t filter -A FORWARD     -o $PROTECTED_NETWORK_INTERFACE    \
-          -s ! $PROTECTED_NETWORK_SPACE -d   $PROTECTED_NETWORK       \
-          -j ACCEPT
-
-# The usual NAT stuff here.
-$IPTABLES -t nat    -A PREROUTING  -i $INTERNET_INTERFACE             \
-          -s ! $PROTECTED_NETWORK_SPACE -d   $INTERNET_IP_ADDRESS     \
-          -p tcp --dport $SSH_PORT                                    \
-          -j DNAT --to-destination $PROTECTED_PC_IP_ADDRESS
-$IPTABLES -t nat    -A POSTROUTING -o $INTERNET_INTERFACE             \
-          -s   $PROTECTED_NETWORK       -d ! $PROTECTED_NETWORK_SPACE \
-          -j SNAT --to-source      $INTERNET_IP_ADDRESS
-
-
-I don't have *anything* with ESTABLISHED or RELATED that would allow
-DNS to sneak in...... *but it does*!?!?!?!?
+Thanks, I sent rule set to thread in another email.
+I don't have anything with ESTABLISHED or RELATED in it.
 
 Chris
 
-
-On Sat, Jun 22, 2002 at 06:38:40PM +0100, Antony Stone wrote:
-> On Saturday 22 June 2002 6:30 pm, Christian Seberino wrote:
+On Sat, Jun 22, 2002 at 05:43:22PM -0400, James T. Moore wrote:
+> Chris,
 > 
-> > My firewall *only* forwards SSH stuff to private LAN.
+>     My guess would be that the firewall is allowing reponses to connections
+> that are already established, but its impossible to say for sure without
+> seeing the script used to create the firewall.
+> 
+> Here is an example:
+> 
+> $IPTABLES -A FORWARD -o $INET_IFACE -d $DNS_SERV1 -s $PRIV_LAN -p
+> udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -i $INET_IFACE -s $DNS_SERV1 -d $PRIV_LAN -p
+> udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
+> 
+> 
+> The first rule allows the clients on the private LAN to query the dns
+> server. These packets can be part of a new or established connection so the
+> clients can create new connections to connect to the DNS server.
+> 
+> The second rule allows the DNS server to respond to the clients' request.
+> These packets can only be part of an established connection so the DNS
+> server (or any other host) can not create a new connection into the private
+> LAN unless there are other rules to allow it.
+> 
+> 
+> J.T.
+> 
+> 
+> 
+> 
+> >Date: Sat, 22 Jun 2002 10:30:55 -0700
+> >From: Christian Seberino <seberino@spawar.navy.mil>
+> >To: netfilter@lists.samba.org
+> >Subject: how is this stuff getting thru default deny iptables firewall?....
 > >
-> > It forwards *everything* _from_ private LAN to Internet however.
+> >My firewall *only* forwards SSH stuff to private LAN.
 > >
-> > How can the private LAN use DNS which it does????
+> >It forwards *everything* _from_ private LAN to Internet however.
 > >
-> > How is DNS server returning the info thru firewall
-> > if it *only* allows SSH??!?!?!?
-> 
-> Do you have a rule allowing reply packets from, say, a website back to your 
-> internal clients ?
-> 
-> Maybe:
-> 
-> iptables -A FORWARD -i $EXTIF -m state --state RELATED,ESTABLISHED -j ACCEPT
-> 
-> Same rule will allow replies to DNS requests.
-> 
-> If you don't have anything like that, post your ruleset and we'll have a 
-> think about it.
-> 
->  
-> 
-> Antony.
+> >How can the private LAN use DNS which it does????
+> >
+> >How is DNS server returning the info thru firewall
+> >if it *only* allows SSH??!?!?!?
+> >
+> >Chris
 
 -- 
 _______________________________________
