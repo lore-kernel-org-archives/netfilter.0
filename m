@@ -1,13 +1,16 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iplimit module refuses to work
-Date: 11 Aug 2003 20:03:09 +0200
+From: cmbb@dslr.net
+Subject: Re[3]: iplimit module refuses to work
+Date: Mon, 11 Aug 2003 14:12:13 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060624988.728.6.camel@elendil.intranet.cartel-securite.net>
+Message-ID: <159352501562.20030811141213@dslr.net>
 References: <63349768828.20030811132640@dslr.net>
+ <1060624988.728.6.camel@elendil.intranet.cartel-securite.net>
+ <183352264796.20030811140816@dslr.net>
+Reply-To: justin <justin@dslr.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <63349768828.20030811132640@dslr.net>
+In-Reply-To: <183352264796.20030811140816@dslr.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,19 +20,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: justin <justin@dslr.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le lun 11/08/2003 =E0 19:26, cmbb@dslr.net a =E9crit :
-> I can't get the iplimit module to work for me,
-> this is an SMP AMD machine.
-> # iptables -A TcpLimit -m iplimit --iplimit-above 125 -j OverX
-> iptables: Invalid argument
+CONFIG_IP_NF_MATCH_IPLIMIT=m
 
-Is your running kernel built with iplimit support ?
+um, is there another secret hidden option, not checked, that has to be
+turned on before the iplimit module will work, even though it compiles
+ok as a module and can be insmod'd ok?
 
---=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+CB>> Is your running kernel built with iplimit support ?
+
 
