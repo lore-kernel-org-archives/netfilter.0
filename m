@@ -1,17 +1,13 @@
-From: mdew <mdew@mdew.dyndns.org>
-Subject: Re: opening a port..
-Date: 09 Jan 2003 21:36:02 +1300
+From: =?ISO-8859-1?Q?J=F6rg_Esser?= <jackfritt@boh.de>
+Subject: Re: Some advice for QoS setup ...
+Date: Thu, 09 Jan 2003 09:20:45 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1042101363.433.31.camel@nirvana>
-References: <FD8F124A387AD6119F7900A0D218B321019A9D@hslex01.hslbz.local>
-	<1042080082.606.21.camel@nirvana>  <1042088119.810.3.camel@india>
-	<1042092980.487.4.camel@nirvana>  <1042093627.810.17.camel@india>
-	<1042094721.423.15.camel@nirvana>  <1042095224.810.19.camel@india>
-	<1042095879.433.17.camel@nirvana>  <3E1D2D11.50302@boh.de>
+Message-ID: <3E1D30DD.3030608@boh.de>
+References: <1042094506.26551.111.camel@rayw.knowledgefactory.co.za>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-lxw5Eypa1cxrr3WW7BI8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3E1D2D11.50302@boh.de>
+In-Reply-To: <1042094506.26551.111.camel@rayw.knowledgefactory.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,292 +17,185 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: =?ISO-8859-1?Q?J=F6rg?= Esser <jackfritt@boh.de>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-lxw5Eypa1cxrr3WW7BI8
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2003-01-09 at 21:04, J=C3=B6rg Esser wrote:
->=20
->=20
-> mdew wrote:
->=20
-> >On Thu, 2003-01-09 at 19:53, Dharmendra.T wrote:
-> > =20
-> >
-> >>>># nc -l -p 4662
-> >>>>
-> >>>>And then run nmap. You should get listed this port!
-> >>>>
-> >>>>--=20
-> >>>>Dharmendra.T
-> >>>>Linux Enthu
-> >>>>       =20
-> >>>>
-> >>>mdew:~# nc -l -p 4662
-> >>>=C3=A3P<H=C2=B9og=C3=9DT'b=C2=B4\Y6=E2=96=92http://emule-project.net<6=
-=C3=91~=C3=96Emdew:~#
-> >>>
-> >>>(some strange characters, then it quits)
-> >>>
-> >>>mdew:~# netstat -an|grep 4662
-> >>>mdew:~#
-> >>>
-> >>>nirvana:/home/mdew# nmap 10.0.0.6
-> >>>     =20
-> >>>
-> nmap -p4662 10.0.0.6
+Raymond Leach wrote:
 
-hmm
-with all the changes it still cant see it
+>Hi all
+>
+>Am I going about this in the right way?
+>
+>This is what I plan to do :
+>
+>1. Outgoing www traffic originating from our web servers has priority 1
+>with min 30% bandwidth and max 60% bandwidth.
+>2. Outgoing mail traffic (smtp and pop3) originating from our mail
+>servers has priority 2 with min 5% bandwidth and max 20% bandwidth.
+>3. Outgoing ftp traffic originating from our ftp servers has priority 3
+>with min 5% bandwidth and max 10% bandwidth.
+>4. All other traffic has priority 4 with min 0% bandwidth and max 10%
+>bandwidth.
+>
+>I was thinking of using htb and sfq. What should my 'tree that is not a
+>tree' look like?
+>
+>I was also planning to use netfilter iptables to mark the traffic and
+>use tc to filter the packets based on the mark (let's say 1,2,3,4
+>corresponding to the priorities above).
+>
+>Any suggestions?
+>
+>I thought my tree would look something like this:
+>
+>                              10: (htb)
+>                                 |
+>                              10:1 (htb)
+>                       (rate 512kbps, ceil 512kbps)
+>                                 |
+>    ________________________________________________________
+>   |                  |                  |                  |
+>10:10 (htb)        10:20 (htb)        10:30 (htb)        10:40 (htb)
+>(rate 153kbps,     (rate 25kbps,      (rate 25kbps,      (rate 0kbps,
+> ceil 306kbps)      ceil 102kbps)      ceil 50kbps)       ceil 50kbps)
+>   |                  |                  |                  |
+>  SFQ                SFQ                SFQ                SFQ
+>
+>Does my tree look correct? Will this tree honour the priorities I want
+>to set? Is netfilter FWMARK the right way to go here?
+>
+>Regards
+>
+>Ray
+>
+Found this in german journal ct.
+Maybe you can use it.
+You need this:
+http://luxik.cdi.cz/~devik/qos/htb/v3/htb3.6-020525.tgz
+(The tc binary is needed without the right version it won=B4t work)
+Insert all QOS stuff from kernel sources in your kernel.
+put this as qos-on script.
+-----------------------------------------
+#!/bin/sh
+#
+# Shell-Skript fuer Quality of Service mit HTB
+#
 
-nirvana:/home/mdew# nmap -p4662 10.0.0.6
+EXTIF=3Dppp0
+INTIF=3Deth0
 
-Starting nmap V. 3.10ALPHA4 ( www.insecure.org/nmap/ )
-The 1 scanned port on debian (10.0.0.6) is: closed
+############
+# Outgoing
+############
+## Root
+tc qdisc add dev $EXTIF root handle 1:0 htb default 12
+## Hauptklasse
+tc class add dev $EXTIF parent 1:0 classid 1:1 htb rate 125kbit ceil 125kbit
+## Klasse fuer ACK
+tc class add dev $EXTIF parent 1:1 classid 1:10 htb rate 10kbit ceil=20
+125kbit prio 0
+## Klasse fuer VPN/SSH
+tc class add dev $EXTIF parent 1:1 classid 1:11 htb rate 30kbit ceil=20
+125kbit prio 1
+## Klasse fuer normalen Traffic
+tc class add dev $EXTIF parent 1:1 classid 1:12 htb rate 75kbit ceil=20
+125kbit prio 2
+## Klasse fuer Bulk
+tc class add dev $EXTIF parent 1:1 classid 1:13 htb rate 10kbit ceil=20
+100kbit prio 3
 
-Nmap run completed -- 1 IP address (1 host up) scanned in 0.319 seconds
+# ACKs
+#iptables -A OUTPUT -t mangle -o $EXTIF -p tcp -m length --length :64 -j=20
+MARK --set-mark 10
+# VPN/IPsec
+iptables -A POSTROUTING -t mangle -o $EXTIF -p 50 -j MARK --set-mark 11
+# SSH
+iptables -A POSTROUTING -t mangle -o $EXTIF -p tcp --dport 22 -j MARK=20
+--set-mark 11
+## lokaler SSH Server auf Port 4444
+## iptables -A OUTPUT -t mangle -o $EXTIF -p tcp --sport 4444 -j MARK=20
+--set-mark 11
+## SMTP
+iptables -A POSTROUTING -t mangle -o $EXTIF -p tcp --dport 25 -j MARK=20
+--set-mark 13
+# eDonkey
+iptables -A POSTROUTING -t mangle -o $EXTIF -p tcp --dport 4662 -j MARK=20
+--set-mark 13
+iptables -A POSTROUTING -t mangle -o $EXTIF -p tcp --sport 4662 -j MARK=20
+--set-mark 13
 
-
-> Should work better.
-> and a new version of nmap should work better, too.
-> I heard that when you use nmap as your way it picks just well known=20
-> ports (/etc/service file ?) and then you won=C2=B4t get this special port=
- if=20
-> its not in there.(Maybe I=C2=B4m wrong)
->=20
-> >>>Starting nmap V. 3.10ALPHA4 ( www.insecure.org/nmap/ )
-> >>>Interesting ports on debian (10.0.0.6):
-> >>>(The 1591 ports scanned but not shown below are in state: closed)
-> >>>Port       State       Service
-> >>>22/tcp     open        ssh
-> >>>25/tcp     open        smtp
-> >>>110/tcp    open        pop-3
-> >>>111/tcp    filtered    sunrpc
-> >>>113/tcp    open        auth
-> >>>135/tcp    filtered    loc-srv
-> >>>136/tcp    filtered    profile
-> >>>137/tcp    filtered    netbios-ns
-> >>>138/tcp    filtered    netbios-dgm
-> >>>139/tcp    filtered    netbios-ssn
-> >>>199/tcp    filtered    smux
-> >>>826/tcp    filtered    unknown
-> >>>953/tcp    filtered    rndc
-> >>>8080/tcp   open        http-proxy
-> >>>
-> >>>
-> >>>
-> >>>
-> >>>     =20
-> >>>
-> >>nc, I mean to say netcat.?
-> >>   =20
-> >>
-> >
-> >it was netcat
-> >
-> >apt-get install netcat
-> >
-> >
-> >
-> >
-> > =20
-> >
->=20
->=20
->=20
+tc filter add dev $EXTIF parent 1:0 prio 0 protocol ip handle 10 fw=20
+flowid 1:10
+tc filter add dev $EXTIF parent 1:0 prio 0 protocol ip handle 11 fw=20
+flowid 1:11
+# default: 1:12
+tc filter add dev $EXTIF parent 1:0 prio 0 protocol ip handle 13 fw=20
+flowid 1:13
 
 
---=-lxw5Eypa1cxrr3WW7BI8
-Content-Disposition: attachment; filename=iptable_list.txt
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; name=iptable_list.txt; charset=ANSI_X3.4-1968
+###########
+# Incoming
+###########
+tc qdisc add dev $INTIF root handle 2:0 htb default 20
+tc class add dev $INTIF parent 2:0 classid 2:2 htb rate 750kbit ceil 750kbit
+tc class add dev $INTIF parent 2:2 classid 2:20 htb rate 500kbit ceil=20
+700kbit prio 1
+tc class add dev $INTIF parent 2:2 classid 2:21 htb rate 150kbit ceil=20
+750kbit prio 0
+tc class add dev $INTIF parent 2:2 classid 2:22 htb rate 100kbit ceil=20
+500kbit prio 3
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:pop3
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:pop3
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:pop3
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:pop3
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:smtp
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:ssmtp
-REJECT     tcp  --  anywhere             anywhere           tcp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:domain
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:domain
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:domain
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:domain
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:domain
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:domain
-ACCEPT     udp  --  anywhere             anywhere           udp spt:domain
-ACCEPT     udp  --  anywhere             anywhere           udp spt:domain
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4661
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4661
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4661
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4661
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4661
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4661
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4661
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4661
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4662
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4662
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4662
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4662
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4662
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4662
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4662
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4662
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4665
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4665
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4665
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4665
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4665
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4665
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4665
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4665
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:111 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:smux re=
-ject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:826 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:953 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:111 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:smux re=
-ject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:826 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:953 rej=
-ect-with icmp-port-unreachable
+# ACKs
+#iptables -A POSTROUTING -t mangle -o $INTIF -m length --length :200 -j=20
+MARK --set-mark 21
+# SSH
+#iptables -A POSTROUTING -t mangle -o $INTIF -p tcp --sport 22 -j MARK=20
+--set-mark 21
+# eDonkey
+iptables -A POSTROUTING -t mangle -o $INTIF -p tcp --dport 4662 -j MARK=20
+--set-mark 22
+iptables -A POSTROUTING -t mangle -o $INTIF -p tcp --sport 4662 -j MARK=20
+--set-mark 22
+# zu drosselnder Rechner
+#iptables -A POSTROUTING -t mangle -o $INTIF -d 192.168.111.1 -j MARK=20
+--set-mark 22
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-REJECT     tcp  --  anywhere             anywhere           tcp dpts:netbio=
-s-ns:netbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp dpts:netbio=
-s-ns:netbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp spts:netbio=
-s-ns:netbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp spts:netbio=
-s-ns:netbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:auth
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:domain
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:domain
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:domain
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:domain
-ACCEPT     tcp  --  paul.                anywhere           tcp dpt:4665 li=
-mit: avg 1/hour burst 5
-ACCEPT     udp  --  paul.                anywhere           udp dpt:4665 li=
-mit: avg 1/hour burst 5
-ACCEPT     udp  --  paul.                anywhere           udp spt:4665 li=
-mit: avg 1/hour burst 5
-ACCEPT     tcp  --  paul.                anywhere           tcp spt:4665 li=
-mit: avg 1/hour burst 5
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4661
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4661
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4661
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4661
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4661
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4661
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4661
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4661
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4662
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4662
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4662
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4662
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4662
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4662
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4662
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4662
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4665
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:4665
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4665
-ACCEPT     udp  --  anywhere             anywhere           udp dpt:4665
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4665
-ACCEPT     udp  --  anywhere             anywhere           udp spt:4665
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4665
-ACCEPT     tcp  --  anywhere             anywhere           tcp spt:4665
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:111 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:smux re=
-ject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:826 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:953 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:111 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:smux re=
-ject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:826 rej=
-ect-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpt:953 rej=
-ect-with icmp-port-unreachable
-ACCEPT     tcp  --  anywhere             10.0.0.6           tcp dpt:4662
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-REJECT     tcp  --  anywhere             anywhere           tcp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp dpts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     tcp  --  anywhere             anywhere           tcp spts:135:ne=
-tbios-ssn reject-with icmp-port-unreachable
-REJECT     udp  --  anywhere             anywhere           udp spts:135:ne=
-tbios-ssn reject-w
---=-lxw5Eypa1cxrr3WW7BI8--
+tc filter add dev $INTIF parent 2:0 prio 0 protocol ip handle 21 fw=20
+flowid 2:21
+tc filter add dev $INTIF parent 2:0 prio 0 protocol ip handle 22 fw=20
+flowid 2:22
+
+
+#########
+# SFQ
+#########
+tc qdisc add dev $EXTIF parent 1:10 handle 10: sfq perturb 10
+tc qdisc add dev $EXTIF parent 1:11 handle 11: sfq perturb 10
+tc qdisc add dev $EXTIF parent 1:12 handle 12: sfq perturb 10
+tc qdisc add dev $EXTIF parent 1:13 handle 13: sfq perturb 10
+
+tc qdisc add dev $INTIF parent 2:20 handle 20: sfq perturb 10
+tc qdisc add dev $INTIF parent 2:21 handle 21: sfq perturb 10
+tc qdisc add dev $INTIF parent 2:22 handle 22: sfq perturb 10
+-----------------------------------------------------------------------
+and this as qos-off script.
+-----------------------------------------------------------------
+# /bin/sh
+EXTIF=3Dppp0
+INTIF=3Deth0
+
+iptables -F -t mangle
+
+tc qdisc del dev $EXTIF root    2> /dev/null > /dev/null
+tc qdisc del dev $EXTIF ingress 2> /dev/null > /dev/null
+tc qdisc del dev $INTIF root    2> /dev/null > /dev/null
+tc qdisc del dev lo root      2> /dev/null > /dev/null
+ ----------------------------------------------------------------
+
+Have a nice day,
+
+Joerg Esser
 
 
