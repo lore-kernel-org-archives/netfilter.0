@@ -1,10 +1,10 @@
-From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: New rules set would not work until rules where summarized
-Date: Sat, 20 Dec 2003 09:45:25 -0500
+From: Gary Thomas <gary@chez-thomas.org>
+Subject: PPTP in 2.4.20
+Date: 20 Dec 2003 08:32:45 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071931525.32295.18.camel@tarkus>
+Message-ID: <1071934364.1641.8.camel@hermes>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -18,36 +18,24 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Redhat 9
-2.4.20-24.9.i686
-iptables-1.2.7a-2
+I've tried to build kernel 2.4.20, using the patches applied
+via patch-o-matic (thanks, Harald!)  However, I can't get the
+PPTP modules to load.  In particular, when I try to load
+'ip_conntrack', I get these messages:
 
-I have one setup where I log based upon clients SA's. Each client has
-their own prefix they log to.
-The rules were very anal in that SA/DA port for each flow was defined. I
-tried to add another pair of SA/DA's port rules 
-and they refused to work. I tried downgrading to 2.4.20-20.9
-no joy. In desperation I redid the rules to limit the amount
-of individual rules to SA subnet/DA port , applied the ruleset again
-summarized that would not work and it is now working. 
+[root@hermes gthomas]# insmod ip_conntrack
+Using /lib/modules/2.4.20-TEST/kernel/net/ipv4/netfilter/ip_conntrack.o
+/lib/modules/2.4.20-TEST/kernel/net/ipv4/netfilter/ip_conntrack.o: init_module: Device or resource busy
+[root@hermes gthomas]# tail /var/log/messages
+Dec 20 07:34:31 hermes kernel: ip_conntrack version 2.1 (4094 buckets, 32752 max) - 312 bytes per conntrack
+Dec 20 07:34:31 hermes kernel: Unable to register netfilter socket option
 
-So now instead of having 40 lines of rules, 20 logging and 20 accept, I
-now have have 16, 8 logging and 8 accept and it is behaving.
+Of course, without this module loaded, I can't load any of the 
+other [important for PPTP] ones.
 
-How could I identify what was the root of the problem?
+Any help or ideas greatly appreciated.
 
-I would like to recreate the problem and gather more data, but any
-insight into what I should be looking fow would be appreciated.
-
-Is their some allocation somehwere in the kernel that is possibly too
-small?
-
-Or did I hit some obscure bug?
-
-Thanks and Happy Holidays,
-
-Ted
-
-
+-- 
+Gary Thomas <gary@chez-thomas.org>
 
 
