@@ -1,11 +1,13 @@
-From: "Benjamin Tompkins" <netfilter@dahanga.org>
-Subject: Unusual routing problem
-Date: Mon, 24 Mar 2003 13:25:31 -0500
+From: Kim Jensen <kimj@dawn.dk>
+Subject: Re: Filtering in the nat table - opinions wanted
+Date: Mon, 24 Mar 2003 20:32:10 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <04d501c2f232$c0dbebc0$93a22ad1@blueone.net>
+Message-ID: <200303242032.10758.kimj@dawn.dk>
+References: <003501c2f232$1c0a5140$6d64a8c0@discmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <003501c2f232$1c0a5140$6d64a8c0@discmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,36 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Aldo Lagana <alagana@discmail.com>
+Cc: netfilter@lists.netfilter.org
 
-I am attempting to route myself an ip block from my office to my home via a
-tunnel. Simple enough. The catch is, I only want the tunnel to be used for
-lan destined traffic and incoming connections to my IP block. The lan
-destined traffic is easy, the trick apparently is getting the block to be
-accessible via the internet, without forcing all traffic to use the tunnel.
-A diagram.
+Hi Aldo,
 
-eth0  (DHCP) cable modem            eth1  (x.x.x.1/28) LAN
-                                              \   /
-                                      Linux Machine
-                                                |
-                                 ppp0 (x.x.x.2/30)
+You shouldn't drop packets in the prerouting part, use the filtering part=
+ to=20
+do this. in the pre/post routing you should just try to keep things clean=
+=2E
 
-Ok, so what I have so far is as follows.
+So, no I don't find it bad to have the nat policy to accept - it is the f=
+ilter=20
+policies I would be worried about :-)
 
-This takes care of access to the office network.
-route add -net x.x.x.1 netmask 255.255.255.240 dev eth1
-route add -net x.x.x.0 netmask 255.255.254.0 dev ppp0
-route add -host x.x.x.1 dev eth0
+/Kim
 
-Now to use the cable for everything else.
-iptables -A POSTROUTING -s x.x.x.1/28 -o eth0 -j MASQUERADE
 
-So now I can access my office lan and vice versa, and everything else gets
-masqed out the cable. But I'm having a heck of a time letting the box to
-know that stuff requested via ppp0, needs to go out ppp0. I have looked at
-using the mangle table making rules for input and forward, but am just
-missing something along the way. Any help anyone can offer would be greatly
-appreciated. Thanks.
+On Monday 24 March 2003 19:20, Aldo Lagana wrote:
+> by default I set the nat chains (PREROUTING POSTROUTING, etc) to ACCEPT=
+=2E=20
+> first off is this bad?
+>
+> For my web & mail servers using DNAT, I need to add rules - and I do.  =
+Same
+> w/ SNAT rules...
+>
+> The problem has come up with our mail server - we were getting spam fro=
+m
+> one IP address - since my DNAT rule was ACCEPT and forward, the mail se=
+rver
+> kept getting these spam messages.  I stopped the SPAM by adding a rule =
+to
+> the beginning of PREROUTING to DROP packets from that address.
+>
+> This made me start thinking - am I doing it right by having all the nat
+> chains default ACCEPT?
+>
+> aldo
 
 
