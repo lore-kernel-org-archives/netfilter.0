@@ -1,12 +1,12 @@
-From: Bob Keyes <bob@sinister.com>
-Subject: RE: how to filter kazaa
-Date: Sun, 25 May 2003 22:26:14 -0400 (EDT)
+From: "George Vieira" <georgev@citadelcomputer.com.au>
+Subject: RE: H/A
+Date: Mon, 26 May 2003 12:55:10 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0305252224350.19802-100000@Sinister.Com>
-References: <2CE951F1A7DC0644A33B9F763D2029C0016FB0E2@mail.it.farmingdale.edu>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A0D6CD8@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2CE951F1A7DC0644A33B9F763D2029C0016FB0E2@mail.it.farmingdale.edu>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,23 +16,44 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: g_netfilter@netfids.com, netfilter@lists.netfilter.org
+
+High Availability linux
+
+http://www.linux-ha.org/
+
+Thanks,
+____________________________________________
+George Vieira
+Systems Manager
+georgev@citadelcomputer.com.au
+
+Citadel Computer Systems Pty Ltd
+http://www.citadelcomputer.com.au
+
+Phone   : +61 2 9955 2644
+HelpDesk: +61 2 9955 2698
+=20
+
+-----Original Message-----
+From: g_netfilter@netfids.com [mailto:g_netfilter@netfids.com]
+Sent: Monday, May 26, 2003 12:45 PM
+To: netfilter@lists.netfilter.org
+Subject: H/A
 
 
-All this talk of blocking kazaa seems a bit crazy to me. Don't you think
-that someone from Kazaa is reading this list? You certainly know they
-could. Each time you find a way to block kazaa they can work around your
-blocking. Instead of the arms race, how about a truce? How about detecting
-Kazaa packets and marking them as 'high throughput', and then using a
-bandwidth management algorithm to keep kazaa users happy without making
-the internet unusable for the rest of us.
+Hi friends, I have some boxes running iptables and i works well. But now =
+I
+need to configure a failover solution, please could you give me some =
+links
+to start reading? I need to consider Netfilter/Iptables and FreeSwan in =
+the
+same box and with a failover configuration.
 
-If you are unlucky enough to have to pay by bytes transferred, then I
-might suggest that you budget usage. I am sure that the average office
-worker doesn't use more than 300mb of Internet bandwidth a day, which I
-voracious p2p user certainly would.
+Thanks in advance.
+
+Geffrey.
 
 
 
