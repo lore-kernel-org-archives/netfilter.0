@@ -1,14 +1,13 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: newbie problem
-Date: Mon, 17 Feb 2003 03:09:16 -0500
+From: =?iso-8859-1?Q?Rasmus_B=F8g_Hansen?= <moffe@amagerkollegiet.dk>
+Subject: Re: ICQ port
+Date: Fri, 14 Feb 2003 10:14:32 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200302170309.16516.netfilter@newkirk.us>
-References: <1045467799.20801.22.camel@billybob.back2front.homelinux.org>
-Reply-To: netfilter@newkirk.us
+Message-ID: <Pine.LNX.4.44.0302141014140.8408-100000@grignard.amagerkollegiet.dk>
+References: <20030211180922.GA2856@gravadora.milenium>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1045467799.20801.22.camel@billybob.back2front.homelinux.org>
+In-Reply-To: <20030211180922.GA2856@gravadora.milenium>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +17,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Chris Barnes <runtimeerror@bigpond.com>, Netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: serjao@gravadora.milenium
+Cc: netfilter@lists.netfilter.org
 
-On Monday 17 February 2003 02:43 am, Chris Barnes wrote:
-> hi people i'm new to the list.
->
-> anyway, I have a very simple firewall on a web server. I want to deny
-> access to everything except the web server (port 80)
->
-> i have set the poilcy on all chains to drop and i have added a rule to
-> the input chain which says
->
-> iptables -A INPUT -p tcp --sport 80 -j ACCEPT
+On Tue, 11 Feb 2003 serjao@gravadora.milenium wrote:
 
-> iptables -A OUTPUT -p tcp -j ACCEPT
+> I'm trying to allow my net users to use ICQ, but I didnt found what is th=
+e port that ICQ uses.
 
-> what am i doing wrong or what is a better way to do this?
->
-> thanks heaps for your help.
+5190/tcp.
 
-You have to accept connections TO port 80, not FROM port 80...
+> Also, I've heard that DCC file transfers will not work. Is it true? Isnt =
+any way to make it work?
 
-Try these:
+Load the IRC Connection tracking module (and the IRC NAT modules if
+you use NAT) and allow RELATED and ESTABLISHED traffic; DCC will now go
+through smoothly.
 
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+/Rasmus
 
-They will allow clients to connect and retrieve http documents, as well=20
-as allowing the very useful ICMP controls like source_quench=20
-fragmentation control and such that really make web browsing work=20
-properly, but no other communication in OR out is allowed by these=20
-rules.  (assuming DROP policy on OUTPUT)  Add appropriate ACCEPT rules=20
-to OUTPUT if the server needs to initiate connections for some reason.
-
-j
+--=20
+-- [ Rasmus "M=F8ffe" B=F8g Hansen ] --------------------------------------=
+-
+Is it safe?
+Yes, it is perfectly safe - it is us, that are in trouble!
+         - Hitch Hikers Guide to the Galaxy, Douglas Adams
+----------------------------------[ moffe at amagerkollegiet dot dk ] --
 
 
