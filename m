@@ -1,13 +1,13 @@
 From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Port forwarding
-Date: Fri, 06 Jun 2003 18:15:10 +1000
+Subject: Re: Problems with NAT - it worked !
+Date: Fri, 06 Jun 2003 19:00:05 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EE04D8E.7040306@snapgear.com>
-References: <012501c32b47$abfd4340$0223a8c0@satconet.com>
+Message-ID: <3EE05815.1060701@snapgear.com>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D73@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <012501c32b47$abfd4340$0223a8c0@satconet.com>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A0D6D73@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,24 +18,24 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Dhyanesh Ramaiya <dhyanesh@intafrica.com>
-Cc: netfilter@lists.netfilter.org
+To: George Vieira <georgev@citadelcomputer.com.au>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-Dhyanesh Ramaiya wrote:
-> iptables -t nat -A PREROUTING -j DNAT -p tcp -d <public_ip> --dport 110 --to
-> <private_ip>:110
-> iptables -t nat -A PREROUTING -j DNAT -p tcp -d <public_ip> --dport 25 --to
-> <private_ip>:25
+George Vieira wrote:
+> What I read was that MASQUERADE should be used for changing IP machines like dialup or DHCP lan workstations etc.. SNAT/DNAT was more for servers with static IPs.
 > 
-> What happens, is that when I try to telnet port 25 or 110 from the router
-> itself, it doesn't connect and gives the error "Connection refused".
-> However, from any other machine on the network it connects. Thinking that
-> some firewall rules might be blocking the connection, the default policy of
-> all chains is set to accept.
+> It didn't say why and what things could happen, just that it was good networking to do it that way...
 
-Packets from the router itself do not go through the PREROUTING
-chain, so they aren't being NATed.  You'll need to add similar
-NAT rules in the OUTPUT chain.
+The reason why is that when an interface goes down or changes address,
+the connection tracking entries for MASQUERADE targets are flushed,
+whereas the connection tracking entries for SNAT targets remain.
+
+So if you have a dynamic IP address, use MASQUERADE, so that the NAT
+mappings will be invalidated when the address changes.
+
+But if you have a static IP address, then use SNAT, so that the NAT
+mappings remain and the connections are not broken, even if the
+interface temporarily goes down.
 
 -- 
 Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
