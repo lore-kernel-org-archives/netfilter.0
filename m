@@ -1,10 +1,13 @@
-From: Tasha Smith <natasha3641@yahoo.com>
-Subject: iptables: exe
-Date: Sat, 21 Sep 2002 14:12:46 -0700 (PDT)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: VPN "Punch-through"
+Date: Sat, 21 Sep 2002 08:48:55 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020921211246.84065.qmail@web20302.mail.yahoo.com>
+Message-ID: <20020921074858.ORWJ11421.mta03-svc.ntlworld.com@there>
+References: <1032584055.1252.23.camel@rbhome.inside.thedataarc.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1032584055.1252.23.camel@rbhome.inside.thedataarc.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,61 +18,44 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Ok...i have my own iptables script trying to get it
-going...here what i have soo far in it...just starting
- 
-SPECS: 
-RedHat 7.2 
-2.4.19 Kernel 
-iptables-1.2.3 
+On Saturday 21 September 2002 5:54 am, ryanb@thedataarc.com wrote:
 
-####################################### 
-#!/bin/bash 
+> Hi
+>
+> I help operate an ISP, delivering bandwidth to 50-60 people in Kansas.
+> Right now, I have a cell that is all public IPs.  I'd like to convert it
+> to a private subnet (10.1.2.3) as we've done in other scenarios.
+>
+> I have two computers currently using a VPN router to link to a remote
+> office (outside our realm).
+>
+> If we convert to a filtered private system, is it possible to use a
+> "DMZ" virtual IP approach to NAT traffic to the VPN routers on the
+> inside?  (Moving our current VPN IP to a virtual on the netfilter
+> router.)
+>
+> Interesting, weird I know.  Possible?
 
-echo 1 = > /proc/sys/net/ipv4//ip_forward 
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE 
+Depends what sort of VPN you're using.
 
-# Remove any existing rules from all chains. 
-iptables --flush 
-iptables -t nat --flush 
+IPsec in tunnel mode - perfectly possible, not difficult.
 
-# Unlimited access on the loopback interface 
-iptables -A INPUT -i lo -j ACCEPT 
-iptables -A OUPUT -o lo -j ACCPET 
+PPTP - possible but challenging to get working.
 
-# Set the fefault policy to Drop 
-iptables --policy INPUT DROP 
-####################################### 
-Now... to get this to run on start-up here is what i
-did but it didnt start up it gave me an error. 
-chown root.root /etc/init.d/firewall 
-chmod u=rwx /etc/init.d /firewall 
+IPsec in transport mode - forget it.
 
-And when i restart I GET ERROR... which is 
-"iptables: execvp: Permission Denied 
-rc. Starting iptables: Failed"  
+Hope this helps,
 
-I also have this line sh /etc/init.d/firewall at the
-end of my "rc.local" file 
+Antony.
 
-HOW CAN I FIX THIS OR GET THEM TO START-UP PROPERLY?
-EDIT: > OOPPPPPPSS guys  i forgot to mention the
-original iptables script that came installed already
-on my system in the "/etc/init.d/" i moved that to
-somewhere else.... was i suppose to do that or just
-leave them there???
+-- 
 
+There are two possible outcomes.
 
+If the result confirms the hypothesis, then you've made a measurement.
+If the result is contrary to the hypothesis, then you've made a discovery.
 
-=====
-
-Image by MackDaddy
-
-__________________________________________________
-Do you Yahoo!?
-New DSL Internet Access from SBC & Yahoo!
-http://sbc.yahoo.com
+ - Enrico Fermi
 
