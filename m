@@ -1,12 +1,12 @@
-From: uniplex <uniplex@maximum-linux.net>
-Subject: Re: -m recent
-Date: Thu, 23 Jan 2003 15:59:46 +0000
+From: Ralph Churchill <mrchucho@yahoo.com>
+Subject: Re: simply confusing
+Date: Thu, 23 Jan 2003 12:40:57 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E301172.101@maximum-linux.net>
-References: <3E2FEA1C.9030305@maximum-linux.net> <20030123191505.GL484@ns.snowman.net>
+Message-ID: <20030123204057.27229.qmail@web11405.mail.yahoo.com>
+References: <Pine.LNX.4.51.0301232123190.7027@dns.toxicfilms.tv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.51.0301232123190.7027@dns.toxicfilms.tv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,42 +16,48 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Maciej Soltysiak <solt@dns.toxicfilms.tv>
+Cc: netfilter@lists.netfilter.org
 
-Stephen Frost wrote:
+Well, I added a logging rule before that:
 
->>iptables -A INPUT -i eth0 -p all -m recent --name icmps --update -j DROP
->>
->>iptables -N icmps
->>iptables -A INPUT -i eth0 -p icmp -j icmps
->>iptables -A icmps -m recent --name icmps --set -j DROP
->>iptables -A icmps -j DROP
+iptables -A INPUT --source 10.11.0.0/16 \
+  -j LOG --log-level info --log-prefix "iptables "
+
+But when ever something gets through, it isn't being
+logged either... If I do "iptables -L -v", then I see
+that both rules (first the LOG, then the DROP) have
+the same packet count.
+
+I can try using "-I" instead, but I'd also like to
+log, so how would I do that? Am I missing something
+fundamental?
+
+RMC
+
+
+--- Maciej Soltysiak <solt@dns.toxicfilms.tv> wrote:
+> > iptables -A INPUT --source 192.168.0.0/16 -j DROP
+> >
+> > Now, shouldn't that block any and ALL traffic from
+> any
+> > computer on the 192.168.*.* subnet?
+> well that is enough to block all packets from that
+> subnet,
+> however, maybe you have other rules that accept
+> traffic before
+> this rule.
+> try -I INPUT to put it at the begining of the chain.
 > 
+> Regards,
+> Maciej Soltysiak
 > 
-> This looks good to me..  Can you tell me what version of ipt_recent
-> you're using?  An old version had a bug where the --name only worked
-> when it was the last option, that may be the problem.
-> 
-> 	Stephen
 
-Hey Stephen,
 
-How can I tell what version of ipt_recent I have? I downloaded the 
-latest version of patch-o-matic and installed your patch from there.
-
-I tried using --name in different places but it still doesn't seem to 
-work for whatever reason. Here's what I've tested with now.
-
-iptables -A INPUT -i eth0 -p all -m recent --update -j DROP --name icmps
-
-iptables -N icmps
-iptables -A INPUT -p icmp -i eth0 -j icmps
-iptables -A icmps -m limit --limit 2/hour --limit-burst 1 -j LOG 
---log-level alert --log-prefix "icmp: "
-iptables -A icmps -m recent --set -j DROP --name icmps
-iptables -A icmps -j DROP
-
-Thanks.
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
