@@ -1,9 +1,8 @@
-From: "Asim Ejaz Butt" <asim.butt@streaming-networks.com>
-Subject: Re: MSN and Yahoo Block through IPTABLES
-Date: Thu, 26 Jun 2003 16:38:04 +0500
+From: Ruslan Spivak <alienoid@is.lg.ua>
+Subject: MARK and ! question
+Date: Thu, 26 Jun 2003 16:28:46 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007d01c33bd7$699e3810$5505a8c0@asimejaz>
-References: <010a01c33b03$d78da1f0$5505a8c0@asimejaz> <004901c33b4a$963ee9b0$1100000a@busbydev>
+Message-ID: <3EFAF50E.3050200@is.lg.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,60 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: David Busby <busby@pnts.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I have tried DROP policy as well but not succeeded.
+Hello.
 
-One thing that I should mentioned that my Internet setup is upload through
-normal DDP and download through Satellite Downlink and both are on separate
-systems. That is one linux based PC where I am running IPTABLES used to
-upload request and the 2nd PC which is a Satellite Receiver used for
-download. So my upload request goes to one system and download request
-received from another system.
+I need to mark with value 107 packets that are going NOT from the 
+193.220.70.0/27 network and NOT from the 193.108.240.0/22 network.
+Is it possible?
 
-Is that help U to find out that particular problem of blocking MSN/Yahoo
-chat using IPTABLES.
+Below two lines seem not to work properly because second rule won't be 
+reached.
 
-Regards,
-Asim
------ Original Message -----
-From: "David Busby" <busby@pnts.com>
-To: "Asim Ejaz Butt" <asim.butt@streaming-networks.com>;
-<netfilter@lists.netfilter.org>
-Sent: Wednesday, June 25, 2003 11:49 PM
-Subject: Re: MSN and Yahoo Block through IPTABLES
+iptables -t mangle -A POSTROUTING -s ! 193.220.70.0/27 -d 
+193.220.70.32/27 -j MARK --set-mark 107
 
+iptables -t mangle -A POSTROUTING -s ! 193.108.240.0/22 -d 
+193.220.70.32/27 -j MARK --set-mark 107
 
-> Can you set policy to DROP then only allow what you need?
->
-> /B
->
->
-> ----- Original Message -----
-> From: "Asim Ejaz Butt" <asim.butt@streaming-networks.com>
-> To: <netfilter@lists.netfilter.org>
-> Sent: Wednesday, June 25, 2003 03:23
-> Subject: MSN and Yahoo Block through IPTABLES
->
->
-> > Hello Gurus,
-> >
-> > I am trying to block MSN and Yahoo Instant Messengers with my LAN using
-> > IPTABLES. Following commands are used to block them but unsuccessful.
-> >
-> >  /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 --dport 1863 -j REJECT
-> >  /sbin/iptables -A FORWARD -p tcp -s 192.168.5.85 -d 64.4.0.0/18 -j
-REJECT
-> >
-> >  /sbin/iptables -A FORWARD -d cs.yahoo.com -j REJECT
-> >  /sbin/iptables -A FORWARD -d scsa.yahoo.com -j REJECT
-> >
-> > Anyone help in blocking them through IPTABLES.
-> >
-> > Asim Ejaz Butt
-> > asim.butt@streaming-networks.com
-> >
+Your help is very, very appreciated.
+
+Best regards,
+Ruslan
 
 
