@@ -1,14 +1,12 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: Filter by IP address problems
-Date: Wed, 11 Dec 2002 15:26:13 -0800
+From: "louie miranda" <lmiranda@chikka.com>
+Subject: Re: portfw on iptables 2.4 kernel problem.
+Date: Thu, 12 Dec 2002 11:11:41 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPAEHJDLAA.stewart.thompson@shaw.ca>
-References: <1039642859.4340.14.camel@damon.betcolan>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <00f301c2a18c$373cf3b0$0b00000a@nocpc3>
+References: <014901c2a02a$0dbf59f0$0b00000a@nocpc3> <3DF720D9.7030501@istitutocolli.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <1039642859.4340.14.camel@damon.betcolan>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,75 +17,70 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Damon Brinkley <damon@betcoinc.com>, netfilter@lists.netfilter.org
-
-Hi Damon:
-
-	Iptables is different than Ipchains. The forwarded
-Packets do not go through the Input or Output chains. If
-you want to deny certain packets from being forwarded,
-you have to put your deny rule in the forward chains.
-Have a look at the documentation at www.netfilter.org.
-They show a diagram there of the packet traversal.
-Hope that helps.
-
-Stu.......
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Damon Brinkley
-Sent: December 11, 2002 1:41 PM
 To: netfilter@lists.netfilter.org
-Subject: Filter by IP address problems
 
-Hey everyone!  I'm getting extremely frustrated at iptables right now
-because it doesn't seem to follow the rules as ipchains did.  Basically
-I'm just trying to replace my ipchains server with a new computer that
-uses 2.4 and iptables.  This is a NAT/gateway machine and we filter our
-users by IP addresses.  The different ip blocks have certain access to
-certain services.  I've copied over my old script that's running right
-now and changed everything to work with iptables but it doesn't seem to
-deny anyone.
+Thanks for those people who replied, But still i can't get it to work.
+Ill be posting my rule set here.
 
-Here's the basic rules I have right now for testing.
+=======================================
+panic:/# iptables -nL --line-num
+Chain INPUT (policy ACCEPT)
+num  target     prot opt source               destination
 
-###################################
+Chain FORWARD (policy DROP)
+num  target     prot opt source               destination
+1    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          state
+RELATED,ESTABLISHED
+2    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+3    LOG        all  --  0.0.0.0/0            0.0.0.0/0          LOG flags 0
+level 4
 
-# disable ip forwarding while rules are applied
-echo 0 > /proc/sys/net/ipv4/ip_forward
+Chain OUTPUT (policy ACCEPT)
+num  target     prot opt source               destination
+panic:/#
+=======================================
+panic:/# iptables -nL --line-num -t nat
+Chain PREROUTING (policy ACCEPT)
+num  target     prot opt source               destination
+1    REDIRECT   tcp  --  0.0.0.0/0            0.0.0.0/0          tcp dpt:80
+redir ports 3128
 
-/sbin/modprobe iptable_nat
-/sbin/modprobe ip_conntrack
+Chain POSTROUTING (policy ACCEPT)
+num  target     prot opt source               destination
+1    MASQUERADE  all  --  0.0.0.0/0            0.0.0.0/0
 
-/sbin/iptables -F
-/sbin/iptables -t nat -F
-/sbin/iptables -X
-/sbin/iptables -t nat -X
+Chain OUTPUT (policy ACCEPT)
+num  target     prot opt source               destination
+panic:/#
+=======================================
 
-/sbin/iptables -P INPUT DROP
-/sbin/iptables -P OUTPUT DROP
-/sbin/iptables -P FORWARD DROP
+My rule set is just a simple masq w/ port redirection internally, catching
+all port 80 request
+and redirect it to my squid on port 3128
 
-# no access
-/sbin/iptables -A INPUT -s 172.17.0.0/20 -j DROP
 
-# NAT
-/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-/sbin/iptables -A FORWARD -j ACCEPT
+I tried the simple rule set that Joel Newkirk, Andrea Rossato and all the
+people who have
+helped me on my problem but still It does not work, I actually set all the
+IPTABLES/NETFILTER
+options on my kernel and add "1" on /proc/sys/net/ipv4/ip_forward. I
+actually search and
+search google.com for my similar problem and tried it all, I had no error's
+or such all is working
+i think. It just does not connect over to my granted port. Ill try any port
+even port 80 or port 139
+on my firewall just get this forwarding to work.
 
-# turn on ip forwarding
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Well, thanks again. I hope what i have posted here "my rule set" will give
+me such nice answers
+to resolved my probem, And ill cont. reading and reading any docs i can find
+on the internet.
 
-####################
 
-If I change my laptop IP to 172.17.0.244 then I'm able to ping
-www.yahoo.com when the no access rule should deny then from doing
-anything.  This is all working on a machine that uses ipchains...what am
-I doing wrong?
 
-Thanks
-Damon Brinkley
+--
+thanks,
+louie miranda
 
 
 
