@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Instructions on how to redirect port 80 to port 8080
-Date: Wed, 18 Feb 2004 16:21:51 +0000
+From: Alexis <alexis@attla.net.ar>
+Subject: Re: Mail Through Firewall
+Date: Wed, 18 Feb 2004 14:27:23 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200402181621.51556.Antony@Soft-Solutions.co.uk>
-References: <9908FCB837A50642B74E2BEC198843095CC657@csrees-exchsrvb.csrees.usda.gov>
+Message-ID: <1077125243.1595.2.camel@pepelui.baicom>
+References: <012201c3f627$18eabbe0$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <9908FCB837A50642B74E2BEC198843095CC657@csrees-exchsrvb.csrees.usda.gov>
+In-Reply-To: <012201c3f627$18eabbe0$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +18,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.netfilter.org>
+To: Peter Marshall <peter.marshall@caris.com>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 18 February 2004 4:07 pm, Martinez, Michael wrote:
+what is the netmask of your network? it sounds like the dest address is
+a broadcast address
 
-> Antony,
->
-> Being an iptables newbie ... How would I log all rejected packets?
 
-Just before the line which says 
-
-iptables -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
-
-you insert one which says
-
-iptables -A RH-Firewall-1-INPUT -j LOG
-
-If you want to be a bit sophisticated about it:
-
-iptables -A RH-Firewall-1-INPUT -j LOG --log-level=info --log-prefix="Reject:"
-
-That way, the logs will go to /var/log/messages and will have "Reject:" in 
-them so you can easily identify what they mean.
-
-Regards,
-
-Antony.
-
+On Wed, 2004-02-18 at 10:57, Peter Marshall wrote:
+> Hey, I am sure this question is going to seem trivial to everyone here ..
+> but I will ask anyway.
+> I want to get outlook to work on my inside box .... I have it all set up
+> correctly, but it can't find the pop / smtp servers ...
+> 
+> I ran ethereal to see what the problem was ...
+> When I try to connect I get 3 requests
+> source 10.0.0.2
+> dest 10.0.0.255
+> Protocol NBNS
+> source and dest ports: 137
+> 
+> and I get no reply's ... ( well, I get an arp request after the 3rd try ...)
+> Any ideas how to get this working ?
+> 
+> BTW, I am using IPTables
+> 
+> Thanks
+> Peter Marshall
 -- 
-All matter in the Universe can be placed into one of two categories:
-
-1. Things which need to be fixed.
-2. Things which need to be fixed once you've had a few minutes to play with 
-them.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Alexis <alexis@attla.net.ar>
 
 
