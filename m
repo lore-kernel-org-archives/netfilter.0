@@ -1,10 +1,9 @@
-From: "G. Georgiev" <ggeorgiev@videotron.ca>
-Subject: PPTP multiple connections masquerading patch needed.
-Date: Sat, 22 Mar 2003 20:29:16 -0500
+From: tataacc<tataacc@tatanova.com>
+Subject: NEWBIE with  NetFilters
+Date: Sun, 23 Mar 2003 05:33:02 +0000 (UTC)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303222029.16524.ggeorgiev@videotron.ca>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Message-ID: <24806.3394254588$1048397582@news.gmane.org>
+Reply-To: tataacc<tataacc@tatanova.com>
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,34 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Date: un, 23 Mar 2003	10:49:24 +0530
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
 
-        Hi,
+Hi Netfilter Gurus
 
-        I need to start two PPTP connections from my gateway (using two login 
-names for the remote end) and it does not want to work - both channels open, 
-but they mix the packets they receive from the server and reject them:
+iam newbie working with netfilters(IPTABLES) on RH 8.0
+I have just started reading the Netfilter docs and iptables docs from 
+http://iptables-tutorial.frozentux.net
+Looks very good, i just had some of doubts by going this docs, still 
+have some confusion
+My setup now is
 
-Mar 22 18:12:00 gate pptp[140]: anon log[decaps_gre:pptp_gre.c:362]: 
-discarding duplicate or old packet 26 (expecting 57)
-rcvd [proto=0xf4f8] 4b da 5e 22 f0 53 b5 6a 52 3b 3f 20 c8 64 c2 a2 0a d2 62 
-e4 65 1f a1 25 16 7a ec 53 4f 40 57 5f ...
-Unsupported protocol 0xf4f8 received
-sent [LCP ProtRej id=0x1a f4 f8 4b da 5e 22 f0 53 b5 6a 52 3b 3f 20 c8 64 c2 
-a2 0a d2 62 e4 65 1f a1 25 16 7a ec 53 4f 40 ...]
+Local net----eth1(Firewall)eth0----Router--- Internet
 
-        Given the fact that the server accepts both connections if there is a 
-way for my gateway to distinguish between them things should work. And in 
-VPN-Masquerade 'howto' it's written that there is an option 'PPTP Call ID 
-masquerade' that may be helpfull for this. However, this is probably a kernel 
-patch that I do not know where to find. I get some patches from 
-http://cvs.netfilter.org/netfilter-extensions/helpers/pptp/, but they give too 
-much compilation errors - probably a work in progress.
+1 )Take example i have itnernal IP ( 192.168.0.0)masquarading with 
+iptables, how does the packets travel from internal IP to Internet
+Where will be the NAT and Masqurade take Place ( INPUT or PREROUTING or 
+POSTROUTING)
+2) If i have FQDN IP, then how will the Public IP travel to Internet
 
-        So, may someone point me how to make two simultaneous PPTP connections 
-work from my gateway to the same server, and if there is a patch where I may 
-find it?
+here is the masquarading take Place or its just send the PACKETS, how 
+will this packet travel
 
-	Thanks, George.
+thanks
+tataacc
+
 
