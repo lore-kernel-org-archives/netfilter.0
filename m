@@ -1,16 +1,13 @@
-From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
-Subject: Re: Relay to DNS Server ?
-Date: Wed, 16 Jun 2004 15:53:19 +0200
+From: "John A. Sullivan III" <john.sullivan@nexusmgmt.com>
+Subject: Re: NAT Box
+Date: Wed, 16 Jun 2004 10:14:49 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040616155319.3ae01819.leslie.polzer@gmx.net>
-References: <1613.64.2.245.108.1087318849.squirrel@64.2.245.108>
-	<1087319969.3576.12.camel@anduril.intranet.cartel-securite.net>
-	<1724.64.2.245.108.1087321922.squirrel@64.2.245.108>
-	<40D04BB9.2030907@akao.fr>
+Message-ID: <1087395288.5001.11.camel@localhost>
+References: <40D045F8.9070101@eutelia.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40D04BB9.2030907@akao.fr>
+In-Reply-To: <40D045F8.9070101@eutelia.it>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,14 +18,94 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Simone Sestini <simone.sestini@eutelia.it>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, 16 Jun 2004 15:31:37 +0200
-Akao <technique@akao.fr> wrote:
+On Wed, 2004-06-16 at 09:07, Simone Sestini wrote:
+> Hi all..
+> 
+> I'm developing a nat box for some special Internet Value Added Services.
+> I have a lot of NAS boxes that receives calls and then the default 
+> router for all is the nat box.
+> The box has 2 ethernet interfaces, one public for internet acces and one 
+> over my intranet lan.
+> I have just done a lot of special configuration but right now i'm in 
+> front of a problem..
+> Normaly a /23 subnet is always natted with a public ip address.
+> Now.. i need to resolve a problem..
+> 
+> A special /23 need to browse only on some specific destination.. but if 
+> one client with the ip into the /23 try to
+> browse out of the range of the ip permitted i need to redirect the 
+> request automatically to 1 or more specific
+> ip address.
+> 
+> 
+> This is the example that is working correct without the automatically 
+> redirection.
+> The 10.30.14.0 /23 can browse some public ip addresses but if it try to 
+> go out of the range the REJECT rules
+> block the packet and the final client will not browse..
+> 
+> /usr/local/sbin/iptables -t nat -A POSTROUTING -s 10.30.14.0/23 -o eth0 
+> -j SNAT --to PUBLIC_IP_FOR_NAT
+> 
+> /usr/local/sbin/iptables -N PERSONAL_RULES
+> /usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+> First_Public_IP
+> /usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+> Second_Public_IP
+> /usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+> Third_Public_IP
+> /usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+> Other_Public_IP
+> /usr/local/sbin/iptables -A PERSONAL_RULES -j ACCEPT -s 10.30.14.0/23 -d 
+> Other_Public_IP
+> /usr/local/sbin/iptables -A PERSONAL_RULES -j REJECT -s 10.30.14.0/23 -d 0/0
+> 
+> /usr/local/sbin/iptables -A FORWARD -s 10.30.14.0/23 -p tcp --dport 80 
+> -j PERSONAL_RULES
+> 
+> Now i have to do something that permit me to add a new feature..
+> I have to remove the REJECT rules and have to find the way to redirect 
+> the request to a specific ip.. maybe with a DNAT ??
+> 
+> Any idea ? all is appreciated..
+> 
+> Best Regards.
+Let me see if I understand you correctly.  If a station from
+10.30.14.0/23 sends a TCP packet on port 80 to any of the allowed
+destinations listed in PERSONAL_RULES, it should be ACCEPTed.  If it
+sends to anything else, it should be redirected to a single IP address.
 
-> Is it possible to use netfilter rules to "relay" clients DNS requests ?
-Masquerading does that, but you must allow packets to port 53 tcp/udp to
-pass through to your ISP's DNS servers and their related packets back.
+I can think of two approaches off the top of my head:
 
-Leslie
+1) Use DNAT as you suggest.  You could do something like:
+
+iptables -t nat -N RedirectChain
+iptables -t nat -A PREROUTING -s 10.30.14.0/23 -p 6 --dport 80 -j
+RedirectChain
+iptables -t nat RedirectChain -d FirstPublicIP -j ACCEPT (or RETURN)
+iptables -t nat RedirectChain -d SecondPublicIP -j ACCEPT . . . etc.
+iptables -t nat RedirectChain -j DNAT --to-destination $REDIR_IP
+iptables -A PERSONAL_RULES -s 10.30.14.0/23 -d $REDIR_IP -p 6 --dport 80
+-j ACCEPT (before REJECT rule)
+
+2) If it is all http traffic and you want to get a little fancy, use a
+transparent proxy like Squid and a redirector like SquidGuard - that
+will give you a lot of flexibility and control at the application layer.
+
+Hope it helps - John
+
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
+
 
