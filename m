@@ -1,12 +1,9 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: RE: NAT issues on a VPN tunnel
-Date: Tue, 02 Nov 2004 21:43:35 -0500
-Message-ID: <1099449815.3181.3.camel@hubcap.ljm.dom>
-References: <9AD7A9B0E0BFCF42A76E29CF9F5B4087B46615@carbon.netsvcs.com>
+From: kate <kate7234@yahoo.com>
+Subject: kb.c:179: warning: return makes integer from pointer without a cast
+Date: Tue, 2 Nov 2004 18:58:26 -0800 (PST)
+Message-ID: <20041103025826.22372.qmail@web21524.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9AD7A9B0E0BFCF42A76E29CF9F5B4087B46615@carbon.netsvcs.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,18 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Tue, 2004-11-02 at 19:35, Christopher Lyon wrote:
-> I believe that would cause a problem on the VPN tunnel as the endpoints
-> won't match. This would need to be done on the far end (site b). 
+Hi,
 
-believe what you want--it works for me.
+I installed nessus on RH Fedora-Linux FC2 box. using
+sh nessus-installer.sh
 
--j
+It seems to run, but I got a few error messages
+including-
 
---
-"Eww, Daddy, this tastes like Gramma!"
-	--The Simpsons
+kb.c: In function `kb_item_addset_str':
+kb.c:179: warning: return makes integer from pointer
+without a cast
+kb.c: In function `kb_item_addset_int':
+kb.c:236: warning: return makes integer from pointer
+without a cast
+x -- Installing
+
+What happened here? I understand integers and cast,
+but did I omit a linux package prior to Nessus
+install? Should I re-install?
+
+guidance appreciated,
+thanks in advance,
+kate
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Check out the new Yahoo! Front Page. 
+www.yahoo.com 
+ 
 
 
