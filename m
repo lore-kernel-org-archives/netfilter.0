@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Blocking broadcasts
-Date: Wed, 10 Jul 2002 20:40:00 +0100
+From: Jan Humme <jan.humme@xs4all.nl>
+Subject: fragmentation flag
+Date: Wed, 10 Jul 2002 21:42:25 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020710194003.ZRQT290.mta02-svc.ntlworld.com@there>
-References: <3D2C8CA4.2040607@frontierdev.com>
+Message-ID: <0207102142250F.04513@Lms>
+Reply-To: jan.humme@xs4all.nl
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3D2C8CA4.2040607@frontierdev.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,21 +19,22 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Wednesday 10 July 2002 8:36 pm, Faruk Grozdanic wrote:
+I am not sure about the fragmentation option: -f.
 
-> Hello,
->
-> I am trying to block broadcast IP traffic, that is IP traffic that has
-> 255.255.255.255 in the destination feild. I pushed a rule:
->
-> iptables -I FORWARD -i eth4 -d 255.255.255.255 -j DROP
->
-> and it did not filter these out.
+I understand that this flag is not needed "if you use connection tracking".
 
-Broadcasts do not go through routers, therefore they will enter the INPUT 
-table of your firewall, not the FORWARD table.
+But what exactly is meant by "if you use connection tracking" ? Does it mean: 
+"if the ip_conntrack module is loaded", or does it mean: "if you have rules 
+using NEW, ESTABLISHED etc" ?
 
- 
+And is it correct that, in that case, all fragmented packets will be 
+unfragmented before they hit any chains, so I will not see any unfragmented 
+packets anyway?
 
-Antony.
+And in case I do need to use the -f option, then in which chains and in which 
+rules?
+
+BTW: I am using iptables v1.2.1a.
+
+Jan Humme.
 
