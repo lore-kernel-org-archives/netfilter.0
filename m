@@ -1,14 +1,12 @@
-From: "Eugenio" <eugenio@imidianet.com.br>
-Subject: RE: DNAT - TCP_MISS/503
-Date: Thu, 7 Nov 2002 09:08:06 -0200
+From: "Alex Bennee" <alex@bennee.com>
+Subject: Mailing list problem?
+Date: Thu, 7 Nov 2002 11:27:19 -0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBJHGGHKMOJBIADANIAEKGEFAA.eugenio@imidianet.com.br>
-References: <20021106202553.FSOK9836.mta01-svc.ntlworld.com@there>
-Reply-To: <eugenio@imidianet.com.br>
+Message-ID: <36272.217.42.120.194.1036668439.squirrel@www.bennee.com>
+Reply-To: alex@bennee.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----=_20021107112719_83559"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20021106202553.FSOK9836.mta01-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,72 +16,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, Antony Stone <Antony@Soft-Solutions.co.uk>
-Cc: =?iso-8859-1?Q?C=E1tia_Ferraz?= <catia.ferraz@syngenta.com>
-
-
-Hi,
-
-Sorry! I think this is a netfilter problem, because I'd stoped my squid
-and the problem not stoped.
-
-(If you test localhost IP my web server [123.0.0.18] it's okay!! but
-if you test the name of the local domain (wwww.mywebserver.com.br) it's not
-okay,
-the netscape report this error.)
-
-The access from INTERNET IP or domain name it's Okay, I don't undestant why.
-
-It's probably something with my Iptables CHAIS, what do you think?
-
-Thank in a advanced
-
-Eugenio.
-
-ps.: excuse my bad English.
-
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of Antony Stone
-Sent: quarta-feira, 6 de novembro de 2002 18:26
 To: netfilter@lists.netfilter.org
-Subject: Re: DNAT - TCP_MISS/503
+
+------=_20021107112719_83559
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
 
-On Wednesday 06 November 2002 7:05 pm, Eugenio wrote:
+Should posters be getting bounces from mailing list postings that can't
+be delivered to subscribers? Does the reply-to field not get set to the
+list?
 
-> Hi all,
->
-> This is my problem!
->
-> ERROR
-> The requested URL could not be retrieved
->
-> The remote host or network may be down. Please try the request again.
-> Your cache administrator is root.
->
-> ERROR in Log squid.
->
-> 1035311411.554     10 123.0.0.1 TCP_MISS/503 999 GET
-> http://www.domain_localhost.com.br/ -
-> NONE/- -
->
-> I don't know correct this problem, please report me what you think
-> about this.
+-------- Original Message --------
+Subject: Returned mail: User unknown
+From: Mail Delivery Subsystem <MAILER-DAEMON@attglobal.net>
+Date: Thu, November 7, 2002 11:20
+To: <alex@bennee.com>
 
-I think this is not a netfilter problem.
+The original message was received at Thu, 7 Nov 2002 06:20:04 -0500 from
+kashyyyk.netfilter.org
 
-It's probably something to do with your Squid setup, but I'm not a Squid
-expert (and this is not a Squid mailing list...)
+   ----- The following addresses had permanent fatal errors -----
+<cutterd@attglobal.net>
+    (expanded from: <cutterd@attglobal.net>)
 
-Antony.
+   ----- Transcript of session follows -----
+mail.local: unknown name: cutterd
+550 <cutterd@attglobal.net>... User unknown
 
---
+Alex
+www.bennee.com/~alex/
 
-Anyone that's normal doesn't really achieve much.
 
- - Mark Blair, Australian rocket engineer
+------=_20021107112719_83559
+Content-Type: message/delivery-status; name="untitled-2"
+Content-Disposition: attachment; filename="untitled-2"
+
+Reporting-MTA: dns; mx1.attglobal.net
+Received-From-MTA: DNS; kashyyyk.netfilter.org
+Arrival-Date: Thu, 7 Nov 2002 06:20:04 -0500
+
+Final-Recipient: RFC822; <cutterd@attglobal.net>
+X-Actual-Recipient: RFC822; cutterd@attglobal.net
+Action: failed
+Status: 5.1.1
+Last-Attempt-Date: Thu, 7 Nov 2002 06:20:04 -0500------=_20021107112719_83559
+Content-Type: text/plain; name="untitled-3.1"
+Content-Disposition: attachment; filename="untitled-3.1"
+
+
+
+Scratch that, must of been cached on the remote machine I was testing with.
+I'm still confused.
+------=_20021107112719_83559--
 
 
