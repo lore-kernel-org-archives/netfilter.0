@@ -1,8 +1,8 @@
-From: Geffrey Velasquez <g_netfilter@netfids.com>
-Subject: 2.4.26 and pomng-20040302
-Date: Mon, 03 May 2004 12:27:28 -0500
+From: Krystian <optimusprime@o2.pl>
+Subject: conf scenario.
+Date: Mon, 03 May 2004 22:42:01 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40968100.3000903@netfids.com>
+Message-ID: <4096AE99.5070705@o2.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,13 +18,21 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi friends, I'm building a 2.4.26 kernel with pomng-20040302, I applied 
-all pending and base patches, also h323, cuseeme, mms and rtsp, but the 
-last four dont appear in the kernel config file... how could I resolve 
-the problem?
+hello
 
+i need some help on how to configure this scenario in iptables:
 
-Regards,
-Geffrey
+[adsl modem/router]-----[eth1-linux box-eth0]-----[network]
+
+the problem is that the box has to work as a forward/masqurade for most 
+users, but it must also bridge traffic from couple hosts inside the 
+network which have public IP addresses.
+
+question: how to configure "linux box's" iptables to forward and 
+masquarade traffic from most users and bridge traffic for couple 
+"public" users.
+
+the way i figured it out is to DNAT all trafic for public ip's to our 
+network public hosts. is there other better way?
 
 
