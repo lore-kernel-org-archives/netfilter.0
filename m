@@ -1,11 +1,9 @@
-From: "B H R Balaji" <balaji@sol.net.in>
-Subject: Problem With Yahoo Voice chat
-Date: Thu, 17 Jul 2003 14:23:19 +0530
+From: Paul Jakma <paulj@alphyra.ie>
+Subject: ftp nat and non-standard ports
+Date: Wed, 16 Jul 2003 15:21:40 +0100 (IST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <069801c34c40$dee874e0$c2bf09ca@Housecall>
-Reply-To: "B H R Balaji" <balaji@sol.net.in>
+Message-ID: <Pine.LNX.4.44.0307161503540.28436-100000@dunlop.admin.ie.alphyra.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,37 +14,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi all
+hi,
 
-Iam running Iptables on Redhat 9.0
-iptables version 1.2.8 with additional -P-O-M patch
-iam running transparent cache with Squid
+i'm trying to get NAT working for FTP, where the FTP server is on a
+non-standard port. ie:
 
-i have one Public IP and 350 users, with private IP
-192.168.10.0, 192.168.20.0, 192.168.20.0
-with 4 NIC
+    client------Linux-------FTP server
 
-1 ethernet iam using for Internet
-3 NIC for home users
+the linux machine is (should) NAT the data connection from the client.
 
-iam doing masq with external interface
-everything work fine
+The NAT in general is working fine, icmp, client->ftp server command
+channel, etc. What is not working is the ftp data channel. the FTP
+server is on port 6370, and i have the following in modules.conf:
 
-but when i try to join Voice chat is yahoo
-You are not authorise to join voice conference
+options ip_conntrack_ftp ports=21,6370
+options ip_nat_ftp ports=6370,21
 
-but some of them are working..
+I have the following rule in the nat table:
 
-my doubt is , is there any limitation of yahoo chat will does for some
-connections coming with one IP
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+SNAT       all  --  anywhere             10.118.248.161 to:10.118.251.90 
 
-any body have same kind of problem
-Please any solution will be appriciated
+What i see if i tcpdump on the linux box the link to the ftp server is:
 
-hare
+client 				server
+        <normal FTP command channel initiation>
+	<Site features negotiated, CWD sent, etc..>
 
+10.118.251.90:33698
+  PORT a,b,c,d,131,164          
+                                10.118.248.161:6370
+                                  port accepted.           
+
+10.118.251.90:33698
+  LIST
+			        10.118.248.161:6369 -> 10.118.251.90:33700
+                                  SYN
+
+				  SYN
+
+				  <etc>
+
+The data channel does not get NATed back to the client.
+
+What exactly am i doing wrong?
+
+regards,
+-- 
+Paul Jakma	Sys Admin	Alphyra
+	paulj@alphyra.ie
+Warning: /never/ send email to spam@dishone.st or trap@dishone.st
 
 
