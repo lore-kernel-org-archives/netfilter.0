@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Why is networking enabled at kernel level?
-Date: Tue, 6 Apr 2004 19:23:28 +0100
+From: "Stuart Lamble" <stu@gateway10.homeip.net>
+Subject: RE: Prerouting question
+Date: Tue, 6 Apr 2004 20:28:23 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404061923.28101.Antony@Soft-Solutions.co.uk>
-References: <1081274356.2983.2.camel@kenneth.intracol.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <000a01c41c04$f22f4e90$0464a8c0@stu>
+References: <200404061916.39265.Antony@Soft-Solutions.co.uk>
+Reply-To: <stu@gateway10.homeip.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1081274356.2983.2.camel@kenneth.intracol.net>
+In-Reply-To: <200404061916.39265.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,44 +21,86 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 06 April 2004 6:59 pm, Kenneth Andresen wrote:
+Hi
 
-> Hello all,
+OK, I understand it now - "FORWARD and INPUT are filter tables" - bells
+start ringing!
+
+Thanks Antony, you make good sense.
+
+Cheers
+Stuart
+
+
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+Sent: Tuesday, April 06, 2004 8:17 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: Prerouting question
+
+
+On Tuesday 06 April 2004 7:00 pm, Stuart Lamble wrote:
+
+> Hi All
 >
-> I have been searching for information related with why networking is
-> part of the Linux kernel itself, but have found nothing at either
-> kernel.org or with any of my Google searches.
->
-> I can see multiple pro's and con's but am looking for a more extensive
-> discussion about this. Anyone who can provide me with some good links?
+> If prerouting is the first rule a packet touches when arriving at the 
+> firewall, why then do we not set the default to DROP here and allow 
+> through what we need.
 
-I can't think of specific links, but I would respond to this comment with the 
-question: "where would you like to see the software which interfaces to your 
-networking hardware, and how would you control its actions?"
+<Pedantic response>
+Because PREROUTING is a nat table, and nat tables are for Network
+Address 
+Translation.   FORWARD and INPUT are filter tables (the default if you
+don't 
+specify in iptables rules), and that's where filtering operations such
+as 
+DROP, REJECT, ACCEPT should be done.
+</Pedant>
 
-Linux uses what is often called an Onion Model of security, and device drivers 
-are buried in the middle of the kernel, interfacing to the hardware, and user 
-applications have to go through all sorts of system calls and protected / 
-trusted interfaces in order to send/get data to/from it.
+<Pragmatic response>
+Because all sorts of things will go wrong if you try this. </Pragmatist>
 
-If you bore a hole through the onion and allow just any code to get directly 
-at the hardware (NICs, Hard Drives, Memory...) you pretty soon don't have a 
-security model.   That's the way M$-DOS worked, and it's one of the reasons 
-why Win9x OSes are so bad at security - because they inherited a lot of the 
-design problems.   WinNT/2k/XP is based on a different model, and at least 
-allows for decent segregation of privileged / unprivileged processes
+<Conntrack response>
+Because all traffic passing through the interface has to go through the 
+PREROUTING table, and this is where lots of connection tracking magic
+happens 
+in the background, meaning that you (read: the rules in the PREROUTING
+table) 
+don't see many of the packets going past, yet they still obey the
+default 
+chain policy.   Therefore you can't catch all the packets you need to
+allow 
+(they get handled behind the scenes), and you don't want to DROP any of
+the 
+ones you can't see.
+</Conntrack>
 
 Regards,
 
 Antony.
 
 -- 
-Success is a lousy teacher.  It seduces smart people into thinking they can't 
-lose.
+I'm pink, therefore I'm Spam.
 
- - William H Gates III
+                                                     Please reply to the
+list;
+                                                           please don't
+CC me.
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+
+
+---
+Incoming mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.650 / Virus Database: 416 - Release Date: 4/4/2004
+ 
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.650 / Virus Database: 416 - Release Date: 4/4/2004
+ 
 
 
