@@ -1,8 +1,8 @@
 From: Steve Turnbull <steve.turnbull@yhgfl.net>
 Subject: Re: No chain/target/match by that name
-Date: Sun, 05 Sep 2004 16:52:44 +0100
+Date: Sun, 05 Sep 2004 16:55:42 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <413B364C.1060407@yhgfl.net>
+Message-ID: <413B36FE.3060506@yhgfl.net>
 References: <413B233C.3000601@yhgfl.net>
 	<1094396051.1745.20.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
@@ -52,52 +52,10 @@ Jason Opperisano wrote:
 > 
 > -j
 > 
-Thanks for the reply
+Also, using bash -x did show that the script falls over at the '-m 
+state' rule...
 
-Our Kernel .config file (iptables extract) shows this (see below), which 
-suggests CONNTRACK is on. Does any of the other setting need compiling in??
-
-Regards
 Steve
-
-#
-#   IP: Netfilter Configuration
-#
-CONFIG_IP_NF_CONNTRACK=y
-CONFIG_IP_NF_FTP=y
-# CONFIG_IP_NF_AMANDA is not set
-# CONFIG_IP_NF_TFTP is not set
-# CONFIG_IP_NF_IRC is not set
-# CONFIG_IP_NF_QUEUE is not set
-CONFIG_IP_NF_IPTABLES=y
-# CONFIG_IP_NF_MATCH_LIMIT is not set
-# CONFIG_IP_NF_MATCH_MAC is not set
-# CONFIG_IP_NF_MATCH_PKTTYPE is not set
-# CONFIG_IP_NF_MATCH_MARK is not set
-# CONFIG_IP_NF_MATCH_MULTIPORT is not set
-# CONFIG_IP_NF_MATCH_TOS is not set
-# CONFIG_IP_NF_MATCH_RECENT is not set
-# CONFIG_IP_NF_MATCH_ECN is not set
-# CONFIG_IP_NF_MATCH_DSCP is not set
-# CONFIG_IP_NF_MATCH_AH_ESP is not set
-# CONFIG_IP_NF_MATCH_LENGTH is not set
-# CONFIG_IP_NF_MATCH_TTL is not set
-# CONFIG_IP_NF_MATCH_TCPMSS is not set
-# CONFIG_IP_NF_MATCH_HELPER is not set
-CONFIG_IP_NF_MATCH_STATE=y
-CONFIG_IP_NF_MATCH_CONNTRACK=y
-# CONFIG_IP_NF_MATCH_UNCLEAN is not set
-# CONFIG_IP_NF_MATCH_OWNER is not set
-CONFIG_IP_NF_FILTER=y
-# CONFIG_IP_NF_TARGET_REJECT is not set
-# CONFIG_IP_NF_TARGET_MIRROR is not set
-# CONFIG_IP_NF_NAT is not set
-# CONFIG_IP_NF_MANGLE is not set
-CONFIG_IP_NF_TARGET_LOG=y
-CONFIG_IP_NF_TARGET_ULOG=y
-# CONFIG_IP_NF_TARGET_TCPMSS is not set
-# CONFIG_IP_NF_ARPTABLES is not set
-
 
 -- 
 Steve Turnbull
