@@ -1,8 +1,8 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: setting up my own ruleset under red hat 8.0
-Date: Thu, 24 Oct 2002 11:46:50 -0400 (EDT)
+From: "Yan Li" <netfilterlist@hotmail.com>
+Subject: About libipq
+Date: Thu, 24 Oct 2002 17:52:11 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210241142001.364-100000@localhost.localdomain>
+Message-ID: <F130kEqM0uQcI92hZrl0000c946@hotmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -14,29 +14,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
+
+Hi all,
+
+I wrote a small program which copy the input packets from the kernel to the=
+=20
+userspace using libipq. And the packets are stored in a buffer in userspace=
+=20
+which is actually an array, say buf.
+
+Using:
+ipq_packet_msg_t * m =3D ipq_get_packet(buf);
+
+I can access some parameters of the packets like the packet ID, packet=20
+length which are defined in the struct ipq_packet_msg_t. For example,=20
+m->packet_id points to the packet ID. But how can I get other information o=
+f=20
+the packets, like the source and destination address, the protocol, etc. Is=
+=20
+there any function or should I read different unit of the array, buf, to do=
+=20
+that?
+
+I am only a beginner. Many thanks for your kind reply.
+
+Yan
 
 
-  ok, time for another almost certainly trivial question.
-what's the proper procedure for establishing my own iptables
-ruleset for red hat 8.0?
 
-  first, i noticed that the startup script /etc/init.d/iptables
-will, at boot time, look for the iptables config file
-/etc/sysconfig/iptables and will run "iptables-restore" based on the 
-contents of that file as it was saved during installation.
 
-  once i define my own ruleset, i'm assuming that, first, i
-want to delete /etc/sysconfig/iptables to remove any trace of
-the former ruleset so that it does not get pulled in at
-boot time.
 
-  and second, what's the preferred place to add my own ruleset?
-i can certainly add a script call to /etc/rc.local, for instance.
-is there a better place?
-
-rday
+_________________________________________________________________
+Surf the Web without missing calls!=A0Get MSN Broadband. =20
+http://resourcecenter.msn.com/access/plans/freeactivation.asp
 
 
