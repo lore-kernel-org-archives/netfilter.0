@@ -1,13 +1,13 @@
-From: Feizhou <feizhou@linuxmail.org>
-Subject: Re: over a 1,000,000,000 individual ips to block
-Date: Mon, 28 Jun 2004 21:20:16 +0800
+From: =?iso-8859-1?Q?Gunnar_Fr=F6din?= <gunnar68@gunfro.com>
+Subject: Re: Port forwarding.
+Date: Mon, 28 Jun 2004 15:21:00 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40E01B10.6000202@linuxmail.org>
-References: <20040624145732.25300.qmail@team.outblaze.com> <20040628064501.3bab3f3c@mgalepc.utilitran.com>
+Message-ID: <000b01c45d12$c159aa50$6600a8c0@simba>
+References: <001301c45cf0$9f7cf710$6600a8c0@simba> <200406281134.37964.Antony@Soft-Solutions.co.uk> <001b01c45d0a$5529b7b0$6600a8c0@simba> <200406281352.20521.Antony@Soft-Solutions.co.uk>
+Reply-To: =?iso-8859-1?Q?Gunnar_Fr=F6din?= <gunnar68@gunfro.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040628064501.3bab3f3c@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +17,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Michael Gale <michael.gale@utilitran.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Michael Gale wrote:
-> Hello,
-> 
-> 	Why don't you block networks ??
-> 
-> Firewall - SYN Cookie enabling ? 
+Okey it works now........
+The fault was in question 3.
+the mail server pointed at another router/firewall.
+and the mail server reported the "external" ip# in response to a smtp helo
+command. nice :-) but as I understan it shound't well well.
 
-What good is syn cookies against traffic that conform to tcp rules but 
-are just too abusive?
-> 
-> Mail servers - use RBL list - this list will contain networks of IP's that
-> belong to home users. So they do not need to connect directly to your mail
-> server.
+Thanks for now Antony.
 
-RBL does nothing against spammers who open 100 connections to each of 
-your MXs and who run malware that do not understand,respect smtp 5xx. 
-Dropping the connection means they keep coming at you. For these, there 
-is nothing but a firewall that will keep them off your MXs.
-> 
-> Web servers -- rate limiting ? block networks ? Better web server ?
-> 
-> If you blocked networks ? The estimated max number of rules a packet might have
-> to match would be 254 ... plus the rest of your filtering for ports and other
-> needs. This could slow down network access because of all the rules to check for
-> each packet.
-> 
-> If you are not using network addresses the list would become to long.
+Regards Gunnar
 
-I am sure CIDRs were part of the OP's mind since iptables takes both 
-individial ips and CIDRs. He probably does have a mixture of over a 
-million ips/cidrs he wants to block.
+
+
+Okay, three more questions:
+
+1. Is a mail server running on 192.168.0.100 (!) ?   Can you telnet to it on
+the real 192.168.0.100 address from a local client?
+
+2. Are there any access controls on the mail server, restricting the IPs
+from
+which it will accept connections?
+
+3. Does the default route of the mail server point back to the firewall?
+
+Regards,
+
+Antony
+
+--
+Software development can be quick, high quality, or low cost.
+
+The customer gets to pick any two out of three.
+
+                                                     Please reply to the
+list;
+                                                           please don't CC
+me.
+
+
+
 
