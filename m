@@ -1,10 +1,13 @@
-From: "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
-Subject: Bad Argument error
-Date: Mon, 8 Jul 2002 16:00:55 -0400
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: HTTP Port forwarding issues
+Date: Mon, 8 Jul 2002 21:07:35 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <956DDDA708487D498B43C36EA4DEA4050B5C4C@SFEXCH01>
+Message-ID: <20020708200737.CDNC4119.mta06-svc.ntlworld.com@there>
+References: <001f01c226b6$eb0a4f60$6702a8c0@internal.monstersolutions.net> <20020708195715.CBTA19225.mta07-svc.ntlworld.com@there> <003501c226ba$93cc7da0$6702a8c0@internal.monstersolutions.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <003501c226ba$93cc7da0$6702a8c0@internal.monstersolutions.net>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -15,18 +18,32 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Iptables-User-list (E-mail)" <netfilter@lists.samba.org>
+To: netfilter@lists.samba.org
 
-I'm running RH7.2 with iptables1.2.4-2
-every time I start iptables I get the following error
-Bad Argument 'LOG_LEVEL="notice" [FAILED]  
+On Monday 08 July 2002 9:03 pm, Big Daddy wrote:
 
-any ideas on how to fix this?
-Mike Hammonds
-Fellon-McCord & Associates, Inc.
-Information Services Manager
-Voice (502) 214-6324 Fax (502)426-8800
-mhammonds@knowledgeinenergy.com <mailto:mhammonds@knowledgeinenergy.com >
- 
+> i have the following rule as well.
+>
+> iptables -A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+Okay, what about a rule allowing the reply packets back out of eth0 ?
+
+Antony
+
+> ----- Original Message -----
+> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> To: <netfilter@lists.samba.org>
+> Sent: Monday, July 08, 2002 3:57 PM
+> Subject: Re: HTTP Port forwarding issues
+>
+> > On Monday 08 July 2002 8:51 pm, Big Daddy wrote:
+> > > It worked when I was using a Linksys router. However maybe they have
+> > > changed it since then. Do my rules look fine?
+> >
+> > Well, I hope these are not your *only* rules ?   I mean, like Stewart
+> > suggested, what about the ESTABLISHED packets as well as the NEW ones ?
+> >
+> >
+> >
+> > Antony.
 
