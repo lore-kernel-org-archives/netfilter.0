@@ -1,11 +1,9 @@
-From: Sebastian Zander <zander@fokus.gmd.de>
-Subject: Re: RTP traffic matching
-Date: Thu, 17 Oct 2002 17:21:01 +0200
+From: Chris Born <ragable@attbi.com>
+Subject: Re: Letting Hotline downloads through
+Date: Thu, 17 Oct 2002 09:29:23 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DAED55D.9010901@fokus.gmd.de>
-References: <032f01c275cb$0c7c9fa0$9f24a58b@segi.ulg.ac.be>
+Message-ID: <5.1.1.6.0.20021017092750.00b8f998@mail.attbi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,34 +15,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Francois Dessart <fd-list@ibelgique.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Francois Dessart wrote:
+I'm trying to setup a Hotline server on an internal NATed machine and I'm 
+having problems with getting clients to download. Here's what I have so far:
 
-> Hello,
-> 
-> Is there an easy way to match RTP/UDP traffic?
-> 
+$EXTIF="eth1"
+$INTIF="eth0"
+$IPTABLES=/sbin/iptables
+$EXTIP=12.252.56.159
+$RAGABLE=192.168.0.2
 
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -p tcp --dport 5500:5503 -m state 
+--state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF --dport 5549 -m state --state 
+NEW,ESTABLISHED,RELATED
+$IPTABLES -A PREROUTING -t nat -p tcp -d $EXTIP --dport 5500:5003 -j DNAT 
+--to $RAGABLE:5500:5503
+$IPTABLES -A PREROUTING -t nat --dport 5549 -j SNAT --to $EXTIP
 
-Hi Francois,
+According to the Hotline server documentation, incoming connection requests 
+come in on ports 5500 - 5503 while outgoing download connections are on 
+port 5549. People are able to connect to the server just fine, but are 
+unable to download so I'm wondering what rules I need to let the downloads 
+through.
 
-Once upon a time I wrote a module for RTP. Its not up to date with
-
-netfilter and somewhat experimental but you can try it:
-http://www.fokus.gmd.de/research/cc/glone/employees/sebastian.zander/private/netfilter-rtp-patch.tgz
-
-Cheers,
-
-Sebastian
-
--- 
-Sebastian Zander                         E-mail: zander@fokus.fhg.de
-FhI FOKUS / Global Networking (GloNe)    Tel: +49-30-3463-7287
-Kaiserin-Augusta-Allee 31                Fax: +49-30-3463-8287
-D-10589 Berlin, Germany                  www.fokus.fhg.de/usr/sebastian.zander
-
+-Chris Born 
 
 
 
