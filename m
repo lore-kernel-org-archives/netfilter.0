@@ -1,11 +1,11 @@
-From: a.ledvinka@promon.cz
+From: tepesu@australia.edu
 Subject: Re: iptables and TOS 15
-Date: Fri, 12 Nov 2004 10:25:06 +0100
-Message-ID: <OFEE5FF69B.A5DEEE8A-ONC1256F4A.0033A2AB-C1256F4A.0033BC9C@promon.cz>
-References: <419551d1.7be0.0@australia.edu>
+Date: Fri, 12 Nov 2004 11:43:19 +0200
+Message-ID: <41956096.91e.0@australia.edu>
+Reply-To: tepesu@australia.edu
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <419551d1.7be0.0@australia.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: tepesu@australia.edu
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-   tos
-       This module matches the 8 bits of Type of Service  field  in  the 
-IP  header  (ie.
-       including the precedence bits).
 
-       --tos tos
-              The argument is either a standard name, (use
-               iptables -m tos -h
-              to see the list), or a numeric value to match.
+    i want to make traffic management of WAN and MAN .... the WAN traffic
+is marked with TOS 15 by my ISP ... and i want to redirect the WAN trafic
+with iptables through an IMQ interface and then to use HTB
+   
 
-iptables -m tos -h
-TOS match v1.2.6a options:
-[!] --tos value                 Match Type of Service field from one of 
-the
-                                following numeric or descriptive values:
-                                     Minimize-Delay 16 (0x10)
-                                     Maximize-Throughput 8 (0x08)
-                                     Maximize-Reliability 4 (0x04)
-                                     Minimize-Cost 2 (0x02)
-                                     Normal-Service 0 (0x00)
 
-INPUT and FORWARD
+>   tos
+>       This module matches the 8 bits of Type of Service  field  in  the 
+>IP  header  (ie.
+>       including the precedence bits).
+>
+>       --tos tos
+>              The argument is either a standard name, (use
+>               iptables -m tos -h
+>              to see the list), or a numeric value to match.
+>
+>iptables -m tos -h
+>TOS match v1.2.6a options:
+>[!] --tos value                 Match Type of Service field from one of 
+>the
+>                                following numeric or descriptive values:
+>                                     Minimize-Delay 16 (0x10)
+>                                     Maximize-Throughput 8 (0x08)
+>                                     Maximize-Reliability 4 (0x04)
+>                                     Minimize-Cost 2 (0x02)
+>                                     Normal-Service 0 (0x00)
+>
+>INPUT and FORWARD
+>
+
+
+
 
