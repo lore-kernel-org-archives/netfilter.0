@@ -1,13 +1,13 @@
-From: Franco Gasperino <franco@gasperino.org>
-Subject: 3rd NIC & SNAT Question
-Date: Thu, 1 May 2003 11:13:36 -0700
+From: "Jeremy C. Reed" <reed@reedmedia.net>
+Subject: Re: building iptables with linux-2.4.20 fails due to headers in
+ wrong places
+Date: Thu, 1 May 2003 12:21:56 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200305011113.36865.franco@gasperino.org>
-Reply-To: franco@gasperino.org
+Message-ID: <Pine.LNX.4.43.0305011030280.15827-100000@pilchuck.reedmedia.net>
+References: <Pine.LNX.4.43.0304301533340.1683-100000@pilchuck.reedmedia.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.43.0304301533340.1683-100000@pilchuck.reedmedia.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,47 +17,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+On Wed, 30 Apr 2003, Jeremy C. Reed wrote:
 
-Hello list,
+> Something wrong... deleting dependencies.
+> make: ***
+> [/tmp/pkgsrc/misc/linux-kernel/work.k3/linux-2.4.20/include/net/if.h]
 
-  I'm having a bit of a problem with netfilter/iptables on debian linux. I 
-have a system providing traditional NAT to a local office. We have also added 
-a 3rd NIC to the system to provide colocation-style access using public, 
-routable addressing.
+> [/tmp/pkgsrc/misc/linux-kernel/work.k3/linux-2.4.20/include/net/ethernet.h]
 
-  While the setup works, it appears the SNAT is modifying all packets going 
-out the eth0 interface, regardless of the source. This is causing havoc with 
-VPN clients that reside on colocation addressing on eth2. I show all the 
-connections in the /proc/net/ip_conntrack file. How can I force the last SNAT 
-rule below to only nat the 10.0.0.0/24 net and not touch the 100.100.101.0/24 
-net?
+Sorry. False alarm. My glibc headers were moved out of the way.
 
-Public External Net: 100.100.100.0/30
-Public External Address: 100.100.100.2
-Public External Interface: eth0
+The message was unclear because the actual missing files were missing from
+/usr/include/net/.
 
-Local Private Net: 10.0.0.0/24
-Local Private Address: 10.0.0.1
-Local Private Interface: eth1
+Can it be built without the entire kernel source? (Just linux/include
+needed?)
 
-Local Public Net: 100.100.101.0/24
-Local Public Address: 100.100.101.1
-Local Public Interface: eth2
+It now builds and installs fine. And it works.
 
-iptables -A INPUT -j ACCEPT
-iptables -A OUTPUT -j ACCEPT
-iptables -A FORWARD -j ACCEPT
+(By the way, I packaged it using NetBSD's pkgsrc -- which is also useful
+under Linux.)
 
-iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -j SNAT --to-source 
-100.100.100.2
+   Jeremy C. Reed
+   http://www.isp-faq.com/
 
 
-Thanks for your input.
 
--- 
-
-Franco
 
