@@ -1,12 +1,14 @@
-From: "Kevin Smith" <ksmith@perfht.com>
-Subject: Modules ect.
-Date: Wed, 23 Apr 2003 09:16:36 -0400
+From: Andre Lorenz <andre@highsecure.de>
+Subject: Re: Modprobe .
+Date: Wed, 23 Apr 2003 16:20:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <NGBBLGFEALDADHNDAAFFKEIKDJAA.ksmith@perfht.com>
+Message-ID: <200304231620.50861.andre@highsecure.de>
+References: <NGBBLGFEALDADHNDAAFFGEIKDJAA.ksmith@perfht.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0000_01C30979.0A5F0CC0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <NGBBLGFEALDADHNDAAFFGEIKDJAA.ksmith@perfht.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,53 +18,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Kevin Smith <ksmith@perfht.com>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Am Mittwoch, 23. April 2003 15:14 schrieb Kevin Smith:
+> I recently patched my kernel and all went well with POM. After I recompiled
+> it and rebooted, I didn't see the module on lsmod, so I tried insmod which
+> responded with and "module not found" error.
+> I looked in the /lib/modules and saw the module was not compiled. (.c file)
+> when the other patch was compiled ok. (.o) file.
+> What would cause a patch not to compile? I checked the source and saw the
+> #include lines and all the files are where is suggest it should be, though
+> running gcc (lack of anything better to do) responds with file or directory
+> not found errors. Is there a PATH that needs to be set up to get this
+> working?
+> I am using RH 7.2 Kernel 2.4.20,  IPTables 2.2.7a, the module is
+> ip_nat_cuseeme.c.
+>
+> Kev
+Hi,
+I had the same problem, I'm using SuSE 8.2.
+The problem was fixed after setting the "right path-vraiable".
 
-------=_NextPart_000_0000_01C30979.0A5F0CC0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+now it works fine for me
 
-I know LSMOD lists the modules loaded, but is there a way to see what is
-built-in to the kernel?
-
-Kev
-
-------=_NextPart_000_0000_01C30979.0A5F0CC0
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="winmail.dat"
-
-eJ8+IiQNAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEGgAMADgAAANMHBAAXAAkAEAAAAAMAEQEB
-A5AGAPgEAAAlAAAACwACAAEAAAALACMAAAAAAAMAJgAAAAAACwApAAAAAAADADYAAAAAAB4AcAAB
-AAAADQAAAE1vZHVsZXMgZWN0LgAAAAACAXEAAQAAABYAAAABwwmakCoXap4sdWwR17ZjAKDJ2dlL
-AAACAR0MAQAAABcAAABTTVRQOktTTUlUSEBQRVJGSFQuQ09NAAALAAEOAAAAAEAABg4A6Jx7mgnD
-AQIBCg4BAAAAGAAAAAAAAAALkP4K2R7WEbZUAKDJ2dlLwoAAAAsAHw4BAAAAAgEJEAEAAADDAAAA
-vwAAAOcAAABMWkZ1wLmF2wMACgByY3BnMTI1FjIA+Atgbg4QMDMzTwH3AqQD4wIAY2gKwHOwZXQw
-IAcTAoB9CoGSdgiQd2sLgGQ0DGAOYwBQCwMLtSBJIGsEbm8H4ExTTU9EFCBsBAB0BCB0aGWyIARh
-dWwHkQkAYQEA4GQsIGJ1BUAEABTygQlwIGEgd2F5FPDsbyARIBUgdxDwFmMWQLkDEHQtC4AXYhUC
-awSROGVsPwqiCoQKgEtlFnYZ1BHhABtgAAsAAYAIIAYAAAAAAMAAAAAAAABGAAAAAAOFAAAAAAAA
-AwADgAggBgAAAAAAwAAAAAAAAEYAAAAAEIUAAAAAAAADAAeACCAGAAAAAADAAAAAAAAARgAAAABS
-hQAAJ2oBAB4ACYAIIAYAAAAAAMAAAAAAAABGAAAAAFSFAAABAAAABAAAADkuMAAeAAqACCAGAAAA
-AADAAAAAAAAARgAAAAA2hQAAAQAAAAEAAAAAAAAAHgALgAggBgAAAAAAwAAAAAAAAEYAAAAAN4UA
-AAEAAAABAAAAAAAAAB4ADIAIIAYAAAAAAMAAAAAAAABGAAAAADiFAAABAAAAAQAAAAAAAAALAA2A
-CCAGAAAAAADAAAAAAAAARgAAAACChQAAAQAAAAsAOoAIIAYAAAAAAMAAAAAAAABGAAAAAA6FAAAA
-AAAAAwA8gAggBgAAAAAAwAAAAAAAAEYAAAAAEYUAAAAAAAADAD2ACCAGAAAAAADAAAAAAAAARgAA
-AAAYhQAAAAAAAAsAUoAIIAYAAAAAAMAAAAAAAABGAAAAAAaFAAAAAAAAAwBTgAggBgAAAAAAwAAA
-AAAAAEYAAAAAAYUAAAAAAAACAfgPAQAAABAAAAALkP4K2R7WEbZUAKDJ2dlLAgH6DwEAAAAQAAAA
-C5D+Ctke1hG2VACgydnZSwIB+w8BAAAAggAAAAAAAAA4obsQBeUQGqG7CAArKlbCAABQU1RQUlgu
-RExMAAAAAAAAAABOSVRB+b+4AQCqADfZbgAAAEM6XFdJTkRPV1NcTG9jYWwgU2V0dGluZ3NcQXBw
-bGljYXRpb24gRGF0YVxNaWNyb3NvZnRcT3V0bG9va1xvdXRsb29rLnBzdAAAAAMA/g8FAAAAAwAN
-NP03AAACAX8AAQAAADEAAAA8TkdCQkxHRkVBTERBREhOREFBRkZLRUlLREpBQS5rc21pdGhAcGVy
-Zmh0LmNvbT4AAAAAAwAGEHcKaY0DAAcQUAAAAAMAEBAAAAAAAwAREAAAAAAeAAgQAQAAAFEAAABJ
-S05PV0xTTU9ETElTVFNUSEVNT0RVTEVTTE9BREVELEJVVElTVEhFUkVBV0FZVE9TRUVXSEFUSVNC
-VUlMVC1JTlRPVEhFS0VSTkVMP0tFVgAAAACP6g==
-
-------=_NextPart_000_0000_01C30979.0A5F0CC0--
-
+with friendly regards
+Andre
 
