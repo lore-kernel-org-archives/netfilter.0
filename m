@@ -1,8 +1,8 @@
 From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: libipt_{psd,string}.so patch-o-matic extensions dont compile to executables.
-Date: Tue, 24 Aug 2004 08:15:57 -0400
+Subject: RE: Is it possible to Jam windows network neighbour?
+Date: Tue, 24 Aug 2004 08:18:25 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512BC@asimail2.alphanumeric.com>
+Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90512BD@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -19,22 +19,20 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Hello all,
->
-> Actually figured it out!
->
-> its that the header files need to be in the include dir and that in =
-the extensions the makefile needs to have the name of the module added.
->
->
-> once thats set they compile!
->
-> psd is working great but make menuconfig still doesnt see the "string" =
-package!
->
-> willpost back if I figure it out!
+> I am running Redhat Linux 9.0 machine for routing as
+> well as iptables firewall for my network serving
+> win 98 clients. For security reasons I do not want win
+> 98 clinets to use pier to pier for transfering
+> files/data among them. In this case win 98 clients do
+> not need to talk to server.
+> Is it possible to Jam pier to pier network ? so that
+> copying of files from one win 98 client to other can
+> be restricted.
+> Thanks for support.
 
-i don't think the string patch works with 2.6...
+a firewall can only filter traffic that passes through it.  if your =
+clients are all sitting on a LAN together, there is no way for an =
+upstream firewall to keep them from communicating with each other.
 
 -j
 
