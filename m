@@ -1,12 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: Understanding how nat works
-Date: Tue, 21 Sep 2004 09:46:18 -0700
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: (no subject)
+Date: Tue, 21 Sep 2004 13:27:45 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF567950D@alderaan.smgtec.com>
+Message-ID: <1095787664.1897.23.camel@wolfpack.ljm.dom>
+References: <1095620074.3098.1.camel@jabbera-laptop>
+	<41503CFC.5030107@pbl.ca>  <3063e504092109437d76aedc@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <3063e504092109437d76aedc@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,16 +19,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Aleksandar Milivojevic <amilivojevic@pbl.ca>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
->> from the same machine I then tried to ping
->> 172.16.12.200 and I got nowhere.  When I deleted the
->> rule it worked fine.
->=20
-> What machine has 172.16.12.167?  Usually you should SNAT only to
-> address that is assigned to the machine/interface where you SNATing.
+On Tue, 2004-09-21 at 12:43, George Alexandru Dragoi wrote:
+> http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-SAME
+> 
+> 
 
-Try to read into ProxyARP. It will give you some insights as to why what
-you describe doesn't work without either proxyARP or the IP address
-bound to your network card.
+did you mean:
+
+http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-NETMAP
+
+and the OP's problem was one of ARP--not NAT.
+
+-j
+
+-- 
+Jason Opperisano <opie@817west.com>
+
 
