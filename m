@@ -1,11 +1,12 @@
-From: Michal Kepien <lordpopcorn@poczta.onet.pl>
-Subject: Firewall setup at boot - trouble with setting up the LOG target
-Date: Thu, 03 Jul 2003 18:11:44 +0200
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: Firewall setup at boot - trouble with setting up the LOG target
+Date: Thu, 3 Jul 2003 09:19:55 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <vrj8gvodbrk8s0dg3pvckscgij9o3gdjen@4ax.com>
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF52E3554@alderaan.smgtec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,7 +17,16 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+To: Michal Kepien <lordpopcorn@poczta.onet.pl>, netfilter@lists.netfilter.org
+
+Just a blank stab at it, but does syslog have to be started to use the
+LOG functionality?
+
+-----Original Message-----
+From: Michal Kepien [mailto:lordpopcorn@poczta.onet.pl]=20
+Sent: Thursday, July 03, 2003 9:12 AM
 To: netfilter@lists.netfilter.org
+Subject: Firewall setup at boot - trouble with setting up the LOG target
 
 Hi there, I've got a problem with my boot-time firewall setup script.
 It works almost 100% correctly, however there is a little problem.
@@ -67,7 +77,8 @@ Michal Kepien
 Lord Popcorn
 lordpopcorn@poczta.onet.pl
 
-"The UPL leaders formulated a bold plan that would assure that humanity =
-would persevere, unscathed by the tempting corruption of radical =
+"The UPL leaders formulated a bold plan that would assure that humanity
+would persevere, unscathed by the tempting corruption of radical
 technologies." --- Blizzard Ent.
+
 
