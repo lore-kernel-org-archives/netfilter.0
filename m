@@ -1,10 +1,10 @@
 From: "George Vieira" <georgev@citadelcomputer.com.au>
-Subject: RE: Howto match only the first connection from an IP
-Date: Fri, 21 Nov 2003 08:55:07 +1100
+Subject: RE: How to redirect requests
+Date: Fri, 21 Nov 2003 08:56:51 +1100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A28AD46@wardrive.citadelcomputer.com.au>
+Message-ID: <09B04A55822EFF4DA48D2E0BB2941D4A28AD47@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -17,23 +17,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Damjan <gdamjan@mail.net.mk>, netfilter@lists.netfilter.org
+To: magu@afesta.net, netfilter@lists.netfilter.org
 
-cGF0Y2gtby1tYXRpYyBoYXMgYSBpcF9saW1pdCBwYXRjaCB3aGljaCB3aWxsIG5vdCBhbGxvdCBt
-b3JlIHRoYW4gMS0yLTMtWFggY29ubmVjdGlvbnMgZGVwZW5kaW5nIG9uIHdoYXQgeW91IHNldC4u
-DQoNCklzIHRoaXMgd2hhdCB5b3Ugd2FudD8NCg0KVGhhbmtzLA0KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18NCkdlb3JnZSBWaWVpcmENCg0KPiAtLS0tLU9yaWdp
-bmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBEYW1qYW4gW21haWx0bzpnZGFtamFuQG1haWwubmV0
-Lm1rXQ0KPiBTZW50OiBUdWVzZGF5LCAxOCBOb3ZlbWJlciAyMDAzIDQ6MTIgUE0NCj4gVG86IG5l
-dGZpbHRlckBsaXN0cy5uZXRmaWx0ZXIub3JnDQo+IFN1YmplY3Q6IEhvd3RvIG1hdGNoIG9ubHkg
-dGhlIGZpcnN0IGNvbm5lY3Rpb24gZnJvbSBhbiBJUA0KPiANCj4gDQo+IE15IGdvYWwgaXMgdG8g
-c2V0LXVwIGFuIGlwdGFibGVzIHJ1bGUgdGhhdCB3aWxsIG1hdGNoIGFuZCBETkFUIHRoZQ0KPiBm
-aXJzdCBjb25uZWN0aW9uIGZyb20gYSBjbGllbnQuIA0KPiANCj4gVGhlIGZpcnN0IGNvbm5lY3Rp
-b24gaXMgZGVmaW5lZCBhcyB0aGUgZmlyc3QgZXN0YWJsaXNoZWQgVENQIHNlc3Npb24gDQo+IGZy
-b20gdGhlIHRpbWUgdGhlIGlwdGFibGVzIHJ1bGUgaXMgaW5zZXJ0ZWQuIE5vIG90aGVyIFRDUCBj
-b25uZWN0aW9uDQo+IHNob3VsZCBtYXRjaCBub3Igc2hvdWxkIGJlIEROQVQtZWQuDQo+IA0KPiBJ
-cyB0aGVyZSBhbnkgZWFzeSB3YXkgdG8gZG8gdGhpcyB3aXRoIGN1cnJlbnQgTmV0ZmlsdGVyL0lw
-dGFibGVzL3BvbS4NCj4gDQo+IChJIGhhdmUgaW5zdGFsbGVkIGFsbW9zdCBhbGwgdGhlIHBhdGNo
-ZXMgZnJvbSBwb20pDQo+IA0KPiANCj4gLS0gDQo+IERhbWphbiBHZW9yZ2lldnNraQ0KPiBqYWJi
-ZXJJRDogZGFtamFuQGJhZ3JhLm5ldC5taw0KPiANCj4gDQo=
+If you are DNATing an internal client to an internal server, don't =
+forget to masquerade/snat the clients address otherwise the server will =
+respond directly to the client which the client would then drop the =
+packets as it has no connection to the real outside ip for =
+www.smartlaunch.net .
+Do this as if the server was outside and had to be SNATed...
+
+Thanks,
+____________________________________________
+George Vieira
+=20
+
+> -----Original Message-----
+> From: magu@afesta.net [mailto:magu@afesta.net]
+> Sent: Wednesday, 19 November 2003 8:12 AM
+> To: netfilter@lists.netfilter.org
+> Subject: How to redirect requests
+>=20
+>=20
+> Hello all.
+>=20
+> I'm trying to redirect all requests coming from my internal=20
+> machines, that
+> contain www.smartlaunch.net to an internal machine. I've already
+> succesfully redirected all requests of the IP address, but=20
+> haven't managed
+> to redirect the domain requests. Maybe it's not at all a job=20
+> for iptables,
+> but I wanted some light on this, since I don't know where to start.
+>=20
+> any help is appreciated
+> magu
+> magu@afesta.net
+>=20
+>=20
+>=20
 
