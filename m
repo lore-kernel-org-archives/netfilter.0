@@ -1,12 +1,13 @@
-From: "Hard__warE" <hard__ware@hotmail.com>
-Subject: SNAT of ICMP fragmentation-nee
-Date: Mon, 10 Jun 2002 22:56:32 +1000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Anyone using DNAT on the OUTPUT chain?
+Date: Mon, 10 Jun 2002 13:57:54 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <000501c2107e$3ed0f300$7b0010ac@dynamicaccess.lan>
-Reply-To: "Hard__warE" <hard__ware@hotmail.com>
+Message-ID: <200206101258.g5ACvxU08297@vulcan.rissington.net>
+References: <BC6421B0F2CC4C43897842092E0E00A94C149E@TX1EX1NT.dyncorp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <BC6421B0F2CC4C43897842092E0E00A94C149E@TX1EX1NT.dyncorp.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -17,59 +18,24 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
 
-> iptables -I POSTROUTING  -t nat -p icmp --icmp-type \
-> fragmentation-needed -j LOG --log-prefix "icmp SNAT POST "
+On Monday 10 June 2002 1:45 pm, Kellogg, Chris wrote:
+
+> iptables -A OUTPUT -s 192.168.0.0/24 -p tcp --dport 80 -t nat -j DNAT
+> --to-destination 192.168.4.4:80
 >
-> iptables -I PREROUTING -t mangle  -p icmp --icmp-type \
-> fragmentation-needed -j LOG --log-prefix "icmp SNAT PRE "
->
+> When I attempt to put this rule in, I get the error message "iptables:
+> Invalid argument".
 
-do you need to log all interfaces / chains
+I should think it's the -s argument which netfilter is complaining about - it 
+makes (almost) no sense to include this in a rule which only applies to 
+packets coming from the local machine.
 
-or a particular adapter ????
-
-ok have you tried using this instead
-
-$IPTABLES -t nat -A POSTROUTING -p icmp --icmp-type \
-fragmentation-needed -j LOG --log-prefix "icmp SNAT POST "
-
-$IPTABLES -t nat -A PREROUTING -p icmp --icmp-type \
-fragmentation-needed -j LOG --log-prefix "icmp SNAT PRE "
-
-....
-
-oh and this one is for
-
-Antony Stone ... :D ... Gday ..
-
->Hmmm.   Okay - this is beyond my understanding of netfilter - can anyone
-else
->suggest why icmp packets going through the machine would get logged and
->processed by PREROUTING and FORWARD but not by POSTROUTING ?
-
-i have tested this with ICMP and it iz very true ...
-
-It seems as if the IPtables Box handles the actuall ICMP traffic locally
-
-So a box on the local lan can ping someone on the net and in your
-
-POSTROUTING Stage the packets arnt logged ...
-
-packets may flow through the actuall Theroy of Prerouting ---> Forward -->
-Postrouting
-
-and actually not go through the Postrouting stage ...
-
-I found by using IP alias's and a few modifications to your IPTables script
-you can acheive alot of
-
-things that are thought to be not possible .... :D .. hehhe
+I assume you really are trying to DNAT packets originating from the netfilter 
+box, and not ones which are being routed by it (which you would do in the 
+POSTROUTING chain) ?
 
 
-
-
-
-
+Antony.
 
