@@ -1,14 +1,12 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Mail Server Behind IPTABLES
-Date: Wed, 1 Sep 2004 10:50:44 -0400
+From: "Nolan, Timothy" <timothy.nolan@verso.com>
+Subject: DNAT/SNAT efficiency?
+Date: Wed, 1 Sep 2004 10:42:37 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409011050.44393.Alistair@nerdnet.ca>
-References: <7768933ECEDCA644AF7908B278CF125D021454@exchange.datec.com.fj>
+Message-ID: <3A6E2F2950688040B9D3127FFC06345C064F62@ndm01-mxc01.needham.verso.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7768933ECEDCA644AF7908B278CF125D021454@exchange.datec.com.fj>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,28 +19,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On August 31, 2004 09:01 pm, Ajen Diwakar wrote:
-> Hi All
->
-> I am new to IPTABLES usage. I have linux(RH) 9.0.
-> The external IP address eth1 is 202.62.x.x
-> The internal ip address is 10.0.0.4
->
-> My mail server IP address is 10.0.0.10
->
-> How do I setup my iptables so that the mail to my record get transfred
-> to the mail server.
->
-> Any assistance will be appreciated.
+I'd like to use iptables to map addressA/portB to addressC/portD. I need =
+to support up to 8000 address/port pairs (can be coming from any =
+address, so I don't think the NETMAP target will suffice). I was =
+planning to use the NAT table and add a DNAT=20
+target for each address to change the destination address and a SNAT =
+target to change the source (total of 16000 rules).
 
-	iptables -t nat -A PREROUTING -p TCP -i {internet device} -d 202.62.x.x  \ 
---dport 25 -j DNAT -to 10.0.0.10
+It's my understanding that iptables uses a linear search and that hipac =
+doesn't support NAT. Does anyone have any opinions on whether iptables =
+will scale to support what I have described?
 
-	iptables -A FORWARD -p TCP -i {internet device} -d 10.0.0.10 --dport 25  \
--j ACCEPT
+Thanks,
+Tim
 
-	(assuming FORWARD -P DROP )
-
-
-	Alistair Tonner
 
