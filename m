@@ -1,14 +1,12 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: udp port 135
-Date: 14 Aug 2003 12:12:05 +0200
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: iptables question
+Date: Thu, 14 Aug 2003 11:17:31 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060855924.1717.75.camel@kermit>
-References: <001201c36225$e166d270$0401000a@sterenborg.info>
-	 <3F3B404A.7060400@belfordhk.com>
+Message-ID: <Pine.LNX.4.44.0308141100450.31438-100000@localhost>
+References: <1060807798.4082.8.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3F3B404A.7060400@belfordhk.com>
+In-Reply-To: <1060807798.4082.8.camel@localhost.localdomain>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,40 +16,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: cc <cc@belfordhk.com>
-Cc: Rob Sterenborg <rob@sterenborg.info>, 'Netfilter Group' <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Glenn Hancock <ghancock@softeksoftware.com>
+Cc: netfilter@lists.netfilter.org
 
-Am Don, 2003-08-14 um 09.54 schrieb cc:
-> Rob Sterenborg wrote:
-> >=20
-> > No. I am interested too in why udp shows "open" from a foreign host,
-> > while tcp shows filtered.
-> > How can I check if an udp port is really closed/filtered or opened ?
->=20
-> I'm completely stumped on this issue.
-There are three possible responses to an udp probe as nmap sends it:
+Hi Glenn,
 
-1. Port is closed. OS hopefully sends an ICMP-Port-Unreachable
+> I have my rules setup the way I would guess they should be based on 5
+> tutorials, 1 book and the man pages.  However, I still can't seem to get
+> the thing to do what I want.  Could someone please help me?
+> 
+> I will make this very simple:
+> 1)  I want to allow all incoming requests to port 80
+> 2) I want to allow all outgoing requests .... period.
+> 
+> I want to drop all other incoming requests not addressed to port 80.
 
-2. Port is open. Either the application sends an error via UDP or does
-not answer at all
+Did you see Rob Sterenborg's response to your previous post? The ruleset 
+which you sent didn't appear to be complete. You also don't mention if the 
+machine you're running the firewall on is the same one that's running the 
+web server, and that you're trying to make outgoing requests from. 
+Assuming that it is, the following rules should work:
 
-3. Port is filtered. No response since the original packet is dropped.
+  iptables -F
+  iptables -P INPUT DROP
+  iptables -P OUTPUT ACCEPT
+  iptables -P FORWARD DROP
+  iptables -A INPUT -m state --state established -j ACCEPT
+  iptables -A INPUT -i lo -j ACCEPT
+  iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 
-When you compare 2 and 3, you will see that nmap cannot distinguish
-between an open and an filtered port. Thus nmap will mark all (drop)
-filtered and open ports as open and will recognize only closed and
-rejected ports as closed.
+If, on the other hand, you have another network behind your Linux box, and 
+machines on that network need to get through the Linux box to the 
+Internet, then you will need the following additional rules:
 
-Cheers,
+  iptables -A FORWARD -i <internal-interface> -o <external-interface> \
+	-j ACCEPT
+  iptables -A FORWARD -m state --state established -j ACCEPT
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+and if the internal machines have private IP addresses:
 
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+  iptables -t nat -A POSTROUTING -o <external-interface> -j MASQUERADE
+
+By the way, I don't like my first impression of your challenge-response
+spam filter. You might want to try SpamAssassin, it's much less intrusive 
+to people trying to e-mail you.
+
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+
+
+
 
