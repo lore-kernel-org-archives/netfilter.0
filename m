@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables suddently stop working
-Date: Wed, 6 Nov 2002 18:15:34 +0000
+Subject: Re: Help Redirect
+Date: Wed, 6 Nov 2002 17:44:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200211061815.gA6IFhe21468@vulcan.rissington.net>
-References: <NABBIDJPNCAGKGOFGHBFKEGNPIAA.luba@assist.com.gt>
+Message-ID: <200211061745.gA6Hj5e21400@vulcan.rissington.net>
+References: <F34hmjdyl6ds7s07Bj8000025dd@hotmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <NABBIDJPNCAGKGOFGHBFKEGNPIAA.luba@assist.com.gt>
+In-Reply-To: <F34hmjdyl6ds7s07Bj8000025dd@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,40 +20,33 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 06 November 2002 6:09 pm, Luis Fernando Barrera wrote:
+On Wednesday 06 November 2002 4:34 pm, Linux User wrote:
 
-> Hi all,
+> Hi friends,
 >
-> I have a strange behavior in my Red Hat 7.3 box using iptables...I allow
-> certain users to send ICMP packages across the firewall, using the FORWARD
-> chain and NAT table(with SNAT).
+> My consultation is the following one:
 >
-> However sometimes the firewall stop routing the packets, but only certain
-> traffic. In my
-> case is the traffic accross the FORWARD chain.
-> Then... I just restart (flush) the iptables script and it works again.
-> I'm wondering whether there is some buffer which is getting full, so the
-> iptables code stop routing the packets?
+> What rules (IPTABLES) in firewall I can apply so that all the requirement
+> of the internal network to port 80 is redirected to an external Squid Proxy
+> server (3128) .
 >
-> Is there anything I should check? I use state-full connections in all the
-> rules.
+> Firewall:
+> Eth0 (External): 192.168.100.1
+> Eth1 (Internal):   172.16.100.1
+>
+> Squid Proxy Server:
+> Eth0 : 192.168.100.100
 
-I don't seriously think it can be your connection tracking table, because 
-that does not get cleared simply by flushing and reloading the rules.
-
-However:
-
-1. What do you get for
-wc -l /proc/net/ip_conntrack
-
-2. What do you get for
-cat /proc/sys/net/ipv4/ip_conntrack_max
-
-3. How much memory do you have in your firewall ?
+iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 80 -j DNAT --to 
+192.168.100.100:3128
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth1 -p tcp --dport 3128 -d 192.168.100.100 -j ACCEPT
 
 Antony.
 
 -- 
 
-Most people have more than the average number of legs.
+Anything that improbable is effectively impossible.
+
+ - Murray Gell-Mann, Nobel Prizewinner in Physics
 
