@@ -1,11 +1,9 @@
-From: Ron Peterson <rpeterso@mtholyoke.edu>
-Subject: Re: Bandwidth Limiting (rate-limit) through IPTABLE
-Date: Sun, 20 Feb 2005 08:04:47 -0500
-Message-ID: <20050220130447.GC14253@mtholyoke.edu>
-References: <1108874009.42181319912c0@mail.gnvfc.net>
+From: Marco Nicoloso <marco.nicoloso@fastwebnet.it>
+Subject: rc.firewall does not work!!!!
+Date: Sun, 20 Feb 2005 20:17:20 +0000
+Message-ID: <4218F050.9070207@fastwebnet.it>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1108874009.42181319912c0@mail.gnvfc.net>
+Content-Transfer-Encoding: 7bit
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +14,382 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: spdesai@gnvfc.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Sun, Feb 20, 2005 at 10:03:29AM +0530, spdesai@gnvfc.net wrote:
-> Hello all
-> 
-> I am using IPTABLE for below purpose onlyy..
-> 
-> To restrict ping from/to LAN
-> To restrict ftp from/to LAN
-> To restrict telnet from/to LAN
-> To restrict site from/to LAN
-> To restrict messanger from/to LAN
-> To restrict particular port like IMAP/pop3 from/to LAN
-> 
-> Pl. let me know the whether IPTABLE can use in any other way ..i.e any other 
-> purpose in which IPTABLE can be use.
-> 
-> can IPTABLE use for bandwidth limiting..????
+Hi there!
 
-Not directly.  There are some other features which may be used for
-limiting connections.  A good article about this here:
+I am at the very beginning of using iptables.
 
-http://linuxgazette.net/108/odonovan.html
+I am using the example shown in netfilter howtos.
 
-See iproute2 and tc for QOS stuff like bandwidth limiting.
+I checked all the settings and modified to my needs, but nothing: PC's 
+under trusted subnet can't even get hostnames resolved. I read also the 
+iptables tutorial, explaining the rc.firewall and everything seems to be 
+right. I have no errors during rules setup.
+I post the script that I am currently using:
 
--- 
-Ron Peterson
-Network & Systems Manager
-Mount Holyoke College
-http://www.mtholyoke.edu/~rpeterso
+ 1. Configuration options.
+#
+
+#
+# 1.1 Internet Configuration.
+#
+
+INET_IFACE="eth1"
+
+#
+# 1.1.1 DHCP
+#
+
+#
+# Information pertaining to DHCP over the Internet, if needed.
+#
+# Set DHCP variable to no if you don't get IP from DHCP. If you get DHCP
+# over the Internet set this variable to yes, and set up the proper IP
+# address for the DHCP server in the DHCP_SERVER variable.
+#
+
+DHCP="no"
+DHCP_SERVER="192.168.0.241"
+
+#
+# 1.1.2 PPPoE
+#
+
+# Configuration options pertaining to PPPoE.
+#
+# If you have problem with your PPPoE connection, such as large mails not
+# getting through while small mail get through properly etc, you may set
+# this option to "yes" which may fix the problem. This option will set a
+# rule in the PREROUTING chain of the mangle table which will clamp
+# (resize) all routed packets to PMTU (Path Maximum Transmit Unit).
+#
+# Note that it is better to set this up in the PPPoE package itself, since
+# the PPPoE configuration option will give less overhead.
+#
+
+PPPOE_PMTU="no"
+
+#
+# 1.2 Local Area Network configuration.
+#
+# your LAN's IP range and localhost IP. /24 means to only use the first 24
+# bits of the 32 bit IP address. the same as netmask 255.255.255.0
+#
+
+LAN_IP="192.168.0.241"
+LAN_IP_RANGE="192.168.0.240/28"
+LAN_IFACE="eth0"
+
+#
+# 1.3 DMZ Configuration.
+#
+
+#
+# 1.4 Localhost Configuration.
+#
+
+LO_IFACE="lo"
+LO_IP="127.0.0.1"
+
+#
+# 1.5 IPTables Configuration.
+#
+
+IPTABLES="/sbin/iptables"
+
+#
+# 1.6 Other Configuration.
+#
+
+###########################################################################
+#
+# 2. Module loading.
+#
+
+#
+# Needed to initially load modules
+#
+
+/sbin/depmod -a
+
+#
+# 2.1 Required modules
+#
+
+/sbin/modprobe ip_conntrack
+/sbin/modprobe ip_tables
+/sbin/modprobe iptable_filter
+/sbin/modprobe iptable_nat
+/sbin/modprobe ipt_LOG
+/sbin/modprobe ipt_limit
+/sbin/modprobe ipt_MASQUERADE
+
+#
+# 2.2 Non-Required modules
+#
+
+#/sbin/modprobe ipt_owner
+#/sbin/modprobe ipt_REJECT
+#/sbin/modprobe ip_conntrack_ftp
+#/sbin/modprobe ip_conntrack_irc
+#/sbin/modprobe ip_nat_ftp
+#/sbin/modprobe ip_nat_irc
+
+###########################################################################
+#
+# 3. /proc set up.
+#
+
+#
+# 3.1 Required proc configuration
+#
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+#
+# 3.2 Non-Required proc configuration
+#
+
+#echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter
+#echo "1" > /proc/sys/net/ipv4/conf/all/proxy_arp
+#echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+###########################################################################
+#
+# 4. rules set up.
+#
+
+######
+# 4.1 Filter table
+#
+
+#
+# 4.1.1 Set policies
+#
+
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT DROP
+$IPTABLES -P FORWARD DROP
+
+#
+# 4.1.2 Create userspecified chains
+#
+
+#
+# Create chain for bad tcp packets
+#
+
+$IPTABLES -N bad_tcp_packets
+
+#
+# Create separate chains for ICMP, TCP and UDP to traverse
+#
+
+$IPTABLES -N allowed
+$IPTABLES -N tcp_packets
+$IPTABLES -N udp_packets
+$IPTABLES -N icmp_packets
+
+#
+# 4.1.3 Create content in userspecified chains
+#
+
+#
+# bad_tcp_packets chain
+#
+
+$IPTABLES -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK \
+-m state --state NEW -j REJECT --reject-with tcp-reset
+$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG \
+--log-prefix "New not syn:"
+$IPTABLES -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
+
+#
+# allowed chain
+#
+
+$IPTABLES -A allowed -p TCP --syn -j ACCEPT
+$IPTABLES -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A allowed -p TCP -j DROP
+
+#
+# TCP rules
+#
+
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 21 -j allowed
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 22 -j allowed
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 80 -j allowed
+$IPTABLES -A tcp_packets -p TCP -s 0/0 --dport 113 -j allowed
+
+#
+# UDP ports
+#
+
+$IPTABLES -A udp_packets -p UDP -s 0/0 --source-port 53 -j ACCEPT
+if [ $DHCP == "yes" ] ; then
+ $IPTABLES -A udp_packets -p UDP -s $DHCP_SERVER --sport 67 \
+ --dport 68 -j ACCEPT
+fi
+
+#$IPTABLES -A udp_packets -p UDP -s 0/0 --source-port 53 -j ACCEPT
+#$IPTABLES -A udp_packets -p UDP -s 0/0 --source-port 123 -j ACCEPT
+$IPTABLES -A udp_packets -p UDP -s 0/0 --source-port 2074 -j ACCEPT
+$IPTABLES -A udp_packets -p UDP -s 0/0 --source-port 4000 -j ACCEPT
+
+#
+# In Microsoft Networks you will be swamped by broadcasts. These lines
+# will prevent them from showing up in the logs.
+#
+
+#$IPTABLES -A udp_packets -p UDP -i $INET_IFACE \
+#--destination-port 135:139 -j DROP
+
+#
+# If we get DHCP requests from the Outside of our network, our logs will
+# be swamped as well. This rule will block them from getting logged.
+#
+
+#$IPTABLES -A udp_packets -p UDP -i $INET_IFACE -d 255.255.255.255 \
+#--destination-port 67:68 -j DROP
+
+#
+# ICMP rules
+#
+
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 8 -j ACCEPT
+$IPTABLES -A icmp_packets -p ICMP -s 0/0 --icmp-type 11 -j ACCEPT
+
+#
+# 4.1.4 INPUT chain
+#
+
+#
+# Bad TCP packets we don't want.
+#
+
+$IPTABLES -A INPUT -p tcp -j bad_tcp_packets
+
+#
+# Rules for special networks not part of the Internet
+#
+
+$IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
+$IPTABLES -A INPUT -p ALL -i $LO_IFACE -j ACCEPT
+
+#
+# Special rule for DHCP requests from LAN, which are not caught properly
+# otherwise.
+#
+
+$IPTABLES -A INPUT -p UDP -i $LAN_IFACE --dport 67 --sport 68 -j ACCEPT
+
+#
+# Rules for incoming packets from the internet.
+#
+
+$IPTABLES -A INPUT -p ALL -i $INET_IFACE -m state --state 
+ESTABLISHED,RELATED \
+-j ACCEPT
+$IPTABLES -A INPUT -p TCP -i $INET_IFACE -j tcp_packets
+$IPTABLES -A INPUT -p UDP -i $INET_IFACE -j udp_packets
+$IPTABLES -A INPUT -p ICMP -i $INET_IFACE -j icmp_packets
+
+#
+# If you have a Microsoft Network on the outside of your firewall, you may
+# also get flooded by Multicasts. We drop them so we do not get flooded by
+# logs
+#
+
+#$IPTABLES -A INPUT -i $INET_IFACE -d 224.0.0.0/8 -j DROP
+
+#
+# Log weird packets that don't match the above.
+#
+
+$IPTABLES -A INPUT -m limit --limit 3/minute --limit-burst 3 -j LOG \
+--log-level DEBUG --log-prefix "IPT INPUT packet died: "
+
+#
+# 4.1.5 FORWARD chain
+#
+
+#
+# Bad TCP packets we don't want
+#
+
+$IPTABLES -A FORWARD -p tcp -j bad_tcp_packets
+
+#
+# Accept the packets we actually want to forward
+#
+
+$IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#
+# Log weird packets that don't match the above.
+#
+
+$IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j LOG \
+--log-level DEBUG --log-prefix "IPT FORWARD packet died: "
+
+#
+# 4.1.6 OUTPUT chain
+#
+
+#
+# Bad TCP packets we don't want.
+#
+
+$IPTABLES -A OUTPUT -p tcp -j bad_tcp_packets
+
+#
+# Special OUTPUT rules to decide which IP's to allow.
+#
+
+$IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+$IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+$IPTABLES -A OUTPUT -p ALL -o $INET_IFACE -j ACCEPT
+
+#
+# Log weird packets that don't match the above.
+#
+
+$IPTABLES -A OUTPUT -m limit --limit 3/minute --limit-burst 3 -j LOG \
+--log-level DEBUG --log-prefix "IPT OUTPUT packet died: "
+
+######
+# 4.2 nat table
+#
+
+#
+# 4.2.1 Set policies
+#
+
+#
+# 4.2.2 Create user specified chains
+#
+
+#
+# 4.2.3 Create content in user specified chains
+#
+
+#
+# 4.2.4 PREROUTING chain
+#
+
+#
+# 4.2.5 POSTROUTING chain
+#
+
+if [ $PPPOE_PMTU == "yes" ] ; then
+ $IPTABLES -t nat -A POSTROUTING -p tcp --tcp-flags SYN,RST SYN \
+ -j TCPMSS --clamp-mss-to-pmtu
+fi
+$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j MASQUERADE
+
+#
+
 
