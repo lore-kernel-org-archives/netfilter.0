@@ -1,14 +1,11 @@
-From: "Mitesh P Choksi" <murli@icafe.co.tz>
-Subject: Re: 'Lending an internet connection'
-Date: Sun, 29 Sep 2002 21:52:59 +0300 (EAT)
+From: "Rob Sterenborg" <rsterenborg@xs4all.nl>
+Subject: Blocking dhcp
+Date: Mon, 30 Sep 2002 15:30:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <55436.64.86.49.17.1033325579.squirrel@www.icafe.co.tz>
-References: <20020928191437.NJRG6699.mta01-svc.ntlworld.com@there>
-Reply-To: murli@icafe.co.tz
+Message-ID: <002c01c26885$82490dc0$153fa8c0@hslbrabantzuid.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20020928191437.NJRG6699.mta01-svc.ntlworld.com@there>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,69 +18,28 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Alternatively, use proxy arp on eth0 for the public IP and then put a host
-route on the eth1.
+Hi all,
 
-eth0 will take up all ethernet packets due to the proxy arp.
-routing table will route the packets to eth1 and subsequently to win machine.
+I have dhcpd installed.
+Afaik it should only run on eth1, but for some reason it doesn't and
+listens on all interfaces : eth0, eth1 and ppp0.
+(# dhcpd -cf <conffile> -lf <leasefile> eth1)
+Since this is what's in the man-page, I think it's strange.. but that
+aside.
 
-proxy-arp howto and bridging howto could be answers to your setup.
+I have the default INPUT policy set to DROP and I don't have an ACCEPT
+rule for port 67/udp.
+When I nmap to the machine (from an external machine) it says that
+port 67/udp is open.
+So, although I think it's overkill, I entered an explicit DROP rule
+for port 67/udp.
+Again when I nmap to the target it shows that the port is still open.
 
-Antony Stone said:
-> On Saturday 28 September 2002 7:35 pm, Sebastian Edman wrote:
->
->> Hi,
->>
->> I have a brother that has an internet connection with a static public
->> IP (217.x.x.139). He is running windows and I want to place a
->> linux-server at his house, and only take ports 22, 25 and 80 from him.
->> The best way I can see to accomplish that is to place the linux-server
->> between his computer (running windows) and his ISP, in such a way so
->> that no change is neccessary on his computer.
->>
->> ISP ------- (eth0) Linux-server (eth1) ------- (eth2) Windows machine
->>
->> (eth2) is configured with the static public IP from the ISP
->> (217.x.x.139) and has gateway 217.x.x.1 and DNS servers 212.x.x.2 and
->> 212.x.x.3.
->>
->> I run LFS (www.linuxfromscratch.org) on the linux-server and I
->> consider my skills in iptables enough to write the rules. The problem
->> is that I do not know how to tackle this problem. What IP addresses
->> should I choose for the linux-server, and what IP addresses should I
->> forward?
->
-> I don't think you can do it.
->
-> You're trying to set up two machines, connected on a network, with only
-> a  single IP address.   There's no way they'd be able to communicate.
->
-> You can't put the public IP address 217.x.x.139 on eth0 because then
-> eth1  wouldn't talk to the Windows machine.
->
-> You can't put anything other than 217.x.x.139 on eth0 because then the
-> ISP  wouldn't talk to it.
->
-> You'll just have to put 217.x.x.139 onto eth0, put a private network
-> between  eth1 and the Windows machine, and do the standard NAT
-> thing.....
->
->
-> Antony.
->
-> --
->
-> Anyone that's normal doesn't really achieve much.
->
-> - Mark Blair, Australian rocket engineer
+Right.. Does anybody know what I'm doing wrong ?
 
 
-
-
-Regards,
-
-Cyberdude Murli
-The Earth
+Tia,
+Rob
 
 
 
