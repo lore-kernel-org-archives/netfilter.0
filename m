@@ -1,11 +1,13 @@
-From: Payal Rathod <payal-netfilter@staticky.com>
-Subject: changing rules at a defined time
-Date: Wed, 24 Dec 2003 09:29:36 +0000
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: changing rules at a defined time
+Date: Wed, 24 Dec 2003 04:47:40 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031224092936.GB27890@staticky.com>
+Message-ID: <1072259260.2184.587.camel@grendel>
+References: <20031224092936.GB27890@staticky.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20031224092936.GB27890@staticky.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,51 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter ML <netfilter@lists.netfilter.org>
+To: Payal Rathod <payal-netfilter@staticky.com>
+Cc: Netfilter ML <netfilter@lists.netfilter.org>
 
-Hi,
-I have a very basic LAN setup question like,
+Greetings!
 
-- till 16:00 p.m. all ips can just use ftp but ips 192.168.0.1
-  and 192.168.0.100 can do anything
+On Wed, 2003-12-24 at 04:29, Payal Rathod wrote:
+>
+> 1> Do the above steps look ok? I will refine them further. Right now are
+> they workable.
 
-- after 4:00 afternoon all can do anything till 5:00 after which again
-  the above [1st rules] are to be applied.
+At the very least, I would specify the receiving interface as well or
+you may be subject to spoofing attacks. At the most, you are missing:
 
-I am thinking of doing,
+Any kind of logging
+Deny inbound packets from loopback, private, etc.
+Deny outbound unreachables, Timex, Echo-replies, critical services, etc.
 
-[For step 1]: - Policy ACCEPT for FORWARD
+There are probably others. The caffeine has not kicked in yet. ;-)
 
-iptables -A FORWARD -s 192.168.0.1 -p tcp -j ACCEPT
-iptables -A FORWARD -s 192.168.0.100 -p tcp -j ACCEPT
-iptables -A FORWARD -s 192.168.0.0/32 -p tcp --dport 21 -j ACCEPT
-iptables -A FORWARD -s 0/0 -p tcp -j DROP
+> 2> If I want to change the rules at 16:00 what is the best way to change
+> them?
 
-[For step 2]: - Policy ACCEPT for FORWARD
+Two options:
 
-iptables -A FORWARD -p tcp -j ACCEPT
+1) Write up two sets of rules in two different shell scripts. Use cron
+to implement them at the appropriate time. Use '-F' as you mentioned at
+the beginning of the script to flush the existing rules.
 
-Maybe same for udp.
+2) Install patch-o-matic and implement the time patch. You can then do
+something like:
+
+iptables -A FORWARD -i eth0 -p tcp -m time --timestart 16:00 --timestop
+17:00 --days Mon,Tue,Wed,Thu,Fri -s 192.168.0.0/32 -j ACCEPT
+
+HTH,
+C
 
 
-Now my question is, 
-
-1> Do the above steps look ok? I will refine them further. Right now are
-they workable.
-
-2> If I want to change the rules at 16:00 what is the best way to change
-them? I was thing of flushing with iptables -F and iptables -F -t nat
-and then running the second step.
-Similary at 17:00 do the same kind of flushes and run 1st step from a
-file? Is this approach ok or is there anything better?
-
-Thanks a lot in advance and bye.
-
-With warm regards,
--Payal
-
--- 
-For GNU/Linux Success Stories and Articles visit:
-          http://payal.staticky.com
 
