@@ -1,16 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Weird TCP flags?
-Date: Fri, 12 Dec 2003 12:41:37 -0500
+From: Stephen Smoogen <smoogen@lanl.gov>
+Subject: Leaky ip_conntrack_ftp in Red Hat kernels
+Date: Fri, 12 Dec 2003 10:49:36 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071250896.1973.10.camel@grendel>
-References: <003101c3c065$f61ad790$13fea8c0@melita.com>
-	 <200312120941.44245.JALaramie@Loudoun-Fairfax.com>
-	 <200312121438.24448.Antony@Soft-Solutions.co.uk>
-	 <200312121105.19702.JALaramie@Loudoun-Fairfax.com>
+Message-ID: <1071251376.6079.22.camel@smoogen1.lanl.gov>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312121105.19702.JALaramie@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,33 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Fri, 2003-12-12 at 11:05, Jeffrey Laramie wrote:
->
-> Yeah, I definitely need a vacation. Next time I post something stupid like 
-> that *smack* me and say "Shut Up Jeff, let me answer this!"
+I am working on tracking down a 'leak' in ip_conntrack_ftp in the RHL
+7.x kernels that we are seeing on several FTP servers. The leak seems to
+occur with some servers that have automated cron jobs that get updates
+every hour. What happens is that as time goes on, we see a larger
+disconnect between /proc/slabinfo and /proc/net/ip_conntrack.
+ip_conntrack will state that it has only 2-4 entries in it, but the
+kernel will state that it has run out of entries and looking at the
+/proc/slabinfo we see it has filled up and isnt releasing any entries. 
 
-Be careful what you wish for... ;-)
+By various testing of putting all the rules to ACCEPT and keeping the
+modules in, and then removing a module at a time, I have gotten it down
+to something in the ip_conntrack_ftp. Having the module in the system
+will eat up the standard number of entries within 20 hours. I am trying
+to figure out where to proceed next in order to help fix:
 
-> The TTL of his packet was about 60 secs lower than what I usually see which 
-> makes Chris's explanation sound likely. How does TTL get calculated?
+1) Try a recompiled kernel with POM-20030912 and see if it works?
+2) Try some sort of flag to get more info?
+3) Anything else?
 
-Actually, the TTL (63) is dead on if his server is running on Linux or
-BSD. Based on the window and packet size, I would guess Linux.
+The kernel is Red Hat's patched 2.4.20-24.7
 
-Per the RFC, a host is to "suppose" to decrement the TTL by 1 for every
-hop crossed, as well as every second the packet is queued. So for
-example a router holding a packet for 5 seconds prior to transmitting
-should decrement the TTL by 6.
+Thanks (and thankyou all for your work).
 
-In reality, most/all devices just decrement by one for hop and don't
-look at the time component. IMHO this is useful for us as as a community
-as it makes it easier to use TTL for passively fingerprinting packets.
-
-HTH,
-C
-
+-- 
+Stephen John Smoogen		smoogen@lanl.gov
+Los Alamos National Lab  CCN-5 Sched 5/40  PH: 4-0645
+Ta-03 SM-1498 MailStop B255 DP 10S  Los Alamos, NM 87545
+-- So shines a good deed in a weary world. = Willy Wonka --
 
 
