@@ -1,13 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Port forwarding
-Date: Fri, 17 Sep 2004 08:55:01 -0400
+From: =?iso-8859-1?Q?KUCKAERTZ_R=E9gis_-_NVISION?= <regis@nvision.lu>
+Subject: RE: Port forwarding
+Date: Fri, 17 Sep 2004 15:23:48 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095425701.1886.30.camel@wolfpack.ljm.dom>
-References: <20040917123138.EC8FE6A5@mail.817west.com>
+Message-ID: <E1C8IiM-0007Pc-00@deer.gmane.org>
+References: <1095425701.1886.30.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040917123138.EC8FE6A5@mail.817west.com>
+In-Reply-To: <1095425701.1886.30.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,81 +17,86 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset=; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2004-09-17 at 08:32, KUCKAERTZ R=C3=A9gis - NVISION wrote:
-> Halo,
+> if that's your only FORWARD rule, and the POLICY of FORWARD=20
+> is set to DROP--you're not allowing reply packets back=20
+> through the machine (SYN's will get through, but SYN-ACK's=20
+> will be blocked).
 >=20
-> I've set up rules so that packets sent to $MASK_IP:$MASK_PORT are forwa=
-rded
-> to $REAL_IP:$REAL_PORT with the source address being replaced by $MASK_=
-IP:
+>   iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 >=20
-> # 1. Changing destination address
-> $IPTABLES -t nat -A PREROUTING -p tcp --dest $MASK_IP --dport $MASK_POR=
-T -j
-> DNAT --to-destination $REAL_IP:$REAL_PORT
+> would help in this situation.
+
+Did it, but nothing changed
+
+> um--where are you telnet-ing from, and where are you tcdump-ing at?
+
+I'm telnet'ing on a different host (otherwise I would have set the
+appropriate rule in the OUTPUT chain), but I do the dump on the =
+"gateway"
+
+>   $TCPDUMP host $MASK_IP and port $MASK_PORT
 >=20
-> # 2. Accepting forwarded packets
-> $IPTABLES -A FORWARD -p tcp --dest $REAL_IP --dport $REAL_PORT -j ACCEP=
-T
+> is equivalent to what you're trying to capture.
 
-if that's your only FORWARD rule, and the POLICY of FORWARD is set to
-DROP--you're not allowing reply packets back through the machine (SYN's
-will get through, but SYN-ACK's will be blocked).
+Thanks!!
 
-  iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> if your BPF specifies $MASK_IP and $MASK_PORT why is your=20
+> capture showing $REAL_IP and $REAL_PORT?  those packets=20
+> shouldn't even match the filter...
 
-would help in this situation.
+Maybe that's because I do the dump on the same machine that does the =
+DNAT?
 
-> # 3. IP masquerading after filtering
-> $IPTABLES -t nat -A POSTROUTING --dest $REAL_IP --dport $REAL_PORT -j S=
-NAT
-> --to-source $MASK_IP
->=20
->=20
-> When I telnet on $MASK_IP:$MASK_PORT, it's hanging... I tried sniffing =
-with
-> tcpdump (although I must honestly confess that I don't know if the foll=
-owing
-> request is good), and here is what I got:
+I hope what follows will help you spot my mistake!
 
-um--where are you telnet-ing from, and where are you tcdump-ing at?
+R=E9gis
 
-> $TCPDUMP \(dst host $MASK_IP and dst port $MASK_PORT\) or \(src host
-> $MASK_IP and src port $MASK_PORT\)
+$ iptables -vnxL -t nat; iptables -vnxL -t mangle; iptables -vnxL
 
-that filter is overly complicated:
+# nat table
+Chain PREROUTING (policy ACCEPT 2439 packets, 148991 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
+      17       1020 DNAT       tcp  --  *      *       0.0.0.0/0
+$MASK_IP         tcp dpt:$MASK_PORT to:$REAL_IP:$REAL_PORT=20
 
-  $TCPDUMP host $MASK_IP and port $MASK_PORT
+Chain POSTROUTING (policy ACCEPT 741 packets, 45651 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
+       0          0 SNAT       tcp  --  *      *       0.0.0.0/0
+$REAL_IP         tcp dpt:$REAL_PORT to:$MASK_IP=20
 
-is equivalent to what you're trying to capture.
+Chain OUTPUT (policy ACCEPT 741 packets, 45651 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
 
-> tcpdump: listening on eth0
-> 14:32:28.568875 x.x.x.x.46569 > $REAL_IP.$REAL_PORT: S
-> 2813621631:2813621631(0) win 5840 <mss 1460,sackOK,timestamp 46292274
-> 0,nop,wscale 0> (DF) [tos 0x10]=20
-> 14:32:31.568875 x.x.x.x.46569 > $REAL_IP.$REAL_PORT: S
-> 2813621631:2813621631(0) win 5840 <mss 1460,sackOK,timestamp 46292574
-> 0,nop,wscale 0> (DF) [tos 0x10]=20
-> 14:32:37.568875 x.x.x.x.46569 > $REAL_IP.$REAL_PORT: S
-> 2813621631:2813621631(0) win 5840 <mss 1460,sackOK,timestamp 46293174
-> 0,nop,wscale 0> (DF) [tos 0x10]=20
+# mangle table
+Chain PREROUTING (policy ACCEPT 1567265 packets, 1105330580 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
 
-if your BPF specifies $MASK_IP and $MASK_PORT why is your capture
-showing $REAL_IP and $REAL_PORT?  those packets shouldn't even match the
-filter...
+Chain OUTPUT (policy ACCEPT 1181535 packets, 615648770 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
 
-> Nothing seems to get back... any idea?
+# filter table
+Chain INPUT (policy ACCEPT 44233 packets, 9251612 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
 
-it *never* hurts to provide us with:
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination        =20
+       0          0 ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0          state RELATED,ESTABLISHED=20
+       0          0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+$REAL_IP           tcp dpt:$REAL_PORT
 
-  iptables -vnxL -t nat; iptables -vnxL -t mangle; iptables -vnxL
-
--j
-
---=20
-Jason Opperisano <opie@817west.com>
+Chain OUTPUT (policy ACCEPT 41927 packets, 30331854 bytes)
+    pkts      bytes target     prot opt in     out     source
+destination  =20
 
 
