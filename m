@@ -1,10 +1,14 @@
-From: "azeem ahmad" <azeem484@hotmail.com>
-Subject: multiple source
-Date: Wed, 31 Mar 2004 21:05:25 +0000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: multiple source
+Date: Wed, 31 Mar 2004 22:21:15 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY15-F45vJd9o0PRxd0002ad8a@hotmail.com>
+Message-ID: <200403312221.15895.Antony@Soft-Solutions.co.uk>
+References: <BAY15-F45vJd9o0PRxd0002ad8a@hotmail.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <BAY15-F45vJd9o0PRxd0002ad8a@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,72 +18,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter-failover@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-hi all
-i want to make such a setup that the two ip 192.168.0.2 and 192.168.0.102 
-from my lan should be MASQUERADEd and all the other addresses should be 
-redirected to the proxy working on the same machine on port 8080, so i made 
-the following rules but these are not working. if i dont add rules in 
-PREROUTING and only add rules in POSTROUTING then both ips (.0.2 and .0.102) 
-MASQUERADEs very well but i also want the other sources to be REDIRECTed to 
-the proxy so if i start redirection then it redirects all the sources 
-including the two (.0.2 and .0.102) which i dont want. wot should i do
-plz help me out
+On Wednesday 31 March 2004 10:05 pm, azeem ahmad wrote:
 
-###################################################################################
-#!/bin/bash
-echo 1 > /proc/sys/net/ipv4/ip_forward
+> hi all
+> i want to make such a setup that the two ip 192.168.0.2 and 192.168.0.102
+> from my lan should be MASQUERADEd and all the other addresses should be
+> redirected to the proxy working on the same machine on port 8080
 
-iptables -F
-iptables -t nat -F
+Please see my response to the last qiuestion on the list, which should tell 
+you how to do what you want: 
+http://lists.netfilter.org/pipermail/netfilter/2004-March/051649.html
 
-MASQs="192.168.0.2 192.168.0.102"
-PROTs="tcp udp"
+> MASQs="192.168.0.2 192.168.0.102"
+>
+> for MASQ in $MASQs;
+> do
+> 	iptables -t nat -A POSTROUTING -s $MASQ -o ppp0 -j MASQUERADE
+> done
 
-for MASQ in $MASQs;
-do
-	iptables -t nat -A POSTROUTING -s $MASQ -o ppp0 -j MASQUERADE
-done
+The reason why this doesn't work is that it creates two rules for you; the 
+first one says "for any address other than 192.168.0.2, MASQUERADE", the 
+second one says "for any address other than 192.168.0.102, MASQUERADE".   
+Every single address will match at least one of those rules, therefore 
+everything gets MASQUERADEd.
 
+Regards,
 
-for MASQ in $MASQs;
-do
-	for PROT in $PROTs;
-	do
-		iptables -t nat -A PREROUTING -s ! $MASQ -p tcp --dport 80 -j REDIRECT 
---to-port 8080
-	done
-done
+Antony.
 
-###################################################################################
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-REDIRECT   tcp  -- !192.168.0.2          anywhere           tcp dpt:http 
-redir ports 8080
-REDIRECT   tcp  -- !192.168.0.2          anywhere           tcp dpt:http 
-redir ports 8080
-REDIRECT   tcp  -- !192.168.0.102        anywhere           tcp dpt:http 
-redir ports 8080
-REDIRECT   tcp  -- !192.168.0.102        anywhere           tcp dpt:http 
-redir ports 8080
+-- 
+The first fifty percent of an engineering project takes ninety percent of the 
+time, and the remaining fifty percent takes another ninety percent of the 
+time.
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  all  --  192.168.0.2          anywhere
-MASQUERADE  all  --  192.168.0.102        anywhere
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-#####################################################################################
-
-Regards
-Azeem
-
-_________________________________________________________________
-Protect your PC - get McAfee.com VirusScan Online 
-http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
