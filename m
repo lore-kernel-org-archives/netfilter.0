@@ -1,12 +1,9 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: sending packet in round robin...
-Date: Sat, 12 Mar 2005 22:09:59 +0100
-Message-ID: <27913.5843077258$1110661805@news.gmane.org>
-References: <02BB8A4AC86C564C89C7F14CF98CE0C49B70@knowledge.wizdom.nu>
-Reply-To: edvin.seferovic@kolp.at
+From: =?ISO-8859-1?Q?M=E5rten_Segerkvist?= <volodja@acc.umu.se>
+Subject: NAT doesn't work (only a fraction of the forwarded packets reach
+ the postrouting chain)
+Date: Sun, 13 Mar 2005 11:11:22 +0100 (MET)
+Message-ID: <Pine.GSO.4.62.0503131105020.8331@shaka.acc.umu.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C49B70@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,65 +14,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello!
 
-that what you would like to do is called link aggregation ( IMHO ).... =
-here
-is a link that explains how to make this:
-http://linux-ip.net/html/ether-bonding.html
+I'm setting up a simple linux router to forward packets between my local wlan 
+and internet; while doing so, I'm using the _same rules_ as on another machine 
+doing the same thing at another location, that is:
 
-Regards,
+echo 1 > /proc/sys/net/ipv4/ip_forward
+modprobe ipt_MASQUERADE
+modprobe iptable_filter
+iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE
+iptables --append FORWARD --in-interface wlan0 -j ACCEPT
 
-Edvin Seferovic
+The packages from wlan never get through, though. A verbose listing of the 
+different chains after a few minutes of pinging varios location gives me:
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Sietse van =
-Zanen
-Sent: Samstag, 12. M=E4rz 2005 22:01
-To: netfilter@lists.netfilter.org
-Subject: RE: sending packet in round robin...
+> iptables -L -v
 
-No you can not.
+Chain INPUT (policy ACCEPT 6316 packets, 727K bytes)
+  pkts bytes target     prot opt in     out     source destination
 
-What you are aiming at is some sort of load balancing / nic teaming.=20
-Your switch should also support this, preferably.
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source destination
+   314 12560 ACCEPT     all  --  wlan0  any     anywhere anywhere
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of M. A. Imam
-Sent: Saturday, March 12, 2005 7:39 PM
-To: netfilter@lists.netfilter.org
-Subject: sending packet in round robin...
+Chain OUTPUT (policy ACCEPT 4976 packets, 762K bytes)
+  pkts bytes target     prot opt in     out     source destination
 
-Hello list,
+> iptables -t nat -L -v
 
-Can anyone tell me if i can route packets from two interfaces in Round
-Robin=20
-fashion.
+Chain PREROUTING (policy ACCEPT 14 packets, 668 bytes)
+  pkts bytes target     prot opt in     out     source destination
 
-here is the scenario. i have two linux machines with two ethernet cards
-each.=20
-i do an ftp from machine1(client) to request a file from
-machine2(server). i=20
-can do this on either links separately. what i want is to that machine2
-when=20
-sends an ftp packet, it send it in around robin fashion. that is it
-sends one=20
-packet from one interface and the second packet from the second
-interface.How=20
-can i achieve this.
+Chain POSTROUTING (policy ACCEPT 1 packets, 228 bytes)
+  pkts bytes target     prot opt in     out     source destination
+    18  1080 MASQUERADE  all  --  any    eth0    anywhere anywhere
+     0     0 LOG        all  --  any    any     anywhere anywhere            LOG 
+level warning
 
-Can i use two default routes... or may some kind of iptables...
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source destination
 
-appreciate an early response
+As only 18 out of 314 (compared with 37959 out of 3836K packets on the working 
+router with the same rules) packets reaches the POSTROUTING chain (out of which 
+none results in a pong), i figured this might have something to do with the 
+problem?
 
-Muhammad A Imam
+I tried to log the packets reaching POSTROUTING with
 
+> iptables -t nat -A POSTROUTING -j log
 
+but none of them showed up in the syslog; that's a minor? problem though.
 
+I'd be most grateful for any suggestions!
 
+(iptables is compiled with the 2004.3 gentoo-ppc-livecd toolset against 
+2.6.8.1, running on a mac mini with a d-link dwl-122 802.11b dongle 
+using linux-wlan-ng).
+
+/M. Segerkvist
 
