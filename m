@@ -1,12 +1,13 @@
-From: SBlaze <dagent.geo@yahoo.com>
+From: Ramin Dousti <ramin@cannon.eng.us.uu.net>
 Subject: Re: Need help have some questions...
-Date: Mon, 18 Aug 2003 13:13:33 -0700 (PDT)
+Date: Mon, 18 Aug 2003 16:52:23 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030818201333.57194.qmail@web40202.mail.yahoo.com>
-References: <1061192932.1915.10.camel@kermit>
+Message-ID: <20030818205223.GA3993@cannon.eng.us.uu.net>
+References: <1061192932.1915.10.camel@kermit> <20030818201333.57194.qmail@web40202.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1061192932.1915.10.camel@kermit>
+Content-Disposition: inline
+In-Reply-To: <20030818201333.57194.qmail@web40202.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,83 +17,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-To: Ralf Spenneberg <lists@spenneberg.org>, nf <netfilter@lists.netfilter.org>
-Cc: cc@belfordhk.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: SBlaze <dagent.geo@yahoo.com>
+Cc: Ralf Spenneberg <lists@spenneberg.org>, nf <netfilter@lists.netfilter.org>, cc@belfordhk.com
 
-To Ralf, the netfilter team, and the whole of the OS community
+On Mon, Aug 18, 2003 at 01:13:33PM -0700, SBlaze wrote:
 
-How am I supposed to proxy apache? Why should I have to? Is it not a firewa=
-lls
-job to protect a system(and LAN behind it)? This is a very valid form of
-protection I'm asking for here.
+> To Ralf, the netfilter team, and the whole of the OS community
+> 
+> How am I supposed to proxy apache? Why should I have to? Is it not a firewalls
+> job to protect a system(and LAN behind it)? This is a very valid form of
+> protection I'm asking for here.
 
-A more detailed explanation of what I need is this and I know I'm not alone=
- in
-this as I have been corresponding with people who want the very same thing(=
-cc
-if ya our there lemme hear ya..post up with me here.)
+First of all, cool down. Secondly, read up on layered model of networking
+and try to understand, each layer and its functionality, like, IP is meant
+for routing, TCP is meant for reliable end to end communication and HTTP
+is meant for retrieval of the hyper text (and images and audio and video...).
 
-Anyone who runs apache and logs(which is EVERYONE who runs apache unless th=
-ey
-are brain dead or don't care about security) is constantly BOMBARDED DAILY =
-with
-CODE/RED and NIMDA(and I'm sure other types of invalid requests they would =
-like
-to protect against).
+Once you get there, you'll understand the goals of netfilter and the layer(s)
+it's supposed to function upon. However, there have been some adhoc 
+developements here and there by means of different (pom) modules which have
+extended the borders of what netfilter can/should do like the "string" module.
+But when you get to the bits and bytes of how things work you would realize
+that, eg, the "string" module kills your system by its extensive scan of
+the packets. It does not know that an "invalid" HTTP request happens at the
+very beginning of the HTTP communication after a "GET" command... And again
+because of some technical issues like fragmentation (which can be found in the
+readings you've already done) this "string" module is not bullet-proof for
+catching the HTTP requests you don't like.
 
-Knowing this... and knowing that the discard service is a very nice and cle=
-an
-way to sort of send things like this to the great packet /dev/null , I do n=
-ot
-think it is too much to ask that iptables provide me a way to keep those
-invalid requests AWAY from my web server. I should be able to route packets=
- to
-the discard service without having to use the NAT table(although if that was
-even an option I would use it.) All my services run on ONE machine NAT shou=
-ld
-not be nessecery.
+What Ralf mentioned earlier is absolutely valid. If you want to filter based
+on an application specific property (eg, "Get cmd.exe", or whatever the M$
+hacks look like) then you need to make use of a filter at the application
+level. In this case, a process which terminates the HTTP dialog, looks for
+(in)valid requests and acts upon it accordingly.
 
-  If this can not be done I would love for someone to give me a half techni=
-cal
-half lamen's terms explanation. I honestly don't think I'm asking so much of
-the  iptables firewall that I should have to go proxying things and
-circumventing things here and there.
+This is a .02$ explanation you asked for.
 
-Much Respect to the netfilter team and the OS Community
-SBlaze
-
-
-
---- Ralf Spenneberg <lists@spenneberg.org> wrote:
-> Am Sam, 2003-08-16 um 00.09 schrieb SBlaze:
-> > How can I sepperate requests to a machine by a matched string? Once thi=
-s is
-> > done how can I then direct certain requests one way and certain request
-> another
-> > way(doesn't need to be another IP but does need to be another port)?
-> Use a proxy.  They were made for application filtering.
->=20
-> Cheers,
->=20
-> Ralf
-> --=20
-> Ralf Spenneberg
-> RHCE, RHCX
->=20
-> Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-> IPsec-Howto				     http://www.ipsec-howto.org
-> Honeynet Project Mirror:                     http://honeynet.spenneberg.o=
-rg
-
-
-=3D=3D=3D=3D=3D
-"Winky is not knowing how sir, winky is not knowing how?" -=3DWinky / Harry=
- Potter and the Goblet of Fire=3D-"
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+Ramin
 
