@@ -1,11 +1,9 @@
-From: "Peter Pohlmann" <peter@e-partner.com>
-Subject: A problem - connections dies
-Date: Tue, 27 May 2003 16:37:33 -0400
+From: John Friel III <john@frieltek.com>
+Subject: RE: upgrade to iptables from ipchains
+Date: Wed, 28 May 2003 13:37:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006901c324a7$17838720$3801a8c0@Peters>
+Message-ID: <6B61CBDA8C62344EB172855F4D94D74C042F3D@alpha.frieltek.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0058_01C3246E.45EBF540"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,98 +14,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.samba.org'" <netfilter@lists.samba.org>
+Cc: =?iso-8859-1?Q?=27Leonardo_Rodrigues_Magalh=E3es=27?= <leolistas@solucoesip.net>
 
-This is a multi-part message in MIME format.
+>     would became this in iptables
+> 
+> iptables -N soporte
+> iptables -A soporte -s 10.0.1.1 -j ACCEPT
+> iptables -A soporte -j DROP
+> iptables -A FORWARD -s 10.0.0.0/25 -j soporte
+> iptables -t nat -A POSTROUTING -s 10.0.1.1 -j MASQUERADE
 
-------=_NextPart_000_0058_01C3246E.45EBF540
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+And it should be noted that with these rules in place, all packets that get
+forwarded to the soporte chain will get DROPPED because the forward rule
+only forwards IP's in the range of 10.0.0.0-10.0.0.127 and the accept range
+is restricted to -only- IP 10.0.1.1.  
 
-Hello list,
+The 4th rule should be:
 
-I have a problem with my masquerading.=20
-Can someone supply me a basic configuration. I want to have the private =
-network
-open for everything.=20
-
-The current rules are below. Works for pop ,http etc. But ftp is not =
-proper and connecting to an outside=20
-smtp server is a problem too. I can send very small emails but if some =
-larger email or attachment it stops after transferring some kbs.  What =
-am I missing here ?  The server is redhat 9 pppoe to the dsl modem.
-
-#!/bin/sh
-
-modprobe ip_conntrack_ftp
-modprobe iptable_nat
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-
-echo 1 >/proc/sys/net/ipv4/ip_forward
-echo 1 >/proc/sys/net/ipv4/ip_dynaddr
-
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS =
---clamp-mss-to-pmtu
-
-Thank you in advance,
-Peter
+iptables -A FORWARD -s 10.0.0.0/16 -j soporte
 
 
 
 
-------=_NextPart_000_0058_01C3246E.45EBF540
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2719.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>Hello list,</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>I have a problem with my masquerading. </FONT></DIV>
-<DIV><FONT size=3D2>Can someone supply me a basic configuration. I want =
-to have=20
-the private network</FONT></DIV>
-<DIV><FONT size=3D2>open for everything. </FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>The current rules are below. Works for pop ,http =
-etc. But ftp=20
-is not proper and connecting to an outside </FONT></DIV>
-<DIV><FONT size=3D2>smtp server is a problem too. I can send very small =
-emails but=20
-if some larger email or attachment it stops after transferring some =
-kbs.&nbsp;=20
-What am I missing here ?&nbsp; The server is redhat 9 pppoe to the dsl=20
-modem.</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>#!/bin/sh</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D2>modprobe ip_conntrack_ftp<BR>modprobe =
-iptable_nat</FONT></DIV>
-<DIV><FONT size=3D2>iptables -P INPUT ACCEPT<BR>iptables -P OUTPUT=20
-ACCEPT<BR>iptables -P FORWARD ACCEPT</FONT></DIV><FONT size=3D2>
-<DIV><BR>echo 1 &gt;/proc/sys/net/ipv4/ip_forward<BR>echo 1=20
-&gt;/proc/sys/net/ipv4/ip_dynaddr</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE<BR>iptables -A =
-FORWARD=20
--p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Thank you in advance,</DIV>
-<DIV>Peter</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><BR>&nbsp;</DIV></FONT></BODY></HTML>
-
-------=_NextPart_000_0058_01C3246E.45EBF540--
-
+Cheers!
+John Friel III
+Frieltek Consulting, Inc.
 
