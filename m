@@ -1,8 +1,8 @@
-From: "Gregory Gerard" <ggerard@ggerard.com>
-Subject: Network mapping from internal to external
-Date: Sun, 3 Oct 2004 20:36:53 -0700
+From: David Rye of Roadtech <d.rye@roadtech.co.uk>
+Subject: Tos, Mark and tunnels
+Date: Mon, 04 Oct 2004 21:25:49 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200410040336.i943acIV023476@ylpvm29.prodigy.net>
+Message-ID: <4161B1CD.EA14C2DB@roadtech.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,30 +18,49 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm not sure how to describe my setup and intended network in iptables
-parlance. Have searched much and can't find anything that matches my
-situation.
+I was thinking on a set-up involving Filtering, Traffic Shaping and
+Tunnels.
 
-I have 5 static IPs from my ISP. Out the Ethernet end of my DSL box I see
-those 5 IPs directly. I have no control over the router but that's fine.
+This trough up a couple of questions that I hope someone can give a 
+definitive answer to.
 
-I have many more than 5 machines in my network.
+If some or all of my traffic is tunnelled I see a potential problem
+when trying to shape traffic leaving the network.
+As far as I can see with ESP packets Route2 filters can only 
+differentiate on the destination IP as they can not see the encrypted
+traffic.
 
-Internally, I have 10.9.x.x (255.255.0.0).
+I have seen a reference to the 2.6 kernels IPsec implementation that 
+implying that if you use a netfilter rule to set a mark on the incoming 
+packets before they enter the tunnel, that the mark is replicated to 
+the ESP Packets created.
 
-I would like to setup iptables such that 4 of the external IP addresses map
-completely map onto exactly 4 internal IP addresses. The fifth external
-address will simply be used to NAT for internal only machines.
+Is this correct?
 
-What's the right mix of NICs and settings?
+If so it would allow shaping providing the shaping is done on the same
+box
+as the tunnelling.
 
-I was thinking about bringing up several eth0:1..4 interfaces to accept
-those 4 external addresses and map them that way.
+Does the TOS field also get replicated?
 
-Suggestions?
+This would allow for TOS based traffic shaping on a downstream box.
 
-Thanks!
-greg
+Are the tos field or Marks replicated to the ESP packets for 
+freeswan/openswan and the 2.4 Kernel.
 
+Are the IP headers TOS value, or netfilter Marks replicated to the new
+packet for the other tunnel protocols, IPIP, GRE, and so on.
 
+while on the subject of MARKs and TOS values.
+
+Is there any way of setting a MARK or the TOS on ftp data connections
+that 
+match as related using the ip_conntrack_ftp module?
+Without setting the same mark on packets relating to other connections?
+
+-- 
+J. David Rye
+http://www.roadrunner.uk.com
+http://www.rha.org.uk
+mailto://hostman@road-runner.net
 
