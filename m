@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: SNAT question
-Date: Tue, 2 Mar 2004 00:22:47 +0000
+From: "John Black" <black@arbbs.net>
+Subject: Re: DNS question
+Date: Mon, 1 Mar 2004 18:54:55 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403020022.47603.Antony@Soft-Solutions.co.uk>
-References: <1078185401.4043cdb979aab@milliweb.millicom.com.pe>
+Message-ID: <001201c3fff0$fbe61660$ed02fea9@y0o3a7>
+References: <4043930b.1ddd.0@arbbs.net> <200403012027.28257.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1078185401.4043cdb979aab@milliweb.millicom.com.pe>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +19,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 01 March 2004 11:56 pm, Felipe wrote:
 
-> It's necessary to set up phisically the public address used in SNAT rule ?
-> For this rule:
->
-> iptables -t nat -A POSTROUTING -s 172.21.0.0/16 -j SNAT --to 200.110.2.181
->
-> For that rule, its necessay set up phisically the IP 200.110.2.181 over the
-> interface ?
+> What is special about having only one IP address?
+i have a private subnet at work with only one static ip address.  which they
+are authoritative over the subnet.
 
-No, it is not necessary to set up that address on that interface in order to 
-use that rule and send out packets with that source address.
 
-However, if you send out packets with that source address, and you want to 
-receive the replies, the address must exist on whatever machine the address 
-will get routed to.
+> Obviously if you have only one server you don't get any resiliency /
+> redundancy, but presumably you either don't mind, or else you're getting
+> someone else to act as secondary for you?
+I have an internal mail, ftp, and web server that I want to grant access to,
+from the outside world.
 
-If you are only doing UDP transmits, and never expect a reply, it might work.
 
-Regards,
+the problem is I'm trying to setup a nonauthoritative dns server.  And I
+have never setup a dns server before
 
-Antony.
 
--- 
-"The joy of X!!??  I've always hated compiling graphical shite.  You have a 10 
-line program, and it ends up depending on the entire known universe."
+thanks for everyone's help
 
- - Philip Hands
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+john
 
 
