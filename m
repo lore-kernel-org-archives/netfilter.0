@@ -1,13 +1,15 @@
-From: "Vladimir Potapov" <varyag18@mail.ru>
-Subject: RE: FORWARD rules
-Date: Wed, 10 Sep 2003 22:47:00 +0400
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: (no subject)
+Date: Wed, 10 Sep 2003 14:53:22 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <HMEKJPOHJKKBIDHGBCMDCEJBCAAA.varyag18@mail.ru>
-References: <20030910175253.GA2752@linux.local>
+Message-ID: <200309101453.22145.Alistair@nerdnet.ca>
+References: <20030910170222.ACD1459AC9@pandora.onwave.com.br>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030910175253.GA2752@linux.local>
+In-Reply-To: <20030910170222.ACD1459AC9@pandora.onwave.com.br>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,43 +20,49 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Payal Rathod <payal-iptables@staticky.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+To: Kilson Arruda <iptables@onwave.com.br>, netfilter@lists.netfilter.org
 
-$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -s 125.125.125.0/32 -p udp -m tcp --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 80 -j ACCEPT
-$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 110 -j ACCEPT
-$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+On September 10, 2003 12:02 pm, Kilson Arruda wrote:
 
-What more do I add to allow natting as well as a secure FORWARD policy?
-Is the position of ESTABLISHED rule ok?
+	See Ramin Dousti's correction to your notation.
+	
+	next point -- exclusions require a separate user chain to stack 
+	exclusions.
 
-You need to add a chains for NEW packets with tcp-flags syn.You need replace
-from console :
-$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -s 125.125.125.0/32 -p udp -m tcp --dport 53 -j ACCEPT
-$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 80 -j ACCEPT
-$IPTABLES -A FORWARD -s 125.125.125.0/32 -p tcp -m tcp --dport 110 -j ACCEPT
+	Create new chain, send all packets destined for the redirection port to 	
+	this chain, 
+	then in this chain, RETURN the packets you DONT want redirected, and
+	at the end of this chain, redirect everything.... 
 
-to
--A FORWARD -d 125.125.125.0/32 -m state --state NEW -p tcp -m tcp --dport
-53 --syn -j ACCEPT
--A FORWARD -d 125.125.125.0/32 -m state --state NEW -p udp -m udp --dport
-53 -j ACCEPT
--A FORWARD -d 125.125.125.0/32 -m state --state NEW -p tcp -m tcp --dport
-80 --syn -j ACCEPT
--A FORWARD -d 125.125.125.0/32 -m state --state NEW -p tcp -m tcp --dport
-110 --syn -j ACCEPT
+	you can't stack exclusions since the first exclusion will grab the targets
+	of all successor exclusions.
 
 
+> I have a Transparent Proxy like this
+>
+> $IPTABLES -t nat -A PREROUTING -p tcp
+> --dport 80 ! -d $DIRECT_IP -m mac --mac-source $MAC -j REDIRECT --to-port
+> 3128
+>
+> Question: can I use more then one "! -d", or multiple IPs to don't REDIRECT
+> the port 80 for more then one IP?
+> If yes, how can I do this?
+>
+> --
+> Kilson Arruda
+> Linux User # 228238
+>
+>
+>
+> ________________________________________________
+> www.onwave.com.br - Internet e Conectividade
 
+-- 
 
-
---
-"Visit GNU/Linux Success Stories"
-http://payal.staticky.com
-Guest-Book Section Updated.
-
-
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
 
