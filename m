@@ -1,12 +1,13 @@
-From: =?iso-8859-1?Q?S=F8ren_Kent_Jensen?= <soren@familie-jensen.dk>
-Subject: Re: MRTG and IPTABLES
-Date: Wed, 7 Jan 2004 17:06:34 +0100
+From: mpdykeman@micron.com
+Subject: RE: MRTG and IPTABLES
+Date: Wed, 7 Jan 2004 09:17:37 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00dc01c3d538$3b014650$0223a8c0@soren>
-References: <83055D4B014C9E478D2F04624B9E82CFD4D5@noveldc.novelgmt.mu> <200401070644.58547.danielf@supportteam.net>
+Message-ID: <040405FAA8D7CD41BCA471B1A3451EE305AAA6@ntxboimbx08.micron.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3D539.C43C0397"
 Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,58 +17,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>, Gilles Yue <gyue@novelgmt.intnet.mu>, netfilter@lists.netfilter.org
+To: EugeneJ@centratel.co.za
+Cc: netfilter@lists.netfilter.org
 
-UDP 161 is user to poll equipment for status / statistics
-UDP 162 is used for SNMP traps.
-(SNMP traps are typically used by equipment to send a warning message to =
-an
-SNMP server.)
+This is a multi-part message in MIME format.
 
+------_=_NextPart_001_01C3D539.C43C0397
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Regards
-S=F8ren Kent Jensen
+MRTG uses snmp to poll devices...
 
+SNMP runs on two ports -- udp/161 (polling from the monitoring console)
+and udp/162 (SNMP traps sent to monitoring console)
 
------ Original Message -----
-From: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>
-To: "Gilles Yue" <gyue@novelgmt.intnet.mu>; <netfilter@lists.netfilter.or=
-g>
-Sent: Wednesday, January 07, 2004 1:44 PM
-Subject: Re: MRTG and IPTABLES
+For your purposes, you are probably interested in udp/161
 
+-mpd
 
-> SNMP UDP Ports 161 and 162 MRTG typically only uses 161.
->
->
-> Thanks
->
-> On Wednesday 07 January 2004 00:54, Gilles Yue wrote:
-> > MRTG cannot work properly due to iptables running.
-> >
-> >
-> >
-> > Anybody knows which port number to open to enable MRTG to work proper=
-ly.
-> >
-> >
-> >
-> > Thanks.
-> >
-> >
-> >
-> > Rgds
-> >
-> > gy
->
-> --
-> Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
-> The distance between nothing and infinity is always the same no matter =
-how
-> close you get to nothing.
->
->
+------_=_NextPart_001_01C3D539.C43C0397
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.6487.1">
+<TITLE>RE: MRTG and IPTABLES</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
 
+<P><FONT SIZE=3D2 FACE=3D"Verdana">MRTG uses snmp to poll =
+devices&#8230;</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">SNMP runs on two ports -- udp/161 =
+(polling from the monitoring console) and udp/162 (SNMP traps sent to =
+monitoring console)</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">For your purposes, you are probably =
+interested in udp/161</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Verdana">-mpd</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C3D539.C43C0397--
 
