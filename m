@@ -1,10 +1,12 @@
-From: Dietmar Hofer <didi156@gmx.net>
-Subject: How to NAT inside a LAN over a single Interface
-Date: Thu, 18 Dec 2003 23:14:50 +0100
+From: Laxmi_Narsaiah <Narsaiah@satyam.com>
+Subject: RE: Can I have DES / 3 DES VPN with IPtables Kernal kernel versio
+	n 2. 4.20 with IPSEC installed
+Date: Fri, 19 Dec 2003 07:18:38 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FE226DA.5080005@gmx.net>
+Message-ID: <A44765C986F8D411995B00B0D0795F4B1E9A1B20@hhtnt002>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3C5D2.38F59B10"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,35 +17,144 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: "'John A. Sullivan III'" <john.sullivan@nexusmgmt.com>
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-I haven't found anythink clearing my problem doing some research in this 
-list, nevertheless I'm sorry if you find my question annoying 'cos I'm 
-quite new to this issue.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I'm in a class B LAN and would make a Machine work as Gateway for 
-another, both in the same network. This because the Internet Gateway 
-accepts only requests of registered Interfaces (MAC-based).
-The Machine which I want to let do this has only one eth-Interface. what 
-in theory should be enough.
-I set up NAT with "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE" 
-and changed the route on the source machine to use the other as gateway.
-When pinging from the source machine, "/var/log/syslog" on the gateway 
-shows me this requests:
+------_=_NextPart_001_01C3C5D2.38F59B10
+Content-Type: text/plain
 
-Dec 18 22:42:44 hogwart kernel: IN=eth0 OUT=eth0 SRC=192.168.2.201 
-DST=192.168.2.150 LEN=8
-4 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=7294 SEQ=1
+I am sorry, I am not clear...U mean to say this IPTABLES supports 3DES ???
 
-But I don't get an answer on the source machine, (while naturally i can 
-ping the given IP from the gateway itself).
-In a HOWTO I found the hint that doing NAT with only 1 Interface for 
-input and output may not work with this config 'cos since kernel 2.4 
-some sort of ICMP redirections doesn't work or so...
+-----Original Message-----
+From: John A. Sullivan III [mailto:john.sullivan@nexusmgmt.com]
+Sent: Thursday, December 18, 2003 8:25 PM
+To: Laxmi_Narsaiah
+Cc: 'netfilter@lists.netfilter.org'
+Subject: Re: Can I have DES / 3 DES VPN with IPtables Kernal kernel
+version 2. 4.20 with IPSEC installed
 
-What I want to know is just what I've to do to use this machine as 
-gateway with only one interface.
-Hope you can help
 
+On Thu, 2003-12-18 at 07:58, Laxmi_Narsaiah wrote:
+> Hi,
+> 
+> Can I have DES / 3 DES VPN with IPtables Kernal kernel version 2.4.20
+> with IPSEC installed, please let me know.
+> 
+<snip>
+	We do this all the time with FreeS/WAN.  In fact, we are developing
+a
+GUI front end to managed combined firewall and VPN security for large,
+complex implementations.  You can find training slide shows on using
+iptables, FreeS/WAN, iproute2 and DHCP at http://iscs.sourceforge.net -
+Good luck
+-- 
+John A. Sullivan III
+Chief Technology Officer
+Nexus Management
++1 207-985-7880
+john.sullivan@nexusmgmt.com
+---
+If you are interested in helping to develop a GPL enterprise class
+VPN/Firewall/Security device management console, please visit
+http://iscs.sourceforge.net 
+************************************************************************** 
+This email (including any attachments) is intended for the sole use of the
+intended recipient/s and may contain material that is CONFIDENTIAL AND
+PRIVATE COMPANY INFORMATION. Any review or reliance by others or copying or
+distribution or forwarding of any or all of the contents in this message is
+STRICTLY PROHIBITED. If you are not the intended recipient, please contact
+the sender by email and delete all copies; your cooperation in this regard
+is appreciated.
+**************************************************************************
+
+------_=_NextPart_001_01C3C5D2.38F59B10
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3DUS-ASCII">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2654.45">
+<TITLE>RE: Can I have DES / 3 DES VPN with IPtables Kernal kernel =
+version 2. 4.20 with IPSEC installed</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>I am sorry, I am not clear...U mean to say this =
+IPTABLES supports 3DES ???</FONT>
+</P>
+
+<P><FONT SIZE=3D2>-----Original Message-----</FONT>
+<BR><FONT SIZE=3D2>From: John A. Sullivan III [<A =
+HREF=3D"mailto:john.sullivan@nexusmgmt.com">mailto:john.sullivan@nexusmg=
+mt.com</A>]</FONT>
+<BR><FONT SIZE=3D2>Sent: Thursday, December 18, 2003 8:25 PM</FONT>
+<BR><FONT SIZE=3D2>To: Laxmi_Narsaiah</FONT>
+<BR><FONT SIZE=3D2>Cc: 'netfilter@lists.netfilter.org'</FONT>
+<BR><FONT SIZE=3D2>Subject: Re: Can I have DES / 3 DES VPN with =
+IPtables Kernal kernel</FONT>
+<BR><FONT SIZE=3D2>version 2. 4.20 with IPSEC installed</FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=3D2>On Thu, 2003-12-18 at 07:58, Laxmi_Narsaiah =
+wrote:</FONT>
+<BR><FONT SIZE=3D2>&gt; Hi,</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; Can I have DES / 3 DES VPN with IPtables Kernal =
+kernel version 2.4.20</FONT>
+<BR><FONT SIZE=3D2>&gt; with IPSEC installed, please let me =
+know.</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&lt;snip&gt;</FONT>
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>We do =
+this all the time with FreeS/WAN.&nbsp; In fact, we are developing =
+a</FONT>
+<BR><FONT SIZE=3D2>GUI front end to managed combined firewall and VPN =
+security for large,</FONT>
+<BR><FONT SIZE=3D2>complex implementations.&nbsp; You can find training =
+slide shows on using</FONT>
+<BR><FONT SIZE=3D2>iptables, FreeS/WAN, iproute2 and DHCP at <A =
+HREF=3D"http://iscs.sourceforge.net" =
+TARGET=3D"_blank">http://iscs.sourceforge.net</A> -</FONT>
+<BR><FONT SIZE=3D2>Good luck</FONT>
+<BR><FONT SIZE=3D2>-- </FONT>
+<BR><FONT SIZE=3D2>John A. Sullivan III</FONT>
+<BR><FONT SIZE=3D2>Chief Technology Officer</FONT>
+<BR><FONT SIZE=3D2>Nexus Management</FONT>
+<BR><FONT SIZE=3D2>+1 207-985-7880</FONT>
+<BR><FONT SIZE=3D2>john.sullivan@nexusmgmt.com</FONT>
+<BR><FONT SIZE=3D2>---</FONT>
+<BR><FONT SIZE=3D2>If you are interested in helping to develop a GPL =
+enterprise class</FONT>
+<BR><FONT SIZE=3D2>VPN/Firewall/Security device management console, =
+please visit</FONT>
+<BR><FONT SIZE=3D2><A HREF=3D"http://iscs.sourceforge.net" =
+TARGET=3D"_blank">http://iscs.sourceforge.net</A> </FONT>
+<BR><FONT =
+SIZE=3D2>***************************************************************=
+*********** </FONT>
+<BR><FONT SIZE=3D2>This email (including any attachments) is intended =
+for the sole use of the intended recipient/s and may contain material =
+that is CONFIDENTIAL AND PRIVATE COMPANY INFORMATION. Any review or =
+reliance by others or copying or distribution or forwarding of any or =
+all of the contents in this message is STRICTLY PROHIBITED. If you are =
+not the intended recipient, please contact the sender by email and =
+delete all copies; your cooperation in this regard is =
+appreciated.</FONT></P>
+
+<P><FONT =
+SIZE=3D2>***************************************************************=
+***********</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C3C5D2.38F59B10--
 
