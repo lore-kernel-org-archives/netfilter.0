@@ -1,12 +1,13 @@
-From: "Yogini Parkhi" <yparkhi@bivio.net>
-Subject: RE: iptables-save file syntax
-Date: Thu, 10 Oct 2002 10:46:19 -0700
+From: Hauke Lampe <packbart@frell.ambush.de>
+Subject: Re: detect portscans in DNATed ports
+Date: Thu, 10 Oct 2002 20:52:49 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <385DA3327471554CA86AACAA2BBB813025141C@plstnexc01.corp.networkrobots.com>
+Message-ID: <20021010185249.GB21761@frell.ambush.de>
+References: <004001c27059$4ede7fc0$3201a8c0@leonardo>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <004001c27059$4ede7fc0$3201a8c0@leonardo>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Nicolas Cadilhac <cadilhac@cae.com>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi Nicolas,
-Those are packet and byte counters. But I think they are ignored while =
-doing a restore.
-These lines are setting default policies for the default chains.=20
-[0:0] means packet and byte counters are zeros.
+On Thu, Oct 10, 2002 at 09:33:59 -0300, Leonardo Rodrigues ( listas ) wrote:
 
-Hope this helps,
--Yogini
+> I've a firewall script that deals with portscan in its external
+> interface.
 
------Original Message-----
-From: Nicolas Cadilhac [mailto:cadilhac@cae.com]
-Sent: Thursday, October 10, 2002 10:14 AM
-To: 'netfilter@lists.netfilter.org'
-Subject: iptables-save file syntax
+The sanest way to deal with portscans is IMO a REJECT rule at the end of the
+INPUT / FORWARD chain.
+ 
+>     Altough it works absolutely fine when someone tries to portscan the
+> firewall, it seems to show all DNATed ports on the scanner.
 
-Hi,
+And now you're astonished because DNAT works just as expected?
 
-I wonder what are those numbers on these lines :
+> Question is: in which chain/rule should I use psd module to get portscan
+> in DNATed ports ??
 
-*nat
-:PREROUTING ACCEPT [77070:3730176]
-:POSTROUTING ACCEPT [2859:369253]
-:OUTPUT ACCEPT [6476:595842]
+Another question would be: Why do you put your gateway's security willingly
+at risk by increasing the packetfilter complexity with unnecessary code that
+can and will introduce new bugs, opening up new attack paths on your
+machine? Just to be c00l3r than the kids scanning your netblock? Or to scare
+away your customer looking for services that you may offer?
 
-sometimes it's 0:0 but since they are really big numbers they are not =
-ports.
-Also are these lines policies ?
+> I was thinking in doing this on NAT OUTPUT ....
 
-Thanks
+OUTPUT? Maybe PREROUTING is what you want. Reading the netfilter
+documentation won't hurt, either.
 
+> what do you think ?
 
+My suggestion would be that you forget this portscanning detection foo. A
+port with no service listening on it and no DNAT rule forwarding it
+elsewhere is still a closed port and connection attempts will be answered
+with ICMP dest unreachable or TCP RST. DoSing yourself by blocking people
+scanning for publicly available services is pointless. IMHO. YMMV.
 
-
+Hauke.
 
