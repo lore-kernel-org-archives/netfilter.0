@@ -1,14 +1,13 @@
-From: Chris Born <ragable@attbi.com>
-Subject: RE: Telnet not being let through
-Date: Tue, 17 Sep 2002 22:27:01 -0600
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: problems with ftp
+Date: Wed, 18 Sep 2002 08:53:41 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5.1.1.6.0.20020917222230.00b3cca8@mail.attbi.com>
-References: <771DD65729F96D41B132C6189EE644552FE7BA@sydexch1.cs_au.com.
- au>
+Message-ID: <20020918075343.IOQQ295.mta06-svc.ntlworld.com@there>
+References: <6029A399F5BFD6118BB200104B0DF37302764E@mailgate.dms.lanka.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <771DD65729F96D41B132C6189EE644552FE7BA@sydexch1.cs_au.com.
- au>
+In-Reply-To: <6029A399F5BFD6118BB200104B0DF37302764E@mailgate.dms.lanka.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,29 +17,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Kevin Saenz <ksaenz@citistreet.com.au>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Thanks, that fixed the problem. I assumed that the rule would only block IP 
-spoofing, as the place I got the rule from indicated so. Seemed logical to 
-me and not quite sure how a TCP telnet packet would get matched up to that one.
+On Tuesday 17 September 2002 3:17 pm, Naleendra@dms.lanka.net wrote:
 
-/sbin/iptables -A INPUT -i eth1 -s 192.168.0.0/24 -d 0.0.0.0/0 -j 
-drop-and-log-it
-
--Chris Born
-
-At 02:07 PM 9/18/2002 +1000, you wrote:
->I think your problem is that you drop-and-log-it
->before accepting anything substantial. IPTables works
->top down unless your forward to other rules.
->Basically what happens is if the rules don't apply to
->the rules before drop-and-log-it then they are getting logged.
->Usually your very last rule should be drop and log.
+> Hi,
 >
->Have you tired the Iptables tutorial by Oskar Andersen?
->His examples are very good.
+> 	First & foremost thanks anthony, telnet works smoothly.
+>
+> 	You see I am checking the services that I'll be needing one by one
+> before by plug in the IPTABLES box in to a running network. Next on line =
+is
+> FTP. Now I've heard that FTP tends to be a bit bothersome . Listed below =
+is
+> my FTP ruleset. My connections are refused both ways. Your help is greatly
+> appreciated.
+>
+>    #Allow FTP outbound.
+> iptables -A INPUT -i $PPPIF -p tcp --sport 21 -m state --state ESTABLISHED
+> -j ACCEPT
+>
+> iptables -A OUTPUT -o $PPPIF -p tcp --dport 21 -m state --state
+> NEW,ESTABLISHED -j ACCEPT
+>
+> iptables -A INPUT -i $PPPIF -p tcp --sport 20 --dport $UP_PORTS  -m state
+> --state ESTABLISHED,RELATED -j ACCEPT
+>
+> iptables -A OUTPUT -o $PPPIF -p tcp --sport $UP_PORTS --dport 20  -m state
+> --state ESTABLISHED -j ACCEPT
+>
+>  iptables -A INPUT -i $PPPIF -p tcp --sport $UP_PORTS --dport $UP_PORTS  =
+-m
+> state --state ESTABLISHED -j ACCEPT
+>
+> iptables -A OUTPUT -o $PPPIF -p tcp --sport $UP_PORTS --dport $UP_PORTS  =
+-m
+> state --state ESTABLISHED,RELATED -j ACCEPT
 
+You need nothing so complicated.
 
+These rules will allow passive & active ftp outbound:
+
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -p tcp --dport 21 -o $PPPIF -j ACCEPT
+
+That's it.   All the remaining "bothersome" bits about ftp are handled by t=
+he=20
+RELATED state.   Just make sure you've got all the ftp support bits of=20
+netfilter compiled into your kernel, or loaded as modules.
+
+Antony.
+
+--=20
+
+This email is intended for the use of the individual addressee(s) named abo=
+ve=20
+and may contain information that is confidential, privileged or unsuitable =
+
+for overly sensitive persons with low self-esteem, no sense of humour, or=20
+irrational religious beliefs.
+
+If you have received this email in error, you are required to shred it=20
+immediately, add some nutmeg, three egg whites and a dessertspoonful of=20
+caster sugar. =A0 Whisk until soft peaks form, then place in a a warm oven =
+for=20
+40 minutes. =A0 Remove promptly and let stand for 2 hours before adding som=
+e=20
+decorative kiwi fruit and cream. =A0 Then notify me immediately by return e=
+mail=20
+and eat the original message.
 
