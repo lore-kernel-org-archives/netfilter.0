@@ -1,12 +1,12 @@
-From: netfilter_user <netfilter_user@o2.pl>
-Subject: SNMP and IPTABLES
-Date: Sat, 2 Aug 2003 13:05:51 +0200
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: SNMP and IPTABLES
+Date: Sat, 2 Aug 2003 14:28:14 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <16310247835.20030802130551@o2.pl>
-Reply-To: netfilter_user <netfilter_user@o2.pl>
+Message-ID: <Pine.LNX.4.44.0308021426450.16350-100000@localhost>
+References: <16310247835.20030802130551@o2.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <16310247835.20030802130551@o2.pl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,67 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter_user <netfilter_user@o2.pl>
+Cc: netfilter@lists.netfilter.org
 
-hello everyone,
+Hello netfilter_user,
 
-This is my problem:
+> BUT: the problem is when MRTG try to receive SNMP information from this
+> same machine that is installed ( MRTG is installed on Linux machine -
+> gateway). I dont know why because i set: iptables -A INPUT -i eth1 -p tcp -m multiport --dport 21,80,161,3128 -j ACCEPT
+>                                          iptables -A INPUT -i eth1 -p udp -m multiport --dport 80,67,161 -j ACCEPT
+>                               ...and it should resolve problem...but
+>                               it wont
+> 
+> !!!!!THIS IS IMPORTANT!!!!
+> when I set all INPUT ACCETP then it works. So there is no problem with
+> snmp and MRTG but with my iptables config :/
 
-As a gateway in my network is a PC with Linux ( Slackware 8.1 ), and
-also on this machine is installed MRTG that listen for SNMP. I want to use SNMP
-only in local ( internal ) network. I know that SNMP
-use 161 and 162 port. There are no problems with comunication between
-Linux machine and local hosts via SNMP.
+The kernel will route packets for the local machine over the "lo" device, 
+not any ethernet interface. You haven't allowed packets in from the "lo" 
+device, which is why SNMP (and probably other things such as pinging 
+yourself) won't work.
 
-BUT: the problem is when MRTG try to receive SNMP information from this
-same machine that is installed ( MRTG is installed on Linux machine -
-gateway). I dont know why because i set: iptables -A INPUT -i eth1 -p tcp -m multiport --dport 21,80,161,3128 -j ACCEPT
-                                         iptables -A INPUT -i eth1 -p udp -m multiport --dport 80,67,161 -j ACCEPT
-                              ...and it should resolve problem...but
-                              it wont
+  iptables -I INPUT -i lo -j ACCEPT
 
-!!!!!THIS IS IMPORTANT!!!!
-when I set all INPUT ACCETP then it works. So there is no problem with
-snmp and MRTG but with my iptables config :/
-
-                                         
-I use:
-NET-SNMP version:  5.0.7
-iptables v1.2.6a
-
-This is my iptables config:
-
-
-insmod ip_conntrack
-insmod ip_conntrack_ftp
-
-iptables -P FORWARD DROP
-iptables -P INPUT DROP
-iptables -P OUTPUT ACCEPT
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p tcp -m multiport --dport 22 -j ACCEPT
-iptables -A INPUT -i eth1 -p tcp -m multiport --dport 21,80,161,3128 -j ACCEPT
-iptables -A INPUT -i eth1 -p udp -m multiport --dport 80,67,161 -j ACCEPT
-
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i eth1 -p tcp -m multiport --dport 21,22,25,110,1111,6112 -j ACCEPT
-iptables -A FORWARD -i eth1 -p udp -m multiport --dport 53,6112,13073,23083,23073 -j ACCEPT
-
-iptables -I INPUT -p icmp --icmp-type echo-request -s 0.0.0.0/0 -m limit --limit 1/s -j ACCEPT
-iptables -I INPUT -p icmp --icmp-type echo-request -s 0.0.0.0/0 -j DROP
-
-
-#===NAT=================================================================================
-modprobe iptable_nat
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-
-Will be thankful for any good advice
-
+Cheers, Chris.
 -- 
-Best regards,
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
 
