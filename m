@@ -1,11 +1,13 @@
-From: Mattia Martinello <mattia@mattiamartinello.com>
-Subject: New chain
-Date: Sun, 12 Jan 2003 00:58:54 +0100
+From: MAB <mabaeyens@eresmas.com>
+Subject: Re: New chain
+Date: Sun, 12 Jan 2003 01:54:06 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E20AFBE.5060404@mattiamartinello.com>
+Message-ID: <200301120154.06722.mabaeyens@eresmas.com>
+References: <3E20AFBE.5060404@mattiamartinello.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E20AFBE.5060404@mattiamartinello.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,38 +17,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mattia Martinello <mattia@mattiamartinello.com>, netfilter@lists.netfilter.org
 
-Hi
+El S=E1b 11 Ene 2003 23:58, Mattia Martinello escribi=F3:
 
-I wish to create and use a new chain which logs all DROP packets, but 
-after DROP rules i must write ACCEPT rules too.
-All DROP packets (not ALLOWED ones) have to be logged.
-I wish to open the comunications between 192.168.1.0/24 and 192.168.1.254.
-All packets between 192.168.1.0/24 and 192.168.1.254 haven't to be logged.
+If I am not wrong, chains are read sequentially. If you say first:
 
-I tried to do this:
+> iptables -A LOG_DROP -j DROP
 
-iptables -N LOG_DROP
-iptables -A LOG_DROP -j LOG --log-tcp-options --log-ip-options 
---log-prefix '[IPTABLES DROP] : '
-iptables -A LOG_DROP -j DROP
+and then you add "new" rules to your firewall script:
 
-iptables -A INPUT -j LOG_DROP
-iptables -A OUTPUT -j LOG_DROP
-iptables -A FORWARD -j LOG_DROP
+> iptables -A LOG_DROP -s 192.168.1.0/24 -d 192.168.1.254/255.255.255.255
+> -j ACCEPT
+> iptables -A LOG_DROP -s 192.168.1.254/255.255.255.255 -d 192.168.1.0/24
+> -j ACCEPT
 
-iptables -A LOG_DROP -s 192.168.1.0/24 -d 192.168.1.254/255.255.255.255 
--j ACCEPT
-iptables -A LOG_DROP -s 192.168.1.254/255.255.255.255 -d 192.168.1.0/24 
--j ACCEPT
+it wont work, because everything before the DROP rule will NOT be parsed.=
+ I'm=20
+my particular case, I should "insert" those rules you want to be accepted=
+=20
+before de DROP one. That's why I set my LOG and DROP rules in the last li=
+nes=20
+of the script.
 
-But it doesn't work.
-Could you tell me how I can solve this problem, please?
+Please, correct me if I am in mistake, and sorry my bad english.
 
-Thank you very much
-Bye
-Mattia
+Regards.
 
+-Miguel Angel Baeyens
+
+KeyID: 0x6FB7A511 en rediris.es
 
