@@ -1,8 +1,8 @@
-From: Jason Opperisano <opie@817west.com>
+From: Michael Gale <michael.gale@utilitran.com>
 Subject: Re: vpn
-Date: Tue, 14 Sep 2004 13:20:33 -0400
+Date: Tue, 14 Sep 2004 08:31:54 -0600
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095182433.1895.10.camel@wolfpack.ljm.dom>
+Message-ID: <20040914083154.61fba19e@mgalepc.utilitran.com>
 References: <012a01c49a61$340e8ad0$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -20,29 +20,56 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 2004-09-14 at 09:46, Peter Marshall wrote:
+
+Place the VPN on the firewall box .. NOT on a separate box in the DMZ ... other wise you will most likely have to NATing
+on the VPN connections to the DMZ network or other problems.
+
+Check out superfreeSwan
+
+Michael
+
+
+On Tue, 14 Sep 2004 10:46:14 -0300
+"Peter Marshall" <peter.marshall@caris.com> wrote:
+
 > I need to set up a vpn.  I am trying to figure out which would be best.  I
 > need to connect my office with a sister office.  The employess are using
 > windows machines.  They want to be able to get and put files from a windos
 > file server. Windows networking would be a bonus.  Both offices have Linux
 > firewalls.    Would ssh over a PPP tunnel work for this ?  Would pptp or
 > cIPe be a better solution ?
-
-IPSec would be the best solution here.  openswan is my stack of choice.
-
+> 
 > I have my network setup below ... I was also wondering if it would be better
 > to put the vpn server either behind the internal firewall, or in the dmz, or
 > make it part of the internal firewall
+> 
+> my network in a nutshell.
+> I have an internal network with an internal firewall.  I have an external
+> network with an external firewall, and a dmz, between the internal and the
+> external firewall.  All numbers in the dmz are internet routable (They have
+> their own /26 network).  The external firewall has a 29 subnet on it's
+> external interface.
+> 
+> thanks for the help.
+> 
+> Peter
+> 
+> 
+> 
+> Peter Marshall, BCS
+> Network Administrator, CARIS
+> 115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+> Phone:  (506) 458-8533 (Reception)
+> 
+> 
+> 
+> 
+> 
+> 
 
-make it part of either the external or internal firewall.  if you didn't
-have public IP's on the internal firewall--the only proper choice would
-be the external firewall.  since you mention putting it on the
-internal--that would be a fine choice.  do not put it behind the
-internal firewall--that would be a bad choice.
-
--j
 
 -- 
-Jason Opperisano <opie@817west.com>
-
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
