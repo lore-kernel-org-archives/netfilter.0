@@ -1,13 +1,13 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: NAT question
-Date: 09 Apr 2003 12:27:53 +0200
+Subject: Re: new tcp connections, without SYN
+Date: 09 Apr 2003 13:33:13 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049884073.22137.10.camel@elendil.intranet.cartel-securite.net>
-References: <B5747F3DB39FD411884B00B0D07808CCB6CA01@server10>
+Message-ID: <1049887993.22720.3.camel@elendil.intranet.cartel-securite.net>
+References: <200304091216.28528.carlosble@terra.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <B5747F3DB39FD411884B00B0D07808CCB6CA01@server10>
+In-Reply-To: <200304091216.28528.carlosble@terra.es>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,49 +18,33 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
+To: carlosble@terra.es
 Cc: netfilter@lists.netfilter.org
 
-Le mer 09/04/2003 =E0 11:51, Philippe Dhont (Sea-ro) a =E9crit :
-> I added=20
-> $IPTABLES -t nat -A POSTROUTING -j SNAT --to-source 10.165.165.165=20
-> Now when i ping from 10.51.13.13 on eth0 side to 10.165.1.60 then i can=
- see
-> via tcpdump that on eth1 the 10.165.1.60 is seeking the 10.165.165.165=20
-> "arp who-has 10.165.165.165 tell 10.165.1.60" is what i get.
-> So i guess that this means that iptables changed the address ?
+Le mer 09/04/2003 =E0 13:16, Carlos Ble a =E9crit :
+> Hi all. Two days ago, i added the policy that drops all new tcp connect=
+ions
+> that starts without SYN to prevent port scaners and other attacks:
+> iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG =
+\
+> --log-prefix "NEW tcp try no SYN:"
+> iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
 
-As far as I understand your configuration, eth0's side is NATed when
-talking to eth1's side.
+You can add RELATED state to this :
 
-If so, yes, Netfilter as already changed the address. That's obvious.
-Your echo request has crossed the box, and has been source NATed to
-10.165.165.165. Then 10.165.1.60 receive it and tries to reply. It
-replies to 10.165.165.165. Nothing special in there, everything's
-normal.
+	iptables -A bad_tcp_packets -p tcp ! --syn -m state \
+		--state NEW,RELATED -j DROP
 
-But on eth1's side, nobody answers ARP requests for 10.165.165.165. So
-you did not configured your firewall to answer them. That's the issue.
+> Another question: I had disabled the icmp answers :
+> echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+> echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+> to try to be "invisible" for some wicked programs .
+> will i have problems with some other programas that makes ping=20
+> before establish a connection?=20
 
-> So the firewall doesn't knows that it converted the ip number before an=
-d
-> can't send a reply to the correct ip address where it originally came f=
-rom
-
-He knows about this. But it is not its job to answer ARP requests. It's
-your job to configure it as such.
-
-> How can i make this work so that if i ping to 10.165.1.60 that i can ge=
-t a
-> reply ?
-
-	ip addr add 10.165.165.165 dev eth1
-
-So your firewall answers ARP requests for 10.165.165.165.
-
-> AND that the NAT thing did its work ?
-
-It did it well.
+If a program waits for a ping reply before attempting connection, sure
+you'll have problems. You can mitigeate this issue dealing echo requests
+with your ruleset, and so having some addresses that still can ping.
 
 --=20
 C=E9dric Blancher  <blancher@cartel-securite.fr>
