@@ -1,10 +1,10 @@
-From: "David Wynter" <david@roamware.com>
-Subject: RE: LAN to firewall difficulties
-Date: Fri, 1 Nov 2002 12:22:38 -0000
+From: David Wynter <david@roamware.com>
+Subject: LAN to firewall difficulties
+Date: Fri, 1 Nov 2002 11:19:25 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <LPECIAHGIGJJHHELMIDLEEIGCPAA.david@roamware.com>
+Message-ID: <20021101111935.DE35E36C002@www.roamware.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,34 +16,12 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter list <netfilter@lists.netfilter.org>
-
-Hi again,
-
-I discovered something interesting. I can ping and FTP from my notebook on
-the LAN to my firewall. That is from 10.0.0.5 to 10.0.0.1 but not from
-10.0.0.6 to 10.0.0.1. The former is a Win98 notebook and the latter runs W2K
-Server. I don't have a firewall or anything running on the W2K box that
-would prevent these ping or FTP packets getting out (that I know of), and
-the $LANSUBNET below in the script is set to "10.0.0.0/8" and the
-$LAN_IF_ADDR is 10.0.0.1. The W2K box can ping/FTP to/HTTP to machines on
-the other side of the firewall, so why not the firewall itself?
-
-David
-
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of David Wynter
-Sent: 01 November 2002 11:19
 To: netfilter@lists.netfilter.org
-Subject: LAN to firewall difficulties
-
 
 Hi,
 
 I have a W2K PC attached to my firewall Linux box (MDK 8.2). Also on the
-Linux box is MySQL listening on port 3306 (netstat -tan). I have read the
-How
+Linux box is MySQL listening on port 3306 (netstat -tan). I have read the How
 To on Packet Filtering and am using a script given to me by someone on
 Linuxquestions.org.
 
@@ -52,11 +30,9 @@ my firewall, although the FORWARD chain works fine and I can FTP from
 firewall to LAN PCs routed via the Internet. I can also ping th eLAN  PCs
 from th efirewall.
 
-I have turned on logging in the kernal but don't get any output for my LAN
-to
+I have turned on logging in the kernal but don't get any output for my LAN to
 firewall attempts at all (I restarted syslog after adding
-"kern.=debug;kern.=info;kern.=notice /var/log/kernel/info" to my
-syslog.conf)
+"kern.=debug;kern.=info;kern.=notice /var/log/kernel/info" to my syslog.conf)
 
 Here are the relevant arts of my iptables script.
 
@@ -97,12 +73,10 @@ Here are the relevant arts of my iptables script.
         # Reject and log all other traffic
         $IPTABLES -A OUTPUT -j DROP
 
-############################################################################
-#
+#############################################################################
 # $ECHO "Building LAN to LAN Interface Chain"
 #
- ---------------------------------------------------------------------------
--
+ ----------------------------------------------------------------------------
  #
 # LANIF
 #
@@ -172,12 +146,10 @@ ACCEPT
 # Reject remaining traffic
         $IPTABLES -A lan-if -j blocked
         #
-############################################################################
-#
+#############################################################################
 # $ECHO "Building LAN Interface to LAN Chain"
 #
- ---------------------------------------------------------------------------
--
+ ----------------------------------------------------------------------------
  #
 # IFLAN
 #
@@ -198,5 +170,4 @@ thanks
 David
 
 -------------------------------------------------------
-
 
