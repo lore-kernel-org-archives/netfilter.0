@@ -1,11 +1,14 @@
-From: bobo <boboaq@163.com>
-Subject: How to  load these modules?
-Date: Fri, 20 Dec 2002 11:27:42 +0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: Apache virtualhost not working behind firewall.
+Date: Fri, 20 Dec 2002 00:33:33 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021220032315.3B1701D110BCC@sm181.163.com>
+Message-ID: <200212200033.33488.netfilter@newkirk.us>
+References: <3E0274C5.7080000@CyberWolf.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E0274C5.7080000@CyberWolf.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,25 +19,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
-Cc: bobowd@sohu.com, bobowd@sohu.com
+To: Chip Upsal <Chip@CyberWolf.com>, netfilter@lists.netfilter.org
 
-     Hello  all:
+On Thursday 19 December 2002 08:39 pm, Chip Upsal wrote:
+> I have a windows 2000 server running apache 2.0.43 with virtual hosts
+> behind an iptables firewall doing NAT.
+> I am running iptables v1.2.5 on a redhat 7.3 server.
 
-           While I am studying iptables,I read such contents from a tutorial as bellow:
+> # PWWEB
+> #
+> $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $PWWEB_IP
+> --dport 80 \
+> -j DNAT --to-destination $DMZ_PWWEB_IP
+>
+> $IPTABLES -t nat -A PREROUTING -p ICMP -i $INET_IFACE -d $PWWEB_IP \
+> -j DNAT --to-destination $DMZ_PWWEB_IP
 
-  "the rc.firewall.txt neede the following options to be compiled to kernel or as modules..
+> The problem....
+> When the server is connected directly to the internet all works well.
+> However, when it is behind the firewall the virtualhost are not
+> working (you can only access the default web site.
+>
+> Furthermore i am getting the following errors when starting iptables;
+>
+> [root@iptables init.d]# ./iptables restart
+> Flushing all current rules and user defined chains:        [  OK  ]
+> Clearing all current rules and user defined chains:        [  OK  ]
+> Applying iptables firewall rules:                          [  OK  ]
+> iptables v1.2.5: Unknown arg `--to-destination'
+> Try `iptables -h' or 'iptables --help' for more information.
 
-  .CONFIG_PACKET
-  .CONFIG_NETFILTER
-  .CONFIG_IP_NF_CONNTRACK
-..........
+My money is on a failure to load the nat module. Try "insmod iptable_nat"
+from a root console, then restart.  If that's it, just put it somewhere=20
+at the top of your script.
 
-   I find some moudles of REDHAT 7.2 in /lib/modules/2.4.7-10/kernel/net/ipv4/netfilter,
- but the modules'name are not the same as the above.  There are about 20 modules in the directory.
-
-  Why?
-
-  How could I do?   How could I get these modules?
+j
 
 
