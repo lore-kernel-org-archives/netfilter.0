@@ -1,13 +1,12 @@
-From: Michal Kepien <lordpopcorn@poczta.onet.pl>
-Subject: Re: Firewall setup at boot - trouble with setting up the LOG target
-Date: Sat, 05 Jul 2003 00:05:28 +0200
+From: "Chip Shabazian" <chip@shabazian.com>
+Subject: QOS/TC
+Date: Fri, 4 Jul 2003 15:08:23 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <sgubgvg6n5ckac25g8qs1d678vgrl0ro24@4ax.com>
-References: <7C9884991ADAE0479C14F10C858BCDF52E3554@alderaan.smgtec.com> <20030704024217.5e231e71.arnt@c2i.net> <chbagvsp3mcblk39e4n5u9od1ntja2ksb1@4ax.com> <200307041112.58290.Alistair@nerdnet.ca>
+Message-ID: <BA12368A8F510340A0CD3D5A7D42A37C04739F@mail.zeus.shabazian.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200307041112.58290.Alistair@nerdnet.ca>
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,37 +17,38 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Alistair@nerdnet.ca
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
->	What those entries suggest to me is that there are two
->	copies of iptables code on the box.
+I'm hoping to get some help regarding bandwidth restriction.  Basically,
+I have a system that is functioning as a router/firewall at a colo site.
+It's got 10 ethernet interfaces in it so that I could give each person
+their own subnet.  I'm fine with the routing and firewalling, but I want
+to be able to restrict certain people to various levels of throughput
+since I have to pay when we go over our 1Mb cap.  From what I've been
+able to determine, I need to use tc to setup qdisc's, but I have not
+been able to find any good references either online or in print that
+will explain clearly to someone who doesn't understand these tools how
+to setup these queues.  I will probably put something together for
+reference if anyone can help me understand these tools.
 
-You're correct:
+=20
 
-(v1.2.3)
-- /lib/iptables
-- /sbin
+What would be really nice, is if someone could give me the commands to
+setup these queues, and explain what each item in the command is.  I
+realize this is a lot of work, but I'll gladly take any help I can get,
+and give back to the community what I am able to come up with.
 
-(v1.2.8 - the correct one)
-- /usr/local/lib/iptables
-- /usr/local/sbin/iptables
+=20
 
->	If there is a second copy of iptables it could take some time
->	and care to sort out which files are which.... but it can be done.
+If this is NOT the right list for this question, please don't send
+flames my way.  A pointer to where I should go would be appreciated.
 
-OK, everything now works as it should. What I did was:
+=20
 
-rm -rf /lib/iptables
-rm -f /sbin/ip*tables*
-mv /usr/local/lib/iptables /lib
-mv /usr/local/sbin/ip*tables* /sbin
-ln -s /lib/iptables /usr/local/lib/iptables
+Thanks,
 
-However, every time an iptables command is executed, the program looks
-for libraries in /usr/local/lib/iptables (which is now symlinked to
-/lib/iptables) - is there a way to force iptables to load its modules
-directly from /lib/iptables?
+=20
 
-Michal Kepien
+Chip
+
 
