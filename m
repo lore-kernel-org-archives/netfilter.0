@@ -1,12 +1,12 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: more questions about kernel config options for iptables
-Date: Tue, 8 Apr 2003 07:01:34 -0400 (EDT)
+From: Scott MacKay <scottmackay@yahoo.com>
+Subject: physdev only needs, con track location
+Date: Tue, 8 Apr 2003 04:35:38 -0700 (PDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0304080644440.25860-100000@dell>
-References: <200304080304.25765.netfilter@newkirk.us>
+Message-ID: <20030408113538.25082.qmail@web13903.mail.yahoo.com>
+References: <200304080400.46995.netfilter@newkirk.us>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200304080304.25765.netfilter@newkirk.us>
+In-Reply-To: <200304080400.46995.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,74 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Joel Newkirk <netfilter@newkirk.us>
-Cc: iptables mailing list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tue, 8 Apr 2003, Joel Newkirk wrote:
+Hello all!  2 quick questions, if I could.
+It looks like the bridge + firewall solution of choice
+for the 2.4 kernel is ebtables
+(http://ebtables.sourceforce.net).  The only thing I
+want to do with the bridge + firewalls is get my
+physical device; I don't need to play with rules based
+on ethernet header.  Does anyone know if I need both
+the ebtables and bridge-nf patches or can I just use
+the bridge-nf?
 
-> On Monday 07 April 2003 05:18 pm, Robert P. J. Day wrote:
+Since it is all integrated in the 2.5 kernel, does
+anyone know how stable that is (yeah, beta) or
+thoughts when it may leave the beta state?
 
-> >   first, the basic Connection tracking option claims to be
-> > necessary for masq/NAT.  what value is that option if it is
-> > the only one selected?  it may be *necesasry* for masq/NAT,
-> > but it certainly doesn't seem to be *sufficient*.  what is
-> > the value of selecting that single option to the exclusion
-> > of all others.  what does it allow you to do?
-> 
-> Conntrack is what supports stateful filtering - without it you won't have 
-> the "--state" match, and can only filter explicitly on IPs, port 
-> numbers, etc.
+Also, in the whole iptables chain order of things,
+when is conn tracking performed?  
 
-not quite the question i was asking.  read on ...
+Thanks in advance for any help with the myrid of
+questions!!!
+-Scott
 
-> >   next, notice that "IP tables support" also claims to be
-> > necessary for masq/NAT.  if that's the case, it would seem
-> > that these two options should somehow be interdependent.
-> 
-> Well, if you're going to use MASQUERADE then you need iptables support, 
-> even if you're not going to use iptables for any filtering.
-
-right, that's what the kernel config options seem to suggest.
-so what is the value of selecting *only* "Connection tracking"
-if you don't select "IP tables support" as well?  note that,
-based on the dependencies in the kernel config process, this is
-certainly allowable, but it's not clear to me what this would
-represent.
-
-RECAP:  just to make sure folks understand what i'm trying to 
-clarify, here are two "features" of the kernel config process
-for netfilter i find confusing:
-
-1) you can select "IP tables support" without selecting one
-   of its submenu options, "Packet filtering".  what is the
-   possible value of this?  what can you do?  as i read it,
-   perhaps it means that you can still do filter-less
-   NAT and masquerading.  if that's the case, i can accept
-   that.
-
-2) you can select "Connection tracking" (which is allegedly
-   required for NAT/masq), without selecting "IP tables support",
-   which also claims to be necessary for NAT/masq.  this
-   suggests that "Connection tracking" should have a dependency
-   of "IP tables support", no?
-
-i have three tentative goals here:
-
-a) to clarify what each of the NF kernel config options
-   represents
-
-b) to make sure all of the dependencies are represented
-
-c) to clean up the menu structure so that it makes more
-   sense, and possibly add more useful info to the help
-   screens
-
-i'm quite willing to move this discussion to the kernel
-mailing list if it's more appropriate there, but i figured
-i'd start here first.
-
-rday
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - File online, calculators, forms, and more
+http://tax.yahoo.com
 
