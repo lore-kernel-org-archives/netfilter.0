@@ -1,9 +1,11 @@
-From: "Philippe Anctil" <z77y16@hotmail.com>
-Subject: Re: safe default chain policies
-Date: Fri, 02 Apr 2004 10:21:27 -0500
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Fwd: Re: Ports closed in spite of opening them?
+Date: Fri, 2 Apr 2004 16:28:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <BAY16-F48j6fVCjmpp100021caf@hotmail.com>
+Message-ID: <200404021628.38527.Antony@Soft-Solutions.co.uk>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -14,51 +16,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Antony,
+On Friday 02 April 2004 4:09 pm, Hurley, Michael wrote:
 
-I will leave the nat chains open. In fact I already did that yesterday. I 
-really makes my life better.
+> Trying to write an iptables script to open ports 22, 25, 80, and 443 on a
+> little testing box. The problem is, when I scan for open ports, 25 and 443
+> report they are *closed*. Any idea what might be going on here?
 
-May I ask what are your arguments in favor of putting filter output and 
-forward chains to drop?
+Do you have services actually listening on those ports?   Can you connect to
+them from a suitable client running on the machine you did the port scan
+from?
 
-As far as my understanding goes, the output chain is primarily important for 
-traffic involving the firewall box itself. For example, you need rules in 
-this chain if you want to ftp from the firewall to the outside. You need 
-rules also if you want the firewall box to communicate freely with the local 
-network. Why wouldn't we want the box to complete connections? Once traffic 
-passed the input chain, why wouldn't I want it to cross the output chain as 
-well?
+Regards,
 
-My reasoning is similar with the forward chain. If traffic is allowed 
-through the input  chain, it is very likely it is allowed to cross the 
-forward chain too.
+Antony.
 
-In other words, rules in OUTPUT and FORWARD appear redundant to me.
+--
+RTFM may be the appropriate reply, but please specify exactly which FM to R.
 
-How a default accept policy in output and forward OUTPUT can compromise my 
-network? Are there obvious cases I should know about?
+                                                     Please reply to the list;
+                                                     please don't CC me.
 
-Thanks for sharing!
-
->
-> > I set all of input and nat chains to DROP.
->
->Do NOT set the nat table policies to DROP.   The nat tables are for address
->translation, not for filtering (DROP is a filtering operation).
->
-> > I am thinking to set all chains to ACCEPT except the INPUT chain.
->
->No.   Set default DROP on INPUT, FORWARD and OUTPUT, then add rules to 
->allow
->the traffic you want.
-
-_________________________________________________________________
-MSN Search, le moteur de recherche qui pense comme vous !  
-http://fr.ca.search.msn.com/
 
 
