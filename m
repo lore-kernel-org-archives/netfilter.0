@@ -1,13 +1,12 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: Netfilter and SCTP
-Date: 30 Apr 2003 16:24:42 +0200
+From: Frank Smith <fsmith@hoovers.com>
+Subject: limit match log question
+Date: Wed, 30 Apr 2003 09:52:18 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1051712682.8215.135.camel@tux.rsn.bth.se>
-References: <Law8-F94rhYQYx3G5aY000150f0@hotmail.com>
+Message-ID: <17030000.1051714338@hoovers-59.hoovers.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Law8-F94rhYQYx3G5aY000150f0@hotmail.com>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +16,22 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Cyrille Colin <shishico@hotmail.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 2003-04-30 at 14:50, Cyrille Colin wrote:
-> Hi,
-> 
-> I would like to know how Netfilter's translator deals with SCTP / IP packets 
-> (Stream Control Transmission Protocol, IP protocol 132).
-> 
-> similarly to UDP, it should be able to translate the source adress in the IP 
-> header, and the source port in the SCTP common header, if needed. And 
-> recompute SCTP and IP headers checksums.
-> 
-> is this currently supported ? if not how Netfilter behave when receiving 
-> such a packet ??
-> 
-> any help on this would be very much appreciated... seems that NAT boxes do 
-> not like SCTP very much...
+If you are using the limit match to control the number of log entries, is
+there any way to also show the number of matches?  Something like syslog's
+ability to combine repeated events into 'last message repeated 2318 times'.
+   For example, if I limit logging of a match to 1 per 5 seconds to avoid
+log flooding, I can't easily tell if I'm dropping 1 packet per 5 seconds
+or 1000.  Or is there some option or patch to do this that I just haven't
+noticed?
 
-iptables doesn't have support for SCTP yet, noone has sent a patch for
-it :)
+Frank
 
--- 
-/Martin
+
+--
+Frank Smith                                             fsmith@hoovers.com
+Systems Administrator                                  Voice: 512-374-4673
+Hoover's Online                                          Fax: 512-374-4501
 
