@@ -1,15 +1,11 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: can someone check this simple firewall?
-Date: Wed, 13 Aug 2003 19:58:27 +0100
+From: Rick Morris <rmorris@wedohosting.com>
+Subject: How not to track connections?
+Date: Wed, 13 Aug 2003 12:31:16 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030813185827.GA11666@acentral.co.uk>
-References: <20030814182810.GA2123@linux.local>
+Message-ID: <200308131231.16565.rmorris@wedohosting.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Resent-Message-ID: <20030813185847.12149.qmail@eddie.acentral.co.uk>
-Content-Disposition: inline
-In-Reply-To: <20030814182810.GA2123@linux.local>
-Resent-To: netfilter@lists.netfilter.org
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,26 +16,52 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@acentral.co.uk
+To: netfilter@lists.netfilter.org
 
-On Thu, Aug 14, 2003 at 11:58:10PM +0530, Payal Rathod wrote:
-> Hi,
-> I have designed a simple firewall ruleset. Can someone please check
-> them? 
-> It is kept at http://payal.staticky.com/firewall-1.txt
+Hi all.
 
-Just a couple of points...
+I have a linux box running 2.4.21 using the NETMAP patch to NAT a /22 onto 
+local IP addresses, with the following rules.
 
-You might want to include the interfaces in your rules... e.g.
+iptables -t nat -A PREROUTING  -d 64.141.0.0/22 -j NETMAP --to 192.168.0.0/22
+iptables -t nat -A POSTROUTING -s 192.168.0.0/22 -j NETMAP --to 64.141.0.0/22
 
-$IPTABLES -A INPUT -p tcp -i eth0 --dport 21 -j ACCEPT
+My problem is that one machine behind this router is getting bursts of a few 
+hundred thousand (yes, > 100,000) connections and overflowing ip_conntrack, 
+even with ip_conntrack_max set at 500000
 
-Also, -s 0/0 is the default, and does not need to be specified...
+So what I want to do is remove one class C from this NETMAP'd netblock, and 
+route it directly out another ethernet interface. I believe inserting this 
+rule in the beginning of the PREROUTING chain will do that:
 
-Finally, the udp INPUT rules serve no purpose for FTP, SSH or HTTP :)
+iptables -t nat -A PREROUTING -d 64.141.3.0/24 -j RETURN
 
-Cheers,
-Gavin.
+And then add in the appropriate routing rules to make this work.
+
+From what I read, this will not actually stop the conntrack module from 
+tracking the connections.
+
+I've found 2 references to modules that should prevent conntrack from tracking 
+these connections, and would like some advice on which one is appropriate.
+
+1) raw
+iptables -t raw -A PREROUTING -d 64.141.0.3/24 -j NOTRACK
+
+2)25_natcore-nohelper.patch
+which I read as being able to deal with the problem by itself, since the 
+target for 64.141.0.3/24 is RETURN
+
+Can someone provide some insite here? Which one (both?) of these will do what 
+I'm after, are there any caveats?
+
+Alternately, am I way off base here, and should I route the /24 previous to 
+the nat box so it doesn't see the traffic at all? 
+
+Thanks very much.
+
+-- 
+Rick Morris
+WeDoHosting.com
+http://www.wedohosting.com
 
 
