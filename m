@@ -1,12 +1,14 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: to snat or to dnat .. that is the question
-Date: Tue, 1 Jun 2004 10:42:59 -0400
+From: Michael Gale <michael.gale@utilitran.com>
+Subject: Re: Blocking Streaming Media (Was: Re: (no subject)..)
+Date: Tue, 1 Jun 2004 08:50:00 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <5D3C2276FD64424297729EB733ED1F76062433BA@email1.mitretek.org>
+Message-ID: <20040601085000.3dcaae24@mgalepc.utilitran.com>
+References: <200406010943.02317.rio@martin.mu>
+	<20040601053750.50670.qmail@web61008.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <20040601053750.50670.qmail@web61008.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,70 +19,123 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
-
-If the box 192.168.0.20 does not have the firewall's IP as its default
-route, then it will not work correctly (DNAT), I am not sure about SNAT.
+To: netfilter@lists.netfilter.org
 
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peter Marshall
-Sent: Tuesday, June 01, 2004 10:30 AM
-To: netfilter
-Subject: to snat or to dnat .. that is the question
+Squid -- can block this no problem.
 
-Hi again.
-
-I am at a bit of a quandary, and am not sure what to do.
-
-Let the external interface on my firewall be 100.100.100.100
-I have an internal box; 192.168.0.20 that needs to connect to an
-external
-box 200.200.200.200 on port 2000.
-
-I want the internal box to connect to hit my firewall on a different
-port ..
-say 15000
-
-so basically
-
-start: .... -s 192.168.0.20 -d 200.200.200.200 --dport 15000
-after firewall -s 100.100.100.100 -d 200.200.200.200 --dport 2000
-
-How can I do this ?
-
-I started out with:
-
-$IPT -t nat -A POSTROUTING -d 200.200.200.200 --dport 15000 -p tcp -i
-eth0 \
-       -j SNAT --to-source 100.100.100.100
-
-But this does not change the destination port (obviously). I thought
-about
-doing the following
-
-$IPT -t nat -A PREROUTING -d 100.100.100.100 --dport 15000 -p tcp -i
-eth0 \
-         -j DNAT --to-destination 200.200.200.200 --dport 2000
-
-However, I don't think that this will change my source address.  Also,
-will
-this even forwarded the packets ?  They would be coming on the input
-chain
-would they not ?
+Michael.
 
 
-Thank you for the help.
-Peter Marshall
+On Mon, 31 May 2004 22:37:50 -0700 (PDT)
+SBlaze <dagent.geo@yahoo.com> wrote:
+
+> 
+> --- Rio Martin <rio@martin.mu> wrote:
+> > On Monday 31 May 2004 18:18, Ivan wrote:
+> > > Hi,
+> > > I am looking for a solution to block streaming media using iptables.
+> > > I have found that some of my users are listening to radio stations using
+> > > internet, which has pumped up the
+> > > internet bill significantly, and of course put a choke on my internet
+> > > links. Does anyone know of a solution for blocking just the streaming
+> > > media traffic from any web site, while still allowing
+> > > the access to the website it self?
+> > > Thanks,
+> > > Ivan
+> > 
+> > 
+> > Hiye Ivan,
+> > The problem you faced was users connecting to Internet Radio Stations using 
+> > web port (port 80) isnt it ? I give u an example like LaunchCast from Yahoo 
+> > or other stations using port 80 as their service port.
+> > 
+> > This is become a serious problem when bandwidth allocated not so wide. The 
+> > only thing in my mind, try to apply the magic of patch-o-matic STRING. 
+> > Examine correctly what packets arrived or what kind of streaming packets
+> > sent
+> > 
+> > by server. Block using those STRING.
+> > 
+> > Regards,
+> > Rio Martin.
+> > 
+> 
+> STRING matching is at best a primative method of any kind of filtration. It
+> has been demonstrated and documented many times here that it's simply not an
+> efficent option. However I do think I might can help with this. First you need
+> to identify what and where the radio stations are coming from. If they are
+> from the new Yahoo LAUNCHcast...stoping them should be fairly easy...with some
+> work.
+> 
+> First this is good info to know...
+> http://search1.cc.dcn.yahoo.com/cct_search.php?ui_mode=answer&prior_transaction_id=248668163&action_code=5&answer_id=14755094#__highlight
+> 
+> It contains info for firewalls and LAUNCHcast.
+> 
+> Assuming you are NATing your internal machines.... set up rules to block
+> certain hosts at yahoo.
+> 
+> From personal experience I connect to this one
+> re2wmcontent24.bcst.re2.yahoo.com (at least at this time I'm connected to it)
+> 
+> By doing some DNS snooping... It apears that there are 43 of these with this
+> being the first...
+> 
+> hogwarts:~# nslookup -silent re2wmcontent01.bcst.re2.yahoo.com
+> Server:         66.190.172.252
+> Address:        66.190.172.252#53
+> 
+> Name:   re2wmcontent01.bcst.re2.yahoo.com
+> Address: 206.190.44.76
+> 
+> and this being the last...
+> 
+> hogwarts:~# nslookup -silent re2wmcontent43.bcst.re2.yahoo.com
+> Server:         66.190.172.252
+> Address:        66.190.172.252#53
+> 
+> Non-authoritative answer:
+> Name:   re2wmcontent43.bcst.re2.yahoo.com
+> Address: 206.190.44.118
+> 
+> with 44 returning this...
+> 
+> hogwarts:~# nslookup -silent re2wmcontent44.bcst.re2.yahoo.com
+> Server:         66.190.172.252
+> Address:        66.190.172.252#53
+> 
+> ** server can't find re2wmcontent44.bcst.re2.yahoo.com: NXDOMAIN
+> 
+> So we can reasonably assume that if we block 206.190.44.76 thorugh
+> 206.190.44.118 we could stop the LAUNCHcast broadcasts.... Dealing with NAT is
+> a tad tricky though... since we need to stop it before it gets "NATED".
+> 
+> 
+> With My setup my eth0 is the "wire" and my eht1 is LAN... so if I drop these
+> on my LAN device(eth1)..theoretically I would stop the broadcast. If I wanted
+> to stop it this would be the approach I would use. I hope it helps.... keep me
+> posted if you try it.
+> 
+> =====
+> In the absence of order there will be chaos.
+> 
+> 
+> 	
+> 		
+> __________________________________
+> Do you Yahoo!?
+> Friends.  Fun.  Try the all-new Yahoo! Messenger.
+> http://messenger.yahoo.com/ 
+> 
+> 
+> 
+> 
+> 
 
 
-Peter Marshall, BCS
-Network Administrator, CARIS
-115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
-Phone:  (506) 458-8533 (Reception)
-
-
-
-
+-- 
+Michael Gale
+Network Administrator
+Utilitran Corporation
 
