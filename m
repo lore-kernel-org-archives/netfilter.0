@@ -1,13 +1,11 @@
-From: William Knop <w_knop@hotmail.com>
-Subject: Re: iptables routing help
-Date: Mon, 26 Jan 2004 23:37:52 -0500
+From: Andrew <andrew@arda.homeunix.net>
+Subject: forwarding traffic from one port to another on the same box
+Date: Tue, 27 Jan 2004 21:37:45 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <915A2E91-5082-11D8-A7CD-000A9577164C@hotmail.com>
-References: <7A3B4AA360FDEF448F3390421FC8D731014BE9CF@coxhpexg.coxhp.com>
-Mime-Version: 1.0 (Apple Message framework v609)
+Message-ID: <bv779t$mo0$1@sea.gmane.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7A3B4AA360FDEF448F3390421FC8D731014BE9CF@coxhpexg.coxhp.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,101 +16,35 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: bmcdowell@coxhealthplans.com
-Cc: john.sullivan@nexusmgmt.com, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Unfortunately, using two interfaces isn't an option, either. A friend 
-of mine suggested vpn, however there has to be a cleaner route.
+I would like to forward all tcp traffic arriving on a particular port to 
+another port on the same machine. This has worked for me in the past but 
+I can't get it working on my current machine.
 
-I thought I could drop packets from the prerouting table and it would 
-fall into the default routing table or something like that. Surely 
-there has to be a way.
+Here are the two commands I'm using to try to create the forward.
 
+iptables -I FORWARD -p tcp -d 192.168.10.34 --dport 26 -j ACCEPT
 
-On Jan 26, 2004, at 11:29 AM, <bmcdowell@coxhealthplans.com> wrote:
+iptables -t nat -A PREROUTING -p tcp -i eth0 -s 0/0 -d 192.168.10.34 
+--dport 26 -j DNAT --to 192.168.10.34:25
 
->
-> I was about to suggest the exact same thing.
->
->
-> Bob
->
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org]On Behalf Of John A.
-> Sullivan III
-> Sent: Monday, January 26, 2004 6:06 AM
-> To: William Knop
-> Cc: netfilter@lists.netfilter.org
-> Subject: Re: iptables routing help
->
->
-> On Sun, 2004-01-25 at 13:53, William Knop wrote:
->> Okay, the problem is that we don't want to do nat (as I said in my
->> original plee for help). We need external ips on all of the machines.
->> Additionally, The ISP's DHCP server specifies it's own gateway, so I
->> can't do normal routing, without spoofing the gateway's address and
->> doing all sorts of ugly stuff (please correct me if I'm wrong).
->>
->>
->> I was under the impression one could have iptables drop a packet from
->> the prerouting or brouting table and it would go through the machine's
->> routing table, without being specified on all the lan machines as the
->> gateway.
->>
->>
->> The physical layout we have are a bunch of boxes connected to a
->> switch, and the dsl modem connected to the switch's uplink port. I
->> could have the modem jack into a firewall box, or something, however
->> the linux ethernet bridge seems to do very odd things to arps, and
->> also iptables. Would bridging be necessary?
->>
->>
->>
-> <snip>
-> This may not be as bad as it sounds and it my be a netfilter issue.
-> Looking at the topology, I would assume that there are several devices
-> on the same public subnet connect through the switch to the DSL modem 
-> in
-> which case they should talk to each other directly on that subnet
-> without sending the data across the DSL modem.  But am I correct to
-> understand that even though these devices share the same switch and the
-> same DSL modem that they are allocated public addresses out of 
-> different
-> IP subnets?
->
-> If that is the case, the best solution is to install a second NIC into
-> each device and create a separate private network as already suggested.
-> Barring that, you can create a second, logical network on the same
-> media.  Use iproute2 to bind a second address to each of the public
-> interfaces.  These will all come from the same subnet and should be 
-> able
-> to communicate with each other.  Just be sure to use the secondary
-> address when sending data between those devices.
->
-> ip address add dev0 192.168.1.4/24
-> ip address add dev0 192.168.1.5/24
-> ip address add dev0 192.168.1.6/24 . . . etc.
->
-> This is a bit dangerous as these devices are still publicly exposed and
-> the ISP may allow traffic on RFC1918 addresses on their internal
-> networks so you may want to tightly secure the devices even for traffic
-> from these "private" addresses using iptables.
->
-> This is the sort of set up that we use on our internal routers to
-> participate in the worldwide VPN project (http://www.worldwidevpn.com).
-> Good luck - John
-> -- 
-> John A. Sullivan III
-> Chief Technology Officer
-> Nexus Management
-> +1 207-985-7880
-> john.sullivan@nexusmgmt.com
-> ---
-> If you are interested in helping to develop a GPL enterprise class
-> VPN/Firewall/Security device management console, please visit
-> http://iscs.sourceforge.net
->
+The first command is accepted but the second command results in an 
+'Invalid argument' error.
+
+The computer has only one interface, eth0. Here are its particulars:
+Mandrake Linux 9.2
+Iptables 1.2.8
+kernel 2.4.24 patched with super-freeswan 1.99.8
+
+The value of /proc/sys/net/ipv4/conf/eth0/forwarding is 0. Changing it 
+to 1 has no impact.
+The value of /proc/sys/net/ipv4/conf/eth0/rp_filter is 0.
+
+I hope someone out there has some ideas about what's going on because 
+I'm all out.
+
+Andrew
 
 
 
