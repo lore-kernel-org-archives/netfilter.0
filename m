@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: how to construct rule to match multiple non-sequential ipv4 addresses
-Date: Fri, 18 Oct 2002 17:36:39 +0100
+Subject: Re: alias interfaces
+Date: Fri, 18 Oct 2002 21:01:33 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210181636.g9IGamL28805@vulcan.rissington.net>
-References: <Pine.LNX.4.44.0210180916130.26320-100000@home.apu.edu>
+Message-ID: <20021018200136.RFJF459.mta02-svc.ntlworld.com@there>
+References: <03c701c276c2$388fb3f0$13c01dd0@shadowfax> <200210181651.g9IGpjL28851@vulcan.rissington.net> <03f901c276e0$910fd140$13c01dd0@shadowfax>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.44.0210180916130.26320-100000@home.apu.edu>
+In-Reply-To: <03f901c276e0$910fd140$13c01dd0@shadowfax>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +18,46 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Friday 18 October 2002 5:22 pm, Chris Len wrote:
+On Friday 18 October 2002 8:57 pm, Mario Antonio wrote:
 
-> Is there any way to accomplish something like the following?
-> iptables -t filter -A INPUT -s (!192.168.0.2 || !192.168.0.3) -j DROP
+> Antony,
+>
+> Thanks for your reply. I really appreciate it.
+>
+> Linux 7.3 and iptables v1.2.7a
+> eth0=10.10.10.239
+> eth0:0=10.10.13.227
+>
+> workstation accessing the server: 10.10.10.19
+>
+> I have the following testing set of rules:
+>
+> #! /bin/sh
+> /usr/local/sbin/iptables -F
+> /usr/local/sbin/iptables -P INPUT DROP
+> #/usr/local/sbin/iptables -A INPUT   -j LOG --log-prefix "IPTABLES-IN "
+> /usr/local/sbin/iptables -P FORWARD ACCEPT
+> /usr/local/sbin/iptables -P OUTPUT ACCEPT
+> /usr/local/sbin/iptables -A INPUT -m state --state RELATED,ESTABLISHED -j
+> ACCEPT
+> /usr/local/sbin/iptables -A INPUT -s 10.10.10.19  -d 10.10.10.239 -p tcp -m
+> tcp --dport 80 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> /usr/local/sbin/iptables -A INPUT -i eth0  -s 10.10.10.19  -d
+> 10.10.13.227 -p tcp -m tcp --dport 80 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+>
+> With my set of rules I can access 10.10.10.239 without any problem.
+> But to access 10.10.13.227, I have to set -->iptables -P INPUT ACCEPT
+> What am I missing?
 
-Er, yes...
-
-iptables -t filter -A INPUT -j DROP
-
-    :-)
-
-Your request says "If the source address is not .2, or is not .3, then drop". 
-All addresses are "not .2" except for .2, and that is "not .3" therefore all 
-addresses match :-)
-
-If, however (as I suspect) you meant to ask "if the address is not .2 and is 
-not .3, then drop", try something like this:
-
-iptables -N mychain
-iptables -A INPUT -j mychain
-iptables -A mychain -s 192.168.0.2 -j RETURN
-iptables -A mychain -s 192.168.0.3 -j RETURN
-iptables -A mychain -j DROP
-
-This creates a user-defined chain called mychain, the INPUT chain calls the 
-user-defined chain, where packets with source address 192.168.0.2 return to 
-the INPUT chain and continue processing, as do packets with source address 
-192.168.0.3, all other packets get DROPped.
+I don't know.   Try adding a LOGging rule at the end of your INPUT chain to 
+see what extra packets are trying to get in but are being blocked.
 
 Antony.
 
 -- 
 
-You can spend the whole of your life trying to be popular,
-but at the end of the day the size of the crowd at your funeral
-will be largely dictated by the weather.
-
- - Frank Skinner
+Abandon hope, all ye who enter here.
+You'll feel much better about things once you do.
 
