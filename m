@@ -1,12 +1,13 @@
-From: "Ian Hunter" <ihunter@hunterweb.net>
+From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
 Subject: Re: help with routing/firewall
-Date: Thu, 18 Dec 2003 13:15:51 -0500
+Date: Thu, 18 Dec 2003 13:19:57 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <013501c3c592$f845d8d0$7000a80a@melita.com>
-References: <007901c3c591$e420f200$3800a8c0@kanux1>
+Message-ID: <3FE1EFCD.2050307@Loudoun-Fairfax.com>
+References: <20031218180112.66315.qmail@web20419.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20031218180112.66315.qmail@web20419.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,58 +17,47 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/html; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-SuSE comes with a script called SuSEfirewall that automatically configures
-things for you.  You probably don't want that if you're talking to folks on
-this list.
-
-See if you have iptables or ipchains -- type iptables-save and if you get
-output, post it to the list and we'll see what SuSE is doing firewall wise.
-
------ Original Message ----- 
-From: "Juan Hernandez" <alucard@kanux.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, December 18, 2003 1:08 PM
-Subject: RE: help with routing/firewall
-
-
-> Mmm im not sure if we are able to help you that way. that would be
-> making the job for you I guess. correct me if I'm wrong. Read some
-> manuals, get a grip in netfilter and if you don't understand something,
-> we'll help you.
->
-> Juan
->
->
-> -----Original Message-----
-> From: netfilter-admin@lists.netfilter.org
-> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Fred Gurn
-> Sent: jueves, 18 de diciembre de 2003 14:01
-> To: netfilter@lists.netfilter.org
-> Subject: help with routing/firewall
->
-> Hi,
-> I have set up suse linux as bridge/firewall.
-> Simple configuration.
-> eth0 internet
-> eth1 local net
-> Everything accepted from eth1, nothing from eth0, traffic from eth1 is
-> routed to internet.
-> IP forwarding is enabled.
-> >From local net I can ping eth1 and eth0 (that means machine is routing
-> packets), but I cant go outside eth0. Same happens when ther is no
-> firewall. What's the problem with routing?
-> What comands can I use to monitor what is happening with packets?
->
-> Tahnks in advance.
->   _____
->
-> Do you Yahoo!?
-> New
-> <http://pa.yahoo.com/*http:/us.rd.yahoo.com/evt=21260/*http:/photos.yaho
-> o.com>  Yahoo! Photos - easier uploading and sharing
->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+  <title></title>
+</head>
+<body text="#000000" bgcolor="#ffffff">
+Fred Gurn wrote:<br>
+<blockquote type="cite"
+ cite="mid20031218180112.66315.qmail@web20419.mail.yahoo.com">
+  <div>Hi,</div>
+  <div>I have set up suse linux as bridge/firewall.</div>
+  <div>Simple configuration. </div>
+  <div>eth0 internet</div>
+  <div>eth1 local net</div>
+  <div>Everything accepted from eth1, nothing from eth0, traffic from
+eth1 is routed to internet.</div>
+  <div>IP forwarding is enabled.</div>
+  <div>From local net I can ping eth1 and eth0 (that means machine is
+routing packets), but I cant go outside eth0. Same happens when ther is
+no firewall. What's the problem with routing?</div>
+</blockquote>
+<br>
+You've answered your own question. You have a problem with routing.
+Check the default routes on your LAN and make sure they point to the
+firewall box.<br>
+<blockquote type="cite"
+ cite="mid20031218180112.66315.qmail@web20419.mail.yahoo.com">
+  <div>What comands can I use to monitor what is happening with packets?</div>
+</blockquote>
+<br>
+Insert LOG rules in the ruleset and then check for entries in
+/var/log/messages. You can use LOG just like any other target. Until
+you fix the routing issue you can't do much with iptables.<br>
+<br>
+Jeff<br>
+<br>
+</body>
+</html>
 
 
