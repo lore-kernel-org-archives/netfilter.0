@@ -1,11 +1,11 @@
-From: pi <pi@art-ad.se>
-Subject: Port 723?
-Date: Tue, 5 Nov 2002 18:49:08 +0100
+From: Payal <payal@hotpop.com>
+Subject: Re: How will I mesure my bandwith
+Date: Tue, 5 Nov 2002 23:13:26 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E2913D4A-F0E6-11D6-AEC7-0030656EDEF8@art-ad.se>
-Mime-Version: 1.0 (Apple Message framework v546)
-Content-Transfer-Encoding: 7bit
+Message-ID: <20021105174326.GB8734@localhost.localdomain>
+Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,21 +15,19 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Can anyone tell me what runs  on port 723?
-After nmap <interface> i got this:
-
-723/tcp open unknown
-
-
-I peeked through /etc/services and didnt find anything that runs on 
-that port.
-Is there a way or a rule to stop this in my firewall script?
-
-
-Regards
-pi
-
+Hi,
+Please try darkstat. it is pretty cool one and easy to install. It runs
+on port 666 by default and you can access it with,
+http://1.2.3.4:666
+where 1.2.3.4 is your ip.
+Thanks and bye.
+-Payal
+-- 
+Pauca sed matura.
+	[Few but excellent.]
+		-- Gauss
 
