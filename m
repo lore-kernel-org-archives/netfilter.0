@@ -1,12 +1,12 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: curious about address specification and port specification
-Date: Thu, 10 Oct 2002 05:16:03 -0400 (EDT)
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: messages in /var/log/message file
+Date: Thu, 10 Oct 2002 12:39:59 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.44.0210100513560.20979-100000@localhost.localdomain>
-References: <000401c27014$5783fdc0$026410ac@honor>
+Message-ID: <Pine.LNX.4.33.0210101234220.27631-100000@blackhole.kfki.hu>
+References: <3DA3D4CE.9050407@inbox.lv>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000401c27014$5783fdc0$026410ac@honor>
+In-Reply-To: <3DA3D4CE.9050407@inbox.lv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,42 +18,30 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+To: Arindam Haldar <arindamhaldar@inbox.lv>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Thu, 10 Oct 2002, Sascha Reissner wrote:
+On Wed, 9 Oct 2002, Arindam Haldar wrote:
 
-> From: "Robert P. J. Day" <rpjday@mindspring.com>
-> 
-> > just the other day, i was at a local LUG meeting and a guy was giving a
-> > quick tutorial on iptables and displayed a sample rule file that contained
-> > the rule:
-> >
-> >   iptables -A FORWARD --destination 172.16.0.2 --destination-port 25  \
-> > --jump ACCEPT
-> >
-> >   doesn't this represent an example of what i was asking about?  a
-> > reference to a port with no reference to protocol.
-> 
-> well, a flipchart, whiteboard or video beamer presentation wont spit out any
-> error messages...
-> 
-> a real computer will do, and it will tell you that --destination-port is an
-> invalid parameter in that case..
-> 
-> because you dont specify any protocol ;)
-> 
-> iptables v1.2.6a: Unknown arg `--destination-port'
-> Try `iptables -h' or 'iptables --help' for more information.
+> Oct  9 12:26:31 ICG kernel: ip_conntrack: max number of expected
+> connections 1 of ftp reached for <ipA> -> <ipB>, reusing
+> Oct  9 12:27:12 ICG kernel: ip_conntrack: max number of expected
+> connections 1 of ftp reached for <ipA> -> <ipB>, reusing
+>
+> these messages are piling the message file.
+> am cusrious now why so ?.. what does this message signify ?
 
-apparently, it was my misunderstanding.  i thought the presenter was
-displaying the contents of his *actual* rules file, when he had just
-lashed together a sample file for the purposes of the talk without 
-actually testing the file.  argh.  so, yes, the rule in question is
-in fact invalid.
+It means, that the FTP client in question sends new PORT/PASV commands
+without establishing the data channel. The ip_conntrack_ftp module
+registers the new request by overwriting the previous one and logs the
+problem.
 
-i have *got* to stop taking people at their word. :-)  thanks for all
-your patience, i think i have a pretty good handle on all this now.
-
-rday
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
