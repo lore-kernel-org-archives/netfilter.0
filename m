@@ -1,11 +1,10 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: is this 1969 ? Are we on the moon yet?
-Date: Fri, 10 Dec 2004 18:30:26 -0800
-Message-ID: <27594E8BA9D5CA458F5EF87D88B6B48F019831@pxtvjoexd01.pxt.primeexalia.com>
+From: =?ISO-8859-1?Q?Antonio_P=E9rez?= <antonio.perez02@alu.umh.es>
+Subject: nat/masquerade with kernel 2.6.x
+Date: Sat, 11 Dec 2004 13:45:08 +0100
+Message-ID: <41BAEBD4.8080401@alu.umh.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,19 +15,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Federico Lucifredi <flucifredi@acm.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Not the time zone, the twilight zone...  Maybe you hit the outer limits
-of your email server/relay...  After all they do control your
-television.
-
-Gary
-
-> Well.... here the clock is set to Dec 10th, 2004. Why are all my
-digests
-> coming from 1969? don't tell me its the timezone =3D)
->=20
-> -Federico
->=20
+Hello,
+I hava a local network with private directions, and a adsl conection. I 
+want to do masquerade. Then I do:
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+    iptables --table nat --append POSTROUTING --out-interface eth1 -j 
+MASQUERADE
+where eth1 is the interface conected to internet. This work perfectly 
+with the kernels 2.4.x.
+But one week ago I installed the kernel 2.6.8 and when I do :
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+    iptables --table nat --append POSTROUTING --out-interface 
+$ifc_internet -j MASQUERADE
+the hosts of the internal network can do ping to internet, and this is 
+normal, but they can not open any web or conection the msn , they
+only can do ping. This is very stranger. I try the kernels 
+2.6.7,2.6.7,2.6.8 and 2.6.9 and they do no work.
+Can somebody help me, please?
+Sorry for my bad english.
 
