@@ -1,13 +1,16 @@
-From: "Paul J. Caritj" <pcaritj@riovia.net>
-Subject: Re: Redirecting Traffic Locally
-Date: Tue, 28 Oct 2003 20:36:50 -0500
+From: Security <security@ezsm.net >
+Subject: Re: HELP!!! (ip_conntrack: table full)
+Date: Tue, 28 Oct 2003 21:50:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F9F19B2.4040801@riovia.net>
-References: <008a01c39dbb$60b51070$2288e7c0@promed.com.au>
+Message-ID: <200310282051.01418.security@ezsm.net>
+References: <007e01c39dbc$d606fae0$de0018ac@admin.monash.edu.my>
+Reply-To: security@ezsm.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <008a01c39dbb$60b51070$2288e7c0@promed.com.au>
+In-Reply-To: <007e01c39dbc$d606fae0$de0018ac@admin.monash.edu.my>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,72 +20,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: eturner@monash.edu.my, netfilter@lists.netfilter.org
 
-No dice, thanks for the tip though.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-If it helps, here is my entire setup:
+modprobe ip_conntrack
 
-iptables -t nat -F PREROUTING;
-iptables -t mangle -F PREROUTING;
-iptables -t nat -F UNREGISTERED;
-iptables -t nat -I UNREGISTERED -s 192.168.1.7 -d 0/0 -j ACCEPT;
-iptables -t nat -I UNREGISTERED -s 0/0 -d 192.168.1.7 -j ACCEPT;
-iptables -t nat -I UNREGISTERED -s 10.0.0.1 -d 0/0 -j ACCEPT;
-iptables -t nat -I UNREGISTERED -s 0/0 -d 10.0.0.1 -j ACCEPT;
-iptables -t nat -I UNREGISTERED -s www.riovia.net -d 0/0 -j ACCEPT;
-iptables -t nat -I UNREGISTERED -s 0/0 -d www.riovia.net -j ACCEPT;
-iptables -t nat -I UNREGISTERED -s www.riovia.com -d 0/0 -j ACCEPT;
-iptables -t nat -I UNREGISTERED -s 0/0 -d www.riovia.com -j ACCEPT;
-iptables -t nat -A UNREGISTERED -p tcp -s 0/0 -d 0/0 -j DNAT 
---to-destination 10.0.0.1;
-iptables -t nat -I PREROUTING -d 0/0 -s 0/0 -j UNREGISTERED;
+or=20
 
-Stuart J. Browne wrote:
+insmod ip_conntrack =20
 
->>-----Original Message-----
->>From: netfilter-admin@lists.netfilter.org 
->>[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Paul 
->>J. Caritj
->>Sent: Wednesday, 29 October 2003 11:01
->>To: netfilter@lists.netfilter.org
->>Subject: Redirecting Traffic Locally
->>
->>
->>Gents,
->>Hopefully this is an easy question :)
->>
->>I have a firewall with a built in webserver. I want all traffic going 
->>through this firewall, not to (or from) a proscribed list of IPs to be 
->>redirected to the Site hosted on the firewall itself (its a signup 
->>page). At present, I'm using redirection of this form:
->>
->>iptables -t nat -A UNREGISTERED -s 0/0 -d 0/0 -j DNAT --to-destination 
->>XXXXXXX;
->>    
->>
->
->Have you tried using 'REDIERCT' instead of 'DNAT' ?
->
->iptables -t nat -A UNREGISTERED -j REDIRECT --to <localport>
->
->  
->
->>A rule in the PREROUTING chain bounces traffic to the UNREGISTERED 
->>chain. The system works fine when XXXXXXX is outside the network. 
->>However, I cannot DNAT to the firewall itself. Thoughts, anyone?
->>    
->>
->
->Stuart
->
->
->
->.
->
->  
->
+NH
 
+On Tuesday 28 October 2003 8:34 pm, Edmund Turner wrote:
+> Hey guys, its been awhile,(im getting old and my memory seems to escape
+> me.) so please bear with me. :)
+>
+> TO remove the module
+>  rmmod ip_conntrack.o
+> How do I reinstate the module?????
+>
+>
+> Regards
+> edmund
+>
+>
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE/nx0EPEfiOMhBaIMRAr/gAKCwwYZz+qyreGadotVr6YihjX0RBgCdFYkF
+78edQvig80Z35SotiJJdofY=3D
+=3DwyNB
+=2D----END PGP SIGNATURE-----
 
 
