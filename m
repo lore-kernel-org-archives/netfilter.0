@@ -1,11 +1,13 @@
-From: "T. Horsnell (tsh)" <tsh@mrc-lmb.cam.ac.uk>
-Subject: connection dropouts
-Date: Wed, 25 Feb 2004 19:05:27 +0000 (GMT)
+From: "Sven-Ake Larsson" <sven-ake.larsson@hiq.se>
+Subject: SV: Ports opened without request
+Date: Wed, 25 Feb 2004 20:24:26 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E1Aw4LY-001AoE-0V@alf1.lmb.internal>
+Message-ID: <IKEBLEEAACOIAKBCECDDOECICAAA.sven-ake.larsson@hiq.se>
+References: <403CD4DF.1070704@stupar.homelinux.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <403CD4DF.1070704@stupar.homelinux.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,41 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
 
-Hi all,
+How did you make scan, from the machine itself or from another machine on
+the outside? Some rulesets doesn't really work when you are at the same
+machine.
+Do you allow any ICMP packets? If so, try to drop them too and scan the
+machine again.
+What is your current ruleset? It helps a lot if you can add it to the list.
 
-We are currently using iptables 1.2.5 and kernel 2.4.18 to do filtering
-and NAT. There are about 800 hosts behind the firewall, and we are in
-the process of moving them into private ip space (10.x.x.x) so not all
-the 800 are NAT candidates, only about 400 so far. The rest still have
-their global ip addresses.
-Users are starting to report that when their machine is moved to
-10. space, they experience network hangups when accessing offsite
-servers (mainly web/ftp but also ssh) and I'd like your advice 
-where I should start looking. 
+I believe you'll have the masters answers soon... ;-)
 
-The firewall box is a 1GHz AMD with 128MBytes mem, and
-/proc/sys/net/ipv4/ip_conntrack_max is currently set to 8184.
+Regards,
+S
 
-How can I track how close I get to this limit? 
-What is the memory use per conntrack entry?
-Is there anything particular about NAT entries in the conntrack
-tables that would make NAT'd hosts more prone to net hangups
-that unNAT'd ones?
-If I raise my ip_conntrack_max value, am I likely to crash
-the firewall if I raise it too high?
-What is the theoretical maximum number of conntrack entries?
-What is the theoretical maximum number of NAT connections?
-(this would seem to me to be 65536 - the maximum number
-of ports available on a single host, i.e. the NAT box
-since it has to map a source host:hostport into a NAT:natport)
+-----Ursprungligt meddelande-----
+Fran: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org]F=F6r Sasa Stupar
+Skickat: den 25 februari 2004 18:01
+Till: netfilter@lists.netfilter.org
+=C4mne: Ports opened without request
 
-Sorry for all the questions, but I'm starting to get worried
-that we may have bitten off more than we can chew here...
 
-TIA,
-Terry.
+Hi!
+
+I have linux RH8 with kernel 2.4.20-28.8, iptables v1.2.8. I have setup
+a firewall with some tcp ports opened (21,25,80,110,443) for servers.
+Then I have ran a port scan  and scanned all 65535 tcp and udp ports. I
+was suprised that 3 ports were opened even if I didn't opened them in
+the configuration. These ports are tcp 389,1002 and 1720.
+I have tried to block them manually by entering a drop command for these
+three ports but no success-they are still open.
+What am I missing here? Is this some problem with iptables?
+
+Sasa
+
 
