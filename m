@@ -1,12 +1,13 @@
-From: Roberto Nibali <ratz@tac.ch>
-Subject: Re: IPTables Feature set and performance.
-Date: Wed, 04 Dec 2002 14:17:00 +0100
+From: Ard van Breemen <ard@telegraafnet.nl>
+Subject: Re: Too many ARP entries and Re: sendto: No buffer space available
+Date: Wed, 4 Dec 2002 16:23:20 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DEE004C.1010102@tac.ch>
-References: <OE22IyhXMOYdOiQ4rYn000056cb@hotmail.com> <3DEBEB33.2070806@iprimus.com.au>
+Message-ID: <20021204152320.GE23341@telegraafnet.nl>
+References: <571705138.20021202111645@pobox.com> <14127620470.20021202182836@pobox.com> <1038920934.8888.4.camel@elendil.intranet.cartel-securite.net> <875890239.20021203122724@pobox.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <875890239.20021203122724@pobox.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,54 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Michael <mutk@iprimus.com.au>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andre Docena Correa <andre.docena@pobox.com>
+Cc: Cedric Blancher <blancher@cartel-securite.fr>, netfilter@lists.netfilter.org
 
-Hi,
+On Tue, Dec 03, 2002 at 12:27:24PM -0200, andre.correa@pobox.com wrote:
+> We   see   my   linux  box  asking  for MAC addresses of hosts outside
+> its "local" network and my gateway, a Cisco 2621 answering those
+> broadcasts with its own MAC address.
+> 
+> For  what  I know, both are doing wrong. My box is not supposed to ask
+> for those MACs and the Cisco is not supposed to answer.
+Your cisco is configured to do proxy-arp. This might be a policy
+decision. I have proxy-arp on, because I have very small subnets,
+but pretend to be a /24 to the customers. Nobody notices it.
 
-> In addition to this, I have found one mention of throughput capabilities 
-> of iptables. According to this reference :http://www.hipac.org/  (The 
-> performance test links), iptables does have significant limitation of 
-> throughput when large (Sequential) rulesets are used. I believe under 
+The only fault in your setup is that you probably have:
+ip route add default dev <internetdev>
 
-Exactly.
+Be aware that ip route show might not show you the details.
+If you do for example this:
+ip route add 172.16.0.1/32 dev eth0
+ip route add default via 172.16.0.1
+ip route del 172.16.0.1/32 dev eth0
+you would see a natural "gatewayed" route, but with something
+peculiar: 172.16.0.1 was local at the time of addition, so it
+will send everything to the interface as local traffic, not
+gatewayed!
 
-> ideal circumstances, and with carefull attention paid the impact can be 
-> minimised.
-
-Exactly.
-
-But simply consider the fact that some people do not write their fw rules by 
-hand, they generate it via a meta language layer. It is apparent that the 
-generation of rulesets which span over multiple packet filter instances are 
-implicit non-optimised.
-
-Also consider the fact that the way nf-hipac is implemented, the matching rule 
-lookup will always be equally or faster to netfilter's table lookup per 
-definition and code.
-
-> I haven't replicated the tests, and also do not know how authoritative 
-> the tests are.
-
-Preliminary tests were done by me and you can certainly consider them to be 
-authoritative. Unfortunately due to health reasons and limited spare time I had 
-to stop further tests. I will pick up the conduct of tests maybe in the 
-beginning of next year. Together with a friend of mine I've also written a paper 
-(for a link, please search this mailinglist archive) about the inefficiencies of 
-various rule matching algorithms based on observation, pragmatic testing and 
-code reading.
-
-> If the tests results are accurate, this might help in making comparisons 
-> and decision making. Does anyone have evidence to backup the findings of 
-> nf-hipac peaple?
-
-I do have some numbers and I have posted them to various mailinglists. Also if 
-you go to the nf-hipac page itself, you see a quite a convincing test result.
-
-Best regards,
-Roberto Nibali, ratz
+route -n will tell you the real routing. Eh, but only for the
+main routing table... :-).
+Anyway: fix your default gateway.
 -- 
-echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq' | dc
-
+procedure signature;
+begin  { telegraaf.com
+} writeln('<ard@telegraafnet.nl> SMA-IS | Geeks don't get viruses');
+end
 
