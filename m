@@ -1,50 +1,113 @@
-From: Oskar Andreasson <blueflux@koffein.net>
-Subject: [RELEASE] Ipsysctl-tutorial 1.0.2
-Date: Thu, 19 Dec 2002 20:20:09 +0100 (CET)
-Sender: lartc-admin@mailman.ds9a.nl
-Message-ID: <Pine.LNX.4.44.0212192010070.6773-100000@laptop1.agatha>
+From: Chip Upsal <Chip@CyberWolf.com>
+Subject: Apache virtualhost not working behind firewall.
+Date: Thu, 19 Dec 2002 18:39:17 -0700
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <3E0274C5.7080000@CyberWolf.com>
 Mime-Version: 1.0
-Return-path: <lartc-admin@mailman.ds9a.nl>
-Errors-To: lartc-admin@mailman.ds9a.nl
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org
+Return-path: <netfilter-admin@lists.netfilter.org>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Ok, sorry about sending all these notifications, but this is the last
-notification for a couple of weeks, so please don't flame me:).
+I have a windows 2000 server running apache 2.0.43 with virtual hosts 
+behind an iptables firewall doing NAT.
+I am running iptables v1.2.5 on a redhat 7.3 server.
 
-I just decided to release version 1.0.2 of the ipsysctl tutorial, and it 
-is now up at http://ipsysctl-tutorial.frozentux.net
+My nat and fowarding rules look like:
 
-This version is seriously broken, and a lot of stuff is still missing, but 
-there has been so many minor fixes etc, and long time since the last 
-release, that I decided to release it now anyway. Also, I will be gone for 
-2 weeks (I think you call it "extended animation" in english... I will be 
-up in the dark dark _dark_ side of Sweden, probably sleeping the whole 
-time;)), hence this release at this time.
+INET_IP="216.184.9.5"
+#HTTP_IP="216.184.9.6"
+PWWEB_IP="216.184.9.30"
+PWODBC_IP="216.184.9.29"
+INET_IFACE="eth2"
 
-Special thanks to Don Cohen for going through the icmp_rate* variables 
-over and over and over with me... Sometimes I just don't get the text 
-right, which I think he has proven.
+LAN_IP="192.168.1.15"
+LAN_IP_RANGE="192.168.1.0/24"
+LAN_BCAST_ADRESS="192.168.1.255"
+LAN_IFACE="eth0"
 
-Thanks all!
 
--- 
-----
-Oskar Andreasson
-http://www.frozentux.net
-http://iptables-tutorial.frozentux.net
-http://ipsysctl-tutorial.frozentux.net
-mailto:blueflux@koffein.net
+DMZ_PWWEB_IP="192.168.0.2"
+DMZ_PWSQL_IP="192.168.0.3"
+DMZ_PWODBC_IP="192.168.0.4"
+DMZ_IP="192.168.0.1"
+DMZ_IFACE="eth1"
 
-_______________________________________________
-LARTC mailing list / LARTC@mailman.ds9a.nl
-http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
+
+$IPTABLES -A FORWARD -i $DMZ_IFACE -o $INET_IFACE -j ACCEPT
+$IPTABLES -A FORWARD -i $INET_IFACE -o $DMZ_IFACE -m state \
+--state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $LAN_IFACE -o $DMZ_IFACE -j ACCEPT
+$IPTABLES -A FORWARD -i $DMZ_IFACE -o $LAN_IFACE -j ACCEPT
+
+#
+# PWWEB
+#
+
+$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWWEB_IP \
+--dport 80 -j allowed
+$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWWEB_IP \
+-j icmp_packets
+
+#
+# PWODBC
+#
+
+$IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -d $DMZ_PWODBC_IP \
+--dport 80 -j allowed
+$IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -d 
+$DMZ_PWODBC_IP \
+-j icmp_packets
+
+#
+# PWWEB
+#
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $PWWEB_IP 
+--dport 80 \
+-j DNAT --to-destination $DMZ_PWWEB_IP
+
+$IPTABLES -t nat -A PREROUTING -p ICMP -i $INET_IFACE -d $PWWEB_IP \
+-j DNAT --to-destination $DMZ_PWWEB_IP
+
+#
+# PWODBC
+#
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $PWODBC_IP 
+--dport 80 \
+-j DNAT --to-destination $DMZ_PWODBC_IP
+
+$IPTABLES -t nat -A PREROUTING -p ICMP -i $INET_IFACE -d $PWODBC_IP \
+-j DNAT --to-destination $DMZ_PWOBDC_IP
+
+
+The problem....
+When the server is connected directly to the internet all works well. 
+However, when it is behind the firewall the virtualhost are not working 
+(you can only access the default web site.
+
+Furthermore i am getting the following errors when starting iptables;
+
+[root@iptables init.d]# ./iptables restart
+Flushing all current rules and user defined chains:        [  OK  ]
+Clearing all current rules and user defined chains:        [  OK  ]
+Applying iptables firewall rules:                          [  OK  ]
+iptables v1.2.5: Unknown arg `--to-destination'
+Try `iptables -h' or 'iptables --help' for more information.
+                                                            [  OK  ]
+
+
+Any ideas on a solution would be most appriciated.
+
+
+Chip
+
+
