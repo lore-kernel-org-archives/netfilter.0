@@ -1,13 +1,13 @@
-From: "Brad Morgan" <B-Morgan@concentric.net>
-Subject: RE: problem with forward/nat
-Date: Sun, 7 Mar 2004 08:57:04 -0700
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: What is missed for port forwarding
+Date: Sun, 7 Mar 2004 16:02:25 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007d01c4045c$d9130060$0400a8c0@bradmorgan>
-References: <200403071503.56728.Antony@Soft-Solutions.co.uk>
+Message-ID: <200403071602.25190.Antony@Soft-Solutions.co.uk>
+References: <20040306183657.GB836@glorybox.de> <200403070953.52863.Antony@Soft-Solutions.co.uk> <20040307154907.GA1978@glorybox.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <200403071503.56728.Antony@Soft-Solutions.co.uk>
+In-Reply-To: <20040307154907.GA1978@glorybox.de>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +18,42 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Antony Stone' <Antony@Soft-Solutions.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> >  Once you hit that rule, the only thing going past
-> > are INVALID packets so the rest of the INPUT and OUTPUT chains aren't
-> doing
-> > anything useful.
-> 
-> No, the other rules are dealing with packets to interfaces other than lo.
+On Sunday 07 March 2004 3:49 pm, Kai Weber wrote:
 
-Opps, I missed the lo!  That means there is no ESTABLISHED,RELATED rule for
-the Ethernet traffic.  My suggestions remove the lo interface which fixes
-that.
+> * Antony Stone <Antony@Soft-Solutions.co.uk>:
+> > Are you testing both SSH/10143 and HTTP/8888 from the same client machine
+> > out on the Internet?
+>
+> Thanks for the tip. It works from outside. I tested only from "inside".
+>
+> Why does DNAT not work when trying from inside?
 
-So for local traffic add the rule:
+See my sig below.
 
-iptables -A INPUT -i lo -j ACCEPT
+Client (eg 192.168.1.10) connects to firewall on192.168.1.250.
+Firewall DNATs the packet and sends it to 192.168.1.2
+192.168.1.2 replies to 192.168.1.10, which is on the local network, therefore 
+reply doesn't go through the firewall, therefore no reverse NAT takes place.
 
-just after the drop of INVALID state packets.  Since I leave the OUTPUT
-default policy as ACCEPT, I don't have an OUTPUT rule for lo but it would
-probably be:
+Result: 192.168.1.10 sent a packet to 192.168.1.250 and got a reply from 
+192.168.1.2.
 
-iptables -A OUTOUT -o lo -j ACCEPT
+Confused unhappy client.
 
-again placed just after the drop of INVALID state packets.
+See also http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
 
+Regards,
+
+Antony.
+
+-- 
+90% of networking problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
