@@ -1,12 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: I need a clever solution for two Bittorrent machines behind
-	afirewall
-Date: Thu, 18 Nov 2004 10:12:40 -0800
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF56795BD@alderaan.smgtec.com>
+From: Kenneth Porter <shiva@sewingwitch.com>
+Subject: Re: I need a clever solution for two Bittorrent machines behind
+ a	firewall
+Date: Thu, 18 Nov 2004 11:31:06 -0800
+Message-ID: <260C0D3A0781D4EBEEED6053@[10.169.6.246]>
+References: <00c801c4cd90$8980f090$0400a8c0@bradmorgan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <00c801c4cd90$8980f090$0400a8c0@bradmorgan>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,14 +19,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jason Opperisano <opie@817west.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+--On Thursday, November 18, 2004 10:03 AM -0700 Brad Morgan 
+<B-Morgan@concentric.net> wrote:
 
-> i'm not familiar with the game your talking about or how it implements
-> its BT client.
+> I'm using a Linux firewall with IPTables as my home firewall.
 
-WOW hard-coded the ports used. The only way to change the ports was to
-extract the BT file out of the executable and run it off another BT
-client. That isn't a very elegant solution!
+Take a look at "port triggering". This is a feature in the Linksys WRT54G, 
+which uses uClinux under the hood. When an outbound connection is seen to a 
+particular port, a port forwarding rule is installed for the internal 
+client. I'm guessing this is done by monitoring the iptables logs and 
+installing a custom chain on demand that's removed after a period of 
+inactivity.
 
