@@ -1,14 +1,14 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Proto 41 filtering and processing...
-Date: Tue, 14 Sep 2004 18:19:30 -0400
+From: Mark Ord <lists@losthorizons.mailshell.com>
+Subject: Re: Forwarding non local packets to loopback with iptables?
+Date: Tue, 14 Sep 2004 09:31:49 +1000
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <200409141819.30436.Alistair@nerdnet.ca>
-References: <20040913174539.GA17190@alcove.wittsend.com>
+Message-ID: <20040913233149.GA2378@scholars.home>
+References: <20040907114859.GA13315@scholars.home>
+	<1094603729.1751.34.camel@wolfpack.ljm.dom>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040913174539.GA17190@alcove.wittsend.com>
 Content-Disposition: inline
+In-Reply-To: <1094603729.1751.34.camel@wolfpack.ljm.dom>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,83 +19,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On September 13, 2004 01:45 pm, Michael H. Warfield wrote:
-> Hey all,
->
-> 	I've got some questions and some observations viv-a-vis proto 41
-> filtering (that "named" ipv6 but, what it really is, is 6over4 in the
-> IPv4 tables).  These are problems where IPv4 and IPv6 interreact or
-> interoperate and some recognition of both layers simultaniously is
-> required.
->
-> 	There are cases where, in handling protocol 41 traffic, I want
-> to respond with IPv4 errors codes.  For instance, if I receive 6to4
-> traffic (protocol 41 traffic with IPv6 addresses in the 2002::/16
-> range) from an IPv6 range I don't want to talk to, I want to send back
-> and IPv4 ICMP protocol unreachable (indicating that I'm not going to
-> talk protocol 41 with him - think scanners).  To generate the IPv4 ICMP
-> unreachable error, this needs to be done in the IPv4 tables, correct?
-> But to select out the packets, I need to examine the IPv6 addresses in
-> the next header up.  So it's examination of the IPv6 information in the
-> 6over4 protocol (proto 41) by the IPv4 iptables.
+On Wed, Sep 08, 2004 at 08:34:07AM +0000, opie at 817west. com Wed Sep 8 02 wrote:
 
-	Okay -- as I understand things in this neck of the woods, protocol 41 is the 
-IPv4 tunnel into which we have stuffed the IPv6 packets.  Since this is a 
-tunnel, there should be an endpoint to the tunnel.  I have my firewall setup:
+> On Tue, 2004-09-07 at 07:49, Mark Ord wrote:
+> > 
+> > What I want to do is set up a SSH tunnel to another machine, behind
+> > another firewall, and use the eth1 aliases to access the remote machines from my
+> > local network (eth1) and the iptables machine. I tried to set this up
+> > before with iptables, failed, 
+> 
+> can we revisit why that failed, perhaps?
 
-iptables -I INPUT 7 -p 41 -s {ip(v4) of tunnel provider} -d {ip(v4) of  \ 
-firewall} -j ACCEPT
+Basically being new to iptables at the time. I set up NAT, firewall and
+the internet -> internal forwardings I wanted, had a crack at setting up
+what I described in the original email, couldn't get it to work, discovered
+rinetd, and went with that.
 
-(I also have a reciprocal rule in output to limit where I will let protocol 41 
-go out to )
+Now, months later, that I know a lot more about using iptables, I decided to
+try again.
 
-I suppose you could:
+> > Last time I tried to establish this with iptables, I got nowhere. This time
+> > around I got it working on the iptables machine with:
+> > 
+> > $IPTABLES -t nat -I OUTPUT -p tcp -s 192.168.0.128 --dport 3389 \
+> >         -j DNAT --to 127.0.0.1:13389
+> >    .. etc .. for each address and port required.
+> > 
+> > Connecting to 129.168.0.128 port 3389 takes me where I want - down the
+> > ssh tunnel, to machine on the remote network.
+> 
+> this isn't exactly a great test scenario, as you're testing locally on
+> the box itself, which will not cleanly extrapolate to the forwarding
+> scenario.
 
-iptables (-I -A) INPUT (rulenum?) -p 41 -s 0/0 -d {ip(v4) of firewall} -j  \ 
-REJECT --reject-with icmp-host-unreachable
+Well, I want to be able to connect to 192.168.0.128 from the firewall box
+itself (working) in addition to being able to from the rest of the
+192.168.0.0/24 network (not working).
 
-so long as that rule *followed* the ACCEPT rule from your provider.
-I have a default DROP policy on INPUT and OUTPUT and FORWARD.  The firewall 
-does the tunnelling and ip6tables kicks in after the tunnel comes up.
+> > Is it possible to achieve this with iptables (redirecting traffic coming in
+> > on eth1 (for eth1:?) to a port on 127.0.0.1), and if so, what rules are
+> > required?
+> 
+> no.
 
+Thanks.
 
->
-> 	Any thoughts on the best way to accomplish this?
->
-> 	Second problem...
->
-> 	Someone issues a proto 41 packet addressed to me but it doesn't
-> come FROM any source address I recognize in any of my SIT tunnels.  So,
-> it shows up as proto 41 in the IPv4 tables (does it?).  
+> but since you have dedicated IP addresses per host--why aren't you
+> just DNAT-ing from the IP on eth1 directly to the host that should
+> receive the traffic (i believe this is the "previously failed"
+> scenario)?
 
-	Yes indeedy it does.  I drop about 5 packets a day -- on a simple home router 
-on a DSL net.  I *believe* that these are likely from misconfigured *cough* 
-winboxen that have IPV6 pointed out the door and are looking for a tunnel. 
-*sigh* thanks MS.
+Because what is bound to 192.168.0.128 (in reality to the loopback, which
+192.168.0.128 is supposed to forward to) are via ssh port forwards to a
+machine behind another firewall, with non-routable addresses. The idea is to
+connect to 192.168.0.128, but actually end up connected to a machine that is
+out on the internet, not something physically on the LAN.
 
-> Does it show up 
-> at all in any of the IPv6 tables?  If so, what input device?  If not, how
-> is the error generated?  Is it an IPv6 error from one of the IPv6 addresses
-> or is it an IPv4 error?  Thoughts on that?
-	
-	Unless you have the tunnel setup to the other end you will NOT see the ipv6 
-data, since the standard TCP stack will not unwrap the packet without the 
-tunnel code in place, so no it will NOT show up in ip6tables at this point.
+Thanks for the response,
+Mark.
 
-	I suppose that if you are leaking your ipv4 address into ipv6 packets 
-(application layer perhaps?) the remote ipv6 enabled hosts could well be 
-trying to talk back to you on ipv4 direct -- but those packets should be ipv4 
-packets OTHER than protocol 41.  I just accept that there are skiddidiots out 
-there and poorly configured systems, and drop the packets. 
-
-
-	(please note that ipv6 is not my strong suit, someone else out there might 
-have more details ....  and .. please read the sample rules carefully and 
-check syntax .. I may not be perfect today)
-	
-	Alistair Tonner
->
-> 	Mike
 
