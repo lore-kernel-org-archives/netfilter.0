@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables question - how to securely allow *just* outgoing smtp
-Date: Fri, 21 Jun 2002 16:35:31 +0100
+Subject: Re: please explain "--state RELATED/ESTABLISHED" rules in iptables
+Date: Fri, 21 Jun 2002 16:39:22 +0100
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206211535.g5LFZbU03196@vulcan.rissington.net>
-References: <20020621083228.A21833@spawar.navy.mil>
+Message-ID: <200206211539.g5LFdWU03215@vulcan.rissington.net>
+References: <20020621083307.B21833@spawar.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020621083228.A21833@spawar.navy.mil>
+In-Reply-To: <20020621083307.B21833@spawar.navy.mil>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,29 +20,27 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Friday 21 June 2002 4:32 pm, Christian Seberino wrote:
+On Friday 21 June 2002 4:33 pm, Christian Seberino wrote:
 
-> My firewall does *not* need or use any
-> rules on INPUT and OUTPUT chains
-> since it just *FORWARD*s packets to/from
-> private LAN.....
+> My firewall iptables script has rules
+> to drop lots of packets and only forward
+> certain packets.....
 >
-> I'd like to install Tripwire on firewall
-> and have firewall *email* me daily of status.....
+> I've seen lots of iptables scripts that
+> have rules with "--state RELATED"
+> and "--state ESTABLISHED".
 >
-> How can I securely *open* up firewall rules
-> to allow me to just email out without
-> compromising security???
+> I know these have to do with TCP packets
+> related to an existing TCP connection and such.
+>
+> *What* are these rules good for?  I didn't
+> use them and couldn't see a need for them.
 
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -A OUTPUT -p tcp --dport 25 -d aa.bb.cc.dd -j ACCEPT
-iptables -A INPUT -p tcp --sport 25 -s aa.bb.cc.dd -m state --state 
-ESTABLISHED,RELATED -j ACCEPT
+http://www.netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-7.html#ss7.3
 
-where aa.bb.cc.dd is the IP address of your mail server.
+Look down until you find "the state match" section.
 
  
 
-Antony.
+Antony
 
