@@ -1,13 +1,11 @@
-From: Jim Carter <jimc@math.ucla.edu>
-Subject: Re: Nat with a dynamic IP
-Date: Fri, 5 Sep 2003 17:34:49 -0700 (PDT)
+From: "Jeremy Davis" <jeremy@slicenet.net>
+Subject: stupid redirect question
+Date: Sat, 6 Sep 2003 00:10:49 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.53.0309051725090.3111@xena.cft.ca.us>
-References: <7C9884991ADAE0479C14F10C858BCDF52E367E@alderaan.smgtec.com>
- <03a601c373d5$c0236800$49caa8c0@caris.priv>
+Message-ID: <GKEILLINGDHHPJJGKJDIEEBCCBAA.jeremy@slicenet.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <03a601c373d5$c0236800$49caa8c0@caris.priv>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,35 +15,77 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Peter Marshall <peter.marshall@caris.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-On Fri, 5 Sep 2003, Peter Marshall wrote:
-> My setup would be something like this
-> iptables -t nat -A PREROUTING -p tcp --dport 22 -i$EXT_DEV -j DNAT
->        --to-destination $InternalIPofFirewall
-> ( this would direct all ssh connections on port 22 to the firewall)
+Ok my problem is when I add a port redirection in the prerouting chain so
+that port 80 traffic goes to a certain box.  I used this rule
 
-Right, but if I remember the original configuration, the internal boxes are
-all on non-routable IPs anyway, so the only one you can specify from the
-global internet is the firewall's external address.  So this rule would not
-be necessary.
+iptables -t nat -I PREROUTING -i ppp0 -p tcp --dport 80 -j DNAT --to
+192.168.0.5:80
 
-> Is the only other possibility (other than sshing to the firewall first and
-> then to the internal box) to have another port listen on a high port, and
-> set up my internal box to listen on that high port for ssh ???
+but this kills all lan http traffic from getting back in to the
+workstations.  What am I missing?
 
-Right, you could use the firewall as a Janus host, or you could DNAT
-special ports to be mapped to port 22 on frequently-used internal hosts.
-Let's say 10000 is for smtp.caris.com, 10001 is for boss.caris.com, etc.
-Then you do "ssh -p 10001 firewall.caris.com" (the external address), and
-you have a ssh connection to "boss".  I would leave the internal machines
-listening on port 22, and rely on DNAT to change 10000, 10001, etc. to 22
-on the right host.
+Jeremy
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+
+
+
+Here is my nat table
+
+Chain PREROUTING (policy ACCEPT 11624 packets, 749K bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 DNAT       tcp  --  any    any     anywhere             anywhere
+tcp dpt:dnsix to:192.168.0.5:80
+    0     0 DNAT       tcp  --  any    any     anywhere             anywhere
+tcp dpt:cadlock to:192.168.0.5:1000
+    2   120 DNAT       tcp  --  ppp0   any     anywhere             anywhere
+tcp dpt:ftp to:192.168.0.5:21
+    3   144 DNAT       tcp  --  any    any     anywhere             anywhere
+tcp dpt:telnet to:192.168.0.5:23
+
+Chain POSTROUTING (policy ACCEPT 12 packets, 780 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+ 9770  490K MASQUERADE  all  --  any    ppp0    anywhere
+anywhere
+
+Chain OUTPUT (policy ACCEPT 43 packets, 2737 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+
+
+
+Here is my filter table
+
+Chain INPUT (policy ACCEPT 5427 packets, 393K bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+  823 75341 ACCEPT     icmp --  ppp0   any     anywhere             anywhere
+  423 52420 ACCEPT     all  --  ppp0   any     anywhere             anywhere
+state RELATED,ESTABLISHED
+    0     0 ACCEPT     tcp  --  ppp0   any     anywhere             anywhere
+tcp dpt:ssh
+  348 59851 LOG        all  --  ppp0   any     anywhere             anywhere
+LOG level warning
+  348 59851 REJECT     all  --  ppp0   any     anywhere             anywhere
+reject-with icmp-port-unreachable
+
+Chain FORWARD (policy DROP 80 packets, 3840 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 ACCEPT     tcp  --  ppp0   eth1    anywhere             anywhere
+tcp dpt:cadlock
+    0     0 ACCEPT     tcp  --  ppp0   eth1    anywhere             anywhere
+tcp dpt:http
+   18  1001 ACCEPT     tcp  --  ppp0   eth1    anywhere             anywhere
+tcp dpt:ftp
+ 3444  140K ACCEPT     tcp  --  ppp0   eth1    anywhere             anywhere
+tcp dpt:telnet
+ 113K   19M ACCEPT     all  --  eth1   ppp0    anywhere             anywhere
+ 126K   94M ACCEPT     all  --  ppp0   eth1    anywhere             anywhere
+state RELATED,ESTABLISHED
+
 
