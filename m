@@ -1,14 +1,12 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: Re: Logging to pgSQL
-Date: 20 Feb 2003 13:37:56 +0200
+From: "timbow" <timbow@cox.net>
+Subject: info please
+Date: Sat, 17 Feb 2001 20:16:15 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045741074.18829.127.camel@rayw.knowledgefactory.co.za>
-References: <1045543090.710.37.camel@monster.thevirtual.co.nz>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <000801c09948$63a078d0$a4ca6944@yourav9l904ire>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-YJ6F73Un2RoAoTGwvJwj"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C0991E.7A9D1F40"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1045543090.710.37.camel@monster.thevirtual.co.nz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,56 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---=-YJ6F73Un2RoAoTGwvJwj
-Content-Type: text/plain
+------=_NextPart_000_0005_01C0991E.7A9D1F40
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2003-02-18 at 06:38, William Hamilton wrote:
-> Is there a method to log all output to PostgreSQL database?  If so any
-> pointers to some docs please?
->=20
-You need to use the ULOG patch from patch-o-matic on www.netfilter.org.
+i was wondering if this firewall worked on a windows system..please =
+reply..thank you
+------=_NextPart_000_0005_01C0991E.7A9D1F40
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> tia
->=20
-> William
->=20
---=20
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(  Raymond Leach                       )
- ) Knowledge Factory                  (
-(                                      )
- ) Tel: +27 11 445 8100               (
-(  Fax: +27 11 445 8101                )
- )                                    (
-(  http://www.knowledgefactory.co.za/  )
- ) http://www.saptg.co.za/            (
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   o                                o
-    o                              o
-        .--.                  .--.
-       | o_o|                |o_o |
-       | \_:|                |:_/ |
-      / /   \\              //   \ \
-     ( |     |)            (|     | )
-     /`\_   _/'\          /'\_   _/`\
-     \___)=3D(___/          \___)=3D(___/
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#000000>
+<DIV><STRONG><FONT face=3D"French Script MT" color=3D#ffffff size=3D5>i =
+was wondering=20
+if this firewall worked on a windows system..please reply..thank=20
+you</FONT></STRONG></DIV></BODY></HTML>
 
---=-YJ6F73Un2RoAoTGwvJwj
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+------=_NextPart_000_0005_01C0991E.7A9D1F40--
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA+VL4Rh1fuR/Bv+ygRAuCHAKCJUynbUetU1hHTd3uSl2lWk2jGHQCgtNkP
-YmK0M7g6mS5o5K3m+3SfnD4=
-=amCd
------END PGP SIGNATURE-----
-
---=-YJ6F73Un2RoAoTGwvJwj--
 
 
