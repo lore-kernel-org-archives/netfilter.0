@@ -1,14 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: string match fails to find anything/everything
-Date: Tue, 20 Jul 2004 14:10:48 +0100
+From: Joshua N Pritikin <jpritikin@pobox.com>
+Subject: Re: FAQ 3.13, but on the same box
+Date: Tue, 20 Jul 2004 19:12:19 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407201410.48990.Antony@Soft-Solutions.co.uk>
-References: <20040718221103.28836.60474.Mailman@vishnu.netfilter.org> <2996.216.239.71.162.1090327934.squirrel@216.239.71.162>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040720134219.GK676@always.joy.eth.net>
+References: <20040718173200.GC718@always.joy.eth.net> <200407190951.37947.Antony@Soft-Solutions.co.uk> <20040719094454.GB1735@always.joy.eth.net> <200407191056.54823.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4wkndigzIeYF6Hbg"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <2996.216.239.71.162.1090327934.squirrel@216.239.71.162>
+Content-Disposition: inline
+In-Reply-To: <200407191056.54823.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +19,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 20 July 2004 1:52 pm, Samuel Jean wrote:
 
->  On Sun, 18 Jul 2004, gypsy wrote:
-> > Problem:
-> > No matter what text is in $STRING, iptables fails to see the match.
-> >
-> > iptables -I INPUT -m string --string $STRING -j LOG
->
-> That rule will _only_ apply for packets going to the firewall itself.
+--4wkndigzIeYF6Hbg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Correct.
+On Mon, Jul 19, 2004 at 10:56:54AM +0100, Antony Stone wrote:
+> On Monday 19 July 2004 10:44 am, Joshua N Pritikin wrote:
+> > I am trying to do Squid + Netfilter + BROWSER on the same machine.
+>=20
+> Oh, right - I hadn't appreciated that part before.   I thought you just m=
+eant=20
+> transparent proxying to a proxy on the gateway instead of to a proxy=20
+> somewhere else.
+>=20
+> In that case you either need to DNAT your OUTPUT packets, as per your pre=
+vious=20
+> posting,
 
-> > "iptables -nvL | grep STRING" has zeros in the counters.
-> >
-> > Example:
-> > Replace $STRING with "oreilly".  From a remote computer run "lynx
-> > http://myurl/oreilly" and variants until at least 30 pages have been
-> > displayed to be certain that at least one packet is not so fragmented
-> > that "oreilly" isn't there (see also Facts above).  On the "myurl"
-> > computer iptables counters are zero.
->
-> Try using that match in the FORWARD chain.
+This solution seems to work (below).  I wonder if this should be added
+to the various FAQs?  ;-)
 
-No, I think INPUT is the right one to use here - because the web server is 
-running on "myurl", and that is the machine with the netfilter rules (as 
-stated in the explanation given above).
+#!/bin/sh
 
-Regards,
+iptables -t nat -F  # clear table
 
-Antony.
+# normal transparent proxy
+iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 80 -j REDIRECT --to-po=
+rt 8080
 
--- 
-Abandon hope, all ye who enter here.
-You'll feel much better about things once you do.
+# handle connections on the same box (192.168.0.2 is a loopback instance)
+gid=3D`id -g proxy`
+iptables -t nat -A OUTPUT -p tcp --dport 80 -m owner --gid-owner $gid -j AC=
+CEPT
+iptables -t nat -A OUTPUT -p tcp --dport 80 -j DNAT --to-destination 192.16=
+8.0.2:8080
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+--=20
+A new cognitive theory of emotion, http://openheartlogic.org
 
+--4wkndigzIeYF6Hbg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFA/SE7qcqnlKSmC70RAo5nAJ4koMVAdWYsta28pnkf2UW1CGgGwgCg2FS+
+GXkUKqDcmYOhU9elChBGM5U=
+=z8R2
+-----END PGP SIGNATURE-----
+
+--4wkndigzIeYF6Hbg--
 
