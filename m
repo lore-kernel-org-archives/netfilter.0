@@ -1,8 +1,8 @@
 From: aksingh@hss.hns.com
-Subject: libipq netlink socket interface
-Date: Fri, 7 May 2004 10:58:53 +0530
+Subject: ip_queue_maxlen
+Date: Fri, 7 May 2004 11:49:11 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF3C58D62C.6A8B9FDC-ON65256E8D.001DA6E2@hss.hns.com>
+Message-ID: <OFF3757E9C.8AD303A0-ON65256E8D.00226C14@hss.hns.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -22,15 +22,13 @@ To: netfilter@lists.netfilter.org
 
 
 
-Hi,
+hi,
 
- I use the libipq library for kernel space / user space communication,
-libipq uses netlink sockets for this purpose ..... now can I tune the
-rcvbuf and sndbuf sizes for this netlink socket using setsockopt ? If I use
-libipq then I believe none of the libipq calls give me the socket
-descriptor of the netlink socket being used by the ip_queue module, so how
-do I do a setsockopt on this to change the rcvbuf and sndbuf sizes to the
-maximum possible ??
+ Whats the maximum number of packets that are queued by ip_queue for the
+user space to handle ... is it 1024 as defined in
+/proc/sys/net/ipv4/ip_queue_maxlen ? That is a max of 1024 packets are
+queued by the kernel, and can we change this value somehow ?
+
 
 thanks
 Amit
