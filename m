@@ -1,13 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Akolinare@gmx.net
 Subject: Re: two negatived parameters
-Date: Mon, 06 Sep 2004 11:00:19 +0200
+Date: Mon, 6 Sep 2004 13:48:55 +0200 (MEST)
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094461219.2309.24.camel@anduril.intranet.cartel-securite.net>
-References: <7421.1094459312@www2.gmx.net>
+Message-ID: <5943.1094471335@www56.gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7421.1094459312@www2.gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +16,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: Akolinare@gmx.net
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Le lun 06/09/2004 =E0 10:28, Akolinare@gmx.net a =E9crit :
-> I create a rule, which should only match if source and destination are =
-not
-> the given. I think that it is easy and try the following rule:
-> iptables -A FORWARD -s ! host1 -d ! host2 -j ACCEPT
-> But with this rule pakets from host1 to host3 (or from host2 to host3) =
-were
-> not affected. It seems like the logical combination is OR and not AND u=
-nlike
-> the not negatived rule.
+> I take it to mean that packets from host2 to host 3 were NOT accepted by
+this=20
+> rule? ... What do the counters for the rule say? ( iptables -L -n -v -x=20
+).
 
-When you build a rule, all parameters are combined with an AND, and it's
-logical (to me) that it is style the case here. When you write :
+yes, I already look after the counter. A paket from host2 to host3 dont
+increase the counter.=20
 
-	iptables -A FORWARD -s host1 -d host2 -j ACCEPT
+> What other rules exist that might affect said packets? -- I note the above
+is =20
+> an ADD.  Could rules farther up the FORWARD chain have already=20
+> accepted/denied the said packets?
 
-You say :
+this was only a example. I tested also on a other pc, with has normal no
+rulesset to be sure.
 
-	if packet is (from host1) AND (to host2) then ACCEPT
+> FYI -- I just tested this by inserting a double negative rule in my
+firewall=20
+>=20
+> iptables -I tcp_packets -p tcp -s ! {internal_lan} -d ! {internal lan ip}=
+=20
+> --dport 25 -j allowed=20
+>=20
+> and sending myself an email from outside.  The packet counter incremented=
+=20
+> appropriately.
 
-Now, if you negate a parameter, you only negate this one, not a couple
-of them. So you get :
+Sorry, but why are you able to send with this rule a mail from outside to a
+mailserver in your internal network? I suppose, that with the "-d !
+{internal lan ip}" it ist not possible to send a paket to your mailserver.
 
-	if packet is (not from host1) AND (not to host2) then ACCEPT
+> well... my two cents :-)
+>
+> iptables -A FORWARD -s host1 -d host2 -j DROP
 
-Which can be translated as :
+well sorry it is not that easy as it seems. The rule should forward pakets
+to a user-chain only if host1 ist not the source and host2 are is not the
+destination.
 
-	if packet is not (from host1 OR to host2) then ACCEPT
-
-And it explains why your packets are not matched, as your test packet is
-from host1. So there's no bug (imho) ;)
-
-But there's something about the second packet that should matche (host2
-to host3). Can you confirm that this very packet does not match ? As
-Alistair, I did a similar test (iptables 1.2.11 on 2.6.5 kernel) on a
-double negative rule and it matched.
-
+I also tested with the 2.6.7 kernel and 1.2.11, so I can exclude this.
 
 --=20
-http://www.netexit.com/~sid/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Superg=FCnstige DSL-Tarife + WLAN-Router f=FCr 0,- EUR*
+Jetzt zu GMX wechseln und sparen http://www.gmx.net/de/go/dsl
+
 
