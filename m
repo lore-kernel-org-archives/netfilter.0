@@ -1,13 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Forwarding help
-Date: Wed, 26 Nov 2003 22:30:31 +0000
+Subject: Re: (no subject)
+Date: Wed, 26 Nov 2003 22:36:39 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311262230.31909.Antony@Soft-Solutions.co.uk>
-References: <000701c3b469$17203ba0$14d36c50@anonymous>
+Message-ID: <200311262236.39590.Antony@Soft-Solutions.co.uk>
+References: <1069853846.3fc4ac966be15@paris-hme1> <1069880102.3fc513260c677@paris-hme1> <3FC51BC8.1000403@Loudoun-Fairfax.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000701c3b469$17203ba0$14d36c50@anonymous>
+In-Reply-To: <3FC51BC8.1000403@Loudoun-Fairfax.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,36 +20,53 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 26 November 2003 10:03 pm, sc2@gmx.at wrote:
+On Wednesday 26 November 2003 9:31 pm, Jeffrey Laramie wrote:
 
-> hello
-> i use iptables .7, but it does not work (forward) , any ideas?
-> thank you ,
-> ps: same rules down i have make for tcp match not only for udp
+> zynkx wrote:
+> >hi again Antony:
+> >
+> >you just said it all. no use for me to add not even
+> >one line to what you just wrotte :))
+> >
+> >now if anyone has got those masks i would appreciate
+> >it :))
+> >
+> >tanx again and sorry for this mess ;)))
 >
-> echo "1" > /proc/sys/net/ipv4/ip_forward
-> iptables -F FORWARD
-> iptables -t nat -F
-> iptables -A FORWARD -j LOG
-> iptables -A FORWARD -p udp -d ip --dport port -j ACCEPT
-> iptables -t nat -A PREROUTING -p udp -d ip --dport port -j DNAT --to
-> ip:port
+> zynkx:
+>
+> If your mail server is running qmail, then your best bet is to read the
+> qmail documentation and learn how to apply filters for the mail server.
+> If you do use iptables, you will need to create a FORWARD rule to allow
+> mail from each of the smtp servers that Ramin listed. Since any message
+> from a Yahoo or Hotmail account will be sent from one of those servers
+> you don't *have* to know every ip range that they've been assigned. The
+> only problem doing it this way is if they change smtp server IPs you'll
+> need to change your rules. I would do this with qmail if I were you.
 
-I assume in that last rule the two occurrences of "ip" are different.
+I agree, and zynkx, I can't tell you how to do this with qmail because I'm a 
+sendmail person.   Do what Jeff suggests and look at the qmail documentation, 
+and if it's not clear ask on a qmail list.
 
-Which one is specified in the FORWARD rule?   Make sure it is the translated 
-address (ie the address on the packet after it has gone through the 
-PREROUTING rule), because it will no longer have the original destination 
-address by the time it hits the FORWARD chain.
+I really think you should not try doing this by IP address because those may 
+change and you won't find out until things start going wrong.
 
-If that's not the answer then post your actual ruleset (by all means munge the 
-addresses if you don't want us to know exactly what they are, but let us see 
-which ones are which...)
+> Antony:
+>
+> It sounds like you have the "We're behind schedule and you got to get
+> this done before the holidays blues!"
+
+Not quite - the satellite link got installed very suddenly (phone call Friday, 
+two men and a long ladder on Monday...) and we now have a month to evaluate 
+it and see if it's a suitable replacement for the leased line - so I have to 
+get as much of it working as possible so people can test it properly.
 
 Antony.
 
 -- 
-Wanted: telepath.   You know where to apply.
+The truth is rarely pure, and never simple.
+
+ - Oscar Wilde
 
                                                      Please reply to the list;
                                                            please don't CC me.
