@@ -1,13 +1,10 @@
-From: "Jan Kaastrup" <jka@protego.dk>
-Subject: RE: Routing a VPN.....confused
-Date: Mon, 15 Dec 2003 09:48:48 +0100
+From: "john bowers" <johnkbowers@hotmail.com>
+Subject: Masquerade problems
+Date: Mon, 15 Dec 2003 11:34:59 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002701c3c2e8$41b68df0$2d64a8c0@pcjka>
-References: <1071402624.1682.6.camel@kermit>
+Message-ID: <BAY8-F102WSsKt3NwAY00036ab1@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1071402624.1682.6.camel@kermit>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,59 +14,75 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: 'Ralf Spenneberg' <lists@spenneberg.org>, mbrei@carolina.rr.com
-Cc: 'Netfilter' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi=20
-I have had the same problem, and i found out that i forgot to put on
-"leftnexthop" or "rightnexthop". Also be sure that the ipsec.conf files
-are the same on both machines.
+Hi , I have a Nat/firewall box that  has worked beautifully for me for quite 
+a while. The only thing I have not been able to fiigure out is that  I have 
+never been able to initiate any kind of services from inside the firewall 
+box to the local network. I can ssh from the local net into the firewall no 
+problem, but if i try to ssh back into my local network it just disapears, 
+but shows up in the iptables -v -L stats for the rules that would allow it 
+as having passed the filter.  If I try to ping an address on my local 
+private addressed network I just get the message "operation not allowed", or 
+something of that sort.  I have a route for the local network entered in the 
+routing table and actually routes for each of the individual host , but I 
+don't know what is going on. Is this a routing problem or am I misusing the 
+Masquerade function? when Any help would greatly be appreciated as I don't 
+know where else to ask
 
-Another thing - if you are using %default route, this can also be the
-problem.=20
+Here is a abreviated portion of my Nat router rules.
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Ralf
-Spenneberg
-Sent: 14. december 2003 12:50
-To: mbrei@carolina.rr.com
-Cc: Netfilter
-Subject: Re: Routing a VPN.....confused
+iptables --flush
+iptables -t nat --flush
+iptables -t mangle --flush
+
+iptables --delete-chain
+iptables -t nat --delete-chain
+iptables -t mangle --delete-chain
+
+iptables --policy INPUT DROP
+iptables --policy OUTPUT DROP
+iptables --policy FORWARD DROP
+
+iptables -t nat --policy POSTROUTING DROP
+
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+###############################################################################
 
 
-Am Son, 2003-12-14 um 03.24 schrieb Matt Brei:
-> Hi all,
->=20
-> I'm trying to set up a VPN with my buddy back in Chicago.  We're both
-> using iptables to nat our Internet connection to the rest of the LAN
-and
-> filter out all the naughtiness on the cable modem connection.  So far,
-> we've tried FreeS/WAN on the iptables routers, but as soon as we start
-> the ipsec service, it kills the Internet connection.=20
-This sounds pretty much like a configuration issue using freeswan >=3D
-2.0. FreeS/WAN enables opportunistic encryption (OE) by default. This
-may interrupt your Internet connections since it tries to encrypt
-everything by default. It uses policy groups for this. You probably have
-to disable these policy groups.
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
 
-Take a look at:
-http://www.freeswan.org/freeswan_trees/freeswan-2.04/doc/policygroups.ht
-ml#disable_policygroups
 
-Cheers,
+################################################################################
+# INPUT RULES
 
-Ralf
---=20
-Ralf Spenneberg
-RHCE, RHCX
+#RELATED & ESTABLISHED RULES
+iptables -A INPUT -i ppp0 \
+	-m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Book: VPN mit Linux
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:
-http://honeynet.spenneberg.org
+iptables -A OUTPUT -o ppp0 \
+	-m state --state ESTABLISHED,RELATED -j ACCEPT
 
+iptables -A OUTPUT -o eth0 \
+	-m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -i ppp0 -o $LAN_INTERFACE \
+	-m state --state ESTABLISHED,RELATED -j ACCEPT
+
+###################################################################################
+# Forward related, established rules
+
+iptables -A FORWARD -i $LAN_INTERFACE -o ppp0 \
+	-m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A FORWARD -o ppp0 \
+	-m state --state ESTABLISHED,RELATED -j ACCEPT
+
+_________________________________________________________________
+Get holiday tips for festive fun. 
+http://special.msn.com/network/happyholidays.armx
 
 
