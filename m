@@ -1,14 +1,14 @@
 From: Willi Dyck <wdyck@gmx.net>
-Subject: Re: Iptables and RaQ550 problems....
-Date: Sat, 22 Feb 2003 01:14:59 +0100
+Subject: Re: fetchmail from intern
+Date: Sat, 22 Feb 2003 01:07:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030222001459.GF412@tekilla.homeip.net>
-References: <HAEDIOFCFBKACBFKGGJEEEJKCIAA.mike@plenty.co.za>
+Message-ID: <20030222000754.GE412@tekilla.homeip.net>
+References: <20030217144358.CE83417C93@delta.meyer.home>
 Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <HAEDIOFCFBKACBFKGGJEEEJKCIAA.mike@plenty.co.za>
+In-Reply-To: <20030217144358.CE83417C93@delta.meyer.home>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,46 +22,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Feb 18, 2003 at 06:42:11PM +0200, Michael Lawford wrote:
-> I have a RaQ550 server that runs iptables.  The other day i logged in and
-> got 1000+ of the following message from my server.
-> 
-> This alert notification is to inform you of network activity occurring on
-> your host.
-> 
->            Timestamp:  Tue 18 Feb 2003 12:05:54 PM SAST
->           Alert Type:  Port Scan Detected
->            Interface:  eth0
->             Protocol:  3/3/icmp
->  Packet Size (bytes):  99
-> 
->       Source Address:  (my IP here)
->          Source port:
->            Direction:  outbound
->  Destination Address:  196.7.0.138 (UUNet's main DNS server)
->     Destination Port:
-> 
->            Log Entry:  eth0:portscan: 3/3/icmp (my IP here) -> 196.7.0.138
-> 99 (22)
-> 
-> 
-> And I keep getting these little error messages every 2 or 3 minutes...  Now
-> my network and UUNet guys tell me that it is IPTables that is trying to
-> resolve to their main DNS server.  They have checked the settings and all
-> appears to be well so they think that it is a bug.  If their is a fix /
-> patch please let me know about it.  I am tearing my hair out trying to fix
-> it.  Any advice would be appreciated.
+On Mon, Feb 17, 2003 at 03:43:58PM +0100, Andreas Meyer wrote:
+> Running fetchmail from the mailserver behind the firewall I have
+> the problem to go to the WAN.
 
-ICMP type=3 code=3 means Destination Unreachable. Looks like UUNets DNS
-server has some problems?!
+> iptables -t nat -A PREROUTING -p TCP --dport 110 -m state --state
+> NEW,ESTABLISHED,RELATED -j DNAT --to 192.168.1.75:110
 
-Or do you DNAT inbound traffic to you LAN to some machine which is off
-at the moment, so your kernel wants to tell this DNS server that it is
-unreachable?!?
+You might want to do SNAT or MASQUERADING in order to be able to access
+the WAN.
 
+> But writing
+> 
+> iptables -t nat -A PREROUTING -p TCP --dport 110 -m state --state
+> NEW,ESTABLISHED,RELATED -j DNAT --to 0.0.0.0:110
+> 
+> I get a
+> kernel: martian destination 0.0.0.0 from 192.168.1.3, dev eth0
+
+What do you want your outbound packets to look like? 0.0.0.0 ?
 
 -- 
-the three great virtues of a programmer:
-laziness, impatience and hubris.
-        Lary Wall
+wdyck at gmx dot net
 
