@@ -1,13 +1,14 @@
-From: Michael Rash <mbr@cipherdyne.org>
-Subject: Re: examining data portion of packet
-Date: Thu, 25 Mar 2004 14:53:33 -0500
+From: David Cannings <lists@edeca.net>
+Subject: Re: Redirect ports on localhost
+Date: Thu, 25 Mar 2004 20:03:09 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040325195333.GA31680@orthanc.gambrl01.md.comcast.net>
-References: <1080129035.1980.0.camel@localhost> <20040324172244.84631.qmail@web60001.mail.yahoo.com>
+Message-ID: <200403252003.09492.lists@edeca.net>
+References: <20040325193403.19216.70237.Mailman@vishnu.netfilter.org> <40633766.3050005@personalsoft.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <40633766.3050005@personalsoft.com.br>
 Content-Disposition: inline
-In-Reply-To: <20040324172244.84631.qmail@web60001.mail.yahoo.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,59 +19,34 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sandy C <sc_netfiltermail@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mar 24, 2004, Sandy C wrote:
+On Thursday 25 March 2004 19:47, Fabiano Bonin wrote:
+> >From: Ben Yerushalmi <beny@pd.verio.net>
+> >Looks like changing the OUTPUT chain did actually work in redirecting
+> >localhost traffic. On the Linux 2.4 kernel you will need to enable the
+> >"NF_NAT_LOCAL" kernel option.
+> Could you provide a complete example of how to do all this?
+> I think it will solve some of my problems.
 
-> I'd like to be able to examine the network data, and
-> if the data (not the header info) matches certain
-> criteria, I want to perform certain actions. Its not
-> clear to me what those actions might be yet.
+You'll need to enable the option CONFIG_IP_NF_NAT_LOCAL.  Using `make 
+menuconfig`, the relevant options are found:
 
-Sounds like you may be looking for an "active response" capability.
-Here are three pieces of software that can react based on
-application layer data:
+In 2.4:
 
-snortsam:       http://www.snortsam.net/
-fwsnort:        http://www.cipherdyne.org/fwsnort/
-snort_inline:   http://snort-inline.sourceforge.net/
+Under "Networking options -> IP: Netfilter Configuration -> NAT of local 
+connections"
 
-Deploying such functionality essentially give the capability to the
-network of reconfiguring itself based on signatures that can easily
-generate false positives!  You have been warned.
+In 2.6:
 
---Mike
+Under "Device Drivers  -> Networking Support -> Networking Options -> 
+Network packet filtering (replaces ipchains) -> IP Netfilter 
+Configuration"
 
-Michael Rash
-http://www.cipherdyne.org/
-Key fingerprint = 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
+In both you will also have to enable "Full NAT" and "iptables support".  
+This will let you use NAT with connections that originate locally, ie 
+from processes on your iptables machine.  The help for the option says 
+there should be more on the netfilter site, http://www.netfilter.org.
 
-
-> --- "John A. Sullivan III"
-> <john.sullivan@nexusmgmt.com> wrote:
-> > On Wed, 2004-03-24 at 00:45, Sandy C wrote:
-> > >    I would like to be able to be able to examine
-> > the
-> > > data portion of a network packet after matching
-> > it. 
-> > > 
-> ..
-> > >    What is the best way to go about this? Should I
-> > be
-> > > thinking of writing a target extension?
-> > <snip>
-> > It depends on what you want to do.  What do you want
-> > to do with the
-> > information?
-> > -- 
-> > John A. Sullivan III
-> 
-> 
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! Finance Tax Center - File online. File on time.
-> http://taxes.yahoo.com/filing.html
-
+David
 
