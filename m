@@ -1,14 +1,13 @@
-From: Rodrigo Severo <rodrigo.lists@fabricadeideias.com>
-Subject: Re: Problem using fwmarks as routing key: "MASQUERADE: Route sent
- us somewhere else."
-Date: Fri, 23 Jan 2004 17:13:07 -0200
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: ip_conntrack and ipt_conntrack
+Date: Fri, 23 Jan 2004 19:48:22 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40117243.4090606@fabricadeideias.com>
-References: <001c01c3e043$93583cd0$1684188d@Kiste> <20040123160603.GA7516@cannon.eng.us.uu.net>
+Message-ID: <200401231948.22760.Antony@Soft-Solutions.co.uk>
+References: <BAY10-F46m2m2XkO28Q0000cf3b@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040123160603.GA7516@cannon.eng.us.uu.net>
+In-Reply-To: <BAY10-F46m2m2XkO28Q0000cf3b@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,45 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thhoep,
+On Friday 23 January 2004 6:14 pm, Rodre Ghorashi-Zadeh wrote:
 
->On Wed, Jan 21, 2004 at 06:25:22PM +0100, Thhoep wrote:
->  
->
->>-----------
->>kernel: request_module: failed /sbin/modprobe -- net-pf-10. error =3D =
-256
->>kernel: MASQUERADE: Route sent us somewhere else.
->>    
->>
-I think you can easily solve your problem substituting MASQUERADE with 
-SNAT. There is one upside and one downside to this solution.
+> If ipt_conntrack does the state matching then what does the ipt_state
+> module do?
 
-The downside is the extra work you will have setting a create/delete 
-updated SNAT each time an ADSL goes up/down.
+Indeed - a good question.
 
-The upside is that it actually works :)
+To quote from the comments at the top of ipt_state.c and ipt_conntrack.c:
 
-I say so because I have a working 2 ADSL connections + 1 fixed 
-connection setup working fine with the MARK + ip rule + SNAT mix.
+(ipt_state.c)
+/* Kernel module to match connection tracking information.
+ * GPL (C) 1999  Rusty Russell (rusty@rustcorp.com.au).
 
+(ipt_conntrack.c)
+/* Kernel module to match connection tracking information.
+ * Superset of Rusty's minimalistic state match.
+ * GPL (C) 2001  Marc Boucher (marc@mbsi.ca).
 
-I hope it helps you,
+So, the answer is that they are both connection trackinf state matches, but 
+ipt_conntrack claims to be a more comprehensive one.
 
-Rodrigo Severo
+To find out more I suggest you look at the source code of each, or ask on the 
+developers' list.
+
+ - Unless anyone else around here can give a good answer to this???
+
+Regards,
+
+Antony.
 
 -- 
-----------------------------------------------------
-Rodrigo Severo
-F=E1brica de Id=E9ias
-Fone: +55(61)321 1357
-Fax: +55(61)223 1712
-SBS - Quadra 2 - Ed. Empire Center - Sala 1301
-Bras=EDlia/DF - Brasil
-CEP: 70.070-904
-----------------------------------------------------
+In science, one tries to tell people
+in such a way as to be understood by everyone
+something that no-one ever knew before.
+
+In poetry, it is the exact opposite.
+
+ - Paul Dirac
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
