@@ -1,11 +1,8 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Tools for creation of iptables
-Date: Mon, 14 Mar 2005 11:42:25 -0500
-Message-ID: <20050314164225.GA10865@bender.817west.com>
-References: <20050314163755.86B4A7FE@mail.817west.com>
+From: Milos Wimmer <wimmer@zcu.cz>
+Subject: problem with active ftp masqarading in kernel 2.6.11
+Date: Mon, 14 Mar 2005 17:48:36 +0100 (CET)
+Message-ID: <Pine.LNX.4.62.0503141748000.5167@nike.zcu.cz>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20050314163755.86B4A7FE@mail.817west.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +13,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Mon, Mar 14, 2005 at 05:40:08PM +0100, Seferovic Edvin wrote:
-> Hi list,
-> 
-> are there some tools for creation of iptables rules that you could refer me
-> to. I would appreciate it when you could write an opinion to the tool you
-> maybe use.
 
-the kids seem to be fond of fwbuilder:
+  Hello,
 
-	http://www.fwbuilder.org/
+I found problem with active ftp masqarading in kernel 2.6.11.
+I use linux firewall with masquarading for the local network.
+When I run ftp client in active mode on any machines in the local network,
+I can connect to remote ftp server in outside network (Internet). But
+when I get "mget *" command in this ftp session, client downloads about
+5 files only and then writes "500 R not understood" and then
+"ftp: bind: Address already in use" and it stops.
+I tried capture some packets and it looks firewall leaves off masqurading for 
+this sessin.
+When I switch ftp client to "passive" mode, all works fine.
+When I run kernel 2.6.9 (and previous) on the firewall, all works fine (both 
+active and passive mode).
 
-i personally haven't ever used it to create an actual iptables rule
-set, so i can't give an informed opinion.
+I tried it on miscellaneous firewalls (with 2.6.11 kernel), miscellaneous ftp 
+servers and miscellaneous ftp clients (in active mode) with same results. I 
+tried both iptables-1.3.1 and iptables-1.3.0 without success.
 
--j
-
---
-"How much is your penny candy?
- Surprisingly expensive."
-         --The Simpsons
+Regards,
+               Milos Wimmer
 
