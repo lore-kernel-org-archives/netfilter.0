@@ -1,13 +1,12 @@
-From: Alejandro Flores <alejandro.flores@triforsec.com.br>
-Subject: Re: Wich authentication is configured on FC2?
-Date: Thu, 19 Aug 2004 09:01:12 -0300
+From: Askar Ali Khan <askarali@gmail.com>
+Subject: service attacks (DoS)
+Date: Thu, 19 Aug 2004 17:47:49 +0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1092916872.2221.3.camel@aflores>
-References: <00ab01c48523$030dc480$1164a8c0@runningcentro.local>
+Message-ID: <a0f69e5040819054736ace4f6@mail.gmail.com>
+Reply-To: Askar Ali Khan <askarali@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <00ab01c48523$030dc480$1164a8c0@runningcentro.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,32 +17,62 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Flavio Borup <borup@running.com.br>
-Cc: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-	Hello Flavio,
+hi,
 
-> 1) It comes with NTLM support compiled, or i have to compile squid ?
+im try to protect my server from various type of DoS for example
+Syn-flood protection,  Furtive port scanner, Ping of death. Its our
+server B protected by firewall machine A.
 
-	Take a look at /usr/lib/squid
+client traffic follow A-------------->B
+                          (fw)              (server)
 
-> 2) To use the /etc/passwd-/etc/shadow authentication, i have to use
-> pam_auth?
+what I did first to log packets on Server B to check with (thanks to Anthony)
 
-	Yes.
+# To log avoid various denial of service attacks (DoS) with a faster
+rate to increase responsiveness
+iptables -N LogPackets
 
-> 3) I can use NTLM authentication with Non-Domain Controllers machine?
-> (authentication beeing validated on a stand-alone Windows machine, using the
-> local account databased, the SAM)?
+# Call the chain right at the top of the INPUT table so we see all the packets
+iptables -I INPUT -j LogPackets
 
-	AFAIK, no.
+# Create a unique log entry for each type of packet we want to know about
+##Syn-flood protection
+iptables -A LogPackets -p tcp --syn -m limit --limit 1/s  -j LOG
+--log-prefix "Syn-flood "
 
-	Flavio, this list is intended for Netfilter/Iptables discussion only.
+## Furtive port scanner
+iptables -A LogPackets -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit
+--limit 1/s -j LOG --log-prefix "Furtive port scanner "
 
--- 
---
-Alejandro Flores
-http://www.triforsec.com.br/
-http://www.defenselayer.com/
-http://www.nabucodonosor.com/
+## Ping of death
+iptables -A LogPackets -p icmp --icmp-type echo-request -m limit
+--limit 1/s -j LOG --log-prefix "Ping of death "
+
+when i do "iptables -L LogPackets -nvx" im getting lot of  new packets/s
+
+ iptables -L LogPackets -nvx
+Chain LogPackets (1 references)
+    pkts      bytes target     prot opt in     out     source         
+     destination
+      25     1248 LOG        tcp  --  *      *       0.0.0.0/0        
+   0.0.0.0/0           tcp flags:0x16/0x02 limit: avg 1/sec burst 5
+LOG flags 0 level 4 prefix `Syn-flood '
+      24      960 LOG        tcp  --  *      *       0.0.0.0/0        
+   0.0.0.0/0           tcp flags:0x17/0x04 limit: avg 1/sec burst 5
+LOG flags 0 level 4 prefix `Furtive port scanner '
+       3      192 LOG        icmp --  *      *       0.0.0.0/0        
+   0.0.0.0/0           icmp type 8 limit: avg 1/sec burst 5 LOG flags
+0 level 4 prefix `Ping of death '
+
+My question: 
+1)                 what exactly im not getting is  "-m limit --limit
+1/s", what values to set for my enviroment, with 100 users connected
+at any time?
+
+2) ACCEPTed or DROPed ?
+
+regards
+Askar
 
