@@ -1,8 +1,8 @@
 From: "Allan Gee" <allang@equation.co.za>
 Subject: patch-o-matic-20031912 and 2.6.1 kernel
-Date: Thu, 15 Jan 2004 17:10:07 +0200
+Date: Thu, 15 Jan 2004 17:28:55 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <006701c3db79$a9b31f00$96c00fc4@Allang>
+Message-ID: <006b01c3db7c$4a7a42e0$96c00fc4@Allang>
 Reply-To: <allang@equation.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
