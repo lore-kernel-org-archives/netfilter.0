@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: travelling the tables and chains...
-Date: Tue, 5 Apr 2005 00:28:28 -0400
-Message-ID: <20050405042828.GA1197@bender.817west.com>
-References: <4250A5A6.6040509@lorenzutti.com.ar>
+Subject: Re: Resend: MASQUERADE: Route sent us somewhere else.
+Date: Tue, 5 Apr 2005 00:49:55 -0400
+Message-ID: <20050405044955.GA1312@bender.817west.com>
+References: <200504042155.j34LtsGK005020@osprey.tkevans.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <4250A5A6.6040509@lorenzutti.com.ar>
+In-Reply-To: <200504042155.j34LtsGK005020@osprey.tkevans.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,32 +21,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sun, Apr 03, 2005 at 11:25:42PM -0300, Guido Lorenzutti wrote:
-> Hi people, i would like to clean up my firewall script by creating new 
-> chains in the filter table. Like this:
-> 
-> iptables -N FORWARD_WAN_TO_LAN
-> 
-> Then, call the traffic in the FORWARD chain:
-> 
-> iptables -A FORWARD -i $WAN -o $LAN -j FORWARD_WAN_TO_LAN
-> 
-> Now how can i discriminate the DNATed packets from that rule? It's OK if 
-> i MARK them in the PREROUTING chain and create a rule BEFORE in the 
-> FORWARD chain to check if the packet im MARKed then -j DNATED_WAN_TO_LAN?
-> 
-> Any better ideas?
+On Mon, Apr 04, 2005 at 05:55:54PM -0400, Tim Evans wrote:
+> I'm resending this, as this normally vocal list has been unfortunately silent.
 
-MARK-ing is a pretty decent general-purpose way of keeping track of
-where a packet has been.  in your case--if you need to find all DNAT-ed
-packets, you could use the more specialized:
+the error message you refer to in your subject is normally encountered
+when using MASQUERADE in conjunction with policy routing, which normally
+implies multiple ISP connections.
 
-  "-m conntrack --ctstate DNAT"
+i cannot find information referencing any of the above in the details of
+your post; which could be a possible explanation for the silence.
 
-to match a DNAT-ed packet.
+-j
 
--- 
-"Baby needs to suck ash. Baby needs to suck ash. Not ass, you pervert. 
- Save it for the interns."
+--
+"She's a whiny little runt isn't she? 
+ What? I said runt."
 	--Family Guy
 
