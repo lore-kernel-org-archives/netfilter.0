@@ -1,13 +1,14 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: does the inbound traffic affect the outbound on 2 different
-	interfaces
-Date: Wed, 22 Dec 2004 08:21:49 -0500
-Message-ID: <1103721709.7337.30.camel@hubcap.ljm.dom>
-References: <62916e504122200524d824825@mail.gmail.com>
+Subject: Re: conntrack records not going away?
+Date: Wed, 22 Dec 2004 08:35:53 -0500
+Message-ID: <1103722552.7337.33.camel@hubcap.ljm.dom>
+References: <876ef97a041220111947fbeff5@mail.gmail.com>
+	<1103596432.6589.8.camel@hubcap.ljm.dom>
+	<1103701266.3634.3.camel@bibo.spenneberg.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <62916e504122200524d824825@mail.gmail.com>
+In-Reply-To: <1103701266.3634.3.camel@bibo.spenneberg.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,17 +22,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-12-22 at 03:52, Sujith Chennupati wrote:
->      expecting some help from any one
+On Wed, 2004-12-22 at 02:41, Ralf Spenneberg wrote:
+> Or a TCP-Reset.
+> 
+> Cheers,
+> 
+> Ralf
 
-this is not the LARTC mailing list.  i think you meat to send this to:
-
-  lartc@mailman.ds9a.nl
+whoops--yeah, precisely.
 
 -j
 
 --
-"I bent my wookie."
+"My cat's breath smells like cat food."
 	--The Simpsons
 
 
