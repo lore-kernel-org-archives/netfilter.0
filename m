@@ -1,14 +1,12 @@
-From: Stewart Thompson <stewart.thompson@shaw.ca>
-Subject: RE: log all dropped packets
-Date: Tue, 01 Oct 2002 21:59:38 -0700
+From: "Tim" <twr@bellsouth.net>
+Subject: FTP conntrack module? ---> Thanks :)
+Date: Tue, 1 Oct 2002 11:06:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <FLEKIPPLAEDMJMOOBBDPOENCDAAA.stewart.thompson@shaw.ca>
-References: <F44BHkJZbK4DAx0hIEA000051cb@hotmail.com>
-Reply-To: stewart.thompson@shaw.ca
+Message-ID: <000001c2697a$01e2c2c0$0101a8c0@nebuchadnezza>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001B_01C2693A.8AFEF6E0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-reply-to: <F44BHkJZbK4DAx0hIEA000051cb@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,54 +16,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="euc-kr"
-To: SB CH <chulmin2@hotmail.com>, netfilter@lists.netfilter.org
+To: iptables-list <netfilter@lists.samba.org>
 
-Hi:
+This is a multi-part message in MIME format.
 
-=09Try something like this at the end of each set of Rules.
+------=_NextPart_000_001B_01C2693A.8AFEF6E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-$IPTABLES - INPUT -j LOG --log-level info  --log-prefix "FW INPUT  "
-$IPTABLES - INPUT -j DROP
-=09Do the same for Forward and Output.
-
-These rules should log all the dropped packets before they hit your
-Drop Policy I believe. Hope that helps.
-
-Stu........
-
------Original Message-----
-=46rom: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org]On Behalf Of SB CH
-Sent: October 1, 2002 6:19 PM
-To: netfilter@lists.netfilter.org
-Subject: log all dropped packets
-
-Hello, all.
-
-my two questions are similar.
-
-Question1.
-I would like to log all Dropped packet.
-How can I write a log about all dropped packet?
+Good ppl,
+=20
+Just a note of gratitude for the replies....I must have experienced a =
+senior moment. The module for conntrack for ftp had been =
+installed/compiled but not loaded. Fix that.....all is well again..=20
 
 
-Question2.
-Surely, my default policy is DROP.
-and one can't log about related default Policy.
-How can I log packet information about default policy related?
+Again, Thank you
 
+Tim-Mia/Fla
 
-Thanks in advance.
+------=_NextPart_000_001B_01C2693A.8AFEF6E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3315.2870" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Good ppl,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Just a note of gratitude for the =
+replies....I must=20
+have experienced a senior moment. The module for conntrack for ftp had =
+been=20
+installed/compiled but not loaded. Fix that.....all is well again..=20
+</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Again, Thank you</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Tim-Mia/Fla</FONT></DIV></BODY></HTML>
 
-
-_________________________________________________________________
-=BA=B8=B4=D9 =BA=FC=B8=A3=B0=ED =BA=B8=B1=E2 =C6=ED=C7=D1 =B4=BA=BD=
-=BA. =BF=C0=B4=C3=C0=C7 =C8=AD=C1=A6=B4=C2 MSN =B4=BA=BD=BA=BF=A1=
-=BC=AD =C8=AE=C0=CE=C7=CF=BC=BC=BF=E4.
-http://www.msn.co.kr/news/
-
-
+------=_NextPart_000_001B_01C2693A.8AFEF6E0--
 
 
