@@ -1,11 +1,10 @@
-From: =?iso-8859-1?q?Intercomax?= <intercomax@yahoo.com.br>
-Subject: Problems removing rules
-Date: Wed, 30 Apr 2003 21:07:17 -0300 (ART)
+From: "Kevin Smith" <starwatcher22@earthlink.net>
+Subject: Dependency Issues ip_conntrack_helper.h
+Date: Wed, 30 Apr 2003 22:52:35 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030501000717.46647.qmail@web14308.mail.yahoo.com>
-Reply-To: intercomax@yahoo.com.br
+Message-ID: <003601c30f8c$d416adc0$0200000a@kevs>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,53 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-I'm having a huge problem:
+I was compile a new kernel (2.4.20) mostly to get the ip_nat_cuseeme module
+working when I this during the compile:
 
-I have those rules:
+Circular /usr/src/linux-2.4.20/include/netfilter_ipv4/ip_conntrack.h <-
+/usr/src/linux-2.4.20/include/linux/netfilter_ipv4/ipconntrack.helper.h
+Dependency Dropped
 
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       tcp  --  anywhere             anywhere    =20
-     tcp dpt:www
-to:192.168.0.1:80
+I Believe this is why the module I'm installing isn't compiling. In my
+research, there was info about a patch, but no patch found. I've also
+checked bugzilla with no luck.
+Can someone give me and idea where to look, or if this is known, where to
+get a patch.
+I have also applied patch-2.4.20, just incase it would make a diff..which it
+didn't.
+Any info will be appreciated, or point towards a fix.
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  all  --  anywhere             anywhere
+Thanks Kev
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-I inserted iptables -t nat -I PREROUTING -s
-xxx.xxx.xxx.xxx -j RETURN
-
-OK. The rules works fine.
-
-Then I removed the RETURN iptables -t nat -D
-PREROUTING -s=20
-xxx.xxx.xxx.xxx -j
-RETURN and... The IP still access some pages that
-accessed before!
-
-Why?
-
-I need to redirect all internal requests to a specific
-page and then,=20
-after a
-login, masquerade them to the Internet...
-
-That's it.
-
-Thanks in advance.
-
-Maur=EDcio S. Mudrik
-
-_______________________________________________________________________
-Yahoo! Mail
-O melhor e-mail gratuito da internet: 6MB de espa=E7o, antiv=EDrus, acesso =
-POP3, filtro contra spam.=20
-http://br.mail.yahoo.com/
 
