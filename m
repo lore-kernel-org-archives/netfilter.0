@@ -1,13 +1,13 @@
-From: Jason White <jdw-netfilter@jdwhite.org>
-Subject: Re: Forcing source port with NAT
-Date: Mon, 23 Jun 2003 16:44:22 -0500
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: Do I need to write a module?
+Date: 24 Jun 2003 08:57:25 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030623214422.GC28900@jdwhite.org>
-References: <20030623200247.GB28900@jdwhite.org>
+Message-ID: <1056437845.2764.57.camel@raylinux.internal>
+References: <sef70417.087@mail.stone-ware.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-y8mLlHKkMs5G8KWhYjtW"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20030623200247.GB28900@jdwhite.org>
+In-Reply-To: <sef70417.087@mail.stone-ware.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,25 +17,68 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On Mon, Jun 23, 2003 at 03:02PM -0500, Jason White wrote:
-[...]
->Basically, I need to ensure that anything coming in on 200.200.200.200:2104
->goes to 10.0.0.2:2104 and anything going out from 10.0.0.2:2104 goes out
->200.200.200.200:2104.
-[...]
 
-  Answering my own post, the following worked:
+--=-y8mLlHKkMs5G8KWhYjtW
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-iptables -t nat -A POSTROUTING -p udp -s 10.0.0.2 --sport 2104 -j SNAT
-  --to 200.200.200.200:2104
+Hi
 
--- 
-Jason White (jdw-netfilter@jdwhite.org)  http://www.jdwhite.org/~jdwhite
-Jabber:jdwhite@jabber.org  IRC:irc.netbsd.org/{jdwhite,jdw}
-AIM:jdwhite90125  Yahoo:jdwhite89  ICQ:9295078  MSN:jdwhite89@hotmail.com
-GPG KeyID: 0x74CF850D/1F57 465A 1357 BA39 2BEF  5629 6E1C 2B20 74CF 850D
+Why don't you get the Java app to export some kind of text that you can
+get netfilter to parse with regular unix utilities (sed, awk, grep).
+
+Create a cron job to parse the file every 10 minutes (if that's regular
+enough) that parses the text file and reloads your iptables rules as per
+the file.
+
+Ray
+
+On Mon, 2003-06-23 at 20:43, Tony Thompson wrote:
+> I am investigating an option to use netfilter to allow/deny traffic from
+> the local subnet based on rules/accounting information that is in
+> another (Java based) system.  I am new to netfilter so, I can someone
+> offer some suggestions:
+>=20
+> 1. Is netfilter the right place to hook or should I look at a firewall
+> that may provide some higher level hooks for authentication and
+> accounting?
+>=20
+> 2. If I should hook into netfilter, is it a good idea to call into a
+> JVM from a netfilter module?
+>=20
+> 3. I am not sure what kind of control I have when using the userspace
+> driver but, should I use that in this situation?  Can I use that
+> directly from Java so I wouldn't have the hassel of calling into a JVM
+> from a native process?
+>=20
+> If anyone can offer any other suggestions or examples, that would be
+> appreciated.
+>=20
+> Thanks.
+> Tony
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
+
+--=-y8mLlHKkMs5G8KWhYjtW
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+9/ZVh1fuR/Bv+ygRAixgAKCUvamE/LpE75fT21PG0WEe82geawCgs0pM
+cU995NOEI9xsAjPLWSP0ouk=
+=DzuW
+-----END PGP SIGNATURE-----
+
+--=-y8mLlHKkMs5G8KWhYjtW--
+
 
