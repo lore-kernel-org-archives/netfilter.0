@@ -1,10 +1,13 @@
-From: kernel_learner <kernel_learner@yahoo.com>
-Subject: Netfilter as an application.
-Date: Fri, 16 Jan 2004 08:39:06 -0800 (PST)
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: Firewall workaround
+Date: Fri, 16 Jan 2004 16:54:16 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040116163906.40844.qmail@web40307.mail.yahoo.com>
+Message-ID: <200401161654.16639.Antony@Soft-Solutions.co.uk>
+References: <357895CFC8CB7C44900D6A4F46D08AA90459C9@exchangeserver.IAT.local> <200401161615.23266.Antony@Soft-Solutions.co.uk> <1074271086.9660.12.camel@noc2tuh.dcn>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1074271086.9660.12.camel@noc2tuh.dcn>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,54 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
+On Friday 16 January 2004 4:38 pm, Alexis wrote:
 
+> using port 80 may work too.
 
-Dear All,
+But SSH is designed to support port forwarding - it's part of the standard 
+operation.   On port 80 you'd have to come up with some mechanism of your own 
+and make it work.
 
- How's it going! I am looking for something that I am
-not sure currently exists. Basically I want to make a
-version of netfilter that's free from all the
-kernel-level and networking stack hooks. I am looking
-for a plain simpler version of netfilter which does
-not interact with the kernel or the networking stack
-in any way. It would be a standard user program which
-a person with normal privelges could compile and run.
-What would it do? It could do the same things that
-netfilter does...i.e. filter packets/NAT etc. However
-the input could be driven from a "main" function which
-"fakes" packets arriving on the network (this could be
-driven from a trace).
+Antony.
 
-Does such a thing exist?
+> On Fri, 2004-01-16 at 13:15, Antony Stone wrote:
+> > On Friday 16 January 2004 4:01 pm, Benjamin Dickgiesser wrote:
+> > > It would be realy nice if someone could help me with this:
+> > >
+> > > Situation:
+> > > I am useing a Windows XP PC at a student hall. To connect to the
+> > > internet I am useing the university connection. Unfortunatly there are
+> > > only around 5 open ports (80,21,22,23,6667).
+> > > My aim is to make a work around to this firewall.
+> >
+> > I'm not sure that's an appropriate quesion to ask on a security mailing
+> > list, but I guess you're right in assuming that this is a place to find
+> > people who know how to do it :)
+> >
+> > Anyway, my answer to your question is: why not just tunnel the protocols
+> > you want through SSH port forwarding?
+> >
+> > Antony
 
-How easy/difficult would it be to hack into the
-current netfilter code to remove all the
-networking/kernel hooks it has?
+-- 
+G- GIT/E d- s+:--(-) a+ C++++$ UL++++$ P+(---)>++ L+++(++++)$ !E W(-) N(-) o? 
+w-- O !M V+++(--) !PS !PE Y+ PGP+> t- tv@ b+++ DI++ D--- e++>+++ h++ r@? 5? 
+!X- !R K--?
 
-Could someone guide me as to how exactly to go about
-doing this? i.e. where the hooks are..in the code?
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
-I was also looking for documentation on the code...I
-mean is there a documentation that explains the
-software architecture?
-
-Sorry for too many questions! :|
-
-Cheers!
-KeRNEL_LeaRNER
-
-"Metallica- The mother of all ye metal bands."
-
-
-
-
-
-
-__________________________________
-Do you Yahoo!?
-Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
-http://hotjobs.sweepstakes.yahoo.com/signingbonus
 
