@@ -1,15 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Cisco VPN Client + Cisco 800 + Firewall
-Date: Wed, 27 Oct 2004 16:15:04 -0400
+From: "Gary Smith" <gary@primeexalia.com>
+Subject: RE: Restrict LAN users to send mail to Internet but allow to send
+	mail	to other LAN user.
+Date: Wed, 27 Oct 2004 13:47:54 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041027201504.GA1315@bender.817west.com>
-References: <1098385275.7ic0vxrrb5hc@mail.sapo.pt>
-	<20041021192949.GA11650@bender.817west.com>
-	<1098876234.mw0x4ye44eo@mail.sapo.pt>
+Message-ID: <21245695958BF041875A6C39D08F9EBA1C3C21@vjo-mails-03.primeexalia.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1098876234.mw0x4ye44eo@mail.sapo.pt>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,36 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: Aleksandar Milivojevic <amilivojevic@pbl.ca>, netfilter@lists.netfilter.org
+
+True...  Sometimes I should read it twice... :)
+=20
+Gary
+
+________________________________
+
+From: netfilter-bounces@lists.netfilter.org on behalf of Aleksandar =
+Milivojevic
+Sent: Wed 10/27/2004 12:16 PM
 To: netfilter@lists.netfilter.org
+Subject: Re: Restrict LAN users to send mail to Internet but allow to =
+send mail to other LAN user.
 
-On Wed, Oct 27, 2004 at 12:23:54PM +0100, shore@sapo.pt wrote:
-> 
-> 
-> Anyone ??
-> 
 
-not to over-simplify things, but where in your firewall rules do you
-allow the VPN pool IP's (the 10.0.0.0/8) into your internal network?
 
-also--while your script may be readable to you, it may be
-incomprehensible to others--the preferred method of posting your rules
-to this list is with the output of:
+Gary Smith wrote:
+> You would still need netfilter to prevent other users from using the =
+internet as a back door.  For example, financial firms must log all =
+incoming and outgoing smtp traffic.  To accomplish this you need to =
+ensure that your users cannot access external SMTP servers otherwise =
+they could sent out unlogged messages.  We have done this in the past =
+for a few companies.  This forces the user to use the sendmail server =
+for their email.  I think this is the goal of the requester.
 
-  iptables -t mangle -vnxL && iptables -t nat -vnxL && iptables -vnxL
+Which is exactly what my first sentence said: "I will assume that LAN
+users are allowed to connect to mail server only, and not to outside
+world".  BTW, this is something that should be done by default.
+Financial firm or not.
 
-the other possible break in the chain is this:  does the cisco 800 have
-a static route on it along the lines of:
+--
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
-  192.168.0.0/24 via 192.168.10.1
 
-or are you relying on NAT to eliminate the need for routing?
 
-you may also want to clue us in to what you testing methodology is (i.e.
-what are you trying to connect to with the VPN client).
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
 
