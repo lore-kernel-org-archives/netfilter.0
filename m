@@ -1,14 +1,12 @@
-From: Raymond Leach <raymondl@knowledgefactory.co.za>
-Subject: RE: Qos using htb and transparent squid proxy
-Date: 29 Jan 2003 12:26:11 +0200
+From: Simone Sestini <simone.sestini@plugit.net>
+Subject: (no subject)
+Date: Wed, 29 Jan 2003 11:42:42 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1043835971.4709.19.camel@rayw.knowledgefactory.co.za>
-References: <FD8F124A387AD6119F7900A0D218B321685F37@hslex01.hslbz.local>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <5.2.0.9.0.20030129114238.0589eb50@imap4.plugit.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-M5gbRN1iCUcN6fnOrzA6"
+Content-Type: multipart/alternative;
+	boundary="=====================_77602125==.ALT"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FD8F124A387AD6119F7900A0D218B321685F37@hslex01.hslbz.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,41 +16,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+--=====================_77602125==.ALT
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 
---=-M5gbRN1iCUcN6fnOrzA6
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+test
 
-On Wed, 2003-01-29 at 12:02, Rob Sterenborg wrote:
-> > ip basis while going through the transparent proxy. I think=20
-> > the proxy is doing all the downloading (as it should be) and=20
-> > therefore does not obey the bandwidth limits imposed on the=20
-> > requesting user.
->=20
-> But in squid you should be able to throttle the bandwidth when you use
-> delay pools.
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Thanks for all the help so far Rob. Yes, delay pools can be used to some
-extent, but I need to throttle according to the source ip before it gets
-SNATed, i.e the internal IPs. I need squid to download at the rate that
-the client is allowed.
+Simone Sestini [ SS971-RIPE ]
 
-Ray
+Plug IT s.p.a. - Technical Office
+Via Galileo Ferraris 216
+52100 Arezzo
 
---=-M5gbRN1iCUcN6fnOrzA6
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Titles:
+System and Network Administrator
+Data Transmission Manager
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+Fax             +39 199 440088
+E-mail  simone.sestini@plugit.net
+Web             http://www.plugit.it
 
-iD8DBQA+N6xDh1fuR/Bv+ygRAs25AJ93h3ieymb2iCMYia1gbkJVuVA76QCeMjjf
-giF+lDT1vPJgdffxUBcviX4=
-=V5Mz
------END PGP SIGNATURE-----
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
---=-M5gbRN1iCUcN6fnOrzA6--
+--=====================_77602125==.ALT
+Content-Type: text/html; charset="us-ascii"
+
+<html>
+<body>
+test<br>
+<x-sigsep><p></x-sigsep>
+<font face="Verdana">::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::<br><br>
+</font><font face="Verdana" color="#FF0000"><b>Simone Sestini
+</font><font face="Verdana" size=2 color="#FF0000">[ SS971-RIPE
+]<br><br>
+</b></font>Plug IT s.p.a. - Technical Office<br>
+Via Galileo Ferraris 216<br>
+52100 Arezzo<br><br>
+<tt><font face="Courier New, Courier" color="#0000FF">Titles:<br>
+System and Network Administrator<br>
+Data Transmission Manager<br><br>
+Fax<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab>+39
+199 440088<br>
+E-mail<x-tab>&nbsp;&nbsp;</x-tab>simone.sestini@plugit.net<br>
+Web<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</x-tab><a href="http://www.plugit.it/" eudora="autourl">http://www.plugit.it</a><br><br>
+</font></tt><font face="Verdana"><u>::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+<br>
+</font></u></body>
+</html>
+
+--=====================_77602125==.ALT--
 
 
