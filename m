@@ -1,9 +1,9 @@
 From: "Allan Kissack" <lists@kissack.freeserve.co.uk>
-Subject: Re: A Good Question about log
-Date: Mon, 2 Jun 2003 07:24:42 -0000
+Subject: iptables from cgi script
+Date: Mon, 2 Jun 2003 07:34:44 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003a01c328d8$092d0c20$2c00a8c0@local.net>
-References: <5.2.0.9.0.20030602112046.00ab36b0@mail.SoftHome.net>
+Message-ID: <006401c328d9$701f0040$2c00a8c0@local.net>
+References: <E04CF3F88ACBD5119EFE00508BBB212109A2CCC8@exch-01.noida.hcltech.com>
 Reply-To: "Allan Kissack" <lists@kissack.freeserve.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,36 +18,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, Blesson Paul <blessonpaul@softhome.net>
+To: netfilter@lists.netfilter.org
 
-From: "Blesson Paul" <blessonpaul@softhome.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Monday, June 02, 2003 6:01 AM
-Subject: A Good Question about log
+I used to be able to list my rules via a cgi script but since moving to
+redhat 9 (iptables 1.2.7a) it fails. The reson given is "can't initialize
+iptables table `filter': Permission denied (you must be root) Perhaps
+iptables or your kernel needs to be upgraded." which is absolutley accurate
+(because I get this logging in as a local user and running /sbin/iptables -L
+too) - but I need to know how to achieve this.
+I tried altering the group on /sbin and /sbin/iptables and adding my local
+user to that, but still it fails.
 
+Am I missing something really obvious?  Either way, your assistance/advice
+is welcome.
 
-<snip>
-I need to know more information
-> about the droped packets. The important information I need to know to
-which
-> computer in the intranet the src is intended to sent. I also like to know
-> the internal table which contains the NAT information.
-> regards
-> Blesson Paul
->
->
-> Blesson Paul,
-
-Paul,
-
-do you mean "iptables -t nat -L" ?
-http://www.arin.net/whois/
-http://www.ripe.net/perl/whois
-http://www.apnic.net/apnic-bin/whois.pl
-http://www.nic.ad.jp/cgi-bin/whois_gw
-These urls should help find some information on the source ip's
+Thanks
 
 --
 Allan
+
+
 
 
