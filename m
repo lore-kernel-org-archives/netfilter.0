@@ -1,12 +1,11 @@
-From: Boryan Yotov <yotov@prosyst.com>
-Subject: Re: FW: Opening connection
-Date: Wed, 30 Oct 2002 17:31:58 +0100
+From: Payal <payal@hotpop.com>
+Subject: Re: masquerading and access
+Date: Wed, 30 Oct 2002 23:12:35 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DC0097E.1020102@prosyst.com>
+Message-ID: <20021030174234.GA5585@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/related;
- boundary="------------000302090403060906010409"
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,70 +15,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi,
+Thanks a lot for the mails. Well, my requirement is simple. I have one
+Linux box (connected to net) and say 50 Windows clients. On the Linux box I will put squid,
+qmail, dnscache. Now out of these 50 email clients only some i.e
+192.168.0.1-192.168.0.25 need to use net directly i.e. browse sites and
+ftp outside & use SMTP. The rest just need to use the SMTP for email.
+Please do not have a picture of a complex setup in mind.
 
---------------000302090403060906010409
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: 7bit
+In short,
+192.168.0.1-192.168.0.25 --> www, ftp and smtp(which is on say 192.168.0.1)
+192.168.0.26-192.168.0.50 --> just use SMTP on 192.168.0.1 to send mails
+outside, but no strict other internet access.
 
-Hello,
+Now what rules should I put? I want to use squid as http proxy.
+I am still unable to get how you figure what 192.168.0.0/27 thing. I can
+get some help here for this specific problem, but it might cause a
+problem if I were to increase/decrease the above ip range a bit. So,
+please tell me how to calculate this.
 
-   If I understood your wish clearly you have the following situation
+Please also do tell the rules I have to put for masquerading (I need it
+for ftp atleast, right?)
 
-   1. Gateway connected to the Internet as well as to your LAN
-       - external interface eth0 with IP 1.2.3.4
-       - internal interface eth1 with iP 9.9.9.1
-   2. Mail server running inside your LAN on IP 9.9.9.2 using the above 
-machine as Internet gateway
-   3. Web server again on your local LAN on IP 9.9.9.3 and the same as 
-for your mail server
-   (Note) All the values are example ones.
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+This is the box which runs squid and is connected to internet.
+Any help here please? I think this rule will masquerade for all
+machines, then I have to use DROP/REJECT for machines 192.168.0.26
+onwards. Is there any better and less clumsy way?
 
-   The firewall rules which you'll need in order both server to be 
-visible from Internet could look like:
-
-   iptables -t nat -A PREROUTING -p tcp -i eth0 -d 1.2.3.4 --dport 80 -j 
-DNAT --to-destination 9.9.9.3
-   iptables -t nat -A PREROUTING -p tcp -i eth0 -d 1.2.3.4 --dport 443 
--j DNAT --to-destination 9.9.9.3
-
-   iptables -t nat -A PREROUTING -p tcp -i eth0 -d 1.2.3.4 --dport 25 -j 
-DNAT --to-destination 9.9.9.2
-   iptables -t nat -A PREROUTING -p tcp -i eth0 -d 1.2.3.4 --dport 110 
--j DNAT --to-destination 9.9.9.2
-     (Note) For the external world it'll look like both servers are 
-running on your Gateway.
-     And of course using this configuration you don't need to change the 
-routing table. But at least the DNS entries for the mail and web server 
-must point to the external IP of your Gateway.
-
-   One addition - use for example the following rule if you want your 
-LAN to be able to reach Internet via the above Gateway:
-     #Enable IP forwarding
-   echo 1 > /proc/sys/net/ipv4/ip_forward
-   iptables -t nat -A POSTROUTING -o eth0 -s 9.9.9.0/24 -j SNAT 
---to-source 1.2.3.4
-       where 9.9.9.0 is your LAN and 24 is your LAN's netmask.
-
-Regards :)
-
-MValentin@imsidc.com wrote:
-
->  
->
->> Please if anybody can help me. My first Linux 7.2 firewall. How do I 
->> setup
->> a connection using NAT for a web and mail server in the LAN. Also, Do I
->> have to create entries for the routing table?
->>   
->
->
->
->
->  
->
-
---------------000302090403060906010409--
-
+Thanks a lot and bye.
+With regards.
+-Payal
 
