@@ -1,11 +1,13 @@
-From: zynkx <skydive@megamail.pt>
-Subject: (no subject)
-Date: Wed, 26 Nov 2003 13:37:26 +0000
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: (no subject)
+Date: Wed, 26 Nov 2003 14:01:04 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1069853846.3fc4ac966be15@paris-hme1>
+Message-ID: <200311261401.04191.Antony@Soft-Solutions.co.uk>
+References: <1069853846.3fc4ac966be15@paris-hme1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1069853846.3fc4ac966be15@paris-hme1>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,23 +17,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-yahoo and hotmail ip ranges? does anyone knows this ip=20
-ranges? need to allow them in my smtp prerouting=20
-rulez  :))
+On Wednesday 26 November 2003 1:37 pm, zynkx wrote:
 
-danke !
+> yahoo and hotmail ip ranges? does anyone knows this ip
+> ranges? need to allow them in my smtp prerouting
+> rulez  :))
 
+If you're doing smtp, why not filter on the domain names yahoo.com and 
+hotmail.com in your MTA?
 
+> danke !
 
+Bitte.
 
-unix is user friendly. it's just selective when=20
-choosing=20
-friends.
+Antony.
 
--------------------------------------------------
-Email Enviado utilizando o servi=E7o MegaMail
+-- 
+Behind the counter a boy with a shaven head stared vacantly into space,
+a dozen spikes of microsoft protruding from the socket behind his ear.
+
+ - William Gibson, Neuromancer (1984)
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
