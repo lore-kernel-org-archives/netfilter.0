@@ -1,15 +1,11 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: transparent squid with internal sites as well
-Date: 25 Nov 2002 12:53:05 +0200
+From: Cyril COUPEL <cyril@coupel.homelinux.org>
+Subject: Transparent Proxy
+Date: 25 Nov 2002 14:04:22 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1038221585.19172.151.camel@rayw.knowledgefactory.co.za>
-References: <20021125121935.0adac911.bain@tcsn.co.za>
-Reply-To: raymondl@knowledgefactory.co.za
+Message-ID: <1038229462.2864.11.camel@sc1.coupel>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-fdHjmXxx32RC+KPRK+Ie"
+Content-Type: multipart/alternative; boundary="=-IbFNvtuP4ujFDc8U7lXw"
 Return-path: <netfilter-admin@lists.netfilter.org>
-From: Raymond Leach <Ray@work>
-In-Reply-To: <20021125121935.0adac911.bain@tcsn.co.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,79 +15,74 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 
---=-fdHjmXxx32RC+KPRK+Ie
+--=-IbFNvtuP4ujFDc8U7lXw
 Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Hi
+Hi all,
+First here is my network architecture:
+3 Linux Box, B act has router (A and C can even be a group of PCs):
 
-One solution could be split horizon DNS? Is your firewall also a DNS
-server?
+------     ------     ------
+|  A  |----|  B  |----|  C  |
+------     ------     ------
 
-Ray
+I need to REDIRECT (DNAT) the traffic from A to B, to a kind of PROXY,
+and then forward it to C.
 
-On Mon, 2002-11-25 at 12:19, Henti Smith wrote:
-> Hi there=20
->=20
-> I have a little problem I'm hoping somebody can help me with.
->=20
-> We are running a WAN here with firewall and tranparent proxy. I have some=
- webservers on the inside of the firewall (yes I know .. this is not my cho=
-ice... *sigh*)
-> which I'm forwarding all data to ip's to those machines.=20
->=20
-> The problem is:
->=20
-> With transparent proxy working the way it should, nobody on the internal =
-network can see the internal websites.
-> With transparent proxy off, all works but I have no way of seeing who bro=
-wses where anor content control.
->=20
-> here is firewall rules that pertain to setup.
->=20
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination        =20
-> REDIRECT   tcp  --  10.0.0.0/8           0.0.0.0            tcp dpt:www r=
-edir ports 3128=20
-> REDIRECT   tcp  --  10.0.0.0/8           0.0.0.0            tcp dpt:3128 =
-redir ports 3128=20
-> DNAT       tcp  --  anywhere             web1		    tcp dpt:www to:10.0.0.=
-10:80=20
-> DNAT       tcp  --  anywhere             web1               tcp dpt:https=
- to:10.0.0.10:443=20
->=20
-> Chain POSTROUTING (policy ACCEPT)
-> target     prot opt source               destination        =20
-> SNAT       all  --  10.0.0.0/8          !10.2.0.0/16        to:liveip
-> SNAT       all  --  192.168.1.0/24       anywhere           to:liveip
->=20
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination        =20
->=20
-> as off right now .. transparent proxy is not logging any internal traffic=
- ... but I need to have tranparent proxy but still allow internal users to =
-browse to web1
->=20
-> any suggestions ?=20
->=20
-> Henti Smith
---=20
+For it, I need to retreave on B the real server address requested by A
+to open a new connection from B to C.
 
---=-fdHjmXxx32RC+KPRK+Ie
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+My Question is:
+How to retreave  the conntrack informations for a connection, without
+parsing the /proc/net/ipv4/ip_conntrack?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
+Thank in advance.
+-- 
+Cyril COUPEL <cyril@coupel.homelinux.org>
 
-iD8DBQA94gERh1fuR/Bv+ygRAn+hAJ9HsjKj9S1uXOf2dIaAG/cVHKpLSgCggG3e
-GOYWV/KjdIxET1B3XPqEYuc=
-=SFKt
------END PGP SIGNATURE-----
+--=-IbFNvtuP4ujFDc8U7lXw
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
---=-fdHjmXxx32RC+KPRK+Ie--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/1.1.6">
+</HEAD>
+<BODY>
+Hi all,<BR>
+First here is my network architecture:<BR>
+3 Linux Box, B act has router (A and C can even be a group of PCs):<BR>
+<BR>
+------&nbsp;&nbsp;&nbsp;&nbsp; ------&nbsp;&nbsp;&nbsp;&nbsp; ------<BR>
+|&nbsp; A&nbsp; |----|&nbsp; B&nbsp; |----|&nbsp; C&nbsp; |<BR>
+------&nbsp;&nbsp;&nbsp;&nbsp; ------&nbsp;&nbsp;&nbsp;&nbsp; ------<BR>
+<BR>
+I need to REDIRECT (DNAT) the traffic from A to B, to a kind of PROXY, and then forward it to C.<BR>
+<BR>
+For it, I need to retreave on B the real server address requested by A to open a new connection from B to C.<BR>
+<BR>
+My Question is:<BR>
+How to retreave&nbsp; the conntrack informations for a connection, without parsing the /proc/net/ipv4/ip_conntrack?<BR>
+<BR>
+Thank in advance.<BR>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Cyril COUPEL &lt;<A HREF="mailto:cyril@coupel.homelinux.org">cyril@coupel.homelinux.org</A>&gt;
+</TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>
+
+--=-IbFNvtuP4ujFDc8U7lXw--
 
 
