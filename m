@@ -1,11 +1,13 @@
-From: jen@saturn5.com
-Subject: ssl forward / proxy question
-Date: Thu, 24 Jul 103 17:12:49 -0700 (PDT)
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: Not quite understanding DNAT
+Date: Fri, 25 Jul 2003 10:14:28 +1000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030725001249.9399.qmail@saturn5.com>
+Message-ID: <3F207664.1000109@snapgear.com>
+References: <3F1F9900.4080401@snapgear.com> <3F1FA56E.28480.E59161E@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F1FA56E.28480.E59161E@localhost>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,38 +17,39 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Coutts, Ashe (Testing Account)" <ATest@sbsdk12.org>
+Cc: netfilter@lists.netfilter.org
 
+Coutts, Ashe (Testing Account) wrote:
+> It is working almost as I expected except for the following. The DNAT 
+> connections come into the system fine but are seen as originating from the 
+> eth0 interface rather than their eth0:x interface. So, when attaching to a linux 
+> cpu with ssh I am needing to place the ip# for the eth0 interface in the 
+> hosts.allow file rather than the much more restrictive eth0:x ip#. Can it be set 
+> up so the connection is between the external eth0:x ip# and its linked internal 
+> ip#?
 
-hi, 
+If all you are doing is DNATing, then the source address should be
+the real external source address, not eth0 *or* eth0:x.
 
-i have a NAT set up via an iptables firewall on RHAS. i have various webservers 
-behind it (and other stuff), but now i'm required by marketing (sigh) to set 
-up loads of SSL certificates. since apache/apache2 still requires one ip 
-address per SSL certificate, and they mean to do lots of these, i'm wondering
-how to set it up in such a way that all DNS points to one external IP address
-such as 234.56.78.90. when the packet hits the firewall, something proxies it 
-so that it will see the *name* address, and forward it on to a virtual IP. for
-example:
+> ## Setup NAT from entire WAN to the outside world
+> /sbin/iptables --table nat  --append POSTROUTING --source 0.0.0.0/0          \
+>                --jump SNAT --to 204.48.178.2
 
-there are 3 domains all belonging to the same "real" IP address. 
+But here we see that you are SNATing everything.  This is probably
+not what you want.  I expect you only want to SNAT outgoing traffic:
 
-234.56.78.90 -> www.guinness.com
-234.56.78.90 -> www.kicks.com
-234.56.78.90 -> www.butt.com
+## Setup NAT from entire WAN to the outside world
+/sbin/iptables --table nat  --append POSTROUTING --out-interface eth0          \
+                  --jump SNAT --to 204.48.178.2
 
-so a user wants to go to www.guinness.com, the IP takes the packet to the fire
-wall/proxy/whatever, notices that it's "www.guinness.com" and and will forward t
-he packet on to the internal address of 10.31.1.44
+With this rule, you should now place the real external hosts in
+your hosts.allow, rather than any IP address that belongs to the
+firewall.
 
-user goes to www.kicks.com, and the packet goes to 10.31.1.45
+-- 
+Philip Craig - philipc@snapgear.com - http://www.SnapGear.com
+SnapGear - Custom Embedded Solutions and Security Appliances
 
-www.butt.com will get forwarded to 10.31.1.46
-
-is there something like this that is possible? 
-
-thanks!!
-
--\jen
 
