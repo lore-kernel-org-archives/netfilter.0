@@ -1,11 +1,11 @@
-From: haquaye@hotmail.com
-Subject: Netfilter Help me
-Date: Thu, 17 Apr 2003 11:30:19 +0000 (GMT)
+From: "Stefano Petroianni" <stefano.petroianni@eln.polito.it>
+Subject: Packets lost by ip_queue
+Date: Thu, 17 Apr 2003 16:25:48 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030417113019.928DE2C015@lists.samba.org>
-Reply-To: haquaye@hotmail.com
+Message-ID: <000801c304ed$3e3b74b0$c709c082@ace17>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C304FE.017C6640"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,104 +16,58 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@lists.samba.org>
+To: netfilter@lists.netfilter.org
 
-FROM MR PUFFIN  DANIEL
-AUDITING AND ACCOUNT UNIT.
-FORIEGN REMITTANCE DEPT.
-UNION TOGOLAISE DE BANQUE LOME TOGO,
-LOME-TOGO.
- 
+This is a multi-part message in MIME format.
 
-STRICTLY AND CONFIDENTIAL,
- 
-I am MR PUFFIN  DANIEL the director in charge of
-auditing
-and account section  UNION TOGOLAISE DE
-BANQUE,LOME-TOGO.With due respect and regard,I have
-decided to contact you on a business transaction that
-will be very beneficial to both of us at the end.   
+------=_NextPart_000_0005_01C304FE.017C6640
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-During our investigation and auditing in this bank, My
-department came across a very huge sum of money
-belonging to a deceased person, who  died on EgyptAir
-Flight 990 plane crash of 31st october 1999. No body
-was recovered from the crash site.
+Hi everyone,
+I'm a beginner in this field. I'm working with netfilter in the =
+user-space.
+I'm having some problem with ip_queue.
+When I try to filter large bandwidths or packet-number (for example a =
+traffic of  50.000pkt/sec with 128bytes/pkt)
+I have an high number of lost packets even if I increase the length of =
+the ip_queue.
+Any advice?
+Thanks.
+Stefano.
 
-This is the website.
-www.cnn.com/us/9911/02/egyptair990.list/index.html
+------=_NextPart_000_0005_01C304FE.017C6640
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This fund has been dormant in his account with my Bank
-without any claim of the fund that is in our custody
-neither from his family or relation before our
-discovery to this development.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1141" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi everyone,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I'm a beginner in this field. I'm =
+working with=20
+netfilter in the user-space.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I'm having some problem with =
+ip_queue.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>When I try to filter large bandwidths =
+or=20
+packet-number (for example a traffic of &nbsp;50.000pkt/sec with=20
+128bytes/pkt)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I have an high&nbsp;number of lost =
+packets even if=20
+I increase the length of the ip_queue.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Any advice?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Stefano.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
 
-Although personally, I keep this information secret
-within myself and partners to enable the whole plans
-and idea be Profitable and successful during the time
-of execution.
- 
-The said amount was US$7M (SEVEN MILLION UNITED
-STATEDOLLARS. As it may interest you to know, I got
-your impressive information through internet when I am
-serching for a good and trust person who will help me
-to finalize this issue.
- 
-Meanwhile all the arrangement to put claim over
-this fund as the bonafide next of kin to the
-deceased,get the required approval and transfer this
-money to a foreign account has been put in place an
-directives and needed informations will be relent to
-you asap to you as soon as you indicate your interest
-and willingness to assist us and also benefit your
-self to this great business opportunity.
- 
-In fact I could have done this deal alone, but because
-of my position in this country as a civil servant, we
-are not allowed to operate a foreign account and would
-eventually raise an eye brow on my side during the
-time of transfer because I work in this bank. 
-
-This is the actual reason why it will require a second
-party or fellow who will forward claims as the next of
-kin with affidavit of trust of oath to the Bank, and
-also present a foreign account where he will need the
-money to be re-transferred into on his request as it
-may be after due verification and clarification by the
- correspondent branch of the bank where the whole
-money will be remitted from to your own designated
-bank account.
- 
-I will not fail to inform you that this transaction is
-100% risk free.On smooth conclusion of this
-transaction, You will be entitled to 25%of the total
-sum as gratification,while 5% will be set aside to
-take care of expenses that may arise during the time
-of transfer and also telephone bills, while 70% will
-be for me and my partners.
- 
-Please, you have been adviced to keep this top secret
-as we are still in service and intend to retire from
-service,and after we conclude this deal with you.I
-will be monitoring the whole situation here in this
-bank until you confirm the money in your account. and
-ask us to come down toyour country for subsequent
-sharing of the fund according to percentages
-previously indicated and further investment, either in
-your country or any country you may advice us to
-invest in.
-All other necessary information will be sent to you
-when I hear from you. 
-
-I suggest you get back to me as soon as possible,
-Stating your wish in this transaction. 
-
-Yours faithfully,
-
-Mr.PUFFIN  DANIEL,
-UNION TOGOLAISE DE BANQUE LOME TOGO.
-
-
+------=_NextPart_000_0005_01C304FE.017C6640--
 
 
