@@ -1,13 +1,15 @@
-From: Sander Sneekes <sander@dmdsecure.com>
-Subject: Re: load balancing
-Date: 03 Feb 2003 15:35:10 +0100
+From: "Alexander W. Janssen" <yalla@ynfonatic.de>
+Subject: Re: iptables grep problems
+Date: Mon, 3 Feb 2003 17:16:13 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1044282910.16954.25.camel@sander>
-References: <1044280193.16953.15.camel@sander>
+Message-ID: <20030203171613.A2170@ynfonatic.de>
+References: <1044279746.9027.55.camel@juna.cypherworld.org> <GNECIOACDBCPDCMNJLJJEEMHCBAA.kkilgore@wt.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-Jtb28g/wA+/byfEXHdBo"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1044280193.16953.15.camel@sander>
+Content-Disposition: inline
+In-Reply-To: <GNECIOACDBCPDCMNJLJJEEMHCBAA.kkilgore@wt.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,87 +19,38 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Ken Kilgore <kkilgore@wt.net>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
 
---=-Jtb28g/wA+/byfEXHdBo
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-currently i'm using this line
+Put "set -x" direct under "#!/bin/bash" in your script. This will show every
+command on stdout before it's executed. This will show you why the errors
+occur.
 
-iptable -t nat -A PREROUTING -d X.X.X.X -p tcp --dport http -j DNAT
---to-dest 192.168.0.100-192.168.0.111
+HTH, Alex.
 
-this this the job but the if i use the same client it always uses 100
-for ex. 
+--=20
+"Mr Data, when I said 'Fire at Will', I didn't mean for you to be so litera=
+l."
+Instructions for use of this post: Insert tounge in cheek. Read as normal.
 
-but we need to do some preformance test with 3 client's so everytime a
-client
-does a reqeust to the http server i want to get it for a different
-server.
+--MGYHOYXEY6WxJCY8
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-anybody ?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: Weitere Infos: siehe http://www.gnupg.org
 
-thanks
-Sander
+iEYEARECAAYFAj4+lcwACgkQEMMZKORQoYJxlQCeLZLh47oDadG8Ys8zE5HrXPqC
+oCsAniHnxPq29HfW5zfqoH0EQpyqdrET
+=OReh
+-----END PGP SIGNATURE-----
 
-
-On Mon, 2003-02-03 at 14:49, Sander Sneekes wrote:
-
-> Hi all,
-> 
-> I need to load balance between 2 webserver 
-> what is the most fastest way of doing this?
-> With iptables? if yes wich line's do i need to use
-> i have a RH 7.2 with iptables running already doing
-> al network traffic
-> 
-> cheers
-> Sander
-
---=-Jtb28g/wA+/byfEXHdBo
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.1.5">
-</HEAD>
-<BODY>
-currently i'm using this line<BR>
-<BR>
-iptable -t nat -A PREROUTING -d X.X.X.X -p tcp --dport http -j DNAT --to-dest 192.168.0.100-192.168.0.111<BR>
-<BR>
-this this the job but the if i use the same client it always uses 100 for ex. <BR>
-<BR>
-but we need to do some preformance test with 3 client's so everytime a client<BR>
-does a reqeust to the http server i want to get it for a different server.<BR>
-<BR>
-anybody ?<BR>
-<BR>
-thanks<BR>
-Sander<BR>
-<BR>
-<BR>
-On Mon, 2003-02-03 at 14:49, Sander Sneekes wrote:
-<BLOCKQUOTE TYPE=CITE>
-    <FONT COLOR="#737373" SIZE="3"><I>Hi all,<BR>
-    <BR>
-    I need to load balance between 2 webserver <BR>
-    what is the most fastest way of doing this?<BR>
-    With iptables? if yes wich line's do i need to use<BR>
-    i have a RH 7.2 with iptables running already doing<BR>
-    al network traffic<BR>
-    <BR>
-    cheers<BR>
-    Sander</I></FONT>
-</BLOCKQUOTE>
-</BODY>
-</HTML>
-
---=-Jtb28g/wA+/byfEXHdBo--
-
+--MGYHOYXEY6WxJCY8--
 
