@@ -1,12 +1,12 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: Odd iptables behavior. One port range works, another doesn't
-Date: Mon, 22 Nov 2004 10:32:30 -0500
-Message-ID: <20041122153230.GA30649@bender.817west.com>
-References: <BC36F80F-3C29-11D9-9337-000A95B6BD3E@hotpop.com>
+Subject: Re: Block proxy use.
+Date: Mon, 22 Nov 2004 11:01:26 -0500
+Message-ID: <20041122160126.GA30757@bender.817west.com>
+References: <1101131370.16509.24.camel@tux.it-akademiet.no>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <BC36F80F-3C29-11D9-9337-000A95B6BD3E@hotpop.com>
+In-Reply-To: <1101131370.16509.24.camel@tux.it-akademiet.no>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,46 +21,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Sun, Nov 21, 2004 at 07:56:33PM -0600, James wrote:
-> I am trying to use non-standard ports with torrents. If I use the 
-> standard ports: 6880:6899, it works fine. However, if I simply change 
-> the port range to 6280:6299, it no longer matches and my default DROP 
-> rule at the end of my chain catches the packets.
+On Mon, Nov 22, 2004 at 02:49:30PM +0100, Stian B. Barmen wrote:
+> Is there som kind of filter for netfilter that can block access to
+> anonymous proxies? The problem I often face is that the most advanced
+> users always can work around the firewall by using proxies. 
 > 
-> My full script can be found here, it is fairly thorough in its comments:
-> http://www.tuxmac.homelinux.org/~james/scripts/fwsoho.full
-> 
-> In an attempt to debug, I trimmed out all of the DROP and REJECT rules 
-> except the default, catch-alls at the bottom. I discovered that if I 
-> used the --dport with the following rules the alternate port range 
-> would not work, but if I left the --dport off and did a straight 
-> accept, it did:
-> 
-> $IPT -A OUTPUT  -o $EXTIF -p tcp -s $EXTIP  \
->     --dport $ports -m state --state NEW -j ACCEPT
->    $IPT -A FORWARD -i $INTIF -p tcp -s $INTNET \
->     --dport $ports -m state --state NEW -j ACCEPT
-> 
-> Here is a link to the trimmed down rule set:
-> http://www.tuxmac.homelinux.org/~james/scripts/fwsoho
-> 
-> Finally, here is the output of "iptables -L" and below it "iptables -t 
-> nat -L PREROUTING -vn" with the troublesome 6280:6299 range used
-> http://www.tuxmac.homelinux.org/~james/scripts/rules
+> I know that I could run a proxy myself but this is not exactly what I
+> want. The best would be if there could be a filter similar to ipp2p
+> which would check for a "proxy signature" and block those
+> communications. 
 
-looking at the above link--your FORWARD rules allow the bittorrent
-traffic OUT, not IN [1]; whereas, if you're using PREROUTING NAT rules, i'm
-assuming you're trying to allow the traffic IN.
+best option:  run squid, transparently proxy connections to it, block
+access to remote proxies by category with squidGuard and a decent
+blacklist; or, by restricting HTTP CONNECT method.
 
-[1]
-Chain FORWARD (policy DROP)
-target     prot opt source                      destination 
-ACCEPTl    tcp  --  james.tuxmac.homelinux.org  anywhere tcp dpt:6280 
+sub-optimal options:
+
+create a list of known remote proxies and block access to them via IP
+address in netfilter or by black-holing the domains in your DNS server.
+
+use something like l7filter (which i have zero experience with) to block
+HTTP CONNECT requests.  note that this method is powerless against
+remote proxies that use SSL.
 
 -j
 
 --
-"I have been shot eight times this year, and as a result, I almost
- missed work."
+"Lisa, Vampires are make-believe, like elves, gremlins, and Eskimos."
         --The Simpsons
 
