@@ -1,11 +1,13 @@
-From: =?unknown-8bit?q?Fran=E7ois?= Boisson <user@maison.homelinux.net>
-Subject: Iptables and broadcast
-Date: Fri, 22 Nov 2002 16:50:11 +0000
+From: Pavlos Parissis <p_pavlos@freemail.gr>
+Subject: Re: Netfilter 1.2.7a (debian), rule (DNAT) problems
+Date: Sun, 24 Nov 2002 14:58:57 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021122165011.7cd24ffb.user@maison.homelinux.net>
+Message-ID: <20021124145857.6085bb2c.p_pavlos@freemail.gr>
+References: <5.1.1.6.0.20021113172900.00bb9ae8@olga.swip.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <5.1.1.6.0.20021113172900.00bb9ae8@olga.swip.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,55 +20,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hey, (excuse my english)
+On Wed, 13 Nov 2002 17:41:57 +0100 040 <madmac@swipnet.se> wrote:
+>  Hello.
+> 
+>  Now I want to add a rule to forward all incoming data on port 4662 (TCP)
+>  
+>  from the internet (eth1) to
+>  a server on my LAN, namely host 192.168.0.7 (via eth0), so I add the 
+>  following rule (under *nat):
+>  -A PREROUTING -p tcp -m tcp -i eth1 --dport 4662 -j DNAT
+>  --to-destination 192.168.0.7:4662
+You have to add rules in FORWARD CHAIN.
+iptables -A FORWARD -p tcp -i eth1 -o eth0 -d 192.168.0.7 --dport 4662 -j
+ACCEPT
 
-I'm trying to understand something on iptables:
-If I put the iptables rules
-iptables -t nat -A PREROUTING -p icmp -d 255.255.255.255 -j DNAT --to
-80.11.65.250
+iptables -A FORWARD -p tcp -i eth0 -o eth1 -s 192.168.0.7 --sport 4662 -j
+ACCEPT
 
-I got
-iptables:
-DNAT       icmp --  anywhere             255.255.255.255   
-to:80.11.65.250
-DNAT       tcp  --  anywhere             anywhere           tcp dpt:6000
-to:192.168.1.253:6000
-DNAT       udp  --  anywhere             anywhere           udp dpt:6000
-to:192.168.1.253:6000
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  all  --  anywhere             anywhere
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+PAvlos
 
-but a ping to 255.255.255.255 (broadcast) isn't relayed to 80.11.65.250.
-The counters show that the rules is applied but the packet disappear.
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I love having the feeling of being in control
+while i have the sensation of speed
 
-If I put 
+The surfer of life
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-iptables -t nat -A PREROUTING -p icmp -d 192.168.1.255 -j DNAT --to
-80.11.65.250IP
-de la machine>
-
-The same thing happens: no relai of a ping to 192.168.1.255.
-
-With no rule, I have a answer of ping 255.255.255.255 by the firewall
-itself. With the following rule:
-
-iptables -t nat -A PREROUTING -p icmp -d 192.168.1.251 -j DNAT --to
-80.11.65.250
-
-(192.168.1.251 is the IP of the firewall), I have an echo of the firewall
-if I do "ping 255.255.255.255" and an echo of 80.11.65.250 if i do "ping
-192.168.1.251".
-
-After the rule is applied, the packet is not a broadcast packet so why it
-disappears. How can I forward a broadcast packet to a specific computer?
-
-Thanks for read me,
-regards
-
-F.Boisson
-
-PS: Cc answer to me, I'm not on the list
 
