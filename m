@@ -1,13 +1,14 @@
-From: Ralf Spenneberg <lists@spenneberg.org>
-Subject: Re: Re[2]: Where libipt_MASQ.so (???)
-Date: 04 Aug 2003 20:08:06 +0200
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: Where libipt_MASQ.so (???)
+Date: 04 Aug 2003 20:09:03 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1060020485.26856.47.camel@kermit>
-References: <1214220394.20030804195749@sevein.com>
+Message-ID: <1060020543.667.2.camel@elendil.intranet.cartel-securite.net>
+References: <1211419607.20030804184812@sevein.com>
+	 <1060017482.26856.40.camel@kermit>  <15910078176.20030804195634@sevein.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1214220394.20030804195749@sevein.com>
+In-Reply-To: <15910078176.20030804195634@sevein.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,30 +20,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: "=?ISO-8859-1?Q?Jes=FAs_Garc=EDa?= Crespo (aka Sevein)" <correo@sevein.com>
-Cc: Netfilter <netfilter@lists.netfilter.org>
+Cc: netfilter@lists.netfilter.org, Ralf Spenneberg <lists@spenneberg.org>
 
-Am Mon, 2003-08-04 um 19.57 schrieb Jes=FAs Garc=EDa Crespo (aka Sevein):
-> Hola flaq,
->=20
-> Monday, August 4, 2003 7:38:47 PM, you wrote:
->=20
-> f> Try -j MASQUERADE
+Le lun 04/08/2003 =E0 19:56, Jes=FAs Garc=EDa Crespo (aka Sevein) a =E9cr=
+it :
+> But the problem is that it can't find libipt_MASQ.so.
 
->=20
-> iptables: Invalid argument
->=20
-Could you post the whole line you used or try:
-iptables -t nat -A POSTROUTING -j MASQUERADE
-Masquerading is done in the POSTROUTING chain of the nat table!
+Yes, because you called MASQ target, that does not exist. That's why
+iptables is looking for an extension it can't find.
 
-Cheers,
+> What I have to rename or replace? I can't understand you. And... '-j
+> MASQ'? or '-j MASQUERADE'?
 
-Ralf
+Use "-j MASQUERADE" just as written in the fine Netfilter documentation
+(i.e. NAT HOWTO).
+
 --=20
-Ralf Spenneberg
-RHCE, RHCX
-
-Book: Intrusion Detection f=FCr Linux Server   http://www.spenneberg.com
-IPsec-Howto				     http://www.ipsec-howto.org
-Honeynet Project Mirror:                     http://honeynet.spenneberg.org
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
