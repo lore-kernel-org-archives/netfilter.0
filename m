@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: iptables + smnp + mrtg
-Date: Tue, 6 Jul 2004 20:22:18 +0100
+From: "Eric Poulin" <epoulin@onepost.net>
+Subject: Problem compiling Iptables 1.2.11 on Kernel 2.6.7
+Date: Tue, 6 Jul 2004 15:28:53 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407062022.18606.Antony@Soft-Solutions.co.uk>
-References: <000001c46395$3c6f98c0$8c1ea8c0@Marketing01>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <009001c4638f$7a173170$800101df@lvl.digidyne.ca>
+Reply-To: "Eric Poulin" <epoulin@onepost.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c46395$3c6f98c0$8c1ea8c0@Marketing01>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,51 +19,43 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 06 July 2004 9:10 pm, knom wrote:
+Hello Guys,
 
-> Hi !
-> I want to use iptables firewall to block all incoming traffic except on
-> several ports like www, smtp, pop.
-> It works all fine except for SNMP.
->
-> I want to use MRTG on localhost therefore I need the snmp port 161.
->
-> Therefore I did:
->
-> /sbin/iptables -I INPUT -p tcp --dport 161 -j ACCEPT
-> /sbin/iptables -I INPUT -p udp --dport 161 -j ACCEPT
-> /sbin/iptables -I INPUT -p tcp --dport 162 -j ACCEPT
-> /sbin/iptables -I INPUT -p udp --dport 162 -j ACCEPT
-> /sbin/iptables -P INPUT DROP
->
-> Now whenever I start mrtg from localhost and it wants to connect to my
-> external IP-adress I get an error "no response received"
-> When I make /sbin/iptables -P INPUT ACCEPT it works.
->
-> I connect from the same host where the firewall and the snmp is running
-> via the external IP.
->
-> Can you help me ??
+Any people succesfully compiled iptables 1.2.11 on 2.6.7?  Oddly, even
+without applying any patch-o-matics packages, I'm getting the following
+error while doing the make:
 
-Do you ACCEPT all packets on the lo (loopback) interface?   If not, you might 
-want to add a rule:
+# make BINDIR=/sbin KERNEL_DIR=/usr/src/linux
+Making dependencies: please wait...
+Extensions found: IPv4:ROUTE IPv4:recent IPv6:ROUTE IPv6:ah IPv6:esp
+IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
+gcc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ -DIPTABLES_VERSIO
+N=\"1.2.11\"  -fPIC -o extensions/libipt_ah_sh.o -c extensions/libipt_ah.c
+In file included from include/libiptc/libiptc.h:6,
+                 from include/iptables.h:5,
+                 from extensions/libipt_ah.c:8:
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: warning: no
+semicolon at end of struct or union
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:255: error: syntax
+error before '*' token
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:259: error: syntax
+error before '}' token
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning: type
+defaults to `int' in declaration of `DECLARE_MUTEX'
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
+parameter names (without types) in function declaration
+/usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h:339: warning:
+`DECLARE_MUTEX' declared `static' but never defined
+make: *** [extensions/libipt_ah_sh.o] Error 1
 
-iptables -A INPUT -i lo -j ACCEPT
 
-Otherwise, add a LOG rule after the four rules you have shown above, run mrtg, 
-and see what packets get LOGged (just before getting DROPped by the default 
-policy).   That should tell you what you want to ACCEPT instead.
+I'm getting this with a vanilla source code of the kernel and iptables. I
+was getting those with the patch-o-matic installed, but I wanted to narrow
+it down. Kernel can compile easily those modules that are coming from
+iptables 1.2.9.
 
-Regards,
+Any idea?
 
-Antony.
-
--- 
-I think, therefore I am.
-I'm pink, therefore I'm Spam.
-I drink, therefore I think I am.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Eric
 
 
