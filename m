@@ -1,13 +1,12 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
-Subject: RE: Does NAT modify sequence number in packet ?
-Date: Thu, 28 Nov 2002 08:50:48 +0100
+From: "james.Q.L" <shijialeeee@yahoo.ca>
+Subject: Re: another iptables question
+Date: Thu, 28 Nov 2002 03:50:25 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608FD77734@w2ks-e2k.iconos.be>
+Message-ID: <20021128085025.92538.qmail@web14505.mail.yahoo.com>
+References: <200211272111.26736.netfilter@newkirk.us>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C296B2.DDBFA8D9"
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <200211272111.26736.netfilter@newkirk.us>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,78 +16,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: "Orca J." <orca_cs@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@newkirk.us, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+[snip]
 
-------_=_NextPart_001_01C296B2.DDBFA8D9
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+> > 3.the packet gets DNAT'ed,and all other requierd action are
+> > taken,however,the packet is not SNAT'ed. so the same source
+> IP
+> > address is used on the packet.
+> > # my question: what does it have to do with SNAT here?
+> shouldn't
+> > it see the source come from $INET_IP ?
+> 
+> This is where it gets more complicated.  If $LAN_BOX sends a
+> packet to 
+> $INET_IP that gets DNATted and forwarded to the local server,
+> the reply from 
+> that server will go DIRECTLY to $LAN_BOX since it recongnizes
+> the client as 
+> an IP that is local to it,
 
-Hi,
->
->Does NAT change Sequence number in packet ? or only change IPAddress =
-and/or=20
->Port
->
+why it see the client from an local IP ? hasn't it been SNAT'ed
+to the $INET_IP ?
 
-Under normal circumstances only the IP address(es) and sometimes port
-numbers are changed. But if a connection tracking NAT module (eg.=20
-ip_nat_ftp, ip_nat_irc) changes the data payload to make it correspond
-to the IP addresses in the IP header, then it's is possible that
-the original packet's length changes and then sequence numbers are
-adjusted accordingly by the NAT code.
+I am bit confused how the internal machine request the
+firewall's $INET_IP. i think the internal request gets SNAT'ed
+so it has the $INET_IP after it goes out of the firewall(does
+it?), then it finds the $INET_IP via DNS resolve, and come back.
+am i right at this point? 
+ 
+> through the 
+> gateway.  The solution to this is to SNAT the DNAT.  What you
+> do is DNAT the 
+> packet as it enters the firewall so that it will be forwarded
+> to the server 
+> that handles it, even though it came in addressed to the
+> firewall/gateway at 
+> $INET_IP.  THEN you SNAT that same packet as it leaves the
+> firewall, so that 
+> the reply from the server will come BACK to the
+> gateway/firewall.  On the 
+> return trip the SNAT is reversed (so that the packet gets
+> forwarded back to 
+> the original requesting client) and then the DNAT is reversed
+> (so that the 
+> client sees it as returning from $INET_IP instead of the
+> 'private' IP of the 
+> actual server)
+> > then later the author has the solution like this:
+> > iptables -t nat -A POSTROUTING -p tcp --dst $HTTP_IP --dport
+> 80
+> > -j SNAT  --to-source $LAN_IP
 
-Regards,
-Filip
 
+i was thinking of the $LAN_IP as the ip of $LAN_BOX....
 
+i have read your words couple times and it's still hard to
+grasp. it's complicated as you mentioned. &^%*(
 
+=====
+/James.Q.L
 
-
-------_=_NextPart_001_01C296B2.DDBFA8D9
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: Does NAT modify sequence number in packet ?</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>Hi,<BR>
-&gt;<BR>
-&gt;Does NAT change Sequence number in packet ? or only change IPAddress =
-and/or<BR>
-&gt;Port<BR>
-&gt;<BR>
-<BR>
-Under normal circumstances only the IP address(es) and sometimes =
-port<BR>
-numbers are changed. But if a connection tracking NAT module (eg.<BR>
-ip_nat_ftp, ip_nat_irc) changes the data payload to make it =
-correspond<BR>
-to the IP addresses in the IP header, then it's is possible that<BR>
-the original packet's length changes and then sequence numbers are<BR>
-adjusted accordingly by the NAT code.<BR>
-<BR>
-Regards,<BR>
-Filip<BR>
-<BR>
-<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C296B2.DDBFA8D9--
+______________________________________________________________________ 
+Post your free ad now! http://personals.yahoo.ca
 
