@@ -1,12 +1,11 @@
-From: Aaron Clausen <maureen-taocow@alberni.net>
-Subject: Re: Getting Closer But Still Having Problems
-Date: Fri, 29 Nov 2002 11:55:28 -0800 (PST)
+From: Martin Marques <martin@bugs.unl.edu.ar>
+Subject: port 137 entries
+Date: Fri, 29 Nov 2002 19:38:07 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.LNX.4.33.0211291153170.1440-100000@ts1.alberni.net>
-References: <Pine.LNX.4.33.0211291013500.21610-100000@ts1.alberni.net>
+Message-ID: <200211291938.07586.martin@bugs.unl.edu.ar>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0211291013500.21610-100000@ts1.alberni.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +15,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Fri, 29 Nov 2002, Aaron Clausen wrote:
+I'm getting lots of firewall logs informing me that packages  with these=20
+specifications where blocked:
 
-> Alright, I managed to get the patched 2.4.19 kernel *and* iptables 1.2.7a
-> binaries and libraries to compile cleanly.  Now I've got one last problem (I
-> hope).  When I run "make install all", everything compiles fine, but it
-> won't overwrite the old iptables binaries and libraries.  I suppose I have
-> to remove these manually, so can somebody tell me where to look?
+scr-port 138, dest-port 138, dest IP <broadcast>
+scr-port 137, dest-port 137, dest IP <broadcast>
 
-Never mind.  I did it the hard way, and everything is working A-okay.  Sorry
-for being so belligerant, I was just getting frustrated with the whole darn
-thing.
+scr-port 1029, dest-port 137, dest IP <my firewall IP>
 
-Now, another question.  Is there anything particular I have to do to get
-H.323 connection tracking working?  I've compiled the code into the kernel,
-so I don't need to load the modules, so is that it?
+Any thoughts? Is this Bug bear virus?
 
-Another quick question, will the H.323 tracking permit more than one machine
-to go through NAT with Netmeeting or whatever?
-
--- 
-Aaron Clausen
+--=20
+Porqu=E9 usar una base de datos relacional cualquiera,
+si pod=E9s usar PostgreSQL?
+-----------------------------------------------------------------
+Mart=EDn Marqu=E9s                  |        mmarques@unl.edu.ar
+Programador, Administrador, DBA |       Centro de Telematica
+                       Universidad Nacional
+                            del Litoral
+-----------------------------------------------------------------
 
 
