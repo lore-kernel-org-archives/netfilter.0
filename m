@@ -1,12 +1,13 @@
-From: Walther@gehag-dsk.de
-Subject: Re: Ping With Iptables.
-Date: Tue, 29 Oct 2002 15:54:25 +0100
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: FTP client behind a gateway
+Date: Tue, 29 Oct 2002 13:50:30 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <OF1644C4CE.760A7B3A-ONC1256C61.005168C6-C1256C61.005771E2@GEHAG-DSK.DE>
+Message-ID: <200210291350.g9TDobe10143@vulcan.rissington.net>
+References: <3DBE7636.6060301@bol.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3DBE7636.6060301@bol.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,78 +17,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: =?iso-8859-1?Q?H=E9lio_Dubeux?= <hdubeux@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-set your default policy to drop and allow forwarding icmp-echo-request and =
+On Tuesday 29 October 2002 11:51 am, Julio Cesar Ody wrote:
 
-icmp-echo-reply from your local lan:
+> Hello. I don't know if anybody else faced this problem, but when I'm
+> behind a gateway (using iptables to perform NAT), I can connect to any
+> FTP server (using the client machines behind the gate) but when I
+> request a directory listing by using the "ls" command, it refuses to
+> enter passive mode. The same doesn't happen when I do it with the
+> gateway machine. Any solutions or ideas ? Thanks again.
 
-<--snip-->
+I know you're using passive mode and not active, but have you included 
+support (either compiled in or as a module) for ftp connection tracking and 
+ftp nat ?
 
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+NAT still needs to know the port numbers used in passive ftp, so it needs the 
+helper module loaded in order to see the PORT command.
 
-iptables -A FORWARD -i $INT -o $EXT -p icmp --icmp-type echo-request -j=20
-ACCEPT
-iptables -A FORWARD -o $EXT -i $INT -p icmp --icmp-type echo-reply -j=20
-ACCEPT
+Antony.
 
-<--snip-->
+-- 
 
-this should work
-
-Best Regards,
-MfG.
-
-Stefan Walther
-stefan=5Fwalther@gehag-dsk.de
-dienst.: +4930/89786448
-Funk: +49172/3943961
-http://www.gehag-dsk.de
-
---------------------------------------------------------------=20
-Linux/UNIX is like an Indian Tipi:
-No Windows, no Gates and Apache inside.
-
-Outgoing Mail is certified mistake-free.=20
-Examined by DOGMATIC infallibility system.=20
-Version 6.04
-
-
-
-
-H=E9lio Dubeux <hdubeux@hotmail.com>
-Sent by: netfilter-admin@lists.netfilter.org
-29.10.2002 14:51
-
-=20
-        To:     netfilter@lists.netfilter.org
-        cc:=20
-        Subject:        Ping With Iptables.
-
-
-Hi, everybody. This is my first message here and i hope you can help me.
-I have a Linux Box as a Gateway of my network. And i want do allow=20
-internal=20
-machines to ping the Internet but i also want to block external machines=20
-to=20
-ping my Gateway. Is this is possible plz send me something... Thanx.
-
-----------------------
-H=E9lio Dubeux Neto
-
-
-
-
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
-MSN Hotmail, o maior webmail do Brasil. http://www.hotmail.com
-
-
-
-
-
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
