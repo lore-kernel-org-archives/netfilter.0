@@ -1,11 +1,11 @@
 From: "Patrick Ahler" <pmahler@vikus.com>
 Subject: Masquerading with optional external ip
-Date: Wed, 5 Nov 2003 16:25:32 -0500
+Date: Wed, 5 Nov 2003 16:52:27 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <810BC538117E9F4E9BB152E0C100DF1F061713@farmer.vikus.net>
+Message-ID: <810BC538117E9F4E9BB152E0C100DF1F061716@farmer.vikus.net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C3A3E3.57FCADA3"
+	boundary="----_=_NextPart_001_01C3A3E7.1AF42983"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -21,7 +21,7 @@ To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C3A3E3.57FCADA3
+------_=_NextPart_001_01C3A3E7.1AF42983
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -39,7 +39,7 @@ Patrick Ahler
 Systems Administrator
 Vikus Corporation
 
-------_=_NextPart_001_01C3A3E3.57FCADA3
+------_=_NextPart_001_01C3A3E7.1AF42983
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -56,7 +56,7 @@ charset=3Dus-ascii">
 <meta name=3DProgId content=3DWord.Document>
 <meta name=3DGenerator content=3D"Microsoft Word 10">
 <meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C3A3B9.6EE8BE90">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C3A3BD.31E2A7F0">
 <!--[if gte mso 9]><xml>
  <o:OfficeDocumentSettings>
   <o:DoNotRelyOnCSS/>
@@ -169,10 +169,10 @@ font-family:Arial'>Any IP in the 192.168.1.192/25 range masquerades as =
 the
 firewall&#8217;s external IP (<span class=3DSpellE>a.b.c.d</span>). I =
 would like
-to specify that it runs on another <span class=3DSpellE>ip</span> (<span
-class=3DSpellE>a.b.c.x</span>), is this possible? If so how must I =
-change my
-current rule?<o:p></o:p></span></font></p>
+to specify that it runs on another <span class=3DSpellE>ip</span> =
+(a.b.c.x), is
+this possible? If so how must I change my current =
+rule?<o:p></o:p></span></font></p>
 
 <p class=3DMsoNormal><font size=3D2 face=3DArial><span =
 style=3D'font-size:10.0pt;
@@ -200,5 +200,5 @@ font-family:Arial'>Vikus Corporation<o:p></o:p></span></font></p>
 
 </html>
 
-------_=_NextPart_001_01C3A3E3.57FCADA3--
+------_=_NextPart_001_01C3A3E7.1AF42983--
 
