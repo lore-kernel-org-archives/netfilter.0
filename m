@@ -1,14 +1,13 @@
-From: Gavin Hamill <gdh@acentral.co.uk>
-Subject: Re: STATELESS
-Date: Tue, 16 Sep 2003 12:56:15 +0100
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: ip_conntrack module, advanced routing and multiple ISP
+Date: Tue, 16 Sep 2003 14:23:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309161256.15286.gdh@acentral.co.uk>
-References: <02ba01c37c46$bb7a5f60$798014ac@matthew>
+Message-ID: <1063714990.887.101.camel@elendil.intranet.cartel-securite.net>
+References: <MGEFIJGLOCLFFKBKAFEPAENBEGAA.mt.netfilter@comelis.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <02ba01c37c46$bb7a5f60$798014ac@matthew>
-Content-Disposition: inline
+In-Reply-To: <MGEFIJGLOCLFFKBKAFEPAENBEGAA.mt.netfilter@comelis.fr>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,16 +17,60 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Matthieu Turpault <mt.netfilter@comelis.fr>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 16 September 2003 12:36, Matthew Mileham wrote:
+I do not have much time, but I'll give you my first thought about your
+problem.
 
-> Does any know how to change Iptables from statefull to stateless ?
+Le lun 15/09/2003 =E0 12:28, Matthieu Turpault a =E9crit :
+> 	The problem is that I can't connect from the internal network to
+> 	 a ftp server of the net. In fact, I can connect to a ftp server
+> 	 of the net but the "ls" command failed the most of the time (1/3).
+> 	 I use passive mode.
 
-Don't load the ip_conntrack module, and / or don't use any iptables rules that 
-use "-m state"  in the arguments :)
+I think command connection and data connection are not routed through
+the same ISP and thus are received by FTP server from 2 different IPs,
+which means data connection SYN is droped.
 
-Cheers,
-Gavin.
+This suppose you are load balancing using some round robbin like stuff,
+such as nth match (I really do not have time to examine your script
+now), and that 1/3 times data connection is set up with correct IP as
+source.
+
+>      If I add the route by the command
+> 	  ip route add <@ftpServer> via <@GATEWAY_ISP2>
+> 	  it is OK
+
+This tends to confirm the above. You should investigate this routing
+stuff.
+
+
+Btw, you should use CONNMARK target instead of MARK target to have your
+packets marked.
+
+cbr@elendil:~$ iptables -j CONNMARK --help
+iptables v1.2.8
+[...]
+CONNMARK target v1.2.8 options:
+  --set-mark value              Set conntrack mark value
+  --save-mark                   Save the packet nfmark on the connection
+  --restore-mark                Restore saved nfmark value
+
+The connmark is a mark you set for the whole connection. This means that
+once you've set a mark on a packet, every following packet identified by
+conntrack engine as belonging to the same connection (ESTABLISHED or
+RELATED) is marked with the same value. You also have corresponding
+match, connmark. With -save-mark and --restore-mark  you can switch
+between nfmark (MARK/mark target and match) and connmark. See :
+
+http://www.netfilter.org/documentation/pomlist/pom-extra.html#CONNMARK
+
+This mean you're sure that data connection is marked the same way as
+corresponding command connection, and thus is routed the same way.
+
+--=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
 
