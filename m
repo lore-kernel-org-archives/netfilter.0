@@ -1,13 +1,13 @@
 From: "Tarek W." <mailinglists1@hotpop.com>
-Subject: Re: wired route entry
-Date: Sun, 08 Feb 2004 17:18:37 +0200
+Subject: Re: How to block sending mail from local network.
+Date: Sun, 08 Feb 2004 17:31:31 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1076253383.3008.8.camel@carve.personal.localdomain>
-References: <20040204124241.48917.qmail@web20721.mail.yahoo.com>
+Message-ID: <1076254290.4458.1.camel@carve.personal.localdomain>
+References: <4024C335.7080705@ergolight-sw.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040204124241.48917.qmail@web20721.mail.yahoo.com>
+In-Reply-To: <4024C335.7080705@ergolight-sw.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,58 +20,40 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-<snip source='/etc/sysconfig/network-scripts/ifup'>
-# Add Zeroconf route.
-if [ -z "${NOZEROCONF}" -a "${ISALIAS}" = "no" ]; then
-    ip route replace 169.254.0.0/16 dev ${REALDEVICE} 
-fi
-</snip>
 
+use filter's FORWARD instead of OUTPUT and u probably want to use -I
+instead of -A
 
-On Wed, 2004-02-04 at 14:42, ip tables wrote:
-> Hello Alexis and group,
->  
-> No these are not bound to be DHCP...i still donno what really causes
-> it.
->  
-> Thanks and regards
+On Sat, 2004-02-07 at 12:51, David Harel wrote:
+> Hi all,
 > 
-> Alexis <alexis@attla.net.ar> wrote:
->         is this device configured to obtain its address via dhcp?
->         
->         
->         ----- Original Message ----- 
->         From: "ip tables" 
->         To: 
->         Sent: Tuesday, February 03, 2004 6:19 PM
->         Subject: wired route entry
->         
->         
->         > hello group(S)
->         > 
->         > I have installed redhat 9 (2.4.20 - 8) on an i686 with
->         > 3 network cards fixed. When i start network services
->         > it puts in an entry 
->         > 
->         > 169.254.0.0 255.255.0.0 eth2
->         > 
->         > why does this happen. This happen on boot also but i
->         > managed to remove it with a route del in the rc.local.
->         > What is the reason for this and how can i prevent
->         > this.
->         > 
->         > Thanks and regards
->         > 
->         > __________________________________
->         > Do you Yahoo!?
->         > Yahoo! SiteBuilder - Free web site building tool. Try it!
->         > http://webhosting.yahoo.com/ps/sb/
->         > 
->         > 
->         
+> I have a small local network and a Linux machine as a gateway to the 
+> Internet. On the Linux machine I started iptables using the script from 
+> Oscar Andreasson's tutorial at: 
+> http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+> Using his script: rc.DHCP.firewall.
+> This script implements masquerading service to the internal network and 
+> provides firewall security.
 > 
-> ______________________________________________________________________
-> Do you Yahoo!?
-> Yahoo! SiteBuilder - Free web site building tool. Try it!
+> The problem started when I was suspected of having a MyDoom virus or 
+> some other worm that sends unsolicited messages. Most likely this can 
+> happened to any of the machines on the internal network.
+> 
+> In Oscar's script the local network is treated liberally allowing them 
+> to everything assuming that illegal activity will be blocked elsewhere 
+> by the firewall. This is done using the command:
+> $IPTABLES -A INPUT -p ALL -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
+> where LAN_IFACE is eth0 and LAN_IP_RANGE is 10.0.0/24 (of course 
+> IPTABLES is /usr/sbin/iptables)
+> 
+> I want to block smtp operations from the local network so the 
+> viruses/worms will be blocked.
+> 
+> I tried a command:
+> $IPTABLES -A OUTPUT -p TCP -i $LAN_IFACE -s $LAN_IP_RANGE --dport smtp 
+> -j DROP
+> but it did nothing.
+> 
+> What can I do to block those messages sending attempts?
 
 
