@@ -1,15 +1,14 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Allow particular website/port
-Date: Sun, 13 Feb 2005 10:18:19 -0500
-Message-ID: <1108307899.4604.71.camel@hubcap.ljm.dom>
-References: <1108064090.420bb75ac0009@mail.gnvfc.net>
-	<1108065714.8043.0.camel@porky>
-	<1108081685.420bfc1516440@mail.gnvfc.net>
-	<a0f69e5050210211124a0269@mail.gmail.com>
-	<1108277638.420ef986ae964@mail.gnvfc.net>
+From: Navneet Choudhary <navneetkc@gmail.com>
+Subject: Re: Linux as router (Gateway Server)
+Date: Sun, 13 Feb 2005 21:36:08 +0530
+Message-ID: <1dceb0120502130806545fe363@mail.gmail.com>
+References: <1dceb012050211233357e23dd4@mail.gmail.com>
+	<1dceb01205021123483860fb86@mail.gmail.com>
+	<a0f69e505021200153e017d6c@mail.gmail.com>
+Reply-To: Navneet Choudhary <navneetkc@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108277638.420ef986ae964@mail.gnvfc.net>
+In-Reply-To: <a0f69e505021200153e017d6c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,121 +20,233 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Askar <askarali@gmail.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Sun, 2005-02-13 at 01:53, spdesai@gnvfc.net wrote:
-> Hi all...particularly Askar,Eric Leblond,Jason Opperisano (which help me)
+> dude add this rule to yur iptables script
+> iptables -A INPUT -p tcp -s 0/0 --dport 80 -j ACCEPT
+
+tried this, problem still exists.
+
+> second "squid squid[3720]: Squid Parent: child process 3722
+> exited due to signal 6" is not iptables related, better place to check
+> is squid mailing list.
+
+Didn't i mentioned in my original mail
+
+"Since, process will NOT die if I disable/flush my rules?"
+
+> You are running squid in interception mode?
+so , what
+
+> remember when squid is running in interception packets destined fro
+> squid machine not hit FORWARD chain but INPUT. :)
+
+Then, allowing INPUT to port 80 should have worked?
+Since, i've already allowed local loopback in my rules.
+ 
+> Note: which version of squid you are using, what cache.log say?
+> solution try to upgrade your squid with never version.
+
+squid-2.5.STABLE7  at the time installation latest one.
+upgrade? anyperticular strong reason for that?
+ 
+> I hope this will help
 > 
-> I have tried to restrict particular website through IPTABLE and its working 
-> file .i have use below rules for that..
+> regards
 > 
-> Suppose we want to open only www.ndtv.com,www.cnn.com ....then i gave rules as 
-> per below order only...
+> On Sat, 12 Feb 2005 13:18:25 +0530, Navneet Choudhary
+> <navneetkc@gmail.com> wrote:
+> > hi list,
+> >
+> > i require further co-operation from yours side.
+> >
+> > Squid Server is serving as Proxy server, Gateway & Firewall
+> >
+> > Problem:
+> > Squid daemon dies at startup.
+> >
+> > Here is log output of  /var/log/messages
+> >
+> > Feb 12 09:15:25 squid squid[3652]: Squid Parent: child process 3654 started
+> > Feb 12 09:15:25 squid (squid): Cannot open HTTP Port
+> > Feb 12 09:15:29 squid squid[3720]: Squid Parent: child process 3722
+> > exited due to signal 6
+> > Feb 12 09:15:32 squid squid[3720]: Squid Parent: child process 4385 started
+> > Feb 12 09:15:32 squid squid[3720]: Squid Parent: child process 4385
+> > exited with status 1
+> > Feb 12 09:15:33 squid (squid): Cannot open HTTP Port
+> >
+> > Why my iptables rule blocking squid to open HTTP port.
+> >
+> > Note: existing rule being attached at the end of mail
+> >
+> > Since, process will not die if I disable/flush my rules?
+> >
+> > Squid being started from /etc/rc.local
+> >
+> > Where i am doing mistakes?
+> >
+> > Please suggest since its causing startup hiccup
+> >
+> > Thanks & regards,
+> >
+> > Navneet Choudhary
+> >
+> > Updates & quick recap
+> >
+> > 1.> Basically I want clients to be able to :
+> >
+> >  a). Send and receives mails from mail.ISP.net [X.X.X.160] and
+> > sometimes from X.X.X.78
+> > Status: Working
+> > b). Browse the net through squid [3128]
+> > Status: Working
+> >
+> > c). Use Jabber [??], MSN [1863] and Yahoo [5050]
+> > Status: Working
+> >
+> > d) Down and upload data using ftp from 202.134.192.21 & 221.171.85.41
+> >
+> > Status: Working
+> > e) Down and upload data using SONICMQ [IP & Port?]
+> >
+> > Status: Require HELP
+> > e) Allow SSH connection to this system [eth0].
+> > Status: Working
+> > f) We can ping/trace route by domain name i.e. ping yahoo.com
+> > Status:  Working
+> >
+> > 2.What i am using?
+> >
+> > My network configuration is as follows: -
+> >
+> >           WAN
+> >              |
+> >           eth1
+> >   (172.21.0.133/28)
+> >              |
+> >              |
+> >       Red Hat 9
+> > [Squid Proxy, Gateway ,firewall & FTP]
+> >              |
+> >              |
+> >              |
+> >     (133.147.0.0/16)
+> >            eth0
+> >               |
+> > ---- SWITCH----------
+> >               |
+> >               |
+> >               |
+> >           LAN
+> >
+> > where:-
+> > eth0-Intel Corp. 82557/8/9 [Ethernet Pro 100]
+> > eth1-Broadcom Corporation NetXtreme BCM5702 Gigabit Ethernet
+> >
+> > Kernel 2.4.20-8
+> >
+> > iptables  v1.2.7a
+> >
+> > 3.What I have done:-
+> >
+> > a)Enabled IP forwarding by adding
+> > vi  /etc/sysctl.conf
+> >
+> >  # Controls IP packet forwarding
+> > net.ipv4.ip_forward = 1
+> >
+> > b)Automatic loading of modules by adding
+> > vi  /etc/rc.local
+> >
+> > /sbin/insmod ip_nat_ftp
+> > /sbin/insmod ip_conntrack_ftp
+> >
+> > b)Firewall rules as follows:-
+> > # Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
+> > *mangle
+> > :PREROUTING ACCEPT [1308:428675]
+> > :INPUT ACCEPT [1308:428675]
+> > :FORWARD ACCEPT [0:0]
+> > :OUTPUT ACCEPT [1273:553710]
+> > :POSTROUTING ACCEPT [1273:553710]
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> > FIN,PSH,URG -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> > FIN,PSH,URG -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> > FIN,PSH,URG -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> > FIN,PSH,URG -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> > -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> > COMMIT
+> > # Completed on Thu Feb 10 20:02:43 2005
+> > # Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
+> > *nat
+> > :PREROUTING ACCEPT [10233:846887]
+> > :POSTROUTING ACCEPT [71:4821]
+> > :OUTPUT ACCEPT [67:4688]
+> > -A POSTROUTING -s 133.147.0.0/255.255.0.0 -o eth1 -j SNAT --to-source
+> > 172.21.0.132
+> > COMMIT
+> > # Completed on Thu Feb 10 20:02:43 2005
+> > # Generated by iptables-save v1.2.7a on Thu Feb 10 20:02:43 2005
+> > *filter
+> > :INPUT DROP [0:0]
+> > :FORWARD DROP [0:0]
+> > :OUTPUT DROP [0:0]
+> > -A INPUT -s 127.0.0.1 -j ACCEPT
+> > -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> > -A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 3128
+> > --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> > -A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 22
+> > --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> > -A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 21
+> > --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> > -A INPUT -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 20
+> > --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> > -A INPUT -p udp -j DROP
+> > -A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j DROP
+> > -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+> > -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> > -A FORWARD -i eth0 -o eth1 -p udp -m udp --sport 1024:65535 --dport 53 -j ACCEPT
+> > -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 25
+> > --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> > -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
+> > 110 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> > -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 21 -j ACCEPT
+> > -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 20 -j ACCEPT
+> > -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
+> > 1863 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> > -A FORWARD -i eth0 -o eth1 -p tcp -m tcp --sport 1024:65535 --dport
+> > 5050 --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> > -A FORWARD -p icmp -m icmp --icmp-type 8 -j ACCEPT
+> > -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> > -A OUTPUT -p udp -m udp --sport 1024:65535 --dport 53 -j ACCEPT
+> > -A OUTPUT -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 80
+> > --tcp-flags SYN,RST,ACK SYN  -m owner --uid-owner squid -j ACCEPT
+> > -A OUTPUT -o eth1 -p tcp -m tcp --sport 1024:65535 --dport 443
+> > --tcp-flags SYN,RST,ACK SYN -m owner --uid-owner squid -j ACCEPT
+> > -A OUTPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+> > COMMIT
+> > # Completed on Thu Feb 10 20:02:43 2005
+> >
+> >
 > 
-> iptables -A FORWARD -s 192.168.1.2 -d www.ndtv.com -p tcp --dport 80 -j ACCEPT
-> iptables -A FORWARD -s 192.168.1.2 -d www.cnn.com -p tcp --dport 80 -j ACCEPT
-> iptables -A FORWARD -p tcp --dport 80 -j DROP
-
-ok--this is exactly why *i* personally don't think this is a good way to
-do this.  i'm not trying to say i'm right, but let me at least explain
-why i feel the way i do.  let's go to http://www.cnn.com/ shall we?
-
-first off; at this moment in time, www.cnn.com resolves to:
-
-  64.236.16.20
-  64.236.16.52
-  64.236.16.84
-  64.236.16.116
-  64.236.24.4
-  64.236.24.12
-  64.236.24.20
-  64.236.24.28
-
-your rule that specifies "-d www.cnn.com" will resolve that name to IP
-address(es) at the time the rule is loaded.  if cnn decides to
-add/change the IP's for that FQDN--you will need to reload your rules to
-pick up the change.  IMHO:  strike one.
-
-k--now we have our 8 filter rules in place for those IP's--let's
-actually fire up our trusty web browser (mosaic...natch).  when i browse
-to http://www.cnn.com/ i make requests to:
-
-  www.cnn.com
-  i.a.cnn.net
-  i.cnn.net
-  cnn.dyn.cnn.com
-
-we already have the first one accounted for in our filter rules
-(obviously)--so now, i.a.cnn.net (at this moment in time) resolves to:
-
-  64.236.40.64
-  64.236.40.5
-  64.236.40.8
-  64.236.40.21
-  64.236.40.32
-  64.236.40.46
-  64.236.40.53
-  64.236.40.63
-
-note that these are akamai addresses and they *will* change frequently.
-
-next up is i.cnn.net, which currently resolves to:
-
-  64.236.16.138
-  64.236.16.139
-  64.236.24.136
-  64.236.24.137
-  64.236.24.138
-  64.236.24.139
-  64.236.16.136
-  64.236.16.137
-
-and lastly, we have cnn.dyn.cnn.com (which judging from its name is
-probably a dynamic; i.e. changing, address):
-
-  64.236.22.20
-  64.236.22.21
-  64.236.29.20
-  64.236.29.21
-
-alright--so to allow access to cnn.com requires 28 rules to allow access
-to 28 IP addresses (generated from the 4 -d $FQDN rules) that can change
-whenever they gosh darn feel like and it's up to me to figure all this
-out...i s'pose we could just allow access to the entire 64.236.0.0/16
-net and be done, right?  one rule, *should* cover whatever IP changes
-they decide, right?  it *is* kind of a shame that we would be allowing
-web browsing into a network owned by AOL though, huh?  sorta defeats the
-purpose.  IMHO:  strike two
-
-let's also keep in mind--i have not clicked through anything on the site
-yet (and i don't plan to, as this is getting a bit ridiculous), but i'm
-guessing i'd need to analyze more traffic, and add more hosts if i
-wanted to watch one of their videos, or listen to their radio etc...
-
-but there no easier way to do this, right?  when all you have is a
-hammer, every problem starts to look like a nail, or something like
-that.
-
-i personally am not willing to go through that much effort for my users
-(or myself, actually).  i also prefer not not implement solutions that
-require constant care and feeding like the above.  not when i can add:
-
-  acl cnn dstdomain .cnn.com .cnn.net
-  http_access allow cnn
-
-to my squid.conf and move on with my life.
-
--j
-
-ps - i'm aware there was never a strike three.  if you want to put in
-the effort to do this, more power to you.  in my experience people that
-start down this path either (a) give up on it and decide to use a
-app-level filter (b) give up on it and just allow everything or (c) let
-it rot away to the point where users lose faith that the admin has any
-clue as to what he/she is doing.
-
---
-"It takes two to lie. One to lie and one to listen."
-	--The Simpsons
-
+> --
+> I love deadlines. I like the whooshing sound they make as they fly by.
+> Douglas Adams
+>
 
