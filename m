@@ -1,11 +1,11 @@
-From: Arindam Haldar <arindamhaldar@inbox.lv>
-Subject: Help NEEDED--sos !!
-Date: Tue, 04 Jun 2002 09:38:10 +0530
+From: Alin Nastac <mrness@technosoft.ro>
+Subject: Re: Why the http response is so slow with Total Control
+Date: Tue, 04 Jun 2002 07:18:17 +0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3CFC3D2A.9030409@inbox.lv>
-References: <Pine.LNX.4.33.0206031349460.4790-100000@blackhole.kfki.hu> <3CFB5ED0.1020204@inbox.lv>
+Message-ID: <3CFC3F89.1010803@technosoft.ro>
+References: <20020604034644.36656.qmail@web21408.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.samba.org>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
@@ -16,66 +16,69 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="gb2312"
+To: wain wen <wain_wen@yahoo.com.cn>
 Cc: netfilter@lists.samba.org
 
-Arindam Haldar wrote:
-> hi,
-> yes..:)... sorry for being a little cryptic ;)... but u guessed it right 
-> !..so i will summarize my 2 Question in this listing-->
-> 1)i am getting these messages in my /var/log/messages..
-> 
->  iptables v1.2.7-20020423 with  kernel 2.4.18 & patched htb3.3-020512 & 
-> imq-2.4.18...
-> May 30 05:09:58 cab1 kernel: ASSERT: ip_nat_core.c:840 
-> &ip_conntrack_lock not readlocked
-> May 30 05:10:04 cab1 kernel: ASSERT ip_nat_core.c:739
-> &ip_conntrack_lock_R71150de5 readlocked
-> May 30 05:10:04 cab1 kernel: ASSERT ip_conntrack_core.c:91
-> &ip_conntrack_lock_R71150de5 readlocked
-> 
-> this pattern message is being received every minute. !.. this system is 
-> on RH-7.2 with 512mb ram & has been running for a month now but the 
-> mesages started coming since may 30 !...
-> 
-more info to the above from the server--->
-# watch 'sort -nr -k 2 /proc/slabinfo'
-buffer_head        34508  34560     96  864  864    1
-dentry_cache       10665  10680    128  356  356    1
-inode_cache         7501   7544    480  938  943    1
-ip_dst_cache        2437   2800    192  140  140    1
-ip_conntrack        1249   1884    320  124  157    1
-# cabneigh all |wc -l
-      17
-# cat /proc/sys/net/ipv4/ip_conntrack_max
-32248
-# ls /lib/modules/2.4.18/kernel/net/ipv4/netfilter/
-ip_conntrack_egg.o      iptable_nat.o      ipt_LOG.o         ipt_realm.o
-ip_conntrack_ftp.o      ip_tables.o        ipt_mac.o    ipt_record_rpc.o
-ip_conntrack_h323.o     ipt_ah.o           ipt_mark.o     ipt_REDIRECT.o
-ip_conntrack_irc.o      ipt_connmark.o     ipt_MARK.o       ipt_REJECT.o
-ip_conntrack.o          ipt_CONNMARK.o     ipt_MASQUERADE.o  ipt_state.o
-ip_conntrack_rpc_tcp.o  ipt_conntrack.o    ipt_MIRROR.o     ipt_string.o
-ip_conntrack_rpc_udp.o  ipt_dscp.o         ipt_mport.o      ipt_tcpmss.o
-ip_nat_ftp.o            ipt_DSCP.o         ipt_multiport.o  ipt_TCPMSS.o
-ip_nat_h323.o           ipt_esp.o          ipt_NETLINK.o     ipt_time.o
-ip_nat_irc.o            ipt_helper.o       ipt_nth.o         ipt_tos.o
-ip_nat_snmp_basic.o     ipt_IMQ.o          ipt_owner.o       ipt_TOS.o
-ip_pool.o               ipt_iplimit.o      ipt_pkttype.o     ipt_ttl.o
-ip_queue.o              ipt_ipv4options.o  ipt_pool.o        ipt_TTL.o
-iptable_filter.o        ipt_length.o       ipt_POOL.o        ipt_ULOG.o
-iptable_mangle.o        ipt_limit.o        ipt_psd.o         ipt_unclean.o
-#
-
-so surely something is wrong when i get the above said messages on 
-/var/log/messages---EVERY ONE MIN...& even at none peak time like late 
-midnight !! ...
-
-can someone tell me whats wrong ?..how can i solve this problem??
-
-
-> regards
-> A.H
-> 
-
-
+Q0JRIGhhcyBhIGJ1bmNoIG9mIHBhcmFtZXRlcnMuIElmIHlvdSBhcmUgbmV3IHRvIHRjIChieSB0
+aGUgd2F5LCBpdCdzCnRyYWZmaWMgY29udHJvbCBub3QgdG90YWwgY29udHJvbCksIHVzZSBjYnEu
+aW5pdCAoZnJvbQpodHRwOi8vd3d3LmZyZWFzaG1lYXQubmV0KS4KCk9yIGdvIHRvIGh0dHA6Ly9s
+YXJ0Yy5vcmcuIFRoaXMgaXMgdGhlIG11c3QtdG8tcmVhZCBwYWdlIHJlZ2FyZHMgdHJhZmZpYwpj
+b250cm9sLgoKd2FpbiB3ZW4gd3JvdGU6Cgo+IAo+SGk6Cj4gCj5CZWxvdyBpcyBteSBuZXR3b3Jr
+IHRvcG9sb2d5ICggbiA9IDYwICk6Cj4gCj4KPmludGVybmV0IC0tLS0tLS0tLS0tIGxpbnV4IGJv
+eCAtLS0tLS0tLS0gUEMxCj4gICAgICAgICBBRFNMKDEwMjRrKSAgICAgICAgICAgfAo+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwtLS0tLS0tLSBQQzIKPiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB8Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfC0tLS0tLS0t
+IFBDbgo+IAo+SWYgdGhlIGxpbnV4IGJveCBvbmx5IHNlcnZlcnMgYXMgZ2F0ZXdheSwgZXZlcnl0
+aGluZwo+aXMgb2suSG93ZXZlciwgYm9zcyB3YW50cyB0byBjb250cm9sIHRoZSBmbG93IG9mIGV2
+ZXJ5Cj5QQywgbXkgY29uZmlndXJhdGlvbiBpcyA6Cj4gCj4jIHRjIHFkaXNjIGxpc3QgZGV2IGV0
+aDEgICAvLyBldGgxIGlzIHRoZSBpbnRlcm5hbAo+aW50ZXJmYWNlIG9mIGxpbnV4IGJveCB3aGlj
+aCBpcCBpcyAxOTIuMTY4LjAuMQo+IAo+IHFkaXNjIHNmcSA4MDEyOiBxdWFudHVtIDE1MTRiIHBl
+cnR1cmIgMTVzZWMgCj4gcWRpc2Mgc2ZxIDgwMTE6IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNl
+YyAKPiBxZGlzYyBzZnEgODAxMDogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAo+IHFkaXNj
+IHNmcSA4MDBmOiBxdWFudHVtIDE1MTRiIHBlcnR1cmIgMTVzZWMgCj4gcWRpc2Mgc2ZxIDgwMGU6
+IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAKPiBxZGlzYyBzZnEgODAwZDogcXVhbnR1bSAx
+NTE0YiBwZXJ0dXJiIDE1c2VjIAo+IHFkaXNjIHNmcSA4MDBjOiBxdWFudHVtIDE1MTRiIHBlcnR1
+cmIgMTVzZWMgCj4gcWRpc2Mgc2ZxIDgwMGI6IHF1YW50dW0gMTUxNGIgcGVydHVyYiAxNXNlYyAK
+PiBxZGlzYyBzZnEgODAwYTogcXVhbnR1bSAxNTE0YiBwZXJ0dXJiIDE1c2VjIAo+IHFkaXNjIGNi
+cSAxMDogcmF0ZSAxMDBNYml0IChib3VuZGVkLGlzb2xhdGVkKSBwcmlvCj5uby10cmFuc21pdAo+
+IAo+ICN0YyBjbGFzcyBsaXN0IGRldiBldGgxCj4gCj4gY2xhc3MgY2JxIDEwOjExIHBhcmVudCAx
+MDoxIGxlYWYgODAxMjogcmF0ZSAxME1iaXQKPihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRy
+YW5zbWl0Cj4gY2xhc3MgY2JxIDEwOiByb290IHJhdGUgMTAwTWJpdCAoYm91bmRlZCxpc29sYXRl
+ZCkKPnByaW8gbm8tdHJhbnNtaXQKPiBjbGFzcyBjYnEgMTA6MjU2IHBhcmVudCAxMDoxIGxlYWYg
+ODAwYzogcmF0ZSAyNTZLYml0Cj4oYm91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdAo+
+IGNsYXNzIGNicSAxMDoxIHBhcmVudCAxMDogcmF0ZSAxMDBNYml0IHByaW8gNQo+IGNsYXNzIGNi
+cSAxMDo4MTkyIHBhcmVudCAxMDoxIGxlYWYgODAxMTogcmF0ZSA4TWJpdAo+KGJvdW5kZWQsaXNv
+bGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKPiBjbGFzcyBjYnEgMTA6NjQgcGFyZW50IDEwOjEgbGVh
+ZiA4MDBhOiByYXRlIDY0S2JpdAo+KGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQK
+PiBjbGFzcyBjYnEgMTA6NTEyIHBhcmVudCAxMDoxIGxlYWYgODAwZDogcmF0ZSA1MTJLYml0Cj4o
+Ym91bmRlZCxpc29sYXRlZCkgcHJpbyBuby10cmFuc21pdAo+IGNsYXNzIGNicSAxMDoxMDI0IHBh
+cmVudCAxMDoxIGxlYWYgODAwZTogcmF0ZSAxTWJpdAo+KGJvdW5kZWQsaXNvbGF0ZWQpIHByaW8g
+bm8tdHJhbnNtaXQKPiBjbGFzcyBjYnEgMTA6NDA5NiBwYXJlbnQgMTA6MSBsZWFmIDgwMTA6IHJh
+dGUgNE1iaXQKPihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRyYW5zbWl0Cj4gY2xhc3MgY2Jx
+IDEwOjEyOCBwYXJlbnQgMTA6MSBsZWFmIDgwMGI6IHJhdGUgMTI4S2JpdAo+KGJvdW5kZWQsaXNv
+bGF0ZWQpIHByaW8gbm8tdHJhbnNtaXQKPiBjbGFzcyBjYnEgMTA6MjA0OCBwYXJlbnQgMTA6MSBs
+ZWFmIDgwMGY6IHJhdGUgMk1iaXQKPihib3VuZGVkLGlzb2xhdGVkKSBwcmlvIG5vLXRyYW5zbWl0
+ICAgICAgCj4gCj4jIHRjIGZpbHRlciBsaXN0IGRldiBldGgxCj4gCj4gZmlsdGVyIHBhcmVudCAx
+MDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIAo+IGZpbHRlciBwYXJlbnQgMTA6IHByb3RvY29s
+IGlwIHByZWYgMTAwIHUzMiBmaCA4MDA6IGh0Cj5kaXZpc29yIDEgCj4gZmlsdGVyIHBhcmVudCAx
+MDogcHJvdG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoCj44MDA6OjgwMCBvcmRlciAyMDQ4IGtleSBo
+dCA4MDAgYmt0IDAgZmxvd2lkIDEwOjEyOAo+bWF0Y2ggYzBhODAwM2YvZmZmZmZmZmYgYXQgMTYK
+PiBmaWx0ZXIgcGFyZW50IDEwOiBwcm90b2NvbCBpcCBwcmVmIDEwMCB1MzIgZmgKPjgwMDo6ODAx
+IG9yZGVyIDIwNDkga2V5IGh0IDgwMCBia3QgMCBmbG93aWQgMTA6MTI4Cj5tYXRjaCBjMGE4MDAz
+ZS9mZmZmZmZmZiBhdCAxNgo+IGZpbHRlciBwYXJlbnQgMTA6IHByb3RvY29sIGlwIHByZWYgMTAw
+IHUzMiBmaAo+ODAwOjo4MDIgb3JkZXIgMjA1MCBrZXkgaHQgODAwIGJrdCAwIGZsb3dpZCAxMDox
+MjgKPm1hdGNoIGMwYTgwMDBmL2ZmZmZmZmZmIGF0IDE2Cj4gZmlsdGVyIHBhcmVudCAxMDogcHJv
+dG9jb2wgaXAgcHJlZiAxMDAgdTMyIGZoCj44MDA6OjgwMyBvcmRlciAyMDUxIGtleSBodCA4MDAg
+Ymt0IDAgZmxvd2lkIDEwOjEyOAo+bWF0Y2ggYzBhODAwMTEvZmZmZmZmZmYgYXQgMTYKPiAuLi4u
+ICAgIAo+IAo+SW4gbXkgb3BpbmlvbiwgZXZlcnkgSVAgc2hvdWxkIGhhdmUgb25seSAxMjhrYml0
+cy5JdAo+aXMgdHJ1ZSB3aGVuIEkgZG93bmxvYWQgZmlsZXMgd2l0aCBmdHAuQnV0IHRoZSBodHRw
+Cj5yZXNwb25zZSBpcyB2ZXJ5IHZlcnkgc2xvdyxldmVuIGlmCj50aGVyZSBpcyBvbmx5IG9uZSBw
+ZXJzb24gb25saW5lLiBXaGVuIFBDMSBkb3dubG9hZAo+ZmlsZXMgLCBvdGhlciBQQyBwaW5nIHRo
+ZSBnYXRld2F5IHNob3VsZCB0YWtlIG1vcmUKPnRoYW4gMzAwIG1zIC5Tb21ldGhpbmcgbXVzdCBi
+ZSB3cm9uZyB3aXRoIG15Cj5jb25maWd1cmF0aW9uLiAKPklzIHRoZSBwZXJmb3JtYW5jZSBwcm9i
+bGVtID8gSG93ZXZlciwgdGhlIGlkbGUgaXMKPmFib3V0IDkwJS5CeSB0aGUgd2F5IEkgYm91bmRs
+ZWQgdGhlIElQIGFuZCB0aGUgTUFDCj5hZGRyZXNzIHdpdGggYXJwLiAKPiAKPlRoeC4KPiAKPgo+
+Cj5fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KPkRvIFlvdSBZYWhvbyE/IAo+MjAwMsTqysC957GtyLrQ2/fp1b0g0cW7otbQufq+2725yNW6
+qwo+aHR0cDovL2NuLmZpZmF3b3JsZGN1cC55YWhvby5jb20vCj4KCgoK
