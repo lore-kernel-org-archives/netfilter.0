@@ -1,11 +1,11 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Traffic going out wrong interface
-Date: Tue, 26 Aug 2003 12:21:05 -0400
+From: =?iso-8859-1?Q?Andr=E9_Mendes?= <amendes@waits.com.br>
+Subject: SMTP Problems
+Date: Tue, 26 Aug 2003 13:37:00 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3F4B88F1.2020208@chrisbrenton.org>
-References: <3F4B3DCC.8010104@chrisbrenton.org> <20030826145630.GB1956@propaganda.localdomain>
+Message-ID: <001601c36bf0$4892d010$8c6364c8@waits.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0017_01C36BD7.23459810"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,40 +16,93 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: kluivert@tm.net.my
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hello Julian,
+This is a multi-part message in MIME format.
 
-Julian Gomez wrote:
-> 
-> I think this behavior is a documented kernel issue.
+------=_NextPart_000_0017_01C36BD7.23459810
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the link, I'll check it out.
+Hi everybody,
+=20
+I installed a Linux RedHat 8 in a network with 10 computers with an ADSL
+connection to Internet.=20
+=20
+This Linux have 2 interfaces, with iptables and sshd only.
+=20
+Sometimes the clients have problems to communicate with the SMTP Server
+in Internet. They get HTTP and POP connection, but SMTP doesn=B4t work. =
+So
+we reestart the Linux and the problem is solved.
+=20
+I don=B4t know whether this is a problem with iptables or kernel, or if
+there is another thing that causes this.
+=20
+Anyone have seen this kind of problem?
+=20
+Thanks,
+=20
+Andr=E9
 
-> ARP requests go out on all interfaces, and can be received on all
-> interfaces also
+------=_NextPart_000_0017_01C36BD7.23459810
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-What I found weird was that there is no legitimate "communication" 
-reason for the legal NAT address to be ARPing for the private NAT 
-address, at least not that I can think of. Also, I don't *think* this is 
-a "ARP being seen off of all interfaces" problem, as I would expect to 
-see ARPs for the external gateway on the internal network if it was and 
-I never see these. Its always the legal NAT to private NAT address.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<TITLE>Mensagem</TITLE>
 
-> Are you running 'tcpdump' on the firewall/routing device itself ? I think a
-> number of us have noticed rather odd things in regards to snat/dnat
-> addresses when running tcpdump on the firewall itself.
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial size=3D2>Hi=20
+everybody,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial size=3D2>I =
+installed a Linux=20
+RedHat 8 in a network with 10 computers with an ADSL connection to =
+Internet.=20
+</FONT></SPAN></DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial size=3D2>This =
+Linux have 2=20
+interfaces, with iptables and sshd only.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial =
+size=3D2>Sometimes the=20
+clients have problems to communicate with the SMTP Server in Internet. =
+They get=20
+HTTP and POP connection, but SMTP doesn=B4t work. So we reestart the =
+Linux and the=20
+problem is solved.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial size=3D2>I =
+don=B4t know whether=20
+this is a problem with iptables or kernel, or if there is another thing =
+that=20
+causes this.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial size=3D2>Anyone =
+have seen=20
+this kind of problem?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2>Thanks,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D595033016-26082003><FONT face=3DArial=20
+size=3D2>Andr=E9</FONT></SPAN></DIV></BODY></HTML>
 
-Hummm. I'm not running tcpdump, but I am running Snort which would have 
-the same effect on the interface. Let me shut Snort down for a while and 
-see if the problem goes away. If it does turn out to be Snort, that 
-would be kind of weird as well as I've run this config since last fall. 
-I did recently upgrade to Snort 2.0 however, so maybe something that's 
-changed in Snort from 1.9 --> 2.0 is causing it.
-
-Thanks for the help!
-Chris
+------=_NextPart_000_0017_01C36BD7.23459810--
 
 
