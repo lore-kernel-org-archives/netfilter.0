@@ -1,14 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: configuration again :)
-Date: Wed, 23 Jun 2004 12:49:12 +0100
+From: Nils Juergens <ju@isf.rwth-aachen.de>
+Subject: Re: strange packets on loopback
+Date: Wed, 23 Jun 2004 14:37:20 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406231249.12949.Antony@Soft-Solutions.co.uk>
-References: <20040622115422.45768.qmail@web20027.mail.yahoo.com> <200406231005.35837.Antony@Soft-Solutions.co.uk> <40D972C6.9020403@o2.pl>
-Reply-To: netfilter <netfilter@lists.netfilter.org>
+Message-ID: <20040623123720.GA5390@koala7>
+References: <1087982478.7946.50.camel@dharmu.nsecure.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40D972C6.9020403@o2.pl>
+In-reply-to: <1087982478.7946.50.camel@dharmu.nsecure.net>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,49 +19,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Wednesday 23 June 2004 1:08 pm, Krystian wrote:
+On Wed, 23.06.04, "Dharmendra T." <dharmu@nsecure.net> wrote:
 
-> >Which of the tutorials or HOWTOs at http://www.netfilter.org/documentation
-> >have you read and had problems in following the advice from?
->
-> Almost all, but I had doubts the configuration i came up with would work.
+> Why the MAC is not displayed proerly? Getting doubt whether someone is
+> trying to spoof!(Possible, not too scary as the packets are getting
+> dropped).
+> 
+> If this is the valid mac just try to find out from which ip it is coming
+> by using arp.
 
-No harm in trying it to see whether it does, and then asking us a specific 
-question if you have problems...  :)
+Thats the first thing i checked, the PC on the local lan has a valid
+MAC-Address, and there is no 00:00:00:00:00:00 MAC anywhere on the net.
+I've got arpwatch running and it reports no such MAC. Neither does the
+arp-table on my firewall.
 
-> so teoreticly :)
-> for every IP i will need 2 rules for my linux box: one for DNAT'ing
-> incomming traffic and one for SNAT'ing outgoing one.
+I do have, however, a DNAT rule in PREROUTING that redirects all http
+requests to z.z.z.z:80. It is _not_, however, redirected to the external
+interface y.y.y.y but rather to the internal address z.z.z.z.
 
-You need a DNAT rule (only) if you want to allow connections *to* the machine 
-on your network (reply packets will work automatically).
+In short, http traffic from clients directly to the squid (from mozilla with
+proxy setting) go to y.y.y.y:8080, http traffic from other browsers (beyond
+our control) is redirected to z.z.z.z:8080.
 
-You do not need an SNAT rule unless you want connections *from* the machine in 
-your network to appear from a specific address (otherwise they would get 
-handled just the same as any other packets from internal machines to the 
-Internet - I presume you have a general-purpose MASQUERADE rule for these).
+DNAT       tcp  --  a.a.a.a.0/24      anywhere           tcp dpt:www to:z.z.z.z:8080
 
-> but i'm not sure my linux box will receive the traffic destined for
-> other ip's in the network without subinterfaces configured to those ip's.
+The 'strange' packet had DST=y.y.y.y so i was thinking the REDIRECT does not
+play a role here.
 
-Correct - you have to add the extra public IP addresses which you want the 
-firewall to accept packets for (and pass them on to something inside your 
-network) to your external interface:
+Also, localy generated packets never pass through PREROUTING, so packets
+from 'lo' should never be touched by this rule.
 
-ip addr add 11.22.33.44 dev eth0
+thanks,
 
-etc.
-
-Antony.
-
--- 
-Anything that improbable is effectively impossible.
-
- - Murray Gell-Mann, Nobel Prizewinner in Physics
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Nils Juergens
 
 
