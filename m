@@ -1,11 +1,13 @@
-From: PayalR <payal@hotpop.com>
-Subject: block ports
-Date: Mon, 16 Sep 2002 12:32:45 +0530
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
+Subject: Re: block ports
+Date: Mon, 16 Sep 2002 08:46:17 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <28485.773134935$1032163822@news.gmane.org>
+Message-ID: <20020916074619.KCJK295.mta06-svc.ntlworld.com@there>
+References: <200209161226.11945@.>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200209161226.11945@.>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,21 +20,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-I have a stupid question. I want to have incoming internet access for onl=
-y=20
-port 22, 25, 80 and 110. How do I go abut it?
-I thought of this rule first,
+On Monday 16 September 2002 8:02 am, PayalR wrote:
 
-#iptables -A INPUT -i eth0 -p tcp --dport ! 22 -j DROP
+> Hi all,
+> I have a stupid question. I want to have incoming internet access for only
+> port 22, 25, 80 and 110. How do I go abut it?
+> I thought of this rule first,
+>
+> #iptables -A INPUT -i eth0 -p tcp --dport ! 22 -j DROP
+>
+> and go for the other ports as well. But my problem is that if a packet
+> arrives from port 110, it will be checked for rule 1 above and since it is
+> not for port 22 it will be dropped disregarding the next rules. Right?
 
-and go for the other ports as well. But my problem is that if a packet=20
-arrives from port 110, it will be checked for rule 1 above and since it i=
-s=20
-not for port 22 it will be dropped disregarding the next rules. Right?
+Right.
 
-What can I do about this? How do I exactly frame the rules?
-Thanks a lot and bye.
--Payal
+The recommended way to configure a firewall is "block everything except what 
+you want to allow".   Therefore do this:
 
+iptables -P INPUT DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 110 -j ACCEPT
+
+I recommend the ESTABLISHED, RELATED rule to make sure that things like ICMP 
+get through as well.
+
+Antony.
+
+-- 
+
+Documentation is like sex:
+when it's good, it's very very good;
+when it's bad, it's still better than nothing.
 
