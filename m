@@ -1,13 +1,13 @@
-From: Francois LE BOURDELLES <flebourdelles@free.fr>
-Subject: Re: DNAT/SNAT stuff
-Date: 11 May 2003 17:56:01 +0200
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: Re: more fun with squid
+Date: 12 May 2003 08:12:10 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1052668561.17939.34.camel@charlebourg-2-81-57-105-138.fbx.proxad.net>
-References: <1052386761.5804.5.camel@mdew>
+Message-ID: <1052719930.1460.5.camel@raylinux.internal>
+References: <ABEKJILKOKKGGDJKHKDFOEPICAAA.patrick@vikus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-Qlj8EXZZhVhL71+dZA83"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-FRPrMhel+BrzZoPDILjp"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1052386761.5804.5.camel@mdew>
+In-Reply-To: <ABEKJILKOKKGGDJKHKDFOEPICAAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,120 +17,72 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: mdew <mdew@orcon.net.nz>
-Cc: netfilter <netfilter@lists.netfilter.org>, Laurent Luyckx <lololuy@tiscali.be>
+To: netfilter EMAIL <netfilter@lists.netfilter.org>
 
 
---=-Qlj8EXZZhVhL71+dZA83
-Content-Type: text/plain; charset="iso-8859-15"
+--=-FRPrMhel+BrzZoPDILjp
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi
 
-Thanks to Laurent Luyckx, here could be something to help you for subnet
-nating :
-(see attached)
+To set squid up as a transparent proxy (obviously read the HowTo for
+this), and basically there are 4 directives to change in the config
+file:
 
-Regards.
+httpd_accel_uses_host_header on
+httpd_accel_port 80
+httpd_accel_host virtual
+... umm the last only is something like httpd_accel_proxy....something
 
-Le jeu 08/05/2003 =E0 11:39, mdew a =E9crit :
-> current setup,=20
+Then you have to get netfilter to redirect packets to squid:
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to
+1.2.3.4:3128
+
+
+
+
+On Fri, 2003-05-09 at 21:49, Patrick Ahler wrote:
+> Ok, I got squid working great behind my firewall even set it up so IE wou=
+ld
+> autodetect it. What I would rather do though is have netfilter/the firewa=
+ll
+> server(192.168.1.a) forward any http packets from my network 192.168.1.0 =
+to
+> the proxy server on 192.168.1.b and then out to the internet through the
+> firewall(192.168.1.a). That way the proxy would be transparent to the use=
+rs'
+> browsers and no autodetection would be required. Not sure how to setup th=
+ese
+> rules, or if this is even the most efficient way of accomplishing the tas=
+k.
+> Also, I don't know if it makes a difference... but the firewall runs NAT
+> tables.
 >=20
-> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p tcp --dport
-> 4661 -j DNAT --to 10.0.0.3
-> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p tcp --dport
-> 4662 -j DNAT --to 10.0.0.3
-> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p tcp --sport 4661
-> -j SNAT --to 210.54.175.12
-> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p tcp --sport 4662
-> -j SNAT --to 210.54.175.12
-> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p udp --dport
-> 4665 -j DNAT --to 10.0.0.3
-> $IPTABLES -t nat -A PREROUTING -i eth0 -d 210.54.175.12 -p udp --dport
-> 4672 -j DNAT --to 10.0.0.3
-> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p udp --sport 4665
-> -j SNAT --to 210.54.175.12
-> $IPTABLES -t nat -A POSTROUTING -o eth0 -s 10.0.0.3 -p udp --sport 4672
-> -j SNAT --to 210.54.175.12
+> So, in other words, this is what I'd like to do...
+> (user)192.168.1.c --->(firewall)192.168.1.a--->(squid/proxy)192.168.1.b--=
+->(
+> firewall)192.168.1.a
 >=20
-> i would like specify 10.0.0.x instead of 10.0.0.3, how is this done?
+> Thanks in advance,
+> -Patrick
 >=20
-> and some problems i had attempting it..
 >=20
-> Try `iptables -h' or 'iptables --help' for more information.
-> iptables v1.2.6a: Bad IP address `10.0.0.0/24'
-> iptables v1.2.6a: host/network `10.0.0.3-10.0.0.8' not found
-> Try `iptables -h' or 'iptables --help' for more information.
 >=20
-> cc: please :)
---=20
-Francois LE BOURDELLES <flebourdelles@free.fr>
 
---=-Qlj8EXZZhVhL71+dZA83
-Content-Disposition: inline
-Content-Type: message/rfc822
+--=-FRPrMhel+BrzZoPDILjp
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Return-Path: <lololuy@tiscali.be>
-Delivered-To: online.fr-flebourdelles@free.fr
-Received: (qmail 20086 invoked from network); 11 May 2003 11:02:51 -0000
-Received: from spoolo2.tiscali.be (HELO smtp-out.tiscali.be)
-	(62.235.13.211) by mrelay2-1.free.fr with SMTP; 11 May 2003 11:02:51 -0000
-Received: from [62.235.84.11] (helo=ftp.luyckx.net) by smtp-out.tiscali.be
-	with esmtp (Tiscali)  id 19EobS-00049K-00; Sun, 11 May 2003 13:02:50 +0200
-Subject: Re: How to nat a full subnet ?
-From: Laurent Luyckx <lololuy@tiscali.be>
-To: Francois LE BOURDELLES <flebourdelles@free.fr>
-Cc: netfilter@lists.netfilter.org
-In-Reply-To: <1052642696.17942.14.camel@charlebourg-2-81-57-105-138.fbx.proxad.net>
-References: 
-	 <1052642696.17942.14.camel@charlebourg-2-81-57-105-138.fbx.proxad.net>
-Content-Type: text/plain
-Organization: 
-Message-Id: <1052650980.699.4.camel@laurent.luyckx.net>
-Mime-Version: 1.0
-X-Mailer: Ximian Evolution 1.2.4 
-Date: 11 May 2003 13:03:00 +0200
-X-Evolution-Source: pop://flebourdelles@pop.free.fr
-Content-Transfer-Encoding: 7bit
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-Have look a the NETMAP patch from p-o-m.
-It creates a static 1:1 mapping of the network address.
+iD8DBQA+vzs6h1fuR/Bv+ygRAkW8AJ9b0xoGrPbRlxQEisbfu1ZnfonIpwCfbeG5
+DhqV+W7+toEOchK5P7Ra9nw=
+=4MpI
+-----END PGP SIGNATURE-----
 
-(http://www.netfilter.org/documentation/pomlist/pom-combined.html#NETMAP)
-
-Cheers.
-
-On Sun, 2003-05-11 at 10:44, Francois LE BOURDELLES wrote:
-> Hello happy netfilter users,
-> 
-> First i use kernel 2.4.20 patch-o-matic'ed and iptables 2.4.8
-> I have to SNAT an DNAT a full subnet (199.1.4.0/0 (internal address
-> plan) to 1998.1.4.0/0 (external view))
-> so I tried to use the command :
-> 
-> iptables -t nat -A POSTROUTING -s 199.1.4.0/24 --to 199.1.4.0/24 -o
-> tunnel0 -j SNAT
-> (tunnel0 is a GRE typed tunnel)
-> 
-> as the NAT Howto page shows (NAT-HOWTO-6.html).
-> 
-> The aim is to have per exemple : 199.1.4.13 source changed to 198.1.4.13
-> 
-> but this command is rejected :
-> 
-> As I understand the sources (iptables and kernel) this is because the
-> --to only accept single IP address
-> or a range of IP-address, the last one for a pool automatic selection
-> [And I do not know for what this could be used !).
-> 
-> DO THE HOW-TO PAGES HAVE TO BE UPDATED (removing of the full subnet SNAT
-> and DNAT) ... or the iptables/ipfilter updated ?
-> 
-> Regards.
--- 
-Laurent Luyckx <lololuy@tiscali.be>
-
-
---=-Qlj8EXZZhVhL71+dZA83--
+--=-FRPrMhel+BrzZoPDILjp--
 
 
