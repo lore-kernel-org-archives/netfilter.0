@@ -1,11 +1,12 @@
 From: Anders Fugmann <afu@fugmann.dhs.org>
-Subject: Re: I think iptables is not alowing me to connect
-Date: Sat, 21 Sep 2002 14:46:24 +0200
+Subject: Re: Internal ip exiting network on firewall external nic despight
+ rule
+Date: Sat, 21 Sep 2002 15:01:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3D8C6A20.8020607@fugmann.dhs.org>
-References: <001f01c260ce$7e185ad0$2101a8c0@aerowillys> <20020920200354.RYHR292.mta01-svc.ntlworld.com@there> <005501c260ed$d5563eb0$2101a8c0@aerowillys>
+Message-ID: <3D8C6D95.1070308@fugmann.dhs.org>
+References: <000101c260f4$c5861260$0801a8c0@s3ac>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,26 +17,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: AndreLSM <a.news@terra.com.br>
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: Rowan Reid <rreid@studio3arc.com>
 Cc: netfilter@lists.netfilter.org
 
-AndreLSM wrote:
-> Sorry I was not very clear,
-> 
-> Actualy I removed all iptables rules with:
-> iptables -F
-> iptables -X
-> iptables -Z
-> 
-> but adsl still hangs and does not connect.
-Have you changed the default policies to ACCEPT on the default chains,
-e.g.:
-$ iptables -P INPUT ACCEPT
-$ iptables -P OUTPUT ACCEPT
-$ iptables -P FORWARD ACCEPT
+Rowan Reid wrote:
+> Since I'm cheap I don=92t want to purchase another hub, I have my T1,
+> connected to a hub with my Firewall extif, my VPN extif and the hub is
+> connected to my switch this allows my to access the net directly and
+> through the firewall from my station, this is for diagnostic purposes s=
+o
+> I don=92t have to play cable switcher.=20
+I really do not understand why you do not want all traffic to go through =
 
-That might help
+your firewall. A firewall is supposed to shield off any unwanted traffic =
+
+to ever enter the internal network, which is only accomplised, if all=20
+traffic _must_ go through the firewall.
+
+This could be accomplished simply by connecting your external interface=20
+on the firewall directly to the T1 entry point, and the switch/hub to=20
+the internal network interface.
+
+The "diagnostic purposes" you are talking about are rendered useless=20
+with the configuraion you are describing - not to mention the _serious_=20
+degradation of your network.
+
+Regards
 Anders Fugmann
 
 
