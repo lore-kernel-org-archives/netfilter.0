@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: VPN behind Linux Firewall
-Date: Mon, 24 Jun 2002 17:57:41 +0100
+From: Giovanni Cardone <g_cardone@libero.it>
+Subject: ip_conntrack_ftp doesn't work
+Date: Fri, 14 Jun 2002 19:42:04 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <200206241657.RAA16900@slate.rockstone.co.uk>
-References: <00ff01c21b9e$fafe0790$0327a8c0@kayegee>
+Message-ID: <af7jgt$p4c$2@main.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <00ff01c21b9e$fafe0790$0327a8c0@kayegee>
+Content-Disposition: inline
+Resent-To: netfilter@lists.samba.org
+Resent-Message-Id: <20020624165601.229108A8E@rainbow.here.domain>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,47 +18,59 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.samba.org
 
-On Monday 24 June 2002 5:48 pm, kayegee wrote:
+On 2.4.18 with 1.2.7(1.2.6a too) ftp conntrack module doesn't work.
+I'm trying to understand this using a simple script:
 
-> I have a LINUX firewall protecting my local LAN. I have 2 computers that
-> use the Nortel VPN client to connect to my office. I can make the VPN
-> connection, but I can't seem to stay connected for more than 10 to 15 min.
-> Suddenly the system stops responding. If you look at the VPN icon, only the
-> top half of the icon blinks. When things are working properly, both the top
-> and bottom half of the VPN icon flash. While this is happening, other
-> computers connected to the Internet continue to work without a problem. I
-> was looking in /proc/net/ip_conntrack file and notice that I seem to lose
-> my connection every time I get an entry like the following in that file:
->
-> unknown  50 523 src=192.168.XX.X dst=192.128.166.44 src=192.128.166.44
-> dst=XX.XXX.XXX.XX use=1
->
-> I'm not sure why I'm getting an unknown packet. I'm also not sure how
-> iptables should handle an unknown packet. If anyone can shed some light on
-> this subject, I'd greatly appreciate it.
+<begin script>
+#!/bin/sh
 
-'unknown' in this context simply means that the logging system doesn't know 
-what to call protocol 50, which is ESP.   Therefore I surmise that the Nortel 
-application is using IPsec.
+ipt='/usr/local/sbin/iptables'
 
-Are you saying that this entry is *not* present in the connection tracking 
-table whilst the VPN connection is operational ?
+modprobe ip_tables
+modprobe iptable_filter
+modprobe ipt_state
+modprobe ip_conntrack
+modprobe ip_conntrack_ftp
+modprobe ipt_LOG
 
- 
+$ipt -P INPUT DROP
+$ipt -P OUTPUT DROP
+$ipt -P FORWARD DROP
+$ipt -A INPUT -i lo -j ACCEPT
+$ipt -A OUTPUT -o lo -j ACCEPT
+$ipt -A OUTPUT -o ppp0 -j ACCEPT
+$ipt -A INPUT -p tcp -m state --state RELATED -j ACCEPT 
+$ipt -A INPUT -p tcp ! --syn -m state --state NEW -j LOG --log-prefix 
+"NEW_NOT_SYN "
+$ipt -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+$ipt -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$ipt -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$ipt -A INPUT -j LOG
+$ipt -A OUTPUT -j LOG
+$ipt -A FORWARD -j LOG
+<end script>
 
-I think it might be interesting to add a logging rule, or use tcpdump / 
-ethereal etc, to look for UDP packets from source port 500 to source port 
-500, and see if these appear soon before the connection goes downj ?
+The logs shows up some entries like these:
 
-UDP 500 is the Internet Key Exchange (IKE) protocol, and the two end systems 
-might be trying to re-key (although 10-15 minutes is a bit quick), and 
-something might be blocking that ?
+Jun 14 19:10:44 darkstar kernel: IN=ppp0 OUT= MAC= SRC=195.210.93.107
+DST=151.26.80.131 LEN=60 TOS=0x08 PREC=0x00 TTL=58 ID=40516 DF PROTO=TCP
+SPT=20 DPT=1039 WINDOW=32120 RES=0x00 SYN URGP=0
 
-Just a thought.
+When I try to contact an ftp server, lsmod says:
 
- 
+darkstar\# lsmod | awk '/ftp/'
+ip_conntrack_ftp        3120   0  (unused)
+ip_conntrack           13264   1  [ip_conntrack_ftp]
 
-Antony.
+So the syn about the data channel from the server port 20 to me is not RELATED
+to the connections in the table. It's normal that lsmod shows up the
+conntrack_ftp as unused? I was thinking no ... :)
+
+What do I need to do?
+
+
+Many Thanks 
 
