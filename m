@@ -1,11 +1,12 @@
-From: "Babar Kazmi" <BabarKazmi@Hotmail.Com>
+From: Kiran Kumar <immidi_kiran@yahoo.com>
 Subject: RE: IPTables Flow Chart
-Date: Fri, 12 Mar 2004 09:39:58 +0500
+Date: Thu, 11 Mar 2004 21:11:31 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000501c407ec$3b173730$2f00a8c0@deamon>
+Message-ID: <20040312051131.86210.qmail@web14006.mail.yahoo.com>
+References: <000501c407ec$3b173730$2f00a8c0@deamon>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <000501c407ec$3b173730$2f00a8c0@deamon>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,64 +16,34 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Dear Jim
+Another suggestion, It would be good if in each of the
+chains, you could put all the tables involved and in
+that order.
 
-Great Work .. Very Smart Approach :)
-Please also Host it at netfiler .. for future reference ...
+This link has it.
+http://www.netfilter.org/documentation/HOWTO//netfilter-hacking-HOWTO-3.htm=
+l#ss3.2
 
-Regards
-
-Babar Kazmi
-
->Nice job Jim.  You've packed a considerable amount of complex stuff into a
->very small space.  I'm sure many will find this beneficial.
->
->-----Original Message----- 
->From: netfilter-admin@lists.netfilter.org
->[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Jim Cliver
->Sent: Thursday, March 11, 2004 12:13 PM
->To: netfilter@lists.netfilter.org
->Subject: Re: IPTables Flow Chart
->
->Jim Cliver wrote:
-> >> Thank you to all that replied to my first posting of the drawing, I
-> >> really appreciate the feedback!
-> >>
-> >> I believe that all of your suggestions and comments have been
-> >> incorporated into this revision...
-> >>
-> >> http://www.aptalaska.net/~jclive/IPTablesFlowChart.pdf
-> >>
-> >> As always, your comments, suggestions and corrections are welcome.
-> >>
-> >> Regards,
-> >> jim
-> >>
-> >>
-> >>
-> > Sorry Folks,
-> >
-> > Just found an error, will correct and repost.  Directonal arrows from
-> > Interface B to PREROUTING process are missing...
-> >
-> > jim
-> >
-> >
-> >
->
->Ok, we should be good to go now!  The link above is still good dwg'ng has
->been updated.
->
->Thanks also to Antony for the quick catch!
->
->jim
->
->
->
->
+--- Babar Kazmi <BabarKazmi@Hotmail.Com> wrote:
+> Dear Jim
+>=20
+> Great Work .. Very Smart Approach :)
+> Please also Host it at netfiler .. for future
+> reference ...
+>=20
+> Regards
 
 
+=3D=3D=3D=3D=3D
+Regards,
+Kiran Kumar Immidi
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Search - Find what you=92re looking for faster
+http://search.yahoo.com
 
