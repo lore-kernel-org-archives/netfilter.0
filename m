@@ -1,17 +1,13 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: Redhat Linux 8.0 IPtables help
-Date: 06 Jun 2003 10:10:01 +0530
+From: Ray Leach <raymondl@knowledgefactory.co.za>
+Subject: RE: Problem Found! - Firewall Rule
+Date: 06 Jun 2003 08:52:28 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1054874488.2496.7.camel@india>
-References: <20030602160653.GB14609@eris>
-	<20030602165342.GC14917@harp.incogen.com>
-	<20030602171755.GA6298@hactar.local.funknet.net>
-	<200306041635.19489.rfunk@funknet.net> 
-	<000f01c32b99$3d65fab0$8c01a8c0@percipia.com>
+Message-ID: <1054882347.13616.53.camel@raylinux.internal>
+References: <09B04A55822EFF4DA48D2E0BB2941D4A019266@wardrive.citadelcomputer.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-Fk2MLzKC3BhJ78tCKEE7"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-VK1+HYtcCLq6dmBa7I8x"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000f01c32b99$3d65fab0$8c01a8c0@percipia.com>
+In-Reply-To: <09B04A55822EFF4DA48D2E0BB2941D4A019266@wardrive.citadelcomputer.com.au>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,156 +17,83 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Sundaram Ramasamy <sun@percipia.com>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
---=-Fk2MLzKC3BhJ78tCKEE7
+--=-VK1+HYtcCLq6dmBa7I8x
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2003-06-06 at 01:02, Sundaram Ramasamy wrote:
+On Fri, 2003-06-06 at 02:56, George Vieira wrote:
+> Your local IP is the same as the remote networks IP.. so how is the
+> local machine to know that 192.168.0.55 or 66 or 32 is on the VPN!?
+> =20
+> The only way I know is to proxyarp the ppp device that the vpn is
+> running on.. I'm assuming it's PPTP so you could try this command when
+> the VPN comes up :
+> echo 1 > /proc/sys/net/ipv4/conf/$VPNDEV/proxy_arp
+You can also use the netfilter P-O-M route patch, which allows you to
+redirect traffic via different interfaces (route) based on regular
+iptables conditions (-s, -d, -p, etc).
 
-    Hi,
-    
-    
-    
-    I have Linux machine with single Network interface. I want to block all the
-    tcp,udp and icmp port's other then 22,23,24 and 80.
-    
-    
-    
-    Can you verify the following script?
-    
-    
-    
-    
-    
-    IPTABLES=/sbin/iptables
-    
-    
-    
-    $IPTABLES -P INPUT DROP
-    $IPTABLES -P OUTPUT DROP
-    $IPTABLES -P FORWARD DROP
-    
-    $IPTABLES -A INPUT -p tcp -m multiport --destination-port 22,23,24,80 -j
-    ACCEPT
-    
-    
-    
-    $IPTABLES -A INPUT -p udp -m multiport --destination-port 22,23,24,80 -j
-    ACCEPT
-    
-    
-    
-    
-    
-    What port should I block for icmp protocol?
-    
-    
-    
-    -SR
-    
-    	You have to add the following rules to enable the communication.
-    
+> =20
+> and this must be done on the VPN server too..
+> I've never done it this way with a VPN.. but you can only try it..
+> =20
+> I'm surprised that anything really works properly the way you've done
+> it because the firewall has 2 network devices with the same IP range.
+>=20
+> Thanks,
+>=20
+>=20
+> =20
+> ____________________________________________
+> George Vieira
+> Citadel Computer Systems Pty Ltd Systems Managergeorgev AT
+> citadelcomputer DOT com DOT au
+> Citadel Computer Systems Pty Ltd
+> Phone : +61 2 9955 2644HelpDesk: +61 2 9955 2698
+> http://www.citadelcomputer.com.au
+> =20
+> =20
+> -----Original Message-----
+> From: John Paul [mailto:john@pinoylinux.sytes.net]
+> Sent: Friday, June 06, 2003 9:56 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Problem Found! - Firewall Rule
+>=20
+>=20
+> Hello Folks, its me again :(
+> =20
+> Below is my config. My problem is, I can connect to VPN but for some
+> reason, I cannot see machines inside the network after being
+> connected. Can somebody give me the simpliest firewall rule on this?
+> just for me to see the machines inside the network.
+> =20
+> Thanks!
+> /JP
+> =20
+--=20
+--
+Raymond Leach <raymondl@knowledgefactory.co.za>
+Network Support Specialist
+http://www.knowledgefactory.co.za
+"lynx -source http://www.rchq.co.za/raymondl.asc | gpg --import"
+Key fingerprint =3D 7209 A695 9EE0 E971 A9AD  00EE 8757 EE47 F06F FB28
+--
 
-$IPTABLES -A OUTPUT -p tcp -m multiport --source-port 22,23,24,80 -j
-ACCEPT
-$IPTABLES -A OUTPUT -p udp -m multiport --source-port 22,23,24,80 -j
-ACCEPT
+--=-VK1+HYtcCLq6dmBa7I8x
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
--- 
-Regards
-Dharmendra.T
+iD8DBQA+4Dorh1fuR/Bv+ygRAuE9AKC7AxQoZo829JhTnkXAi0AvCiyOmgCfcxWC
+9NqHE8n8qMAAxYTAbXmFN5M=
+=rllM
+-----END PGP SIGNATURE-----
 
-
-This message is intended for the addressee only. It may contain
-privileged or Confidential information. If you have received this
-message in error,please notify the sender and destroy the message
-immediately.Unauthorised use or reproduction of this message is strictly
-prohibited.
-
---=-Fk2MLzKC3BhJ78tCKEE7
-Content-Type: text/html; charset=utf-8
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
-</HEAD>
-<BODY>
-On Fri, 2003-06-06 at 01:02, Sundaram Ramasamy wrote:
-    <BLOCKQUOTE>
-<PRE><FONT COLOR="#73273a"><FONT SIZE="3"><I>Hi,</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>I have Linux machine with single Network interface. I want to block all the</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>tcp,udp and icmp port's other then 22,23,24 and 80.</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Can you verify the following script?</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>IPTABLES=/sbin/iptables</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>$IPTABLES -P INPUT DROP</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>$IPTABLES -P OUTPUT DROP</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>$IPTABLES -P FORWARD DROP</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>$IPTABLES -A INPUT -p tcp -m multiport --destination-port 22,23,24,80 -j</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>ACCEPT</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>$IPTABLES -A INPUT -p udp -m multiport --destination-port 22,23,24,80 -j</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>ACCEPT</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>What port should I block for icmp protocol?</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>-SR</FONT></FONT></I>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<FONT SIZE="3">	You have to add the following rules to enable the communication.</FONT>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I></PRE>
-    </BLOCKQUOTE>
-<FONT SIZE="3">$IPTABLES -A OUTPUT -p tcp -m multiport --source-port 22,23,24,80 -j ACCEPT</FONT>
-<BR>
-<FONT SIZE="3">$IPTABLES -A OUTPUT -p udp -m multiport --source-port 22,23,24,80 -j ACCEPT</FONT>
-<BR>
-<FONT SIZE="3"></FONT>
-<BR>
-<FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
-Regards
-Dharmendra.T
-
-
-This message is intended for the addressee only. It may contain privileged or Confidential information. If you have received this message in error,please notify the sender and destroy the message immediately.Unauthorised use or reproduction of this message is strictly prohibited.</PRE>
-</TD>
-</TR>
-</TABLE>
-
-</BODY>
-</HTML>
-
---=-Fk2MLzKC3BhJ78tCKEE7--
+--=-VK1+HYtcCLq6dmBa7I8x--
 
 
