@@ -1,14 +1,13 @@
-From: Thierry ITTY <thierry.itty@besancon.org>
-Subject: Re: voice IP
-Date: Tue, 04 Nov 2003 08:33:41
+From: "diseno1" <diseno1@puntozeropublicidad.cl>
+Subject: squid and iptables
+Date: Tue, 4 Nov 2003 09:55:16 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3.0.1.16.20031104083341.251f9fb4@s-net-04.besancon.org>
-References: <3FA6B9B8.2040703@adinet.com.uy>
+Message-ID: <007a01c3a2b1$5dca5c80$6a1f68c8@proxy>
+Reply-To: "diseno1" <diseno1@puntozeropublicidad.cl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0077_01C3A2B9.BF7BB1B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FA6B9B8.2040703@adinet.com.uy>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,112 +17,45 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Manuel Tato <madness@adinet.com.uy>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-it looks to me that, for getting incoming calls, you try to reach your voip
-gateway from "outside" with a private address (192.168.1.40) which your
-firewall is aware of, but as private addresses are not routed on the
-internet, you'll never get any incoming packets.=20
-outgoing calls work fine because of the masquerade rule and the h323=
- helpers.
-this is actually not an iptables problem.
-due to h323 protocol you can't just do a static port forwarding to handle
-incoming calls=20
-maybe you could try to redirect a broad range of ports and configuring your
-gateway to negociate only ports within this range, if possible
-maybe also you could try to redirect the known h323 ports, and all
-unrelated/unestablished incoming udp packets, considering such packets to
-be voip traffic, or do a redirection based on some diffserv value, doing
-the same assumption...
-of course such port redirections need that the incoming packets are sent to
-the public address of your firewall (which is the only one reachable from
-outside) thus need an additional DNAT rule with redirection, and of course
-an SNAT rule for outgoing packets (and NO masquerading)
+This is a multi-part message in MIME format.
 
-hth
+------=_NextPart_000_0077_01C3A2B9.BF7BB1B0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-please let me know
+hello...
+i need set up a firewall/proxy...
+with smtp, pop3,www, ssh, and the most security posibility...
+no hablo bien ingles...
+si alguien me pudiera ayudar estaria agradecido...
 
+------=_NextPart_000_0077_01C3A2B9.BF7BB1B0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>hello...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>i need set up a =
+firewall/proxy...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>with smtp, pop3,www, ssh, and the most =
+security=20
+posibility...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>no hablo bien ingles...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>si alguien me pudiera ayudar estaria=20
+agradecido...</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
 
+------=_NextPart_000_0077_01C3A2B9.BF7BB1B0--
 
-A 17:25 03/11/2003 -0300, vous avez =E9crit :
->i have this firewall, i have at 192.168.1.40 a voice ip gateway, i'm=20
->doing portforward to this ip.
->i make phone calls with out major problems, but i can=B4t recive any...
->someone have voip experience trough linux fw/routers?
->thanks in advance
->manuel
->
->
->#!/bin/bash
-># eth1--> Modem/ADSL
-># eth0--> LAN
->#
->echo 1 > /proc/sys/net/ipv4/ip_forward
->modprobe ipt_MASQUERADE
->modprobe ip_conntrack
->modprobe ip_conntrack_ftp
->modprobe iptable_nat
->modprobe ip_conntrack_h323
->modprobe ip_nat_h323
->#
->iptables -F
->iptables -t nat -F
->iptables -t mangle -F
->iptables -A INPUT -j ACCEPT
->iptables -A FORWARD -j ACCEPT
->iptables -A OUTPUT -j ACCEPT
->
->iptables -A FORWARD -p tcp --sport 137:139 -j DROP
->iptables -A FORWARD -p udp --sport 137:139 -j DROP
->#    NFS Mount Service (TCP/UDP 635)
->iptables -A FORWARD -p tcp --sport 635 -j DROP
->iptables -A FORWARD -p udp --sport 635 -j DROP
->#    NFS (TCP/UDP 2049)
->iptables -A FORWARD -p tcp --sport 2049 -j DROP
->iptables -A FORWARD -p udp --sport 2049 -j DROP
->#    Portmapper (TCP/UDP 111)
->iptables -A FORWARD -p tcp --sport 111 -j DROP
->iptables -A FORWARD -p udp --sport 111 -j DROP
-># Block incoming syslog, lpr, rsh, rexec...
->iptables -A FORWARD -i eth1 -p udp --dport syslog -j DROP
->iptables -A FORWARD -i eth1 -p tcp --dport 515 -j DROP
->iptables -A FORWARD -i eth1 -p tcp --dport 514 -j DROP
->iptables -A FORWARD -i eth1 -p tcp --dport 512 -j DROP
->###
->#
-># NAT
->iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
->######
->#####
->#######
->iptables -A FORWARD -p tcp --sport 1719:1789 -j ACCEPT
->iptables -A FORWARD -p udp --sport 1719:1789 -j ACCEPT
->
->iptables -t nat -A PREROUTING -p tcp --dport 80 -i eth1 -j DNAT --to=20
->192.168.1.40:80
->iptables -A FORWARD -i eth1 -p tcp -d 192.168.1.40 --dport 80 -j ACCEPT
->iptables -t nat -A PREROUTING -p tcp --dport 23 -i eth1 -j DNAT --to=20
->192.168.1.40:23
->iptables -A FORWARD -i eth1 -p tcp -d 192.168.1.40 --dport 23 -j ACCEPT
->iptables -t nat -A PREROUTING -p tcp --dport 161 -i eth1 -j DNAT --to=20
->192.168.1.40:161
->iptables -A FORWARD -i eth1 -p tcp -d 192.168.1.40 --dport 161 -j ACCEPT
->iptables -t nat -A PREROUTING -p tcp --dport 1726:1789 -i eth1 -j DNAT=20
->--to 192.168.1.40:1726:1789
->iptables -A FORWARD -i eth1 -p tcp -d 192.168.1.40 --dport 1726:1789 -j=20
->ACCEPT
->iptables -t nat -A PREROUTING -p udp --dport 1726:1789 -i eth1 -j DNAT=20
->--to 192.168.1.40:1726:1789
->iptables -A FORWARD -i eth1 -p udp -d 192.168.1.40 --dport  1726:1789 -j=20
->ACCEPT
->
->
->
->
->
->
->
 
