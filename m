@@ -1,14 +1,15 @@
-From: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
-Subject: Re: How to NAT inside a LAN over a single Interface
-Date: Fri, 19 Dec 2003 11:52:03 -0800
+From: "Michael H. Warfield" <mhw@wittsend.com>
+Subject: Re: Firewalling non-IPsec connections
+Date: Wed, 17 Dec 2003 19:37:46 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1071863523.3758.28.camel@ranjeet-pc2.zultys.com>
-References: <3FE226DA.5080005@gmx.net>
-	 <3FE334BE.6010408@Loudoun-Fairfax.com>
+Message-ID: <20031218003746.GA20788@alcove.wittsend.com>
+References: <GFEPJIHHFOJDOFDMNAJDIEAGEKAA.mark@npsl.co.uk> <3FE0D27B.9080900@hoeg.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-md5;
+	protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3FE334BE.6010408@Loudoun-Fairfax.com>
+Content-Disposition: inline
+In-Reply-To: <3FE0D27B.9080900@hoeg.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,75 +19,80 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-On Fri, 2003-12-19 at 09:26, Jeffrey Laramie wrote:
-> Dietmar Hofer wrote:
-> > I haven't found anythink clearing my problem doing some research in
-> > this list, nevertheless I'm sorry if you find my question annoying
-> > 'cos I'm quite new to this issue. 
-> > 
-> > I'm in a class B LAN and would make a Machine work as Gateway for
-> > another, both in the same network. This because the Internet Gateway
-> > accepts only requests of registered Interfaces (MAC-based). 
-> > The Machine which I want to let do this has only one eth-Interface.
-> > what in theory should be enough. 
-> > I set up NAT with "iptables -t nat -A POSTROUTING -o eth0 -j
-> > MASQUERADE" and changed the route on the source machine to use the
-> > other as gateway. 
-> > When pinging from the source machine, "/var/log/syslog" on the
-> > gateway shows me this requests: 
-> > 
-> > Dec 18 22:42:44 hogwart kernel: IN=eth0 OUT=eth0 SRC=192.168.2.201
-> > DST=192.168.2.150 LEN=8 
-> > 4 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=7294
-> > SEQ=1 
-> > 
-> > But I don't get an answer on the source machine, (while naturally i
-> > can ping the given IP from the gateway itself). 
-> > In a HOWTO I found the hint that doing NAT with only 1 Interface for
-> > input and output may not work with this config 'cos since kernel 2.4
-> > some sort of ICMP redirections doesn't work or so... 
-> > 
-> > What I want to know is just what I've to do to use this machine as
-> > gateway with only one interface. 
-> > Hope you can help 
-> 
-> I'm afraid I've never heard of a configuration where you use the same
-> NIC for both input and output. I doubt this would work for numerous
-> reasons, but even if it did, why bother? A NIC is $19.95 and a patch
-> cable is a few bucks. Wouldn't it be much easier to install another
-> NIC and avoid all the routing headaches?
-> 
-> Jeff
-
-It may be that you are getting a reply from the Internet Gateway to your
-NATing gateway. However, due to a variety of reasons like rp_filter, the
-machines being on the same LAN etc, the NATting gateway might be
-dropping the packet because it "feels" that the packet direction doesn't
-make sense.
-
-In any case, try this out.
-
-Get the vconfig utility from
-http://www.candelatech.com/~greear/vlan.html
-
-Create 2 seperate logical ethernet devices (eth0.0 (?), eth0.1, ...) and
-then play with them. Not sure, if iptables will accept logical
-interfaces.
-
--- 
-
-Ranjeet Shetye
-Senior Software Engineer
-Zultys Technologies
-Ranjeet dot Shetye2 at Zultys dot com
-http://www.zultys.com/
- 
-The views, opinions, and judgements expressed in this message are solely
-those of the author. The message contents have not been reviewed or
-approved by Zultys.
+To: Peter Hoeg <disposable1@hoeg.com>
+Cc: Netfilter List <netfilter@lists.netfilter.org>
 
 
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Dec 17, 2003 at 11:02:35PM +0100, Peter Hoeg wrote:
+> Mark Weaver wrote:
+>=20
+> >I have to guess so.  I've no idea TBH where the packets actually go, but
+> >this definitely works for me.  I'm more of a cook than a chef when it co=
+mes
+> >to netfilter.  I've tried looking around the source, but I'm pretty
+> >clueless, and the native ipsec doesn't seem to be documented at all.  It=
+'s
+> >not even got a maintainer listed, and virtually nothing in
+> >linux/Documentation.  (If anyone could point me in the right direction t=
+hat
+> >would be great!).
+
+> mark, you simply rule! this fixed my problem. now, since i was going=20
+> nuts trying to figure it out and i couldn't find ANY info on ANYWHERE=20
+> (you guys were my last resort), so i have decided to make a small guide=
+=20
+> (i needed to learn docbook anyway so this seemed like a good chance)=20
+> which can be found here:
+
+> http://hoeg.org/lri/
+
+> but one thing - to be honest i actually was thinking briefly about the=20
+> MARK solution myself but came to the conclusion that since it is similar=
+=20
+> to the TOS marks you can set, then technically somebody else could tag=20
+> the packets themselves before entering my system which would bypass the=
+=20
+> solution. and thats why i didnt take it further. can anybody shed any=20
+> light on that?
+
+	No...  TOS is contained in the packet.  It's actually a header
+field.  MARK is not.  It's not a part of the packet at all outside of the
+system.  It can not be introduced from outside the system.
+
+> but in order for the search engines to pick up this message: racoon=20
+> linux kernel 2.6 ipsec vpn tunnel firewall iptables netfilter
+
+> >It kind of makes sense, because without this we'd have no possibility of
+> >handling packets that came in via an IPSC tunnel separately.
+
+> agree
+
+	Mike
+--=20
+ Michael H. Warfield    |  (770) 985-6132   |  mhw@WittsEnd.com
+  /\/\|=3Dmhw=3D|\/\/       |  (678) 463-0932   |  http://www.wittsend.com/=
+mhw/
+  NIC whois:  MHW9      |  An optimist believes we live in the best of all
+ PGP Key: 0xDF1DD471    |  possible worlds.  A pessimist is sure of it!
+
+--SUOF0GtieIMvvwua
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iQCVAwUBP+D22uHJS0bfHdRxAQE1kQQAp3yBc+4byqN58OOPBV9vnI26UssarKF5
+IRkg237UoQ1g9Cz2c+mCeJI5VDpZwTCvdm52oqK1QPQjfjNNqIqiTMpKl5n7Ka+c
+r94bi1ND296YvGhRSSoFshIzwNkOJWiixvdsL4A7fZKqRqQIFjmjsZ/j7xTe12Cp
+5dtcmcdZJCE=
+=tyvm
+-----END PGP SIGNATURE-----
+
+--SUOF0GtieIMvvwua--
 
