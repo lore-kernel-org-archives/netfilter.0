@@ -1,12 +1,12 @@
-From: <bmcdowell@coxhealthplans.com>
+From: "Hildebrand, Brian" <BrianHildebrand@universalcomputersys.com>
 Subject: RE: Gigabit
-Date: Tue, 9 Mar 2004 15:00:31 -0600
+Date: Tue, 9 Mar 2004 15:08:47 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7A3B4AA360FDEF448F3390421FC8D7311B9D61@coxhpexg.coxhp.com>
+Message-ID: <D8FBABA1EF6F2E4DBCC88903F60691F302856A8F@houxchsvr.ucscorp.ucs.pvt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,6 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+In my initial testing with netfilter, I found it started dropping =
+packets eventually. But it tries really hard to keep up before that. At =
+around 50% utilization on a 100meg pipe I started seeing packet loss =
+with random syn packets (basically just sending syn requests using =
+random source/destination ports at a firewall with no ruleset). CPU =
+utilization at that point was maxed out.=20
+
+Brian
+
+-----Original Message-----
+From: bmcdowell@coxhealthplans.com [mailto:bmcdowell@coxhealthplans.com]
+Sent: Tuesday, March 09, 2004 15:01
+To: netfilter@lists.netfilter.org
+Subject: RE: Gigabit
+
 
 
 Anthony makes a good point.  'Need' is probably going to be the biggest =
@@ -125,4 +141,14 @@ list;
                                                            please don't =
 CC me.
 
+
+
+----------------------------------------
+The information transmitted in this message is intended only for the =
+person or entity to whom it is addressed and may contain confidential =
+and/or privileged material.  Any review, retransmission, dissemination =
+or other use of, or taking of any action in reliance upon this =
+information by persons or entities other than the intended recipient is =
+prohibited.  If you received this in error, please contact the sender =
+and destroy any copies of this document.
 
