@@ -1,16 +1,13 @@
 From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: MSN throught Linux
-Date: Fri, 10 Oct 2003 20:43:51 +0200
+Subject: Re: smoothwall
+Date: Fri, 10 Oct 2003 20:59:09 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031010204351.06c3a59f.arnt@c2i.net>
-References: <3.0.1.16.20031006084006.1a5fcc36@s-net-04.besancon.org>
-	<14C5057BC852D611BAC400E0299AA10F02042D@MAILSERV>
-	<3.0.1.16.20031006084006.1a5fcc36@s-net-04.besancon.org>
-	<3.0.1.16.20031006143157.16e7556a@s-net-04.besancon.org>
+Message-ID: <20031010205909.177f2c73.arnt@c2i.net>
+References: <F22386C3FEB012449238672E38ED61E70A8D08@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <3.0.1.16.20031006143157.16e7556a@s-net-04.besancon.org>
+In-Reply-To: <F22386C3FEB012449238672E38ED61E70A8D08@overlord.overturemedia.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,35 +17,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, 06 Oct 2003 14:31:57,=20
-Thierry ITTY <thierry.itty@besancon.org> wrote in message=20
-<3.0.1.16.20031006143157.16e7556a@s-net-04.besancon.org>:
+On Mon, 29 Sep 2003 17:02:43 +0800, 
+"Fritz Mesedilla" <fritz.mesedilla@overturemedia.com> wrote in message 
+<F22386C3FEB012449238672E38ED61E70A8D08@overlord.overturemedia.com>:
 
-> A 11:09 06/10/2003 +0200, Harald Welte a =E9crit :
-> > On Mon, Oct 06, 2003 at 08:40:06AM +0000, Thierry ITTY wrote:
-> > > Use linux internet gateway device (aka linux-igd) from sourceforge
-> >
-> >*sigh*.  I hope you are aware that upnp is inherently insecure, and
-> >you can actually have the same security by removing your firewall
-> >alltogether ?
->=20
-> well you're right, but when in the office _some_ people _decide_ to
-> use msn you can tell'em whatever you want about they'll answer they
-> _need_ it and all you have to do is to obey
+> 
+> Hello folks!
+> 
+> Has anyone tried smoothwall?
+> I have become tired of making samba work and still it won't work so
+> now I am resorting to using a "pre-built" iptables firewall. At least
+> it is GUI-based. :D
+> 
+> I've always wanted to make my own firewall bash script.
+> If I can make smoothwall and samba to work properly then perhaps I can
+> use the firewall script it generates to make my own, right?
+> 
+> So can anyone advice me on this one?
 
-...or _run_. =20
+..needs its own box, if your ok with that, chk out ipcop.org.
 
-..once your msn-defeated firewall has been taken advantage of, _which_
-firewall admin gets the blame?
+..also possible to set up a basic debian with 2.4.18 (bf24) and 
+rip out ipchains and install shorewall.net and webmin.com,
+do 'apt-get remove --purge ipchains ; apt-get update ; apt-get \
+upgrade ; apt-get install shorewall webmin ', then go into webmin's
+update menu to update webmin to 1.110 or whatever it is now, 
+then go into webmin's shorewall menu.  ;-)
 
---=20
-..med vennlig hilsen =3D with Kind Regards from Arnt... ;-)
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;-)
 ...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three:=20
+  Scenarios always come in sets of three: 
   best case, worst case, and just in case.
-
 
 
