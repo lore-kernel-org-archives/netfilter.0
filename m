@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Routing and PREROUTING
-Date: Mon, 12 Jul 2004 17:02:15 +0100
+Subject: Re: MIRROR.. would this work?
+Date: Mon, 12 Jul 2004 17:09:30 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407121702.15765.Antony@Soft-Solutions.co.uk>
-References: <20040712145806.GA30044@itstud.chalmers.se> <40F2ABB7.2080801@nexusmgmt.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200407121709.30133.Antony@Soft-Solutions.co.uk>
+References: <627ED3D5182532448B61510FFAB3D37F10A94F@srvdc01.jade.local>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40F2ABB7.2080801@nexusmgmt.com>
+In-Reply-To: <627ED3D5182532448B61510FFAB3D37F10A94F@srvdc01.jade.local>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,31 +21,26 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 12 July 2004 4:18 pm, John A. Sullivan III wrote:
+On Monday 12 July 2004 4:34 pm, Mark C. Casey wrote:
 
-> Hmmm . . . someone correct me if I'm wrong but I think your first rule
-> will end processing in the nat table but the packet will still pass to
-> the FORWARD table where, if it does not match a rule, it will be handled
-> by your FORWARD chain policy - John
+> Would the following work in trying to access 172.16.0.1 but seeing the
+> address of 123.123.123.123. (say 123.123.123.123 is an external address and
+> when 172.16.0.1 tries accessing 123.123.123.123 it accesses itself? it's a
+> long story, I just need to be able to access 172.16.0.1 from 172.16.0.1 but
+> using the external address of 123.123.123.123 from 172.16.0.1)
+>
+> iptables -A FORWARD -p tcp -s 172.16.0.1/32 -d 123.123.123.123/32 -j MIRROR
 
-That is correct.
+I guess it's worth a try...   That's what MIRROR is for, after all....
 
-If you ACCEPT packets in the PREROUTING nat table, they will proceed to the 
-FORWARD filter table and start trundling through your ruleset.
-
-If you DROP packets in the PREROUTING nat table, all sorts of things are 
-likely to break (depending on how indiscriminate your DROP policy is).
+(No, I've never played with this target myself)
 
 Antony.
 
 -- 
-"When you talk about Linux versus Windows, you're talking about which 
-operating system is the best value for money and fit for purpose. That's a 
-very basic decision customers can make if they have the information available 
-to them. Quite frankly if we lose to Linux because our customers say it's 
-better value for money, tough luck for us."
-
- - Steve Vamos, MD of Microsoft Australia
+I own three Windows books, published by O'Reilly.   They are "Windows 
+Annoyances", "Office 97 Annoyances" and "Windows 98 Annoyances".   That 
+pretty much sums it up for me.
 
                                                      Please reply to the list;
                                                            please don't CC me.
