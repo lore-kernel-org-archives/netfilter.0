@@ -1,10 +1,15 @@
-From: "Martin Leduc" <marled3@hotmail.com>
-Subject: Re: Problem behind my DMZ
-Date: Fri, 09 Jan 2004 02:19:54 +0000
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: Problems with Transparent Proxy using IPTables, Squid and 2.6 kernel
+Date: Thu, 8 Jan 2004 21:33:38 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Law9-F44y5JrmDLaA4J00011e46@hotmail.com>
+Message-ID: <11606.1662709855$1073615876@news.gmane.org>
+References: <FE0E2967-4215-11D8-AFEE-000393677A36@porchlight.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+From: Alistair Tonner <>
+In-Reply-To: <FE0E2967-4215-11D8-AFEE-000393677A36@porchlight.ca>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,120 +19,67 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: ramin@cannon.eng.us.uu.net, Antony@Soft-Solutions.co.uk
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Peter Schobel <pschobel@porchlight.ca>, netfilter@lists.netfilter.org
 
-Good evening folks,
+On January 8, 2004 03:05 pm, Peter Schobel wrote:
+> ok, I downloaded the source ball for iptables 1.2.9, and compiled using
+>
+> make KERNEL_DIR=/usr/src/linux-2.6.0-1.107
+>
+> i got an error from config.h telling me to use the glibc version so i
+> symlinked /usr/src/linux-2.6.0-1.107 to /usr/include/linux/config.h
+>
+> then i compiled successfully and installed using
+>
+> make install KERNEL_DIR=/usr/src/linux-2.6.0-1.107
+>
+> without incident
+>
+> i checked the timestamp on the iptables binary to make sure that it had
+> been overwritten
+>
+> I rmmod'd all the iptables modules and then reloaded my iptables rule
+>
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
+> --to-port 3128
+>
 
-Sorry to answer you so late, and thank you for your informations.  I'm so 
-exited, I have make test and, basicly, it's working.  Tomorow is the 
-official test.  I keep you informed.
+	Ummm ... I don't understand where the error came from.... I'm using a slackware based box with many upgrades
+	(gcc glibc binutils and modutils....) my switch from 2.4.23 to 2.6.0 required a binutils and modutils
+	upgrade FIRST -- I would hope that RPM dependencies are in place to enforce this as it will likely
+	apply to your situation ... when I rebuilt iptables source it went painlessly --- no error from config.h.
 
-The only thing I can't figure out is the /32 netmask address for an address 
-having a /28.  Why dont put the /28?
+	I *DONT* like the relink .. I've a feeling this will break some inportant defines....
+	
+	what do you get for modprobe --version and ld -v ?
+	I suspect your modutils is incorrect for 2.6.0
 
-Of course I try it but the route program have reject this entries.  Can you 
-explain to me?
-
-Other thing.  It is possible than I can't reach other machine placed before 
-the firewall BOX having address IP in the same range than my firewall box 
-after having put the /32 host in my route table?
-
-Example:
-192.168.1.1  ISP GAteway
-192.168.1.2  Server (Any kind)
-192.168.1.3  Firewall BOX (Eth0)
-192.168.1.3  Firewall BOX (eth1)
-192.168.1.4  Server Behind Firewall BOX
-
-Ping Test result
----------------------------
-192.168.1.4 can reach 192.168.1.3
-192.168.1.4 can reach 192.168.1.1
-192.168.1.4 can't reach 192.168.1.2
-
-In the same test
-
-192.168.1.2 can reach 192.168.1.1
-But not 1.3 and 1.4
-
-I ask that because if I check my DSL route table, I see the same 
-configuration like
-
-Destination     Gateway         Genmask         Flags Metric Ref    Use 
-Iface
-67.68.140.1     0.0.0.0         255.255.255.255 UH    0      0        0 ppp0
-192.168.1.1   0.0.0.0         255.255.255.0   U     0      0        0 eth0
-127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
-0.0.0.0         67.68.140.1     0.0.0.0         UG    0      0        0 ppp0
-
-I can ping 67.68.140.1, .2, .3, .4, .5, etc....
-
-Can you explain?
-
-
-Now the configuration :D
-
-This is the prompt command I have and will do, for other who using Slackware 
-(and for me is a test to see if I understand correctly ;) ):
-
-We asume my ISP router is 20.0.0.14/28
-
-On the Firewall BOX
-
-1- Connect your ISP gateway RJ-45 cable to your eth0 NIC
-2- Connect your Server Switch in your eth1 NIC
-
-On the Firewall shell
-
-#Clean your interface and the route table
-ifconfig eth0 down
-ifconfig eth1 down
-
-#Configure the both NIC using your public address you choose
-ifconfig eth0 20.0.0.1 netmask 255.255.255.240 broadcast 20.0.0.15
-ifconfig eth1 20.0.0.1 netmask 255.255.255.240 broadcast 20.0.0.15
-
-#Change your route setting
-route del -net 20.0.0.0/28 eth0
-route add -host 20.0.0.14/32 eth0
-
-#Set your firewall your ISP default Gateway
-route add default gw 20.0.0.14
-
-#Test
-ping 20.0.0.14
-
-(Should Work)
-
-#On your server shell
-
-#Clean your interface and the route table
-ifconfig eth0 down
-
-#Configure with your other public ip address
-ifconfig eth0 20.0.0.2 netmask 255.255.255.240 broadcast 20.0.0.15
-
-#Configure the default route
-route add defaut gw 20.0.0.1
-
-#Test
-ping 20.0.0.14
-
-(Should Work)
-
-I'll tell you tomorow if it's work!, it's work on public address 
-(192.168.0.1).  I dont think that will not work.
-
-All the rest is done by the FORWARD filter rule, use the state rules to 
-allow on each machine only what you want.
-
-Martin
-
-_________________________________________________________________
-MSN Messenger : discutez en direct avec vos amis !  
-http://messenger.fr.msn.ca/
-
+> lsmod gives me
+>
+> Module                  Size  Used by
+> ipt_REDIRECT            2048  1
+> iptable_nat            20140  2 ipt_REDIRECT
+> ip_tables              15104  2 ipt_REDIRECT,iptable_nat
+> ip_conntrack           28464  2 ipt_REDIRECT,iptable_nat
+>
+> iptables -t nat -L gives me
+>
+> Chain PREROUTING (policy ACCEPT)
+> target     prot opt source               destination
+> REDIRECT   tcp  --  anywhere             anywhere            tcp
+> dpt:http redir ports 3128
+>
+> Chain POSTROUTING (policy ACCEPT)
+> target     prot opt source               destination
+>
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+>
+> testing it reveals that it is still not working - did i do anything
+> wrong in the above steps? what further steps would you recommend to
+> troubleshoot this problem?
+>
+> Peter Schobel
+> ~
 
