@@ -1,12 +1,14 @@
-From: "Daniel Chemko" <dchemko@smgtec.com>
-Subject: RE: to snat or to dnat .. that is the question
-Date: Tue, 1 Jun 2004 10:38:05 -0700
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: to snat or to dnat .. that is the question
+Date: Tue, 1 Jun 2004 13:50:38 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E31F@alderaan.smgtec.com>
+Message-ID: <200406011350.38658.Alistair@nerdnet.ca>
+References: <5D3C2276FD64424297729EB733ED1F76062433BA@email1.mitretek.org> <200406011116.55391.Alistair@nerdnet.ca> <147b01c447f5$4f44b900$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
+In-Reply-To: <147b01c447f5$4f44b900$49caa8c0@caris.priv>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,17 +19,127 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Peter Marshall <peter.marshall@caris.com>, Alistair Tonner <Alistair@nerdnet.ca>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Peter Marshall wrote:
-> That's insane .. please tell me you did not just come up with that
-> and that you are already using that .....
-> Thank you for the reply. :)
+On June 1, 2004 12:27 pm, Peter Marshall wrote:
+> So ... for every nat I have going from my internal network on a specific
+> port, destined to an external IP on a different port I need to have
+> something like this ?
+>
+>   $IPT -t nat -A PREROUTING -d <firewall_ip> --dport 15000 -p tcp -i eth0 \
+>        -j DNAT --to-destination <some_internet_ip> --dport 2000
+>
+>   $IPT -t nat -A POSTROUTING -d <some_internet_ip> --dport 2000  -p tcp -o
+> eth0 \
+>        -j SNAT --to-source <firewall_ip>
+>
+> Is there a better way ???  I have about 20 routes to add .....
 
-Nope, just came up with it. I love bash!
-There are definitly more efficient techniques, but I imagine that'd be
-something good enough for your purposes.
-If you think that's crazy, you should see my (terse,unmaintainable)
-firewall scripts... They're totally spagetti. Ah, time for a rewrite!
+	Well ... Yes actually -- since in PREROUTING you are altering the destination 
+to the correct port, and you are allowing it through forward, IF you always 
+set the destination IP and PORT in PREROUTING you only need a default SNAT 
+rule in POSTROUTING.
+$IPT -t nat -I POSTROUTING -o {outbound interface} -p tcp -j SNAT --to-source 
+{firewall ip}
 
+	should suffice, however -- if you have OTHER PUBLIC ip's in a DMZ somewhere 
+you need to evict them from that rule of course.
+
+	Alistair
+>
+> Thank you for your help.
+>
+> Peter
+>
+>
+> ----- Original Message -----
+> From: "Alistair Tonner" <Alistair@nerdnet.ca>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Tuesday, June 01, 2004 12:16 PM
+> Subject: Re: to snat or to dnat .. that is the question
+>
+> On June 1, 2004 10:51 am, Peter Marshall wrote:
+> > yes, my firewall is the default route on all internal boxes
+> >
+> > ----- Original Message -----
+> > From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+> > To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
+> > <netfilter@lists.netfilter.org>
+> > Sent: Tuesday, June 01, 2004 11:42 AM
+> > Subject: RE: to snat or to dnat .. that is the question
+> >
+> >
+> > If the box 192.168.0.20 does not have the firewall's IP as its default
+> > route, then it will not work correctly (DNAT), I am not sure about SNAT.
+> >
+> >
+> > -----Original Message-----
+> > From: netfilter-admin@lists.netfilter.org
+> > [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Peter Marshall
+> > Sent: Tuesday, June 01, 2004 10:30 AM
+> > To: netfilter
+> > Subject: to snat or to dnat .. that is the question
+> >
+> > Hi again.
+> >
+> > I am at a bit of a quandary, and am not sure what to do.
+> >
+> > Let the external interface on my firewall be 100.100.100.100
+> > I have an internal box; 192.168.0.20 that needs to connect to an
+> > external
+> > box 200.200.200.200 on port 2000.
+> >
+> > I want the internal box to connect to hit my firewall on a different
+> > port ..
+> > say 15000
+> >
+> > so basically
+> >
+> > start: .... -s 192.168.0.20 -d 200.200.200.200 --dport 15000
+> > after firewall -s 100.100.100.100 -d 200.200.200.200 --dport 2000
+> >
+> > How can I do this ?
+> >
+> > I started out with:
+> >
+> > $IPT -t nat -A POSTROUTING -d 200.200.200.200 --dport 15000 -p tcp -i
+> > eth0 \
+> >        -j SNAT --to-source 100.100.100.100
+> >
+> > But this does not change the destination port (obviously). I thought
+> > about
+> > doing the following
+> >
+> > $IPT -t nat -A PREROUTING -d 100.100.100.100 --dport 15000 -p tcp -i
+> > eth0 \
+> >          -j DNAT --to-destination 200.200.200.200 --dport 2000
+> >
+> > However, I don't think that this will change my source address.  Also,
+> > will
+> > this even forwarded the packets ?  They would be coming on the input
+> > chain
+> > would they not ?
+>
+> Since you've done this in PREROUTING no, they wont hit the INPUT chain.
+> This is where to start.
+>
+>
+>
+> You need then to have a FORWARD rule to allow the packets, and
+> ESTABLISHED,RELATED, and then in POSTROUTING add a rule to SNAT those
+> packets
+> destined to 200.200.200.200:2000 ( you could, if need be, add the source to
+> the rule as well)
+>
+> > Thank you for the help.
+> > Peter Marshall
+> >
+> >
+> > Peter Marshall, BCS
+> > Network Administrator, CARIS
+> > 115 Waggoners Lane, Fredericton NB, E3B 2L4 CANADA
+>
+> Alistair Tonner
+> -- from slightly west of there, on the last lake
+> T.O.
 
