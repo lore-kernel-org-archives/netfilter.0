@@ -1,136 +1,71 @@
-From: "azeem ahmad" <azeem484@hotmail.com>
-Subject: weired problem while connecting
-Date: Tue, 01 Jun 2004 22:14:44 +0000
-Sender: samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org
-Message-ID: <BAY15-F5oHMwVN7miR90003b234@hotmail.com>
+From: "Daniel Chemko" <dchemko@smgtec.com>
+Subject: RE: netfilter forwarding to FTP gateway
+Date: Tue, 1 Jun 2004 15:25:23 -0700
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <7C9884991ADAE0479C14F10C858BCDF591E322@alderaan.smgtec.com>
 Mime-Version: 1.0
-Return-path: <samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+content-class: urn:content-classes:message
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://lists.samba.org/mailman/listinfo/samba>,
-	<mailto:samba-request@lists.samba.org?subject=unsubscribe>
-List-Archive: <http://lists.samba.org/archive/samba>
-List-Post: <mailto:samba@lists.samba.org>
-List-Help: <mailto:samba-request@lists.samba.org?subject=help>
-List-Subscribe: <http://lists.samba.org/mailman/listinfo/samba>,
-	<mailto:samba-request@lists.samba.org?subject=subscribe>
-Errors-To: samba-bounces+gnsg-samba=m.gmane.org@lists.samba.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: samba@lists.samba.org, netfilter@lists.netfilter.org
-
-hi all
-i m connecting to my samba server from a windows xp client. whenever i 
-started my firewall script the client used to take 4 minutes to connect to 
-the samba server and i run IRIS (sniffer) on my windows xp box it captures a 
-packet as shown below
--------------------------------------------------------------------------------------------------------------------------------------
-OPTIONS / HTTP/1.1
-translate: f
-User-Agent: Microsoft-WebDAV-MiniRedir/5.1.2600
-Host: Subzero
-Content-Length: 0
-Connection: Keep-Alive
-
-HTTP/1.0 504 Gateway Time-out
-Server: squid/2.5.STABLE1
-Mime-Version: 1.0
-Date: Mon, 31 May 2004 18:13:57 GMT
-Content-Type: text/html
-Content-Length: 1056
-Expires: Mon, 31 May 2004 18:13:57 GMT
-X-Squid-Error: ERR_CONNECT_FAIL 110
-X-Cache: MISS from proxy.ravians-hostel.net
-Connection: keep-alive
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+To: mclinden@informed.net, netfilter@lists.netfilter.org
 
 
-ERROR
-The requested URL could not be retrieved
---------------------------------------------------------------------------------
+Nice description, but one piece of info's required.
 
-While trying to retrieve the URL:
-http://subzero/
+If you want transparent control of services, you MUST have control of
+all gateways. If 172.16.16.0/22 has anotehr gateway besides the firewall
+your talking about, you need to perform the following:
 
-The following error was encountered:
+# 172.16.16.0/22 router (GATEWAY2)
+ip route add 172.16.11.237/32 via ${GATEWAY1_NET16} dev ${IF_NET16}
+iptables -t nat -A PREROUTING -p tcp -s 172.16.0.0/16 --dport 21 -j DNAT
+--to 172.16.11.237:2370
+iptables -t nat -A POSTROUTING -d 172.16.11.237 -p tcp --dport 2370 -j
+SNAT --to ${GATEWAY2_NET16}
 
-Connection Failed
+# 172.16.8.0/22 router (GATEWAY1)
+# Theoretically these rules don't need to exist since hosts on the
+subnet should never be required to hit the firewall first.
+iptables -t nat -A PREROUTING -p tcp -s 172.16.0.0/16 --dport 21 -j DNAT
+--to 172.16.11.237:2370
+iptables -t nat -A POSTROUTING -d 172.16.11.237 -p tcp --dport 2370 -j
+SNAT --to ${GATEWAY1_NET16}
 
-The system returned:
-    (110) Connection timed out
+If you don't have access to GATEWAY2, you're hooped. You need channel
+control to get it working.
 
-The remote host or network may be down.  Please try the request again.
-Your cache administrator is Mumraiz-Khan.
-
---------------------------------------------------------------------------------
-
-Generated Mon, 31 May 2004 18:13:57 GMT by proxy.ravians-hostel.net 
-(squid/2.5.STABLE1)
-
--------------------------------------------------------------------------------------------------------------------------------------
-
-but if i disable transparent redirection from my firewall then it takes 
-about 20 seconds or dont run the firewall then it browses the samba server 
-noramally. the firewall script is as below. and also in the latter two 
-conditions IRIS doesnt caputre this packet shown above
-here is the firewall
--------------------------------------------------------------------------------------------------------------------------------------
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-iptables -F
-iptables -t nat -F
-
-modprobe ip_nat_ftp
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+If there isn't gateway2, then just use the rules from GATEWAY1. The SNAT
+rule is just a sanity check to make sure the routes are sane. If there
+aren't any other routers in the network, they probably aren't needed.
 
 
-iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 22   -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 42   -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 88   -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 88   -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 135  -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 137  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 137  -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 138  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 138  -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 139  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 139  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 389  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 636  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 445  -j ACCEPT
-iptables -A INPUT -i eth0 -p udp --dport 445  -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 3268 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 3269 -j ACCEPT
 
-iptables -P INPUT DROP
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+> I also configure point to point routes to the specific FTP sites using
+> 172.16.11.237 as the gateway, which appears to work ok for systems on
+> the same subnet (172.16.8.0/22). But Microsoft's desktop OSs do not
+> let you specify gateways outside the subnet of the client, therefore,
+> clients on the 172.16.16.0/22 subnet cannot use the transparent FTP
+> proxy.=20
+>=20
+> My thought was to put another Linux box with a single interface on the
+> 172.16.16 subnet, use it as the gateway to the downstream clients, and
+> have it forward all packets for port 21 to the machine on the other
+> subnet. But I'm a bit confused on how to do this.
+>=20
+> Suggestions or references to tutorials/faqs/etc would be appreciated.
+>=20
+> Thanks in advance
+>=20
+> Sean McLinden
+> Allegheny County Health Department
 
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-iptables -A FORWARD -i eth0 -p tcp --dport 21        -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 443       -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 5000      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 5001      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 5005      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 5050      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 6660:6670 -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 7000      -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 28805     -j ACCEPT
-iptables -A FORWARD -i eth0 -p tcp --dport 51215     -j ACCEPT
-
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
--------------------------------------------------------------------------------------------------------------------------------------
-
-Regards
-Azeem
-
-_________________________________________________________________
-Add photos to your messages with MSN 8. Get 2 months FREE*. 
-http://join.msn.com/?page=features/featuredemail
-
--- 
-To unsubscribe from this list go to the following URL and read the
-instructions:  http://lists.samba.org/mailman/listinfo/samba
