@@ -1,74 +1,75 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: IPSec - IPTables issues
-Date: Wed, 05 May 2004 09:47:22 -0500
-Sender: linux-net-owner@vger.kernel.org
-Message-ID: <4098FE7A.8070707@pbl.ca>
-References: <20040502155538.GD515@schottelius.org> <4096317F.8020609@eurodev.net> <20040504211557.GA236@schottelius.org>
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Re: libipq installation
+Date: Wed, 5 May 2004 16:34:41 +0200
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <20040505143441.GA25003@zion.homelinux.com>
+References: <OFB831D70A.34529ED3-ON65256E8B.001C8EDD@hss.hns.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-net-owner@vger.kernel.org>
-In-Reply-To: <20040504211557.GA236@schottelius.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <OFB831D70A.34529ED3-ON65256E8B.001C8EDD@hss.hns.com>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Nico Schottelius <nico-linux-net@schottelius.org>
-Cc: Pablo Neira <pablo@eurodev.net>, netfilter@lists.netfilter.org, gregor-net@paasch.name, linux-net@vger.kernel.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+To: aksingh@hss.hns.com
+Cc: netfilter@lists.netfilter.org
 
-Nico Schottelius wrote:
-> I'll compare what freeswan did with what Linux 2.6 does now:
-> 
-> Freeswan has virtual devices (ipsec*), through which the unencrypted
-> packets come into the system. So you can add these firewall lines:
-> 
-> - allow AH, ESP, UDP/500, deny rest on eth0
-> - allow IPs/networks, etc. on ipsec0
-> 
-> With Linux 2.6 I don't have virtual devices. This means that my IPSec
-> packets enter the physical device twice:
-> 
-> 1. esp encrypted packet enters
-> 2. Linux decrypts it
-> 3. Linux sends the unencrypted packets through the same device again
-> 
-> The problem with that is, that
-> 
-> - allow AH, ESP, UDP/500, deny rest on eth0
-> 
-> will deny the _content_ of my encrypted packages (step three is broken).
 
-Haven't worked much with IPSec (at least not over firewall).  Are you 
-sure that IPSec packets will go through Netfilter twice (once encrypted, 
-and than once again unencrypted)?
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Anyhow, if I assume that what you wrote is correct (and it is how Linux 
-kernel handles packets), I still don't see need for virtual devices.
+On Wed, May 05, 2004 at 12:13:14PM +0530, aksingh@hss.hns.com told us:
+>=20
+> hi,
+>=20
+>  How do I install libipq on my redhat linux box (2.4.2-2) ? Iahve
+> downloaded iptables source code -- iptables-1.2.9.tar.bz2
 
-If above is what really happens, the proper way to do what you want to 
-do is (IMHO):
+You need to run a 'make install-devel' after compiling iptables
+so that the libipq libs, headers and manpages are installed.
 
-   - allow hosts/networks on eth0 (in Netfilter part of kernel)
-   - setup IPSec policies so that traffic from allowed hosts/networks is 
-required to be encrypted (in IPSec part of kernel)
+But isn't kernel 2.4.2-2 a little bit outdated? I think this is
+the installation kernel from redhat 7.1. You probably want to
+install the last errata kernel from redhat first, or even=20
+a vanilla kernel from kernel.org as there's no more support for
+redhat 7.1 from redhat and so also no new erratas...
 
-This way, you will get an equivalent configuration (you accept traffic 
-only from defined set of hosts/networks, and require that traffic to be 
-encrypted).  If you want to limit traffic to say only HTTP, than you 
-would allow it if it is: from host/network and (AH or ESP or UDP/500 or 
-HTTP).
 
-So you get:
+HTH
 
-1. Linux requires packets from defined hosts/networks to be encrypted. 
-If packets is not encrypted, Linux rejects it because of IPSec policy
-2. Packet goes through Netfilter encrypted (accepted since it is AH, 
-ESP, or UDP/500 and from allowed src IP)
-3. Linux decrypts it
-4. Packet goes through Netfilter again (accepted because it is HTTP and 
-allowed src IP)
+Sven
 
-I'm not familiar with kernel internals, so I don't know if steps 1 and 2 
-are actually inverted (doesn't change anything).
+>=20
+> thanks,
+> Amit
+>=20
 
--- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+--=20
+Linux zion 2.6.6-rc1 #1 Sat Apr 17 11:50:12 CEST 2004 i686 athlon i386 GNU/=
+Linux
+ 16:31:46  up 14 days, 21:21,  1 user,  load average: 0.02, 0.01, 0.00
+
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQFAmPuBo4FAdB2PneQRAm51AJ4yFKCchZIAKo1gQxC70KeBMY3rXgCfa3Q/
+Oey0bcRIXHwoXx7AmaR7kZQ=
+=yuyx
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
+
