@@ -1,11 +1,10 @@
-From: "Alexis" <alexis@tpys.com.ar>
-Subject: Re: IPs blocked still able to connect
-Date: Sun, 13 Jun 2004 22:02:57 -0300
+From: <david@suarapembaruan.co.id>
+Subject: iptables for backup connection
+Date: Mon, 14 Jun 2004 16:56:44 +0700 (WIT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <001701c451ab$56837610$0200000a@heretic>
-References: <200406132359.i5DNx0bJ016290@ylpvm15.prodigy.net>
+Message-ID: <1171.172.16.128.100.1087207004.squirrel@mail.suarapembaruan.co.id>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,55 +16,103 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+Dear all,
+In my office i using 2 connection (Wireless connection direct to ISP "A"
+and backup connection to ISP "B" with ADSL Modem), how to configure Linux
+iptables (gateway) so when connection to ISP "A" down client can still
+work with ISP "B" without reconfiguration at client computer (see network
+diagram B).
 
 
------ Original Message ----- 
-From: "Spiro Azkoul" <spiro@snacorp.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Sunday, June 13, 2004 8:59 PM
-Subject: RE: IPs blocked still able to connect
+Network diagram "A" (current)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+
+     ISP "A"
+       :
+       :
+       :
+       \/
+:-----------------:
+:LINUX ROUTER/GW  :
+:eth0 202.x.x.1   :
+:eth1 172.16.x.100:
+:-----------------:
+       /\
+       :
+       :
+       \/
+:-----------------:
+:Client computer's:
+:-----------------:
+       /\
+       :
+       :
+       \/
+:--------------------:
+:ADSL MODEM/ROUTER/GW:
+:eth0 Dynamic        :
+:eth1 172.16.x.200   :
+:--------------------:
+       /\
+       :
+       :
+     ISP "B"
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Network Diagram "B"
+
+     ISP "A"                   ISP "B"
+       :                          :
+       :                          :
+       :                          :
+       \/                         \/
+:-----------------:        :-----------------:
+:LINUX ROUTER     :        :ADSL MODEM/ROUTER:
+:eth0 202.x.x.1   :        :eth0 Dynamic     :
+:eth1 172.16.x.100:        :eth1 172.16.x.200:
+:-----------------:        :-----------------:
+        :                           :
+        :                           :
+        :                           :
+        -----------------------------
+                     :
+                     :
+                     :
+            :-----------------:
+            :LINUX GATEWAY    :
+            :eth0 172.16.x.1  :
+            :-----------------:
+                     :
+                     :
+                     :
+              Client Computer's
+
+Regards,
+David Kandou
 
 
->
-> Hello,
->
-> You should be able to "man iptables"
->
-> -> I did, got the info I needed. Thanks.
-> I also transferred all my -A rules to -I and an iptables -L INPUT now shows
-> priority to the -I rules, which basically should not block any traffic to my
-> server.
->
-> On the other hand, I have a couple more questions:
->
-> 1- If I have 2 Nic Cards, eth0 and eth1, without any kind of NATing
-> involved, as I am simply using the private interface for backup jobs, local
-> SSH and so forth, should I worry about the FORWARD chain? There is no
-> routing between the 2 interfaces nor do I need there be so I assumed so far
-> that my INPUT/OUTPUT rules will apply to the public interface without having
-> to go the extra step of specifying it.
-
-
-There's no explicit need of nat to pass the traffic between two interfaces,
-without having any nat rule, if you've turned on ip_forwarding, and FORWARD
-chain is ACCEPT, traffic will flow between interfaces.
 
 
 
->
-> 2- Is there a way to build a text file and have IPTABLES pull from it
-> periodically? I know this could be done in perl, but has anyone tried to do
-> it with a simple cron job?
-
-the output of iptables-save could help?
 
 
 
-> Thanks
->
->
->
->
+
+
+
+
+
+
+
+
+
+
+
+
 
 
