@@ -1,14 +1,12 @@
-From: Jose Maria Lopez <jkerouac@eresmas.com>
-Subject: Re: iptables 1.2.11
-Date: 28 Aug 2004 18:59:14 +0200
+From: James Casbon <james.casbon@a4internet.com>
+Subject: why does this packet not match these rules?
+Date: Mon, 30 Aug 2004 15:12:39 +0100
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1093706059.12157.33.camel@nostromo.bgsecm.com>
-References: <200408281038.56978.pandre@darkstar.nom.za>
-	<200408281044.20001.pandre@darkstar.nom.za>
+Message-ID: <200408301512.43189.james.casbon@a4internet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200408281044.20001.pandre@darkstar.nom.za>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +16,41 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El sáb, 28 de 08 de 2004 a las 10:44, Paulo Andre escribió:
-> On 28/08/2004 10:38, Paulo Andre wrote:
-> > I have just installed a new kernel (2.4.27).
-> > I patched the kernel to handle pptp/gre conntrack.
-> > I also installed iptables 1.2.11 on this server, after the kernel build I
-> > installed iptables and that went through fine.
-> >
-> > When I restart the server the new kernel works great, but iptables gives me
-> > an error of 'iptables: Invalid argument' for any -t nat rules.
-> > Have I missed an option on the kernel rebuild?
-> >
-> > Paulo
-> 
-> To add to this, I have then rebooted the server and gone back to the old 
-> kernel and still I have problems with the iptables when trying to add '-t 
-> nat' rules.
-> 
-> Paulo
+Hi,
 
-You have to patch with patch-o-matic ng the kernel and the userspace
-(iptables) source code and then compile them. Both need to have the
-same code patched, if one of them has code different from the other
-(another patch-o-matic patch) then you will have problems.
+I have these rules in my iptables script (iptables -L -v -n):
+
+Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
+
+16955 5070K ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0
+
+35895  278M out_lan    all  --  *      eth0    0.0.0.0/0            0.0.0.0/0
+
+  16M 3830M out_internet  all  --  *      ppp0    x.x.x.x       0.0.0.0/0
+
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0           0.0.0.0/0
+     state RELATED
+
+26649 1534K LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0 
+0 level 4 prefix `OUT-unknown:' 
+
+ 28209 1621K DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0
 
 
--- 
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPAÑA
+(where x.x.x.x is my ip), and yet these packets are being logged:
 
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
+... OUT-unknown:IN= OUT=ppp0 SRC=x.x.x.x DST=y.y.y.y LEN=60 TOS=0x00 PREC=0x00 
+TTL=64 ID=45650 DF PROTO=TCP SPT=43257 DPT=4662 WINDOW=4383 RES=0x00 SYN 
+URGP=0
 
+surely this should match rule 3 (src=x.x.x.x, out=ppp0) and be handled by 
+out_internet?
+
+thanks,
+James
 
