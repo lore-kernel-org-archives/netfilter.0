@@ -1,12 +1,12 @@
-From: Fox <admin@flshlnk.com>
-Subject: OUTPUT chain DNAT problem
-Date: Wed, 2 Jul 2003 15:57:08 +0500
+From: Chris Wilson <chris@netservers.co.uk>
+Subject: Re: REDIRECT question
+Date: Wed, 2 Jul 2003 12:01:04 +0100 (BST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <4417747639.20030702155708@flshlnk.com>
-Reply-To: admin@flshlnk.com
+Message-ID: <Pine.LNX.4.44.0307021159470.16552-100000@localhost>
+References: <3F02BA55.1030504@is.lg.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3F02BA55.1030504@is.lg.ua>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,30 +16,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ruslan Spivak <alienoid@is.lg.ua>
+Cc: netfilter@lists.netfilter.org
 
-Hi.
+Hi Ruslan,
 
-I'm having problems with rewriting outgoing packets.
-I've specified the following rule:
-iptables -t nat -A OUTPUT -d 10.0.0.2 -j DNAT --to-destination
-192.168.0.2
+> i want make transaparent proxy on localhost and want to disabe access 
+> after redirecting to port 3128 if destination address in net other then 
+> 193.108.240.0/22.
+> Does REDIRECT target send packet to INPUT chain and i should disable 
+> access in INPUT chain or should i disable access in '-t nat -A 
+> POSTROUTING' chain?
 
-When I ping 10.0.0.2 i get them rewritten (i check it with tcpdump and
-get stats with `iptables -t nat -L -v -n`). But when an application
-sends a packet to 10.0.0.2 it's not rewritten. I can't understand why.
+You will not be able to disable access in the POSTROUTING chain, since 
+after reading the REDIRECT rule, no further rules in that chain are 
+processed. In any case, it is not recommended to filter in the nat table. 
+The best place to put your filtering rule is in the INPUT chain.
 
-I need to to the following thing:
-
-A              B                C
-10.0.0.2  ---> 192.168.0.1 ---> 192.168.0.2
-
-A send requests to B and B replies to A. But i want those replies go
-to C and only C.
-
-Your help is appreciated.
-thanks.
-fox
+Cheers, Chris.
+-- 
+   ___ __     _
+ / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
+/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
+\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
 
 
