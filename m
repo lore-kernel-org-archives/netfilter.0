@@ -1,9 +1,10 @@
-From: Miguel Manso <mmanso@yahoo.com>
-Subject: disallow access from two internal networks
-Date: Sun, 25 May 2003 10:30:40 -0700 (PDT)
+From: b22@softlinx.com
+Subject: How to deny private net accessing each other by private net ip
+Date: Sun, 25 May 2003 16:36:58 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030525173040.13037.qmail@web11506.mail.yahoo.com>
+Message-ID: <16081.10602.461664.908656@joker.softlinx.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,50 +16,39 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi there,
 
-I've a linux router that's sharing an internet connection with four internal
-networks:
+Hi
 
-192.168.1.0/24
-192.168.2.0/24
-192.168.3.0/24
-192.168.4.0/24
+I have following firewall setup
+eth0  internet (1.1.x.x, 1.2.x.x, 1.3.x.x)
+eth1  private lan 10.1.x.x snat/dnat 1.1.x.x.x
+eth2  private lan 10.2.x.x snat/dnat 1.2.x.x.x
+eth3  private lan 10.3.x.x snat/dnat 1.3.x.x.x
 
-I'd like to disallow each internal network to access the others.
+I am trying to restrict machines on ethA from accessing machines on ethB (A = 1,2,3, B=1,2,3)
+by its reserved IP (10.B.x.x) and only allow access by its public (1.B.x.x) IP.
 
-I've this devices on the router:
+I can do it using PREROUTING chain in nat/mangle
+  iptable -t nat    -A PREROUTING -i eth2 -d 10.0.0.0/8 -j DROP # or 
+  iptable -t mangle -A PREROUTING -i eth2 -d 10.0.0.0/8 -j DROP
 
-ppp0 (external connection)
-eth0 (network 1)
-eth1 (network 2)
-eth2 (network 3)
-eth3 (network 4)
+but I read a tutorial (from www.netfilter.org) saying not to do any filtering in nat/mangle tables because not all packages traverse these tables. (http://iptables-tutorial.frozentux.net/)
 
-I thought that with this:
+I cannot do it in FORWARD chain because by the time packet reaches FORWARD chain
+in may have already been already DNAT-ed (I cannot tell if it was w/o marking it in mangle/nat tables)
 
-$IPT -A OUTPUT -o eth0 -s 192.168.2.0/24 -j DROP
+That is in the FORWARD chain I cannot distinguish between packets 
+- from eth1 d=10.2.x.x 
+- from eth1 d=1.2.x.x (in FORWARD chain this packet will have d=10.2.x.x set by DNAT target)
 
-I could drop any connection comming from the eth0 device (network 1) to the
-network 192.168.2.0/24 (network 2).
+If I need to mark package in mangle, and later drop in in FORWARD then why not drop it right in the mangle table ?
+But that would be filtering in nat/mangle tables which is suppose to be a no no.
 
-I've tryed it but it don't DROP the connection.
+I would appreciate any help/advice
 
-What am I missing?
+thanks
+Bog
 
-Thanks.
-
-
-
-=====
-Miguel Manso
-mmanso@yahoo.com
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
 
