@@ -1,12 +1,12 @@
-From: Scott MacKay <scottmackay@yahoo.com>
+From: Derek Storvik <dstorvik@pf.ueo.ohio-state.edu>
 Subject: Re: Iptables not working with RH9
-Date: Thu, 20 Nov 2003 08:17:30 -0800 (PST)
+Date: Thu, 20 Nov 2003 11:29:01 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20031120161730.99386.qmail@web13907.mail.yahoo.com>
-References: <sfbc9d8f.047@pf.ueo.ohio-state.edu>
+Message-ID: <sfbca583.011@pf.ueo.ohio-state.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <sfbc9d8f.047@pf.ueo.ohio-state.edu>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,9 +17,13 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Derek Storvik <dstorvik@pf.ueo.ohio-state.edu>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, scottmackay@yahoo.com
 
+I have not custom compiled the kernel. I was first using rh7.3 and it works straight out of the box.   I assumed that they would not have taken that code back out of the precompiled kernel but i suppose they could have
+
+Derek 
+
+>>> Scott MacKay <scottmackay@yahoo.com> 11/20/03 11:17AM >>>
 Did you add on the iptables hook for bridging and
 activate all the proper configuration settings?
 I has a similar problem with 2.4.22 (under RH9)
@@ -86,5 +90,7 @@ wrote:
 __________________________________
 Do you Yahoo!?
 Free Pop-Up Blocker - Get it now
-http://companion.yahoo.com/
+http://companion.yahoo.com/ 
+
+
 
