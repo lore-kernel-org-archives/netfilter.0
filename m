@@ -1,10 +1,9 @@
-From: 0ndrej <0@amu.cz>
-Subject: rule to match next-hop
-Date: Tue, 24 Dec 2002 10:50:43 +0100
+From: "James.Q.L" <shijialeeee@yahoo.ca>
+Subject: dhcp renew rules question
+Date: Thu, 26 Dec 2002 01:13:06 -0500 (EST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E082DF3.9050007@amu.cz>
+Message-ID: <20021226061306.28775.qmail@web41414.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,36 +14,31 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dear NetFilter Wizards,
+i am using the rules from ipmasq howto.
 
-We are building a volunteer network in Prague based on wireless 
-broadband technology (WiFi and our cheep FSO deviced - see 
-http://ronja.jikos.cz) - http://www.czfree.net and we would like to 
-limit bandwith between our routers, as the 'broadband' is not that broad 
-concerning WiFi....
+iptables -A INPUT -i eth0 -p tcp --sport 68 --dport 67 -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --sport 68 --dport 67 -j ACCEPT
 
-Is there a way to match/clasify packets going via our meshed network to 
-a certain nex-hop router?
+iptables -A OUTPUT -o eth0 -p tcp -s 192.168.0.1 --sport 67
+-d 255.255.255.255 --dport 68 -j ACCEPT
+iptables -A OUTPUT -o eth0 -p udp -s 192.168.0.1 --sport 67
+-d 255.255.255.255 --dport 68 -j ACCEPT 
 
-example
+Reading DHCP howto, i know When the client reaches 50 percent of its assigned lease time, it will
+enter the renewal phase. The client sends a DHCPREQUEST packet directly to the server that gave it
+its TCP/IP address.  my question is will the server respond with a broadcast or a direct
+answer(DHCPACK) to the client ?  but the rules from ipmasq seems only care about the broadcast.
+what about the renewal ?
 
-      wlan0      wlan0  wlan1     wlan0  wlan1
-<box a> --------- <box b> -------- <box c> --- ...
-                           \------- <box d> --- ...
-                            \------ <box e> --- ...
+ 
 
-At <box b> we would like to mark packets going through interface wlan1 
-via boxes c,d,e with different marks, such that we could make fair 
-sharing of the available bandwith (QoS / HTB)
-This means classifying packets based on their next-hop, but I couldnt 
-find any way how to do it. I hope I'm just stupid and it is possible, so 
-if anyone knows, please tell me :)
+=====
+/James.Q.L
 
-thanks, enjoy Xmass
-0.
-
-
+______________________________________________________________________ 
+Post your free ad now! http://personals.yahoo.ca
 
