@@ -1,13 +1,12 @@
-From: jo@neolabs.be
-Subject: ssh gets cut off
-Date: Fri, 30 Jan 2004 19:32:32 +0200
+From: "Olexandr O. Galay" <root@e-mail.te.ua>
+Subject: ipt_connlimit trouble
+Date: Fri, 30 Jan 2004 21:30:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401301832.i0UIWWu16787@neo1.neolabs.be>
-Reply-To: jo@neolabs.be
+Message-ID: <172429746234.20040130213006@e-mail.te.ua>
+Reply-To: "Olexandr O. Galay" <root@e-mail.te.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: binary
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,53 +19,31 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, does anyone recognize the following problem :
+Hi everybody!
 
-people here lose their ssh connections to a remote server over the
-internet if they leave their ssh open but inactive for like 30 minutes.
-This has happened since I replaced our gateway firewall ipfilter
-(solaris) by a netfilter(linux) exactly two days ago. So I am pretty sure 
-it must be some setting in netfilter.
+I have error trying to install ipt_connlimit module.
+What i do:
+1. download and unpack 2.4.24 to /usr/src/linux
+2. download and unpack patch-o-matic-20031219
+3. do ./runme base/connlimit.patch in pom directory (and received
+patch applied answer)
+4. compile and install kernel with all options of iptables sets to M (module)
+5. download/compile/install iptables 1.2.9
 
-I have become so desperate that I have cleared out the whole filter
-table, leaving only the SNAT in the nat table and some kernel tunings,
-but the problem persists. So it cannot be the --syn thing.
+so, now when i trying to # modprobe ipt_connlimit i get:
+[root@test /]# modprobe ipt_connlimit
+/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o: unresolved symbol ip_conntrack_find_get
+/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o: insmod /lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o failed
+/lib/modules/2.4.24/kernel/net/ipv4/netfilter/ipt_connlimit.o: insmod ipt_connlimit failed
 
-The default timeouts make no sense either, I see correct values in
-/proc/net/ip_conntrack...
+another modules loads and works success.
 
-/usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c :
+maybe anybody helps me?
 
-static unsigned long tcp_timeouts[]
-= { 30 MINS,    /*      TCP_CONNTRACK_NONE,     */
-    5 DAYS,     /*      TCP_CONNTRACK_ESTABLISHED,      */
-    2 MINS,     /*      TCP_CONNTRACK_SYN_SENT, */
-    60 SECS,    /*      TCP_CONNTRACK_SYN_RECV, */
-    2 MINS,     /*      TCP_CONNTRACK_FIN_WAIT, */
-    2 MINS,     /*      TCP_CONNTRACK_TIME_WAIT,        */
-    10 SECS,    /*      TCP_CONNTRACK_CLOSE,    */
-    60 SECS,    /*      TCP_CONNTRACK_CLOSE_WAIT,       */
-    30 SECS,    /*      TCP_CONNTRACK_LAST_ACK, */
-    2 MINS,     /*      TCP_CONNTRACK_LISTEN,   */ 
+--
+  Olexandr O. Galay
+  System Administrator
+  mailto:root@e-mail.te.ua
+  ICQ: 29292281
 
-The only time frame that comes close to the drop out time reported
-by the users is the NONE (???), since they are cut off appr. after
-30 minutes of inactivity.
-
-The only 'special' thing is that I SNAT two different internal networks
-(10.xx.xx.xx and 172.17.xx.xx - on two internal nic's off
-course) to a fixed external ip with the following rule :
-
-iptables -t nat -A POSTROUTING -o $EXTIF -j SNAT --to $EXTIP
-
-Any ideas? Must have already happened ;-)
-
-Thanks for any ideas or hints on how I can trace this. By the way I am
-running the Red Hat 9 kernel without any updates.
-
-Jo
-
-
-
-NEOlabs - http://www.neolabs.be - mailto:info@neolabs.be
 
