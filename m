@@ -1,13 +1,12 @@
-From: Tobias DiPasquale <codeslinger@gmail.com>
-Subject: Re: ip_conntrack limit && stateless firewalls
-Date: Fri, 11 Feb 2005 09:55:36 -0500
-Message-ID: <876ef97a05021106551fb5dacb@mail.gmail.com>
-References: <Pine.CYG.4.62.0502110943440.2348@MI340a.chem.mathsci.usna.edu>
-Reply-To: Tobias DiPasquale <codeslinger@gmail.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: RELATED ICMP packets of type 3
+Date: Fri, 11 Feb 2005 10:06:36 -0500
+Message-ID: <20050211150635.GA2371@bender.817west.com>
+References: <200502111757.16352.e-boogie@yandex.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.CYG.4.62.0502110943440.2348@MI340a.chem.mathsci.usna.edu>
+Content-Disposition: inline
+In-Reply-To: <200502111757.16352.e-boogie@yandex.ru>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +18,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, 11 Feb 2005 09:49:40 -0500, Kevin Van Workum <vanw@usna.edu> wrote:
-> I'm having a problem with my firewall where packets are being dropped due
-> to the ip_conntrack limit. I could up the limit, but my users need 30k+
-> connections simultaneously and with the minimum overhead. And I only have
-> 1 firewall box. So I'd like to disable or by-pass ip_conntrack some how to
-> avoid dropped packets and reduce over head. How can I do this, and more
-> importantly, would it be helpful.
+On Fri, Feb 11, 2005 at 05:57:16PM +0300, Mikhail Zotov wrote:
+> Hello everybody,
+> 
+> I have written an iptables script to protect a machine/LAN
+> and I'd like to clarify an issue about RELATED ICMP packets
+> of type 3 (actually, mostly 3/1).
+> 
+> As far as I understand, it is safe to ACCEPT incoming
+> packets of this sort.
 
-You can use the NOTRACK target on the traffic that is causing the
-problem (which will disable using ip_conntrack on that traffic), or
-you can decompile conntrack altogether. The latter would basically
-make the firewall stateless. man iptables for more info on using
-NOTRACK.
+yes.  personally (for whatever that is worth), i allow ICMP Types 3, 11,
+and 12 [*].
 
--- 
-[ Tobias DiPasquale ]
-0x636f6465736c696e67657240676d61696c2e636f6d
+> Is it safe to allow _outgoing_ packets of this kind?
+> Can an attacker make my machine generate such packets
+> in order to obtain information about it?  (All new
+> incoming packets are just DROPped.)
+
+yes.  an open plea to all firewall administrators:
+
+  please stop breaking our Internet!!!
+
+-j
+
+* http://www.iana.org/assignments/icmp-parameters
+
+--
+"You couldn't fool your mother on the foolingest day of your life if
+ you had an electrified fooling machine."
+        --The Simpsons
 
