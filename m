@@ -1,10 +1,14 @@
-From: James Morris <jmorris@intercode.com.au>
-Subject: [SECURITY] Local Netfilter / IPTables IP Queue PID Wrap Flaw
-Date: Tue, 3 Dec 2002 21:57:45 +1100 (EST)
+From: =?iso-8859-1?q?Andreas=20Wright?= <learnvoip@yahoo.co.uk>
+Subject: Using PRIO qdisc
+Date: Tue, 3 Dec 2002 10:28:46 +0000 (GMT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Mutt.LNX.4.44.0212032155570.27990-100000__35284.3975103044$1038915782@blackbird.intercode.com.au>
+Message-ID: <20021203102846.86260.qmail@web14504.mail.yahoo.com>
+References: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net>
 Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-104552463-1038911326=:30129"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <31347F3CE518D6118ACB00A0246AD0560B2505@mx.seaan.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -14,103 +18,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-announce@lists.netfilter.org
-Cc: netfilter-devel@lists.samba.org, netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+--0-104552463-1038911326=:30129
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
 
-                  Netfilter Core Team Security Advisory
-                  
-Subject:
+Hello ,
 
-  Local Netfilter / IPTables IP Queue PID Wrap Flaw
+I want to use PRIO qdisc to priortize packets coming from a known IP address.Can I specify a filter along with PRIO qdisc instead of using the default priomap.
 
-Released:
+tc qdisc add dev eth0 root handle 1 : [filter]
 
-  December 3, 2002.
+If such a filter is possible what would be the syntax for specifying the IP address for example 1.2.3.4
 
-Effects:
+Regards,
 
-  Under limited circumstances, an unprivileged local user may be able
-  to read a limited amount of arbitrary IPv4 or IPv6 traffic.
+Andreas.
 
-Estimated Severity:
 
-  Low.
 
-Remotely Exploitable:
 
-  No.
-  
-Systems Affected:
+---------------------------------
+With Yahoo! Mail you can get a bigger mailbox -- choose a size that fits your needs
 
-  Linux 2.4 kernels up to and including 2.4.19, and Linux 2.5 kernels
-  up to and including 2.5.31, where Netfilter / IPTables is enabled,
-  and where either of the experimental IP queuing modules (ip_queue,
-  ip6_queue) are in use.
+--0-104552463-1038911326=:30129
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-Solution:
-
-  Upgrade to Linux kernels 2.4.20 (stable), and 2.5.32 (development).
-
-Details:
-
-  Under Linux 2.4 and 2.5, an experimental IP packet queuing feature is
-  available as part of Netfilter / IPTables.  This consists of kernel
-  modules and a userspace library which allow userspace mediation and
-  modification of IPv4 and IPv6 packets.
-
-  A userspace mediation process must normally be privileged (requiring
-  NET_ADMIN capability) to process packets from the kernel.  To commence
-  mediating packets, a userspace process typically sends a Netlink message
-  to the associated kernel module, specifying queuing parameters. The
-  kernel module captures the Unix process ID (PID) of the process to ensure
-  reliable queuing and delivery of packets.
-
-  If the privileged mediation process exits, an unprivileged process
-  re-using the same PID may be able to receive a limited amount of
-  network traffic.
-
-  This would only occur if no network traffic was queued between the exit
-  of the privileged process and the establishment of the unprivileged
-  process, as the kernel module will reset the queuing session upon
-  transmission error to userspace.
-
-  The kernel module will only transmit a limited number of packets to
-  the userspace process without acknowledgment.  As all transmissions
-  from userspace to the kernel module require NET_ADMIN capability,
-  the unprivileged process will not be able to acknowledge packets.
-  Thus, the maximum number of packets that the unprivileged process
-  can read is limited to the queue length (default 1024 packets).
-  The unprivileged process can also only read packets which have been
-  selected for queuing via IPTables by a privileged process.
-
-  This flaw is theorized to be difficult and somewhat invasive to exploit,
-  probably requiring a combined use of DoS attacks.  It was discovered by
-  the author of the code, and no exploits are known to exist.
-
-  Fixing the flaw involved implementing a reliable mechanism for detecting
-  when the Netlink control socket of a privileged mediation process is
-  closed, and resetting the kernel queuing session state upon such events.
-
-Credits:
-  The fix was implemented by the Netfilter Core Team, with contributions
-  from Jamal Hadi Salim and Alexey Kuznetsov.
-
-Contact:
-  coreteam@netfilter.org
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE97I4yKVbBrEQtqycRAmlnAJwN5ifTaixuLhi3qv8FVicmaNpYagCffdOu
-Mc8UiYh/FUhiZbjXctyaoxg=
-=nnt5
------END PGP SIGNATURE-----
-
+<P>Hello ,</P>
+<P>I want to use PRIO qdisc to priortize packets coming from a known IP address.Can I specify a filter along with PRIO qdisc instead of using the default priomap.</P>
+<P>tc qdisc add dev eth0 root handle 1 : [<FONT color=#ff0000>filter</FONT>]</P>
+<P>If such a filter is possible what would be the syntax for specifying the IP address for example 1.2.3.4</P>
+<P>Regards,</P>
+<P>Andreas.</P><p><p><br><hr size=1><a href="http://uk.yahoo.com/mail/tagline_xtra/?http://uk.docs.yahoo.com/mail_storage.html"><b><font face="Arial" size="2">With Yahoo! Mail you can get a bigger mailbox -- choose a size that fits your needs</font></b></a><br>
+--0-104552463-1038911326=:30129--
 
