@@ -1,11 +1,10 @@
-From: Enrico <ebutera@gmail.com>
-Subject: [libipq] local connections problem
-Date: Sun, 7 Nov 2004 15:21:23 +0000
-Message-ID: <414e0fc9041107072145372ffc@mail.gmail.com>
-Reply-To: Enrico <ebutera@gmail.com>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: Stateful filtering for IPv6?
+Date: Mon, 8 Nov 2004 02:42:34 +0100
+Message-ID: <20041108014229.GA9070@tintin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +16,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi, i'm using libipq to develop a small application that blocks
-connections from/to hosts if they are in a "black" list. It works fine
-for outgoing and incoming traffic but when i try to connect to
-localhost or loopback (for ex: ftp 127.0.0.1 or using localhost ip) it
-refuses to connect giving a "Connection reset by peer" error. If i try
-to connect to a non-opened port it correctly says "Connection
-refused".
-This is how i QUEUE packets to my app:
+Hi,
 
-iptables -A INPUT -p tcp -m state --state NEW -j QUEUE
-iptables -A OUTPUT -p tcp -m state --state NEW -j QUEUE
+I thought this question would be a FAQ, but I could not find it answered 
+on http://www.netfilter.org/documentation/FAQ/netfilter-faq.html.
+Currently, only stateless filtering is available for IPv6. Hence, I'd 
+like to know what the status of stateful filtering for IPv6 is. Is it 
+some work in progress? Is it supposed to be a very complex task? Is it 
+thought to be impossible for some reason?
 
-The only way to make local connections work again is to explicitly
-ACCEPT them (before QUEUE'ing them) with:
-iptables -I INPUT -p tcp -s 127.0.0.1 -d 127.0.0.1 -j ACCEPT
+I'd love to switch to IPv6, but a good firewall would be a requirement, 
+and I'm very happy with netfilter for IPv4.
 
-Chains policy is set to ACCEPT.
 
-I repeat that all the other traffic works fine. I don't understand why
-i have to do that, any suggestions?
+Thanks,
 
-Enrico
+Nicolas
 
