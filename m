@@ -1,12 +1,9 @@
-From: "Miguel Angel Amador L." <amador@puc.cl>
-Subject: Re: PPP Routing
-Date: Thu, 27 Feb 2003 01:50:04 -0300
+From: Jason <baker@cyborgworkshop.com>
+Subject: chance to impress the suits
+Date: Wed, 26 Feb 2003 17:57:58 -0600 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009101c2de1b$bce34750$7fe753c8@as>
-References: <3E5D008A.7070804@openadventures.org> <20030226225616.GA380@tekilla.homeip.net>
-Reply-To: "Miguel Angel Amador L." <amador@puc.cl>
+Message-ID: <Pine.LNX.4.50.0302261757350.18770-100000@alfred.home.cyborgworkshop.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,64 +14,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-create the rules for each interface... and applied ppp+ for rules in all
-ppp's interfaces,
-the rules work when de interfaces are up , in the other case, the rules not
-work if the interfaces not exist.
+Hello,  I have been given a task that I think netfilter is ideal for, but
+need a little help.  I need to be able to limit the number of connections
+going through a router running netfilter to a max of 500. When I hit 500,
+I want to reject any new connections. I know that the iplimit match does
+this, but I don't seem to be having any luck getting it to work.  Here is
+the scenario..
 
-in other Words... Read the How To Filter Packet  (netfilter.samba.org)
+----                ----                ----
+=A =  -> Port 80 -> +NF+  -> Port 80 -> =C =
+----                ----                ----
 
+Simple enough.  NF is my netfilter router, A is source, C is destination.
+C is an application that when it gets overworked, pretty much tarpits
+connecting clients and never lets go.  I have tried many permutations of
 
-Att.
-  /=3D=3D=3D/  Miguel Angel Amador L.  /=3D=3D=3D=3D/
-"la vida me sonrie, o se estara riendo de mi? "
+iptables -A FORWARD -p tcp -i lan -m state --state NEW -m iplimit
+--iplimit-above 1 -j REJECT
 
------BEGIN GEEK CODE BLOCK-----
-Version: 3.12
-GCM d- s:+ a- C++++ UL+++ P- L+++ E--- W+++ N++ o K- w++
-O- M- V- PS+ PE++ Y PGP- t 5 X+++ R !tv b+ DI- D
-G++ e- h* r- y*
-------END GEEK CODE BLOCK------
+with out much luck.  Does anyone have any idea on how to make iplimit in a
+router situation work?  Should I apply this to the output chain?
 
------ Original Message -----
-From: "Willi Dyck" <wdyck@gmx.net>
-To: <netfilter@lists.netfilter.org>
-Sent: Wednesday, February 26, 2003 7:56 PM
-Subject: Re: PPP Routing
-
-
-> On Wed, Feb 26, 2003 at 10:59:38AM -0700, Tom Smith wrote:
-> > RedHat 7.3 Kernel 2.4.9-31
-> > iptables 1.2.5
-> >
-> > I have a working Firewall/VPN. Problem is that I need to create a
-> > seperate set of rules for each ppp# connection. For example, ppp0's
-> > ruleset would be:
-> >
-> > $IPTABLES -A INPUT -i ppp0 -s $INTNET -d $INTNET -j ACCEPT
-> > $IPTABLES -A OUTPUT -o ppp0 -s $INTNET -d $INTNET -j ACCEPT
-> > $IPTABLES -A FORWARD -i ppp0 -d $INTNET -j ACCEPT
-> > $IPTABLES -A FORWARD -o ppp0 -d $INTNET -j ACCEPT
-> >
-> > Is there a way to dynamically create the ppp# as new connections come
-> > and go?
->
-> You might try 'ppp+' instead of 'ppp0'. Although it might not be what
-> you want, since it will not be loaded dynamically, but it will match
-> dynamically for all ppp# interfaces. See the netfilter docs for further
-> info. Hope that helps.
->
-> Gru=DF/Regards -- Willi
->
-> --
-> A Microsoft Certified System Engineer is to information technology as a
-> McDonalds Certified Food Specialist is to the culinary arts.
->         Michael Bacarella commenting on the limited value of
-certification.
->
->
-
+--
+Jason Baker
+baker@cyborgworkshop.com
+www.cyborgworkshop.com
 
