@@ -1,14 +1,12 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: Is it possible to Jam windows network neighbour?
-Date: Tue, 24 Aug 2004 13:41:39 +0100
+From: Vincent Blondel <vincent.blondel@chello.be>
+Subject: FTP Connection problems.
+Date: Tue, 24 Aug 2004 15:07:14 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040824124139.GD28997@metastasis.org.uk>
-References: <D5C9032B2B09C64EA2409D6214E91AC90512BD@asimail2.alphanumeric.com>
-Reply-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Message-ID: <1093352834.1894.16.camel@lbedlbxl.dev.xtra-net.org>
+Reply-To: vincent.blondel@chello.be
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC90512BD@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,29 +17,74 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Aug 24, 2004 at 08:18:25AM -0400, Jason Opperisano wrote:
+Hi all,
 
-> > I am running Redhat Linux 9.0 machine for routing as well as
-> > iptables firewall for my network serving win 98 clients. For
-> > security reasons I do not want win 98 clinets to use pier to pier
-> > for transfering files/data among them. In this case win 98 clients
-> > do not need to talk to server.
+I a trying to initiate ftp connections to some of my servers but it
+doesn't work. You can find below a schema representing my three
+machines, client, firewall and ftp server. There is no NAT at the moment
+and the script I use on my firewall.
 
-> > Is it possible to Jam pier to pier network ? so that copying of
-> > files from one win 98 client to other can be restricted.
-> 
-> a firewall can only filter traffic that passes through it.  if your
-> clients are all sitting on a LAN together, there is no way for an
-> upstream firewall to keep them from communicating with each other.
+---
 
-Not quite true, sort of, but we're into Firewall / IPS ( Intrusion
-Prevention System ) territory here.  "Snort" *might* be able to deny
-traffic on the network, failing that you're probably looking at
-commercial software.
+ ftp server                   eth1 fw eth0                 client 
+192.168.125.1      192.168.125.240    192.168.124.240    192.168.124.1
 
--- 
-"I think a church with a lightning rod shows a decided lack of confidence"
+---
+
+#!/bin/sh
+#
+
+fw="/sbin/iptables"
+nat="$fw -t nat"
+mangle="$fw -t mangle"
+
+CONN_TRACK="1" 				# Connection Tracking
+UNPRIVPORTS="1024:65535" 		# unprivileged port range
+
+# Remove any existing rules from all chains
+$fw --flush
+$nat --flush
+$mangle --flush
+
+# Unlimited traffic on the loopback interface
+$fw -A INPUT  -i lo -j ACCEPT
+$fw -A OUTPUT -o lo -j ACCEPT
+
+# Set the default policy to drop
+$fw --policy INPUT   DROP
+$fw --policy OUTPUT  DROP
+$fw --policy FORWARD DROP
+
+$nat --policy PREROUTING  DROP
+$nat --policy OUTPUT      DROP
+$nat --policy POSTROUTING DROP
+
+$mangle --policy PREROUTING  DROP
+$mangle --policy OUTPUT      DROP
+
+# Remove any pre-existing user-defined chains
+$fw --delete-chain
+$nat --delete-chain
+$mangle --delete-chain
+
+if [ "$CONN_TRACK" = "1" ]; then
+	$fw -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+	$fw -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+	$fw -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+fi
+
+# Incoming FTP requests
+iptables -A FORWARD -i eth0 -o eth1 -p tcp -s 192.168.124.1 --sport
+$UNPRIVPORTS -d 192.168.125.1 --dport 21 -m state --state NEW -j ACCEPT
+
+# Port Mode Data Channel Responses
+iptables -A FORWARD -i eth1 -o eth0 -p tcp -d 192.168.124.1 --sport 20
+--dport $UNPRIVPORTS -m state --state NEW -j ACCEPT
+
+Thanks to help me ...
+Vincent
+
+
 
