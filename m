@@ -1,13 +1,12 @@
-From: Patrick Leslie Polzer <leslie.polzer@gmx.net>
-Subject: Re: port scan identification
-Date: Wed, 9 Jun 2004 11:30:30 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Is this firewall good enough?
+Date: Wed, 9 Jun 2004 11:28:33 +0200 (CEST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040609113030.3ff84f78.leslie.polzer@gmx.net>
-References: <40C6D987.9050805@wanadoo.fr>
+Message-ID: <Pine.LNX.4.33.0406091112130.5934-100000@blackhole.kfki.hu>
+References: <40C61E15.4050702@linuxmail.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40C6D987.9050805@wanadoo.fr>
+In-Reply-To: <40C61E15.4050702@linuxmail.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,17 +16,32 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Feizhou <feizhou@linuxmail.org>
+Cc: David Cannings <lists@edeca.net>, netfilter@lists.netfilter.org
 
-On Wed, 09 Jun 2004 11:33:59 +0200
-Rakotomandimby Mihamina <rktmb.list@wanadoo.fr> wrote:
+On Wed, 9 Jun 2004, Feizhou wrote:
 
-> Well . According to me, a port scan is the action to scan _all_ the
-> ports ... why is the port scan identified as only scaning the 80th port
-> ? I mean, a port scan should not be on one port only ... isn't it ?
-Well, if the attacker is only interested in web servers he might as well
-scan only port 80. 
+> > Is there any good reason not to load connection tracking?
+>
+> SLOW. It isn't good enough to use on a high traffic server.
 
-Leslie
+Could you back your claims up with data?
+
+At testing connection tracking we could pump trough two million concurrent
+connection at 200000pps rate with opening up 20000 new connection per
+second on a dual Xeon PC with Serverworks chipset and Intel copper GE
+cards. Best results were achieved by Linux kernel 2.6.x with conntrack
+locking and TCP window tracking patches applied and NAPI enabled.
+I'd say that's not bad at all.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
 
