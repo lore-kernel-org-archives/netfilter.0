@@ -1,9 +1,8 @@
-From: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
-Subject: Re: Command not working  in latest version
-Date: Sun, 16 Feb 2003 23:54:38 -0000
+From: Jean-Christian Imbeault <jc@mega-bucks.co.jp>
+Subject: SSH request comes in as DNS?
+Date: Mon, 17 Feb 2003 12:24:47 +0900
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <002901c2d616$c41d6300$0100a8c0@nikita>
-References: <01CEA3A5B8B2D511890F0002A5870AEC5FB5E9@EXCHANGE>
+Message-ID: <3E5055FF.4090808@mega-bucks.co.jp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,150 +15,96 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: Khanh Tran <khanh@slc.edu>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+I've installed a a very simple set of iptables rules on two machines 
+(SERVER1 and SERVER2) on the same network. On one machine the rules work 
+as expected, only allowing SSH connections in. On the second machine 
+though it doesn't work.
+
+And the strange thing is that it seems that when I try to SSH to the 
+machine the request is denied and logged as a DNS (port 53) attempt AND 
+the SRC IP is wrong. Instead of being the IP of the machine I am trying 
+to connect from it is the IP of the firewall between the two machines 
+... But the firewall isn't supposed to do any NAT
+
+My network setup is like this:
 
 
-> You may not have all of the proper elements compiled into your kernel.
-Try:
->
-> http://www.e-infomax.com/ipmasq/howto/c-html/ipmasq-compiling3.1.html
->
-
-Hi Khanh,
-
-I've compiled the kernel specifically like they said in your reference
-except those new options of 2.4.20 but still I get 'Invalid Arguments' from
-iptables 1.2.7a. What's Full NAT in kernel config, is that useful for
-iptables?
-
-I've run the line:
-# iptables -v -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
-SNAT all opt -- in * out eth1 0.0.0.0/0 -> 0.0.0.0/0 to:217.129.146.56
-iptables: Invalid Argument
-
-This is indeed strange. Do you have any idea of what could I do now?
-
-Is there any other iptables command line with the same outcome?
-
-Best regards,
-
-Paulo
+LAN ---- FIREWALL---- WAN
+  |        (x.241)
+  |          |
+  |          |----------
+  |          |         |
+PC(W2K)   SERVER2    SERVER1
+(y.103)  (x.244)    (x.245)
 
 
+Please note I am trying to set rules for SERVER1 and SERVER2 *not* for 
+the firewall ... I don't control the firewall =)
 
-> Khanh Tran
-> Network Operations
-> Sarah Lawrence College
->
->
-> -----Original Message-----
-> From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> Sent: Sunday, February 16, 2003 11:04 AM
-> To: Khanh Tran; netfilter@lists.netfilter.org
-> Subject: Re: Command not working in latest version
->
->
->
-> > You should also make sure you are loading modules ip_tables and
-> ip_conntrack
-> > before you load your other modules.
->
-> Iptables are built into the kernel, even after loading ipt_conntrack I
-> receive invalid argument.
->
-> I just do:
-> iptables -t nat -F
-> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
->
-> First line is ok, second returns invalid argument. Getting desperate. Any
-> ideas?
->
-> Best regards,
->
-> Paulo
->
-> >
-> > Khanh Tran
-> > Network Operations
-> > Sarah Lawrence College
-> >
-> >
-> > -----Original Message-----
-> > From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> > Sent: Sunday, February 16, 2003 9:45 AM
-> > To: Khanh Tran; netfilter@lists.netfilter.org
-> > Subject: Re: Command not working in latest version
-> >
-> >
-> > > You'll now want to do:
-> > >
-> > > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $EXTIP
-> > >
-> > > where eth0 is the interface going out to the Internet and $EXTIP is
-the
-> > > public IP on that interface.
-> >
-> > Hi Khanh, strangely I still get Invalid Argument.
-> > iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 217.129.146.56
-> >
-> > where eth1 is the interface that gives access to the internet with IP
-> > 217.129.146.56 (given by DHCP server).
-> >
-> > Thx for your patience,
-> >
-> > Paulo
-> >
-> > >
-> > > Khanh Tran
-> > > Network Operations
-> > > Sarah Lawrence College
-> > >
-> > >
-> > > -----Original Message-----
-> > > From: Paulo J. Matos [mailto:pocm@mega.ist.utl.pt]
-> > > Sent: Sunday, February 16, 2003 9:00 AM
-> > > To: netfilter@lists.netfilter.org
-> > > Subject: Command not working in latest version
-> > >
-> > >
-> > > Hi all,
-> > >
-> > > I've changed from my old distribution to a new one that comes with
-> > iptables
-> > > 1.2.7a.
-> > > I have iptables in the kernel (2.4.20) and I've loaded the modules
-> > > iptable_nat, ipt_REDIRECT and ipt_MASQUERADE.
-> > > I had in my previous distributions the following lines:
-> > > iptables -t nat -F
-> > > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> > >
-> > > This would give total access from lan attached to eth0 to the internet
-> > > through my computer. But now, line 1 executes ok, line 2 gives:
-> > > iptables: Invalid Argument
-> > >
-> > > If I do :
-> > > iptables -t nat -A POSTROUTING -o eth0
-> > > everything runs ok but lan has still no access to the internet as
-> > expected.
-> > > What's happening, any ideas?
-> > >
-> > > Best regards,
-> > >
-> > > Paulo
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> >
-> >
-> >
-> >
->
->
->
+Here are my rules, they work fine for SERVER2 but not for SERVER1. (Note 
+that the var IP is x.x.x.244 for SERVER1 and x.x.x.245 for SERVER2)
+
+#!/bin/sh
+
+IPT="/usr/local/sbin/iptables"
+IP="x.x.x.244"
+PC="y.y.y.103"
+
+# Delete any old rules
+
+for i in filter
+do
+   $IPT -t $i -F
+   $IPT -t $i -X
+done
+
+$IPT --policy INPUT   DROP
+$IPT --policy OUTPUT  ACCEPT
+$IPT --policy FORWARD DROP
+
+# Loopback accepts everything
+
+$IPT -A INPUT  -i lo -j ACCEPT
+$IPT -A OUTPUT -o lo -j ACCEPT
+
+# Allow previously established connections
+
+$IPT -A INPUT -p TCP -s $PC -i eth0 -d $IP --dport 22 -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+
+# Allow new SSH connections
+
+$IPT -A INPUT -p TCP -s 0/0 -i eth0 -d $IP --dport 22  -j ACCEPT
+
+#log anything that made it his far w/o being caught
+$IPT -A INPUT -j LOG --log-level debug --log-prefix "DROP packet:"
+
+When I look into the log file I find this kind of entry at the exact 
+time I tried to establish a new SSH connection:
+
+Feb 17 11:50:57 localhost kernel: DROP packet:IN=eth0 OUT= MAC=XX 
+SRC=x.x.x.241 DST=x.x.x.244 LEN=151 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF 
+PROTO=UDP SPT=53 DPT=32888 LEN=131
+
+The SRC IP is wrong (it's the firewall's IP and not my PC's) *and* the 
+SPT is 53 (DNS?) and the DPT is wrong, it should be 22 ....
+
+Just to make sure that my firewall isn't doing any NAT or masquerading I 
+   flushed my rules, established a new SSH connection and then did a 
+netstat:
+
+Proto Recv-Q Send-Q Local Address     Foreign Address
+tcp        0      0 y.y.y.244:22      x.x.x.103:1197    ESTABLISHED
+
+
+There is definitely something going on that I don't know about ... Can 
+anyone suggest ways that I can find the root cause for this problem? I'm 
+really new at iptables and debugging network problem so any help is 
+appreciated!
+
+Jc
 
 
