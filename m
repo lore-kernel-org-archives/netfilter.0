@@ -1,11 +1,13 @@
-From: "NeXTstep" <nextstepn@katamail.com>
-Subject: [leadership/opensource] invitation to online survey
-Date: Mon, 19 Jan 2004 14:12:35 +0100
+From: Nuno Miguel Pais Fernandes <npf@eurotux.com>
+Subject: Re: per-connection byte counts
+Date: 19 Jan 2004 14:27:49 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <010101c3de8d$e9a0cb50$1929e282@babayaro>
+Message-ID: <1074522469.27665.7.camel@xeon.office.eurotux.com>
+References: <20040118140903.GA3351@glympton.airtime.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-eTjuYFzQUlfQS4oWEZRf"
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <20040118140903.GA3351@glympton.airtime.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,42 +17,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Adam Rice <adamrice@ntlworld.com>
+Cc: netfilter@lists.netfilter.org
 
-Dear all,
 
-      I have just put online a survey addressing the topic of "good
-leadership in the open-source environment". Basically, my objective is to
-identify the personal conceptions of good leadership that reside in
-the minds of the contributors, in terms of leaders' _behaviors_ and
-_characteristics_.
+--=-eTjuYFzQUlfQS4oWEZRf
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-What is a good open-source project leader, from the contributor's point of
-view? To what extent, those personal believes are shared among developers?
-Can the
-contributor's national cultural belonging and level of experience in
-contributing to open-source projects explain such differences in their idea
-of what a good leader is?
+Try http://luxik.cdi.cz/~devik/connbytes/
 
-I would really appreciate your participation to the survey! Contribution
-(completely anonymous) consists in rating a list of statements that may be
-used to describe the behaviors of an open-source leader. It will take around
-ten minutes - there aren't any "time-consuming" open ended questions;)
+It works very well....
 
-Following, the link to the survey:
+Ahh, connection counter restarts at zero after 4GB of data (32bits).
 
-http://freeonlinesurveys.com/rendersurvey.asp?id=49776
 
-If you are interested, I will not miss to email you a link to the
-final report, when ready ;) (approx, a couple of months from now)
+Nuno Fernandes
 
-Thank you in advance, and don't hesitate to contact me if you have
-any questions or comments :)
 
-Gianluca Bosco
-g.bosco@GETRIDOFTHISinwind.it
-Denmark Technical University
-Department of manufacturing engineering and management
+On Sun, 2004-01-18 at 14:09, Adam Rice wrote:
+> I'd like to be able to get per-connection byte-counts from the kernel, so=
+ I
+> can create a sort of top program showing what processes and users are
+> currently using the network and how much. Since I want this to be somethi=
+ng I
+> can keep running all the time, I don't want to do it by snooping the
+> interface. Is there some way to do this with netfilter? Sadly
+> /proc/net/ip_conntrack doesn't appear to provide this information.
+>=20
+> Thanks,
+>   Adam
+--=20
+Nuno Miguel Pais Fernandes <npf@eurotux.com>
+
+--=-eTjuYFzQUlfQS4oWEZRf
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQBAC+llbJtoPy2XRQkRApTHAJ9OSCNIG2IYWMpDHaNnd0Gh0x6bEACbBLLt
+UxKvGSAf19l6rAvCjwLQGbk=
+=XB/b
+-----END PGP SIGNATURE-----
+
+--=-eTjuYFzQUlfQS4oWEZRf--
 
 
