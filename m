@@ -1,11 +1,13 @@
-From: Nuutti Kotivuori <naked@iki.fi>
-Subject: Re: Per connection transfer rate matching
-Date: Tue, 10 Feb 2004 20:02:44 +0200
+From: "Saeed Zamani" <szamani@tavanesh.com>
+Subject: RE: Need help on NAT
+Date: Tue, 10 Feb 2004 23:04:48 +0330
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <87wu6ubynv.fsf@iki.fi>
-References: <877jz2iiil.fsf@iki.fi> <1075966119.5355.0.camel@raylinux.internal>
+Message-ID: <000001c3f00c$fb858050$3c23d9d5@Zamani>
+References: <1076414843.4028c97b900c7@www.realdealz.ch>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <1076414843.4028c97b900c7@www.realdealz.ch>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,28 +18,48 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: 'Fabian Hartmann' <realdeal@realdealz.ch>
+Cc: netfilter@lists.netfilter.org
 
-Ray Leach wrote:
-> On Thu, 2004-02-05 at 00:31, Nuutti Kotivuori wrote:
->> The 'connbytes' match in the patch-o-matic matches on cumulative
->> transfer amounts on a per connection basis. The 'limit' match
->> matches packets on a simple token bucket implementation. Combining
->> these two to something which matches bytes on a simple token bucket
->> per connection would create the desired result.
->
-> Could you not do it then by using two user defined chains, one for
-> limit match and one for connbytes?
 
-Nay. If you think about what I am wanting, it should be obvious that
-it can't work.
+   Thank you all. Excellent solutions. 
+Saeed Zamani.
 
-Anyway, I cooked up a patch to do what I wanted - I posted it on the
-netfilter-devel list just recently. It's still in development and very
-basic, but seems to work fine.
+-----Original Message-----
+From: Fabian Hartmann [mailto:realdeal@realdealz.ch] 
+Sent: Tuesday, February 10, 2004 3:37 PM
+To: Saeed Zamani
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Need help on NAT
 
--- Naked
+
+hi Saeed
+There is an iptables patch called "nth" which allows you to match every
+Nth packet encountered. 
+That includes load-balancing such as you desire like every 4 received
+packet, 
+SNAT first to the ip of ISP1, the other three to the ip of ISP2.
+
+i. e.:  iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
+             --every 4 --packet 0 -j SNAT --to-source $ISP1
+        iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
+             --every 4 --packet 1 -j SNAT --to-source $ISP2
+        iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
+             --every 4 --packet 2 -j SNAT --to-source $ISP2
+        iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 \
+             --every 4 --packet 2 -j SNAT --to-source $ISP2
+
+have a look at this
+http://cvs.netfilter.org/patch-o-matic-ng/nth/help?rev=1.2
+
+It is available in the netfilter patch-o-matic base repository
+
+---
+Fabian Hartmann
+
+realdeal@realdealz.ch
+www.realdealz.ch
+
 
 
 
