@@ -1,11 +1,10 @@
-From: Chris Barnes <runtimeerror@bigpond.com>
-Subject: newbie problem
-Date: 17 Feb 2003 18:43:19 +1100
+From: "Paulo J. Matos" <pocm@mega.ist.utl.pt>
+Subject: Commands not working in latest version
+Date: Sun, 16 Feb 2003 13:48:59 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1045467799.20801.22.camel@billybob.back2front.homelinux.org>
+Message-ID: <003101c2d5c2$2872a950$0100a8c0@nikita>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-0tZY5p+BdO/u+EsaUW8+"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,53 +15,30 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi all,
 
---=-0tZY5p+BdO/u+EsaUW8+
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I've changed from my old distribution to a new one that comes with iptables
+1.2.7a.
+I have iptables in the kernel (2.4.20) and I've loaded the modules
+iptable_nat, ipt_REDIRECT and ipt_MASQUERADE.
+I had in my previous distributions the following lines:
+iptables -t nat -F
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-hi people i'm new to the list.
+This would give total access from lan attached to eth0 to the internet
+through my computer. But now, line 1 executes ok, line 2 gives:
+iptables: Invalid Argument
 
-anyway, I have a very simple firewall on a web server. I want to deny
-access to everything except the web server (port 80)
+If I do :
+iptables -t nat -A POSTROUTING -o eth0
+everything runs ok but lan has still no access to the internet as expected.
+What's happening, any ideas?
 
-i have set the poilcy on all chains to drop and i have added a rule to
-the input chain which says
+Best regards,
 
-iptables -A INPUT -p tcp --sport 80 -j ACCEPT
-
-i've done it like this because the web server has 2 interfaces (eth0 and
-eth1) which i would like to have access to the server (eth0 is local
-10.3.2.0/24 and eth1 is external)
-
-i also made a rule for output
-
-iptables -A OUTPUT -p tcp -j ACCEPT
-
-the problem is that nothing can get to the web server...the packets are
-being dropped...i checked the counters and none of the rules counted any
-packets or bytes so the packets are being dropped before the rules.
-
-what am i doing wrong or what is a better way to do this?
-
-thanks heaps for your help.
-
-
-
---=-0tZY5p+BdO/u+EsaUW8+
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA+UJKXMutcjt77K+ARArYKAJ4yKtMAQfcEsQ/VkAzJaJof+cA5pwCgi7Gz
-J5zxydtvhN366XFyRPujbUI=
-=5a3N
------END PGP SIGNATURE-----
-
---=-0tZY5p+BdO/u+EsaUW8+--
+Paulo
 
 
