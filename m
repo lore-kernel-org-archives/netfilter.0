@@ -1,11 +1,13 @@
 From: Payal Rathod <payal-iptables@staticky.com>
-Subject: iptables with real ips
-Date: Fri, 15 Aug 2003 20:49:43 +0530
+Subject: Re: a doubt about INPUT rule
+Date: Fri, 15 Aug 2003 22:16:29 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030815151943.GA1513@linux.local>
+Message-ID: <20030815164629.GA2245@linux.local>
+References: <20030814064610.GA1701@linux.local> <1060759344.1711.13.camel@kermit>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <1060759344.1711.13.camel@kermit>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,39 +19,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Ralf Spenneberg <lists@spenneberg.org>
+Cc: Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
-First excuse for mailing a new question before commenting about previous.
-It is that I get 20 mins 2 times a day net access only (dial-up).
-I download all mails once and send/comment once.
+On Wed, Aug 13, 2003 at 09:22:25AM +0200, Ralf Spenneberg wrote:
+> --dport requires the definition of a protocol beforehand. It is only
+> defined when the protocol is either udp or tcp. Omitting the protocol or
+> using all does not work because icmp, esp, ah, etc. do not have a port.
 
-Fortunately for me, a friend of mine has agreed to let me try Linux and
-iptables at his office and hey I get paid $50 for it too :):):)
-But their are some contraints which I want you to give opinion about.
+Ok. Got it now. Thanks a lot Ralf for the excellent mails so far.
 
-- RH Linux 7.2 (default kernel)
-- 4 real ips (thru' some router)
-- all traffic should pass thru' Linux firewall
-- I cannot recompile kernel and change anything other than firewall on
-  the box. I will be killed if I crash that box.
-- One windows machine has a webserver and ftp server accessible thru'
-  outside world. Can I make people from outside access that box but the
-  traffic should pass thru' Linux box first and its firewall rules?
-  I think that when someone from outside asks about windows http server,
-  Linux box should accept it and pass to windows server. But techinically
-  I don't know if it possible. What should I be looking at?
-- One more windows box with real ip is connecting to a machine in Europe
-  thru VPN. This VPN is allowed only for that windows ip. Can I make
-  this VPN traffic pass thru' Linux box and still it should appear as
-  not originating from the Linux ip but from windows ip to the remote
-  server?
+> Book: Intrusion Detection f?r Linux Server   http://www.spenneberg.com
 
-These questions may sound stupid but I never have used more than 1 live
-ip and that too only 2 times.
-
-Thanks a lot for the time in advance and eagerly waiting for any replies
-on this.
+Why is this ? in "f?r Linux Server"
 
 With warm regards,
 -Payal
