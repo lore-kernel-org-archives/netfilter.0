@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
-Subject: Re: ip ro get problem
-Date: Wed, 15 Sep 2004 07:53:13 -0400
+Subject: Re: --mac-dest matching
+Date: Wed, 15 Sep 2004 08:02:12 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1095249193.1899.15.camel@wolfpack.ljm.dom>
-References: <20040915104501.GA10207@bluff>
+Message-ID: <1095249731.1899.23.camel@wolfpack.ljm.dom>
+References: <1095242190.2267.24.camel@tartiflette>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040915104501.GA10207@bluff>
+In-Reply-To: <1095242190.2267.24.camel@tartiflette>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,56 +20,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-09-15 at 06:45, Sandro Dentella wrote:
-> Hi all,
+On Wed, 2004-09-15 at 05:56, Stephane Delcroix wrote:
+> Hi,
+> for a particular firewall, I need to match packet by mac-dest.
+> I didnt find anything neither in netfilter doc nor in the kernel
+> sources :(
 > 
-> I'm using ip route get to debug a routing probelm and I get:
+> Is there a patch or an extension for netfilter to do that?
 > 
->     root@fw-euronet argo # ip route get 192.168.254.10 
->     192.168.254.10 dev eth0  src 192.168.254.1 
-> 	cache  mtu 1500 advmss 1460
->     root@fw-euronet argo # ip route get 192.168.254.10 from 192.168.5.2
->     RTNETLINK answers: Invalid argument
+> regards,
 > 
-> 
-> What does really mean "RTNETLINK answers: Invalid argument", 
+> Stephane
 
-means that the IP address 192.168.254.10 does not exist on this host.
+on a routing gateway; a destination MAC match is irrelevant, as the
+destination MAC will always be that of the local machine (this pretty
+much applies to a standalone host as well).
 
-> 
-> 
-> I get the same error w/
-> 
->     root@fw-euronet argo # ip route get 192.168.254.10 iif tun0
->     RTNETLINK answers: Invalid argument
-> 
-> My rules are:
->     root@fw-euronet argo # ip ru li
->     0:      from all lookup local 
->     30:     from all iif tun0 lookup adsl 
->     38:     from 192.168.254.10 lookup hdsl 
->     40:     from 217.58.51.160/27 lookup hdsl 
->     41:     from 81.121.243.248/30 lookup adsl 
->     52:     from all iif eth0 lookup adsl 
->     53:     from all iif eth2 lookup adsl 
->     32766:  from all lookup main 
->     32767:  from all lookup default 
-> 
-> where you can see that tun0, where 192.168.5.0/24 is, should look table adsl
-> that is define this way:
-> 
->     root@fw-euronet argo # ip ro ls table adsl
->     81.121.243.248/30 dev eth3  scope link  src 81.121.243.250 
->     217.58.51.160/27 dev eth1  scope link  src 217.58.51.162 
->     192.168.5.0/24 dev tun0  scope link 
->     192.168.1.0/24 dev eth2  scope link  src 192.168.1.1 
->     192.168.254.0/24 dev eth0  scope link  src 192.168.254.1 
->     default via 81.121.243.249 dev eth3 
-> 
->    
-> TYA
-> sandro
-> *:-)
+destination MAC addresses are only really relevant to switches...
+
+anyways--i'm guessing you're probably trying to setup some sort of
+bridge--in which case, you need "ebtables" which is available at:
+
+        http://ebtables.sourceforge.net/
+        
+and can match on destination MAC address.
+
+my other guess would be maybe you're looking to match
+broadcasts/multicasts, in which case--the pkttype match may be of some
+interest to you.
+
+-j
+
 -- 
 Jason Opperisano <opie@817west.com>
 
