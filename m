@@ -1,12 +1,12 @@
-From: Nick Taylor <nickt@lightlink.com>
-Subject: Re: NETMAP nat target and strange traceroutes
-Date: Thu, 1 Jul 2004 12:04:29 -0400 (EDT)
+From: "IZEM Farid" <Farid.IZEM@abxlogistics.fr>
+Subject: RE: (no subject)
+Date: Thu, 1 Jul 2004 18:45:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <Pine.GSU.4.58.0407011123550.17661@adore.lightlink.com>
-References: <Pine.LNX.4.33.0407011144170.29404-100000@blackhole.kfki.hu>
+Message-ID: <B732FD42D68974438C1451C73C1D030FD1EFEB@FR92EX02.eu.abxlogistics.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.33.0407011144170.29404-100000@blackhole.kfki.hu>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,69 +16,124 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-> > Thank you for responding.  I don't think that we've communicated the
-> > problem clearly, though.
+Thanks Anthony for you help,
+
+Don't worry about the rule in my firewall, in each one,
+Source and destination are checked both in FORWARD and PREROUTING chain.
+Everything is clear for me and I will terminate the customisation=20
+Of my firewall next week because I'm in my holidays for three days.
+
+Thanks for all,
+
+Best regards,
+
+Farid IZEM
+Ing=E9nieur Syst=E8me Unix
+Soci=E9t=E9 ABX Logistics France
+48-50, route principale du port
+92232 Gennevilliers
+T=E9l. : 01-41-47-61-78
+Email : farid.izem@abxlogistics.fr
+
+
+> Anthony,
 >
-> OK, could you add the IP addresses of the interfaces to the ASCII chart?
+> Ok, I understand what you explain and I will test as soon as possible.
+> I always setup netfilter by adding rules to INPUT, OUTPUT, DNAT, .. =
+chain.
+> But in this way, netfilter is very difficult to maintain.
+> In fact, my firewall has 2 networks interfaces and it's doing SNAT and
+> DNAT. SNAT and DNAT is properly working but difficult to administrate.
+> As it is already in production environnement, I have to plan when =
+modificat
 >
-I've updated to ASCII chart to show the four DSL modems in use (fvrp*), as
-well as the 3 linux boxes (bond0* and rp2), and the cisco router (t3).  In
-order to distinguish the lines indicating network topology from the lines
-connecting the lables, I've used hash marks (#) to indicate a network
-connection.  I hope this is more clear.
+> In your opinion, which solution is better:
+>
+> 	Create DNAT rules like
+> 		Iptables -A PREROUTING -d 192.19.93.100 -j DNAT
+> 				--to-destination 92.92.1.100
+> 		Iptables -A FORWARD -i eth0 -o eth1 -p tcp -s 172.19.92.100
+> 				-d 92.92.1.100 --dport 23 -j ACCEPT
+>
+> 	Or
+> 		Iptables -A PREROUTING -s 172.19.92.100 -d 192.19.93.100
+> 				--dport 23 - j DNAT --to-destination 92.92.1.100:23
 
-The IPs are as follows:
+You have omitted to list the FORWARDing rule which is needed with the =
+second=20
+example of the PREROUTING rule:
+
+iptables -A FORWARD -i eth0 -o eth1 -d 92.92.1.100 -j ACCEPT
+
+(Following the style you have outlined with the differences between the =
+two=20
+PREROUTING rules).
+
+In other words, you always need a PREROUTING rule, and a FORWARD rule, =
+for=20
+packets to get through the firewall and reach the intended machine.
+
+As for my opinion as to which is better - I prefer the one which is =
+easier=20
+(for you) to understand.   Firewall maintenance is more important in =
+almost=20
+all cases than ultimate efficiency of a ruleset, achieved by shaving a =
+test=20
+here and there off the rules in case it takes up another CPU cycle or =
+two.
+
+In general that means I favour fully explicit rules - both for clarity =
+and=20
+security.   If you only intend to allow packets to TCP, port 23 =
+(although I=20
+cannot imagine why you want to allow anything at all to that particular=20
+port....) and you want those packets to be allowed only from a specific =
+IP=20
+address, going through the firewall in one particular direction, then =
+make=20
+this clear in both the rules which are needed:
+
+iptables -A PREROUTING -t nat -p tcp --dport 23 -i eth0 -s 172.19.92.100 =
+-d=20
+192.19.93.100 -j DNAT --to 92.92.1.100
+iptables -A FORWARD -p tcp --dport 23 -i eth0 -o eth1 -s 172.19.92.100 =
+-d=20
+92.92.1.100 -j ACCEPT
+
+If you find the duplication of information less clear, then simply it so =
+that=20
+you are happy with the rules (and they still provide the security you=20
+require).   So long as you don't completely omit the source address (for =
+
+example), so that packets get accepted from anywhere, then you should =
+use the=20
+rules you will find easiest to understand in three months' time....
+
+Regards,
+
+Antony.
+
+--=20
+"Reports that say that something hasn't happened are always interesting =
+to me,=20
+because as we know, there are known knowns; there are things we know we =
+know.=20
+We also know there are known unknowns; that is to say we know there are =
+some=20
+things we do not know. But there are also unknown unknowns - the ones we =
+
+don't know we don't know."
+
+ - Donald Rumsfeld, US Secretary of Defence
+
+                                                     Please reply to the =
+list;
+                                                           please don't =
+CC me.
 
 
-207.127.235.1
-|        10.42.0.1
-|        |    10.42.0.2
-|        |    |     10.42.1.1
-|        |    |     |   10.42.1.2
-|        |    |     |   |     10.42.2.2      207.127.233.35
-|        |    |     |   |     |    10.42.2.1 |
-|        |    |     |   |     |    |         |
-T3###bond0####fvrp0fv###fvrp0rp####bond0rp###rp2###customer
-     |     #                    #        |
-     |     #                    #        |
-     |     ###fvrp1fv###fvrp1rp##        207.127.233.33
-     |        |     |   |     |
-     |        |     |   |     10.42.2.3
-     |        |     |   10.42.1.4
-     |        |     10.42.1.3
-     |        10.42.0.3
-     207.127.235.40
 
-
-T3 has IP 207.127.235.1 (among others)
-bond0:eth0 is 207.127.235.40, and 207.127.235.28
-bond0:eth1 is 10.42.0.1
-
-there are four DSL modems not shown in the original diagram, they are
-numbered as follows:
-
-10.42.0.2, and 10.42.0.3 plug into eth1 of bond0
-the "wan" side of these modems are 10.42.1.1 and 10.42.1.3, respectively.
-
-another set of modems attaches to the other end of the BANA circuits,
-"wan" addresses are 10.42.1.2, and 10.42.1.4.  The ethernet ports of these
-modems plug into bond0rp:eth0, and they have addresses 10.42.2.2, and
-10.42.2.3.
-
-bond0rp:eth0 is 10.42.2.1
-bond0rp:eth1 is 207.127.233.33
-
-There is however a NETMAP nat rule in place for the 207.127.233.32/28
-network, mapping it to 10.23.23.0/28, so the machine knows itself as
-207.127.233.33, and machines in the "outside world" should know it by that
-address, but while local packets traverse the DSL links, they'll be
-10.23.23.1.
-
-rp2:eth0 is 207.127.233.35 (natted to 10.23.23.3) and
-rp2:eth1 has many aliases, too many to list.
 
