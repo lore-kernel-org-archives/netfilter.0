@@ -1,12 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Flag SYN not necessarily state NEW?
-Date: Fri, 14 Jun 2002 13:17:15 +0200 (CEST)
+Subject: Re: ip_conntrack cleanup
+Date: Fri, 14 Jun 2002 13:37:07 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206141315450.17402-100000@blackhole.kfki.hu>
-References: <3CD8C99B.E81155B5@mazda.at>
+Message-ID: <Pine.LNX.4.33.0206141333100.17402-100000@blackhole.kfki.hu>
+References: <3CE9F837.3040606@snt.pl>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <3CD8C99B.E81155B5@mazda.at>
+In-Reply-To: <3CE9F837.3040606@snt.pl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -18,20 +18,23 @@ List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Ing. Christian Ogris" <ogris@mazda.at>
+To: Wojciech Sobola <Wojciech.Sobola@snt.pl>
 Cc: netfilter@lists.samba.org
 
-On Wed, 8 May 2002, Ing. Christian Ogris wrote:
+On Tue, 21 May 2002, Wojciech Sobola wrote:
 
-> I connect from Box A via SSH to Box B, where the firewall runs, and i
-> get the state "NEW" on the first packet.
-> Then - the first connection is still established - i connect AGAIN from
-> Box A to Box B and do NOT get the state "NEW" anymore. (So obviously
-> it's already accepted by the ESTABLISHED,RELATED -j ACCEPT rule).
-> Is this behavior correct?
+> I have chains here, that can't be cleared out. Example:
+> tcp      6 321156 ESTABLISHED src=63.218.135.142 dst=62.xx.x.44 sport=63920 dport=80 [UNREPLIED] src=192.168.101.2
+> dst=63.218.135.142 sport=80 dport=63920 use=1
+...
 
-No. But so far nobody has reported such an ill-behaviour. I assume
-something is wrong in your setup/logging.
+Looks like ACK-scanning of the network.
+
+> Such table can stay even 2 or 3 days. If I put DROP into INPUT or
+> PREROUTING it doesn't change. Is this something suspicious?
+
+Existing conntrack entries cannot be deleted by iptable rules.
+But those are harmless and will be time out later.
 
 Regards,
 Jozsef
