@@ -1,12 +1,14 @@
-From: Dhirendra Pal Singh <list@actiswitch.com>
-Subject: How to do port forwarding dynamically
-Date: Fri, 21 Feb 2003 16:59:32 -0800
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: How to do port forwarding dynamically
+Date: Fri, 21 Feb 2003 20:34:57 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3E56CB74.4090305@actiswitch.com>
-References: <023001c2daaf$cd19fe80$020010ac@romio>
+Message-ID: <200302212034.57159.netfilter@newkirk.us>
+References: <023001c2daaf$cd19fe80$020010ac@romio> <3E56CB74.4090305@actiswitch.com>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <3E56CB74.4090305@actiswitch.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,109 +18,88 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Dhirendra Pal Singh <list@actiswitch.com>, netfilter@lists.netfilter.org
 
+On Friday 21 February 2003 07:59 pm, Dhirendra Pal Singh wrote:
+> Hi All,
+> I am trying to set up a web server inside my home lan. Firewall is
+> running on the gatewaty.
+> Below is the script for the firewall... (its very simple.. I
+> downloaded it from the net)
+
+> echo "   enabling forwarding.."
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+
+Best not to do this until you've already created the rules, and the DROP=20
+policy.
+
+> echo "   enabling DynamicAddr.."
+> echo "1" > /proc/sys/net/ipv4/ip_dynaddr
 >
+> echo "   clearing any existing rules and setting default policy.."
+> $IPTABLES -P INPUT ACCEPT
 
-Hi All,
-I am trying to set up a web server inside my home lan. Firewall is 
-running on the gatewaty.
-Below is the script for the firewall... (its very simple.. I downloaded 
-it from the net)
+This is NOT a good idea.  This allows anybody on the internet to have=20
+unrestricted access to all ports on your firewall/gateway.  (unless you=20
+DNAT them to another machine, or have a rule that explicitly DROPs=20
+something)  You want a DROP policy instead, and then ACCEPT only traffic=20
+that needs to access the gateway machine itself.  A simple, more-secure=20
+(but still not tight) approach is to have a DROP policy on INPUT, then=20
+use:
 
-*****************************************
-#!/bin/sh
-#
-# rc.firewall-2.4
-FWVER=0.70
+$IPTABLES -A INPUT -i $INTIF1 -j ACCEPT
+$IPTABLES -A INPUT -i $INTIF2 -j ACCEPT
 
-echo -e "\n\nLoading simple rc.firewall version $FWVER..\n"
-echo -e "\n\nLoading simple rc.firewall version $FWVER..\n"
+which allows all machines on the local networks unrestricted access to=20
+the gateway itself (this is a separate matter from forwarding!) but=20
+ignores connection attempts from the outside world.  Even better would=20
+be to ACCEPT ONLY the absolute bare minimum.  Under normal operation=20
+nobody (internet _OR_ LAN) should need access to the firewall box=20
+itself.  If you do all your work on the machine sitting in front of it=20
+with it's own keyboard and monitor, and it's not offering other services=20
+then you can probably work just fine with DROP policy for INPUT (and=20
+even OUTPUT).  If there are services that the gateway offers to the LAN=20
+(mailserver, DNS, filesharing, whatever) then you should have ACCEPT=20
+rules for the necessary ports on INPUT chain, and limit them as above to=20
+ONLY the LAN, never the internet. =20
 
 
-IPTABLES=/sbin/iptables
-DEPMOD=/sbin/depmod
-INSMOD=/sbin/insmod
+>************************ I have stripped off the comments for
+> simplicity. Now when I want to open a port and forward it I am trying
+> to execute the following 2 commands...
+>
+> $iptables -A INPUT -j ACCEPT -p tcp --syn --destination-port 5000
+> $iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 5000 -j DNAT
+> --to-destination 192.168.1.30:80
+>
+> Shouldnt this forward port 5000 to the internal box on port 80. But
 
-EXTIF="eth0"
-INTIF1="eth1"
-INTIF2="eth2"
-echo "   External Interface:  $EXTIF"
-echo "   Internal Interface1:  $INTIF1"
-echo "   Internal Interface2:  $INTIF2"
+Nope.  This DNATs port 5000 incoming to port 80 on the internal box, and=20
+ACCEPTs syn to port 5000 on the gateway.  You want the PREROUTING rule=20
+as is, (but "-i $EXTIF" would fit the script style better...) but the=20
+second rule should be:
 
-echo -en "   loading modules: "
-echo "  - Verifying that all kernel modules are ok"
-$DEPMOD -a
-echo 
-"----------------------------------------------------------------------"
+$IPTABLES -A FORWARD -i $EXTIF -p tcp --dport 80 -j ACCEPT
 
-echo -en "ip_tables, "
-$INSMOD ip_tables
+Differences:  This is FORWARD chain, which is where packets to be=20
+forwarded will go instead of INPUT.  The destination port is now 80, not=20
+5000, since the DNAT rule already changed the DPORT when it changed the=20
+destIP.
 
-echo -en "ip_conntrack, "
-$INSMOD ip_conntrack
+> this is not working. Can someone please help me to correct this
+> script. Actually I want just 2 lines which I can run for any port and
+> can open and forward it to anymachine of my choice...
+>
+> Any quick help would be very much appreciated...
+> Thanks and advance..
+> Dp
 
-echo -en "ip_conntrack_ftp, "
-$INSMOD ip_conntrack_ftp
+INPUT is for connections directly to the firewall machine, or responses=20
+to something initiated by the machine itself.  OUTPUT is for connections=20
+initiated by the firewall machine, or responses to something that came=20
+in INPUT.  FORWARD is for connections that are only passing through.
 
-echo -en "ip_conntrack_irc, "
-$INSMOD ip_conntrack_irc
-
-echo -en "iptable_nat, "
-$INSMOD iptable_nat
-
-echo -en "ip_nat_ftp, "
-$INSMOD ip_nat_ftp
-
-echo ".  Done loading modules."
-
-echo "   enabling forwarding.."
-echo "1" > /proc/sys/net/ipv4/ip_forward
-echo "   enabling DynamicAddr.."
-echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-
-echo "   clearing any existing rules and setting default policy.."
-$IPTABLES -P INPUT ACCEPT
-$IPTABLES -F INPUT
-$IPTABLES -P OUTPUT ACCEPT
-$IPTABLES -F OUTPUT
-$IPTABLES -P FORWARD DROP
-$IPTABLES -F FORWARD
-$IPTABLES -t nat -F
-
-echo "   FWD: Allow all connections OUT and only existing and related 
-ones IN"
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF1 -m state --state 
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF1 -o $EXTIF -j ACCEPT
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF2 -m state --state 
-ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF2 -o $EXTIF -j ACCEPT
-$IPTABLES -A FORWARD -j LOG
-
-echo "   Enabling SNAT (MASQUERADE) functionality on $EXTIF"
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-
-echo -e "\nrc.firewall-2.4 v$FWVER done.\n"
-
-**********************************************************************************************
-I have stripped off the comments for simplicity. Now when I want to open 
-a port and forward it I am trying to execute the following 2 commands...
-
-$iptables -A INPUT -j ACCEPT -p tcp --syn --destination-port 5000
-$iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 5000 -j DNAT 
---to-destination 192.168.1.30:80
-
-Shouldnt this forward port 5000 to the internal box on port 80. But this 
-is not working. Can someone please help me to correct this script.
-Actually I want just 2 lines which I can run for any port and can open 
-and forward it to anymachine of my choice...
-
-Any quick help would be very much appreciated...
-Thanks and advance..
-Dp
-
+j
 
 
