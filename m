@@ -1,12 +1,11 @@
-From: "Annette Meriste" <annette.meriste@cablecom.ch>
-Subject: Antw: Iptables
-Date: Thu, 13 Jun 2002 11:12:11 +0200
+From: Payal <rpayal@indiainfo.com>
+Subject: iptables : masq
+Date: Thu, 13 Jun 2002 15:28:27 +0530
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <sd087e0c.027@cablecom.ch>
+Message-ID: <ae9qdl$trm$2@main.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.samba.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,37 +15,55 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
-To: PAndre@autopage.altech.co.za, netfilter@lists.samba.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.samba.org
 
-Hi Paulo,
+Hi,
+As I said earlier I am using Mdk Linux 8.2 with kernel 2.4.18. I am tryin=
+g to=20
+shift from ipchains to iptables for a simple reson that I cannot connect =
+to=20
+one particular ftp site where ip_masq_ftp was required in earlier version=
+s of=20
+kernel. Now this module is no longer available. So, I have to shift to=20
+iptables since connecting to that site is really imp.
+But I am having a problem. I read briefly NAT and iptables HOWTOs and dec=
+ided=20
+the rule,
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-You are probably looking for something like this:
-http://freshmeat.net/projects/fireparse/?topic_id=3D245%2C43%2C148%2C151%2C=
-152
+My loaded modules by lsmod include,
+ipt_MASQUERADE          1504   5  (autoclean)
+iptable_mangle          2336   0  (autoclean) (unused)
+iptable_nat            15988   1  (autoclean) [ipt_MASQUERADE]
+ip_conntrack           15180   1  (autoclean) [ipt_MASQUERADE iptable_nat=
+]
+iptable_filter          1952   0  (autoclean)
+ip_tables              11584   6  [ipt_MASQUERADE iptable_mangle iptable_=
+nat=20
+iptable_filter]
 
-Annette
+But my problem is that inspite of giving the above command I have,
 
----------------------------------------------------------------------------=
-----------------------------------------------------
-Cablecom GmbH
-Security Team
-Zollstrasse 42
-CH-8021 Z=FCrich
-E-Mail: annette.meriste@cablecom.ch
+#iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
 
->>> Paulo Andre <PAndre@autopage.altech.co.za> 13.06.02 11:03:36 >>>
-I use iptables-1.2.6a, and ulog.
-Has anyone written a script that will go through the log files and filter
-out stats that management require (eg. daily no. of port scans, telnet/ssh
-attempts etc.)
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
-Thanks
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
-Paulo=20
+What is wrong now? Why is'nt my rule listed?
+I even have 1 in /proc/sys/net/ipv4/ip_forward.
+Please do tell as early as possible or atleast tell me how to get it work=
+ing=20
+under ipchains.
 
-
-
-
-
+Thanks a lot in advance and bye.
+-Payal
+p.s i have some problems with my present email address, it would be great=
+ if=20
+you can cc the mail to payal99  @  cyberspace.org
 
