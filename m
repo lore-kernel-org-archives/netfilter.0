@@ -1,12 +1,12 @@
-From: Frans Luteijn <f.a.g.luteijn@knoware.nl>
-Subject: Re: ip aliasing considered harmful?
-Date: Thu, 13 Jan 2005 17:43:31 +0100
-Message-ID: <41E6A532.4211B054@knoware.nl>
-References: <BAY101-F28F59D9C013C228CBEAFC8DF970@phx.gbl>
-	<1105364334.12623.5.camel@hubcap.ljm.dom>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: how can I test the firewall with iptable
+Date: Thu, 13 Jan 2005 13:46:23 -0500
+Message-ID: <20050113184623.GA22272@bender.817west.com>
+References: <20050113184512.90097.qmail@web51307.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20050113184512.90097.qmail@web51307.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,40 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+On Thu, Jan 13, 2005 at 10:45:12AM -0800, Mohamed Nassih wrote:
+> 
+> Hi,
+> 
+>    is there any tool for testing a firewall with iptable and have a 
+> report with statistics to analyse the performence(...intrusion detection 
+> ...).
+>    if this tool exist. is it easy to use and to install..
 
+i didn't really understand what you were asking the first time you sent
+this, but since you sent it again--i suppose i better snap to it.
 
-Jason Opperisano schreef:
+i *think* you're asking for something along the lines of nessus:
 
-> On Mon, 2005-01-10 at 01:46, Curby . wrote:
-> > I've currently got two Internet-facing IP addresses on my gateway using a
-> > single interface.  I have them configured as eth0:0 and eth0:1, but I've
-> > read several times on this list that doing it this way (I think it's called
-> > aliasing?) is not recommended.  IIRC the recommended alternative was to use
-> > the ip command to handle it.
->
-> that is correct.
->
-> > Why is that alternative preferable?  The only thing I can see now is that
-> > I'd have to double the number of iptables rules in some cases to take care
-> > of eth0:0 and eth0:1 instead of just eth0.
->
-> that's why 'ip addr add w.x.y.z dev eth0' is preferable--it doesn't
-> delude you into thinking you have multiple interfaces, because you
-> don't.  try and add a rule for eth0:0 and let us know how it goes.
+  http://nessus.org/
 
-I can think of two pro's:- Aliasing is the standard way of handling multiple
-ip-addresses to one interface (at least for Sun).
-- It's an easy  way of adding an ip-address via ifup and ifdown in the file (for
-Debian) /etc/network/interfaces.
+-j
 
-Greetings,
 --
-Frans Luteijn
-PGP PblKey fprnt=C4 87 CE AF BC B6 98 C1  EF 42 A1 9A E2 C0 42 5B
-GPG PblKey fprnt=ED20 0F25 C233 DC59 3FFA  170E D0BF 15F5 0BA6 1355
-
-
-
+"I saw weird stuff in that place last night. Weird, strange, sick,
+ twisted, eerie, godless, evil stuff. And I want in."
+        --The Simpsons
 
