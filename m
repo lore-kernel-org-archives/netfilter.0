@@ -1,11 +1,10 @@
-From: Czezz <czezz@o2.pl>
-Subject: DNAT what am i doing wrong ???
-Date: Sat, 18 Oct 2003 12:14:52 +0200
+From: =?unknown-8bit?q?=BD=DC?= <zijiepan@163.com>
+Subject: =?gb2312?B?c3FsbmV0IHByb2JsZW0=?=
+Date: Sat, 18 Oct 2003 19:09:40 +0800 (CST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1782916143.20031018121452@o2.pl>
-Reply-To: Czezz <czezz@o2.pl>
+Message-ID: <3F911F74.00001E.21384@bj222.163.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Alternative; boundary="Boundary-=_iIZhtlcKodPYPkhOeGfUVNNCgQfB"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,61 +15,25 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello everyone,
+--Boundary-=_iIZhtlcKodPYPkhOeGfUVNNCgQfB
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-here is description of my situation:
+Hi all:
+   We use oracle server, with sql*net dynamic port(not MTS). i tried to
+find a patch for sql*net,but failed. is there any one have the sqlnet conntrack/nat modules?
+--Boundary-=_iIZhtlcKodPYPkhOeGfUVNNCgQfB
+Content-Type: text/html
+Content-Transfer-Encoding: 8bit
 
-my host is behind NAT server (Linux 2.4.x). By default, INPUT and
-FORWARD is DROP. OUTPUT is ACCEPT.
-There are maden some rules that allow to send/receive mail and for
-PROXY server traffic.
+Hi&nbsp;all:<br>&nbsp;&nbsp;&nbsp;We&nbsp;use&nbsp;oracle&nbsp;server,&nbsp;with&nbsp;sql*net&nbsp;dynamic&nbsp;port(not&nbsp;MTS).&nbsp;i&nbsp;tried&nbsp;to<br>find&nbsp;a&nbsp;patch&nbsp;for&nbsp;sql*net,but&nbsp;failed.&nbsp;is&nbsp;there&nbsp;any&nbsp;one&nbsp;have&nbsp;the&nbsp;sqlnet&nbsp;conntrack/n<br>at&nbsp;modules?<br><font style='font-size:12pt'>
+<br>
+==============================================<br>
+<a target=_blank href='http://vip.163.com' title='http://vip.163.com'><font color=green><b>������������������������������������������������������������������������������������������30������������������������������~</b></a><br>
+<a target=_blank href='http://mail.163.com' title='http://mail.163.com'><font color=red><b>������������������������������������������������������������������������ 25������������������ 4������������������������</b></a><br>
+<a target=_blank href='http://popo.163.com' title='http://popo.163.com'><font color=green><b>������������������������������������������������������������ ������������������������������������������������������������!</b></a><br><br>
 
-Anyway, I want to connect to some server in the external net (
-internet). Thatx to command:
-
-   iptables -A FORWARD -i eth1 -j LOG --log-prefix "IPT:UnhandledForward:"
-
-I found in syslog lines like this:
-
-   Oct 16 19:05:59 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.251 DST=62.111.129.3 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=17885 PROTO=UDP SPT=23083 DPT=13073 LEN=16
-   Oct 16 19:07:44 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.251 DST=62.111.129.3 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=18107 PROTO=UDP SPT=23083 DPT=13073 LEN=16
-   Oct 16 19:10:27 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.251 DST=62.111.129.3 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=18888 PROTO=UDP SPT=23083 DPT=13073 LEN=16
-   Oct 16 19:11:08 slack kernel: IPT:UnhandledForward:IN=eth1 OUT=ppp0 SRC=192.168.1.251 DST=62.111.129.3 LEN=36 TOS=0x00 PREC=0x00 TTL=127 ID=19078 PROTO=UDP SPT=23083 DPT=13073 LEN=16
-
-...so why in this situation I tryed to just FORWARD ports: SPT=23083
-and DPT=13073. Unfortunately it wont work :(.
-
-This is what I added:
-
-   iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-   iptables -A FORWARD -i eth1 -p udp -m multiport --dport 13073,23083 -j ACCEPT
-
-Dont know realy why it didnt work( maybe someone can explain me that,
-because I use similar construction for SMTP and POP3 and it works
-perfect)
-
-Anyway i tryed to make DNAT.
-
-I added the following lines:
-
-   iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport 13073 -j DNAT --to 192.168.1.251:23083
-   iptables -A FORWARD -p tcp -d 192.168.1.251 --dport 23083 -j ACCEPT
-   iptables -t nat -A PREROUTING -p udp -i ppp0 --dport 13073 -j DNAT --to-destination 192.168.1.251:23083
-   iptables -A FORWARD -p udp -d 192.168.1.251 --dport 23083 -j ACCEPT
-
-...and this method failed too :(
-
-Can anyone give me an hand how to resolve this problem - i will be in
-debt forever.
-
-PS.
-
-Please say if any of my description is not understood
-
--- 
-Best regards,
-
+--Boundary-=_iIZhtlcKodPYPkhOeGfUVNNCgQfB--
 
