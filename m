@@ -1,11 +1,12 @@
-From: "Allan Gee" <AllanG@Equation.co.za>
-Subject: Bridge with tunnel openvpn
-Date: Tue, 22 Oct 2002 18:17:14 +0200
+From: "Clayton Check" <clayton.check@cornettech.com>
+Subject: static IP, different gateway & dns
+Date: Wed, 23 Oct 2002 21:08:18 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000001c27a6c$a32a24e0$0eb2a8c0@equation.co.za>
-Reply-To: <Allang@equation.co.za>
+Message-ID: <00de01c27a95$56e306f0$0f01a8c0@Inspiron2100>
+Reply-To: "Clayton Check" <clayton.check@cornettech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00D1_01C27AD8.4FA01110"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,58 +17,126 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+To: netfilter@lists.netfilter.org
 
-Hi Guys I would like some help on the following:
-Excuse my asci-art!
-                   ______     __________                      __________
-______
-     Web Server---|bridge|---|std router|---slow line(64k)---|std
-router|---|bridge|---|LAN
-                  |______|   |10.1.1.1__|                    |10.1.2.1__|
-|______|
-                     |
-|
+This is a multi-part message in MIME format.
 
-|10.4.0.1_______________tunnel__________________10.4.0.2__|
+------=_NextPart_000_00D1_01C27AD8.4FA01110
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-without the tunnel running the route for LAN is via 10.1.1.1 and route for
-Web Server is via 10.1.2.1
-All is fine!
-Now I want the Web Server traffic to go via the tunnel end point(10.4.0.2)
-so it will be compressed and encrypted but I DON't want to have to change
-ANY gateway's on either the LAN devices or the Web Server.
-When the tunnel comes up I thought I would use Iptables to catch traffic
-going to each router and somehow redirect it to the tunnel.
-I've tried to MARK packets and then send them via a rt_table but it still
-goes to the default gateway on the std router. I think it's the bridging
-that is messing me up but I don't no why?
-My netfilter IS patched with nf-bridge etc.. I get the packets to the MARK
-mangle table but they don't go to the rt_table
+Hi,
 
-This is the script that runs when the tunnel comes up :
+Can iptables NAT or handle nodes that have static IP address not on the =
+same subnet as the iptable box, also with different gateway =
+configuration and different DNS config?
 
-FOR Web Server side bridge:
-iptables -A PREROUTING -t mangle -d 10.1.2.0/24 -j MARK --set-mark 1
-ip ru add fwmark 1 table for.tun
-ip ro del 10.1.2.0/24 via 10.1.2.1  #the original gateway for LAN but I keep
-a static for the
-						# single IP so the tunnel keeps going
-ip or add 10.1.2.0/24 via dev tune table fortune
-ip or flush cache
-#END
-in rt_tables
-202 for.tun
-The same mirred on the LAN bridge side!
-I use OPENVPN for the tunnel!
-NO GO!!
-Please give me some ideas as to whats going wrong or to whether I should use
-some other plan.
 
-Regards Allan Gee
-Equation
-021 4181777
-www.equation.co.za
+Overview
+A linux box with iptable acts as a gateway to connect several clients to =
+the Internet. However, the clients behind this gateway have static IP =
+addresses and different gateway and dns configuration. Lets assume that =
+changing their network configurations are not possible.=20
+
+Can iptables handle this sort of networking?
+
+
+                             |--- 192.168.1.12 (gw: 192.168.1.1)
+                             |
+---- eth0 (iptables) eth1 ---|--- 192.168.10.25 (gw: 192.168.10.1)
+                  10.0.0.1/8 |
+                             |--- 202.145.23.25 (gw: 202.145.0.5)
+                             |
+                             |--- 10.0.0.16 (gw: 10.0.0.1)
+
+
+
+
+
+
+
+
+
+
+------=_NextPart_000_00D1_01C27AD8.4FA01110
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 5.50.4919.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Can iptables NAT or handle nodes that =
+have static=20
+IP address not on the same subnet as the iptable box, also with =
+different=20
+gateway configuration and different DNS config?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Overview</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A linux box with iptable&nbsp;acts as a =
+gateway to=20
+connect several clients to&nbsp;the&nbsp;Internet. However, =
+t</FONT><FONT=20
+face=3DArial size=3D2>he clients behind this gateway&nbsp;have static IP =
+addresses=20
+and different gateway and dns configuration. Lets assume that changing =
+their=20
+network configurations are not possible. </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Can iptables handle this sort of=20
+networking?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New"=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+|--- 192.168.1.12 (gw: 192.168.1.1)</FONT></DIV>
+<DIV><FONT face=3D"Courier New"=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</FONT></DIV>
+<DIV><FONT face=3D"Courier New" size=3D2>---- eth0&nbsp;(iptables) eth1 =
+---|---=20
+192.168.10.25 (gw: 192.168.10.1)</FONT></DIV>
+<DIV><FONT face=3D"Courier New"=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+10.0.0.1/8&nbsp;|</FONT></DIV>
+<DIV><FONT face=3D"Courier New"=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+|--- 202.145.23.25 (gw: 202.145.0.5)</FONT></DIV>
+<DIV><FONT face=3D"Courier New"=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</FONT></DIV>
+<DIV><FONT face=3D"Courier New"=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|---=20
+10.0.0.16 (gw: 10.0.0.1)</FONT></DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_00D1_01C27AD8.4FA01110--
 
 
