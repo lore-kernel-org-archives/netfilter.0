@@ -1,12 +1,12 @@
-From: "Stian B. Barmen" <stian@barmen.nu>
-Subject: Block proxy use.
-Date: Mon, 22 Nov 2004 14:49:30 +0100
-Message-ID: <1101131370.16509.24.camel@tux.it-akademiet.no>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: bad ftp speeds through nat
+Date: Mon, 22 Nov 2004 10:04:12 -0500
+Message-ID: <20041122150411.GA30543@bender.817west.com>
+References: <0e2d01c4d092$b8c13950$49caa8c0@caris.priv>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1;
-	protocol="application/x-pkcs7-signature";
-	boundary="=-ranktYa5aUCVJishSZRp"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <0e2d01c4d092$b8c13950$49caa8c0@caris.priv>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,87 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@lists.netfilter.org>
 
+On Mon, Nov 22, 2004 at 08:56:44AM -0400, Peter Marshall wrote:
+> I am not sure what is causing this ... I have an ftp server in my DMZ.  I am
+> getting horrible ftp speeds ... only 200 - 300 KB/s  ... I have 10/100 cards
+> on both the firewall and the ftp server and they are connected with one 100
+> Mb switch. If anyone has any ideas as to why this is happening I would
+> appreciate the wisdom.
 
---=-ranktYa5aUCVJishSZRp
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+have you base-lined the environment?  does FTP through the firewall with
+no rules loaded and just IP forwarding enabled allow for significantly
+higher throughput?  how about a machine locally in the DMZ directly to
+the FTP server, what's that throughput look like?
 
-Is there som kind of filter for netfilter that can block access to
-anonymous proxies? The problem I often face is that the most advanced
-users always can work around the firewall by using proxies.=20
+-j
 
-I know that I could run a proxy myself but this is not exactly what I
-want. The best would be if there could be a filter similar to ipp2p
-which would check for a "proxy signature" and block those
-communications.=20
-
-Best regards
-Stian B. Barmen
-
---=-ranktYa5aUCVJishSZRp
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII4TCCAssw
-ggI0oAMCAQICAw0JnzANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
-d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
-YWlsIElzc3VpbmcgQ0EwHhcNMDQwOTE0MDczMDE5WhcNMDUwOTE0MDczMDE5WjBBMR8wHQYDVQQD
-ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMR4wHAYJKoZIhvcNAQkBFg9zdGlhbkBiYXJtZW4ubnUw
-ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgKNwEFNherNuL7XY/rAO7jR8WLrfgFvGm
-1+Yw3hYSDlfZSp5o20GxH/uAraHXw0O8LzrzuTvfNgx7jXJiR9rWWqyaF8vYv01n4dEkohGnPvoJ
-7c+EWFqJyNdl/UxWkuHYf84POwr3Pl5a9S8WUeuu3yb8ZP80yUt5tgR1peXrVKNrynTBQBO78DEy
-8FNonVjCSv3S73oUXtEo7uQnUrehkh4ByNz0sbPsx5O4uq/4NNO82bdW68NqbPShWJlsbrtr/BKK
-UEt9Xv47La8o6OVODRG1B8Oehd04+uoEtmC6whVjJFHr1hG+/3ikzqqokWqhD7EM1xjShR8fNr7+
-a61BAgMBAAGjLDAqMBoGA1UdEQQTMBGBD3N0aWFuQGJhcm1lbi5udTAMBgNVHRMBAf8EAjAAMA0G
-CSqGSIb3DQEBBAUAA4GBAL+JPkXo15KjJdwyv0gCvLpTZiNGkbfElDg2KdggEoIa6DHDjkdFiaXt
-udJh0gQGwOQ/l2jWGwLXQskzU22xoSg5fr8Pv84BMowegNaBlY9ZB2eV/71MSn07LqD6dFnvPAmo
-x1vIlFtpjGU4BB9sE1335n7LDFkFctfBCU6hyLK3MIICyzCCAjSgAwIBAgIDDQmfMA0GCSqGSIb3
-DQEBBAUAMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBM
-dGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTAeFw0wNDA5
-MTQwNzMwMTlaFw0wNTA5MTQwNzMwMTlaMEExHzAdBgNVBAMTFlRoYXd0ZSBGcmVlbWFpbCBNZW1i
-ZXIxHjAcBgkqhkiG9w0BCQEWD3N0aWFuQGJhcm1lbi5udTCCASIwDQYJKoZIhvcNAQEBBQADggEP
-ADCCAQoCggEBAOAo3AQU2F6s24vtdj+sA7uNHxYut+AW8abX5jDeFhIOV9lKnmjbQbEf+4CtodfD
-Q7wvOvO5O982DHuNcmJH2tZarJoXy9i/TWfh0SSiEac++gntz4RYWonI12X9TFaS4dh/zg87Cvc+
-Xlr1LxZR667fJvxk/zTJS3m2BHWl5etUo2vKdMFAE7vwMTLwU2idWMJK/dLvehRe0Sju5CdSt6GS
-HgHI3PSxs+zHk7i6r/g007zZt1brw2ps9KFYmWxuu2v8EopQS31e/jstryjo5U4NEbUHw56F3Tj6
-6gS2YLrCFWMkUevWEb7/eKTOqqiRaqEPsQzXGNKFHx82vv5rrUECAwEAAaMsMCowGgYDVR0RBBMw
-EYEPc3RpYW5AYmFybWVuLm51MAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEEBQADgYEAv4k+RejX
-kqMl3DK/SAK8ulNmI0aRt8SUODYp2CASghroMcOOR0WJpe250mHSBAbA5D+XaNYbAtdCyTNTbbGh
-KDl+vw+/zgEyjB6A1oGVj1kHZ5X/vUxKfTsuoPp0We88CajHW8iUW2mMZTgEH2wTXffmfssMWQVy
-18EJTqHIsrcwggM/MIICqKADAgECAgENMA0GCSqGSIb3DQEBBQUAMIHRMQswCQYDVQQGEwJaQTEV
-MBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xGjAYBgNVBAoTEVRoYXd0
-ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQw
-IgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNv
-bmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcNMDMwNzE3MDAwMDAwWhcNMTMwNzE2MjM1OTU5WjBi
-MQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoG
-A1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0EwgZ8wDQYJKoZIhvcNAQEB
-BQADgY0AMIGJAoGBAMSmPFVzVftOucqZWh5owHUEcJ3f6f+jHuy9zfVb8hp2vX8MOmHyv1HOAdTl
-UAow1wJjWiyJFXCO3cnwK4Vaqj9xVsuvPAsH5/EfkTYkKhPPK9Xzgnc9A74r/rsYPge/QIACZNen
-prufZdHFKlSFD0gEf6e20TxhBEAeZBlyYLf7AgMBAAGjgZQwgZEwEgYDVR0TAQH/BAgwBgEB/wIB
-ADBDBgNVHR8EPDA6MDigNqA0hjJodHRwOi8vY3JsLnRoYXd0ZS5jb20vVGhhd3RlUGVyc29uYWxG
-cmVlbWFpbENBLmNybDALBgNVHQ8EBAMCAQYwKQYDVR0RBCIwIKQeMBwxGjAYBgNVBAMTEVByaXZh
-dGVMYWJlbDItMTM4MA0GCSqGSIb3DQEBBQUAA4GBAEiM0VCD6gsuzA2jZqxnD3+vrL7CF6FDlpSd
-f0whuPg2H6otnzYvwPQcUCCTcDz9reFhYsPZOhl+hLGZGwDFGguCdJ4lUJRix9sncVcljd2pnDmO
-jCBPZV+V2vf3h9bGCE6u9uo05RAaWzVNd+NWIXiC3CEZNd4ksdMdRv9dX2VPMYIC5zCCAuMCAQEw
-aTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEs
-MCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECAw0JnzAJBgUrDgMC
-GgUAoIIBUzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0wNDExMjIx
-MzQ5MzBaMCMGCSqGSIb3DQEJBDEWBBR8FgpdMZofmXNvdJVuq6WmPGbmkjB4BgkrBgEEAYI3EAQx
-azBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQu
-MSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIDDQmfMHoGCyqG
-SIb3DQEJEAILMWugaTBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcg
-KFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0EC
-Aw0JnzANBgkqhkiG9w0BAQEFAASCAQCKHU+x5SEN1/vhHIW0JPVsIErW9Agwcgdcuol6U00KR44K
-zv2KxCj+aGhaaPiGeXcHPgK+HFH9GLXBEBC0rDbVJ/QSNhlDh1DkK3hMHUQIxOtH4ZTvAEl0rSRX
-trGyBqdEe13Mxkwm2i89GzTPp5kgUXDukiT4gCA/Bb4rpg0AENCnOq3JP4mq52w0irQH/cdEoNY4
-vAqRhvnCOhcZHJJtP5q2nBx7L7IPCybMBA86Bj3PPIKV7ZrfkqPF32P0GfswImOrViAJLiALcE6C
-goQEBKeP9JEsM8MLcJz5JifJFLLto2zVSnHFse2NGhzV7f/v1rIA6jFD6LRXQRT2cpFdAAAAAAAA
-
-
-
---=-ranktYa5aUCVJishSZRp--
-
+--
+"It's not easy to juggle a pregnant wife and a troubled child, but
+ somehow I managed to fit in eight hours of TV a day."
+        --The Simpsons
 
