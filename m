@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Dlink DFE-580TX (4port)
-Date: Tue, 9 Dec 2003 09:21:47 +0000
+From: "Laurens Blankers" <lblankers@xs4all.nl>
+Subject: pom for 2.6
+Date: Tue, 9 Dec 2003 10:55:59 +0100 (CET)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200312090921.47810.Antony@Soft-Solutions.co.uk>
-References: <200312091022.16100.pandre@darkstar.nom.za>
+Message-ID: <3635.10.1.1.181.1070963759.squirrel@mail>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200312091022.16100.pandre@darkstar.nom.za>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,44 +16,18 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tuesday 09 December 2003 8:22 am, Paulo Andre wrote:
+Hello,
 
-> Hi, this is somewhat netfilter related so I hope this is fine.
->
-> I have a firewall that had the above mentioned card. I have been using this
-> card for sometime and it works great.
-> Last week I tried to IP alias a port for nat'ing, and the connection will
-> come up and transfer some data then it will slow down immensly, nearly to a
-> stand still.
-> I tried IP aliasing the port with IP address'es in the same range and
-> different range.
-> Could the problem be link to netfilter and connection tracking? What could
-> I do to pin point the exact problem.
+This question has been asked a number of times on this list already but I
+can't find an answer to it: When can we expect a patch-o-matic for kernel
+2.6?
 
-I've used these D-Link cards, and haven't found their performance any 
-different from others (such as the older DFE-570TX with the nice Dec Tulip 
-chipset); however I've not tried to max out the bandwidth - I'm normally 
-dealing with an Internet link of <2Mbps and very little local inter-subnet 
-traffic.
+The first final version of 2.6 is coming closer and it would be really
+nice to have a pom for it when it is released.
 
-Can you try a different card (either another DFE-580, or something other than 
-a DFE-580, or four single port cards) to see whether the problem really is 
-tied to the card?
+Laurens
 
-I can't quite see why a particular card would work normally but have a problem 
-with IP aliasing...
-
-Antony.
-
--- 
-How I want a drink, alcoholic of course, after the heavy chapters involving 
-quantum mechanics.
-
- - 3.14159265358979
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
