@@ -1,11 +1,13 @@
-From: "Dan Egli" <dan@shortcircuit.dyndns.org>
-Subject: Samba blocked?
-Date: Tue, 26 Nov 2002 14:05:31 -0700
+From: Ben Russo <ben@umialumni.com>
+Subject: Re: can't initialize iptables table `'
+Date: 26 Nov 2002 17:18:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000d01c2958f$d3fadbd0$1e00a8c0@yamatto>
+Message-ID: <1038349122.16933.1.camel@ben.mis.tnsi.com>
+References: <6FB083FB72EFD21181D30004AC4CA18A01EABFA8@srv002>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <6FB083FB72EFD21181D30004AC4CA18A01EABFA8@srv002>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,62 +18,61 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Sam Pointer <sam.pointer@hpdsoftware.com>
+Cc: netfilter@lists.netfilter.org
 
-Ok. I'm a fair bit confused here. I'm trying to setup a IPtables filter set
-that will block certain ports and allow others. It seems to work perfectly
-for anything other than Samba. If I try:
+Did you custom compile your kernel?
+If you are using a standard RedHat 8 kernel have you upgraded to the
+latest?
 
-smbclient //myserver/shared1, it fails to connect. But using the IP in place
-of it:
-smbclient //192.168.0.2/shared1 works just fine. I am specifically allowing
-NetBIOS-ns, NetBIOS-ssn, and NetBIOS-dgm. Still no go. What's wrong?
-
-Thanks!
--- Dan
-
-tables:
-
-#!/bin/bash
-IPT=/sbin/iptables
-# step 1 - ensure iptables are loaded
-modprobe ip_conntrack_ftp
-# that should pull in all dependant modules
-#step 2  SET DEFAULT POLICY
-
-$IPT -P INPUT DROP
-$IPT -P OUTPUT ACCEPT
-$IPT -P FORWARD DROP
-
-# step 3 FLUSH THE TABLES
-$IPT -F INPUT
-$IPT -F OUTPUT
-$IPT -F FORWARD
-$IPT -t nat -F PREROUTING
-$IPT -t nat -F POSTROUTING
-$IPT -t nat -F OUTPUT
-
-# setp 4 - setup rules
-$IPT -A INPUT -p tcp -m multiport --dports smtp,ftp,telnet,ssh -j ACCEPT
-$IPT -A INPUT -p tcp -i eth0 -m multiport --dports
-telnet,ssh,domain,nntp,ntp,printer,pop3,imap,http,https,netbios-ns,netbios-d
-gm,netbios-ssn -j ACCEPT
-$IPT -A INPUT -p udp -i eth0 -m multiport --dports
-domain,ntp,netbios-ns,netbios-dgm,netbios-ssn -j ACCEPT
-$IPT -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-$IPT -A INPUT -j LOG
-
-$IPT -A FORWARD -i eth0 -j ACCEPT
-$IPT -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-$IPT -A FORWARD -j LOG
-# step 5 - enable NAT
-$IPT -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 64.122.31.38
-# step 6 - setup the proc files for a propper firewall
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-
-P.S. With these rules, it should only log packets that are failing, and I
-see the packets on port 137 in the log, so I don't know what's wrong.
+On Tue, 2002-11-26 at 12:20, Sam Pointer wrote:
+> Before I carry, please feel free to tell me FAQ off; I have quickly scanned
+> the archive and google and haven't found a solution to this problem - but
+> I'm open to suggestions.
+> 
+> I'm initialising iptables on RH Linux 8. When I start iptables I am getting
+> the error message " can't initialize iptables table `' ". 
+> 
+> Now, I issued `lsmod` and I have both "iptable_filter" and "ip_tables"
+> modules loaded.
+> 
+> I initially tried starting ipchains with a whole raft of rules, but even
+> starting with the single rule:
+> 
+> -P INPUT DROP
+> 
+> causes this error to appear.
+> 
+> When I reboot the machine and check my syslog messages, I notice that
+> iptables-restore is issuing a modprobe for module `iptable_`, as in:
+> 
+> iptables: Applying iptables firewall rules
+> modprobe: modprobe: Can't locate module iptable_
+> modprobe: modprobe: Can't locate module iptable_
+> ...
+> iptables: can't initialize iptables table `' (do you need to insmod?)
+> 
+> which leads me to believe that some table module it requires isn't loaded.
+> Is this correct, and if so how is this. I'm only using the default "filter"
+> table (which is loaded) with my single policy rule...
+> 
+> Any help or pointers to solutions would be greatly appreciated.
+> 
+> 
+> This email and any attachments are strictly confidential and are intended
+> solely for the addressee. If you are not the intended recipient you must
+> not disclose, forward, copy or take any action in reliance on this message
+> or its attachments. If you have received this email in error please notify
+> the sender as soon as possible and delete it from your computer systems.
+> Any views or opinions presented are solely those of the author and do not
+> necessarily reflect those of HPD Software Limited or its affiliates.
+> 
+>  At present the integrity of email across the internet cannot be guaranteed
+> and messages sent via this medium are potentially at risk.  All liability
+> is excluded to the extent permitted by law for any claims arising as a re-
+> sult of the use of this medium to transmit information by or to 
+> HPD Software Limited or its affiliates.
+> 
+> 
 
 
