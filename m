@@ -1,13 +1,12 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: rp-l2tpd iptables and rh9 but no google
-Date: 18 Jul 2003 21:49:19 +0200
+From: "thomas krause" <thomas.krause@mmonline.de>
+Subject: Public Webserver behind IPtables Router
+Date: Fri, 18 Jul 2003 23:41:16 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1058557759.16546.2.camel@porky>
-References: <HBELLDKFGOFPEHBLCFCLCEBJCCAA.rverduij@dds.nl>
+Message-ID: <001c01c34d75$51848ea0$5001a8c0@linux>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-VPwxpnCEelprnY0xofgW"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0019_01C34D86.14B330B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <HBELLDKFGOFPEHBLCFCLCEBJCCAA.rverduij@dds.nl>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,46 +18,106 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
 
---=-VPwxpnCEelprnY0xofgW
-Content-Type: text/plain; charset=iso-8859-15
+------=_NextPart_000_0019_01C34D86.14B330B0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-Le ven 18/07/2003 =E0 21:01, Rob Verduijn a =E9crit :
-> Hi there,
->=20
-> I've got this curious problem with netfilter.
+Hello , i tried to set up an IPTables Router for my Webserver. All hosts =
+have has an official IP Adress. The eth0 of the Router is in a seperate =
+Net.
 
-> I did
-> echo 1 > /proc/sys/net/ipv4/ip_forward
+The config on the Router  is like this :
 
->=20
-> I can ping google so icmp seems to work but I can't surf the web for goog=
-le.
-> Neither windows nor linux will work.
 
-You may have look to the MTU, with encapsulation in L2TP you loose some
-bytes.
-To test try increase your ping size with the -s option.
+---------<Router>----------------------<WEBServer>
+eth0               eth1                  eth0
 
-If it is working with -s 1500 then try to look at tcpmss.
 
-BR,
---=20
-Eric Leblond <eric@regit.org>
 
---=-VPwxpnCEelprnY0xofgW
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+# Allow ssh ( 0.0.0.0/0 is replaced by my own client IP )
+iptables -P INCOMING DROP
+iptables -A INCOMING -s 0.0.0.0/0 -p tcp --dport 22 -j ACCEPT
 
-iD8DBQA/GE8/nxA7CdMWjzIRAsBGAJ91450p/Je2jKFLo+MMu5uytSSsSACfUSdD
-v/g5thnMkbFmX7YGDfeo0Fk=
-=CtGV
------END PGP SIGNATURE-----
 
---=-VPwxpnCEelprnY0xofgW--
+iptables -P FORWARD DROP
+iptables -A FORWARD -s 0.0.0.0/0 -p tcp --dport 80 -j ACCEPT
+
+iptables -P OUTPUT ALLOW
+
+
+Will this work ? O.K. Iam a Newbie but i will learn !
+
+
+MfG Thomas
+
+
+
+------=_NextPart_000_0019_01C34D86.14B330B0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3315.2870" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello , i tried to set up an IPTables =
+Router for my=20
+Webserver. All hosts have has an official IP Adress. The eth0 of the =
+Router is=20
+in a&nbsp;seperate Net.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>The config on the Router  is like this=20
+:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial=20
+size=3D2>---------&lt;Router&gt;----------------------&lt;WEBServer&gt;</=
+FONT></DIV>
+<DIV><FONT face=3DArial=20
+size=3D2>eth0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;=20
+eth1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+eth0</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2># Allow ssh ( 0.0.0.0/0 is replaced by =
+my own=20
+client IP )</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -P INCOMING DROP</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -A INCOMING -s 0.0.0.0/0 -p =
+tcp --dport 22=20
+-j ACCEPT</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -P FORWARD DROP</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -A FORWARD -s 0.0.0.0/0 -p tcp =
+--dport 80=20
+-j ACCEPT</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>iptables -P OUTPUT ALLOW</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Will this work ? O.K. Iam a Newbie but =
+i will learn=20
+!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>MfG Thomas</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0019_01C34D86.14B330B0--
+
 
