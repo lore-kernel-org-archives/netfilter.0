@@ -1,14 +1,10 @@
-From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
-Subject: Re: What to do to protet our send from the attacks which is caused
- by	worms?
-Date: Fri, 17 Sep 2004 14:20:57 -0500
+From: Hudson Delbert J Contr 61 CS/SCBN <Delbert.Hudson@LOSANGELES.AF.MIL>
+Subject: RE: Blocking Netranges Based on IP-to-Country CSV
+Date: Fri, 17 Sep 2004 13:16:00 -0700
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <414B3919.90503@pbl.ca>
-References: <BAY12-F11jlA733LJa500009c09@hotmail.com>
+Message-ID: <7EACCDBB65D37443912D80713CC1245D02382B0D@fsnsab20.losangeles.af.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY12-F11jlA733LJa500009c09@hotmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +14,53 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
+
+
+depends on what you call a 'legitimate' connection.
+if the guy is browsing the web and comes upon say perhaps .....your website
+why would he not be considered 'legitimate' because you dont like the
+'reputation'...
+
+####################################
+# delbert.hudson@losangeles.af.mil #
+#        61cs/scbn, 3-0182         #
+####################################
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Nick Drage
+Sent: Friday, September 17, 2004 4:46 AM
 To: netfilter@lists.netfilter.org
+Subject: Re: Blocking Netranges Based on IP-to-Country CSV
 
-Red Hat wrote:
-> Hi,
+
+On Thu, Sep 16, 2004 at 09:33:03AM -0700, Hudson Delbert J Contr 61 CS/SCBN
+wrote:
 > 
-> What to do to protet our send from the attacks which is caused by worms in
-> Microsoft XP OS of our users? Our user may have worms in their system & it
-> causes that our send go up & up that our send is going upper than which we
-> have to use.
+> why do this ?
 
-How about installing all updates from MS, and putting some anti-virus on 
-your mail server, so that your users don't get infected in the first place?
+There's a good set of reasons on:
 
-Other than that, on the firewall close everything down, and allow only 
-what you need (no direct outgoing connections from user's computers, no 
-direct incoming connections to user's computers, only incomming/outgoing 
-to/from servers in DMZ).
+http://ip-to-country.webhosting.info/
+
+> seems a bit nasty in nature.
+
+Depends how you use the information.  And to be honest considering the
+reputation of some sources of traffic, such as Korea and South America,
+which might be unlikely to have legitimate connections to your site, it
+would be handy to block them all.
+
+> we dont even do this sort of thing? see email addy...
+
+But you're a worldwide organisation, and I think there's much more that
+you can do with this than just block.  For example, has anything figured
+out a way to tie this into logging rules, it would great to see which
+countries I'm being attacked from.
 
 -- 
-Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
-Systems Administrator                           1499 Buffalo Place
-Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
+mors omnia vincit
 
