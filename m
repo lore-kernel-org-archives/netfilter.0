@@ -1,10 +1,11 @@
-From: "Justin Booth" <jbooth@ccbill.com>
-Subject: Internal connection to an External port forwarded ip.
-Date: Mon, 24 Mar 2003 02:23:13 -0700
+From: Steve Cherry <steve.cherry@brandid.co.uk>
+Subject: Re: Redirect for transparent proxy does not work with https
+Date: Mon, 24 Mar 2003 10:08:57 +0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <005301c2f1e6$fed1ce50$3500000a@WORKSTATION>
+Message-ID: <3E7ED939.5060500@brandid.co.uk>
+References: <20030321175750.6512.qmail@hm36.locaweb.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,49 +16,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "Luis Fernando C. Talora" <talora-listas@talora.com.br>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+You cannot transparent proxy HTTPS, it's inherent in the design of SSL
 
-    I'm not currently part of the mailing list so please carbon me on any
-replies.   The current configuration is:
+Have a look at
 
-Firewall (2 interfaces):
-    eth0: a.b.c.d
-    eth0:1 a.b.c.e  ( e = d+1 ... I got a small netblock of about 5 ip's)
-    eth1: 192.168.0.1
+http://en.tldp.org/HOWTO/mini/TransparentProxy-2.html
 
-Internal Web Server (1 interface):
-    eth0: 192.168.0.2
+section 2.3
 
-a.b.c.d and a.b.c.e is a public IP address.
+Luis Fernando C. Talora wrote:
 
-Current Rules I'm useing are this:
+>Fellows,
+>
+>I've tried to use RedHat Linux 8.0 to build a transparent proxy with squ=
+id (squid-2.4.STABLE7-4) and netfilter=20
+>(iptables-1.2.6a-2). Squid is listening on port 8080. When a http packet=
+ arrives, the requisition appears on squid=20
+>log and the page is viewed nicely. When a https requisition is made, squ=
+id seem not to recieve the redirection=20
+>from netfilter, though. The nat rule used for redirection follows:
+>
+>      iptables -t nat A PREROUTING -i $EXTERNAL_INTERFACE -p tcp -d ! $I=
+NTERNAL_NETWORK -m multiport --
+>dports 80,443 -j REDIRECT --to-port 8080
+>
+>Can anybody please help me?
+>
+>Thanks a lot!
+>
+>Regards,
+>
+>Lu=EDs Fernando C. Talora
+>
+>
 
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source a.b.c.d
-iptables -t nat -A PREROUTING -i eth0 -d a.b.c.e -p tcp --dport 1000 -j
-DNAT --to-destination 192.168.0.2
-iptables -t nat -A PREROUTING -i eth0 -d a.b.c.e -p tcp --dport 80 -j
-DNAT --to-destination 192.168.0.2
-
-Everything looks like it's fine and dandy, from the outside of eth0
-everything is fine. I can connect to both port 1000 and port 80 on eth0:1
-from any outside source. I have another internal machine on 192.168.0.3. The
-problem I am currntly haveing  is that the 192.168.0.3 machine cannot
-connect to the forwarded ports on eth0:1 (a.b.c.e) interface, ports 1000 and
-80. All I seem to get is a "Connection Refused" unless I add the rule:
-
-iptables -t nat -A PREROUTING -i eth1 -d a.b.c.e -p tcp --dport 80 -j
-DNAT --to-destination 192.168.0.2
-
-In which case I get a hung connection on "SYN_SENT" with incomming
-connection to the 192.168.0.2 machine.
-
-any help would greatly be appreciated.
-
-Thanks in advance,
-    Justin Booth
-    jbooth@ccbill.com
 
 
