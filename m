@@ -1,15 +1,11 @@
-From: Alistair Tonner <Alistair@nerdnet.ca>
-Subject: Re: Two IP add
-Date: Thu, 5 Jun 2003 21:10:47 -0400
+From: Dr Aldo Medina <aldomedina@hotpop.com>
+Subject: Test script for P2P
+Date: 05 Jun 2003 23:16:44 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200306052110.47892.Alistair@nerdnet.ca>
-References: <200306051156.45624.pandre@darkstar.nom.za> <200306051856.48803.Alistair@nerdnet.ca> <200306060156.08079.pc-secure@home.nl>
-Reply-To: Alistair@nerdnet.ca
+Message-ID: <1054873047.864.211.camel@linuxclient>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200306060156.08079.pc-secure@home.nl>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,99 +16,213 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Pascal Italiaander <pc-secure@home.nl>, Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On June 5, 2003 07:56 pm, Pascal Italiaander wrote:
-> Op vrijdag 6 juni 2003 00:56, schreef u:
-> > On June 5, 2003 01:54 pm, Pascal Italiaander wrote:
-> > > Op donderdag 5 juni 2003 19:51, schreef u:
-> > > > Op donderdag 5 juni 2003 15:29, schreef Ray Leach:
-> > > > > On Thu, 2003-06-05 at 13:38, Dharmendra.T wrote:
-> > > > > > On Thu, 2003-06-05 at 15:26, Paulo Andre wrote:
-> > > > > >         I would like to do the following:
-> > > > > >
-> > > > > >         Stop MASQUESRADING to two servers say. 10.10.10.5 and
-> > > > > > 10.10.10.8, how would i do this with a rule.
-> > > > > >
-> > > > > >         iptables -t nat -A POSTROUTING -s x.x.x.x -d ! 'servers
-> > > > > > ip' -j MASQUERADE now how would i put in two ip address's ?
-> > > >
-> > > > Ok , you could do something like this:
-> > >
-> > > sorry in the first reply was an error !!
-> > > this is fixed now.
-> > >
-> > >  NO_MASK="10.10.10.5 10.10.10.8"
-> > >
-> > >  if [ ${NO_MASK} != "" ] ; then
-> > >    for nomask in ${NO_MASK}; do
-> > >   	iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j
-> > > MASQUERADE done;
-> > >  fi
-> > >
-> > > > this is a bit more flexible, cause , you can ad more ip's the NO_MASK
-> > > > easily without changing the rule itself, or have to write a new line.
-> > >
-> > >  Pascal
-> >
-> > 	I somehow don't think this will do what we want here.
-> > 	rule 1 from this loop will MASQUERADE any ip that is
-> > 	NOT 10.10.10.5, which unfortunately includes 10.10.10.8
-> > 	and rule #2 will never be hit by the 10.10.10.8 packet.
-> >
-> > 	I would suggest that we want to take the entire segment
-> > 	and manage it separately, but I have no experience with
-> > 	creating user chains in the nat table, although this *might*
-> > 	work -- ymmv
-> >
-> >
-> > iptables -t nat -N masq_filter
-> > iptables -t nat -A POSTROUTING -s x.x.x.x -d 10.10.10.0/24 -j masq_filter
-> > # the above line includes an assumption that MIGHT BE WRONG!!!! I dont
-> > know # what your netmask is!!!!!!!!!
-> > iptables -t nat -A masq_filter -d 10.10.10.5 -j RETURN
-> > iptables -t nat -A masq_filter -d 10.10.10.8 -j RETURN
-> > iptables -t nat -A masq_filter -j MASQUERADE
-> >
-> > 	filling in out the ips to NOT masquerade one at a time, perhaps with a
-> > loop as pascal suggests above, with appropriate modifications...
->
-> Yes correct , now you mention it , I see it also.
-> 2 lines where added to the filter-list and would not traverse the firewall
-> if IP was 10.10.10.8
->
-> however the syntax could be reused, with this modification.
-> So combined the information together we get this example;
->
-> MASQ="yes' #Do you need masquerading ?
-> NO_MASK="10.10.10.5 10.10.10.8" #IP's who don't need masquerading(watch the
-> single-space)
-> INET="10.10.10.0/24" #Local network + subnet
-> EX_IF="eth0" #External interface
->
-> if [ ${MASQ} == "yes" ]; then
->    if [ ${NO_MASK} != "" ] ; then
->         for nomask in ${NO_MASK}; do
->  		iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j RETURN
-> 		iptables -A POSTROUTING -t nat -s ${INET} -o ${EX_IF} -j MASQUERADE
->  	done;
-> 		else
-> 			iptables -A POSTROUTING -t nat -s ${INET} -o ${EX_IF} -j MASQUERADE
->  fi
->
-> greetings Pascal
-> have fun
+Based in wshaper:
 
-	Now we're getting somewhere, but you need to take out the !
-	iptables -t nat -A POSTROUTING -s x.x.x.x -d ! ${nomask} -j RETURN
-	should be
-	iptables -t nat -A POSTROUTING -s x.x.x.x -d  ${nomask} -j RETURN
--- 
+#!/bin/bash
 
-	Alistair Tonner
-	nerdnet.ca
-	Senior Systems Analyst - RSS
-	
-     Any sufficiently advanced technology will have the appearance of magic.
-	Lets get magical!
+# MLDonkey Wondershaper
+# In kilobits
+
+DOWNLINK=256
+UPLINK=128
+DEV=ppp0
+QLEN=30 #Default 3
+RQ=1    #Default 10
+BURST=30 #Default 6
+CLASS12="http/tcp/both pop3/tcp/dport pop3s/tcp/dport https/tcp/dport
+8080/tcp/b
+oth nntp/tcp/both"
+
+case "$1" in
+   start)
+      IPTCMD="iptables -A WSHAPER -t mangle -p"
+
+      tc disc del dev $DEV root 2> /dev/null > /dev/null
+      tc disc del dev $DEV ingress 2> /dev/null > /dev/null
+      tc disc del dev imq0 root 2> /dev/null > /dev/null
+      iptables -t mangle -D POSTROUTING -o $DEV -j WSHAPER 2> /dev/null
+\
+         > /dev/null
+      ip link set dev $DEV qlen $QLEN
+      tc qdisc add dev $DEV root handle 1: htb r2q $RQ default 13
+      
+      tc class add dev $DEV parent 1: classid 1:1 htb rate
+$[$UPLINK-2]kbit \
+            ceil $[$UPLINK-2]kbit burst ${BURST}k
+      tc class add dev $DEV parent 1:1 classid 1:10 htb rate \
+            $[(($UPLINK-2)*17)/100]kbit ceil $[$UPLINK-2]kbit prio 2
+      tc class add dev $DEV parent 1:1 classid 1:11 htb rate \
+            $[(($UPLINK-2)*40)/100]kbit ceil $[$UPLINK-2]kbit prio 0
+      tc class add dev $DEV parent 1:1 classid 1:12 htb rate \
+            $[(($UPLINK-2)*40)/100]kbit ceil $[$UPLINK-2]kbit prio 1
+      tc class add dev $DEV parent 1:1 classid 1:13 htb rate \
+            1kbit ceil $[$UPLINK-2]kbit prio 3
+      
+      tc qdisc add dev $DEV parent 1:10 handle 10: sfq perturb 10
+      tc qdisc add dev $DEV parent 1:11 handle 11: sfq perturb 10
+      tc qdisc add dev $DEV parent 1:12 handle 12: sfq perturb 10
+      tc qdisc add dev $DEV parent 1:13 handle 13: sfq perturb 10
+
+      tc filter add dev $DEV parent 1:0 prio 0 protocol ip handle 10 \
+         fw flowid 1:10
+      tc filter add dev $DEV parent 1:0 prio 1 protocol ip handle 11 \
+         fw flowid 1:11
+      tc filter add dev $DEV parent 1:0 prio 2 protocol ip handle 12 \
+         fw flowid 1:12
+      tc filter add dev $DEV parent 1:0 prio 3 protocol ip handle 13 \
+         fw flowid 1:13
+
+     iptables -t mangle -N WSHAPER
+     iptables -t mangle -I POSTROUTING -o $DEV -j WSHAPER
+
+     # Class 10
+     $IPTCMD tcp -m length --length :64 -j MARK --set-mark 10   ## ACKs
+
+     # $IPTCMD tcp -p tcp --tcp-flags ACK -j MARK --set-mark 10
+     
+     # Class 11
+     $IPTCMD tcp --dport ssh -j MARK --set-mark 11              ## SSH
+     $IPTCMD tcp --sport ssh -j MARK --set-mark 11
+     $IPTCMD icmp -j MARK --set-mark 11                         ## ICMP
+     $IPTCMD udp --dport domain -j MARK --set-mark 11           ## DNS
+     $IPTCMD all --source 192.168.0.2 -j MARK --set-mark 11     ##
+linuxclient
+     $IPTCMD all --destination 192.168.0.2 -j MARK --set-mark 11
+     $IPTCMD all --source 192.168.0.3 -j MARK --set-mark 11     ##
+linuxlaptop
+     $IPTCMD all --destination 192.168.0.3 -j MARK --set-mark 11
+     $IPTCMD all --source 192.168.0.4 -j MARK --set-mark 11     ##
+compaqlaptop
+     $IPTCMD all --destination 192.168.0.4 -j MARK --set-mark 11
+
+     # Class 12
+     for PORTPROTODEST in $CLASS12 ; do
+        PORT=`echo $PORTPROTODEST | awk -F/ '{print $1}'`
+        PROTO=`echo $PORTPROTODEST | awk -F/ '{print $2}'`
+        DEST=`echo $PORTPROTODEST | awk -F/ '{print $3}'`
+
+       if [ "$PROTO" = "both" ]; then
+           if [ "$DEST" = "both" ]; then
+              $IPTCMD tcp --dport $PORT -j MARK --set-mark 12
+              $IPTCMD udp --sport $PORT -j MARK --set-mark 12
+              $IPTCMD tcp --sport $PORT -j MARK --set-mark 12
+              $IPTCMD udp --dport $PORT -j MARK --set-mark 12
+           else
+              $IPTCMD tcp --$DEST $PORT -j MARK --set-mark 12
+              $IPTCMD udp --$DEST $PORT -j MARK --set-mark 12
+           fi
+        else
+           if [ "$DEST" = "both" ]; then
+              $IPTCMD $PROTO --dport $PORT -j MARK --set-mark 12
+              $IPTCMD $PROTO --sport $PORT -j MARK --set-mark 12
+           else
+              $IPTCMD $PROTO --$DEST $PORT -j MARK --set-mark 12
+           fi
+        fi
+      done
+
+      # Class 13 default
+      $IPTCMD udp --sport 4660:4670 -j MARK --set-mark 13
+      $IPTCMD udp --dport 4660:4670 -j MARK --set-mark 13
+      $IPTCMD tcp --sport 4660:4670 -j MARK --set-mark 13
+      $IPTCMD tcp --dport 4660:4670 -j MARK --set-mark 13
+      $IPTCMD udp --dport 8948 -j MARK --set-mark 13
+      $IPTCMD tcp --dport 8948 -j MARK --set-mark 13
+      $IPTCMD udp --sport 8948 -j MARK --set-mark 13
+      $IPTCMD tcp --sport 8948 -j MARK --set-mark 13
+
+tc qdisc add dev imq0 handle 1: root htb default 1
+tc class add dev imq0 parent 1: classid 1:1 htb rate $[DOWNLINK-2]kbit
+tc qdisc add dev imq0 parent 1:1 handle 10: htb default 5
+tc class add dev imq0 parent 10: classid 10:1 htb \
+  rate $[((DOWNLINK-2)*10)/100]kbit ceil $[DOWNLINK-2]kbit burst 30k
+prio 1
+tc class add dev imq0 parent 10: classid 10:2 htb \
+  rate $[((DOWNLINK-2)*70)/100]kbit ceil $[DOWNLINK-2]kbit burst 30k
+prio 2
+tc class add dev imq0 parent 10: classid 10:5 htb \
+  rate $[((DOWNLINK-2)*20)/100]kbit ceil $[DOWNLINK-2]kbit prio 3
+tc qdisc add dev imq0 parent 10:1 handle 21:0 pfifo
+tc qdisc add dev imq0 parent 10:2 handle 22:0 sfq
+tc qdisc add dev imq0 parent 10:5 handle 23:0 sfq
+tc filter add dev imq0 protocol ip pref 1 parent 10: handle 1 fw classid
+10:1
+tc filter add dev imq0 protocol ip pref 2 parent 10: handle 2 fw classid
+10:2
+iptables -t mangle -A PREROUTING -i $DEV -j IMQ
+iptables -t mangle -A PREROUTING -i $DEV -p tcp -m tos --tos
+minimize-delay -m s
+tate --state ESTABLISHED -j MARK --set-mark 1
+iptables -t mangle -A PREROUTING -i $DEV -p tcp -m length --length :64
+-j MARK -
+-set-mark 1
+iptables -t mangle -A PREROUTING -i $DEV -p tcp --dport 22  -m state
+--state EST
+ABLISHED -j MARK --set-mark 2
+iptables -t mangle -A PREROUTING -i $DEV -p tcp --sport 80 --dport 1024:
+-m stat
+e --state ESTABLISHED -j MARK --set-mark 2
+iptables -t mangle -A PREROUTING -i $DEV -p tcp --dport 80 --sport 1024:
+-m stat
+e --state ESTABLISHED -j MARK --set-mark 2
+iptables -t mangle -A PREROUTING -i $DEV -p tcp --sport 443 --dport
+1024: -m sta
+te --state ESTABLISHED -j MARK --set-mark 2
+iptables -t mangle -A PREROUTING -i $DEV -p tcp --sport pop3 -m state
+--state ES
+TABLISHED -j MARK --set-mark 2
+iptables -t mangle -A PREROUTING -i $DEV -p udp --sport domain -j MARK
+--set-mar
+k 2
+iptables -t mangle -A PREROUTING -i $DEV -p icmp -j MARK --set-mark 2
+ip link set imq0 up
+  
+   echo "wshaper started"
+      ;;
+   stop)
+      iptables -t mangle -D POSTROUTING -o $DEV -j WSHAPER 2> /dev/null
+\
+         > /dev/null
+      iptables -t mangle -D PREROUTING -i $DEV -j WSHAPER 2> /dev/null \
+         > /dev/null
+      iptables -t mangle -D PREROUTING -i $DEV -j IMQ 2> /dev/null \
+         > /dev/null
+      iptables -t mangle -F PREROUTING 2> /dev/null >/dev/null
+      iptables -t mangle -F WSHAPER 2> /dev/null > /dev/null
+      iptables -t mangle -X WSHAPER 2> /dev/null > /dev/null
+
+      tc qdisc del dev $DEV root 2> /dev/null > /dev/null
+      tc qdisc del dev $DEV ingress 2> /dev/null > /dev/null
+      tc qdisc del dev imq0 root 2> /dev/null > /dev/null
+      echo "wshaper stopped"
+      ;;
+   restart)
+      $0 stop
+      $0 start
+      ;;
+   status)
+      # print anything interesting
+      echo "[qdisc]"
+      tc -s qdisc show dev $DEV
+      echo "[class]"
+      tc -s class show dev $DEV
+      echo "[iptables]"
+      iptables -t mangle -L WSHAPER -xnv
+      echo "[imq]"
+      tc -s qdisc show dev imq0
+      tc -s class show dev imq0
+      exit
+      ;;
+   *)
+      echo "Usage: $0 {start|stop|restart|status}"
+      ;;
+esac
+
+Any opinions? I'm particularly interested in the values for variables
+QLEN, RQ and BURST.
+
+
+
 
