@@ -1,10 +1,9 @@
-From: =?iso-8859-2?Q?Pawe=B3_Filutowski?= <pfilutowski@koperfam.pl>
-Subject: Problem with ppt_conntrack_nat
-Date: Wed, 15 Sep 2004 11:21:16 +0200
+From: "McFall, Gary" <Gary.McFall@dfi.state.wi.us>
+Subject: Blocking Netranges Based on IP-to-Country CSV
+Date: Wed, 15 Sep 2004 07:57:33 -0500
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <020101c49b05$5dc59c70$0a00a8c0@admin>
+Message-ID: <35A63C29D445834BA42FE172EC30EB3C01C54833@dfiemlp1.dfi.state.wi.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,23 +15,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hello,
-I have just compiled a new kernel 2.4.27 with iptables 1.2.11 and =
-patch-o-matic-ng-20040621
-First i tried to compile only kernel and iptables.
-Finally, everythings worked fine.
-But when I added the ppt_conntrack_nat (./runme pptp-conntrack-nat) and =
-I compiled kernel - I noticed that NAT(MASQUARADE) didn`t work (although =
-there wasn`t any errors during setting iptables).
-I use rc.firewall to setup iptables.
+Due to a number of issues, my organization is looking at being able to block
+certain country domains at the firewall.  To be proactive, we want to
+automate that process via iptables & the CSV available at
+<http://ip-to-country.webhosting.info <http://ip-to-country.webhosting.info>
+>.
 
-Can anyone help me ?
+We have created a C program (IPCheck) in the /bin directory which, when
+given an IP long number, checks the ip-to-country CSV and returns a value
+for permit or not.  We want to process the packet based on that return.  
 
+I'm a relative newbie with iptables & scripts.  Listed below is some very
+crude code, some of which is a verbal description of intent.  Any
+suggestions on how to shore this up so that it will work?  Or should this
+concept be a new module in iptables?
 
+#
+#    ***** DROP BAD IPS *****
+#
+/bin/IPCheck `grep -w "SRC =" | cut -d = -f 2`
+if return = "Bad IP"
+$IPT -A INPUT -$ETH0 $RATELIMIT -j INBADIPS
 
+      ***** RULES - DROP  BAD IPS *****
+#    ***** REVIEW LOG AT /var/log/iptables.log *****
+#
+$IPT -A  INBADIPS -j LOG --log-level debug --log-prefix "BADIP:  " -j DROP
 
+Thanks in advance for your help.
 
-
-
+Gary McFall
