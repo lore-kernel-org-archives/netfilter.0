@@ -1,13 +1,14 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>
 Subject: Re: MRTG and IPTABLES
-Date: Thu, 8 Jan 2004 12:07:48 +0000
+Date: Thu, 8 Jan 2004 07:13:18 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401081207.48443.Antony@Soft-Solutions.co.uk>
-References: <83055D4B014C9E478D2F04624B9E82CFD4D8@noveldc.novelgmt.mu>
+Message-ID: <200401080713.18385.danielf@supportteam.net>
+References: <83055D4B014C9E478D2F04624B9E82CFAE9660@noveldc.novelgmt.mu> <200401080927.05649.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <83055D4B014C9E478D2F04624B9E82CFD4D8@noveldc.novelgmt.mu>
+In-Reply-To: <200401080927.05649.Antony@Soft-Solutions.co.uk>
+Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -20,38 +21,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 08 January 2004 11:56 am, Gilles Yue wrote:
+DOH! I do this all time, sorry.  He's right no $ign before the SNMP_POLLER_IP 
 
-> Hi,
+Also I never set the nat tables or mangle tables to drop unless im using them 
+and I have accept rules for all my traffic in them. 
+
+On Thursday 08 January 2004 03:27, Antony Stone wrote:
+> On Thursday 08 January 2004 6:47 am, Gilles Yue wrote:
+> > Dear sir,
+> >
+> > Have tried your commands below but when I run my iptables script,
+> >
+> > I get "command not found" and it points to the line
+> >
+> > $SNMP_POLLER_IP="xxx.xxx.xxx.xxx"
 >
-> 	I have opened port 161 in my firewall script.
+> There should be no $ at the beginning of this line.
 >
-> 	$IPTABLES -A INPUT -p udp -m udp --dport 161 -j ACCEPT
+> Shell scripts use $ when referencing a variable, not when defining it or
+> assigning to it.   This is different from Perl.
 >
-> 	However, POSRTOUTING SET TO DROP By default, is preventing MRTG
-> from 	running properly. (I have tried setting POSTROUTING TO ACCEPT
-> and MRTG 	works fine)
->
-> 	$IPTABLES -t nat -P POSTROUTING DROP
-
-That is a very bad idea.
-
-The nat tables are for address translation, not for filtering.
-
-The filter tables are for filtering - that's where you should be DROPping 
-packets.
-
-Set the policy on POSTROUTING back to ACCEPT, and by all means tell us if this 
-causes you any problems.
-
-Regards,
-
-Antony.
+> Antony.
 
 -- 
-If at first you don't succeed, destroy all the evidence that you tried.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Daniel Fairchild - Chief Security Officer | danielf@supportteam.net
+The distance between nothing and infinity is always the same no matter how 
+close you get to nothing.
 
