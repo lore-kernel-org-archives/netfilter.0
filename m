@@ -1,127 +1,69 @@
-From: "Sneppe Filip" <Filip.Sneppe@cronos.be>
-Subject: RE: xdmcp
-Date: Sat, 9 Nov 2002 14:35:42 +0100
-Sender: netfilter-devel-admin@lists.netfilter.org
-Message-ID: <E131E9F1848D0148813EAF06A846608FD776F0@w2ks-e2k.iconos.be>
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: Question on PREROUTING and INPUT chains
+Date: Sat, 9 Nov 2002 07:32:41 -0500 (EST)
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <Pine.LNX.4.44.0211090730120.15561-100000@dell>
+References: <H52KD3$II79GwJU6pjw8ZNZc1oYk1taD6_z_kdUix49OEr@uol.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C287F4.E67984EE"
-Return-path: <netfilter-devel-admin@lists.netfilter.org>
-content-class: urn:content-classes:message
-Errors-To: netfilter-devel-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <H52KD3$II79GwJU6pjw8ZNZc1oYk1taD6_z_kdUix49OEr@uol.com.br>
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
-To: Min Li <li9@expert.ics.purdue.edu>, laforge@gnumonks.org, linux96@netsarang.com
-Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: netfilter mailing list <netfilter@lists.netfilter.org>
 
-This is a multi-part message in MIME format.
+On Mon, 4 Nov 2002, Carlos Fa=C4=BFanha wrote:
 
-------_=_NextPart_001_01C287F4.E67984EE
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+> I have a Linux box used as NAT server and firewall. All =
 
-Min Li [mailto:li9@expert.ics.purdue.edu] wrote:
->Dear all,
->I am trying to make xdmcp work on red-hat 7.3. What I did was turn on =
-the
->flag in /etc/kde/kdm/kdmrc, make "enable =3D true", since I'm using =
-kde.
->However, my exceed on the windows still cannot see the broadcast from =
-the
->linux machine. Please advise. Thanks a lot. I also checked the firewall
->rules in /etc/sysconfig/iptables, and make sure port 177 is not =
-blocked.
+> requests on its port 80 are forwarded to a local webserver =
 
-Hi Min,
+> inside my network. I want to block access to all services =
 
-I think the problem is that the xdmcp protocol requires a special
-helper module to add the necessary connection expectations, since
-it appears to open random connections, like ftp for instance.
+> including http from a specific external host.
+> =
 
-This raises an interesting question: Here:
-http://cvs.netfilter.org/cgi-bin/cvsweb/netfilter-extensions/helpers/xdmc=
-p/
-is some work on a conntrack helper/nat module by Hojae Lee, apparently.
+> I'm using the following rule to block the host
+> =
 
-I've never heard any noise about this, the code is not available in
-standard patch-o-matic, and I am also wondering what the whole
-/netfilter-extensions CVS directory is all about ?
-Perhaps Harald knows more about this...
+> iptables -A INPUT -i $extint -s $hostip -j DROP
+> =
 
-Regards,
-Filip
+> and this one to do the NAT
+> =
 
+> iptables -t nat -A PREROUTING -p tcp --dport 80 -d $extip -j =
 
+> DNAT --to $webserverip:80
+> =
 
+> The problem is that the host is blocked from accessing all =
 
+> services but http. I've already checked if there are any =
 
-------_=_NextPart_001_01C287F4.E67984EE
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+> rules before that ACCEPT the request. It seems that prerouted =
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3DWindows-1252">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.6249.1">
-<TITLE>RE: xdmcp</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
+> packets are bypassing the INPUT chain.
 
-<P><FONT SIZE=3D2>Min Li [<A =
-HREF=3D"mailto:li9@expert.ics.purdue.edu">mailto:li9@expert.ics.purdue.ed=
-u</A>] wrote:<BR>
-&gt;Dear all,<BR>
-&gt;I am trying to make xdmcp work on red-hat 7.3. What I did was turn =
-on the<BR>
-&gt;flag in /etc/kde/kdm/kdmrc, make &quot;enable =3D true&quot;, since =
-I'm using kde.<BR>
-&gt;However, my exceed on the windows still cannot see the broadcast =
-from the<BR>
-&gt;linux machine. Please advise. Thanks a lot. I also checked the =
-firewall<BR>
-&gt;rules in /etc/sysconfig/iptables, and make sure port 177 is not =
-blocked.<BR>
-<BR>
-Hi Min,<BR>
-<BR>
-I think the problem is that the xdmcp protocol requires a special<BR>
-helper module to add the necessary connection expectations, since<BR>
-it appears to open random connections, like ftp for instance.<BR>
-<BR>
-This raises an interesting question: Here:<BR>
-<A =
-HREF=3D"http://cvs.netfilter.org/cgi-bin/cvsweb/netfilter-extensions/help=
-ers/xdmcp/">http://cvs.netfilter.org/cgi-bin/cvsweb/netfilter-extensions/=
-helpers/xdmcp/</A><BR>
-is some work on a conntrack helper/nat module by Hojae Lee, =
-apparently.<BR>
-<BR>
-I've never heard any noise about this, the code is not available in<BR>
-standard patch-o-matic, and I am also wondering what the whole<BR>
-/netfilter-extensions CVS directory is all about ?<BR>
-Perhaps Harald knows more about this...<BR>
-<BR>
-Regards,<BR>
-Filip<BR>
-<BR>
-<BR>
-<BR>
-</FONT>
-</P>
+as i read it, filtering on INPUT is only going to be effective
+for those packets that are destined for the local host itself.
+setting up nat PREROUTING sends those incoming packets, not to
+filter/INPUT, but through the FORWARD chain.
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C287F4.E67984EE--
+if you want to drop some outside host from getting thru to the
+internal webserver, you should add the DROP rule, not to INPUT,
+but to FORWARD.
+
+unless, of course, i'm badly mistaken.
+
+rday
+
 
