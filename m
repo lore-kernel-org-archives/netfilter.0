@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Input chain, traffic from interface lo
-Date: Wed, 08 Dec 2004 08:00:05 -0500
-Message-ID: <1102510805.3556.2.camel@hubcap.ljm.dom>
-References: <20041208123229.14114.qmail@web54106.mail.yahoo.com>
+From: "Jorge Bastos" <mysql.jorge@decimal.pt>
+Subject: Re: How to control the bandwidth
+Date: Wed, 8 Dec 2004 13:15:19 -0000
+Message-ID: <001501c4dd27$f9c5f660$0101a8c0@jorge>
+References: <MDAEMON-F200412082053.AA5333898md50000000155@palettemm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20041208123229.14114.qmail@web54106.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,32 +19,36 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2004-12-08 at 07:32, Vesselin Kostadinov wrote:
-> Hi,
-> 
-> The current "Iptables Tutorial" contains the following lines:
-> 
-> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LO_IP -j ACCEPT
-> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $LAN_IP -j ACCEPT
-> $IPTABLES -A INPUT -p ALL -i $LO_IFACE -s $INET_IP -j ACCEPT
-> 
-> where $LO_IFACE is "lo", $LO_IP is "127.0.0.1", $LAN_IP is "192.168.0.2" and
-> $INET_IP is "194.236.50.155". 
-> 
-> I fully agree with the first line but I am a bit puzzled by the other 2
-> lines. Is there any chance packets with source IP other than 127.0.0.1 to
-> come from interface lo?
+i use shaperd
 
-no.  the linux routing code drops packets with source IP != 127.0.0.1
-received on lo as a "martian source."
+----- Original Message ----- 
+From: "Bassam A. Al-Khaffaf" <bassam@palettemm.com>
+To: <netfilter@lists.netfilter.org>
+Sent: Wednesday, December 08, 2004 12:51 PM
+Subject: How to control the bandwidth
 
-i used to have the actual line in the source code handy, but i'm sure
-some constructive grepping will get you there.
 
--j
 
---
-"Look, just give me some inner peace, or I'll mop the floor with ya!"
-	--The Simpsons
+Hi All,
+   I have Internet sharing Linux box (Redhat 9, Kernel 2.4.27, iptables
+1.2.11). All the traffic from the LAN side is MASQUERDED to the WAN side so
+that everyone can get access the Internet.
+
+My backbone bandwidth is 2 mbps, when some people on the LAN side try to use
+streaming downloads or use VoIP they will reserve the bandwidth and will
+deprive the others from accessing the Internet.
+
+How can I use the iptables firewall rules to control the bandwidth??
+
+Regards
+Bassam
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.806 / Virus Database: 548 - Release Date: 12/5/2004
+
+
+
 
 
