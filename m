@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: destination nat onto the same network
-Date: Thu, 17 Jun 2004 13:46:52 +0100
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Subject: RE: Allow active and passive FTP connections
+Date: Thu, 17 Jun 2004 09:06:00 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406171346.52719.Antony@Soft-Solutions.co.uk>
-References: <40D18C2D.9030700@phreaker.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <2E314DE03538984BA5634F12115B3A4E894FF3@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <40D18C2D.9030700@phreaker.net>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,33 +17,79 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Thursday 17 June 2004 1:18 pm, ro0ot wrote:
+root@p500:~# insmod ip_conntrack_ftp
+insmod: can't read 'ip_conntrack_ftp': No such file or directory
+root@p500:~#
 
-> Hi all,
->
-> I have one webserver inside my LAN but when I try to browse it via the
-> hostname (eg. www.example.com) from a workstation inside my LAN, the
-> browser can't reach the page.  Why?  From remote (outside), I can browse
-> to the website.
+- Insmod is when you load the module directly, there it would not work
+unless you were in the _same_ directory as the ip_conntrack_ftp and you
+renamed the ip_conntrack_ftp.{ko,o} ip_conntrack_ftp, then it would
+work.
 
-http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-10.html
+Otherwise, I do not see how you come to that conclusion.
 
-The best solution to this is to set up split DNS, so your internal clients get 
-the real (private) address, and external clients get the public address, when 
-resolving www.example.com.
+
+-----Original Message-----
+From: netfilter-admin@lists.netfilter.org
+[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+Sent: Thursday, June 17, 2004 8:23 AM
+To: netfilter
+Subject: Re: Allow active and passive FTP connections
+
+On Thursday 17 June 2004 1:13 pm, Piszcz, Justin Michael wrote:
+
+> I think he meant, modprobe ip_conntrack_ftp and if you are behind nat
+> there is a module for that as well.
+
+insmod should do the job perfectly well.
+
+NAT is very unlikely when the rules are running on the FTP server itself
+
+(they're in the INPUT & OUTPUT chains).
 
 Regards,
 
 Antony.
 
--- 
-Most people are aware that the Universe is big.
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Chris
+Brenton
+> Sent: Thursday, June 17, 2004 8:08 AM
+> To: Sagara Wijetunga
+> Cc: netfilter
+> Subject: Re: Allow active and passive FTP connections
+>
+> On Thu, 2004-06-17 at 07:03, Sagara Wijetunga wrote:
+> > I have following issues relating to above rules:
+> > 1. For active FTP requests by remote clients, it drops
+> > the data connection request to the remote client from
+> > the server on the OUTPUT chain.
+> >
+> > 2. For passive FTP requests by remote clients, it
+> > drops the data connection request to the server from
+> > remote clients on the INPUT chain.
+>
+> Try:
+> insmod ip_conntrack_ftp
+>
+> HTH,
+> C
 
- - Paul Davies, Professor of Theoretical Physics
+--=20
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing on usenet and in e-mail?
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+                                                     Please reply to the
+list;
+                                                           please don't
+CC me.
+
+
+
 
 
