@@ -1,14 +1,15 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: client on local network
-Date: Sun, 28 Mar 2004 09:48:45 +0100
+From: Frederic de Villamil <neuro@seclab.jp>
+Subject: Re: simple config question
+Date: Sun, 28 Mar 2004 11:53:50 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403280948.45991.Antony@Soft-Solutions.co.uk>
-References: <web-269277793@mail01.infosat.net>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <20040328095350.GA6334@jesus.seclab.jp>
+References: <000a01c41470$9dbe3ec0$8a361645@Earthlink.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <web-269277793@mail01.infosat.net>
+Content-Disposition: inline
+In-Reply-To: <000a01c41470$9dbe3ec0$8a361645@Earthlink.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,61 +19,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Eric McAfee <emcafee@earthlink.net>
+Cc: netfilter@lists.netfilter.org
 
-On Sunday 28 March 2004 9:31 am, IT Clown wrote:
 
-> Hi
->
-> i have setup a local network users iptables as follow to
-> access webpages:
->
-> :INPUT DROP [0:0]
->
-> -A INPUT -i eth0 -p tcp -m multiport --sport 80,8080 -j ACCEPT
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Let's just look at the above two rules I have extracted from your ruleset.
+On Sat, 27 Mar 2004, Eric McAfee wrote:
 
-The first says "default policy is to drop all incoming packets" (good idea).
+> I need to know the iptables command that would restrict all access to my server except for my computer's Dreamweaver program and ccbill's access to my password file. I know it would be some variation of:
+> iptables -A INPUT -i ppp0 -p tcp --syn -j DROP
 
-The second says "accept all TCP packets coming in through eth0 from any 
-address to any service providing the source port is 80 or 8080" (not such a 
-good idea).
+Hi,
+what  you're going  to do  is drop  every new  TCP connection  to your
+interface ppp0.
 
-This will allow anything to connect to anything it can find (or run a port 
-scan etc) so long as the remote system uses source port 80 or 8080.
+What you want to to should be something like that
 
-> I would like to know the way i set it up is it correct or is there a better
-> way.The client can browse.
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
 
-I really would recommend you do what was suggested to you on Friday by David 
-Cannings:
+iptables -A INPUT -s 127.0.0.1 -j ACCEPT
+iptables -A OUTPUT -s 127.0.0.1 -j ACCEPT
 
-> There are three things I would suggest.  The first is reading two
-> tutorials on http://www.netfilter.org/documentation/index.html -
-> specifically the "packet filtering HOWTO" and the "NAT HOWTO".
->
-> The second is Oskar's excellent iptables tutorial, at
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html.
->
-> The third is taking a while to work out what ports the services you
-> mention work on.  A basic feel for how TCP/IP connections work would help
-> too.  The knowledge that in most cases a client chooses a port >1024 and
-> connects to the service port should suffice.  People on the list could
-> easily list the ports you need to allow or deny but you'll learn a
-> tremendous amount by spending 10 minutes working it out.
+iptables -A INPUT -s $MACHINE -j ACCEPT
+iptables -A OUTPUT -s $MACHINE -j ACCEPT
 
-Regards,
+$machine is your machine IP address.
 
-Antony.
+regards
+Frederic
+--
+http://www.seclab.jp
 
--- 
-The first fifty percent of an engineering project takes ninety percent of the 
-time, and the remaining fifty percent takes another ninety percent of the 
-time.
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-                                                     Please reply to the list;
-                                                           please don't CC me.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (FreeBSD)
 
+iD8DBQFAZqCuYBnsNILdO64RAlOHAJ99bo5g4Hf/wRvy46Sv0IMRUIwPAQCfaERE
+DjsjDnaRHGY92aiw1DOYJ+4=
+=MgQJ
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
 
