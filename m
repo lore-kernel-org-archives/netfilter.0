@@ -1,8 +1,9 @@
-From: Joe Judge <joe_judge@guardium.com>
-Subject: to patch, or not to patch?
-Date: 27 Mar 2003 10:27:05 -0500
+From: Simone Leggio <tkt_legg@cs.helsinki.fi>
+Subject: Re: IP TOS based routing
+Date: Thu, 27 Mar 2003 17:33:04 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048778825.17439.7.camel@midgard.guardium.com>
+Message-ID: <3E8319B0.6000609@cs.helsinki.fi>
+References: <3E80187B.5030209@cs.helsinki.fi> <200303261316.35019.kimj@dawn.dk> <3E82A91F.7000108@cs.helsinki.fi> <019501c2f46c$8a47c5c0$25000c0a@Flaptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -15,32 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Rinse Kloek <rinse@solcon.nl>
+Cc: netfilter@lists.netfilter.org
 
+Rinse Kloek wrote:
+ > Hello,
+ >
+ > I have  a problem like this. Can somebody tell me how I can use 'ip 
+route'
+ > to do DSCP field based routing. I now can only use the TOS fields, but I
+ > want to use the DS fields too.
+ >
+ > How Come?
+ >
+ > Regards Rinse
 
-Should I do the Patch-o-matic to get the ROUTE patch?
-or is there a way to do this?
+The DS field is a TOS field "masked", so the use is pretty similar. 
+Only, pay attention because the coding is slightly different.
+I suggest to take a look to Linux traffix control tool howto:
 
+http://lartc.org/
 
-	-joe
+It is very well specified how to play with differentiated services, and 
+thus with the DS field.
+It is not stirctly related to routing, but it might give you an idea 
+about the coding.
+With regard to routing, I'm working on it too, so unfortunely I cannot 
+help you so much.
 
-I have a netfilter box on a monitoring port (span port)
-of a switch (eth0).
+	Simone.
 
-I want to:
-  - pick out the packets from  *-->server and
-  send them out the back-end eth1 interface.
-  - pick out the packets from  server-->* and
-  send them out the other back-end eth2 interface
-
-Long ago, in my solaris days, I used ipfilter -- which had a feature
-like the current ROUTE p-o-m patch, a "bypass system routing, go out
-this interface now" jump.
-
-
--- 
-Joe Judge <joe_judge@guardium.com>
-Guardium
 
 
