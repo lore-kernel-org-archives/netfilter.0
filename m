@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: ping to internet hosts through NameServer of provider
-Date: Tue, 9 Mar 2004 10:40:28 +0000
+From: Kashif Awan <kashif_aawan@yahoo.com>
+Subject: how to install iptables on redhat linux AS 2.1
+Date: Tue, 9 Mar 2004 02:47:49 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403091040.28256.Antony@Soft-Solutions.co.uk>
-References: <404D8E6C.2070107@seznam.cz>
+Message-ID: <20040309104749.52675.qmail@web80807.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative; boundary="0-1896181630-1078829269=:52102"
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <404D8E6C.2070107@seznam.cz>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,67 +15,42 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 09 March 2004 9:29 am, Stanislav Puffler DiS. wrote:
+--0-1896181630-1078829269=:52102
+Content-Type: text/plain; charset=us-ascii
 
-> Hi all,
-> i=B4m newbie to fw, have just installed iptables and configured. Have 3
-> interfaces, eth0 - internet, eth1 - DMZ (squid, postfix), eth2 - LAN. M=
-y
-> provider has connected my firewall to the Internet via 1 public IP (on
-> eth0). Internet hosts are resolved via provider=B4s Name Server (this I=
-P
-> is in /etc/resolv.conf). If I tried ping to (for example) www.rb.cz
-> before installing iptables, there was no problem. Now, after installing
-> iptables, I can=B4t ping to internet hosts correctly (only on IP - it i=
-s
-> without need of contacting providers NS) - it is working like this :
->
-> [user@machine]$ ping www.rb.cz
-> IN=3Deth0 OUT=3D MAC=3D.............. SRC=3D"my_providers_nameserver_ip=
-"
-> DST=3D"ip_on_my_eth0" LEN=3D127 TOS=3D0x00 PREC=3D0x00 TTL=3D61 ID=3D32=
-68 DF
-> PROTO=3DUDP SPT=3D53 DPT=3D32792 LEN=3D107
 
-So you have a LOGging rule (presumably some time before a DROP rule - not=
- many=20
-people LOG ACCEPTed packets), which shows that you are blocking DNS repli=
-es=20
-from your ISP.   Hence you cannot resolve IP addresses.
+hello everyone
 
-> Ping to resolved IP of www.rb.cz is no problem (ping 193.86.103.40 -
-> returns a normal replay). Could anyone help me please how to set up
-> carefully and secure rule to maintain this problem - to permit my
-> provider=B4s NS to resolv internet hosts ?
+i have installed redhat linux AS 2.1 and I was using ipchains as a firewall 
 
-Please tell us your ruleset (either the iptables commands you use to set =
-up=20
-the rules, or the output of "iptables -L -nv; iptables -L -t nat -nv") an=
-d we=20
-can suggest what might be wrong.
+but i need to switch to iptables iptables package is already installed but i want to install it from scratch can somebody tell me the path of documentation how to install if from the scratch
 
-If you are new to networking as well as netfilter, please read one of the=
-=20
-excellent tutorials accessible from http://www.netfilter.org and this wil=
-l=20
-help you get a basic setup working.   I can recommend Oskar Andreasson's=20
-tutorial at http://iptables-tutorial.frozentux.net
+thanks in advance
 
-Regards,
 
-Antony.
 
---=20
-Most people are aware that the Universe is big.
 
- - Paul Davies, Professor of Theoretical Physics
+---------------------------------
+Do you Yahoo!?
+New Yahoo! Photos - easier uploading and sharing
+--0-1896181630-1078829269=:52102
+Content-Type: text/html; charset=us-ascii
 
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
-
+<P>hello everyone</P>
+<P>i have installed redhat linux AS 2.1 and I was using ipchains as a firewall </P>
+<P>but i need to switch to iptables iptables package is already installed but i want to install it from scratch can somebody tell me the path of documentation how to install if from the scratch</P>
+<P>thanks in advance</P>
+<TABLE id=HB_Mail_Container height="100%" cellSpacing=0 cellPadding=0 width="100%" border=0 UNSELECTABLE="on">
+<TBODY>
+<TR height="100%" width="100%" UNSELECTABLE="on">
+<TD id=HB_Focus_Element vAlign=top width="100%" background="" height=250 UNSELECTABLE="off">
+<DIV></DIV></TD></TR>
+<TR UNSELECTABLE="on" hb_tag="1">
+<TD style="FONT-SIZE: 1pt" height=1 UNSELECTABLE="on">
+<DIV id=hotbar_promo></DIV></TD></TR></TBODY></TABLE><p><hr SIZE=1>
+Do you Yahoo!?<br>
+<a href="http://pa.yahoo.com/*http://us.rd.yahoo.com/evt=21260/*http://photos.yahoo.com">New Yahoo! Photos - easier uploading and sharing</a>
+--0-1896181630-1078829269=:52102--
 
