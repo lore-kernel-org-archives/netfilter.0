@@ -1,13 +1,13 @@
 From: Jason Opperisano <opie@817west.com>
 Subject: Re: No internet connection
-Date: Thu, 09 Sep 2004 10:15:51 -0400
+Date: Thu, 09 Sep 2004 11:02:18 -0400
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <1094739351.2044.35.camel@wolfpack.ljm.dom>
-References: <20040909140459.92337.qmail@web50209.mail.yahoo.com>
+Message-ID: <1094742137.14416.3.camel@wolfpack.ljm.dom>
+References: <20040909144044.27300.qmail@web50208.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20040909140459.92337.qmail@web50209.mail.yahoo.com>
+In-Reply-To: <20040909144044.27300.qmail@web50208.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,46 +20,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 2004-09-09 at 10:04, Giancarlo Boaron wrote:
-> Hello.
-> I'm testing a new iptables script on my server box but
-> after some minuts that this script is running, the
-> clients in my LAN have no access to Internet.
-> I'm using SQUID for proxing and caching.
-> 
-> I think I'm not being very restrictive for my IPTABLES
-> rules because my clients still have Internet access
-> after about 20 minuts when the script is running.
-> 
-> What can be wrong? Does my kernel have some limit
-> about connections? 
+On Thu, 2004-09-09 at 10:40, Giancarlo Boaron wrote:
+> Ok. I made my iptables script and I forgot to handle
+> the DHCP protocol. So, my firewall box gets its IP
+> address via DHCP. Thats a nice thing to test.
 
-of course it does.  i doubt it's the cause of your problem, but if
-you're curious:
-        grep ip_conntrack /var/log/messages
-        
-should show you something like:
-        ip_conntrack version 2.1 (6142 buckets, 49136 max) - 360 bytes
-        per conntrack
-        
-the number before max (49,136 in this case) is the max number of
-conntrack entries for the machine.
-        
-> Does it hava someting to do with
-> the CONTRACK?
+for the sake of the list archives:
 
-i doubt it.  but posting your rules might help:
+  # DHCP server -> client
+  iptables -A INPUT -p udp --sport 67 --dport 68 -j ACCEPT
 
-  iptables -vnL -t mangle && iptables -vnL -t nat && iptables -vnL
-
-i've been batting about zero with my stabs in the dark here
-recently--but here goes...
-
-is it possible that you get your external IP via DHCP; and that you're
-blocking the DHCP packets between your firewall and the ISP's DHCP
-server.  so you get an IP, start up your firewall, and at the first
-semaphore period, and either the DHCP server or client decides the other
-is no longer there, and your IP gets released?
+  # DHCP client -> server
+  iptables -A OUTPUT -p udp --sport 68 --dport 67 -j ACCEPT
 
 -j
 
