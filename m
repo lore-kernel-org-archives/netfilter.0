@@ -1,11 +1,11 @@
-From: Jose Maria Lopez Hernandez <jkerouac@bgsec.com>
-Subject: Re: Iptables 2.4.x kernels
-Date: Fri, 11 Mar 2005 18:53:34 +0100
-Message-ID: <1110563614.2417.13.camel@nostromo.bgsecm.com>
-References: <200503111736.j2BHaiZ1016306@commserver.noach.com>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: NAT question
+Date: Fri, 11 Mar 2005 10:46:36 -0500
+Message-ID: <1110555996.4767.30.camel@hubcap.ljm.dom>
+References: <200503111541.j2BFfAK8006512@mail1.firstbhph.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <200503111736.j2BHaiZ1016306@commserver.noach.com>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <200503111541.j2BFfAK8006512@mail1.firstbhph.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,47 +16,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-El vie, 11-03-2005 a las 12:36 -0500, John Hill escribi=C3=B3:
-> Should I consider iptables to be dropping 2.4.x kernel support?
->=20
-> I have yet to compile iptables successfully since 2.4.26 and 1.2.11. I =
-get a
-> MUTEX error. This was addressed by a patch (sent to me in email) but a
-> permanent fix has failed to make the kernel and the iptables code. The =
-new
-> 2.4.29 and 1.3.1 still does it. I also had segmentation errors with
-> shorewall after applying the patch to 2.4.28 and 1.3.0. I gave up witho=
-ut
-> looking into the problem further hoping the new kernel and iptables wou=
-ld
-> fix it. It has not.
+On Fri, 2005-03-11 at 10:41, Dimitri Yioulos wrote:
+> Sorry for any confusion I may be causing.  Here's a little more info.:
+> 
+> I've aliased my Web and mail server public addresses to eth0:0 and eth0:1
+> (eth0 being the external interface).  I think I've read that this isn't the
+> optimal set-up, but it does work.  That shouldn't matter, should it?
+> 
+> The key here may be in omitting a NAT postrouting rule (sorry if the
+> terminology is incorrect).  Here's what I have:
+> 
+> IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $HTTP_IP --dport 80 \
+> -j DNAT --to-destination $DMZ_HTTP_IP
+> IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $SMTP_IP --dport 25 \
+> -j DNAT --to-destination $DMZ_SMTP_IP
+> IPTABLES -t nat -A PREROUTING -p UDP -i $INET_IFACE -d $SMTP_IP --dport 25 \
+> -j DNAT --to-destination $DMZ_SMTP_IP
+> IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $SMTP_IP --dport \
+> 110 -j DNAT --to-destination $DMZ_SMTP_IP
+> IPTABLES -t nat -A PREROUTING -p UDP -i $INET_IFACE -d $SMTP_IP --dport \
+> 110 -j DNAT --to-destination $DMZ_SMTP_IP
+> IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
+> 
+> in that order.  I will change the last rule to include -s $INSIDE_NET.  I
+> also notice that I don't have the outbound one-to-one NAT for web or mail
+> servers. So, if I add: 
+> 
+> IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -s $WEB_SRV_PRIV_IP \
+> -j SNAT --to-source $WEB_SRV_PUB_IP 
+> 
+> and
+> 
+> IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -s $MAIL_SRV_PRIV_IP \
+> -j SNAT --to-source $MAIL_SRV_PUB_IP
+> 
+> just after the outbound many-to-one NAT for inside net as above, will I be
+> good?
 
-Are you applying the patch-o-matic patches to the kernels and userspace
-tools? You must do it to compile the code.
+yes.
 
-> Thanks
->=20
-> --john
+> Thanks so much for your time.
 
-Regards.
+no prob.
 
---=20
+-j
 
-Jose Maria Lopez Hernandez
-Director Tecnico de bgSEC
-jkerouac@bgsec.com
-bgSEC Seguridad y Consultoria de Sistemas Informaticos
-http://www.bgsec.com
-ESPA=C3=91A
-
-The only people for me are the mad ones -- the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn, burn
-like fabulous yellow Roman candles.
-                -- Jack Kerouac, "On the Road"
-
+--
+"It takes two to lie. One to lie and one to listen."
+	--The Simpsons
 
 
