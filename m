@@ -1,8 +1,9 @@
-From: <netfilter@drbroyles.com>
-Subject: Am I making a bone-headed mistake with patch-o-matic ?
-Date: Sat, 23 Nov 2002 11:34:54 -0500
+From: Karina <kgs@acabtu.com.mx>
+Subject: Re: Overriding REDIRECT for certain hosts (SQUID)
+Date: Sat, 23 Nov 2002 12:03:43 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <031e01c2930e$41097800$4545450a@drbroyles.com>
+Message-ID: <3DDFC2FF.FE11B55E@acabtu.com.mx>
+References: <20021123052657.30417.33449.Mailman@kashyyyk> <1038066385.4859.12.camel@rbhome>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -16,33 +17,67 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Ryan Beisner <ryanb@thedataarc.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello.  I am interested in installing the time extension to iptables but I
-am unable to run the following command ...
+I had the same problem , and i followed the suggestion from Antony stone
+that wrote:
 
-    iptables -m time
+3. Use your existing DNAT rule in the PREROUTING nat chain, but insert some
+rules before it which match a destination address using "-d a.b.c.d" and use
 
-I get the resulting output ...
+the target "-j ACCEPT" so that these packets bypass the DNAT rule.
 
-    iptables v1.2.7a: Couldn't load match
-`time':/usr/local/lib/iptables/libipt_time.so: cannot open object file: No
-such file or directory
+I did more or less the same...
 
-I obviously don't have that file.  I've tried running patch-o-matic like so
-...
+i use this
 
-    KERNEL_DIR=/usr/src/linux-2.4.19 | ./runme base  (this is run from
-within the patch-o-matic directory)
+IPTABLES -t nat -A PREROUTING -i "myinterface" -p tcp -d ! xxx.xxx.xxx.xxx
+--dport 80 -j REDIRECT --to-port 3128 -v
 
-Everything looks like it works fine, so I go to my kernel source directory
-and run a 'make menuconfig' but I don't see any new options for any of the
-extension patches that should be installed now.  Am I making a bone-headed
-mistake and just completely missing something?  I am running RedHat 7.2 and
-obviously trying to setup kernel 2.4.19.  I got the latest patch-o-matic via
-cvs and I installed iptables 1.2.7a from a tar.bz2 file from netfilter.org.
+and now the request to the OWA is not passing to squid anymore.
 
-Thanks in advance for any help,
-Brandon Broyles
+You need to have the IP address of the site using Outlook WebAccess. I don't
+know what it's exactly the problem with this service, and in the Microsoft
+Web page there's nothing... just a note about troubleshouting the OWA with
+the Microsoft Proxy, that basically has the same problems than with squid.
+
+I hope this helps,
+
+karina.
+
+
+Ryan Beisner wrote:
+
+> I don't know if anyone else has noticed, but SQUID doesn't treat some
+> websites very kindly in its http acceleration (transparent proxy).
+> Mainly, Microsoft Outlook Webmail (I have a client using it).
+>
+> [ BTW this is a strange breed of a web based mail system .. it looks
+> like you're using Outlook, within a webpage, released by MS.  Their
+> firewall info claims that HTTP is the only protocol in use. ]
+>
+> I have already configured Squid not to cache that entire domain, and it
+> doesn't cache it.  I've flushed the cache, then looked at the "All Cache
+> Objects" SQUID report, to find none at domain XYZZZ.COM.
+>
+> OK, so how would one turn this rule around into a couple of rules that
+> redirect port 80 to 3128, *unless* it's to/from "any-host.xyzzz.com" or
+> "any-host.anotherdomain.com"  etc ?
+>
+> .......................}SNIP{...........................
+> $ipt -t nat -A PREROUTING -i $eth0 -p tcp --dport 80 -j REDIRECT
+> --to-port 3128
+> .......................}SNIP{...........................
+>
+> I realize I could create a rule based on their IP range, but I want the
+> rule to be based on the domain name -- I haven't yet seen that in
+> action.  ;}
+>
+> All help is appreciated!
+>
+> TIA
+>
+> -Ryan Beisner
 
 
