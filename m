@@ -1,11 +1,10 @@
-From: "Sundaram Ramasamy" <sun@percipia.com>
-Subject: Redhat Linux 8.0 IPtables help
-Date: Thu, 5 Jun 2003 15:32:45 -0400
+From: Thomas Lussnig <tlussnig@bewegungsmelder.de>
+Subject: Reciving Failed
+Date: Thu, 05 Jun 2003 23:02:34 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <000f01c32b99$3d65fab0$8c01a8c0@percipia.com>
-References: <20030602160653.GB14609@eris> <20030602165342.GC14917@harp.incogen.com> <20030602171755.GA6298@hactar.local.funknet.net> <200306041635.19489.rfunk@funknet.net>
+Message-ID: <3EDFAFEA.6060209@bewegungsmelder.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -16,49 +15,24 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: netfilter@lists.samba.org
 
-Hi,
-
-
-
-I have Linux machine with single Network interface. I want to block all the
-tcp,udp and icmp port's other then 22,23,24 and 80.
-
-
-
-Can you verify the following script?
-
-
-
-
-
-IPTABLES=/sbin/iptables
-
-
-
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT DROP
-$IPTABLES -P FORWARD DROP
-
-$IPTABLES -A INPUT -p tcp -m multiport --destination-port 22,23,24,80 -j
-ACCEPT
-
-
-
-$IPTABLES -A INPUT -p udp -m multiport --destination-port 22,23,24,80 -j
-ACCEPT
-
-
-
-
-
-What port should I block for icmp protocol?
-
-
-
--SR
-
-
-
+SGksCmFmdGVyIHVwZ3JhZGUgbXkgUEMgKE1haW5ib2FyZCArIENQVSkgYWxsIHRoaW5ncyB3aGVy
+ZSByZWNvZ25pemVkIG9ubHkgCk5ldHdvcmsgZG9lcyBub3Qgd29yay4KVGhlIHN5bXB0b20nczoK
+LSBtaWktdG9vbCByZXBvcnQgY29ycmVjdCBsaW5rIHN0YXR1cwotIGlwIC1zIGxpIGxpIGRpc3Bs
+YXkgc2VuZCBwYWNrZXRzIGJ1dCBvbmx5IHJlY2l2ZWQgYnl0ZXMgbm8gcGFja2V0cwotIC9wcm9j
+L2ludGVycnVwdHMgdGVsbCAwIGV2ZW50cyBmb3IgdGhpcyBjYXJkIHdpdGggYW4gaXJjIGFib3Zl
+IDE1IGFuZCAKbm9uZSBhcyAiUHJpbz8iCgpjYXQgL3Byb2MvaW50ZXJydXB0cwogMjE6ICAgICAw
+ICAgbm9uZSAgZXRoMAoKVGhlIGZpcnN0IHNvbHZlIHdhcyBkaXNhYmxpbmcgSU8tQVBJQy4gQnV0
+IGFmdGVyIHJlYWQgdGhlIFNNUCAKZG9rdW1lbnRhdGlvbiBhbmQgSU8tQVBJQwppIGZvdW5kIHRo
+YXQgYXBwaW5kaW5nIGluICJsaWxvIiB0byB0aGUga2VybmVsIHRoZSByZXN1bHQgb2YgdGhpcyBs
+aW5lIAptZW50aW9uZWQgaW4gdGhlIEtlcm5lbCBkb2MKZml4IHRoZSBwcm9ibGVtLgoKZWNobyAt
+biBwaXJxPTsgZWNobyBgc2NhbnBjaSB8IGdyZXAgVF9MIHwgY3V0IC1jNTYtYCB8IHNlZCAncy8g
+LywvZycKCmNhdCAvcHJvYy9pbnRlcnJ1cHRzCiAyMTogICAgIDg4MDggICBJTy1BUElDLWxldmVs
+ICBldGgwCgoKTWF5YmUgdGhpcyBjYW4gZ28gdG8gdGhlIG5ldGZpbHRlciByZWFkbWUgYmVjYXVz
+ZSB0aGUgZmlyc3QgaWRlZSB3YXMgYW4gCnByb2JsZW0gd2l0aCBuZXRmaWx0ZXIgYmxvY2tpbmcg
+YWxsCmluY29tbWluZy4gSSBhbHNvIGZpbmQgQUZURVIga25vd2luZyB0aGUgcHJvYmxlbSB0aGF0
+IElPLUFQSUMgYW5kIApOZXR3b3JrIGlzIG1vcmUgb2Z0ZW4gYW4gcHJvYmxlbQp3aXRoIHRoZSBz
+YW1lIHN5bXB0aG9tJ3MgYnV0IG5vd2hlcmUgbWVudGlvbmVkIHRoZSBmaXguIE9ubHkgZGlzYWJs
+aW5nIApBUElDIGlzIG1lbnRpb25lZC4KCkN1IFRob21hcyBMdcOfbmlnCgoK
