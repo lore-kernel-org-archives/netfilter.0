@@ -1,14 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: bidirectional forwarding
-Date: Wed, 28 Jul 2004 11:41:19 +0100
+From: Aleksandar Milivojevic <amilivojevic@pbl.ca>
+Subject: Re: iptables on Satellite receive only linux PC
+Date: Wed, 28 Jul 2004 09:37:53 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200407281141.19408.Antony@Soft-Solutions.co.uk>
-References: <1090977653.4106ff750c48a@webmail.ccse.kfupm.edu.sa>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <4107BA41.4060409@pbl.ca>
+References: <410736B8.D9130BBF@neduet.edu.pk> <1090995073.2141.35.camel@anduril.intranet.cartel-securite.net> <41074F24.2BF980C3@neduet.edu.pk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1090977653.4106ff750c48a@webmail.ccse.kfupm.edu.sa>
+In-Reply-To: <41074F24.2BF980C3@neduet.edu.pk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,48 +17,27 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 28 July 2004 2:20 am, Itrat Rasod Quadri wrote:
+yunus wrote:
+> When I change the line below to accept everything works fine.
+> 
+> $IPTABLES -P FORWARD DROP    to  $IPTABLES -P FORWARD ACCEPT
 
-> Hello,
->
-> I have setup linux routers as shown below
->
-> PC1               R1           R2           R3           R4            PC2
->
-> |---------------|   |-------|    |--------|   |--------|   |-----------|
->
-> 192.168.10.2   .1  12.1    12.2 13.1     13.2 16.1    16.2 11.1       11.2
-> e0             e0   e1     e0   e1        e0  e1       e0  e1          e0
->
-> I am able to send traffic from PC1 to PC2 but I am unable to receive the
-> response beyond R3. I am able to set up a bi directional path from R1 to R4
-> but unbelievably I can't seem to do the same for PC1 and PC2. Response from
-> a ping from PC2 doesn't go beyond e0 of R3.
+Of course it works, because you just deactivated your firewall. 
+Anything goes through it (all your rules in FORWARD chain have ACCEPT 
+target, and than you changed default policy to ACCEPT: everything is 
+accepted).
 
-I suspect this is almost certainly a routing table problem (on one or more of 
-the systems involved).
-
-Quickest way to eliminate netfilter as a cause of the problem is:
-
-iptables -A FORWARD -p icmp -j ACCEPT
-
-as a temporary rule on whichever of the above machines are running netfilter.
-
-Sig below chosen specifically for this email.
-
-Regards,
-
-Antony.
+Also, it seems that you have (incorrect) assumption that packet will go 
+through both INPUT and FORWARD chains (because you are catching "bad" 
+packets only in INPUT chain).  Packet will go either through INPUT (if 
+it is destined for local machine) or through FORWARD (if it is to be 
+routed/forwarded to another machine).  It will never go through both.
 
 -- 
-90% of networking problems are routing problems.
-9 of the remaining 10% are routing problems in the other direction.
-The remaining 1% might be something else, but check the routing anyway.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
-
+Aleksandar Milivojevic <amilivojevic@pbl.ca>    Pollard Banknote Limited
+Systems Administrator                           1499 Buffalo Place
+Tel: (204) 474-2323 ext 276                     Winnipeg, MB  R3T 1L7
 
