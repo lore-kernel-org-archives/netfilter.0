@@ -1,14 +1,13 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Firewall question...
-Date: Tue, 30 Mar 2004 10:58:37 +0100
+Subject: Re: patch-o-matic
+Date: Tue, 30 Mar 2004 11:00:34 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200403301058.37604.Antony@Soft-Solutions.co.uk>
-References: <20040330093408.49895.qmail@web41410.mail.yahoo.com>
-Reply-To: netfilter@lists.netfilter.org
+Message-ID: <200403301100.34039.Antony@Soft-Solutions.co.uk>
+References: <1342533804.20040330133901@samnipineft.ru> <200403300942.18073.gdh@acentral.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20040330093408.49895.qmail@web41410.mail.yahoo.com>
+In-Reply-To: <200403300942.18073.gdh@acentral.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,55 +20,27 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 30 March 2004 10:34 am, V. A.H. wrote:
+On Tuesday 30 March 2004 9:42 am, Gavin Hamill wrote:
 
-> Thx for your answer.
-> Still a little bit confused.
-> This is the scheme with ip addresses:
+> On Tuesday 30 March 2004 09:39, Ilya Kostin wrote:
+> > Hello netfilter,
+> >
+> >   patch-o-matic or iptables-1.2.9 ???
 >
-> Internet (Different ISP)
+> Yes.
 >
-> Subnet Y (10.0.0.0/20)
->
-> (eth0)-10.0.1.254
-> Firewall
-> (eth1)-10.0.1.253
+> Cheers,
+> Gavin.
+> P.S. If you send an obtuse question, you will get an obtuse answer.
 
-I'm not surprised you are a little bit confused if these IP addresses are 
-accurate :)
-
-Please confirm: is eth0 10.0.1.254, or 10.0.0.254?
-
-And: you have one subnet 10.0.0.0/20, with another connected network 
-10.0.1.0/24 (ie a subnet of the original network)???
-
-This is going be difficult to sort out.
-
-Hosts in Subnet Y are going to expect 10.0.1.0/24 addresses to be local, not 
-via a router - the Firewall you've shown is going to have to do a lot of 
-nasty proxy-arp'ing for this setup to work.
-
-> My Subnet(10.0.1.0/24)
->
-> (eth1)-10.0.1.1(default route for My Subnet)
-> Firewall/Router(SNAT)
-> (eth0)-some real ip address
->
-> Internet (My ISP).
-
-I recommend you start with two non-overlapping subnets.   If you cannot do 
-that, you have some significant routing challenges to solve, before you get 
-anywhere near setting up netfilter to block some of the otherwise routed 
-packets.
+I was going to reply "Apache, or possibly squid", however you beat me to it :)
 
 Regards,
 
 Antony.
 
 -- 
-Software development can be quick, high quality, or low cost.
-
-The customer gets to pick any two out of three.
+If at first you don't succeed, destroy all the evidence that you tried.
 
                                                      Please reply to the list;
                                                            please don't CC me.
