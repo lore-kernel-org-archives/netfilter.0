@@ -1,11 +1,13 @@
-From: Roy Sigurd Karlsbakk <roy@karlsbakk.net>
-Subject: adding counters
-Date: Mon, 16 Sep 2002 14:49:58 +0200
+From: "Raj Wurttemberg" <rajw@c64.us>
+Subject: RE: Upgrade Iptables...
+Date: Mon, 16 Sep 2002 09:09:20 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209161449.58221.roy@karlsbakk.net>
+Message-ID: <000901c25d82$4b822ff0$d201a8c0@hornet>
+References: <39778BFB9C25BA429794B15B50AEC781045434@server-dcms>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <39778BFB9C25BA429794B15B50AEC781045434@server-dcms>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,37 +18,22 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter mailinglist <netfilter@lists.netfilter.org>
+To: 'Didier Hung Wan Luk' <DidierH@frci.net>, 'Netfilter Mailing List' <netfilter@lists.netfilter.org>
 
-hi
+> I have redhat 7.3 with kernel linux-2.4.18-10 and I want to 
+> use iptables 1.2.7a.
+> 
+> When I compile iptables do I need to recompile my kernel to 
+> use the 1.2.7a version of iptables?
 
-I've created a new table with the following lines, and inserted a -j coun=
-ters=20
-on top of INPUT. Wouldn't this allow me to count packets per port? All I =
-get=20
-is the -j counters line increasing it's byte count, but none of the below=
-=20
-does...
+Hello Didier,
 
-roy
+You will want to apply the patch-o-matic to your kernel and then
+recompile your kernel prior to compiling and using the 1.2.7a version of
+iptables. I could be wrong, but I do not think that the default RedHat
+kernel has all of the necessary iptables modules.
 
-Chain counters (1 references)
-target     prot opt source               destination
-RETURN     tcp  --  anywhere             anywhere           tcp dpt:pop3s
-RETURN     tcp  --  anywhere             anywhere           tcp dpt:ircs
-RETURN     tcp  --  anywhere             anywhere           tcp dpt:https
-RETURN     tcp  --  anywhere             anywhere           tcp dpt:imap
-RETURN     tcp  --  anywhere             anywhere           tcp dpt:pop3
-RETURN     tcp  --  anywhere             anywhere           tcp dpt:http
-RETURN     tcp  --  anywhere             anywhere           tcp dpt:smtp
+/*Raj*/
 
-and=20
---=20
-Roy Sigurd Karlsbakk, Datavaktmester
-ProntoTV AS - http://www.pronto.tv/
-Tel: +47 9801 3356
-
-Computers are like air conditioners.
-They stop working when you open Windows.
 
 
