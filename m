@@ -1,12 +1,9 @@
-From: "diseno1" <diseno1@puntozeropublicidad.cl>
-Subject: squid and iptables
-Date: Tue, 4 Nov 2003 09:55:16 +0100
+From: James Martin <jamesmartin100@yahoo.com>
+Subject: Iptables logging only output packets
+Date: Tue, 4 Nov 2003 06:23:44 -0800 (PST)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007a01c3a2b1$5dca5c80$6a1f68c8@proxy>
-Reply-To: "diseno1" <diseno1@puntozeropublicidad.cl>
+Message-ID: <20031104142344.43912.qmail@web41408.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0077_01C3A2B9.BF7BB1B0"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,45 +14,57 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Hi. My problem with Iptables is that it logs only
+outgoing packet, and not incoming ones.
 
-------=_NextPart_000_0077_01C3A2B9.BF7BB1B0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+It is set up in a very simple way, more to do packet
+logging/capturing than to do do real firewalling. Its
+main purpose is a didactic one. 
+etho is connected to the Internet, and eth2 goes to
+the LAN (for some strange reasons the additional
+pcmcia ethernet card on the Toshiba laptop is
+recognized as eth1 and not as eth1, but this is fine).
 
-hello...
-i need set up a firewall/proxy...
-with smtp, pop3,www, ssh, and the most security posibility...
-no hablo bien ingles...
-si alguien me pudiera ayudar estaria agradecido...
+Following is the Iptables script:
 
-------=_NextPart_000_0077_01C3A2B9.BF7BB1B0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+clear
+echo "1" > /proc/sys/net/ipv4/ip_forward
+/sbin/iptables -F
+/sbin/iptables --delete-chain 
+/sbin/iptables -t nat --delete-chain
+/sbin/iptables -t mangle --delete-chain
+/sbin/iptables -N entrata
+/sbin/iptables -N uscita
+/sbin/iptables -P INPUT  ACCEPT
+/sbin/iptables -P OUTPUT ACCEPT
+/sbin/iptables -P FORWARD ACCEPT
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -j
+MASQUERADE
+/sbin/iptables -A FORWARD -i etho -o eth2 -j entrata 
+/sbin/iptables -A FORWARD -i eth2 -o eth0 -j uscita 
+/sbin/iptables -A entrata -j LOG --log-prefix
+"Firewall Entr: " --log-level "DEBUG" 
+/sbin/iptables -A uscita -j LOG --log-prefix "Firewall
+Usc: " --log-level "DEBUG" 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>hello...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>i need set up a =
-firewall/proxy...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>with smtp, pop3,www, ssh, and the most =
-security=20
-posibility...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>no hablo bien ingles...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>si alguien me pudiera ayudar estaria=20
-agradecido...</FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
+What I get is log entries only with prefix "Firewall
+Usc: ", that is outgoing, and not even one packet with
+"Firewall Entr: " prefix.
 
-------=_NextPart_000_0077_01C3A2B9.BF7BB1B0--
+Any idea of what I am doing wrong ?
 
+Thanks,
+
+James
+
+
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
