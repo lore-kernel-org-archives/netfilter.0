@@ -1,14 +1,14 @@
-From: Joel Newkirk <netfilter@newkirk.us>
-Subject: Re: redirecting everything to another machine
-Date: Fri, 21 Mar 2003 16:40:45 -0500
+From: Willi Dyck <wdyck@gmx.net>
+Subject: Re: (no subject)
+Date: Sat, 22 Mar 2003 21:28:57 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200303211640.45458.netfilter@newkirk.us>
-References: <1048207207.6972.1360.camel@xavier>
-Reply-To: netfilter@newkirk.us
+Message-ID: <20030322202857.GC412@tekilla.homeip.net>
+References: <F23niTwiwzRJFC4ucSo000016a8@hotmail.com>
+Reply-To: netfilter user <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1048207207.6972.1360.camel@xavier>
+Content-Disposition: inline
+In-Reply-To: <F23niTwiwzRJFC4ucSo000016a8@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,36 +19,19 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Dan Cox <dancox@speakeasy.net>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter user <netfilter@lists.netfilter.org>
 
-On Thursday 20 March 2003 07:40 pm, Dan Cox wrote:
-> With iptables how would I redirect all connection attempts coming from
-> the Internet interface to a machine inside my DMZ? I also have a LAN
-> that I have "masqueraded" though I don't know if thats related. My set
-> up is below:
->
-> Internet IP/iface =3D eth0 1.2.3.4
-> LAN IP/iface =3D eth1 192.168.0.1
-> DMZ IP/iface =3D eth2 192.168.1.1
+On Tue, Feb 25, 2003 at 09:21:55PM +0100, Deks Vazquez wrote:
+> i want know how i can stop any request of arp-spoofing to my router with 
+> iptables.
 
-iptables -t nat -A PREROUTING -m state --state NEW -d 1.2.3.4 -p DNAT=20
---to 192.168.1.x
+With iptables I don't think so. But there is a kernel patch to resist
+ARP spoofing. Check google for it.
 
-The NEW match will send new connection attempts to the DNAT IP.  Anything=
-=20
-already ESTABLISHED or RELATED will go where it is supposed to, IE=20
-replies to connections from the LAN will go back the the machine they=20
-were SNATted from, continued inbound traffic that is part of a DNATted=20
-connection to the DMZ will continue to go to the DNATted IP in the DMZ.
-
-Make sure your SNAT or MASQUERADE for traffic from the LAN is applied=20
-ONLY to traffic from the LAN by matching "-i eth1" in that rule.
-
-j
-
-
-> Any help is very much appreciated. Thanks
->
-> Dan Cox
-
+-- 
+NT is the OS of the future. The main engine is the 16-bit Subsystem
+(also called MS-DOS Subsystem). Above that, there is the windoze 95/98
+16-bit Subsystem. Anyone can see that 16+16=32, so windoze NT is a
+*real* 32-bit system.
 
