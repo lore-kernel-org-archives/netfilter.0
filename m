@@ -1,13 +1,16 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: blocking Multicast packets
-Date: Wed, 18 Aug 2004 06:05:29 -0600
+From: Ted Kaczmarek <tedkaz@optonline.net>
+Subject: Re: REDIRECT to localhost
+Date: Wed, 18 Aug 2004 08:22:43 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040818060529.4cb2abf8@mgalepc.utilitran.com>
-References: <D5C9032B2B09C64EA2409D6214E91AC905129D@asimail2.alphanumeric.com>
+Message-ID: <1092831763.14318.39.camel@tarkus>
+References: <20040816082400.5165.qmail@flock1.newmail.ru>
+ <1092654950.27598.13.camel@tarkus> <200408171302.30699.igor@garant.koenig.ru>
+ <1092792092.4025.4.camel@anduril.intranet.cartel-securite.net>
+Reply-To: tedkaz@optonline.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC905129D@asimail2.alphanumeric.com>
+In-reply-to: <1092792092.4025.4.camel@anduril.intranet.cartel-securite.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,62 +20,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-9"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Igor Popov <igor@garant.koenig.ru>, netfilter@lists.netfilter.org
 
-Hello,
+On Wed, 2004-08-18 at 03:21 +0200, Cedric Blancher wrote:
+> Le mar 17/08/2004 =E0 13:02, Igor Popover a acrid :
+> > As I know, REDIRECT target redirects to the same if ace, but on a=
+nother port.
+>=20
+> Nope.
+> REDIRECT target redirects to lo interface, on the port you want.
+>=20
+> > I can run squid on PP if ace, because it is created dynamically a=
+nd I don't=20
+> > want it to listen on all addresses.
+>=20
+> Just have it run on 127.0.0.1, port 3128, and configure it as a
+> transparent proxy (see Squid doc).
+>=20
+> > I have tried to use REDIRECT and DAT, but without any success.
+>=20
+> And finally try this :
+>=20
+> =09iptables -t nat -A PREROUTING -p tcp --dport 80 \
+> =09=09-j REDIRECT --to-ports 3128
 
-	Well hopefully today or tomorrow we will be completely isolating that part of the network and moving it onto it's own
-network which is not physically connect to the internal lan.
-
-Michael.
-
-
-
-On Wed, 18 Aug 2004 07:57:51 -0400
-"Jason Opperisano" <Jopperisano@alphanumeric.com> wrote:
-
-> >       We seem to have a problem with multi-cast packets, our develop team was testing some kind of load balancer
-> >       which is
-> > causing about 100 packets a second to be sent out continuously:
-> >
-> >
-> > 05:35:44.864029 IP X.X.X.9128 > 230.0.0.1.9128: UDP, length: 1000
-> >
-> > So this drives up the network card IRQ request I believe using anywhere from 10%-80% of the CPU:
-> >
-> >     4 root      19  19     0    0     0 SWN  17.1  0.0 225:28   1 ksoftirqd_CPU1
-> >     3 root      19  19     0    0     0 SWN  14.5  0.0 228:31   0 ksoftirqd_CPU0
-> >
-> > So I thought about adding in a iptables rule to block all the traffic but it is not working. I have added the
-> > following rules with out effect:
-> >
-> > iptables -I INPUT -i eth1 -s X.X.X.X -j DROP
-> > iptables -I FORWARD -i eth1 -s X.X.X.X -j DROP
-> >
-> > I never see the byte counters increment at all .. they are staying at zero ??
-> 
-> maybe:
-> 
-> 	iptables -I INPUT -i eth1 -d 230.0.0.1 -j DROP
-> 
-> or:
-> 
-> 	iptables -I INPUT -m pkttype --pkt-type multicast -j DROP
-> 
-> this won't necessarily help your problem of the packets chewing up IRQ requests, as the packets are still being
-> received by the NIC and passed up the stack.  maybe you need a screening firewall for your firewall?
-> 
-> -j
-> 
-> 
-> 
-> 
-> 
+As long as you want ALL port 80 traffic hitting your squid. Otherwise
+much better to be specific to interface or even ip block(s). Not a go=
+od
+idea to be mixing squid for internal use with external accelerator us=
+age
+IMHO.
+>=20
+> Should work.
+>=20
+>=20
+Ted
 
 
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
 
