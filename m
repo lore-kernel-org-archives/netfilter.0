@@ -1,11 +1,14 @@
-From: Roger <roger@efn.org>
-Subject: whois
-Date: Thu, 26 Sep 2002 18:37:43 -0700
+From: Fabrice MARIE <fabrice@celestix.com>
+Subject: Re: quota and time patch.
+Date: Fri, 27 Sep 2002 11:27:03 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20020926183743.A2461@efn.org>
+Message-ID: <200209271127.03831.fabrice@celestix.com>
+References: <F91y07vQONDZsbg5YX600007f11@hotmail.com>
+Reply-To: fabrice@celestix.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <F91y07vQONDZsbg5YX600007f11@hotmail.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,31 +19,40 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: SB CH <chulmin2@hotmail.com>, netfilter@lists.netfilter.org
 
 
-I'm having problems setting a rule to allow 'whois' queries.
-With the following:
-iptables -A OUTPUT  -o eth+ -p tcp --dport 43 -m state --state 
-NEW,ESTABLISHED -j ACCEPT
+Hello,
 
-iptables -A INPUT -i eth+ -p tcp --sport 43 -m state --state ESTABLISHED 
--j ACCEPT
+On Friday 27 September 2002 10:30, SB CH wrote:
+> Hello all.
+> I would like to limit the traffic usage per user
+> using iptables extension function, quota and time.
+> for example, I would like to set like this.
+> one can use 10M http traffic per hour per one IP address at business
+> time(09h~18h).
+> Is it possible to set using iptables?
+> thanks in advance.
 
-with any unmatching being logged, there is a log entry for inbound tcp to 
-port 43
+The problem with the current iptables framework is that you cannot
+"auto-remove" rules dynamically. For example, the quota match will
+increase the used-up quota, until the limit is reached, after which
+the rule will stop matching. However the quota rule will not go away
+by itself, and cannot be made so. So as things are right now, no, you
+cannot do what you want.
 
-I was under the impression that since I'm originating the request, then 
-the input should come through since it is an established connection.  If I 
-modify the INPUT rule to allow NEW,ESTABLISHED then it works.
+It would be easy enough however to modify the source of the quota match to implement
+quota per hour with a quota that would reset once the new time slice starts.
 
-other services that I have set up in a similar fashion seem to work.
+Have a nice day,
 
-Any idea what's going on?
+Fabrice.
+--
+Fabrice MARIE
+Senior R&D Engineer
+Celestix Networks
+http://www.celestix.com/
 
-tia.
-Roger
-
--- 
+"Silly hacker, root is for administrators"
+       -Unknown
 
