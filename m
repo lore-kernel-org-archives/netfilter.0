@@ -1,11 +1,13 @@
-From: <llana@hanzy.ath.cx>
-Subject: string.patch  - iptables-1.2.6a/ linux-2.6.5
-Date: Thu, 6 May 2004 18:12:03 +0800 (PHT)
+From: Marek Dohojda <mdohojda@cisco.com>
+Subject: Re: CISCO VPN clients behind firewall
+Date: Tue, 04 May 2004 20:38:22 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <21350.61.9.69.125.1083838323.squirrel@hanzy.ath.cx>
+Message-ID: <409861AE.6060202@cisco.com>
+References: <00f101c43236$e54f0380$0300a8c0@indoakses2> <200405050153.18201.Antony@Soft-Solutions.co.uk> <011901c43241$13d1dc00$0300a8c0@indoakses2>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <011901c43241$13d1dc00$0300a8c0@indoakses2>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,47 +17,41 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: bino_oetomo <bino@indoakses-online.com>
+Cc: netfilter@lists.netfilter.org
 
-Ive been running Debian 3.0r2. Ive been using the string matching patch
-on my old 2.4.x kernel. But i upgraded my kernel to 2.6.5. Now im trying to
-add the string matching patch to the new kernel but im getting error.
+Nope that is not a problem.  Got it working without much of a problem.
 
-Has anyone compiled the string matching patch on a 2.6.x kernel?
-Im getting an error saying...  "Could not find place to slot in Config.in
-line"...
-
-TIA
+Ok that wasn't helpful I know.  One thing you have to do is ensure that 
+you are using proper setting on your concentrator.  Ensure that it is 
+set to be able to accept NAT.  In addition choose UDP (or TCP) on 
+specific port.
 
 
+bino_oetomo wrote:
 
-.:: screenshot ::.
-
-#export KERNEL_DIR=/usr/src/linux-2.6.5
-#cd /usr/src/iptables-1.2.6a
-
-#make patch-o-matic KERNEL_DIR=/usr/src/linux-2.6.5
-
-
-
-Testing... string.patch NOT APPLIED ( 2 missing files)
-The extra/string patch:
-
-   This patch adds CONFIG_IP_NF_MATCH_STRING which allows you to
-   match a string in a whole packet.
-
-   THIS PATCH DOES NOT WORK WITH KERNEL 2.4.9 !!!
-
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/v/q/?] Y
-Testing patch extra/string.patch...
-fgrep:
-/usr/src/linux-2.6.5/../87b4dc3322fefa73e617f3394aa4409c6f5f407df6300bd0ce2bf3348840cd2b/net/ipv4/netfilter/Config.in:
-No such file or directoryCould not find place to slot in Config.in line
-TEST FAILED: patch NOT applied.
-
-[Press enter to continue]
-
-
+> Dear Antony
+> ----- Original Message ----- 
+> From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+> To: <netfilter@lists.netfilter.org>
+> Sent: Wednesday, May 05, 2004 7:53 AM
+> Subject: Re: CISCO VPN clients behind firewall
+> 
+> 
+> 
+>>As far as I know, Cisco VPNs use IPsec - no problem there for netfilter 
+>>(although maybe problems if you're using transport mode and doing nat).
+>>
+> 
+> 
+> Yes, actualy it's "behind nat" rather then just "behind firewall"
+> 
+> 
+> Sincerely
+> -bino-
+> 
+> 
+> 
+> 
 
