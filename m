@@ -1,12 +1,11 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Need an advice
-Date: Tue, 23 Nov 2004 11:46:22 -0500
-Message-ID: <20041123164622.GA2134@bender.817west.com>
-References: <C97EC9D40F9B8E469B2187228615909104853C@mail.crescat.com>
+From: Nick Taylor <nickt@lightlink.com>
+Subject: Re: transfer speed through firewall
+Date: Tue, 23 Nov 2004 12:21:00 -0500 (EST)
+Message-ID: <Pine.GSU.4.58.0411231212270.24170@adore.lightlink.com>
+References: <0ee701c4d171$c8a5b870$49caa8c0@caris.priv>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <C97EC9D40F9B8E469B2187228615909104853C@mail.crescat.com>
+In-Reply-To: <0ee701c4d171$c8a5b870$49caa8c0@caris.priv>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,134 +16,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Peter Marshall <peter.marshall@caris.com>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Tue, Nov 23, 2004 at 05:47:10PM +0600, Hirantha Wijayawardena wrote:
-> Hi,
+> Date: Tue, 23 Nov 2004 11:33:29 -0400
+> From: Peter Marshall <peter.marshall@caris.com>
+> To: netfilter <netfilter@lists.netfilter.org>
+> Subject: transfer speed through firewall
 >
-> Thank a lot for those posts. I have an ADSL router which is built-in
-> NAT
-> to the LAN users.
+> I posted about this yesterday and J gave some very helpful suggestions to
+> try ...(thank you by the way).  But I have still not getten any better
+> results.  Since then, I have changed some switches, put in brand new
+> Ethernet cables, and still no difference.  I can transfer data between boxes
+> in my DMZ extremely fast.  (3 seconds for a 40 MB file using ftp).  However,
+> when I try to transfer that same file from a box on my interior network to a
+> box in my DMZ (so it goes to a switch, then to the firewall, then to another
+> switch, and then to the box) it takes approx. 40 seconds.  I am 99%
+> confident that it is not the switches or network cables.  All cards and
+> switches along the way are 100 MB.
 >
-> <INTERNET> <--> <ADSLROUTER (NAT enabled)> <--> <eth0><LINUX
-> FIREWALL><eth1>
+> Does anyone know of problems with netfilter with slowing down transfers ?
+> The box is an 850 with 512 MB of ram.  It has 3 nic cards, and 5 interfaces
+> (2 virtual) + the loopback.  Data from my internal network to the DMZ always
+> goes in one interface and then out a different.  I did a netstat -ni as
+> suggested, but found no errors.
 >
-> INET_IFACE="eth0"
-> INET_IP="192.168.1.2"
+> Again, thank you for any information that can be provided.
 >
-> LAN_IP="10.1.1.1"
-> LAN_IFACE="eth1"
+> Peter
 >
-> IPTABLES="/usr/sbin/iptables
-> $IPTABLES -N allowed
-> $IPTABLES -N tcp_packets
 >
-> 1.) I do not wanted to enable the NAT on my Linux firewall but tight
-> the
-> security for the LAN users, though the following rule is still valid!
-> Is
-> it ture?
->
-> $IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT -to $INET_IP
+Have you tried the transfer from the server to the firewall, and from
+the firewall to the client?  Have you tried a ping flood?  Have you tried
+to transfer large amounts of data with other protocols?  Other hosts on
+the same networks?  You need to think of this as a science project.
+Isolate one variable at a time.  Have you trimmed your firewall down to
+the absolute bare minimum (just NAT that you NEED in order to talk)?
+Are you using any traffic shaping or policing (if so, disable)?
+Is your firewall slow for other things, or just this one client to this
+one server and only when doing ftp?  Is your firewall doing anything else
+in life (squid server, web server, sql server, etc)?  What's the load
+average on the firewall?  What's the average idle CPU on the firewall?
+Is the machine running into swap space, or is there free RAM?
+Are you certian that there is no IP conflict in either network (two
+machines with the same IP address assigned - this breaks everything)
 
-looks fine to me.
-
-> 2.) If I need to install and enable squid/SquidGuard on the Linux
-> firewall and redirect LAN user's initial web request to the squid
-> authentication page. Is the following rules are enough?
->
-> $IPTABLES -t nat -A PREROUTING -i $LAN_IFACE -p tcp --dport 80 \
->               -j REDIRECT --to-ports 3128
-> $IPTABLES -A OUTPUT -j ACCEPT -m state --state NEW -o $INET_IFACE \
->               -p tcp --dport 80
-
-if you're doing transparent redirection--keep in mind that both the LAN
-users and the firewall/proxy will need to be able to do DNS lookups.
-
-> 3.) How do I enable LAN users to access specific services on the
-> internet (i.e. http,https,pop3,mms and dns) only and block all other
-> ports. Is it possible with following rules?
->
-> $IPTABLES -A INPUT -i $INET_IFACE -p tcp ! --syn --source-port 25 \
->               -s $INET-IP --destination-port 1024: -j ACCEPT
-> $IPTABLES -A OUTPUT -o $INET_IFACE -p tcp -s $INET_IP --source-port
-> 1024: \
->               --destination-port 25 -j ACCEPT
->
-> $IPTABLES -A INPUT -i $INET-IFACE -p tcp ! --syn --source-port 80 \
->               -s $INET-IP --destination-port 1024: -j ACCEPT
-> $IPTABLES -A OUTPUT -o $INET_IFACE -p tcp -s $INET_IP --source-port
-> 1024: \
->               --destination-port 80 -j ACCEPT
->
-> and so on...
-
-i see sample rule sets all the time like this, with the two-way rules
-that make me think back to the days of ipchains, and why i ended up
-switching to IPF...  anyways, the modicum of added security from writing
-your rules this way (to me) doesn't seem worth the added convolution.
-allow established reply packets first, and allow your requests out.
-
-also--if your intent is to allow the internal LAN users to access these
-services on the Internet--you need to be modifying the FORWARD
-chain--not INPUT and OUTPUT.  also--if you're trying to force your users
-through the proxy, allowing them out on port 80 kinda defeats the
-purpose (i know, i know--NAT PREROUTING will take precedence):
-
-  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-  # smtp dns pop3 https mms
-  for tcpport in 25 53 110 443 1755; do
-    iptables -A FORWARD -i $LAN_IFACE -o $INET_IFACE -p tcp --syn \
-      -m state --state NEW --sport 1024:65535 --dport $tcpport -j ACCEPT
-  done
-
-  # dns mms
-  for udpport in 53 1755; do
-    iptables -A FORWARD -i $LAN_IFACE -o $INET_IFACE -p udp \
-      -m state --state NEW --sport 1024:65535 --dport $udpport -j ACCEPT
-  done
-
-> 4.) If I run the DNS service (DNS forwarder) on the Linux firewall, is
-> following rule is still valid as previous mail explained?
->
-> $IPTABLES -A tcp_packets --dport 53 -j allowed
-
-the vast majority of DNS name resolution requests are UDP, not TCP.  if
-you want to run a caching DNS server on your firewall:
-
-  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-  # allow internal clients to make DNS requests to firewall
-  iptables -A INPUT -i $LAN_IFACE -p tcp --syn -m state --state NEW \
-    --sport 1024:65535 --dport 53 -j ACCEPT
-  iptables -A INPUT -i $LAN_IFACE -p udp -m state --state NEW \
-    --sport 1024:65535 --dport 53 -j ACCEPT
-
-  iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-  # allow firewall to make DNS requests to Internet
-  iptables -A OUTPUT -o $INET_IFACE -p tcp --syn -m state --state NEW \
-    --sport 1024:65535 --dport 53 -j ACCEPT
-  iptables -A OUTPUT -o $INET_IFACE -p udp -m state --state NEW \
-    --sport 1024:65535 --dport 53 -j ACCEPT
-
-> Please advice since I need to get good understand about iptables
-> before
-> I going to implement stage.
->
-> Thanks in advance.
->
-> - Hirantha
-
-hope this helps...
-
--j
-
---
-"I've figured out an alternative to giving up my beer. Basically,
- we become a family of traveling acrobats!"
-        --The Simpsons
 
