@@ -1,14 +1,14 @@
 From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: track bandwith used
-Date: Wed, 30 Jun 2004 17:17:52 +0100
+Subject: Re: traceroute
+Date: Wed, 30 Jun 2004 17:21:43 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200406301717.52224.Antony@Soft-Solutions.co.uk>
-References: <00e501c45ea3$28e2d110$49caa8c0@caris.priv> <200406301441.22500.Antony@Soft-Solutions.co.uk> <12a101c45eab$99055aa0$49caa8c0@caris.priv>
+Message-ID: <200406301721.43285.Antony@Soft-Solutions.co.uk>
+References: <2E314DE03538984BA5634F12115B3A4E62E80E@email1.mitretek.org>
 Reply-To: "netfilter" <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <12a101c45eab$99055aa0$49caa8c0@caris.priv>
+In-Reply-To: <2E314DE03538984BA5634F12115B3A4E62E80E@email1.mitretek.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,39 +21,128 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 30 June 2004 3:07 pm, Peter Marshall wrote:
+On Wednesday 30 June 2004 5:10 pm, Piszcz, Justin Michael wrote:
 
-> ya, that was great.  I guess there was one thing that you said that worried
-> me ... you said almost all packets will match the ESTABLISHED,RELATED check
-> on the forwared chain ... would that not be a bad thing ... is it dangerous
-> to have RELATED as an option on the FORWARD CHAIN. ???
+> Yes, that is why I recommended to him to set the INPUT to
+> ESTABLISHED,RELATED, which may help to solve his problem, as well as
+> setting the policy (FORWARD) to ACCEPT until he can find out what
+> exactly is causing his problem(s).
 
-No, in fact it is essential for many purposes.
+What's the purpose of making any changes to the INPUT chain when the packets 
+are being routed through the firewall to somewhere else?
 
-1. The FTP data channel will be matched as RELATED to the initial control 
-channel, so RELATED in FORWARD is needed if you are going to allow FTP.
-
-2. ICMP error responses (usually seen in reply to UDP packets which fail for 
-some reason) match as RELATED, and (as is already being discussed on another 
-thread on this list), it is not a good idea to stop all ICMP packets from 
-getting through your firewall.
-
-There are other examples of why RELATED packets are necessary, but these are 
-the most common and obvious ones.
-
-You will generally find that all tutorials and netfilter examples match 
-ESTABLISHED and RELATED in the FORWARD chain.
-
-What makes you think that RELATED is dangerous?
+I could just about understand if you were ensuring that his OUTPUT chain 
+allowed the ICMP TTL Exceeded packets to leave the firewall for that 
+particular hop, but I don't see where INPUT comes into it at all?
 
 Regards,
 
 Antony.
 
+> -----Original Message-----
+> From: netfilter-admin@lists.netfilter.org
+> [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+> Sent: Wednesday, June 30, 2004 11:33 AM
+> To: netfilter
+> Subject: Re: traceroute
+>
+> On Wednesday 30 June 2004 4:10 pm, Piszcz, Justin Michael wrote:
+> > ICMP is "allowed" when you -I INPUT ESTABLISHED,RELATED.
+> >
+> > You do not have to allow it explicitly (ie: allow icmp so other
+>
+> machines
+>
+> > can ping your machine).
+>
+> Please look at the rules which are being used:
+>
+> $IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPT -A FORWARD -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+> They are explicitly accepting TCP and UDP only.   ICMP will not be
+> matched by
+> the above rules.
+>
+> Regards,
+>
+> Antony.
+>
+> > -----Original Message-----
+> > From: netfilter-admin@lists.netfilter.org
+> > [mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
+> > Sent: Wednesday, June 30, 2004 10:58 AM
+> > To: netfilter
+> > Subject: Re: traceroute
+> >
+> > On Wednesday 30 June 2004 3:34 pm, Piszcz, Justin Michael wrote:
+> > > -----Original Message-----
+> > > From: Peter Marshall [mailto:peter.marshall@caris.com]
+> > > Sent: Wednesday, June 30, 2004 10:25 AM
+> > > To: Piszcz, Justin Michael; netfilter
+> > > Subject: Re: traceroute
+> > >
+> > > I don't get anything (except the name lookup) from traceroute.
+> > >
+> > > Below are the relavant rules .... tracert is the ip of the box I am
+> > > trying to traceroute form.
+> > > The Ip of that box is an internet routable ip addess.
+> > >
+> > > $IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j
+>
+> ACCEPT
+>
+> > > $IPT -A FORWARD -p UDP -m state --state ESTABLISHED,RELATED -j
+>
+> ACCEPT
+>
+> > > $IPT -A FORWARD -s <tracert box> -o eth1 -j rh-net
+> > > $IPT -A FORWARD -d <tracert box -i eth1 -j net-rh
+> > >
+> > > $IPT -A rh-net -s <tracert box> -j ACCEPT
+> > > $IPT -A net-rh -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
+> >
+> > You should allow ICMP packets through your system.
+> >
+> > You should certainly allow ICMP through if you want traceroute to
+>
+> work,
+>
+> > and
+> > you should generally allow ICMP if you want many other things to work.
+> > If
+> > you want to block certain types of ICMP, that's fine (many people do),
+> > but
+> > don't block all ICMP.
+> >
+> > Traceroute works by sending either ICMP "ping" (echo request) packets,
+> > or UDP
+> > packets to high port numbers (which are assumed not to be listening),
+> > depending on the Operating System of the client doing the traceroute.
+> > In
+> > both cases the important response is an ICMP TTL exceeded packet,
+>
+> which
+>
+> > contains the IP address of the router where TTL became == 0.
+> >
+> > Remember that firewalling can be a dangerous topic - if you block
+>
+> things
+>
+> > you
+> > don't understand, and therefore don't know that you should allow, some
+> > things
+> > will break.
+> >
+> > Regards,
+> >
+> > Antony.
+
 -- 
-The words "e pluribus unum" on the Great Seal of the United States are from a 
-poem by Virgil entitled "Moretum", which is about cheese and garlic salad 
-dressing.
+The first fifty percent of an engineering project takes ninety percent of the 
+time, and the remaining fifty percent takes another ninety percent of the 
+time.
 
                                                      Please reply to the list;
                                                            please don't CC me.
