@@ -2,7 +2,7 @@ From: =?ISO-8859-1?Q?Z=E9=20Lu=EDs?= <zeluis@objetivo-americana.com.br>
 Subject: squid and iptables
 Date: Fri, 14 Jun 2002 11:12:12 -0300
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <3D09F9BC.8000200@objetivo-americana.com.br>
+Message-ID: <aectl4$psh$2@main.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
