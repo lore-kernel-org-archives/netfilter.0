@@ -1,13 +1,12 @@
-From: Phil Howard <phil-netfilter@ipal.net>
-Subject: Re: how to block 10000's of addresses?
-Date: Sun, 13 Oct 2002 17:05:50 -0500
+From: "Svein E. Seldal" <Svein.Seldal@solidas.com>
+Subject: Re: FTP/auth problems (slooow links)
+Date: Sun, 13 Oct 2002 22:36:34 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20021013170550.A16894@hamal.ipal.net>
-References: <20021013095628.D15824@hamal.ipal.net> <Pine.LNX.4.44.0210131215410.17397-100000@localhost.localdomain>
+Message-ID: <3DA9D952.3030709@solidas.com>
+References: <3DA97045.2040803@solidas.com> <20021013164821.GA689@Ajftl1.ajfthome.on.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0210131215410.17397-100000@localhost.localdomain>; from rpjday@mindspring.com on Sun, Oct 13, 2002 at 12:25:50PM -0400
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,72 +16,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Alistair Tonner <Alistair@alistairt.ath.cx>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, Oct 13, 2002 at 12:25:50PM -0400, Robert P. J. Day wrote:
+Alistair Tonner wrote:
+ >
+ >     I wonder ... are the boxes inside purely WIN boxes?
 
-| On Sun, 13 Oct 2002, Phil Howard wrote:
-| 
-| > The initial inspiration is for filtering spam.  But I can see other
-| > uses, and am looking at this for broader re-usable purposes which
-| > would be initially deployed to filter spamming servers.
-| 
-| for spam, what about things like spamassassin?  or other spam-filtering
-| tools?  of course, using iptables means you can stop that stuff much
-| sooner at the network level.  so here's a couple of thoughts:
+No. I've tested mostly all combinations of servers (win/linux), clients 
+(win/linux), client apps. (ftp/ie/leech/etc.), and the conclusion is 
+clear: Once the connection has gone through, then the data throughput is 
+what it is expected to be. Example: one large file takes the same amount 
+of time, regardless of it being transferred directly vs. through the 
+router. But many small files are considerable slower (up to 100 times 
+slower).
 
-I already reject mail during the SMTP transaction.  Accepting it and
-running through spamassassin after delivery would just be a greater
-level of load.  I'm trying to reduce it.
+I have got reports that (external and internal) websites can take very 
+long time to come up, but once it has connected to the server, then the 
+data comes very quickly. I have got a gut feeling that this initial 
+connection opening delay is the same we are seeing on the FTP, only its 
+more evident on FTP. If I'm connecting to websites internally, the 
+complete page comes up very quickly. But if I try to connect to the same 
+page, via. the router, then the pictures takes very long time to complete.
 
-| 
-| 1) if you really have this kind of filtering need, consider getting
-|    a separate hardware filter to do this kind of processing.  no
-|    matter how cleverly you set up your netfilter rules, it's going
-|    to cost you processing time.  what you're asking for might just
-|    be a little overwhelming to ask of iptables.  might be time to
-|    check into a custom box that can handle tens of thousands of rules
-|    so your system doesn't have to deal with it.
+So, I'm rephrasing the question: "What can be the reason that the router 
+is having such long initial delays on connections?"
 
-If each packet did a lookup into a tree object of some sort based on the
-source address, and possibly discarded, that should reduce the processing.
-The challenge is finding the method.  Maybe the policy routing will do
-this, but from its skimpy documentation (I don't know if I have found it
-all, yet) it also looks like it is doing a linear search.
+ >     -- What sort of outside connection do you have?
+
+2.3MBit SDSL. The data from my router is going into a DSL router from
+cisco. I.e internet -- cisco dsl router -- linux router -- lan. However
+for the testing on this example, the data goes from lan to linux router
+to lan again, never via. the cisco router nor the dsl link. The linux
+router is sole reason for the delay!
+
+And I dont think this is a MTU issue here, as the router and the server 
+and the client is all sharing the same network switch. If a packet from 
+the client is received on the router addressed to the server, then it 
+will be received on eth0 and transmitted on eth0 again.
 
 
-| 2) if you're really determined to use iptables, consider building a
-|    bunch of user-defined chains to create a tree structure for the
-|    rules to speed up processing.  as far as i can tell, you can do
-|    this:
-| 
-|    # iptables -N network1
-|    # iptables -N network2
-|    # iptables -N network3
-|    ...
-| 
-|    # iptables -A INPUT -s 1.0.0.0/8 -j network1
-|    # iptables -A INPUT -s 2.0.0.0/8 -j network2
-|    ...
-| 
-|    you'd then add to the user-defined chain network1 all rules for
-|    filtering from source addresses on the 1.0.0.0 class A network.
-|    (this is just a hypothetical example, of course.)  and just keep
-|    going.
-| 
-|    if you want to be really clever, write a script of some kind that
-|    reads, in a simple format, all the filtering you want to do, and
-|    dynamically builds a nicely-balanced B-tree or something so that
-|    you have the optimal tree structure, and rebuild the filtering
-|    rules whenever your filtering needs change.
+Thanks,
+Svein E. Seldal
 
-That certainly looks like it could do it with a lower level of processing.
 
--- 
------------------------------------------------------------------
-| Phil Howard - KA9WGN |   Dallas   | http://linuxhomepage.com/ |
-| phil-nospam@ipal.net | Texas, USA | http://ka9wgn.ham.org/    |
------------------------------------------------------------------
 
