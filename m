@@ -1,9 +1,10 @@
-From: alexb@atix.com.br
+From: Bjorn Ruberg <bjorn@ruberg.no>
 Subject: Re: nat & ip accounting
-Date: Wed, 26 Mar 2003 19:51:26 -0300 (BRT)
+Date: 27 Mar 2003 00:17:54 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1048719086.3e822eeeb4d7e@www.spsul.com.br>
-References: <001b01c2f3dc$37348a20$1001a8c0@s3ac> <200303262251.45912.kimj@dawn.dk>
+Message-ID: <1048720674.18872.19.camel@mikke>
+References: <001b01c2f3dc$37348a20$1001a8c0@s3ac> 
+	<200303262251.45912.kimj@dawn.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -20,46 +21,34 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-If you havn't to many diferent ip/ip-ranges to monitor you can enter iptabl=
-es
-filter rules for that ips with no action, just to count the trafic, than us=
-e a
-script and mrtg to show them. something like:
-
-iptables -A FORWARD -s [MonitoredIP] -i [NIC_conecting_to_IP]
-iptables -A FORWARD -d {MonitoredIP] -o [NIC_conecting_to_IP]
-
-make a script to grab the bytecount and output them as mrtg expect
-(IN,OUT,UPTIME,HOSTNAME). Change ^[1,2] to select your rules
-in the chain where you grab the trafic.
-
-iptables -nvxL FORWARD --line-numbers|egrep ^[1,2]|awk '{print $3}'
-
-
-C=F3pia Kim Jensen <kimj@dawn.dk>:
-
+On Wed, 2003-03-26 at 22:51, Kim Jensen wrote:
 > On Wednesday 26 March 2003 22:11, Rowan Reid wrote:
 > > I have an answer but you also got me thinking.  A good tool to keep
 > > track of traffic via ip addresses would be mrtg. However is there an
-> > mrtg type tool that uses the counters in iptables rules to keep track
-> of
+> > mrtg type tool that uses the counters in iptables rules to keep track o=
+f
 > > traffic and output it in a user friendly form.
 >=20
-> If you wish to see things in a more user friendly way (or usable way, as
-> no=20
-> system is friendly :-) can be hard as you have to define what in what
-> you=20
+> If you wish to see things in a more user friendly way (or usable way, as =
+no=20
+> system is friendly :-) can be hard as you have to define what in what you=
+=20
 > wish to see things!
 >=20
-> mrtg is quite good, since you get the results on a webpage, but for
-> tracking=20
-> ip specific things - I don't know, as I don't think the kernel remembers
-> this=20
-> statistic. You can read per interface but not from each ip connecting to
-> an=20
+> mrtg is quite good, since you get the results on a webpage, but for track=
+ing=20
+> ip specific things - I don't know, as I don't think the kernel remembers =
+this=20
+> statistic. You can read per interface but not from each ip connecting to =
+an=20
 > interface.
->=20
-> /Kim
->=20
->=20
+
+You can indeed log from each IP connecting. In fact you may read
+whatever you configure iptables to log. You may end up with one heck of
+a ruleset, as you need one iptables rule for every different parameter
+you want to log.
+
+
+Bj=F8rn
+
 
