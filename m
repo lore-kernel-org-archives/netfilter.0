@@ -1,13 +1,15 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: setting up network sharing
-Date: Fri, 15 Oct 2004 20:03:24 -0400
+From: Harald Welte <laforge@netfilter.org>
+Subject: [FAQ] Re: PPTP connection tracking and NAT helper in Linux 2.6
+Date: Sat, 16 Oct 2004 10:13:54 +0200
 Sender: netfilter-bounces@lists.netfilter.org
-Message-ID: <20041016000324.GA9058@bender.817west.com>
-References: <29c1c2ca23d24.416ffa4a@usc.edu>
+Message-ID: <20041016081354.GE29413@sunbeam.de.gnumonks.org>
+References: <20766.1097853320@www26.gmx.net>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YkJPYEFdoxh/AXLE"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <29c1c2ca23d24.416ffa4a@usc.edu>
+In-Reply-To: <20766.1097853320@www26.gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +19,55 @@ List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Jochen Rueppel <j.rueppel@gmx.de>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Fri, Oct 15, 2004 at 04:26:50PM -0700, vineet bhargava wrote:
-> Hi all,
-> 
-> I am having trouble setting up internet conenction sharing
-> on an embedded device. I am running linux kernel v2.4.18
-> with iptables and netfilter support. 
-> 
-> When I try to run this command -
-> iptables --table nat --append POSTROUTING --out-interface
-> wlan0 -j MASQUERADE
-> 
-> I am getting the following error -
-> iptables v1.2.2: Couldn't load target `MASQUERADE':File not
-> found
 
-first off--that is an *_ANCIENT_* version of iptables...1.2.8/1.2.9 is
-the oldest version i still see in use regularly, as SuSE and RH are
-keeping them around...however--the current version is 1.2.11...
+--YkJPYEFdoxh/AXLE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-anyways--it sounds like you compiled a custom kernel w/o MASQUERADE
-support.  does your kernel config have the following set:
+On Fri, Oct 15, 2004 at 05:15:20PM +0200, Jochen Rueppel wrote:
+> Hi Harald
+>=20
+> In the info file for the current patchomatic modul "PPTP connection track=
+ing
+> and NAT helper" is written: "Requires: linux < 2.6.0"
+>=20
+> I plan to migrate to linux-kernel 2.6 in the near future.
+> Will PPTP connection tracking be part of linux 2.6?
+> If not, when will exist the natching patchomatic modul?
 
-  CONFIG_IP_NF_TARGET_MASQUERADE=m
+As soon as somebody ports it and sends me a patch.  I receive about 3-5
+mails per week asking for this feature... but apparently nobody is
+willing to contribute some time back to the netfilter project.
 
-the 'm' would be for a modular kernel, a non-modular kernel would have
-it set to 'y'
+> thanks & greets
+> Jochen
 
-if you do have that set in your kernel, and your kernel is modular,
-check the output of:
+--=20
+- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-  lsmod | grep ipt_MASQUERADE
+--YkJPYEFdoxh/AXLE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-and if you don't see any output, try loading it with:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-  modprobe ipt_MASQUERADE
+iD8DBQFBcNhCXaXGVTD0i/8RAlMcAJkBKVtNMk1aXOS+rYSXdTdcyK+ydgCeM9+Q
+o0a0nGdy1eHDsAzJyhHFxLo=
+=A2cV
+-----END PGP SIGNATURE-----
 
-the module in question should be located at:
-
-/lib/modules/`uname -r`/kernel/net/ipv4/netfilter/ipt_MASQUERADE.o
-
-HTH...
-
--j
-
--- 
-Jason Opperisano <opie@817west.com>
+--YkJPYEFdoxh/AXLE--
 
