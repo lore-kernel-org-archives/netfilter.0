@@ -1,14 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Re[4]: Problem with Port forwarding
-Date: Fri, 9 Apr 2004 13:53:32 +0100
+From: "Alexis" <alexis@tpys.com.ar>
+Subject: Re: opening connection for Tomcat
+Date: Fri, 9 Apr 2004 10:50:04 -0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404091353.32056.Antony@Soft-Solutions.co.uk>
-References: <146373237921.20040405211401@internetplustravel.ru> <200404061344.23168.Antony@Soft-Solutions.co.uk> <325389781.20040409162513@internetplustravel.ru>
-Reply-To: <netfilter@lists.netfilter.org>
+Message-ID: <002b01c41e39$906eb4c0$51a2fea9@heretic>
+References: <40756C19.3010606@tin.it> <1081446600.2453.63.camel@katala.sterenborg.info> <4075B24D.1020601@tin.it> <200404082253.44301.Antony@Soft-Solutions.co.uk> <407642A3.1040700@tin.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <325389781.20040409162513@internetplustravel.ru>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,69 +17,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Gianni Pucciani <gp.puccio@tin.it>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-On Friday 09 April 2004 1:25 pm, Oleg Savostyanov wrote:
+using the correct mask it is.
 
-> On Tuesday, April 6, 2004, 4:44:23 PM, Antony Stone wrote:
+
+----- Original Message ----- 
+From: "Gianni Pucciani" <gp.puccio@tin.it>
+To: "Netfilter" <netfilter@lists.netfilter.org>
+Sent: Friday, April 09, 2004 3:28 AM
+Subject: Re: opening connection for Tomcat
+
+
+> Antony Stone wrote:
+> > On Thursday 08 April 2004 9:13 pm, Gianni Pucciani wrote:
+> >
+> >
+> >>Ok, I've fixed the problem: it seems that the address 0.0.0.0 is no
+good.
+> >
+> >
+> > You are certainly very unlikely to receive packets from that address, as
+it
+> > does not exist.
 >
-> > What do you see in the packet / byte counters from "iptables -L -nvx;
-> > iptables -L -t nat -nvx" when you try to make a connection?   Do you
-> > see packets in the PREROUTING DNAT rule, the FORWARD rule towards the
-> > mail server, and the FORWARD rule for the replies?
+> Well, I'm not a firewall guru, but I think that 0.0.0.0 address is often
+> used to indicate "every address", isn't it?
 >
-> iptables -L -nvx
-> 562 27336 ACCEPT tcp--eth0 eth1 0.0.0.0/0 10.10.10.252 tcp dpt:25
-> 566 27576 ACCEPT tcp--eth0 eth1 0.0.0.0/0 10.10.10.252 tcp dpt:25
-
-Is this the NEW rule early on in your ruleset (I'm assuming you're still using 
-the ruleset you posted on Tuesday: 
-http://lists.netfilter.org/pipermail/netfilter/2004-April/051811.html)   If 
-so, there's something strange about it catching 4 packets - only the first 
-one should be NEW, the rest should be ESTABLISHED and match on a rule further 
-down your ruleset.
-
-> iptables -L -t nat -nvx
+> Gianni
+> >
+> > Regards,
+> >
+> > Antony.
+> >
 >
-> Chain PREROUTING (policy ACCEPT 207941 packets, 25904040 bytes)
-> pkts      bytes target     prot opt in     out     source      destination
-> 185  8964 DNAT tcp--eth0 * 0.0.0.0/0 62.105.158.196 tcp dpt:25
-> to:10.10.10.252
-> Chain PREROUTING (policy ACCEPT 207933 packets, 25903472 bytes)
-> pkts      bytes target     prot opt in     out     source      destination
-> 184  8904 DNAT tcp--eth0 * 0.0.0.0/0 62.105.158.196 tcp dpt:25
-> to:10.10.10.252
-
-Okay, I'm slightly puzzled by this, because there is a smaller number of 
-packets in the second log entry than the first - I can only assume that this 
-is an "after" and "before" display :)
-
-This shows only a single matching packet, which if it's the first SYN packet, 
-and there was an acceptable SYN-ACK response, is what I'd expect, since the 
-nat rules only see the first packet in a connection, and all the others get 
-handled magically in the background by the connection tracking software.
-
-I recommend you put a packet sniffer (ethereal is a good one) on the network 
-segment between the firewall and the mail server, and see what packets are 
-there.
-
-I'm of the opinion that netfilter is working fine, but there's some 
-application layer problem which is causing the connection not to succeed.
-
-Regards,
-
-Antony.
-
--- 
-"Note: Windows 98, Windows 98SE and Windows 95 are not affected by [MS
-Blaster].   However, these products are no longer supported.   Users of these
-products are strongly encouraged to upgrade to later versions."
-
-(which *are* affected by MS Blaster...)
-
-http://www.microsoft.com/security/security_bulletins/ms03-026.asp
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+>
+>
+>
 
 
