@@ -1,47 +1,55 @@
-From: "Jamie Harris" <jamie@jharris.homeip.net>
-Subject: Packet mangling latency
-Date: Wed, 1 Oct 2003 22:06:13 +0100 (BST)
-Sender: lartc-admin@mailman.ds9a.nl
-Message-ID: <33751.192.168.1.2.1065042373.squirrel@rincewind.jharris.homeip.net>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Question to the list/maintainers....
+Date: Wed, 1 Oct 2003 19:18:40 -0400
+Sender: netfilter-admin@lists.netfilter.org
+Message-ID: <200310011918.40436.Alistair@nerdnet.ca>
+Reply-To: Alistair@nerdnet.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <lartc-admin@mailman.ds9a.nl>
-Errors-To: lartc-admin@mailman.ds9a.nl
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Subscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+Errors-To: netfilter-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Firstly... sorry to those of you on both the netfilter and lartc list
-who'll end up with this message twice...
 
-I am trying to find out what kind of latency I can expect when dNAT'ing
-UDP packets on (probably) a mid-range P3 server, 32-bit 33MHz PCI bus with
-Intel EEPro NICs.  It'll most likely be running whatever the latest 2.4
-kernel will be at the time, unless there are significant boosts in packet
-mangling performace in 2.6.
+	I am in the process of rewriting my firewall ( as prev mentioned on the list)
+	and in this process note that there have been updates to ip_xxxx_irc. put in 
+	2.4.22.  I'm currently running 2.4.21 with lowlatency patches and iptables
+	1.2.7a with P.O.M. from 20030107.
 
-Sorry that this is such vague set of specs, but this is just a vague idea
-at the moment.  Any suggestions for hardware that would be particuarly
-suited to shifting packets with the lowest possibly latency would be much
-appreciated.
+	Are the updates in 2.4.22 likely to fix the occasional DCC send/recieve 
+errors that my natted users have been experiencing ( DCC connection requests
+	come through, but cannot be seen by the client, only by the server and
+	the NATTING host) -- this is an intermittent problem that I was laying at the 
+	foot of the client until I noted that the actual client to client connection
+	was never built in the conntrack table?
 
-cheers.
+	(would make my other half and a couple of friends that drop by with laptops
+	MUCH happier)
 
-Jamie...
+	Considering what I'm up to at the moment, this is becoming  a project that
+	I'm gonna have to take a day or three to perform anyway --- I'd like to know 
+	if I should add a kernel upgrade and an iptables tools and POM upgrade to 
+	the list.
 
-PS Thanks to the Netfilter team for producing such a cracking frame work,
-thanks to the LARTC guys for making me feel like a newbie again :)
+	(This is my HOME lan... not a production system for business... but rather
+	a mixed OS lan/playground)
 
 -- 
-**  This message was transmitted on 100% recycled electrons **
 
-_______________________________________________
-LARTC mailing list / LARTC@mailman.ds9a.nl
-http://mailman.ds9a.nl/mailman/listinfo/lartc HOWTO: http://lartc.org/
+	Alistair Tonner
+	nerdnet.ca
+	Senior Systems Analyst - RSS
+	
+     Any sufficiently advanced technology will have the appearance of magic.
+	Lets get magical!
+
