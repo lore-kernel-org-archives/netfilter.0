@@ -1,8 +1,8 @@
-From: "Joel n.solanki" <zealous@bonbon.net>
-Subject: Logging src/dst ip ftp
-Date: 19 Jul 2004 10:10:01 +0530
+From: George Alexandru Dragoi <waruiinu@gmail.com>
+Subject: bridge + nat
+Date: Mon, 19 Jul 2004 08:46:01 +0300
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1090212001.2721.14.camel@joel.d2visp.com>
+Message-ID: <3063e5040718224645349687@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -18,30 +18,12 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Dear all,
-
-Again with some doughts and want to implement on iptables.
-
-I have redhat 9.0 working as a gateway. around 80 to 90 users connect
-uses this server.
-lets say 10.0.0.2 is the client user.
-For this we just take ftp protocol.
-
-I want to keep a soft copy of 10.0.0.2 ip about his ftp connection.
-
-10.0.0.2 ---ftp out ---> some internet ftp site.
-10.0.0.2 ---ftp in <<<-----some internet friend.
-
-I want to keep track of this things so that no users can say me that i
-havent use ftp service ..or i havent use internet connection.
-
-
-Any ideas about this. Anyone here have implemented this ?
-
-Joel n.solanki
-Systems Administrator
-D2V ISP PVT LTD.
-
-
-
+Hello, i am trying to make a linux machine as both router and bridge.
+The linux machine will be connected to internet and to the lan. One of
+the LAN machines will get public ips, and the rest, including the
+linux bridging interface will have ips from private space. How do i
+share internet to those computer? the public ip will be on some
+windows machine which has voip, and i'm not sure just forwarding ports
+to that machine will make voip working, so i am thinking to do this
+bridge. Thank you for any suggestion/hint
 
