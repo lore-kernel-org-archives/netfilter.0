@@ -1,64 +1,43 @@
-From: "hare ram" <hareram@sol.net.in>
-Subject: Problem with bridge+iptables+ulog
-Date: Wed, 12 Mar 2003 15:55:34 +0530
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <078601c2e886$039a49e0$13fcc5cb@Housecall>
-Reply-To: "hare ram" <hareram@sol.net.in>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: How to log all the packets through netfilter?
+Date: 12 Mar 2003 11:56:17 +0100
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <1047466577.9484.3.camel@elendil.intranet.cartel-securite.net>
+References: <20030312103355.9C1FF1C9C2DCC@sm206.163.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+In-Reply-To: <20030312103355.9C1FF1C9C2DCC@sm206.163.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Bobo <boboaq@163.com>
+Cc: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>, "netfilter-devel@lists.netfilter.org" <netfilter-devel@lists.netfilter.org>
 
-Hi all
+Le mer 12/03/2003 a 11:34, Bobo a ecrit :
+>         While using IPtables,I am now trying to log all the packets
+> the firewall receives.
+>      Now,I could log such packets that match the set rules.If receive
+> some packet which does=20
+> not meet any rules in a chain,how to log it?
 
-some one can help i have the following setup
+End you chain with a LOG target alone, e.g. for INPUT chain :
 
-x.x.x.1/24            x.x.x.2/24
-   +------+                               +------+
-  | Router A |------+ +---------| PC B |
-   +------+              | |              +------+
-                              | |
-                        eth0| | eth1
-                          +-----+
-                            | qos | (br0 =3D x.x.x.3/24)
-                          +-----+
+	iptables -A INPUT -j LOG
 
+At the end of script.
 
-
-Router A is connected to internet
-QOS box running with bridge
-PC B is my LAPTOP
-
-iam try to make the ULOG usig the following command
-
-
-$IPTABLES -I INPUT -i eth1 -j ULOG --ulog-nlgroup 1 --ulog-cprange
-   --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
-
-iam not able to see any LOG here in my LOG file
-
-when i do this with out  interfce
-
-$IPTABLES -I INPUT  -j ULOG --ulog-nlgroup 1 --ulog-cprange
-   --ulog-qthreshold 50 --ulog-prefix "EXT_IN"
-
-iam able to see some logs using BR0
-
-how can i get the logs from eth0 and eth1
-
-any suggestion will be great
-
-hare
-
+--=20
+C=E9dric Blancher  <blancher@cartel-securite.fr>
+IT systems and networks security expert  - Cartel S=E9curit=E9
+Phone : +33 (0)1 44 06 97 87 - Fax: +33 (0)1 44 06 97 99
+PGP KeyID:157E98EE  FingerPrint:FA62226DA9E72FA8AECAA240008B480E157E98EE
 
 
