@@ -1,10 +1,13 @@
-From: "dravya" <dravya@magma.ca>
-Subject: Re: Masqureading issues... packets go over wrong link
-Date: Fri, 13 Aug 2004 13:39:16 -0400 (EDT)
+From: Payal Rathod <payal-netfilter@scriptkitchen.com>
+Subject: Re: VPN?
+Date: Fri, 13 Aug 2004 13:44:08 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200408131739.i7DHdGQ0026395@webmail2.magma.ca>
+Message-ID: <20040813174408.GA21449@tranquility.scriptkitchen.com>
+References: <D5C9032B2B09C64EA2409D6214E91AC905127F@asimail2.alphanumeric.com>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <D5C9032B2B09C64EA2409D6214E91AC905127F@asimail2.alphanumeric.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,45 +19,21 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter mailing list <netfilter@lists.netfilter.org>
+To: Netfilter ML <netfilter@lists.netfilter.org>
 
+On Fri, Aug 13, 2004 at 12:30:28PM -0400, Jason Opperisano wrote:
+>         # modprobe ip_conntrack_pptp
 
-> > Hello all,
-> >
-> > I have a system setup with two phones/interfaces (ppp0 and ppp1). I access
-> > the internet via these two interfaces only.
-> >
-> > I have the following rules in my iptables:
-> >
-> > iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> > iptables -t nat -A POSTROUTING -o ppp1 -j MASQUERADE
-> >
-> > and yet when a machine on my network uses my machine as the gateway to ping
-> > outside, packets travel on the wrong link causing change of ip address of
-> > the phones. I have tested this using ethereal and it clearly shows a ppp0
-> > packet (src add of ppp0) outgoing on ppp1, as I was capturing on ppp1.
-> > Also, iptables is masquerading as it shows the number of packets it
-> > masqueraded.
-> 
-> I agree with you that the above rules ought to ensure that packets going out 
-> of each interface have the appropriate source address.
-> 
-> What does your routing table look like (presumably you are using iproute2 to 
-> balance traffic, or route based on source etc, to share the two links)?
+FATAL: Module ip_conntrack_pptp not found.
 
-Yes I am using iproute2 and the Routing Table is as follows
+>         # modprobe ip_nat_pptp
 
- 206.47.201.1 dev ppp1  proto kernel  scope link  src 204.101.96.143
- 204.101.237.225 dev ppp0  proto kernel  scope link  src 69.158.211.67
- 169.254.0.0/16 dev eth0  scope link
- 192.168.0.0/16 dev eth0  scope link
- 127.0.0.0/8 dev lo  scope link
- default equalize
-      nexthop via 204.101.237.225  dev ppp0 weight 1
-      nexthop via 206.47.201.1  dev ppp1 weight 1
+FATAL: Module ip_nat_pptp not found.
 
-Obviously when the ip addresses change this table is updated.
+> heh heh--well the pptp-conntrack-nat patch doesn't actually officially support the 2.6 kernel:
 
-Thanks
-Dravya
+Now what do you suggest? Do I have to download anything?
+
+With warm regards,
+-Payal
 
