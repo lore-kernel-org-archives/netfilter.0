@@ -1,10 +1,12 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Linux Security
-Date: Wed, 4 Aug 2004 11:08:40 -0300
+From: "MagicWind" <magicwind@citiz.net>
+Subject: How can I configure my firewall to access voice chat with MSN 
+	messenger 6.2?
+Date: Wed, 4 Aug 2004 23:09:09 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <009701c47a2c$8aee76d0$49caa8c0@caris.priv>
+Message-ID: <006c01c47a35$02e03540$0201a8c0@MagicwindLaptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0069_01C47A78.0C7BA330"
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,14 +17,61 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I know this is a bit off topic ... but ... Does anyone know a good Linux
-security book ?  ( possibly related Redhat / fedora).
+This is a multi-part message in MIME format.
 
-Thanks
+------=_NextPart_000_0069_01C47A78.0C7BA330
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-Peter
+SSBoYXZlIGEgbGludXggc2VydmVyIHdoaWNoIGlzIGNvbmZpZ3VyZWQgYXMgYSByb3V0ZXIgY29u
+bmVjdGluZyBteSBpbnRlcm5hbCBuZXR3b3JrIGFuZCB0aGUgaW50ZXJuZXQuICB1c2luZyB0aGUg
+Zm9sbG93aW5nIGlwdGFibGVzIHJ1bGVzOg0KDQppcHRhYmxlcyAtQSBGT1JXQVJEIC1pIGV0aDAg
+LW8gZXRoMSAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUDQpp
+cHRhYmxlcyAtQSBGT1JXQVJEIC1pIGV0aDEgLW8gZXRoMCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1B
+IEZPUldBUkQgLWogTE9HDQppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAt
+aiBNQVNRVUVSQURFDQoNCndoZXJlIGV0aDAgaXMgdGhlIG5ldHdvcmQgYWRhcHRlciBsaW5raW5n
+IHRvIHRoZSBpbnRlcm5ldCBhbmQgdGhlIGV0aDEgaXMgdGhlIGFkYXB0ZXIgbGlua2luZyB0byB0
+aGUgaW50ZXJuYWwgbmV0d29yay4NCkl0IHNlZW1zIHRoZSBuZXR3b3JrIHdvcmtzIHF1aXRlIHdl
+bGwsIGV4Y2VwdCBmb3IgdGhlIHZvaWNlIGNvbm5lY3Rpb24gb2YgTVNOIG1lc3NlbmdlciA2LjIu
+ICBJIGNhbid0IGVpdGhlciBpbml0aWFsIGEgdm9pY2UgY2hhdCBvciBhY2NlcHQgYSB2b2ljZSBj
+aGF0Lg0KDQpJJ3ZlIGdvdCBhYnNvbHV0ZWx5IG5vIGlkZWEgaG93IHRvIG1ha2UgaXQgd29yay4g
+IEFueSBpZGVhcz8NCg==
+
+------=_NextPart_000_0069_01C47A78.0C7BA330
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
+MC4yODAwLjE0MDAiIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
+Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5JIGhhdmUgYSBsaW51eCBz
+ZXJ2ZXIgd2hpY2ggaXMgY29uZmlndXJlZCBhcyBhIHJvdXRlciANCmNvbm5lY3RpbmcgbXkgaW50
+ZXJuYWwgbmV0d29yayBhbmQgdGhlIGludGVybmV0LiZuYnNwOyB1c2luZyB0aGUgZm9sbG93aW5n
+IA0KaXB0YWJsZXMgcnVsZXM6PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05U
+PiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+aXB0YWJsZXMmbmJzcDstQSBGT1JXQVJE
+IC1pJm5ic3A7ZXRoMCAtbyZuYnNwO2V0aDEgLW0gc3RhdGUgDQotLXN0YXRlIEVTVEFCTElTSEVE
+LFJFTEFURUQgLWogQUNDRVBUPEJSPmlwdGFibGVzJm5ic3A7LUEgRk9SV0FSRCAtaSZuYnNwO2V0
+aDEgDQotbyZuYnNwO2V0aDAgLWogQUNDRVBUPEJSPmlwdGFibGVzJm5ic3A7LUEgRk9SV0FSRCAt
+aiBMT0c8QlI+PC9GT05UPjxGT05UIA0Kc2l6ZT0yPmlwdGFibGVzJm5ic3A7LXQgbmF0IC1BIFBP
+U1RST1VUSU5HIC1vJm5ic3A7ZXRoMCAtaiANCk1BU1FVRVJBREU8L0ZPTlQ+PC9ESVY+DQo8RElW
+PjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj53aGVy
+ZSBldGgwIGlzIHRoZSBuZXR3b3JkIGFkYXB0ZXIgbGlua2luZyB0byB0aGUgaW50ZXJuZXQgYW5k
+IA0KdGhlIGV0aDEgaXMgdGhlIGFkYXB0ZXIgbGlua2luZyB0byB0aGUgaW50ZXJuYWwgbmV0d29y
+ay48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5JdCBzZWVtcyB0aGUgbmV0d29yayB3
+b3JrcyBxdWl0ZSB3ZWxsLCBleGNlcHQgZm9yIHRoZSB2b2ljZSANCmNvbm5lY3Rpb24gb2YgTVNO
+IG1lc3NlbmdlciA2LjIuJm5ic3A7IEkgY2FuJ3QgZWl0aGVyIGluaXRpYWwgYSB2b2ljZSBjaGF0
+IG9yIA0KYWNjZXB0IGEgdm9pY2UgY2hhdC48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9
+Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5JJ3ZlIGdvdCBhYnNvbHV0
+ZWx5IG5vIGlkZWEgaG93IHRvIG1ha2UgaXQgd29yay4mbmJzcDsgQW55IA0KaWRlYXM/PC9ESVY+
+PC9GT05UPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPjwvQk9EWT48L0hU
+TUw+DQo=
+
+------=_NextPart_000_0069_01C47A78.0C7BA330--
+
 
 
