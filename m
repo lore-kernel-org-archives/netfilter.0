@@ -1,10 +1,14 @@
-From: "Maarten Wijnants" <maarten.wijnants@pandora.be>
-Subject: UDP checksum problems after switching from kernel 2.4 to 2.6
-Date: Wed, 22 Dec 2004 14:42:55 +0100
-Message-ID: <009001c4e82c$244911b0$6c2813ac@in.edm.luc.ac.be>
+From: Jason Opperisano <opie@817west.com>
+Subject: Re: conntrack records not going away?
+Date: Wed, 22 Dec 2004 08:43:05 -0500
+Message-ID: <1103722984.7337.42.camel@hubcap.ljm.dom>
+References: <876ef97a041220111947fbeff5@mail.gmail.com>
+	<1103596432.6589.8.camel@hubcap.ljm.dom>
+	<876ef97a041222043743ee9a5c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <876ef97a041222043743ee9a5c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,47 +19,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all,
+On Wed, 2004-12-22 at 07:37, Tobias DiPasquale wrote:
+> I wasn't able to get a capture that expressed this particular problem.
+> Every time I did a capture, the FINs were sent properly and the
+> conntrack records were removed. But I have another question: is what
+> you're telling me above that the kernel will sometimes not correctly
+> close a socket that a process has open when it gets killed? Where is
+> the code in the kernel that governs that behavior?
+> linux/net/ipv4/tcp_*?
 
-I have written a libipq application that accepts QUEUEd packets from
-userspace, checks them, and subsequently decides what to do with them. I
-often change stuff inside a packet and then reinject it in the kernel
- through ACCEPT. More specifically, I only need to do this for UDP packets.
- As stated on the netfilter homepage, the checksum of a modified packet must
- be recomputed before it is reinjected into kernelspace. So, every time I
- change the content of a QUEUEd UDP packet, I recompute the IP checksum.
- However, I just set the UDP checksum to 0 to save computation power.
+um--requesting the socket to be closed is the job of the application. 
+when apps crash, processes die, cables get unplugged, power goes
+out--connections do not get shut down gracefully and get stuck in your
+firewall connection table.  i'm not telling you the kernel isn't doing
+its job.  i was saying that either the application isn't doing its job
+or a person between the application and the firewall isn't letting the
+application do its job.
 
- This all worked fine on kernel version 2.4. However, I have just upgraded 
-to
- kernel 2.6, and all of a sudden my application doesn't work anymore.
- Although I manually set the UDP checksum to 0 in my libipq userspace
- application, the UDP packet arrives at its destination with an incorrect 
-UDP
- checksum. As a result, the UDP packet is dropped by the network stack of 
-the
- receiving machine. Is this an issue in kernel 2.6? In other words, do I 
-need
- to recalculate the UDP checksum in order to garantuee correct execution of
- my application? Also, if this is the case, does anyone know an efficient
- algoritm for this?
-
-Thanks in advance for your help.
-
-Kinds regards,
-Maarten Wijnants
+-j
 
 --
-
-Maarten Wijnants
-Expertisecentrum voor Digitale Media
-Limburgs Universitair Centrum
-Wetenschapspark 2 - 3590 Diepenbeek
-Tel: +32 (0)11 268419 - Mobile: +32 (0)497 341848
-E-mail: maarten.wijnants@luc.ac.be
-URL: http://edm.luc.ac.be 
+"Getting out of jury duty is easy. The trick is to say you're
+ prejudiced against all races."
+	--The Simpsons
 
 
