@@ -1,11 +1,9 @@
-From: "Rio Martin." <rio@martin.mu>
-Subject: SNAT
-Date: Thu, 3 Apr 2003 17:29:16 +0700
+From: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
+Subject: SNAT learning
+Date: Thu, 3 Apr 2003 15:31:06 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <003701c2f9cb$e109d330$6401a8c0@server>
-References: <20030403102302.5858.91445.Mailman@kashyyyk>
+Message-ID: <B5747F3DB39FD411884B00B0D07808CCB6C9D3@server10>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -17,27 +15,25 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Dear folks,
-I need help to modify the source ip for every irc connection coming from my
-clients.
+yo yo,
 
-Eg:
+i am learning the NAT thing but should it be possible that someone sends me
+a little example of a working snat with pings ?
+like:
+network A: 10.60.x.x
+network B: 10.165.x.x
+server network B: 10.165.0.10
 
-eth0    = 64.1.1.1
-eth0:1 = 64.1.1.2
-eth0:2 = 192.168.1.1
+what rules exactly do i need to set where so that someone from network A who
+pings to a server in network B get a reply ?
+it would help me a lot so that in the future i can set up al other
+connections by myself.
 
+thnx
 
-My clients is in 192.168.1.0/24. Right now all connection to irc server is
-using ip 64.1.1.1
-I want to modify, so all irc connection is using 64.1.1.2
-
-Thanks for helping me ...
-
-Regards,
-Rio Martin.
-
+ --tronstr@xsomic--
 
 
