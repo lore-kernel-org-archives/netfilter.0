@@ -1,13 +1,12 @@
-From: "Dharmendra.T" <dharmu@nsecure.net>
-Subject: Re: A problem in configuring a firewall system
-Date: 08 Sep 2003 11:15:05 +0530
+From: "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com>
+Subject: RE: internal web server
+Date: Mon, 8 Sep 2003 13:48:20 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1062999914.960.22.camel@india.nsecure.net>
-References: <20030902115159.79965.qmail@web10701.mail.yahoo.com>
+Message-ID: <F22386C3FEB012449238672E38ED61E706C220@overlord.overturemedia.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="=-0wOA1sScp0IiH9u+ZBLX"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <20030902115159.79965.qmail@web10701.mail.yahoo.com>
+Content-Class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,130 +16,146 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: shiva vafadar <sh_vafadar@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
---=-0wOA1sScp0IiH9u+ZBLX
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Thank you so much for replying!
+I have tried your suggestion as well as Thorten's suggestion but it =
+still does not work!
 
-On Tue, 2003-09-02 at 17:21, shiva vafadar wrote:
+By the way, there is a router in front of all this. Does this have an =
+effect on the natting?
 
-    Dear all
-     
-    I have a problem in configuring my firewall system.
-    My Linux system has two Net cards and there are two interfaces in
-    it. eth0 and eth1.
-    I want to forward a incoming request ( from 192.168.1.1) to another
-    destination(132.20.48.5). I have added a rule in firewall iptables
-    using Nat and prerouting. As a consequence of this rule a recorde is
-    added to the log file after requesting, with following informaiton:
-    IN=eth0, OUT= eth1, Source=192.168.1.11 and Destination=132.20.48.5.
-    I think this is exactly what I want. 
-    I used tcp dump and I see that there is a request from 192.168.1.11
-    to firewall system on eth0 but there is no request from eth1 to the
-    132.20.48.5.
-    I conclude that there is somthing wrong in connection between lan
-    cards and interfaces, Is it all right? And what should I do to
-    bridge this gap?
-     
-    I approciate your consideration in advance.
-     
-    Shiva Vafadar
-     
-     
-    
-    
-    ____________________________________________________________________
-    Do you Yahoo!?
-    Yahoo! SiteBuilder - Free, easy-to-use web site design software
+router - firewall - web server
 
-Hi 
+I don't want to use the router to route traffic directly to the web =
+server as I want all traffic to enter the firewall.
+It somehow means there is a double nat that happens.
 
-As you are forwarding the packets from internal to external you are
-getting the info logged as given. The kind of packet you are expecting
-to come will come only if the packet is generated locally on the
-firewall machine. So currently you are right.
+- router translates 202.138.128.xxx to 192.168.247.3 (firewall internal =
+ip)
+- firewall hopes to translate 192.168.247.3 port 80 traffic to =
+192.168.247.5 (web server internal ip) port 80
 
--- 
-Regards
-Dharmendra.T
-dharmu@nsecure.net
-Linux Security and Admin
+When I use the old one like:
+iptables -t nat -A PREROUTING -p tcp -d 192.168.247.3 --dport 80 -j DNAT =
+--to-destination 192.168.247.5:80
 
---=-0wOA1sScp0IiH9u+ZBLX
-Content-Type: text/html; charset=utf-8
+I see this:
+[clause@fw firewall]# iptables -nvL -t nat
+Chain PREROUTING (policy ACCEPT 3318K packets, 1243M bytes)
+ pkts bytes target     prot opt in     out     source               =
+destination
+   21  1008 DNAT       tcp  --  *      *       0.0.0.0/0            =
+192.168.247.3      tcp dpt:80 to:192.168.247.5:80
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/1.0.4">
-</HEAD>
-<BODY>
-On Tue, 2003-09-02 at 17:21, shiva vafadar wrote:
-    <BLOCKQUOTE>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>Dear all</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I have a problem in configuring my firewall system.</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>My Linux system has two Net cards and there are two interfaces in it. eth0 and eth1.</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I want to forward a incoming request ( from 192.168.1.1)&nbsp;to another destination(132.20.48.5). I have added a rule in firewall iptables using Nat and prerouting. As a consequence of this rule&nbsp;a recorde is added to the log file after requesting, with following informaiton:</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>IN=eth0, OUT= eth1, Source=192.168.1.11 and Destination=132.20.48.5.</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I think this is exactly what I want. </FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I used tcp dump and I see that there is a request from 192.168.1.11 to firewall system on eth0 but there is no request from eth1 to the 132.20.48.5.</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I conclude that there is somthing wrong in connection between lan cards and interfaces, Is it all right? And what should I do to bridge this gap?</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>I approciate your consideration in advance.</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>Shiva Vafadar</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I>&nbsp;</FONT></FONT></I>
-    <BR>
-    <FONT COLOR="#73273a"><FONT SIZE="3"><I></FONT></FONT></I>
-    <BR>
-    
-<HR SIZE="1">
-<FONT COLOR="#73273a"><FONT SIZE="3"><I>Do you Yahoo!?</FONT></FONT></I>
-    <BR>
-    <A HREF="http://us.rd.yahoo.com/evt=10469/*http://sitebuilder.yahoo.com"><FONT SIZE="3"><I>Yahoo! SiteBuilder</FONT></I></A><FONT COLOR="#73273a"><FONT SIZE="3"><I> - Free, easy-to-use web site design software</FONT></FONT></I>
-    </BLOCKQUOTE>
-<FONT SIZE="3">Hi </FONT>
-<BR>
-<FONT SIZE="3"></FONT>
-<BR>
-<FONT SIZE="3">As you are forwarding the packets from internal to external you are getting the info logged as given. The kind of packet you are expecting to come will come only if the packet is generated locally on the firewall machine. So currently you are right.</FONT>
-<BR>
-<FONT SIZE="3"></FONT>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
-<PRE>-- 
-Regards
-Dharmendra.T
-dharmu@nsecure.net
-Linux Security and Admin</PRE>
-</TD>
-</TR>
-</TABLE>
+So I feel that the nat somehow works. I just don't receive any packets =
+on the web server.
 
-</BODY>
-</HTML>
+I hope you can help me again!
 
---=-0wOA1sScp0IiH9u+ZBLX--
+Thanks again for helping me.
+
+
+fritz <www.mesedilla.com>
+---
++ Basta Ikaw Lord
+
+
+
+> -----Original Message-----
+> From: slack geek [mailto:slack_geek@mail.bulgaria.com]
+> Sent: Friday, September 05, 2003 10:32 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: internal web server
+>=20
+>=20
+> Hello fritz,
+>=20
+> You have only one mistake in your iptables command. Since=20
+> you're making DNAT and you're refering to firewall's=20
+> _external_ ip to connect=20
+> to to the internal web server, it's right to do it like this:
+>=20
+> EXT_IFACE =3D your external network interface ( eth0 for example )
+> EXT_IP =3D the ip address attached to your $EXT_IFACE
+> INT_WWW_IP =3D your web server ip address
+>=20
+> iptables -t nat -A PREROUTING -p tcp -i $EXT_IFACE -d $EXT_IP=20
+> --dport 80 -j DNAT --to-destination $INT_WWW_IP:80
+>=20
+>=20
+> Cheers, train.
+>=20
+> On Fri, 5 Sep 2003 20:57:51 +0800
+> "Fritz Mesedilla" <fritz.mesedilla@overturemedia.com> wrote:
+>=20
+> >=20
+> > Greetings!
+> > I can't seem to make this work...
+> >=20
+> > - external ip of firewall 202.138.128.xxx
+> > - internal ip of firewall 192.168.247.3
+> > - internal web server with ip 192.168.247.5
+> >=20
+> > This was what my code was...
+> > $IPT -t nat -A PREROUTING -p tcp -d 192.168.247.3 --dport=20
+> 80 -j DNAT --to-destination 192.168.247.5:80
+> >=20
+> > It doesn't seem to work. I have set the web server to use=20
+> the gw of 192.168.247.3
+> >=20
+> >=20
+> > Hope you can help me. Thanks.
+> >=20
+> > fritz <www.mesedilla.com>
+> > ---
+> > + Basta Ikaw Lord
+> >=20
+> >=20
+> ----------------------------------------------------------------------
+> > This email and any files transmitted with it are confidential and
+> > intended solely for the use of the individual or entity to whom they
+> > are addressed. If you have received this email in error=20
+> please notify
+> > the sender immediately by e-mail and delete this e-mail from your
+> > system. Please note that any views or opinions presented in this
+> > email are solely those of the author and do not necessarily=20
+> represent
+> > those of the company. Finally, the recipient should check this email
+> > and any attachments for the presence of viruses. The company accepts
+> > no liability for any damage caused by any virus transmitted by this
+> > email.=20
+> >=20
+> > Overture Media, Inc.
+> > Direct Line: (632) 635-4785
+> > Trunkline:   (632) 631-8971 Local 146
+> > Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor.=20
+> Ortigas Ave., Quezon City 1100
+> >=20
+> >=20
+>=20
+>=20
+>=20
+>=20
+
+----------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the sender immediately by e-mail and delete this e-mail from your
+system. Please note that any views or opinions presented in this
+email are solely those of the author and do not necessarily represent
+those of the company. Finally, the recipient should check this email
+and any attachments for the presence of viruses. The company accepts
+no liability for any damage caused by any virus transmitted by this
+email.=20
+
+Overture Media, Inc.
+Direct Line: (632) 635-4785
+Trunkline:   (632) 631-8971 Local 146
+Level 1 Summit Media Offices, Robinsons Galleria EDSA Cor. Ortigas Ave., =
+Quezon City 1100
 
 
