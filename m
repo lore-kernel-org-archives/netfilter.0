@@ -1,12 +1,12 @@
-From: "Peter Marshall" <peter.marshall@caris.com>
-Subject: Re: traceroute
-Date: Wed, 30 Jun 2004 11:50:26 -0300
+From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
+Subject: RE: traceroute
+Date: Wed, 30 Jun 2004 10:34:37 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <12c901c45eb1$946a8e10$49caa8c0@caris.priv>
-References: <2E314DE03538984BA5634F12115B3A4E62E806@email1.mitretek.org>
+Message-ID: <2E314DE03538984BA5634F12115B3A4E62E806@email1.mitretek.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,21 +17,7 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>, netfilter <netfilter@lists.netfilter.org>
-
-Why would I use the INPUT chain .. I am doing a trace route from an internal
-box to an internet box ... on the other side of my firewall ... I am pretty
-sure that is a forwared rule ... is it not ?
-
-Peter
-
------ Original Message ----- 
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-To: "Peter Marshall" <peter.marshall@caris.com>; "netfilter"
-<netfilter@lists.netfilter.org>
-Sent: Wednesday, June 30, 2004 11:34 AM
-Subject: RE: traceroute
-
+To: Peter Marshall <peter.marshall@caris.com>, netfilter <netfilter@lists.netfilter.org>
 
 Is there a reason why you are doing stuff with the FORWARD chain?
 Have you tried enabling ACCEPT for the FORWARD chain and seeing if it
@@ -51,7 +37,7 @@ You need the ESTABLISHED,RELATED option for the INPUT chain.
 --state ESTABLISHED,RELATED -j ACCEPT
 
 -----Original Message-----
-From: Peter Marshall [mailto:peter.marshall@caris.com]
+From: Peter Marshall [mailto:peter.marshall@caris.com]=20
 Sent: Wednesday, June 30, 2004 10:25 AM
 To: Piszcz, Justin Michael; netfilter
 Subject: Re: traceroute
@@ -99,7 +85,7 @@ $IPT -A net-rh -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
 Thank you again,
 Peter.
 
------ Original Message ----- 
+----- Original Message -----=20
 From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
 To: "netfilter" <netfilter@lists.netfilter.org>
 Sent: Wednesday, June 30, 2004 10:47 AM
@@ -140,7 +126,7 @@ Regards,
 
 Antony.
 
--- 
+--=20
 "It is easy to be blinded to the essential uselessness of them by the
 sense of
 achievement you get from getting them to work at all. In other words -
@@ -156,7 +142,6 @@ completely hidden by their superficial design flaws."
 list;
                                                            please don't
 CC me.
-
 
 
 
