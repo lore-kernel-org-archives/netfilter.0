@@ -1,12 +1,13 @@
-From: "Piszcz, Justin Michael" <justin.piszcz@mitretek.org>
-Subject: RE: traceroute
-Date: Wed, 30 Jun 2004 11:10:48 -0400
+From: "James A. Pattie" <james@pcxperience.com>
+Subject: Re: how to redirect certain IPs to specific url
+Date: Wed, 30 Jun 2004 10:14:32 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <2E314DE03538984BA5634F12115B3A4E62E80A@email1.mitretek.org>
+Message-ID: <40E2D8D8.6050201@pcxperience.com>
+References: <a0f69e504063000446f514e22@mail.gmail.com> <200406300931.16812.Antony@Soft-Solutions.co.uk> <a0f69e5040630021311b0555d@mail.gmail.com> <200406301034.44072.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <200406301034.44072.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,81 +17,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-ICMP is "allowed" when you -I INPUT ESTABLISHED,RELATED.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-You do not have to allow it explicitly (ie: allow icmp so other machines
-can ping your machine).
+Antony Stone wrote:
 
------Original Message-----
-From: netfilter-admin@lists.netfilter.org
-[mailto:netfilter-admin@lists.netfilter.org] On Behalf Of Antony Stone
-Sent: Wednesday, June 30, 2004 10:58 AM
-To: netfilter
-Subject: Re: traceroute
+| If www.abc.com resolves to more than one IP address, only one will get entered
+| into the rule if you specify the name (and you would need to use multiple
+| rules if you specify by IP), and therefore only some of the packets sent to
+| ww.abc.com would match the rule.
+|
 
-On Wednesday 30 June 2004 3:34 pm, Piszcz, Justin Michael wrote:
+I just tested and if you say use www.yahoo.com, which resolves to multiple
+entries, you get that many iptables rules generated for each unique IP that
+www.yahoo.com resolves to.  I've been relying on this feature for a long time. :)
 
-> -----Original Message-----
-> From: Peter Marshall [mailto:peter.marshall@caris.com]
-> Sent: Wednesday, June 30, 2004 10:25 AM
-> To: Piszcz, Justin Michael; netfilter
-> Subject: Re: traceroute
->
-> I don't get anything (except the name lookup) from traceroute.
->
-> Below are the relavant rules .... tracert is the ip of the box I am
-> trying to traceroute form.
-> The Ip of that box is an internet routable ip addess.
->
-> $IPT -A FORWARD -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPT -A FORWARD -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> $IPT -A FORWARD -s <tracert box> -o eth1 -j rh-net
-> $IPT -A FORWARD -d <tracert box -i eth1 -j net-rh
->
-> $IPT -A rh-net -s <tracert box> -j ACCEPT
-> $IPT -A net-rh -p UDP -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-You should allow ICMP packets through your system.
+- --
+James A. Pattie
+james@pcxperience.com
 
-You should certainly allow ICMP through if you want traceroute to work,
-and=20
-you should generally allow ICMP if you want many other things to work.
-If=20
-you want to block certain types of ICMP, that's fine (many people do),
-but=20
-don't block all ICMP.
+Linux -- SysAdmin / Programmer
+Xperience, Inc.
+http://www.pcxperience.com/
+http://www.xperienceinc.com/
+http://www.pcxperience.org/
 
-Traceroute works by sending either ICMP "ping" (echo request) packets,
-or UDP=20
-packets to high port numbers (which are assumed not to be listening),=20
-depending on the Operating System of the client doing the traceroute.
-In=20
-both cases the important response is an ICMP TTL exceeded packet, which=20
-contains the IP address of the router where TTL became =3D=3D 0.
+GPG Key Available at http://www.pcxperience.com/gpgkeys/james.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
-Remember that firewalling can be a dangerous topic - if you block things
-you=20
-don't understand, and therefore don't know that you should allow, some
-things=20
-will break.
+iD8DBQFA4tjXtUXjwPIRLVERAvFyAKCe3AYePy69ry/RPYkfs1saIUqIRgCgttVp
+HM6SXxZo+/hXeN/Hs7CnrR8=
+=qy1L
+-----END PGP SIGNATURE-----
 
-Regards,
-
-Antony.
-
---=20
-Anything that improbable is effectively impossible.
-
- - Murray Gell-Mann, Nobel Prizewinner in Physics
-
-                                                     Please reply to the
-list;
-                                                           please don't
-CC me.
-
+-- 
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
+MailScanner thanks transtec Computers for their support.
 
 
