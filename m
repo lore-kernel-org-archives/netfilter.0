@@ -1,9 +1,8 @@
-From: "Guillermo" <diseno1@puntozeropublicidad.cl>
-Subject: redirect squid to other proxy(windows) hearing in port 80
-Date: Fri, 21 Nov 2003 13:19:29 -0300
+From: "Aaron P. Martinez" <ml@proficuous.com>
+Subject: NETMAP patch
+Date: 21 Nov 2003 10:26:04 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <00b901c3b04b$3d88ff10$6500a8c0@ProxY>
-References: <20031121132405.56143.qmail@web40812.mail.yahoo.com> <3FBE183F.6030109@Loudoun-Fairfax.com> <200311211411.hALEBN725115@onyx.rockstone.co.uk>
+Message-ID: <1069431963.25622.13.camel@aaron-rh9-ws.proficuous.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
@@ -17,26 +16,26 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.samba.org
 
-hello!!
-i need help with iptables and proxy squid...
-i have a linux-proxy for tests and it is connected in the internal net
-(LAN), but i need that this squid pass through a win2000 proxy that is
-hearing in port 80 for all request....(view the picture)
+I'm tryin to use the netmap argument with iptables, and when i try using
+the example, which even though i don't have those ips, should still work
+i get the following....
 
-computers ----->squid-linux(hear port 3128)---->win2000-proxy(hear port
-80)----->internet (https-DNS)
 
-mi problem is that apparently the DNS petitions (port 53) not arrives at the
-DNS server.
-how i must setup IPTABLES for redirect this packets DNS (TCP and UDP) at the
-win2000 proxy???
-or i must setup SQUID for this???
-or i must instal a BIND DNS in my Linux box??
-any help will be welcome...
-thanks
+root@test root]# iptables -t nat -A PREROUTING -d 1.2.3.0/24 -j NETMAP
+--to 5.6.7.0/24
+iptables v1.2.8: Unknown arg `--to'
+Try `iptables -h' or 'iptables --help' for more information.
+[root@test root]#
 
-PD: sorry for my english.... i dont speak english very well..
+I'm running RH 3.0EL, 2.4.22 kernel w/the current patchomatic installed,
+use the "base" option.
+
+Any ideas?
+
+Thanks in advance,
+
+Aaron P. Martinez
 
 
