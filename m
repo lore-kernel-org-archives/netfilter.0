@@ -1,15 +1,11 @@
-From: Fabrice MARIE <fabrice@netfilter.org>
-Subject: Re: Logging back!
-Date: Sun, 24 Aug 2003 14:19:18 +0800
+From: "Slawomir Orlowski" <orlowscy@hotpop.com>
+Subject: question about Real Audio
+Date: Fri, 22 Aug 2003 15:45:18 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200308241419.18830.fabrice@netfilter.org>
-References: <000001c36991$b9f23ae0$fb09a8c0@viper11>
-Reply-To: fabrice@netfilter.org
+Message-ID: <00d301c368e5$ea5d7a20$4900a8c0@cympak.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000001c36991$b9f23ae0$fb09a8c0@viper11>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -22,30 +18,29 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hello there,
+I have been using ipchains with 2.2 kernel and after reading about Netfilter
+and outstanding manual iptables tutorial by Oskar Andreasson I desire to
+move to 2.4 kernel with iptables.
 
-Hello,
+I have some question though. In ipchains I have been using ip_masq_radio,
+ip_masq_irc, ip_masq_ftp modules (to make real Audio, IRC and ftp services
+to work).
 
-On Sunday 24 August 2003 00:15, Ray Anderson wrote:
-> Forgive the double post (if any).  I originally sent this from my
-> non-subscribed account.
-> I have a RedHat 9 machine, and  as I stated on this list before, I had
-> fixed the console logging by adding -c 3 to the KLOGD options in BOTH
-> /etc/sysconfig/syslog AND /etc/rc.d/init.d/syslog.  (Thanks Brian)
-> This worked great up until I upgraded to the latest kernel (2.4.20-20.9).
-> Now all console spewing has returned.
-> Any suggestions?
+I understand that in new iptables I will be using ip_conntrack_ftp,
+ip_nat_ftp and ip_conntrack_irc, ip_nat_irc modules respectively.
 
-You can ask dmesg to ask the console to shut up, or to ask to to log
-less. On mandrake, there's a dmesg -n 1 ran at the rc.sysinit stage.
-Man page of dmesg should help you.
+What about real audio? Do modules ip_conntrack_raudio, ip_nat_radio exists ?
 
-Have a nice day,
+If not, will not I be able to use real audio ?
 
-Fabrice.
---
-Fabrice MARIE
+I have Real Server on my network and would like to be able to conect from
+LAN Windows clients to conect to another Real Servers on the Internet.
 
-"Silly hacker, root is for administrators"
-       -Unknown
+I would really appreciate if somebody would shed some light on this topic.
+Where I can find more information about it ?
+
+Best regards.
+Slawomir Orlowski
 
 
