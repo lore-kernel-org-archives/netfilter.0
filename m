@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Iptables Problem on DNS Server
-Date: Sat, 22 Jun 2002 14:39:14 +0100
+From: "yomega" <yomega@wahooo.net>
+Subject: IP Traffic Accounting
+Date: Sat, 22 Jun 2002 16:02:06 +0200
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <20020622133916.DOTG4626.mta02-svc.ntlworld.com@there>
-References: <20020622131306.987A9444F@lists.samba.org> <002d01c21a6f$86549f60$6500a8c0@systemsadmin>
+Message-ID: <NFBBLDBMIDIOFPBNLEAJCEIOCHAA.yomega@wahooo.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <002d01c21a6f$86549f60$6500a8c0@systemsadmin>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,28 +18,34 @@ List-Archive: <http://lists.samba.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.samba.org
 
-On Sunday 23 June 2002 5:36 am, Joe de Vera Jr. wrote:
+Hi List,
 
-> > On Sunday 23 June 2002 5:01 am, Joe de Vera Jr. wrote:
-> > > here's my ruleset in my machine... seen anything wrong or lacking here?
-> > > just to remind you guys my problem is that.. when my firewall is running
-> > > my DNS don't work... thanks!
-> >
-> > Can we just clarify that last bit ?
-> >
-> > Do you mean that your firewall cannot resolve names by contacting an
-> > external
-> > DNS server, or that you are running DNS on your firewall, and other
-> > machines cannot contact *it* as a DNS server ?
->
-> yep,, i'm running DNS on that machine also.. an that exactly my client
-> can't resolve from it.. so all the DNS record on that server can't function
-> due to this problem.. so i force not to run a firewall for a meantime...
+i want to set up IP Traffic Accounting. I wanna to measure the Traffic which
+comes in and goes out on specified Ports.
 
-Okay - the answer is simple, then.   You have no rule allowing udp packets 
-into the machine on port 53.
+After reading some IPTABLES Manuals and testing some with my Linux
+Fileserver, i thought of doing exactly this by that way:
+I create Rules to Log the specified Ports: iptables ..... -j
+log --log-prefix [name] <- this one :) Because of my syslog Settings, the
+Packets are logged into /var/log/firewall
+Ok now i make a Cron with a little Python or PHP Script that analyses the
+logged packages, and flushes the Log File empty :). The Cron is executed
+every 5 minutes.
 
- 
+OK this should work, but i still got a question:
 
-Antony.
+First i start to realize that my log file will become very big with even
+little outbound traffic. Now the cron is exectued and all the data written
+on the hd is analysed and written on the hd. I'm afraid that this will
+injure the health of the HD. Is there any other maybe more "clean"
+possibility to do that loggin? or have i made some mistakes in my thoughts?
+
+Maybe everthing happens in the RAM (syslog and analysing)? So this would not
+be a hd health prob?
+
+Thanx 4 all suggestions :)
+
+Greetz,
+Stephan
+
 
