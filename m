@@ -1,12 +1,12 @@
-From: "Reginald NALLARATNAM" <regi@toolsnottoys.com>
-Subject: Routing packets with IPTABLES?
-Date: Mon, 10 Feb 2003 12:34:16 -0500
+From: "Arnoud" <a.buurman@wxs.nl>
+Subject: Help needed on multicast and iptables.
+Date: Sat, 8 Feb 2003 14:03:59 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <se479e38.044@mail.toolsnottoys.com>
+Message-ID: <000701c2cf72$8b8bc6d0$0c00a8c0@nt.klote.com>
+Reply-To: <a.buurman@wxs.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,44 +19,25 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Gents! & Ladies?!
 
-Hardware Layout:
-   Firewall #1: (Linux Box)
-    I have a linux box with 2 nics.
-   eth1 @ 192.168.20.1 =20
-   eth0 @ 192.168.30.2=20
-   Gateway:  192.168.30.1 =20
+Can someone comment on this?
 
-   Firewall # 2: (Some other router)
-   interface 1:  192.168.20.2
-   interface 2:  192.168.30.2
-   Gateway:  192.168.30.1 =20
+I figgured that multicast with PIM should work while working with iptables:
 
-   Web server:
-   192.168.20.100
-   Gateway:  192.168.20.2 (Firewall # 2)  =20
+We need to allow for IGMP to reach the PIM deamon, the PIM deamon needs to
+communicate and we need some ip traffic to allow from normal IP to multicast
+adresses and or ranges.
+Anyone who got experience with it? Can't find any usefull info in FAQ and
+Google, but maybe I'm googleing the wrong way?
 
-   Gateway - is someother Firewall/Router that allows both firewall #1 and =
-#2 to connect to the internet.
-   192.168.30.1
-
-Question:
-   Is there a way to route incomming packets from the gateway to eth0 on =
-firewall #1 based on source IP and destination Port to the web server @ =
-192.168.20.100?
-The only way this will work if Firewall # 1 routes or forwards the packets =
-to web server without connection tracking, since the return answer from =
-web server will go through firewall # 2.
-
-Could some give me an example or the command to do this using iptables, if =
-not how else can this be done?
-
-Thanks in advance.
+Maybe someone from the developers who can tell how iptables handles IGMP &
+multicast IP.
 
 
+Kind regards,
 
 
-
+Arnoud Buurman
 
 
