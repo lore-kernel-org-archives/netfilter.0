@@ -1,11 +1,14 @@
-From: Askar Ali Khan <askarali@gmail.com>
-Subject: ftp access problem
-Date: Sat, 24 Jul 2004 15:05:59 +0500
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: the impossible "iptables -C" option
+Date: Sat, 24 Jul 2004 06:16:40 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <a0f69e504072403057b210342@mail.gmail.com>
+Message-ID: <1090664200.2012.21.camel@grendel>
+References: <01be01c4710c$440a79e0$5100a8c0@egp>
+	 <200407240856.03201.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <200407240856.03201.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,39 +21,39 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
-Hi
+On Sat, 2004-07-24 at 03:56, Antony Stone wrote:
+>
+> I understand it to mean "check what would happen to a packet of this type if 
+> it went through the ruleset"
 
-On my router/firewall which acting i am getting problem while anyone
-tries to connect to ftp server he connected successfully however when
-he types and command for example "ls" ftp server return error "500
-Illegal PORT range rejected"
-Everything else is working fine.
+Yup, that's what it did under ipchains. :)
 
-default policies are drop
+> > What is "packet payload"? How does it make the "--check" option impossible
+> > to be implemented?
+> 
+> It makes it impossible to implement --check because there's no way to provide 
+> the payload on the command line.
 
-iptables --policy INPUT DROP     
-iptables --policy FORWARD DROP 
-iptables --policy OUTPUT DROP 
-.
-.
-.
-iptables -t nat -A POSTROUTING -o ppp0 -s 192.168.0.0/24 -d 0/0  -j
-MASQUERADE#iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
-REDIRECT --to-port 3128
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+Not quite true as you would just use a sting match, same as you would in
+a filtering rule.
 
-For FTP access..
-iptables -A FORWARD -o ppp0 -p tcp -m multiport --dport 20,21 -m state
---state NEW -j ACCEPT
+The problem is a majority of the time check would end up reporting "it
+depends". For example what if you try and check what would happen to "a
+packet coming from the Internet to an internal system from 22/TCP to an
+upper port number, with the ACK flag set and "foo" in the payload. You
+may not have a rule that specifically lets this traffic through, but it
+might actually pass if it ends up being a state match due to an initial
+outbound SYN packets. So how iptables would handle this packet "depends"
+on what traffic went by prior to it.
 
-I understand that FTP server will also in return open a port on my
-side and this is what causing problem. However I don't know which
-chain and what rule to make for this to solve this problem. :)
+The check option has said it would be implemented "real soon now" since
+iptables was alpha code. I'm guessing the option will never happen. Its
+just a carry over from ipchains. ;-)
 
-I any quick help in this regard will be greatly appreciated :D
+HTH,
+C
 
-Regards
-Askar
+
+
+
 
