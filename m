@@ -1,15 +1,11 @@
-From: NightHawk <nighthawk@easyservermanagement.com>
-Subject: Re: ip_conntrack
-Date: Mon, 15 Sep 2003 16:43:09 -0400
+From: Jim Redman <jim@ergotech.com>
+Subject: UDP Redirects
+Date: Mon, 15 Sep 2003 18:07:14 -0600
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200309151643.12573.nighthawk@easyservermanagement.com>
-References: <000801c378a1$f6c24360$243902c4@weatherman>
-Reply-To: nighthawk@ezsm.net
+Message-ID: <20030916000714.GC3213@charizard>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <000801c378a1$f6c24360$243902c4@weatherman>
-Content-Description: clearsigned data
 Content-Disposition: inline
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -20,34 +16,33 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: Text/Plain; charset="us-ascii"
-To: Warren P <weatherman@webmail.co.za>, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+I have a system that is sending UDP packets to port 995 at about 100 
+packets/second.  I want to redirect these to 1995 so that I can listen 
+on an unpriveledged port.  So I:
 
-Just simply remove the mod ip_conntrac and any dependices and re-apply it.
+iptables -t nat -A PREROUTING -p udp --dport 995 \
+     -j REDIRECT --to-port 1995
 
-**Warning** this will require you to drop iptables while you do it...which =
-may=20
-not be a good option depening on your network configuration. **/Warning**
+This seems to work some of the time, but most of the time not.  It 
+seems to work better when the connection is across a VPN which limits 
+that packets to about 5-10/second.  So I assume that I've hit some 
+limit, however this (and a number of variants) don't seem to help:
 
-NH
+iptables -t nat -I PREROUTING -m limit --limit 1000/s \
+     --limit-burst 1000 -j ACCEPT
 
-On Thursday 11 September 2003 4:19 pm, Warren P wrote:
-> hi
->
-> does anyone know how to clear/flush the ip_conntrack table. Every 4 to 6
-> months i need to reboot my server because it drops packets and complains
-> that the table is full ...
->
-> Regards,
-> Warren P
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+Am I missing something obvious?  Any suggestions?
 
-iD8DBQE/ZiRdb58ZIoF+byQRAnS1AKCNFSkbxzO1C6HwHA6TdnOnzVfuYQCfZeDw
-WdVpLPTGBcmroVejcs4QJYs=3D
-=3D2odx
-=2D----END PGP SIGNATURE-----
+Thanks,
+
+Jim
+
+-- 
+
+Jim Redman
+(505) 662 5156 x85
+http://www.ergotech.com
 
