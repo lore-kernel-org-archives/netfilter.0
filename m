@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "HareRam" <hareram@sol.net.in>
 Subject: Re: Fw: Yahoo Messenger
-Date: Sun, 6 Oct 2002 18:43:08 +0100
+Date: Mon, 7 Oct 2002 10:50:06 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210061743.g96HhwL13290@vulcan.rissington.net>
-References: <001701c26d5e$28e75d80$7cfcc5cb@humanpc>
+Message-ID: <00bd01c26dc1$329a8ba0$7cfcc5cb@humanpc>
+References: <001701c26d5e$28e75d80$7cfcc5cb@humanpc> <200210061743.g96HhwL13290@vulcan.rissington.net>
+Reply-To: "HareRam" <hareram@sol.net.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <001701c26d5e$28e75d80$7cfcc5cb@humanpc>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,55 +18,76 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: Antony Stone <Antony@Soft-Solutions.co.uk>, netfilter <netfilter@lists.netfilter.org>
 
-On Sunday 06 October 2002 6:31 pm, HareRam wrote:
+Hi all
 
-> anyn help will be appriciated
+any one just give me some example
+how can i do this
+
+thanks in advance
+hare
+----- Original Message -----
+From: "Antony Stone" <Antony@Soft-Solutions.co.uk>
+To: "netfilter" <netfilter@lists.netfilter.org>
+Sent: Sunday, October 06, 2002 11:13 PM
+Subject: Re: Fw: Yahoo Messenger
+
+
+> On Sunday 06 October 2002 6:31 pm, HareRam wrote:
 >
-> thanks
-> hare
-> ----- Original Message -----
-> From: "HareRam" <hareram@sol.net.in>
-> To: "Antony Stone" <Antony@Soft-Solutions.co.uk>; "Netfilter"
-> <netfilter@lists.netfilter.org>
-> Sent: Sunday, October 06, 2002 4:55 PM
-> Subject: Re: Yahoo Messenger
+> > anyn help will be appriciated
+> >
+> > thanks
+> > hare
+> > ----- Original Message -----
+> > From: "HareRam" <hareram@sol.net.in>
+> > To: "Antony Stone" <Antony@Soft-Solutions.co.uk>; "Netfilter"
+> > <netfilter@lists.netfilter.org>
+> > Sent: Sunday, October 06, 2002 4:55 PM
+> > Subject: Re: Yahoo Messenger
+> >
+> > > Hi all
+> > >
+> > > i have developped some front end to user to login and log out
+> > > using Visual c++ and i want to count how many minutes he is online
+> > > and how many minutes he has reamaining.
+> > > all the things are working fine....
+> > >
+> > > all users have static IP and ARP table is binded to specific user PC
+MAC
+> > > when the user looged in, iam replacing the  FORWARD rules with  ACCEPT
+> > > when he logged out iam replacing the same FORWARD Rules wiht DROP
+> > >
+> > > the problems after this is.
+> > >
+> > > 1. after Dropping the Forward Rules, still he able to browse the
+existing
+> > > site which he is browsing
+> > >     but he is not getting any new sites, so i feel he is able to get
+the
+> > > existing connection data.
 >
-> > Hi all
-> >
-> > i have developped some front end to user to login and log out
-> > using Visual c++ and i want to count how many minutes he is online
-> > and how many minutes he has reamaining.
-> > all the things are working fine....
-> >
-> > all users have static IP and ARP table is binded to specific user PC MAC
-> > when the user looged in, iam replacing the  FORWARD rules with  ACCEPT
-> > when he logged out iam replacing the same FORWARD Rules wiht DROP
-> >
-> > the problems after this is.
-> >
-> > 1. after Dropping the Forward Rules, still he able to browse the existing
-> > site which he is browsing
-> >     but he is not getting any new sites, so i feel he is able to get the
-> > existing connection data.
+> This is because there is an entry in the connection tracking table, and as
+> slong as that is there the connection will be allowed by your ESTABLISHED
+> rule - you would have to put the DROP rules in front of that in your
+FORWARD
+> chain to cut off any current connections.
+>
+> > > 2. when he connect to Yahoo Messenger, he is not disconnecting, his
+> > > connection is continueing
+>
+> I have no idea how Yahoo Messenger works.   I am not the person to answer
+> this question.
+>
+> Antony.
+>
+> --
+>
+> Documentation is like sex:
+> when it's good, it's very very good;
+> when it's bad, it's still better than nothing.
+>
+>
 
-This is because there is an entry in the connection tracking table, and as 
-slong as that is there the connection will be allowed by your ESTABLISHED 
-rule - you would have to put the DROP rules in front of that in your FORWARD 
-chain to cut off any current connections.
-
-> > 2. when he connect to Yahoo Messenger, he is not disconnecting, his
-> > connection is continueing
-
-I have no idea how Yahoo Messenger works.   I am not the person to answer 
-this question.
-
-Antony.
-
--- 
-
-Documentation is like sex:
-when it's good, it's very very good;
-when it's bad, it's still better than nothing.
 
