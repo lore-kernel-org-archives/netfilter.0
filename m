@@ -1,10 +1,10 @@
-From: Ricardo A <ricardoa@base.fm.usp.br>
-Subject: about psd in kernel 2.6.x
-Date: Mon, 17 May 2004 15:13:41 -0300
+From: "pengjie" <bill.peng@ocamar.com>
+Subject: h323 & nat,again
+Date: Tue, 18 May 2004 10:36:19 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <40A900D5.6010101@base.fm.usp.br>
+Message-ID: <001101c43c80$e6c44780$0f64020a@acamarpeng>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,40 +15,35 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-
-    Hello all,
-
-    This is my first message in the list.
-
-    Anyone carry the psd module load under kernel 2.6.x(6)?
-
-    I installed recently o kernel 2.6.6, but i have the psd module ok=20
-with the kernel 2.4.26.
-
-    Well, any idea is wellcome.
-
-    Thanks,
-
-
---=20
-             Ricardo A
-        Analista de Suporte
-	   www.usp.br/fm
-
-Linux Registered User # 291904
-
-The box said "Windows XP, Windows NT, or better".
-So I installed GNU/Linux.
-
-
-
---------------------------
-Esta mensagem foi verificada
-pelo sistema de antiv=EDrus DIM e
-acredita-se estar livre de Virus.
-Virus data file v4360 created May 12 2004
+c29ycnkgZm9yIHRoZSBodG1sIGZvcm1hdCxub3cgaSBwb3N0IGl0IGFnYWluLg0KDQppIGhhZCBy
+ZWFkIG1hbnkgZG9jdW1lbnRzIGJ1dCBpIGRpZG4ndCBmaW5kIGFuc3dlci4NCg0KaSBoYXZlIGEg
+bmV0d29yayBhcyBmb2xsb3dpbmc6DQoNCiAgICAgICAgQS0tLS0tLS0tLS0tLS0tLS0tLUI9PT09
+PT09PT09PT09PT09PT09PUMNCjE5Mi4xNjguMTEwLnggIDE5Mi4xNjguMTEwLnkgIDIwMi4xMDEu
+ay5tICAgICAyMDIuMTAxLmsubg0KDQp0aGUgQiBpcyBhIGdhdGV3YXkgZG9pbmcgTkFULiBpdCdz
+IGV0aDAgaXMgMTkyLjE2OC4xMTAueSBhbmQgZXRoMSBpcyAyMDIuMTAxLmsubS4gdGhlcmUgaXMg
+Ukg5IHJ1bm5pbmcgb24gaXQsaXQncyBrZXJuZWwgaXMgMi40LjIxLiBpIGhhdmUgcGF0aGNoZWQg
+dGhlIGgzMjMsYW5kIHJ1bm5lZCB1cCB0aGUgbW9kdWxlcyBpcF9jb25udHJhY2tfaDMyMyBhbmQg
+aXBfbmF0X2gzMjMuDQoNCnRoZSBBIGFuZCB0aGUgQyBhcmUgbmV0bWVldGluZyBjbGllbnRzLg0K
+DQppIHRlc3QgaXQgd2l0aCAyIG1ldGhvZHM6DQoNCjEpYm90aCBBIGFuZCBDIGxvZ29uIHRvIGEg
+SUxTLg0KDQpSRVNVTFRTOg0KQSBjYWxscyBDIGlzIG9rLCBhbmQgdGhleSBjYW4gY2hhdCB0byBl
+YWNoIG90aGVyLg0KDQpDIGNhbGxzIEEgaXMgZmFpbHVyZSwgaSBzZWUgdGhlIGFkZHJlc3MgY2Fs
+bGVkIGlzIHRoZSBwcml2YXRlIGFkZHJlc3Mgb2YgQS4gc28gc2V0dGluZyB1cCBpcyBmYWlsdXJl
+Lg0KDQoNClFVRVNUSU9OOiBkb2Vzbid0IHRoZSBwYXRjaCBkbyBzb21ldGhpbmcgd2hlbiBjbGll
+bnQgbG9nb24gdG8gYSBJTFM/DQoNCjIpY2FsbCBlYWNoIG90aGVyIHdpdGhvdXQgdGhlIElMUy4N
+Cg0KaSBhZGQgYSBydWxlOiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSBldGgxIC1w
+IHRjcCAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgMTUwMywxNzIwIC1qIEROQVQgLS10by1kZXN0aW5h
+dGlvbiAxOTIuMTY4LjExMC54DQoNCnRoZXkgY2FsbCBlYWNoIG90aGVyIHdpdGggSVAgYWRkcmVz
+cy4gQSBjYWxscyBDIHdpdGggQydzIElQIGFzIHRoZSBkZXN0aW5hdGlvbiwgYW5kIEMgY2FsbHMg
+QSB3aXRoIGdhdGV3YXkncyB2YWxpZCBJUCBhcyB0aGUgZGVzdGluYXRpb24uDQoNClJFU1VMVFM6
+DQpBIGNhbGxzIEMgaXMgb2ssIGFuZCB0aGV5IGNhbiBjaGF0IHRvIGVhY2ggb3RoZXIuDQpDIGNh
+bGxzIEEgaXMgb2ssIGJ1dCB0aGV5IGNhbid0IGNoYXQgdG8gZWFjaCBvdGhlci4NCg0KUVVFU1RJ
+T046IGlzIHRoZSBydWxlIHJpZ2h0PyBoLjMyMyBzdHJlYW1pbmcgcG9ydCBpcyBkeW5hbWljLCBk
+b2VzIGl0IHJlc3VsdCB0aGlzIHN5bXB0b20/DQogICAgICAgICAgZXZlbiB0aG91Z2ggaSBhZGQg
+dGhlIHJ1bGUgcmlnaHQsaSB0aGluayBpdCdzIG5vIHVzZS5pdCBqdXN0IGVuYWJsZSBvbmUgY2xp
+ZW50IHRvIGdvIHRocm91Z2ggdGhlIGdhdGV3YXkuaXMgaXQ/DQoNCmFueSBoZWxwIGlzIGFwcHJl
+Y2lhdGVkLg==
 
 
