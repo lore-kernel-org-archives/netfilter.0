@@ -1,13 +1,14 @@
-From: Jeffrey Laramie <JALaramie@Loudoun-Fairfax.com>
+From: dan radom <netfilter@radom.org>
 Subject: Re: irc
-Date: Mon, 17 Nov 2003 10:33:14 -0500
+Date: Mon, 17 Nov 2003 08:41:24 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3FB8EA3A.1050605@Loudoun-Fairfax.com>
-References: <OFF1909C30.1DB391B5-ON85256DE1.0053A2C4-85256DE1.0053CA79@kal.kalsec.com> <200311171521.hAHFL0j22192@agate.rockstone.co.uk>
+Message-ID: <20031117154124.GD10857@hamachi.radom.org>
+References: <OF9DF42386.B8AE0536-ON85256DE1.00551398-85256DE1.00552F5A@kal.kalsec.com>
+Reply-To: netfilter@radom.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200311171521.hAHFL0j22192@agate.rockstone.co.uk>
+Content-Disposition: inline
+In-Reply-To: <OF9DF42386.B8AE0536-ON85256DE1.00551398-85256DE1.00552F5A@kal.kalsec.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,31 +18,26 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Antony Stone wrote:
+* trainier@kalsec.com (trainier@kalsec.com) wrote:
+> Aye, a familiar face. ;-)
+> 
+> The 'firewall' in this case, is a transparent proxy server.  The proxy 
+> server will be the gateway to the internet.
+> I need to allow irc connections through this machine, somehow.  I don't 
+> know how to do that.
+> 
+> Regards,
+> 
+> Tim Rainier
+> 
 
->On Monday 17 November 2003 3:15 pm, trainier@kalsec.com wrote:
->
->  
->
->>Can anyone tell me how I can initiate an irc connection using iptables?
->>    
->>
->
->Suggest you initiate an IRC connection using an IRC client :)
->
->Netfilter / iptables might be involved in forwarding the packets, but what's 
->the problem?   I use IRC through a NAT firewall with nothing special for this 
->particular protocol.
->
->Antony.
->
->  
->
-You type too fast! You've already had 2. I get the next one!
+You can always just allow established and related packets back in.  This
+should make almost any connection initiated from the LAN or iptables
+machine work.
 
-Jeff
-
+iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
