@@ -1,15 +1,13 @@
-From: Chris Straessle <sacrelege@swissonline.ch>
-Subject: Re: squid
-Date: Tue, 29 Apr 2003 19:44:51 +0200
+From: "Eric Poulin" <epoulin@onepost.net>
+Subject: Re: PREROUTING
+Date: Tue, 29 Apr 2003 09:28:28 -0400
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3EAEBA13.4030809@swissonline.ch>
-References: <ABEKJILKOKKGGDJKHKDFOENCCAAA.patrick@vikus.com>
+Message-ID: <039e01c30e7b$9e6fd000$c565a8c0@lvl.digidyne.ca>
+References: <E6CED068-7A23-11D7-8B95-0003938423EC@earthtvnet.com>
+Reply-To: "Eric Poulin" <epoulin@onepost.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig10BCF25B0426F6093AF89229"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <ABEKJILKOKKGGDJKHKDFOENCCAAA.patrick@vikus.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,57 +17,64 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-To: Patrick Ahler <patrick@vikus.com>
-Cc: netfilter EMAIL <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Frederic Gobin <frederic.gobin@earthtvnet.com>
+Cc: netfilter@lists.netfilter.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig10BCF25B0426F6093AF89229
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+You are absolutly right. Actually, the command is correct, and also working
+fine in my environement, so I suspect also that some options by be missing in
+the kernel.
 
-we stop using windows?!
-
-
-cu,
-chris
-
-PS: sorry, its just a joke... ;-)
+Eric
 
 
-
-Patrick Ahler wrote:
-> I know this is a bit off topic, but at first I thought it was a netfilter
-> problem, now I'm convinced it's squid. I redirect my internal traffic
-> through a squid proxy... the problem I'm running into is that I can't seem
-> to get any windows updates to work for my machines using the proxy. When it
-> begins to detect upgrades needed, it will just sit on 0%. Anyone else had
-> this problem? If so, how'd you fix it?
-> 
-> -=PaTriCK
-> 
-> 
-> 
-> 
-
--- 
------------------------------------------------------------------------
-Chris Straessle                         http://raptor.homeunix.net/
-Alias: sacrelege                        email: sacrelege@swissonline.ch
-PGP Public Key:  http://raptor.homeunix.net/christian_straessle.pgp.txt
------------------------------------------------------------------------
-
---------------enig10BCF25B0426F6093AF89229
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQE+rroaRtB4nJeL0gARAlIpAJ93PjYdKR8QwwUJiPi5cJ061GWkbQCfUVsd
-MM3ehKUOc03k1oPbnia5avw=
-=Z+em
------END PGP SIGNATURE-----
-
---------------enig10BCF25B0426F6093AF89229--
+> This is not really true ...
+>
+> According to the iptables man page, DNAT is valid only in the OUTPUT
+> and PREROUTING chain of the nat table. SNAT is only valid in the
+> POSTROUTING chain of the nat table.
+>
+> It could be a missing kernel option ...
+>
+> Frederic Gobin
+>
+> Am Dienstag, 29.04.03 um 09:49 Uhr schrieb SaVaGE:
+>
+> > Op dinsdag 29 april 2003 09:23, schreef netfilter_user:
+> >> Hello everyone,
+> >>
+> >> this is my problem:
+> >> My LAN is connected to Internet via Linux machine with 2 interface (
+> >> ppp0 - for internet and eth1 for local net). I need to connect from
+> >> local host, service that is running on port 23073 and 23083 UDP in
+> >> internet. For this i wrote afew rules with PREROUTING but when I start
+> >> script with rules below i receive:
+> >>
+> >> Bad argument `PREROUTING'
+> >> Try `iptables -h' or 'iptables --help' for more information.
+> >> Bad argument `PREROUTING'
+> >> Try `iptables -h' or 'iptables --help' for more information.
+> >>
+> >>
+> >> iptables -t nat -A PREROUTING -p udp -d 80.50.60.185 --dport 23073 -j
+> >> DNAT
+> >> --to-destination 192.168.1.2 iptables -t nat -A PREROUTING -p udp -d
+> >> 80.50.60.185 --dport 23083 -j DNAT --to-destination 192.168.1.2
+> >>
+> >> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23073 -j ACCEPT
+> >> iptables -A FORWARD -p udp -d 192.168.1.2 --dport 23083 -j ACCEPT
+> >>
+> >> What maybe a reason of this msg?
+> >> Im using slackware 8.1 with iptables 1.2.6a
+> >
+> > This behaviour is correct NATting is done on the POSTROUTING table !!!!
+> >
+> >
+> > Pascal (PC-Secure Dutch security service)
+> >
+>
+>
+>
+>
 
 
