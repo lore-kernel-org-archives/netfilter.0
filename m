@@ -1,14 +1,13 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Problem Matching Packets
-Date: Tue, 5 Apr 2005 17:33:46 -0400
-Message-ID: <20050405213346.GA4000@bender.817west.com>
-References: <20050405221146.GB31371@gw.home.tux-labor.de>
-	<20050405211045.GA3933@bender.817west.com>
-	<20050405223129.GC31371@gw.home.tux-labor.de>
+From: Alistair Tonner <Alistair@nerdnet.ca>
+Subject: Re: irc dcc incoming transfers truncated after a while
+Date: Tue, 5 Apr 2005 17:59:50 -0400
+Message-ID: <200504051759.50574.Alistair@nerdnet.ca>
+References: <1112267638.21083.14.camel@localhost.localdomain>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1112267638.21083.14.camel@localhost.localdomain>
 Content-Disposition: inline
-In-Reply-To: <20050405223129.GC31371@gw.home.tux-labor.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,26 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sebastian Docktor <sebi@tux-labor.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, Apr 06, 2005 at 12:31:29AM +0200, Sebastian Docktor wrote:
-> Yes I am doing this, is this a Problem, i want to redirect all these
-> Packet to a speciall Machine.
+On March 31, 2005 06:13 am, Andrea Ratto wrote:
+> Hello List!
+> I am running a SuSE based router and NAT gateway. It uses the
+> SuSEFirewall iptables based script, which saved me a lot of tweaking.
+> Everything works great except irc dcc file transfers. I am not talking
+> about uploads from internal network (those works because I use forwarded
+> ports) but about downloads. After a minute or so the firewall blocks
+> some packages killing the transfer.
+	
+	Are you absolutely certain that your firewall is doing the blocking? -- LOG 
+the packets please and let us see.... 
 
-yeah--it's a problem.  the "correct" way to do this (if there even is
-one) is to write some sort of proxy to catch the broadcasts and resend
-the data to the "special machine."  much of this depends on what the
-application in question is actually doing.
+	When you loaded the ip_conntrack_irc module did you set the server ports you 
+would be connecting to?  --> modinfo ip_conntrack_irc for the details, you 
+need to have the IRC server ports you are connecting to in there.
 
-another possible option would be to setup a GRE tunnel to get the native
-broadcasts to reach the "special machine" without proxying.
+> Of course i have modprobed ip_nat_irc and ip_conntrack_irc that SuSE
+> didn't load by default, but the problem remains. So I was wondering if
+> there is something I still need to do (some iptables command to make use
+> of the modules?). I haven't found any doc so I am asking the list.
+> Thank very much. Bye
 
--j
 
---
-"Meg: Brian, you look like you lost weight! What is your secret?
- Brian: Here's my secret. PUT DOWN THE FORK!"
-        --Family Guy
+	P.S. I've had problems with users on RR getting dcc transfers started, but 
+the  connection dies .. I'm not sure where the problem lies -- but its 
+something I've seen.
+	
+	Alistair
 
