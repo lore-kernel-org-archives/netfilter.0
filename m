@@ -1,14 +1,13 @@
-From: Michael Gale <michael.gale@utilitran.com>
-Subject: Re: IPs blocked still able to connect
-Date: Sun, 13 Jun 2004 13:58:59 -0600
+From: "Spiro Azkoul" <spiro@snacorp.net>
+Subject: RE: IPs blocked still able to connect
+Date: Sun, 13 Jun 2004 16:59:20 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20040613135859.51704919@mgalepc.utilitran.com>
-References: <20040613132245.07a9fbb7@mgalepc.utilitran.com>
-	<200406131936.i5DJaTnI004263@ylpvm01.prodigy.net>
+Message-ID: <200406132359.i5DNx0bJ016290@ylpvm15.prodigy.net>
+References: <20040613135859.51704919@mgalepc.utilitran.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <200406131936.i5DJaTnI004263@ylpvm01.prodigy.net>
+In-Reply-To: <20040613135859.51704919@mgalepc.utilitran.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -21,57 +20,30 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+
 Hello,
 
 	You should be able to "man iptables"
 
--A, --append chain rule-specification
-              Append one or more rules to the end of the selected chain.  When
-the source and/or destination names resolve to more than  one             
-address, a rule will be added for each possible address combination.
+-> I did, got the info I needed. Thanks.
+I also transferred all my -A rules to -I and an iptables -L INPUT now shows
+priority to the -I rules, which basically should not block any traffic to my
+server. 
 
--I, --insert chain [rulenum] rule-specification
-              Insert one or more rules in the selected chain as the given rule
-number.  So, if the rule number is 1, the rule or  rules  are             
-inserted at the head of the chain.  This is also the default if no rule number
-is specified.
+On the other hand, I have a couple more questions:
 
+1- If I have 2 Nic Cards, eth0 and eth1, without any kind of NATing
+involved, as I am simply using the private interface for backup jobs, local
+SSH and so forth, should I worry about the FORWARD chain? There is no
+routing between the 2 interfaces nor do I need there be so I assumed so far
+that my INPUT/OUTPUT rules will apply to the public interface without having
+to go the extra step of specifying it. 
 
+2- Is there a way to build a text file and have IPTABLES pull from it
+periodically? I know this could be done in perl, but has anyone tried to do
+it with a simple cron job?
 
-On Sun, 13 Jun 2004 12:36:55 -0700
-"Spiro Azkoul" <spiro@snacorp.net> wrote:
+Thanks
+ 
 
-> 
-> 
-> t
-> 
-> Hello,
-> 
-> 	You are using "iptables -A" ... this will append this rule to your
-> list. If you
-> have an accept rule further up that this connection would match then it will
-> be
-> accepted but it hits this rule.
-> 
-> You should do a "iptables -I" to insert the rule at the top.
-> 
-> Michael.
-> 
-> I am not sure I understand the difference between -I and -A
-> Where can I find docs on this?
-> Thanks Michael
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-
-
--- 
-Michael Gale
-Network Administrator
-Utilitran Corporation
 
