@@ -1,13 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Rules for blocking Email from libero.it domain
-Date: Tue, 29 Oct 2002 13:04:51 +0000
+From: Julio Cesar Ody <julioody@bol.com.br>
+Subject: FTP client behind a gateway
+Date: Tue, 29 Oct 2002 09:51:18 -0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200210291304.g9TD4ve10070@vulcan.rissington.net>
-References: <200210281507.g9SF70e08704@vulcan.rissington.net> <20021029085004.FRPW1554.mta07-svc.ntlworld.com@there> <0a9501c27f37$a0cf6370$eb00010a@andromeda>
+Message-ID: <3DBE7636.6060301@bol.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <0a9501c27f37$a0cf6370$eb00010a@andromeda>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,29 +15,17 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 29 October 2002 10:40 am, Adam D. Barratt wrote:
+Hello. I don't know if anybody else faced this problem, but when I'm 
+behind a gateway (using iptables to perform NAT), I can connect to any 
+FTP server (using the client machines behind the gate) but when I 
+request a directory listing by using the "ls" command, it refuses to 
+enter passive mode. The same doesn't happen when I do it with the 
+gateway machine. Any solutions or ideas ? Thanks again.
 
-> Antony Stone wrote Tuesday, October 29, 2002 8:50 AM
->
-> > The latter is correct.   Before an email is transmitted, the sender tells
-> > the receiver what size it is so that the receiver can decide whether it
-> > has space to accept it.
->
-> In most cases, no such decision takes place. Specifically, there are very
-> few servers (IME) that actually implement the SIZE extension, as defined in
-> RFC1870.
->
-> Note that RFC2821 discourages decisions based on message size.
 
-Hmmm.   I suppose everyone assumes that mail servers have infinite hard disk 
-capacity these days...
+Julio Cesar Ody
 
-Antony.
-
--- 
-
-Which part of 'apt-get dist-upgrade' do you not understand ???
 
