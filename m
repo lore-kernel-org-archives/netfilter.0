@@ -1,14 +1,14 @@
 From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: RE: Re: Ports closed in spite of opening them?
-Date: Fri, 02 Apr 2004 22:09:01 +0200
+Subject: Re: ntpdate works; ntpd doesn't
+Date: Fri, 02 Apr 2004 22:25:21 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1080936541.1655.46.camel@anduril.intranet.cartel-securite.net>
-References: <AD8D39C727CBD411BB2C0090273A727408F9F139@mortimer.law.uconn.edu>
-	 <1080936038.22816.3.camel@ranjeet-pc2.zultys.com>
+Message-ID: <1080937521.1655.55.camel@anduril.intranet.cartel-securite.net>
+References: <200404021950.i32JoiCO012686@osprey.tkevans.com>
+	 <200404022104.39456.Antony@Soft-Solutions.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1080936038.22816.3.camel@ranjeet-pc2.zultys.com>
+In-Reply-To: <200404022104.39456.Antony@Soft-Solutions.co.uk>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,28 +19,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Ranjeet Shetye <ranjeet.shetye2@zultys.com>
-Cc: "Hurley, Michael" <MHurley@law.uconn.edu>, "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Le ven 02/04/2004 =E0 22:00, Ranjeet Shetye a =E9crit :
-> you might have "/etc/hosts.allow" and "/etc/hosts.deny" files lying
-> around that WILL interfere, without you being aware of what's happening.
+Le ven 02/04/2004 =E0 22:04, Antony Stone a =E9crit :
+> I believe ntpd uses the "time" protocol on port 37, whereas netdate and=
+=20
+> ntpdate uses "ntp" on port 123.
 
-A port scan will see thoses ports as opened, as an application wrapper,
-such as tcpd, needs the TCP connection establishment to complete for
-getting client IP from the socket. It's something like
+Mine uses UDP/123 :
 
-	Client			Server
-		----- SYN ---->
-		<-- SYN/ACK ---
-		----- ACK ---->
-				Check for client IP =3D> forbiden
-		<-- RST/ACK ---
+cbr@feydreiva:~$ netstat -aun
+Connexions Internet actives (serveurs et =E9tablies)
+Proto Recv-Q Send-Q Adresse locale          Adresse distante        Etat
+udp        0      0 172.16.14.17:123        0.0.0.0:*
+udp        0      0 127.0.0.1:123           0.0.0.0:*
+udp        0      0 0.0.0.0:123             0.0.0.0:*
 
-When you portscan, you consider the port as opened as soon as you get
-the SYN/ACK from server (half-open scan, e.g. nmap -sS) or see the
-socket opened (connect scan, e.g. nmap -sT). Both theses two methods
-will show port as open, even if wrapped.
+And the related conntrack entry for the synchro after daemon rehash :
+
+udp      17 23 src=3D172.16.14.17 dst=3D172.16.14.1 sport=3D123 dport=3D1=
+23
+src=3D172.16.14.1 dst=3D172.16.14.17 sport=3D123 dport=3D123 use=3D2 mark=
+=3D0
+
+
+PS : seems you lost your bet ;)
 
 --=20
 http://www.netexit.com/~sid/
