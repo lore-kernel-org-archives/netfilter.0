@@ -1,11 +1,13 @@
-From: Kelly Setzer <Kelly.Setzer@placemark.com>
-Subject: Purpose of self-referential rule
-Date: Mon, 24 Feb 2003 10:06:28 -0600
+From: "Gareth Darby" <gdarby@aztech-communications.co.uk>
+Subject: fw compare
+Date: Mon, 24 Feb 2003 15:04:48 -0000
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <20030224160628.GH4316@placemark.com>
+Message-ID: <2F54EFB055DF5149B4C199D12224FDF601C7EE@helpdesk.aztech-communications.co.uk>
 Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C2DC16.12E32524"
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -15,28 +17,175 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I've been experimenting with gShield trying to learn the ins and outs
-of iptables.  One of the rules is generates is:
+This is a multi-part message in MIME format.
 
-iptables -A INPUT -s 192.168.6.0/24 -d 192.168.6.0/24 -i eth1 -j ACCEPT
+------_=_NextPart_001_01C2DC16.12E32524
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-The source and dest are correct for my internal network, and eth1 is
-the internal net.  My question is, when would the firewall ever see a
-packet that could possible match this?  Any packet with a source and
-destination on the same network would send the packet directly (no
-routing, thus no firewall).
+Hi Guys,
+=20
+I am just looking for some advice, I am trying to justify the reasons
+behind running IPTables based firewalls rather than purchasing
+Borderware.  The other sysadmins have been told that Borderware has
+never been hacked etc and the reason they give for not installing IP
+Tables is ....... We shouldn't!!!  Please help with this argument
+=20
+Thanks
+=20
+gareth
 
-What am I missing?
+------_=_NextPart_001_01C2DC16.12E32524
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
-Kelly
---
-Kelly Setzer, System Administrator/Architect - Placemark Investments
-14180 Dallas Pkwy, Suite 200, Dallas, TX 75240
-kelly.setzer@placemark.com  http://www.placemark.com
-(972)404-8100x41 (work)       (214) 287-3464 (cell)
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+
+
+<meta name=3DProgId content=3DWord.Document>
+<meta name=3DGenerator content=3D"Microsoft Word 10">
+<meta name=3DOriginator content=3D"Microsoft Word 10">
+<link rel=3DFile-List href=3D"cid:filelist.xml@01C2CA14.BED71AC0">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DocumentKind>DocumentEmail</w:DocumentKind>
+  <w:EnvelopeVis/>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	mso-style-noshow:yes;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	color:windowtext;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */=20
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
+style=3D'tab-interval:.5in'>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi Guys,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I am just looking for some advice, I am trying to =
+justify
+the reasons behind running <span class=3DSpellE>IPTables</span> based =
+firewalls
+rather than purchasing <span class=3DSpellE>Borderware</span>. <span
+style=3D'mso-spacerun:yes'>&nbsp;</span>The other <span =
+class=3DSpellE>sysadmins</span>
+have been told that <span class=3DSpellE>Borderware</span> has never =
+been hacked etc
+and the reason they give for not installing IP Tables is &#8230;&#8230;. =
+We shouldn&#8217;t!!!<span
+style=3D'mso-spacerun:yes'>&nbsp; </span>Please help with this =
+argument<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>gareth<o:p></o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C2DC16.12E32524--
 
