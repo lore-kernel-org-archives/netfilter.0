@@ -1,12 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: SNAT of icmp: fragmentation-needed
-Date: Fri, 14 Jun 2002 13:50:05 +0200 (CEST)
+From: Ramin Alidousti <ramin@cannon.eng.us.uu.net>
+Subject: Re: Routing SMTP problem
+Date: Fri, 14 Jun 2002 07:59:10 -0400
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <Pine.LNX.4.33.0206141348470.17402-100000@blackhole.kfki.hu>
-References: <Pine.LNX.4.44.0206041715120.27892-100000@albert.ha-vel.cz>
+Message-ID: <20020614115910.GA5563@cannon.eng.us.uu.net>
+References: <1597F9D20963E347AC9E232F0F636DA8047BA2@server.skinners.highsun.com.au>
 Mime-Version: 1.0
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <Pine.LNX.4.44.0206041715120.27892-100000@albert.ha-vel.cz>
+Content-Disposition: inline
+In-Reply-To: <1597F9D20963E347AC9E232F0F636DA8047BA2@server.skinners.highsun.com.au>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,33 +17,28 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: jn@angel.cz
+To: Ian Pollock <ianp@highsun.com.au>
 Cc: netfilter@lists.samba.org
 
-On Tue, 4 Jun 2002 jn@angel.cz wrote:
+What you can do is to set up a dyn-dns for this dhcp interface and iclude that
+in the set of the MX records... At any IP change you could encounter smtp
+unreachability but it's not a big deal as the backup MX's would collect
+the emails and send it to you at a later time...
 
-> I would like to SNAT icmp fragmentation-needed messages that have source
-> address from private network range (RFC1918), I have tried something like:
->
-> iptables -t nat  -I POSTROUTING -j SNAT --to real_address -p icmp  \
-> --icmp-type fragmentation-needed -s 192.168.0.0/16
->
-> but it does not work. I think that because these packets are part of
-> valid TCP connection, they are somehow processed by ip_conntrack
-> module and do not pass this rule....
+Note that netfilter has nothing to do with your question and this solution.
 
-Yes, ICMP error messages related to already existing connections are
-handled by conntrack and NAT automatically. There is no need to setup any
-rule for them. One only have to let trough packets with state RELATED.
+Ramin
 
-Regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-WWW-Home: http://www.kfki.hu/~kadlec
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+On Fri, Jun 14, 2002 at 01:19:24PM +1000, Ian Pollock wrote:
 
+> Hi,
+> Can anyone tell me if this is possible, we upgraded our internet access from isdn (small isp) to broadband (telstra). We had a static ip of eg:210.20.20.20 from our small isp on the isdn, with the new cable connection we get dhcp ip address which makes it hard for mail routing. Ok the big question can I alias the old static ip (small isp) we own of 210.20.20.20 to my external etho dhcp (from telstra) device (ip of 211.50.50.50) on my cable connection and route my mail through this way. I have included a few rules that I have in mind. Can anyone tell me if I am going down the wrong path with this and if they have any other way of doing it could they let me no (maybe I have to use pop3). Any help with this would be greatly appreciated, I tried to explain as best I could. Ian
+> 
+> iptables -t nat -A POSTROUTING -o eth0 -s my_mail_server -p tcp --dport 25 -j SNAT --to OLD_ISP_mail_server_ip:25    ## can this work??
+> 
+> iptables -t nat -A PREROUTING -I eth0 -p tcp --dport 25 -j DNAT --to my_mail_server:25          ## I no this works...
+> 
+> ps... any help with "how to alias" would be great too
 
