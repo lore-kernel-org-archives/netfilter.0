@@ -1,10 +1,10 @@
-From: "Vann H. Walke" <walkev@presearch.com>
-Subject: NAT of entire subnets
-Date: 23 May 2003 10:28:47 -0400
+From: Padraig Brady <padraig.brady@corvil.com>
+Subject: netfilter passive monitoring
+Date: Mon, 19 May 2003 17:32:38 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1053700127.13108.39.camel@localhost.localdomain>
+Message-ID: <3EC90726.7010402@corvil.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
@@ -15,53 +15,43 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi, I've a passive monitor setup with 3
+network interfaces. eth2 is the management (normal)
+interface while eth0 and eth1 are my monitoring
+interfaces which never transmit.
 
-I'm working on a project building training simulators for the US Navy. 
-The full deployment will consist of 10 simulators each of which
-containing approximately 500 computers.  As we ramp up the
-development/production at any given time we will have 2 to 3 systems on
-site.
 
-The only sane way of developing the network for the systems is to make
-them as identical as possible.  Thus the software layout can exactly the
-same on each system.  
+-----+-----+--------
+      |     |
+     eth0  eth1
 
-While in development, we require the ability to connect to each system
-from our internal LAN.  
+so eth0 monitors the traffic one way on the link
+and vice versa for eth1 (we're using a netoptics tap).
 
-One possibility would be to do simple NAT to one external IP address.  
-Each training system would have one external IP through which it could
-be accessed.  This works fine when you are inside the system (NAT to
-outside is seamless), but isn't quite as elegant from outside. 
-Accessing a given computer from our general LAN would require first
-accessing a single entry point and then connecting to the desired
-machine.
+Anyway my question is I would like to pass all
+traffic received on eth0 and eth1 into netfilter.
+I thought by placing my rules in the PREROUTING
+chain of the mangle table would work, since this
+happens before any routing decision is made.
+But the packets are never received by netfilter :-(
 
-What I would like to do is NAT an entire domain.  So that the addresses
-would be mangled to access individual machines.  Some examples of
-possible conversions
+The packets are entering the box because you can
+see/filter them using iptraf.
 
-Connecting to           Actually Connects to
--------------           --------------------
-10.2.5.20               192.168.5.20  (in the second trainer)
-10.1.3.5                192.168.3.5   (in the first trainer)
-10.1.6.6                192.168.6.6   (in the first trainer)
-10.2.6.6                192.168.6.6   (in the second trainer)
+#iptables -t mangle -L PREROUTING -v
+Chain PREROUTING (policy ACCEPT 189K packets, 61M bytes)
+  pkts bytes target     prot opt in     out  source      destination
 
-In this way the internal software and maintenance procedures could be
-identical, but developers could easily access any system in the network.
+     0     0            icmp --  eth0   any  anywhere    anywhere
 
-Can iptables provide this functionality?  If so, how would one configure
-it?  Are there any inherent problems/pitfalls in such a scheme?   Would
-a dedicated router have this feature?  Any recommendations on using a
-linux box vs. a purpose built router?
+     0     0            icmp --  eth1   any  anywhere    anywhere
 
-Thanks greatly,
-Vann
+
+thanks,
+P=E1draig.
 
 
 
