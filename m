@@ -1,16 +1,12 @@
-From: Tony Earnshaw <tonni@billy.demon.nl>
-Subject: Re: Error when using iptables 1.2.6a (or another version)
-Date: 05 Jun 2002 08:25:50 +0200
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: H323..... and getting close! anyone tell me whats going wrong!
+Date: Wed, 5 Jun 2002 09:00:12 +0200 (CEST)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <1023258350.2834.8.camel@billy.demon.nl>
-References: <B5747F3DB39FD411884B00B0D07808CCB6C1FC@server10>
-	<1023223261.8261.2.camel@billy.demon.nl> 
-	<20020604212807.GA30300@valjean.si.ocslink.com>
+Message-ID: <Pine.LNX.4.33.0206050854120.8715-100000@blackhole.kfki.hu>
+References: <3051.24.168.132.35.1023234953.squirrel@mail.vistawiz.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-aqvnJ2uUWuofzLLn0mDy"
 Return-path: <netfilter-admin@lists.samba.org>
-In-Reply-To: <20020604212807.GA30300@valjean.si.ocslink.com>
+In-Reply-To: <3051.24.168.132.35.1023234953.squirrel@mail.vistawiz.com>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -20,62 +16,40 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-To: netfilter@lists.samba.org
-Cc: James Sneeringer <james+netfilter@vincentsystems.com>, "Philippe Dhont  (Sea-ro)" <Philippe.Dhont@searo.be>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Shazad Malik <smalik@vistawiz.com>
+Cc: netfilter@lists.samba.org
 
+On Tue, 4 Jun 2002, Shazad Malik wrote:
 
---=-aqvnJ2uUWuofzLLn0mDy
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> I have the following settings:
+> iptables 1.2.6a
+> linux kerbel 2.4.18
+> pwlib (latest)
+> and openh323 (latest)
 
-tir, 2002-06-04 kl. 23:28 skrev James Sneeringer:
+pwlib and openh323 are not required for the h323 helper of netfilter.
 
-> There is a compile-time option to modutils (modprobe, insmod, et al) that
-> permits gzipped kernel modules.
+> This is what I have done:
+> 1) I have grabbed the latest newnat from the CVS directory which is
+> newnat13 from the samba.netfiler web site.
 
-> I know Slackware 7.1 and 8.0 enable this feature.
+Stop here. All next steps you wrote were unnecessary and could only broke
+the patches. If you grab the cvs, you can forget about patch-o-matic from
+iptables, because the cvs contains the up to date version. Do not use the
+patches from my webpage - it is written there that "this page is kept for
+historical reasons only and not maintained anymore."
 
-Ah. Well then, Philippe's possibly suffering from the well-known
-ipchains syndrome. lsmod would show this.
+> 4) Then I run ./runme; ./runme suite and then I jump onto ./runme newnat
+> and thats when I get the error.
 
-The solution is remove the ipchains modules (if they're not compiled
-into a monolithic kernel) and substitute iptables.
-
-Under Red Hat, up to v7.2, anyway, it was standard to start up ipchains
-instead of iptables after a fresh install. All the iptables stuff had to
-be done by hand, i.e. stopping automatic loading and enabling automatic
-loading of iptables.
-
-Tony
-
---=20
-
-Tony Earnshaw
-
-e-post:		tonni@billy.demon.nl
-www:		http://www.billy.demon.nl
-gpg public key:	http://www.billy.demon.nl/tonni.armor
-
-Telefoon:	(+31) (0)172 530428
-Mobiel:		(+31) (0)6 51153356
-
-GPG Fingerprint =3D 3924 6BF8 A755 DE1A 4AD6 FA2B F7D7 6051 3BE7 B981
-3BE7B981
-
-
-
---=-aqvnJ2uUWuofzLLn0mDy
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dette er en digitalt signert meldingsdel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA8/a7u99dgUTvnuYERAvhpAJ0dgXqPDxckaidjbfgN3gQlwr0nVgCfdc44
-u0hesKgzv+DRzCzIiee9gJM=
-=4FY6
------END PGP SIGNATURE-----
-
---=-aqvnJ2uUWuofzLLn0mDy--
+Regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+WWW-Home: http://www.kfki.hu/~kadlec
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
