@@ -1,12 +1,14 @@
-From: Carlos Ble <carlosble@terra.es>
-Subject: netfilter and squid transparent proxy
-Date: Tue, 1 Apr 2003 16:42:00 +0100
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: iptables wishes
+Date: Tue, 1 Apr 2003 10:35:21 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <E190Ntg-0000s8-00@Alfa.linuxserver1.net>
-Reply-To: carlosble@terra.es
+Message-ID: <200304011035.21340.netfilter@newkirk.us>
+References: <65F646CE24EBF24AA3714070D537988E017F04@gargoyle.seaan.net> <006c01c2f85b$9b2d8800$1e0110ac@ausland.net.br>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <006c01c2f85b$9b2d8800$1e0110ac@ausland.net.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,42 +19,31 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Ivano Proietti Mucci <ipmucci@yahoo.com.br>, netfilter@lists.netfilter.org
 
-Hi all.I'm new in the mailinglist.
-I have a linux router with 3 ethernet interfaces:
-eth0 is my LAN, eth1 and eth2 are internet gateways.
-My system default gateway is eth2.
-At the moment im working with mangle table to mark packets and
-to use two gateways; http goes across eth1 and
-other protocols goes across eth2, for example.
-This is ok. Everything works ok.
-But now i want to run a transparent squid proxy-cache y the
-linux router machine and i have some problems.
-With the next rule, squid works fine:
-iptables -t nat -A PREROUTING -s 192.168.60.0/255.255.255.0 \
--p tcp --dport 80 -j REDIRECT --to-port 3128
-but it use eth2, the default via, it take no notice of mangle
-table and don't goes across eth1, because squid takes the
-control. I really had proven a lot of different rules but
-i can't do simultaneously mangling and web caching.
-Can somebody help me please?
-Thanks in advance.
+On Tuesday 01 April 2003 09:32 am, Ivano Proietti Mucci wrote:
+> like most peaple, i have a gateway to internet, and the thing is: how
+> to limit bandwidth per internal-ip?
+>
+> thanks,
+> Ivano
 
-PS- Reading other messages from de list, i think this is
-one of the more interesting mailinglist i had subscribed.
-I hope i'll be able to help other people in the mailinglist in 
-the future.
-Thanks to all.
+This can be achieved with advanced routing.  The LARTC HowTo has some=20
+sections relating to this at:
+http://lartc.org/howto/lartc.cookbook.html
+
+If the bandwidth allocation policy is strictly IP-based then the solution=
+=20
+is routing.  If the policy depends on connection type as well (IE, bulk=20
+transfers like P2P prioritized lower than interactive connections) then=20
+the solution incorporates the TOS or MARK targets in iptables, in the=20
+mangle-PREROUTING and mangle-OUTPUT chains.
+
+Very powerful stuff, but I've yet to find a how-to on it that is both=20
+clear AND thorough.  (with a subject so complex, that combination is=20
+extremely difficult to achieve...)
+
+j
 
 
------------
-Carlos Ble
-email: carlosble@terra.es,
-       tecnico@wireless-canarias.com,
-       alu2388@csi.ull.es
-irc.oftc.net: kharly_
-irc.irc-hispano.org: kharly_
-
-Impulsado por Debian/GNU Linux
 
