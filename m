@@ -1,12 +1,11 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: Preventing port scanning
-Date: Wed, 7 Apr 2004 19:57:15 +0100
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Preventing port scanning
+Date: Wed, 7 Apr 2004 20:57:54 +0200
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200404071957.15692.Antony@Soft-Solutions.co.uk>
+Message-ID: <20040407185754.596353C97@sterenborg.info>
 References: <000001c41ccc$1eae1dd0$0464a8c0@stu>
-Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
 In-Reply-To: <000001c41ccc$1eae1dd0$0464a8c0@stu>
 Errors-To: netfilter-admin@lists.netfilter.org
@@ -21,36 +20,13 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 07 April 2004 7:14 pm, Stuart Lamble wrote:
+> Is it possible to prevent people from port scanning my 
+> firewall to see whats open?
 
-> Hi All
->
-> Is it possible to prevent people from port scanning my firewall to see
-> whats open?
+You mean : "iptables -P INPUT DROP" ?
 
-<pedant>You can't prevent them port scanning your firewall, no,</pedant> 
-however you can prevent them getting any positive answers simply by ensuring 
-that all the ports are closed.
 
-(If, for some reason, you need to have some ports open for external access to 
-your network, then no, you cannot prevent people from discovering this.)
-
-You might try using some sort of tarpit rules to bog down a naive port scanner 
-which scans multiple ports in a short period of time, however these will have 
-no effect on scanners which are only looking for a small number of ports 
-(such as 21,22,23,25,53,80,110,119,143 for example).
-
-Regards,
-
-Antony.
-
--- 
-Your work is both good and original.  Unfortunately the parts that are good 
-aren't original, and the parts that are original aren't good.
-
- - Samuel Johnson
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
+Gr,
+Rob
 
 
