@@ -1,12 +1,14 @@
-From: "Jee J.Z." <jz105@york.ac.uk>
+From: Antony Stone <Antony@Soft-Solutions.co.uk>
 Subject: Re: icmp echo reply && FORWARD chain
-Date: Sun, 2 May 2004 16:29:05 +0100
+Date: Sun, 2 May 2004 16:42:01 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <007b01c4305a$34258300$68892090@grouse>
-References: <006701c43051$39130ad0$68892090@grouse> <200405021546.51594.Antony@Soft-Solutions.co.uk>
+Message-ID: <200405021642.01619.Antony@Soft-Solutions.co.uk>
+References: <006701c43051$39130ad0$68892090@grouse> <200405021546.51594.Antony@Soft-Solutions.co.uk> <007b01c4305a$34258300$68892090@grouse>
+Reply-To: <netfilter@lists.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <007b01c4305a$34258300$68892090@grouse>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -19,55 +21,55 @@ List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Antony,
+On Sunday 02 May 2004 4:29 pm, Jee J.Z. wrote:
 
-Sorry for the confusion.
-
-> On Sunday 02 May 2004 3:24 pm, Jee J.Z. wrote:
+> Hi Antony,
 >
-> > Hi all,
+> Sorry for the confusion.
+>
+> > > My rules on a gateway linux box (PC2) are set as follows:
+> > >
+> > > Internet (PC1 and so on)
+> > >   |
+> > >   |
+> > > (eth0:global_ip)
+> > > PC2
+> > > (eth1:192.168.0.1)
+> > >   |
+> > >   |
+> > > Internal networks (PC3 (192.168.0.2) and so on...)
+> > >
+> > > iptables -F
+> > > iptables -F -t nat
+> > > iptables -I FORWARD -j QUEUE
+> > > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to global_ip
+> > > iptables -t nat -A PREROUTING -i eth1 -j DNAT --to 192.168.0.2
 > >
-> > My rules on a gateway linux box (PC2) are set as follows:
-> >
-> > Internet(PC1 and so
-on)-----------(eth0:global_ip)-PC2-(eth1:192.168.0.1)-------------Internal
-> > networks(PC3(192.168.0.2) and so on...)
-> >
-> > iptables -F
-> > iptables -F -t nat
-> > iptables -I FORWARD -j QUEUE
-> > iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to global_ip
-> > iptables -t nat -A PREROUTING -i eth1 -j DNAT --to 192.168.0.2
+> > That is a weird-looking rule.   Where does IP 192.168.0.2 exist on the
+> > above diagram?
 >
-> That is a weird-looking rule.   Where does IP 192.168.0.2 exist on the
-above
-> diagram?
+> It's the internal IP of PC3. I modified the diagram a little bit. Thank you.
 
-It's the internal IP of PC3. I modified the diagram a little bit. Thank you.
+I modified it a bit too, so we don't have problems with line-wrap.
 
-Jee
+So, what you're saying is that any packet coming in on eth1, addressed to 
+anywhere at all, gets DNATted, and sent straight back out eth1 again, now 
+addressed to PC3.   Hm.
 
+Why?
 
-> > ICMP echo request packets from PC1 or PC3 to PC2 can be caught by the
-> > FORWARD chain queuing to userspace, however, ICMP echo reply (in
-response
-> > to ping request from PC2) packets from PC1 or PC3 to PC2 will be ignored
-by
-> > the FORWARD chain. Is this a reasonable phenomenon? Could anyone tell me
-> > the reasons? Thanks a lot in advance!
-> >
-> > Cheers,
-> > Jee
->
-> -- 
-> Ramdisk is not an installation procedure.
->
->                                                      Please reply to the
-list;
->                                                            please don't CC
-me.
->
->
->
+Antony.
+
+PS: I'm not sure if the sig below (which gets selected at random by my mail 
+client) is appropriate here, however I can't see it doing any harm to remind 
+people :)
+
+-- 
+90% of networking problems are routing problems.
+9 of the remaining 10% are routing problems in the other direction.
+The remaining 1% might be something else, but check the routing anyway.
+
+                                                     Please reply to the list;
+                                                           please don't CC me.
 
 
