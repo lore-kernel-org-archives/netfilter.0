@@ -1,42 +1,40 @@
-From: "Daniel F. Chief Security Engineer -" <danielf@supportteam.net>
-Subject: NAT and anti spoofing
-Date: Wed, 18 Sep 2002 16:29:56 -0500
-Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200209181629.56408.danielf@supportteam.net>
+From: Patrick Schaaf <bof@bof.de>
+Subject: Re: [PATCH] associate user defined name with rule match
+Date: Wed, 18 Sep 2002 23:47:57 +0200
+Sender: netfilter-devel-admin@lists.netfilter.org
+Message-ID: <20020918214757.GD10465@oknodo.bof.de>
+References: <Pine.LNX.4.44L.0209172244330.10390-102000@hunger.screamingdaemon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-admin@lists.netfilter.org>
-Errors-To: netfilter-admin@lists.netfilter.org
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Return-path: <netfilter-devel-admin@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44L.0209172244330.10390-102000@hunger.screamingdaemon.com>
+Errors-To: netfilter-devel-admin@lists.netfilter.org
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <https://lists.netfilter.org/pipermail/netfilter-devel/>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Jay Schulist <jschlst@linux-sna.org>
+Cc: Harald Welte <laforge@gnumonks.org>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-This may be a stupid question but the answer is eluding me right now. 
+On Tue, Sep 17, 2002 at 10:48:04PM -0700, Jay Schulist wrote:
+> Here is a new match which allows the user to associate a name with a rule.
+> It is a very simple match, but it is useful if the user needs an easy way
+> to track a rule by name.
 
-With NAT setup. 
+I don't understand. Do you mean "tag with some string, so we can later
+easily grep for it"? No real match operation, just a way to attach some
+text to a rule?
 
-I have a single machine with 8 global IPs NATed to 8 10.0.0.0/8 IPs. How do 
-you filter the 10.0.0.0/8 network from talking to the machines behind the 
-firewall. From outside the firewall on the internet.  
+If that's it, I vote to rename the thing "comment", and please permit
+arbitrary quoted strings (with proper escaping for iptables-restore's
+benefit).
 
-I used command like this to get the NAT working is this right. 
-iptables -t nat -A POSTROUTING -s 10.10.10.128 -j SNAT --to 1.2.3.4
-iptables -t nat -A PREROUTING -d 1.2.3.4 -j DNAT --to 10.10.10.128
-
-This worked to make 1.2.3.4 send to a machine behind the firewall that had 
-10.10.10.128 for it's IP. 
-
-
-Thanks
-
--- 
-Daniel Fairchild
-C I Host | danielf@cihost.com
+best regards & thanks for your work
+  Patrick
 
