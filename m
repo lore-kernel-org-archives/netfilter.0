@@ -1,12 +1,14 @@
-From: Blizzards <blizzards@libero.it>
-Subject: Re: DROP Fin Scan
-Date: Thu, 12 Dec 2002 16:25:28 +0100
+From: Joel Newkirk <netfilter@newkirk.us>
+Subject: Re: portfw on iptables 2.4 kernel problem.
+Date: Thu, 12 Dec 2002 09:25:43 -0500
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <3DF8AA68.3040900@libero.it>
-References: <20021124093933.24186.71076.Mailman@kashyyyk> <1039703255.3df89cd74ff10@zigzag.cantine.org>
+Message-ID: <200212120925.43434.netfilter@newkirk.us>
+References: <5.1.0.14.2.20021212094109.02d83370@of23sm3>
+Reply-To: netfilter@newkirk.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
+In-Reply-To: <5.1.0.14.2.20021212094109.02d83370@of23sm3>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,50 +18,49 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Dade <mailing@cantine.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Rasmus Reinholdt Nielsen <rasmus@narani.dk>, netfilter@lists.netfilter.org
 
-The idea behind the FIN scan, is not based on a NEW connection  (only 
-pachet with the SYN bit set and ACK,RST,FIN cleared can initiate a new 
-connection), but in sending an RST/FIN to a server to probe ports.
-Closed ports reply to this CLEAR CONNECT FIN bit set packet with a RST 
-bit set, while open port must ignore
-the packet (this works on a unix TCP/IP stack).
-FIN bits is sended by the client to server
-server reply with ack
-client close connect and reply with ack
-server now send FIN and close connection
-client receive final FIN and close all.
-RST bit set produce an immediate closing of connection on both side.
-In my opinion the 1st rule is exact:
-
-iptables -A INPUT -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-
-Bye.
-G.
-
-
-
-
->: 
+On Thursday 12 December 2002 03:51 am, Rasmus Reinholdt Nielsen wrote:
+> Hi
 >
->Hi, 
->I'd like to block all FIN SCAN type. In Internet I find the following method: 
+> I have the same problem here. Using kernel 2.4.19-pre9, where I just
+> can't forward port 80. Port 8080 works for instace fine. I have also
+> tried to redirect all requests on port 80 to port 8080, but without
+> any luck. When connecting to port 80 the browser just hangs. I can see
+> in the apache log on the webserver that it gets the request, so I
+> think it is a problem of the packets not getting back through the
+> firewall and to the browser.
 >
->iptables -A INPUT -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP 
+> I just can't see what is wrong. I even tried the following rules to
+> see it that would help, but it didn't
 >
->but for me is better to write: 
+> iptables -A INPUT -j ACCEPT
+> iptables -A FORWARD -j ACCEPT
+> iptables -t nat -A POSTROUTING -j MASQUERADE
+> iptables -t nat -A PREROUTING -p tcp -i eth1 --dport 80 -j DNAT --to
+> <http_ip>:80
+> echo 1 > /proc/sys/net/ipv4/ip_forward
 >
->iptables -A FORWARD -m state -state NEW -p tcp --tcp-flags FIN FIN -j DROP 
->
->that means blocking all packets with flag FIN active regarding only packets 
->belonging to new TCP connections. 
->Are you agree? 
->Thanks in advance, 
->Davide
->  
->
+> This is not my usual firewall script, but I can't think of a more open
+> one :)
 
+Just a few observations.  I assume eth1 is your internet connection, so=20
+you should probably be using:
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+Otherwise it will constantly be checking the IP of every interface and=20
+masquerading packets outbound on every interface.
+and you also need (did you just not list it?)
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+for the MASQ target to work.
 
+> Anybody knows of this might be a problem with the 2.4.19 kernels, I
+> have a 2.4.18 firewall as well on which forwarding IS working, with
+> the same ruleset.
+
+Is this just DNAT that fails, or all forwarding?  And just to be sure,=20
+since you didn't say, are you testing it from outside the LAN, or from a=20
+local machine (or the firewall box itself)?
+
+j
 
