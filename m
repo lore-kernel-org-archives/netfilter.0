@@ -1,13 +1,12 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
-Subject: Re: -m owner & -j MARK problem
-Date: Fri, 9 Jan 2004 16:05:24 +0000
+From: "Thhoep" <thhoep@gmx.de>
+Subject: Re: Iproute2 and fwmark usage
+Date: Fri, 9 Jan 2004 17:17:36 +0100
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200401091605.24970.Antony@Soft-Solutions.co.uk>
-References: <1073657669.1103.1.camel@bubursuc.celuloza.ro>
+Message-ID: <001d01c3d6cc$191fc210$1684188d@Kiste>
+References: <001401c3d63b$e9ebdff0$1684188d@Kiste> <20040109164718.GB24304@cannon.eng.us.uu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <1073657669.1103.1.camel@bubursuc.celuloza.ro>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,30 +17,20 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Friday 09 January 2004 2:14 pm, Radu Anghel wrote:
+> I'm sorry. I tried to read and understand your problem several times but
+> I'm lost. Can you explain a bit more what the problem is?
 
-> what's wrong with the following command?
->
-> [root:pts/5][~]# iptables -t mangle -A PREROUTING -i eth0 -m owner
-> --gid-owner 101 -j MARK --set-mark 101
-> iptables: Invalid argument
+oh, of course. in short terms:
 
-According to 
-http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO-7.html#ss7.3 
-the owner match is only valid in the OUTPUT chain?
+if using the inbuilt "ip rule add from .." directive of iproute for advanced
+routing everything is working fine. but if i try to use netfilter marks to
+do the exact same thing using "ip rule add fwmark ..." outgoing packets find
+their way through my routing stuff and out of the net, but incoming replies
+just get lost between PREROUTING and FORWARD, probably during the routing
+process, for just no reason and without any icmp error messages or
+something.
 
-Antony.
-
--- 
-Never write it in Perl if you can do it in Awk.
-Never do it in Awk if sed can handle it.
-Never use sed when tr can do the job.
-Never invoke tr when cat is sufficient.
-Avoid using cat whenever possible.
-
-                                                     Please reply to the list;
-                                                           please don't CC me.
 
 
