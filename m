@@ -1,12 +1,12 @@
-From: Jan Humme <jan.humme@xs4all.nl>
-Subject: Do I need a firewall rule for RST ?
-Date: Tue, 9 Jul 2002 18:50:13 +0200
+From: Matthias Kattanek <mattes@mykmk.com>
+Subject: Re: Redhat 7.2 Kernel
+Date: Tue, 9 Jul 2002 10:20:39 -0700 (PDT)
 Sender: netfilter-admin@lists.samba.org
-Message-ID: <02070918501400.02824@Lms>
-Reply-To: jan.humme@xs4all.nl
+Message-ID: <Pine.LNX.4.44.0207091015020.4405-100000@e33.eng.roonetworks.com>
+References: <000701c22756$425ac1b0$153fa8c0@hslbrabantzuid.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-admin@lists.samba.org>
+In-Reply-To: <000701c22756$425ac1b0$153fa8c0@hslbrabantzuid.nl>
 Errors-To: netfilter-admin@lists.samba.org
 List-Help: <mailto:netfilter-request@lists.samba.org?subject=help>
 List-Post: <mailto:netfilter@lists.samba.org>
@@ -16,44 +16,36 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://lists.samba.org/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.samba.org?subject=unsubscribe>
 List-Archive: <http://lists.samba.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.samba.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "R. Sterenborg" <rsterenborg@xs4all.nl>, "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
+Cc: "Iptables-User-list (E-mail)" <netfilter@lists.samba.org>
 
-In /var/log/messages, I often find packages that have been rejected because 
-of the following rules:
 
-$IPTABLES -A FORWARD -m multiport -p tcp -i ppp0 --sports $TCPOUT\
-	-j ACCEPT --tcp-flags ACK ACK
-$IPTABLES -A FORWARD -m multiport -p tcp -o ppp0 --dports $TCPOUT\
-	-j ACCEPT
+On Tue, 9 Jul 2002, R. Sterenborg wrote:
 
-In short, what I want to achieve is that incoming traffic should always have 
-the ACK-bit set.
+> ----- Original Message ----- 
+> From: "Mike G. Hammonds" <mhammonds@knowledgeinenergy.com>
+> Subject: Redhat 7.2 Kernel
+> 
+> 
+> > Does the default install kernel of RH7.2 have iptable support already
+> > compiled in it?
+> > 
+> Yes it does.
 
-Packets that are rejected most often are packets that have the RST-flag set:
+Nope, that is not exactly true.
+All RedHat 7.x distribution with a 2.4.x kernel offer iptables as a 
+module. (same as ipchains)
 
-Jul  9 14:08:58 jhh kernel: IN=ppp0 OUT=eth0 SRC=145.58.30.9 DST=192.168.0.1 
-LEN=40 TOS=0x00 PREC=0x00 TTL=49 ID=32896 PROTO=TCP SPT=80 DPT=1068 WINDOW=0 
-RES=0x00 RST URGP=0
-Jul  9 14:08:59 jhh kernel: IN=ppp0 OUT=eth0 SRC=145.58.30.9 DST=192.168.0.1 
-LEN=40 TOS=0x00 PREC=0x00 TTL=49 ID=33682 PROTO=TCP SPT=80 DPT=1068 WINDOW=0 
-RES=0x00 RST URGP=0
-Jul  9 14:09:01 jhh kernel: IN=ppp0 OUT=eth0 SRC=145.58.30.9 DST=192.168.0.1 
-LEN=40 TOS=0x00 PREC=0x00 TTL=49 ID=35186 PROTO=TCP SPT=80 DPT=1068 WINDOW=0 
-RES=0x00 RST URGP=0
+By default RH distries have ipchains activated. So in case you attempt
+e.g. 'iptables -L' you will encounter an error message.
 
-Questions:
+no worries. easiest way around is to rename /etc/sysconfig/ipchains
+to /etc/sysconfig/ipchains.notinuse. Then reboot the box and run 
+'iptables' and it will autoload the respective module.
 
-1) AFAIK these packets are harmless, correct? Or could some of them be used 
-in attacks?
+mattes
 
-2) (Assuming they are harmless:) is it safe then to add a rule:
 
-$IPTABLES -A FORWARD -m multiport -p tcp -i ppp0 --sports $TCPOUT\
-	-j ACCEPT --tcp-flags RST RST
- 
-3) Is there perhaps a better way to deal with these kinds of packets? 
-Perhaps i should better use "state" and forget about the flags?
-
-Jan Humme.
 
