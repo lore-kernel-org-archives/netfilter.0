@@ -1,12 +1,10 @@
-From: "Jason Opperisano" <Jopperisano@alphanumeric.com>
-Subject: RE: rules suggestion
-Date: Thu, 22 Jul 2004 16:31:43 -0400
+From: "Todd Landfried" <tlandfried@hotmail.com>
+Subject: How to redirect browsers with static proxy settings in iptables?
+Date: Thu, 22 Jul 2004 14:48:52 -0700
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <D5C9032B2B09C64EA2409D6214E91AC90511E0@asimail2.alphanumeric.com>
+Message-ID: <BAY2-F17K8rBKXGA7zy0000775f@hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-Content-class: urn:content-classes:message
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -16,48 +14,46 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-> $ipt -t filter -A OUTPUT -o $extif_name -p udp -d 192.168.1.255 =
---dport
-> 137:139 -j DROP  #NETBIOS
->
-> $ipt -t filter -A INPUT -i $extif_name -p udp -d 192.168.1.255 --dport
-> 137:139 -j DROP  #NETBIOS
->
-> $ipt -t filter -A FORWARD -i $extif_name -p udp -d 192.168.1.255 =
---dport
-> 137:139 -j DROP  #NETBIOS
->
-> $ipt -t filter -A FORWARD -o $extif_name -p udp -d 192.168.1.255 =
---dport
-> 137:139 -j DROP  #NETBIOS
+I'm new to this firewall stuff, so any assistance would be greatly=20
+appreciated. I've RTFM as much as I can, but nothing seems to fit this=20
+situation exactly. Maybe I'm not asking the questions correctly in Google.
 
-all these rules block are UDP 137-139 to the specific broadcast address =
-on your internal LAN.  while this is nice for tidying up your logs; i =
-*believe* the original poster was looking to keep netbios-related =
-traffic from leaking out to the internet.  in which case, my =
-recommendation is:
+I have a Linux 7.3 (2.4.20-28) server with two NICs. One is eth0 and=20
+connects to the router. The other is eth1 and connects to the switch that=20
+connect the computers in the house. We have a couple of laptops that have t=
+o=20
+have static proxy settings in the browser for work, but it's a royal pain t=
+o=20
+have to go and unclick the "use proxy" settings all the time. I'm being=20
+pressured to find a solution--if you know what I mean.
 
--A FORWARD -o $external_if -p udp --dport 137:138 -j DROP
--A FORWARD -o $external_if -p tcp --dport 139 -j DROP
--A FORWARD -o $external_if -p tcp --dport 445 -j DROP
+Let's say the proxy settings are:
 
-two notes:
+IP: 68.152.65.65
+Port: 80
 
-all the examples are using "-A."  keep in mind that if you already have =
-some kind of "allow everything on the inside out" rule, these will never =
-get matched.  in such a case, you would need to "-I FORWARD x" where x =
-=3D the numnber of the "allow everything out" rule.
+Let's say the internal network is 10.1.0.x. I've also installed squid=20
+(2.4.stable6) and I think I have that correct, but it's not working. I may =
 
-it gets mentioned all the time on this list, but hey--you can never get =
-too much of a good thing, right:
+be missing some component, but I'm not sure.
 
-the best way to design your firewall rules is to start with a default =
-drop, and then just allow the specific traffic that you need.  it may =
-take slightly longer to get it setup initially, but requires much less =
-care & feeding in the long run.
+How do I create a rule that will route the browser traffic through the linu=
+x=20
+box without having to uncheck the silly checkbox everytime she comes home?
 
--j=20
+Any solution or guidance would be appreciated.
+
+Thnks
+
+Todd
+
+_________________________________________________________________
+Overwhelmed by debt? Find out how to =91Dig Yourself Out of Debt=92 from MS=
+N=20
+Money. http://special.msn.com/money/0407debt.armx
+
 
