@@ -1,13 +1,12 @@
-From: Lists <lists@nyc.rr.com>
-Subject: Firewall suggestions needed
-Date: 27 Oct 2003 19:12:33 -0500
+From: snort@cncorn.com <snort@cncorn.com>
+Subject: netfilter & iptables
+Date: Tue, 28 Oct 2003 10:03:50 +0800
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1067299953.20617.3.camel@bluedevil2>
-References: <FDAFEC98D318F74CA26B5A26F2B4965227C54E@exchange.jfctechnologies.com>
+Message-ID: <E1AEJAd-0007BD-RI@kashyyyk.netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <FDAFEC98D318F74CA26B5A26F2B4965227C54E@exchange.jfctechnologies.com>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,19 +16,18 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+i'm sorry for a very very stupid question,but what is the difference betw=
+een
+netfilter and iptables?
 
-Is there a firewall program that reads and writes firewall rules using
-iptables?  By this I mean that it uses the rules stored in netfilter,
-and doesn't first store rules in its own memory and then translate those
-into iptables commands.  This would allow it to see any rule changes
-made by external programs that run iptables commands.
-
-Thanks for your help.
-
-Apologies if this is a duplicate.
-
+-----------------------------------
+=BB=B6=D3=AD=CA=B9=D3=C3=D6=D0=B9=FA=C1=B8=D3=CD=CD=F8=C2=E7=CA=D5=B7=D1=D3=
+=CA=CF=E4
+http://www.sdoo.com/promail.asp
+50MB=B3=AC=B4=F3=D3=CA=CF=E4
+http://www.cncorn.com/
+-----------------------------------
 
 
