@@ -1,13 +1,13 @@
-From: Antony Stone <Antony@Soft-Solutions.co.uk>
+From: "hare ram" <hareram@sol.net.in>
 Subject: Re: Port Scanner
-Date: Wed, 5 Nov 2003 15:15:05 +0000
+Date: Wed, 5 Nov 2003 20:45:39 +0530
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <200311051515.hA5FFBr13175@agate.rockstone.co.uk>
-References: <60101.200.180.170.253.1068041679.squirrel@www.alcidesmaya.com.br> <200311051419.hA5EJtr13138@agate.rockstone.co.uk> <60242.200.180.170.253.1068043446.squirrel@www.alcidesmaya.com.br>
+Message-ID: <014201c3a3af$abc00bc0$c2bf09ca@Housecall>
+References: <60101.200.180.170.253.1068041679.squirrel@www.alcidesmaya.com.br> <1068043048.810.141.camel@elendil.intranet.cartel-securite.net>
+Reply-To: "hare ram" <hareram@sol.net.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <60242.200.180.170.253.1068043446.squirrel@www.alcidesmaya.com.br>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -18,62 +18,43 @@ List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Lista de Mail netfilter <netfilter@lists.netfilter.org>
+To: Cedric Blancher <blancher@cartel-securite.fr>, Leandro Takashi Hirano <takashi@alcidesmaya.com.br>
+Cc: Lista de Mail netfilter <netfilter@lists.netfilter.org>
 
-On Wednesday 05 November 2003 2:44 pm, Leandro Takashi Hirano wrote:
+Hi
 
-> > 2. One packet per second will be ACCEPTed.   What happens to the othe=
-r
-> > packets (and whether anything gets returned to the scanner) depends o=
-n
-> > the  other rules following this one in the chain.
->
-> OK, one packet per second will be ACCEPTed, but aren=B4t the other pack=
-ets
-> going to be DROPed?
+iam using p-o-m with PSD patch
 
-As I said, that depends on what rules follow this one in the chain.   You=
- can=20
-DROP the packets, you can REJECT the packets - you can even ACCEPT them i=
-f=20
-you want to!
+right now iam running this
 
-> > 3. The rule only applies to packets with RST set, and SYN, ACK, FIN
-> > clear.    Therefore it will incfluence the outcome of a RST port scan=
-,
-> > but have no  effect on a FIN scan, or a SYN scan.
->
-> Do I have also to create a rule for FIN scan and SYN scan?
+iptables -A INPUT -m psd -j DROP
 
-If you want to block those types of scan, then yes.
+how do i run the script like this
+Log the Portscanner IP and Drop them
 
-> Do you have some port scanners rules to show me? (and other protection
-> rules too)
+thanks
+hare
 
-Tell me what you want to do and I may be able to show you a rule which do=
-es=20
-it.
+----- Original Message -----=20
+From: "Cedric Blancher" <blancher@cartel-securite.fr>
+To: "Leandro Takashi Hirano" <takashi@alcidesmaya.com.br>
+Cc: "Lista de Mail netfilter" <netfilter@lists.netfilter.org>
+Sent: Wednesday, November 05, 2003 8:07 PM
+Subject: Re: Port Scanner
 
-Personally I simply DROP all packets which I don't want to allow.
 
-> > I think in order to answer your question we first need to know:
-> >
-> >  - what response do you want someone to get when they attempt to port
-> > scan your system?
->
-> no answer....
+Le mer 05/11/2003 =E0 15:14, Leandro Takashi Hirano a =E9crit :
+> Is it safe to use only this rule to avoid port scanners?
 
-Okay.
+See psd match :
 
-Antony.
+http://www.netfilter.org/documentation/pomlist/pom-base.html#psd
 
 --=20
+http://www.netexit.com/~sid/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
-I love deadlines.   I love the whooshing noise they make as they go by.
 
- - Douglas Noel Adams
-                                                     Please reply to the =
-list;
-                                                           please don't C=
-C me.
 
