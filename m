@@ -1,10 +1,17 @@
-From: seberino@spawar.navy.mil
-Subject: why good to drop *these* TCP flag settings...?....
-Date: Mon, 4 Apr 2005 23:25:53 -0700
-Message-ID: <20050405062553.GA13645@spawar.navy.mil>
+From: J A <jake.lists@gmail.com>
+Subject: Re: IPTables & HTTPD Conflict
+Date: Tue, 5 Apr 2005 14:41:57 +0800
+Message-ID: <249c20290504042341465be16c@mail.gmail.com>
+References: <200504031339.j33DdR2X003262@osprey.tkevans.com>
+	<249c202905040319115c97c290@mail.gmail.com>
+	<a0f69e5050404024079ea9980@mail.gmail.com>
+	<249c20290504040259680894c@mail.gmail.com>
+	<a0f69e505040404325bf851f5@mail.gmail.com>
+Reply-To: J A <jake.lists@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <a0f69e505040404325bf851f5@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +23,108 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Askar <askarali@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Why are these flag combos in iptables rules good to drop???
+Hello Askar/A.Dreyer,
 
+Thank you very much for your insights,  now i see how badly our
+IPTables is setup.  Will re-configure along your recommended settings,
+and see how system goes.
 
+I will post whatever our final rules will look like.
 
-# Is the explanation for these because SYN starts a
-# connection and it doesn't make sense to reset (RST)
-# or terminate (FIN) at the same time your initiating (SYN)???
-   --tcp-flags SYN,RST SYN,RST -j DROP
-   --tcp-flags SYN,FIN SYN,FIN -j DROP
+Best regards!
 
-# Is this obvious in that you can't finish (FIN) and
-# reset (RST) at the same time?
-   --tcp-flags FIN,RST FIN,RST -j DROP
+---jake
 
-# Can these be explained by simple fact that *ALL* packets
-# must have ACK set after connection established?? Is that right?
-# (if yes, could we add 'ACK,RST RST' to drop list as well?)
-   --tcp-flags ACK,FIN FIN     -j DROP
-   --tcp-flags ACK,PSH PSH     -j DROP
-   --tcp-flags ACK,URG URG     -j DROP
-
-What would DROP rule look like to protect against Xmas tree scan?
-You'd want to drop packets with FIN, PSH and URG /all/ set right?
-
-Thanks!
-
-Chris
+On Apr 4, 2005 7:32 PM, Askar <askarali@gmail.com> wrote:
+> On Apr 4, 2005 3:59 PM, J A <jake.lists@gmail.com> wrote:
+> > Sorry, when i replied to the thread, i seemed to have copied only
+> > guido, here's a re-send:
+> >
+> > Here are our rules (pls refer to the thread for the problem
+> > description), hope you could share us your vasluable insight.
+> > --------------------------------------------------------------------------
+> > *filter
+> > :INPUT ACCEPT [0:0]
+> > :FORWARD ACCEPT [0:0]
+> > :OUTPUT ACCEPT [0:0]
+> > :RH-Lokkit-0-50-INPUT - [0:0]
+> > -A INPUT -j RH-Lokkit-0-50-INPUT
+> > -A FORWARD -j RH-Lokkit-0-50-INPUT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 25 --syn -j ACCEPT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 80 --syn -j ACCEPT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 21 --syn -j ACCEPT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 22 --syn -j ACCEPT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 23 --syn -j ACCEPT
+> > -A RH-Lokkit-0-50-INPUT -i lo -j ACCEPT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 0:1023 --syn -j REJECT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 2049 --syn -j REJECT
+> > -A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 0:1023 -j REJECT
+> > -A RH-Lokkit-0-50-INPUT -p udp -m udp --dport 2049 -j REJECT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 6000:6009 --syn -j REJECT
+> > -A RH-Lokkit-0-50-INPUT -p tcp -m tcp --dport 7100 --syn -j REJECT
+> > COMMIT
+> > --------------------------------------------------------------------------
+> >
+> >
+> > On Apr 4, 2005 5:40 PM, Askar <askarali@gmail.com> wrote:
+> > > how should we suggest something without watchen your iptables rules set?
+> > >
+> > > regards
+> > >
+> > >
+> > > On Apr 4, 2005 8:11 AM, J A <jake.lists@gmail.com> wrote:
+> > > > Hello All,
+> > > >
+> > > > We're using Redhat 9
+> > > > We've been running a Web Server (Apache & Tomcat), and were told to
+> > > > run a firewall, in this case IPTables.  When we enabled IPTables, many
+> > > > of our web sites (BUT not all) could no longer be browsed from the
+> > > > Internet.
+> > > >
+> > > > Could you tell us which specific IPTables parameter is doing this, so
+> > > > we could disable only the specific parameter?
+> > > > Or is it not advisable to run IPTables side-by-side with Web services?
+> > > >
+> > > > Thanks, appreciate your ideas.
+> > > >
+> > > > ---jake
+> > > >
+> > > >
+> > >
+> > > --
+> > > I love deadlines. I like the whooshing sound they make as they fly by.
+> > > Douglas Adams
+> > >
+> >
+> okay try these iptables rules as starting point,
+> 
+> # Load the FTP connection state helper module.
+> #Clear \ Flush all the rules from the different chains and tables
+> for table in mangle nat filter; do
+>   iptables -t $table -F
+>   iptables -t $table -X
+> done
+> # Set the default filter table policy
+> iptables --policy INPUT   DROP
+> iptables --policy OUTPUT  ACCEPT
+> iptables --policy FORWARD DROP
+> 
+> # Using Connection State to By-pass Rule Checking
+> iptables -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A INPUT -p tcp -m multiport --dport 25,80,21,22,23 -m state
+> --state NEW -j ACCEPT
+> 
+> Note: save these rules to a file, then chmod +x the file and then
+> execute it with ./filename :)
+> 
+> regards
+> 
+> 
+> --
+> I love deadlines. I like the whooshing sound they make as they fly by.
+> Douglas Adams
+>
 
