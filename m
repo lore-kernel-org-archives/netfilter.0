@@ -1,12 +1,10 @@
-From: Jason Opperisano <opie@817west.com>
-Subject: Re: Resource temporarily unavailable
-Date: Tue, 16 Nov 2004 16:37:50 -0500
-Message-ID: <1100641070.3695.44.camel@hubcap.ljm.dom>
-References: <200411161629.00497.lindsay@pa.net>
+From: Eduardo =?ISO-8859-1?Q?Fern=E1ndez?= <eduardo@cmusanjuan.com>
+Subject: [OT] Traffic from ff:ff:ff:ff:ff:ff in switched environment
+Date: Tue, 16 Nov 2004 22:45:54 +0100
+Message-ID: <1100641554.1647.10.camel@laserite>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200411161629.00497.lindsay@pa.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,42 +18,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 2004-11-16 at 16:29, Lindsay Snider wrote:
-> When quickly adding/removing rules to iptables, I randomly get the 'Resource 
-> temporarily unavailable' and 'Invalid argument' message.  In the past, I put 
-> a random .3 - 1 sec sleep in between iptables calls to get the rules in. 
-> Recently we've updated two boxes to the 2.6 kernel and things have gotten 
-> worse.  We normally float around 10K rules but when the 2.6 kernel boxes get 
-> into the 7K number of rules range, the add/removal time is to slow for the 
-> boxes to keep up with the changes.  On the 2.6 kernel boxes, the system time 
-> maxes out one processor at 100% system cpu.  The 2.4 kernel boxes are keeping 
-> up, running for mail load and the system cpu is averaging 41%.
-> 
-> A quick note on the boxes.  There are 9 dell 1550's (dual PIII, 1G ram).  7 
-> boxes are running 2.4.22-1.2199.nptlsmp (fedora rpm), 1 running 
-> 2.6.9-1.667smp (fc3 rpm), and 1 running 2.6.9 (stock kernel.org).  The 
-> hardware w/i the boxes are the same.
-> 
-> Does anyone have a suggestion on what this might be?
-> 
-> Addition info:
-> iptables add/remove rate is averaging 64.5 / minute
-> 
-> 
-> Lindsay
+Hi all,
 
-save your rules via ipables-save and load your rules via
-iptables-restore.
+i know this is not strictly about netfilter, but here it goes:
 
-refer to this previous post on the efficiency gains:
+While I was deploying my firewall script, I noticed some weird traffic
+from mac ff:ff:ff:ff:ff:ff in my router's private interface. Later on I
+noticed the same traffic in other computers within the network. The
+traffic was arp who-has packets at a constant rate of about 35 kbytes/s.
+It's a /16 network in a switched environment. 
 
-  http://marc.theaimsgroup.com/?l=netfilter&m=109897603213467&w=2
+Thank you very much in advance. Best regards,
 
--j
-
---
-"Getting out of jury duty is easy. The trick is to say you're
- prejudiced against all races."
-	--The Simpsons
+Eduardo
 
 
