@@ -1,13 +1,10 @@
-From: Martin Josefsson <gandalf@tux.rsn.bth.se>
-Subject: RE: new tcp connections, without SYN
-Date: 09 Apr 2003 16:00:28 +0200
+From: Scott Johnson <sjohnson@eccweb1.edina.k12.mn.us>
+Subject: SNAT help
+Date: Wed, 9 Apr 2003 09:59:52 -0500 (CDT)
 Sender: netfilter-admin@lists.netfilter.org
-Message-ID: <1049896827.1313.148.camel@tux.rsn.bth.se>
-References: <7497DCA1C240C042B28F6657ADFD8E09268776@i2km11-ukbr.domain1.systemhost.net>
+Message-ID: <Pine.LNX.4.44.0304090959160.19516-100000@eccweb1.edina.k12.mn.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-admin@lists.netfilter.org>
-In-Reply-To: <7497DCA1C240C042B28F6657ADFD8E09268776@i2km11-ukbr.domain1.systemhost.net>
 Errors-To: netfilter-admin@lists.netfilter.org
 List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Post: <mailto:netfilter@lists.netfilter.org>
@@ -17,28 +14,51 @@ List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: <https://lists.netfilter.org/pipermail/netfilter/>
-Content-Type: text/plain; charset="us-ascii"
-To: dhiraj.2.bhuyan@bt.com
-Cc: Netfilter <netfilter@lists.netfilter.org>, carlosble@terra.es, blancher@cartel-securite.fr
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Wed, 2003-04-09 at 15:00, dhiraj.2.bhuyan@bt.com wrote:
-> As far as I understand, an "ACK" packet can also start a "NEW" connection.
-> If the connection remains idle for long, the Netfilter's connection tracking
-> engine times out that connection and removes it's entry from the state
-> table. Now when an "ACK" packet comes back after sometime, the connection
-> tracking engine marks this as a "NEW" connection. However am not sure how
-> the state changes to "ESTABLISHED".
 
-IIRC there's been som discussion about how Internet Explorer violates
-the tcp standard. Some versions start their tcp sessions with a ACK
-instead of a SYN. And there's an hack in the windows OS that accepts
-that if it's destined for an IIS webserver I think. This is to shorten
-the amount of time needed for connection setup.
+I apologize if this message appears twice... I got a bounce on it the 
+first time.
 
-If connection-pickup is enabled they will be marked as NEW even though
-they don't contain a SYN. If connection-pickup is disabled the packets
-will be marked as INVALID.
+I'm new to iptables so I very much appreciate any help I can get.
 
--- 
-/Martin
+I've been digging through information for about 1.5 weeks now and got most 
+things to work, however I'm stumped on one thing...
+
+I've got masquerading going on for the 3000+ work stations I have in 
+house.  In addition, I've got some good basic firewalling going on, I'm 
+still working on the rules, but I'm happy they're working as well as they 
+are.
+
+Now, I've got a few PC's that need a different public IP address from the 
+masses.  So I'm trying to assign a static NAT to these.  When I assign the 
+static nat rule, it never gets used.
+
+For example:
+
+eth0 - internal
+eth1 - dmz
+eth2 - external
+
+iptables -t nat -A POSTROUTING -s 10.1.3.35/32 -o eth2 -j SNAT --to 
+1.2.3.4
+(where 1.2.3.4 is the public address that I'm assigning)
+ip address add 1.2.3.4 dev eth2
+
+creates a rule that looks like:
+
+   0     0 SNAT       all  --  *      eth2    10.1.3.35            
+0.0.0.0/0          to:1.2.3.4
+
+When I go check my ip address at an external site, I keep getting the 
+public interface IP address.
+
+Again, any and all help is MUCH appreciated.
+
+Thanks!
+  Scott 
+
+
 
